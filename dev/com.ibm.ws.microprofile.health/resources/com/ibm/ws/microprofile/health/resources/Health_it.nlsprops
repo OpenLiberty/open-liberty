@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2021 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -47,8 +47,8 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=Il metodo della chiamata s
 healthcheck.bean.call.exception.CWMH0050E.useraction=Esaminare il metodo della chiamata nel bean HealthCheck per identificare l'eccezione che si \u00e8 verificata.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0052W=CWMH0052W: L'HealthCheckResponse che implementa {0} nell'applicazione {1} nel modulo {2} ha riportato uno stato {3} con dati {4}.
-healthcheck.application.down.CWMH0052W.explanation=A causa dello stato DOWN, il servizio di monitoraggio potrebbe intraprendere azioni su questo server.
+healthcheck.application.down.CWMH0052W=CWMH0052W: La risposta {0} che implementa HealthChecknell'applicazione {1} nel modulo, {2}, ha riportato uno stato {3} per il controllo di integrit\u00e0, {4}e con i dati {5}.
+healthcheck.application.down.CWMH0052W.explanation=Lo stato INATTIVO potrebbe far s\u00ec che un servizio di monitoraggio agisca su questo server.
 healthcheck.application.down.CWMH0052W.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.  Questa avvertenza \u00e8 una registrazione dello stato DOWN.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet

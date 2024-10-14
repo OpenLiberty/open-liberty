@@ -44,9 +44,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.FATSuite;
 import com.ibm.ws.jsf23.fat.JSFUtils;
-import com.ibm.ws.jsf23.fat.selenium_util.CustomDriver;
-import com.ibm.ws.jsf23.fat.selenium_util.ExtendedWebDriver;
-import com.ibm.ws.jsf23.fat.selenium_util.WebPage;
+import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
+import componenttest.containers.SimpleLogConsumer;
+
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -77,6 +79,7 @@ public class JSF23CDIGeneralTests {
     @ClassRule
     public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
                     .withAccessToHost(true)
+                    .withLogConsumer(new SimpleLogConsumer(JSF23CDIGeneralTests.class, "selenium-driver"))
                     .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
 
     private static ExtendedWebDriver driver;
@@ -107,6 +110,9 @@ public class JSF23CDIGeneralTests {
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
 
+        Log.info(c, "Initialization Output", chrome != null ? "Chrome not null" : "Chrome is null");
+        Log.info(c, "Initialization Output", chrome.getSeleniumAddress().toString());
+
         driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
     }
 
@@ -123,7 +129,9 @@ public class JSF23CDIGeneralTests {
         if (server != null && server.isStarted()) {
             server.stopServer();
         }
-        driver.quit(); // closes all sessions and terminutes the webdriver
+        if (driver != null) {
+            driver.quit(); // closes all sessions and terminates the webdriver
+        }
     }
 
     /*
@@ -514,8 +522,14 @@ public class JSF23CDIGeneralTests {
         input.sendKeys("Hello World");
 
         page.findElement(By.id("form1:submitButton")).click();
+
+        // Dismiss alert that is used in testFacesBehaviorBeanInjection as it prevents Selenium from reading page
         driver.switchTo().alert().dismiss();
+
         page.waitForCondition(webDriver -> page.isInPage("Hello Earth"));
+
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), driver.getPageTextReduced());
 
         assertTrue(page.isInPage("Hello Earth"));
     }
@@ -546,6 +560,7 @@ public class JSF23CDIGeneralTests {
 
         page.findElement(By.id("form1:submitButton")).click();
 
+        // Dismiss alert that is used in testFacesBehaviorBeanInjection as it prevents Selenium from reading page
         driver.switchTo().alert().dismiss();
 
         // Log the page for debugging if necessary in the future.

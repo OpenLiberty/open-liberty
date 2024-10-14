@@ -30,9 +30,31 @@ public class SelfExtractorTest {
      */
     @Test
     public void testmatchLibertyPropertiesInvalidEdition() {
-        String appliesTo = "com.ibm.websphere.appserver; productVersion=24.0.0.1; productEdition=Open; editions=\"BASE, DEVELOPER\"";
+        String appliesTo = "com.ibm.websphere.appserver; productVersion=24.0.0.2; productEdition=Open; editions=\"BASE, DEVELOPER\"";
         List productMatches = SelfExtractor.parseAppliesTo(appliesTo);
-        appliesTo = "com.ibm.websphere.appserver; productVersion=24.0.0.2; productEdition=Open; editions=\"BASE, DEVELOPER\"";
+        appliesTo = "com.ibm.websphere.appserver; productVersion=24.0.0.1; productEdition=Open; editions=\"BASE, DEVELOPER\"";
+        productMatches.addAll(SelfExtractor.parseAppliesTo(appliesTo));
+        Properties props = new Properties();
+        props.put("com.ibm.websphere.productId", "com.ibm.websphere.appserver");
+        props.put("com.ibm.websphere.productVersion", "24.0.0.2");
+        props.put("com.ibm.websphere.productEdition", "LIBERTY_CORE");
+        props.put("com.ibm.websphere.productLicenseType", "IPLA");
+        props.put("com.ibm.websphere.productInstallType", "Archive");
+
+        ReturnCode rc = SelfExtractor.matchLibertyProperties(productMatches, props);
+        assertTrue("Message key should be invalidEdition but it was '" + rc.getMessageKey() + "'", rc.getMessageKey().equals("invalidEdition"));
+
+    }
+
+    /**
+     *
+     * Test method for {@link wlp.lib.extract.SelfExtractor#validateProductMatches(java.io.File, java.util.List)}.
+     */
+    @Test
+    public void testmatchLibertyPropertiesInvalidEditionWithOlderVersion() {
+        String appliesTo = "com.ibm.websphere.appserver; productVersion=24.0.0.2; productEdition=Open; editions=\"BASE, DEVELOPER\"";
+        List productMatches = SelfExtractor.parseAppliesTo(appliesTo);
+        appliesTo = "com.ibm.websphere.appserver; productVersion=24.0.0.1; productEdition=Open; editions=\"BASE, DEVELOPER\"";
         productMatches.addAll(SelfExtractor.parseAppliesTo(appliesTo));
         Properties props = new Properties();
         props.put("com.ibm.websphere.productId", "com.ibm.websphere.appserver");
@@ -43,6 +65,25 @@ public class SelfExtractorTest {
 
         ReturnCode rc = SelfExtractor.matchLibertyProperties(productMatches, props);
         assertTrue("Message key should be invalidEdition but it was '" + rc.getMessageKey() + "'", rc.getMessageKey().equals("invalidEdition"));
+
+    }
+
+    /**
+     * User feature or local ESA install does not have "appliesTo" String. Therefore, productMatches list is empty.
+     */
+    @Test
+    public void testmatchLibertyPropertiesEmptyProductMatch() {
+        String appliesTo = null;
+        List productMatches = SelfExtractor.parseAppliesTo(appliesTo);
+        Properties props = new Properties();
+        props.put("com.ibm.websphere.productId", "com.ibm.websphere.appserver");
+        props.put("com.ibm.websphere.productVersion", "24.0.0.1");
+        props.put("com.ibm.websphere.productEdition", "LIBERTY_CORE");
+        props.put("com.ibm.websphere.productLicenseType", "IPLA");
+        props.put("com.ibm.websphere.productInstallType", "Archive");
+
+        ReturnCode rc = SelfExtractor.matchLibertyProperties(productMatches, props);
+        assertTrue("Should return OK '", rc.getCode() == 0);
 
     }
 

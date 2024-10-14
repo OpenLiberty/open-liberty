@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
@@ -54,11 +55,7 @@ import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.provisioning.ExtensionConstants;
 import com.ibm.wsspi.kernel.feature.LibertyFeature;
 
-/**
- *
- */
 public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefinition, LibertyFeature {
-
     private static final TraceComponent tc = Tr.register(SubsystemFeatureDefinitionImpl.class);
 
     /** Immutable attributes of the subsystem feature definition */
@@ -218,6 +215,20 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         return iAttr.visibility;
     }
 
+    public boolean isPrivate() {
+        if (iAttr.visibility == Visibility.PRIVATE) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPublic() {
+        if (iAttr.visibility == Visibility.PUBLIC) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public EnumSet<ProcessType> getProcessTypes() {
         return iAttr.processTypes;
@@ -226,7 +237,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     @Override
     public boolean isSingleton() {
         return iAttr.isSingleton;
-    };
+    }
 
     @Override
     public String getBundleRepositoryType() {
@@ -255,9 +266,10 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         if (dir != null && dir.isDirectory()) {
             files = dir.listFiles(new FilenameFilter() {
                 @Override
-                public boolean accept(File dir, String name) {
+                public boolean accept(File useDir, String name) {
                     // KEEP IN SYNC WITH getResourceBundle !!
-                    return name.equals(iAttr.symbolicName + ".properties") || (name.startsWith(iAttr.symbolicName + "_") && name.endsWith(".properties"));
+                    return name.equals(iAttr.symbolicName + ".properties") ||
+                           (name.startsWith(iAttr.symbolicName + "_") && name.endsWith(".properties"));
                 }
             });
         }
@@ -280,6 +292,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
                 try {
                     return new PropertyResourceBundle(new FileReader(file));
                 } catch (IOException e) {
+                    // FFDC and ignore
                 }
             }
         }
@@ -287,22 +300,22 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         return null;
     }
 
-    /** {@inheritDoc} */
+    private ProvisioningDetails verifyDetails() {
+        if (mfDetails == null) {
+            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
+        }
+        return mfDetails;
+    }
+
     @Override
     public Collection<FeatureResource> getConstituents(SubsystemContentType type) {
-        if (mfDetails == null)
-            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
-
-        return mfDetails.getConstituents(type);
+        return verifyDetails().getConstituents(type);
     }
 
     @Override
     public String getHeader(String header) {
-        if (mfDetails == null)
-            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
-
         try {
-            return mfDetails.getMainAttributeValue(header);
+            return verifyDetails().getMainAttributeValue(header);
         } catch (IOException e) {
             // We should be well beyond any IOException issues obtaining the manifest..
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -310,6 +323,11 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
             }
         }
         return null;
+    }
+
+    // @Override
+    public List<String> getAltNames() {
+        return verifyDetails().getAltNames();
     }
 
     @Override
@@ -349,13 +367,11 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         mfDetails.setHeaderValue(header, value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return iAttr.hashCode();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -370,7 +386,6 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         return this.iAttr.equals(other.iAttr);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isSuperseded() {
         if (mfDetails == null)
@@ -379,7 +394,6 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         return mfDetails.isSuperseded();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getSupersededBy() {
         if (mfDetails == null)
@@ -388,11 +402,6 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         return mfDetails.getSupersededBy();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.kernel.feature.FeatureDefinition#isCapabilitySatified(java.util.Collection)
-     */
     @Override
     public boolean isCapabilitySatisfied(Collection<ProvisioningFeatureDefinition> featureDefinitionsToCheck) {
         // If it isn't an autofeature, it's satisfied.
@@ -452,7 +461,6 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         return isCapabilitySatisfied;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isKernel() {
         return false;
@@ -466,11 +474,6 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
             return mfDetails.toString();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition#getIcons()
-     */
     @Override
     public Collection<String> getIcons() {
         Collection<String> result = new ArrayList<String>();
@@ -503,11 +506,6 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.kernel.feature.LibertyFeature#getBundles()
-     */
     @Override
     public Collection<Bundle> getBundles() {
         if (mfDetails == null)
@@ -541,5 +539,140 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         }
 
         return bundles;
+    }
+
+    /**
+     * Tell if this is a versionless feature.
+     *
+     * Currently these are:
+     *
+     * <ul><li>public</li>
+     * <li>platformless</li>
+     * <li>have a short name that is equal to the feature name</li>
+     * <li>contain ".versionless." in their symbolic name.</li>
+     * <li>does not contain ".internal.versionless." in their symbolic name.</li>
+     * </ul>
+     *
+     * @return True or false telling if this is a versionless feature.
+     */
+    @Override
+    public boolean isVersionless() {
+        if (!isPublic() || (getPlatformName() != null)) {
+            return false;
+        }
+
+        String shortName = getIbmShortName();
+        if ((shortName == null) || !shortName.equals(getFeatureName())) {
+            return false;
+        }
+
+        if (getSymbolicName().indexOf(".versionless.") == -1) {
+            return false;
+        } else if (getSymbolicName().indexOf(".internal.versionless.") != -1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Tell if this is a compatibility feature.
+     *
+     * <ul><li>private</li>
+     * <li>do not have a short name</li>
+     * <li>contain a wlp platform value</li>
+     * </ul>
+     *
+     * @return True or false telling if this is a versionless feature.
+     */
+    @Override
+    public boolean isCompatibility() {
+        if (!isPrivate()) {
+            return false;
+        } else if (getIbmShortName() != null) {
+            return false;
+        }
+        return (getPlatformName() != null);
+    }
+
+    /**
+     * Tell if this is a versionless linking feature.
+     *
+     * <ul><li>private</li>
+     * <li>platformless</li>
+     * <li>do not have a short name</li>
+     * <li>contain ".versionless." in their symbolic name.</li>
+     * </ul>
+     *
+     * For example:
+     *
+     * <code>
+     * io.openliberty.versionless.servlet.mf
+     *
+     * Subsystem-SymbolicName: io.openliberty.versionless.servlet; visibility:=public; singleton:=false
+     * IBM-ShortName: servlet
+     * Subsystem-Content: io.openliberty.internal.versionless.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0,6.1"; type="osgi.subsystem.feature"
+     *
+     * io.openliberty.internal.versionless.servlet-5.0.mf
+     *
+     * Subsystem-SymbolicName: io.openliberty.internal.versionless.servlet-5.0; visibility:=private; singleton:=true
+     * Subsystem-Content: com.ibm.websphere.appserver.servlet-5.0;type="osgi.subsystem.feature"
+     *
+     * com.ibm.websphere.appserver.servlet-5.0.mf
+     *
+     * Subsystem-SymbolicName: com.ibm.websphere.appserver.servlet-5.0; visibility:=public; singleton:=true
+     * </code>
+     *
+     * "servlet" has links to several versionless links, "io.openliberty.internal.versionless.servlet-3.0",
+     * "io.openliberty.internal.versionless.servlet-3.1", and others, (currently) up to version 6.1.
+     *
+     * "servlet" links to "servlet-5.0" through the versionless link
+     * "io.openliberty.internal.versionless.servlet-5.0".
+     *
+     * @return True or false telling if this is a versionless feature.
+     */
+    public boolean isVersionlessLink() {
+        if (!isPrivate() || (getPlatformName() != null)) {
+            return false;
+        } else if (getIbmShortName() != null) {
+            return false;
+        } else if (getSymbolicName().indexOf(".internal.versionless.") == -1) {
+            // TODO: This could be answered by either adding new metadata,
+            //       or by checking feature dependencies to tell if this
+            //       feature has a link from a versionless feature.
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean isConvenience() {
+        if (!isPublic()) {
+            return false;
+        } else if (getIbmShortName() != null) {
+            return false;
+        }
+
+        // TODO: There is better way to detect convenience features currently.
+        String symName = getSymbolicName();
+        // Include ".appserver." to avoid "io.openliberty.securityAPI.javaee-1.0"
+        return (symName.contains(".appserver.javaee-") ||
+                symName.contains(".jakartaee-") ||
+                symName.contains(".microProfile-"));
+    }
+
+    @Override
+    public List<String> getPlatformNames() {
+        return iAttr.platforms;
+    }
+
+    public boolean hasWlpPlatform() {
+        return (!iAttr.platforms.isEmpty());
+    }
+
+    @Override
+    public String getPlatformName() {
+        return (!iAttr.platforms.isEmpty() ? iAttr.platforms.get(0) : null);
     }
 }

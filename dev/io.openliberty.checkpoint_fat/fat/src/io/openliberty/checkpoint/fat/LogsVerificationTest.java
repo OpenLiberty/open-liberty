@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,8 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -76,7 +76,7 @@ public class LogsVerificationTest {
         server.stopServer(false, "");
         server.checkpointRestore();
 
-        RemoteFile logsDirectory = new RemoteFile(server.getMachine(), server.getLogsRoot());
+        RemoteFile logsDirectory = server.getMachine().getFile(server.getLogsRoot());
 
         RemoteFile[] logs = logsDirectory.list(false);
         int actualMessagesLogCount = 0;
@@ -116,7 +116,7 @@ public class LogsVerificationTest {
         server.stopServer(false, "");
         server.checkpointRestore();
 
-        RemoteFile logsDirectory = new RemoteFile(server.getMachine(), server.getLogsRoot());
+        RemoteFile logsDirectory = server.getMachine().getFile(server.getLogsRoot());
 
         RemoteFile[] logs = logsDirectory.list(false);
         int actualMessagesLogCount = 0;
@@ -185,7 +185,7 @@ public class LogsVerificationTest {
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
-        RemoteFile messagesLog = new RemoteFile(server.getMachine(), server.getLogsRoot() + "/messages.log");
+        RemoteFile messagesLog = server.getMachine().getFile(server.getLogsRoot() + "/messages.log");
         try (JsonReader jsonReader = Json.createReader(new FileReader(messagesLog.getAbsolutePath()))) {
             assertFalse("Message format should not be json", isValidJson(jsonReader));
         }

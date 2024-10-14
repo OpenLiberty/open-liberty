@@ -51,13 +51,6 @@ public interface PolicyExecutor extends ExecutorService {
          * This policy does not allow running on the submitter's thread if already at maximum concurrency.
          */
         strict
-
-        /*
-         * Leaving the policy unspecified indicates that the policy is to be chosen on a case-by-case basis
-         * based on whether the submitter thread is a virtual thread (try to avoid running on the submitter's thread)
-         * or a platform thread (use a policy of loose).
-         */
-        // unspecified
     }
 
     /**

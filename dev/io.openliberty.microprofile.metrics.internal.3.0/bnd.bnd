@@ -86,5 +86,6 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.microprofile.metrics.2.3,\
-	com.ibm.ws.kernel.boot
+	com.ibm.ws.kernel.boot,\
+	com.ibm.ws.microprofile.metrics.common;version=latest
 	

@@ -1,0 +1,13 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.2</feature>
+        <feature>jaxws-2.2</feature>
+    </featureManager>
+     
+    <include location="../fatTestPorts.xml"/>
+    <!-- Since enableDefaultValidation is true by default, to mask JAXB validation errors, enableDefaultValidation is set to false here -->
+    <webServiceClient serviceName="SayHelloService"  enableSchemaValidation="false" enableDefaultValidation="false"/>
+    
+    <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
+    
+</server>

@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #
 #COMPONENTPREFIX CWWKT
@@ -210,3 +207,8 @@ log.rollover.start.time.format.warning.useraction=Aseg\u00farese de que el valor
 log.rollover.interval.too.short.warning=CWWKT0046W: La duraci\u00f3n del intervalo de reinicio del registro no puede ser menor que 1 minuto. Si se especifica un valor menor que 1 minuto, el intervalo del reinicio del registro se establece en un valor predeterminado de 1 d\u00eda.
 log.rollover.interval.too.short.warning.explanation=La duraci\u00f3n del intervalo de reinicio del registro no puede ser menor que 1 minuto.
 log.rollover.interval.too.short.warning.useraction=Especifique un intervalo de renovaci\u00f3n del registro que sea igual o mayor que 1 minuto.
+
+#only if the Set-Cookie is added with the response set/addHeader API.  The best practice is to use Cookie() API which already has this check and uses its own message.
+cookie.attribute.name.invalid=CWWKT0047E: El atributo de cookie [{0}] contiene un car\u00e1cter no v\u00e1lido.
+cookie.attribute.name.invalid.explanation=El nombre de atributo de cookie no puede contener ning\u00fan car\u00e1cter especial [() < > @,;: \\/ []? = {}].
+cookie.attribute.name.invalid.useraction=Corrija el nombre de atributo de cookie para que no utilice ning\u00fan car\u00e1cter especial.

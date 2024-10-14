@@ -47,6 +47,8 @@ NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Do metody setParameter przekazano paramet
 
 PARAMETER_NILL_NOT_FOUND=Do metody getParameterValue() przekazano parametr o warto\u015bci NULL.
 
+RIGHT_JOIN_NOT_SUPPORTED=\u0141\u0105czenie po prawej stronie nie jest obs\u0142ugiwane
+
 add_attribute_key_was_null=Podczas okre\u015blania obiektu AttributeGroup dla podklasy typu atrybutu parametr typu nie mo\u017ce mie\u0107 warto\u015bci NULL.
 
 argument_collection_was_null=Kolekcja argument\u00f3w ma warto\u015b\u0107 NULL
@@ -99,9 +101,19 @@ cant_persist_detatched_object=Nie mo\u017cna utrwali\u0107 od\u0142\u0105czonego
 
 cant_refresh_not_managed_object=Nie mo\u017cna od\u015bwie\u017cy\u0107 obiektu niezarz\u0105dzanego: {0}.
 
+configured_pu_name_conflict=Nie mo\u017cna utworzy\u0107 skonfigurowanej jednostki trwa\u0142o\u015bci o nazwie {0}. Ta nazwa zosta\u0142a znaleziona w niestandardowych jednostkach trwa\u0142o\u015bci.
+
 create_insertion_failed=Wstawienie utworzenia nie powiod\u0142o si\u0119.
 
 criteria_no_constructor_found=Wyst\u0105pi\u0142 wyj\u0105tek podczas wyszukiwania konstruktora w klasie {0} przy u\u017cyciu typ\u00f3w kryteri\u00f3w wyboru jako argument\u00f3w.  Je\u015bli ten interfejs CriteriaQuery nie mia\u0142 by\u0107 zapytaniem o konstruktor, upewnij si\u0119, \u017ce wyb\u00f3r jest zgodny z typem zwracanym.
+
+custom_pu_create_error=Nie mo\u017cna utworzy\u0107 niestandardowej jednostki trwa\u0142o\u015bci o nazwie {0}.
+
+custom_pu_create_error_no_caller=Nie mo\u017cna utworzy\u0107 niestandardowej jednostki trwa\u0142o\u015bci o nazwie {0}. W stosie nie znaleziono metody wywo\u0142uj\u0105cej.
+
+custom_pu_create_error_no_caller_class_url=Nie mo\u017cna utworzy\u0107 niestandardowej jednostki trwa\u0142o\u015bci o nazwie {0}. Nie znaleziono adresu URL klasy wywo\u0142uj\u0105cej {1} .
+
+custom_pu_name_conflict=Nie mo\u017cna utworzy\u0107 niestandardowej jednostki trwa\u0142o\u015bci o nazwie {0}. Ta nazwa zosta\u0142a znaleziona w konfiguracji XML.
 
 directory_not_exist=Katalog {0} nie istnieje.
 
@@ -124,6 +136,8 @@ ejb30-wrong-type-for-query-hint=Wskaz\u00f3wka {1} zapytania {0} nie jest popraw
 entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Konflikt w\u0142a\u015bciwo\u015bci interfejsu EntityManager: jakarta.persistence.driver i jakarta.persistence.url wymagaj\u0105 obiektu DefaultConnector, ale jednostka trwa\u0142o\u015bci korzysta z zewn\u0119trznego kontrolera transakcji, dlatego wymagany jest obiekt JNDIConnector.
 
 entity_manager_properties_conflict_default_connector_vs_jndi_connector=Konflikt w\u0142a\u015bciwo\u015bci interfejsu EntityManager: jakarta.persistence.driver i jakarta.persistence.url wymagaj\u0105 obiektu DefaultConnector, ale jakarta.persistence.jtaDataSource i jakarta.persistence.nonjtaDataSource wymagaj\u0105 obiektu JNDIConnector.
+
+entity_manager_with_connection_failed=Kod u\u017cytkownika nie powi\u00f3d\u0142 si\u0119 z b\u0142\u0119dem: {0}
 
 entity_no_longer_exists_in_db=Obiekt ju\u017c nie istnieje w bazie danych: {0}.
 
@@ -148,6 +162,8 @@ error_unmarshalling_return=B\u0142\u0105d podczas powrotu z demarszalingu
 file_exists=Plik {0} ju\u017c istnieje.
 
 file_not_exist=Plik {0} nie istnieje.
+
+find_option_class_unknown=Opcja FindOption implementuj\u0105ca klas\u0119 {0} nie jest obs\u0142ugiwana.
 
 finder_query_failed=Zapytanie wyszukiwarki nie powiod\u0142o si\u0119:
 
@@ -207,9 +223,9 @@ jmx_enabled_platform_mbean_runtime_exception=Wyst\u0105pi\u0142 wyj\u0105tek pod
 
 join_trans_called_on_entity_trans=Metod\u0119 joinTransaction wywo\u0142ano wzgl\u0119dem interfejsu EntityManager lokalnego dla zasob\u00f3w, kt\u00f3ry nie mo\u017ce zarejestrowa\u0107 si\u0119 w transakcji JTA.
 
-jpa21-ddl-create-script-target-not-specified=Podczas generowania kodu DDL dla skrypt\u00f3w nale\u017cy okre\u015bli\u0107 cel skryptu tworzenia, u\u017cywaj\u0105c w\u0142a\u015bciwo\u015bci [jakarta.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=Podczas generowania kodu DDL do skrypt\u00f3w nale\u017cy okre\u015bli\u0107 cel skryptu tworzenia przy u\u017cyciu w\u0142a\u015bciwo\u015bci [{0}].
 
-jpa21-ddl-drop-script-target-not-specified=Podczas generowania kodu DDL dla skrypt\u00f3w nale\u017cy okre\u015bli\u0107 cel skryptu usuwana, u\u017cywaj\u0105c w\u0142a\u015bciwo\u015bci [jakarta.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=Podczas generowania kodu DDL do skrypt\u00f3w nale\u017cy okre\u015bli\u0107 cel skryptu upuszczania przy u\u017cyciu w\u0142a\u015bciwo\u015bci [{0}].
 
 jpa21-ddl-invalid-source-script-type=Udost\u0119pniony skrypt \u017ar\u00f3d\u0142owy {0} ma niepoprawny typ {0}. Poprawny typ skryptu \u017ar\u00f3d\u0142owego to java.io.Reader lub \u0142a\u0144cuch adresu URL pliku.
 
@@ -253,6 +269,12 @@ jpa_helper_invalid_read_all_query=Zapytanie typu {0} nie jest zapytaniem odczytu
 
 jpa_helper_invalid_report_query=Zapytanie typu {0} nie jest zapytaniem raportu EclipseLink i dlatego nie mo\u017ce zosta\u0107 przekszta\u0142cone.
 
+jpa_non_persistent_class=Klasa [{0}] nie jest klas\u0105 trwa\u0142\u0105.
+
+jpa_persistence_util_get_version_no_version_in_class=PersistenceUtil. MetodagetVersion(entity) zosta\u0142a wywo\u0142ana z obiektem [{0}], kt\u00f3ry nie ma atrybutu wersji.
+
+jpa_persistence_util_get_version_non_persistent_class=PersistenceUtil. MetodagetVersion(entity) zosta\u0142a wywo\u0142ana z obiektem [{0}], kt\u00f3ry nie jest obiektem trwa\u0142ym.
+
 jpa_persistence_util_non_persistent_class=Metoda PersistenceUtil.getIdentifier(entity) zosta\u0142a wywo\u0142ana z obiektem [{0}], kt\u00f3ry nie jest obiektem trwa\u0142ym.
 
 json_ora21c_jsonvalue_to_oraclevalue=Nie mo\u017cna przekszta\u0142ci\u0107 warto\u015bci JsonValue w warto\u015b\u0107 OracleJsonValue.
@@ -268,6 +290,8 @@ json_pgsql_pgobject_conversion=Konwersja obiektu PGobject nie powiod\u0142a si\u
 json_pgsql_unknown_type=Z bazy danych zwr\u00f3cono nieznany typ JSON.
 
 lock_called_without_version_locking=Wywo\u0142ania metody entityManager.lock(Object entity, LockModeType lockMode) wymagaj\u0105 w\u0142\u0105czonego blokowania wersji.
+
+lock_option_class_unknown=Klasa implementuj\u0105ca LockOption {0} nie jest obs\u0142ugiwana
 
 managed_component_not_found=Atrybut: {1} wymieniony w interfejsie EntityGraph: {0} odwo\u0142uje si\u0119 do grafu podrz\u0119dnego o nazwie: {2}, kt\u00f3rego nie mo\u017cna znale\u017a\u0107.
 
@@ -320,6 +344,8 @@ no_entities_retrieved_for_get_reference=Nie mo\u017cna znale\u017a\u0107 jednost
 no_entities_retrieved_for_get_single_result=Metoda getSingleResult() nie pobra\u0142a \u017cadnych obiekt\u00f3w.
 
 no_entity_graph_of_name=Brak interfejsu EntityGraph o nazwie {0}
+
+no_key_in_entity=Nie mo\u017cna doda\u0107 \u0142\u0105czenia {0} do {1} , poniewa\u017c w klasie docelowej brakuje atrybutu typu \u017ar\u00f3d\u0142owego
 
 not_an_entity=Obiekt: {0} nie jest znanym typem jednostki.
 
@@ -375,9 +401,23 @@ position_param_not_found=Brak parametru w pozycji: {0}.
 
 pu_configured_for_resource_local=Nie mo\u017cna utworzy\u0107 interfejsu EntityManager z obiektem SynchronizationType, poniewa\u017c interfejs PersistenceUnit jest skonfigurowany z transakcjami lokalnymi wzgl\u0119dem zasob\u00f3w.
 
+refresh_option_class_unknown=Klasa implementacji RefreshOption {0} nie jest obs\u0142ugiwana
+
 remove_deletion_failed=Skasowanie usuni\u0119cia nie powiod\u0142o si\u0119:
 
 rollback_because_of_rollback_only=Transakcja zosta\u0142a wycofana, poniewa\u017c ustawiono dla niej warto\u015b\u0107 RollbackOnly.
+
+schema_validation=Schema Validation
+
+schema_validation_failed=Sprawdzanie poprawno\u015bci schematu nie powiod\u0142o si\u0119
+
+schema_validation_missing_table=W schemacie nie znaleziono obszaru roboczego tabeli {0}
+
+schema_validation_table_different_columns=Tabela {0} ma r\u00f3\u017cne kolumny w schemacie
+
+schema_validation_table_missing_columns=Tabela {0} nie ma kolumn w schemacie
+
+schema_validation_table_surplus_columns=Tabela {0} ma nadmiar kolumn w schemacie
 
 sdo_helper_invalid_changesummary=Podany interfejs ChangeSummary [{0}] nie jest klas\u0105 EclipseLink SDOChangeSummary i dlatego nie mo\u017ce zosta\u0107 przekszta\u0142cony.
 
@@ -434,6 +474,10 @@ sdo_helper_invalid_xsdhelper=Podany interfejs XSDHelper [{0}] nie jest interfejs
 subclass_sought_not_a_managed_type=Poszukiwany typ grafu podrz\u0119dnego {0} nie jest typem zarz\u0105dzanym dla danego atrybutu: {1}.
 
 too_many_results_for_get_single_result=Metoda Query.getSingleResult() zwr\u00f3ci\u0142a wi\u0119cej ni\u017c jeden wynik
+
+truncate_tables_failed=Obci\u0119cie tabel nie powiod\u0142o si\u0119
+
+typed_query_reference_is_null=Odwo\u0142anie do nazwanego zapytania ma warto\u015b\u0107 NULL
 
 unable_to_find_named_query=Nie znaleziono adnotacji NamedQuery o nazwie {0}.
 

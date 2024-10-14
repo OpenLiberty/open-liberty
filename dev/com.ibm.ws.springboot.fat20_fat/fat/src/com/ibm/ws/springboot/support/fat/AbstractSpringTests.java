@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,13 +65,13 @@ public abstract class AbstractSpringTests {
 
     public static final String SPRING_BOOT_15_APP_BASE = "io.openliberty.springboot.test.version15.app-1.0.0.jar";
 
-    public static final String SPRING_BOOT_20_APP_ACTUATOR  = "com.ibm.ws.springboot.fat20.actuator.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_20_APP_BASE =    "com.ibm.ws.springboot.fat20.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_20_APP_JAVA =    "com.ibm.ws.springboot.fat20.java.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_ACTUATOR = "com.ibm.ws.springboot.fat20.actuator.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.fat20.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_JAVA = "com.ibm.ws.springboot.fat20.java.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_MULTI_CONTEXT = "com.ibm.ws.springboot.fat20.multicontext.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_20_APP_WAR       = "com.ibm.ws.springboot.fat20.war.app-0.0.1-SNAPSHOT.war";
-    public static final String SPRING_BOOT_20_APP_WEBANNO   = "com.ibm.ws.springboot.fat20.webanno.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_20_APP_WEBFLUX   = "com.ibm.ws.springboot.fat20.webflux.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_WAR = "com.ibm.ws.springboot.fat20.war.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_WEBANNO = "com.ibm.ws.springboot.fat20.webanno.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_WEBFLUX = "com.ibm.ws.springboot.fat20.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBSOCKET = "com.ibm.ws.springboot.fat20.websocket.app-0.0.1-SNAPSHOT.jar";
 
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
@@ -99,7 +99,7 @@ public abstract class AbstractSpringTests {
     }
 
     public static void requireServerMessage(String msg, String regex) {
-        assertNotNull( msg, server.waitForStringInLog(regex) );
+        assertNotNull(msg, server.waitForStringInLog(regex));
     }
 
     public static void requireServerTrace(String msg, String regex) {
@@ -125,15 +125,15 @@ public abstract class AbstractSpringTests {
     public static RemoteFile dropinsFile;
 
     public static RemoteFile getServerRootFile() throws Exception {
-        if ( serverRootFile == null ) {
+        if (serverRootFile == null) {
             serverRootFile = getServerFile("");
         }
         return serverRootFile;
     }
 
     public static RemoteFile getDropinsFile() throws Exception {
-        if ( dropinsFile == null ) {
-            dropinsFile = new RemoteFile( getServerRootFile(), "dropins" );
+        if (dropinsFile == null) {
+            dropinsFile = server.getMachine().getFile(getServerRootFile(), "dropins");
         }
         return dropinsFile;
     }
@@ -261,7 +261,7 @@ public abstract class AbstractSpringTests {
                     String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
                     new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
                     appFile.copyToDest(server.getFileFromLibertyServerRoot(dropinsSpring));
-                    RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), appFile.getName());
+                    RemoteFile dest = server.getMachine().getFile(server.getFileFromLibertyServerRoot(dropinsSpring), appFile.getName());
                     dropinFiles.add(dest);
                     dropinsTest = true;
                     break;
@@ -270,7 +270,7 @@ public abstract class AbstractSpringTests {
                     new File(new File(server.getServerRoot()), "dropins/").mkdirs();
                     String appName = appFile.getName();
                     appName = appName.substring(0, appName.length() - 3) + SPRING_APP_TYPE;
-                    RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot("dropins/"), appName);
+                    RemoteFile dest = server.getMachine().getFile(server.getFileFromLibertyServerRoot("dropins/"), appName);
                     appFile.copyToDest(dest);
                     dropinFiles.add(dest);
 
@@ -278,7 +278,7 @@ public abstract class AbstractSpringTests {
                     for (int i = 0; i < copyNum; i++) {
                         int lastDot = dest.getName().lastIndexOf(".");
                         String copyName = "app.copy" + i + appName.substring(lastDot);
-                        RemoteFile copyDest = new RemoteFile(server.getFileFromLibertyServerRoot("dropins/"), copyName);
+                        RemoteFile copyDest = server.getMachine().getFile(server.getFileFromLibertyServerRoot("dropins/"), copyName);
                         appFile.copyToDest(copyDest);
                         dropinFiles.add(copyDest);
                     }

@@ -1,11 +1,12 @@
 package com.ibm.ws.sib.msgstore.persistence.dispatcher;
+
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +15,7 @@ package com.ibm.ws.sib.msgstore.persistence.dispatcher;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.ws.sib.admin.JsMessagingEngine;
 import com.ibm.ws.sib.msgstore.MessageStoreConstants;
@@ -25,6 +27,7 @@ import com.ibm.ws.sib.msgstore.cache.links.AbstractItemLink;
 import com.ibm.ws.sib.msgstore.impl.MessageStoreImpl;
 import com.ibm.ws.sib.msgstore.persistence.BatchingContext;
 import com.ibm.ws.sib.msgstore.persistence.BatchingContextFactory;
+import com.ibm.ws.sib.msgstore.persistence.dispatcher.StateUtils.UpdateCallback;
 import com.ibm.ws.sib.msgstore.persistence.impl.Tuple;
 import com.ibm.ws.sib.msgstore.task.Task;
 import com.ibm.ws.sib.msgstore.transactions.impl.PersistentTransaction;
@@ -32,6 +35,13 @@ import com.ibm.ws.sib.msgstore.transactions.impl.TransactionState;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.utils.ras.SibTr;
+
+import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForErrorCleared;
+import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForErrorOccurred;
+import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForStart;
+import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForStopRequested;
+import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForStopped;
+import static com.ibm.ws.sib.msgstore.persistence.dispatcher.StateUtils.updateState;
 
 /**
  * Instances of this class orchestrate asynchronous writing of data being
@@ -96,15 +106,7 @@ public class SpillDispatcher extends DispatcherBase
     // Batching context factory - allows testing of dispatcher independently
     private BatchingContextFactory _bcfactory;
 
-    // Flag set to indicate that the dispatcher should stop. This is caused by
-    // calling the {@link #stop()} method.
-    private boolean _stopRequested = false;
-
-    // Flag set to indicate whether dispatcher is running
-    private boolean _running = false;
-
-    // Count of the number of worker threads experiencing write errors
-    private int _threadWriteErrorsOutstanding = 0;
+    private final AtomicReference<DispatcherState> stateRef = new AtomicReference<>(new DispatcherState());
 
     // Defect 560281.1
     // Use an inner class specific to this class for locking.
@@ -180,7 +182,7 @@ public class SpillDispatcher extends DispatcherBase
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "isHealthy");
 
-        boolean retval = _running && !_stopRequested && (_threadWriteErrorsOutstanding == 0);
+        boolean retval = stateRef.get().isHealthy();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "isHealthy", Boolean.valueOf(retval));
         return retval;
@@ -284,9 +286,6 @@ public class SpillDispatcher extends DispatcherBase
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "dispatch");
     }
 
-    /* (non-Javadoc)
-     * @see com.ibm.ws.sib.msgstore.persistence.Dispatcher#start()
-     */
     public void start()
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "start");
@@ -302,8 +301,7 @@ public class SpillDispatcher extends DispatcherBase
 
         synchronized(this)
         {
-            _stopRequested = false;
-            _running = true;
+            updateState(stateRef, updaterForStart);
         }
 
         // Get the ME_UUID so that we can tell which ME our
@@ -331,25 +329,16 @@ public class SpillDispatcher extends DispatcherBase
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "start");
     }
 
-    /* (non-Javadoc)
-     * @see com.ibm.ws.sib.msgstore.persistence.Dispatcher#stop(int)
-     */
     public void stop(int mode)
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "stop", Integer.valueOf(mode));
 
-        boolean performingTheStop = false;
+        boolean performingTheStop;
 
         // First change the state of the dispatcher
         synchronized(this)
         {
-            if (_running && !_stopRequested)
-            {
-                performingTheStop = true;
-
-                // Make sure that the dispatcher threads notice that we are stopping
-                _stopRequested = true;
-            }
+            performingTheStop = updateState(stateRef, updaterForStopRequested);
         } // end synchronized
 
 
@@ -398,23 +387,27 @@ public class SpillDispatcher extends DispatcherBase
 
     public synchronized void threadWriteErrorOccurred(int threadNum)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "threadWriteErrorOccurred", Integer.valueOf(threadNum));
+        final UpdateCallback<DispatcherState> callback = (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) ?
+                new UpdateCallback<DispatcherState>() {
+            public void updated(DispatcherState newState) {
+                SibTr.event(SpillDispatcher.this, tc, String.format("threadWriteErrorOccurred: threadNum = %d, new writeErrorCount = %d",
+                        threadNum, newState.threadWriteErrors));
+            }
+        } : null;
 
-        _threadWriteErrorsOutstanding++;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "threadWriteErrorOccurred", "_threadWriteErrorsOutstanding="+_threadWriteErrorsOutstanding);
+        updateState(stateRef, updaterForErrorOccurred, callback);
     }
 
     public synchronized void threadWriteErrorCleared(int threadNum)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "threadWriteErrorCleared", Integer.valueOf(threadNum));
-
-        if (_threadWriteErrorsOutstanding > 0)
-        {
-            _threadWriteErrorsOutstanding--;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "threadWriteErrorCleared", "_threadWriteErrorsOutstanding="+_threadWriteErrorsOutstanding);
+        final UpdateCallback<DispatcherState> callback = (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) ?
+                new UpdateCallback<DispatcherState>() {
+            public void updated(DispatcherState newState) {
+                SibTr.event(SpillDispatcher.this, tc, String.format("threadWriteErrorCleared: threadNum = %d, new writeErrorCount = %d",
+                        threadNum, newState.threadWriteErrors));
+            }
+        } : null;
+        updateState(stateRef, updaterForErrorCleared, callback);
     }
 
     // SIB0112d.ms.2
@@ -426,9 +419,7 @@ public class SpillDispatcher extends DispatcherBase
      */
     public String toString()
     {
-        return super.toString() + (_stopRequested ? " (STOP REQUESTED)" : "") +
-        (!_running ? " (STOPPED)" : "") +
-        ((_threadWriteErrorsOutstanding > 0) ? " (ERROR)" : "");
+        return super.toString() + stateRef.get().desc();
     }
 
     /**
@@ -532,6 +523,7 @@ public class SpillDispatcher extends DispatcherBase
             _dispatchRemoveQueue = new LinkedList();
         }
 
+
         /* (non-Javadoc)
          * @see java.lang.Runnable#run()
          */
@@ -557,10 +549,7 @@ public class SpillDispatcher extends DispatcherBase
                     // consistently synchronized
                     synchronized(SpillDispatcher.this)
                     {
-                        if (_stopRequested)
-                        {
-                            stopNow = true;
-                        }
+                        stopNow = stateRef.get().isStopRequested;
                     }
 
                     while (!dataToWrite && !stopNow)
@@ -606,10 +595,7 @@ public class SpillDispatcher extends DispatcherBase
                         // consistently synchronized
                         synchronized(SpillDispatcher.this)
                         {
-                            if (_stopRequested)
-                            {
-                                stopNow = true;
-                            }
+                            stopNow = stateRef.get().isStopRequested;
                         }
                     } // end while (!dataToWrite && !stopNow)
 
@@ -723,7 +709,7 @@ public class SpillDispatcher extends DispatcherBase
                     // Defect 258476 - reordered logic slightly for better state management
 
                     // Was this a planned termination?
-                    if (!_stopRequested)
+                    if (false == stateRef.get().isStopRequested)
                     {
                         // This is a thread termination which occurred for some
                         // reason other than a stop request. Bounce the server
@@ -736,7 +722,7 @@ public class SpillDispatcher extends DispatcherBase
                     // If we're last out, turn off the lights
                     if (_numThreads == 0)
                     {
-                        _running = false;
+                        updateState(stateRef, updaterForStopped);
                     }
                 } // end synchronized(SpillDispatcher.this)
             } // end try-finally

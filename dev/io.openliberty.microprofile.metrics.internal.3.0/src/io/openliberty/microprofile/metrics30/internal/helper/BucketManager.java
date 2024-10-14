@@ -20,11 +20,9 @@ import java.util.stream.Stream;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.Snapshot;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.metrics30.internal.micrometer.PercentileHistogramBuckets;
 import io.openliberty.microprofile.metrics30.setup.config.DefaultBucketConfiguration;
@@ -40,8 +38,6 @@ public class BucketManager {
     private final Map<Double, BucketValue> buckets = new TreeMap<>();
     private final Map<String, Map<Double, BucketValue>> allBuckets = new TreeMap<>();
     private final BucketValue infiniteObject;
-    private static boolean issuedBetaMessage = false;
-    private static boolean issuedBetaWarning = false;
 
     private static final TraceComponent tc = Tr.register(BucketManager.class);
 
@@ -139,28 +135,10 @@ public class BucketManager {
 
         }
 
-        if (metadata != null && buckets != null && !buckets.isEmpty() && betaFenceCheck()) {
+        if (metadata != null && buckets != null && !buckets.isEmpty()) {
             allBuckets.put(metricName, buckets);
         }
 
-    }
-
-    private boolean betaFenceCheck() throws UnsupportedOperationException {
-        // Not running beta edition, throw exception
-        if (!ProductInfo.getBetaEdition()) {
-            if (!issuedBetaWarning) {
-                Tr.warning(tc, "This method is beta and is not available.");
-                issuedBetaWarning = true;
-            }
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = true;
-            }
-        }
-
-        return issuedBetaMessage;
     }
 
     public void updateTimer(long value) {
@@ -223,10 +201,6 @@ public class BucketManager {
 
     public Map<String, Map<Double, BucketValue>> getBuckets() {
         return allBuckets;
-    }
-
-    public Snapshot getBucketsSnap() {
-        return (Snapshot) buckets;
     }
 
 }

@@ -407,6 +407,13 @@ public class SRTInputStream31 extends SRTInputStream
     public void setAsyncReadOutstanding(boolean asyncReadOutstanding){
         this.asyncReadOutstanding = asyncReadOutstanding;
     }
+
+    public boolean isAsyncReadOutstanding() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.debug(tc, "isAsyncReadOutstanding" , "SRTInputStream31.isAsyncReadOutstanding() returning: " + this.asyncReadOutstanding);
+        }
+        return this.asyncReadOutstanding;
+    }
     
     /**
      * Sets up for driving the read listener again on another thread.
@@ -423,6 +430,13 @@ public class SRTInputStream31 extends SRTInputStream
      */
     public Object getCompleteLockObj() {
         return completeLockObj;
+    }
+
+    /**
+     * @return the lockObj
+     */
+    public Object getLockObj() {
+        return lockObj;
     }
     
     /* (non-Javadoc)

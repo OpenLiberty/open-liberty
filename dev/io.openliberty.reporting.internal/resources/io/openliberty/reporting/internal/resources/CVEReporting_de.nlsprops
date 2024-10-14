@@ -52,3 +52,7 @@ CWWKF1705.failed.response.useraction=Beheben Sie das Kommunikationsproblem und v
 CWWKF1706.issue.parsing=CWWKF1706W: Problem beim Parsing von Produktinformationen.
 CWWKF1706.issue.parsing.explanation=Der Service kann die Produktinformationen nicht erfolgreich analysieren.
 CWWKF1706.issue.parsing.useraction=Beheben Sie das Kommunikationsproblem und versuchen Sie es erneut.
+
+CWWKF1707.internal.error=CWWKF1706W: Bei der \u00dcberpr\u00fcfung der Liberty -Laufzeit auf Sicherheitsl\u00fccken ist ein interner Fehler aufgetreten. Der Fehler: {0}
+CWWKF1707.internal.error.explanation=Es ist ein Fehler aufgetreten, der verhindert hat, dass die Liberty -Laufzeit nach Sicherheitsl\u00fccken sucht.
+CWWKF1707.internal.error.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.

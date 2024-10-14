@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1497,46 +1497,55 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getRequestBodyBuffer(sync)");
         }
-        if (!headersParsed()) {
-            // request message must have the headers parsed prior to attempting
-            // to read a body (this is a completely invalid state in the channel
-            // above)
-            IOException ioe = new IOException("Request not read yet");
-            FFDCFilter.processException(ioe, CLASS_NAME + ".getRequestBodyBuffer", "1436");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Attempt to read a body without headers");
-            }
-            throw ioe;
-        }
 
-        // check to see if a body is allowed before reading for one
-        if (!isIncomingBodyValid()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "getRequestBodyBuffer(sync): No body allowed");
-            }
-            return null;
-        }
+        boolean isError = false;
 
-        setMultiRead(false);
-        // check for any already read buffer
-        WsByteBuffer buffer = getNextBuffer();
-        if (null == buffer && !isBodyComplete()) {
-            // read a buffer
-            try {
-                readBodyBuffer(getRequestImpl(), false);
-            } catch (BodyCompleteException e) {
-                // no FFDC required
+        try {
+            if (!headersParsed()) {
+                // request message must have the headers parsed prior to attempting
+                // to read a body (this is a completely invalid state in the channel
+                // above)
+                IOException ioe = new IOException("Request not read yet");
+                FFDCFilter.processException(ioe, CLASS_NAME + ".getRequestBodyBuffer", "1436");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Attempt to read a body without headers");
+                }
+                isError = true;
+                throw ioe;
+            }
+
+            // check to see if a body is allowed before reading for one
+            if (!isIncomingBodyValid()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "getRequestBodyBuffer(sync): BodyCompleteException");
+                    Tr.exit(tc, "getRequestBodyBuffer(sync): No body allowed");
                 }
                 return null;
             }
-            buffer = getNextBuffer();
+
+            setMultiRead(false);
+            // check for any already read buffer
+            WsByteBuffer buffer = getNextBuffer();
+            if (null == buffer && !isBodyComplete()) {
+                // read a buffer
+                try {
+                    readBodyBuffer(getRequestImpl(), false);
+                } catch (BodyCompleteException e) {
+                    // no FFDC required
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "getRequestBodyBuffer(sync): BodyCompleteException");
+                    }
+                    isError = true;
+                    return null;
+                }
+                buffer = getNextBuffer();
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getRequestBodyBuffer(sync): " + buffer);
+            }
+            return buffer;
+        } finally {
+            countDownFirstReadLatch(isError);
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "getRequestBodyBuffer(sync): " + buffer);
-        }
-        return buffer;
     }
 
     /**

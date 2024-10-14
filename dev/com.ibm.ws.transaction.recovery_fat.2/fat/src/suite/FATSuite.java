@@ -19,11 +19,13 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import tests.DupXidDBTranlogTest;
 import tests.RecoveryDBTranlogTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 RecoveryDBTranlogTest.class,
+                DupXidDBTranlogTest.class,
 })
 public class FATSuite {
 

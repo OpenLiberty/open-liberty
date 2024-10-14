@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,4 +14,9 @@
  * @version 1.0.16
  */
 @org.osgi.annotation.versioning.Version("1.0.16")
+@TraceOptions(traceGroup = com.ibm.wsspi.persistence.internal.PersistenceServiceConstants.TRACE_GROUP,
+              messageBundle = com.ibm.wsspi.persistence.internal.PersistenceServiceConstants.MESSAGE_BUNDLE)
 package com.ibm.wsspi.persistence;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;
+

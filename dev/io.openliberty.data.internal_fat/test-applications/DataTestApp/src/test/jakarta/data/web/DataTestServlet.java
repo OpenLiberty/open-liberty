@@ -12,15 +12,20 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
+import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static test.jakarta.data.web.Assertions.assertIterableEquals;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.Year;
 import java.util.ArrayList;
@@ -67,12 +72,11 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
+import jakarta.data.repository.By;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.HeuristicMixedException;
 import jakarta.transaction.HeuristicRollbackException;
 import jakarta.transaction.InvalidTransactionException;
@@ -84,11 +88,13 @@ import jakarta.transaction.TransactionRequiredException;
 import jakarta.transaction.TransactionalException;
 import jakarta.transaction.UserTransaction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
+import test.jakarta.data.web.Residence.Occupant;
 
 @DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource",
@@ -101,6 +107,12 @@ public class DataTestServlet extends FATServlet {
     private final long TIMEOUT_MINUTES = 2;
 
     @Inject
+    Apartments apartments;
+
+    @Inject
+    Cylinders cylinders;
+
+    @Inject
     EmptyRepository emptyRepo;
 
     @Inject
@@ -111,6 +123,9 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     Packages packages;
+
+    @Inject
+    Participants participants;
 
     @Inject
     People people;
@@ -127,6 +142,9 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     Products products;
+
+    @Inject
+    Ratings ratings;
 
     @Inject
     Receipts receipts;
@@ -490,18 +508,289 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that performs a JDQL query using the String
+     * concatenation operator ||.
+     */
+    @Test
+    public void testConcatenationOperator() {
+        assertEquals(List.of("thirty-one", "twenty-three", "thirteen", "three", "two"),
+                     primes.concatAndMatch("%It%", Sort.desc(ID)));
+    }
+
+    /**
+     * Use repository methods that convert a long value to other numeric types.
+     */
+    @Test
+    public void testConvertLongValue() throws Exception {
+        assertEquals(47L,
+                     primes.numberAsBigDecimal(47).longValue());
+
+        assertEquals(43L,
+                     primes.numberAsBigInteger(43).orElseThrow().longValue());
+
+        assertEquals((byte) 41,
+                     primes.numberAsByte(41));
+
+        try {
+            byte result = primes.numberAsByte(4021);
+            fail("Should not convert long value 4021 to byte value " + result);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        assertEquals((byte) 37,
+                     primes.numberAsByteWrapper(37).orElseThrow().byteValue());
+
+        try {
+            Optional<Byte> result = primes.numberAsByteWrapper(4019);
+            fail("Should not convert long value 4019 to Byte value " + result);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        assertEquals(4003.0, primes.numberAsDouble(4003), 0.01);
+
+        assertEquals(4001f,
+                     primes.numberAsFloatWrapper(4001)
+                                     .get(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                                     .orElseThrow()
+                                     .floatValue(),
+                     0.01f);
+
+        assertEquals(31,
+                     primes.numberAsInt(31));
+
+        assertEquals(29,
+                     primes.numberAsInteger(29L).orElseThrow().intValue());
+
+        assertEquals(23L,
+                     primes.numberAsLong(23));
+
+        assertEquals(19L,
+                     primes.numberAsLongWrapper(19).orElseThrow().longValue());
+
+        assertEquals((short) 4013,
+                     primes.numberAsShort(4013));
+
+        assertEquals((short) 4007,
+                     primes.numberAsShortWrapper(4007).orElseThrow().shortValue());
+
+        assertEquals(false,
+                     primes.numberAsShortWrapper(27).isPresent());
+
+    }
+
+    /**
+     * Repository method that converts a length 1 String attribute to a
+     * single character.
+     */
+    @Test
+    public void testConvertToChar() {
+        assertEquals(Character.valueOf('D'),
+                     primes.singleHexDigit(13).orElseThrow());
+
+        assertEquals(false,
+                     primes.singleHexDigit(12).isPresent());
+
+        try {
+            Optional<Character> found = primes.singleHexDigit(29);
+            fail("Should not be able to return hex 1D as a single character: " +
+                 found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1046E") &&
+                x.getMessage().contains("singleHexDigit"))
+                ; // pass
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Repository method that returns the count as a BigDecimal value.
+     */
+    @Test
+    public void testCountAsBigDecimal() {
+        assertEquals(BigDecimal.valueOf(14L), primes.countAsBigDecimalByNumberIdLessThan(45));
+    }
+
+    /**
+     * Repository method that returns the count as a BigInteger value.
+     */
+    @Test
+    public void testCountAsBigInteger() {
+        assertEquals(BigInteger.valueOf(13L), primes.countAsBigIntegerByNumberIdLessThan(43));
+    }
+
+    /**
+     * Repository method that returns the count as a boolean value,
+     * which is not an allowed return type. This must raise an error.
+     */
+    @Test
+    public void testCountAsBoolean() {
+        try {
+            boolean count = primes.countAsBooleanByNumberIdLessThan(42);
+            fail("Count queries cannot have a boolean return type: " + count);
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Repository method that returns the count as a byte value.
+     */
+    @Test
+    public void testCountAsByte() {
+        assertEquals((byte) 12, primes.countAsβyteByNumberIdLessThan(40));
+    }
+
+    /**
+     * Repository method that returns the count as a Byte value.
+     */
+    @Test
+    public void testCountAsByteWrapper() {
+        assertEquals(Byte.valueOf((byte) 10),
+                     primes.countAsβyteWrapperByNumberIdLessThan(30));
+    }
+
+    /**
+     * Repository method that returns the count as an int value.
+     */
+    @Test
+    public void testCountAsInt() {
+        assertEquals(9, primes.countAsIntByNumberIdLessThan(25));
+    }
+
+    /**
      * Count the number of matching entries in the database using query by method name.
      */
     @Test
-    public void testCount() throws ExecutionException, InterruptedException, TimeoutException {
+    public void testCountAsInteger() throws ExecutionException, InterruptedException, TimeoutException {
 
-        assertEquals(15, primes.countByNumberIdLessThan(50));
+        assertEquals(15L, primes.countAsLongByNumberIdLessThan(50));
 
-        assertEquals(Integer.valueOf(0), primes.countByNumberIdBetween(32, 36));
+        assertEquals(Integer.valueOf(0), primes.countAsIntegerByNumberIdBetween(32, 36));
 
-        assertEquals(Integer.valueOf(3), primes.countByNumberIdBetween(40, 50));
+        assertEquals(Integer.valueOf(3), primes.countAsIntegerByNumberIdBetween(40, 50));
 
         assertEquals(Short.valueOf((short) 14), primes.countByNumberIdBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
+     * Repository method that returns the count as a Long value.
+     */
+    @Test
+    public void testCountAsLongWrapper() {
+        assertEquals(Long.valueOf(8L), primes.countAsLongWrapperByNumberIdLessThan(20));
+    }
+
+    /**
+     * Repository method that returns the count as a Number.
+     */
+    @Test
+    public void testCountAsNumber() {
+        assertEquals(7L, primes.countAsNumberByNumberIdLessThan(18).longValue());
+    }
+
+    /**
+     * Repository method that returns the count as a short value.
+     */
+    @Test
+    public void testCountAsShort() {
+        assertEquals((short) 6, primes.countAsShortByNumberIdLessThan(15));
+    }
+
+    /**
+     * Repository method that returns the count as a Short value.
+     */
+    @Test
+    public void testCountAsShortWrapper() {
+        assertEquals(Short.valueOf((short) 5), primes.countAsShortWrapperByNumberIdLessThan(12));
+    }
+
+    /**
+     * Verify that cursor-based pagination can be used with an empty string Query,
+     * which the spec allows as a valid query. It will need to generate a WHERE
+     * clause when appending conditions for the cursor.
+     */
+    @Test
+    public void testCursorPaginationForEmptyQuery() {
+
+        PageRequest page3request = PageRequest.ofPage(3)
+                        .size(5)
+                        .afterCursor(Cursor.forKey(12));
+        CursoredPage<Prime> page3 = primes.all(page3request,
+                                               Sort.asc("numberId"));
+
+        assertIterableEquals(List.of("thirteen",
+                                     "seventeen",
+                                     "nineteen",
+                                     "twenty-three",
+                                     "twenty-nine"),
+                             page3.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        CursoredPage<Prime> page4 = primes.all(page3.nextPageRequest(),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("thirty-one",
+                                     "thirty-seven",
+                                     "forty-one",
+                                     "forty-three",
+                                     "forty-seven"),
+                             page4.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Verify that cursor-based pagination can be used on a Find method without
+     * conditions that retrieves all entities. It will need to generate the WHERE
+     * clause when appending conditions for the cursor.
+     */
+    @Test
+    public void testCursorPaginationForFindAll() {
+
+        CursoredPage<Prime> page3 = primes.all(Order.by(Sort.asc("numberId")),
+                                               PageRequest.ofPage(3).size(3));
+
+        assertIterableEquals(List.of("seventeen", "nineteen", "twenty-three"),
+                             page3.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        CursoredPage<Prime> page4 = primes.all(page3.nextPageRequest(),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("twenty-nine", "thirty-one", "thirty-seven"),
+                             page4.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Verify that cursor-based pagination can append conditions for a WHERE clause
+     * when the base query only consists of a FROM clause.
+     */
+    @Test
+    public void testCursorPaginationWithFromClauseOnly() {
+
+        CursoredPage<Prime> page4 = primes.all(PageRequest.ofPage(4).size(3),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("twenty-nine", "thirty-one", "thirty-seven"),
+                             page4.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        CursoredPage<Prime> page3 = primes.all(page4.previousPageRequest(),
+                                               Order.by(Sort.asc("numberId")));
+
+        assertIterableEquals(List.of("seventeen", "nineteen", "twenty-three"),
+                             page3.stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -580,7 +869,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Delete multiple entries and use a default method to atomically remove and return a removed entity.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testDefaultRepositoryMethod() {
         products.clear();
@@ -627,6 +916,34 @@ public class DataTestServlet extends FATServlet {
         }
 
         products.clear();
+    }
+
+    /**
+     * Query by method name with deleteFirstX prefix - ensure First keywork is ignored
+     */
+    @Test
+    public void testDeleteIgnoresFirstKeywork() {
+        packages.deleteAll(); //cleanup before test
+
+        packages.save(new Package(10001, 10.0f, 13.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10001"));
+        packages.save(new Package(10002, 11.0f, 12.4f, 4.0f, "testDeleteIgnoresFirstKeywork#10002"));
+        packages.save(new Package(10003, 12.0f, 11.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10003"));
+        packages.save(new Package(10004, 13.0f, 10.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10004"));
+
+        try {
+            Optional<Package> pkg = packages.deleteFirst();
+            fail("Expected packages.deleteFirst() to ignore the 'first' keyword and fail to return a signular result.");
+        } catch (NonUniqueResultException e) {
+            // pass
+        }
+
+        Package pkg = packages.deleteFirst5ByWidthLessThan(11.0f);
+        assertEquals(10004, pkg.id);
+
+        List<Package> pkgs = packages.deleteFirst2();
+        assertEquals(3, pkgs.size());
+
+        assertEquals(0, packages.deleteAll()); //cleanup after test
     }
 
     /**
@@ -722,9 +1039,40 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository delete method with query language (JPQL) that contains
+     * an entity identifier variable.
+     */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
+    @Test
+    public void testDeleteQueryWithEntityIdentifierVariable() {
+        products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%");
+
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("TestDeleteQueryWithEntityIdentifierVariable-1".getBytes());
+        prod1.name = "TestDeleteQueryWithEntityIdentifierVariable-Product-1";
+        prod1.price = 1.99f;
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("TestDeleteQueryWithEntityIdentifierVariable-2".getBytes());
+        prod2.name = "TestDeleteQueryWithEntityIdentifierVariable-Product-2";
+        prod2.price = 2.39f;
+
+        Product prod3 = new Product();
+        prod3.pk = UUID.nameUUIDFromBytes("TestDeleteQueryWithEntityIdentifierVariable-3".getBytes());
+        prod3.name = "TestDeleteQueryWithEntityIdentifierVariable-Product-3";
+        prod3.price = 3.89f;
+
+        products.saveMultiple(prod1, prod2, prod3);
+
+        assertEquals(3, products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%"));
+
+        assertEquals(0, products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%"));
+    }
+
+    /**
      * Unannotated entity with an attribute that is an embeddable type.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28380
     @Test
     public void testEmbeddable() {
         houses.dropAll();
@@ -872,6 +1220,48 @@ public class DataTestServlet extends FATServlet {
         assertEquals(4, h.numBedrooms);
         assertEquals(188000f, h.purchasePrice, 0.001f);
         assertEquals(Year.of(2020), h.sold);
+
+        found = houses.findByGarage_door_heightOrderByGarage_door_heightDesc(9);
+        assertEquals(1, found.size());
+
+        h = found.get(0);
+        assertEquals("TestEmbeddable-404-4418-40", h.parcelId);
+        assertEquals(2400, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(13, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(14, h.kitchen.width);
+        assertEquals(0.24f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals(204000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2022), h.sold);
+
+        // Query by attributes on base entity that could conflict with embedded attributes
+
+        List<House> hs = houses.findByArea(2400);
+        assertEquals(1, hs.size());
+
+        h = hs.get(0);
+        assertEquals("TestEmbeddable-404-4418-40", h.parcelId);
+        assertEquals(2400, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(13, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(14, h.kitchen.width);
+        assertEquals(0.24f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals(204000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2022), h.sold);
 
         // Sorting with type-safe StaticMetamodel constant-like fields
 
@@ -1030,8 +1420,8 @@ public class DataTestServlet extends FATServlet {
     /**
      * Query-by-method name repository operation to remove and return one or more entities.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDelete(HttpServletRequest request, HttpServletResponse response) {
+    @Test
+    public void testFindAndDelete() {
         packages.save(new Package(40001, 41.0f, 14.0f, 4.0f, "testFindAndDelete#40001"));
         packages.save(new Package(40004, 44.0f, 40.4f, 4.4f, "testFindAndDelete#40004"));
         packages.save(new Package(40012, 42.0f, 12.0f, 2.0f, "testFindAndDelete#4001x"));
@@ -1054,7 +1444,7 @@ public class DataTestServlet extends FATServlet {
             // expected
         }
 
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
         Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.asc("id") } : null;
 
@@ -1127,13 +1517,13 @@ public class DataTestServlet extends FATServlet {
     /**
      * Annotated repository operation to remove and return a single entity.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDeleteMultipleAnnotated(HttpServletRequest request, HttpServletResponse response) {
+    @Test
+    public void testFindAndDeleteMultipleAnnotated() {
         packages.save(new Package(60001, 61.0f, 41.0f, 26.0f, "testFindAndDeleteMultipleAnnotated"));
         packages.save(new Package(60002, 62.0f, 42.0f, 25.0f, "testFindAndDeleteMultipleAnnotated"));
         packages.save(new Package(60003, 59.0f, 39.0f, 24.0f, "testFindAndDeleteMultipleAnnotated"));
 
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         List<Package> list = supportsOrderByForUpdate //
@@ -1234,9 +1624,10 @@ public class DataTestServlet extends FATServlet {
     /**
      * Find-and-delete repository operations that return one or more IDs, corresponding to removed entities.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDeleteReturnsIds(HttpServletRequest request, HttpServletResponse response) {
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+    @SkipIfSysProp(DB_Oracle) //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
+    @Test
+    public void testFindAndDeleteReturnsIds() throws Exception {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         packages.deleteAll();
@@ -1250,13 +1641,13 @@ public class DataTestServlet extends FATServlet {
         remaining.addAll(Set.of(80008, 80080, 80081, 80088));
 
         Sort<Package> sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
-        Integer id = packages.deleteFirst(sort).orElseThrow();
+        Integer id = packages.delete1(Limit.of(1), sort).orElseThrow();
         if (supportsOrderByForUpdate)
             assertEquals(Integer.valueOf(80080), id);
         assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
 
         Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        int[] ids = packages.deleteFirst2(sorts);
+        int[] ids = packages.delete2(Limit.of(2), sorts);
         assertEquals(Arrays.toString(ids), 2, ids.length);
         if (supportsOrderByForUpdate) {
             assertEquals(80081, ids[0]);
@@ -1266,7 +1657,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + ids[1] + "; expected one of " + remaining, true, remaining.remove(ids[1]));
 
         // should have only 1 remaining
-        ids = packages.deleteFirst2(sorts);
+        ids = packages.delete2(Limit.of(2), sorts);
         assertEquals(Arrays.toString(ids), 1, ids.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
     }
@@ -1276,6 +1667,7 @@ public class DataTestServlet extends FATServlet {
      * record class, or id class.
      */
     @Test
+    @SkipIfSysProp(DB_Oracle) //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
     public void testFindAndDeleteReturnsInvalidTypes() {
         packages.deleteAll();
 
@@ -1284,21 +1676,55 @@ public class DataTestServlet extends FATServlet {
         Sort<Package> sort = Sort.asc("id");
 
         try {
-            long[] deleted = packages.deleteFirst3(sort);
+            long[] deleted = packages.delete3(Limit.of(3), sort);
             fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            List<String> deleted = packages.deleteFirst4(sort);
+            List<String> deleted = packages.delete4(Limit.of(4), sort);
             fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            Collection<Number> deleted = packages.deleteFirst5(sort);
+            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
+            fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Find-and-delete repository operations that return invalid types that are neither the entity class,
+     * record class, or id class.
+     * In this case the table is empty and no results will have been deleted,
+     * we should still throw a mapping exception.
+     */
+    @Test
+    public void testFindAndDeleteReturnsInvalidTypesEmpty() {
+        packages.deleteAll();
+
+        Sort<Package> sort = Sort.asc("id");
+
+        try {
+            long[] deleted = packages.delete3(Limit.of(3), sort);
+            fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            List<String> deleted = packages.delete4(Limit.of(4), sort);
+            fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
             fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
@@ -1308,16 +1734,20 @@ public class DataTestServlet extends FATServlet {
     /**
      * Find-and-delete repository operations that return one or more objects, corresponding to removed entities.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDeleteReturnsObjects(HttpServletRequest request, HttpServletResponse response) {
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+    @Test
+    @SkipIfSysProp({
+                     DB_Oracle //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/28545
+    })
+    public void testFindAndDeleteReturnsObjects() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         packages.deleteAll();
 
-        packages.save(new Package(70071, 17.0f, 17.1f, 7.7f, "testFindAndDeleteReturnsObjects#70071"));
+        //                        id     length width height description
+        packages.save(new Package(70071, 17.0f, 17.1f, 7.7f, "testFindAndDeleteReturnsObjects#multi"));
         packages.save(new Package(70070, 70.0f, 70.0f, 7.0f, "testFindAndDeleteReturnsObjects#70070"));
-        packages.save(new Package(70077, 77.0f, 17.7f, 7.7f, "testFindAndDeleteReturnsObjects#70077"));
+        packages.save(new Package(70077, 77.0f, 17.7f, 7.7f, "testFindAndDeleteReturnsObjects#multi"));
         packages.save(new Package(70007, 70.0f, 10.7f, 0.7f, "testFindAndDeleteReturnsObjects#70007"));
 
         Set<Integer> remaining = new TreeSet<>();
@@ -1336,8 +1766,17 @@ public class DataTestServlet extends FATServlet {
         }
         assertEquals("Found " + p.id + "; expected one of " + remaining, true, remaining.remove(p.id));
 
-        Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        LinkedList<?> deletesList = packages.deleteFirst2ByHeightLessThan(8.0f, sorts);
+        // It is not deterministic to order on height when multiple entities
+        // have a floating point value that looks the same (7.7), but which is
+        // not exact and can vary slightly, intermittently ordering the entities
+        // differently. Instead, we are using the description column, which can
+        // be reliably compared.
+        // It is okay to order on length because the other entity with length=70.0
+        // was previously removed.
+        Sort<?>[] sorts = supportsOrderByForUpdate //
+                        ? new Sort[] { Sort.desc("description"), Sort.asc("length") } //
+                        : null;
+        LinkedList<?> deletesList = packages.delete2ByHeightLessThan(8.0f, Limit.of(2), sorts);
         assertEquals("Deleted " + deletesList, 2, deletesList.size());
         Package p0 = (Package) deletesList.get(0);
         Package p1 = (Package) deletesList.get(1);
@@ -1346,12 +1785,12 @@ public class DataTestServlet extends FATServlet {
             assertEquals(17.0f, p0.length, 0.001f);
             assertEquals(17.1f, p0.width, 0.001f);
             assertEquals(7.7f, p0.height, 0.001f);
-            assertEquals("testFindAndDeleteReturnsObjects#70071", p0.description);
+            assertEquals("testFindAndDeleteReturnsObjects#multi", p0.description);
             assertEquals(70077, p1.id);
             assertEquals(77.0f, p1.length, 0.001f);
             assertEquals(17.7f, p1.width, 0.001f);
             assertEquals(7.7f, p1.height, 0.001f);
-            assertEquals("testFindAndDeleteReturnsObjects#70077", p1.description);
+            assertEquals("testFindAndDeleteReturnsObjects#multi", p1.description);
         }
         assertEquals("Found " + p0.id + "; expected one of " + remaining, true, remaining.remove(p0.id));
         assertEquals("Found " + p1.id + "; expected one of " + remaining, true, remaining.remove(p1.id));
@@ -1365,7 +1804,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Search for missing item. Insert it. Search again.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testFindCreateFind() {
         UUID id = UUID.nameUUIDFromBytes("OL306-233F".getBytes());
@@ -1423,7 +1862,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use the % and _ characters, which are wildcards in JPQL, within query parameters.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testFindLike() throws Exception {
         // Remove data from previous tests:
@@ -1589,7 +2028,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Repository methods where the FROM clause identifies the entity.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testFromClauseIdentifiesEntity() {
         products.clear();
@@ -1859,7 +2298,10 @@ public class DataTestServlet extends FATServlet {
      * Tests repository insert methods.
      */
     @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
+    @SkipIfSysProp({
+                     DB_Postgres, //Failing on Postgres due to eclipselink issue:  https://github.com/OpenLiberty/open-liberty/issues/28380
+                     DB_SQLServer //Failing on SQLServer due to eclipselink issue: https://github.com/OpenLiberty/open-liberty/issues/28737
+    })
     @Test
     public void testInsert() throws Exception {
         people.deleteBySSN_IdBetween(0L, 999999999L);
@@ -1965,7 +2407,10 @@ public class DataTestServlet extends FATServlet {
      * Insert and delete multiple entities.
      */
     // @AllowedFFDC("jakarta.data.exceptions.EntityExistsException")
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
+    @SkipIfSysProp({
+                     DB_Postgres, //Failing on Postgres due to eclipselink issue:  https://github.com/OpenLiberty/open-liberty/issues/28380
+                     DB_SQLServer //Failing on SQLServer due to eclipselink issue: https://github.com/OpenLiberty/open-liberty/issues/28737
+    })
     @Test
     public void testInsertAndDeleteMultiple() throws Exception {
         people.deleteBySSN_IdBetween(0L, 999999999L);
@@ -2171,11 +2616,11 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Access pages in a forward direction while entities are being added and removed,
-     * using a keyset to avoid duplicates.
+     * Access pages in the next page direction while entities are being added and
+     * removed, using a cursor to avoid duplicates.
      */
     @Test
-    public void testKeysetForwardPagination() {
+    public void testCursorNext() {
         packages.deleteAll();
 
         packages.saveAll(List.of(new Package(114, 14.0f, 90.0f, 15.0f, "package#114"), // page1
@@ -2207,7 +2652,7 @@ public class DataTestServlet extends FATServlet {
         // should not appear on next page because we already read up to length 18.0:
         packages.save(new Package(117, 17.0f, 23.0f, 12.0f, "package#117"));
 
-        // should appear on next page because length 20.0 is beyond the keyset value of 18.0:
+        // should appear on next page because length 20.0 is beyond the cursor value of 18.0:
         packages.save(new Package(120, 20.0f, 23.0f, 12.0f, "package#120"));
 
         // Page 2
@@ -2219,7 +2664,8 @@ public class DataTestServlet extends FATServlet {
         // remove some entries that we already read:
         packages.deleteByIdIn(List.of(116, 118, 120, 122, 124));
 
-        // should appear on next page because length 22.0 matches the keyset value and width 70.0 is beyond the keyset value:
+        // should appear on next page because length 22.0 matches the cursor value
+        // and width 70.0 is beyond the cursor value:
         packages.save(new Package(130, 22.0f, 70.0f, 67.0f, "package#130"));
 
         // Page 3
@@ -2276,9 +2722,10 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(114, 144, 133, 151),
                              page.stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.saveAll(List.of(new Package(128, 28.0f, 45.0f, 53.0f, "package#128"), // comes after the keyset values, should be included in next page
-                                 new Package(153, 53.0f, 45.0f, 28.0f, "package#153") // comes before the keyset values, should not be on next page
-        ));
+        packages.saveAll(List.of(// comes after the cursor values, should be included in next page
+                                 new Package(128, 28.0f, 45.0f, 53.0f, "package#128"),
+                                 // comes before the cursor values, should not be on next page
+                                 new Package(153, 53.0f, 45.0f, 28.0f, "package#153")));
 
         // Page 2
         page = packages.findByHeightGreaterThan(10.0f, page.nextPageRequest());
@@ -2339,11 +2786,12 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Access pages in a forward direction, but delete the remaining entries before accessing the next page.
-     * Expect the next page to be empty, and next/previous PageRequest from the empty page to be null.
+     * Access pages in the next page direction, but delete the remaining entries
+     * before accessing the next page. Expect the next page to be empty, and the
+     * next/previous PageRequest from the empty page to be null.
      */
     @Test
-    public void testKeysetForwardPaginationNextPageEmptyAfterDeletion() {
+    public void testCursorNextPageEmptyAfterDeletion() {
         packages.deleteAll();
 
         packages.saveAll(List.of(new Package(440, 40.0f, 44.0f, 40.0f, "package#440"), // page1
@@ -2375,17 +2823,17 @@ public class DataTestServlet extends FATServlet {
         assertEquals(0, page.numberOfElements());
         assertEquals(false, page.hasContent());
 
-        // An empty page lacks keyset values from which to request next/previous pages
+        // An empty page lacks cursor values from which to request next/previous pages
         assertEquals(false, page.hasNext());
         assertEquals(false, page.hasPrevious());
     }
 
     /**
-     * Obtain keyset cursors from a page of results and use them to obtain pages in forward
-     * and reverse directions.
+     * Obtain cursors from a page of results and use them to obtain pages in the
+     * next page and previous page directions.
      */
     @Test
-    public void testKeysetPaginationWithCursor() {
+    public void testCursorPagination() {
         // Expected order for OrderByEvenDescSumOfBitsDescNumberAsc:
         // num binary sum even?
         // 2,  10,     1, true
@@ -2441,10 +2889,10 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Access pages in reverse direction using a keyset.
+     * Access pages in the previous page direction using a cursor.
      */
     @Test
-    public void testKeysetPreviousPages() {
+    public void testCursorPrevious() {
         packages.deleteAll();
 
         packages.saveAll(List.of(new Package(210, 10.0f, 50.0f, 55.0f, "package#210"), // page 1
@@ -2506,26 +2954,26 @@ public class DataTestServlet extends FATServlet {
         // 240, 40.0f, 21.0f, 42.0f
 
         PageRequest.Cursor cursor = new PageRequest.Cursor() {
-            private final List<Object> keysetValues = List.of(21.0f, 42.0f, 240);
+            private final List<Object> cursorElements = List.of(21.0f, 42.0f, 240);
 
             @Override
             public List<?> elements() {
-                return keysetValues;
+                return cursorElements;
             }
 
             @Override
             public Object get(int index) {
-                return keysetValues.get(index);
+                return cursorElements.get(index);
             }
 
             @Override
             public int size() {
-                return keysetValues.size();
+                return cursorElements.size();
             }
 
             @Override
             public String toString() {
-                return "Custom cursor of " + keysetValues;
+                return "Custom cursor of " + cursorElements;
             }
         };
 
@@ -2642,11 +3090,11 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Access pages in reverse direction while entities are being added and removed,
-     * using a keyset to avoid duplicates.
+     * Access pages in the previous page direction while entities are being added
+     * and removed, using a cursor to avoid duplicates.
      */
     @Test
-    public void testKeysetReversePaginationWithUpdates() {
+    public void testCursorPreviousWithUpdates() {
         packages.deleteAll();
 
         // using @OrderBy width descending, height ascending, id descending:
@@ -2779,70 +3227,77 @@ public class DataTestServlet extends FATServlet {
         }
     }
 
-    /**
-     * A repository might define a method that returns a keyset-aware page with a Limit parameter.
-     */
-    @Test
-    public void testKeysetWithLimit() {
-        // This is not a recommended pattern. Testing to see how it is handled.
-        CursoredPage<Prime> page = primes.findByNumberIdBetween(15L, 45L, Limit.of(5));
+    @Test //TODO
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29475")
+    public void testFetchTypeDefault() {
+        ratings.clear();
 
-        assertEquals(1L, page.pageRequest().page());
-        assertEquals(5L, page.numberOfElements());
-        assertEquals(5L, page.pageRequest().size());
-        assertEquals(1L, page.pageRequest().page());
-        assertEquals(2L, page.totalPages());
-        assertEquals(8L, page.totalElements());
+        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestFetchTypeDefault", "rex@openliberty.io");
+        Rating.Item toaster = new Rating.Item("toaster", 28.98f);
+        Set<String> comments = Set.of("Burns everything.", "Often gets stuck.", "Bagels don't fit.");
 
-        assertIterableEquals(List.of(17L, 19L, 23L, 29L, 31L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
+        ratings.add(new Rating(1000, toaster, 2, user1, comments));
 
-        assertIterableEquals(Collections.EMPTY_LIST,
-                             primes.findByNumberIdBetween(15L, 45L, page.previousPageRequest()));
+        Rating user1Rating = ratings.get(1000).orElseThrow();
 
-        page = primes.findByNumberIdBetween(15L, 45L, page.nextPageRequest());
-
-        assertEquals(3L, page.numberOfElements());
-        assertEquals(5L, page.pageRequest().size());
-        assertEquals(2L, page.pageRequest().page());
-        assertEquals(2L, page.totalPages());
-        assertEquals(8L, page.totalElements());
-        assertEquals(false, page.hasNext());
-
-        assertIterableEquals(List.of(37L, 41L, 43L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
+        assertFalse("Expected comments to be populated when using fetch type eager", user1Rating.comments().isEmpty());
+        assertEquals("Expected comments to be populated when using fetch type eager", comments, user1Rating.comments());
     }
 
     /**
-     * A repository might define a method that returns a keyset-aware page without specifying a PageRequest,
-     * specifying the sort criteria separately.
+     * A repository might attempt to define a method that returns a CursoredPage
+     * without specifying a PageRequest and attempt to use a Limit parameter
+     * instead. This is not supported by the spec.
+     * Expect UnsupportedOperationException.
      */
     @Test
-    public void testKeysetWithoutPageRequest() {
-        // This is not a recommended pattern. Testing to see how it is handled.
-        CursoredPage<Prime> page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, 40L, Sort.asc(ID));
-        assertEquals(31L, page.content().get(0).numberId);
+    public void testLacksPageRequestUseLimitInstead() {
+        CursoredPage<Prime> page;
+        try {
+            page = primes.findByNumberIdBetween(15L, 45L, Limit.of(5));
+            fail("Able to obtain CursoredPage without a PageRequest: " + page);
+        } catch (UnsupportedOperationException x) {
+            // pass
+        }
+    }
 
-        // Obtain PageRequest for previous entries from the CursoredPage
-        PageRequest pagination = page.previousPageRequest().size(5);
-        page = primes.findByNumberIdBetween(0L, 40L, pagination);
-        assertIterableEquals(List.of(13L, 17L, 19L, 23L, 29L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
+    /**
+     * A repository might attempt to define a method that returns a CursoredPage
+     * without specifying a PageRequest and attempt to use a Sort parameter instead.
+     * This is not supported by the spec. Expect UnsupportedOperationException.
+     */
+    @Test
+    public void testLacksPageRequestUseSortInstead() {
+        CursoredPage<Prime> page;
+        try {
+            page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, //
+                                                                      40L, //
+                                                                      Sort.asc(ID));
+            fail("Able to obtain CursoredPage without a PageRequest: " + page);
+        } catch (UnsupportedOperationException x) {
+            // pass
+        }
+    }
 
-        pagination = page.previousPageRequest();
-        page = primes.findByNumberIdBetween(0L, 40L, pagination);
-        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L),
-                             page.stream()
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
+    /**
+     * Use a repository method that performs a JDQL query using LEFT function
+     * to obtain the beginning of a String value.
+     */
+    @Test
+    public void testLeftFunction() {
+        assertEquals(List.of("seven", "seventeen"),
+                     primes.matchLeftSideOfName("seven"));
+    }
 
-        assertEquals(false, page.hasPrevious());
+    /**
+     * Repository method with return type of LongStream, involving type conversion.
+     */
+    @Test
+    public void testLongStream() {
+        assertEquals(List.of(10L, 11L, 101L, 111L, 1011L, 1101L, 10001L, 10011L),
+                     primes.binaryDigitsAsDecimal(20)
+                                     .boxed()
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -2959,6 +3414,9 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testMultipleAggregates() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        boolean databaseRounds = jdbcJarName.startsWith("ojdbc") || jdbcJarName.startsWith("postgre");
+
         Object[] objects = primes.minMaxSumCountAverageObject(50);
         assertEquals(Long.valueOf(2L), objects[0]); // minimum
         assertEquals(Long.valueOf(47L), objects[1]); // maximum
@@ -2988,19 +3446,27 @@ public class DataTestServlet extends FATServlet {
         assertEquals(12, ints[3]); // count
         assertEquals(16, ints[4]); // average
 
-        float[] floats = primes.minMaxSumCountAverageFloat(35);
-        assertEquals(2.0f, floats[0], 0.01f); // minimum
-        assertEquals(31.0f, floats[1], 0.01f); // maximum
-        assertEquals(160.0f, floats[2], 0.01f); // sum
-        assertEquals(11.0f, floats[3], 0.01f); // count
-        assertEquals(14.0f, Math.floor(floats[4]), 0.01f); // average
+        try {
+            float[] floats = primes.minMaxSumCountAverageFloat(35);
+            fail("Allowed unsafe conversion from double to float: " +
+                 Arrays.toString(floats));
+        } catch (MappingException x) {
+            if (x.getMessage().startsWith("CWWKD1046E") &&
+                x.getMessage().contains("float[]"))
+                ; // unsafe to convert double to float
+            else
+                throw x;
+        }
 
         List<Long> list = primes.minMaxSumCountAverageList(30);
         assertEquals(Long.valueOf(2L), list.get(0)); // minimum
         assertEquals(Long.valueOf(29L), list.get(1)); // maximum
         assertEquals(Long.valueOf(129L), list.get(2)); // sum
         assertEquals(Long.valueOf(10L), list.get(3)); // count
-        assertEquals(Long.valueOf(12L), list.get(4)); // average
+        if (databaseRounds)
+            assertEquals(Long.valueOf(13L), list.get(4)); // average - 12.9 -> 13
+        else
+            assertEquals(Long.valueOf(12L), list.get(4)); // average - 12.9 -> 12
 
         Stack<String> stack = primes.minMaxSumCountAverageStack(25);
         assertEquals("2", stack.get(0)); // minimum
@@ -3015,7 +3481,10 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Integer.valueOf(19), it.next()); // maximum
         assertEquals(Integer.valueOf(77), it.next()); // sum
         assertEquals(Integer.valueOf(8), it.next()); // count
-        assertEquals(Integer.valueOf(9), it.next()); // average
+        if (databaseRounds)
+            assertEquals(Integer.valueOf(10), it.next()); // average - 9.625 -> 10
+        else
+            assertEquals(Integer.valueOf(9), it.next()); // average - 9.625 -> 9
 
         Deque<Double> deque = primes.minMaxSumCountAverageDeque(18);
         assertEquals(2.0, deque.removeFirst(), 0.01); // minimum
@@ -3026,9 +3495,43 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository that has multiple embeddable attributes of the same type.
+     */
+    @Test
+    public void testMultipleEmbeddableAttributesOfSameType() {
+        Cylinder cyl1, cyl2, cyl3, cyl4, cyl5;
+
+        //                                    Id     a.x, a.y, b.x, b.y, c.x, c.y
+        cylinders.upsert(cyl1 = new Cylinder("CYL1", 100, 287, 372, 833, 509, 424),
+                         cyl2 = new Cylinder("CYL2", 790, 857, 942, 143, 509, 424),
+                         cyl3 = new Cylinder("CYL3", 340, 101, 100, 919, 629, 630),
+                         cyl4 = new Cylinder("CYL4", 100, 684, 974, 516, 453, 163),
+                         cyl5 = new Cylinder("CYL5", 412, 983, 276, 413, 629, 630));
+
+        assertEquals(5, cylinders.countValid());
+
+        assertEquals(List.of(cyl5.toString(), cyl3.toString()),
+                     cylinders.centeredAt(629, 630)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(cyl2.toString(), cyl1.toString()),
+                     cylinders.centeredAt(509, 424)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(cyl3.toString(), cyl1.toString(), cyl4.toString()),
+                     cylinders.findBySideAXOrSideBXOrderBySideBYDesc(100, 100)
+                                     .map(Object::toString)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(Long.valueOf(5), cylinders.eraseAll());
+    }
+
+    /**
      * Use a repository where methods are for different entities.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testMultipleEntitiesInARepository() {
         // Remove any pre-existing data that could interfere with the test:
@@ -3308,6 +3811,137 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Tests entity attribute names from embeddables and MappedSuperclass that
+     * can have delimiters. Includes tests for name collisions with attributes from an
+     * embeddable or superinteface. This test uses unannotated entities.
+     */
+    @Test
+    public void testPersistentFieldNamesAndDelimiters() {
+        apartments.removeAll();
+
+        Apartment a101 = new Apartment();
+        a101.occupant = new Occupant();
+        a101.occupant.firstName = "Kyle";
+        a101.occupant.lastName = "Smith";
+        a101.isOccupied = true;
+        a101.aptId = 101L;
+        a101.quarters = new Bedroom();
+        a101.quarters.length = 10;
+        a101.quarters.width = 10;
+        a101.quartersWidth = 15;
+
+        Apartment a102 = new Apartment();
+        a102.occupant = new Occupant();
+        a102.occupant.firstName = "Brent";
+        a102.occupant.lastName = "Smith";
+        a102.isOccupied = false;
+        a102.aptId = 102L;
+        a102.quarters = new Bedroom();
+        a102.quarters.length = 11;
+        a102.quarters.width = 11;
+        a102.quartersWidth = 15;
+
+        Apartment a103 = new Apartment();
+        a103.occupant = new Occupant();
+        a103.occupant.firstName = "Brian";
+        a103.occupant.lastName = "Smith";
+        a103.isOccupied = false;
+        a103.aptId = 103L;
+        a103.quarters = new Bedroom();
+        a103.quarters.length = 11;
+        a103.quarters.width = 12;
+        a103.quartersWidth = 15;
+
+        Apartment a104 = new Apartment();
+        a104.occupant = new Occupant();
+        a104.occupant.firstName = "Scott";
+        a104.occupant.lastName = "Smith";
+        a104.isOccupied = false;
+        a104.aptId = 104L;
+        a104.quarters = new Bedroom();
+        a104.quarters.length = 12;
+        a104.quarters.width = 11;
+        a104.quartersWidth = 15;
+
+        apartments.saveAll(List.of(a101, a102, a103, a104));
+
+        List<Apartment> results;
+
+        results = apartments.findApartmentsByBedroomWidth(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroom(11, 11);
+        assertEquals(1, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomLength();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomWidth();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroomLength(10);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuarters_Width(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuartersLength(12);
+        assertEquals(1, results.size());
+        assertEquals("Scott", results.get(0).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters.length"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters_width"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findByOccupied(true);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByOccupantLastNameOrderByFirstName("Smith");
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        // Colliding non-delimited attribute name quartersWidth, ensure we use entity attribute and not embedded attribute for query
+        results = apartments.findByQuartersWidth(15);
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        try {
+            apartments.findAllCollidingEmbeddable();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from embeddable");
+        } catch (MappingException e) {
+            //expected
+        }
+
+        try {
+            apartments.findAllCollidingSuperclass();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from superclass");
+        } catch (MappingException e) {
+            // expected
+        }
+    }
+
+    /**
      * Use a repository query with positional parameters and a literal value that looks like a named parameter, but isn't.
      */
     @Test
@@ -3400,7 +4034,7 @@ public class DataTestServlet extends FATServlet {
                                      .collect(Collectors.toList()));
 
         assertEquals(List.of("Impreza", "HR-V"),
-                     vehicles.deleteFirst2FoundOrderByPriceAscVinIdAsc()
+                     vehicles.deleteFoundOrderByPriceAscVinIdAsc(Limit.of(2))
                                      .stream()
                                      .map(v -> v.model)
                                      .collect(Collectors.toList()));
@@ -3477,7 +4111,10 @@ public class DataTestServlet extends FATServlet {
     /**
      * Tests all CrudRepository methods (apart from those inherited from BasicRepository) with a record as the entity.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28380
+    @SkipIfSysProp({
+                     DB_Postgres, //Failing on Postgres due to eclipselink issue:  https://github.com/OpenLiberty/open-liberty/issues/28380
+                     DB_SQLServer //Failing on SQLServer due to eclipselink issue: https://github.com/OpenLiberty/open-liberty/issues/28737
+    })
     @Test
     public void testRecordCrudRepositoryMethods() {
         receipts.deleteByTotalLessThan(1000000.0f);
@@ -3591,6 +4228,31 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test an unannotated entity that has an attribute which is a Java record,
+     * which should be inferred to be an embeddable, such that queries and sorting
+     * can be performed on the attributes of the embeddable.
+     */
+    @Test
+    public void testRecordAsEmbeddable() {
+        participants.remove("TestRecordAsEmbeddable");
+
+        participants.add(Participant.of("Steve", "TestRecordAsEmbeddable", 1),
+                         Participant.of("Sarah", "TestRecordAsEmbeddable", 2),
+                         Participant.of("Simon", "TestRecordAsEmbeddable", 3),
+                         Participant.of("Samantha", "TestRecordAsEmbeddable", 4));
+
+        assertEquals("Simon", participants.getFirstName(3).orElseThrow());
+
+        // TODO enable once #29460 is fixed
+        //assertEquals(List.of("Samantha", "Sarah", "Simon", "Steve"),
+        //             participants.withSurname("TestRecordAsEmbeddable")
+        //                             .map(p -> p.name.first())
+        //                             .collect(Collectors.toList()));
+
+        assertEquals(4L, participants.remove("TestRecordAsEmbeddable"));
+    }
+
+    /**
      * Tests that a record entity can be specified in the FROM clause of JDQL.
      */
     @Test
@@ -3608,6 +4270,183 @@ public class DataTestServlet extends FATServlet {
         assertEquals(17.29f, receipts.totalOf(2001L), 0.001f);
 
         assertEquals(2, receipts.removeIfTotalUnder(2000.0f));
+    }
+
+    /**
+     * Use repository methods that have various return types for a record entity.
+     */
+    @Test
+    public void testRecordReturnTypes() throws Exception {
+        receipts.removeIfTotalUnder(1000000.0f);
+
+        receipts.insertAll(List.of(new Receipt(3000L, "RRT10155", 100.98f),
+                                   new Receipt(3001L, "RRT10155", 48.99f),
+                                   new Receipt(3002L, "RRT20618", 12.98f),
+                                   new Receipt(3003L, "RRT10155", 34.97f),
+                                   new Receipt(3004L, "RRT10155", 4.15f),
+                                   new Receipt(3005L, "RRT10155", 51.95f),
+                                   new Receipt(3006L, "RRT20618", 629.99f),
+                                   new Receipt(3007L, "RRT10155", 71.79f),
+                                   new Receipt(3008L, "RRT20618", 8.98f),
+                                   new Receipt(3009L, "RRT10155", 99.94f),
+                                   new Receipt(3010L, "RRT10155", 10.49f),
+                                   new Receipt(3011L, "RRT10155", 101.92f),
+                                   new Receipt(3012L, "RRT20618", 12.99f),
+                                   new Receipt(3013L, "RRT30033", 31.99f),
+                                   new Receipt(3014L, "RRT10155", 434.99f),
+                                   new Receipt(3015L, "RRT10155", 55.59f)));
+
+        // various forms of completion stage results
+        CompletableFuture<Receipt> futureResult = receipts.findByPurchaseId(3013L);
+        CompletionStage<Optional<Receipt>> futureOptionalPresent = //
+                        receipts.findIfPresentByPurchaseId(3014L);
+        CompletionStage<Optional<Receipt>> futureOptionalMissing = //
+                        receipts.findIfPresentByPurchaseId(3116L);
+        CompletableFuture<List<Receipt>> futureList = //
+                        receipts.forCustomer("RRT20618",
+                                             Order.by(Sort.desc("total")));
+
+        // single record
+        Receipt receipt = receipts.withPurchaseNum(3015L);
+        assertEquals("RRT10155", receipt.customer());
+        assertEquals(55.59f, receipt.total(), 0.001f);
+
+        // array of record
+        Receipt[] array = receipts.forCustomer("RRT20618");
+        assertEquals(Arrays.toString(array), 4, array.length);
+        assertEquals(3002L, array[0].purchaseId());
+        assertEquals(3006L, array[1].purchaseId());
+        assertEquals(3008L, array[2].purchaseId());
+        assertEquals(3012L, array[3].purchaseId());
+
+        // page of record
+        PageRequest pageReq = PageRequest.ofSize(5);
+
+        Page<Receipt> page1 = receipts.forCustomer("RRT10155", pageReq, Sort.asc("total"));
+        assertEquals(List.of(3004L, 3010L, 3003L, 3001L, 3005L),
+                     page1.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        Page<Receipt> page2 = receipts.forCustomer("RRT10155", page1.nextPageRequest(), Sort.asc("total"));
+        assertEquals(List.of(3015L, 3007L, 3009L, 3000L, 3011L),
+                     page2.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        Page<Receipt> page3 = receipts.forCustomer("RRT10155", page2.nextPageRequest(), Sort.asc("total"));
+        assertEquals(List.of(3014L),
+                     page3.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        // cursored page of record
+        PageRequest above3006 = PageRequest.ofSize(3).afterCursor(Cursor.forKey(3006L));
+
+        CursoredPage<Receipt> pageAbove3006 = receipts.forCustomer("RRT10155", above3006, Sort.asc("purchaseId"));
+        assertEquals(List.of(3007L, 3009L, 3010L),
+                     pageAbove3006.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        CursoredPage<Receipt> pageAbove3010 = receipts.forCustomer("RRT10155", pageAbove3006.nextPageRequest(), Sort.asc("purchaseId"));
+        assertEquals(List.of(3011L, 3014L, 3015L),
+                     pageAbove3010.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        CursoredPage<Receipt> pageBelow3007 = receipts.forCustomer("RRT10155", pageAbove3006.previousPageRequest(), Sort.asc("purchaseId"));
+        assertEquals(List.of(3003L, 3004L, 3005L),
+                     pageBelow3007.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        CursoredPage<Receipt> pageBelow3003 = receipts.forCustomer("RRT10155", pageBelow3007.previousPageRequest(), Sort.asc("purchaseId"));
+        assertEquals(List.of(3000L, 3001L),
+                     pageBelow3003.stream()
+                                     .map(Receipt::purchaseId)
+                                     .toList());
+
+        // completable future single result that was requested earlier
+        assertEquals(31.99f, futureResult.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).total(), 0.001f);
+
+        // completable future list of results that were requested earlier
+        assertEquals(List.of(3006L, 3012L, 3002L, 3008L),
+                     futureList.get(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                                     .stream()
+                                     .map(Receipt::purchaseId)
+                                     .collect(Collectors.toList()));
+
+        // completion stage optional result that was requested earlier
+        Receipt r3014 = futureOptionalPresent.toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES).orElseThrow();
+        assertEquals(3014L, r3014.purchaseId());
+        assertEquals("RRT10155", r3014.customer());
+        assertEquals(434.99f, r3014.total(), 0.001f);
+
+        assertEquals(false, futureOptionalMissing.toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES).isPresent());
+
+        assertEquals(1L, receipts.removeByPurchaseId(3000L));
+
+        assertEquals(Set.of(3002L, 3010L, 3012L),
+                     receipts.removeByTotalBetween(10.00f, 20.00f));
+
+        // remove data to avoid interference with other tests
+        assertEquals(12, receipts.removeIfTotalUnder(1000000.0f));
+    }
+
+    /**
+     * Use a record entity that has embeddable attributes.
+     */
+    @Test
+    public void testRecordWithEmbeddables() {
+        ratings.clear();
+
+        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestRecordWithEmbeddables", "rex@openliberty.io");
+        Rating.Reviewer user2 = new Rating.Reviewer("Rhonda", "TestRecordWithEmbeddables", "rhonda@openliberty.io");
+        Rating.Reviewer user3 = new Rating.Reviewer("Rachel", "TestRecordWithEmbeddables", "rachel@openliberty.io");
+        Rating.Reviewer user4 = new Rating.Reviewer("Ryan", "TestRecordWithEmbeddables", "ryan@openliberty.io");
+
+        Rating.Item blender = new Rating.Item("blender", 41.99f);
+        Rating.Item toaster = new Rating.Item("toaster", 28.98f);
+        Rating.Item microwave = new Rating.Item("microwave", 63.89f);
+
+        ratings.add(new Rating(1000, toaster, 2, user4, Set.of("Burns everything.", "Often gets stuck.", "Bagels don't fit.")));
+        ratings.add(new Rating(1001, blender, 0, user4, Set.of("Broke after first use.")));
+        ratings.add(new Rating(1002, microwave, 2, user4, Set.of("Uneven cooking.", "Too noisy.")));
+        ratings.add(new Rating(1003, microwave, 4, user3, Set.of("Good at reheating leftovers.")));
+        ratings.add(new Rating(1004, microwave, 5, user2, Set.of()));
+        ratings.add(new Rating(1005, microwave, 3, user1, Set.of("It works okay.")));
+        ratings.add(new Rating(1006, toaster, 4, user1, Set.of("It toasts things.")));
+        ratings.add(new Rating(1007, blender, 3, user1, Set.of("Too noisy.", "It blends things. Sometimes.")));
+        ratings.add(new Rating(1008, blender, 5, user2, Set.of("Nice product!")));
+        ratings.add(new Rating(1009, toaster, 5, user2, Set.of("Nice product!")));
+        ratings.add(new Rating(1010, toaster, 3, user3, Set.of("Timer malfunctions on occasion, but it otherwise works.")));
+
+        assertEquals(Set.of("Uneven cooking.", "Too noisy."),
+                     ratings.getComments(1002));
+
+        // TODO enable once EclipseLink bug is fixed
+        // java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
+        // Exception Description: Problem compiling
+        // [SELECT NEW test.jakarta.data.web.Rating(o.id, o.item, o.numStars, o.reviewer, o.comments)
+        //  FROM RatingEntity o WHERE (o.item.price BETWEEN ?1 AND ?2) ORDER BY o.reviewer.email]. [78, 88]
+        // The state field path 'o.comments' cannot be resolved to a collection type.
+        //assertEquals(List.of("Rachel", "Rex", "Ryan"),
+        //             ratings.findByItemPriceBetween(40.00f, 50.00f, Sort.asc("reviewer.email"))
+        //                             .map(r -> r.reviewer().firstName)
+        //                             .collect(Collectors.toList()));
+
+        //assertEquals(List.of(1007, 1002),
+        //             ratings.findByCommentsContainsOrderByIdDesc("Too noisy.")
+        //                             .map(Rating::id)
+        //                             .collect(Collectors.toList()));
+
+        //assertEquals(List.of("toaster", "blender", "microwave"),
+        //             ratings.search(3)
+        //                             .map(r -> r.item().name)
+        //                             .collect(Collectors.toList()));
+
+        assertEquals(11L, ratings.clear());
     }
 
     /**
@@ -3799,6 +4638,17 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that performs a JDQL query using RIGHT function
+     * to obtain the end of a String value.
+     */
+    @Test
+    public void testRightFunction() {
+        assertEquals(List.of("thirty-seven", "thirteen", "seventeen",
+                             "seven", "nineteen", "eleven"),
+                     primes.matchRightSideOfName("en"));
+    }
+
+    /**
      * Use repository methods with Rounded, RoundedUp, and RoundedDown keywords.
      */
     @Test
@@ -3982,7 +4832,38 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with a SELECT clause but no FROM clause.
+     * Repository method having only a SELECT clause.
+     */
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
+    @Test
+    public void testSelectClauseOnly() {
+        products.clear();
+
+        assertEquals(List.of(),
+                     List.of(products.names()));
+
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("TestSelectClauseOnly-1".getBytes());
+        prod1.name = "TestSelectClauseOnly-1";
+        prod1.description = "TestSelectClauseOnly description 1";
+        prod1.price = 18.99f;
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("TestSelectClauseOnly-2".getBytes());
+        prod2.name = "TestSelectClauseOnly-2";
+        prod2.description = "TestSelectClauseOnly description 2";
+        prod2.price = 27.99f;
+
+        products.saveMultiple(prod1, prod2);
+
+        assertEquals(Set.of("TestSelectClauseOnly-1", "TestSelectClauseOnly-2"),
+                     Set.of(products.names()));
+
+        products.clear();
+    }
+
+    /**
+     * Repository method with a SELECT clause and WHERE clause, but no FROM clause.
      */
     @Test
     public void testSelectClauseWithoutFromClause() {
@@ -4199,6 +5080,19 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use the JDQL id(entityVar) function as the sort property to perform a
+     * descending sort.
+     */
+    @Test
+    public void testSortByIdFunction() {
+        assertEquals(List.of(31L, 29L, 23L, 19L, 17L, 13L),
+                     primes.findByNumberIdBetween(12, 36, Sort.desc(By.ID))
+                                     .stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * When sort criteria is specified statically via the OrderBy annotation and
      * dynamically via Sorts from pagination, the static sort criteria is applied
      * before the dynamic sort criteria.
@@ -4227,8 +5121,8 @@ public class DataTestServlet extends FATServlet {
 
     /**
      * When sort criteria is specified statically via the Query annotation and
-     * dynamically via Sorts from keyset pagination, the static sort criteria is applied
-     * before the dynamic sort criteria.
+     * dynamically via Sorts from cursor-based pagination, the static sort criteria
+     * is applied before the dynamic sort criteria.
      */
     @Test
     public void testSortCriteriaOfOrderByAnnoTakesPrecedenceOverPaginationSortsOnCustomQueryUsingCursorPagination() {
@@ -4285,11 +5179,11 @@ public class DataTestServlet extends FATServlet {
 
     /**
      * When sort criteria is specified statically via the OrderBy keyword and
-     * dynamically via Sorts from keyset pagination, the static sort criteria is applied
-     * before the dynamic sort criteria.
+     * dynamically via Sorts from cursor-based pagination, the static sort criteria
+     * is applied before the dynamic sort criteria.
      */
     @Test
-    public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverKeysetPaginationSorts() {
+    public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverCursorPaginationSorts() {
 
         PageRequest pagination = PageRequest.ofSize(6).withoutTotal();
         CursoredPage<Prime> page1 = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination,
@@ -4449,12 +5343,12 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation,
-     * with a count query automatically generated from the primary query of the Query annotation.
+     * Obtain total counts of number of elements and pages when JPQL with 4 clauses
+     * (SELECT, FROM, WHERE, ORDER BY) is supplied via the Query annotation, with a
+     * count query automatically generated from the primary query.
      */
-    // TODO re-enable once JPA 3.2 gives us COUNT(THIS) or if we improve the query parsing to better simulate it
-    // @Test
-    public void testTotalCountsForCountQuery() {
+    @Test
+    public void testTotalCountsForFullQuery() {
         Page<Map.Entry<Long, String>> page1 = primes.namesByNumber(47L, PageRequest.ofSize(5));
 
         assertEquals(15L, page1.totalElements());
@@ -4483,33 +5377,79 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Obtain total counts of number of elements and pages when JDQL is supplied via the Query annotation
-     * and the count query provided by the Query annotation only has a WHERE clause.
+     * Obtain total counts of elements when various JDQL queries are supplied
+     * that lack different optional clauses.
      */
     @Test
-    public void testTotalCountsForCountQueryWithWhereClauseOnly() {
+    public void testTotalCountsForQueriesWithSomeClausesOmitted() {
+        receipts.removeIfTotalUnder(Float.MAX_VALUE);
+
+        receipts.insertAll(List.of(new Receipt(5001, "TCFQWSCO-1", 51.01f),
+                                   new Receipt(5002, "TCFQWSCO-2", 52.42f),
+                                   new Receipt(5003, "TCFQWSCO-3", 50.33f),
+                                   new Receipt(5004, "TCFQWSCO-2", 52.24f),
+                                   new Receipt(5005, "TCFQWSCO-5", 56.95f)));
+
+        Page<Receipt> page1;
+        PageRequest page1req = PageRequest.ofSize(3).withTotal();
+
+        // query with no clauses
+        page1 = receipts.all(page1req, Order.by(Sort.asc(ID)));
+        assertEquals(5, page1.totalElements());
+
+        receipts.insert(new Receipt(5006, "TCFQWSCO-5", 56.56f));
+
+        // query with FROM clause only
+        page1 = receipts.all(page1req, Sort.desc(ID));
+        assertEquals(6, page1.totalElements());
+
+        receipts.insert(new Receipt(5007, "TCFQWSCO-7", 57.17f));
+
+        // query with FROM clause only
+        page1 = receipts.sortedByTotalIncreasing(page1req);
+        assertEquals(7, page1.totalElements());
+        assertEquals(5003, page1.iterator().next().purchaseId());
+
+        receipts.insert(new Receipt(5008, "TCFQWSCO-8", 58.88f));
+
+        // query with SELECT clause only
+        Page<Float> amountsPage1;
+        amountsPage1 = receipts.totals(page1req, Sort.asc(ID));
+        assertEquals(8, amountsPage1.totalElements());
+
+        receipts.insert(new Receipt(5009, "TCFQWSCO-9", 59.09f));
+
+        // query with SELECT and ORDER BY clauses only
+        amountsPage1 = receipts.totalsDecreasing(page1req);
+        assertEquals(9, amountsPage1.totalElements());
+
+        assertEquals(9, receipts.removeIfTotalUnder(Float.MAX_VALUE));
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when JDQL is supplied via
+     * the Query annotation and the provided query lacks a FROM clause.
+     */
+    @Test
+    public void testTotalCountsForQueryWithInferredFromClause() {
         // The prime numbers less than 50 where the roman numeral length is at least
         // twice the name length are:
         // 2, 3, 7, 13, 37
 
-        Page<Prime> page1 = primes.lengthBasedQuery(PageRequest.ofSize(3));
+        Page<String> page1 = primes.lengthBasedQuery(PageRequest.ofSize(3));
 
         assertEquals(List.of("two", "three", "thirty-seven"),
-                     page1.stream()
-                                     .map(p -> p.name)
-                                     .collect(Collectors.toList()));
+                     page1.content());
 
         assertEquals(3, page1.numberOfElements());
         assertEquals(5L, page1.totalElements());
         assertEquals(2L, page1.totalPages());
         assertEquals(true, page1.hasNext());
 
-        Page<Prime> page2 = primes.lengthBasedQuery(page1.nextPageRequest());
+        Page<String> page2 = primes.lengthBasedQuery(page1.nextPageRequest());
 
         assertEquals(List.of("thirteen", "seven"),
-                     page2.stream()
-                                     .map(p -> p.name)
-                                     .collect(Collectors.toList()));
+                     page2.content());
 
         assertEquals(false, page2.hasNext());
     }
@@ -4518,6 +5458,8 @@ public class DataTestServlet extends FATServlet {
      * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation
      * where a count query is inferred from the Query annotation value, which has an ORDER BY clause.
      */
+    @SkipIfSysProp(DB_Oracle) //SQLSyntaxErrorException ORA-00918: LENGTH(ROMANNUMERAL): column ambiguously specified - appears in  and
+    // Call: SELECT * FROM (SELECT a.*, ROWNUM rnum  FROM (SELECT DISTINCT LENGTH(ROMANNUMERAL), LENGTH(ROMANNUMERAL) FROM WLPPrime WHERE (NUMBERID <= ?) ORDER BY LENGTH(ROMANNUMERAL) DESC) a WHERE ROWNUM <= ?) WHERE rnum > ?
     @Test
     public void testTotalCountsForQueryWithOrderBy() {
         Page<Integer> page1 = primes.romanNumeralLengths(41L, PageRequest.ofSize(4));
@@ -4572,10 +5514,11 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Obtain total counts of number of elements and pages when keyset pagination is used.
+     * Obtain total counts of number of elements and pages when cursor-based
+     * pagination is used.
      */
     @Test
-    public void testTotalCountsWithKeysetPagination() {
+    public void testTotalCountsWithCursorPagination() {
         CursoredPage<Prime> page3 = primes.findByNumberIdBetween(3L, 50L, PageRequest.ofPage(3)
                         .size(5)
                         .beforeCursor(Cursor.forKey(47L)));
@@ -4605,7 +5548,7 @@ public class DataTestServlet extends FATServlet {
         // In this case, the 14 elements are across 4 pages, not 3,
         // because the first and last pages ended up being partial.
         // But that doesn't become known until the first or last page is read.
-        // This is one of many reasons why keyset pagination documents that
+        // This is one of many reasons why CursoredPage documents that
         // page counts are inaccurate and cannot be relied upon.
         assertEquals(3L, page4.totalPages());
         assertEquals(14L, page4.totalElements());
@@ -4779,7 +5722,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Update multiple entries.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testUpdateMultiple() {
         products.clear();
@@ -4904,7 +5847,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use update methods with a versioned entity parameter to make updates.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testUpdateWithVersionedEntityParameter() {
         Product prod1 = new Product();
@@ -4957,7 +5900,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use JPQL query to update based on version.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testVersionedUpdateViaQuery() {
         Product prod1 = new Product();
@@ -4995,7 +5938,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository save method to update based on version.
      */
-    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
+    @SkipIfSysProp(DB_Postgres) //TODO Failing on Postgres due to eclipselink issue.  https://github.com/OpenLiberty/open-liberty/issues/28368
     @Test
     public void testVersionedUpdateViaRepository() {
         Product prod1 = new Product();

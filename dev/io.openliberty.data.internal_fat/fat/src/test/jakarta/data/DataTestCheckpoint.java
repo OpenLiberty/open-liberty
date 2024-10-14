@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,9 @@
  *******************************************************************************/
 package test.jakarta.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
 
@@ -21,7 +24,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -46,8 +48,6 @@ import test.jakarta.data.web.DataTestServlet;
 @MinimumJavaLevel(javaLevel = 17)
 @CheckpointTest
 public class DataTestCheckpoint extends FATServletClient {
-    private static String jdbcJarName;
-
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
@@ -58,12 +58,8 @@ public class DataTestCheckpoint extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Get driver type
-        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        jdbcJarName = type.getDriverName();
-
         // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
+        DatabaseContainerUtil.setupDataSourcePropertiesForCheckpoint(server, testContainer);
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp", "test.jakarta.data.web");
         ShrinkHelper.exportAppToServer(server, war);
@@ -78,44 +74,22 @@ public class DataTestCheckpoint extends FATServletClient {
         WebArchive providerWar = ShrinkHelper.buildDefaultApp("ProviderTestApp", "test.jakarta.data.inmemory.web")
                         .addAsLibrary(providerJar);
         ShrinkHelper.exportAppToServer(server, providerWar);
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
+
+        Map<String, String> envVars = new HashMap<>();
+        envVars.put("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
+
+        //Server started, application started, checkpoint taken, server is now stopped.
+        //Configure environment variable used by servlet
+        server.addEnvVarsForCheckpoint(envVars);
+
+        server.checkpointRestore();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDelete() throws Exception {
-        runTest(server, "DataTestApp", "testFindAndDelete&jdbcJarName=" + jdbcJarName);
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDeleteMultipleAnnotated() throws Exception {
-        runTest(server, "DataTestApp", "testFindAndDeleteMultipleAnnotated&jdbcJarName=" + jdbcJarName);
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDeleteReturnsIds() throws Exception {
-        runTest(server, "DataTestApp", "testFindAndDeleteReturnsIds&jdbcJarName=" + jdbcJarName);
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDeleteReturnsObjects() throws Exception {
-        runTest(server, "DataTestApp", "testFindAndDeleteReturnsObjects&jdbcJarName=" + jdbcJarName);
+        server.stopServer(DataTest.EXPECTED_ERROR_MESSAGES);
     }
 }

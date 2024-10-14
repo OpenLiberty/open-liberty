@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -47,6 +47,9 @@ CWWKC1204.not.serializable=CWWKC1204E: Nem hozhat\u00f3 l\u00e9tre soros\u00edth
 CWWKC1204.not.serializable.explanation=A harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 sz\u00e1lkontextus t\u00edpusok nem kompatibilisek a soros\u00edt\u00e1ssal, \u00e9s nem konfigur\u00e1lhat\u00f3k soros\u00edthat\u00f3 k\u00f6rnyezetf\u00fcgg\u0151 proxykhoz t\u00f6rt\u00e9n\u0151 tov\u00e1bb\u00edt\u00e1sra.
 CWWKC1204.not.serializable.useraction=Friss\u00edtse az alkalmaz\u00e1st, hogy egy nem soros\u00edthat\u00f3 k\u00f6rnyezetf\u00fcgg\u0151 proxyt k\u00e9rjen, vagy gondoskodjon arr\u00f3l, hogy ne legyenek tov\u00e1bb\u00edtva harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 kontextust\u00edpusok.
 
+CWWKC1217.no.virtual.threads=CWWKC1217I: Az egyidej\u0171s\u00e9gi specifik\u00e1ci\u00f3 megk\u00f6veteli, hogy a virtual=true \u00e9rt\u00e9ket figyelmen k\u00edv\u00fcl hagyj\u00e1k a {0} {1} defin\u00edci\u00f3ban a {2} alkalmaz\u00e1s mell\u00e9kterm\u00e9k\u00e9ben, mert a Java {3} nem t\u00e1mogatja a virtu\u00e1lis sz\u00e1lakat.
+CWWKC1217.no.virtual.threads.explanation=A virtu\u00e1lis sz\u00e1lak csak a Java 21-es \u00e9s \u00fajabb verzi\u00f3iban \u00e9rhet\u0151k el.
+CWWKC1217.no.virtual.threads.useraction=Friss\u00edtsen Java 21-re vagy \u00fajabbra a virtu\u00e1lis sz\u00e1lak haszn\u00e1lat\u00e1nak enged\u00e9lyez\u00e9s\u00e9hez.
 
 
 # Messages for @Asynchronous that are shared with other bundles:

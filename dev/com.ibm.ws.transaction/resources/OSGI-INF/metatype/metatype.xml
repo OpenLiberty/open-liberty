@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2023 IBM Corporation and others.
+    Copyright (c) 2011, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -128,6 +128,9 @@
         
         <AD name="%transaction.log.dbtablesuffix" description="%transaction.log.dbtablesuffix.desc"
             id="transactionLogDBTableSuffix" required="false" type="String" default="" />
+        
+        <AD name="%transaction.log.db.name" description="%transaction.log.db.name.desc"
+            id="transactionLogDBName" required="false" type="String" default="" />
             
         <AD name="%timeout.grace.period.enabled" description="%timeout.grace.period.enabled.desc"
             id="timeoutGracePeriodEnabled" required="false" type="Boolean" default="false" />

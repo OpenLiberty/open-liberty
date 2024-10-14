@@ -41,7 +41,8 @@ public class CRaCResourceFailCheckpointServlet extends HttpServlet {
 
         @Override
         public void afterRestore(Context<? extends Resource> context) throws Exception {
-            // nothing
+            System.out.println("TESTING - afterCheckpoint " + expectedResource);
+            throw new RuntimeException("TESTING - restore failed " + expectedResource);
         }
     }
 

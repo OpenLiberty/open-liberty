@@ -15,6 +15,6 @@ addRequiredLibraries {
 }
 
 dependencies {
-  requiredLibs project(':io.openliberty.org.crac')
+  requiredLibs project(':io.openliberty.org.crac.1.4')
 }
 

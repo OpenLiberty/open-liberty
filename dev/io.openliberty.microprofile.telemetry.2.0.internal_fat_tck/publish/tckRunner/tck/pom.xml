@@ -66,10 +66,14 @@
             <artifactId>microprofile-telemetry-tracing-tck</artifactId>
             <version>${mptelemetry.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.microprofile.telemetry</groupId>
             <artifactId>microprofile-telemetry-metrics-tck</artifactId>
+            <version>${mptelemetry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.telemetry</groupId>
+            <artifactId>microprofile-telemetry-logs-tck</artifactId>
             <version>${mptelemetry.version}</version>
         </dependency>
 
@@ -238,7 +242,7 @@
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
-                        <suiteXmlFile>tck-suite.xml</suiteXmlFile>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
                 </configuration>

@@ -72,11 +72,11 @@ public class Servlet60PartitionedAttributeTests {
         String expectedPlainCookie = "Set-Cookie: Cookie_Plain_Name=AddCookie_Plain_Value";
         String expectedSameSiteNoneOnlyCookie = "Set-Cookie: AddCookie_SameSiteNoneOnly_Name=AddCookie_SameSiteNoneOnly_Value; SameSite=None";
         String expectedSameSiteNoneCookie = "Set-Cookie: AddCookie_SameSiteNone_Name=AddCookie_SameSiteNone_Value; SameSite=None; Partitioned";
-        String expectedSameSiteLaxCookie = "Set-Cookie: AddCookie_SameSiteLax_Name=AddCookie_SameSiteLax_Value; SameSite=Lax; Partitioned";
+        String expectedSameSiteLaxCookie = "Set-Cookie: AddCookie_SameSiteLax_Name=AddCookie_SameSiteLax_Value; SameSite=Lax";
 
         String expectedResponse = "Welcome to the TestSetAttributePartitionedCookieServlet!";
         boolean plainCookieFound = false;
-        boolean paritionedOnlyFound = false;
+        boolean partitionedOnlyFound = false;
         boolean partitionedSameSiteNoneFound = false;
         boolean partitionedSameSiteLaxFound = false;
 
@@ -106,7 +106,7 @@ public class Servlet60PartitionedAttributeTests {
                     if (headerValue.equals(expectedPlainCookie)) {
                         plainCookieFound = true;
                     } else if (headerValue.equals(expectedSameSiteNoneOnlyCookie)) {
-                        paritionedOnlyFound = true;
+                        partitionedOnlyFound = true;
                     } else if (headerValue.equals(expectedSameSiteNoneCookie)) {
                         partitionedSameSiteNoneFound = true;
                     } else if (headerValue.equals(expectedSameSiteLaxCookie)) {
@@ -116,7 +116,7 @@ public class Servlet60PartitionedAttributeTests {
 
                 assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
                 assertTrue("The response did not contain the expected Set-Cookie header: " + expectedPlainCookie, plainCookieFound);
-                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSameSiteNoneOnlyCookie, paritionedOnlyFound);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSameSiteNoneOnlyCookie, partitionedOnlyFound);
                 assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSameSiteNoneCookie, partitionedSameSiteNoneFound);
                 assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSameSiteLaxCookie, partitionedSameSiteLaxFound);
                 assertTrue("The response did not contain the expected number of cookie headers", cookieCount == 4);
@@ -140,11 +140,11 @@ public class Servlet60PartitionedAttributeTests {
         // Untouched via Config
         String expectedPlainCookie = "Set-Cookie: Cookie_Plain_Name=AddCookie_Plain_Value";
         String expectedSameSiteNoneCookie = "Set-Cookie: AddCookie_SameSiteNone_Name=AddCookie_SameSiteNone_Value; SameSite=None; Partitioned";
-        String expectedSameSiteLaxCookie = "Set-Cookie: AddCookie_SameSiteLax_Name=AddCookie_SameSiteLax_Value; SameSite=Lax; Partitioned";
+        String expectedSameSiteLaxCookie = "Set-Cookie: AddCookie_SameSiteLax_Name=AddCookie_SameSiteLax_Value; SameSite=Lax";
 
         String expectedResponse = "Welcome to the TestSetAttributePartitionedCookieServlet!";
         boolean plainCookieFound = false;
-        boolean paritionedOnlyFound = false;
+        boolean partitionedOnlyFound = false;
         boolean partitionedSameSiteNoneFound = false;
         boolean partitionedSameSiteLaxFound = false;
 
@@ -189,7 +189,7 @@ public class Servlet60PartitionedAttributeTests {
                     if (headerValue.equals(expectedPlainCookie)) {
                         plainCookieFound = true;
                     } else if (headerValue.equals(expectedSameSiteNoneOnlyCookie)) {
-                        paritionedOnlyFound = true;
+                        partitionedOnlyFound = true;
                     } else if (headerValue.equals(expectedSameSiteNoneCookie)) {
                         partitionedSameSiteNoneFound = true;
                     } else if (headerValue.equals(expectedSameSiteLaxCookie)) {
@@ -199,7 +199,7 @@ public class Servlet60PartitionedAttributeTests {
 
                 assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
                 assertTrue("The response did not contain the expected Set-Cookie header: " + expectedPlainCookie, plainCookieFound);
-                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSameSiteNoneOnlyCookie, paritionedOnlyFound);
+                assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSameSiteNoneOnlyCookie, partitionedOnlyFound);
                 assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSameSiteNoneCookie, partitionedSameSiteNoneFound);
                 assertTrue("The response did not contain the expected Set-Cookie header: " + expectedSameSiteLaxCookie, partitionedSameSiteLaxFound);
                 assertTrue("The response did not contain the expected number of cookie headers", cookieCount == 4);

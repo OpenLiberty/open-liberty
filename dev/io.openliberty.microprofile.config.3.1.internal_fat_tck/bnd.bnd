@@ -18,7 +18,9 @@ fat.project: true
 
 tested.features: mpConfig-3.1,\
                  cdi-4.0,\
+                 cdi-4.1,\
                  restfulWS-3.1, \
+                 restfulWS-4.0, \
                  localconnector-1.0
 
 
@@ -26,7 +28,7 @@ tested.features: mpConfig-3.1,\
 #      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
--buildpath:
+-buildpath: io.openliberty.microprofile.config.internal_repeat_tests;version=latest
 
 javac.source: 11
 javac.target: 11

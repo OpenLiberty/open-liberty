@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2023 IBM Corporation and others.
+ * Copyright (c) 2020,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,17 @@ package com.ibm.ws.ejbcontainer.security.jacc_fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import org.junit.After;
 import org.junit.AfterClass;
 
@@ -23,6 +34,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 import com.ibm.ws.webcontainer.security.test.servlets.ServletClient;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -39,6 +51,20 @@ public class EJBAnnTestBase {
 
     private static final Class<?> c = EJBAnnTestBase.class;
 
+    public static void configureBootStrapProperties(LibertyServer server, Map<String, String> properties) throws Exception, IOException, FileNotFoundException {
+        Properties bootStrapProperties = new Properties();
+        File bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
+        if (bootStrapPropertiesFile.isFile()) {
+            try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
+                bootStrapProperties.load(in);
+            }
+        }
+        bootStrapProperties.putAll(properties);
+        try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
+            bootStrapProperties.store(out, "");
+        }
+    }
+
     public static void commonSetup(Class<?> classLog, String serverName, String appName, String servletName, String contextRoot) throws Exception {
         String thisMethod = "commonSetUp";
         Log.info(c, thisMethod, "***************Starting CommonSetup for test: " + classLog + " ***************");
@@ -49,9 +75,22 @@ public class EJBAnnTestBase {
         }
         client = new BasicAuthClient(server, BasicAuthClient.DEFAULT_REALM, servletName, contextRoot);
 
-        testHelper = new EJBAnnTestBaseHelper(server, client);
-
         JACCFatUtils.installJaccUserFeature(server);
+
+        if (FeatureReplacementAction.isCheckpointRepeatActionActive()) {
+            Map<String, String> properties = new HashMap<>();
+            properties.put("websphere.java.security.exempt", "true");
+            configureBootStrapProperties(server, properties);
+
+            Map<String, String> options = server.getJvmOptionsAsMap();
+            options.put("-Dcom.ibm.ws.beta.edition", "true");
+            server.setJvmOptions(options);
+
+            LibertyServer.setValidateApps(false);
+            testHelper = new EJBAnnTestBaseHelper(server, client, true);
+        } else {
+            testHelper = new EJBAnnTestBaseHelper(server, client, false);
+        }
 
         switch (serverName) {
             case Constants.SERVER_EJB:

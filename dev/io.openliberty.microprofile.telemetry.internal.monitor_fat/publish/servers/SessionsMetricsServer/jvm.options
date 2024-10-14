@@ -1,0 +1,5 @@
+-Dotel.metrics.exporter=otlp
+-Dotel.sdk.disabled=false
+-Dotel.traces.exporter=none
+-Dotel.logs.exporter=none
+-Dotel.metric.export.interval=500

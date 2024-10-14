@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
@@ -29,8 +29,8 @@ instrument.classesExcludes: \
 # Use this format (4.1.0.RC#)  until we have an official release and not an RC Version
 Include-Resource: \
   @${repo;org.apache.myfaces.core:myfaces-impl;4.1.0.RC2;EXACT}!/META-INF/**, \
-  @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
-  @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
+  @${repo;io.openliberty.jakarta.faces.4.1}!/META-INF/resources/**, \
+  @${repo;io.openliberty.jakarta.faces.4.1}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
 
 Service-Component: \

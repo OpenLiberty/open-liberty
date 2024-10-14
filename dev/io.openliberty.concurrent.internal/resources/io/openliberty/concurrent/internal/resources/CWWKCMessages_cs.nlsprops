@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,6 +46,9 @@ CWWKC1204.not.serializable=CWWKC1204E: Nelze vytvo\u0159it serializovateln\u00fd
 CWWKC1204.not.serializable.explanation=Typy kontextu podprocesu t\u0159et\u00edch stran nejsou kompatibiln\u00ed se serializac\u00ed, a nelze je nakonfigurovat pro \u0161\u00ed\u0159en\u00ed pro serializovateln\u00e9 kontextov\u00e9 servery proxy.
 CWWKC1204.not.serializable.useraction=Aktualizujte aplikaci, aby po\u017eadovala kontextov\u00fd proxy server, kter\u00fd nelze serializovat, nebo zajist\u011bte, aby nebyly nakonfigurov\u00e1ny \u017e\u00e1dn\u00e9 typy kontextu t\u0159et\u00edch stran k \u0161\u00ed\u0159en\u00ed
 
+CWWKC1217.no.virtual.threads=CWWKC1217I: Specifikace Concurrency vy\u017eaduje, aby byl virtual=true ignorov\u00e1n v definici {0} {1} v artefaktu aplikace {2} , proto\u017ee Java {3} nepodporuje virtu\u00e1ln\u00ed vl\u00e1kna.
+CWWKC1217.no.virtual.threads.explanation=Virtu\u00e1ln\u00ed vl\u00e1kna jsou k dispozici pouze v Jav\u011b 21 a nov\u011bj\u0161\u00edch.
+CWWKC1217.no.virtual.threads.useraction=Aktualizujte na Java 21 nebo nov\u011bj\u0161\u00ed, abyste umo\u017enili pou\u017e\u00edv\u00e1n\u00ed virtu\u00e1ln\u00edch vl\u00e1ken.
 
 
 # Messages for @Asynchronous that are shared with other bundles:

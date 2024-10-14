@@ -47,3 +47,6 @@
 
 5011=Minim\u00e1ln\u011b jeden objekt nelze aktualizovat, proto\u017ee se od posledn\u00edho na\u010dten\u00ed zm\u011bnil nebo byl odstran\u011bn.
 
+5012=Jeden nebo v\u00edce objekt\u016f t\u0159\u00eddy {0} se seznamem parametr\u016f {1} nelze aktualizovat pro dotaz SQL {2} , proto\u017ee se zm\u011bnil nebo byl od posledn\u00edho \u010dten\u00ed odstran\u011bn.
+
+

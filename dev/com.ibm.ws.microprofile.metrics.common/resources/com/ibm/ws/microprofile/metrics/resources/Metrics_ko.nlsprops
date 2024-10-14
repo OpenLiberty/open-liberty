@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=\ub9c8\uc774\ud06c\ub85c\ub
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: MicroProfile \uba54\ud2b8\ub9ad \uae30\ub2a5\uc774 \ub2e4\uc74c libraryRef: [{0}]\uc744(\ub97c) \uc0ac\uc6a9\ud558\ub3c4\ub85d \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 libraryRefConfigured.info.CWMMC0014I.explanation=MicroProfile \uba54\ud2b8\ub9ad \uae30\ub2a5\uc740 libraryRef\ub97c \uc0ac\uc6a9\ud558\ub3c4\ub85d \uad6c\uc131\ub429\ub2c8\ub2e4. \uc774 \ucc38\uc870\ub41c \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0\ub294 \ub9c8\uc774\ud06c\ub85c\ubbf8\ud130 \ucf54\uc5b4 \ub77c\uc774\ube0c\ub7ec\ub9ac, \ub300\uc0c1 \ub9c8\uc774\ud06c\ub85c\ubbf8\ud130 \ub77c\uc774\ube0c\ub7ec\ub9ac \ubc0f \uc885\uc18d\uc131\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
 libraryRefConfigured.info.CWMMC0014I.useraction=\uc544\ubb34 \uc870\uce58\ub3c4 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: {0} \uac12\uc774 {1} \ud2b9\uc131\uc5d0 \ub300\ud574 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc815\uc218 \ubc0f 10\uc9c4\uc218\uac12\ub9cc \ud5c8\uc6a9\ub429\ub2c8\ub2e4.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=\uad6c\uc131\ub41c \ud788\uc2a4\ud1a0\uadf8\ub7a8 \uac12\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=\uc815\uc218 \ubc0f 10\uc9c4\uc218\ub9cc \uc0ac\uc6a9\ud558\uc5ec \uac12\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: {0} \uac12\uc774 {1} \ud2b9\uc131\uc5d0 \ub300\ud574 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc2dc\uac04 \ub2e8\uc704\uac00 \uc788\ub294 \uc815\uc218 \uac12 (\uc608: ms, s, m, h) \ub9cc \ud5c8\uc6a9\ub429\ub2c8\ub2e4.
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=\uad6c\uc131\ub41c \ud0c0\uc774\uba38 \uac12\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=\uc815\uc218 \uac12 \ubc0f \uc2dc\uac04 \ub2e8\uc704 (\uc608: ms, s, m, h) \ub85c \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: {0} \uac12\uc774 {1} \ud2b9\uc131\uc5d0 \ub300\ud574 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud5c8\uc6a9\ub418\ub824\uba74 \uac12\uc774 0.0 - 1.0 \ubc94\uc704\uc5d0 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=\uad6c\uc131\ub41c \ubc31\ubd84\uc704\uc218 \uac12\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=0.0 \uc758 \uac12\uc744 \ud5c8\uc6a9\ud560 1.0 \ud3ec\ud568 \ubc94\uc704\ub85c \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
 
 #Memory usedHeap message
 memory.usedHeap.description=\uc0ac\uc6a9\ub41c \ud799 \uba54\ubaa8\ub9ac \ud06c\uae30(\ubc14\uc774\ud2b8)\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4.

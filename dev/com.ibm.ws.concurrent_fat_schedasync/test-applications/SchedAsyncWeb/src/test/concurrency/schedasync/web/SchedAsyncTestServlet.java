@@ -27,9 +27,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -42,10 +41,10 @@ import componenttest.app.FATServlet;
 @ContextServiceDefinition(name = "java:app/concurrent/app-context",
                           propagated = APPLICATION,
                           unchanged = ALL_REMAINING)
-//@ManagedExecutorDefinition(name = "java:module/concurrent/max-2-executor",
-//                           context = "java:app/concurrent/app-context",
-//                           maxAsync = 2,
-//                           virtual = true)
+@ManagedExecutorDefinition(name = "java:module/concurrent/max-2-executor",
+                           context = "java:app/concurrent/app-context",
+                           maxAsync = 2,
+                           virtual = true)
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class SchedAsyncTestServlet extends FATServlet {
@@ -53,10 +52,6 @@ public class SchedAsyncTestServlet extends FATServlet {
      * Maximum number of nanoseconds to wait for a task to finish.
      */
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
-
-    // TODO remove this once virtual=true is honored on @ManagedExecutorDefinition
-    @Resource(name = "java:module/concurrent/max-2-executor", lookup = "concurrent/temp-max-2-executor")
-    ManagedExecutorService temp;
 
     private static LinkedBlockingQueue<long[]> afterSixSeconds3Times = new LinkedBlockingQueue<>();
     private static final AtomicInteger afterSixSeconds3TimesCount = new AtomicInteger();
@@ -253,27 +248,28 @@ public class SchedAsyncTestServlet extends FATServlet {
         Set<Thread> uniqueThreads = new HashSet<>();
         Thread th;
 
-        // TODO update thread name assertions to check for the JNDI name once we are actually using the ManagedExecutorDefinition
-        // Example name: managedExecutorService[java:module/concurrent/max-2-executor]/concurrencyPolicy:4
+        String prefix = "application[SchedAsyncWeb]/module[SchedAsyncWeb.war]/" +
+                        "managedExecutorService[java:module/concurrent/max-2-executor]/" +
+                        "concurrencyPolicy:";
 
         assertNotNull(th = everyFourSecondsVirtualThreads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(true, th.isVirtual());
-        assertEquals(true, th.getName().startsWith("managedExecutorService["));
+        assertEquals(th.toString(), true, th.isVirtual());
+        assertEquals(th.getName(), true, th.getName().startsWith(prefix));
         uniqueThreads.add(th);
 
         assertNotNull(th = everyFourSecondsVirtualThreads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(true, th.isVirtual());
-        assertEquals(true, th.getName().startsWith("managedExecutorService["));
+        assertEquals(th.toString(), true, th.isVirtual());
+        assertEquals(th.getName(), true, th.getName().startsWith(prefix));
         uniqueThreads.add(th);
 
         assertNotNull(th = everyFourSecondsVirtualThreads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(true, th.isVirtual());
-        assertEquals(true, th.getName().startsWith("managedExecutorService["));
+        assertEquals(th.toString(), true, th.isVirtual());
+        assertEquals(th.getName(), true, th.getName().startsWith(prefix));
         uniqueThreads.add(th);
 
         assertNotNull(th = everyFourSecondsVirtualThreads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(true, th.isVirtual());
-        assertEquals(true, th.getName().startsWith("managedExecutorService["));
+        assertEquals(th.toString(), true, th.isVirtual());
+        assertEquals(th.getName(), true, th.getName().startsWith(prefix));
         uniqueThreads.add(th);
 
         assertEquals(null, everyFourSecondsVirtualThreads.poll());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,17 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
                 break;
             }
 
-            // Priority 2: If the image is known to only exist in an Artifactory registry
+            // Priority 2a: If the image is known to only exist in an Artifactory organization
+            if (original.getRepository().contains("wasliberty-")) {
+                result = DockerImageName.parse(original.asCanonicalNameString())
+                                        .withRegistry(ArtifactoryRegistry.instance().getRegistry())
+                                        .asCompatibleSubstituteFor(original);
+                needsArtifactory = true;
+                reason = "This image only exists in Artifactory, must use Artifactory registry.";
+                break;
+            }
+
+            // Priority 2b: If the image is known to only exist in an Artifactory registry
             if (original.getRegistry() != null && original.getRegistry().contains("artifactory.swg-devops.com")) {
                 throw new RuntimeException("Not all developers of Open Liberty have access to artifactory, must use a public registry.");
             }

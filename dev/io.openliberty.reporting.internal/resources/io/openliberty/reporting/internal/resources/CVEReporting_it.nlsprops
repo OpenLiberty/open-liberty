@@ -52,3 +52,7 @@ CWWKF1705.failed.response.useraction=Correggere il problema di comunicazione e r
 CWWKF1706.issue.parsing=CWWKF1706W: Problema durante l'analisi delle informazioni sul prodotto.
 CWWKF1706.issue.parsing.explanation=Il servizio non pu\u00f2 analizzare correttamente le informazioni sul prodotto.
 CWWKF1706.issue.parsing.useraction=Correggere il problema di comunicazione e riprovare.
+
+CWWKF1707.internal.error=CWWKF1706W: Si \u00e8 verificato un errore interno quando il runtime di Liberty ha controllato le vulnerabilit\u00e0 di sicurezza. L'errore \u00e8: {0}
+CWWKF1707.internal.error.explanation=Si \u00e8 verificato un errore che ha impedito al runtime di Liberty di controllare le vulnerabilit\u00e0 della sicurezza.
+CWWKF1707.internal.error.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.

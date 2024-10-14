@@ -1,37 +1,44 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2022 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
 quietTransformer=true
 
+fat.test.container.images:\
+    seleniarm/standalone-chromium:4.8.3,\
+    selenium/standalone-chrome:4.8.3
+
 tested.features: \
   enterprisebeanslite-4.0, \
   enterprisebeanslite-5.0, \
   facesContainer-3.0, \
   facesContainer-4.0, \
+  facesContainer-4.1, \
   cdi-3.0, \
   cdi-4.0, \
+  cdi-4.1, \
   xmlBinding-3.0, \
   xmlBinding-4.0, \
   concurrent-2.0, \
   concurrent-3.0, \
+  concurrent-3.1, \
   persistenceContainer-3.0, \
   persistenceContainer-3.1, \
+  persistenceContainer-3.2, \
   beanvalidation-3.0, \
+  validation-3.1, \
   beanvalidation-4.0, \
   faces-3.0, \
-  faces-4.0
+  faces-4.0, \
+  faces-4.1
 
 src: \
     fat/src,\
@@ -52,6 +59,7 @@ src: \
 fat.project: true
 
 -buildpath: \
+	com.google.guava:guava;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
@@ -64,4 +72,11 @@ fat.project: true
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	net.sourceforge.htmlunit:htmlunit;version=2.20,\
+	io.openliberty.org.testcontainers;version=latest,\
+	org.seleniumhq.selenium:selenium-api;version=4.8.3,\
+	org.seleniumhq.selenium:selenium-chrome-driver;version=4.8.3,\
+	org.seleniumhq.selenium:selenium-chromium-driver;version=4.8.3,\
+	org.seleniumhq.selenium:selenium-remote-driver;version=4.8.3,\
+	org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+	io.openliberty.faces.fat.selenium.util.internal;version=latest,\
 	xml-apis:xml-apis;version=1.4.01

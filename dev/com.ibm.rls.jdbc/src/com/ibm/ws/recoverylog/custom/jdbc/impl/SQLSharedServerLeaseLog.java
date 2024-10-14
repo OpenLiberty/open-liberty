@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -116,11 +117,12 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     private Statement _claimPeerlockingStmt;
     private PreparedStatement _claimPeerUpdateStmt;
     private ResultSet _claimPeerLockingRS;
-    private boolean _noLockOnLeaseScans = false;
+    private boolean _noLockOnLeaseScans;
+    private String _localRecoveryIdentity;
 
     public SQLSharedServerLeaseLog(CustomLogProperties logProperties) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "SQLSharedServerStatusLog", logProperties, this);
+            Tr.entry(tc, "SQLSharedServerLeaseLog", logProperties, this);
 
         // Cache the supplied information
         _customLogProperties = logProperties;
@@ -142,7 +144,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             Tr.debug(tc, "The _noLockOnLeaseScans flag has been set to: " + _noLockOnLeaseScans);
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "SQLSharedServerStatusLog", this);
+            Tr.exit(tc, "SQLSharedServerLeaseLog", this);
     }
 
     @FFDCIgnore({ SQLException.class, SQLRecoverableException.class })
@@ -246,12 +248,12 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 if (currentSqlEx != null) {
                     // Set the exception that will be reported
                     nonTransientException = currentSqlEx;
-                    GetPeerLeaseRetry getPeerLeaseRetry = new GetPeerLeaseRetry(peerLeaseTable, recoveryGroup);
+
+                    final GetPeerLeaseRetry getPeerLeaseRetry = new GetPeerLeaseRetry(peerLeaseTable, recoveryGroup);
                     getPeerLeaseRetry.setNonTransientException(currentSqlEx);
                     // The following method will reset "nonTransientException" if it cannot recover
                     if (_sqlTransientErrorHandlingEnabled) {
-                        failAndReport = getPeerLeaseRetry.retryAfterSQLException(this, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
-                                                                                 SQLRetry.getLightweightRetrySleepTime());
+                        failAndReport = getPeerLeaseRetry.retryAfterSQLException(this, currentSqlEx);
 
                         if (failAndReport)
                             nonTransientException = getPeerLeaseRetry.getNonTransientException();
@@ -319,6 +321,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                     queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
                                   " FROM " + _leaseTableName +
                                   (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "' AND SERVER_IDENTITY != '" + _localRecoveryIdentity + "'" +
                                   ((_isSQLServer) ? "" : " FOR UPDATE") +
                                   ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");
                     if (tc.isDebugEnabled())
@@ -326,7 +329,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 } else {
                     queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
                                   " FROM " + _leaseTableName +
-                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'";
+                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "' AND SERVER_IDENTITY != '" + _localRecoveryIdentity + "'";
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Attempt to select from the lease table - " + queryString);
                 }
@@ -399,6 +402,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     public synchronized void updateServerLease(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "updateServerLease", recoveryIdentity, recoveryGroup, isServerStartup, this);
+
         boolean updateSuccess = false;
         Connection conn = null;
         int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
@@ -413,9 +417,6 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 Tr.exit(tc, "updateServerLease", "server stopping");
             return;
         }
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "Work with recoveryIdentity - ", recoveryIdentity);
 
         // Reset a null recoveryGroup to an empty string
         if (recoveryGroup == null)
@@ -529,12 +530,12 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 if (currentSqlEx != null) {
                     // Set the exception that will be reported
                     nonTransientException = currentSqlEx;
-                    UpdateServerLeaseRetry updateServerLeaseRetry = new UpdateServerLeaseRetry(recoveryIdentity, recoveryGroup, isServerStartup);
+
+                    final UpdateServerLeaseRetry updateServerLeaseRetry = new UpdateServerLeaseRetry(recoveryIdentity, recoveryGroup, isServerStartup);
                     updateServerLeaseRetry.setNonTransientException(currentSqlEx);
                     // The following method will reset "nonTransientException" if it cannot recover
                     if (_sqlTransientErrorHandlingEnabled) {
-                        failAndReport = updateServerLeaseRetry.retryAfterSQLException(this, currentSqlEx, SQLRetry.getTransientRetryAttempts(),
-                                                                                      SQLRetry.getTransientRetrySleepTime());
+                        failAndReport = updateServerLeaseRetry.retryAfterSQLException(this, currentSqlEx);
 
                         if (failAndReport)
                             nonTransientException = updateServerLeaseRetry.getNonTransientException();
@@ -753,19 +754,24 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         if (tc.isEntryEnabled())
             Tr.entry(tc, "insertNewLease", this);
 
+        if (_localRecoveryIdentity == null) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Setting recoveryIdentity for this log: {0}", recoveryIdentity);
+            _localRecoveryIdentity = recoveryIdentity;
+        }
+
         String insertString = "INSERT INTO " +
                               _leaseTableName +
                               " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
                               " VALUES (?,?,?,?)";
 
-        PreparedStatement specStatement = null;
-        long fir1 = System.currentTimeMillis();
+        long fir1 = Instant.now().toEpochMilli();
 
         Tr.audit(tc, "WTRN0108I: Insert New Lease for server with recovery identity " + recoveryIdentity);
-        try {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Need to setup new row using - " + insertString + ", and time: " + Utils.traceTime(fir1));
-            specStatement = conn.prepareStatement(insertString);
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Need to setup new row using - " + insertString + ", and time: " + Utils.traceTime(fir1));
+        try (PreparedStatement specStatement = conn.prepareStatement(insertString)) {
             specStatement.setString(1, recoveryIdentity);
             specStatement.setString(2, recoveryGroup);
             // Overload the LEASE_OWNER column with both the owner and the BackendURL, separated by a comma
@@ -779,10 +785,8 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Have inserted Server row with return: " + ret);
-        } finally {
-            if (specStatement != null && !specStatement.isClosed())
-                specStatement.close();
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "insertNewLease");
     }
@@ -1002,8 +1006,16 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 createTableStmt.execute(postgresqlIndexString);
             } else {
                 String genericTableString = genericTablePreString + _leaseTableName + genericTablePostString;
+
+                if (_isDB2) {
+                    String dbName = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDBName();
+                    if (!dbName.isEmpty()) {
+                        genericTableString = genericTableString + " IN DATABASE " + dbName;
+                    }
+                }
+
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create Generic Table using: " + genericTableString);
+                    Tr.debug(tc, "Create Table using: " + genericTableString);
                 createTableStmt.executeUpdate(genericTableString);
                 String genericIndexString = "CREATE INDEX IXWS_LEASE ON " + _leaseTableName + "( \"SERVER_IDENTITY\" ASC) ";
 
@@ -1221,12 +1233,12 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 if (currentSqlEx != null) {
                     // Set the exception that will be reported
                     nonTransientException = currentSqlEx;
-                    DeleteServerLeaseRetry deleteServerLeaseRetry = new DeleteServerLeaseRetry(recoveryIdentity);
+
+                    final DeleteServerLeaseRetry deleteServerLeaseRetry = new DeleteServerLeaseRetry(recoveryIdentity);
                     deleteServerLeaseRetry.setNonTransientException(currentSqlEx);
                     // The following method will reset "nonTransientException" if it cannot recover
                     if (_sqlTransientErrorHandlingEnabled) {
-                        failAndReport = deleteServerLeaseRetry.retryAfterSQLException(this, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
-                                                                                      SQLRetry.getLightweightRetrySleepTime());
+                        failAndReport = deleteServerLeaseRetry.retryAfterSQLException(this, currentSqlEx);
 
                         if (failAndReport)
                             nonTransientException = deleteServerLeaseRetry.getNonTransientException();
@@ -1289,17 +1301,44 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
         _deleteStmt = conn.createStatement();
 
-        String deleteString = "DELETE FROM " + _leaseTableName +
-                              (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                              " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'";
+        final String queryString = "SELECT LEASE_OWNER FROM " + _leaseTableName
+                                   + (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "")
+                                   + " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'"
+                                   + ((_isSQLServer) ? "" : " FOR UPDATE");
+
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "delete server lease for " + recoveryIdentity + "using string " + deleteString);
+            Tr.debug(tc, "Locking lease for delete: {0}", queryString);
 
-        int ret = _deleteStmt.executeUpdate(deleteString);
+        try (ResultSet rs = _deleteStmt.executeQuery(queryString)) {
+            while (rs.next()) {
+                final String leaseOwner = rs.getString(1);
 
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Locked lease owner: {0}", leaseOwner);
+
+                // Check we're still the lease owner
+                if (leaseOwner.startsWith(_localRecoveryIdentity + ",")) {
+                    final String deleteString = "DELETE FROM " + _leaseTableName +
+                                                (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "")
+                                                + " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'";
+
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Deleting lease with: {0}", deleteString);
+
+                    final int ret = _deleteStmt.executeUpdate(deleteString);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "deleteLeaseFromTable", ret);
+                    return ret;
+                }
+
+                break; // should only be one anyway (SERVER_IDENTITY is UNIQUE)
+            }
+        }
+
+        // We don't own this lease any more.
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "deleteLeaseFromTable", ret);
-        return ret;
+            Tr.exit(tc, "deleteLeaseFromTable");
+        return 0;
     }
 
     /**
@@ -1315,6 +1354,14 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     public synchronized boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "claimPeerLeaseForRecovery", recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, this);
+
+        if (_localRecoveryIdentity == null) {
+            _localRecoveryIdentity = myRecoveryIdentity;
+        } else {
+            if (tc.isDebugEnabled())
+                if (!_localRecoveryIdentity.equals(myRecoveryIdentity))
+                    Tr.debug(tc, "Existing recoveryId: {0}, this recoveryId: {1}!", _localRecoveryIdentity, myRecoveryIdentity);
+        }
 
         boolean peerClaimed = false;
         boolean peerClaimSuccess = false;
@@ -1422,12 +1469,12 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 if (currentSqlEx != null) {
                     // Set the exception that will be reported
                     nonTransientException = currentSqlEx;
-                    ClaimPeerLeaseRetry claimPeerLeaseRetry = new ClaimPeerLeaseRetry(recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo);
+
+                    final ClaimPeerLeaseRetry claimPeerLeaseRetry = new ClaimPeerLeaseRetry(recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo);
                     claimPeerLeaseRetry.setNonTransientException(currentSqlEx);
                     // The following method will reset "nonTransientException" if it cannot recover
                     if (_sqlTransientErrorHandlingEnabled) {
-                        failAndReport = claimPeerLeaseRetry.retryAfterSQLException(this, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
-                                                                                   SQLRetry.getLightweightRetrySleepTime());
+                        failAndReport = claimPeerLeaseRetry.retryAfterSQLException(this, currentSqlEx);
 
                         if (failAndReport)
                             nonTransientException = claimPeerLeaseRetry.getNonTransientException();
@@ -1562,7 +1609,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
      * This concrete class extends SQLRetry providing the lease update code to be retried.
      *
      */
-    class UpdateServerLeaseRetry extends SQLRetry {
+    private class UpdateServerLeaseRetry extends LogRetry {
 
         String _recoveryIdentity;
         String _recoveryGroup;
@@ -1640,7 +1687,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
      * This concrete class extends SQLRetry providing the lease deletion code to be retried.
      *
      */
-    class DeleteServerLeaseRetry extends SQLRetry {
+    private class DeleteServerLeaseRetry extends LightweightLogRetry {
 
         String _recoveryIdentity;
 
@@ -1694,7 +1741,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
      * This concrete class extends SQLRetry providing the lease retrieval code to be retried.
      *
      */
-    class GetPeerLeaseRetry extends SQLRetry {
+    private class GetPeerLeaseRetry extends LightweightLogRetry {
 
         String _recoveryGroup;
         PeerLeaseTable _peerLeaseTable;
@@ -1747,7 +1794,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
      * This concrete class extends SQLRetry providing the lease retrieval code to be retried.
      *
      */
-    class ClaimPeerLeaseRetry extends SQLRetry {
+    private class ClaimPeerLeaseRetry extends LightweightLogRetry {
 
         String _recoveryIdentityToRecover;
         String _myRecoveryIdentity;

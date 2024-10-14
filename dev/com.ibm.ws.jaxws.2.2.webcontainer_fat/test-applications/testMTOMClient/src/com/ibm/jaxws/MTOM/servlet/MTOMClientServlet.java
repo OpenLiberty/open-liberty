@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -63,6 +63,14 @@ public class MTOMClientServlet extends HttpServlet {
         SOAPBinding binding = (SOAPBinding) bp.getBinding();
         binding.setMTOMEnabled(true);
         bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, newTarget);
+
+        // Add soapAction if set by test
+        String soapAction = request.getParameter("setSoapAction");
+
+        if (soapAction != null && !soapAction.isEmpty()) {
+            bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, soapAction);
+        }
+
         byte[] bytes = proxy.getAttachment();
         writer.println("getAttachment() returned " + bytes);
 

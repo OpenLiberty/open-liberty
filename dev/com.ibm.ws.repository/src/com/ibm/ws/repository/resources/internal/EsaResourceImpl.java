@@ -234,10 +234,10 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             return;
         }
 
-        String minJava21 = "Java SE 21, Java SE 22";
-        String minJava17 = "Java SE 17, Java SE 21, Java SE 22";
-        String minJava11 = "Java SE 11, Java SE 17, Java SE 21, Java SE 22";
-        String minJava8 = "Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 22";
+        String minJava21 = "Java SE 21, Java SE 23";
+        String minJava17 = "Java SE 17, Java SE 21, Java SE 23";
+        String minJava11 = "Java SE 11, Java SE 17, Java SE 21, Java SE 23";
+        String minJava8 = "Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 23";
 
         // The min version should have been validated when the ESA was constructed
         // so checking for the version string should be safe
@@ -365,7 +365,8 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
         addVersionDisplayString();
     }
 
-    protected Collection<AppliesToFilterInfo> getAppliesToFilterInfo() {
+    @Override
+    public Collection<AppliesToFilterInfo> getAppliesToFilterInfo() {
         return _asset.getWlpInformation().getAppliesToFilterInfo();
     }
 
@@ -418,6 +419,7 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
         setShortName(esaRes.getShortName());
         setVanityURL(esaRes.getVanityURL());
         setSingleton(esaRes.getSingleton());
+        setPlatforms(esaRes.getPlatforms());
         setIBMInstallTo(esaRes.getIBMInstallTo());
     }
 
@@ -823,6 +825,18 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
     @Override
     public void setIBMInstallTo(String ibmInstallTo) {
         _asset.getWlpInformation().setIbmInstallTo(ibmInstallTo);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Collection<String> getPlatforms() {
+        return _asset.getWlpInformation().getPlatforms();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPlatforms(Collection<String> platforms) {
+        _asset.getWlpInformation().setPlatforms(platforms);
     }
 
 }

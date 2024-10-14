@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.elcdi.beans;
 
@@ -157,7 +154,7 @@ public class ELImplicitObjectBean implements Serializable {
                 facesContext.addMessage(null, new FacesMessage("Flow map object is null: Exception: " + e.getMessage()));
             }
 
-            facesContext.addMessage(null, new FacesMessage("Message from HeaderMap: " + headerMap.get("headerMessage")));
+            facesContext.addMessage(null, new FacesMessage("Message from HeaderMap: " + headerMap.get("User-Agent")));
 
             facesContext.addMessage(null, new FacesMessage("Cookie object from CookieMap: " + cookieMap.get("JSESSIONID")));
 
@@ -167,7 +164,7 @@ public class ELImplicitObjectBean implements Serializable {
 
             facesContext.addMessage(null, new FacesMessage("Message from RequestParameterValuesMap: " + Arrays.toString(requestParameterValuesMap.get("message"))));
 
-            facesContext.addMessage(null, new FacesMessage("Message from HeaderValuesMap: " + Arrays.toString(headerValuesMap.get("headerMessage"))));
+            facesContext.addMessage(null, new FacesMessage("Message from HeaderValuesMap: " + Arrays.toString(headerValuesMap.get("User-Agent"))));
 
             facesContext.addMessage(null, new FacesMessage("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: " + resourceHandler.JSF_SCRIPT_LIBRARY_NAME));
 

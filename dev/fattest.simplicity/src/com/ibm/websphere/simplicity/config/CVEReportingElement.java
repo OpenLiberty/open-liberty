@@ -33,10 +33,6 @@ public class CVEReportingElement extends ConfigElement {
         this.enabled = b;
     }
 
-    public void setEnabled(Boolean b) {
-        this.enabled = b == null ? null : b.toString();
-    }
-
     @XmlAttribute(name = "urlLink")
     public void setUrlLink(String link) {
         this.urlLink = link;

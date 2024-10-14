@@ -22,27 +22,6 @@
 	<artifactId>tck.runner.standalone</artifactId>
 	<name>Jakarta Data TCK Runner TCK Module</name>
 
-	<repositories>
-		<!-- For artifacts not yet in Maven Central -->
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Sonatype Nexus Staging</name>
-			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<!-- For artifacts not yet in Stagging repo use DHE -->
-		<repository>
-			<name>IBM DHE Maven repository</name>
-			<id>DHE</id>
-			<url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
-		</repository>
-	</repositories>
-
 	<properties>
 		<targetDirectory>${project.basedir}/target</targetDirectory>
 	</properties>
@@ -74,7 +53,7 @@
 			<artifactId>junit-jupiter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.netbeans.tools</groupId>
+			<groupId>jakarta.tck</groupId>
 			<artifactId>sigtest-maven-plugin</artifactId>
 			<version>${sigtest.version}</version>
 		</dependency>
@@ -89,26 +68,24 @@
 		<dependency>
 			<groupId>org.jboss.shrinkwrap</groupId>
 			<artifactId>shrinkwrap-api</artifactId>
-			<version>1.2.6</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.jboss.arquillian.junit5</groupId>
 		    <artifactId>arquillian-junit5-core</artifactId>
-		    <version>1.7.0.Alpha13</version>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.0</version>
+			<version>6.1</version>
 			<scope>system</scope>
-			<systemPath>${io.openliberty.jakarta.servlet.6.0}</systemPath>
+			<systemPath>${io.openliberty.jakarta.servlet.6.1}</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.enterprise</groupId>
 			<artifactId>jakarta.enterprise.cdi-api</artifactId>
-			<version>4.0</version>
+			<version>4.1</version>
 			<scope>system</scope>
-			<systemPath>${io.openliberty.jakarta.cdi.4.0}</systemPath>
+			<systemPath>${io.openliberty.jakarta.cdi.4.1}</systemPath>
 		</dependency>
 	</dependencies>
 
@@ -153,9 +130,14 @@
 						<jimage.dir>${jimage.dir}</jimage.dir>
 						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.data-api.jar:${jimage.dir}/java.base:${jimage.dir}/java.rmi:${jimage.dir}/java.sql:${jimage.dir}/java.naming</signature.sigTestClasspath>
 						<jakarta.tck.skip.deployment>true</jakarta.tck.skip.deployment>
+						<jakarta.tck.database.type>${jakarta.tck.database.type}</jakarta.tck.database.type>
+						<jakarta.tck.database.name>${jakarta.tck.database.name}</jakarta.tck.database.name>
 					</systemPropertyVariables>
+					<excludes>
+						<exclude>${excluded.tests}</exclude>
+					</excludes>
 					<groups>${included.groups}</groups>
-					<reportNameSuffix>${jakarta.profile}</reportNameSuffix>
+					<reportNameSuffix>${jakarta.profile}-${jakarta.tck.database.type}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
 				</configuration>
 			</plugin>

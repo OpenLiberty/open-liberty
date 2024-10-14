@@ -43,10 +43,11 @@ Service-Component=com.ibm.ws.session.cache;\
   userTransaction=javax.transaction.UserTransaction;\
   cacheManagerService=io.openliberty.jcache.CacheManagerService;\
   configCondition=org.osgi.service.condition.Condition;\
-  dynamic:="monitor,userTransaction";\
-  greedy:="library,monitor,userTransaction";\
-  optional:="monitor,userTransaction,cacheManagerService";\
-  properties:="library.target=(id=unbound),monitor.target=(id=unbound),cacheManagerService.target=(id=unbound),configCondition.target=(osgi.condition.id=session.cache.config)"
+  runningCondition=org.osgi.service.condition.Condition;\
+  dynamic:="monitor,userTransaction,runningCondition";\
+  greedy:="library,monitor,userTransaction,runningCondition";\
+  optional:="monitor,userTransaction,cacheManagerService,runningCondition";\
+  properties:="library.target=(id=unbound),monitor.target=(id=unbound),cacheManagerService.target=(id=unbound),configCondition.target=(osgi.condition.id=session.cache.config),runningCondition.target=(osgi.condition.id=io.openliberty.process.running)"
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\

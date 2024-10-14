@@ -9,19 +9,15 @@
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces41.fat.view.bean;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Named;
-
 import java.io.Serializable;
-import java.util.UUID;
-import jakarta.inject.Inject;
 
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
 
 @ViewScoped
 @Named("viewBean")
 public class ViewBean implements Serializable {
 
-    
+    private static final long serialVersionUID = 1L;
+
 }

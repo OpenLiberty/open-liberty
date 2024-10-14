@@ -8,7 +8,7 @@ visibility=private
   io.openliberty.jakarta.cdi-4.0; ibm.tolerates:="4.1", \
   io.openliberty.jsonp-2.1
 -bundles=\
-  io.openliberty.jakarta.jsonb.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json.bind:jakarta.json.bind-api:3.0.0",\
+  io.openliberty.jakarta.jsonb.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json.bind:jakarta.json.bind-api:3.0.1",\
   io.openliberty.org.eclipse.yasson.3.0
 kind=ga
 edition=core

@@ -57,7 +57,7 @@ public class AsyncInterceptor implements Serializable {
         Asynchronous anno = method.getAnnotation(Asynchronous.class);
 
         // Is it a scheduled asynchronous method?
-        Schedule[] schedules = anno.runAt();
+        Schedule[] schedules = anno == null ? new Schedule[0] : anno.runAt();
         if (schedules.length > 0) {
             // Identify requested inline execution for scheduled executions other than the first,
             CompletableFuture<?> future = ScheduledAsyncMethod.inlineExecutionFuture.get();

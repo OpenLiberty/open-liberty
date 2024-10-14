@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common.constants;
 
+import io.opentelemetry.api.common.AttributeKey;
 
 public class OpenTelemetryConstants {
 
@@ -23,5 +24,30 @@ public class OpenTelemetryConstants {
     public static final String CONFIG_LOGS_EXPORTER_PROPERTY = "otel.logs.exporter";
     public static final String SERVICE_NAME_PROPERTY = "otel.service.name";
     public static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
+    public static final String OTEL_RUNTIME_INSTANCE_NAME = "io.openliberty.microprofile.telemetry.runtime";
 
+    //HTTP Metric name + desc
+    public static final String HTTP_SERVER_REQUEST_DURATION_NAME = "http.server.request.duration";
+    public static final String HTTP_SERVER_REQUEST_DURATION_DESC = "Duration of HTTP server requests.";
+
+    //HTTP Metric units
+    public static final String OTEL_SECONDS_UNIT = "s";
+
+    //Attribute Keys
+    //We're not pulling these from constants in semconv libraries because the import will be version specific
+    public static final AttributeKey<String> KEY_SERVICE_NAME = AttributeKey.stringKey("service.name");
+    public static final AttributeKey<String> KEY_SERVICE_INSTANCE_ID = AttributeKey.stringKey("service.instance.id");
+
+    //Other OTel standards
+    public static final String UNKNOWN_SERVICE = "unknown_service";
+
+    //OpenLiberty namespace prefix
+    public static final String NAME_SPACE_PREFIX = "io.openliberty.";
+
+    //(Open Liberty) Connection Pool metric name + desc
+    public static final String WAIT_TIME_NAME = "connection_pool.connection.wait_time";
+
+    public static final String IN_USE_TIME_NAME = "connection_pool.connection.use_time";
+
+    public static final String DATASOURCE_ATTRIBUTE = "datasource.name";
 }

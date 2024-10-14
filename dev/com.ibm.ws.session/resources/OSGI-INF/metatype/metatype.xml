@@ -123,10 +123,14 @@
         </AD>
 
         <AD id="cookiePartitioned" 
-            name="internal" 
-            description="internal use only"
+            name="%cookie.partitioned" 
+            description="%cookie.partitioned.desc"
             ibmui:group="cookies"
-            required="false" type="Boolean" default="false" /> 
+            required="false" type="String" default="defer">
+            <Option label="%cookie.partitioned.defer" value="defer"/>
+            <Option label="%cookie.partitioned.true" value="true"/>
+            <Option label="%cookie.partitioned.false" value="false"/>
+        </AD> 
 
         <!-- ibmui:group=url.rewriting -->
         <AD id="rewriteId" 

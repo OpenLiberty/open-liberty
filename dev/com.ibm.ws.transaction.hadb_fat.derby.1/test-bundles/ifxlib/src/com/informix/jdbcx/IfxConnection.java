@@ -65,8 +65,6 @@ public class IfxConnection implements Connection {
     private static boolean _testingLeaselogClaimFlag;
     private static boolean _testingLeaselogGetFlag;
 
-    private static boolean _peerRecoveryPauseEnabled;
-
     IfxConnection(Connection realConn) {
         System.out.println("IfxConnection(" + wrappedConn + "): construct wrapped connection using - " + realConn);
         wrappedConn = realConn;
@@ -235,7 +233,7 @@ public class IfxConnection implements Connection {
      */
     @Override
     public Map<String, Class<?>> getTypeMap() throws SQLException {
-        Map ret = wrappedConn.getTypeMap();
+        Map<String, Class<?>> ret = wrappedConn.getTypeMap();
         return ret;
     }
 
@@ -900,21 +898,6 @@ public class IfxConnection implements Connection {
      */
     public static void setQueryFailoverEnabled(boolean queryFailoverEnabled) {
         IfxConnection._queryFailoverEnabled = queryFailoverEnabled;
-    }
-
-    /**
-     * @return the failoverEnabled
-     */
-    public static boolean isPeerRecoveryPauseEnabled() {
-        return _peerRecoveryPauseEnabled;
-    }
-
-    /**
-     * @param failoverEnabled
-     *            the failoverEnabled to set
-     */
-    public static void setPeerRecoveryPause(boolean peerRecoveryPauseEnabled) {
-        IfxConnection._peerRecoveryPauseEnabled = peerRecoveryPauseEnabled;
     }
 
     /**

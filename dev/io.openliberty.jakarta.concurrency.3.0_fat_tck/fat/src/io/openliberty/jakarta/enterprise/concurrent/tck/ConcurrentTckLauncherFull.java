@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class ConcurrentTckLauncherFull {
     public static void setUp() throws Exception {
         //UNCOMMENT - To test against a local snapshot of TCK
 //        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-//        additionalProps.put("jakarta.concurrent.tck.version", "3.0.3-SNAPSHOT");
+//        additionalProps.put("jakarta.concurrent.tck.version", "3.0.4-SNAPSHOT");
 
         Map<String, String> opts = server.getJvmOptionsAsMap();
         //Path that jimage will output modules for signature testing

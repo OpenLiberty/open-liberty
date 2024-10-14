@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,63 +18,77 @@ import java.util.List;
 
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 
-/**
- *
- */
 public class RestrictedFeatureRespository implements Repository {
-    private final Repository repo;
-    private final Collection<String> restricted;
-    private final Collection<String> restrictedAttempts = new ArrayList<String>();
-
     public RestrictedFeatureRespository(Repository repo, Collection<String> restricted) {
         this.repo = repo;
+
         this.restricted = restricted;
+        this.restrictedAttempts = new ArrayList<String>();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository#getAutoFeatures()
-     */
+    private final Repository repo;
+
     @Override
     public Collection<ProvisioningFeatureDefinition> getAutoFeatures() {
         return repo.getAutoFeatures();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository#getFeature(java.lang.String)
-     */
-    @Override
-    public ProvisioningFeatureDefinition getFeature(String featureName) {
-        ProvisioningFeatureDefinition result = repo.getFeature(featureName);
-        if (result == null) {
-            return null;
-        }
-        if (restricted.contains(result.getSymbolicName())) {
-            // record the restricted attemp
-            if (!restrictedAttempts.contains(result.getSymbolicName())) {
-                restrictedAttempts.add(result.getSymbolicName());
-            }
-            return null;
-        }
-        return result;
-    }
-
-    Collection<String> getRestrictedFeatureAttempts() {
-        return restrictedAttempts;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository#getConfiguredTolerates(java.lang.String)
-     */
     @Override
     public List<String> getConfiguredTolerates(String baseSymbolicName) {
         return repo.getConfiguredTolerates(baseSymbolicName);
     }
 
+    //
+
+    public static List<ProvisioningFeatureDefinition> select(Repository repository, Selector<ProvisioningFeatureDefinition> selector) {
+        return select(repository.getFeatures(), selector);
+    }
+
+    public static List<ProvisioningFeatureDefinition> select(List<ProvisioningFeatureDefinition> defs, Selector<ProvisioningFeatureDefinition> selector) {
+        List<ProvisioningFeatureDefinition> selected = new ArrayList<>(defs.size());
+        for (ProvisioningFeatureDefinition def : defs) {
+            if ((selector == null) || selector.test(def)) {
+                selected.add(def);
+            }
+        }
+        return selected;
+    }
+
+    private final Collection<String> restricted;
+    private final Collection<String> restrictedAttempts;
+
+    @Override
+    public List<ProvisioningFeatureDefinition> getFeatures() {
+        return select(repo,
+                      new Selector<ProvisioningFeatureDefinition>() {
+                          @Override
+                          public boolean test(ProvisioningFeatureDefinition def) {
+                              return (!restricted.contains(def.getSymbolicName()));
+                          }
+                      });
+    }
+
+    @Override
+    public ProvisioningFeatureDefinition getFeature(String featureName) {
+        ProvisioningFeatureDefinition featureDef = repo.getFeature(featureName);
+        if (featureDef == null) {
+            return null;
+        }
+
+        String featureSymName = featureDef.getSymbolicName();
+        if (!restricted.contains(featureSymName)) {
+            return featureDef;
+        }
+
+        if (!restrictedAttempts.contains(featureSymName)) {
+            restrictedAttempts.add(featureSymName);
+        }
+        return null;
+    }
+
+    Collection<String> getRestrictedFeatureAttempts() {
+        return restrictedAttempts;
+    }
 }

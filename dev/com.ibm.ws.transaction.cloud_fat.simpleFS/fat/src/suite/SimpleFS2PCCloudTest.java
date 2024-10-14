@@ -25,9 +25,20 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
@@ -54,6 +65,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     private FileChannel fChannel;
     protected static final int FScloud2ServerPort = 9992;
     private static final String v1Length = "v1Length";
+    protected Path leaseFile;
 
     @Server("FSCLOUD001")
     public static LibertyServer s1;
@@ -61,13 +73,17 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     @Server("FSCLOUD002")
     public static LibertyServer s2;
 
-    @Server("longLeaseLengthFSServer1")
-    public static LibertyServer longLeaseLengthFSServer1;
+    @Server("FSCLOUD001.longleasecompete")
+    public static LibertyServer s3;
+
+    @Server("FSCLOUD002.fastcheck")
+    public static LibertyServer s4;
 
     public static String[] serverNames = new String[] {
                                                         "FSCLOUD001",
                                                         "FSCLOUD002",
-                                                        "longLeaseLengthFSServer1",
+                                                        "FSCLOUD001.longleasecompete",
+                                                        "FSCLOUD002.fastcheck",
     };
 
     @Override
@@ -86,17 +102,20 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     public static void setUp() throws Exception {
         initialize(s1, s2, "transaction", "/SimpleFS2PCCloudServlet");
 
+        longLeaseCompeteServer1 = s3;
+        server2fastcheck = s4;
+
         final WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "servlets.*");
         final DeployOptions[] dO = new DeployOptions[0];
 
         ShrinkHelper.exportAppToServer(server1, app, dO);
         ShrinkHelper.exportAppToServer(server2, app, dO);
-        ShrinkHelper.exportAppToServer(longLeaseLengthFSServer1, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseCompeteServer1, app, dO);
 
         server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
-        longLeaseLengthFSServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        longLeaseCompeteServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }
 
     /**
@@ -133,9 +152,6 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         StringBuilder sb = null;
         String id = "Core";
         serversToCleanup = new LibertyServer[] { server1, server2 };
-
-        final String tranlog = "tranlog/tranlog";
-        final String partnerlog = "tranlog/partnerlog";
 
         // Start Server1
         FATUtils.startServers(server1);
@@ -193,7 +209,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         StringBuilder sb = null;
         String id = "Core";
 
-        serversToCleanup = new LibertyServer[] { server1, longLeaseLengthFSServer1, server2 };
+        serversToCleanup = new LibertyServer[] { server1, longLeaseCompeteServer1, server2 };
 
         // Start Server1
         FATUtils.startServers(server1);
@@ -214,10 +230,10 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
 
         // Now re-start cloud1
-        longLeaseLengthFSServer1.startServerExpectFailure("recovery-log-fail.log", false, true);
+        longLeaseCompeteServer1.startServerExpectFailure("recovery-log-fail.log", false, true);
 
         // Server appears to have failed as expected. Check for log failure string
-        assertNotNull("Recovery logs should have failed", longLeaseLengthFSServer1.waitForStringInLog("RECOVERY_LOG_FAILED"));
+        assertNotNull("Recovery logs should have failed", longLeaseCompeteServer1.waitForStringInLog("RECOVERY_LOG_FAILED"));
 
         // defect 210055: Now we need to tidy up the environment, start by releasing the lock.
         releaseServerLease("FSCLOUD001");
@@ -420,5 +436,98 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
 
         Log.info(this.getClass(), method, "releaseServerLease processing complete");
         return true;
+    }
+
+    // Remove this method when aggressive takeover works on FS
+    @Override
+    public void testAggressiveTakeover1() throws Exception {
+        Log.info(this.getClass(), "testAggressiveTakeover1", "Aggressive takeover doesn't yet work for FS logs");
+    }
+
+    // Remove this method when aggressive takeover works on FS
+    @Override
+    public void testAggressiveTakeover2() throws Exception {
+        Log.info(this.getClass(), "testAggressiveTakeover2", "Aggressive takeover doesn't yet work for FS logs");
+    }
+
+    @Override
+    protected void setupOrphanLease(LibertyServer server, String path, String serverName) throws Exception {
+        final String method = "setupOrphanLease";
+
+        Path leasesDir = Paths.get(server.getInstallRoot(),
+                                   "usr",
+                                   "shared",
+                                   "leases");
+
+        Path leaseDir = Paths.get(leasesDir.toString(), "defaultGroup");
+        Files.createDirectories(leaseDir);
+
+        Path controlFile = Paths.get(leaseDir.toString(), "control");
+        try {
+            Files.createFile(controlFile);
+            Log.info(getClass(), method, "Created control file: " + controlFile);
+        } catch (FileAlreadyExistsException e) {
+        }
+
+        leaseFile = FileSystems.getDefault().getPath(leaseDir.toString(), serverName);
+        Files.createFile(leaseFile);
+        Log.info(getClass(), method, "Created lease file: " + leaseFile);
+
+        final String leaseContents = server.getInstallRoot() +
+                                     File.separator + "usr" +
+                                     File.separator + "servers" +
+                                     File.separator + serverName +
+                                     File.separator + "tranlog" +
+                                     "\nhttp://localhost:9080";
+
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+            @Override
+            public Void run() throws IOException {
+                try (RandomAccessFile randomAccessFile = new RandomAccessFile(leaseFile.toFile(), "rw");
+                                FileChannel fileChannel = randomAccessFile.getChannel()) {
+                    final ByteBuffer bb = ByteBuffer.wrap(leaseContents.getBytes());
+                    fileChannel.write(bb);
+                    fileChannel.force(false);
+                }
+
+                return null;
+            }
+        });
+
+        // Set modification time to 5 minutes ago
+        Files.setLastModifiedTime(leaseFile, FileTime.from(Instant.now().minus(5, ChronoUnit.MINUTES)));
+    }
+
+    private void delete(File dir) throws IOException { // For later
+        if (dir.exists()) {
+            try (Stream<Path> paths = Files.walk(dir.toPath())) {
+                paths.sorted(Comparator.reverseOrder())
+                                .map(Path::toFile)
+                                .forEach(File::delete);
+            }
+        }
+    }
+
+    @Override
+    protected boolean checkOrphanLeaseExists(LibertyServer server, String path, String serverName) {
+        final boolean result = leaseFile.toFile().exists();
+        Log.info(getClass(), "checkOrphanLeaseExists", "" + result);
+        return result;
+    }
+
+    @Override
+    protected void setupBatchesOfOrphanLeases(LibertyServer server1, LibertyServer server2, String path) throws Exception {
+        Log.info(getClass(), "setupBatchesOfOrphanLeases", "");
+
+        // 20 leases for random servers
+        int i;
+        for (i = 0; i < 20; i++) {
+            setupOrphanLease(server1, null, UUID.randomUUID().toString().replaceAll("\\W", ""));
+        }
+    }
+
+    @Override
+    protected String logsMissingMarker() {
+        return "Doing peer recovery but .*tranlog is missing";
     }
 }

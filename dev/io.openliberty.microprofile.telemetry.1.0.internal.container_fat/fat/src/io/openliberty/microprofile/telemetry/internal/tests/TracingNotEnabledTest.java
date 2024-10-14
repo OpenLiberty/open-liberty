@@ -43,10 +43,10 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * Test logging to Jaeger without tracing enabled
@@ -63,7 +63,7 @@ public class TracingNotEnabledTest {
     private static final Class<TracingNotEnabledTest> c = TracingNotEnabledTest.class;
 
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(TracingNotEnabledTest.class, "jaeger"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);

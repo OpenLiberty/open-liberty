@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2023 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
-  cxf
-  spring
   pureCXF
 }
 
@@ -22,17 +20,6 @@ dependencies {
   requiredLibs(project(':com.ibm.ws.jmx.connector.client.restConnector')) {
     transitive = false
   }
-  cxf 'org.apache.cxf.xjcplugins:cxf-xjc-boolean:3.3.1',
-  'org.apache.cxf.xjcplugins:cxf-xjc-bug671:3.3.1',
-  'org.apache.cxf.xjcplugins:cxf-xjc-dv:3.3.1',
-  'org.apache.cxf.xjcplugins:cxf-xjc-ts:3.3.1',
-  'org.apache.cxf.xjc-utils:cxf-xjc-runtime:3.3.1'
-  spring 'org.springframework:spring-aop:5.2.17.RELEASE',
-  'org.springframework:spring-beans:5.2.17.RELEASE',
-  'org.springframework:spring-context:5.2.17.RELEASE',
-  'org.springframework:spring-core:5.2.17.RELEASE',
-  'org.springframework:spring-expression:5.2.17.RELEASE',
-  'org.springframework:spring-web:5.2.17.RELEASE'
   pureCXF 'aopalliance:aopalliance:1.0',
   'org.ow2.asm:asm:9.2',
   project(':io.openliberty.org.apache.commons.logging'),
@@ -64,23 +51,13 @@ dependencies {
   'org.apache.ws.xmlschema:xmlschema-core:2.2.5'
 }
 
-task addCXF(type: Copy) {
-  from configurations.cxf
-  into "${buildDir}/autoFVT/publish/shared/resources/cxf/"
-}
-
-task addSpring(type: Copy) {
-  from configurations.cxf
-  into "${buildDir}/autoFVT/publish/shared/resources/spring/"
-}
-
 task addPureCXF(type: Copy) {
   from configurations.pureCXF
   into "${buildDir}/autoFVT/publish/shared/resources/pureCXF/"
 }
 
 addRequiredLibraries {
-  dependsOn addCXF, addSpring, addPureCXF
+  dependsOn addPureCXF
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

@@ -12,6 +12,7 @@ Subsystem-Name: SAML Web Single Sign-On 2.0
 -bundles=\
   io.openliberty.org.apache.commons.logging, \
   io.openliberty.org.apache.commons.codec, \
-  com.ibm.ws.org.jose4j
+  com.ibm.ws.org.jose4j, \
+  com.ibm.ws.crypto.common
 kind=ga
 edition=core

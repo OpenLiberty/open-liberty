@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat({"EE9_FEATURES", "EE10_FEATURES"}) // WADL is not supported in EE9
+@SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // WADL is not supported in EE9
 public class WADLTest {
 
     @Server("com.ibm.ws.jaxrs.fat.wadl")
@@ -96,6 +96,9 @@ public class WADLTest {
         RemoteFile wadl2java = server.getFileFromLibertyInstallRoot(wadl2javaPath);
         RemoteFile wadl2javaBat = server.getFileFromLibertyInstallRoot(wadl2javaBatPath);
         String wadl2javaArgs = new StringBuilder().append("-d ").append(WADL2JAVASrcDir.getAbsolutePath()).append(" -p ").append(TEST_PACKAGE).append(" ").append(TEST_WADL_LOCATION).toString();
+
+
+        Log.info(WADLTest.class, "calling wadl2jjava with these args", wadl2javaArgs);
 
         assertTrue("The file bin/jaxrs/wadl2java does not exist.", wadl2java.exists());
         assertTrue("The file bin/jaxrs/wadl2java.bat does not exist.", wadl2javaBat.exists());

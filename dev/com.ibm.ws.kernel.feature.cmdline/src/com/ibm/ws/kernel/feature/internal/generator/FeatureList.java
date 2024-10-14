@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -81,6 +81,7 @@ public class FeatureList {
     private final static boolean writingJavaVersion = Boolean.getBoolean("ibm.javaVersion");
     private static final List<Map<String, Object>> possibleJavaVersions = new ArrayList<Map<String, Object>>();
     private static final Map<String, Collection<GenericMetadata>> eeToCapability = new HashMap<String, Collection<GenericMetadata>>();
+    private static final Map<String, List<MetaTypeInformationSpecification>> metaTypes = new HashMap<>();
 
     private static File installDir;
     private static boolean gaBuild = true;
@@ -92,7 +93,7 @@ public class FeatureList {
             addJVM(possibleJavaVersions, "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
-            addJVM(possibleJavaVersions, "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
+            addJVM(possibleJavaVersions, "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
 
             List<GenericMetadata> mostGeneralRange = ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.7))\"");
 
@@ -106,7 +107,7 @@ public class FeatureList {
             eeToCapability.put("JavaSE-11", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=11))\""));
             eeToCapability.put("JavaSE-17", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=17))\""));
             eeToCapability.put("JavaSE-21", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=21))\""));
-            eeToCapability.put("JavaSE-22", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=22))\""));
+            eeToCapability.put("JavaSE-23", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=23))\""));
         }
 
         gaBuild = isGABuild();
@@ -297,19 +298,25 @@ public class FeatureList {
                     elements.add("variable");
                 }
                 boolean includeInternal = options.getIncludeInternals();
-                SchemaMetaTypeParser parser = new SchemaMetaTypeParser(Locale.getDefault(), new ArrayList<File>(bundles), productName);
-                List<MetaTypeInformationSpecification> info = parser.getMetatypeInformation();
-                for (MetaTypeInformationSpecification spec : info) {
-                    for (ObjectClassDefinitionSpecification ocds : spec.getObjectClassSpecifications()) {
-                        if (includeInternal || !!!"internal".equals(ocds.getName())) {
-                            if (ocds.getExtensionUris().contains(XMLConfigConstants.METATYPE_EXTENSION_URI)) {
-                                Map<String, String> attribs = ocds.getExtensionAttributes(XMLConfigConstants.METATYPE_EXTENSION_URI);
-                                if (attribs != null) {
-                                    String isBeta = attribs.get("beta");
-                                    if ( ! (gaBuild && "true".equals(isBeta))) {
-                                        String alias = attribs.get("alias");
-                                        if (alias != null && !attribs.containsKey("childAlias")) {
-                                            elements.add(alias);
+                for (File bundle : bundles) {
+                    List<MetaTypeInformationSpecification> info = metaTypes.get(bundle.getAbsolutePath());
+                    if (info == null) {
+                        SchemaMetaTypeParser parser = new SchemaMetaTypeParser(Locale.getDefault(), Collections.singletonList(bundle), productName);
+                        info = parser.getMetatypeInformation();
+                        metaTypes.put(bundle.getAbsolutePath(), info);
+                    }
+                    for (MetaTypeInformationSpecification spec : info) {
+                        for (ObjectClassDefinitionSpecification ocds : spec.getObjectClassSpecifications()) {
+                            if (includeInternal || !!!"internal".equals(ocds.getName())) {
+                                if (ocds.getExtensionUris().contains(XMLConfigConstants.METATYPE_EXTENSION_URI)) {
+                                    Map<String, String> attribs = ocds.getExtensionAttributes(XMLConfigConstants.METATYPE_EXTENSION_URI);
+                                    if (attribs != null) {
+                                        String isBeta = attribs.get("beta");
+                                        if ( ! (gaBuild && "true".equals(isBeta))) {
+                                            String alias = attribs.get("alias");
+                                            if (alias != null && !attribs.containsKey("childAlias")) {
+                                                elements.add(alias);
+                                            }
                                         }
                                     }
                                 }
@@ -321,6 +328,11 @@ public class FeatureList {
                     writer.writeTextElement("configElement", configElement);
                 }
             }
+        }
+        
+        //Add platforms if exist
+        for (String platformElement : fd.getPlatformNames()) {
+            writer.writeTextElement("platform", platformElement);
         }
 
         for (FeatureResource included : fd.getConstituents(SubsystemContentType.FEATURE_TYPE)) {

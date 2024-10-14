@@ -45,7 +45,8 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.jaxb.*;version=${cxfVersion}
+  org.apache.cxf.jaxb.*;version=${cxfVersion}, \
+  io.openliberty.jaxws.jaxb.*;version=${cxfVersion}
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/*-INF/*, \

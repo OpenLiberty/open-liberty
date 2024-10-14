@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -55,7 +56,8 @@ import jakarta.enterprise.concurrent.ContextServiceDefinition;
 /**
  * Creates, modifies, and removes ContextService resource factories that are defined via ContextServiceDefinition.
  */
-public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuilder {
+public class ContextServiceResourceFactoryBuilder implements //
+                ConcurrencyResourceFactoryBuilder, ResourceFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ContextServiceResourceFactoryBuilder.class);
 
     private static final String CONTEXT_PID_ZOS_WLM = "com.ibm.ws.zos.wlm.context";
@@ -398,11 +400,16 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
 
                 ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
 
-                if (ref == null) // TODO message should include possibility of deployment descriptor element
-                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
-                                                            qualifierNames + " qualifiers on the " +
-                                                            jndiName + " " + ContextServiceDefinition.class.getSimpleName() +
-                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+                if (ref == null)
+                    throw new UnsupportedOperationException(Tr //
+                                    .formatMessage(tc,
+                                                   "CWWKC1205.qualifiers.require.cdi",
+                                                   jeeName,
+                                                   qualifierNames,
+                                                   getDefinitionAnnotationClass().getSimpleName(),
+                                                   getDDElementName(),
+                                                   jndiName,
+                                                   ContextServiceDefinitionProvider.getCDIFeatureName()));
 
                 QualifiedResourceFactories qrf = bundleContext.getService(ref);
                 qrf.add(jeeName, QualifiedResourceFactory.Type.ContextService, qualifierNames, factory);
@@ -453,6 +460,18 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
             }
         }
         return sb.append("contextService").append('[').append(jndiName).append(']').toString();
+    }
+
+    @Override
+    @Trivial
+    public final String getDDElementName() {
+        return "context-service";
+    }
+
+    @Override
+    @Trivial
+    public final Class<? extends Annotation> getDefinitionAnnotationClass() {
+        return ContextServiceDefinition.class;
     }
 
     /**

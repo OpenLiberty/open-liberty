@@ -39,6 +39,7 @@ Export-Package: io.openliberty.restfulWS.internal.globalhandler;thread-context=t
 
 Import-Package: \
   jakarta.servlet.*;version="[5.0,7.0)", \
+  jakarta.ws.rs.*;version="[3.0,5)", \
   * 
 
 Include-Resource:\

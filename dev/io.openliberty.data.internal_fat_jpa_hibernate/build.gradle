@@ -1,0 +1,80 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ // Always pull from Maven Central so we don't have to upload transitive dependencies to artifactory
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+ext {
+  hibernateVersion = '7.0.0.Beta1' //TODO update to final
+}
+
+configurations {
+  hibernateJPA32
+  derby16 // See derby/java compatibility matrix https://db.apache.org/derby/derby_downloads.html
+}
+
+dependencies {
+  def withoutJakartaAPI = { 
+  	exclude group: 'jakarta.activation', module: 'jakarta.activation-api'
+  	exclude group: 'jakarta.inject', module: 'jakarta.inject-api'
+  	exclude group: 'jakarta.persistence', module: 'jakarta.persistence-api'
+  	exclude group: 'jakarta.transaction', module: 'jakarta.transaction-api'
+  	exclude group: 'jakarta.xml.bind', module: 'jakarta.xml.bind-api'
+  }
+  
+  hibernateJPA32 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
+  
+  derby16 "org.apache.derby:derby:10.16.1.1",
+          "org.apache.derby:derbytools:10.16.1.1"
+
+  //Annotation processor - generates .java files in build/libs/generated/sources
+  //Some generated .java files import hibernate dependencies, need this compileOnly dependency
+  annotationProcessor "org.hibernate.orm:hibernate-jpamodelgen:${hibernateVersion}"
+  compileOnly "org.hibernate.orm:hibernate-core:${hibernateVersion}"
+}
+
+task addHibernateJPA32(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hibernateJPA32
+  into new File(autoFvtDir, 'publish/shared/resources/jpa32_hibernate')
+}
+
+task addDerby16(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derby16
+  into new File(autoFvtDir, 'publish/shared/resources/derby16')
+  rename 'derby-.*.jar', 'derby.jar'
+  rename 'derbyshared-.*.jar', 'derbyshared.jar'
+  rename 'derbytools-.*.jar', 'derbytools.jar'
+}
+
+// Copy bundle io.openliberty.org.testcontainers to AutoFVT/lib/
+// This bundle is required both at compiletime and runtime.
+addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn copyJdbcDrivers
+
+addRequiredLibraries.dependsOn addHibernateJPA32
+addRequiredLibraries.dependsOn addDerby16
+
+apply plugin: 'java'
+
+compileJava {
+  options.compilerArgs << '-parameters'
+}
+
+assemble.doLast {
+  // update the generated-src dir with the generated code
+  copy {
+    from "build/libs/generated/sources/annotationProcessor/java/main"
+      into "generated-src"
+  }
+}

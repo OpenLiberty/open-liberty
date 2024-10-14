@@ -13,8 +13,9 @@ Subsystem-Name: Jakarta RESTful Web Services 4.0
   com.ibm.websphere.appserver.eeCompatible-11.0
 -bundles=\
  io.openliberty.org.jboss.resteasy.cdi.ee11, \
- io.openliberty.org.jboss.resteasy.server.ee10
-kind=noship
-edition=full
+ io.openliberty.org.jboss.resteasy.server.ee11
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0

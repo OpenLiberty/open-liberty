@@ -34,3 +34,4 @@ Subsystem-Name: JMS 2.0 Client for Message Server
 kind=ga
 edition=base
 WLP-InstantOn-Enabled: true; type:=beta
+WLP-Platform: javaee-7.0,javaee-8.0

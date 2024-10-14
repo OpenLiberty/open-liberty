@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,6 +46,9 @@ CWWKC1204.not.serializable=CWWKC1204E: Nu se poate crea un proxy de context seri
 CWWKC1204.not.serializable.explanation=Tipurile de context al firului de execu\u021bie ter\u021b\u0103 parte nu sunt compatibile cu serializarea \u0219i nu pot fi configurate pentru a fi propagate pentru proxy-uri de context serializabile.
 CWWKC1204.not.serializable.useraction=Actualiza\u021bi aplica\u021bia pentru a solicita un proxy de context non-serializabil sau asigura\u021bi-v\u0103 c\u0103 nu exist\u0103 tipuri de context ter\u021b\u0103 parte configurate \u00een vederea propag\u0103rii.
 
+CWWKC1217.no.virtual.threads=CWWKC1217I: Specifica\u021bia de concuren\u021b\u0103 necesit\u0103 ca virtual=true s\u0103 fie ignorat \u00een defini\u021bia {0} {1} din artefactul aplica\u021biei {2} deoarece Java {3} nu accept\u0103 fire virtuale.
+CWWKC1217.no.virtual.threads.explanation=Firele virtuale sunt disponibile numai \u00een Java 21 \u0219i versiuni ulterioare.
+CWWKC1217.no.virtual.threads.useraction=Actualiza\u021bi la Java 21 sau o versiune ulterioar\u0103 pentru a permite utilizarea firelor de execu\u021bie virtuale.
 
 
 # Messages for @Asynchronous that are shared with other bundles:

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,7 @@ public class ValidateJMSTest extends FATServletClient {
      */
     @Test
     public void testJMSConnectionFactory() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/jmscf1").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsConnectionFactory/jmscf1").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "jmscf1", json.getString("uid"));
         assertEquals(err, "jmscf1", json.getString("id"));
@@ -104,7 +104,7 @@ public class ValidateJMSTest extends FATServletClient {
     })
     @Test
     public void testJMSConnectionFactoryFailure() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/jmscf2").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsConnectionFactory/jmscf2").run(JsonObject.class);
         JsonArray stack;
         String err = "Unexpected json response: " + json;
         assertEquals(err, "jmscf2", json.getString("uid"));
@@ -165,7 +165,7 @@ public class ValidateJMSTest extends FATServletClient {
     })
     @Test
     public void testMultipleConnectionFactories() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsConnectionFactory");
         JsonArray json = request.method("GET").run(JsonArray.class);
         String err = "unexpected response: " + json;
 
@@ -212,7 +212,7 @@ public class ValidateJMSTest extends FATServletClient {
      */
     @Test
     public void testMultipleQueueConnectionFactories() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/jmsQueueConnectionFactory");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsQueueConnectionFactory");
         JsonArray qcfs = request.method("GET").run(JsonArray.class);
         JsonObject json;
         String err = "unexpected response: " + qcfs;
@@ -236,7 +236,7 @@ public class ValidateJMSTest extends FATServletClient {
      */
     @Test
     public void testMultipleTopicConnectionFactories() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/jmsTopicConnectionFactory");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsTopicConnectionFactory");
         JsonArray tcfs = request.method("GET").run(JsonArray.class);
         JsonObject json;
         String err = "unexpected response: " + tcfs;
@@ -285,7 +285,7 @@ public class ValidateJMSTest extends FATServletClient {
      */
     @Test
     public void testQueueConnectionFactory() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsQueueConnectionFactory/qcf1").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsQueueConnectionFactory/qcf1").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "qcf1", json.getString("uid"));
         assertEquals(err, "qcf1", json.getString("id"));
@@ -304,7 +304,8 @@ public class ValidateJMSTest extends FATServletClient {
      */
     @Test
     public void testTopicConnectionFactory() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsTopicConnectionFactory/jmsTopicConnectionFactory[default-0]").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsTopicConnectionFactory/jmsTopicConnectionFactory%5Bdefault-0%5D")
+                        .run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "jmsTopicConnectionFactory[default-0]", json.getString("uid"));
         assertNull(err, json.get("id"));

@@ -55,7 +55,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agentconfig.AgentConfigTestResource;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -79,7 +78,7 @@ public class AgentConfigMultiAppTest {
     public static LibertyServer server;
 
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
@@ -121,7 +120,8 @@ public class AgentConfigMultiAppTest {
 
     @Test
     // Skipping for MP 5.0 and 6.1 as JavaAgent 1.29 is sometimes successful and sometimes fails (possible classLoader issue in JavaAgent (BUG))
-    @SkipForRepeat({ TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID })
+    @SkipForRepeat({ TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID, TelemetryActions.MP50_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID,
+                     MicroProfileActions.MP70_EE11_ID })
     public void testAgentMultiApp() throws Exception {
         PropertiesAsset app1Config = new PropertiesAsset().addProperty("otel.service.name", "multi-app-1");
         WebArchive app1 = ShrinkWrap.create(WebArchive.class, "multiApp1.war")
@@ -159,7 +159,8 @@ public class AgentConfigMultiAppTest {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             // MP6.0 uses JavaAgent 1.19 therefore the internal span is not created
             assertThat(serverSpan, hasName("/multiApp1/"));
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
+        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)
+                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
             assertThat(serverSpan, hasName("GET /multiApp1"));
             assertThat(serverSpan, JaegerSpanMatcher.isSpan().withTraceId(traceId)
                                                     .withAttribute(SemanticAttributes.HTTP_ROUTE, "/multiApp1")
@@ -198,7 +199,9 @@ public class AgentConfigMultiAppTest {
                                                      .withAttribute(SemanticAttributes.HTTP_ROUTE, "/multiApp2/")
                                                      .withAttribute(SemanticAttributes.HTTP_TARGET, "/multiApp2")
                                                      .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {            assertThat(serverSpan2, hasName("GET /multiApp2"));
+        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)
+                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
+            assertThat(serverSpan2, hasName("GET /multiApp2"));
             assertThat(serverSpan2, JaegerSpanMatcher.isSpan().withTraceId(traceId2)
                                                      .withAttribute(SemanticAttributes.HTTP_ROUTE, "/multiApp2")
                                                      .withAttribute(SemanticAttributes.HTTP_TARGET, "/multiApp2")

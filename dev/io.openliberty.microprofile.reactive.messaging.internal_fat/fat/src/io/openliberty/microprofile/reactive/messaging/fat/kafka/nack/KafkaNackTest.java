@@ -44,7 +44,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.KafkaTests;
-import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 /**
  * Assert what happens when a message from Kafka is nacked
@@ -60,12 +60,9 @@ public class KafkaNackTest extends FATServletClient {
     @TestServlet(contextRoot = APP_NAME, servlet = KafkaNackTestServlet.class)
     public static LibertyServer server;
 
+    //Repeats for RM 3.0 tests only. MP 2.0 is not tested as it has RM 1.0
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME,
-                                                                  ReactiveMessagingActions.MP61_RM30,
-                                                                  ReactiveMessagingActions.MP50_RM30,
-                                                                  ReactiveMessagingActions.MP60_RM30);
-
+    public static final RepeatTests r = ReactiveMessagingActions.reactive30Repeats(SERVER_NAME);
     @BeforeClass
     public static void setup() throws Exception {
         // Configure delivery to a non-existant broker so that we can test with messages which aren't delivered

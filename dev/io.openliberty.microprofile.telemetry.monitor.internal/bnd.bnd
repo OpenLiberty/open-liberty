@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+Bundle-Name: io.openliberty.microprofile.telemetry.monitor.internal
+Bundle-SymbolicName: io.openliberty.microprofile.telemetry.monitor.internal
+Bundle-Description: MicroProfile Telemetry Monitor Bridge, version ${bVersion}
+
+bVersion=1.0
+
+Import-Package: \
+	jakarta.enterprise.*;version="[4.0,5)",\
+	jakarta.ws.rs.container;resolution:=optional,\
+	io.openliberty.microprofile.telemetry.internal.common.resources,\
+	*
+
+Export-Package: \
+   io.openliberty.microprofile.telemetry.internal.monitor
+
+Private-Package: \
+   io.openliberty.microprofile.telemetry.internal.monitor.internal,\
+   com.ibm.ws.microprofile.metrics.resources
+   
+WS-TraceGroup: TELEMETRY
+
+-dsannotations: \
+    io.openliberty.microprofile.telemetry.internal.monitor.MonitorMetricsHandler
+
+-buildpath: \
+	com.ibm.ws.logging;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.3.0;version=latest,\
+	com.ibm.ws.monitor;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	io.openliberty.io.opentelemetry.2.0;version=latest,\
+	io.openliberty.microprofile.telemetry.2.0.internal;version=latest,\
+	io.openliberty.microprofile.telemetry.internal.common;version=latest,\
+	io.openliberty.io.opentelemetry,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.jaxrs.defaultexceptionmapper.jakarta;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
+	com.ibm.ws.microprofile.metrics.common;version=latest,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.kernel.boot.core;version=latest
+	

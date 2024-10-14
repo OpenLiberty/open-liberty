@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,17 +50,16 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -84,13 +83,11 @@ public class SSLTest {
     public TestMethod testMethod;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() //
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly()) //
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+    public static RepeatTests repeatTest = FATSuite.defaultEERepeat(SERVER_NAME);
 
     @Before
     public void beforeEach() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "app2");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app2");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
         testMethod = getTestMethod(TestMethod.class, testName);
         configureBeforeCheckpoint();
@@ -134,7 +131,7 @@ public class SSLTest {
                 addKeystore("serverTrustStore", "server-truststore.jks", "JKS", "secret");
                 addSSL("defaultSSLConfig", "serverKeyStore", "serverTrustStore");
                 LibertyServerFactory.recursivelyCopyDirectory(server.getMachine(), new LocalFile("lib/LibertyFATTestFiles/sslKeystore/resources"),
-                                                              new RemoteFile(server.getMachine(), server.getServerRoot() + "/resources"));
+                                                              server.getMachine().getFile(server.getServerRoot() + "/resources"));
                 break;
             default:
                 break;

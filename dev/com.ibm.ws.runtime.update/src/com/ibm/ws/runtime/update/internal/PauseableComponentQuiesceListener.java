@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,7 +49,7 @@ public class PauseableComponentQuiesceListener implements ServerQuiesceListener 
                 for (ServiceReference<PauseableComponent> ref : refs) {
 
                     PauseableComponent pc = bundleContext.getService(ref);
-                    if (!pc.isPaused()) {
+                    if (pc != null && !pc.isPaused()) {
                         try {
                             pc.pause();
                         } catch (PauseableComponentException ex) {

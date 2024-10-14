@@ -257,6 +257,8 @@ public class TCKRunner {
 
         List<String> dependencyOutput = runDependencyCmd();
         TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
+
+        //TODO validate resultsInfo especially certification file name prior to writing
         TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
         TCKResultsWriter.preparePublicationFile(resultsInfo);
     }
@@ -746,6 +748,7 @@ public class TCKRunner {
         Log.entering(c, "genericResolveJarPath", new Object[] { jarName, wlpPathName });
         String dev = wlpPathName + "/dev/";
         String api = dev + "api/";
+        String thirdParty = api + "third-party/";
         String apiStable = api + "stable/";
         String apiSpec = api + "spec/";
         String lib = wlpPathName + "/lib/";
@@ -754,6 +757,7 @@ public class TCKRunner {
         places.add(apiStable);
         places.add(apiSpec);
         places.add(lib);
+        places.add(thirdParty);
 
         String jarPath = null;
         for (String dir : places) {

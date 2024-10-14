@@ -1,0 +1,11 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-Name: ffdc.bundle
+Bundle-SymbolicName: ffdc.bundle
+Bundle-Activator: io.openliberty.microprofile.telemetry.logging.internal.fat.ffdc.bundle.FFDCActivator
+Private-Package: io.openliberty.microprofile.telemetry.logging.internal.fat.ffdc.bundle
+
+Import-Package: \
+  com.ibm.websphere.ras*, \
+  *

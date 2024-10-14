@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Descriptions of metrics used by Fault Tolerance. 
+# See https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0.2/microprofile-fault-tolerance-spec-4.0.2.html#_integration_with_microprofile_metrics
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ft.invocations.total.description=El n\u00famero de veces que se ha llamado al m\u00e9todo.
+
+ft.retry.calls.total.description=El n\u00famero de veces que se ha ejecutado la l\u00f3gica de reintento. Esto siempre ser\u00e1 una vez por llamada de m\u00e9todo.
+
+ft.retry.retries.total.description=N\u00famero de veces que se ha reintentado el m\u00e9todo.
+
+ft.timeout.calls.total.description=El n\u00famero de veces que se ha ejecutado la l\u00f3gica de tiempo de espera. Normalmente ser\u00e1 una vez por llamada de m\u00e9todo, pero puede ser cero veces si el disyuntor impide la ejecuci\u00f3n o m\u00e1s de una vez si se reintenta el m\u00e9todo.
+
+ft.timeout.executionDuration.description=Histograma de tiempos de ejecuci\u00f3n para el m\u00e9todo.
+
+ft.circuitbreaker.calls.total.description=N\u00famero de veces que se ha ejecutado la l\u00f3gica de disyuntor. Normalmente ser\u00e1 una vez por llamada de m\u00e9todo, pero puede ser m\u00e1s de una vez si se reintenta la llamada de m\u00e9todo.
+
+ft.circuitbreaker.state.total.description=Cantidad de tiempo que el interruptor ha pasado en cada estado.
+
+ft.circuitbreaker.opened.total.description=N\u00famero de veces que el disyuntor ha pasado del estado cerrado al estado abierto.
+
+ft.bulkhead.calls.total.description=El n\u00famero de veces que se ha ejecutado la l\u00f3gica de barrera aislante. Esto normalmente ser\u00e1 una vez por llamada de m\u00e9todo, pero puede ser cero veces si el disyuntor de circuito impidi\u00f3 la ejecuci\u00f3n o m\u00e1s de una vez si se reintenta la llamada de m\u00e9todo.
+
+ft.bulkhead.executionsRunning.description=N\u00famero de ejecuciones en ejecuci\u00f3n actualmente.
+
+ft.bulkhead.executionsWaiting.description=N\u00famero de ejecuciones actualmente en espera en la cola.
+
+ft.bulkhead.runningDuration.description=Histograma del tiempo que las ejecuciones de m\u00e9todo han pasado en ejecuci\u00f3n.
+
+ft.bulkhead.waitingDuration.description=Histograma del tiempo que las ejecuciones del m\u00e9todo han estado esperando en la cola.

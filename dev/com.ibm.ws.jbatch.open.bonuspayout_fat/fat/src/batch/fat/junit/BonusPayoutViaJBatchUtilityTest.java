@@ -138,7 +138,10 @@ public class BonusPayoutViaJBatchUtilityTest {
 
     //On slower platforms this test occasionally picks up the expected FFDC from testRunBonusPayoutBadJNDILookup
     @Test
-    @AllowedFFDC({ "javax.naming.NameNotFoundException", "com.ibm.jbatch.container.exception.BatchContainerRuntimeException" })
+    @AllowedFFDC({ "javax.naming.NameNotFoundException", "com.ibm.jbatch.container.exception.BatchContainerRuntimeException",
+                   "com.ibm.jbatch.container.exception.PersistenceException",
+                   "javax.transaction.xa.XAException",
+                   "jakarta.transaction.RollbackException" })
     public void testRunBonusPayoutStandaloneWARJavaCompEnvDefault() throws Exception {
         String method = "testRunBonusPayoutStandaloneWARJavaCompEnvDefault";
 

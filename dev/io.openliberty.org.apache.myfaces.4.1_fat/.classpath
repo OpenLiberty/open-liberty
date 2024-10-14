@@ -2,7 +2,6 @@
 <classpath>
     <classpathentry kind="src" path="fat/src"/>
     <classpathentry kind="src" path="test-applications/Flow_Spec1342_Spec1739.war/src"/>
-    <classpathentry kind="src" path="test-applications/RenderId_Spec1760.war/src"/>
     <classpathentry kind="src" path="test-applications/SetResponseContentLengthLong_Spec1829.war/src"/>
     <classpathentry kind="src" path="test-applications/uuidConverter_Spec1819.war/src"/>
     <classpathentry kind="src" path="test-applications/ViewScopeEvents_Spec1739.war/src"/>

@@ -45,11 +45,11 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         // This is needed as a workaround for defect 89337.
         @Trivial
         static Class<?> loadClass(String className, ClassLoader loader) throws ClassNotFoundException {
-            return loader.loadClass(className);
+            return loader == null ? null : loader.loadClass(className);
         }
         @Trivial
         static Class<?> loadClass(String className, BundleLoader loader) {
-            return loader.findClassNoException(className);
+            return loader == null ? null : loader.findClassNoException(className);
         }
     }
 
@@ -58,7 +58,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     private final Bundle bundle;
     private BundleWiring wiring = null;
     private final ClassLoader cl;
-    private BundleLoader bLoader;
+    private volatile BundleLoader bLoader;
     private final CompositeResourceProvider resourceProviders;
 
     static GatewayClassLoader createGatewayClassLoader(Map<Bundle, Set<GatewayClassLoader>> classloaders,
@@ -147,7 +147,8 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
             if (cl != null) {
                 result = cl.getResource(name);
             } else {
-                result = bLoader.findResource(name);
+                BundleLoader current = bLoader;
+                result = current == null ? null : current.findResource(name);
             }
         }
         // This doesn't have access to ALL split packages (it just gets one) so it's augmented with a resource provider  
@@ -168,7 +169,13 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         // Only check the parent bundle loader if the request is outside of "" or "/"
         if (!!!"".equals(name) && !!!"/".equals(name)) {
             // First try the bundleLoader
-            Enumeration<URL> urls = cl != null ? cl.getResources(name) : bLoader.findResources(name);
+            Enumeration<URL> urls;
+            if (cl != null) {
+                urls = cl.getResources(name);
+            } else {
+                BundleLoader current = bLoader;
+                urls = current == null ? Collections.emptyEnumeration() : current.findResources(name);
+            }
             result.add(urls);
         }
 

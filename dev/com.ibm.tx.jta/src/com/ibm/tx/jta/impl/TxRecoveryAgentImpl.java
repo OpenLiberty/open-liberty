@@ -12,9 +12,10 @@
  *******************************************************************************/
 package com.ibm.tx.jta.impl;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -256,7 +257,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     try {
                         fsc = createFailureScopeController(fs);
                     } catch (Exception exc) {
-                        FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1177", this);
+                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "259", this);
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Exception caught whist creating FailureScopeController", exc);
                         throw new RecoveryFailedException(exc);
@@ -304,15 +305,11 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
                     } else {
                         // Set up FileLogProperties
-                        String tranLogDirStem = tlc.expandedLogDirectory();
-                        tranLogDirStem = tranLogDirStem.trim();
-                        String tranLogDirToUse = tranLogDirStem + File.separator + TransactionImpl.TRANSACTION_LOG_NAME;
+                        String recLogDirStem = tlc.expandedLogDirectory().trim();
+                        Path tranLogDirToUse = Paths.get(recLogDirStem, TransactionImpl.TRANSACTION_LOG_NAME);
+                        transactionLogProps = new FileLogProperties(transactionLogRLI, TransactionImpl.TRANSACTION_LOG_NAME, tranLogDirToUse, tlc.logFileSize(), recLogDirStem);
 
-                        transactionLogProps = new FileLogProperties(transactionLogRLI, TransactionImpl.TRANSACTION_LOG_NAME, tranLogDirToUse, tlc.logFileSize(), tranLogDirStem);
-
-                        String partnerLogDirToUse = tlc.expandedLogDirectory();
-                        partnerLogDirToUse = partnerLogDirToUse.trim() + File.separator + TransactionImpl.PARTNER_LOG_NAME;
-
+                        Path partnerLogDirToUse = Paths.get(recLogDirStem, TransactionImpl.PARTNER_LOG_NAME);
                         partnerLogProps = new FileLogProperties(partnerLogRLI, TransactionImpl.PARTNER_LOG_NAME, partnerLogDirToUse, tlc.logFileSize());
                     }
 
@@ -323,14 +320,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     //
                     transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
 
-                    // Configure the SQL HADB Retry parameters
-                    if (transactionLog != null && transactionLog instanceof HeartbeatLog) {
-                        HeartbeatLog heartbeatLog = (HeartbeatLog) transactionLog;
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "The transaction log is a Heartbeatlog, configure SQL HADB retry parameters");
-                        configureSQLHADBRetryParameters(heartbeatLog, cp);
-                    }
-
                     //
                     // Create the Partner (XAResources) log
                     //
@@ -339,20 +328,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Set the home partnerLog to " + partnerLog);
                         _homePartnerLog = partnerLog;
-                    }
-
-                    // Configure the SQL HADB Retry parameters
-                    if (partnerLog != null && partnerLog instanceof HeartbeatLog) {
-                        HeartbeatLog heartbeatLog = (HeartbeatLog) partnerLog;
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "The partner log is a Heartbeatlog, configure SQL HADB retry parameters");
-                        cp = ConfigurationProviderManager.getConfigurationProvider();
-                        if (cp == null) {
-                            if (tc.isEntryEnabled())
-                                Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
-                            throw new RecoveryFailedException("ConfigurationProvider is null");
-                        }
-                        configureSQLHADBRetryParameters(heartbeatLog, cp);
                     }
 
                     // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
@@ -531,8 +506,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
 
                     // If Recovery Failed, then by default, if this is the home server, we shall bring down the Liberty Server
-                    if (fsc != null && fsc.getRecoveryManager() != null) {
-                        if (fsc.getRecoveryManager().recoveryFailed()) {
+                    RecoveryManager rm; // RecoverManager might be removed on another thread
+                    if (fsc != null && (rm = fsc.getRecoveryManager()) != null) {
+                        if (rm.recoveryFailed()) {
                             // Check the system property but by default we want the server to be shutdown if we, the server
                             // that owns the logs is not able to recover them. The System Property supports the tWAS style
                             // of processing.
@@ -579,34 +555,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
                 }
             }
-
-        } catch (
-
-        InvalidFailureScopeException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
+        } catch (InvalidFailureScopeException | InvalidLogPropertiesException | URISyntaxException | PrivilegedActionException e) {
+            if (!_serverStopping)
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "586", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
 
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(e); // 171598
-        } catch (InvalidLogPropertiesException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
-            Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(e); // 171598
-        } catch (URISyntaxException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
-            Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(e); // 171598
-        } catch (PrivilegedActionException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "463", this);
-            Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(e); // 171598
+            throw new RecoveryFailedException(e);
         }
 
         if (tc.isEntryEnabled())
@@ -666,7 +622,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         try {
             recoveryDirector = RecoveryDirectorFactory.recoveryDirector();
         } catch (InternalLogException exc) {
-            FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.terminateRecovery", "1274", this);
+            FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.terminateRecovery", "650", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "terminateRecovery");
             throw new TerminationFailedException(exc);
@@ -699,7 +655,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // and if this occurs then this indicates that there is a defect in the code. This exception is
             // raised by the RLS in the event that ot does not recognize this failure scope and recovery agent
             // conbindation.
-            FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.terminateRecovery", "1308", this);
+            FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.terminateRecovery", "683", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Unable to indicate termination completion to recovery director: " + exc);
             if (tc.isEntryEnabled())
@@ -1054,17 +1010,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Custom PartnerLog is set - {0}", partnerLog);
 
-                        if (partnerLog != null && partnerLog instanceof HeartbeatLog) {
+                        if (partnerLog instanceof HeartbeatLog) {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "The log is a Heartbeatlog");
                             heartbeatLog = (HeartbeatLog) partnerLog;
-
-                            // Configure the log's SQL Peer Locking parameters
-                            configureSQLPeerLockParameters(heartbeatLog, cp);
-
-                            // Configure the log's SQL HADB Retry parameters
-                            configureSQLHADBRetryParameters(heartbeatLog, cp);
-                            configureSQLHADBLightweightRetryParameters(heartbeatLog, cp);
                         }
                     }
                 }
@@ -1092,63 +1041,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isDBTXLogPeerLocking", enableLocking);
         return enableLocking;
-    }
-
-    /**
-     * Configure the SQL Peer Locking parameters
-     *
-     * @param recLog
-     * @param cp
-     */
-    private void configureSQLPeerLockParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "configureSQLPeerLockParameters", new java.lang.Object[] { heartbeatLog, cp, this });
-
-        // The optional SQL Peer Lock parameters
-        int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
-        heartbeatLog.setTimeBeforeLogStale(peerLockTimeBeforeStale);
-        int timeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
-        heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "configureSQLPeerLockParameters");
-    }
-
-    /**
-     * Configure the SQL HADB Retry parameters
-     *
-     * @param recLog
-     * @param cp
-     */
-    private void configureSQLHADBRetryParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "configureSQLHADBRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
-
-        // The optional SQL HADB Retry parameters
-        int logRetryInterval = cp.getLogRetryInterval();
-        heartbeatLog.setLogRetryInterval(logRetryInterval);
-        int logRetryLimit = cp.getLogRetryLimit();
-        heartbeatLog.setLogRetryLimit(logRetryLimit);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "configureSQLHADBRetryParameters");
-    }
-
-    /**
-     * Configure the Lightweight SQL HADB Retry parameters
-     *
-     * @param recLog
-     * @param cp
-     */
-    private void configureSQLHADBLightweightRetryParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "configureSQLHADBLightweightRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
-
-        // The optional SQL HADB Retry parameters
-        int lightweightLogRetryInterval = cp.getLightweightLogRetryInterval();
-        heartbeatLog.setLightweightLogRetryInterval(lightweightLogRetryInterval);
-        int lightweightLogRetryLimit = cp.getLightweightLogRetryLimit();
-        heartbeatLog.setLightweightLogRetryLimit(lightweightLogRetryLimit);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "configureSQLHADBLightweightRetryParameters");
     }
 
     /**

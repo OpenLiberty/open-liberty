@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #
 #COMPONENTPREFIX CWWKT
@@ -210,3 +207,8 @@ log.rollover.start.time.format.warning.useraction=V\u00e9rifiez que la valeur de
 log.rollover.interval.too.short.warning=CWWKT0046W: L'intervalle de remise \u00e0 z\u00e9ro du journal ne peut pas \u00eatre inf\u00e9rieur \u00e0 1 minute. Si une valeur inf\u00e9rieure \u00e0 1 minute est sp\u00e9cifi\u00e9e, l'intervalle de remise \u00e0 z\u00e9ro du journal est d\u00e9fini sur une valeur par d\u00e9faut de 1 jour.
 log.rollover.interval.too.short.warning.explanation=L'intervalle de remise \u00e0 z\u00e9ro du journal ne peut pas \u00eatre inf\u00e9rieur \u00e0 1 minute.
 log.rollover.interval.too.short.warning.useraction=Indiquez un intervalle de remise \u00e0 z\u00e9ro du journal \u00e9gal ou sup\u00e9rieur \u00e0 1 minute.
+
+#only if the Set-Cookie is added with the response set/addHeader API.  The best practice is to use Cookie() API which already has this check and uses its own message.
+cookie.attribute.name.invalid=CWWKT0047E: L''attribut de cookie [{0}] contient un caract\u00e8re non valide.
+cookie.attribute.name.invalid.explanation=Le nom d'attribut de cookie ne contient pas de caract\u00e8re sp\u00e9cial [ () < > @, ;: \\/ [ ]? = { } ].
+cookie.attribute.name.invalid.useraction=Corrigez le nom d'attribut de cookie pour ne pas utiliser de caract\u00e8re sp\u00e9cial.

@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.db2;
+
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -40,6 +42,8 @@ public class DB2Test extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         ShrinkHelper.defaultApp(server, APP_NAME, "db2.web");
 
         server.addEnvVar("DB2_DBNAME", db2.getDatabaseName());

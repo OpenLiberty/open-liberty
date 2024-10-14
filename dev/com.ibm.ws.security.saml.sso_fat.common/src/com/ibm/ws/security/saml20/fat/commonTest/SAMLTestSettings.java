@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,24 @@ public class SAMLTestSettings extends TestSettings {
 
     public static SAMLCommonTestTools cttools = new SAMLCommonTestTools();
     public static SAMLMessageTools msgUtils = new SAMLMessageTools();
+    // webClient timeout value
+    // -1 means no timeout value assigned
+    // webClient's default value will be used (it is 90000 at the moment)
+    private int webClientTimeOut = -1;
+
+    /**
+     * @return the waitTime
+     */
+    public int getWebClientTimeOut() {
+        return webClientTimeOut;
+    }
+
+    /**
+     * @param waitTime the waitTime to set
+     */
+    public void setWebClientTimeOut(int timeOut) {
+        this.webClientTimeOut = timeOut;
+    }
 
     public class ReplaceVars {
         private String oldValue;
@@ -686,9 +704,9 @@ public class SAMLTestSettings extends TestSettings {
     /**
      *
      * @param httpStart
-     *            prefix Url string (ie: http://localhost:DefaultPort)
+     *                       prefix Url string (ie: http://localhost:DefaultPort)
      * @param httpsStart
-     *            prefix Url string (ie: https://localhost:DefaultSSLPort)
+     *                       prefix Url string (ie: https://localhost:DefaultSSLPort)
      * @return
      *         returns a TestSettings object with the default values set
      */
@@ -735,7 +753,7 @@ public class SAMLTestSettings extends TestSettings {
      * Using the currently chosen TFIM server, return the IDP challenge provider requested
      *
      * @param provider
-     *            - index of requested provider
+     *                     - index of requested provider
      * @return
      * @throws Exception
      */

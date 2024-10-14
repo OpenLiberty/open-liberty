@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -151,11 +151,11 @@ public class MinifiedServerTestUtils {
             useMinifiedServer(packageZip);
 
             // Put the required test files into the right place for new server..
-            fatTestCommon.copyToDest(new RemoteFile(server.getMachine(), server.getServerRoot() + "/../fatTestCommon.xml"));
-            fatTestPorts.copyToDest(new RemoteFile(server.getMachine(), server.getServerRoot() + "/../fatTestPorts.xml"));
-            testPortsProps.copyToDest(new RemoteFile(server.getMachine(), server.getServerRoot() + "/../testports.properties"));
+            fatTestCommon.copyToDest(server.getMachine().getFile(server.getServerRoot() + "/../fatTestCommon.xml"));
+            fatTestPorts.copyToDest(server.getMachine().getFile(server.getServerRoot() + "/../fatTestPorts.xml"));
+            testPortsProps.copyToDest(server.getMachine().getFile(server.getServerRoot() + "/../testports.properties"));
             if (serverEnv.exists())
-                serverEnv.copyToDest(new RemoteFile(server.getMachine(), server.getInstallRoot() + "/etc/server.env"));
+                serverEnv.copyToDest(server.getMachine().getFile(server.getInstallRoot() + "/etc/server.env"));
 
             Log.info(MinifiedServerTestUtils.class, "setup", "minified Install Root : " + server.getInstallRoot());
             Log.info(MinifiedServerTestUtils.class, "setup", "minified  Server Root : " + server.getServerRoot());

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,8 +41,8 @@ public class CDICurrentTestServlet extends FATServlet {
 
     private static final long serialVersionUID = 1L;
 
+    //Must be manually cleared at the end of a test
     private static Boolean wasCDICurrentFound = null;
-    private static volatile Boolean wasCDICurrentFoundViaMES = null;
 
     @Inject
     private SharedLibBean sharedLibBean;
@@ -70,27 +70,59 @@ public class CDICurrentTestServlet extends FATServlet {
      * context onto a newly created thread. This test ensures that works correctly and CDI.current() returns a value
      * when called from a new thread.
      *
-     * Note that threads created via new Thread() will not have the required context and CDI.current() will return null
      */
     @Test
     public void testCDICurrentViaMES() throws Exception {
-        long startTime = System.nanoTime();
+        try {
+            long startTime = System.nanoTime();
 
-        assertNotNull(CDI.current()); //Test outside a new thread just for completeness.
+            assertNotNull(CDI.current()); //Test outside a new thread just for completeness.
 
-        LOGGER.info("calling managedExecutorService");
-        managedExecutorService.submit(new CallCDICurrent());
+            LOGGER.info("calling managedExecutorService");
+            managedExecutorService.submit(new CallCDICurrent());
 
-        while (System.nanoTime() - startTime < Duration.of(10, SECONDS).toNanos()) {
-            if (wasCDICurrentFoundViaMES != null) {
-                assertTrue("CDI.current returned null when called in a new Thread", wasCDICurrentFoundViaMES);
-                return;
+            while (System.nanoTime() - startTime < Duration.of(10, SECONDS).toNanos()) {
+                if (wasCDICurrentFound != null) {
+                    assertTrue("CDI.current returned null when called in a new Managed Thread", wasCDICurrentFound);
+                    return;
+                }
+                Thread.sleep(15);
             }
-            Thread.sleep(15);
-        }
 
-        LOGGER.info("About to throw exception");
-        assertTrue("The thread with CDI.current never completed", false);
+            LOGGER.info("About to throw exception");
+            assertTrue("The thread with CDI.current never completed", false);
+        } finally {
+            wasCDICurrentFound = false;
+        }
+    }
+
+    /*
+     * We have implemented a fallback that allows CDI.current() to work if you call a new thread
+     * without propagating context via a ManagedExecutorService, this tests that code.
+     */
+    @Test
+    public void testCDICurrentViaNewThread() throws Exception {
+        try {
+            long startTime = System.nanoTime();
+
+            assertNotNull(CDI.current()); //Test outside a new thread just for completeness.
+            LOGGER.info("calling managedExecutorService");
+            Thread thread = new Thread(new CallCDICurrent());
+            thread.run();
+
+            while (System.nanoTime() - startTime < Duration.of(10, SECONDS).toNanos()) {
+                if (wasCDICurrentFound != null) {
+                    assertTrue("CDI.current returned null when called in a new Thread", wasCDICurrentFound);
+                    return;
+                }
+                Thread.sleep(15);
+            }
+
+            LOGGER.info("About to throw exception");
+            assertTrue("The thread with CDI.current never completed", false);
+        } finally {
+            wasCDICurrentFound = false;
+        }
     }
 
     @Test
@@ -99,10 +131,8 @@ public class CDICurrentTestServlet extends FATServlet {
     }
 
     public static void setWasCDICurrentFound(boolean b) {
-
-        wasCDICurrentFoundViaMES = b;
+        wasCDICurrentFound = b;
         LOGGER.info("Set test variable");
-
     }
 
     public class CallCDICurrent implements Runnable {
@@ -113,10 +143,9 @@ public class CDICurrentTestServlet extends FATServlet {
             LOGGER.info("Found CDI " + cdi);
             if (cdi != null) {
                 CDICurrentTestServlet.setWasCDICurrentFound(true);
-                LOGGER.info("Calling setter for test variable");
+                LOGGER.info("Calling setter for test variable with true");
             } else {
-                System.out.println("GREP 1 " + java.time.LocalDateTime.now());
-                LOGGER.info("Calling setter for test variable");
+                LOGGER.info("Calling setter for test variable with false");
             }
         }
     }

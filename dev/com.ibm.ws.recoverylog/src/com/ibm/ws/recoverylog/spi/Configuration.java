@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -378,9 +378,10 @@ public class Configuration {
      *
      * @return FailureScope The local FailureScope
      */
+    @Trivial
     public static final FailureScope localFailureScope() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "localFailureScope", _localFailureScope);
+            Tr.debug(tc, "localFailureScope {0}", _localFailureScope);
         return _localFailureScope;
     }
 

@@ -14,6 +14,8 @@ package test.jakarta.data.web;
 
 import static jakarta.data.repository.By.ID;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -26,6 +28,7 @@ import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import jakarta.data.Limit;
@@ -49,15 +52,54 @@ import jakarta.enterprise.concurrent.Asynchronous;
  */
 @Repository
 public interface Primes {
+    @Find
+    CursoredPage<Prime> all(Order<Prime> sorts, PageRequest req);
+
+    @Query("")
+    CursoredPage<Prime> all(PageRequest req, Order<Prime> sorts);
+
+    @Query("FROM Prime")
+    CursoredPage<Prime> all(PageRequest req, Sort<?>... sorts);
+
     @Query("SELECT (num.name) FROM Prime As num")
     Page<String> all(Sort<Prime> sort, PageRequest pagination);
 
-    Integer countByNumberIdBetween(long first, long last);
+    @Query("SELECT binaryDigits WHERE numberId <= :max")
+    @OrderBy(ID)
+    LongStream binaryDigitsAsDecimal(long max);
+
+    @Query("SELECT name WHERE numberId < 35 AND romanNumeral || name LIKE :pattern")
+    List<String> concatAndMatch(String pattern, Sort<?> sort);
+
+    BigDecimal countAsBigDecimalByNumberIdLessThan(long number);
+
+    BigInteger countAsBigIntegerByNumberIdLessThan(long number);
+
+    // boolean return type is not allowed for count methods
+    boolean countAsBooleanByNumberIdLessThan(long number);
+
+    int countAsIntByNumberIdLessThan(long number);
+
+    Integer countAsIntegerByNumberIdBetween(long first, long last);
+
+    long countAsLongByNumberIdLessThan(long number);
+
+    Long countAsLongWrapperByNumberIdLessThan(long number);
+
+    Number countAsNumberByNumberIdLessThan(long number);
+
+    short countAsShortByNumberIdLessThan(long number);
+
+    Short countAsShortWrapperByNumberIdLessThan(long number);
+
+    // The β symbol is used here because Byte starts with the By keyword
+    byte countAsβyteByNumberIdLessThan(long number);
+
+    // The β symbol is used here because Byte starts with the By keyword
+    Byte countAsβyteWrapperByNumberIdLessThan(long number);
 
     @Asynchronous
     CompletableFuture<Short> countByNumberIdBetweenAndEvenNot(long first, long last, boolean isOdd);
-
-    long countByNumberIdLessThan(long number);
 
     @Find
     Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort<?>... sorts);
@@ -108,6 +150,7 @@ public interface Primes {
 
     Prime findByNumberIdBetween(long min, long max);
 
+    // Unsupported pattern: lacks PageRequest parameter.
     @OrderBy("numberId")
     CursoredPage<Prime> findByNumberIdBetween(long min, long max, Limit limit);
 
@@ -116,7 +159,8 @@ public interface Primes {
 
     List<Prime> findByNumberIdBetween(long min, long max, Sort<?>... orderBy);
 
-    CursoredPage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy); // Lacks PageRequest
+    // Unsupported pattern: lacks PageRequest parameter.
+    CursoredPage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy);
 
     CursoredPage<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, PageRequest pagination, Order<Prime> order);
 
@@ -202,12 +246,20 @@ public interface Primes {
 
     Boolean existsByNumberIdBetween(Long first, Long last);
 
-    // TODO after JDQL SELECT is added: "Select name Where length(romanNumeral) * 2 >= length(name) Order By name Asc",
-    @Query(value = "Where numberId < 50 and romanNumeral is not null and length(romanNumeral) * 2 >= length(name) Order By name Desc")
-    Page<Prime> lengthBasedQuery(PageRequest pageRequest);
+    @Query(value = "Select name" +
+                   " Where numberId < 50 and" +
+                   "       romanNumeral is not null and" +
+                   "       length(romanNumeral) * 2 >= length(name)" +
+                   " Order By name Desc")
+    Page<String> lengthBasedQuery(PageRequest pageRequest);
 
     @OrderBy(ID)
-    @Query("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)")
+    @Query("SELECT ID(THIS)" +
+           "  FROM Prime" +
+           " WHERE (name = :numberName" +
+           "     OR :numeral=romanNumeral" +
+           "     OR hex =:hex" +
+           "     OR ID(THIS)=:num)")
     long[] matchAny(long num, String numeral, String hex, String numberName);
 
     @OrderBy(ID)
@@ -227,22 +279,44 @@ public interface Primes {
     @Query("SELECT o.numberId FROM Prime o WHERE (o.name = ?1 OR o.numberId=:num)")
     Collection<Long> matchAnyWithMixedUsageOfPositionalAndNamed(String name, long num);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT name WHERE numberId < 50 AND LEFT(name, LENGTH(:s)) = :s")
+    @OrderBy("name")
+    List<String> matchLeftSideOfName(@Param("s") String searchFor);
+
+    @Query("SELECT name" +
+           " WHERE numberId < 40" +
+           "   AND RIGHT(name, LENGTH(:searchFor)) = :searchFor" +
+           " ORDER BY name DESC")
+    List<String> matchRightSideOfName(String searchFor);
+
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), " +
+           "       COUNT(o.numberId), AVG(o.numberId) " +
+           "  FROM Prime o WHERE o.numberId < ?1")
     Deque<Double> minMaxSumCountAverageDeque(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS FLOAT)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     float[] minMaxSumCountAverageFloat(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     int[] minMaxSumCountAverageInt(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     Iterable<Integer> minMaxSumCountAverageIterable(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     List<Long> minMaxSumCountAverageList(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId)," +
+           "       COUNT(o.numberId), CAST(AVG(o.numberId) AS INTEGER)" +
+           "  FROM Prime o WHERE o.numberId < ?1")
     Long[] minMaxSumCountAverageLong(long numBelow);
 
     @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
@@ -264,11 +338,51 @@ public interface Primes {
     @OrderBy("numberId")
     Page<Object[]> namesWithHex(long maxNumber, PageRequest pagination);
 
+    @Query("SELECT numberId WHERE numberId=?1")
+    BigDecimal numberAsBigDecimal(long num);
+
+    @Query("SELECT numberId WHERE numberId=:num")
+    Optional<BigInteger> numberAsBigInteger(long num);
+
+    @Query("SELECT numberId WHERE numberId=?1")
+    byte numberAsByte(long num);
+
+    @Query("SELECT numberId WHERE numberId=:n")
+    Optional<Byte> numberAsByteWrapper(@Param("n") long num);
+
+    @Query("SELECT numberId WHERE ID(this)=?1")
+    double numberAsDouble(long num);
+
+    @Asynchronous
+    @Query("SELECT numberId WHERE id(THIS)=?1")
+    CompletableFuture<Optional<Float>> numberAsFloatWrapper(long num);
+
+    @Query("SELECT numberId WHERE Id(This)=?1")
+    int numberAsInt(long num);
+
+    @Query("SELECT numberId WHERE Id(This)=:num")
+    Optional<Integer> numberAsInteger(long num);
+
+    @Query("SELECT numberId WHERE id(this)=?1")
+    long numberAsLong(long num);
+
+    @Query("SELECT numberId WHERE id(this)=:num")
+    Optional<Long> numberAsLongWrapper(long num);
+
+    @Query("SELECT numberId WHERE ID(THIS)=?1")
+    short numberAsShort(long num);
+
+    @Query("SELECT numberId WHERE ID(THIS)=:num")
+    Optional<Short> numberAsShortWrapper(long num);
+
     @Insert
     void persist(Prime... primes);
 
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, PageRequest pagination);
+
+    @Query("SELECT hex WHERE numberId=:id")
+    Optional<Character> singleHexDigit(long id);
 
     @Query("SELECT hex WHERE numberId=?1")
     Optional<String> toHexadecimal(long num);
@@ -286,7 +400,10 @@ public interface Primes {
 
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "name", descending = false)
-    @Query(" WHERE( numberId<=:max AND UPPER(romanNumeral) NOT LIKE '%VII' AND (numberId-(numberId/10)* 10)<>3 AND\tnumberId\t>= :min)")
+    // Query used to contain (numberId-(numberId/10)* 10)<>3
+    // Long values in oracle are stored as a NUMBER which includes a
+    // floating point, therefore integer based arithmetic is not supported.
+    @Query(" WHERE( numberId<=:max AND UPPER(romanNumeral) NOT LIKE '%VII' AND MOD(numberId,10)<>3 AND\tnumberId\t>= :min)")
     CursoredPage<Prime> withinButNotEndingIn7or3(@Param("min") long minimum,
                                                  @Param("max") long maximum,
                                                  PageRequest pageRequest);

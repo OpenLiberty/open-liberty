@@ -98,7 +98,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				boolean result = enlistXAResource("commit", XAResourceImpl.DIRECTION_COMMIT);
 				if (result == true) {
 					System.out.println("Reply from server: "
-							+ proxy.sayHello("commitclear", XAResourceImpl.DIRECTION_COMMIT));
+							+ proxy.sayHello("commit", XAResourceImpl.DIRECTION_COMMIT));
 					userTransaction.commit();
 					System.out.println("client user transaction commit");
 					finalOutput = "Finish Twoway message";
@@ -340,11 +340,10 @@ public class EndToEndClientServlet extends HttpServlet {
 	private boolean enlistXAResource(String vote, int expectedDirection){
 		boolean result = false;
 		try {
-			XAResourceImpl.clear();
 			final ExtendedTransactionManager TM = TransactionManagerFactory
 					.getTransactionManager();
 			final Serializable xaResInfo = XAResourceInfoFactory
-					.getXAResourceInfo(0);
+					.getXAResourceInfo();
 			XAResourceImpl xaRes;
 			if (vote.equals("rollback")) {
 				xaRes = XAResourceFactoryImpl.instance().getXAResourceImpl(

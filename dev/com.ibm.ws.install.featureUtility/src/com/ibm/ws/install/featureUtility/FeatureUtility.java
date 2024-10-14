@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ public class FeatureUtility {
     private final Boolean noCache;
     private final Boolean licenseAccepted;
     private final List<String> featuresToInstall;
+    private final Collection<String> platforms;
     private final List<String> additionalJsons;
     private String openLibertyVersion;
     private String openLibertyEdition;
@@ -78,7 +79,7 @@ public class FeatureUtility {
      * Constructor for unit testing only.
      */
     protected FeatureUtility(InstallKernelMap map, File fromDir, List<File> esaFiles, Boolean noCache,
-	    Boolean licenseAccepted, List<String> featuresToInstall, List<String> additionalJsons,
+	    Boolean licenseAccepted, List<String> featuresToInstall, List<String> platforms, List<String> additionalJsons,
 	    String openLibertyVersion, String openLibertyEdition, Logger logger, ProgressBar progressBar,
 	    Map<String, String> featureToExt, boolean isInstallServerFeature, VerifyOption verifyOption) {
 	super();
@@ -88,6 +89,7 @@ public class FeatureUtility {
 	this.noCache = noCache;
 	this.licenseAccepted = licenseAccepted;
 	this.featuresToInstall = featuresToInstall;
+	this.platforms = platforms;
 	this.additionalJsons = additionalJsons;
 	this.openLibertyVersion = openLibertyVersion;
 	this.openLibertyEdition = openLibertyEdition;
@@ -99,7 +101,8 @@ public class FeatureUtility {
     }
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
-        this.logger = InstallLogUtils.getInstallLogger();
+        
+		this.logger = InstallLogUtils.getInstallLogger();
         this.progressBar = ProgressBar.getInstance();
 
         this.openLibertyVersion = getLibertyVersion();
@@ -109,6 +112,7 @@ public class FeatureUtility {
                             Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_BETA_EDITION_NOT_SUPPORTED"));
         }
 	this.additionalJsons = builder.additionalJsons;
+	this.platforms = builder.platforms;
         this.to = builder.to;
 	this.fromDir = builder.fromDir; // this can be overwritten by the env prop
 
@@ -249,9 +253,11 @@ public class FeatureUtility {
 	    map.put(InstallConstants.RUNTIME_INSTALL_DIR, Utils.getInstallDir());
 	    map.put(InstallConstants.INSTALL_LOCAL_ESA, true);
 	    map.put(InstallConstants.SINGLE_JSON_FILE, jsonPaths);
-        if (featuresToInstall != null) {
-	    map.put(InstallConstants.FEATURES_TO_RESOLVE, featuresToInstall);
-
+	    if (featuresToInstall != null) {
+		    map.put(InstallConstants.FEATURES_TO_RESOLVE, featuresToInstall);
+	    }
+        if (platforms != null) {
+        	map.put(InstallConstants.PLATFORMS, platforms);
         }
         if (esaFiles != null && !esaFiles.isEmpty()) {
 	    map.put(InstallConstants.INDIVIDUAL_ESAS, esaFiles);
@@ -313,6 +319,11 @@ public class FeatureUtility {
 
 		}
 
+		// override no_proxy settings
+		if (System.getProperty("featureUtility.beta") != null && System.getProperty("featureUtility.beta").equals("true") && FeatureUtilityProperties.getNoProxySetting() != null) {
+		    overrideMap.put("http.nonProxyHosts", FeatureUtilityProperties.getNoProxySetting());
+		}
+
         // override the local feature repo
         if(FeatureUtilityProperties.getFeatureLocalRepo() != null){
             overrideMap.put("FEATURE_LOCAL_REPO", FeatureUtilityProperties.getFeatureLocalRepo());
@@ -347,6 +358,13 @@ public class FeatureUtility {
         }
 
 	map.put(InstallConstants.OVERRIDE_ENVIRONMENT_VARIABLES, overrideMap);
+
+	if (map.get(InstallConstants.ACTION_ERROR_MESSAGE) != null) {
+	    // error with installation
+	    fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
+	    String exceptionMessage = (String) map.get(InstallConstants.ACTION_ERROR_MESSAGE);
+	    throw new InstallException(exceptionMessage);
+	}
     }
 
     /**
@@ -650,10 +668,34 @@ public class FeatureUtility {
 		fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
                 throw new InstallException(exceptionMessage);
             }
-        }
+        } else
+        	if (!isInstallServerFeature) {
+        		String installingFeature = featuresToInstall.get(0);
+        		for( String aFeature : resolvedFeatures) {
+        			String shortName = aFeature.split(":").length > 1 ? aFeature.split(":")[1] : "" ;
+        			if (installingFeature.equals(shortName) && isBaseVersionless(aFeature)) {
+        				throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_VERSIONLESS_INSTALL"), InstallException.BAD_ARGUMENT);
+        			}	
+        		}
+        	}
     }
 
-    private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
+    /**
+     * @param aFeature
+     * @return if the feature coordinates represents a versionless feature
+     */
+    private boolean isBaseVersionless(String aFeature) {
+    	String[] featureCoordinates = aFeature.split(":");
+    	if (featureCoordinates.length >= 2) {
+    		String groupName = featureCoordinates[0];
+    		String shortName = featureCoordinates[1];
+    		if (!shortName.contains("-") && (groupName.equals("io.openliberty.features")))
+    			return true;
+    	}
+		return false;
+	}
+
+	private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
 	map.put(InstallConstants.FROM_REPO, fromDir.toString());
         return downloadFeatureEsas(resolvedFeatures);
     }
@@ -831,6 +873,7 @@ public class FeatureUtility {
     public static class FeatureUtilityBuilder {
         File fromDir;
         Collection<String> featuresToInstall;
+        Collection<String> platforms;
         List<String> additionalJsons;
         List<File> esaFiles;
         boolean noCache;
@@ -873,14 +916,19 @@ public class FeatureUtility {
             return this;
         } 
 
-	public FeatureUtilityBuilder setVerify(String verifyOption) {
-	    this.verifyOption = verifyOption;
-	    return this;
-	}
+		public FeatureUtilityBuilder setVerify(String verifyOption) {
+		    this.verifyOption = verifyOption;
+		    return this;
+		}
 
         public FeatureUtility build() throws IOException, InstallException {
             return new FeatureUtility(this);
         }
+
+		public FeatureUtilityBuilder setPlatforms(List<String> platformNames) {
+			this.platforms = platformNames;
+		    return this;
+		}
 
     }
 

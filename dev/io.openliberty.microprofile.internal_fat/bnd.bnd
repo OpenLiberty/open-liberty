@@ -30,7 +30,8 @@ tested.features: microProfile-1.0, \
                  microProfile-4.1, \
                  microProfile-5.0, \
                  microProfile-6.0, \
-                 microProfile-6.1
+                 microProfile-6.1, \
+                 microProfile-7.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,8 +56,10 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2 && 5.0.x
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2 && 5.0.x
+          exclude(name: '**/OptimisticLockExceptionResource.nlsprops')// Remove with 5.0.x
+          exclude(name: '**/ExceptionLocalizationResource.nlsprops')// Remove with 5.0.x
         }
       }
       delete fileTree(existingResourceDir){ 
@@ -68,8 +70,10 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2 && 5.0.x
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2 && 5.0.x
+          exclude(name: '**/OptimisticLockExceptionResource.nlsprops')// Remove with 5.0.x
+          exclude(name: '**/ExceptionLocalizationResource.nlsprops')// Remove with 5.0.x
         }
       }
     }
@@ -81,8 +85,10 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2 && 5.0.x
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2 && 5.0.x
+          exclude(name: '**/OptimisticLockExceptionResource.nlsprops')// Remove with 5.0.x
+          exclude(name: '**/ExceptionLocalizationResource.nlsprops')// Remove with 5.0.x
         }
       }
       delete fileTree(newResourcesDir){ 
@@ -93,8 +99,10 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2 && 5.0.x
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2 && 5.0.x
+          exclude(name: '**/OptimisticLockExceptionResource.nlsprops')// Remove with 5.0.x
+          exclude(name: '**/ExceptionLocalizationResource.nlsprops')// Remove with 5.0.x
         }
       }
     }

@@ -34,4 +34,12 @@ public class ConfigValidation {
         public static boolean validateIgnoreUnexpectedElements(boolean value) {
             return true;
         }
+        
+        /**
+         * @param value - key name
+         * @return true since no need to validate booleans
+         */
+        public static boolean validateEnableDefaultValidation(boolean value) {
+            return true;
+        }
 }

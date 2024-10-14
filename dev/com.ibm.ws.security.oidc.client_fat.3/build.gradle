@@ -12,7 +12,7 @@
  *******************************************************************************/
 apply from: '../com.ibm.ws.security.fat.common.SSO.clientTests/CommonTests.gradle'
 
-addRequiredLibraries.dependsOn copyPKCEOPServer, copyPrivateKeyJwtOPServer, copyPKCEAndPrivateKeyJwtOPServer
+addRequiredLibraries.dependsOn copyPKCEOPServer, copyPrivateKeyJwtOPServer, copyPKCEAndPrivateKeyJwtOPServer, copyWasReqUrlOPServer
 
 repositories {
   if (isUsingArtifactory) {
@@ -80,7 +80,8 @@ autoFVT.doLast {
   def servers = [
     'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.pkce',
     'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.privateKeyJwt',
-    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.pkceAndPrivateKeyJwt'
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.pkceAndPrivateKeyJwt',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.wasReqUrl'
   ]
   servers.each { server ->
     copy { 
@@ -113,7 +114,6 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
       include 'oauthRoles_1.xml'
       include 'formlogin_1.xml'
-      include 'op_fatTestPorts.xml'
     }  
 
     copy {
@@ -147,6 +147,27 @@ autoFVT.doLast {
      include 'altAllAlgTrustStore.p12'
      include 'diffTrustStore.p12'
     }           
+                 
+  }
+  
+  servers = [
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.wasReqUrl'
+  ]
+  servers.each { server ->  
+     /* copy shared key/trust stores from the common security fat project */
+     println "Copy keys for:  ${server}"
+      copy { 
+        from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+        into new File(autoFvtDir, "publish/servers/${server}/")
+        include 'commonBasicKeyStore.jks'
+        include 'commonTrustStore.jks'
+      }
+     
+     copy { 
+        from project(':com.ibm.ws.security.fat.common.SSO.clientTests').file('publish/shared/config/')
+        into new File(autoFvtDir, "publish/servers/${server}/imports")
+        include 'goodSSLSettings.xml'
+     }
                  
   }
 }

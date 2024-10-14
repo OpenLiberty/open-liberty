@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package io.openliberty.reporting.internal.fat;
 
 import static java.util.Collections.singletonMap;
@@ -67,7 +76,7 @@ public class CVEReportingCheckpointTest extends FATServletClient {
     public void testIsDisabled() throws Exception {
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         ServerConfiguration config = server.getServerConfiguration();
-        config.getCVEReporting().setEnabled(false);
+        config.getCVEReporting().setEnabled("false");
         server.updateServerConfiguration(config);
         server.startServer();
         server.checkpointRestore();
@@ -79,7 +88,7 @@ public class CVEReportingCheckpointTest extends FATServletClient {
     public void testIsEnabled() throws Exception {
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         ServerConfiguration config = server.getServerConfiguration();
-        config.getCVEReporting().setEnabled(true);
+        config.getCVEReporting().setEnabled("true");
         server.updateServerConfiguration(config);
         server.startServer();
         server.checkpointRestore();

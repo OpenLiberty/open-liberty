@@ -69,6 +69,10 @@ CONFIG_ATTRIBUTE_IGNORED=SESN0311W: o atributo de configura\u00e7\u00e3o {0} foi
 CONFIG_ATTRIBUTE_IGNORED.explanation=A configura\u00e7\u00e3o especificada foi ignorada porque ela foi fornecida pelo cacheManagerRef especificado.
 CONFIG_ATTRIBUTE_IGNORED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
+UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: O atributo de configura\u00e7\u00e3o do Cache de Sess\u00e3o HTTP {0} foi mudado desde que o servidor foi verificado. Se o valor do atributo for alterado ap\u00f3s o ponto de verifica\u00e7\u00e3o do servidor, mas antes do processo do servidor ser restaurado, o aplicativo n\u00e3o usar\u00e1 o valor atualizado.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=O atributo de configura\u00e7\u00e3o especificado n\u00e3o pode ser modificado durante o tempo entre o ponto de verifica\u00e7\u00e3o e a restaura\u00e7\u00e3o do processo do servidor.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Configure o valor do atributo antes de executar o ponto de verifica\u00e7\u00e3o do servidor.
+
 INTERNAL_SERVER_ERROR=Erro interno do servidor
 
 SESSION_CACHE_CONFIG_MESSAGE=Verifique se a configura\u00e7\u00e3o do servidor cont\u00e9m uma configura\u00e7\u00e3o httpSessionCache v\u00e1lida. Consulte a configura\u00e7\u00e3o de amostra. {0}

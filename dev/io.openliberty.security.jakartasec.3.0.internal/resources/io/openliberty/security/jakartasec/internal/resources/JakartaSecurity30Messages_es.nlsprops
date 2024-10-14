@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -52,3 +52,7 @@ JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Para obtener m\u00e1s informaci\u0
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: El valor del atributo {0} de la anotaci\u00f3n de definici\u00f3n del mecanismo de autenticaci\u00f3n OpenID no puede ser un entero negativo. Si el valor del atributo es una expresi\u00f3n en Lenguaje de Expresiones (EL), no puede resolver a un entero negativo. El valor proporcionado era ''{1}''. En su lugar se utiliza el valor de atributo predeterminado de ''{2}''.
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=El valor del atributo no puede ser un entero negativo. Si el valor de atributo es una expresi\u00f3n en EL, el valor no puede resolver a un entero negativo.
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Actualice el atributo para utilizar un entero no negativo. Si el valor de atributo es una expresi\u00f3n en EL, actualice el bean referenciado para que resuelva a un entero no negativo.
+
+CREDENTIAL_VALIDATION_CALLER_MISSING=CWWKS2508E: La credencial no se puede validar porque el valor del llamante no est\u00e1 establecido. La reclamaci\u00f3n de nombre de llamante [{0}] es nula o est\u00e1 vac\u00eda, o no se puede encontrar una reclamaci\u00f3n con ese nombre en la se\u00f1al de acceso, la se\u00f1al de ID o los datos UserInfo para el usuario.
+CREDENTIAL_VALIDATION_CALLER_MISSING.explanation=La validaci\u00f3n de credenciales requiere un valor de interlocutor y no se ha establecido.
+CREDENTIAL_VALIDATION_CALLER_MISSING.useraction=Verifique que la reclamaci\u00f3n de nombre de interlocutor no sea nula o est\u00e9 vac\u00eda. Verifique que la reclamaci\u00f3n de nombre de interlocutor es una reclamaci\u00f3n que se incluye en la se\u00f1al de acceso, la se\u00f1al de ID o los datos de UserInfo para el usuario.

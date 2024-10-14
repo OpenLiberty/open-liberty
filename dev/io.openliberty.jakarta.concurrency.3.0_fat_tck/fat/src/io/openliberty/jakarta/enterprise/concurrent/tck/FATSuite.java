@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,7 @@ public class FATSuite {
          * This will protect us from regressions as new JDK versions are released and tested.
          */
         int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
-        if (!(javaSpecVersion == 11 || javaSpecVersion == 17)) {
+        if (!(javaSpecVersion == 11 || javaSpecVersion == 17 || javaSpecVersion == 21)) {
             Log.info(ConcurrentTckLauncherFull.class, "createSuiteXML", "Skipping Signature Tests on unsupported JDK");
             specExcludes.add("ee.jakarta.tck.concurrent.spec.signature");
         }

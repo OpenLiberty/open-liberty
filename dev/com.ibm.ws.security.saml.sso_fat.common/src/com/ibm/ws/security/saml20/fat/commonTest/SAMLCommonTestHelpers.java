@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -793,6 +793,14 @@ public class SAMLCommonTestHelpers extends TestHelpers {
             }
 
             Log.info(thisClass, thisMethod, "ACS request: " + request.getUrl());
+
+            // -1 is the default value for WebClientTimeOut
+            // if it's -1 it means no specific default value is set
+            // skip setting specific timeout value
+            if (-1 != settings.getWebClientTimeOut()) {
+                webClient.getOptions().setTimeout(settings.getWebClientTimeOut());
+            }
+            Log.info(thisClass, thisMethod, "WebClient timeout: " + settings.getWebClientTimeOut());
             thePage = webClient.getPage(request);
             // make sure the page is processed before continuing
             waitBeforeContinuing(webClient);
@@ -1768,7 +1776,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
      * server exceptions for this particular server.
      *
      * @param theServer
-     *            - the server to register the allowed excpetion to.
+     *                           - the server to register the allowed excpetion to.
      * @param expected
      * @param step
      * @param log

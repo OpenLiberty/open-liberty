@@ -28,6 +28,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
+
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  */
@@ -37,7 +39,7 @@ public class ReactiveMessagingTCKLauncher {
     public static final String SERVER_NAME = "ReactiveMessaging30TCKServer";
 
     @ClassRule
-    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
+    public static RepeatTests r = ReactiveMessagingActions.reactive30Repeats(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

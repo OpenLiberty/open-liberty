@@ -35,6 +35,9 @@ import com.ibm.ws.webcontainer.security.test.servlets.ServletClient;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+import componenttest.topology.impl.LibertyServer.CheckpointInfo;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  *
  */
@@ -50,10 +53,13 @@ public class EJBAnnTestBaseHelper {
     // To be set by child class
     protected LibertyServer server;
     protected ServletClient client;
+    
+    protected boolean checkpointEnabled;
 
-    protected EJBAnnTestBaseHelper(LibertyServer server, ServletClient client) {
+    protected EJBAnnTestBaseHelper(LibertyServer server, ServletClient clientclient, boolean checkpointEnabled) {
         this.server = server;
         this.client = client;
+        this.checkpointEnabled = checkpointEnabled;
     }
 
     //----------------------------------
@@ -230,6 +236,12 @@ public class EJBAnnTestBaseHelper {
         }
 
         Log.info(thisClass, thisMethod, "Starting server: " + server.getServerName());
+        
+        if (checkpointEnabled) {
+            CheckpointInfo checkpointInfo = new CheckpointInfo(CheckpointPhase.AFTER_APP_START, true, null);
+            server.setCheckpoint(checkpointInfo);
+            server.addCheckpointRegexIgnoreMessages("SRVE9967W", "CNTR0338W");
+        }
         server.startServer();
 
         waitForMessages(waitForMessages, true);

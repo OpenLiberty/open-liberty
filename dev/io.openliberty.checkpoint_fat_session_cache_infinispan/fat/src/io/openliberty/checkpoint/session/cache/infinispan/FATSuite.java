@@ -19,17 +19,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
@@ -38,13 +42,23 @@ import componenttest.topology.utils.HttpUtils;
                 AlwaysPassesTest.class,
                 CheckpointSessionCacheOneServerTest.class,
                 CheckpointSessionCacheTwoServerTest.class,
-                CheckpointSessionCacheTwoServerTimeoutTest.class
+                CheckpointSessionCacheTwoServerTimeoutTest.class,
+                CheckpointSessionCacheConfigUpdateTest.class
 })
 
 public class FATSuite {
 
     public static final String CACHE_MANAGER_EE9_ID = JakartaEE9Action.ID + "_CacheManager";
     public static final String CACHE_MANAGER_EE10_ID = JakartaEE10Action.ID + "_CacheManager";
+
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        // Delete the Infinispan jars that might have been left around by previous test buckets.
+        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.session.cache.config.fat.infinispan.checkpointServer");
+        Machine machine = server.getMachine();
+        String installRoot = server.getInstallRoot();
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan");
+    }
 
     public static String run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, path + '?' + FATServletClient.TEST_METHOD + '=' + testMethod);

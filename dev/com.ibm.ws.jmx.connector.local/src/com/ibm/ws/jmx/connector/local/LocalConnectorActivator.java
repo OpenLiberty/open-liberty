@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,18 +26,22 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.kernel.boot.jmx.service.VirtualMachineHelper;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 @Component(service = {}, configurationPolicy = ConfigurationPolicy.IGNORE)
+@SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public final class LocalConnectorActivator {
 
     /**  */
@@ -120,14 +124,12 @@ public final class LocalConnectorActivator {
                             // Use reflection to invoke...
                             // VirtualMachine vm = VirtualMachine.attach(String.valueOf(ProcessHandle.current().pid()));
                             // localConnectorAddress = vm.startLocalManagementAgent();
-                            Object vm = VirtualMachineHelper.getVirtualMachine();
+                            Class<?> ProcessHandle = Class.forName("java.lang.ProcessHandle");
+                            Object processHandle = ProcessHandle.getMethod("current").invoke(null);
+                            long pid = (long) ProcessHandle.getMethod("pid").invoke(processHandle);
+
                             Class<?> VirtualMachine = Class.forName("com.sun.tools.attach.VirtualMachine");
-                            if (vm == null) {
-                                Class<?> ProcessHandle = Class.forName("java.lang.ProcessHandle");
-                                Object processHandle = ProcessHandle.getMethod("current").invoke(null);
-                                long pid = (long) ProcessHandle.getMethod("pid").invoke(processHandle);
-                                vm = VirtualMachine.getMethod("attach", String.class).invoke(null, String.valueOf(pid));
-                            }
+                            Object vm = VirtualMachine.getMethod("attach", String.class).invoke(null, String.valueOf(pid));
                             localConnectorAddress = (String) VirtualMachine.getMethod("startLocalManagementAgent").invoke(vm);
                         }
 

@@ -1,0 +1,11 @@
+- stepName: Compile FATs
+  workType: RTC
+  timeoutInMinutes: 1440
+  properties:
+    build.stub.target: build.CachedWSCD.CompileFATs
+    # Do not create IM buckets in this step because some require an image to compile,
+    # so they are built in the Compile Liberty Images step.
+    create.im.repo: false
+    personal.im.build: false
+  includeProperties:
+    - file: compile.properties

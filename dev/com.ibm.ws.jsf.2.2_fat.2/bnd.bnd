@@ -1,0 +1,109 @@
+#*******************************************************************************
+# Copyright (c) 2020, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+fat.test.container.images: \
+    seleniarm/standalone-chromium:4.8.3,\
+    selenium/standalone-chrome:4.8.3
+
+src: \
+    fat/src,\
+    test-applications/CDITests.war/src,\
+    test-applications/TestJSFEL.war/src,\
+    test-applications/JSF22StatelessView.war/src,\
+    test-applications/CDICommon/src,\
+    test-applications/CDIFacesFlows.war/src,\
+    test-applications/JSF22FacesFlows.war/src,\
+    test-applications/JSF22Miscellaneous.jar/src,\
+    test-applications/JSF22Miscellaneous.war/src,\
+    test-applications/TestJSF22Ajax.war/src,\
+    test-applications/CDIConfigByACP.war/src,\
+    test-applications/CDIConfigByACP.jar/src,\
+    test-applications/BeanValidationTests.war/src,\
+    test-applications/PI85492.war/src,\
+    test-applications/PI47600.war/src,\
+    test-applications/PI30335.jar/src,\
+    test-applications/PI50108.war/src,\
+    test-applications/PI46218Flow1.war/src,\
+    test-applications/PI46218Flow2.war/src,\
+    test-applications/PI57255CDI.war/src,\
+    test-applications/PI59422.war/src,\
+    test-applications/PI63135.war/src,\
+    test-applications/ViewScopedCDIBean.war/src,\
+    test-applications/ViewScopedJSFBean.war/src,\
+    test-applications/PI64714.war/src,\
+    test-applications/PI64718.war/src,\
+    test-applications/PI67525.war/src,\
+    test-applications/PI90507.war/src,\
+    test-applications/PH01566.war/src,\
+    test-applications/JSF22ThirdPartyApi.war/src,\
+    test-applications/FunctionMapper.war/src,\
+    test-applications/ViewScopeLeak.war/src,\
+    test-applications/MYFACES-4512.war/src,\
+    test-applications/PH55398.war/src
+
+fat.project: true
+
+tested.features: \
+    servlet-4.0,\
+    jsf-2.3,\
+    cdi-2.0,\
+    beanvalidation-2.0,\
+    expressionlanguage-4.0,\
+    servlet-5.0,\
+    faces-3.0,\
+    pages-3.0,\
+    cdi-3.0,\
+    beanvalidation-3.0,\
+    expressionlanguage-5.0,\
+    pages-3.1,\
+    servlet-6.0,\
+    faces-4.0,\
+    cdi-4.0,\
+    expressionlanguage-6.0,\
+    faces-4.1,\
+    cdi-4.1,\
+    servlet-6.1,\
+    validation-3.1
+
+
+-buildpath: \
+    com.google.guava:guava;version=latest,\
+    com.ibm.websphere.appserver.thirdparty.jsf-2.2;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.el.3.0;version=latest,\
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+    com.ibm.websphere.javaee.jsf.2.2;version=latest,\
+    com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+    com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+    com.ibm.websphere.javaee.validation.1.1;version=latest,\
+    com.ibm.ws.jsf.2.2;version=latest,\
+    com.ibm.ws.jsp.2.3;version=latest,\
+    com.ibm.ws.org.apache.httpcomponents;version=latest, \
+    io.openliberty.org.apache.commons.codec;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
+    io.openliberty.org.apache.xercesImpl;version=latest,\
+    io.openliberty.org.testcontainers;version=latest,\
+    net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
+    net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
+    net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
+    net.sourceforge.htmlunit:webdriver;version=2.6,\
+    org.brotli:dec;version=0.1.2,\
+    org.seleniumhq.selenium:selenium-api;version=4.8.3,\
+    org.seleniumhq.selenium:selenium-chrome-driver;version=4.8.3,\
+    org.seleniumhq.selenium:selenium-chromium-driver;version=4.8.3,\
+    org.seleniumhq.selenium:selenium-remote-driver;version=4.8.3,\
+    org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+    org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
+    io.openliberty.faces.fat.selenium.util.internal;version=latest,\
+    xml-apis:xml-apis;version=1.4.01
+

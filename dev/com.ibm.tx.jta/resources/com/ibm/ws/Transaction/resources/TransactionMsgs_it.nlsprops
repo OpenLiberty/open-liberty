@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -875,7 +875,7 @@ WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Correggere le condizioni indicate da
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 il servizio di transazione non \u00e8 in grado di iniziare una transazione.
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty non supporta le applicazioni che iniziano o richiedono una transazione mentre l'applicazione viene avviata quando viene richiesto un punto di controllo del server.
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Utilizzare l'opzione di checkpoint del server at=deployment o modificare l'applicazione per iniziare le transazioni dopo che \u00e8 stata avviata.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Configurare il punto di controllo in modo che si verifichi prima dell'avvio dell'applicazione utilizzando l'opzione beforeAppAvvia punto di controllo del server o modificare l'applicazione per avviare le transazioni dopo che \u00e8 stata avviata.
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Un''applicazione ha avviato o richiesto una transazione durante la richiesta del punto di controllo del server. La seguente traccia di stack per questo thread \u00e8 stata catturata quando \u00e8 stata creata la transazione: {0}

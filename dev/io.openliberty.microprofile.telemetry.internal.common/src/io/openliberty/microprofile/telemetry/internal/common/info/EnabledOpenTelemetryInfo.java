@@ -31,7 +31,7 @@ import io.opentelemetry.sdk.trace.SdkTracerProvider;
 /**
  * This produces an OpenTelemetry wrapper with info to state whether it is enabled or disabled
  */
-public class EnabledOpenTelemetryInfo implements OpenTelemetryInfo {
+public class EnabledOpenTelemetryInfo implements OpenTelemetryInfoInternal {
 
     private static final TraceComponent tc = Tr.register(EnabledOpenTelemetryInfo.class);
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
@@ -54,7 +54,7 @@ public class EnabledOpenTelemetryInfo implements OpenTelemetryInfo {
      * @return true if enabled
      */
     @Override
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 

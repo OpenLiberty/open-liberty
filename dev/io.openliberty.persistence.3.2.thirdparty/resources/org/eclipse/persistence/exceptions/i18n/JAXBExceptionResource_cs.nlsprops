@@ -85,7 +85,7 @@
 
 50028=Nebylo mo\u017en\u00e9 vytvo\u0159it novou instanci [{0}].
 
-50029=T\u0159\u00edda [{0}] poskytnut\u00e1 na anotaci XmlCustomizer neimplementuje rozhran\u00ed org.eclipse.persistence.config.DescriptorCustomizer.
+50029=T\u0159\u00edda [{0}] poskytnut\u00e1 na XmlCustomizer neimplementuje rozhran\u00ed org.eclipse.persistence.descriptors.DescriptorCustomizer .
 
 50030=Do\u0161lo k pokusu o nastaven\u00ed v\u00edce ne\u017e jedn\u00e9 vlastnosti XmlID na t\u0159\u00edd\u011b [{1}]. Vlastnost [{0}] nelze nastavit jako XmlID, proto\u017ee jako XmlID je ji\u017e nastavena vlastnost [{2}].
 

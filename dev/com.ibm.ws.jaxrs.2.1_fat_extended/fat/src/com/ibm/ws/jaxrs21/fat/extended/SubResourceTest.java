@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs21.fat.subresource.SubResourceTestServlet;
 
-@SkipForRepeat({JakartaEE9Action.ID, JakartaEE10Action.ID}) // blocked on https://issues.redhat.com/browse/RESTEASY-2652
+@SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // blocked on https://issues.redhat.com/browse/RESTEASY-2652
 @RunWith(FATRunner.class)
 public class SubResourceTest extends FATServletClient {
                     

@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Descriptions of metrics used by Fault Tolerance. 
+# See https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0.2/microprofile-fault-tolerance-spec-4.0.2.html#_integration_with_microprofile_metrics
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ft.invocations.total.description=Num\u0103rul de ori metoda a fost numit.
+
+ft.retry.calls.total.description=Num\u0103rul de ori logica retry a fost rulat. Acest lucru va fi \u00eentotdeauna o dat\u0103 pe apel metod\u0103.
+
+ft.retry.retries.total.description=Num\u0103rul de ori metoda a fost rejudecat.
+
+ft.timeout.calls.total.description=Num\u0103rul de ori logica timeout a fost rulat. Acest lucru va fi, de obicei, o dat\u0103 pe apel metod\u0103, dar poate fi de zero ori \u00een cazul \u00een care \u00eentrerup\u0103torul previne executarea sau mai mult dec\u00e2t o dat\u0103 \u00een cazul \u00een care metoda este rejudecat.
+
+ft.timeout.executionDuration.description=Histograma timpilor de executie pentru metoda.
+
+ft.circuitbreaker.calls.total.description=De num\u0103rul de ori logica \u00eentrerup\u0103tor de circuit a fost rulat. Acest lucru va fi, de obicei, o dat\u0103 pe apel metod\u0103, dar poate fi mai mult dec\u00e2t o dat\u0103 \u00een cazul \u00een care apelul metoda este rejudecat.
+
+ft.circuitbreaker.state.total.description=Cantitatea de timp pe care \u00eentrerup\u0103torul de circuit a petrecut-o \u00een fiecare stat.
+
+ft.circuitbreaker.opened.total.description=Num\u0103rul de ori \u00eentrerup\u0103torul de circuit s-a mutat de la stat \u00eenchis la stat deschis.
+
+ft.bulkhead.calls.total.description=Num\u0103rul de ori logica bulkhead a fost rulat. Acest lucru va fi, de obicei, o dat\u0103 pe apel metod\u0103, dar poate fi de zero ori \u00een cazul \u00een care \u00eentrerup\u0103torul de circuit a \u00eempiedicat executarea sau mai mult dec\u00e2t o dat\u0103
+
+ft.bulkhead.executionsRunning.description=Num\u0103rul execu\u021biilor \u00een curs de desf\u0103\u0219urare.
+
+ft.bulkhead.executionsWaiting.description=Num\u0103rul de execu\u021bii care a\u0219teapt\u0103 \u00een prezent coada.
+
+ft.bulkhead.runningDuration.description=Histograma timpului pe care execu\u021biile metodei l-au petrecut alerg\u00e2nd.
+
+ft.bulkhead.waitingDuration.description=Histograma timpului pe care execu\u021biile metodei l-au petrecut a\u0219tept\u00e2nd \u00een coad\u0103.

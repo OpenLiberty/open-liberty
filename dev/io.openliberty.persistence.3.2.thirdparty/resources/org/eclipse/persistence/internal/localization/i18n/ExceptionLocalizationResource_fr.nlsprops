@@ -47,6 +47,8 @@ NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Un param\u00e8tre Null a \u00e9t\u00e9 tr
 
 PARAMETER_NILL_NOT_FOUND=Param\u00e8tre Null transmis \u00e0 getParameterValue()
 
+RIGHT_JOIN_NOT_SUPPORTED=La jointure droite n''est pas prise en charge
+
 add_attribute_key_was_null=Lors de l''indication d''un groupe d''attributs pour une sous-classe du type d''un attribut, le param\u00e8tre de type ne doit pas \u00eatre null
 
 argument_collection_was_null=La collection d''arguments \u00e9tait nulle
@@ -99,9 +101,19 @@ cant_persist_detatched_object=Impossible de CONSERVER l''objet d\u00e9tach\u00e9
 
 cant_refresh_not_managed_object=Impossible d''actualiser l''objet non g\u00e9r\u00e9 : {0}.
 
+configured_pu_name_conflict=Impossible de cr\u00e9er une unit\u00e9 de persistance configur\u00e9e avec le nom {0}. Ce nom a \u00e9t\u00e9 trouv\u00e9 dans les unit\u00e9s de persistance personnalis\u00e9es.
+
 create_insertion_failed=La cr\u00e9ation d''insertion a \u00e9chou\u00e9.
 
 criteria_no_constructor_found=Une exception s''est produite lors de l''inspection de la classe {0} pour un constructeur avec des types de crit\u00e8re de s\u00e9lection en tant qu''arguments.  Si cet \u00e9l\u00e9ment CriteriaQuery n''\u00e9tait pas destin\u00e9 \u00e0 une requ\u00eate de constructeur, v\u00e9rifiez que la s\u00e9lection correspond au type de retour.
+
+custom_pu_create_error=Impossible de cr\u00e9er une unit\u00e9 de persistance personnalis\u00e9e avec le nom {0}.
+
+custom_pu_create_error_no_caller=Impossible de cr\u00e9er une unit\u00e9 de persistance personnalis\u00e9e avec le nom {0}. Aucune m\u00e9thode d''appelant n''a \u00e9t\u00e9 trouv\u00e9e dans la pile.
+
+custom_pu_create_error_no_caller_class_url=Impossible de cr\u00e9er une unit\u00e9 de persistance personnalis\u00e9e avec le nom {0}. Aucune URL de classe d''appelant {1} n''a \u00e9t\u00e9 trouv\u00e9e.
+
+custom_pu_name_conflict=Impossible de cr\u00e9er une unit\u00e9 de persistance personnalis\u00e9e avec le nom {0}. Ce nom a \u00e9t\u00e9 trouv\u00e9 dans la configuration xml.
 
 directory_not_exist=Le r\u00e9pertoire {0} n''existe pas.
 
@@ -124,6 +136,8 @@ ejb30-wrong-type-for-query-hint=La requ\u00eate {0}, indice de requ\u00eate {1} 
 entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Conflit de propri\u00e9t\u00e9s EntityManager : jakarta.persistence.driver et/ou jakarta.persistence.url requi\u00e8rent DefaultConnector, mais l''unit\u00e9 de persistance utilise un contr\u00f4leur de transaction externe, JNDIConnector est donc requis.
 
 entity_manager_properties_conflict_default_connector_vs_jndi_connector=Conflit de propri\u00e9t\u00e9s EntityManager : jakarta.persistence.driver et/ou jakarta.persistence.url requi\u00e8rent DefaultConnector, mais jakarta.persistence.jtaDataSource et/ou jakarta.persistence.nonjtaDataSource requi\u00e8rent JNDIConnector.
+
+entity_manager_with_connection_failed=Le code utilisateur a \u00e9chou\u00e9 avec une erreur: {0}
 
 entity_no_longer_exists_in_db=L''entit\u00e9 n''existe plus dans la base de donn\u00e9es : {0}.
 
@@ -148,6 +162,8 @@ error_unmarshalling_return=Erreur de d\u00e9conversion de param\u00e8tres de ret
 file_exists=Le fichier {0} existe d\u00e9j\u00e0.
 
 file_not_exist=Le fichier {0} n''existe pas.
+
+find_option_class_unknown=La classe FindOption impl\u00e9mentant la classe {0} n''est pas prise en charge
 
 finder_query_failed=La requ\u00eate de l''outil de recherche a \u00e9chou\u00e9 :
 
@@ -207,9 +223,9 @@ jmx_enabled_platform_mbean_runtime_exception=Une exception s''est produite lors 
 
 join_trans_called_on_entity_trans=joinTransaction a \u00e9t\u00e9 appel\u00e9 sur un \u00e9l\u00e9ment EntityManager ressource-local qui ne peut pas s''inscrire pour une transaction JTA.
 
-jpa21-ddl-create-script-target-not-specified=Lors de la g\u00e9n\u00e9ration de DDL dans des scripts, une cible de cr\u00e9ation de script doit \u00eatre sp\u00e9cifi\u00e9e \u00e0 l''aide de la propri\u00e9t\u00e9 [jakarta.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=Lors de la g\u00e9n\u00e9ration de DDL dans des scripts, une cible de script de cr\u00e9ation doit \u00eatre sp\u00e9cifi\u00e9e \u00e0 l''aide de la propri\u00e9t\u00e9 [{0}].
 
-jpa21-ddl-drop-script-target-not-specified=Lors de la g\u00e9n\u00e9ration de DDL dans des scripts, une cible de suppression de script doit \u00eatre sp\u00e9cifi\u00e9e \u00e0 l''aide de la propri\u00e9t\u00e9 [jakarta.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=Lors de la g\u00e9n\u00e9ration de DDL dans des scripts, une cible de script de suppression doit \u00eatre sp\u00e9cifi\u00e9e \u00e0 l''aide de la propri\u00e9t\u00e9 [{0}].
 
 jpa21-ddl-invalid-source-script-type=Le script source fourni {0} est d''un type non valide {0}. Les types de script source valides sont : java.io.Reader ou une cha\u00eene d\u00e9signant une URL de fichier.
 
@@ -253,6 +269,12 @@ jpa_helper_invalid_read_all_query=La requ\u00eate de type {0} n''est pas une req
 
 jpa_helper_invalid_report_query=La requ\u00eate de type {0} n''est pas une requ\u00eate de rapport EclipseLink ; par cons\u00e9quent, elle n''a pas pu \u00eatre convertie.
 
+jpa_non_persistent_class=La classe [{0}] n''est pas une classe persistante.
+
+jpa_persistence_util_get_version_no_version_in_class=PersistenceUtil.getVersion(entity) a \u00e9t\u00e9 appel\u00e9e avec l''objet [{0}], qui n''a pas d''attribut de version.
+
+jpa_persistence_util_get_version_non_persistent_class=PersistenceUtil.getVersion(entity) a \u00e9t\u00e9 appel\u00e9e avec l''objet [{0}], qui n''est pas un objet persistant.
+
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) a \u00e9t\u00e9 appel\u00e9 avec l''objet [{0}] qui n''est pas un objet persistant.
 
 json_ora21c_jsonvalue_to_oraclevalue=Impossible de convertir une JsonValue en OracleJsonValue.
@@ -268,6 +290,8 @@ json_pgsql_pgobject_conversion=La conversion de l''objet PGObject de base de don
 json_pgsql_unknown_type=Type JSON inconnu renvoy\u00e9 par la base de donn\u00e9es.
 
 lock_called_without_version_locking=Pour les appels de entityManager.lock(Object entity, LockModeType lockMode), le verrouillage de version doit \u00eatre activ\u00e9.
+
+lock_option_class_unknown=L''option LockOption impl\u00e9mentant la classe {0} n''est pas prise en charge
 
 managed_component_not_found=Un attribut : {1} r\u00e9pertori\u00e9 dans EntityGraph : {0} r\u00e9f\u00e9rence un sous-diagramme nomm\u00e9 : {2} qui est introuvable.
 
@@ -320,6 +344,8 @@ no_entities_retrieved_for_get_reference=Impossible de trouver l''entit\u00e9 pou
 no_entities_retrieved_for_get_single_result=L''\u00e9l\u00e9ment getSingleResult() n''a extrait aucune entit\u00e9.
 
 no_entity_graph_of_name=Il n''existe aucun \u00e9l\u00e9ment EntityGraph nomm\u00e9 {0}
+
+no_key_in_entity=Impossible d''ajouter la jointure de {0} \u00e0 {1} car il manque un attribut de type source dans la classe cible
 
 not_an_entity=Objet : {0} n''est pas un type d''entit\u00e9 connu.
 
@@ -375,9 +401,23 @@ position_param_not_found=Il n''y avait aucun param\u00e8tre \u00e0 la position :
 
 pu_configured_for_resource_local=Impossible de cr\u00e9er un \u00e9l\u00e9ment EntityManager avec SynchronizationType car PersistenceUnit est configur\u00e9 avec des transactions locales de ressource.
 
+refresh_option_class_unknown=La classe d''impl\u00e9mentation RefreshOption {0} n''est pas prise en charge
+
 remove_deletion_failed=Echec de retrait de suppression :
 
 rollback_because_of_rollback_only=Transaction "annul\u00e9e" car elle \u00e9tait d\u00e9finie sur RollbackOnly.
+
+schema_validation=Validation de sch\u00e9ma
+
+schema_validation_failed=Echec de la validation du sch\u00e9ma
+
+schema_validation_missing_table=Le canevas de la table {0} est introuvable dans le sch\u00e9ma
+
+schema_validation_table_different_columns=La table {0} comporte des colonnes diff\u00e9rentes dans le sch\u00e9ma
+
+schema_validation_table_missing_columns=La table {0} comporte des colonnes manquantes dans le sch\u00e9ma
+
+schema_validation_table_surplus_columns=La table {0} comporte des colonnes exc\u00e9dentaires dans le sch\u00e9ma
 
 sdo_helper_invalid_changesummary=L''\u00e9l\u00e9ment ChangeSummary [{0}] fourni n''est pas un \u00e9l\u00e9ment EclipseLink SDOChangeSummary ; par cons\u00e9quent, il n''a pas pu \u00eatre converti.
 
@@ -434,6 +474,10 @@ sdo_helper_invalid_xsdhelper=L''\u00e9l\u00e9ment XSDHelper [{0}] fourni n''est 
 subclass_sought_not_a_managed_type=le type de sous-graphe recherch\u00e9 : {0} n''est pas un type g\u00e9r\u00e9 pour cet attribut : {1}.
 
 too_many_results_for_get_single_result=Plusieurs r\u00e9sultats ont \u00e9t\u00e9 retourn\u00e9s de Query.getSingleResult()
+
+truncate_tables_failed=Echec de la troncature des tables
+
+typed_query_reference_is_null=La r\u00e9f\u00e9rence \u00e0 une requ\u00eate nomm\u00e9e est null
 
 unable_to_find_named_query=El\u00e9ment NamedQuery nomm\u00e9 : {0} non trouv\u00e9.
 

@@ -18,10 +18,12 @@ import java.util.List;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
+import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ManifestClassPathHelper;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
 import com.ibm.wsspi.artifact.ArtifactContainer;
@@ -48,7 +50,23 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
             //either we created this already, or OSGi prepopulated it.
             return classesInfo;
         }
+        NonPersistentCache cache = containerToAdapt.adapt(NonPersistentCache.class);
+        final ModuleClassesContainerInfo classesContainerInfo = (ModuleClassesContainerInfo) cache.getFromCache(ModuleClassesContainerInfo.class);
+        if (classesContainerInfo != null) {
+            classesInfo = new WebModuleClassesInfo() {
+                @Override
+                public List<ContainerInfo> getClassesContainers() {
+                    return classesContainerInfo.getClassesContainerInfo();
+                }
+            };
+        } else {
+            classesInfo = computeWebModuleClassesInfo(containerToAdapt);
+        }
+        rootOverlay.addToNonPersistentCache(artifactContainer.getPath(), WebModuleClassesInfo.class, classesInfo);
+        return classesInfo;
+    }
 
+    private WebModuleClassesInfo computeWebModuleClassesInfo(Container containerToAdapt) throws UnableToAdaptException {
         ArrayList<String> resolved = new ArrayList<String>();
         final List<ContainerInfo> containerInfos = new ArrayList<ContainerInfo>();
 
@@ -120,15 +138,12 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
             }
         }
 
-        classesInfo = new WebModuleClassesInfo() {
+        return new WebModuleClassesInfo() {
             @Override
             public List<ContainerInfo> getClassesContainers() {
                 return containerInfos;
             }
         };
-
-        rootOverlay.addToNonPersistentCache(artifactContainer.getPath(), WebModuleClassesInfo.class, classesInfo);
-        return classesInfo;
     }
 
 }

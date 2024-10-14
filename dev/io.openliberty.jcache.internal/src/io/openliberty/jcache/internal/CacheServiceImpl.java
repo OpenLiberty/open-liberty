@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal;
 
+import static io.openliberty.jcache.internal.Activator.CACHE_CONFIG_CONDITION;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import java.io.ByteArrayInputStream;
@@ -37,8 +38,10 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -82,16 +85,14 @@ public class CacheServiceImpl implements CacheService {
 
     @Activate
     public void activate(Map<String, Object> configProps) {
-        /*
-         * Retrieve the id and cache name from the configuration properties.
-         */
-        this.id = (String) configProps.get(KEY_ID);
-        this.cacheName = (String) configProps.get(KEY_CACHE_NAME);
+        processConfiguration(configProps);
         /*
          * Schedule a task to initialize the cache in the background. This will
          * alleviate delays on the first request to the cache.
+         *
+         * Assign Rank 2 to the restore hook to ensure it executes after the CacheProviderService (rank 0) and CacheManagerServiceImp (rank 1).
          */
-        CheckpointPhase.onRestore(1, () -> {
+        CheckpointPhase.onRestore(2, () -> {
             getCacheFuture = scheduledExecutorService.schedule(new Runnable() {
                 @Override
                 public void run() {
@@ -99,6 +100,19 @@ public class CacheServiceImpl implements CacheService {
                 }
             }, 0, TimeUnit.SECONDS);
         });
+    }
+
+    private void processConfiguration(Map<String, Object> configProps) {
+        /*
+         * Retrieve the id and cache name from the configuration properties.
+         */
+        this.id = (String) configProps.get(KEY_ID);
+        this.cacheName = (String) configProps.get(KEY_CACHE_NAME);
+    }
+
+    @Modified
+    public void modified(Map<String, Object> configProps) {
+        processConfiguration(configProps);
     }
 
     @Deactivate
@@ -318,6 +332,11 @@ public class CacheServiceImpl implements CacheService {
 
     public void unsetSerializationService(SerializationService serializationService) {
         this.serializationService = null;
+    }
+    
+    @Reference(name = "configCondition", service = Condition.class, target = "(" + Condition.CONDITION_ID + "=" + CACHE_CONFIG_CONDITION + ")")
+    protected void setConfigCondition(Condition configCondition) {
+        // do nothing; this is just a reference that we use to force the component to recycle
     }
 
     @Override

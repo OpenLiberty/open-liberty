@@ -9,19 +9,15 @@
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces41.fat.view.bean;
 
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.Destroyed;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Observes;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.view.ViewScoped;
-import jakarta.faces.flow.FlowScoped;
-import jakarta.faces.flow.Flow;
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.context.BeforeDestroyed;
-
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
-
+import jakarta.faces.view.ViewScoped;
 
 @Dependent
 public class Tracker {
@@ -30,10 +26,7 @@ public class Tracker {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Initialized VIEW"));
     }
 
-    /*
-     * Not working -- Invesigation Needed
-     */
-    public void observeBeforeDestroyed(@Observes @BeforeDestroyed(ViewScoped.class)  UIViewRoot view) {
+    public void observeBeforeDestroyed(@Observes @BeforeDestroyed(ViewScoped.class) UIViewRoot view) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("BeforeDestroyed VIEW"));
     }
 

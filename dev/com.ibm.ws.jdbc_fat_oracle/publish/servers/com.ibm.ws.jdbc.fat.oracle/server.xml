@@ -12,7 +12,7 @@
  -->
 <server>
     <featureManager>
-      <feature>servlet-3.1</feature>
+      <feature>servlet-4.0</feature>
       <feature>jdbc-4.2</feature>
       <feature>jndi-1.0</feature>
       <feature>componenttest-1.0</feature>
@@ -34,29 +34,30 @@
     
     <dataSource id="DefaultDataSource">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
+    	<properties.oracle URL="${ORACLE_URL}" user="${ORACLE_USER}" password="${ORACLE_PASSWORD}"/>
     </dataSource>
 
     <dataSource id="casting-ds" jndiName="jdbc/casting-ds" enableConnectionCasting="true">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" roleName="TestRole"/>
+    	<properties.oracle URL="${ORACLE_URL}" user="${ORACLE_USER}" password="${ORACLE_PASSWORD}" roleName="TestRole"/>
     	<onConnect>UPDATE CONCOUNT SET NUMCONNECTIONS = NUMCONNECTIONS + 1</onConnect>
     	<onConnect>CREATE GLOBAL TEMPORARY TABLE ${TEMP_TABLE_NAME}(CURTIME NVARCHAR2(100)) ON COMMIT PRESERVE ROWS</onConnect>
     	<onConnect>INSERT INTO ${TEMP_TABLE_NAME} VALUES (CURRENT_TIMESTAMP)</onConnect>
     </dataSource>
     
     <dataSource id="driver-ds" jndiName="jdbc/driver-ds" type="java.sql.Driver">
-    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
+    	<properties.oracle URL="${ORACLE_URL}" user="${ORACLE_USER}" password="${ORACLE_PASSWORD}"/>
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
     <dataSource id="generic-driver-ds" jndiName="jdbc/generic-driver-ds">
-    	<properties URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
+    	<properties URL="${ORACLE_URL}" user="${ORACLE_USER}" password="${ORACLE_PASSWORD}"/>
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
+    <variable name="ORACLE_PORT" defaultValue="9999" />
     <dataSource id="inferred-ds" jndiName="jdbc/inferred-ds">
-    	<properties databaseName="${env.ORACLE_DBNAME}" portNumber="${env.ORACLE_PORT}" serverName="${env.ORACLE_HOST}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" driverType="thin"/>
+    	<properties databaseName="${ORACLE_DBNAME}" portNumber="${ORACLE_PORT}" serverName="${ORACLE_HOST}" user="${ORACLE_USER}" password="${ORACLE_PASSWORD}" driverType="thin"/>
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
@@ -66,7 +67,7 @@
     <dataSource id="driver-url-preferred" jndiName="jdbc/driver-url-preferred" type="java.sql.Driver">
       <jdbcDriver libraryRef="DBLib"/>
       <containerAuthData user="${ORACLE_USER}" password="${ORACLE_PASSWORD}"/>
-      <properties.oracle url="jdbc:oracle:thin:@${env.ORACLE_HOST}:${env.ORACLE_PORT}:${env.ORACLE_DBNAME}"
+      <properties.oracle url="jdbc:oracle:thin:@${ORACLE_HOST}:${ORACLE_PORT}:${ORACLE_DBNAME}"
       serverName="$INVALID" portNumber="000" serviceName="$INVALID"/> <!-- Should be ignored -->
     </dataSource>
     
@@ -76,7 +77,7 @@
     <dataSource id="ds-url-preferred" jndiName="jdbc/ds-url-preferred" type="javax.sql.DataSource">
       <jdbcDriver libraryRef="DBLib"/>
       <containerAuthData user="${ORACLE_USER}" password="${ORACLE_PASSWORD}"/>
-      <properties.oracle URL="jdbc:oracle:thin:@${env.ORACLE_HOST}:${env.ORACLE_PORT}:${env.ORACLE_DBNAME}"
+      <properties.oracle URL="jdbc:oracle:thin:@${ORACLE_HOST}:${ORACLE_PORT}:${ORACLE_DBNAME}"
       serverName="$INVALID" portNumber="000" serviceName="$INVALID"/> <!-- Should be ignored -->
     </dataSource>
     

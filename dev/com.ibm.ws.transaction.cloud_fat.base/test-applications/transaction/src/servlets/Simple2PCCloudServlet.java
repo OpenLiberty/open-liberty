@@ -12,7 +12,6 @@
  *******************************************************************************/
 package servlets;
 
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -20,6 +19,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
@@ -31,6 +36,7 @@ import javax.transaction.xa.XAResource;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
@@ -90,45 +96,42 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
-            DatabaseMetaData mdata = con.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
-            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
-            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
+            final DatabaseMetaData mdata = con.getMetaData();
+            final String dbName = mdata.getDatabaseProductName();
+            final boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+            final boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
 
             // Statement used to drop table
-            try (Statement stmt = con.createStatement()) {
-                String selForUpdateString = "SELECT LEASE_OWNER" +
-                                            " FROM WAS_LEASES_LOG" +
-                                            (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                                            " WHERE SERVER_IDENTITY='cloud0011'" +
-                                            ((isSQLServer) ? "" : " FOR UPDATE") +
-                                            ((isPostgreSQL || isSQLServer) ? "" : " OF LEASE_TIME");
-                System.out.println("modifyLeaseOwner: " + selForUpdateString);
-                ResultSet rs = stmt.executeQuery(selForUpdateString);
+            final String selForUpdateString = "SELECT LEASE_OWNER" +
+                                              " FROM WAS_LEASES_LOG" +
+                                              (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                              " WHERE SERVER_IDENTITY='cloud0011'" +
+                                              ((isSQLServer) ? "" : " FOR UPDATE") +
+                                              ((isPostgreSQL || isSQLServer) ? "" : " OF LEASE_TIME");
+            System.out.println("modifyLeaseOwner: " + selForUpdateString);
+            try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(selForUpdateString)) {
+
                 String owner = null;
                 while (rs.next()) {
                     owner = rs.getString("LEASE_OWNER");
                     System.out.println("modifyLeaseOwner: owner is - " + owner);
+                    break;
                 }
-                rs.close();
 
                 if (owner == null) {
                     throw new Exception("No rows were returned for " + selForUpdateString);
                 }
 
-                String updateString = "UPDATE WAS_LEASES_LOG" +
-                                      " SET LEASE_OWNER = 'cloud0021'" +
-                                      " WHERE SERVER_IDENTITY='cloud0011'";
+                final String updateString = "UPDATE WAS_LEASES_LOG" +
+                                            " SET LEASE_OWNER = 'cloud0021'" +
+                                            " WHERE SERVER_IDENTITY='cloud0011'";
                 System.out.println("modifyLeaseOwner: " + updateString);
-                stmt.executeUpdate(updateString);
-            } catch (Exception x) {
-                System.out.println("modifyLeaseOwner: caught exception - " + x);
+                final int ret = stmt.executeUpdate(updateString);
+                System.out.println("modifyLeaseOwner: update returned " + ret);
             }
 
             System.out.println("modifyLeaseOwner: commit changes to database");
             con.commit();
-        } catch (Exception ex) {
-            System.out.println("modifyLeaseOwner: caught exception in testSetup: " + ex);
         }
     }
 
@@ -176,73 +179,35 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         }
     }
 
+    // Check our logs are still here and peer leases have gone
     public void testTranlogTableAccess(HttpServletRequest request,
                                        HttpServletResponse response) throws Exception {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
 
-            DatabaseMetaData mdata = con.getMetaData();
+            final Set<String> ourTables = new HashSet<String>();
 
-            System.out.println("testTranlogTableAccess: get metadata tables - " + mdata);
-
-            // Need to be a bit careful here, some RDBMS store uppercase versions of the name and some lower.
-            boolean foundUpperTranCloud1 = false; // WAS_TRAN_LOGCLOUD0011 should have been dropped
-            boolean foundUpperTranCloud2 = false; // WAS_TRAN_LOGCLOUD0021 should be found
-            boolean foundUpperPartnerCloud1 = false; // WAS_PARTNER_LOGCLOUD0011 should have been dropped
-            boolean foundUpperPartnerCloud2 = false; // WAS_PARTNER_LOGCLOUD0021 should be found
-            //Retrieving the columns in the database
-            ResultSet tables = mdata.getTables(null, null, "WAS_%", null); // Just get all the "WAS" prepended tables
-            String tableString = "";
-            while (tables.next()) {
-                tableString = tables.getString("Table_NAME");
-                System.out.println("testTranlogTableAccess: Found table name: " + tableString);
-                if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0011"))
-                    foundUpperTranCloud1 = true;
-                else if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0021"))
-                    foundUpperTranCloud2 = true;
-                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0011"))
-                    foundUpperPartnerCloud1 = true;
-                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0021"))
-                    foundUpperPartnerCloud2 = true;
+            // Need to be a bit careful here, some RDBMS store upper case versions of the name and some lower.
+            for (String wasPrefix : Arrays.asList("WAS_%", "was_%")) {
+                try (ResultSet tables = con.getMetaData().getTables(null, null, wasPrefix, null)) {
+                    while (tables.next()) {
+                        final String tableName = tables.getString("Table_NAME");
+                        System.out.println("Found table: " + tableName);
+                        ourTables.add(tableName.toUpperCase());
+                    }
+                }
             }
 
-            boolean foundLowerTranCloud1 = false; // WAS_TRAN_LOGCLOUD0011 should have been dropped
-            boolean foundLowerTranCloud2 = false; // WAS_TRAN_LOGCLOUD0021 should be found
-            boolean foundLowerPartnerCloud1 = false; // WAS_PARTNER_LOGCLOUD0011 should have been dropped
-            boolean foundLowerPartnerCloud2 = false; // WAS_PARTNER_LOGCLOUD0021 should be found
-            tables = mdata.getTables(null, null, "was%", null); // Just get all the "was" tables
-            while (tables.next()) {
-                tableString = tables.getString("Table_NAME");
-                System.out.println("testTranlogTableAccess: Found table name: " + tableString);
-                if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0011"))
-                    foundLowerTranCloud1 = true;
-                else if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0021"))
-                    foundLowerTranCloud2 = true;
-                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0011"))
-                    foundLowerPartnerCloud1 = true;
-                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0021"))
-                    foundLowerPartnerCloud2 = true;
-            }
-
-            // Report unexpected behaviour
-            final PrintWriter pw = response.getWriter();
-            if (foundUpperTranCloud1 || foundLowerTranCloud1) {
-                pw.println("Unexpectedly found tran log table for CLOUD0011");
-            }
-            if (!foundUpperTranCloud2 && !foundLowerTranCloud2) {
-                pw.println("Unexpectedly did not find tran log table for CLOUD0021");
-            }
-            if (foundUpperPartnerCloud1 || foundLowerPartnerCloud1) {
-                pw.println("Unexpectedly found partner log table for CLOUD0011");
-            }
-            if (!foundUpperPartnerCloud2 && !foundLowerPartnerCloud2) {
-                pw.println("Unexpectedly did not find partner log table for CLOUD0021");
-            }
-            tables.close();
             con.commit();
-        } catch (Exception ex) {
-            System.out.println("testTranlogTableAccess: caught exception " + ex);
+
+            if (ourTables.contains("WAS_TRAN_LOGCLOUD0011") || ourTables.contains("WAS_PARTNER_LOGCLOUD0011")) {
+                throw new Exception("cloud0011 logs still exist");
+            }
+
+            if (!ourTables.contains("WAS_TRAN_LOGCLOUD0021") || !ourTables.contains("WAS_PARTNER_LOGCLOUD0021")) {
+                throw new Exception("cloud0021 logs don't exist");
+            }
         }
     }
 
@@ -375,6 +340,98 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
                 con.commit();
             } catch (Exception ex) {
                 System.out.println("tidyupV1LeaseLog: caught exception in testSetup: " + ex);
+            }
+        }
+    }
+
+    public void insertOrphanLease() throws Exception {
+
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+            System.out.println("insertOrphanLease with cleanup");
+            // Access the Database
+            boolean isPostgreSQL = false;
+            boolean isSQLServer = false;
+            if (dbName.toLowerCase().contains("postgresql")) {
+                // we are PostgreSQL
+                isPostgreSQL = true;
+                System.out.println("insertOrphanLease: This is a PostgreSQL Database");
+            } else if (dbName.toLowerCase().contains("microsoft sql")) {
+                // we are MS SQL Server
+                isSQLServer = true;
+                System.out.println("insertOrphanLease: This is an MS SQL Server Database");
+            }
+
+            String queryString = "SELECT LEASE_TIME" +
+                                 " FROM WAS_LEASES_LOG" +
+                                 (isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 " WHERE SERVER_IDENTITY='nonexistant'" +
+                                 (isSQLServer ? "" : " FOR UPDATE") +
+                                 (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
+            System.out.println("insertOrphanLease: Attempt to select the row for UPDATE using - " + queryString);
+
+            try (Statement claimPeerlockingStmt = con.createStatement(); ResultSet claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString)) {
+
+                final long fiveMinutesAgo = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
+
+                // see if we acquired the row
+                if (claimPeerLockingRS.next()) {
+                    // We found an existing lease row
+                    long storedLease = claimPeerLockingRS.getLong(1);
+                    System.out.println("insertOrphanLease: Acquired server row, stored lease value is: " + storedLease);
+
+                    // Construct the UPDATE string
+                    String updateString = "UPDATE WAS_LEASES_LOG" +
+                                          " SET LEASE_OWNER = ?, LEASE_TIME = ?" +
+                                          " WHERE SERVER_IDENTITY='nonexistant'";
+
+                    System.out.println("insertOrphanLease: update lease for nonexistant");
+
+                    try (PreparedStatement claimPeerUpdateStmt = con.prepareStatement(updateString)) {
+
+                        // Set the Lease_time
+                        claimPeerUpdateStmt.setString(1, "nonexistant");
+                        claimPeerUpdateStmt.setLong(2, fiveMinutesAgo);
+
+                        System.out.println("insertOrphanLease: Ready to UPDATE using string - " + updateString + " and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
+
+                        int ret = claimPeerUpdateStmt.executeUpdate();
+
+                        System.out.println("insertOrphanLease: Have updated server row with return: " + ret);
+                        con.commit();
+                    } catch (Exception ex) {
+                        System.out.println("insertOrphanLease: caught exception in testSetup: " + ex);
+                        // attempt rollback
+                        con.rollback();
+                    }
+                } else {
+                    // We didn't find the row in the table
+                    System.out.println("insertOrphanLease: Could not find row");
+
+                    String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                          " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                          " VALUES (?,?,?,?)";
+
+                    System.out.println("insertOrphanLease: Using - " + insertString + ", and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
+
+                    try (PreparedStatement specStatement = con.prepareStatement(insertString)) {
+                        specStatement.setString(1, "nonexistant");
+                        specStatement.setString(2, "defaultGroup");
+                        specStatement.setString(3, "nonexistant");
+                        specStatement.setLong(4, fiveMinutesAgo);
+
+                        int ret = specStatement.executeUpdate();
+
+                        System.out.println("insertOrphanLease: Have inserted Server row with return: " + ret);
+                        con.commit();
+                    } catch (Exception ex) {
+                        System.out.println("insertOrphanLease: caught exception in testSetup: " + ex);
+                        // attempt rollback
+                        con.rollback();
+                    }
+                }
             }
         }
     }
@@ -513,5 +570,90 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void modifyLeaseOwnerAndDie(HttpServletRequest request,
+                                       HttpServletResponse response) throws Exception {
+        modifyLeaseOwner(request, response);
+        // Give the test something to search for
+        XAResourceImpl.dumpState();
+        Runtime.getRuntime().halt(XAResourceImpl.DIE);
+    }
+
+    public void checkOrphanLeaseAbsence() throws Exception {
+
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+
+            // Access the Database
+            boolean isPostgreSQL = false;
+            boolean isSQLServer = false;
+            if (dbName.toLowerCase().contains("postgresql")) {
+                // we are PostgreSQL
+                isPostgreSQL = true;
+            } else if (dbName.toLowerCase().contains("microsoft sql")) {
+                // we are MS SQL Server
+                isSQLServer = true;
+            }
+
+            String queryString = "SELECT LEASE_TIME" +
+                                 " FROM WAS_LEASES_LOG" +
+                                 (isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 " WHERE SERVER_IDENTITY='nonexistant'" +
+                                 (isSQLServer ? "" : " FOR UPDATE") +
+                                 (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
+
+            try (Statement claimPeerlockingStmt = con.createStatement(); ResultSet claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString)) {
+
+                // see if we acquired the row
+                if (claimPeerLockingRS.next()) {
+                    throw new Exception();
+                    // We found an existing lease row
+                }
+            }
+        }
+    }
+
+    public void setupBatchOfOrphanLeases(int lower, int upper) throws Exception {
+
+        try (Connection con = getConnection(dsTranLog); Statement claimPeerlockingStmt = con.createStatement()) {
+
+            con.setAutoCommit(false);
+
+            for (int i = lower; i < upper; i++) {
+                String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                      " VALUES (?,?,?,?)";
+
+                final long fiveMinutesAgo = Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
+                String serverid = UUID.randomUUID().toString().replaceAll("\\W", "");
+                System.out.println("setupBatchOfOrphanLeases: Using - " + insertString + ", and time: " + TxTestUtils.traceTime(fiveMinutesAgo));
+
+                try (PreparedStatement specStatement = con.prepareStatement(insertString)) {
+                    specStatement.setString(1, serverid);
+                    specStatement.setString(2, "defaultGroup");
+                    specStatement.setString(3, serverid);
+                    specStatement.setLong(4, fiveMinutesAgo);
+
+                    int ret = specStatement.executeUpdate();
+
+                    System.out.println("setupBatchOfOrphanLeases: Have inserted Server row with return: " + ret);
+                }
+            }
+
+            con.commit();
+        }
+    }
+
+    public void setupBatchOfOrphanLeases1() throws Exception {
+
+        setupBatchOfOrphanLeases(0, 10);
+    }
+
+    public void setupBatchOfOrphanLeases2() throws Exception {
+
+        setupBatchOfOrphanLeases(10, 20);
     }
 }

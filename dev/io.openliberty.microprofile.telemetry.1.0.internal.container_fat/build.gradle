@@ -14,6 +14,7 @@ def grpcVersion='1.57.2'
 configurations {
   telemetryAgent
   telemetryAgent129
+  telemetryAgent210
   jaegerClient
   zipkinTracer
 }
@@ -42,6 +43,8 @@ dependencies {
   telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.19.0'
   
   telemetryAgent129 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.29.0'
+  
+  telemetryAgent210 'io.opentelemetry.javaagent:opentelemetry-javaagent:2.0.0'
   
   //Needed for opentracingZipkin-0.33 user feature
   zipkinTracer 'net.wasdev.wlp.tracer:liberty-opentracing-zipkintracer:3.0:sample@zip'
@@ -75,6 +78,13 @@ task addAgent129(type: Copy) {
   rename { 'opentelemetry-javaagent.jar' }
 }
 
+
+task addAgent210(type: Copy) {
+  from configurations.telemetryAgent210
+  into new File(autoFvtDir, 'publish/files/agent-210')
+  rename { 'opentelemetry-javaagent.jar' }
+}
+
 task addJaegerClientLibs (type: Copy) {
     into new File(autoFvtDir, 'publish/servers/crossFeatureOpenTracingServer/jaegerLib')
     from configurations.jaegerClient
@@ -99,5 +109,6 @@ addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn addAgent
 addRequiredLibraries.dependsOn addAgent129
+addRequiredLibraries.dependsOn addAgent210
 addRequiredLibraries.dependsOn addJaegerClientLibs
 addRequiredLibraries.dependsOn copyZipkinTracer

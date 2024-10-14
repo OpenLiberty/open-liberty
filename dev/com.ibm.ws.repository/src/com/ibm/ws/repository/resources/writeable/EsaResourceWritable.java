@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -68,6 +68,13 @@ public interface EsaResourceWritable extends WebDisplayable, ApplicableToProduct
     public void addRequireFeatureWithTolerates(String feature, Collection<String> tolerates);
 
     /**
+     * Sets the collection of platforms for this feature
+     *
+     * @param platforms The collection of platforms for this feature
+     */
+    public void setPlatforms(Collection<String> platforms);
+
+    /**
      * Add the supplied fix to the list of required fixes
      *
      * @param fix The ID of the fix to add
@@ -126,7 +133,7 @@ public interface EsaResourceWritable extends WebDisplayable, ApplicableToProduct
      * Sets the ibmProvisionCapability field.
      *
      * @param ibmProvisionCapability
-     *            The new ibmProvisionCapability to be used
+     *                                   The new ibmProvisionCapability to be used
      */
     public void setProvisionCapability(String provisionCapability);
 
@@ -144,10 +151,10 @@ public interface EsaResourceWritable extends WebDisplayable, ApplicableToProduct
      * Specify the minimum/maximum Java version needed by this ESA, and the Require-Capability headers from each contained bundle which have led to the requirement. All fields are
      * allowed to be null.
      *
-     * @param minimum an OSGI version string representing the minimum Java version required.
-     * @param maximum an OSGI version string representing the minimum Java version required.
-     * @param displayMinimum An alternative representation of the minimum version for display purposes
-     * @param displayMaximum An alternative representation of the maximum version for display purposes
+     * @param minimum               an OSGI version string representing the minimum Java version required.
+     * @param maximum               an OSGI version string representing the minimum Java version required.
+     * @param displayMinimum        An alternative representation of the minimum version for display purposes
+     * @param displayMaximum        An alternative representation of the maximum version for display purposes
      * @param rawBundleRequirements The Require-Capability headers from all the bundles contained in this ESA
      */
     public void setJavaSEVersionRequirements(String minimum, String maximum, Collection<String> rawBundleRequirements);

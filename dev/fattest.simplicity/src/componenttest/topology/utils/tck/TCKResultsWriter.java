@@ -15,8 +15,10 @@ package componenttest.topology.utils.tck;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -77,22 +79,31 @@ public class TCKResultsWriter {
             specURL = "https://jakarta.ee/specifications/" + specName + "/" + specVersion;
             tckURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".zip"; //just a placeholder, needs to be manually updated
         }
-        String filename = null;
+        // Replace the "_" with "-" in the directory name to keep consistency
+        String filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + "-TCKResults.adoc").replace("_", "-");
+
+        String redeableRepeatName = "";
+        //Adoc file for certification is added to results/REPEAT_ID/
         if (repeat.contains("FeatureReplacementAction")) {
-            String newRepeat = repeat.replaceAll("FeatureReplacementAction.*REMOVE", "remove")
+            redeableRepeatName = repeat.replaceAll("FeatureReplacementAction.*REMOVE", "remove")
                             .replaceAll("\\[", "")
                             .replaceAll("\\]", "")
                             .replaceAll("ADD", "add")
                             .replaceAll("  ", " ")
+                            .replaceAll(",","-")
                             .replaceAll(" ", "_");
-            filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + newRepeat + "-TCKResults.adoc").replace("_", "-");
         } else {
-            filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + repeat + "-TCKResults.adoc").replace("_", "-");
+            redeableRepeatName = repeat;
         }
-        // Replace the "_" with "-" in filename to keep consistency
+        Path outputDirectory = Paths.get("results/" + "TCK_Results_Certifications" + redeableRepeatName);
+        Path outputPath = Paths.get("results/" + "TCK_Results_Certifications" + redeableRepeatName, filename);
 
-        Path outputPath = Paths.get("results", filename);
         File outputFile = outputPath.toFile();
+        File outputDir = outputDirectory.toFile();
+
+        if(!outputDir.exists()){
+            outputDir.mkdir();
+        }
 
         String timestamp = Instant.now()
                         .truncatedTo(ChronoUnit.SECONDS)
@@ -127,10 +138,21 @@ public class TCKResultsWriter {
                 }
             }
             output.write("----");
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (SAXException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Files written to the extras directory are included in the FAT output zip, but can also be uploaded to an additional location by setting the
+        // 'extraFatOutputPath' property to a path on LibFS (e.g. /liberty/dev/Xo/release/BUILD_LABEL) to retain them beyond the life cycle of FAT output.
+        // Note that this copying *only* occurs in CI Orchestrator environments as the code wrapping FAT execution is responsible for performing the upload to LibFS.
+        // The use case here is to make .adoc files available in the build directory without having to extract them from the FAT output zip every time.
+        try {
+            Path extrasPath = Paths.get("extras/" + "TCK_Results_Certifications" + redeableRepeatName, filename);
+            Files.createDirectories(extrasPath.getParent());
+            Files.copy(outputPath, extrasPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

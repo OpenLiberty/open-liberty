@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -20,17 +20,21 @@ src: src, resources
 
 Import-Package: \
     org.eclipse.microprofile.config.*;version="[1.0,3)",\
+    org.eclipse.microprofile.openapi.models.media;version="[2,4)",\
     io.openliberty.microprofile.openapi.internal.resources,\
     io.openliberty.microprofile.openapi.internal.resources.validation,\
     javax.xml.bind.annotation;version=!,\
-    io.smallrye.openapi.*;version="[2.0,4.0)",\
+    io.smallrye.openapi.*;version="[2.0,5.0)",\
     org.jboss.jandex;version="[2.4,4)",\
     *
 
 Export-Package: \
     com.ibm.ws.microprofile.openapi.servlet.filter, \
+    io.openliberty.microprofile.openapi20.internal,\
+    io.openliberty.microprofile.openapi20.internal.merge,\
     io.openliberty.microprofile.openapi20.internal.services,\
-    io.openliberty.microprofile.openapi20.internal.utils
+    io.openliberty.microprofile.openapi20.internal.utils,\
+    io.openliberty.microprofile.openapi20.internal.validation
 
 Private-Package: \
     io.openliberty.microprofile.openapi20.internal.*
@@ -47,9 +51,11 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
     io.openliberty.microprofile.openapi20.internal.ApplicationProcessor,\
     io.openliberty.microprofile.openapi20.internal.MergeDisabledAlerter,\
     io.openliberty.microprofile.openapi20.internal.OLOASFactoryResolverImpl,\
+    io.openliberty.microprofile.openapi20.internal.ValidationComponent,\
     io.openliberty.microprofile.openapi20.internal.css.CustomCSSProcessor,\
     io.openliberty.microprofile.openapi20.internal.DefaultHostListenerImpl,\
-    io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer
+    io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer,\
+    io.openliberty.microprofile.openapi20.internal.validation.OASValidator30Impl
 
 WS-TraceGroup: MPOPENAPI
 

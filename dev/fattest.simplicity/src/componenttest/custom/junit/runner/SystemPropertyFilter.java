@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,21 +22,14 @@ import componenttest.annotation.SkipIfSysProp;
 
 public class SystemPropertyFilter extends Filter {
 
+    private static Class<?> getMyClass() {
+        return SystemPropertyFilter.class;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String describe() {
         return null;
-    }
-
-    /**
-     * Like {@link Description#getTestClass}, but without initializing the class.
-     */
-    private Class<?> getTestClass(Description desc) {
-        try {
-            return Class.forName(desc.getClassName(), false, getClass().getClassLoader());
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
     }
 
     /** {@inheritDoc} */
@@ -48,8 +41,8 @@ public class SystemPropertyFilter extends Filter {
     /**
      * Decide if we should skip this test based on the SkipIfSysProp annotation
      *
-     * @param desc
-     * @return true (we must skip), false (we should run unless something else prevents us)
+     * @param  desc
+     * @return      true (we must skip), false (we should run unless something else prevents us)
      */
     private boolean shouldSkipViaSysProp(Description desc) {
         SkipIfSysProp anno = desc.getAnnotation(SkipIfSysProp.class);
@@ -57,7 +50,7 @@ public class SystemPropertyFilter extends Filter {
         if (anno == null) {
             //there was no method level annotation
             //check for a test class level annotation
-            anno = getTestClass(desc).getAnnotation(SkipIfSysProp.class);
+            anno = FilterUtils.getTestClass(desc, getMyClass()).getAnnotation(SkipIfSysProp.class);
         }
 
         return shouldSkipViaSysProp(anno, desc.getDisplayName());
@@ -96,8 +89,8 @@ public class SystemPropertyFilter extends Filter {
     /**
      * Decide if we should run this test based on the OnlyIfSysProp annotation
      *
-     * @param desc
-     * @return true (we should run unless something else prevents us), false (we must skip)
+     * @param  desc
+     * @return      true (we should run unless something else prevents us), false (we must skip)
      */
     private boolean shouldRunViaSysProp(Description desc) {
         OnlyIfSysProp anno = desc.getAnnotation(OnlyIfSysProp.class);
@@ -105,7 +98,7 @@ public class SystemPropertyFilter extends Filter {
         if (anno == null) {
             //there was no method level annotation
             //check for a test class level annotation
-            anno = getTestClass(desc).getAnnotation(OnlyIfSysProp.class);
+            anno = FilterUtils.getTestClass(desc, getMyClass()).getAnnotation(OnlyIfSysProp.class);
         }
 
         return shouldRunViaSysProp(anno, desc.getDisplayName());

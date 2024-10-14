@@ -1,3 +1,5 @@
 dependencies {
-  requiredLibs project(':com.ibm.ws.logging.hpel')
+  requiredLibs (project(':com.ibm.ws.logging.hpel')) {
+    transitive = false
+  }
 }

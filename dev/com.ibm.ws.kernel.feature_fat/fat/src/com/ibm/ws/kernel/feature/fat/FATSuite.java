@@ -18,7 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                // Disabled FeatureProcessTypeTest.class,
+// Disabled FeatureProcessTypeTest.class,
                 MinifiedServerEnforceSingletonTest.class,
                 BundleOriginTest.class,
                 ActivationTypeTest.class,
@@ -28,6 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 UserFeatureTest.class,
                 SPIIsolationTest.class,
                 SimpleMinifiedServerTest.class,
+                SimpleVersionlessMinifiedServerTest.class,
                 MinifyIconsTest.class,
                 FeatureConflictUpgradeTest.class,
                 IgnoreAPITest.class,

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E : Un temporisateur n''a pas pu \u00eatre cr\
 J2CA8510.create.timed.out.explanation=La cr\u00e9ation du temporisateur est plus longue que pr\u00e9vue.
 J2CA8510.create.timed.out.useraction=V\u00e9rifiez la charge du syst\u00e8me et si elle est \u00e9lev\u00e9e, r\u00e9duisez-la.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car l''adaptateur de ressources {0} a cr\u00e9\u00e9 un temporisateur.
+J2CA8511.create.timer.failed.checkpoint.explanation=Liberty ne prend pas en charge les adaptateurs de ressources qui cr\u00e9ent un temporisateur lors du d\u00e9marrage des applications lorsqu'un point de contr\u00f4le du serveur est demand\u00e9.
+J2CA8511.create.timer.failed.checkpoint.useraction=Configurez le point de contr\u00f4le pour qu'il se produise avant le d\u00e9marrage de l'application \u00e0 l'aide de l'option de point de contr\u00f4le du serveur beforeApp.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: Impossible de cr\u00e9er un temporisateur pour l''adaptateur de ressources {0} lors de la demande de point de contr\u00f4le du serveur.
+J2CA8512.create.timer.not.supported.checkpoint.explanation=Liberty ne prend pas en charge la cr\u00e9ation de temporisateurs par les adaptateurs de ressources lorsque les applications d\u00e9marrent lorsqu'un point de contr\u00f4le de serveur est demand\u00e9.
+J2CA8512.create.timer.not.supported.checkpoint.useraction=Configurez le point de contr\u00f4le pour qu'il se produise avant le d\u00e9marrage de l'application \u00e0 l'aide de l'option de point de contr\u00f4le du serveur beforeApp.
+
 J2CA8600.work.start.timeout=J2CA8600E : Le travail {0} soumis par l''adaptateur de ressources {1} n''a pas d\u00e9marr\u00e9 dans un d\u00e9lai de {2} millisecondes.
 J2CA8600.work.start.timeout.explanation=La tentative de d\u00e9marrage du travail a d\u00e9pass\u00e9 le d\u00e9lai imparti.
 J2CA8600.work.start.timeout.useraction=V\u00e9rifiez la charge du syst\u00e8me et si elle est \u00e9lev\u00e9e, r\u00e9duisez-la, ou contactez le fournisseur de l'adaptateur de ressources pour savoir si le d\u00e9lai d'attente de soumission du travail au gestionnaire de travaux JCA doit \u00eatre augment\u00e9.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car l''adaptateur de ressources {0} a soumis le travail {1}.
+J2CA8601.work.submit.failed.checkpoint.explanation=Liberty ne prend pas en charge les adaptateurs de ressources qui soumettent des travaux lors du d\u00e9marrage des applications lorsqu'un point de contr\u00f4le de serveur est demand\u00e9.
+J2CA8601.work.submit.failed.checkpoint.useraction=Configurez le point de contr\u00f4le pour qu'il se produise avant le d\u00e9marrage de l'application \u00e0 l'aide de l'option de point de contr\u00f4le du serveur beforeApp.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: Le travail {0} soumis par l''adaptateur de ressources {1} a \u00e9t\u00e9 rejet\u00e9 lors de la demande de point de contr\u00f4le du serveur.
+J2CA8602.work.submit.not.supported.checkpoint.explanation=Liberty ne prend pas en charge la soumission de travaux par les adaptateurs de ressources lorsque les applications d\u00e9marrent lorsqu'un point de contr\u00f4le de serveur est demand\u00e9.
+J2CA8602.work.submit.not.supported.checkpoint.useraction=Configurez le point de contr\u00f4le pour qu'il se produise avant le d\u00e9marrage de l'application \u00e0 l'aide de l'option de point de contr\u00f4le du serveur beforeApp.
 
 # 8622 deleted
 
@@ -168,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=Consultez la documentation du fournis
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Les archives de bean d'adaptateur de ressources ne sont pas prises en charge.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Le fichier beans.xml du r\u00e9pertoire META-INF est ignor\u00e9 car les adaptateurs de ressources d'archive de bean g\u00e9r\u00e9e par CDI ne sont pas pris en charge.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Retirez le fichier beans.xml du r\u00e9pertoire META-INF car les adaptateurs de ressources d'archive de bean g\u00e9r\u00e9e par CDI ne sont pas pris en charge.
-
-
-

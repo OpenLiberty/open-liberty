@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2021 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -47,8 +47,8 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=The specified call method 
 healthcheck.bean.call.exception.CWMH0050E.useraction=Review your call method within the HealthCheck bean to identify the exception that occurred.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0052W=CWMH0052W: The {0} implementing HealthCheckResponse in the {1} application in module {2}, reported a {3} status with data {4}.
-healthcheck.application.down.CWMH0052W.explanation=The DOWN status might cause a monitoring service to take action on this server.
+healthcheck.application.down.CWMH0052W=CWMH0052W: The {0} implementing HealthCheckResponse in the {1} application in the module, {2}, reported a {3} status for the health check, {4}, and with the data {5}.
+healthcheck.application.down.CWMH0052W.explanation=The DOWN status might cause a monitoring service to act on this server.
 healthcheck.application.down.CWMH0052W.useraction=No user action is required.  This warning is a record of the DOWN status.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet

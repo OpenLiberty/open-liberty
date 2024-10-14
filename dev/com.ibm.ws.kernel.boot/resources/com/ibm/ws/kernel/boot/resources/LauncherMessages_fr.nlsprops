@@ -774,6 +774,14 @@ warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Un d\u00e9passement du 
 warning.timeoutWaitingForServerProcessToStop.explanation=Le serveur ne s'est pas arr\u00eat\u00e9 dans le d\u00e9lai imparti par la valeur de d\u00e9lai d'attente. Cela peut \u00eatre d\u00fb \u00e0 un arr\u00eat lent du serveur ou \u00e0 un blocage du serveur.   
 warning.timeoutWaitingForServerProcessToStop.useraction=Si le serveur est toujours en cours d'ex\u00e9cution, envisagez d'augmenter la valeur du d\u00e9lai d'attente pour la commande'server stop'. Sur les syst\u00e8mes de type UNIX, la commande d'arr\u00eat du serveur attend que le processus serveur s'arr\u00eate. Sous Windows, la commande attend d'obtenir un verrou sur le fichier console.log . Utilisez les outils de surveillance de fichier pour v\u00e9rifier si un autre programme, tel qu'un \u00e9diteur, a verrouill\u00e9 le fichier console.log .
 
+warning.manual.PPV.env.var=CWWKE0969W: Une variable d'environnement manuelle PREFERRED_PLATFORM_VERSION a \u00e9t\u00e9 sp\u00e9cifi\u00e9e lors du conditionnement du serveur.
+warning.manual.PPV.env.var.explanation=Une variable d'environnement manuelle PREFERRED_PLATFORM_VERSION a \u00e9t\u00e9 d\u00e9finie dans l'environnement mais ne sera pas incluse dans le package serveur.
+warning.manual.PPV.env.var.useraction=Pour conserver la variable d'environnement PREFERRED_PLATFORM_VERSION, sp\u00e9cifiez-la dans le fichier de configuration server.env .
+
+error.read.server.env=CWWKE0970E: Impossible de lire le fichier server.env \u00e0 l'emplacement { }.
+error.read.server.env.explanation=Echec de la lecture du fichier server.env .
+error.read.server.env.useraction=Impossible de lire le fichier server.env .  V\u00e9rifiez les droits d'acc\u00e8s aux fichiers et relancez l'op\u00e9ration.
+
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.
 info.serverStartedWithPID=Le serveur {0} a d\u00e9marr\u00e9 avec l''ID de processus {1}.
