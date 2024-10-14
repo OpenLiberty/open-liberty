@@ -600,10 +600,10 @@ CWWKD1060.name.out.of.scope.useraction=Update the Repository annotation to \
  specify a data store name that is visible to the module or library \
  providing the repository interface.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: The {0} repository interface which is \
- defined in the {1} enterprise bean module of the {2} application configures \
- a {2} value for the {3} attribute. However,  {4} names are not accessible to \
- enterprise bean modules. Use a name from one of the following \
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: One or more repository interfaces ({0}) \
+ that are defined in the {1} enterprise bean module of the {2} application \
+ configure a {2} value for the {3} attribute. However, {4} names are not accessible \
+ to enterprise bean modules. Use a name from one of the following \
  namespaces: {5}.
 CWWKD1061.comp.name.in.ejb.explanation=The specified namespace is not accessible \
  to the enterprise bean module where the repository interface is defined.
@@ -633,24 +633,24 @@ CWWKD1064.datastore.error.explanation=An error occurred when attempting to obtai
 CWWKD1064.datastore.error.useraction=Ensure that the specified data store and all \
  other resources it depends on exist and are correctly configured.
 
-CWWKD1065.ddlgen.timeout=CWWKD1065E: DDL generation for the {0} repository \
- interface failed because the {1} data store did not complete DDL generation \
+CWWKD1065.ddlgen.timeout=CWWKD1065E: DDL generation for one or more repository \
+ interfaces ({0}) failed because the {1} data store did not complete DDL generation \
  within {2} seconds for the following entities: {3}.
 CWWKD1065.ddlgen.timeout.explanation=The DDL generation attempt timed out \
  and did not complete.
 CWWKD1065.ddlgen.timeout.useraction=Reattempt DDL generation \
  when the system and database are not under load.
 
-CWWKD1066.ddlgen.failed=CWWKD1066E: DDL generation for the {0} repository \
- interface that uses the {1} data store encountered an error when attempting \
+CWWKD1066.ddlgen.failed=CWWKD1066E: DDL generation for one or more repository \
+ interfaces ({0}) that use the {1} data store encountered an error when attempting \
  DDL generation for the following entities: {2}. The error is: {3}.
 CWWKD1066.ddlgen.failed.explanation=The DDL generation attempt failed \
  and did not complete.
 CWWKD1066.ddlgen.failed.useraction=Investigate the error and make corrections \
  to the repository interface, entities, data store configuration, or database.
 
-CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: DDL generation for the {0} repository \
- interface failed because the {1} data store was not available or was unable \
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: DDL generation for one or more repository \
+ interfaces ({0}) failed because the {1} data store was not available or was unable \
  to make the following entities available within {2} seconds: {3}.
 CWWKD1067.ddlgen.emf.timeout.explanation=Acquisition of the resources needed \
  for DDL generation timed out and did not complete.
@@ -686,16 +686,18 @@ CWWKD1070.record.convert.err.explanation=It is not possible to use the \
 CWWKD1070.record.convert.err.useraction=Define the entity as a Jakarta Persistence \
  entity instead of using a Java record entity.
 
-CWWKD1071.record.with.type.var=CWWKD1071E: The {0} record cannot be used as an \
- entity because it has one or more type variables: {1}.
+CWWKD1071.record.with.type.var=CWWKD1071E: The {0} record is used as an entity by \
+ one or more of the repository interfaces ({1}) in the {2} application artifact, \
+ but the record cannot be an entity because it has one or more type variables: {3}.
 CWWKD1071.record.with.type.var.explanation=Entity classes cannot have generic \
  type variables.
 CWWKD1071.record.with.type.var.useraction=Remove the type variables from the \
  record.
 
-CWWKD1072.record.comp.conflict=CWWKD1072E: The {0} record cannot be used as an \
- entity because its {1} component and {2} component both resolve to the same \
- entity property name.
+CWWKD1072.record.comp.conflict=CWWKD1072E: The {0} record is used as an entity by \
+ one or more of the repository interfaces ({1}) in the {2} application artifact, \
+ but the record cannot be an entity because its {3} component and {4} component \
+ both resolve to the same entity property name.
 CWWKD1072.record.comp.conflict.explanation=Entity property names must be \
  unique ignoring case.
 CWWKD1072.record.comp.conflict.useraction=Rename one of the record components \
@@ -734,8 +736,8 @@ CWWKD1076.repo.disposed.useraction=Ensure that the repository method is not \
  used outside of the scope of the application that defines the repository.
 
 CWWKD1077.defaultds.not.found=CWWKD1077E: The {0} application artifact \
- has a {1} repository interface that uses or defaults to the \
- {2} data store, which must be configured in server configuration \
+ has one or more repository interfaces ({1}) that use or default to the \
+ {2} data store. This data store must be configured in server configuration \
  by defining a dataSource element that has an identifier of \
  DefaultDataSource. For example, {3} \
  Alternatively, assign the dataStore value of the Repository annotation \
