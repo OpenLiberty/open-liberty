@@ -152,8 +152,13 @@ public class TestUtils {
     static boolean compareLogSizes(String methodName, String logs, long expected, long actual) {
         boolean logSizesMatch = (expected == actual);
 
-        if (!logSizesMatch)
+        if (!logSizesMatch) {
+            Log.info(c, methodName, methodName + " -- test failed");
+            Log.info(c, methodName, expected + "=expected, " + actual + "=actual -- occurances found");
             Log.info(c, methodName, logs);
+            Log.info(c, methodName, "LOG COMPLETED");
+
+        }
 
         return logSizesMatch;
     }

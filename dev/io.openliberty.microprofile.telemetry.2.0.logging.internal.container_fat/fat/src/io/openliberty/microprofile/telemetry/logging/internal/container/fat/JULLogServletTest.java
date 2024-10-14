@@ -90,7 +90,7 @@ public class JULLogServletTest {
 
         final String logs = container.getLogs();
 
-        List<String> linesMessagesLog = server.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", server.getDefaultLogFile());
+        List<String> linesMessagesLog = server.findStringsInLogsUsingMark("^(?!.*scopeInfo).*\\[.*$", server.getDefaultLogFile());
         int bridgedLogsCount = logs.split("LogRecord #").length - 1;
 
         assertTrue("Messages.log and Telemetry console logs don't match.",

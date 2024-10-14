@@ -197,7 +197,15 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Agent is active, and received event is NOT logged by Tr.", event.toString());
                     }
+                    if (event.toString().contains("SRVE0250I"))
+                        Tr.info(tc, "Agent is active, and received event is NOT logged by Tr. SRVE0250I found: ", event.toString());
+
                     return;
+                }
+                if (AgentDetection.isAgentActive() && isTrEvent(event)) {
+                    if (event.toString().contains("SRVE0250I"))
+                        Tr.info(tc, "Agent is active, and received event is logged by Tr. SRVE0250I found: ", event.toString());
+
                 }
 
                 // Get the LogRecordBuilder from the OpenTelemetry Logs Bridge API.
