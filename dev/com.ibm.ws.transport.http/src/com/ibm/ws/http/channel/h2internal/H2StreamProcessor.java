@@ -2028,8 +2028,6 @@ public class H2StreamProcessor {
                                 return false;
                             } else if (elapsed >= writeTimeout) {
                                 timedOut = true;
-                            } else {
-                                writeTimeout -= elapsed;
                             }
                         }
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
