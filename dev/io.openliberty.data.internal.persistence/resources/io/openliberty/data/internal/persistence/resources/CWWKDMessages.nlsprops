@@ -737,7 +737,7 @@ CWWKD1076.repo.disposed.useraction=Ensure that the repository method is not \
 
 CWWKD1077.defaultds.not.found=CWWKD1077E: The {0} application artifact \
  has one or more repository interfaces ({1}) that use or default to the \
- {2} data store. This data store must be configured in server configuration \
+ {2} data store. This data store must be configured in the server configuration \
  by defining a dataSource element that has an identifier of \
  DefaultDataSource. For example, {3} \
  Alternatively, assign the dataStore value of the Repository annotation \
