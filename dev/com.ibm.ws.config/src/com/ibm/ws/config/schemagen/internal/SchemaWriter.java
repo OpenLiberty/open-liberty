@@ -1041,10 +1041,6 @@ class SchemaWriter {
         }
 
         if (type.getHasExtraProperties()) {
-            writeInternalPropertiesType(type);
-        }
-
-        if (generateWildcards) {
             writeAttributeWildcard();
         }
 
