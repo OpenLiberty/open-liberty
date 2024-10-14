@@ -56,7 +56,6 @@ import javax.xml.xpath.XPathFactory;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Assume;
-import org.openqa.selenium.InvalidArgumentException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -264,13 +263,13 @@ public class TCKRunner {
 
     private TCKRunner(LibertyServer server, Type type, String specName) {
         // Validate required settings
-        Objects.requireNonNull(server, "TCKRunner was build without a configured server");
-        Objects.requireNonNull(type, "TCKRunner was build without a configured type");
-        Objects.requireNonNull(specName, "TCKRunner was build without a configured specName");
+        Objects.requireNonNull(server, "TCKRunner was built without a configured server");
+        Objects.requireNonNull(type, "TCKRunner was built without a configured type");
+        Objects.requireNonNull(specName, "TCKRunner was built without a configured specName");
 
         // Validate spec name field
-        if (Pattern.compile("^[ A-Za-z]+$").matcher(specName).matches()) {
-            throw new InvalidArgumentException("The specName " + specName
+        if (!Pattern.compile("^[ A-Za-z]+$").matcher(specName).matches()) {
+            throw new IllegalArgumentException("The specName " + specName
                                                + " is an invalid name as it contains characters other than letters and spaces, or no information at all.");
         }
 
