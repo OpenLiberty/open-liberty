@@ -28,5 +28,5 @@ Subsystem-Name: Message Server 1.0
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.messaging_1.0-javadoc.zip
 kind=ga
 edition=base
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true
 WLP-Platform: javaee-6.0,javaee-7.0,javaee-8.0

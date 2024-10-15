@@ -33,5 +33,5 @@ Subsystem-Name: JMS 2.0 Client for Message Server
  io.openliberty.netty.internal.impl
 kind=ga
 edition=base
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true
 WLP-Platform: javaee-7.0,javaee-8.0
