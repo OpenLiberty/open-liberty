@@ -77,25 +77,27 @@ public class TxTestContainerSuite extends TestContainerSuite {
 
     public static void dropTables(String ...tables) {
     	Log.entering(TxTestContainerSuite.class, "dropTables");
-        try (Connection conn = testContainer.createConnection(""); Statement stmt = conn.createStatement()) {
-        	if (tables.length != 0) {
-            	Log.info(TxTestContainerSuite.class, "dropTables", "explicit");
-        		for (String table : tables) {
-        			dropTable(stmt, table);
-        		}
-        	} else {
-        		DatabaseMetaData metaData = conn.getMetaData();
-        		String[] types = {"TABLE"};
-        		//Retrieving the columns in the database
-        		try (ResultSet existing = metaData.getTables(null, null, "%", types)) {
-        			while (existing.next()) {
-        				dropTable(stmt, existing.getString("TABLE_NAME"));
-        			}
-        		}
-        	}
-        } catch (SQLException e) {
-        	Log.error(TxTestContainerSuite.class, "dropTables", e);
-        }
+    	if (testContainer != null) {
+    		try (Connection conn = testContainer.createConnection(""); Statement stmt = conn.createStatement()) {
+    			if (tables.length != 0) {
+    				Log.info(TxTestContainerSuite.class, "dropTables", "explicit");
+    				for (String table : tables) {
+    					dropTable(stmt, table);
+    				}
+    			} else {
+    				DatabaseMetaData metaData = conn.getMetaData();
+    				String[] types = {"TABLE"};
+    				//Retrieving the columns in the database
+    				try (ResultSet existing = metaData.getTables(null, null, "%", types)) {
+    					while (existing.next()) {
+    						dropTable(stmt, existing.getString("TABLE_NAME"));
+    					}
+    				}
+    			}
+    		} catch (SQLException e) {
+    			Log.error(TxTestContainerSuite.class, "dropTables", e);
+    		}
+    	}
     }
     
     private static void dropTable(Statement stmt, String table) {

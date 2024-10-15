@@ -91,7 +91,7 @@
             id="shutdownOnLogFailure" required="false" type="Boolean" default="true" />
 
         <AD name="internal" description="internal use only"
-            id="enableHADBPeerLocking" required="false" type="Boolean" default="true" />
+            id="enableLogLocking" required="false" type="Boolean" default="true" />
             
         <AD name="internal" description="internal use only"
             id="timeBetweenHeartbeats" required="false" type="Integer" default="5" />

@@ -45,6 +45,8 @@ public class DBRotationTest extends CloudFATServletClient {
     private static final Class<?> c = DBRotationTest.class;
 
     protected static final int cloud2ServerPort = Integer.parseInt(System.getProperty("HTTP_secondary"));
+    protected static final int longLeaseServerPortB = 9993;
+    protected static final int longLeaseServerPortC = 9994;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
     public static LibertyServer s1;
@@ -79,6 +81,15 @@ public class DBRotationTest extends CloudFATServletClient {
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown")
     public static LibertyServer noShutdownServer1;
 
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA")
+    public static LibertyServer longLeaseServerA;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaseB")
+    public static LibertyServer longLeaseServerB;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaseC")
+    public static LibertyServer longLeaseServerC;
+
     public static String[] serverNames = new String[] {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD002",
@@ -91,6 +102,9 @@ public class DBRotationTest extends CloudFATServletClient {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.norecoverygroup",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD002.shortlease",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD002.fastcheck",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.longleaseB",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.longleaseC",
     };
 
     @BeforeClass
@@ -122,6 +136,9 @@ public class DBRotationTest extends CloudFATServletClient {
         ShrinkHelper.exportAppToServer(longLeaseLogFailServer1, app, dO);
         ShrinkHelper.exportAppToServer(noShutdownServer1, app, dO);
         ShrinkHelper.exportAppToServer(server2nopeerlocking, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseServerA, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseServerB, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseServerC, app, dO);
     }
 
     public static void setUp(LibertyServer server) throws Exception {
@@ -416,7 +433,7 @@ public class DBRotationTest extends CloudFATServletClient {
     }
 
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException" })
     public void testBackwardCompatibility() throws Exception {
 
         serversToCleanup = new LibertyServer[] { server1 };
@@ -429,11 +446,11 @@ public class DBRotationTest extends CloudFATServletClient {
         // we pickup the trace from the next home server lease update where the V1 data will be replaced by V2 and from the claim for
         // cloud0022's logs.
         server1.setTraceMarkToEndOfDefaultTrace();
-        assertNotNull("Lease Owner column not updated", server1.waitForStringInTrace("Lease_owner column contained cloud0011,http", FATUtils.LOG_SEARCH_TIMEOUT));
-        assertNotNull("Lease Owner column not inserted", server1.waitForStringInTrace("Insert combined string cloud0011,http", FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull("V1 lease Owner column not discovered", server1.waitForStringInTrace("Lease_owner column contained cloud0011$", FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull("V2 lease Owner column not inserted", server1.waitForStringInTrace("Insert combined string cloud0011,http", FATUtils.LOG_SEARCH_TIMEOUT));
 
-        // Now tidy up after test
-        runTest(server1, SERVLET_NAME, "tidyupV1LeaseLog");
+        assertNotNull("Peer recovery not attempted",
+                      server1.waitForStringInTrace("CWRLS0011I: Performing recovery processing for a peer WebSphere server ", FATUtils.LOG_SEARCH_TIMEOUT));
     }
 
     @Test
@@ -480,6 +497,76 @@ public class DBRotationTest extends CloudFATServletClient {
             Log.info(c, method, "testReactionToDeletedTables twoTrans returned: " + sb);
             assertNotNull("Home server tables are still present", server2.waitForStringInTrace("Underlying SQL tables missing", FATUtils.LOG_SEARCH_TIMEOUT));
         }
+    }
+
+    /**
+     * The test is the inverse of testLogFailure() and checks recovery log locking in a peer server environment.
+     *
+     * Start 2 servers, com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA which is configured with a long (5 minute) leaseTimeout
+     * and com.ibm.ws.transaction_ANYDBCLOUD002 which is configured with a 20 second leaseTimeout. com.ibm.ws.transaction_ANYDBCLOUD002
+     * does not know that com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA has a much longer leaseTimeout configured so it will prematurely
+     * (from com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA's point of view) attempt to
+     * acquire com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA's logs. In the database case, the takeover will fail because peer database log
+     * locking is enabled by default and com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA "still holds its lock" on its logs.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPeerTakeoverFailure() throws Exception {
+        //Servers are concurrent, disable for standalone Derby database which will fail
+        if (DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer) == DatabaseContainerType.Derby) {
+            return;
+        }
+
+        serversToCleanup = new LibertyServer[] { longLeaseServerA, server2 };
+
+        longLeaseServerA.setFFDCChecking(false);
+        server2.setHttpDefaultPort(cloud2ServerPort);
+
+        // serverA has waitforrecovery true so server2 will not be started till serverA's logs are fully ready
+        FATUtils.startServers(_runner, longLeaseServerA, server2);
+
+        // server2 does not know that serverA has a much longer leaseTimeout configured so it will prematurely
+        // (from serverA's point of view) attempt to acquire serverA's log. In the filesystem case,
+        // the takeover will fail because serverA still holds its lock.
+
+        //  Check for key string to see whether peer recovery has failed
+        assertNotNull("peer recovery unexpectedly succeeded",
+                      server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0011",
+                                                   FATUtils.LOG_SEARCH_TIMEOUT));
+    }
+
+    /**
+     * Same as above but with 3 servers
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMultiPeerTakeoverFailure() throws Exception {
+        //Servers are concurrent, disable for standalone Derby database which will fail
+        if (DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer) == DatabaseContainerType.Derby) {
+            return;
+        }
+
+        serversToCleanup = new LibertyServer[] { longLeaseServerA, server2, longLeaseServerB, longLeaseServerC };
+
+        longLeaseServerA.setFFDCChecking(false);
+        server2.setHttpDefaultPort(cloud2ServerPort);
+        longLeaseServerB.setHttpDefaultPort(longLeaseServerPortB);
+        longLeaseServerC.setHttpDefaultPort(longLeaseServerPortC);
+
+        FATUtils.startServers(_runner, longLeaseServerA, longLeaseServerB, longLeaseServerC, server2);
+
+        //  Check for key strings to see whether peer recovery has failed
+        assertNotNull("First peer recovery unexpectedly succeeded",
+                      server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0011",
+                                                   FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull("Second peer recovery unexpectedly succeeded",
+                      server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0012",
+                                                   FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull("Third peer recovery unexpectedly succeeded",
+                      server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0013",
+                                                   FATUtils.LOG_SEARCH_TIMEOUT));
     }
 
     // Returns false if the server is alive, throws Exception otherwise

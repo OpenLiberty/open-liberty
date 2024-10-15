@@ -313,37 +313,6 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         return conn;
     }
 
-    public void tidyupV1LeaseLog(HttpServletRequest request,
-                                 HttpServletResponse response) throws Exception {
-
-        try (Connection con = getConnection(dsTranLog)) {
-            con.setAutoCommit(false);
-            DatabaseMetaData mdata = con.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
-            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
-
-            // Statement used to delete from table
-            try (Statement stmt = con.createStatement()) {
-                String delString = "DELETE FROM WAS_LEASES_LOG" +
-                                   (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                                   " WHERE SERVER_IDENTITY='cloud0022'";
-                System.out.println("tidyupV1LeaseLog: " + delString);
-                int ret = stmt.executeUpdate(delString);
-                System.out.println("tidyupV1LeaseLog: return was " + ret);
-                delString = "DELETE FROM WAS_LEASES_LOG" +
-                            (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                            " WHERE SERVER_IDENTITY='cloud0033'";
-                System.out.println("tidyupV1LeaseLog: " + delString);
-                ret = stmt.executeUpdate(delString);
-
-                System.out.println("tidyupV1LeaseLog: return was " + ret + " commit changes to database");
-                con.commit();
-            } catch (Exception ex) {
-                System.out.println("tidyupV1LeaseLog: caught exception in testSetup: " + ex);
-            }
-        }
-    }
-
     public void insertOrphanLease() throws Exception {
 
         try (Connection con = getConnection(dsTranLog)) {
@@ -459,10 +428,8 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
             boolean isOracle = dbName.toLowerCase().contains("oracle");
             boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
-            Statement stmt = null;
-            // Statement used to drop table
-            try {
-                stmt = con.createStatement();
+
+            try (Statement stmt = con.createStatement()) {
                 String dropTableString = "DROP TABLE WAS_LEASES_LOG";
                 System.out.println("setupNonIndexedLeaseLog: Drop table using: " + dropTableString);
                 int dropReturn = stmt.executeUpdate(dropTableString);
@@ -471,9 +438,8 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
                 System.out.println("setupNonIndexedLeaseLog: caught exception in testSetup: " + ex);
             }
 
-            try {
-                // Now set up old school WAS_LEASES_LOG table
-                stmt = con.createStatement();
+            // Now set up old school WAS_LEASES_LOG table
+            try (Statement stmt = con.createStatement()) {
                 if (isOracle) {
                     System.out.println("setupNonIndexedLeaseLog: Create Oracle Table using: " + oracleTableString);
                     stmt.executeUpdate(oracleTableString);

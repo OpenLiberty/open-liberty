@@ -342,12 +342,11 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     * @see com.ibm.tx.config.ConfigurationProvider#enableLogLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean enableLogLocking() {
+        return true;
     }
 
     /*

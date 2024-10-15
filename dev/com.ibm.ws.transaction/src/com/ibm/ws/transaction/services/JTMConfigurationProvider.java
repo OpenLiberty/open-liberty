@@ -872,8 +872,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
-        return (Boolean) _props.get("enableHADBPeerLocking");
+    public boolean enableLogLocking() {
+        return (Boolean) _props.get("enableLogLocking");
     }
 
     /*
