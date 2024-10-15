@@ -36,9 +36,9 @@ import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 import javax.validation.valueextraction.ValueExtractor;
 
-import org.hibernate.validator.cdi.internal.InjectingConstraintValidatorFactory;
 import org.hibernate.validator.internal.engine.valueextraction.ValueExtractorDescriptor;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -54,6 +54,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.BVNLSConstants;
 import com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder;
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
@@ -77,6 +78,11 @@ public class BvalManagedObjectBuilderImpl implements BvalManagedObjectBuilder {
 
     private final AtomicServiceReference<CDIService> cdiService = new AtomicServiceReference<CDIService>(REFERENCE_CDI_SERVICE);
     private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef = new AtomicServiceReference<ManagedObjectService>(REFERENCE_MANAGED_OBJECT_SERVICE);
+
+    @Reference
+    protected FeatureProvisioner provisionerService;
+
+    private Version runtimeVersion = new Version(1, 0, 0);
 
     private static class GetInstancesFromServiceLoader implements PrivilegedAction<List<ValueExtractor>> {
 
@@ -143,6 +149,7 @@ public class BvalManagedObjectBuilderImpl implements BvalManagedObjectBuilder {
 
     @Activate
     protected void activate(ComponentContext cc) {
+        setVersion();
         cdiService.activate(cc);
         managedObjectServiceRef.activate(cc);
     }
@@ -242,10 +249,14 @@ public class BvalManagedObjectBuilderImpl implements BvalManagedObjectBuilder {
         BootstrapConfiguration configSource = config.getBootstrapConfiguration();
         String constraintValidatorFactoryClassName = configSource.getConstraintValidatorFactoryClassName();
         ConstraintValidatorFactory cvf = null;
-
         if (constraintValidatorFactoryClassName == null) {
             // use default
-            cvf = createManagedObject(InjectingConstraintValidatorFactory.class);
+            if (isBeanValidationVersion31()) {
+                cvf = (ConstraintValidatorFactory) createManagedObject(org.hibernate.validator.cdi.spi.InjectingConstraintValidatorFactory.class);
+            } else {
+                cvf = createManagedObject(org.hibernate.validator.cdi.internal.InjectingConstraintValidatorFactory.class);
+            }
+
         } else {
             @SuppressWarnings("unchecked")
             Class<? extends ConstraintValidatorFactory> constraintValidatorFactoryClass = (Class<? extends ConstraintValidatorFactory>) loadClass(constraintValidatorFactoryClassName,
@@ -333,5 +344,31 @@ public class BvalManagedObjectBuilderImpl implements BvalManagedObjectBuilder {
                 Tr.debug(tc, "Class " + className + " not found during CDI enablement of the ValidatorFactory.", e);
             throw new ValidationException(nls.getString("BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY", "BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY"), e);
         }
+    }
+
+    private void setVersion() {
+        provisionerService.getInstalledFeatures().forEach(feature -> {
+            String subString = null;
+            if (feature.startsWith("beanValidation-")) {
+                subString = feature.substring("beanValidation-".length());
+            } else if (feature.startsWith("validation-")) {
+                subString = feature.substring("validation-".length());
+            }
+            if (subString != null) {
+                try {
+                    runtimeVersion = Version.parseVersion(subString);
+                } catch (IllegalArgumentException e) {
+                    //This is possible if there's ever a validationOtherFeature feature,
+                    //so we should just ignore if this occurs. Essentially if the version
+                    //doesn't parse correctly, then we had additional characters in the
+                    //subString, and this isn't one of the Jakarta Validation features.
+                }
+            }
+        });
+
+    }
+
+    private boolean isBeanValidationVersion31() {
+        return runtimeVersion.compareTo(new Version(3, 1, 0)) == 0;
     }
 }
