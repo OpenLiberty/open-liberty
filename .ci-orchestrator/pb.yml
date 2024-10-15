@@ -128,6 +128,7 @@ steps:
   properties:
   githubPRApi: ${github_pr_api}
   githubPRNumber: ${github_pr_number}
+
 - stepName: Prohibited Terms Check
   workType: Jenkins
   projectName: prohibitedTermsCheck
