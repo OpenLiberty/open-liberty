@@ -74,9 +74,13 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/release/CONT
 
 2. Run a gradle build.
 
+   Pre-requisite - Environment variable `JAVA_21_HOME` must be set.
+
         cd open-liberty/dev
         ./gradlew cnf:initialize
         ./gradlew assemble
+
+    Troubleshoot - If `./gradlew assemble` shows Out of Memory error then you could increase the memory in `dev/gradle.properties` file. Stop gradle daemons after you change the memory using `./gradlew --stop`. If it does not help, then try cleaning up maven repository (using `rm -rf ~/.m2`) and gradle caches (using `rm -rf ~/.gradle/caches`).
     
 3. Run the unit or FAT tests.
 
