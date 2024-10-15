@@ -683,6 +683,11 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     public void setStatusCode(int code) {
         this.nettyResponse.setStatus(HttpResponseStatus.valueOf(code));
 
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        for (int i = 2; i < stack.length; i++) {
+            System.out.println(stack[i]);
+        }
+
     }
 
     @Override

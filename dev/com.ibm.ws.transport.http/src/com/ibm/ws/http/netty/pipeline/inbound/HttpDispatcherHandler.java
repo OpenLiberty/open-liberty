@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2023 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
+ * All rights reserved. This program and the accompany g materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
@@ -114,7 +114,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
             connection.stream(c.streamId()).close();
             return;
         } else if (cause instanceof IllegalArgumentException) {
-            FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
+            //Legacy doesnt throw ffdc on processNewInformation
+            //FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "exceptionCaught encountered an IllegalArgumentException : " + cause);
             }

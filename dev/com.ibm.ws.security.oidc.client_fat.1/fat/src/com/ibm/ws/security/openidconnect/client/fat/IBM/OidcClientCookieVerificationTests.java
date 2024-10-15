@@ -63,6 +63,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         // Start the OIDC OP server
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", "op_server_cookieVerification.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS);
 
+
         //Start the OIDC RP server and setup default values
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rp", "rp_server_cookieVerification.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE);
 
@@ -85,15 +86,18 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         updatedTestSettings.setScope("openid profile");
         updatedTestSettings.setNonce(Constants.EXIST_WITH_ANY_VALUE);
 
+
+
         List<validationData> expectations = vData.addSuccessStatusCodesForActions(Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get to the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_HEADER, Constants.STRING_DOES_NOT_CONTAIN, "Should not have seen any Set-Cookie headers in the response but did.", null, "Set-Cookie");
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found a WASOidcState cookie but didn't.", null, "WASOidcState[pn][0-9]+=[^" + CommonValidationTools.COOKIE_DELIMITER + "]+");
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found a WASOidcNonce cookie but didn't.", null, "WASOidcNonce[pn][0-9]+=[^" + CommonValidationTools.COOKIE_DELIMITER + "]+");
         expectations = getSuccessfulAccessExpectations(updatedTestSettings, expectations);
-        String expirationCookieFormat = JakartaEEAction.isEE10OrLaterActive() ? "; max-age=0" : "; Expires=Thu, 01 Dec 1994";
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Should have found a Set-Cookie header to clear the WASOidcState cookie but didn't.", null, "WASOidcState[pn][0-9]+=\"\"" + expirationCookieFormat);
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Should have found a Set-Cookie header to clear the WASOidcNonce cookie but didn't.", null, "WASOidcNonce[pn][0-9]+=\"\"" + expirationCookieFormat);
+        String expirationCookieFormat = "((; ?[Mm]ax-[Aa]ge=0)|(; ?[Ee]xpires=[^;]+))"+"(; [^;=]+=[^;]+)*";
+
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Should have found a Set-Cookie header to clear the WASOidcState cookie but didn't.", null, "WASOidcState(p[0-9]+)?=\"\""+expirationCookieFormat);
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Should have found a Set-Cookie header to clear the WASOidcNonce cookie but didn't.", null, "WASOidcNonce(p[0-9]+)?=\"\""+expirationCookieFormat);
 
         genericRP(_testName, webClient, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
