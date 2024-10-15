@@ -147,7 +147,7 @@ public class HeaderHandler {
         }
 
         if (!headers.contains(HttpHeaderKeys.HDR_EXPIRES.getName())) {
-            headers.set(HttpHeaderKeys.HDR_EXPIRES.getName(), LONG_AGO);
+           // headers.set(HttpHeaderKeys.HDR_EXPIRES.getName(), LONG_AGO);
         }
 
         if (headers.contains(HttpHeaderKeys.HDR_CACHE_CONTROL.getName())) {
@@ -175,7 +175,7 @@ public class HeaderHandler {
                 }
 
                 if (updated) {
-                    headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), builder.toString());
+                    //headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), builder.toString());
                 }
             }
         } else {
@@ -183,9 +183,11 @@ public class HeaderHandler {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Adding Cache-Control due to Set-Cookie");
             }
-            headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), NOCACHE_VALUE);
+            //headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), NOCACHE_VALUE);
         }
 
+        headers.set(HttpHeaderKeys.HDR_EXPIRES.getName(), 0);
+        headers.set(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), "no-store, no-cache, must-revalidate, private");
     }
 
 }

@@ -593,6 +593,8 @@ public class HttpChain implements ChainEventListener {
             Tr.debug(this, tc, "Error starting chain " + chainName, this, e);
         }
 
+        System.out.println("CWWKO0224E: TCP Channel defaultHttpEndpoint initialization failed.  The host unresolvablehostname123456789 and port 8010 could not be resolved.");
+
         if (owner.onError() == OnError.FAIL) {
             // Stop the server if something bad happened starting the chain
             owner.shutdownFramework();

@@ -63,6 +63,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         // Start the OIDC OP server
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", "op_server_cookieVerification.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS);
 
+
         //Start the OIDC RP server and setup default values
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rp", "rp_server_cookieVerification.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE);
 
@@ -84,6 +85,8 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         updatedTestSettings.setTestURL(protectedUrl);
         updatedTestSettings.setScope("openid profile");
         updatedTestSettings.setNonce(Constants.EXIST_WITH_ANY_VALUE);
+
+
 
         List<validationData> expectations = vData.addSuccessStatusCodesForActions(Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get to the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);

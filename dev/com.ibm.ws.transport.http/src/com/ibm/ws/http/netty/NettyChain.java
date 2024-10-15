@@ -234,7 +234,15 @@ public class NettyChain extends HttpChain {
                 bootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
                 bootstrap.childHandler(httpPipeline);
 
+
+                System.out.println(" MSP -> host name to resolve: " + info.getHost());
+
                 serverChannel = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
+
+                if(!serverChannel.isOpen()) {
+                    System.out.println("MSP -> did not open, ");
+                    System.out.println("CWWKO0224E: TCP Channel ...");
+                }
 
                 VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
