@@ -392,7 +392,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                                           getClassNames(repositoryInterfaces),
                                           metadata.getName(),
                                           dataStore,
-                                          x.getMessage()).initCause(x);
+                                          x).initCause(x);
             }
         }
     }
