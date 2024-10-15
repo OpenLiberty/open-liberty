@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.crypto.common.CryptoMessageUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
@@ -57,6 +58,9 @@ public class TwitterLoginConfigImpl extends Oauth2LoginConfigImpl {
         this.displayName = configUtils.getConfigAttribute(props, KEY_displayName);
         this.website = configUtils.getConfigAttribute(props, KEY_website);
         this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
+
+        // X (Twitter) login requires SHA-1 hashing for authentication.  This is no longer considered secure.
+        CryptoMessageUtils.logInsecureProvider("twitterLogin", "SHA-1");
     }
 
     @Override
