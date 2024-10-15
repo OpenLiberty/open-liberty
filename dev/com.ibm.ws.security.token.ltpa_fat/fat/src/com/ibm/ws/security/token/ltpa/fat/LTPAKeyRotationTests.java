@@ -318,7 +318,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException",  "java.lang.NullPointerException" })
-    public void testLTPAFileReplacement_invalid3DESKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
+    public void testLTPAFileReplacement_invalidSharedKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
         configureServer("true", "10", true);
 
@@ -1627,7 +1627,7 @@ public class LTPAKeyRotationTests {
         // Contents to update ltpa keys with
         Map<String, String> contents = new HashMap<String, String>() {
             {
-                put("com.ibm.websphere.ltpa.3DESKey", "eJh1K9My7p4Uj0Gw/X2XDWxyY1C9E3UEp7ji+BJPSDM\\=");
+                put("com.ibm.websphere.ltpa.SharedKey", "eJh1K9My7p4Uj0Gw/X2XDWxyY1C9E3UEp7ji+BJPSDM\\=");
                 put("com.ibm.websphere.ltpa.PrivateKey",
                     "kmhgRjTUcxvFJoVw8jxWuh3ffuxym/SLYW8TQYKjK/4TJoPx9h2FJvNHkiaxfvACUWN5Lw5A1c500PRD+kcUtY+05IpNbGd0xu7BsjDQoLaEi4jrtBjT0REEYepsj9QQXnQTG9GL3CuNkSmPLxlHWBKZkDlcv4MtOKn2ozeXQjQ5doAJGDm6qk8QxxB7jGHCdQI9L6G4ic34w6DWV9qKZiX/Yp39neL6jR9mH3e9U7EFyefrtOTF7EUscfikBnw0sQUNnwTx2vMv+Q9QI+ykZMJULvzGKf2fW7Qz+OfQIlTatBCYRWtG0BQGi0BkUULApK2qIxQbvLVT7ijEwg2YsWTREcsnbVvHFmSqTF5jf8w\\=");
                 put("com.ibm.websphere.ltpa.PublicKey",

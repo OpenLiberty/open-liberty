@@ -34,6 +34,7 @@ import com.ibm.ws.security.token.ltpa.internal.LTPAKeyFileCreatorImpl;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
+import com.ibm.ws.crypto.common.FIPSUtils;
 
 /**
  * Load or create an LTPA keys file, something that looks like this:
@@ -80,6 +81,8 @@ public class LTPAKeyInfoManager {
     private final Map<String, String> realmCache = new Hashtable<String, String>();
 
     private static List<LTPAValidationKeysInfo> ltpaValidationKeysInfos = new ArrayList<LTPAValidationKeysInfo>();
+
+    private static final boolean fipsEnabled = FIPSUtils.isFIPSEnabled();
 
     /**
      * Load the contents of the properties file.
@@ -211,9 +214,9 @@ public class LTPAKeyInfoManager {
         //Check to see if the LTPA key import file exists, create the keys and file if not
         WsResource ltpaKeyFileResource = getLTPAKeyFileResource(locService, keyImportFile);
 
-        if (ltpaKeyFileResource != null) {
+        if (ltpaKeyFileResource != null && !fipsEnabled) {
             props = loadPropertiesFile(ltpaKeyFileResource);
-        } else if (validationKey) { //validationKeys file does not exist so error
+        } else if (validationKey && !fipsEnabled) { //validationKeys file does not exist so error
             Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", keyImportFile);
             return;
         } else { //Primary keys file does not exist so create the primary key
