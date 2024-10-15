@@ -3620,34 +3620,36 @@ public class LibertyServer implements LogMonitorClient {
 
                 Set<String> expectedFeatures = new HashSet<>(featureReplacementAction.getAddFeatures()); //the expected features, if present
                 expectedFeatures.addAll(featureReplacementAction.getAlwaysAddFeatures());
-                Set<String> installedFeatures = getInstalledFeatures(); //the features actually installed at runtime
+                List<Set<String>> installedFeatures = getInstalledFeatures(); //the features actually installed at runtime
+                for (Set<String> installedFeatureSet : installedFeatures) {
 
-                //expected feature -> actual feature
-                Map<String, String> unexpectedFeatures = getUnexpectedFeatures(expectedFeatures, installedFeatures);
+                    //expected feature -> actual feature
+                    Map<String, String> unexpectedFeatures = getUnexpectedFeatures(expectedFeatures, installedFeatureSet);
 
-                if (unexpectedFeatures.size() > 0) {
-                    String message = "Runtime features were not of the expected version for repeat action (Server: " + serverName + ", Action: " + action.getID() + ").\n";
-                    for (Map.Entry<String, String> entry : unexpectedFeatures.entrySet()) {
-                        message = message + "Expected: " + entry.getKey() + ", Actual: " + entry.getValue() + ".\n";
-                    }
-                    message = message
-                              + "This is usually caused by a feature not being explicitly set in the FAT's server.xml such that FeatureReplacementAction does not replace it properly.";
+                    if (unexpectedFeatures.size() > 0) {
+                        String message = "Runtime features were not of the expected version for repeat action (Server: " + serverName + ", Action: " + action.getID() + ").\n";
+                        for (Map.Entry<String, String> entry : unexpectedFeatures.entrySet()) {
+                            message = message + "Expected: " + entry.getKey() + ", Actual: " + entry.getValue() + ".\n";
+                        }
+                        message = message
+                                  + "This is usually caused by a feature not being explicitly set in the FAT's server.xml such that FeatureReplacementAction does not replace it properly.";
 
-                    //if this is a local run then always throw an exception
-                    //if not local then check if the server is exempt
-                    //if not exempt then throw exception, otherwise just output a message
-                    //check for exempt servers should eventually be removed
-                    if (REPEAT_FEATURE_CHECK_ERROR) {
-                        if (FAT_TEST_LOCALRUN) {
-                            message = message + "\nYou should also ensure that the test server has been removed from LibertyServer.EXEMPT_SERVERS.";
-                            throw new Exception(message);
-                        } else if (!EXEMPT_SERVERS_SET.contains(serverName)) {
-                            throw new Exception(message);
+                        //if this is a local run then always throw an exception
+                        //if not local then check if the server is exempt
+                        //if not exempt then throw exception, otherwise just output a message
+                        //check for exempt servers should eventually be removed
+                        if (REPEAT_FEATURE_CHECK_ERROR) {
+                            if (FAT_TEST_LOCALRUN) {
+                                message = message + "\nYou should also ensure that the test server has been removed from LibertyServer.EXEMPT_SERVERS.";
+                                throw new Exception(message);
+                            } else if (!EXEMPT_SERVERS_SET.contains(serverName)) {
+                                throw new Exception(message);
+                            } else {
+                                Log.info(c, method, message);
+                            }
                         } else {
                             Log.info(c, method, message);
                         }
-                    } else {
-                        Log.info(c, method, message);
                     }
                 }
             }
@@ -6227,22 +6229,23 @@ public class LibertyServer implements LogMonitorClient {
     private static final String INSTALL_FEATURE_MESSAGE_PREFIX = "CWWKF0012I: The server installed the following features:";
 
     /**
-     * Returns a set of the features which were installed at runtime startup, based on the messages.log.
-     * We only look at the first occurrence of the message. This method does not look for subsequent feature changes.
+     * Returns sets of the features which were installed at runtime startup, based on the CWWKF0012I message in messages.log.
+     * This message can occur multiple times, hence multiple sets
      *
      * e.g.
      * CWWKF0012I: The server installed the following features: [bells-1.0, cdi-4.0, componenttest-2.0, concurrent-3.0, jndi-1.0, mpConfig-3.1, mpContextPropagation-1.3,
      * mpFaultTolerance-4.0, servlet-6.0, timedexit-1.0].
      *
-     * @return           a set of the features installed at runtime
+     * @return           sets of the features installed at runtime
      * @throws Exception
      */
-    public Set<String> getInstalledFeatures() throws Exception {
-        Set<String> installedFeatures = new HashSet<>();
+    public List<Set<String>> getInstalledFeatures() throws Exception {
+        List<Set<String>> installedFeatures = new ArrayList<>();
 
         for (String line : findStringsInLogs(INSTALL_FEATURE_MESSAGE_PREFIX)) {
-            installedFeatures.addAll(getInstalledFeaturesFromLogMessage(line));
-            break; //only look at the first message
+            Set<String> installedFeatureSet = new HashSet<>();
+            installedFeatureSet.addAll(getInstalledFeaturesFromLogMessage(line));
+            installedFeatures.add(installedFeatureSet);
         }
 
         return installedFeatures;
