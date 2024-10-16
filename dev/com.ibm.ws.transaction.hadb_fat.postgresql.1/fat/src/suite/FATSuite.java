@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,17 +34,9 @@ import tests.FailoverTest1;
                 FailoverTest1.class
 })
 public class FATSuite extends TxTestContainerSuite {
-    private static final String POSTGRES_DB = "testdb";
-    private static final String POSTGRES_USER = "postgresUser";
-    private static final String POSTGRES_PASS = "superSecret";
 
     static {
-        /*
-         * The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
-         * The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
-         * With the resulting image being pushed to docker hub.
-         */
-        testContainer = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
+        testContainer = new PostgreSQLContainer(POSTGRES_IMAGE)
                         .withDatabaseName(POSTGRES_DB)
                         .withUsername(POSTGRES_USER)
                         .withPassword(POSTGRES_PASS)

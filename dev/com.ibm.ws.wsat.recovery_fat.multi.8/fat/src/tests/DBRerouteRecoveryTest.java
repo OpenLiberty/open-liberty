@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.AllowedFFDC;
@@ -38,9 +39,6 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 
-    private static final String POSTGRES_DB = "testdb";
-    private static final String POSTGRES_USER = "postgresUser";
-    private static final String POSTGRES_PASS = "superSecret";
     public static PostgreSQLContainer testContainer;
 
 	@Server("WSATRecovery3")
@@ -68,10 +66,10 @@ public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 	    };
 
 	    // The Dockerfile for 'jonhawkes/postgresql-ssl:1.0' can be found in the com.ibm.ws.jdbc_fat_postgresql project
-	    testContainer = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
-	                    .withDatabaseName(POSTGRES_DB)
-	                    .withUsername(POSTGRES_USER)
-	                    .withPassword(POSTGRES_PASS)
+	    testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_IMAGE)
+	                    .withDatabaseName(TxTestContainerSuite.POSTGRES_DB)
+	                    .withUsername(TxTestContainerSuite.POSTGRES_USER)
+	                    .withPassword(TxTestContainerSuite.POSTGRES_PASS)
 	                    .withSSL()
 	                    .withLogConsumer(new SimpleLogConsumer(DBRerouteRecoveryTest.class, "postgre-ssl"));
 

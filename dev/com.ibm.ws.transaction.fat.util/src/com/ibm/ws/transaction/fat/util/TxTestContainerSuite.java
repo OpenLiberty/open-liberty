@@ -32,6 +32,16 @@ import componenttest.topology.database.container.DatabaseContainerType;
  *
  */
 public class TxTestContainerSuite extends TestContainerSuite {
+    public static final String POSTGRES_DB = "testdb";
+    public static final String POSTGRES_USER = "postgresUser";
+    public static final String POSTGRES_PASS = "superSecret";
+
+    /*
+     * The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
+     * The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
+     * With the resulting image being pushed to docker hub.
+     */
+    public static final String POSTGRES_IMAGE = "jonhawkes/postgresql-ssl:1.0";
 
     private static DatabaseContainerType databaseContainerType;
     public static JdbcDatabaseContainer<?> testContainer;
