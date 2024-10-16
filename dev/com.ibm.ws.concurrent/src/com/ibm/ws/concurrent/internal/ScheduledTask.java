@@ -1097,5 +1097,20 @@ public class ScheduledTask<T> implements Callable<T>, ScheduledCustomExecutorTas
                     throw new IllegalStateException(status.type.toString());
             }
         }
+
+        @Override
+        @Trivial
+        public String toString() {
+            // Both hashCode and identityHashCode are included so that we can correlate
+            // output in Liberty trace, which prints toString for values and method args
+            // but uses uses identityHashCode (id=...) when printing trace for a class
+            return new StringBuilder(46) //
+                            .append("ScheduledTask.FutureImpl@") //
+                            .append(Integer.toHexString(hashCode())) //
+                            .append("(id=") //
+                            .append(Integer.toHexString(System.identityHashCode(this))) //
+                            .append(')') //
+                            .toString();
+        }
     }
 }
