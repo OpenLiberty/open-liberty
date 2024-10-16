@@ -3,6 +3,7 @@
     <featureManager>
         <feature>servlet-6.0</feature>
     	<feature>pages-3.1</feature>
+    	<feature>faces-4.0</feature>
     	<feature>restfulWS-3.1</feature>
     	<feature>monitor-1.0</feature>
     </featureManager>
@@ -23,9 +24,4 @@
 
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
-    
-    <mpMetrics authentication="false"/>
-
-
-
 </server>

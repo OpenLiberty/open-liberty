@@ -1,8 +1,8 @@
 
 <server>
     <featureManager>
-        <feature>pages-3.1</feature>
-    	<feature>mpTelemetry-2.0</feature>
+        <feature>faces-4.0</feature>
+    	<feature>mpMetrics-5.1</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />
@@ -21,4 +21,9 @@
 
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+    
+    <mpMetrics authentication="false"/>
+
+
+
 </server>

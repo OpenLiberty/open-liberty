@@ -12,6 +12,7 @@ package io.openliberty.http.monitor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Arrays;
 
 import javax.servlet.UnavailableException;
 
@@ -21,7 +22,6 @@ import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
-//import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
 import javax.servlet.Filter;
@@ -46,7 +46,6 @@ public class ServletFilter implements Filter {
 	
     @Override
     public void init(FilterConfig config) {
-    	
     }
 	
 	@Override
@@ -267,7 +266,6 @@ public class ServletFilter implements Filter {
 		servletPath = (servletPath == null ) ? null : servletPath.trim();
 		String requestURI = srtServletRequest.getRequestURI();
 		requestURI = (requestURI == null ) ? null : requestURI.trim();
-	
 
 		/*
 		 * WebAppDispatcher used to get a "mapping" value
@@ -322,46 +320,87 @@ public class ServletFilter implements Filter {
 					}
 				}
 				
+				/*
+				 * Explicitly deal with resources loaded by JSF / Jakarta Faces
+				 * 
+				 * URL for resources request will end with the file extension of the original requesting 
+				 * 
+				 * i.e., page.xhtml -> /jakarta.faces.resource/someFile.file.xhtml
+				 */
+				else if (servletPath.startsWith("/jakarta.faces.resource") || servletPath.startsWith("/javax.faces.resource")) {
+					String[] arr = servletPath.split("\\.");
+					String extension = arr[arr.length-1];
+					httpRoute = contextPath + "/*." + extension;
+				}
+
 				else {
 					/*
-					 * PATH INFO NULL
-					 * SERVLET NOT NULL
+					 * PATH INFO = NULL
+					 * SERVLET PATH = NOT NULL
+					 * 
 					 * We are dealing with a direct match.
 					 * OR a wild card servlet , but right on the node
 					 * ^ Can only resolve for EE8
 					 * e.g.
-					 * servlet path: /path/*
-					 * request path: /path
+					 * servlet path is specified as : /path/*
+					 * request path was requested as : /path
 					 *
 					 */
 
-					//Used by EE8 and above
+					/*
+					 *  Applies to Servlet 4 and up (EE8 and up ) as we are using the 'pattern' value
+					 *  that is only obtainable with WebAppDispatcherContext40.
+					 */
 					if (Servlet4Helper.isServlet4Up()) {
 
 						String pattern = Servlet4Helper.getPattern(iwadc);
-						//This resolves the /wild/* servlet path and the /wild is entered for EE8
-						if (pattern != null && pattern.endsWith("/*")) {
-							httpRoute = contextPath + pattern;
+						
+						/*
+						 * This resolves the /wild/* servlet path and the /wild is entered for EE8
+						 * Also if configured with *.<extension> (i.e., *.xhtml, *.jsf, *.abc)
+						 */
+						if (pattern != null && (pattern.endsWith("/*") || pattern.startsWith("*."))) {
+							httpRoute = contextPath + "/" + pattern;
 							//direct mtach for EE8
 						} else {
 							httpRoute = contextPath + servletPath;
 						}
 					}
-					//EE7 specifically
+					/*
+					 * Applies only to EE7 
+					 */
 					else {
-						/*
-						 * Simply a direct match.
-						 * 
-						 * Unfortunately, given a scenario where a servlet is set as /path/*
-						 * we cannot properly resolve the http route of hits to /path as /path/*
-						 * 
-						 * Constraint of EE7 where we have no "pattern" information
-						 */
-						httpRoute = contextPath + servletPath;
 						
+						/*
+						 * Hard coded to deal with the typical file extensions of JSF files : `.jsf`, `.faces` or `.xhtml`.
+						 * 
+						 * Unfortunately, won't be able to catch any servlet mappings where they mapped the JSF servlet to some
+						 * random extension (i.e., *.abc)
+						 * 
+						 * In those cases, it'll just be handled as a direct match (i.e., the bottom else block)
+						 */
+						if (servletPath.endsWith(".jsf")) {
+							httpRoute = contextPath + "/*.jsf";
+						} else if (servletPath.endsWith(".faces")) {
+							httpRoute = contextPath + "/*.faces";
+						} else if (servletPath.endsWith(".xhtml")) {
+							httpRoute = contextPath + "/*.xhtml";
+						} else {
+							/*
+							 * Simply a direct match.
+							 * 
+							 * Unfortunately, given a scenario where a servlet is set as /path/*
+							 * we cannot properly resolve the http route of hits to /path as /path/*
+							 * 
+							 * Also scenario where mapping was made against JSF servlet that isn't the usual
+							 * file name extensions (as listed above) (e.g., *.abc)
+							 * 
+							 * Constraint of EE7 where we have no "pattern" information
+							 */
+							httpRoute = contextPath + servletPath;
+						}
 					}
 				}
-
 			}
 			/*
 			 *  SERVLETS WITH WILD CARD 

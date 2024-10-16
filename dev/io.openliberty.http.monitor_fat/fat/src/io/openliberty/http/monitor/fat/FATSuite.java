@@ -30,14 +30,17 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 ServletApplicationMBeanTest.class,
                 RestApplicationMbeanTest.class,
                 JSPApplicationMBeanTest.class,
+                JSFApplicationMBeanTest.class,
                 NoAppTest.class,
                 JSPApplicationTest.class,
                 RestApplicationTest.class,
                 ServletApplicationTest.class,
+                JSFApplicationTest.class,
                 ContainerServletApplicationTest.class,
                 ContainerJSPApplicationTest.class,
                 ContainerRestApplicationTest.class,
-                ContainerNoAppTest.class
+                ContainerNoAppTest.class,
+                ContainerJSFApplicationTest.class
 })
 
 public class FATSuite extends TestContainerSuite {
