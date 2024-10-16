@@ -2277,8 +2277,6 @@ public class QueryInfo {
             boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType);
             StringBuilder q = null;
 
-            // TODO would it be more efficient to invoke method.getAnnotations() once?
-
             // spec-defined annotation types
             Delete delete = method.getAnnotation(Delete.class);
             Find find = method.getAnnotation(Find.class);
@@ -2327,11 +2325,13 @@ public class QueryInfo {
                 if (type == Type.FIND_AND_DELETE
                     && multiType != null
                     && Stream.class.isAssignableFrom(multiType)) {
-                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                            repository.repositoryInterface.getName() +
-                                                            " repository interface cannot use the " +
-                                                            method.getGenericReturnType().getTypeName() +
-                                                            " return type for a delete operation.");
+                    throw exc(UnsupportedOperationException.class,
+                              "CWWKD1006.delete.rtrn.err",
+                              method.getGenericReturnType().getTypeName(),
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              entityInfo.getType().getName(),
+                              entityInfo.idType.getName());
                 }
             }
 
