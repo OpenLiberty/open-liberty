@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+-include= jar:${fileuri;${repo;org.jboss.logging:jboss-logging;3.6.0.Final;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Bundle-SymbolicName: io.openliberty.org.jboss.logging36; singleton:=true
+
+-includeresource: \
+  @${repo;org.jboss.logging:jboss-logging;3.6.0.Final;EXACT}!/!module-info.class
+
+instrument.disabled: true
+
+-buildpath: \
+        org.jboss.logging:jboss-logging;version=3.6.0.Final, \
+        com.ibm.ws.org.osgi.annotation.versioning;version=latest
