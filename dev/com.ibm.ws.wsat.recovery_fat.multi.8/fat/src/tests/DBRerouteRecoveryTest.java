@@ -39,8 +39,6 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 
-    public static PostgreSQLContainer testContainer;
-
 	@Server("WSATRecovery3")
 	public static LibertyServer server3;
 
@@ -56,25 +54,14 @@ public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 	        	Log.info(DBRerouteRecoveryTest.class, "setupRunner.run", "Setting up "+s.getServerName()+" for testcontainers");
 
 	            //Get driver name
-	            s.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+	            s.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer).getDriverName());
 
 	            //Setup server DataSource properties
-	            DatabaseContainerUtil.setupDataSourceDatabaseProperties(s, testContainer);
+	            DatabaseContainerUtil.setupDataSourceDatabaseProperties(s, TxTestContainerSuite.testContainer);
 
 	            s.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 	        }
 	    };
-
-	    // The Dockerfile for 'jonhawkes/postgresql-ssl:1.0' can be found in the com.ibm.ws.jdbc_fat_postgresql project
-	    testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_IMAGE)
-	                    .withDatabaseName(TxTestContainerSuite.POSTGRES_DB)
-	                    .withUsername(TxTestContainerSuite.POSTGRES_USER)
-	                    .withPassword(TxTestContainerSuite.POSTGRES_PASS)
-	                    .withSSL()
-	                    .withLogConsumer(new SimpleLogConsumer(DBRerouteRecoveryTest.class, "postgre-ssl"));
-
-        testContainer.setStartupAttempts(2);
-        testContainer.start();
 
 //		System.getProperties().entrySet().stream().forEach(e -> Log.info(RerouteTest.class, "Properties", e.getKey() + " -> " + e.getValue()));
 //		System.getenv().entrySet().stream().forEach(e -> Log.info(RerouteTest.class, "Environment", e.getKey() + " -> " + e.getValue()));
@@ -104,8 +91,6 @@ public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 
 		DBTestBase.cleanupWSATTest(server1);
 		DBTestBase.cleanupWSATTest(server2);		
-
-		testContainer.stop();
 	}
 
 	@Before
