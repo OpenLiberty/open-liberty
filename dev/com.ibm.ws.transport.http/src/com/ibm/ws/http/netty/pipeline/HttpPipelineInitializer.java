@@ -276,6 +276,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 pipeline.addLast(new AccessLoggerHandler(httpConfig));
             }
         }
+
+        pipeline.addBefore(NETTY_HTTP_SERVER_CODEC, "CRLFHandler", new CRLFValidationHandler());
     }
 
     /**
