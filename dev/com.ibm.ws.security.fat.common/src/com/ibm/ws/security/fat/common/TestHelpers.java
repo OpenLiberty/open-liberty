@@ -51,11 +51,11 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.meterware.httpunit.HttpUnitOptions;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.cookies.CookieProperties;
-import com.ibm.ws.crypto.common.FipsUtils;
 
 public class TestHelpers {
 
@@ -504,13 +504,13 @@ public class TestHelpers {
         webClient.getOptions().setUseInsecureSSL(true);
         webClient.getOptions().setRedirectEnabled(true);
         if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
-            if (FipsUtils.isFIPSEnabled()) {
+            if (CryptoUtils.isFIPSEnabled()) {
                 webClient.getOptions().setSSLClientProtocols((new String[] { "TLSv1.2" })); // rtc 259307
             } else {
                 webClient.getOptions().setSSLClientProtocols((new String[] { "TLSv1.2", "TLSv1.1", "TLSv1" })); // rtc 259307
             }
         } else {
-            if (FipsUtils.isFIPSEnabled()) {
+            if (CryptoUtils.isFIPSEnabled()) {
                 webClient.getOptions().setSSLClientProtocols((new String[] { "TLSv1.3", "TLSv1.2" })); // rtc 259307
             } else {
                 webClient.getOptions().setSSLClientProtocols((new String[] { "TLSv1.3", "TLSv1.2", "TLSv1.1", "TLSv1" })); // rtc 259307

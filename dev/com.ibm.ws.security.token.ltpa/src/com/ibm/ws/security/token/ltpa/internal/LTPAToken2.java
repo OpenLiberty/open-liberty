@@ -27,11 +27,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
-import com.ibm.ws.crypto.common.CryptoProvider;
-import com.ibm.ws.crypto.common.CryptoUtils;
-import com.ibm.ws.crypto.common.FipsUtils;
-import com.ibm.ws.crypto.common.MessageDigestUtils;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
@@ -45,7 +42,7 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
  */
 public class LTPAToken2 implements Token, Serializable {
 
-    private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
+    private static final boolean fipsEnabled = CryptoUtils.isFIPSEnabled();
 
     private static final TraceComponent tc = Tr.register(LTPAToken2.class);
 
@@ -70,21 +67,21 @@ public class LTPAToken2 implements Token, Serializable {
     static {
         MessageDigest m1 = null, m2 = null;
         try {
-            if (fipsEnabled && CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
-                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoProvider.OPENJCE_PLUS_FIPS_NAME);
-                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoProvider.OPENJCE_PLUS_FIPS_NAME);
-            } else if (fipsEnabled && CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
-                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoProvider.IBMJCE_PLUS_FIPS_NAME);
-                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoProvider.IBMJCE_PLUS_FIPS_NAME);
-            } else if (CryptoProvider.isOpenJCEPlusAvailable()) {
-                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoProvider.OPENJCE_PLUS_NAME);
-                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoProvider.OPENJCE_PLUS_NAME);
-            } else if (CryptoProvider.isIBMJCEAvailable()) {
-                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoProvider.IBMJCE_NAME);
-                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoProvider.IBMJCE_NAME);
+            if (fipsEnabled && CryptoUtils.isOpenJCEPlusFIPSAvailable()) {
+                m1 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoUtils.OPENJCE_PLUS_FIPS_NAME);
+                m2 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoUtils.OPENJCE_PLUS_FIPS_NAME);
+            } else if (fipsEnabled && CryptoUtils.isIBMJCEPlusFIPSAvailable()) {
+                m1 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoUtils.IBMJCE_PLUS_FIPS_NAME);
+                m2 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, CryptoUtils.IBMJCE_PLUS_FIPS_NAME);
+            } else if (CryptoUtils.isOpenJCEPlusAvailable()) {
+                m1 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoUtils.OPENJCE_PLUS_NAME);
+                m2 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoUtils.OPENJCE_PLUS_NAME);
+            } else if (CryptoUtils.isIBMJCEAvailable()) {
+                m1 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoUtils.IBMJCE_NAME);
+                m2 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA, CryptoUtils.IBMJCE_NAME);
             } else {
-                m1 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
-                m2 = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
+                m1 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
+                m2 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
             }
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

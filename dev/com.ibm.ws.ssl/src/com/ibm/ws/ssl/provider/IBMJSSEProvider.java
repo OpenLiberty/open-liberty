@@ -17,8 +17,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEProvider;
-import com.ibm.ws.crypto.common.CryptoProvider;
-import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 
 /**
@@ -42,11 +41,11 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
         super();
 
         String protocol = Constants.PROTOCOL_SSL;
-        if (FipsUtils.isFIPSEnabled() && CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
+        if (CryptoUtils.isFIPSEnabled() && CryptoUtils.isIBMJCEPlusFIPSAvailable()) {
             protocol = Constants.PROTOCOL_TLS;
         }
 
-        if (CryptoProvider.isIBMJCEPlusFIPSAvailable()) {
+        if (CryptoUtils.isIBMJCEPlusFIPSAvailable()) {
             initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
                        Constants.SOCKET_FACTORY_WAS_DEFAULT, null, protocol);
         }

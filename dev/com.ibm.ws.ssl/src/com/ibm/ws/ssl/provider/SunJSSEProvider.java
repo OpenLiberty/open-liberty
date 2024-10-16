@@ -17,7 +17,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEProvider;
-import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 
 /**
@@ -39,7 +39,7 @@ public class SunJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
     public SunJSSEProvider() {
         super();
         String protocol = Constants.PROTOCOL_SSL;
-        if (FipsUtils.isFIPSEnabled() && FipsUtils.isSemeruFips()) {
+        if (CryptoUtils.isFIPSEnabled() && CryptoUtils.isSemeruFips()) {
             protocol = Constants.PROTOCOL_TLS;
         }
 
