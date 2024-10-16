@@ -256,11 +256,19 @@ public class TCKRunner {
         }
 
         List<String> dependencyOutput = runDependencyCmd();
-        TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
+        try {
+            TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
 
-        //TODO validate resultsInfo especially certification file name prior to writing
-        TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
-        TCKResultsWriter.preparePublicationFile(resultsInfo);
+            System.out.println("GREP2");
+            TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
+            System.out.println("GREP3");
+            TCKResultsWriter.preparePublicationFile(resultsInfo);
+            System.out.println("GREP4");
+        } catch (Exception e) {
+            System.out.println("GREP!");
+            System.out.println(e.toString());
+            e.printStackTrace(System.out);
+        }
     }
 
     /**
