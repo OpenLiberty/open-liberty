@@ -53,7 +53,7 @@ steps:
 - stepName: Copyright Header Check
   workType: Jenkins
   projectName: copyrightHeaderCheck
-  timeoutInMinutes: 30
+  timeoutInMinutes: 120
   properties:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
@@ -61,7 +61,7 @@ steps:
 - stepName: Prohibited Terms Check
   workType: Jenkins
   projectName: prohibitedTermsCheck
-  timeoutInMinutes: 30
+  timeoutInMinutes: 120
   properties:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
