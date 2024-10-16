@@ -18,6 +18,7 @@
     <feature>componenttest-1.0</feature>
     <feature>ssl-1.0</feature>
     <feature>mpOpenAPI-2.0</feature>
+    <feature>mpConfig-2.0</feature>
     <feature>jaxrs-2.1</feature> <!-- EE feature to ensure we get the expected EE version -->
   </featureManager>
 
