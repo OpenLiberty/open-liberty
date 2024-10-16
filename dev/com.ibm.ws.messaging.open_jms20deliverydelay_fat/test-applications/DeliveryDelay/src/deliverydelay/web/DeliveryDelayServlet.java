@@ -301,141 +301,105 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
-    //
+    
+    // Simple deliveryDelay tests using the JMS2.0 SImplified API
 
     public void testSetDeliveryDelay(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFBindings, jmsQueue);
-        testSetDeliveryDelay(jmsQCFBindings, jmsQueue);
+        testSetDeliveryDelay(jmsQCFBindings, jmsQueue, false);
     }
 
     public void testSetDeliveryDelay_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFTCP, jmsQueue);
-        testSetDeliveryDelay(jmsQCFTCP, jmsQueue);
+        testSetDeliveryDelay(jmsQCFTCP, jmsQueue, false);
     }
 
     public void testSetDeliveryDelayTopic(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-        testSetDeliveryDelay(jmsTCFBindings, jmsTopic);
+        testSetDeliveryDelay(jmsTCFBindings, jmsTopic, false);
     }
 
     public void testSetDeliveryDelayTopic_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-        testSetDeliveryDelay(jmsTCFTCP, jmsTopic);
+        testSetDeliveryDelay(jmsTCFTCP, jmsTopic, false);
     }
     
-    private void testSetDeliveryDelay(ConnectionFactory connectionFactory, Destination destination) throws JMSException, TestException {
+    public void testSetDeliveryDelayTopicDurSub(
+            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+    	testSetDeliveryDelay(jmsTCFBindings, jmsTopic, true);
+    }
+    
+    public void testSetDeliveryDelayTopicDurSub_Tcp(
+            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+    	testSetDeliveryDelay(jmsTCFTCP, jmsTopic, true);
+    }
+    
+    /**
+     * 
+     * Internal test code used by setDeliveryDelay tests.
+     * 
+     * This connects to the messaging provider, sends a message to a destination with a (test default) deliveryDelay and then receives the message back.
+     * THe test then checks that the message was only receied after the deliveryDelay period had elapsed.
+     * This can be driven for either messaging domain and optionally with a durable subscriber
+     * 
+     * @param connectionFactory
+     * @param destination
+     * @param useDurableSubscriber
+     * @throws JMSException
+     * @throws TestException
+     */
+    private void testSetDeliveryDelay(ConnectionFactory connectionFactory, Destination destination, boolean useDurableSubscriber) throws JMSException, TestException {
 
+    	// Do an initial check that we haven't been asked for a durableSubscriber but only been given a Queue destination
+    	if ( useDurableSubscriber && !(destination instanceof Topic)) {
+    		throw new TestException("Incompatible parameters. useDurablSubscriber specified, but destination was not a Topic: " + destination);
+    	}
+    	
+    	String durableSubscriberName = "subs";
+    	
         try (JMSContext jmsContext = connectionFactory.createContext()) {
+        	
+        	JMSConsumer jmsConsumer = null;
+        	
+        	if (useDurableSubscriber) {
+        		jmsConsumer = jmsContext.createDurableConsumer((Topic)destination, durableSubscriberName);
+        	}
+        	else {
+        		jmsConsumer = jmsContext.createConsumer(destination);
+        	}
 
             JMSProducer jmsProducer = jmsContext.createProducer();
             jmsProducer.setDeliveryDelay(deliveryDelay);
 
-            JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
-
             TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + timeStamp());
+
             long beforeSend = System.currentTimeMillis();
             jmsProducer.send(destination, sentMessage);
             long afterSend = System.currentTimeMillis();
+
             if (afterSend - beforeSend > deliveryDelay)
                 throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:"+beforeSend+" afterSend:"+afterSend+" deliveryDelay:"+deliveryDelay);
 
             TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
             long afterReceive = System.currentTimeMillis();
+            
             if (receivedMessage == null)
                 throw new TestException("No message received, sentMessage:" + sentMessage);
             if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
             if(afterReceive - beforeSend < deliveryDelay )
-                throw new TestException("Message received to soon, afterSend:"+afterSend+" afterReceive"+afterReceive+" deliveryDelay:"+deliveryDelay
-                        +"\nreceivedMessage:" + receivedMessage);            
-        }
-    }
+                throw new TestException("Message received to soon, afterSend:" + afterSend + " afterReceive" + afterReceive + " deliveryDelay:" + deliveryDelay
+                        + "\nreceivedMessage:" + receivedMessage);            
 
-    public void testSetDeliveryDelayTopicDurSub(
-            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-        testSetDeliveryDelayTopicDurSub(jmsTCFBindings);
-    }
-    
-    public void testSetDeliveryDelayTopicDurSub_Tcp(
-            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-        testSetDeliveryDelayTopicDurSub(jmsTCFTCP);
-    }
-    
-    private void testSetDeliveryDelayTopicDurSub(TopicConnectionFactory topicConnectionFactory) throws JMSException, TestException {
-
-        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
-
-            JMSConsumer jmsConsumer = jmsContext.createDurableConsumer(jmsTopic, "subs");
-
-            JMSProducer jmsProducer = jmsContext.createProducer();
-            jmsProducer.setDeliveryDelay(deliveryDelay);
-
-            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + timeStamp());
-            long beforeSend = System.currentTimeMillis();
-            jmsProducer.send(jmsTopic, sentMessage);
-            long afterSend = System.currentTimeMillis();
-            if (afterSend - beforeSend > deliveryDelay)
-                throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:"+beforeSend+" afterSend:"+afterSend+" deliveryDelay:"+deliveryDelay);
-           
-            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
-            long afterReceive = System.currentTimeMillis();
-            if (receivedMessage == null)
-                throw new TestException("No message received, sentMessage:" + sentMessage);
-            if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
-                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
-            if(afterReceive -  beforeSend < deliveryDelay )
-                throw new TestException("Message received to soon, afterSend:"+afterSend+" afterReceive"+afterReceive+" deliveryDelay:"+deliveryDelay
-                        +"\nreceivedMessage:" + receivedMessage);
-            
             jmsConsumer.close();
-            jmsContext.unsubscribe("subs");
+            
+            if (useDurableSubscriber) {
+                jmsContext.unsubscribe("subs");
+            }
+            
         }
+        return;
     }
 
-    /*
-    public void testReceiveAfterDelayTopicDurSub(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
-
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-        if ( recMsg1 == null ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveAfterDelayTopic failed");
-        }
-    }
-
-    public void testReceiveAfterDelayTopicDurSub_Tcp(
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
-
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-        if ( recMsg1 == null ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveAfterDelayTopic_TCP failed");
-        }
-    }
-    */
 
     public void testDeliveryDelayForDifferentDelays(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
