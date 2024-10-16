@@ -27,6 +27,6 @@ import tests.DBRerouteRecoveryTest;
 })
 public class FATSuite extends TestContainerSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
 }
