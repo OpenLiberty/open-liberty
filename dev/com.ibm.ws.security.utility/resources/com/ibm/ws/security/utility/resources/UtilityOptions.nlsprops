@@ -56,7 +56,7 @@ encode.desc=\
 \tEncode the provided text.\n\n\
 \tIf your password includes special characters, you must escape each special character to help ensure that the password is properly encoded.\n\
 \tSpecial characters and escape characters might vary according to your operating system.\n\
-\tFor example, on Unix systems, pa$$W0rd must be provided as pa\\$\\$W0rd.\n\
+\tFor example, on UNIX systems, pa$$W0rd must be provided as pa\\$\\$W0rd.\n\
 \tFor more information, see the Open Liberty securityUtility encode documentation.
 #Note to translator the word "encode" should not be translated
 encode.usage.options=\
