@@ -39,7 +39,7 @@ plugins {
 }
 
 def grpcVersion = '1.57.2'
-def protocVersion = '3.23.4'
+def protocVersion = '3.25.5'
 
 // only run the protobuf compilation plugin if the build is run with "-PcompileProtobufs"
 // this will allow us to avoid recompiling the protobuf stubs on every build, and additionally
@@ -122,7 +122,7 @@ configurations {
 dependencies {
 
     // Adding libraries the application to run in FAT
-    storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.23.4',
+    storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.25.5',
     project(':io.openliberty.com.google.gson'),
     project(':com.ibm.ws.com.google.guava'),
     'com.google.errorprone:error_prone_annotations:2.4.0',
@@ -135,7 +135,7 @@ dependencies {
     'net.sourceforge.htmlunit:htmlunit:2.20'
  
     //
-    implementation 'com.google.protobuf:protobuf-java-util:3.23.4'
+    implementation 'com.google.protobuf:protobuf-java-util:3.25.5'
     // @jar is needed since some of the dependencies of java-util were overwritten
     providedCompile 'io.grpc:grpc-protobuf:' + grpcVersion + '@jar'
     compileOnly 'io.grpc:grpc-stub:' + grpcVersion
@@ -145,7 +145,7 @@ dependencies {
     implementation 'com.ibm.websphere.appserver.api:com.ibm.websphere.appserver.api.distributedMap:2.0.37'
 
     // provided
-    providedCompile 'com.google.protobuf:protobuf-java:3.23.4'
+    providedCompile 'com.google.protobuf:protobuf-java:3.25.5'
     providedCompile 'javax.annotation:javax.annotation-api:1.2'
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
     providedCompile 'org.eclipse.microprofile:microprofile:3.2'
@@ -171,8 +171,8 @@ dependencies {
       'io.grpc:grpc-stub:' + grpcVersion,
       'io.grpc:grpc-protobuf:' + grpcVersion,
       'io.grpc:grpc-netty:' + grpcVersion,
-      'com.google.protobuf:protobuf-java:3.23.4',
-      'com.google.protobuf:protobuf-java-util:3.23.4'
+      'com.google.protobuf:protobuf-java:3.25.5',
+      'com.google.protobuf:protobuf-java-util:3.25.5'
 }
 
 
