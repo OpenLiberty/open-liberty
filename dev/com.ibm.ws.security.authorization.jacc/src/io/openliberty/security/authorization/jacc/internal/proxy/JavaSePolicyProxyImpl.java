@@ -46,7 +46,7 @@ public class JavaSePolicyProxyImpl implements PolicyProxy {
     }
 
     @Override
-    public boolean implies(Subject subject, Permission permission) {
+    public boolean implies(String contextId, Subject subject, Permission permission) {
         ProtectionDomain pd = null;
         if (subject != null && subject.getPrincipals().size() > 0) {
             Principal[] principalArray = subject.getPrincipals().toArray(new Principal[subject.getPrincipals().size()]);

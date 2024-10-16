@@ -10,18 +10,18 @@
 
 package com.ibm.wsspi.security.authorization.jacc;
 
-import jakarta.security.jacc.Policy;
 import jakarta.security.jacc.PolicyConfigurationFactory;
+import jakarta.security.jacc.PolicyFactory;
 
 public interface ProviderService {
 
     /**
      * Returns the instance representing the provider-specific implementation
-     * of the jakarta.security.jacc.Policy abstract class.
+     * of the jakarta.security.jacc.PolicyFactory abstract class.
      *
-     * @return An instance which implements Policy class.
+     * @return An instance which implements the PolicyFactory class.
      */
-    public Policy getPolicy();
+    public PolicyFactory getPolicyFactory();
 
     /**
      * Returns the instance representing the provider-specific implementation
