@@ -214,7 +214,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             // logging the error and raising an exception with the same message.
             throw exc(DataException.class,
                       "CWWKD1067.ddlgen.emf.timeout",
-                      repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
+                      getClassNames(repositoryInterfaces),
                       dataStore,
                       DDLGEN_WAIT_TIME,
                       entityTypes.stream().map(Class::getName).collect(Collectors.toList()));
@@ -224,7 +224,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             Throwable cause = (ex instanceof ExecutionException) ? ex.getCause() : ex;
             DataException dx = exc(DataException.class,
                                    "CWWKD1066.ddlgen.failed",
-                                   repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
+                                   getClassNames(repositoryInterfaces),
                                    dataStore,
                                    entityTypes.stream() //
                                                    .map(Class::getName) //
@@ -250,7 +250,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             // logging the error and raising an exception with the same message.
             throw exc(DataException.class,
                       "CWWKD1065.ddlgen.timeout",
-                      repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
+                      getClassNames(repositoryInterfaces),
                       dataStore,
                       DDLGEN_WAIT_TIME,
                       entityTypes.stream().map(Class::getName).collect(Collectors.toList()));
@@ -260,7 +260,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             Throwable cause = (ex instanceof ExecutionException) ? ex.getCause() : ex;
             DataException dx = exc(DataException.class,
                                    "CWWKD1066.ddlgen.failed",
-                                   repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
+                                   getClassNames(repositoryInterfaces),
                                    dataStore,
                                    entityTypes.stream() //
                                                    .map(Class::getName) //
@@ -303,7 +303,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             if (namespace == Namespace.COMP && metadataIdentifier.startsWith("EJB#"))
                 throw exc(DataException.class,
                           "CWWKD1061.comp.name.in.ejb",
-                          repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
+                          getClassNames(repositoryInterfaces),
                           repoMetadata.getJ2EEName().getModule(),
                           repoMetadata.getJ2EEName().getApplication(),
                           resourceName,
@@ -521,7 +521,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
         DataException x = exc(DataException.class,
                               "CWWKD1077.defaultds.not.found",
                               metadata.getJ2EEName(),
-                              repositoryInterfaces.stream().findFirst().get().getName(), // TODO revisit this and other NLS messages
+                              getClassNames(repositoryInterfaces),
                               dataStore,
                               dataSourceConfigExample,
                               databaseStoreConfigExample,
