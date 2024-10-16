@@ -165,8 +165,19 @@ public class DeliveryDelayServlet extends HttpServlet {
     }
 
     private static final long deliveryDelay = 10000;
-
-    private void sendAndCheckDeliveryTime(
+    
+    
+    /**
+     * Utility method that sends a message to a producer and checks that the time taken to send the message is less than the test default deliveryDelay time.
+     * If the message took longer to send than the time it is to be delayed then the method logs a warning message as this might interfere with later test results.
+     * 
+     * @param producer
+     * @param dest
+     * @param send_msg
+     * @return the value of SYstem.currentTimeMillis() from before the send call was made. This can be used as a basis for later checks for delay times.
+     * @throws JMSException
+     */
+    private long sendAndCheckDeliveryTime(
         Object producer,
         Destination dest,
         TextMessage send_msg) throws JMSException {
@@ -191,6 +202,8 @@ public class DeliveryDelayServlet extends HttpServlet {
                 ", which more than delivery delay " + deliveryDelay + "."+
                 " Please analyse the send time.");
         }
+        
+        return beforeSend;
     }
 
     //
@@ -336,8 +349,9 @@ public class DeliveryDelayServlet extends HttpServlet {
      * 
      * Internal test code used by setDeliveryDelay tests.
      * 
-     * This connects to the messaging provider, sends a message to a destination with a (test default) deliveryDelay and then receives the message back.
-     * THe test then checks that the message was only receied after the deliveryDelay period had elapsed.
+     * This connects to the messaging provider, sends a message to a destination with a (test default) deliveryDelay
+     * It then receives the message back using a receive timeout of twice the deliverDelay period.
+     * The test then checks that the message was only received after the deliveryDelay period had elapsed.
      * This can be driven for either messaging domain and optionally with a durable subscriber
      * 
      * @param connectionFactory
@@ -378,7 +392,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             if (afterSend - beforeSend > deliveryDelay)
                 throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:"+beforeSend+" afterSend:"+afterSend+" deliveryDelay:"+deliveryDelay);
 
-            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(deliveryDelay * 2 );
             long afterReceive = System.currentTimeMillis();
             
             if (receivedMessage == null)
@@ -392,14 +406,166 @@ public class DeliveryDelayServlet extends HttpServlet {
             jmsConsumer.close();
             
             if (useDurableSubscriber) {
-                jmsContext.unsubscribe("subs");
+                jmsContext.unsubscribe(durableSubscriberName);
             }
             
         }
         return;
     }
 
+    
+    // Simple setDeliveryDelay tests using standard domain-specific APIs
+    
+    // Tests for point-to-point domain
+    
+    public void testSetDeliveryDelayClassicApi(
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	
+    	emptyQueue(jmsQCFBindings, jmsQueue1);
+    	testSetDeliveryDelayQueueClassicApi(jmsQCFBindings, jmsQueue1);
+  
+    }
+    
+    public void testSetDeliveryDelayClassicApi_Tcp(
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	
+    	emptyQueue(jmsQCFTCP, jmsQueue1);
+    	testSetDeliveryDelayQueueClassicApi(jmsQCFTCP, jmsQueue1);
+    	
+    }
+    
+    /**
+     * Simple setDeliveryDelay test that uses the standard point-to-point API
+     * 
+     * @param queueConnectionFactory
+     * @param queue
+     * @throws Exception
+     */
+    private void testSetDeliveryDelayQueueClassicApi(QueueConnectionFactory connectionFactory, Queue queue) throws Exception {
+    	
+    	boolean testFailed = false;
+    	
+    	QueueConnection connection = connectionFactory.createQueueConnection();
+    	connection.start();
 
+        QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+
+        QueueReceiver receiver = session.createReceiver(queue);
+
+        QueueSender sender = session.createSender(queue);
+        sender.setDeliveryDelay(deliveryDelay);
+
+        TextMessage sendMsg = session.createTextMessage("testSetDeliveryDelayClassicApi");
+    	
+        long beforeSend = sendAndCheckDeliveryTime(sender, queue, sendMsg);
+        
+        TextMessage receivedMessage = (TextMessage) receiver.receive(deliveryDelay * 2);
+        long afterReceive = System.currentTimeMillis();
+    	
+        if ( (receivedMessage == null) ||
+              (receivedMessage.getText() == null) ||
+              !receivedMessage.getText().equals(sendMsg.getText()) ) {
+        	testFailed = true;
+           }
+        
+        sender.close();
+        connection.close();
+        
+        if ( testFailed ) {
+            throw new Exception("testSetDeliveryDelayQueueClassicApi failed");
+        }
+
+        return;
+        
+    }
+    
+
+    
+    // tests for pub/sub domain
+    
+    public void testSetDeliveryDelayTopicClassicApi(
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	
+    	testSetDeliveryDelayTopicClassicApi(jmsTCFBindings, jmsTopic, false);
+    	
+    }
+    
+    public void testSetDeliveryDelayTopicClassicApi_Tcp(
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    	testSetDeliveryDelayTopicClassicApi(jmsTCFTCP, jmsTopic, false);
+
+    }
+
+    public void testSetDeliveryDelayTopicDurSubClassicApi(
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    	testSetDeliveryDelayTopicClassicApi(jmsTCFBindings, jmsTopic, true);
+
+    }
+
+    public void testSetDeliveryDelayTopicDurSubClassicApi_Tcp(
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    	testSetDeliveryDelayTopicClassicApi(jmsTCFTCP, jmsTopic, true);
+
+    }
+    
+    /**
+     * Simple setDeliveryDelay test that uses the standard publish/subscribe API 
+     * 
+     * @param connnectionFactory
+     * @param topic
+     * @param useDurableSubscriber whether to create a durable or nondurable subscriber
+     * @throws Exception
+     */
+    public void testSetDeliveryDelayTopicClassicApi( TopicConnectionFactory connnectionFactory, Topic topic, boolean useDurableSubscriber) throws Exception {
+
+        boolean testFailed = false;
+    	String durableSubscriberName = "dursub";
+
+        TopicConnection connection = connnectionFactory.createTopicConnection();
+        connection.start();
+
+        TopicSession session = connection.createTopicSession(false,Session.AUTO_ACKNOWLEDGE);
+
+        TopicSubscriber subscriber = null;
+        if (useDurableSubscriber) {
+        	subscriber = session.createDurableSubscriber(topic, durableSubscriberName);
+        }
+        else {
+            subscriber = session.createSubscriber(topic);
+        }
+
+        TopicPublisher publisher = session.createPublisher(topic);
+        publisher.setDeliveryDelay(deliveryDelay);
+
+        TextMessage sendMsg = session.createTextMessage("testSetDeliveryDelayTopicClassicApi");
+        long beforeSend = sendAndCheckDeliveryTime(publisher, topic, sendMsg);
+        
+        
+        TextMessage receivedMessage = (TextMessage) subscriber.receive(deliveryDelay * 2);
+        long afterReceive = System.currentTimeMillis();
+    	
+        if ( (receivedMessage == null) ||
+              (receivedMessage.getText() == null) ||
+              !receivedMessage.getText().equals(sendMsg.getText()) ) {
+        	testFailed = true;
+           }
+        
+        subscriber.close();
+        if (useDurableSubscriber) {
+            session.unsubscribe(durableSubscriberName);
+        }
+        connection.close();
+        
+        if ( testFailed ) {
+            throw new Exception("testSetDeliveryDelayTopicClassicApi failed");
+        }
+        
+    	
+    }
+    
 
     public void testDeliveryDelayForDifferentDelays(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -2501,255 +2667,6 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
-    // CLASSIC
-
-    public void testSetDeliveryDelayClassicApi(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        QueueConnection con = jmsQCFBindings.createQueueConnection();
-        con.start();
-
-        emptyQueue(jmsQCFBindings, jmsQueue1);
-
-        QueueSession sessionSender = con.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        QueueReceiver rec = sessionSender.createReceiver(jmsQueue1);
-
-        QueueSender send = sessionSender.createSender(jmsQueue1);
-        send.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg = sessionSender.createTextMessage("testSetDeliveryDelayClassicApi");
-        sendAndCheckDeliveryTime(send, jmsQueue1, sendMsg);
-
-        TextMessage recMsg = (TextMessage) rec.receiveNoWait();
-        if ( recMsg != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) rec.receive(30000);
-
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayClassicApi") ) {
-            testFailed = true;
-        }
-
-        send.close();
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSetDeliveryDelayClassicApi failed");
-        }
-    }
-
-    public void testSetDeliveryDelayClassicApi_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        QueueConnection con = jmsQCFTCP.createQueueConnection();
-        con.start();
-
-        emptyQueue(jmsQCFTCP, jmsQueue1);
-
-        QueueSession sessionSender = con.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        QueueReceiver rec = sessionSender.createReceiver(jmsQueue1);
-
-        QueueSender send = sessionSender.createSender(jmsQueue1);
-        send.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg = sessionSender.createTextMessage("testSetDeliveryDelayClassicApi_Tcp");
-        sendAndCheckDeliveryTime(send, jmsQueue1, sendMsg);
-        TextMessage recMsg = (TextMessage) rec.receiveNoWait();
-
-        if ( recMsg != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) rec.receive(30000);
-
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayClassicApi_Tcp") ) {
-            testFailed = true;
-        }
-
-        send.close();
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSetDeliveryDelayClassicApi_Tcp failed");
-        }
-    }
-
-    public void testSetDeliveryDelayTopicClassicApi(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        TopicConnection con = jmsTCFBindings.createTopicConnection();
-        con.start();
-
-        TopicSession session = con.createTopicSession(false,Session.AUTO_ACKNOWLEDGE);
-
-        TopicSubscriber sub = session.createSubscriber(jmsTopic);
-
-        TopicPublisher publisher = session.createPublisher(jmsTopic);
-        publisher.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg = session.createTextMessage("testSetDeliveryDelayTopicClassicApi");
-        sendAndCheckDeliveryTime(publisher, jmsTopic, sendMsg);
-        TextMessage recMsg = (TextMessage) sub.receiveNoWait();
-
-        if ( recMsg != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) sub.receive(30000);
-
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayTopicClassicApi") ) {
-            testFailed = true;
-        }
-
-        if ( sub != null ) {
-            sub.close();
-        }
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveAfterDelayTopicClassicApi failed");
-        }
-    }
-
-    public void testSetDeliveryDelayTopicClassicApi_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        TopicConnection con = jmsTCFTCP.createTopicConnection();
-        con.start();
-
-        TopicSession session = con.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        TopicSubscriber sub = session.createSubscriber(jmsTopic);
-
-        TopicPublisher publisher = session.createPublisher(jmsTopic);
-        publisher.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg = session.createTextMessage("testSetDeliveryDelayTopicClassicApi_Tcp");
-        sendAndCheckDeliveryTime(publisher, jmsTopic, sendMsg);
-        TextMessage recMsg = (TextMessage) sub.receiveNoWait();
-
-        if ( recMsg != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) sub.receive(30000);
-
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayTopicClassicApi_Tcp") ) {
-            testFailed = true;
-        }
-
-        if ( sub != null ) {
-            sub.close();
-        }
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveAfterDelayTopicClassicApi failed");
-        }
-    }
-
-    public void testSetDeliveryDelayTopicDurSubClassicApi(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        TopicConnection con = jmsTCFBindings.createTopicConnection();
-        con.start();
-
-        TopicSession session = con.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        TopicSubscriber sub = session.createDurableSubscriber(jmsTopic, "dursub");
-
-        TopicPublisher publisher = session.createPublisher(jmsTopic);
-        publisher.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg = session.createTextMessage("testSetDeliveryDelayTopicDurSubClassicApi");
-        sendAndCheckDeliveryTime(publisher, jmsTopic, sendMsg);
-        TextMessage recMsg = (TextMessage) sub.receiveNoWait();
-
-        if ( recMsg != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) sub.receive(30000);
-
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayTopicDurSubClassicApi") ) {
-            testFailed = true;
-        }
-
-        if ( sub != null ) {
-            sub.close();
-        }
-        session.unsubscribe("dursub");
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSetDeliveryDelayTopicDurSubClassicApi failed");
-        }
-    }
-
-    public void testSetDeliveryDelayTopicDurSubClassicApi_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        TopicConnection con = jmsTCFTCP.createTopicConnection();
-        con.start();
-
-        TopicSession session = con.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        TopicSubscriber sub = session.createDurableSubscriber(jmsTopic, "dursubtcp");
-
-        TopicPublisher publisher = session.createPublisher(jmsTopic);
-        publisher.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg = session.createTextMessage("testSetDeliveryDelayTopicDurSubClassicApi_Tcp");
-        sendAndCheckDeliveryTime(publisher, jmsTopic, sendMsg);
-        TextMessage recMsg = (TextMessage) sub.receiveNoWait();
-
-        if ( recMsg != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) sub.receive(30000);
-
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayTopicDurSubClassicApi_Tcp") ) {
-            testFailed = true;
-        }
-
-        if ( sub != null ) {
-            sub.close();
-        }
-        session.unsubscribe("dursubtcp");
-        con.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSetDeliveryDelayTopicDurSubClassicApi_Tcp failed");
-        }
-    }
 
     public void testDeliveryDelayForDifferentDelaysClassicApi(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
