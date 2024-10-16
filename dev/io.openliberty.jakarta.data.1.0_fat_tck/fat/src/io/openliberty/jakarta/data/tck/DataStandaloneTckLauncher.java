@@ -61,11 +61,11 @@ public class DataStandaloneTckLauncher {
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
-        String testName = this.getClass() + ":launchDataTckStandaloneNoSQL";
-        Type type = Type.JAKARTA;
-        String specName = "Data (Standalone - NoSQL)";
-        String relativeTckRunner = "publish/tckRunner/standalone/";
-        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
+        TCKRunner.build(DONOTSTART, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("standalone", "NoSQL")
+                        .withRelativeTCKRunner("publish/tckRunner/platform/")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 }

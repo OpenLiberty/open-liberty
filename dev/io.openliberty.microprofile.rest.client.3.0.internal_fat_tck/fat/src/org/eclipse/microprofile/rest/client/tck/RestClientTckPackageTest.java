@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,10 +47,10 @@ public class RestClientTckPackageTest {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
 
     public static final String SERVER_NAME = "FATServer";
-    
+
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP61,// 3.0+EE10
+                                                             MicroProfileActions.MP61, // 3.0+EE10
                                                              MicroProfileActions.MP50); // 3.0+EE9
 
     @Server(SERVER_NAME)
@@ -89,12 +89,10 @@ public class RestClientTckPackageTest {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testRestClient30Tck() throws Exception {
         // Skip running on the windows platform when not running locally.
-        if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) { 
-            String bucketName = "io.openliberty.microprofile.rest.client.3.0.internal_fat_tck";
-            String testName = this.getClass() + ":testRestClient30Tck";
-            Type type = Type.MICROPROFILE;
-            String specName = "Rest Client";
-            TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
+            TCKRunner.build(server, Type.MICROPROFILE, "Rest Client")
+                            .withDefaultSuiteFileName()
+                            .runTCK();
         }
     }
 

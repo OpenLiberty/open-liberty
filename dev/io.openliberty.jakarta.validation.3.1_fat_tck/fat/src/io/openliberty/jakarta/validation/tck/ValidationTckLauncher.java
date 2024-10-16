@@ -99,16 +99,10 @@ public class ValidationTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchValidation31TCK() throws Exception {
 
-        /**
-         * The runTCKMvnCmd will set the following properties for use by
-         * arquillian [ wlp, tck_server, tck_port, tck_failSafeUndeployment,
-         * tck_appDeployTimeout, tck_appUndeployTimeout ] and then run the mvn
-         * test command.
-         */
-        String bucketName = "io.openliberty.jakarta.validation.3.1_fat_tck";
-        String testName = this.getClass() + ":launchValidation31TCK";
-        Type type = Type.JAKARTA;
-        String specName = "Validation ";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, "tck-tests.xml", additionalProps);
+        TCKRunner.build(server, Type.JAKARTA, "Validation")
+                        .withPlatfromVersion("11")
+                        .withSuiteFileName("tck-tests.xml")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 }
