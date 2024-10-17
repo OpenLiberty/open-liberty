@@ -32,55 +32,40 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.transport.iiop.spi.ORBRef;
+import com.ibm.ws.transport.iiop.spi.OrbConfigurator;
 import com.ibm.ws.transport.iiop.spi.ServerPolicySource;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
-/**
- * A TSSBean represents a transport-level security profile for exported EJB objects. An
- * exported object is attached to a TSSBean-created named POA. The TSSBean POA
- * is created in the context of the ORB controlled by a CORBABean instance.
- * The parent CORBABean controls the transport-level security of the host connection and
- * defines the endpoint connnection for the object (host and listener port).
- * TSSBean may then define additional characteristics that
- * get encoded in the IOR of the connection.
- * 
- * @version $Revision: 497125 $ $Date: 2007-01-17 10:51:30 -0800 (Wed, 17 Jan 2007) $
- */
 @Component(factory = "com.ibm.ws.transport.iiop.internal.ServerPolicySourceImpl",
                 property = { "service.vendor=IBM", "service.ranking:Integer=10" })
 @DSExt.PersistentFactoryComponent
 public class ServerPolicySourceImpl implements ServerPolicySource {
 
     /* DS adds the references in the correct ranked order */
-    protected final List<SubsystemFactory> subsystemFactories = new ArrayList<>();
+    protected final List<OrbConfigurator> orbConfigurators = new ArrayList<>();
     protected Map<String, Object> properties;
 
+    /* SubsystemFactories will eventually be converted to OrbConfigurators. *
+     * Until then, this object will accept both types of component.         *
+     * Each component should provide only on of these two services.         */
+
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.STATIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setSubsystemFactory(SubsystemFactory sf) {
-        subsystemFactories.add(sf);
-    }
+    protected void addSubsystemFactory(SubsystemFactory sf) { orbConfigurators.add(sf); }
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.STATIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void addOrbConfigurator(OrbConfigurator oc) { orbConfigurators.add(oc); }
 
     @Activate
-    protected void activate(Map<String, Object> properties, BundleContext ctx) {
-        this.properties = properties;
-    }
-
-    @Deactivate
-    protected void deactivate() {}
+    protected void activate(Map<String, Object> properties, BundleContext ctx) { this.properties = properties; }
 
     //n.b. no modified method: changing the security config should result in all apps restarting and writing out the new IORs.
 
-    /** {@inheritDoc} */
     @Override
     public void addConfiguredPolicies(List<Policy> policies, ORBRef server) throws Exception {
         ORB orb = server.getORB();
-
-        for (SubsystemFactory sf : subsystemFactories) {
-            Policy targetPolicy = sf.getTargetPolicy(orb, properties, server.getExtraConfig());
-            if (targetPolicy != null) {
-                policies.add(targetPolicy);
-            }
+        for (OrbConfigurator oc : orbConfigurators) {
+            Policy targetPolicy = oc.getTargetPolicy(orb, properties, server.getExtraConfig());
+            if (null == targetPolicy) continue;
+            policies.add(targetPolicy);
         }
     }
-
 }

@@ -12,12 +12,6 @@
  */
 package shared;
 
-import java.util.stream.Stream;
-
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import componenttest.app.FATServlet;
 
 /**

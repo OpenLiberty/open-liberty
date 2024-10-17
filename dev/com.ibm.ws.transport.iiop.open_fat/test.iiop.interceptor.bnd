@@ -34,4 +34,4 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Include-Resource: OSGI-INF=test-bundles/test.iiop.interceptor/OSGI-INF
 
--dsannotations: test.iiop.interceptor.TestSubsystemFactory
+-dsannotations: test.iiop.interceptor.TestOrbConfigurator

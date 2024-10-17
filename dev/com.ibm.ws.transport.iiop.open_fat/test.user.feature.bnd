@@ -19,5 +19,4 @@ Bundle-Name: User Feature Bundle
 Bundle-SymbolicName: test.user.feature; singleton:=true
 Bundle-Description: This bundle provides some classes to use in testing a user feature; version=${bVersion}
 
-# export nothing
 Export-Package: test.user.feature

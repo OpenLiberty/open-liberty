@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.rmi.CORBA.Util;
 
@@ -48,6 +49,7 @@ import com.ibm.ws.transport.iiop.spi.AdapterActivatorOp;
 import com.ibm.ws.transport.iiop.spi.ClientORBRef;
 import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
 import com.ibm.ws.transport.iiop.spi.ORBRef;
+import com.ibm.ws.transport.iiop.spi.OrbConfigurator;
 import com.ibm.ws.transport.iiop.spi.ServerPolicySource;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -88,14 +90,14 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
             if (checkpointPhase != CheckpointPhase.INACTIVE) {
                 Util.createValueHandler().getRunTimeCodeBase();
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         try {
             if (endpoints.isEmpty()) {
-                this.orb = configAdapter.createClientORB(properties, subsystemFactories);
+                this.orb = configAdapter.createClientORB(properties, orbConfigurators);
             } else {
                 // the config adapter creates the actual ORB instance for us.
-                orb = configAdapter.createServerORB(properties, extraConfig, endpoints, subsystemFactories);
+                orb = configAdapter.createServerORB(properties, extraConfig, endpoints, orbConfigurators);
 
                 org.omg.CORBA.Object obj = orb.resolve_initial_references("RootPOA");
                 rootPOA = POAHelper.narrow(obj);
@@ -105,22 +107,15 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
                 Tr.debug(tc, "activate() using ORB: " + orb);
             PolicyManager policyManager = (PolicyManager) orb.resolve_initial_references("ORBPolicyManager");
             List<Policy> policies = new ArrayList<>();
-            for (SubsystemFactory sf : subsystemFactories) {
-                Policy policy = sf.getClientPolicy(orb, properties);
-                if (policy != null) {
-                    policies.add(policy);
-                }
+            for (OrbConfigurator oc : orbConfigurators) {
+                Policy policy = oc.getClientPolicy(orb, properties);
+                if (policy != null) policies.add(policy);
             }
             policyManager.set_policy_overrides(policies.toArray(new Policy[policies.size()]), SetOverrideType.ADD_OVERRIDE);
             for (IIOPEndpoint endpoint : endpoints) {
                 Tr.audit(tc, "NAME_SERVER_AVAILABLE", "corbaloc:iiop:" + endpoint.getHost() + ":" + endpoint.getIiopPort() + "/NameService");
             }
-        } catch (NoSuchMethodError e) {
-//        throw new IllegalStateException("CORBA usage requires Yoko CORBA spec classes in java.endorsed.dirs classpath", e);
-//    } catch (ConfigException e) {
-//    } catch (InvalidName e) {
-//    } catch (InvalidPolicies e) {
-        } catch (Exception e) {
+        } catch (NoSuchMethodError|Exception ignored) {
         }
     }
 
@@ -133,7 +128,6 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
                 Tr.audit(tc, "NAME_SERVER_UNAVAILABLE", "corbaloc:iiop:" + endpoint.getHost() + ":" + endpoint.getIiopPort() + "/NameService");
             }
         }
-        super.deactivate();
         map.deactivate(cc);
     }
 
@@ -172,25 +166,18 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
         return rootPOA;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Map<String, Object> getExtraConfig() {
         return extraConfig;
     }
 
     private class DelegatingAdapterActivator extends LocalObject implements AdapterActivator {
-
         private static final long serialVersionUID = 1L;
-
-        /** {@inheritDoc} */
         @Override
         public boolean unknown_adapter(POA parent, String name) {
             AdapterActivatorOp ops = map.getService(name);
-            if (ops != null) {
-                return ops.unknown_adapter(parent, name, ORBWrapperInternal.this);
-            }
-            return false;
+            if (null == ops) return false;
+            return ops.unknown_adapter(parent, name, ORBWrapperInternal.this);
         }
     }
-
 }
