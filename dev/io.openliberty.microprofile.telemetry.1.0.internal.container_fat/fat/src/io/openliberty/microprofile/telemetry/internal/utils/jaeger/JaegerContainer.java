@@ -54,7 +54,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
     public JaegerContainer(DockerImageName imageName) {
         super(imageName);
-        Log.info(c, "JaegerContainer", "creating JaegerContainer with imageName");
+        Log.info(c, "JaegerContainer", "creating JaegerContainer with " + imageName);
 
         withExposedPorts(OTLP_GRPC_PORT,
                          OTLP_HTTP_PORT,
@@ -64,6 +64,10 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
                          HTTP_QUERY_PORT);
 
         withEnv("COLLECTOR_OTLP_ENABLED", "true");
+        withEnv("GODEBUG=http2debug","2");
+        //withEnv("IDLE_CONN_TIMEOUT","10s");// maximum amount of time an idle (keep-alive) connection will remain idle before closing
+        //withEnv("HTTP2_READ_IDLE_TIMEOUT","10s");//_http2_read_idle_timeout")
+        withEnv("COLLECTOR.OTLP.GRPC.MAX-CONNECTION-AGE", "120s");
     }
 
     public JaegerContainer(File tlsCert, File tlsKey) {
@@ -87,7 +91,11 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
                          HTTP_QUERY_PORT);
 
         withEnv("COLLECTOR_OTLP_ENABLED", "true");
+        withEnv("COLLECTOR.OTLP.GRPC.MAX-CONNECTION-AGE", "120s");
         withEnv("COLLECTOR_OTLP_GRPC_TLS_ENABLED", "true");
+        withEnv("GODEBUG=http2debug","2");
+        //withEnv("IDLE_CONN_TIMEOUT","10s");// maximum amount of time an idle (keep-alive) connection will remain idle before closing
+        //withEnv("HTTP2_READ_IDLE_TIMEOUT","10s");//_http2_read_idle_timeout")
         withEnv("COLLECTOR_OTLP_GRPC_TLS_CERT", "/etc/certificate.crt");
         withEnv("COLLECTOR_OTLP_GRPC_TLS_KEY", "/etc/private.key");
 

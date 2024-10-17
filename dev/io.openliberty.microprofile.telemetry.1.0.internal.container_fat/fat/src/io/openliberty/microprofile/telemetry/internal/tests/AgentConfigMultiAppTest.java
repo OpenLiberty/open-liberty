@@ -77,7 +77,7 @@ public class AgentConfigMultiAppTest {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(AgentConfigMultiAppTest.class, "jaeger"));
     public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule

@@ -22,7 +22,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,6 +63,7 @@ public class JaegerQueryClient implements AutoCloseable {
 
     private final String host;
     private final int port;
+    private static final Duration TIMEOUT = Duration.ofSeconds(10);
 
     private QueryServiceBlockingStub client;
 
@@ -76,6 +83,8 @@ public class JaegerQueryClient implements AutoCloseable {
                 ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
                 client = QueryServiceGrpc.newBlockingStub(channel);
             }
+            Log.info(c, "getRawClient()", "host " + host);
+            Log.info(c, "getRawClient()", "port " + port);
             return client;
         }
     }
@@ -99,23 +108,27 @@ public class JaegerQueryClient implements AutoCloseable {
      * @return the spans
      */
     public List<Span> getSpansForTraceId(ByteString traceId) {
-        try {
-            Log.info(c, "getSpansForTraceId", "Starting Jaeger query");
-            GetTraceRequest req = GetTraceRequest.newBuilder().setTraceId(traceId).build();
-            Iterator<SpansResponseChunk> result = getRawClient().getTrace(req);
-            List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
-            Log.info(c, "getSpansForTraceId", "Returning spans");
-            return spans;
-        } catch (StatusRuntimeException ex) {
-            // If the traceId was not found, there are no spans for that traceId
-            // return an empty list rather than throwing an exception
-            if (ex.getStatus().getCode() == Code.NOT_FOUND) {
-                Log.info(c, "getSpansForTraceId", "No spans found");
-                return Collections.emptyList();
-            } else {
-                throw ex;
+        return runWithRetryAndTimeout(() -> {
+            try {
+                Log.info(c, "getSpansForTraceId", "Starting Jaeger query");
+                GetTraceRequest req = GetTraceRequest.newBuilder().setTraceId(traceId).build();
+                Log.info(c, "GetTraceRequest.newBuilder().setTraceId(" + traceId + ").build()", req.toString());
+                Iterator<SpansResponseChunk> result = getRawClient().getTrace(req);
+                Log.info(c, "getRawClient().getTrace(req)", result.toString());
+                List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
+                Log.info(c, "getSpansForTraceId", "Returning spans");
+                return spans;
+            } catch (StatusRuntimeException ex) {
+                // If the traceId was not found, there are no spans for that traceId
+                // return an empty list rather than throwing an exception
+                if (ex.getStatus().getCode() == Code.NOT_FOUND) {
+                    Log.info(c, "getSpansForTraceId", "No spans found");
+                    return Collections.emptyList();
+                } else {
+                    throw ex;
+                }
             }
-        }
+        }, TIMEOUT);
     }
 
     /**
@@ -125,27 +138,34 @@ public class JaegerQueryClient implements AutoCloseable {
      * @return the list of spans
      */
     public List<Span> getSpansForServiceName(String serviceName) {
-        Log.info(c, "getSpansForServiceName", "Starting Jaeger query");
-        TraceQueryParameters params = TraceQueryParameters.newBuilder().setServiceName(serviceName).build();
-        FindTracesRequest req = FindTracesRequest.newBuilder().setQuery(params).build();
-        Iterator<SpansResponseChunk> result = getRawClient().findTraces(req);
-        List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
-        Log.info(c, "getSpansForServiceName", "Returning spans");
-        return spans;
+        return runWithRetryAndTimeout(() -> {
+            Log.info(c, "getSpansForServiceName", "Starting Jaeger query");
+            TraceQueryParameters params = TraceQueryParameters.newBuilder().setServiceName(serviceName).build();
+            Log.info(c, "getSpansForServiceName", "TraceQueryParameters " + params.toString());
+            FindTracesRequest req = FindTracesRequest.newBuilder().setQuery(params).build();
+            Log.info(c, "getSpansForServiceName", "FindTracesRequest " + req.toString());
+            Iterator<SpansResponseChunk> result = getRawClient().findTraces(req);
+            Log.info(c, "getSpansForServiceName", "Iterator<SpansResponseChunk> result " + result.toString());
+            List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
+            Log.info(c, "getSpansForServiceName", "Returning spans");
+            return spans;
+        }, TIMEOUT);
     }
 
     /**
      * Retrieve all service names
      */
     public List<String> getServices() {
-        Log.info(c, "getServices", "Starting Jaeger query");
-        GetServicesRequest req = GetServicesRequest.getDefaultInstance();
-        GetServicesResponse resp = getRawClient().getServices(req);
-        List<ByteString> services = resp.getServicesList().asByteStringList();
-        Log.info(c, "getServices", "Returning service names");
-        return services.stream()
-                       .map(ByteString::toStringUtf8)
-                       .collect(Collectors.toList());
+        return runWithRetryAndTimeout(() -> {
+            Log.info(c, "getServices", "Starting Jaeger query");
+            GetServicesRequest req = GetServicesRequest.getDefaultInstance();
+            GetServicesResponse resp = getRawClient().getServices(req);
+            List<ByteString> services = resp.getServicesList().asByteStringList();
+            Log.info(c, "getServices", "Returning service names");
+            return services.stream()
+                           .map(ByteString::toStringUtf8)
+                           .collect(Collectors.toList());
+        }, TIMEOUT);
     }
 
     /**
@@ -265,6 +285,42 @@ public class JaegerQueryClient implements AutoCloseable {
             result.addAll(extractFunction.apply(chunkIterator.next()));
         }
         return result;
+    }
+
+    /**
+     * Run an action asynchronously with a timeout, retrying up to three times if it times out.
+     * <p>
+     * Useful for methods which use the raw client to talk to Jaeger
+     *
+     * @param <T> the return type of the action
+     * @param action the action to run
+     * @param timeout the timeout for each retry
+     * @return the result of the action
+     * @throws RuntimeException if the action throws an exception or times out three times
+     */
+    private static <T> T runWithRetryAndTimeout(Callable<T> action, Duration timeout) {
+        int retryCount = 0;
+
+        while (retryCount < 3) {
+            Log.info(c, "runWithRetryandTimeout", "retryCount " + retryCount);
+            retryCount += 1;
+            //get executOR
+            ExecutorService e = Executors.newSingleThreadExecutor();
+            Future<T> future = e.submit(action);
+            //
+            try {
+                return future.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException e1) {
+                future.cancel(true); //interrupt the task if it's still running
+                throw new RuntimeException("Action throw an exception ", e1);
+            } catch (TimeoutException e1) {
+                future.cancel(true);
+            } finally {
+                e.shutdown();
+            }
+
+        }
+        throw new RuntimeException("Action timeout");
     }
 
     private static class Timeout {

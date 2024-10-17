@@ -27,7 +27,7 @@ Import-Package: \
   com.ibm.websphere.pmi;version="[1.1,2)", \
   com.ibm.wsspi.pmi.factory;version="[1.1,2)", \
   com.ibm.wsspi.pmi.stat;version="[1.1,2)", \
-  io.grpc;version="[1.57.2,11)", \
+  io.grpc;version="[1.68.0,11)", \
   *
 	
 Export-Package: \

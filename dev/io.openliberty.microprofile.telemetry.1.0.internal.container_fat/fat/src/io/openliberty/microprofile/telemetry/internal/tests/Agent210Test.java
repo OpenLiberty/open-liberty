@@ -79,7 +79,7 @@ public class Agent210Test {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(Agent210Test.class, "Jaeger container"));
     public static RepeatTests repeat = TelemetryActions.telemetry20Repeats(SERVER_NAME);
 
     // In contrast to most tests, this test needs a new jaeger instance for each repeat

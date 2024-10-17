@@ -17,11 +17,11 @@ fat.project: true
 
 #Any changes to these names must be copied to TestConstants
 fat.test.container.images: \
-    jaegertracing/all-in-one:1.54, \
+    jaegertracing/all-in-one:1.60, \
     openzipkin/zipkin-slim:2.23, \
     otel/opentelemetry-collector:0.74.0
 
-grpcVersion=1.57.2
+grpcVersion=1.68.0
 
 tested.features:\
   cdi-2.0,\
