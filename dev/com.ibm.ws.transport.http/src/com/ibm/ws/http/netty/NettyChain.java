@@ -46,7 +46,7 @@ import io.openliberty.netty.internal.exception.NettyException;
  */
 public class NettyChain extends HttpChain {
 
-    private static final TraceComponent tc = Tr.register(NettyChain.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(NettyChain.class, HttpMessages.HTTP_TRACE_NAME, "com.ibm.ws.tcpchannel.internal.resources.TCPChannelMessages");
 
     private NettyFramework nettyFramework;
     private ServerBootstrapExtended bootstrap;
@@ -237,12 +237,6 @@ public class NettyChain extends HttpChain {
 
                 serverChannel = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
-                if(!serverChannel.isOpen()) {
-                    Tr.error(tc, TCPChannelMessageConstants.LOCAL_HOST_UNRESOLVED, new Object[] {this.tcpName, info.getHost(), info.getPort()});
-
-                   // System.out.println("CWWKO0224E: TCP Channel ...");
-                }
-
                 VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
                 postEvent(topic, currentConfig, null);
@@ -263,6 +257,9 @@ public class NettyChain extends HttpChain {
     private void channelFutureHandler(ChannelFuture future) {
         //TODO: check this synchronization behaves as intended
         synchronized (this) {
+
+
+
             if (future.isSuccess()) {
                 state.set(ChainState.STARTED);
                 EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
@@ -275,12 +272,27 @@ public class NettyChain extends HttpChain {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel failed to bind to port:  " + future.cause());
                 }
+
+                // Check if the exception is or was caused by UnresolvedAddressException
+                Throwable cause = future.cause();
+                boolean unresolvedAddress = false;
+
+            while (cause != null) {
+                if (cause instanceof java.nio.channels.UnresolvedAddressException) {
+                    unresolvedAddress = true;
+                    break;
+                }
+                cause = cause.getCause();
+            }
+
+            if (unresolvedAddress) {
+            // Log the specific error message
+                Tr.error(tc, TCPChannelMessageConstants.LOCAL_HOST_UNRESOLVED,
+                     new Object[] {this.endpointName, currentConfig.configHost, currentConfig.configPort});
+            }
+
                 handleStartupError(new NettyException(future.cause()), currentConfig);
-                // if(serverChannel != null){
-                //     serverChannel.close();
-                //     serverChannel = null;
-                // }
-                // TODO: check if this is needed
+                
                 if (currentConfig != null) {
                     VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                     currentConfig.clearActivePort();

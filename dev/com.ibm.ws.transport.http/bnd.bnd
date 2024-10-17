@@ -56,6 +56,7 @@ Import-Package: \
 
 Private-Package: \
 	com.ibm.ws.http.*, \
+	com.ibm.ws.tcpchannel.internal.resources, \
 	com.ibm.ws.genericbnf.internal, \
 	io.openliberty.http.options, \
 	io.openliberty.http.utils
