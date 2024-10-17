@@ -9,7 +9,8 @@
         <feature>mpHealth-2.0</feature>
     </featureManager>
 	
-	<logging traceSpecification="*=info:HEALTH=all"/>
+	<!-- Enable trace for debug purposes only.-->
+	<!--logging traceSpecification="*=info:HEALTH=all"/-->
 
 	<application name="MultipleHealthCheckApp" type="war" location="MultipleHealthCheckApp.war" autoStart="true"></application>
 	
