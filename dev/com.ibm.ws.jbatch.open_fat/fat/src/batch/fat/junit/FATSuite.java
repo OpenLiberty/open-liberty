@@ -12,6 +12,16 @@
  *******************************************************************************/
 package batch.fat.junit;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.Properties;
+
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,6 +32,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * Collection of all example tests
@@ -55,6 +66,7 @@ import componenttest.rules.repeater.RepeatTests;
         CDITestCheckpoint.class,
         ChunkTest.class,
         JdbcConfigTest.class,
+        JdbcConfigTestCheckpoint.class,
         LocalServerJobRecoveryAtStartUpTest.class,
         MiscTest.class,
         TranTimeoutTest.class,
@@ -70,4 +82,19 @@ public class FATSuite {
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
         .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
         .andWith(new JakartaEE10Action()); 
+    
+    static public void configureBootStrapProperties(LibertyServer server, Map<String, String> properties) throws Exception, IOException, FileNotFoundException {
+        Properties bootStrapProperties = new Properties();
+        File bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
+        if (bootStrapPropertiesFile.isFile()) {
+            try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
+                bootStrapProperties.load(in);
+            }
+        }
+        bootStrapProperties.putAll(properties);
+        try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
+            bootStrapProperties.store(out, "");
+        }
+    } 
+    
 }
