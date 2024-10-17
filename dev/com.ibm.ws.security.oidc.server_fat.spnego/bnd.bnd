@@ -20,6 +20,7 @@ fat.project: true
 
 -buildpath: \
     com.ibm.json4j;version=latest,\
+    org.apache.httpcomponents:httpcore;version=4.4.13, \
     com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
     com.ibm.ws.security.fat.common;version=latest,\
     com.ibm.ws.security.oauth.2.0;version=latest,\
