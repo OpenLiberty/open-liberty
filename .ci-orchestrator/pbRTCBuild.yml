@@ -50,6 +50,22 @@ steps:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
 
+- stepName: Copyright Header Check
+  workType: Jenkins
+  projectName: copyrightHeaderCheck
+  timeoutInMinutes: 120
+  properties:
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
+
+- stepName: Prohibited Terms Check
+  workType: Jenkins
+  projectName: prohibitedTermsCheck
+  timeoutInMinutes: 120
+  properties:
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
+
 - stepName: Compile
   coreStep: true
   workType: RTC
