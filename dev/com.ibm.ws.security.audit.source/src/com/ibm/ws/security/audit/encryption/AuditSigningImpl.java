@@ -29,6 +29,7 @@ import javax.management.ObjectName;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditDecryptionException;
@@ -52,14 +53,14 @@ public class AuditSigningImpl implements AuditSigning {
     private static String certLabelPrefix = "auditcert";
     private static String CRYPTO_ALGORITHM = "SHA256withRSA";
 
-    private static boolean fips140_3Enabled = false;
-
-    private static final String IBMJCE_NAME = "IBMJCE";
-    private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
-    private static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
+    private static boolean fips140_3Enabled = CryptoUtils.isFips140_3Enabled();
+//
+//    private static final String IBMJCE_NAME = "IBMJCE";
+//    private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
+//    private static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
     //private static final String provider = getProvider();
 
-    private static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";
+//    private static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";
     //private static final String signatureAlgorithm = getSignatureAlgorithm();
 
     private Signature signature = null;

@@ -595,11 +595,6 @@ public class AuditFileHandler implements SynchronousHandler {
         return this.sign;
     }
 
-    public Boolean isFips140_3Enabled() {
-        //TODO:
-        return true;
-    }
-
     /** {@inheritDoc} */
     public void setCompact(Object value) {
         this.compact = (Boolean) value;

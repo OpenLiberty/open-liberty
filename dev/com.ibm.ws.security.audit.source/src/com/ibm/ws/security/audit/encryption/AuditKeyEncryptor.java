@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.audit.encryption;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.audit.source.utils.ByteArray;
 
 /**
@@ -19,11 +20,11 @@ import com.ibm.ws.security.audit.source.utils.ByteArray;
  */
 public class AuditKeyEncryptor {
     public static final String MESSAGE_DIGEST_ALGORITHM_SHA = "SHA";
-    public static final String MESSAGE_DIGEST_ALGORITHM_SHA256 = "SHA256";
+//    public static final String MESSAGE_DIGEST_ALGORITHM_SHA256 = "SHA256";
 
-    public static final String IBMJCE_NAME = "IBMJCE";
-    public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
-    private String algorithm = MESSAGE_DIGEST_ALGORITHM_SHA;
+//    public static final String IBMJCE_NAME = "IBMJCE";
+//    public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
+    private String algorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA;
     private int len = 24;
     byte[] password;
     byte[] desKey;
@@ -33,8 +34,8 @@ public class AuditKeyEncryptor {
         this.password = password;
         java.security.MessageDigest md = null;
         try {
-            if (isFips140_3Enabled()) {
-                algorithm = MESSAGE_DIGEST_ALGORITHM_SHA256;
+            if (CryptoUtils.isFips140_3Enabled()) {
+                algorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
                 len = 32;
             }
 
@@ -60,10 +61,5 @@ public class AuditKeyEncryptor {
 
     public byte[] encrypt(byte[] key) {
         return des.encrypt(key, desKey);
-    }
-
-    public boolean isFips140_3Enabled() {
-        //TODO:UTLE
-        return true;
     }
 }
