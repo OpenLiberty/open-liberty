@@ -90,7 +90,7 @@ CWWKD1015.null.entity.param=CWWKD1015E: Die {0} Methode der {1} Repository-Schni
 CWWKD1015.null.entity.param.explanation=Lebenszyklusmethoden erfordern eine Entit\u00e4tsinstanz, die nicht null ist.
 CWWKD1015.null.entity.param.useraction=Aktualisieren Sie den Anwendungscode, um zu vermeiden, dass ein Null-Entity-Wert an die Repository-Methode \u00fcbergeben wird.
 
-CWWKD1016.incompat.entity.param=CWWKD1016E: Die {0}-Methode der {1}-Repository-Schnittstelle erfordert eine {0}-Entit\u00e4t, aber ein {1}-Wert wurde geliefert.
+CWWKD1016.incompat.entity.param=CWWKD1016E: Die {0} der {1} erfordert eine {2}, aber es wurde ein {3} geliefert.
 CWWKD1016.incompat.entity.param.explanation=Die Lebenszyklusmethode akzeptiert nur Entit\u00e4tswerte des angegebenen Typs.
 CWWKD1016.incompat.entity.param.useraction=Anwendungscode aktualisieren, um einen Entit\u00e4tswert desselben Entit\u00e4tstyps zu liefern, den die Repository-Methode deklariert.
 
@@ -165,3 +165,198 @@ CWWKD1033.ql.orderby.disallowed.useraction=Ersetzen Sie die ORDER BY-Klausel dur
 CWWKD1034.ql.where.required=CWWKD1034E: Die Abfrage, die von der Methode {0} der Repository-Schnittstelle {1} angegeben wird, muss mit einer WHERE-Klausel enden, da die Methode {2} zur\u00fcckgibt. Dort endet die WHERE-Klausel an der Position {3}, aber die L\u00e4nge der Abfrage ist {4}. Die Abfrage lautet: {5}.
 CWWKD1034.ql.where.required.explanation=Eine WHERE-Klausel ist erforderlich, wenn eine cursorbasierte Paginierung verwendet wird.
 CWWKD1034.ql.where.required.useraction=F\u00fcgen Sie der Abfrage eine WHERE-Klausel hinzu.
+
+CWWKD1035.incompat.page.mode=CWWKD1035E: Eine Seitenanforderung mit dem Paginierungsmodus {0} darf nicht an die Methode {1} der Repository-Schnittstelle {2} \u00fcbergeben werden, da die Methode {3} statt {4} zur\u00fcckgibt.
+CWWKD1035.incompat.page.mode.explanation=Der angeforderte Paginierungsmodus ist nicht mit dem R\u00fcckgabetyp der Repository-Methode kompatibel.
+CWWKD1035.incompat.page.mode.useraction=Verwenden Sie einen R\u00fcckgabetyp Page f\u00fcr den Paginierungsmodus OFFSET und einen R\u00fcckgabetyp CursoredPage f\u00fcr die Paginierungsmodi CURSOR_NEXT und CURSOR_PREVIOUS.
+
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: Ein Cursor mit {0} Elementen, der an die {1} der {2} \u00fcbergeben wird, kann nicht mit Sortierkriterien der Gr\u00f6\u00dfe {3} verwendet werden, da die Anzahl und Reihenfolge der Cursor-Elemente mit den Sortierkriterien \u00fcbereinstimmen muss. Der Cursor besteht aus: {4}. Die Sortierkriterien sind: {5}.
+CWWKD1036.cursor.size.mismatch.explanation=Die Anzahl der Cursorelemente muss der Gr\u00f6\u00dfe der kombinierten Sortierkriterien der Repository-Methode entsprechen.
+CWWKD1036.cursor.size.mismatch.useraction=Korrigieren Sie die Cursor-Elemente oder die Sortierkriterien so, dass beide die gleiche Gr\u00f6\u00dfe haben.
+
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Es ist nicht m\u00f6glich, einen Cursor aus dem {0} Ergebnis der {1} Methode der {2} Repository-Schnittstelle zu erhalten. Abfragen, die eine cursorbasierte Paginierung verwenden, m\u00fcssen Ergebnisse desselben Typs wie der Entit\u00e4tstyp zur\u00fcckgeben, d. h. {3}. Der R\u00fcckgabetyp der Repository-Methode ist {4}.
+CWWKD1037.cursor.rtrn.mismatch.explanation=Die Cursor-basierte Paginierung ist nur m\u00f6glich, wenn die Repository-Methode den Entit\u00e4tstyp zur\u00fcckgibt.
+CWWKD1037.cursor.rtrn.mismatch.useraction=Aktualisieren Sie die Repository-Methode, um den Entit\u00e4tstyp zur\u00fcckzugeben.
+
+CWWKD1038.no.prev.offset.page=CWWKD1038E: Eine Seitennummer vor {0} kann f\u00fcr die Methode {1} der Repository-Schnittstelle {2} nicht angefordert werden, da die Methode Page.hasPrevious den Wert false zur\u00fcckgibt, was bedeutet, dass es keine vorherige Seite gibt.
+CWWKD1038.no.prev.offset.page.explanation=Bei der Offset-Paginierung sind Seitenzahlen unter 1 nicht zul\u00e4ssig.
+CWWKD1038.no.prev.offset.page.useraction=Stellen Sie sicher, dass die angeforderte Seitenzahl eine positive Zahl ist, und verwenden Sie die Methode Page.hasPrevious, um sicherzustellen, dass die Anforderung der vorherigen Seite g\u00fcltig ist.
+
+CWWKD1039.no.prev.cursor.page=CWWKD1039E: F\u00fcr die Methode {0} der Repository-Schnittstelle {1} kann keine vorherige Seite angefordert werden, da die Methode Page.hasPrevious false zur\u00fcckgibt, was bedeutet, dass es keine vorherige Seite gibt.
+CWWKD1039.no.prev.cursor.page.explanation=Die cursorbasierte Paginierung erlaubt es nicht, eine vorherige Seite anzufordern, wenn bekannt ist, dass die aktuelle Seite die Ergebnisse am Anfang des Datensatzes enth\u00e4lt.
+CWWKD1039.no.prev.cursor.page.useraction=Verwenden Sie die Methode Page.hasPrevious, um sicherzustellen, dass die Anforderung der vorherigen Seite g\u00fcltig ist.
+
+CWWKD1040.no.next.page=CWWKD1040E: F\u00fcr die Methode {0} der Repository-Schnittstelle {1} kann keine Folgeseite angefordert werden, da {2} false zur\u00fcckgibt, was bedeutet, dass es keine Folgeseite gibt.
+CWWKD1040.no.next.page.explanation=Eine n\u00e4chste Seite kann nicht angefordert werden, wenn bekannt ist, dass die aktuelle Seite das Ende des Datensatzes enth\u00e4lt.
+CWWKD1040.no.next.page.useraction=Verwenden Sie die Methode hasNext, um sicherzustellen, dass die Anforderung der n\u00e4chsten Seite g\u00fcltig ist.
+
+CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: Die Methode {0} der Repository-Schnittstelle {1} hat einen R\u00fcckgabetyp {2}, aber es fehlt ein Parameter vom Typ PageRequest, der den Parametern f\u00fcr die Abfragebedingungen folgt.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=Repository-Methoden mit den R\u00fcckgabetypen Page und CursoredPage m\u00fcssen einen PageRequest haben.
+CWWKD1041.rtrn.mismatch.pagereq.useraction=Hinzuf\u00fcgen eines PageRequest zur Signatur der Repository-Methode.
+
+CWWKD1042.no.totals=CWWKD1042E: Seiten, die mit der {0} der {1} abgerufen werden, enthalten keine Gesamtzahl der Elemente und Seiten, da die {2} f\u00fcr requestTotal den Wert false angibt. Um eine Seite mit der Gesamtzahl anzufordern, verwenden Sie die Methode PageRequest.withTotal anstelle der Methode PageRequest.withoutTotal.
+CWWKD1042.no.totals.explanation=Die Methode PageRequest.withoutTotal gibt an, dass die angeforderten Seiten keine Gesamtzahl der Elemente und Seiten enthalten.
+CWWKD1042.no.totals.useraction=Verwenden Sie die Methode PageRequest.withTotal, um die Gesamtzahl der Elemente und Seiten zu ermitteln.
+
+CWWKD1043.offset.exceeds.max=CWWKD1043E: Der {0} Offset, der f\u00fcr die {1} Seitenanforderung ben\u00f6tigt wird, die an die {2} Methode der {3} Repository-Schnittstelle geliefert wird, \u00fcberschreitet den maximal zul\u00e4ssigen Wert von {4}.
+CWWKD1043.offset.exceeds.max.explanation=Die Kombination aus Seitenzahl und maximaler Seitengr\u00f6\u00dfe ist zu gro\u00df.
+CWWKD1043.offset.exceeds.max.useraction=F\u00fcgen Sie der Abfrage Einschr\u00e4nkungen hinzu, um die Anzahl der passenden Ergebnisse zu reduzieren.
+
+CWWKD1044.invalid.resource.type=CWWKD1044E: Die {0} Resource Accessor Methode des {1} Repository kann keine {2} Resource zur\u00fcckgeben. Die unterst\u00fctzten R\u00fcckgabetypen f\u00fcr Ressourcen-Accessor-Methoden sind: {3}.
+CWWKD1044.invalid.resource.type.explanation=Der R\u00fcckgabetyp der Ressourcen-Accessor-Methode geh\u00f6rt nicht zu den unterst\u00fctzten Typen f\u00fcr Jakarta Data.
+CWWKD1044.invalid.resource.type.useraction=Entfernen Sie die Methode oder aktualisieren Sie sie, damit sie einen der unterst\u00fctzten Typen zur\u00fcckgibt.
+
+CWWKD1045.unknown.entity.anno=CWWKD1045E: Der eingebaute Jakarta Data Provider kann keine Implementierung der {0} Repository-Schnittstelle bereitstellen, da die {1} Entit\u00e4tsklasse, die vom Repository verwendet wird, eine nicht erkannte Entit\u00e4tsannotation enth\u00e4lt. Die folgenden Entit\u00e4tsannotationen sind in der Entit\u00e4tsklasse zu finden: {2}. Unterst\u00fctzte Entit\u00e4tsannotationen sind: {3}.
+CWWKD1045.unknown.entity.anno.explanation=Der eingebaute Jakarta Data Provider unterst\u00fctzt eine der Entity-Annotationen nicht.
+CWWKD1045.unknown.entity.anno.useraction=Entfernen Sie die nicht erkannte Entity-Annotation oder verwenden Sie das Provider-Attribut der Repository-Annotation, um einen Jakarta Data Provider auszuw\u00e4hlen, der die Entity-Annotation erkennt.
+
+CWWKD1046.result.convert.err=CWWKD1046E: Das {0} Ergebnis der {1} Methode der {2} Repository-Schnittstelle kann nicht in den {3} R\u00fcckgabetyp der Repository-Methode konvertiert werden.
+CWWKD1046.result.convert.err.explanation=Der Ergebniswert ist nicht mit dem R\u00fcckgabetyp der Repository-Methode kompatibel.
+CWWKD1046.result.convert.err.useraction=Stellen Sie sicher, dass der R\u00fcckgabetyp der Repository-Methode mit dem Ergebnistyp \u00fcbereinstimmt, der von der Abfrage zur\u00fcckgegeben wird.
+
+CWWKD1047.result.out.of.range=CWWKD1047E: Das {0} Ergebnis der {1} Methode der {2} Repository-Schnittstelle kann nicht in den {3} R\u00fcckgabetyp der Repository-Methode konvertiert werden, da das Ergebnis nicht im Bereich von {4} bis {5} liegt.
+CWWKD1047.result.out.of.range.explanation=Der Ergebniswert ist nicht mit dem R\u00fcckgabetyp f\u00fcr die Repository-Methode kompatibel, da er au\u00dferhalb des Wertebereichs liegt, der umgewandelt werden kann.
+CWWKD1047.result.out.of.range.useraction=Passen Sie den R\u00fcckgabetyp der Repository-Methode an, damit der Wert zur\u00fcckgegeben werden kann.
+
+CWWKD1048.result.exceeds.max=CWWKD1048E: Das {0} Ergebnis der {1} Methode der {2} Repository-Schnittstelle kann nicht in den {3} R\u00fcckgabetyp der Repository-Methode konvertiert werden, da der Ergebniswert den Maximalwert von {4} \u00fcberschreitet.
+CWWKD1048.result.exceeds.max.explanation=Der Ergebniswert ist nicht mit dem R\u00fcckgabetyp der Repository-Methode kompatibel, da er den maximalen Wert, der in diesen Typ konvertiert werden kann, \u00fcberschreitet.
+CWWKD1048.result.exceeds.max.useraction=Passen Sie den R\u00fcckgabetyp der Repository-Methode an, damit der Wert zur\u00fcckgegeben werden kann.
+
+CWWKD1049.count.convert.err=CWWKD1049E: Der Z\u00e4hlwert {0} aus der Methode {1} der Repository-Schnittstelle {2} kann nicht in den R\u00fcckgabetyp {3} der Repository-Methode konvertiert werden.
+CWWKD1049.count.convert.err.explanation=Der Z\u00e4hlwert ist nicht mit dem R\u00fcckgabetyp der Repository-Methode kompatibel.
+CWWKD1049.count.convert.err.useraction=Passen Sie den R\u00fcckgabetyp der Repository-Methode an, damit der Wert zur\u00fcckgegeben werden kann.
+
+CWWKD1050.opt.lock.exc=CWWKD1050E: Die {0} der {1} hat keine {2} gefunden, die den Entit\u00e4tseigenschaften entspricht: {3}. \u00dcberpr\u00fcfen Sie, ob die Entit\u00e4tsinstanz, die der Methode {0} \u00fcbergeben wird, auf der neuesten Version der Entit\u00e4t basiert. Die aktuellste Version der Entit\u00e4t kann durch eine Find-Methode oder durch den Ergebniswert einer der folgenden Lifecycle-Methoden ermittelt werden: {4}.
+CWWKD1050.opt.lock.exc.explanation=Eine passende Entit\u00e4t wurde nicht gefunden.
+CWWKD1050.opt.lock.exc.useraction=Wenn zu erwarten ist, dass die Entit\u00e4t nicht in der Datenbank gefunden wird, sind keine Ma\u00dfnahmen erforderlich. Andernfalls m\u00fcssen Sie sicherstellen, dass die neueste Version der Entit\u00e4t verwendet wird.
+
+CWWKD1051.single.opt.lock.exc=CWWKD1051E: Die {0} der {1} hat keine passende {2} in der Datenbank gefunden. \u00dcberpr\u00fcfen Sie, ob die Entit\u00e4tsinstanz, die der Methode {0} \u00fcbergeben wird, auf der neuesten Version der Entit\u00e4t basiert. Die aktuellste Version der Entit\u00e4t kann aus einer Find-Methode oder aus dem Ergebniswert einer der folgenden Lebenszyklusmethoden ermittelt werden: {3}.
+CWWKD1051.single.opt.lock.exc.explanation=Eine passende Entit\u00e4t wurde nicht gefunden.
+CWWKD1051.single.opt.lock.exc.useraction=Wenn zu erwarten ist, dass die Entit\u00e4t nicht in der Datenbank gefunden wird, sind keine Ma\u00dfnahmen erforderlich. Andernfalls m\u00fcssen Sie sicherstellen, dass die neueste Version der Entit\u00e4t verwendet wird.
+
+CWWKD1052.multi.opt.lock.exc=CWWKD1052E: Die {0} Methode der {1} Repository-Schnittstelle fand nicht {2} der {3} {4} Entit\u00e4ten in der Datenbank gefunden. \u00dcberpr\u00fcfen Sie, ob die Entit\u00e4tsinstanzen, die an die {0} \u00fcbergeben werden, auf der neuesten Version jeder Entit\u00e4t basieren. Die aktuellste Version einer Entit\u00e4t kann durch eine Find-Methode oder durch den Ergebniswert einer der folgenden Lifecycle-Methoden ermittelt werden: {5}.
+CWWKD1052.multi.opt.lock.exc.explanation=Eine oder mehrere der Entit\u00e4ten wurden in der Datenbank nicht gefunden.
+CWWKD1052.multi.opt.lock.exc.useraction=Wenn zu erwarten ist, dass eine Entit\u00e4t nicht in der Datenbank gefunden wird, ist keine Aktion erforderlich. Andernfalls stellen Sie sicher, dass die neueste Version jeder Entit\u00e4t verwendet wird.
+
+CWWKD1053.empty.result=CWWKD1053E: Der R\u00fcckgabetyp {0} der Methode {1} der Repository-Schnittstelle {2} kann kein leeres Ergebnis zur\u00fcckgeben. Wenn ein leeres Ergebnis erwartet wird, muss die Repository-Methode ein Array oder einen der folgenden R\u00fcckgabetypen zur\u00fcckgeben: {3}.
+CWWKD1053.empty.result.explanation=Der R\u00fcckgabetyp der Repository-Methode erlaubt es nicht, ein leeres Ergebnis zur\u00fcckzugeben.
+CWWKD1053.empty.result.useraction=Aktualisieren Sie die Repository-Methode, um einen der R\u00fcckgabetypen zu verwenden, die ein leeres Ergebnis darstellen k\u00f6nnen.
+
+CWWKD1054.non.unique.result=CWWKD1054E: Die {0} der {1} hat den {2}, der nicht in der Lage ist, {3} zur\u00fcckzugeben. Um sich auf ein einziges Ergebnis zu beschr\u00e4nken, verwenden Sie eines der folgenden Jakarta Data-Muster: {4}.
+CWWKD1054.non.unique.result.explanation=Der R\u00fcckgabetyp der Repository-Methode erlaubt es nicht, mehrere Ergebnisse zur\u00fcckzugeben.
+CWWKD1054.non.unique.result.useraction=Aktualisieren Sie die Repository-Methode, um entweder einen R\u00fcckgabetyp zu verwenden, der mehrere Ergebnisse unterst\u00fctzt, oder aktualisieren Sie die Repository-Methode, um nicht mehr als ein einziges Ergebnis zur\u00fcckzugeben.
+
+CWWKD1055.unsupported.entity.prop=CWWKD1055E: Die Eigenschaft {0} der Entit\u00e4t {1} hat einen nicht unterst\u00fctzten Typ: {2}. Jakarta Data unterst\u00fctzt Java Aufz\u00e4hlungstypen, die {3} temporalen Typen und die folgenden Basistypen: {4}. Der eingebaute Jakarta Data Provider unterst\u00fctzt auch einige Jakarta Persistence-Typen, wie z.B. Embeddables.
+CWWKD1055.unsupported.entity.prop.explanation=Jakarta Data unterst\u00fctzt den von der Entit\u00e4tseigenschaft verwendeten Typ nicht.
+CWWKD1055.unsupported.entity.prop.useraction=Aktualisieren Sie die Entit\u00e4tseigenschaft, um einen der unterst\u00fctzten Typen zu verwenden.
+
+CWWKD1056.unsupported.keyword=CWWKD1056E: Die Methode {0} der Repository-Schnittstelle {1} hat einen Namen, der das Schl\u00fcsselwort {2} enth\u00e4lt, das kein unterst\u00fctztes Schl\u00fcsselwort des Musters Jakarta Data Query by Method Name ist.
+CWWKD1056.unsupported.keyword.explanation=Der Methodenname enth\u00e4lt ein Schl\u00fcsselwort, das nicht als Teil des unterst\u00fctzten Jakarta Data Query by Method Name-Musters erkannt wird.
+CWWKD1056.unsupported.keyword.useraction=Benennen Sie die Repository-Methode um, um das nicht unterst\u00fctzte Schl\u00fcsselwort zu entfernen.
+
+CWWKD1057.no.args.constr.inacc=CWWKD1057E: Der {0} R\u00fcckgabetyp der {1} Methode der {2} Repository-Schnittstelle ist nicht f\u00fcr eine Repository-Methode g\u00fcltig, da die {3} Klasse keinen \u00f6ffentlichen Konstruktor ohne Parameter hat.
+CWWKD1057.no.args.constr.inacc.explanation=Ein \u00f6ffentlicher Konstruktor ohne Parameter ist erforderlich, um das Ergebnis in die angegebene Klasse zu konvertieren.
+CWWKD1057.no.args.constr.inacc.useraction=Aktualisieren Sie die Repository-Methode so, dass sie einen R\u00fcckgabetyp hat, der von Jakarta Data unterst\u00fctzt wird, oder dass sie eine Unterklasse von Iterable mit einem \u00f6ffentlichen Konstruktor ist, der keine Parameter hat.
+
+CWWKD1058.no.args.constr.err=CWWKD1058E: Der {0} R\u00fcckgabetyp der {1} Methode der {2} Repository-Schnittstelle ist f\u00fcr eine Repository-Methode nicht g\u00fcltig, da der Konstruktor der {3} Klasse einen Fehler ausgel\u00f6st hat: {4}.
+CWWKD1058.no.args.constr.err.explanation=Der \u00f6ffentliche Konstruktor ohne Parameter ist aufgrund eines Fehlers fehlgeschlagen.
+CWWKD1058.no.args.constr.err.useraction=Beheben Sie den Fehler im Konstruktor, oder aktualisieren Sie die Repository-Methode, um einen anderen R\u00fcckgabetyp zu verwenden.
+
+CWWKD1059.prop.cast.err=CWWKD1059E: Die {0} Methode der {1} Repository-Schnittstelle kann nicht auf die {2} Eigenschaft der {3} Entit\u00e4t zugreifen, da das {4} Feld oder die Methode der {5} Klasse mit einem {6} Wert nicht kompatibel ist.
+CWWKD1059.prop.cast.err.explanation=Eine Entit\u00e4tseigenschaft oder eine verwandte Eigenschaft aus ihrer Hierarchie ist nicht mit dem erwarteten Typ kompatibel.
+CWWKD1059.prop.cast.err.useraction=\u00dcberpr\u00fcfen Sie das Entit\u00e4tsmodell und stellen Sie sicher, dass die richtigen Typen f\u00fcr jede Eigenschaft verwendet werden.
+
+CWWKD1060.name.out.of.scope=CWWKD1060E: Die {0} Repository-Schnittstelle in der {1} Anwendung konfiguriert einen {2} Wert f\u00fcr das {3} Attribut, aber {3} Namen sind f\u00fcr das Artefakt, das die Repository-Schnittstelle bereitstellt, nicht zug\u00e4nglich. Verwenden Sie stattdessen einen {4}.
+CWWKD1060.name.out.of.scope.explanation=Der angegebene Namespace ist von dem Artefakt, in dem die Repository-Schnittstelle definiert ist, nicht zug\u00e4nglich.
+CWWKD1060.name.out.of.scope.useraction=Aktualisieren Sie die Repository-Anmerkung, um einen Datenspeichernamen anzugeben, der f\u00fcr das Modul oder die Bibliothek, die die Repository-Schnittstelle bereitstellt, sichtbar ist.
+
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Die {0} Repository-Schnittstelle, die im {1} Enterprise Bean-Modul der {2} Anwendung definiert ist, konfiguriert einen {2} Wert f\u00fcr das {3} Attribut. Allerdings sind {4} Namen f\u00fcr Enterprise Bean Module nicht zug\u00e4nglich. Verwenden Sie einen Namen aus einem der folgenden Namespaces: {5}.
+CWWKD1061.comp.name.in.ejb.explanation=Der angegebene Namespace ist f\u00fcr das Enterprise Bean-Modul, in dem die Repository-Schnittstelle definiert ist, nicht zug\u00e4nglich.
+CWWKD1061.comp.name.in.ejb.useraction=Aktualisieren Sie die Repository-Anmerkung, um einen Datenspeichernamen anzugeben, der f\u00fcr das Enterprise Bean-Modul, das die Repository-Schnittstelle bereitstellt, sichtbar ist.
+
+CWWKD1062.resource.not.found=CWWKD1062E: Die {0} der {1} ist nicht in der Lage, die {2} mit dem {3} zu finden.
+CWWKD1062.resource.not.found.explanation=Die Ressource wird nicht gefunden.
+CWWKD1062.resource.not.found.useraction=Stellen Sie sicher, dass die angegebene Ressource und alle anderen Ressourcen, von denen sie abh\u00e4ngt, existieren und korrekt konfiguriert sind.
+
+CWWKD1063.unsupported.resource=CWWKD1063E: Die {0} der {1} kann keine {2} erhalten, da der Jakarta-Persistenz-Anbieter die Unwrap-Operation, die eine {3} zur\u00fcckgibt, nicht unterst\u00fctzt.
+CWWKD1063.unsupported.resource.explanation=Der Jakarta Persistence-Anbieter unterst\u00fctzt die Operation "Unwrap", die den angegebenen Ressourcentyp zur\u00fcckgibt, nicht.
+CWWKD1063.unsupported.resource.useraction=Entfernen Sie die nicht unterst\u00fctzte Ressourcen-Accessor-Methode aus der Repository-Schnittstelle.
+
+CWWKD1064.datastore.error=CWWKD1064E: Die {0} der {1} ist aufgrund des folgenden Fehlers nicht in der Lage, den {2} f\u00fcr das Repository zu erhalten: {3}.
+CWWKD1064.datastore.error.explanation=Beim Versuch, den Datenspeicher abzurufen, ist ein Fehler aufgetreten.
+CWWKD1064.datastore.error.useraction=Stellen Sie sicher, dass der angegebene Datenspeicher und alle anderen Ressourcen, von denen er abh\u00e4ngt, vorhanden und korrekt konfiguriert sind.
+
+CWWKD1065.ddlgen.timeout=CWWKD1065E: Die DDL-Generierung f\u00fcr die Repository-Schnittstelle {0} ist fehlgeschlagen, da der Datenspeicher {1} die DDL-Generierung innerhalb von {2} Sekunden f\u00fcr die folgenden Entit\u00e4ten nicht abgeschlossen hat: {3}.
+CWWKD1065.ddlgen.timeout.explanation=Der Versuch der DDL-Generierung hat eine Zeit\u00fcberschreitung verursacht und wurde nicht abgeschlossen.
+CWWKD1065.ddlgen.timeout.useraction=Versuchen Sie die DDL-Generierung erneut, wenn das System und die Datenbank nicht belastet sind.
+
+CWWKD1066.ddlgen.failed=CWWKD1066E: Die DDL-Generierung f\u00fcr die Repository-Schnittstelle {0}, die den Datenspeicher {1} verwendet, ist beim Versuch der DDL-Generierung f\u00fcr die folgenden Entit\u00e4ten auf einen Fehler gesto\u00dfen: {2}. Der Fehler ist: {3}.
+CWWKD1066.ddlgen.failed.explanation=Der Versuch der DDL-Generierung ist fehlgeschlagen und wurde nicht abgeschlossen.
+CWWKD1066.ddlgen.failed.useraction=Untersuchen Sie den Fehler und nehmen Sie Korrekturen an der Repository-Schnittstelle, den Entit\u00e4ten, der Datenspeicherkonfiguration oder der Datenbank vor.
+
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: Die DDL-Generierung f\u00fcr die Repository-Schnittstelle {0} ist fehlgeschlagen, weil der Datenspeicher {1} nicht verf\u00fcgbar war oder nicht in der Lage war, die folgenden Entit\u00e4ten innerhalb von {2} Sekunden bereitzustellen: {3}.
+CWWKD1067.ddlgen.emf.timeout.explanation=Die Beschaffung der f\u00fcr die DDL-Generierung ben\u00f6tigten Ressourcen hat eine Zeit\u00fcberschreitung verursacht und wurde nicht abgeschlossen.
+CWWKD1067.ddlgen.emf.timeout.useraction=Versuchen Sie die DDL-Generierung erneut, wenn das System und die Datenbank nicht belastet sind.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: Die Repository-Schnittstelle {0} hat mehrere Entit\u00e4ten mit dem Namen {1}, die von verschiedenen Klassen bereitgestellt werden: {2}. Verwenden Sie die folgenden Jakarta Persistence Entity Annotations, um jeder Entit\u00e4tsklasse einen eindeutigen Entit\u00e4tsnamen und Tabellennamen zuzuweisen: {3}.
+CWWKD1068.entity.name.conflict.explanation=Entit\u00e4tsnamen und Tabellennamen werden aus dem unqualifizierten Klassennamen abgeleitet oder durch Jakarta Persistence-Annotationen zugewiesen.
+CWWKD1068.entity.name.conflict.useraction=Benennen Sie die Entit\u00e4ten um oder f\u00fcgen Sie Jakarta Persistence-Annotationen hinzu, um den Namenskonflikt explizit aufzul\u00f6sen.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: Die Repository-Schnittstelle {0} hat mehrere Entit\u00e4ten mit dem Namen {1}, die von verschiedenen Klassen bereitgestellt werden: {2}. Wenn Java-Datens\u00e4tze als Entit\u00e4ten verwendet werden, muss es auch m\u00f6glich sein, ein Suffix von Entity an den Entit\u00e4tsnamen anzuh\u00e4ngen, ohne dass es zu einem Namenskonflikt kommt. Zum Beispiel: {2}.
+CWWKD1069.record.entity.name.conflict.explanation=Entit\u00e4tsnamen und Tabellennamen werden aus dem unqualifizierten Klassennamen abgeleitet oder durch Jakarta Persistence-Annotationen zugewiesen.
+CWWKD1069.record.entity.name.conflict.useraction=Benennen Sie die Entit\u00e4ten um oder wechseln Sie zu Jakarta Persistence-Entit\u00e4ten, um den Namenskonflikt zu l\u00f6sen.
+
+CWWKD1070.record.convert.err=CWWKD1070E: Der {0}, der an die {1} der {2} \u00fcbergeben wird, kann aufgrund des folgenden Fehlers nicht als Entit\u00e4t verwendet werden: {3}.
+CWWKD1070.record.convert.err.explanation=Es ist nicht m\u00f6glich, den Java-Datensatz als Entit\u00e4t zu verwenden.
+CWWKD1070.record.convert.err.useraction=Definieren Sie die Entit\u00e4t als Jakarta-Persistenz-Entit\u00e4t, anstatt eine Java-Record-Entit\u00e4t zu verwenden.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: Der Datensatz {0} kann nicht als Entit\u00e4t verwendet werden, da er eine oder mehrere Typvariablen enth\u00e4lt: {1}.
+CWWKD1071.record.with.type.var.explanation=Entit\u00e4tsklassen k\u00f6nnen keine generischen Typvariablen haben.
+CWWKD1071.record.with.type.var.useraction=Entfernen Sie die Typvariablen aus dem Datensatz.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: Der {0} kann nicht als Entit\u00e4t verwendet werden, da seine {1} und {2} beide auf denselben Entit\u00e4tseigenschaftsnamen aufgel\u00f6st werden.
+CWWKD1072.record.comp.conflict.explanation=Die Namen der Entit\u00e4tseigenschaften m\u00fcssen eindeutig sein und Gro\u00df- und Kleinschreibung ignorieren.
+CWWKD1072.record.comp.conflict.useraction=Benennen Sie eine der Datensatzkomponenten um, um den Konflikt zu vermeiden.
+
+CWWKD1073.offset.exceeds.max=CWWKD1073E: Der {0} Startpunkt des {1} Limits, das an die {2} Methode der {3} Repository-Schnittstelle geliefert wird, \u00fcberschreitet den maximal zul\u00e4ssigen Wert von {4}.
+CWWKD1073.offset.exceeds.max.explanation=Der Ausgangspunkt f\u00fcr den Grenzwert ist zu hoch angesetzt.
+CWWKD1073.offset.exceeds.max.useraction=F\u00fcgen Sie der Abfrage Einschr\u00e4nkungen hinzu, um die Anzahl der passenden Ergebnisse zu reduzieren.
+
+CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: Die {0} der {1} darf das {2} nicht mit dem {3} in derselben Bedingung Abfrage nach Methodenname kombinieren.
+CWWKD1074.qbmn.incompat.keywords.explanation=Die angegebenen Schl\u00fcsselw\u00f6rter Query by Method Name sind nicht miteinander kompatibel.
+CWWKD1074.qbmn.incompat.keywords.useraction=Benennen Sie die Methode um, damit die Schl\u00fcsselw\u00f6rter nicht mit der gleichen Bedingung kombiniert werden.
+
+CWWKD1075.entity.prop.conflict=CWWKD1075E: Die Entit\u00e4t {0} kann keine Eigenschaft mit dem Namen {1} und eine Eigenschaft mit dem Namen {2} haben, da die Jakarta-Data-Spezifikation diese Namen als Aliasnamen f\u00fcr dieselbe Entit\u00e4tseigenschaft betrachtet.
+CWWKD1075.entity.prop.conflict.explanation=Es gibt eine Kollision zwischen den Namen von zwei Entit\u00e4tseigenschaften aufgrund des Unterstrichs.
+CWWKD1075.entity.prop.conflict.useraction=Verwenden Sie keine Unterstriche in Namen von Entit\u00e4tseigenschaften.
+
+CWWKD1076.repo.disposed=CWWKD1076E: Die Methode {0} der Repository-Schnittstelle {1} kann nicht aufgerufen werden, da die Anwendung, die das Repository definiert, angehalten wurde. Die Repository-Instanz ist {2}.
+CWWKD1076.repo.disposed.explanation=Repository-Methoden d\u00fcrfen nicht au\u00dferhalb des Lebenszyklus der Anwendung, die das Repository definiert, verwendet werden.
+CWWKD1076.repo.disposed.useraction=Stellen Sie sicher, dass die Repository-Methode nicht au\u00dferhalb des Bereichs der Anwendung verwendet wird, die das Repository definiert.
+
+CWWKD1077.defaultds.not.found=CWWKD1077E: Das {0} Anwendungsartefakt hat eine {1} Repository-Schnittstelle, die den {2} Datenspeicher verwendet oder standardm\u00e4\u00dfig verwendet. Dieser muss in der Serverkonfiguration konfiguriert werden, indem ein dataSource definiert wird, das den Bezeichner DefaultDataSource hat. Zum Beispiel, {3} Alternativ kann der dataStore der Repository-Annotation dem Bezeichner eines databaseStore oder dem JNDI-Namen einer Datenquellen-Ressourcenreferenz oder einer Persistenzeinheitenreferenz zugewiesen werden, auf die das Anwendungsartefakt zugreifen kann. Ein databaseStore kann in der Serverkonfiguration definiert werden. Zum Beispiel: {4} Eine Anwendungskomponente kann die Anmerkung Ressource verwenden, um einen Verweis auf eine Datenquellenressource zu definieren. Zum Beispiel {5}, der verlangt, dass die Serverkonfiguration ein dataSource mit einem {6} hat. Eine Anwendungskomponente kann die PersistenceUnit verwenden, um eine Referenz auf eine Persistenzeinheit \
+    zu definieren. Zum Beispiel {7}, was voraussetzt, dass die persistence.xml ein persistence-unit-Element mit einem passenden name-Attribut enth\u00e4lt. Zum Beispiel, {8}
+CWWKD1077.defaultds.not.found.explanation=Jakarta Data Repositories verwenden standardm\u00e4\u00dfig die Jakarta EE Standarddatenquelle, die in der Serverkonfiguration konfiguriert werden muss.
+CWWKD1077.defaultds.not.found.useraction=Konfigurieren Sie die Standarddatenquelle von Jakarta EE oder geben Sie einen anderen Datenspeicher f\u00fcr das Repository an.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: Eine oder mehrere Repository-Schnittstellen{0}) aus dem {1} Anwendungsartefakt geben einen {2} Datenspeicher an, der nicht mit der ID eines dataSource oder eines databaseStore in der Serverkonfiguration \u00fcbereinstimmt, oder er stimmt nicht mit dem JNDI-Namen einer Datenquelle, einer Datenquellen-Ressourcenreferenz oder einer Persistenzeinheitenreferenz \u00fcberein, auf die das Anwendungsartefakt zugreifen kann, oder eine der zugeh\u00f6rigen Ressourcen ist nicht korrekt konfiguriert. Ein dataSource kann in der Serverkonfiguration definiert werden. Zum Beispiel, {3} Ein databaseStore kann in der Serverkonfiguration definiert werden. Zum Beispiel: {4} Eine Anwendungskomponente kann die Anmerkung Ressource verwenden, um einen Verweis auf eine Datenquellenressource zu definieren. Zum Beispiel {5}, der verlangt, dass die Serverkonfiguration ein dataSource mit einem {6} hat. Eine Anwendungskomponente kann die PersistenceUnit verwenden, um eine Referenz auf\
+    \ eine Persistenzeinheit zu definieren. Zum Beispiel {7}, was voraussetzt, dass die persistence.xml ein persistence-unit-Element mit einem passenden name-Attribut enth\u00e4lt. Zum Beispiel, {8}
+CWWKD1078.datastore.not.found.explanation=Der Datenspeicher eines Jakarta Data Repository kann die ID eines dataSource oder databaseStore in der Serverkonfiguration sein, oder es kann ein JNDI-Name einer Datenquelle, eine Datenquellen-Ressourcenreferenz oder eine Persistenzeinheitenreferenz sein.
+CWWKD1078.datastore.not.found.useraction=Stellen Sie sicher, dass die Ressource richtig konfiguriert ist. Wenn Sie einen JNDI-Namen verwenden, stellen Sie sicher, dass der Geltungsbereich des JNDI-Namens den Zugriff auf die Ressource f\u00fcr das Anwendungsartefakt erm\u00f6glicht, das das Repository bereitstellt.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: Eine oder mehrere Repository-Schnittstellen{0}) des {1} Anwendungsartefakts geben einen Datenspeicher mit dem {2} JNDI-Namen an, aber eine Datenquelle, eine Datenquellen-Ressourcenreferenz oder eine Persistenzeinheitsreferenz mit diesem JNDI-Namen ist f\u00fcr das Anwendungsartefakt nicht zug\u00e4nglich, oder eine der zugeh\u00f6rigen Ressourcen ist nicht korrekt konfiguriert. Eine Anwendungskomponente kann die Anmerkung Ressource verwenden, um einen Verweis auf eine Datenquellenressource zu definieren. Zum Beispiel {3}, das auf ein dataSource mit einem {4} verweist. Eine Anwendungskomponente kann die PersistenceUnit verwenden, um eine Referenz auf eine Persistenzeinheit zu definieren. Zum Beispiel {5}, der verlangt, dass die Datei persistence.xml ein persistence-unit-Element mit einem passenden name-Attribut enth\u00e4lt. Zum Beispiel: {6} Eine Anwendungskomponente kann die DataSourceDefinition verwenden, um eine Datenquelle zu definieren. Alternativ dazu ka\
+    nn ein dataSource eine Datenquelle in der Serverkonfiguration definieren. Zum Beispiel, {7}
+CWWKD1079.jndi.not.found.explanation=Wenn der Datenspeicher eines Jakarta Data-Repositorys auf einen JNDI-Namen einer Datenquelle, eine Datenquellen-Ressourcenreferenz oder eine Persistenzeinheit-Referenz gesetzt wird, muss der JNDI-Name f\u00fcr das Anwendungsartefakt, das das Repository bereitstellt, zug\u00e4nglich sein, und die Datenquelle oder Persistenzeinheit muss korrekt konfiguriert sein.
+CWWKD1079.jndi.not.found.useraction=Vergewissern Sie sich, dass die Ressource korrekt konfiguriert ist, und stellen Sie sicher, dass der Geltungsbereich des JNDI-Namens den Zugriff auf die Ressource f\u00fcr das Anwendungsartefakt erm\u00f6glicht, das das Repository bereitstellt.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: Eine oder mehrere Repository-Schnittstellen{0}) aus dem Anwendungsartefakt {1} sind aufgrund eines Fehlers nicht verf\u00fcgbar. Der Fehler kann auf ein Konfigurationsproblem zur\u00fcckzuf\u00fchren sein, oder der {2} Datenspeicher f\u00fcr das Repository ist nicht verf\u00fcgbar. Der Fehler ist: {3}.
+CWWKD1080.datastore.general.err.explanation=Ein Fehler verhindert, dass die angegebenen Repositories verwendet werden k\u00f6nnen.
+CWWKD1080.datastore.general.err.useraction=Suchen Sie die Repository-Schnittstellen und die Konfiguration des Datenspeichers und nehmen Sie gegebenenfalls Korrekturen vor.
+
+CWWKD1081.entity.general.err=CWWKD1081E: Aufgrund eines Fehlers ist die Entit\u00e4t {0} f\u00fcr eine oder mehrere Repository-Schnittstellen{1}), die den Datenspeicher {2} verwenden, nicht verf\u00fcgbar. Der Fehler ist {3}.
+CWWKD1081.entity.general.err.explanation=Ein Fehler verhindert, dass die angegebene Entit\u00e4t verwendet werden kann.
+CWWKD1081.entity.general.err.useraction=Suchen Sie die Entit\u00e4t und nehmen Sie bei Bedarf Korrekturen vor.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: Die Persistenzeinheit f\u00fcr den Datenspeicher {0} definiert nicht eine oder mehrere Entit\u00e4tsklassen{1}), die eine oder mehrere Repository-Schnittstellen{2}), die den Datenspeicher verwenden, ben\u00f6tigen.
+CWWKD1082.entity.classes.missing.explanation=Repositories verwenden Entit\u00e4tsklassen, die in der Persistenzeinheit definiert werden m\u00fcssen.
+CWWKD1082.entity.classes.missing.useraction=Nehmen Sie alle Entit\u00e4tsklassen in die Persistenzeinheit auf.

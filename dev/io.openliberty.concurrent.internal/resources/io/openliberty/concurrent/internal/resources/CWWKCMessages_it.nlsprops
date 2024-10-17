@@ -46,7 +46,19 @@ CWWKC1204.not.serializable=CWWKC1204E: Impossibile creare un proxy contestuale s
 CWWKC1204.not.serializable.explanation=I tipi di contesto di thread di terze parti non sono compatibili con la serializzazione e non possono essere configurati per essere propagati per i proxy contestuali serializzabili.
 CWWKC1204.not.serializable.useraction=Aggiornare l'applicazione per richiedere un proxy contestuale non serializzabile o assicurarsi che non siano configurati tipi di contesto di terze parti da propagare.
 
-CWWKC1217.no.virtual.threads=CWWKC1217I: La specifica Concurrency richiede che virtual=true sia ignorato nella definizione {0} {1} nell''artefatto applicativo {2} perch\u00e9 Java {3} non supporta i thread virtuali.
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: L''artefatto applicativo {0} non pu\u00f2 specificare i qualificatori {1} sull''annotazione {2} o sull''elemento descrittore di distribuzione {3} che ha il nome {4} perch\u00e9 la funzione {5} non \u00e8 abilitata.
+CWWKC1205.qualifiers.require.cdi.explanation=La funzione CDI \u00e8 un prerequisito per specificare i qualificatori in una definizione di risorsa.
+CWWKC1205.qualifiers.require.cdi.useraction=Abilitare la funzione CDI.
+
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: L''artefatto applicativo {0} specifica un''annotazione {1} o un elemento descrittore di distribuzione {2} che ha il nome {3} e l''elenco dei qualificatori {4}. L''elenco dei qualificatori include un valore {5} che non \u00e8 un''annotazione. Tutti gli elementi dell''elenco devono essere classi di annotazione annotate con @Qualifier e @Retention(RUNTIME). Ad esempio, {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Ogni valore dell'elenco dei qualificatori deve essere una classe di annotazione.
+CWWKC1206.qualifier.must.be.anno.useraction=Assicurarsi che tutti i valori dell'elenco dei qualificatori siano classi di annotazione.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: L''artefatto applicativo {0} specifica un''annotazione {1} o un elemento descrittore di distribuzione {2} che ha il nome {3} e l''elenco dei qualificatori {4}. L''elenco dei qualificatori include l''annotazione {5}, che non \u00e8 annotata con @jakartajakarta.inject.Qualifier e @Retention(RUNTIME). Un esempio di qualificatore valido \u00e8: {6}
+CWWKC1207.lacks.qualifier.anno.explanation=L'annotazione Qualificatore indica che l'annotazione \u00e8 un qualificatore. L'annotazione Retention controlla la disponibilit\u00e0 delle annotazioni.
+CWWKC1207.lacks.qualifier.anno.useraction=Aggiungere le annotazioni @Qualifier e @Retention(RUNTIME) alla classe Qualifier.
+
+CWWKC1217.no.virtual.threads=CWWKC1217I: La specifica Concurrency richiede che virtual=true sia ignorato nell''annotazione {1} dell''artefatto applicativo o nell''elemento {2} del descrittore di distribuzione con il nome {3}, perch\u00e9 Java {4} non supporta i thread virtuali.
 CWWKC1217.no.virtual.threads.explanation=I thread virtuali sono disponibili solo in Java 21 e successivi.
 CWWKC1217.no.virtual.threads.useraction=Aggiornare a Java 21 o successivo per abilitare l'uso dei thread virtuali.
 

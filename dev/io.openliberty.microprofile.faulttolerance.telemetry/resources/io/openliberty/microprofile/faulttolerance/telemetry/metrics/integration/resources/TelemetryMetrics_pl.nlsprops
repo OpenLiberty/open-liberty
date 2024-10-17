@@ -29,25 +29,25 @@
 
 ft.invocations.total.description=Liczba wywo\u0142a\u0144 metody.
 
-ft.retry.calls.total.description=Liczba uruchomie\u0144 logiki ponawiania. B\u0119dzie to zawsze jeden raz dla ka\u017cdego wywo\u0142ania metody.
+ft.retry.calls.total.description=Liczba uruchomie\u0144 logiki ponawiania pr\u00f3b. Warto\u015b\u0107 ta jest zawsze r\u00f3wna raz na wywo\u0142anie metody.
 
 ft.retry.retries.total.description=Liczba powt\u00f3rze\u0144 metody.
 
-ft.timeout.calls.total.description=Liczba uruchomie\u0144 logiki limitu czasu. B\u0119dzie to zwykle jeden raz dla wywo\u0142ania metody, ale mo\u017ce by\u0107 zerem, je\u015bli wy\u0142\u0105cznik automatyczny uniemo\u017cliwia wykonanie lub wi\u0119cej ni\u017c jeden raz, je\u015bli metoda jest ponawiana.
+ft.timeout.calls.total.description=Liczba uruchomie\u0144 logiki limitu czasu. Warto\u015b\u0107 ta jest zazwyczaj r\u00f3wna raz na wywo\u0142anie metody. Mo\u017ce jednak wynosi\u0107 zero, je\u015bli wy\u0142\u0105cznik obwodu uniemo\u017cliwia wykonanie lub wi\u0119cej ni\u017c raz na wywo\u0142anie metody, je\u015bli metoda jest ponawiana.
 
 ft.timeout.executionDuration.description=Histogram czas\u00f3w wykonania metody.
 
-ft.circuitbreaker.calls.total.description=Liczba uruchomie\u0144 logiki wy\u0142\u0105cznika automatycznego. B\u0119dzie to zwykle jeden raz dla ka\u017cdego wywo\u0142ania metody, ale mo\u017ce by\u0107 wi\u0119cej ni\u017c jeden raz, je\u015bli wywo\u0142anie metody zostanie ponowione.
+ft.circuitbreaker.calls.total.description=Liczba uruchomie\u0144 logiki wy\u0142\u0105cznika obwodu. Warto\u015b\u0107 ta jest zazwyczaj r\u00f3wna raz na ka\u017cde wywo\u0142anie metody, ale mo\u017ce by\u0107 wi\u0119ksza ni\u017c raz, je\u015bli metoda jest ponawiana.
 
-ft.circuitbreaker.state.total.description=Czas zu\u017cyty przez wy\u0142\u0105cznik automatyczny w ka\u017cdym stanie.
+ft.circuitbreaker.state.total.description=Czas, jaki wy\u0142\u0105cznik sp\u0119dzi\u0142 w ka\u017cdym stanie.
 
-ft.circuitbreaker.opened.total.description=Liczba przej\u015b\u0107 wy\u0142\u0105cznika automatycznego ze stanu zamkni\u0119tego do stanu otwartego.
+ft.circuitbreaker.opened.total.description=Liczba prze\u0142\u0105cze\u0144 wy\u0142\u0105cznika ze stanu zamkni\u0119tego do stanu otwartego.
 
-ft.bulkhead.calls.total.description=Liczba uruchomie\u0144 logiki bulkhead. B\u0119dzie to zwykle jeden raz dla wywo\u0142ania metody, ale mo\u017ce by\u0107 zerem, je\u015bli wy\u0142\u0105cznik automatyczny uniemo\u017cliwi\u0142 wykonanie lub wi\u0119cej ni\u017c jeden raz, je\u015bli wywo\u0142anie metody jest ponawiane.
+ft.bulkhead.calls.total.description=Liczba uruchomie\u0144 logiki grodzi. Warto\u015b\u0107 ta jest zazwyczaj r\u00f3wna raz na wywo\u0142anie metody. Mo\u017ce jednak wynosi\u0107 zero, je\u015bli wy\u0142\u0105cznik obwodu uniemo\u017cliwia wykonanie lub wi\u0119cej ni\u017c raz na wywo\u0142anie metody, je\u015bli metoda jest ponawiana.
 
 ft.bulkhead.executionsRunning.description=Liczba obecnie dzia\u0142aj\u0105cych wykona\u0144.
 
-ft.bulkhead.executionsWaiting.description=Liczba wykona\u0144 obecnie oczekuj\u0105cych w kolejce.
+ft.bulkhead.executionsWaiting.description=Liczba wykona\u0144 oczekuj\u0105cych obecnie w kolejce.
 
 ft.bulkhead.runningDuration.description=Histogram czasu wykonywania metod.
 

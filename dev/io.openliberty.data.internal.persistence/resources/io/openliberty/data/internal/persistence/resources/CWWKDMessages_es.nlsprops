@@ -90,7 +90,7 @@ CWWKD1015.null.entity.param=CWWKD1015E: El m\u00e9todo {0} de la interfaz de rep
 CWWKD1015.null.entity.param.explanation=Los m\u00e9todos del ciclo de vida requieren una instancia de entidad no nula.
 CWWKD1015.null.entity.param.useraction=Actualice el c\u00f3digo de la aplicaci\u00f3n para evitar proporcionar un valor de entidad nulo al m\u00e9todo de repositorio.
 
-CWWKD1016.incompat.entity.param=CWWKD1016E: El m\u00e9todo {0} de la interfaz de repositorio {1} requiere una entidad {0}, pero se ha suministrado un valor {1}.
+CWWKD1016.incompat.entity.param=CWWKD1016E: El m\u00e9todo {0} de la interfaz del repositorio {1} requiere una entidad {2}, pero se ha suministrado un valor {3}.
 CWWKD1016.incompat.entity.param.explanation=El m\u00e9todo del ciclo de vida s\u00f3lo acepta valores de entidad del tipo declarado.
 CWWKD1016.incompat.entity.param.useraction=Actualice el c\u00f3digo de la aplicaci\u00f3n para suministrar un valor de entidad del mismo tipo de entidad que declara el m\u00e9todo de repositorio.
 
@@ -165,3 +165,198 @@ CWWKD1033.ql.orderby.disallowed.useraction=Sustituya la cl\u00e1usula ORDER BY p
 CWWKD1034.ql.where.required=CWWKD1034E: La consulta que especifica el m\u00e9todo {0} de la interfaz de repositorio {1} debe terminar en una cl\u00e1usula WHERE porque el m\u00e9todo devuelve {2}. La cl\u00e1usula WHERE termina en la posici\u00f3n {3}, pero la longitud de la consulta es {4}. La consulta es: {5}.
 CWWKD1034.ql.where.required.explanation=Se requiere una cl\u00e1usula WHERE cuando se utiliza la paginaci\u00f3n basada en cursor.
 CWWKD1034.ql.where.required.useraction=A\u00f1ade una cl\u00e1usula WHERE a la consulta.
+
+CWWKD1035.incompat.page.mode=CWWKD1035E: Una petici\u00f3n de p\u00e1gina con el modo de paginaci\u00f3n {0} no debe suministrarse al m\u00e9todo {1} de la interfaz de repositorio {2} porque el m\u00e9todo devuelve {3} en lugar de {4}.
+CWWKD1035.incompat.page.mode.explanation=El modo de paginaci\u00f3n solicitado no es compatible con el tipo de retorno del m\u00e9todo del repositorio.
+CWWKD1035.incompat.page.mode.useraction=Utilice un tipo de retorno Page para el modo de paginaci\u00f3n OFFSET y un tipo de retorno CursoredPage para los modos de paginaci\u00f3n CURSOR_NEXT y CURSOR_PREVIOUS.
+
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: Un cursor con {0} elementos que se suministra al m\u00e9todo {1} de la interfaz del repositorio {2} no puede utilizarse con criterios de ordenaci\u00f3n de tama\u00f1o {3} porque el n\u00famero y el orden de los elementos del cursor deben coincidir con los criterios de ordenaci\u00f3n. El cursor consiste en: {4}. El criterio de ordenaci\u00f3n es: {5}.
+CWWKD1036.cursor.size.mismatch.explanation=El n\u00famero de elementos del cursor debe coincidir con el tama\u00f1o de los criterios de ordenaci\u00f3n combinados del m\u00e9todo de repositorio.
+CWWKD1036.cursor.size.mismatch.useraction=Corrija los elementos del cursor o los criterios de ordenaci\u00f3n para que ambos tengan el mismo tama\u00f1o.
+
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: No se puede obtener un cursor del resultado {0} del m\u00e9todo {1} de la interfaz del repositorio {2}. Las consultas que utilizan la paginaci\u00f3n basada en el cursor deben devolver resultados del mismo tipo que el tipo de entidad, que es {3}. El tipo de retorno del m\u00e9todo de repositorio es {4}.
+CWWKD1037.cursor.rtrn.mismatch.explanation=La paginaci\u00f3n basada en cursor s\u00f3lo es posible cuando el m\u00e9todo de repositorio devuelve el tipo de entidad.
+CWWKD1037.cursor.rtrn.mismatch.useraction=Actualiza el m\u00e9todo del repositorio para que devuelva el tipo de entidad.
+
+CWWKD1038.no.prev.offset.page=CWWKD1038E: No se puede solicitar un n\u00famero de p\u00e1gina anterior a {0} para el m\u00e9todo {1} de la interfaz de repositorio {2} porque el m\u00e9todo Page.hasPrevious devuelve false, indicando que no hay p\u00e1gina anterior.
+CWWKD1038.no.prev.offset.page.explanation=La paginaci\u00f3n offset no permite n\u00fameros de p\u00e1gina inferiores a 1.
+CWWKD1038.no.prev.offset.page.useraction=Aseg\u00farese de que el n\u00famero de p\u00e1gina solicitado es un n\u00famero positivo y utilice el m\u00e9todo Page.hasPrevious para asegurarse de que es v\u00e1lido solicitar la p\u00e1gina anterior.
+
+CWWKD1039.no.prev.cursor.page=CWWKD1039E: No se puede solicitar una p\u00e1gina anterior para el m\u00e9todo {0} de la interfaz de repositorio {1} porque el m\u00e9todo Page.hasPrevious devuelve false, indicando que no hay p\u00e1gina anterior.
+CWWKD1039.no.prev.cursor.page.explanation=La paginaci\u00f3n basada en cursores no permite solicitar una p\u00e1gina anterior cuando se sabe que la p\u00e1gina actual contiene los resultados al principio del conjunto de datos.
+CWWKD1039.no.prev.cursor.page.useraction=Utilice el m\u00e9todo Page.hasPrevious para asegurarse de que es v\u00e1lido solicitar la p\u00e1gina anterior.
+
+CWWKD1040.no.next.page=CWWKD1040E: No se puede solicitar una p\u00e1gina siguiente para el m\u00e9todo {0} de la interfaz de repositorio {1} porque {2} devuelve false, indicando que no hay p\u00e1gina siguiente.
+CWWKD1040.no.next.page.explanation=No se puede solicitar una p\u00e1gina siguiente cuando se sabe que la p\u00e1gina actual contiene el final del conjunto de datos.
+CWWKD1040.no.next.page.useraction=Utilice el m\u00e9todo hasNext para asegurarse de que es v\u00e1lido para solicitar la p\u00e1gina siguiente.
+
+CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: El m\u00e9todo {0} de la interfaz de repositorio {1} tiene un tipo de retorno {2} pero carece de un par\u00e1metro de tipo PageRequest a continuaci\u00f3n de los par\u00e1metros para las condiciones de consulta.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=Los m\u00e9todos de repositorio con los tipos de retorno Page y CursoredPage deben tener un par\u00e1metro PageRequest.
+CWWKD1041.rtrn.mismatch.pagereq.useraction=A\u00f1ade un par\u00e1metro PageRequest a la firma del m\u00e9todo repositorio.
+
+CWWKD1042.no.totals=CWWKD1042E: Las p\u00e1ginas que se recuperan mediante el m\u00e9todo {0} de la interfaz del repositorio {1} no incluyen un recuento total de elementos y p\u00e1ginas porque la petici\u00f3n de p\u00e1gina {2} especifica un valor de false para requestTotal. Para solicitar una p\u00e1gina con el recuento total incluido, utilice el m\u00e9todo PageRequest.withTotal en lugar del m\u00e9todo PageRequest.withoutTotal.
+CWWKD1042.no.totals.explanation=El m\u00e9todo PageRequest.withoutTotal especifica que las p\u00e1ginas solicitadas no incluyen un recuento total de elementos y p\u00e1ginas.
+CWWKD1042.no.totals.useraction=Utilice el m\u00e9todo PageRequest.withTotal para solicitar un recuento total de elementos y p\u00e1ginas.
+
+CWWKD1043.offset.exceeds.max=CWWKD1043E: El desplazamiento {0} que se necesita para la solicitud de p\u00e1gina {1} que se suministra al m\u00e9todo {2} de la interfaz de repositorio {3} supera el valor m\u00e1ximo permitido de {4}.
+CWWKD1043.offset.exceeds.max.explanation=La combinaci\u00f3n de n\u00famero de p\u00e1gina y tama\u00f1o m\u00e1ximo de p\u00e1gina es demasiado grande.
+CWWKD1043.offset.exceeds.max.useraction=A\u00f1ada restricciones a la consulta para reducir el n\u00famero de resultados coincidentes.
+
+CWWKD1044.invalid.resource.type=CWWKD1044E: El m\u00e9todo de acceso al recurso {0} del repositorio {1} no puede devolver un recurso {2}. Los tipos de retorno admitidos para los m\u00e9todos de acceso a recursos son: {3}.
+CWWKD1044.invalid.resource.type.explanation=El tipo de retorno del m\u00e9todo de acceso al recurso no es uno de los tipos soportados por Jakarta Data.
+CWWKD1044.invalid.resource.type.useraction=Elimine el m\u00e9todo o actual\u00edcelo para que devuelva uno de los tipos admitidos.
+
+CWWKD1045.unknown.entity.anno=CWWKD1045E: El proveedor integrado Jakarta Data no puede proporcionar una implementaci\u00f3n de la interfaz del repositorio {0} porque la clase de entidad {1} que utiliza el repositorio incluye una anotaci\u00f3n de entidad no reconocida. Las siguientes anotaciones de entidad se encuentran en la clase de entidad: {2}. Las anotaciones de entidad soportadas son: {3}.
+CWWKD1045.unknown.entity.anno.explanation=El proveedor integrado Jakarta Data no soporta una de las anotaciones de entidad.
+CWWKD1045.unknown.entity.anno.useraction=Elimine la anotaci\u00f3n de entidad no reconocida o utilice el atributo provider de la anotaci\u00f3n Repository para seleccionar un proveedor de Jakarta Data que reconozca la anotaci\u00f3n de entidad.
+
+CWWKD1046.result.convert.err=CWWKD1046E: El {0} resultado del {1} m\u00e9todo de la {2} interfaz del repositorio no puede convertirse al {3} tipo de retorno del m\u00e9todo del repositorio.
+CWWKD1046.result.convert.err.explanation=El valor resultante no es compatible con el tipo de retorno del m\u00e9todo del repositorio.
+CWWKD1046.result.convert.err.useraction=Aseg\u00farese de que el tipo de retorno del m\u00e9todo de repositorio es coherente con el tipo de resultado que devuelve la consulta.
+
+CWWKD1047.result.out.of.range=CWWKD1047E: El resultado {0} del m\u00e9todo {1} de la interfaz {2} del repositorio no se puede convertir al tipo de retorno {3} del m\u00e9todo del repositorio porque el resultado no est\u00e1 dentro del rango de {4} a {5}.
+CWWKD1047.result.out.of.range.explanation=El valor resultante no es compatible con el tipo de retorno del m\u00e9todo repositorio porque est\u00e1 fuera del rango de valores que se pueden convertir.
+CWWKD1047.result.out.of.range.useraction=Ajuste el tipo de retorno del m\u00e9todo de repositorio para permitir que se devuelva el valor.
+
+CWWKD1048.result.exceeds.max=CWWKD1048E: El resultado {0} del m\u00e9todo {1} de la interfaz {2} del repositorio no se puede convertir al tipo de retorno {3} del m\u00e9todo del repositorio porque el valor del resultado excede el valor m\u00e1ximo de {4}.
+CWWKD1048.result.exceeds.max.explanation=El valor resultante no es compatible con el tipo de retorno del m\u00e9todo repositorio porque excede el valor m\u00e1ximo que se puede convertir a ese tipo.
+CWWKD1048.result.exceeds.max.useraction=Ajuste el tipo de retorno del m\u00e9todo de repositorio para permitir que se devuelva el valor.
+
+CWWKD1049.count.convert.err=CWWKD1049E: El valor de recuento, {0}, del m\u00e9todo {1} de la interfaz de repositorio {2} no se puede convertir al tipo de retorno {3} del m\u00e9todo de repositorio.
+CWWKD1049.count.convert.err.explanation=El valor de recuento no es compatible con el tipo de retorno del m\u00e9todo de repositorio.
+CWWKD1049.count.convert.err.useraction=Ajuste el tipo de retorno del m\u00e9todo de repositorio para permitir que se devuelva el valor.
+
+CWWKD1050.opt.lock.exc=CWWKD1050E: El m\u00e9todo {0} de la interfaz del repositorio {1} no ha encontrado una entidad {2} que coincida con las propiedades de la entidad: {3}. Verificar que la instancia de entidad que se suministra al m\u00e9todo {0} se basa en la versi\u00f3n m\u00e1s reciente de la entidad. La versi\u00f3n m\u00e1s reciente de la entidad puede obtenerse a partir de un m\u00e9todo find o del valor resultante de uno de los siguientes m\u00e9todos del ciclo de vida: {4}.
+CWWKD1050.opt.lock.exc.explanation=No se ha encontrado una entidad coincidente.
+CWWKD1050.opt.lock.exc.useraction=Si se espera que la entidad no se encuentre en la base de datos, no es necesario realizar ninguna acci\u00f3n. En caso contrario, aseg\u00farese de que se utiliza la versi\u00f3n m\u00e1s reciente de la entidad.
+
+CWWKD1051.single.opt.lock.exc=CWWKD1051E: El m\u00e9todo {0} de la interfaz del repositorio {1} no encontr\u00f3 una entidad {2} coincidente en la base de datos. Verificar que la instancia de entidad que se suministra al m\u00e9todo {0} se basa en la versi\u00f3n m\u00e1s reciente de la entidad. La versi\u00f3n m\u00e1s reciente de la entidad puede obtenerse a partir de un m\u00e9todo find o del valor resultante de uno de los siguientes m\u00e9todos del ciclo de vida: {3}.
+CWWKD1051.single.opt.lock.exc.explanation=No se ha encontrado una entidad coincidente.
+CWWKD1051.single.opt.lock.exc.useraction=Si se espera que la entidad no se encuentre en la base de datos, no es necesario realizar ninguna acci\u00f3n. En caso contrario, aseg\u00farese de que se utiliza la versi\u00f3n m\u00e1s reciente de la entidad.
+
+CWWKD1052.multi.opt.lock.exc=CWWKD1052E: El m\u00e9todo {0} de la interfaz del repositorio {1} no encontr\u00f3 {2} de las {3} {4} entidades en la base de datos. Verificar que las instancias de entidad que se suministran al m\u00e9todo {0} se basan en la versi\u00f3n m\u00e1s reciente de cada entidad. La versi\u00f3n m\u00e1s reciente de una entidad puede obtenerse a partir de un m\u00e9todo find o del valor resultante de uno de los siguientes m\u00e9todos del ciclo de vida: {5}.
+CWWKD1052.multi.opt.lock.exc.explanation=Una o m\u00e1s de las entidades no se encontraron en la base de datos.
+CWWKD1052.multi.opt.lock.exc.useraction=Si se espera que una entidad no se encuentre en la base de datos, no es necesario realizar ninguna acci\u00f3n. En caso contrario, aseg\u00farese de que se utiliza la versi\u00f3n m\u00e1s reciente de cada entidad.
+
+CWWKD1053.empty.result=CWWKD1053E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz de repositorio {2} no es capaz de devolver un resultado vac\u00edo. Si se espera un resultado vac\u00edo, el m\u00e9todo de repositorio debe devolver un array o uno de los siguientes tipos de retorno: {3}.
+CWWKD1053.empty.result.explanation=El tipo de retorno del m\u00e9todo repositorio no permite devolver un resultado vac\u00edo.
+CWWKD1053.empty.result.useraction=Actualice el m\u00e9todo de repositorio para utilizar uno de los tipos de retorno que pueden representar un resultado vac\u00edo.
+
+CWWKD1054.non.unique.result=CWWKD1054E: El m\u00e9todo {0} de la interfaz del repositorio {1} tiene el tipo de retorno {2}, que no es capaz de devolver resultados {3}. Para limitar a un \u00fanico resultado, utilice uno de los siguientes patrones de Jakarta Data: {4}.
+CWWKD1054.non.unique.result.explanation=El tipo de retorno del m\u00e9todo repositorio no permite devolver m\u00faltiples resultados.
+CWWKD1054.non.unique.result.useraction=Actualice el m\u00e9todo de repositorio para utilizar un tipo de devoluci\u00f3n que admita m\u00faltiples resultados o actualice el m\u00e9todo de repositorio para que no devuelva m\u00e1s que un \u00fanico resultado.
+
+CWWKD1055.unsupported.entity.prop=CWWKD1055E: La propiedad {0} de la entidad {1} tiene un tipo no soportado: {2}. Jakarta Data soporta los tipos de enumeraci\u00f3n de Java, los tipos temporales {3} y los siguientes tipos b\u00e1sicos: {4}. El proveedor de Jakarta Data incorporado tambi\u00e9n soporta algunos tipos de Jakarta Persistence, como los embeddables.
+CWWKD1055.unsupported.entity.prop.explanation=Jakarta Data no soporta el tipo utilizado por la propiedad entidad.
+CWWKD1055.unsupported.entity.prop.useraction=Actualice la propiedad de la entidad para utilizar uno de los tipos admitidos.
+
+CWWKD1056.unsupported.keyword=CWWKD1056E: El m\u00e9todo {0} de la interfaz del repositorio {1} tiene un nombre que incluye una palabra clave {2}, que no es una palabra clave soportada por el patr\u00f3n Jakarta Data Query by Method Name.
+CWWKD1056.unsupported.keyword.explanation=El nombre del m\u00e9todo incluye una palabra clave que no se reconoce como parte del patr\u00f3n soportado Jakarta Data Query by Method Name.
+CWWKD1056.unsupported.keyword.useraction=Cambie el nombre del m\u00e9todo de repositorio para eliminar la palabra clave no admitida.
+
+CWWKD1057.no.args.constr.inacc=CWWKD1057E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz de repositorio {2} no es v\u00e1lido para un m\u00e9todo de repositorio porque la clase {3} carece de un constructor p\u00fablico sin par\u00e1metros.
+CWWKD1057.no.args.constr.inacc.explanation=Se necesita un constructor p\u00fablico sin par\u00e1metros para convertir el resultado a la clase especificada.
+CWWKD1057.no.args.constr.inacc.useraction=Actualiza el m\u00e9todo repositorio para que tenga un tipo de retorno que soporte Jakarta Data o para que sea una subclase de Iterable con un constructor p\u00fablico que no tenga par\u00e1metros.
+
+CWWKD1058.no.args.constr.err=CWWKD1058E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz de repositorio {2} no es v\u00e1lido para un m\u00e9todo de repositorio porque el constructor de la clase {3} gener\u00f3 un error: {4}.
+CWWKD1058.no.args.constr.err.explanation=El constructor p\u00fablico sin par\u00e1metros ha fallado debido a un error.
+CWWKD1058.no.args.constr.err.useraction=Corrige el error en el constructor, o actualiza el m\u00e9todo de repositorio para utilizar un tipo de retorno diferente.
+
+CWWKD1059.prop.cast.err=CWWKD1059E: El m\u00e9todo {0} de la interfaz del repositorio {1} no puede acceder a la propiedad {2} de la entidad {3} porque el campo o m\u00e9todo {4} de la clase {5} es incompatible con un valor {6}.
+CWWKD1059.prop.cast.err.explanation=Una propiedad de la entidad o una propiedad relacionada de su jerarqu\u00eda no es compatible con el tipo esperado.
+CWWKD1059.prop.cast.err.useraction=Revise el modelo de entidad y verifique que se utilizan los tipos correctos para cada propiedad.
+
+CWWKD1060.name.out.of.scope=CWWKD1060E: La interfaz {0} del repositorio en la aplicaci\u00f3n {1} configura un valor {2} para el atributo {3}, pero los nombres {3} no son accesibles para el artefacto que proporciona la interfaz del repositorio. Utiliza un nombre {4} en su lugar.
+CWWKD1060.name.out.of.scope.explanation=El espacio de nombres especificado no es accesible desde el artefacto donde est\u00e1 definida la interfaz del repositorio.
+CWWKD1060.name.out.of.scope.useraction=Actualice la anotaci\u00f3n Repositorio para especificar un nombre de almac\u00e9n de datos que sea visible para el m\u00f3dulo o biblioteca que proporciona la interfaz del repositorio.
+
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: La interfaz {0} del repositorio que se define en el m\u00f3dulo {1} enterprise bean de la aplicaci\u00f3n {2} configura un valor {2} para el atributo {3}. Sin embargo, los nombres {4} no son accesibles para los m\u00f3dulos enterprise bean. Utilice un nombre de uno de los siguientes espacios de nombres: {5}.
+CWWKD1061.comp.name.in.ejb.explanation=El espacio de nombres especificado no es accesible para el m\u00f3dulo enterprise bean donde est\u00e1 definida la interfaz del repositorio.
+CWWKD1061.comp.name.in.ejb.useraction=Actualiza la anotaci\u00f3n Repositorio para especificar un nombre de almac\u00e9n de datos que sea visible para el m\u00f3dulo enterprise bean que proporciona la interfaz de repositorio.
+
+CWWKD1062.resource.not.found=CWWKD1062E: El m\u00e9todo {0} de la interfaz del repositorio {1} no puede localizar el recurso {2} con el filtro {3}.
+CWWKD1062.resource.not.found.explanation=El recurso no se encuentra.
+CWWKD1062.resource.not.found.useraction=Aseg\u00farese de que el recurso especificado y todos los dem\u00e1s recursos de los que depende existen y est\u00e1n correctamente configurados.
+
+CWWKD1063.unsupported.resource=CWWKD1063E: El m\u00e9todo {0} de la interfaz del repositorio {1} no puede obtener un recurso {2} porque el proveedor Jakarta Persistence no soporta la operaci\u00f3n unwrap que devuelve una instancia {3}.
+CWWKD1063.unsupported.resource.explanation=El proveedor Jakarta Persistence no soporta la operaci\u00f3n unwrap que devuelve el tipo de recurso especificado.
+CWWKD1063.unsupported.resource.useraction=Elimina el m\u00e9todo de acceso a recursos no soportado de la interfaz del repositorio.
+
+CWWKD1064.datastore.error=CWWKD1064E: El m\u00e9todo {0} de la interfaz del repositorio {1} no puede obtener el almac\u00e9n de datos {2} para el repositorio debido al siguiente error: {3}.
+CWWKD1064.datastore.error.explanation=Se ha producido un error al intentar obtener el almac\u00e9n de datos.
+CWWKD1064.datastore.error.useraction=Aseg\u00farese de que el almac\u00e9n de datos especificado y todos los dem\u00e1s recursos de los que depende existen y est\u00e1n correctamente configurados.
+
+CWWKD1065.ddlgen.timeout=CWWKD1065E: La generaci\u00f3n DDL para la interfaz de repositorio {0} fall\u00f3 porque el almac\u00e9n de datos {1} no complet\u00f3 la generaci\u00f3n DDL en {2} segundos para las siguientes entidades: {3}.
+CWWKD1065.ddlgen.timeout.explanation=El intento de generaci\u00f3n de DDL ha caducado y no se ha completado.
+CWWKD1065.ddlgen.timeout.useraction=Reintentar la generaci\u00f3n DDL cuando el sistema y la base de datos no est\u00e9n bajo carga.
+
+CWWKD1066.ddlgen.failed=CWWKD1066E: La generaci\u00f3n DDL para la interfaz de repositorio {0} que utiliza el almac\u00e9n de datos {1} encontr\u00f3 un error al intentar la generaci\u00f3n DDL para las siguientes entidades: {2}. El error es: {3}.
+CWWKD1066.ddlgen.failed.explanation=El intento de generaci\u00f3n DDL fall\u00f3 y no se complet\u00f3.
+CWWKD1066.ddlgen.failed.useraction=Investigue el error y realice correcciones en la interfaz del repositorio, las entidades, la configuraci\u00f3n del almac\u00e9n de datos o la base de datos.
+
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: La generaci\u00f3n DDL para la interfaz de repositorio {0} fall\u00f3 porque el almac\u00e9n de datos {1} no estaba disponible o no pudo poner a disposici\u00f3n las siguientes entidades en {2} segundos: {3}.
+CWWKD1067.ddlgen.emf.timeout.explanation=La adquisici\u00f3n de los recursos necesarios para la generaci\u00f3n DDL se ha interrumpido y no se ha completado.
+CWWKD1067.ddlgen.emf.timeout.useraction=Reintentar la generaci\u00f3n DDL cuando el sistema y la base de datos no est\u00e9n bajo carga.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: La interfaz del repositorio {0} tiene m\u00faltiples entidades llamadas {1} que son proporcionadas por diferentes clases: {2}. Utilice las siguientes anotaciones de entidad de Jakarta Persistence para asignar un nombre de entidad y un nombre de tabla \u00fanicos a cada clase de entidad: {3}.
+CWWKD1068.entity.name.conflict.explanation=Los nombres de entidades y tablas se infieren a partir del nombre no cualificado de la clase o se asignan mediante anotaciones de Jakarta Persistence.
+CWWKD1068.entity.name.conflict.useraction=Cambie el nombre de las entidades o a\u00f1ada anotaciones de Jakarta Persistence para resolver expl\u00edcitamente el conflicto de nombres.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: La interfaz del repositorio {0} tiene m\u00faltiples entidades llamadas {1} que son proporcionadas por diferentes clases: {2}. Cuando se utilizan registros Java como entidades, tambi\u00e9n debe ser posible a\u00f1adir un sufijo de Entidad al nombre de la entidad sin que se produzca un conflicto de nombres. Por ejemplo: {2}.
+CWWKD1069.record.entity.name.conflict.explanation=Los nombres de entidades y tablas se infieren a partir del nombre no cualificado de la clase o se asignan mediante anotaciones de Jakarta Persistence.
+CWWKD1069.record.entity.name.conflict.useraction=Cambie el nombre de las entidades o cambie a entidades de Jakarta Persistence para resolver el conflicto de nombres.
+
+CWWKD1070.record.convert.err=CWWKD1070E: El registro {0} que se suministra al m\u00e9todo {1} de la interfaz de repositorio {2} no puede utilizarse como entidad debido al siguiente error: {3}.
+CWWKD1070.record.convert.err.explanation=No es posible utilizar el registro Java como entidad.
+CWWKD1070.record.convert.err.useraction=Defina la entidad como una entidad Jakarta Persistence en lugar de utilizar una entidad Java record.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: El registro {0} no puede utilizarse como entidad porque tiene una o m\u00e1s variables de tipo: {1}.
+CWWKD1071.record.with.type.var.explanation=Las clases de entidad no pueden tener variables de tipo gen\u00e9rico.
+CWWKD1071.record.with.type.var.useraction=Elimina las variables de tipo del registro.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: El registro {0} no se puede utilizar como entidad porque sus componentes {1} y {2} resuelven al mismo nombre de propiedad de entidad.
+CWWKD1072.record.comp.conflict.explanation=Los nombres de las propiedades de las entidades deben ser \u00fanicos ignorando may\u00fasculas y min\u00fasculas.
+CWWKD1072.record.comp.conflict.useraction=Cambie el nombre de uno de los componentes del registro para evitar el conflicto.
+
+CWWKD1073.offset.exceeds.max=CWWKD1073E: El punto de inicio {0} del l\u00edmite {1} que se suministra al m\u00e9todo {2} de la interfaz de repositorio {3} supera el valor m\u00e1ximo permitido de {4}.
+CWWKD1073.offset.exceeds.max.explanation=El punto de partida del l\u00edmite es demasiado grande.
+CWWKD1073.offset.exceeds.max.useraction=A\u00f1ada restricciones a la consulta para reducir el n\u00famero de resultados coincidentes.
+
+CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: El m\u00e9todo {0} de la interfaz de repositorio {1} no debe combinar la palabra clave {2} con la palabra clave {3} en la misma condici\u00f3n de Consulta por nombre de m\u00e9todo.
+CWWKD1074.qbmn.incompat.keywords.explanation=Las palabras clave Query by Method Name especificadas no son compatibles entre s\u00ed.
+CWWKD1074.qbmn.incompat.keywords.useraction=Cambiar el nombre del m\u00e9todo para no combinar las palabras clave en la misma condici\u00f3n.
+
+CWWKD1075.entity.prop.conflict=CWWKD1075E: La entidad {0} no puede tener una propiedad llamada {1} y otra llamada {2} porque la especificaci\u00f3n Jakarta Data considera que estos nombres son alias para la misma propiedad de entidad.
+CWWKD1075.entity.prop.conflict.explanation=Hay una colisi\u00f3n entre los nombres de dos propiedades de entidad debido al car\u00e1cter de subrayado.
+CWWKD1075.entity.prop.conflict.useraction=No utilice el car\u00e1cter de subrayado en los nombres de propiedades de entidad.
+
+CWWKD1076.repo.disposed=CWWKD1076E: El m\u00e9todo {0} de la interfaz del repositorio {1} no puede ser invocado porque la aplicaci\u00f3n que define el repositorio se ha detenido. La instancia del repositorio es {2}.
+CWWKD1076.repo.disposed.explanation=Los m\u00e9todos del repositorio no deben utilizarse fuera del ciclo de vida de la aplicaci\u00f3n que define el repositorio.
+CWWKD1076.repo.disposed.useraction=Aseg\u00farese de que el m\u00e9todo de repositorio no se utiliza fuera del \u00e1mbito de la aplicaci\u00f3n que define el repositorio.
+
+CWWKD1077.defaultds.not.found=CWWKD1077E: El artefacto de aplicaci\u00f3n {0} tiene una interfaz de repositorio {1} que utiliza o utiliza por defecto el almac\u00e9n de datos {2}, que debe ser configurado en la configuraci\u00f3n del servidor definiendo un elemento dataSource que tenga el identificador DefaultDataSource. Por ejemplo, {3} Alternativamente, asigne el valor dataStore de la anotaci\u00f3n Repository para que sea el identificador de un elemento databaseStore o el nombre JNDI de una referencia de recurso de fuente de datos o referencia de unidad de persistencia que sea accesible al artefacto de aplicaci\u00f3n. Se puede definir un elemento databaseStore en la configuraci\u00f3n del servidor. Por ejemplo, {4} Un componente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n Resource para definir una referencia a un recurso de fuente de datos. Por ejemplo, {5}, que requiere que la configuraci\u00f3n del servidor tenga un elemento de configuraci\u00f3n dataSource con un atributo {6}. Un c\
+    omponente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n PersistenceUnit para definir una referencia de unidad de persistencia. Por ejemplo, {7}, que requiere que el archivo persistence.xml tenga un elemento persistence-unit con un atributo name coincidente. Por ejemplo, {8}
+CWWKD1077.defaultds.not.found.explanation=Los repositorios de Jakarta Data tienen por defecto el origen de datos por defecto de Jakarta EE, que debe ser configurado en la configuraci\u00f3n del servidor.
+CWWKD1077.defaultds.not.found.useraction=Configure la fuente de datos por defecto de Jakarta EE o especifique un almac\u00e9n de datos diferente para el repositorio.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: Una o m\u00e1s interfaces de repositorio{0}) del artefacto de aplicaci\u00f3n {1} especifican un almac\u00e9n de datos {2} que no coincide con el ID de un elemento dataSource o un elemento databaseStore en la configuraci\u00f3n del servidor, o no coincide con el nombre JNDI de una fuente de datos, una referencia de recurso de fuente de datos, o una referencia de unidad de persistencia que es accesible al artefacto de aplicaci\u00f3n, o uno de los recursos relacionados no est\u00e1 configurado correctamente. Se puede definir un elemento dataSource en la configuraci\u00f3n del servidor. Por ejemplo, {3} Se puede definir un elemento databaseStore en la configuraci\u00f3n del servidor. Por ejemplo, {4} Un componente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n Resource para definir una referencia a un recurso de fuente de datos. Por ejemplo, {5}, que requiere que la configuraci\u00f3n del servidor tenga un elemento de configuraci\u00f3n dataSource con \
+    un atributo {6}. Un componente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n PersistenceUnit para definir una referencia de unidad de persistencia. Por ejemplo, {7}, que requiere que el archivo persistence.xml tenga un elemento persistence-unit con un atributo name coincidente. Por ejemplo, {8}
+CWWKD1078.datastore.not.found.explanation=El almac\u00e9n de datos de un repositorio de Jakarta Data puede ser el ID de un elemento dataSource o databaseStore en la configuraci\u00f3n del servidor, o puede ser un nombre JNDI de una fuente de datos, referencia de recurso de fuente de datos o referencia de unidad de persistencia.
+CWWKD1078.datastore.not.found.useraction=Aseg\u00farese de que el recurso est\u00e1 configurado correctamente. Si utiliza un nombre JNDI, aseg\u00farese de que el \u00e1mbito del nombre JNDI hace que el recurso sea accesible para el artefacto de aplicaci\u00f3n que proporciona el repositorio.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: Una o m\u00e1s interfaces de repositorio{0}) del artefacto de aplicaci\u00f3n {1} especifican un almac\u00e9n de datos con el nombre {2} JNDI, pero una fuente de datos, referencia de recurso de fuente de datos, o referencia de unidad de persistencia con ese nombre JNDI no es accesible al artefacto de aplicaci\u00f3n, o uno de los recursos relacionados no est\u00e1 configurado correctamente. Un componente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n Resource para definir una referencia a un recurso de fuente de datos. Por ejemplo, {3}, que apunta a un elemento de configuraci\u00f3n del servidor dataSource con un atributo {4}. Un componente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n PersistenceUnit para definir una referencia de unidad de persistencia. Por ejemplo, {5}, que requiere que el archivo persistence.xml tenga un elemento persistence-unit con un atributo name coincidente. Por ejemplo, {6} Un componente de aplicaci\u00f3n puede utilizar l\
+    a anotaci\u00f3n DataSourceDefinition para definir una fuente de datos. Alternativamente, un elemento dataSource puede definir una fuente de datos en la configuraci\u00f3n del servidor. Por ejemplo, {7}
+CWWKD1079.jndi.not.found.explanation=Cuando el almac\u00e9n de datos de un repositorio de Jakarta Data se establece a un nombre JNDI de una fuente de datos, una referencia de recurso de fuente de datos, o una referencia de unidad de persistencia, el nombre JNDI debe ser accesible al artefacto de aplicaci\u00f3n que proporciona el repositorio, y la fuente de datos o unidad de persistencia debe estar configurada correctamente.
+CWWKD1079.jndi.not.found.useraction=Aseg\u00farese de que el recurso est\u00e1 configurado correctamente, y aseg\u00farese de que el \u00e1mbito del nombre JNDI hace que el recurso sea accesible al artefacto de aplicaci\u00f3n que proporciona el repositorio.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: Una o m\u00e1s interfaces de repositorio{0}) del artefacto de aplicaci\u00f3n {1} no est\u00e1n disponibles debido a un error. El error puede deberse a un problema de configuraci\u00f3n, o a que el {2} almac\u00e9n de datos del repositorio no est\u00e9 disponible. El error es: {3}.
+CWWKD1080.datastore.general.err.explanation=Un error impide utilizar los repositorios especificados.
+CWWKD1080.datastore.general.err.useraction=Localice las interfaces del repositorio y la configuraci\u00f3n del almac\u00e9n de datos realice las correcciones necesarias.
+
+CWWKD1081.entity.general.err=CWWKD1081E: Debido a un error, la entidad {0} no est\u00e1 disponible para una o m\u00e1s interfaces de repositorio{1}) que utilizan el almac\u00e9n de datos {2}. El error es {3}.
+CWWKD1081.entity.general.err.explanation=Un error impide utilizar la entidad especificada.
+CWWKD1081.entity.general.err.useraction=Localice la entidad y haga las correcciones necesarias.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: La unidad de persistencia para el almac\u00e9n de datos {0} no define una o m\u00e1s clases de entidad{1}) que requieran una o m\u00e1s interfaces de repositorio{2}) que utilicen el almac\u00e9n de datos.
+CWWKD1082.entity.classes.missing.explanation=Los repositorios utilizan clases de entidad que deben definirse en la unidad de persistencia.
+CWWKD1082.entity.classes.missing.useraction=Incluir todas las clases de entidad en la unidad de persistencia.

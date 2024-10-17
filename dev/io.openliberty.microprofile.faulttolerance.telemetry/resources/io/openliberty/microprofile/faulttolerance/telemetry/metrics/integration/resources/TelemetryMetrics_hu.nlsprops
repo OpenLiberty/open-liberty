@@ -29,25 +29,25 @@
 
 ft.invocations.total.description=A met\u00f3dus megh\u00edv\u00e1s\u00e1nak sz\u00e1ma.
 
-ft.retry.calls.total.description=Az \u00fajrapr\u00f3b\u00e1lkoz\u00e1si logika futtat\u00e1s\u00e1nak sz\u00e1ma. Ez mindig egy met\u00f3dush\u00edv\u00e1s lesz.
+ft.retry.calls.total.description=Az \u00fajrapr\u00f3b\u00e1lkoz\u00e1si logika futtat\u00e1s\u00e1nak sz\u00e1ma. Ez az \u00e9rt\u00e9k met\u00f3dush\u00edv\u00e1sonk\u00e9nt mindig egyenl\u0151 egyszerivel.
 
 ft.retry.retries.total.description=A met\u00f3dus \u00fajrapr\u00f3b\u00e1lkoz\u00e1sainak sz\u00e1ma.
 
-ft.timeout.calls.total.description=Az id\u0151t\u00fall\u00e9p\u00e9si logika futtat\u00e1sainak sz\u00e1ma. Ez \u00e1ltal\u00e1ban met\u00f3dush\u00edv\u00e1sonk\u00e9nt egyszer lesz, de lehet, hogy null\u00e1t\u00f3l elt\u00e9r\u0151 lehet, ha a megszak\u00edt\u00f3 megakad\u00e1lyozza a v\u00e9grehajt\u00e1st vagy t\u00f6bbsz\u00f6r, ha a met\u00f3dus \u00fajrapr\u00f3b\u00e1l\u00e1sra ker\u00fcl.
+ft.timeout.calls.total.description=Az id\u0151t\u00fall\u00e9p\u00e9si logika futtat\u00e1s\u00e1nak sz\u00e1ma. Ez az \u00e9rt\u00e9k \u00e1ltal\u00e1ban met\u00f3dush\u00edv\u00e1sonk\u00e9nt egyszeri. El\u0151fordulhat azonban, hogy nulla, ha a megszak\u00edt\u00f3 megakad\u00e1lyozza a v\u00e9grehajt\u00e1st, vagy met\u00f3dush\u00edv\u00e1sonk\u00e9nt t\u00f6bbsz\u00f6r is, ha a met\u00f3dus \u00fajrapr\u00f3b\u00e1l\u00f3dik.
 
 ft.timeout.executionDuration.description=A met\u00f3dus v\u00e9grehajt\u00e1si idej\u00e9nek hisztogramja.
 
-ft.circuitbreaker.calls.total.description=Azon alkalmak sz\u00e1ma, amikor az \u00e1rammegszak\u00edt\u00f3 logika futott. Ez \u00e1ltal\u00e1ban met\u00f3dush\u00edv\u00e1sonk\u00e9nt egyszer lesz, de lehet, hogy t\u00f6bbsz\u00f6r is, ha a met\u00f3dush\u00edv\u00e1s \u00fajrapr\u00f3b\u00e1l\u00e1sra ker\u00fcl.
+ft.circuitbreaker.calls.total.description=A megszak\u00edt\u00f3 logika futtat\u00e1s\u00e1nak sz\u00e1ma. Ez az \u00e9rt\u00e9k \u00e1ltal\u00e1ban met\u00f3dush\u00edv\u00e1sonk\u00e9nt egyszeri \u00e9rt\u00e9kkel egyenl\u0151, de el\u0151fordulhat, hogy a met\u00f3dus \u00fajrapr\u00f3b\u00e1lkoz\u00e1sa eset\u00e9n t\u00f6bbsz\u00f6r is el\u0151fordulhat.
 
-ft.circuitbreaker.state.total.description=A megszak\u00edt\u00f3 \u00e1ltal minden egyes \u00e1llapotban t\u00f6lt\u00f6tt id\u0151 mennyis\u00e9ge.
+ft.circuitbreaker.state.total.description=A megszak\u00edt\u00f3 \u00e1ltal az egyes \u00e1llapotokban elt\u00f6lt\u00f6tt id\u0151.
 
-ft.circuitbreaker.opened.total.description=Azon alkalmak sz\u00e1ma, amikor a megszak\u00edt\u00f3 z\u00e1rt \u00e1llapotr\u00f3l nyitott \u00e1llapotba ker\u00fclt.
+ft.circuitbreaker.opened.total.description=Azon alkalmak sz\u00e1ma, amikor a megszak\u00edt\u00f3 z\u00e1rt \u00e1llapotb\u00f3l nyitott \u00e1llapotba ker\u00fclt.
 
-ft.bulkhead.calls.total.description=A v\u00e1laszfali logika futtat\u00e1s\u00e1nak sz\u00e1ma. Ez \u00e1ltal\u00e1ban met\u00f3dush\u00edv\u00e1sonk\u00e9nt egyszer fog t\u00f6rt\u00e9nni, de lehet, hogy null\u00e1t\u00f3l elt\u00e9r\u0151 lehet, ha a megszak\u00edt\u00f3 megakad\u00e1lyozta a v\u00e9grehajt\u00e1st vagy t\u00f6bbsz\u00f6r, ha a met\u00f3dush\u00edv\u00e1s \u00fajrapr\u00f3b\u00e1l\u00e1sra ker\u00fcl.
+ft.bulkhead.calls.total.description=A v\u00e1laszfallogika futtat\u00e1s\u00e1nak sz\u00e1ma. Ez az \u00e9rt\u00e9k \u00e1ltal\u00e1ban met\u00f3dush\u00edv\u00e1sonk\u00e9nt egyszeri. El\u0151fordulhat azonban, hogy nulla, ha a megszak\u00edt\u00f3 megakad\u00e1lyozza a v\u00e9grehajt\u00e1st, vagy met\u00f3dush\u00edv\u00e1sonk\u00e9nt t\u00f6bbsz\u00f6r is, ha a met\u00f3dus \u00fajrapr\u00f3b\u00e1l\u00f3dik.
 
 ft.bulkhead.executionsRunning.description=Jelenleg fut\u00f3 v\u00e9grehajt\u00e1sok sz\u00e1ma.
 
-ft.bulkhead.executionsWaiting.description=A sorban jelenleg v\u00e1rakoz\u00f3 v\u00e9grehajt\u00e1sok sz\u00e1ma.
+ft.bulkhead.executionsWaiting.description=Jelenleg a sorban v\u00e1rakoz\u00f3 v\u00e9grehajt\u00e1sok sz\u00e1ma.
 
 ft.bulkhead.runningDuration.description=A met\u00f3dus v\u00e9grehajt\u00e1sainak futtat\u00e1s\u00e1val t\u00f6lt\u00f6tt id\u0151 hisztogramja.
 

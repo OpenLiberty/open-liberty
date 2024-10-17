@@ -91,7 +91,7 @@ CWWKD1015.null.entity.param=CWWKD1015E: A {1} lerakatfel\u00fclet {0} met\u00f3d
 CWWKD1015.null.entity.param.explanation=Az \u00e9letciklus-m\u00f3dszerek nem nulla entit\u00e1sp\u00e9ld\u00e1nyt ig\u00e9nyelnek.
 CWWKD1015.null.entity.param.useraction=Friss\u00edtse az alkalmaz\u00e1s k\u00f3dj\u00e1t, hogy elker\u00fclje a null entit\u00e1s\u00e9rt\u00e9k megad\u00e1s\u00e1t a lerakat met\u00f3dushoz.
 
-CWWKD1016.incompat.entity.param=CWWKD1016E: A {1} lerakatfel\u00fclet {0} met\u00f3dus\u00e1hoz {0} entit\u00e1s sz\u00fcks\u00e9ges, de egy {1} \u00e9rt\u00e9k megadva.
+CWWKD1016.incompat.entity.param=CWWKD1016E: A {1} lerakatfel\u00fclet {0} met\u00f3dus\u00e1hoz {2} entit\u00e1s sz\u00fcks\u00e9ges, de egy {3} \u00e9rt\u00e9k megadva.
 CWWKD1016.incompat.entity.param.explanation=Az \u00e9letciklus-m\u00f3dszer csak a deklar\u00e1lt t\u00edpus\u00fa entit\u00e1s\u00e9rt\u00e9keket fogadja el.
 CWWKD1016.incompat.entity.param.useraction=Friss\u00edtse az alkalmaz\u00e1sk\u00f3dot, hogy a lerakatmet\u00f3dussal azonos t\u00edpus\u00fa entit\u00e1s\u00e9rt\u00e9ket adjon meg.
 
@@ -166,3 +166,198 @@ CWWKD1033.ql.orderby.disallowed.useraction=Cser\u00e9lje le az ORDER BY z\u00e1r
 CWWKD1034.ql.where.required=CWWKD1034E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa \u00e1ltal megadott lek\u00e9rdez\u00e9snek WHERE z\u00e1rad\u00e9kkal kell v\u00e9gz\u0151dnie, mert a met\u00f3dus a k\u00f6vetkez\u0151t adja vissza: {2} . Ott a WHERE z\u00e1rad\u00e9k a {3} helyen v\u00e9gz\u0151dik, de a lek\u00e9rdez\u00e9s hossza {4} . A lek\u00e9rdez\u00e9s: {5} .
 CWWKD1034.ql.where.required.explanation=Kurzor alap\u00fa lapoz\u00e1s haszn\u00e1latakor sz\u00fcks\u00e9g van egy WHERE z\u00e1rad\u00e9kra.
 CWWKD1034.ql.where.required.useraction=Adjon hozz\u00e1 egy WHERE z\u00e1rad\u00e9kot a lek\u00e9rdez\u00e9shez.
+
+CWWKD1035.incompat.page.mode=CWWKD1035E: A(z) {0} oldalsz\u00e1moz\u00e1si m\u00f3ddal rendelkez\u0151 oldalk\u00e9r\u00e9st nem szabad megadni a(z) {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak, mert a met\u00f3dus a(z {3} \u00e9rt\u00e9ket adja vissza a(z {4} helyett.
+CWWKD1035.incompat.page.mode.explanation=A k\u00e9rt lapoz\u00e1si m\u00f3d nem kompatibilis a t\u00e1rm\u00f3dszer visszat\u00e9r\u00e9si t\u00edpus\u00e1val.
+CWWKD1035.incompat.page.mode.useraction=Haszn\u00e1ljon Oldal visszat\u00e9r\u00e9si t\u00edpust az OFFSET lapoz\u00e1si m\u00f3dhoz, \u00e9s CursoredPage visszat\u00e9r\u00e9si t\u00edpust a CURSOR_NEXT \u00e9s CURSOR_PREVIOUS lapoz\u00e1si m\u00f3dokhoz.
+
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: A {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1hoz biztos\u00edtott {0} elem\u0171 kurzor nem haszn\u00e1lhat\u00f3 {3} m\u00e9ret\u0171 rendez\u00e9si felt\u00e9telekkel, mert a kurzorelemek sz\u00e1m\u00e1nak \u00e9s sorrendj\u00e9nek meg kell egyeznie a rendez\u00e9si felt\u00e9telekkel. A kurzor a k\u00f6vetkez\u0151kb\u0151l \u00e1ll: {4} . A rendez\u00e9si felt\u00e9telek: {5} .
+CWWKD1036.cursor.size.mismatch.explanation=A kurzorelemek sz\u00e1m\u00e1nak meg kell egyeznie a t\u00e1rol\u00f3m\u00f3dszer kombin\u00e1lt rendez\u00e9si felt\u00e9teleinek m\u00e9ret\u00e9vel.
+CWWKD1036.cursor.size.mismatch.useraction=Jav\u00edtsa ki a kurzorelemeket vagy a rendez\u00e9si felt\u00e9teleket \u00fagy, hogy mindkett\u0151 azonos m\u00e9ret\u0171 legyen.
+
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Nem lehet kurzort lek\u00e9rni a(z) {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak {0} eredm\u00e9ny\u00e9b\u0151l. A kurzor alap\u00fa lapoz\u00e1st haszn\u00e1l\u00f3 lek\u00e9rdez\u00e9seknek az entit\u00e1st\u00edpussal megegyez\u0151 t\u00edpus\u00fa eredm\u00e9nyeket kell visszaadniuk, ami a k\u00f6vetkez\u0151: {3} . A t\u00e1rol\u00f3 met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa {4} .
+CWWKD1037.cursor.rtrn.mismatch.explanation=A kurzor alap\u00fa lapoz\u00e1s csak akkor lehets\u00e9ges, ha a repository met\u00f3dus visszaadja az entit\u00e1st\u00edpust.
+CWWKD1037.cursor.rtrn.mismatch.useraction=Friss\u00edtse a lerakat met\u00f3dus\u00e1t az entit\u00e1st\u00edpus visszaad\u00e1s\u00e1hoz.
+
+CWWKD1038.no.prev.offset.page=CWWKD1038E: A(z {0} el\u0151tti oldalsz\u00e1m nem k\u00e9rhet\u0151 a(z) {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1hoz, mert a Page.hasPrevious met\u00f3dus false \u00e9rt\u00e9ket ad vissza, jelezve, hogy nincs el\u0151z\u0151 oldal.
+CWWKD1038.no.prev.offset.page.explanation=Az eltol\u00e1sos oldalsz\u00e1moz\u00e1s nem enged\u00e9lyezi az 1-n\u00e9l kisebb oldalsz\u00e1mokat.
+CWWKD1038.no.prev.offset.page.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a k\u00e9rt oldalsz\u00e1m pozit\u00edv sz\u00e1m, \u00e9s haszn\u00e1lja a Page.hasPrevious met\u00f3dust annak biztos\u00edt\u00e1s\u00e1ra, hogy \u00e9rv\u00e9nyes-e az el\u0151z\u0151 oldal lek\u00e9r\u00e9se.
+
+CWWKD1039.no.prev.cursor.page=CWWKD1039E: A(z) {1} lerakatfel\u00fclet {0} met\u00f3dus\u00e1hoz nem k\u00e9rhet\u0151 el\u0151z\u0151 oldal, mert a Page.hasPrevious met\u00f3dus false \u00e9rt\u00e9ket ad vissza, jelezve, hogy nincs el\u0151z\u0151 oldal.
+CWWKD1039.no.prev.cursor.page.explanation=A kurzor alap\u00fa lapoz\u00e1s nem teszi lehet\u0151v\u00e9 az el\u0151z\u0151 oldal lek\u00e9r\u00e9s\u00e9t, ha az aktu\u00e1lis oldalr\u00f3l tudjuk, hogy az adatk\u00e9szlet elej\u00e9n tal\u00e1lhat\u00f3 eredm\u00e9nyeket tartalmazza.
+CWWKD1039.no.prev.cursor.page.useraction=Haszn\u00e1lja a Page.hasPrevious met\u00f3dust annak biztos\u00edt\u00e1s\u00e1ra, hogy \u00e9rv\u00e9nyes-e az el\u0151z\u0151 oldal lek\u00e9r\u00e9se.
+
+CWWKD1040.no.next.page=CWWKD1040E: A k\u00f6vetkez\u0151 oldal nem k\u00e9rhet\u0151 a {1} lerakatfel\u00fclet {0} met\u00f3dus\u00e1hoz, mert {2} hamis \u00e9rt\u00e9ket ad vissza, jelezve, hogy nincs k\u00f6vetkez\u0151 oldal.
+CWWKD1040.no.next.page.explanation=Nem k\u00e9rhet\u0151 k\u00f6vetkez\u0151 oldal, ha az aktu\u00e1lis oldalr\u00f3l tudjuk, hogy az adatk\u00e9szlet v\u00e9g\u00e9t tartalmazza.
+CWWKD1040.no.next.page.useraction=Haszn\u00e1lja a hasNext met\u00f3dust, hogy megbizonyosodjon arr\u00f3l, hogy \u00e9rv\u00e9nyes-e a k\u00f6vetkez\u0151 oldal k\u00e9r\u00e9s\u00e9re.
+
+CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: A {1} lerakatfel\u00fclet {0} met\u00f3dus\u00e1nak visszat\u00e9r\u00e9si t\u00edpusa {2} van, de hi\u00e1nyzik bel\u0151le a PageRequest t\u00edpus\u00fa param\u00e9ter, amely a lek\u00e9rdez\u00e9si felt\u00e9telek param\u00e9tereit k\u00f6vetn\u00e9.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=A Page \u00e9s CursoredPage visszat\u00e9r\u00e9si t\u00edpusokkal rendelkez\u0151 adatt\u00e1r met\u00f3dusoknak rendelkezni\u00fck kell egy PageRequest param\u00e9terrel.
+CWWKD1041.rtrn.mismatch.pagereq.useraction=Adjon hozz\u00e1 egy PageRequest param\u00e9tert a lerakatmet\u00f3dus al\u00e1\u00edr\u00e1s\u00e1hoz.
+
+CWWKD1042.no.totals=CWWKD1042E: Azok az oldalak, amelyeket a {1} lerakatfel\u00fclet {0} met\u00f3dusa keres le, nem tartalmazza az elemek \u00e9s oldalak teljes sz\u00e1m\u00e1t, mivel a {2} oldalk\u00e9r\u00e9s false \u00e9rt\u00e9ket ad meg requestTotal sz\u00e1m\u00e1ra. A teljes sz\u00e1mot tartalmaz\u00f3 oldal k\u00e9r\u00e9s\u00e9hez haszn\u00e1lja a PageRequest.withTotal met\u00f3dust a PageRequest.withoutTotal met\u00f3dus helyett.
+CWWKD1042.no.totals.explanation=A PageRequest.withoutTotal met\u00f3dus azt hat\u00e1rozza meg, hogy a k\u00e9rt oldalak nem tartalmazz\u00e1k az elemek \u00e9s oldalak teljes sz\u00e1m\u00e1t.
+CWWKD1042.no.totals.useraction=Haszn\u00e1lja a PageRequest.withTotal met\u00f3dust az elemek \u00e9s oldalak teljes sz\u00e1m\u00e1nak k\u00e9r\u00e9s\u00e9hez.
+
+CWWKD1043.offset.exceeds.max=CWWKD1043E: A {0} eltol\u00e1s, amely a {1} oldalk\u00e9r\u00e9shez sz\u00fcks\u00e9ges, amely a {3} lerakatfel\u00fclet {2} met\u00f3dus\u00e1nak van biztos\u00edtva, meghaladja a {4} maxim\u00e1lis megengedett \u00e9rt\u00e9ket.
+CWWKD1043.offset.exceeds.max.explanation=Az oldalsz\u00e1m \u00e9s a maxim\u00e1lis oldalm\u00e9ret kombin\u00e1ci\u00f3ja t\u00fal nagy.
+CWWKD1043.offset.exceeds.max.useraction=Adjon meg korl\u00e1toz\u00e1sokat a lek\u00e9rdez\u00e9shez, hogy cs\u00f6kkentse az egyez\u0151 eredm\u00e9nyek sz\u00e1m\u00e1t.
+
+CWWKD1044.invalid.resource.type=CWWKD1044E: A(z) {1} t\u00e1rhely {0} er\u0151forr\u00e1s-hozz\u00e1f\u00e9r\u00e9si met\u00f3dusa nem tud visszaadni {2} er\u0151forr\u00e1st. Az er\u0151forr\u00e1s-el\u00e9r\u00e9si met\u00f3dusok t\u00e1mogatott visszat\u00e9r\u00e9si t\u00edpusai a k\u00f6vetkez\u0151k: {3} .
+CWWKD1044.invalid.resource.type.explanation=Az er\u0151forr\u00e1s-el\u00e9r\u00e9si met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa nem tartozik a Jakarta Data t\u00e1mogatott t\u00edpusai k\u00f6z\u00e9.
+CWWKD1044.invalid.resource.type.useraction=T\u00e1vol\u00edtsa el a met\u00f3dust, vagy friss\u00edtse a t\u00e1mogatott t\u00edpusok valamelyik\u00e9nek visszaad\u00e1s\u00e1hoz.
+
+CWWKD1045.unknown.entity.anno=CWWKD1045E: A be\u00e9p\u00edtett jakartai adatszolg\u00e1ltat\u00f3 nem tudja megval\u00f3s\u00edtani a {0} lerakatfel\u00fcletet, mert a lerakat \u00e1ltal haszn\u00e1lt {1} entit\u00e1soszt\u00e1ly fel nem ismert entit\u00e1sannot\u00e1ci\u00f3t tartalmaz. A k\u00f6vetkez\u0151 entit\u00e1sjel\u00f6l\u00e9sek tal\u00e1lhat\u00f3k az entit\u00e1soszt\u00e1lyon: {2} . A t\u00e1mogatott entit\u00e1sjel\u00f6l\u00e9sek a k\u00f6vetkez\u0151k: {3} .
+CWWKD1045.unknown.entity.anno.explanation=A be\u00e9p\u00edtett Jakarta adatszolg\u00e1ltat\u00f3 nem t\u00e1mogatja az entit\u00e1sok egyik megjegyz\u00e9s\u00e9t.
+CWWKD1045.unknown.entity.anno.useraction=T\u00e1vol\u00edtsa el a fel nem ismert entit\u00e1sannot\u00e1ci\u00f3t, vagy haszn\u00e1lja a Repository annot\u00e1ci\u00f3 szolg\u00e1ltat\u00f3i attrib\u00fatumait egy olyan jakartai adatszolg\u00e1ltat\u00f3 kiv\u00e1laszt\u00e1s\u00e1hoz, amely felismeri az entit\u00e1sfeljegyz\u00e9st.
+
+CWWKD1046.result.convert.err=CWWKD1046E: A {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak {0} eredm\u00e9nye nem konvert\u00e1lhat\u00f3 a lerakatmet\u00f3dus {3} visszat\u00e9r\u00e9si t\u00edpus\u00e1ra.
+CWWKD1046.result.convert.err.explanation=Az eredm\u00e9ny \u00e9rt\u00e9k nem kompatibilis a t\u00e1rol\u00f3 met\u00f3dus visszat\u00e9r\u00e9si t\u00edpus\u00e1val.
+CWWKD1046.result.convert.err.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a lerakatmet\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa \u00f6sszhangban van a lek\u00e9rdez\u00e9s \u00e1ltal visszaadott eredm\u00e9ny t\u00edpus\u00e1val.
+
+CWWKD1047.result.out.of.range=CWWKD1047E: A {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak {0} eredm\u00e9nye nem konvert\u00e1lhat\u00f3 a lerakatmet\u00f3dus {3} visszat\u00e9r\u00e9si t\u00edpus\u00e1v\u00e1, mert az eredm\u00e9ny nem esik a {4} \u00e9s {5} k\u00f6z\u00f6tti tartom\u00e1nyba.
+CWWKD1047.result.out.of.range.explanation=Az eredm\u00e9ny\u00e9rt\u00e9k nem kompatibilis a repository met\u00f3dus visszat\u00e9r\u00e9si t\u00edpus\u00e1val, mert k\u00edv\u00fcl esik a konvert\u00e1lhat\u00f3 \u00e9rt\u00e9ktartom\u00e1nyon.
+CWWKD1047.result.out.of.range.useraction=\u00c1ll\u00edtsa be a lerakat m\u00f3dszer visszat\u00e9r\u00e9si t\u00edpus\u00e1t, hogy lehet\u0151v\u00e9 tegye az \u00e9rt\u00e9k visszaad\u00e1s\u00e1t.
+
+CWWKD1048.result.exceeds.max=CWWKD1048E: A {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak {0} eredm\u00e9nye nem konvert\u00e1lhat\u00f3 a lerakatmet\u00f3dus {3} visszat\u00e9r\u00e9si t\u00edpus\u00e1ra, mert az eredm\u00e9ny \u00e9rt\u00e9ke meghaladja a {4} maxim\u00e1lis \u00e9rt\u00e9k\u00e9t.
+CWWKD1048.result.exceeds.max.explanation=Az eredm\u00e9ny\u00e9rt\u00e9k nem kompatibilis a lerakatmet\u00f3dus visszat\u00e9r\u00e9si t\u00edpus\u00e1val, mert meghaladja az adott t\u00edpusra konvert\u00e1lhat\u00f3 maxim\u00e1lis \u00e9rt\u00e9ket.
+CWWKD1048.result.exceeds.max.useraction=\u00c1ll\u00edtsa be a lerakat m\u00f3dszer visszat\u00e9r\u00e9si t\u00edpus\u00e1t, hogy lehet\u0151v\u00e9 tegye az \u00e9rt\u00e9k visszaad\u00e1s\u00e1t.
+
+CWWKD1049.count.convert.err=CWWKD1049E: A {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1b\u00f3l sz\u00e1rmaz\u00f3 {0} sz\u00e1ml\u00e1l\u00e1si \u00e9rt\u00e9k nem konvert\u00e1lhat\u00f3 a lerakatmet\u00f3dus {3} visszat\u00e9r\u00e9si t\u00edpus\u00e1v\u00e1.
+CWWKD1049.count.convert.err.explanation=A sz\u00e1ml\u00e1l\u00e1si \u00e9rt\u00e9k nem kompatibilis a t\u00e1rol\u00f3m\u00f3dszer visszat\u00e9r\u00e9si t\u00edpus\u00e1val.
+CWWKD1049.count.convert.err.useraction=\u00c1ll\u00edtsa be a lerakat m\u00f3dszer visszat\u00e9r\u00e9si t\u00edpus\u00e1t, hogy lehet\u0151v\u00e9 tegye az \u00e9rt\u00e9k visszaad\u00e1s\u00e1t.
+
+CWWKD1050.opt.lock.exc=CWWKD1050E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa nem tal\u00e1lt az entit\u00e1s tulajdons\u00e1gainak megfelel\u0151 {2} entit\u00e1st: {3} . Ellen\u0151rizze, hogy a(z) {0} met\u00f3dushoz biztos\u00edtott entit\u00e1sp\u00e9ld\u00e1ny az entit\u00e1s leg\u00fajabb verzi\u00f3j\u00e1n alapul-e. Az entit\u00e1s leg\u00fajabb verzi\u00f3ja egy keres\u00e9si m\u00f3dszerb\u0151l vagy a k\u00f6vetkez\u0151 \u00e9letciklus-m\u00f3dszerek egyik\u00e9nek eredm\u00e9ny\u00e9rt\u00e9k\u00e9b\u0151l szerezhet\u0151 be: {4} .
+CWWKD1050.opt.lock.exc.explanation=Nem tal\u00e1lhat\u00f3 egyez\u0151 entit\u00e1s.
+CWWKD1050.opt.lock.exc.useraction=Ha v\u00e1rhat\u00f3, hogy az entit\u00e1s nem tal\u00e1lhat\u00f3 az adatb\u00e1zisban, nincs sz\u00fcks\u00e9g teend\u0151re. Ellenkez\u0151 esetben gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az entit\u00e1s leg\u00fajabb verzi\u00f3j\u00e1t haszn\u00e1lja.
+
+CWWKD1051.single.opt.lock.exc=CWWKD1051E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa nem tal\u00e1lt megfelel\u0151 {2} entit\u00e1st az adatb\u00e1zisban. Ellen\u0151rizze, hogy a(z) {0} met\u00f3dushoz biztos\u00edtott entit\u00e1sp\u00e9ld\u00e1ny az entit\u00e1s leg\u00fajabb verzi\u00f3j\u00e1n alapul-e. Az entit\u00e1s legfrissebb verzi\u00f3ja egy keres\u00e9si m\u00f3dszerb\u0151l vagy a k\u00f6vetkez\u0151 \u00e9letciklus-met\u00f3dusok egyik\u00e9nek eredm\u00e9ny\u00e9rt\u00e9k\u00e9b\u0151l szerezhet\u0151 be: {3} .
+CWWKD1051.single.opt.lock.exc.explanation=Nem tal\u00e1lhat\u00f3 egyez\u0151 entit\u00e1s.
+CWWKD1051.single.opt.lock.exc.useraction=Ha v\u00e1rhat\u00f3, hogy az entit\u00e1s nem tal\u00e1lhat\u00f3 az adatb\u00e1zisban, nincs sz\u00fcks\u00e9g teend\u0151re. Ellenkez\u0151 esetben gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az entit\u00e1s leg\u00fajabb verzi\u00f3j\u00e1t haszn\u00e1lja.
+
+CWWKD1052.multi.opt.lock.exc=CWWKD1052E: A(z) {1} lerakatfel\u00fclet {0} met\u00f3dusa nem tal\u00e1lt {2} a(z {3} {4} entit\u00e1s k\u00f6z\u00fcl az adatb\u00e1zisban. Ellen\u0151rizze, hogy a {0} met\u00f3dushoz biztos\u00edtott entit\u00e1sp\u00e9ld\u00e1nyok az egyes entit\u00e1sok leg\u00fajabb verzi\u00f3j\u00e1n alapulnak-e. Az entit\u00e1s legfrissebb verzi\u00f3ja egy keres\u00e9si m\u00f3dszerb\u0151l vagy a k\u00f6vetkez\u0151 \u00e9letciklus-m\u00f3dszerek egyik\u00e9nek eredm\u00e9ny\u00e9rt\u00e9k\u00e9b\u0151l szerezhet\u0151 be: {5} .
+CWWKD1052.multi.opt.lock.exc.explanation=Egy vagy t\u00f6bb entit\u00e1s nem tal\u00e1lhat\u00f3 az adatb\u00e1zisban.
+CWWKD1052.multi.opt.lock.exc.useraction=Ha v\u00e1rhat\u00f3, hogy egy entit\u00e1s nem tal\u00e1lhat\u00f3 az adatb\u00e1zisban, nincs sz\u00fcks\u00e9g teend\u0151re. Ellenkez\u0151 esetben gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az egyes entit\u00e1sok leg\u00fajabb verzi\u00f3j\u00e1t haszn\u00e1lja.
+
+CWWKD1053.empty.result=CWWKD1053E: A {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak {0} visszat\u00e9r\u00e9si t\u00edpusa nem k\u00e9pes \u00fcres eredm\u00e9nyt visszaadni. Ha \u00fcres eredm\u00e9ny v\u00e1rhat\u00f3, a repository met\u00f3dusnak egy t\u00f6mb\u00f6t vagy a k\u00f6vetkez\u0151 visszat\u00e9r\u00e9si t\u00edpusok egyik\u00e9t kell visszaadnia: {3} .
+CWWKD1053.empty.result.explanation=A repository met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa nem teszi lehet\u0151v\u00e9, hogy \u00fcres eredm\u00e9nyt adjon vissza.
+CWWKD1053.empty.result.useraction=Friss\u00edtse a repository met\u00f3dust az egyik olyan visszat\u00e9r\u00e9si t\u00edpus haszn\u00e1lat\u00e1hoz, amely \u00fcres eredm\u00e9nyt jelenthet.
+
+CWWKD1054.non.unique.result=CWWKD1054E: A {1} lerakatfel\u00fclet {0} met\u00f3dus\u00e1nak {2} visszat\u00e9r\u00e9si t\u00edpusa van, amely nem k\u00e9pes {3} eredm\u00e9nyeket visszaadni. Ha egyetlen eredm\u00e9nyre szeretne korl\u00e1tozni, haszn\u00e1lja a k\u00f6vetkez\u0151 Jakarta adatmint\u00e1k egyik\u00e9t: {4} .
+CWWKD1054.non.unique.result.explanation=A repository met\u00f3dus visszat\u00e9r\u00e9si t\u00edpusa nem teszi lehet\u0151v\u00e9 t\u00f6bb eredm\u00e9ny visszaad\u00e1s\u00e1t.
+CWWKD1054.non.unique.result.useraction=Friss\u00edtse a lerakatm\u00f3dszert \u00fagy, hogy t\u00f6bb eredm\u00e9nyt t\u00e1mogat\u00f3 visszat\u00e9r\u00e9si t\u00edpust haszn\u00e1ljon, vagy friss\u00edtse a lerakatm\u00f3dszert \u00fagy, hogy legfeljebb egyetlen eredm\u00e9nyt adjon vissza.
+
+CWWKD1055.unsupported.entity.prop=CWWKD1055E: A(z) {1} entit\u00e1s {0} tulajdons\u00e1g\u00e1nak t\u00edpusa nem t\u00e1mogatott: {2} . A Jakarta Data t\u00e1mogatja a Java felsorol\u00e1si t\u00edpusokat, a {3} id\u0151beli t\u00edpusokat \u00e9s a k\u00f6vetkez\u0151 alapt\u00edpusokat: {4} . A be\u00e9p\u00edtett Jakarta Data szolg\u00e1ltat\u00f3 bizonyos Jakarta Persistence t\u00edpusokat is t\u00e1mogat, p\u00e9ld\u00e1ul a be\u00e1gyazhat\u00f3akat.
+CWWKD1055.unsupported.entity.prop.explanation=A Jakarta Data nem t\u00e1mogatja az entit\u00e1stulajdons\u00e1g \u00e1ltal haszn\u00e1lt t\u00edpust.
+CWWKD1055.unsupported.entity.prop.useraction=Friss\u00edtse az entit\u00e1s tulajdons\u00e1got a t\u00e1mogatott t\u00edpusok valamelyik\u00e9nek haszn\u00e1lat\u00e1hoz.
+
+CWWKD1056.unsupported.keyword=CWWKD1056E: A {1} adatt\u00e1rfel\u00fclet {0} met\u00f3dus\u00e1nak neve egy {2} kulcssz\u00f3t tartalmaz, amely nem t\u00e1mogatott kulcssz\u00f3 a Jakarta Data Query by Method Name mint\u00e1ban.
+CWWKD1056.unsupported.keyword.explanation=A met\u00f3dusn\u00e9v olyan kulcssz\u00f3t tartalmaz, amelyet nem ismer fel a t\u00e1mogatott Jakarta Data Query by Method Name minta r\u00e9szek\u00e9nt.
+CWWKD1056.unsupported.keyword.useraction=A nem t\u00e1mogatott kulcssz\u00f3 elt\u00e1vol\u00edt\u00e1s\u00e1hoz nevezze \u00e1t a t\u00e1rm\u00f3dszert.
+
+CWWKD1057.no.args.constr.inacc=CWWKD1057E: A {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak {0} visszat\u00e9r\u00e9si t\u00edpusa nem \u00e9rv\u00e9nyes lerakatmet\u00f3dusra, mert a {3} oszt\u00e1lyb\u00f3l hi\u00e1nyzik a param\u00e9terek n\u00e9lk\u00fcli nyilv\u00e1nos konstruktor.
+CWWKD1057.no.args.constr.inacc.explanation=Param\u00e9terek n\u00e9lk\u00fcli publikus konstruktorra van sz\u00fcks\u00e9g ahhoz, hogy az eredm\u00e9nyt a megadott oszt\u00e1lyba konvert\u00e1lja.
+CWWKD1057.no.args.constr.inacc.useraction=Friss\u00edtse a repository met\u00f3dust, hogy olyan visszat\u00e9r\u00e9si t\u00edpussal rendelkezzen, amelyet a Jakarta Data t\u00e1mogat, vagy hogy az Iterable aloszt\u00e1lya legyen egy nyilv\u00e1nos konstruktorral, amely nem rendelkezik param\u00e9terekkel.
+
+CWWKD1058.no.args.constr.err=CWWKD1058E: A {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak {0} visszat\u00e9r\u00e9si t\u00edpusa nem \u00e9rv\u00e9nyes lerakatmet\u00f3dusra, mert a {3} oszt\u00e1ly konstruktora hib\u00e1t adott: {4} .
+CWWKD1058.no.args.constr.err.explanation=A param\u00e9terek n\u00e9lk\u00fcli nyilv\u00e1nos konstruktor hiba miatt meghi\u00fasult.
+CWWKD1058.no.args.constr.err.useraction=Jav\u00edtsa ki a konstruktor hib\u00e1j\u00e1t, vagy friss\u00edtse a repository met\u00f3dust egy m\u00e1sik visszat\u00e9r\u00e9si t\u00edpus haszn\u00e1lat\u00e1hoz.
+
+CWWKD1059.prop.cast.err=CWWKD1059E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa nem f\u00e9r hozz\u00e1 a {3} entit\u00e1s {2} tulajdons\u00e1g\u00e1hoz, mert a {5} oszt\u00e1ly {4} mez\u0151je vagy met\u00f3dusa nem kompatibilis a {6} \u00e9rt\u00e9kkel.
+CWWKD1059.prop.cast.err.explanation=Egy entit\u00e1stulajdons\u00e1g vagy egy kapcsol\u00f3d\u00f3 tulajdons\u00e1g a hierarchi\u00e1j\u00e1b\u00f3l nem kompatibilis a v\u00e1rt t\u00edpussal.
+CWWKD1059.prop.cast.err.useraction=Tekintse \u00e1t az entit\u00e1smodellt, \u00e9s ellen\u0151rizze, hogy a megfelel\u0151 t\u00edpusokat haszn\u00e1lja-e az egyes tulajdons\u00e1gokhoz.
+
+CWWKD1060.name.out.of.scope=CWWKD1060E: A {0} lerakatfel\u00fclet a {1} alkalmaz\u00e1sban be\u00e1ll\u00edt egy {2} \u00e9rt\u00e9ket a {3} attrib\u00fatumhoz, de a {3} nevek nem \u00e9rhet\u0151k el a lerakatfel\u00fcletet biztos\u00edt\u00f3 mell\u00e9kterm\u00e9k sz\u00e1m\u00e1ra. Haszn\u00e1ljon helyette egy {4} nevet.
+CWWKD1060.name.out.of.scope.explanation=A megadott n\u00e9vt\u00e9r nem \u00e9rhet\u0151 el abb\u00f3l a mell\u00e9kterm\u00e9kb\u0151l, ahol a lerakatfel\u00fclet defini\u00e1lva van.
+CWWKD1060.name.out.of.scope.useraction=Friss\u00edtse a Repository annot\u00e1ci\u00f3t egy olyan adatt\u00e1rn\u00e9v megad\u00e1s\u00e1hoz, amely l\u00e1that\u00f3 a lerakatfel\u00fcletet biztos\u00edt\u00f3 modul vagy k\u00f6nyvt\u00e1r sz\u00e1m\u00e1ra.
+
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: A {0} lerakatfel\u00fclet, amely a {2} alkalmaz\u00e1s {1} v\u00e1llalati komponens modulj\u00e1ban van defini\u00e1lva, egy {2} \u00e9rt\u00e9ket konfigur\u00e1l a {3} attrib\u00fatumhoz. A(z) {4} nevek azonban nem \u00e9rhet\u0151k el a v\u00e1llalati komponensmodulok sz\u00e1m\u00e1ra. Haszn\u00e1ljon nevet a k\u00f6vetkez\u0151 n\u00e9vterek egyik\u00e9b\u0151l: {5} .
+CWWKD1061.comp.name.in.ejb.explanation=A megadott n\u00e9vt\u00e9r nem \u00e9rhet\u0151 el a v\u00e1llalati komponens modul sz\u00e1m\u00e1ra, ahol a lerakatfel\u00fclet defini\u00e1lva van.
+CWWKD1061.comp.name.in.ejb.useraction=Friss\u00edtse a Repository annot\u00e1ci\u00f3t egy olyan adatt\u00e1rn\u00e9v megad\u00e1s\u00e1hoz, amely l\u00e1that\u00f3 a lerakatfel\u00fcletet biztos\u00edt\u00f3 v\u00e1llalati komponens modul sz\u00e1m\u00e1ra.
+
+CWWKD1062.resource.not.found=CWWKD1062E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa nem tudja megtal\u00e1lni a {2} er\u0151forr\u00e1st a {3} sz\u0171r\u0151vel.
+CWWKD1062.resource.not.found.explanation=Az er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3.
+CWWKD1062.resource.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a megadott er\u0151forr\u00e1s \u00e9s minden egy\u00e9b er\u0151forr\u00e1s, amelyt\u0151l f\u00fcgg, l\u00e9tezik, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+CWWKD1063.unsupported.resource=CWWKD1063E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa nem tud beszerezni egy {2} er\u0151forr\u00e1st, mert a Jakarta Persistence szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a {3} p\u00e9ld\u00e1nyt visszaad\u00f3 kibont\u00e1si m\u0171veletet.
+CWWKD1063.unsupported.resource.explanation=A Jakarta Persistence szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a kibont\u00e1si m\u0171veletet, amely a megadott er\u0151forr\u00e1st\u00edpust adja vissza.
+CWWKD1063.unsupported.resource.useraction=T\u00e1vol\u00edtsa el a nem t\u00e1mogatott er\u0151forr\u00e1s-el\u00e9r\u00e9si met\u00f3dust a lerakatfel\u00fcletr\u0151l.
+
+CWWKD1064.datastore.error=CWWKD1064E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa nem tudja beszerezni a lerakat {2} adatt\u00e1r\u00e1t a k\u00f6vetkez\u0151 hiba miatt: {3} .
+CWWKD1064.datastore.error.explanation=Hiba t\u00f6rt\u00e9nt az adatt\u00e1r lek\u00e9r\u00e9se sor\u00e1n.
+CWWKD1064.datastore.error.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a megadott adatt\u00e1r \u00e9s minden egy\u00e9b er\u0151forr\u00e1s, amelyt\u0151l f\u00fcgg, l\u00e9tezik \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+CWWKD1065.ddlgen.timeout=CWWKD1065E: A DDL gener\u00e1l\u00e1sa a(z) {0} lerakatfel\u00fclethez nem siker\u00fclt, mert a(z) {1} adatt\u00e1r nem fejezte be a DDL l\u00e9trehoz\u00e1s\u00e1t {2} m\u00e1sodpercen bel\u00fcl a k\u00f6vetkez\u0151 entit\u00e1sokn\u00e1l: {3} .
+CWWKD1065.ddlgen.timeout.explanation=A DDL-gener\u00e1l\u00e1si k\u00eds\u00e9rlet id\u0151t\u00fall\u00e9p\u00e9st szenvedett, \u00e9s nem fejez\u0151d\u00f6tt be.
+CWWKD1065.ddlgen.timeout.useraction=Ha a rendszer \u00e9s az adatb\u00e1zis nincs terhel\u00e9s alatt, pr\u00f3b\u00e1lja meg \u00fajra a DDL gener\u00e1l\u00e1st.
+
+CWWKD1066.ddlgen.failed=CWWKD1066E: A {1} adatt\u00e1rat haszn\u00e1l\u00f3 {0} lerakatfel\u00fclet DDL-gener\u00e1l\u00e1sa hib\u00e1t \u00e9szlelt a k\u00f6vetkez\u0151 entit\u00e1sok DDL-gener\u00e1l\u00e1s\u00e1nak megk\u00eds\u00e9rl\u00e9sekor: {2} . A hiba a k\u00f6vetkez\u0151: {3} .
+CWWKD1066.ddlgen.failed.explanation=A DDL gener\u00e1l\u00e1si k\u00eds\u00e9rlet meghi\u00fasult, \u00e9s nem fejez\u0151d\u00f6tt be.
+CWWKD1066.ddlgen.failed.useraction=Vizsg\u00e1lja meg a hib\u00e1t, \u00e9s jav\u00edtsa ki a lerakat fel\u00fclet\u00e9t, az entit\u00e1sokat, az adatt\u00e1r konfigur\u00e1ci\u00f3j\u00e1t vagy az adatb\u00e1zist.
+
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: A DDL gener\u00e1l\u00e1sa a(z) {0} adatt\u00e1rfel\u00fclethez nem siker\u00fclt, mert a(z) {1} adatt\u00e1r nem volt el\u00e9rhet\u0151, vagy nem tudta {2} m\u00e1sodpercen bel\u00fcl el\u00e9rhet\u0151v\u00e9 tenni a k\u00f6vetkez\u0151 entit\u00e1sokat: {3} .
+CWWKD1067.ddlgen.emf.timeout.explanation=A DDL gener\u00e1l\u00e1s\u00e1hoz sz\u00fcks\u00e9ges er\u0151forr\u00e1sok beszerz\u00e9se id\u0151t\u00fall\u00e9p\u00e9st szenvedett, \u00e9s nem fejez\u0151d\u00f6tt be.
+CWWKD1067.ddlgen.emf.timeout.useraction=Ha a rendszer \u00e9s az adatb\u00e1zis nincs terhel\u00e9s alatt, pr\u00f3b\u00e1lja meg \u00fajra a DDL gener\u00e1l\u00e1st.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: A {0} adatt\u00e1r fel\u00fclet\u00e9n t\u00f6bb {1} nev\u0171 entit\u00e1s tal\u00e1lhat\u00f3, amelyeket k\u00fcl\u00f6nb\u00f6z\u0151 oszt\u00e1lyok biztos\u00edtanak: {2} . A k\u00f6vetkez\u0151 Jakarta Persistence entit\u00e1s megjegyz\u00e9sekkel rendelhet egyedi entit\u00e1snevet \u00e9s t\u00e1bl\u00e1zatnevet minden entit\u00e1soszt\u00e1lyhoz: {3} .
+CWWKD1068.entity.name.conflict.explanation=Az entit\u00e1snevek \u00e9s a t\u00e1blanevek a min\u0151s\u00edtetlen oszt\u00e1lyn\u00e9vb\u0151l k\u00f6vetkeztetnek, vagy a Jakarta Persistence annot\u00e1ci\u00f3k hozz\u00e1 vannak rendelve.
+CWWKD1068.entity.name.conflict.useraction=Nevezze \u00e1t az entit\u00e1sokat, vagy adjon hozz\u00e1 Jakarta Persistence megjegyz\u00e9seket a n\u00e9v\u00fctk\u00f6z\u00e9s egy\u00e9rtelm\u0171 felold\u00e1s\u00e1hoz.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: A {0} adatt\u00e1r fel\u00fclet\u00e9n t\u00f6bb {1} nev\u0171 entit\u00e1s tal\u00e1lhat\u00f3, amelyeket k\u00fcl\u00f6nb\u00f6z\u0151 oszt\u00e1lyok biztos\u00edtanak: {2} . Amikor Java rekordokat haszn\u00e1lnak entit\u00e1sk\u00e9nt, lehet\u0151v\u00e9 kell tenni az Entit\u00e1s ut\u00f3tag hozz\u00e1ad\u00e1s\u00e1t az entit\u00e1s nev\u00e9hez an\u00e9lk\u00fcl, hogy n\u00e9v\u00fctk\u00f6z\u00e9st okozna. P\u00e9ld\u00e1ul: {2} .
+CWWKD1069.record.entity.name.conflict.explanation=Az entit\u00e1snevek \u00e9s a t\u00e1blanevek a min\u0151s\u00edtetlen oszt\u00e1lyn\u00e9vb\u0151l k\u00f6vetkeztetnek, vagy a Jakarta Persistence annot\u00e1ci\u00f3k hozz\u00e1 vannak rendelve.
+CWWKD1069.record.entity.name.conflict.useraction=Nevezze \u00e1t az entit\u00e1sokat, vagy v\u00e1ltson Jakarta Persistence entit\u00e1sokra a n\u00e9v\u00fctk\u00f6z\u00e9s megold\u00e1s\u00e1hoz.
+
+CWWKD1070.record.convert.err=CWWKD1070E: A {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak biztos\u00edtott {0} rekord nem haszn\u00e1lhat\u00f3 entit\u00e1sk\u00e9nt a k\u00f6vetkez\u0151 hiba miatt: {3} .
+CWWKD1070.record.convert.err.explanation=A Java rekordot nem lehet entit\u00e1sk\u00e9nt haszn\u00e1lni.
+CWWKD1070.record.convert.err.useraction=Hat\u00e1rozza meg az entit\u00e1st Jakarta Persistence entit\u00e1sk\u00e9nt a Java rekord entit\u00e1s haszn\u00e1lata helyett.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: A {0} rekord nem haszn\u00e1lhat\u00f3 entit\u00e1sk\u00e9nt, mert egy vagy t\u00f6bb t\u00edpusv\u00e1ltoz\u00f3ja van: {1} .
+CWWKD1071.record.with.type.var.explanation=Az entit\u00e1soszt\u00e1lyok nem tartalmazhatnak \u00e1ltal\u00e1nos t\u00edpus\u00fa v\u00e1ltoz\u00f3kat.
+CWWKD1071.record.with.type.var.useraction=T\u00e1vol\u00edtsa el a t\u00edpusv\u00e1ltoz\u00f3kat a rekordb\u00f3l.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: A(z) {0} rekord nem haszn\u00e1lhat\u00f3 entit\u00e1sk\u00e9nt, mert a(z) {1} \u00e9s a(z {2} komponens ugyanazt az entit\u00e1stulajdons\u00e1g nev\u00e9t adja fel.
+CWWKD1072.record.comp.conflict.explanation=Az entit\u00e1stulajdons\u00e1gok nev\u00e9nek egyedinek kell lennie, figyelmen k\u00edv\u00fcl hagyva a kis- \u00e9s nagybet\u0171ket.
+CWWKD1072.record.comp.conflict.useraction=Az \u00fctk\u00f6z\u00e9s elker\u00fcl\u00e9se \u00e9rdek\u00e9ben nevezze \u00e1t az egyik rekord\u00f6sszetev\u0151t.
+
+CWWKD1073.offset.exceeds.max=CWWKD1073E: A {3} lerakatfel\u00fclet {2} met\u00f3dus\u00e1nak megadott {1} korl\u00e1t {0} kezd\u0151pontja meghaladja a {4} maxim\u00e1lis megengedett \u00e9rt\u00e9ket.
+CWWKD1073.offset.exceeds.max.explanation=A korl\u00e1t kezd\u0151pontja t\u00fal nagy.
+CWWKD1073.offset.exceeds.max.useraction=Adjon meg korl\u00e1toz\u00e1sokat a lek\u00e9rdez\u00e9shez, hogy cs\u00f6kkentse az egyez\u0151 eredm\u00e9nyek sz\u00e1m\u00e1t.
+
+CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa nem kombin\u00e1lhatja a {2} kulcssz\u00f3t a {3} kulcssz\u00f3val ugyanazon a Lek\u00e9rdez\u00e9s m\u00f3dszern\u00e9v szerint felt\u00e9telen.
+CWWKD1074.qbmn.incompat.keywords.explanation=A megadott Met\u00f3dusn\u00e9v szerinti lek\u00e9rdez\u00e9s kulcsszavai nem kompatibilisek egym\u00e1ssal.
+CWWKD1074.qbmn.incompat.keywords.useraction=Nevezze \u00e1t a met\u00f3dust \u00fagy, hogy ne kombin\u00e1lja a kulcsszavakat azonos felt\u00e9telek mellett.
+
+CWWKD1075.entity.prop.conflict=CWWKD1075E: A {0} entit\u00e1snak nem lehet {1} nev\u0171 tulajdons\u00e1ga \u00e9s {2} nev\u0171 tulajdons\u00e1ga, mert a Jakarta Data specifik\u00e1ci\u00f3ja ezeket a neveket ugyanannak az entit\u00e1stulajdons\u00e1gnak \u00e1lneveinek tekinti.
+CWWKD1075.entity.prop.conflict.explanation=K\u00e9t entit\u00e1stulajdons\u00e1g neve \u00fctk\u00f6zik az al\u00e1h\u00faz\u00e1s karakter miatt.
+CWWKD1075.entity.prop.conflict.useraction=Ne haszn\u00e1ljon al\u00e1h\u00faz\u00e1s karaktert az entit\u00e1stulajdons\u00e1gok nev\u00e9ben.
+
+CWWKD1076.repo.disposed=CWWKD1076E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa nem h\u00edvhat\u00f3 meg, mert a lerakat meghat\u00e1roz\u00f3 alkalmaz\u00e1s le\u00e1llt. A lerakatp\u00e9ld\u00e1ny a k\u00f6vetkez\u0151: {2} .
+CWWKD1076.repo.disposed.explanation=A lerakatm\u00f3dszerek nem haszn\u00e1lhat\u00f3k a lerakatot meghat\u00e1roz\u00f3 alkalmaz\u00e1s \u00e9letciklus\u00e1n k\u00edv\u00fcl.
+CWWKD1076.repo.disposed.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a lerakatm\u00f3dszert nem haszn\u00e1lja a lerakatot meghat\u00e1roz\u00f3 alkalmaz\u00e1s hat\u00f3k\u00f6r\u00e9n k\u00edv\u00fcl.
+
+CWWKD1077.defaultds.not.found=CWWKD1077E: A(z) {0} alkalmaz\u00e1s mell\u00e9kterm\u00e9knek van egy {1} lerakatfel\u00fclete, amely a(z {2} adatt\u00e1rat haszn\u00e1lja vagy azt alap\u00e9rtelmezetten \u00e1ll\u00edtja be, amelyet a szerverkonfigur\u00e1ci\u00f3ban kell konfigur\u00e1lni egy olyan dataSource elem megad\u00e1s\u00e1val, amelynek azonos\u00edt\u00f3ja DefaultDataSource . P\u00e9ld\u00e1ul: {3} Alternat\u00edv megold\u00e1sk\u00e9nt a Repository annot\u00e1ci\u00f3 dataStore \u00e9rt\u00e9k\u00e9t egy databaseStore elem azonos\u00edt\u00f3jak\u00e9nt vagy egy adatforr\u00e1s-er\u0151forr\u00e1s-hivatkoz\u00e1s vagy perzisztenciaegys\u00e9g-hivatkoz\u00e1s JNDI-nev\u00e9hez rendelheti, amely el\u00e9rhet\u0151 az alkalmaz\u00e1s mell\u00e9kterm\u00e9ke sz\u00e1m\u00e1ra. Egy databaseStore elem a szerver konfigur\u00e1ci\u00f3j\u00e1ban defini\u00e1lhat\u00f3. P\u00e9ld\u00e1ul: {4} Egy alkalmaz\u00e1skomponens haszn\u00e1lhatja az Er\u0151forr\u00e1s megjegyz\u00e9st adatforr\u00e1\
+    s-er\u0151forr\u00e1s-hivatkoz\u00e1s meghat\u00e1roz\u00e1s\u00e1hoz. P\u00e9ld\u00e1ul {5} , amely megk\u00f6veteli a szerverkonfigur\u00e1ci\u00f3t\u00f3l, hogy legyen egy dataSource konfigur\u00e1ci\u00f3s eleme {6} attrib\u00fatummal. Az alkalmaz\u00e1skomponensek a PersistenceUnit annot\u00e1ci\u00f3t haszn\u00e1lhatj\u00e1k a perzisztenciaegys\u00e9g-hivatkoz\u00e1s meghat\u00e1roz\u00e1s\u00e1hoz. P\u00e9ld\u00e1ul {7} , amely megk\u00f6veteli, hogy a persistence.xml f\u00e1jlnak rendelkezzen egy perzisztencia-egys\u00e9g elemmel egyez\u0151 n\u00e9vattrib\u00fatummal. P\u00e9ld\u00e1ul: {8}
+CWWKD1077.defaultds.not.found.explanation=A Jakarta adatt\u00e1rak alap\u00e9rtelmez\u00e9s szerint a Jakarta EE alap\u00e9rtelmezett adatforr\u00e1sa, amelyet a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban kell konfigur\u00e1lni.
+CWWKD1077.defaultds.not.found.useraction=Konfigur\u00e1lja a Jakarta EE alap\u00e9rtelmezett adatforr\u00e1s\u00e1t, vagy adjon meg egy m\u00e1sik adatt\u00e1rat a t\u00e1rhoz.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: A(z) {1} alkalmaz\u00e1s mell\u00e9kterm\u00e9k\u00e9nek egy vagy t\u00f6bb lerakatfel\u00fclete ( {0} ) olyan {2} adatt\u00e1rat hat\u00e1roz meg, amely nem egyezik egy dataSource elem vagy egy databaseStore elem azonos\u00edt\u00f3j\u00e1val a szerverkonfigur\u00e1ci\u00f3ban, vagy nem egyezik a JNDI nev\u00e9vel egy adatforr\u00e1s, egy adatforr\u00e1s-er\u0151forr\u00e1s-hivatkoz\u00e1s vagy egy perzisztenciaegys\u00e9g-hivatkoz\u00e1s, amely el\u00e9rhet\u0151 az alkalmaz\u00e1s mell\u00e9kterm\u00e9ke sz\u00e1m\u00e1ra, vagy a kapcsol\u00f3d\u00f3 er\u0151forr\u00e1sok egyike nincs megfelel\u0151en konfigur\u00e1lva. dataSource elem a szerver konfigur\u00e1ci\u00f3j\u00e1ban defini\u00e1lhat\u00f3. P\u00e9ld\u00e1ul: {3} Egy databaseStore elem defini\u00e1lhat\u00f3 a szerver konfigur\u00e1ci\u00f3j\u00e1ban. P\u00e9ld\u00e1ul: {4} Egy alkalmaz\u00e1skomponens haszn\u00e1lhatja az Er\u0151forr\u00e1s megjegyz\u00e9st adatforr\u00e1s-er\u0151forr\u00e1\
+    s-hivatkoz\u00e1s meghat\u00e1roz\u00e1s\u00e1hoz. P\u00e9ld\u00e1ul {5} , amely megk\u00f6veteli a szerverkonfigur\u00e1ci\u00f3t\u00f3l, hogy legyen egy dataSource konfigur\u00e1ci\u00f3s eleme {6} attrib\u00fatummal. Az alkalmaz\u00e1skomponensek a PersistenceUnit annot\u00e1ci\u00f3t haszn\u00e1lhatj\u00e1k a perzisztenciaegys\u00e9g-hivatkoz\u00e1s meghat\u00e1roz\u00e1s\u00e1hoz. P\u00e9ld\u00e1ul {7} , amely megk\u00f6veteli, hogy a persistence.xml f\u00e1jlnak rendelkezzen egy perzisztencia-egys\u00e9g elemmel egyez\u0151 n\u00e9vattrib\u00fatummal. P\u00e9ld\u00e1ul: {8}
+CWWKD1078.datastore.not.found.explanation=A jakartai adatt\u00e1rak adatt\u00e1rol\u00f3ja lehet egy dataSource elem vagy databaseStore elem azonos\u00edt\u00f3ja a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban, vagy lehet egy adatforr\u00e1s JNDI neve, adatforr\u00e1s-er\u0151forr\u00e1s-hivatkoz\u00e1s vagy perzisztenciaegys\u00e9g-hivatkoz\u00e1s.
+CWWKD1078.datastore.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az er\u0151forr\u00e1s megfelel\u0151en van konfigur\u00e1lva. Ha JNDI nevet haszn\u00e1l, gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a JNDI n\u00e9v hat\u00f3k\u00f6re el\u00e9rhet\u0151v\u00e9 teszi az er\u0151forr\u00e1st a lerakat biztos\u00edt\u00f3 alkalmaz\u00e1s mell\u00e9kterm\u00e9ke sz\u00e1m\u00e1ra.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: A(z) {1} alkalmaz\u00e1s mell\u00e9kterm\u00e9k\u00e9nek egy vagy t\u00f6bb lerakatfel\u00fclete ( {0} ) meghat\u00e1roz egy adatt\u00e1rat a(z) {2} JNDI n\u00e9vvel, de az adatforr\u00e1s, az adatforr\u00e1s-er\u0151forr\u00e1s hivatkoz\u00e1s vagy a perzisztenciaegys\u00e9g-hivatkoz\u00e1s ezzel a JNDI n\u00e9vvel nem \u00e9rhet\u0151 el. az alkalmaz\u00e1s mell\u00e9kterm\u00e9k\u00e9hez, vagy a kapcsol\u00f3d\u00f3 er\u0151forr\u00e1sok egyike nincs megfelel\u0151en konfigur\u00e1lva. Egy alkalmaz\u00e1s\u00f6sszetev\u0151 haszn\u00e1lhatja az Er\u0151forr\u00e1s annot\u00e1ci\u00f3t az adatforr\u00e1s-er\u0151forr\u00e1s hivatkoz\u00e1s meghat\u00e1roz\u00e1s\u00e1hoz. P\u00e9ld\u00e1ul {3} , amely egy {4} attrib\u00fatummal rendelkez\u0151 dataSource szerver konfigur\u00e1ci\u00f3s elem\u00e9re mutat. Az alkalmaz\u00e1skomponensek a PersistenceUnit annot\u00e1ci\u00f3t haszn\u00e1lhatj\u00e1k a perzisztenciaegys\u00e9g-hivatkoz\u00e1s meghat\u00e1roz\u00e1\
+    s\u00e1hoz. P\u00e9ld\u00e1ul {5} , amely megk\u00f6veteli, hogy a persistence.xml f\u00e1jlnak rendelkezzen egy persistentence-unit elemmel egyez\u0151 n\u00e9vattrib\u00fatummal. P\u00e9ld\u00e1ul: {6} Egy alkalmaz\u00e1s\u00f6sszetev\u0151 haszn\u00e1lhatja a DataSourceDefinition annot\u00e1ci\u00f3t egy adatforr\u00e1s meghat\u00e1roz\u00e1s\u00e1hoz. Alternat\u00edv megold\u00e1sk\u00e9nt egy dataSource elem defini\u00e1lhat adatforr\u00e1st a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban. P\u00e9ld\u00e1ul {7}
+CWWKD1079.jndi.not.found.explanation=Ha egy jakartai adatt\u00e1r adatt\u00e1ra egy adatforr\u00e1s JNDI-nev\u00e9re, egy adatforr\u00e1s-er\u0151forr\u00e1s-hivatkoz\u00e1sra vagy egy perzisztenciaegys\u00e9g-hivatkoz\u00e1sra van be\u00e1ll\u00edtva, a JNDI-n\u00e9vnek el\u00e9rhet\u0151nek kell lennie a t\u00e1rol\u00f3t biztos\u00edt\u00f3 alkalmaz\u00e1sm\u0171term\u00e9k sz\u00e1m\u00e1ra, \u00e9s az adatoknak a forr\u00e1st vagy a perzisztencia egys\u00e9get megfelel\u0151en kell konfigur\u00e1lni.
+CWWKD1079.jndi.not.found.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az er\u0151forr\u00e1s megfelel\u0151en van konfigur\u00e1lva, \u00e9s gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a JNDI n\u00e9v hat\u00f3k\u00f6re el\u00e9rhet\u0151v\u00e9 teszi az er\u0151forr\u00e1st a lerakat biztos\u00edt\u00f3 alkalmaz\u00e1s mell\u00e9kterm\u00e9ke sz\u00e1m\u00e1ra.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: Egy vagy t\u00f6bb lerakatfel\u00fclet ( {0} ) a(z) {1} alkalmaz\u00e1s mell\u00e9kterm\u00e9k\u00e9b\u0151l hiba miatt nem \u00e9rhet\u0151 el. A hiba oka lehet egy konfigur\u00e1ci\u00f3s probl\u00e9ma, vagy el\u0151fordulhat, hogy a lerakathoz tartoz\u00f3 {2} adatt\u00e1r nem \u00e9rhet\u0151 el. A hiba a k\u00f6vetkez\u0151: {3} .
+CWWKD1080.datastore.general.err.explanation=Egy hiba megakad\u00e1lyozza a megadott lerakatok haszn\u00e1lat\u00e1t.
+CWWKD1080.datastore.general.err.useraction=Keresse meg a lerakat interf\u00e9szt, \u00e9s az adatt\u00e1rol\u00f3 konfigur\u00e1ci\u00f3ja v\u00e9gezze el a jav\u00edt\u00e1sokat, ha sz\u00fcks\u00e9ges.
+
+CWWKD1081.entity.general.err=CWWKD1081E: Egy hiba miatt a(z) {0} entit\u00e1s nem \u00e9rhet\u0151 el egy vagy t\u00f6bb lerakatfel\u00fcleten ( {1} ), amelyek a(z) {2} adatt\u00e1rat haszn\u00e1lj\u00e1k. A hiba: {3}.
+CWWKD1081.entity.general.err.explanation=Egy hiba megakad\u00e1lyozza a megadott entit\u00e1s haszn\u00e1lat\u00e1t.
+CWWKD1081.entity.general.err.useraction=Keresse meg az entit\u00e1st, \u00e9s v\u00e9gezzen jav\u00edt\u00e1sokat, ha sz\u00fcks\u00e9ges.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: A(z) {0} adatt\u00e1r perzisztencia egys\u00e9ge nem hat\u00e1roz meg egy vagy t\u00f6bb entit\u00e1soszt\u00e1lyt ( {1} ), amelyet egy vagy t\u00f6bb adatt\u00e1rat haszn\u00e1l\u00f3 lerakatfel\u00fclet ( {2} ) megk\u00f6vetel.
+CWWKD1082.entity.classes.missing.explanation=A t\u00e1rol\u00f3k entit\u00e1soszt\u00e1lyokat haszn\u00e1lnak, amelyeket meg kell hat\u00e1rozni a perzisztencia egys\u00e9gben.
+CWWKD1082.entity.classes.missing.useraction=Tartalmazza az \u00f6sszes entit\u00e1soszt\u00e1lyt a perzisztencia egys\u00e9gben.

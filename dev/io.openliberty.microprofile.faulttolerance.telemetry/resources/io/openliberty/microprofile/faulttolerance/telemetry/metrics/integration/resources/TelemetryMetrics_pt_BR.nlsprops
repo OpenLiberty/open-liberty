@@ -29,25 +29,25 @@
 
 ft.invocations.total.description=O n\u00famero de vezes em que o m\u00e9todo foi chamado
 
-ft.retry.calls.total.description=O n\u00famero de vezes que a l\u00f3gica de repeti\u00e7\u00e3o foi executada. Isso sempre ser\u00e1 uma vez por chamada de m\u00e9todo.
+ft.retry.calls.total.description=O n\u00famero de vezes que a l\u00f3gica de nova tentativa foi executada. Esse valor \u00e9 sempre igual a uma vez por chamada de m\u00e9todo.
 
 ft.retry.retries.total.description=O n\u00famero de vezes em que o m\u00e9todo foi tentado novamente
 
-ft.timeout.calls.total.description=O n\u00famero de vezes em que a l\u00f3gica de tempo limite foi executada Geralmente ser\u00e1 uma vez por chamada de m\u00e9todo, mas pode ser zero vezes se o disjuntor impedir a execu\u00e7\u00e3o ou mais de uma vez se o m\u00e9todo for tentado novamente.
+ft.timeout.calls.total.description=O n\u00famero de vezes que a l\u00f3gica de tempo limite foi executada. Esse valor \u00e9 normalmente igual a uma vez por chamada de m\u00e9todo. No entanto, pode ser zero se o disjuntor impedir a execu\u00e7\u00e3o ou mais de uma vez por chamada de m\u00e9todo se o m\u00e9todo for repetido.
 
 ft.timeout.executionDuration.description=Histograma de tempos de execu\u00e7\u00e3o para o m\u00e9todo
 
-ft.circuitbreaker.calls.total.description=O n\u00famero de vezes em que a l\u00f3gica do disjuntor foi executada Isso geralmente ser\u00e1 uma vez por chamada de m\u00e9todo, mas pode ser mais de uma vez se a chamada de m\u00e9todo for tentada novamente
+ft.circuitbreaker.calls.total.description=O n\u00famero de vezes que a l\u00f3gica do disjuntor foi executada. Esse valor normalmente \u00e9 igual a uma vez por chamada de m\u00e9todo, mas pode ser mais de uma vez se o m\u00e9todo for repetido.
 
-ft.circuitbreaker.state.total.description=Quantidade de tempo gasto pelo disjuntor em cada estado.
+ft.circuitbreaker.state.total.description=Quantidade de tempo que o disjuntor passou em cada estado.
 
-ft.circuitbreaker.opened.total.description=N\u00famero de vezes que o disjuntor mudou do estado fechado para o estado aberto.
+ft.circuitbreaker.opened.total.description=N\u00famero de vezes que o disjuntor passou do estado fechado para o estado aberto.
 
-ft.bulkhead.calls.total.description=O n\u00famero de vezes que a l\u00f3gica de anteparo foi executada Isso geralmente ser\u00e1 uma vez por chamada de m\u00e9todo, mas pode ser zero vezes se o disjuntor impediu a execu\u00e7\u00e3o ou mais de uma vez se a chamada de m\u00e9todo for tentada novamente.
+ft.bulkhead.calls.total.description=O n\u00famero de vezes que a l\u00f3gica do anteparo foi executada. Esse valor \u00e9 normalmente igual a uma vez por chamada de m\u00e9todo. No entanto, pode ser zero se o disjuntor impedir a execu\u00e7\u00e3o ou mais de uma vez por chamada de m\u00e9todo se o m\u00e9todo for repetido.
 
 ft.bulkhead.executionsRunning.description=N\u00famero de execu\u00e7\u00f5es em execu\u00e7\u00e3o no momento
 
-ft.bulkhead.executionsWaiting.description=N\u00famero de execu\u00e7\u00f5es atualmente aguardando na fila.
+ft.bulkhead.executionsWaiting.description=N\u00famero de execu\u00e7\u00f5es que est\u00e3o aguardando na fila no momento.
 
 ft.bulkhead.runningDuration.description=Histograma do tempo que as execu\u00e7\u00f5es de m\u00e9todo gastaram executando.
 

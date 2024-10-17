@@ -46,7 +46,19 @@ CWWKC1204.not.serializable=CWWKC1204E: Es kann kein serialisierbarer Kontextprox
 CWWKC1204.not.serializable.explanation=Threadkontexttypen anderer Anbieter sind nicht mit der Serialisierung kompatibel und k\u00f6nnen nicht f\u00fcr die Weitergabe f\u00fcr serialisierbare kontextabh\u00e4ngige Proxys konfiguriert werden.
 CWWKC1204.not.serializable.useraction=Aktualisieren Sie die Anwendung, um einen nicht serialisierbaren Kontextproxy anzufordern, oder stellen Sie sicher, dass keine Kontexttypen anderer Anbieter f\u00fcr die Weitergabe konfiguriert sind.
 
-CWWKC1217.no.virtual.threads=CWWKC1217I: Die Concurrency-Spezifikation verlangt, dass virtual=true bei der {0} {1}-Definition im {2}-Anwendungs-Artefakt ignoriert wird, da Java {3} keine virtuellen Threads unterst\u00fctzt.
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: Das {0} Anwendungsartefakt kann die {1} Qualifikatoren nicht auf dem {2} Annotation- oder {3} Deployment-Deskriptor-Element mit dem {4} Namen angeben, da die {5} Funktion nicht aktiviert ist.
+CWWKC1205.qualifiers.require.cdi.explanation=Das CDI-Feature ist eine Voraussetzung f\u00fcr die Angabe von Qualifiern in einer Ressourcendefinition.
+CWWKC1205.qualifiers.require.cdi.useraction=Aktivieren Sie die CDI-Funktion.
+
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: Das {0} Anwendungsartefakt spezifiziert eine {1} Annotation oder ein {2} Deployment-Deskriptor-Element, das den {3} Namen und die {4} Qualifizierungsliste hat. Die Qualifizierungsliste enth\u00e4lt einen {5}, der keine Anmerkung ist. Alle Elemente in der Liste m\u00fcssen Annotationsklassen sein, die mit @Qualifier und @Retention(RUNTIME) annotiert sind. Zum Beispiel, {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Jeder Wert in der Qualifier-Liste muss eine Annotationsklasse sein.
+CWWKC1206.qualifier.must.be.anno.useraction=Vergewissern Sie sich, dass alle Werte in der Qualifier-Liste Annotationsklassen sind.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Das {0} Anwendungsartefakt spezifiziert eine {1} Annotation oder ein {2} Deployment-Deskriptor-Element, das den {3} Namen und die {4} Qualifizierungsliste hat. Die Liste der Qualifier enth\u00e4lt die Anmerkung {5}, die nicht mit @jakartajakarta.inject.Qualifier und @Retention(RUNTIME) kommentiert ist. Ein Beispiel f\u00fcr einen g\u00fcltigen Qualifier ist: {6}
+CWWKC1207.lacks.qualifier.anno.explanation=Die Anmerkung Qualifier zeigt an, dass die Anmerkung ein Qualifier ist. Die Anmerkung Retention steuert die Verf\u00fcgbarkeit von Anmerkungen.
+CWWKC1207.lacks.qualifier.anno.useraction=F\u00fcgen Sie die Anmerkungen @Qualifier und @Retention(RUNTIME) zur Qualifier-Klasse hinzu.
+
+CWWKC1217.no.virtual.threads=CWWKC1217I: Die Concurrency-Spezifikation verlangt, dass virtual=true in der {1} Annotation des {0} Anwendungsartefakts oder dem {2} Deployment-Deskriptor-Element mit dem {3} Namen ignoriert wird, da Java {4} keine virtuellen Threads unterst\u00fctzt.
 CWWKC1217.no.virtual.threads.explanation=Virtuelle Threads sind nur in Java 21 und h\u00f6her verf\u00fcgbar.
 CWWKC1217.no.virtual.threads.useraction=Aktualisieren Sie auf Java 21 oder h\u00f6her, um die Verwendung von virtuellen Threads zu erm\u00f6glichen.
 
