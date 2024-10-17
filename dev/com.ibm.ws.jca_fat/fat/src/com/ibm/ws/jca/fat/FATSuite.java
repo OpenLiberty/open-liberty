@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jca.fat.app.ConnectionManagerMBeanTest;
 import com.ibm.ws.jca.fat.app.DependantApplicationTest;
 import com.ibm.ws.jca.fat.app.JCATest;
+import com.ibm.ws.jca.fat.regr.InboundSecurityCheckpointTest;
 import com.ibm.ws.jca.fat.regr.InboundSecurityTest;
 import com.ibm.ws.jca.fat.regr.InboundSecurityTestRapid;
 
@@ -38,7 +39,8 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JCATest.class,
                 ConnectionManagerMBeanTest.class,
                 InboundSecurityTest.class,
-                InboundSecurityTestRapid.class
+                InboundSecurityTestRapid.class,
+                InboundSecurityCheckpointTest.class
 })
 public class FATSuite {
 
