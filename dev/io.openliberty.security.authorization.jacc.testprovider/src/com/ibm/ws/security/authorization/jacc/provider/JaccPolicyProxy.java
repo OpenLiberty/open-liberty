@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.authorization.jacc.provider;
@@ -28,7 +25,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import jakarta.security.jacc.EJBMethodPermission;
 import jakarta.security.jacc.EJBRoleRefPermission;
 import jakarta.security.jacc.Policy;
-import jakarta.security.jacc.PolicyContext;
 import jakarta.security.jacc.PolicyContextException;
 import jakarta.security.jacc.WebResourcePermission;
 import jakarta.security.jacc.WebRoleRefPermission;
@@ -37,6 +33,7 @@ import jakarta.security.jacc.WebUserDataPermission;
 public class JaccPolicyProxy implements Policy {
     private JaccProvider jaccProvider = null;
     private static final TraceComponent tc = Tr.register(JaccPolicyProxy.class);
+    private final String contextID;
 
     static {
         /**
@@ -64,8 +61,63 @@ public class JaccPolicyProxy implements Policy {
         c.getName(); // Use c to prevent compile warnings
     }
 
-    // This is called during startup - only one thread is active
-    public JaccPolicyProxy() {
+    public JaccPolicyProxy(String contextId) {
+        this.contextID = contextId;
+    }
+
+    @Override
+    public boolean impliesByRole(Permission p, Subject subject) {
+        if (p instanceof WebResourcePermission) {
+            Set<Principal> principals = subject == null ? null : subject.getPrincipals();
+            if (principals != null && principals.size() > 0) {
+                WSPolicyConfigurationImpl pc = getPolicyConfiguration();
+                if (pc != null) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Checking the role list");
+                    return jaccProvider.checkRolePerm(pc, p, contextID);
+                }
+            }
+        } else if (p instanceof WebRoleRefPermission || p instanceof EJBRoleRefPermission || p instanceof EJBMethodPermission) {
+            WSPolicyConfigurationImpl pc = getPolicyConfiguration();
+            if (pc != null) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Checking the role list");
+                return jaccProvider.checkRolePerm(pc, p, contextID);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isExcluded(Permission p) {
+        if (p instanceof WebResourcePermission || p instanceof WebUserDataPermission || p instanceof EJBMethodPermission) {
+            WSPolicyConfigurationImpl pc = getPolicyConfiguration();
+            if (pc != null) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Checking the excluded list");
+
+                return jaccProvider.checkExcludedPerm(pc, p);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isUnchecked(Permission p) {
+        if (p instanceof WebResourcePermission || p instanceof WebUserDataPermission || p instanceof EJBMethodPermission) {
+            WSPolicyConfigurationImpl pc = getPolicyConfiguration();
+            if (pc != null) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Checking the unchecked list");
+                if (jaccProvider.checkUncheckedPerm(pc, p)) {
+                    return true;
+                }
+                if (p instanceof WebResourcePermission) {
+                    return jaccProvider.isEveryoneGranted(pc, p, contextID);
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -74,7 +126,6 @@ public class JaccPolicyProxy implements Policy {
 
     private WSPolicyConfigurationImpl getPolicyConfiguration() {
         //get contextID;
-        String contextID = PolicyContext.getContextID();
         WSPolicyConfigurationImpl pc = null;
         pc = AllPolicyConfigs.getInstance().getPolicyConfig(contextID);
 
@@ -143,7 +194,7 @@ public class JaccPolicyProxy implements Policy {
                     if (jaccProvider.checkUncheckedPerm(pc, p)) {
                         return true;
                     } else {
-                        return jaccProvider.isEveryoneGranted(pc, p, PolicyContext.getContextID());
+                        return jaccProvider.isEveryoneGranted(pc, p, contextID);
                     }
                 } else {
                     if (tc.isDebugEnabled())
@@ -153,7 +204,7 @@ public class JaccPolicyProxy implements Policy {
                     } else {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Checking the role list");
-                        return jaccProvider.checkRolePerm(pc, p, PolicyContext.getContextID());
+                        return jaccProvider.checkRolePerm(pc, p, contextID);
                     }
                 }
             } else if (p instanceof WebUserDataPermission) {
@@ -177,7 +228,7 @@ public class JaccPolicyProxy implements Policy {
                 }
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Checking the role list");
-                return jaccProvider.checkRolePerm(pc, p, PolicyContext.getContextID());
+                return jaccProvider.checkRolePerm(pc, p, contextID);
             } else if (p instanceof EJBMethodPermission) {
                 WSPolicyConfigurationImpl pc = getPolicyConfiguration();
                 if (pc == null) {
@@ -193,7 +244,7 @@ public class JaccPolicyProxy implements Policy {
                     if (jaccProvider.checkUncheckedPerm(pc, p)) {
                         return true;
                     } else {
-                        return jaccProvider.checkRolePerm(pc, p, PolicyContext.getContextID());
+                        return jaccProvider.checkRolePerm(pc, p, contextID);
                     }
                 }
             }

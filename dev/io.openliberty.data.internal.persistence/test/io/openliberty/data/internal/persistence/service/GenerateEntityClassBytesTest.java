@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
+import java.util.Set;
 
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
@@ -40,42 +41,66 @@ public class GenerateEntityClassBytesTest {
 
     @Test
     public void testPrimitive() throws Exception {
-        byte[] classBytes = RecordTransformer.generateEntityClassBytes(Primitive.class, Primitive.class.getName() + "Entity");
+        byte[] classBytes = RecordTransformer //
+                        .generateEntityClassBytes(Primitive.class,
+                                                  Primitive.class.getName() + "Entity",
+                                                  null,
+                                                  Set.of());
         assertClassBytes(classBytes);
         assertClassSignature(Primitive.class, classBytes);
     }
 
     @Test
     public void testBoxed() throws Exception {
-        byte[] classBytes = RecordTransformer.generateEntityClassBytes(Boxed.class, Boxed.class.getName() + "Entity");
+        byte[] classBytes = RecordTransformer //
+                        .generateEntityClassBytes(Boxed.class,
+                                                  Boxed.class.getName() + "Entity",
+                                                  null,
+                                                  Set.of());
         assertClassBytes(classBytes);
         assertClassSignature(Boxed.class, classBytes);
     }
 
     @Test
     public void testSpecial() throws Exception {
-        byte[] classBytes = RecordTransformer.generateEntityClassBytes(Special.class, Special.class.getName() + "Entity");
+        byte[] classBytes = RecordTransformer //
+                        .generateEntityClassBytes(Special.class,
+                                                  Special.class.getName() + "Entity",
+                                                  null,
+                                                  Set.of());
         assertClassBytes(classBytes);
         assertClassSignature(Special.class, classBytes);
     }
 
     @Test
     public void testEmpty() throws Exception {
-        byte[] classBytes = RecordTransformer.generateEntityClassBytes(Empty.class, Empty.class.getName() + "Entity");
+        byte[] classBytes = RecordTransformer //
+                        .generateEntityClassBytes(Empty.class,
+                                                  Empty.class.getName() + "Entity",
+                                                  null,
+                                                  Set.of());
         assertClassBytes(classBytes);
         assertClassSignature(Empty.class, classBytes);
     }
 
     @Test
     public void testNaming() throws Exception {
-        byte[] classBytes = RecordTransformer.generateEntityClassBytes(Naming.class, Naming.class.getName() + "Entity");
+        byte[] classBytes = RecordTransformer //
+                        .generateEntityClassBytes(Naming.class,
+                                                  Naming.class.getName() + "Entity",
+                                                  null,
+                                                  Set.of());
         assertClassBytes(classBytes);
         assertClassSignature(Naming.class, classBytes);
     }
 
     @Test
     public void testGeneric() throws Exception {
-        byte[] classBytes = RecordTransformer.generateEntityClassBytes(Generic.class, Generic.class.getName() + "Entity");
+        byte[] classBytes = RecordTransformer //
+                        .generateEntityClassBytes(Generic.class,
+                                                  Generic.class.getName() + "Entity",
+                                                  null,
+                                                  Set.of());
         assertClassBytes(classBytes);
         assertClassSignature(Generic.class, classBytes);
     }
@@ -83,7 +108,10 @@ public class GenerateEntityClassBytesTest {
     @Test
     public void testGenericInfer() throws Exception {
         try {
-            RecordTransformer.generateEntityClassBytes(GenericInfer.class, GenericInfer.class.getName() + "Entity");
+            RecordTransformer.generateEntityClassBytes(GenericInfer.class,
+                                                       GenericInfer.class.getName() + "Entity",
+                                                       null,
+                                                       Set.of());
             fail("Should not have created a entity class for: " + GenericInfer.class.getName());
         } catch (DataException e) {
             //expected
@@ -93,7 +121,10 @@ public class GenerateEntityClassBytesTest {
     @Test
     public void testAmbiguous() throws Exception {
         try {
-            RecordTransformer.generateEntityClassBytes(Ambiguous.class, Ambiguous.class.getName() + "Entity");
+            RecordTransformer.generateEntityClassBytes(Ambiguous.class,
+                                                       Ambiguous.class.getName() + "Entity",
+                                                       null,
+                                                       Set.of());
             fail("Should not have been able to create a well-formed entity class for: " + Ambiguous.class.getCanonicalName());
         } catch (DataException e) {
             //expected

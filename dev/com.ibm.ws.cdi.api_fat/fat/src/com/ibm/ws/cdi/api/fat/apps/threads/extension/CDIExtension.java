@@ -34,45 +34,80 @@ import javax.enterprise.inject.spi.ProcessManagedBean;
 public class CDIExtension implements Extension {
 
     private final Set<String> duplicatesFilter = new HashSet<String>();
+    private final ClassLoader threadContextClassLoaderInConstructor;
+
+    public CDIExtension() {
+        threadContextClassLoaderInConstructor = Thread.currentThread().getContextClassLoader();
+    }
 
     public void eventListener(@Observes BeforeBeanDiscovery event) {
-        checkForBeanManagerInUnmanagedThread("BeforeBeanDiscovery");
+        String eventName = "BeforeBeanDiscovery";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
     }
 
     public void eventListener(@Observes ProcessAnnotatedType event) {
-        checkForBeanManagerInUnmanagedThread("ProcessAnnotatedType");
+        String eventName = "ProcessAnnotatedType";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
     }
 
     public void eventListener(@Observes AfterTypeDiscovery event) {
-        checkForBeanManagerInUnmanagedThread("AfterTypeDiscovery");
+        String eventName = "AfterTypeDiscovery";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
     }
 
     public void eventListener(@Observes ProcessInjectionTarget event) {
-        checkForBeanManagerInUnmanagedThread("ProcessInjectionTarget");
+        String eventName = "ProcessInjectionTarget";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
     }
 
     public void eventListener(@Observes ProcessInjectionPoint event) {
-        checkForBeanManagerInUnmanagedThread("ProcessInjectionPoint");
+        String eventName = "ProcessInjectionPoint";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
     }
 
     public void eventListener(@Observes ProcessBeanAttributes event) {
-        checkForBeanManagerInUnmanagedThread("ProcessBeanAttributes");
+        String eventName = "ProcessBeanAttributes";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
     }
 
     public void eventListener(@Observes ProcessBean event) {
-        checkForBeanManagerInUnmanagedThread("ProcessBean");
+        String eventName = "ProcessBean";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
     }
 
     public void eventListener(@Observes ProcessManagedBean event) {
-        checkForBeanManagerInUnmanagedThread("ProcessManagedBean");
+        String eventName = "ProcessManagedBean";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
     }
 
     public void eventListener(@Observes AfterBeanDiscovery event) {
-        checkForBeanManagerInUnmanagedThread("AfterBeanDiscovery");
+        String eventName = "AfterBeanDiscovery";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
     }
 
     public void eventListener(@Observes AfterDeploymentValidation event) {
-        checkForBeanManagerInUnmanagedThread("AfterDeploymentValidation");
+        String eventName = "AfterDeploymentValidation";
+        checkForBeanManagerInUnmanagedThread(eventName);
+        checkTCCLMatches(eventName);
+    }
+
+    private void checkTCCLMatches(String eventName) {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        if (!tccl.equals(threadContextClassLoaderInConstructor)) {
+            System.out.println("Found the wrong classloader in " + eventName + " Expected: " + threadContextClassLoaderInConstructor
+                               + " found: " + tccl);
+        } else {
+            System.out.println("Found the correct classloader in " + eventName);
+        }
     }
 
     private void checkForBeanManagerInUnmanagedThread(final String eventName) {

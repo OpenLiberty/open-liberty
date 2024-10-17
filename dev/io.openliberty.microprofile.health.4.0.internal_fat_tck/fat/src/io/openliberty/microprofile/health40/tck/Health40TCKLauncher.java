@@ -68,11 +68,10 @@ public class Health40TCKLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        String bucketName = "io.openliberty.microprofile.health.4.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchHealth40Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Health";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build(server, Type.MICROPROFILE, "Health")
+                        .withDefaultSuiteFileName()
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
 }

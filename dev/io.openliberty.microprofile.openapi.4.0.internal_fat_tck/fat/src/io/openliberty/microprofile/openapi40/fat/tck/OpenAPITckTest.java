@@ -64,11 +64,10 @@ public class OpenAPITckTest {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        String bucketName = "io.openliberty.microprofile.openapi.4.0.internal_fat_tck";
-        String testName = this.getClass() + ":testOpenAPI40Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Open API";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build(server, Type.MICROPROFILE, "Open API")
+                 .withDefaultSuiteFileName()
+                 .withAdditionalMvnProps(additionalProps)
+                 .runTCK();
     }
 
 }

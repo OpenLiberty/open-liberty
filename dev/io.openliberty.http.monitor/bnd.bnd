@@ -62,4 +62,5 @@ DynamicImport-Package: \
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.container.service,\
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.websphere.javaee.jsf.2.2

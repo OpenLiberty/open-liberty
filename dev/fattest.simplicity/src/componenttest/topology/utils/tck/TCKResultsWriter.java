@@ -28,8 +28,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
-import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-
 public class TCKResultsWriter {
 
     private static final String NEW_LINE = "\n";
@@ -41,15 +39,6 @@ public class TCKResultsWriter {
      * @param resultInfo TCK Results metadata
      */
     public static void preparePublicationFile(TCKResultsInfo resultInfo) {
-        String javaMajorVersion = resultInfo.getJavaMajorVersion();
-        String javaVersion = resultInfo.getJavaVersion();
-        String openLibertyVersion = resultInfo.getOpenLibertyVersion();
-        Type type = resultInfo.getType();
-        String osName = resultInfo.getOsName();
-        String osVersion = resultInfo.getOsVersion();
-        String specName = resultInfo.getSpecName();
-        String specVersion = resultInfo.getSpecVersion();
-        String repeat = resultInfo.getRepeat();
 
         SAXParserFactory factory = null;
         SAXParser saxParser = null;
@@ -62,54 +51,17 @@ public class TCKResultsWriter {
             throw new RuntimeException(e);
         }
 
-        String MPSpecLower = (specName.toLowerCase()).replace(" ", "-");
-
-        String fullSpecName;
-        String specURL = null;
-        String tckURL = null;
-        String tckSHA1 = resultInfo.getSHA1();
-        String tckSHA256 = resultInfo.getSHA256();
-        if (type.equals(Type.MICROPROFILE)) {
-            fullSpecName = "MicroProfile " + specName + " " + specVersion;
-            specURL = "https://github.com/eclipse/microprofile-" + MPSpecLower + "/tree/" + specVersion;
-            tckURL = "https://repo1.maven.org/maven2/org/eclipse/microprofile/" + MPSpecLower + "/microprofile-" + MPSpecLower + "-tck/" + specVersion + "/microprofile-"
-                     + MPSpecLower + "-tck-" + specVersion + ".jar";
-        } else {
-            fullSpecName = "Jakarta " + specName + " " + specVersion;
-            specURL = "https://jakarta.ee/specifications/" + specName + "/" + specVersion;
-            tckURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".zip"; //just a placeholder, needs to be manually updated
-        }
-        // Replace the "_" with "-" in the directory name to keep consistency
-        String filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + "-TCKResults.adoc").replace("_", "-");
-
-        String redeableRepeatName = "";
-        //Adoc file for certification is added to results/REPEAT_ID/
-        if (repeat.contains("FeatureReplacementAction")) {
-            redeableRepeatName = repeat.replaceAll("FeatureReplacementAction.*REMOVE", "remove")
-                            .replaceAll("\\[", "")
-                            .replaceAll("\\]", "")
-                            .replaceAll("ADD", "add")
-                            .replaceAll("  ", " ")
-                            .replaceAll(",","-")
-                            .replaceAll(" ", "_");
-        } else {
-            redeableRepeatName = repeat;
-        }
-        Path outputDirectory = Paths.get("results/" + "TCK_Results_Certifications" + redeableRepeatName);
-        Path outputPath = Paths.get("results/" + "TCK_Results_Certifications" + redeableRepeatName, filename);
+        Path outputDirectory = Paths.get("results/" + "TCK_Results_Certifications" + resultInfo.getReadableRepeatName());
+        Path outputPath = Paths.get("results/" + "TCK_Results_Certifications" + resultInfo.getReadableRepeatName(), resultInfo.getFilename());
 
         File outputFile = outputPath.toFile();
         File outputDir = outputDirectory.toFile();
 
-        if(!outputDir.exists()){
+        if (!outputDir.exists()) {
             outputDir.mkdir();
         }
 
-        String timestamp = Instant.now()
-                        .truncatedTo(ChronoUnit.SECONDS)
-                        .toString();
-        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, timestamp, tckURL, tckSHA1,
-                                           tckSHA256);
+        String adocContent = getADocHeader(resultInfo);
 
         try (FileWriter output = new FileWriter(outputFile)) {
             Path junitPath = Paths.get("results", "junit");
@@ -131,9 +83,9 @@ public class TCKResultsWriter {
                  * This will never be null because when calling RepeatTestFilter.getRepeatActionsAsString()
                  * if REPEAT_ACTION_STACK is empty it will return an empty string instead ("")
                  */
-                if (result.toString().contains(repeat)) {
+                if (result.toString().contains(resultInfo.getRepeat())) {
                     // Removing repeat ID from the test results
-                    String newResult = result.toString().replace(repeat, "");
+                    String newResult = result.toString().replace(resultInfo.getRepeat(), "");
                     output.write(newResult);
                 }
             }
@@ -149,7 +101,7 @@ public class TCKResultsWriter {
         // Note that this copying *only* occurs in CI Orchestrator environments as the code wrapping FAT execution is responsible for performing the upload to LibFS.
         // The use case here is to make .adoc files available in the build directory without having to extract them from the FAT output zip every time.
         try {
-            Path extrasPath = Paths.get("extras/" + "TCK_Results_Certifications" + redeableRepeatName, filename);
+            Path extrasPath = Paths.get("extras/" + "TCK_Results_Certifications" + resultInfo.getReadableRepeatName(), resultInfo.getFilename());
             Files.createDirectories(extrasPath.getParent());
             Files.copy(outputPath, extrasPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
@@ -157,8 +109,11 @@ public class TCKResultsWriter {
         }
     }
 
-    private static String getADocHeader(String filename, String fullSpecName, String specURL, String openLibertyVersion, String javaMajorVersion, String javaVersion,
-                                        String osName, String osVersion, String timestamp, String tckURL, String tckSHA1, String tckSHA256) {
+    private static String getADocHeader(TCKResultsInfo resultInfo) {
+        String timestamp = Instant.now()
+                        .truncatedTo(ChronoUnit.SECONDS)
+                        .toString();
+
         StringBuilder builder = new StringBuilder();
 
         builder.append(":page-layout: certification ").append(NEW_LINE);
@@ -166,52 +121,52 @@ public class TCKResultsWriter {
         builder.append(NEW_LINE);
 
         builder.append("As required by the https://www.eclipse.org/legal/tck.php[Eclipse Foundation Technology Compatibility Kit License], following is a summary of the TCK results for releases of ");
-        builder.append(fullSpecName).append(NEW_LINE);
+        builder.append(resultInfo.getFullSpecName()).append(NEW_LINE);
         builder.append(NEW_LINE);
 
-        builder.append("== Open Liberty ").append(openLibertyVersion).append(" - ").append(fullSpecName).append(SPACE);
-        builder.append("Certification Summary (Java ").append(javaMajorVersion).append(")").append(NEW_LINE);
+        builder.append("== Open Liberty ").append(resultInfo.getOpenLibertyVersion()).append(" - ").append(resultInfo.getFullSpecName()).append(SPACE);
+        builder.append("Certification Summary (Java ").append(resultInfo.getJavaMajorVersion()).append(")").append(NEW_LINE);
         builder.append(NEW_LINE);
 
         builder.append("* Product Name, Version and download URL (if applicable):").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
         builder.append("https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/release/"); //this URL isn't right for betas
-        builder.append(openLibertyVersion).append("/openliberty-").append(openLibertyVersion).append(".zip");
-        builder.append("[Open Liberty ").append(openLibertyVersion).append("]").append(NEW_LINE);
+        builder.append(resultInfo.getOpenLibertyVersion()).append("/openliberty-").append(resultInfo.getOpenLibertyVersion()).append(".zip");
+        builder.append("[Open Liberty ").append(resultInfo.getOpenLibertyVersion()).append("]").append(NEW_LINE);
         builder.append(NEW_LINE);
 
         builder.append("* Specification Name, Version and download URL:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
-        builder.append(specURL);
-        builder.append("[").append(fullSpecName).append(" Specification]").append(NEW_LINE);
+        builder.append(resultInfo.getSpecURL());
+        builder.append("[").append(resultInfo.getFullSpecName()).append(" Specification]").append(NEW_LINE);
         builder.append(NEW_LINE);
 
         builder.append("* (Optional) TCK Version, digital fingerprint and download URL:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
-        builder.append(tckURL);
-        builder.append("[").append(fullSpecName).append(" TCK]").append(NEW_LINE);
+        builder.append(resultInfo.getTCKURL());
+        builder.append("[").append(resultInfo.getFullSpecName()).append(" TCK]").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
-        builder.append("SHA-1: `").append(tckSHA1).append("`").append(NEW_LINE);
+        builder.append("SHA-1: `").append(resultInfo.getSHA1()).append("`").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
-        builder.append("SHA-256: `").append(tckSHA256).append("`").append(NEW_LINE);
+        builder.append("SHA-256: `").append(resultInfo.getSHA256()).append("`").append(NEW_LINE);
         builder.append(NEW_LINE);
 
         builder.append("* Public URL of TCK Results Summary:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
-        builder.append("xref:").append(filename);
+        builder.append("xref:").append(resultInfo.getFilename());
         builder.append("[TCK results summary]").append(NEW_LINE).append(NEW_LINE);
         builder.append(NEW_LINE);
 
         builder.append("* Java runtime used to run the implementation:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
-        builder.append("Java ").append(javaMajorVersion).append(": ").append(javaVersion).append(NEW_LINE);
+        builder.append("Java ").append(resultInfo.getJavaMajorVersion()).append(": ").append(resultInfo.getJavaVersion()).append(NEW_LINE);
         builder.append(NEW_LINE);
 
         builder.append("* Summary of the information for the certification environment, operating system, cloud, ...:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
-        builder.append(osName);
+        builder.append(resultInfo.getOsName());
         builder.append(": ");
-        builder.append(osVersion).append(NEW_LINE);
+        builder.append(resultInfo.getOsVersion()).append(NEW_LINE);
         builder.append(NEW_LINE);
 
         builder.append("Report generated at: " + timestamp);

@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.Server;
@@ -36,9 +37,6 @@ import suite.FATSuite;
 
 @RunWith(FATRunner.class)
 public class DBRerouteTest extends SimpleTest {
-    private static final String POSTGRES_DB = "testdb";
-    private static final String POSTGRES_USER = "postgresUser";
-    private static final String POSTGRES_PASS = "superSecret";
 
     public static JdbcDatabaseContainer<?> testContainer;
 
@@ -65,10 +63,10 @@ public class DBRerouteTest extends SimpleTest {
 	        }
 	    };
 
-        testContainer = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
-                .withDatabaseName(POSTGRES_DB)
-                .withUsername(POSTGRES_USER)
-                .withPassword(POSTGRES_PASS)
+        testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_IMAGE)
+                .withDatabaseName(TxTestContainerSuite.POSTGRES_DB)
+                .withUsername(TxTestContainerSuite.POSTGRES_USER)
+                .withPassword(TxTestContainerSuite.POSTGRES_PASS)
                 .withSSL()
                 .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
         testContainer.setStartupAttempts(2);

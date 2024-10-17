@@ -1094,7 +1094,7 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Swaps in a different server.xml file from the server directory.
      *
-     * @param  fileName
+     * @param  fileName  the name of a server.xml file found in the wlp/usr/[server]/ directory
      * @throws Exception
      */
     public void swapInServerXMLFromPublish(String fileName) throws Exception {

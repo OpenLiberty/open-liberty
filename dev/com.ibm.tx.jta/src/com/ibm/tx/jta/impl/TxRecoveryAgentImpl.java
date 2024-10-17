@@ -37,6 +37,7 @@ import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 import com.ibm.tx.jta.util.TranLogConfiguration;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -339,6 +340,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
                         throw new RecoveryFailedException("ConfigurationProvider is null");
                     }
+
                     if (_isPeerRecoverySupported) {
                         _leaseLog = rlm.getLeaseLog(localRecoveryIdentity,
                                                     _recoveryGroup,
@@ -365,47 +367,42 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     _recoveryManager = fsc.getRecoveryManager();
                 }
 
-                // If we have a lease log then we need to set it into the recovery manager, so that it too will be processed.
-                if (_leaseLog != null) {
-                    // If this is the local server and we're operating with lightweight peer recovery, we need to
-                    // acquire a lock against the lease log.
-                    if (localRecovery) {
-                        if (!_leaseLog.lockLocalLease(localRecoveryIdentity)) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Cannot lock server's own logs");
-                            Object[] errorObject = new Object[] { localRecoveryIdentity };
-                            RecoveryFailedException rex = new RecoveryFailedException("Cannot lock server's own logs");
-                            Tr.audit(tc, "CWRLS0008_RECOVERY_LOG_FAILED",
-                                     errorObject);
-                            Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", rex);
+                if (localRecovery && _isPeerRecoverySupported) {
+                    if (_leaseLog == null) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Cannot lock server's own logs");
+                        Object[] errorObject = new Object[] { localRecoveryIdentity };
+                        RecoveryFailedException rex = new RecoveryFailedException("Cannot lock server's own logs");
+                        Tr.audit(tc, "CWRLS0008_RECOVERY_LOG_FAILED",
+                                 errorObject);
+                        Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", rex);
 
-                            // Drive recovery failure processing
-                            _recoveryManager.recoveryFailed(rex);
+                        // Drive recovery failure processing
+                        _recoveryManager.recoveryFailed(rex);
 
-                            // Check the system property but by default we want the server to be shutdown if we, the server
-                            // that owns the logs is not able to recover them. The System Property supports the tWAS style
-                            // of processing.
-                            if (!doNotShutdownOnRecoveryFailure()) {
-                                cp = ConfigurationProviderManager.getConfigurationProvider();
-                                if (cp == null) {
-                                    if (tc.isEntryEnabled())
-                                        Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
-                                    throw new RecoveryFailedException("ConfigurationProvider is null");
-                                }
-                                cp.shutDownFramework();
+                        // Check the system property but by default we want the server to be shutdown if we, the server
+                        // that owns the logs is not able to recover them. The System Property supports the tWAS style
+                        // of processing.
+                        if (!doNotShutdownOnRecoveryFailure()) {
+                            cp = ConfigurationProviderManager.getConfigurationProvider();
+                            if (cp == null) {
+                                if (tc.isEntryEnabled())
+                                    Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                                throw new RecoveryFailedException("ConfigurationProvider is null");
                             }
-
-                            if (tc.isEntryEnabled())
-                                Tr.exit(tc, "initiateRecovery", rex);
-
-                            // Output a message as to why we are terminating the server as in
-                            Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex);
-                            throw rex;
+                            cp.shutDownFramework();
                         }
-                    }
 
-                    _recoveryManager.configurePeerRecovery(_leaseLog, _recoveryGroup, localRecoveryIdentity);
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "initiateRecovery", rex);
+
+                        // Output a message as to why we are terminating the server as in
+                        Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex);
+                        throw rex;
+                    }
                 }
+
+                _recoveryManager.configurePeerRecovery(_leaseLog, _recoveryGroup, localRecoveryIdentity);
             }
 
             synchronized (this) {
@@ -468,6 +465,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             if (fsc != null)
                 fsc.getRecoveryManager().waitForReplayCompletion(localRecovery);
 
+            // Replay has completed but recovery processing may have failed
+            boolean recoveryFailed = false;
+            if (fsc != null)
+                recoveryFailed = fsc.getRecoveryManager().recoveryFailed();
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Replay completed but did recovery fail -  " + recoveryFailed);
+
             // Peer recovery may be interrupted by shutdown of the home server in which case we stop recovery processing.
             if (!localRecovery) {
                 if (!_serverStopping) {
@@ -492,19 +497,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 }
 
                 if (_leaseLog != null) {
-                    // Release the lock on the lease log. This could be the local server or a peer.
-                    try {
-                        if (localRecovery) {
-                            _leaseLog.releaseLocalLease(recoveredServerIdentity);
-                        } else {
-                            _leaseLog.releasePeerLease(recoveredServerIdentity);
-                        }
-                    } catch (Exception e) {
-                        // Note the error but continue
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Caught exception on lock release - " + e);
-                    }
-
                     // If Recovery Failed, then by default, if this is the home server, we shall bring down the Liberty Server
                     RecoveryManager rm; // RecoverManager might be removed on another thread
                     if (fsc != null && (rm = fsc.getRecoveryManager()) != null) {
@@ -552,6 +544,18 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                         _recoveryDirector,
                                                         cp.getLeaseLength() * cp.getLeaseRenewalThreshold() / 100,
                                                         cp.getLeaseCheckInterval());
+                    }
+                } else {
+                    // Not a peer recovery environment
+                    if (fsc != null && fsc.getRecoveryManager().recoveryFailed()) {
+                        RecoveryFailedException rex = new RecoveryFailedException("Server recovery failed");
+
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "initiateRecovery", rex);
+
+                        // Output a message as to why we are terminating the server as in
+                        Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex.toString());
+                        throw rex;
                     }
                 }
             }
@@ -776,13 +780,42 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     @Override
     public boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "claimPeerLeaseForRecovery", new java.lang.Object[] { recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, this });
+            Tr.entry(tc, "claimPeerLeaseForRecovery", recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, this);
 
-        boolean peerClaimed = _leaseLog.claimPeerLeaseForRecovery(recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo);
+        final boolean peerClaimed = _leaseLog.claimPeerLeaseForRecovery(recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo);
+
+        // Release lock if the claim failed
+        if (!peerClaimed) {
+            try {
+                _leaseLog.releasePeerLease(recoveryIdentityToRecover);
+            } catch (Exception e) {
+                RecoveryFailedException rfex = new RecoveryFailedException(e);
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "claimPeerLeaseForRecovery", rfex);
+                throw rfex;
+            }
+        }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "claimPeerLeaseForRecovery", peerClaimed);
         return peerClaimed;
+    }
+
+    @Override
+    public void releasePeerLeaseForRecovery(String recoveryIdentityToRecover) throws Exception {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "releasePeerLeaseForRecovery", recoveryIdentityToRecover, this);
+
+        try {
+            _leaseLog.releasePeerLease(recoveryIdentityToRecover);
+        } catch (Exception e) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "releasePeerLeaseForRecovery", e);
+            throw e;
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "releasePeerLeaseForRecovery");
     }
 
     /**
@@ -1030,17 +1063,25 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#enableHADBPeerLocking()
+     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#isLogLockingEnabled()
      */
     @Override
-    public boolean isDBTXLogPeerLocking() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "isDBTXLogPeerLocking");
+    @Trivial
+    public boolean isLogLockingEnabled() {
         ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-        boolean enableLocking = cp.enableHADBPeerLocking();
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "isDBTXLogPeerLocking", enableLocking);
+        boolean enableLocking = cp.enableLogLocking();
         return enableLocking;
+    }
+
+    @Override
+    public boolean isSQLRecoveryLog() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "isSQLRecoveryLog");
+        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        boolean isSQLLog = cp.isSQLRecoveryLog();
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "isSQLRecoveryLog", isSQLLog);
+        return isSQLLog;
     }
 
     /**

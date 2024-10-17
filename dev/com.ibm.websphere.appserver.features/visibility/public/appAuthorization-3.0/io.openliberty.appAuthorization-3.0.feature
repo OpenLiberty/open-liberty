@@ -22,4 +22,4 @@ edition=full
 -jars=io.openliberty.jacc.3.0; location:="lib/"
 #-files=dev/api/ibm/javadoc/io.openliberty.jacc.3.0_1.0-javadoc.zip
 WLP-Platform: jakartaee-11.0
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true

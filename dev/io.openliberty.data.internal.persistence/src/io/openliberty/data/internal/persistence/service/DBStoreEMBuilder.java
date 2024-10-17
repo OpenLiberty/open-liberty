@@ -365,10 +365,19 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 String tableName = c.getSimpleName();
 
                 if (c.isRecord()) {
-                    String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX; // an entity class is generated for the record
-                    byte[] generatedEntityBytes = RecordTransformer.generateEntityClassBytes(c, entityClassName);
-                    generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
-                    Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(getRepositoryClassLoader(), entityClassName, generatedEntityBytes);
+                    // an entity class is generated for the record
+                    String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX;
+                    byte[] generatedEntityBytes = RecordTransformer //
+                                    .generateEntityClassBytes(c,
+                                                              entityClassName,
+                                                              jeeName,
+                                                              repositoryInterfaces);
+                    String name = entityClassName.replace('.', '/') + ".class";
+                    generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, name));
+                    Class<?> generatedEntity = classDefiner //
+                                    .findLoadedOrDefineClass(getRepositoryClassLoader(),
+                                                             entityClassName,
+                                                             generatedEntityBytes);
                     generatedToRecordClass.put(generatedEntity, c);
                     c = generatedEntity;
                 }

@@ -92,7 +92,7 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
     }
 
     @Test
-    public void jsp_noWebXmlJSP() throws Exception {
+    public void cjsp_jsp_noWebXmlJSP() throws Exception {
 
         assertTrue(server.isStarted());
 
@@ -110,7 +110,7 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
     }
 
     @Test
-    public void jsp_configredWebXmlJSP() throws Exception {
+    public void cjsp_jsp_configredWebXmlJSP() throws Exception {
 
         assertTrue(server.isStarted());
 
@@ -126,7 +126,7 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
     }
 
     @Test
-    public void jsp_defaultHTML() throws Exception {
+    public void cjsp_jsp_defaultHTML() throws Exception {
 
         assertTrue(server.isStarted());
 

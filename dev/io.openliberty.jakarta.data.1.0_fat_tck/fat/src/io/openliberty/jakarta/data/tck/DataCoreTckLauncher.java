@@ -83,12 +83,12 @@ public class DataCoreTckLauncher {
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
-        String testName = this.getClass() + ":launchDataTckCorePersistence";
-        Type type = Type.JAKARTA;
-        String specName = "Data (Core - Persistence)";
-        String relativeTckRunner = "publish/tckRunner/platform/";
-        TCKRunner.runTCK(persistenceServer, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
+        TCKRunner.build(persistenceServer, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("core", "persistence")
+                        .withRelativeTCKRunner("publish/tckRunner/platform/")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
     /**
@@ -122,11 +122,11 @@ public class DataCoreTckLauncher {
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
-        String testName = this.getClass() + ":launchDataTckCoreNoSQL";
-        Type type = Type.JAKARTA;
-        String specName = "Data (Core - NoSQL)";
-        String relativeTckRunner = "publish/tckRunner/platform/";
-        TCKRunner.runTCK(noSQLServer, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
+        TCKRunner.build(noSQLServer, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("core", "NoSQL")
+                        .withRelativeTCKRunner("publish/tckRunner/platform/")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 }

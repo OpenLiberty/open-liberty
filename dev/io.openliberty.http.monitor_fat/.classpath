@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/JsfApp/src"/>
 	<classpathentry kind="src" path="test-applications/MBeanGetter/src"/>
 	<classpathentry kind="src" path="test-applications/WildCardServletApp/src"/>
 	<classpathentry kind="src" path="test-applications/ServletApp/src"/>

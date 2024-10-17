@@ -3,7 +3,6 @@
     <featureManager>
         <feature>servlet-6.1</feature>
     	<feature>mpTelemetry-2.0</feature>
-    	<feature>monitor-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />
@@ -22,9 +21,4 @@
 
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
-    
-    <mpMetrics authentication="false"/>
-
-
-
 </server>

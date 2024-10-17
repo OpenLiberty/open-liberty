@@ -24,7 +24,6 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -147,7 +146,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         }
 
         // wait for 1st server to have gone away
-        if (s1.waitForStringInLog("Dump State:") == null) {
+        if (s1.waitForStringInLog(XAResourceImpl.DUMP_STATE) == null) {
             testFailed = true;
             testFailureString = "First server did not crash";
         }
@@ -254,7 +253,6 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", "java.lang.RuntimeException" })
     public void testLocalServerDoesAcquireLogs() throws Exception {
         int test = 3;
 

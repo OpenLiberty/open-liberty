@@ -49,16 +49,14 @@ public class GraphQLTckPackageTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-        	server.stopServer("CWNEN0047W", "CWNEN0049W", "CWWKZ0014W");
+            server.stopServer("CWNEN0047W", "CWNEN0049W", "CWWKZ0014W");
         }
     }
 
     @Test
     public void testGraphQL20Tck() throws Exception {
-        String bucketName = "io.openliberty.microprofile.graphql.2.0.internal_fat_tck";
-        String testName = this.getClass() + ":testGraphQL20Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "GraphQL";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build(server, Type.MICROPROFILE, "GraphQL")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 }

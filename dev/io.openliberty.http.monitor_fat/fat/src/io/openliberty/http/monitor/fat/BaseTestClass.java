@@ -211,18 +211,45 @@ public abstract class BaseTestClass {
         return containerCollectorMetrics;
     }
 
-    /*
-     * MP Metrics
+    /**
+     *
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @return
      */
     protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod) {
         return validateMpMetricsHttp(vendorMetricsOutput, route, responseStatus, requestMethod, null);
     }
 
+    /**
+     *
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @param errorType           Specified errorType to check in regex matching.
+     * @return
+     */
     protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType) {
-        return validateMpMetricsHttp(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, null);
+        return validateMpMetricsHttp(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, null, null);
     }
 
-    protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String count) {
+    /**
+     *
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @param errorType           Specified errorType to check in regex matching.
+     * @param expectedCount       Specify the regex to match with or use ">number" (i.e., ">5") to check if value is greater than number. If null will default to checking greater
+     *                                than zero
+     * @param expectedSum         Specify the regex to match for the sum value of the http metric
+     * @return
+     */
+    protected boolean validateMpMetricsHttp(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String expectedCount,
+                                            String expectedSum) {
         if (errorType == null) {
             errorType = "";
         }
@@ -241,23 +268,52 @@ public abstract class BaseTestClass {
                                 + "\",http_route=\"" + route
                                 + "\",mp_scope=\"vendor\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
 
-        return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, countMatchString) &&
-               validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, sumMatchString);
+        return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, expectedCount, countMatchString) &&
+               validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, expectedSum, sumMatchString);
     }
 
-    /*
-     * MP Telemetry
+    /**
+     *
+     * @param appName             Specified app name (or service name)
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @return
      */
     protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod) {
         return validateMpTelemetryHttp(appName, vendorMetricsOutput, route, responseStatus, requestMethod, null);
     }
 
+    /**
+     *
+     * @param appName             Specified app name (or service name)
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @param errorType           Specified errorType to check in regex matching.
+     * @return
+     */
     protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType) {
-        return validateMpTelemetryHttp(appName, vendorMetricsOutput, route, responseStatus, requestMethod, errorType, null);
+        return validateMpTelemetryHttp(appName, vendorMetricsOutput, route, responseStatus, requestMethod, errorType, null, null);
     }
 
+    /**
+     *
+     * @param appName             Specified app name (or service name)
+     * @param vendorMetricsOutput Provide /metrics output to use for regex matching
+     * @param route               Specified http route to check in regex matching.
+     * @param responseStatus      Specified response status to check in regex matching.
+     * @param requestMethod       Specified requestMethod to check in regex matching.
+     * @param errorType           Specified errorType to check in regex matching.
+     * @param expectedCount       Specify the regex to match with or use ">number" (i.e., ">5") to check if value is greater than number. If null will default to checking greater
+     *                                than zero
+     * @param expectedSum         Specify the regex to match for the sum value of the http metric
+     * @return
+     */
     protected boolean validateMpTelemetryHttp(String appName, String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType,
-                                              String count) {
+                                              String expectedCount, String expectedSum) {
         String countMatchString = null;
         String sumMatchString = null;
 
@@ -300,27 +356,36 @@ public abstract class BaseTestClass {
                              + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
         }
 
-        return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, countMatchString)
-               && validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, count, sumMatchString);
+        return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, expectedCount, countMatchString)
+               && validatePrometheusHTTPMetricSum(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, expectedSum, sumMatchString);
     }
 
-    /*
-     * For all
-     */
-    private boolean validatePrometheusHTTPMetricCount(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String count,
+    private boolean validatePrometheusHTTPMetricCount(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String expectedCount,
                                                       String matchString) {
-        boolean isDefaultCountCheck = false;
+        boolean isGreaterThanCountCheck = false;
+        int greaterThanVal = 0;
 
         /*
          * Account for both MP Metrics (double)
          * and OTel Collector output (integer)
          */
-        if (count == null) {
-            count = "[0-9]+[.]?[0-9]*";
-            isDefaultCountCheck = true;
+        if (expectedCount == null || expectedCount.startsWith(">")) {
+
+            /*
+             * If the greater than check was specified, verify it is legitimate
+             * otherwise, we'll just check it's greater than 0 (i.e., default).
+             */
+            if (expectedCount != null && expectedCount.startsWith(">") && expectedCount.matches(">[0-9]+")) {
+                greaterThanVal = Integer.valueOf(expectedCount.split(">")[1]);
+            }
+
+            //Whether null or checking value is greater than 'x', we'll use same regex.
+            expectedCount = "[0-9]+[.]?[0-9]*";
+            isGreaterThanCountCheck = true;
+
         }
 
-        matchString += count;
+        matchString += expectedCount;
 
         Log.info(c, "validatePrometheusHTTPMetricCount", "Trying to match: " + matchString);
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
@@ -340,12 +405,12 @@ public abstract class BaseTestClass {
                      * If no custom count regex was supplied.
                      * We will check if value is greater than 0
                      */
-                    if (isDefaultCountCheck) {
+                    if (isGreaterThanCountCheck) {
                         String[] split = line.split(" "); // should be only one space at the very end.
                         assertEquals("Error. Expected 2 indexes from split " + Arrays.toString(split), split.length, 2);
 
                         double countVal = Double.parseDouble(split[1].trim());
-                        assertTrue("Expected count value to be greater than 0", countVal > 0);
+                        assertTrue(String.format("Expected count value to be greater than [%d]", greaterThanVal), countVal > greaterThanVal);
                     }
 
                     return true;
@@ -356,7 +421,7 @@ public abstract class BaseTestClass {
         return false;
     }
 
-    private boolean validatePrometheusHTTPMetricSum(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String count,
+    private boolean validatePrometheusHTTPMetricSum(String vendorMetricsOutput, String route, String responseStatus, String requestMethod, String errorType, String expectedSum,
                                                     String matchString) {
 
         boolean isDefaultCountCheck = false;
@@ -365,12 +430,12 @@ public abstract class BaseTestClass {
          * For Open Telemetry, a zero would be 0.
          * The existence of a period indicates that something has been recorded
          */
-        if (count == null) {
-            count = "[0-9]+\\.[0-9]*[eE]?-?[0-9]+";
+        if (expectedSum == null) {
+            expectedSum = "[0-9]+\\.[0-9]*[eE]?-?[0-9]+";
             isDefaultCountCheck = true;
         }
 
-        matchString += count;
+        matchString += expectedSum;
 
         Log.info(c, "validatePrometheusHTTPMetricSum", "Trying to match: " + matchString);
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
@@ -394,8 +459,8 @@ public abstract class BaseTestClass {
                         String[] split = line.split(" "); // should be only one space at the very end.
                         assertEquals("Error. Expected 2 indexes from split " + Arrays.toString(split), split.length, 2);
 
-                        double countVal = Double.parseDouble(split[1].trim());
-                        assertTrue("Expected sum value to be greater than 0", countVal > 0);
+                        double sumVal = Double.parseDouble(split[1].trim());
+                        assertTrue("Expected sum value to be greater than 0", sumVal > 0);
                     }
 
                     return true;

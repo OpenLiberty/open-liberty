@@ -32,8 +32,8 @@ com.google.errorprone:error_prone_annotations:2.4.0
 com.google.guava:guava:32.0.1-android
 com.google.inject:guice:2.0
 com.google.j2objc:j2objc-annotations:1.1
-com.google.protobuf:protobuf-java-util:3.23.4
-com.google.protobuf:protobuf-java:3.23.4
+com.google.protobuf:protobuf-java-util:3.25.5
+com.google.protobuf:protobuf-java:3.25.5
 com.googlecode.json-simple:json-simple:1.1.1
 com.graphql-java:graphql-java:19.5
 com.graphql-java:java-dataloader:3.2.0
@@ -861,11 +861,11 @@ org.osgi:org.osgi.util.function:1.1.0
 org.osgi:org.osgi.util.promise:1.1.1
 org.osgi:osgi.core:7.0.0
 org.osgi:osgi.core:8.0.0
-org.ow2.asm:asm-analysis:9.7
-org.ow2.asm:asm-commons:9.7
-org.ow2.asm:asm-tree:9.7
-org.ow2.asm:asm-util:9.7
-org.ow2.asm:asm:9.7
+org.ow2.asm:asm-analysis:9.7.1
+org.ow2.asm:asm-commons:9.7.1
+org.ow2.asm:asm-tree:9.7.1
+org.ow2.asm:asm-util:9.7.1
+org.ow2.asm:asm:9.7.1
 org.postgresql:postgresql:42.7.2
 org.powermock:powermock-core:1.5
 org.quartz-scheduler:quartz:2.3.2

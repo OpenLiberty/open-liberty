@@ -13,12 +13,7 @@
 package tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.Duration;
 
 import org.junit.After;
@@ -33,14 +28,10 @@ import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
 import web.simpleclient.SimpleClientServlet;
 
 @RunWith(FATRunner.class)
@@ -81,7 +72,9 @@ public class SimpleTest extends DBTestBase {
 		final Duration meanStartTime = FATUtils.startServers(runner, server, server2);
 		final float perfFactor = (float)normalStartTime.getSeconds() / (float)meanStartTime.getSeconds();
 		Log.info(SimpleTest.class, "beforeTests", "Mean startup time: "+meanStartTime+", Perf factor="+perfFactor);
-		setTestQuerySuffix("perfFactor="+perfFactor);
+		if (perfFactor < 1f) {
+			setTestQuerySuffix("perfFactor="+perfFactor);
+		}
 	}
 
 	@AfterClass
@@ -90,6 +83,8 @@ public class SimpleTest extends DBTestBase {
 
 		DBTestBase.cleanupWSATTest(server);
 		DBTestBase.cleanupWSATTest(server2);
+		
+		setTestQuerySuffix(null);
 	}
 
 	@After

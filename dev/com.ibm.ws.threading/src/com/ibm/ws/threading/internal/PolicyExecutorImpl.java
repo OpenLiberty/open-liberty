@@ -299,10 +299,16 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         @Override
         @Trivial
         public String toString() {
+            // Both hashCode and identityHashCode are included so that we can correlate
+            // output in Liberty trace, which prints toString for values and method args
+            // but uses uses identityHashCode (id=...) when printing trace for a class
             String tf = threadFactory.toString();
-            return new StringBuilder(tf.length() + 31) //
-                            .append("VirtualThreadExecutor@").append(Integer.toHexString(hashCode())) //
-                            .append(' ').append(tf) //
+            return new StringBuilder(tf.length() + 44) //
+                            .append("VirtualThreadExecutor@") //
+                            .append(Integer.toHexString(hashCode())) //
+                            .append("(id=") //
+                            .append(Integer.toHexString(System.identityHashCode(this))) //
+                            .append(") ").append(tf) //
                             .toString();
         }
     }

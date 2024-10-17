@@ -79,18 +79,13 @@ public class ConcurrentTckLauncherFull {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrent30TCKFull() throws Exception {
-
         suiteXmlFile = FATSuite.createSuiteXML(FATSuite.PROFILE.FULL);
 
-        /**
-         * The runTCKMvnCmd will set the following properties for use by arquillian
-         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
-         * and then run the mvn test command.
-         */
-        String bucketName = "io.openliberty.jakarta.concurrency.3.0_fat_tck";
-        String testName = this.getClass() + ":launchConcurrent30TCKFull";
-        Type type = Type.JAKARTA;
-        String specName = "Concurrency (Full)";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteXmlFile, additionalProps);
+        TCKRunner.build(server, Type.JAKARTA, "Concurrency")
+                        .withPlatfromVersion("10")
+                        .withQualifiers("full")
+                        .withSuiteFileName(suiteXmlFile)
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 }

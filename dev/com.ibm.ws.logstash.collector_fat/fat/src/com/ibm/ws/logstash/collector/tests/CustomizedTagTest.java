@@ -217,6 +217,9 @@ public class CustomizedTagTest extends LogstashCollectorTest {
     private static void serverStart() throws Exception {
         Log.info(c, "serverStart", "--->  Starting Server.. ");
         server.startServer();
+        // Wait for Liberty server to connect to Logstash server
+        // TRAS0218I: The logstash collector is connected to the logstash server on the specified host {0} and port number {1}.
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLog("TRAS0218I", 10000));
     }
 
     private boolean isGCSupported() {

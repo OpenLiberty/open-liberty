@@ -58,6 +58,7 @@ import io.openliberty.jpa.data.tests.models.Line;
 import io.openliberty.jpa.data.tests.models.Line.Point;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
+import io.openliberty.jpa.data.tests.models.Participant;
 import io.openliberty.jpa.data.tests.models.Person;
 import io.openliberty.jpa.data.tests.models.Prime;
 import io.openliberty.jpa.data.tests.models.Product;
@@ -214,6 +215,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28874
     public void testOLGH28874() throws Exception {
         NaturalNumber two = NaturalNumber.of(2);
         NaturalNumber three = NaturalNumber.of(3);
@@ -1558,6 +1560,43 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         assertNotNull(result.comments);
         assertEquals(3, result.comments.size());
+
+    }
+
+    @Test
+    //("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460")
+    public void testOLGH29460() throws Exception {
+        // Setup test data using the factory method
+        Participant p1 = Participant.of("John", "Doe", 1);
+        Participant p2 = Participant.of("Jane", "Smith", 2);
+        Participant p3 = Participant.of("Emily", "Doe", 3);
+
+        // Persisting the participants
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        em.persist(p3);
+        tx.commit();
+
+        // Test the JPQL query
+        List<Participant> results;
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT o FROM Participant o WHERE (o.name.last = ?1) ORDER BY o.name.first, o.id", Participant.class)
+                            .setParameter(1, "Doe")
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        // Verify the results
+        assertEquals(2, results.size());
+        assertEquals("Doe", results.get(0).getName().getLast());
+        assertEquals("Emily", results.get(0).getName().getFirst());
+        assertEquals("Doe", results.get(1).getName().getLast());
+        assertEquals("John", results.get(1).getName().getFirst());
 
     }
 

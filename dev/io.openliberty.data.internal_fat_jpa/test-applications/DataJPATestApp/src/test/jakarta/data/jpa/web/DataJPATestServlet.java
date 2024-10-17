@@ -2934,6 +2934,22 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(driver -> driver.fullName)
                                              .collect(Collectors.toList()));
 
+        drivers.setInfo(new Driver("Oscar TestOneToOne", //
+                        100404000, //
+                        LocalDate.of(2004, 4, 4), //
+                        75, // height updated
+                        242, // weight updated
+                        "T121-400-400-400", //
+                        "Iowa", //
+                        LocalDate.of(2020, 4, 4), //
+                        LocalDate.of(2024, 4, 4)));
+        d4 = drivers.findById(100404000).orElseThrow();
+        assertEquals("Oscar TestOneToOne", d4.fullName);
+        assertEquals(75, d4.heightInInches);
+        assertEquals(242, d4.weightInPounds);
+        assertEquals("Iowa", d4.license.stateName);
+        assertEquals(LocalDate.of(2020, 4, 4), d4.license.issuedOn);
+
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
     }
 
@@ -3664,6 +3680,26 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method that queries for the IdClass using id(this)
+     * and sorts based on the attributes of the IdClass.
+     */
+    // @Test // TODO enable once #29073 is fixed
+    public void testSelectIdClass() {
+        assertEquals(List.of("Illinois:Springfield",
+                             "Kansas:Kansas City",
+                             "Massachusetts:Springfield",
+                             "Minnesota:Rochester",
+                             "Missouri:Kansas City",
+                             "Missouri:Springfield",
+                             "New York:Rochester",
+                             "Ohio:Springfield",
+                             "Oregon:Springfield"),
+                     cities.ids()
+                                     .map(id -> id.getStateName() + ":" + id.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Use the JPQL version(entityVar) function as the sort property to perform
      * an ascending sort.
      */
@@ -3725,6 +3761,9 @@ public class DataJPATestServlet extends FATServlet {
                                      .stream()
                                      .map(o -> o.purchasedBy)
                                      .collect(Collectors.toList()));
+
+        assertEquals(List.of(1, 2, 3, 4),
+                     orders.versions());
 
         orders.deleteAll();
     }
@@ -4018,6 +4057,98 @@ public class DataJPATestServlet extends FATServlet {
                      Arrays.toString(counties.findZipCodesByName("Wabasha").orElseThrow()));
 
         assertEquals(4, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
+    }
+
+    /**
+     * Update an entity that has an IdClass.
+     * This covers update that returns the updated value
+     * and update that returns no value,
+     * which are different code paths.
+     */
+    @Test
+    public void testUpdateEntityWithIdClass() {
+        CreditCard original = creditCards
+                        .findByIssuedOnWithMonthIn(Set.of(Month.MAY.getValue()))
+                        .findFirst()
+                        .orElseThrow();
+
+        CreditCard replacement = new CreditCard( //
+                        original.debtor, //
+                        original.number, //
+                        551, // new security code
+                        LocalDate.of(2024, Month.MAY, 10), //
+                        LocalDate.of(2028, Month.MAY, 10), //
+                        original.issuer);
+
+        replacement = creditCards.replace(replacement);
+
+        assertEquals(original.debtor.customerId, replacement.debtor.customerId);
+        assertEquals(original.number, replacement.number);
+        assertEquals(551, replacement.securityCode);
+        assertEquals(LocalDate.of(2024, Month.MAY, 10), replacement.issuedOn);
+        assertEquals(LocalDate.of(2028, Month.MAY, 10), replacement.expiresOn);
+        assertEquals(original.issuer, replacement.issuer);
+
+        CreditCard card = creditCards
+                        .findByIssuedOnWithMonthIn(Set.of(Month.MAY.getValue()))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertEquals(original.debtor.customerId, card.debtor.customerId);
+        assertEquals(original.number, card.number);
+        assertEquals(551, card.securityCode);
+        assertEquals(LocalDate.of(2024, Month.MAY, 10), card.issuedOn);
+        assertEquals(LocalDate.of(2028, Month.MAY, 10), card.expiresOn);
+        assertEquals(original.issuer, card.issuer);
+
+        // Put the original value back to avoid impacting other tests.
+        // This also tests an Update method with void return.
+        creditCards.revert(original);
+    }
+
+    /**
+     * Update an entity that has an IdClass and Version.
+     * This covers update that returns the updated value
+     * and update that returns no value,
+     * which are different code paths.
+     */
+    @Test
+    public void testUpdateEntityWithIdClassAndVersion() {
+        CityId mnId = CityId.of("Rochester", "Minnesota");
+        CityId nyId = CityId.of("Rochester", "New York");
+
+        long mnVer = cities.currentVersion(mnId.name, mnId.getStateName());
+        long nyVer = cities.currentVersion(nyId.name, nyId.getStateName());
+        // TODO
+        //long mnVer = cities.currentVersion(mnId);
+        //long nyVer = cities.currentVersion(nyId);
+
+        // TODO allow this test to run once 28589 is fixed
+        // and verify that EclipseLink does not corrupt the area code value
+        // for the following subsequent tests:
+        // testCollectionAttribute, testIdClassOrderBySorts, testIdClassOrderByAnnotationWithCursorPagination,
+        // testIdClassOrderByNamePatternWithCursorPagination, testIdClassOrderByAnnotationReverseDirection
+        if (true)
+            return;
+
+        City[] updated = cities.modifyData(City.of(mnId, 122413, Set.of(507, 924), mnVer),
+                                           City.of(nyId, 208546, Set.of(585), nyVer));
+        assertEquals(Arrays.toString(updated), 2, updated.length);
+        assertEquals("Rochester", updated[0].name);
+        assertEquals("Minnesota", updated[0].stateName);
+        assertEquals(122413, updated[0].population);
+        assertEquals(Set.of(507, 924), updated[0].areaCodes);
+        assertEquals(mnVer + 1, updated[0].changeCount);
+
+        assertEquals("Rochester", updated[1].name);
+        assertEquals("New York", updated[1].stateName);
+        assertEquals(208546, updated[1].population);
+        assertEquals(Set.of(585), updated[1].areaCodes);
+        assertEquals(nyVer + 1, updated[1].changeCount);
+
+        // restore original data
+        cities.modifyStats(City.of(mnId, 121395, Set.of(507), mnVer + 1),
+                           City.of(nyId, 211328, Set.of(585), nyVer + 1));
     }
 
     /**
