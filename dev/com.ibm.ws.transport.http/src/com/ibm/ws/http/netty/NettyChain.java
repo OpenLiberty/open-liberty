@@ -28,6 +28,7 @@ import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
+import com.ibm.ws.tcpchannel.internal.TCPChannelMessageConstants;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -234,14 +235,12 @@ public class NettyChain extends HttpChain {
                 bootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
                 bootstrap.childHandler(httpPipeline);
 
-
-                System.out.println(" MSP -> host name to resolve: " + info.getHost());
-
                 serverChannel = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
                 if(!serverChannel.isOpen()) {
-                    System.out.println("MSP -> did not open, ");
-                    System.out.println("CWWKO0224E: TCP Channel ...");
+                    Tr.error(tc, TCPChannelMessageConstants.LOCAL_HOST_UNRESOLVED, new Object[] {this.tcpName, info.getHost(), info.getPort()});
+
+                   // System.out.println("CWWKO0224E: TCP Channel ...");
                 }
 
                 VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);

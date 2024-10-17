@@ -89,6 +89,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_AGGREGATOR_HANDLER_NAME = "LIBERTY_OBJECT_AGGREGATOR";
     public static final String HTTP_REQUEST_HANDLER_NAME = "LIBERTY_REQUEST_HANDLER";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "H2C_UPGRADE_HANDLER";
+    public static final String CRLF_VALIDATION_HANDLER = "CRLFValidationHandler";
 
     public static final long maxContentLength = Long.MAX_VALUE;
 
@@ -214,7 +215,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         //TODO: check for best default first line max size (changing for jwt test)
         HttpServerCodec sourceCodec = new HttpServerCodec(8192, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize());
-        pipeline.addLast("CRLFValidationHandler", new CRLFValidationHandler());
+        pipeline.addLast(CRLF_VALIDATION_HANDLER, new CRLFValidationHandler());
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
