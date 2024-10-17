@@ -14,9 +14,7 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.MessageDigest;
 
-import com.ibm.ws.crypto.common.CryptoUtils;
-import com.ibm.ws.crypto.common.FipsUtils;
-import com.ibm.ws.crypto.common.MessageDigestUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * A package local class for performing encryption and decryption of keys based
@@ -24,7 +22,7 @@ import com.ibm.ws.crypto.common.MessageDigestUtils;
  */
 public class KeyEncryptor {
 
-	private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
+	private static final boolean fipsEnabled = CryptoUtils.isFIPSEnabled();
 	private static final int size = (fipsEnabled ? 32 : 24);
 	private static final String CIPHER = CryptoUtils.getCipher();
 	private final byte[] key;
@@ -35,7 +33,7 @@ public class KeyEncryptor {
 	 * @param password The key password
 	 */
 	public KeyEncryptor(byte[] password) throws Exception {
-		MessageDigest md = MessageDigest.getInstance(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM);
+		MessageDigest md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM);
 		byte[] digest = md.digest(password);
 		key = new byte[size];
 		System.arraycopy(digest, 0, key, 0, digest.length);

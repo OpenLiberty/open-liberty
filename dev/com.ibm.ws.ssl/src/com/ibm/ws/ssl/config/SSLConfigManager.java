@@ -42,12 +42,12 @@ import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLConfigChangeEvent;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.internal.LibertyConstants;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
-import com.ibm.ws.crypto.common.FipsUtils;
 
 /**
  * Class that reads and controls access to SSL configuration objects. It
@@ -382,11 +382,11 @@ public class SSLConfigManager {
         if (sslProtocol != null && !sslProtocol.equals("")) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Setting default SSLProtocol: " + sslProtocol);
-            
+
             // Use PROTOCOL_TLSV1_2 if FIPS is enabled
-            if (FipsUtils.isFIPSEnabled()) {
+            if (CryptoUtils.isFIPSEnabled()) {
                 sslprops.setProperty(Constants.SSLPROP_PROTOCOL, Constants.PROTOCOL_TLSV1_2);
-                
+
             } else {
                 sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
             }

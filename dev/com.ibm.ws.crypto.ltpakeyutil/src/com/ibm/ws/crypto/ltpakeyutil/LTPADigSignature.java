@@ -14,16 +14,15 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.MessageDigest;
 
-import com.ibm.ws.crypto.common.FipsUtils;
-import com.ibm.ws.crypto.common.MessageDigestUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 final class LTPADigSignature {
 
-	static int keySize = (FipsUtils.isFIPSEnabled() ? 256 : 128);
+	static int keySize = (CryptoUtils.isFIPSEnabled() ? 256 : 128);
 
 	static byte[][] testRawPubKey = null;
 	static byte[][] testRawPrivKey = null;
-	static MessageDigest md1 = MessageDigestUtils.getMessageDigestForLTPA();
+	static MessageDigest md1 = CryptoUtils.getMessageDigestForLTPA();
 	static private Object lockObj1 = new Object();
 	static long created = 0;
 	static long cacheHits = 0;

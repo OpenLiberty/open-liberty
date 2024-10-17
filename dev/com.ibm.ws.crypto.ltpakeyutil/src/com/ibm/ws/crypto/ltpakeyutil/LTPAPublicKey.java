@@ -14,7 +14,7 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.PublicKey;
 
-import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Represents an LTPA Public Key based on RSA/SHA-1. Its based on a 128 byte RSA
@@ -22,7 +22,7 @@ import com.ibm.ws.crypto.common.FipsUtils;
  */
 public final class LTPAPublicKey implements PublicKey {
 
-	private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
+	private static final boolean fipsEnabled = CryptoUtils.isFIPSEnabled();
 	private static final long serialVersionUID = 6585779055758956436L;
 	private static final int MODULUS = 0;
 	private static final int EXPONENT = 1;

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,11 +18,11 @@ import java.util.List;
 
 import javax.net.ssl.SSLContext;
 
-import com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * CertificateEnvHelper
@@ -69,7 +69,7 @@ public class ProtocolHelper {
 
         if (protocols.length > 1) {
             // If FIPS is enabled then we only allow TLSv1.2 and TLSv1.3
-            if (FipsUtils.isFIPSEnabled()) {
+            if (CryptoUtils.isFIPSEnabled()) {
                 Tr.debug(tc, "FIPS is enabled, only allowing TLSv1.2 and TLSv1.3");
                 for (String protocol : protocols) {
                     if (Constants.FIPS_140_3_PROTOCOLS.contains(protocol)) {

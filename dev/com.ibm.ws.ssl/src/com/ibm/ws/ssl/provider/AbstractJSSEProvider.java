@@ -54,8 +54,7 @@ import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
-import com.ibm.ws.crypto.common.CryptoProvider;
-import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.util.StreamHandlerUtils;
@@ -133,9 +132,9 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
                 Tr.debug(tc, "Provider[" + i + "]: " + provider_list[i].getName() + ", info: " + provider_list[i].getInfo());
             }
         }
-        if (FipsUtils.isFIPSEnabled()) {
-            if (FipsUtils.isFips140_2Enabled() || FipsUtils.isFips140_3Enabled()) {
-                if (CryptoProvider.isIBMJCEPlusFIPSAvailable() || CryptoProvider.isOpenJCEPlusFIPSAvailable()) {
+        if (CryptoUtils.isFIPSEnabled()) {
+            if (CryptoUtils.isFips140_2Enabled() || CryptoUtils.isFips140_3Enabled()) {
+                if (CryptoUtils.isIBMJCEPlusFIPSAvailable() || CryptoUtils.isOpenJCEPlusFIPSAvailable()) {
                     try {
                         com.ibm.ws.ssl.JSSEProviderFactory.initializeFips();
                     } catch (Exception e) {

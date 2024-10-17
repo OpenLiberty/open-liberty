@@ -43,15 +43,13 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.crypto.common.CryptoProvider;
-import com.ibm.ws.crypto.common.CryptoUtils;
-import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 final class LTPACrypto {
 
-	private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
+	private static final boolean fipsEnabled = CryptoUtils.isFIPSEnabled();
 
-	private static final String provider = CryptoProvider.getProvider();
+	private static final String provider = CryptoUtils.getProvider();
 
 	private static final String signatureAlgorithm = CryptoUtils.getSignatureAlgorithm();
 

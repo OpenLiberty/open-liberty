@@ -14,7 +14,7 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.PrivateKey;
 
-import com.ibm.ws.crypto.common.FipsUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Represents an LTPA Private Key; Encoding is non-standard. Uses 128 byte RSA.
@@ -22,7 +22,7 @@ import com.ibm.ws.crypto.common.FipsUtils;
  */
 public final class LTPAPrivateKey implements PrivateKey {
 
-	private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
+	private static final boolean fipsEnabled = CryptoUtils.isFIPSEnabled();
 	private static final long serialVersionUID = -2566137894245694562L;
 	private static final int PRIVATE_EXPONENT = 1;
 	private static final int PUBLIC_EXPONENT = 2;
