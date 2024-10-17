@@ -58,6 +58,18 @@ invalidDuration=CWWKE0107W: The specified parameter does not represent a duratio
 invalidDuration.explanation=The value for the specified configuration parameter is not, or cannot be converted to, a duration value.
 invalidDuration.useraction=Ensure that the value specified in the server configuration is a valid representation of a duration value.
 
+invalidScheduleDelimit=CWWKE0108E: Schedule components must be delimited by a single space ( ). Provided: {0}. Valid example: {1}
+invalidScheduleDelimit.explanation=A schedule must include both a day-of-week and a time component. Optionally, a schedule can also have a timezone component.   
+invalidScheduleDelimit.useraction=Ensure that the schedule that is specified in the server configuration uses a single space ( ) to delimit day-of-week, time, and timezone components.
+
+invalidScheduleDelimitRange=CWWKE0108E: Schedule ranges must be delimited by a single hyphen (-). Provided: {0}. Valid example: {1}
+invalidScheduleDelimitRange.explanation=A range of days or times must have a start component and an end component that are delimited by a single hyphen (-).
+invalidScheduleDelimitRange.useraction=Ensure that the schedule that is specified in the server configuration uses a single hyphen (-) to delimit day and time ranges.
+
+invalidScheduleParse=CWWKE0109E: Unable to parse the provided parameter to a valid {0} class. Provided: {1}. Valid example(s): {2}.
+invalidScheduleParse.explanation=A schedule must be able to evaluate days as java.time.DayOfWeek, times as java.time.LocalTime, and timezones as java.time.ZoneID.
+invalidScheduleParse.useraction=Ensure that all of the schedule components that are specified in the server configuration use the correct syntax to be evaluated as a corresponding java.time object.
+
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #

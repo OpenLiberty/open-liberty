@@ -55,6 +55,7 @@ import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
+import com.ibm.wsspi.kernel.service.utils.SerializableSchedule;
 
 class ConfigEvaluator {
 
@@ -1063,6 +1064,8 @@ class ConfigEvaluator {
             return Enum.valueOf(OnError.class, strVal.trim().toUpperCase());
         } else if (type == MetaTypeFactory.TOKEN_TYPE) {
             return MetatypeUtils.evaluateToken(strVal);
+        } else if (type == MetaTypeFactory.SCHEDULE_TYPE) {
+            return MetatypeUtils.evaluateSchedule(strVal);
         } else if (type == MetaTypeFactory.PID_TYPE) {
             return evaluateReference(strVal, attrDef, context);
         } else {
@@ -1176,6 +1179,7 @@ class ConfigEvaluator {
      */
     private String[] convertListToStringArray(List<?> rawValues, ExtendedAttributeDefinition attrDef, EvaluationContext context,
                                               boolean ignoreWarnings) throws ConfigEvaluatorException {
+
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Collection<String> collection = (Collection) convertListToVector(rawValues, attrDef, context, ignoreWarnings);
         return collection == null ? null : collection.toArray(new String[collection.size()]);
@@ -1261,6 +1265,8 @@ class ConfigEvaluator {
             return convertListToDurationArray(rawValues, attrDef, context, TimeUnit.MINUTES, ignoreWarnings);
         } else if (type == MetaTypeFactory.DURATION_H_TYPE) {
             return convertListToDurationArray(rawValues, attrDef, context, TimeUnit.HOURS, ignoreWarnings);
+        } else if (type == MetaTypeFactory.SCHEDULE_TYPE) {
+            return convertListToScheduleArray(rawValues, attrDef, context, ignoreWarnings);
         } else {
             // STRING, PID_TYPE, TOKEN_TYPE, and all other unknown/invalid types.
             return convertListToStringArray(rawValues, attrDef, context, ignoreWarnings);
@@ -1274,6 +1280,23 @@ class ConfigEvaluator {
         for (Object rawValue : rawValues) {
             String value = resolveStringValue(rawValue, attrDef, context, ignoreWarnings);
             retVal[i++] = MetatypeUtils.evaluateDuration(value, timeUnit);
+        }
+        return retVal;
+    }
+
+    /**
+     * Returns a list of schedules
+     *
+     * Each SerializableSchedule only holds one scheduled time / range.
+     * So multiple times / ranges will be returned as a list of schedules.
+     */
+    private SerializableSchedule[] convertListToScheduleArray(List<?> rawValues, ExtendedAttributeDefinition attrDef, EvaluationContext context,
+                                                              boolean ignoreWarnings) throws ConfigEvaluatorException {
+        SerializableSchedule[] retVal = new SerializableSchedule[rawValues.size()];
+        int i = 0;
+        for (Object rawValue : rawValues) {
+            String value = resolveStringValue(rawValue, attrDef, context, ignoreWarnings);
+            retVal[i++] = new SerializableSchedule(value);
         }
         return retVal;
     }
