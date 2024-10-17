@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -77,7 +78,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     /** server started logic borrowed from CHFWBundle */
     private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
-    private static Queue<FutureTask<?>> serverStartedTasks = new LinkedBlockingQueue<>();
+    private static Queue<FutureTask<ChannelFuture>> serverStartedTasks = new LinkedBlockingQueue<>();
     private static Object syncStarted = new Object() {
     }; // use brackets/inner class to make lock appear in dumps using class name
 
@@ -309,27 +310,67 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // output. Use this signal to run tasks, mostly likely tasks that will
         // finish the port listening logic, that need to run at the end of server
         // startup
-
-        FutureTask<?> task;
+        FutureTask<ChannelFuture> task;
+        CountDownLatch latch = new CountDownLatch(serverStartedTasks.size());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Netty Framework signaled- Server Completely Started signal received");
         }
-        while ((task = serverStartedTasks.poll()) != null) {
-            try {
-            	if(!task.isCancelled())
-            		executorService.submit(task);
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+        synchronized (syncStarted) {
+            while ((task = serverStartedTasks.poll()) != null) {
+                try {
+                    if(!task.isCancelled()) {
+                        executorService.submit(new StartTaskRunnable(task, latch));
+                    }else
+                        latch.countDown();
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+                    }
                 }
             }
-        }
-
-        synchronized (syncStarted) {
+            
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				// Verify how to handle exception
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+				}
+				throw new RuntimeException(e);
+			}
+        
             serverCompletelyStarted.set(true);
             isActive = true;
             syncStarted.notifyAll();
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Netty Framework - Server Completely Started completed");
+        }
+    }
+    
+    private class StartTaskRunnable implements Runnable{
+
+        private FutureTask<ChannelFuture> task;
+        private CountDownLatch latch;
+
+        public StartTaskRunnable(FutureTask<ChannelFuture> task, CountDownLatch latch) {
+            this.task = task;
+            this.latch = latch;
+        }
+
+        @Override
+        public void run() {
+            task.run();
+            try {
+                task.get(getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "caught exception performing startup task: " + e);
+                }
+            }
+            latch.countDown();
+        }
+    
     }
     
     /**
@@ -342,13 +383,13 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      *         the task to denote it has ran.
      * @throws Exception
      */
-    public <T> FutureTask<T> runWhenServerStarted(Callable<T> callable) throws Exception {
+    public FutureTask<ChannelFuture> runWhenServerStarted(Callable<ChannelFuture> callable) throws Exception {
         synchronized (syncStarted) {
-        	FutureTask<T> future = new FutureTask<T>(callable);
+            FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
             if (!serverCompletelyStarted.get()) {
                 serverStartedTasks.add(future);
-            }else {
-            	this.executorService.submit(future);
+            } else {
+                this.executorService.submit(future);
             }
             return future;
         }
@@ -388,14 +429,16 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     
     @Override
     public void registerEndpointQuiesce(Channel chan, Callable quiesce) {
-    	if(chan != null && getActiveChannelsMap().containsKey(chan)) {
-    		ChannelHandler quiesceHandler = new QuiesceHandler(quiesce);
-        	chan.pipeline().addLast(quiesceHandler);
-    	}else {
-    		if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
+        synchronized (activeChannelMap) {
+            if(chan != null && getActiveChannelsMap().containsKey(chan)) {
+                ChannelHandler quiesceHandler = new QuiesceHandler(quiesce);
+                chan.pipeline().addLast(quiesceHandler);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
+                }
             }
-    	}
+        }
     }
 
     /**
@@ -429,19 +472,20 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
-    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+    public Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
         return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
+    
 
     @Override
-    public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort,
+    public Channel start(BootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
         return UDPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
 
     @Override
-    public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+    public Channel startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
     		ChannelFutureListener bindListener) throws NettyException {
     	if (bootstrap.getConfiguration() instanceof TCPConfigurationImpl) {
     		return TCPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
@@ -452,35 +496,41 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     public ChannelFuture stop(Channel channel) {
-    	ChannelGroup group = activeChannelMap.get(channel);
-    	if(group != null) {
-    		group.close().addListener(innerFuture -> {
-    			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "channel group" + group + " has closed...");
-                }
-    		});
-    		activeChannelMap.remove(channel);
-    	}
-    	return channel.close();
+        synchronized (activeChannelMap) {
+            ChannelGroup group = activeChannelMap.get(channel);
+            if(group != null) {
+                group.close().addListener(innerFuture -> {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "channel group" + group + " has closed...");
+                    }
+                });
+                activeChannelMap.remove(channel);
+            }
+            return channel.close();
+        }
     }
 
     @Override
     public void stop(Channel channel, long timeout) {
-    	if (timeout == -1) {
-    		timeout = getDefaultChainQuiesceTimeout();
-    	}
-    	ChannelFuture future = stop(channel);
-    	if (future != null) {
-    		future.awaitUninterruptibly(timeout, TimeUnit.MILLISECONDS);
-    	}
-    }
+        if (timeout == -1) {
+            timeout = getDefaultChainQuiesceTimeout();
+        }
+        ChannelFuture future;
     
+        synchronized(activeChannelMap) {
+            future = stop(channel);
+        }
+        if (future != null) {
+            future.awaitUninterruptibly(timeout, TimeUnit.MILLISECONDS);
+        }
+    }
+
 
     @Override
     public Set<Channel> getActiveChannels() {
         return activeChannelMap.keySet();
     }
-    
+
 
     public Map<Channel, ChannelGroup> getActiveChannelsMap() {
         return activeChannelMap;
@@ -506,45 +556,45 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     
     @Override
     public String toString() {
-    	StringBuffer buf = new StringBuffer();
-    	buf.append("NettyFrameworkImpl@").append(Integer.toHexString(System.identityHashCode(this)));
-    	buf.append(": {");
-    	buf.append("Parent Group: ");
-    	buf.append(getParentGroup());
-    	if(getParentGroup() != null) {
-    		buf.append(" isShuttingDown? ");
-    		buf.append(getParentGroup().isShuttingDown());
-    		buf.append(" isShutDown? ");
-    		buf.append(getParentGroup().isShutdown());
-    		buf.append(" isTerminated? ");
-    		buf.append(getParentGroup().isTerminated());
-    	}
-    	buf.append(", Child Group: ");
-    	buf.append(getChildGroup());
-    	if(getChildGroup() != null) {
-    		buf.append(" isShuttingDown? ");
-    		buf.append(getChildGroup().isShuttingDown());
-    		buf.append(" isShutDown? ");
-    		buf.append(getChildGroup().isShutdown());
-    		buf.append(" isTerminated? ");
-    		buf.append(getChildGroup().isTerminated());
-    	}
-    	buf.append(", EndpointManager: ");
-    	buf.append(getEndpointManager());
-    	buf.append(", Default Chain Quiesce Timeout: ");
-    	buf.append(getDefaultChainQuiesceTimeout());
-    	buf.append(", Outbound Connections: ");
-    	buf.append(getOutboundConnections());
-    	buf.append(", Active Endpoints: ");
-    	buf.append(getActiveChannels());
-    	buf.append(", Active endpoint maps: ");
-    	buf.append(getActiveChannelsMap());
-    	buf.append(", Is Active: ");
-    	buf.append(isActive());
-    	buf.append(", Is Stopping: ");
-    	buf.append(isStopping());
-    	buf.append("}");
-    	return buf.toString();
+        StringBuffer buf = new StringBuffer();
+        buf.append("NettyFrameworkImpl@").append(Integer.toHexString(System.identityHashCode(this)));
+        buf.append(": {");
+        buf.append("Parent Group: ");
+        buf.append(getParentGroup());
+        if(getParentGroup() != null) {
+            buf.append(" isShuttingDown? ");
+            buf.append(getParentGroup().isShuttingDown());
+            buf.append(" isShutDown? ");
+            buf.append(getParentGroup().isShutdown());
+            buf.append(" isTerminated? ");
+            buf.append(getParentGroup().isTerminated());
+        }
+        buf.append(", Child Group: ");
+        buf.append(getChildGroup());
+        if(getChildGroup() != null) {
+            buf.append(" isShuttingDown? ");
+            buf.append(getChildGroup().isShuttingDown());
+            buf.append(" isShutDown? ");
+            buf.append(getChildGroup().isShutdown());
+            buf.append(" isTerminated? ");
+            buf.append(getChildGroup().isTerminated());
+        }
+        buf.append(", EndpointManager: ");
+        buf.append(getEndpointManager());
+        buf.append(", Default Chain Quiesce Timeout: ");
+        buf.append(getDefaultChainQuiesceTimeout());
+        buf.append(", Outbound Connections: ");
+        buf.append(getOutboundConnections());
+        buf.append(", Active Endpoints: ");
+        buf.append(getActiveChannels());
+        buf.append(", Active endpoint maps: ");
+        buf.append(getActiveChannelsMap());
+        buf.append(", Is Active: ");
+        buf.append(isActive());
+        buf.append(", Is Stopping: ");
+        buf.append(isStopping());
+        buf.append("}");
+        return buf.toString();
     }
 
     public EventLoopGroup getParentGroup() {

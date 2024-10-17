@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -75,12 +75,12 @@ public interface NettyFramework {
      * @param bootstrap
      * @param inetHost
      * @param inetPort
-     * @return ChannelFuture for the ServerChannel, or null if the server is not yet
+     * @return Channel for the ServerChannel, or null if the server is not yet
      *         started
      */
-    FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+    Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException;
-
+    
     /**
      * Binds a Bootstrap to the given host and port, and registers the Channel with
      * this framework
@@ -88,10 +88,10 @@ public interface NettyFramework {
      * @param bootstrap
      * @param inetHost
      * @param inetPort
-     * @return ChannelFuture for the ServerChannel, or null if the server is not yet
+     * @return Channel for the ServerChannel, or null if the server is not yet
      *         started
      */
-    FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener)
+    Channel start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener)
             throws NettyException;
 
     /**
@@ -102,10 +102,10 @@ public interface NettyFramework {
      * @param inetHost
      * @param inetPort
      * @param bindListener
-     * @return ChannelFuture
+     * @return Channel
      * @throws NettyException
      */
-    FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+    Channel startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException;
 
     /**
