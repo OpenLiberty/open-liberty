@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,14 +49,24 @@ public class ModelEquality {
             return true;
         }
 
+        /*
+         * Take https://github.com/smallrye/smallrye-open-api/blob/3.13.0/core/src/main/java/io/smallrye/openapi/api/models/ExtensibleImpl.java
+         * extensions is null. If you call addExtension() it will become an map with an item.
+         * if you then call remove, it will remove the item from the list and not null it.
+         * In short new ExtensibleImpl().addExtension(x).removeExtension(x) is not equals() new ExtensibleImpl().
+         *
+         * So to work around that, we treat null and empty maps as equivalent.
+         *
+         * This may need to be extended to cover lists
+         */
         if (a == null) {
-            if (b == null) {
+            if (nullOrEmptyMap(b)) {
                 return true;
             } else {
                 return false;
             }
         } else if (b == null) {
-            return false;
+            return nullOrEmptyMap(a);
         }
 
         Optional<ModelType> modelObject = ModelType.getModelObject(a.getClass());
@@ -79,6 +89,7 @@ public class ModelEquality {
 
     @Trivial
     private static boolean equalsMap(Map<?, ?> a, Map<?, ?> b) {
+
         if (!Objects.equals(a.keySet(), b.keySet())) {
             return false;
         }
@@ -122,6 +133,18 @@ public class ModelEquality {
         }
 
         return true;
+    }
+
+    @Trivial
+    private static boolean nullOrEmptyMap(Object a) {
+        if (a == null) {
+            return true;
+        }
+        if (a instanceof Map) {
+            Map<?, ?> m = (Map<?, ?>) a;
+            return m.isEmpty();
+        }
+        return false;
     }
 
 }
