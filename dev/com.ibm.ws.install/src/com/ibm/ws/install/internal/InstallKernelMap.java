@@ -1150,7 +1150,7 @@ public class InstallKernelMap implements Map {
                     System.setProperty("https.proxyPort", (String) envMap.get("http.proxyPort"));
                 }
             }
-            if (System.getProperty("featureUtility.beta") != null && System.getProperty("featureUtility.beta").equals("true") && envMap.get("http.nonProxyHosts") != null) {
+            if (envMap.get("http.nonProxyHosts") != null) {
                 String noProxyHosts = (String) envMap.get("http.nonProxyHosts");
                 //if users provide list of hosts using ",", replace to "|"
                 noProxyHosts = noProxyHosts.replace(",", "|");
@@ -1971,10 +1971,8 @@ public class InstallKernelMap implements Map {
                 envMapRet.put(key, httpsProxyVariables.get(key));
             }
         }
-        if (System.getProperty("featureUtility.beta") != null && System.getProperty("featureUtility.beta").equals("true")) {
-            envMapRet.put("http.nonProxyHosts", System.getenv("no_proxy"));
-        }
 
+        envMapRet.put("http.nonProxyHosts", System.getenv("no_proxy"));
         envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
         envMapRet.put("FEATURE_REPO_PASSWORD", System.getenv("FEATURE_REPO_PASSWORD"));
