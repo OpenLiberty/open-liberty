@@ -90,7 +90,7 @@ CWWKD1015.null.entity.param=CWWKD1015E: Il metodo {0} dell''interfaccia del repo
 CWWKD1015.null.entity.param.explanation=I metodi del ciclo di vita richiedono un'istanza di entit\u00e0 non nulla.
 CWWKD1015.null.entity.param.useraction=Aggiornare il codice dell'applicazione per evitare di fornire un valore di entit\u00e0 nullo al metodo del repository.
 
-CWWKD1016.incompat.entity.param=CWWKD1016E: Il metodo {0} dell''interfaccia del repository {1} richiede un''entit\u00e0 {0}, ma \u00e8 stato fornito un valore {1}.
+CWWKD1016.incompat.entity.param=CWWKD1016E: Il metodo {0} dell''interfaccia del deposito {1} richiede un''entit\u00e0 {2}, ma \u00e8 stato fornito un valore {3}.
 CWWKD1016.incompat.entity.param.explanation=Il metodo del ciclo di vita accetta solo valori di entit\u00e0 del tipo dichiarato.
 CWWKD1016.incompat.entity.param.useraction=Aggiornare il codice dell'applicazione per fornire un valore di entit\u00e0 dello stesso tipo di entit\u00e0 dichiarato dal metodo del repository.
 
@@ -165,3 +165,198 @@ CWWKD1033.ql.orderby.disallowed.useraction=Sostituire la clausola ORDER BY con a
 CWWKD1034.ql.where.required=CWWKD1034E: La query specificata dal metodo {0} dell''interfaccia del repository {1} deve terminare con una clausola WHERE perch\u00e9 il metodo restituisce {2}. La clausola WHERE termina alla posizione {3}, ma la lunghezza della query \u00e8 {4}. La query \u00e8: {5}.
 CWWKD1034.ql.where.required.explanation=Una clausola WHERE \u00e8 necessaria quando si utilizza la paginazione a cursore.
 CWWKD1034.ql.where.required.useraction=Aggiungere una clausola WHERE alla query.
+
+CWWKD1035.incompat.page.mode=CWWKD1035E: Una richiesta di pagina con la modalit\u00e0 di paginazione {0} non deve essere fornita al metodo {1} dell''interfaccia del repository {2}, perch\u00e9 il metodo restituisce {3} invece di {4}.
+CWWKD1035.incompat.page.mode.explanation=La modalit\u00e0 di paginazione richiesta non \u00e8 compatibile con il tipo di ritorno del metodo del repository.
+CWWKD1035.incompat.page.mode.useraction=Utilizzare un tipo di ritorno di Page per la modalit\u00e0 di paginazione OFFSET e un tipo di ritorno di CursoredPage per le modalit\u00e0 di paginazione CURSOR_NEXT e CURSOR_PREVIOUS.
+
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: Un cursore con {0} elementi fornito al metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere usato con criteri di ordinamento di dimensione {3} perch\u00e9 il numero e l''ordine degli elementi del cursore devono corrispondere ai criteri di ordinamento. Il cursore \u00e8 composto da: {4}. Il criterio di ordinamento \u00e8: {5}.
+CWWKD1036.cursor.size.mismatch.explanation=Il numero di elementi del cursore deve corrispondere alla dimensione dei criteri di ordinamento combinati del metodo di repository.
+CWWKD1036.cursor.size.mismatch.useraction=Correggere gli elementi del cursore o i criteri di ordinamento in modo che entrambi abbiano le stesse dimensioni.
+
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Impossibile ottenere un cursore dal risultato {0} del metodo {1} dell''interfaccia del repository {2}. Le query che utilizzano la paginazione a cursore devono restituire risultati dello stesso tipo del tipo di entit\u00e0, che \u00e8 {3}. Il tipo di ritorno del metodo del repository \u00e8 {4}.
+CWWKD1037.cursor.rtrn.mismatch.explanation=La paginazione basata sul cursore \u00e8 possibile solo quando il metodo di repository restituisce il tipo di entit\u00e0.
+CWWKD1037.cursor.rtrn.mismatch.useraction=Aggiornare il metodo del repository per restituire il tipo di entit\u00e0.
+
+CWWKD1038.no.prev.offset.page=CWWKD1038E: Non \u00e8 possibile richiedere un numero di pagina precedente a {0} per il metodo {1} dell''interfaccia del repository {2} perch\u00e9 il metodo Page.hasPrevious restituisce false, indicando che non esiste una pagina precedente.
+CWWKD1038.no.prev.offset.page.explanation=L'impaginazione offset non consente di inserire numeri di pagina inferiori a 1.
+CWWKD1038.no.prev.offset.page.useraction=Assicurarsi che il numero di pagina richiesto sia un numero positivo e utilizzare il metodo Page.hasPrevious per assicurarsi che sia valida la richiesta della pagina precedente.
+
+CWWKD1039.no.prev.cursor.page=CWWKD1039E: Non \u00e8 possibile richiedere una pagina precedente per il metodo {0} dell''interfaccia del repository {1} perch\u00e9 il metodo Page.hasPrevious restituisce false, indicando che non esiste una pagina precedente.
+CWWKD1039.no.prev.cursor.page.explanation=La paginazione basata sul cursore non consente di richiedere una pagina precedente quando \u00e8 noto che la pagina corrente contiene i risultati all'inizio del set di dati.
+CWWKD1039.no.prev.cursor.page.useraction=Utilizzare il metodo Page.hasPrevious per assicurarsi che sia valida la richiesta della pagina precedente.
+
+CWWKD1040.no.next.page=CWWKD1040E: Non \u00e8 possibile richiedere una pagina successiva per il metodo {0} dell''interfaccia del repository {1} perch\u00e9 {2} restituisce false, indicando che non esiste una pagina successiva.
+CWWKD1040.no.next.page.explanation=Non \u00e8 possibile richiedere una pagina successiva quando si sa che la pagina corrente contiene la fine del set di dati.
+CWWKD1040.no.next.page.useraction=Utilizzare il metodo hasNext per assicurarsi che sia valido per richiedere la pagina successiva.
+
+CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: Il metodo {0} dell''interfaccia del repository {1} ha un tipo di ritorno {2}, ma manca un parametro di tipo PageRequest dopo i parametri delle condizioni di interrogazione.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=I metodi del repository con i tipi di ritorno Page e CursoredPage devono avere un parametro PageRequest.
+CWWKD1041.rtrn.mismatch.pagereq.useraction=Aggiungere un parametro PageRequest alla firma del metodo del repository.
+
+CWWKD1042.no.totals=CWWKD1042E: Le pagine recuperate con il metodo {0} dell''interfaccia del repository {1} non includono il conteggio totale degli elementi e delle pagine, perch\u00e9 la richiesta di pagina {2} specifica il valore false per requestTotal. Per richiedere una pagina con il conteggio totale incluso, utilizzare il metodo PageRequest.withTotal invece del metodo PageRequest.withoutTotal.
+CWWKD1042.no.totals.explanation=Il metodo PageRequest.withoutTotal specifica che le pagine richieste non includono il conteggio totale degli elementi e delle pagine.
+CWWKD1042.no.totals.useraction=Utilizzare il metodo PageRequest.withTotal per richiedere il conteggio totale degli elementi e delle pagine.
+
+CWWKD1043.offset.exceeds.max=CWWKD1043E: L''offset {0} necessario per la richiesta di pagina {1} fornita al metodo {2} dell''interfaccia del deposito {3} supera il valore massimo consentito di {4}.
+CWWKD1043.offset.exceeds.max.explanation=La combinazione di numero di pagina e dimensione massima della pagina \u00e8 troppo grande.
+CWWKD1043.offset.exceeds.max.useraction=Aggiungere restrizioni alla query per ridurre il numero di risultati corrispondenti.
+
+CWWKD1044.invalid.resource.type=CWWKD1044E: Il metodo di accesso alla risorsa {0} del repository {1} non pu\u00f2 restituire una risorsa {2}. I tipi di ritorno supportati per i metodi di accesso alle risorse sono: {3}.
+CWWKD1044.invalid.resource.type.explanation=Il tipo di ritorno del metodo di accesso alla risorsa non \u00e8 uno dei tipi supportati da Jakarta Data.
+CWWKD1044.invalid.resource.type.useraction=Rimuovere il metodo o aggiornarlo per restituire uno dei tipi supportati.
+
+CWWKD1045.unknown.entity.anno=CWWKD1045E: Il provider integrato di Jakarta Data non pu\u00f2 fornire un''implementazione dell''interfaccia {0} del repository perch\u00e9 la classe {1} dell''entit\u00e0 usata dal repository include un''annotazione di entit\u00e0 non riconosciuta. Le seguenti annotazioni dell''entit\u00e0 si trovano nella classe dell''entit\u00e0: {2}. Le annotazioni di entit\u00e0 supportate sono: {3}.
+CWWKD1045.unknown.entity.anno.explanation=Il provider integrato di Jakarta Data non supporta una delle annotazioni delle entit\u00e0.
+CWWKD1045.unknown.entity.anno.useraction=Rimuovere l'annotazione dell'entit\u00e0 non riconosciuta o usare l'attributo provider dell'annotazione Repository per selezionare un provider Jakarta Data che riconosca l'annotazione dell'entit\u00e0.
+
+CWWKD1046.result.convert.err=CWWKD1046E: Il risultato {0} del metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere convertito nel tipo di ritorno {3} del metodo del repository.
+CWWKD1046.result.convert.err.explanation=Il valore del risultato non \u00e8 compatibile con il tipo di ritorno del metodo del repository.
+CWWKD1046.result.convert.err.useraction=Assicurarsi che il tipo di ritorno del metodo del repository sia coerente con il tipo di risultato restituito dalla query.
+
+CWWKD1047.result.out.of.range=CWWKD1047E: Il risultato {0} del metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere convertito nel tipo di ritorno {3} del metodo del repository perch\u00e9 il risultato non rientra nell''intervallo tra {4} e {5}.
+CWWKD1047.result.out.of.range.explanation=Il valore del risultato non \u00e8 compatibile con il tipo di ritorno del metodo repository perch\u00e9 non rientra nell'intervallo di valori che possono essere convertiti.
+CWWKD1047.result.out.of.range.useraction=Adattare il tipo di ritorno del metodo del repository per consentire la restituzione del valore.
+
+CWWKD1048.result.exceeds.max=CWWKD1048E: Il risultato {0} del metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere convertito nel tipo di ritorno {3} del metodo del repository perch\u00e9 il valore del risultato supera il valore massimo di {4}.
+CWWKD1048.result.exceeds.max.explanation=Il valore del risultato non \u00e8 compatibile con il tipo di ritorno del metodo del repository perch\u00e9 supera il valore massimo che pu\u00f2 essere convertito in quel tipo.
+CWWKD1048.result.exceeds.max.useraction=Adattare il tipo di ritorno del metodo del repository per consentire la restituzione del valore.
+
+CWWKD1049.count.convert.err=CWWKD1049E: Il valore di conteggio, {0}, del metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere convertito nel tipo di ritorno {3} del metodo del repository.
+CWWKD1049.count.convert.err.explanation=Il valore del conteggio non \u00e8 compatibile con il tipo di ritorno del metodo del repository.
+CWWKD1049.count.convert.err.useraction=Adattare il tipo di ritorno del metodo del repository per consentire la restituzione del valore.
+
+CWWKD1050.opt.lock.exc=CWWKD1050E: Il metodo {0} dell''interfaccia del deposito {1} non ha trovato un''entit\u00e0 {2} che corrisponde alle propriet\u00e0 dell''entit\u00e0: {3}. Verificare che l''istanza dell''entit\u00e0 fornita al metodo {0} sia basata sulla versione pi\u00f9 recente dell''entit\u00e0. La versione pi\u00f9 recente dell''entit\u00e0 pu\u00f2 essere ottenuta da un metodo find o dal valore del risultato di uno dei seguenti metodi del ciclo di vita: {4}.
+CWWKD1050.opt.lock.exc.explanation=Non \u00e8 stata trovata un'entit\u00e0 corrispondente.
+CWWKD1050.opt.lock.exc.useraction=Se si prevede che l'entit\u00e0 non venga trovata nel database, non \u00e8 necessario intervenire. Altrimenti, assicurarsi che venga utilizzata la versione pi\u00f9 recente dell'entit\u00e0.
+
+CWWKD1051.single.opt.lock.exc=CWWKD1051E: Il metodo {0} dell''interfaccia del deposito {1} non ha trovato un''entit\u00e0 {2} corrispondente nel database. Verificare che l''istanza dell''entit\u00e0 fornita al metodo {0} sia basata sulla versione pi\u00f9 recente dell''entit\u00e0. La versione pi\u00f9 recente dell''entit\u00e0 pu\u00f2 essere ottenuta da un metodo find o dal valore del risultato di uno dei seguenti metodi del ciclo di vita: {3}.
+CWWKD1051.single.opt.lock.exc.explanation=Non \u00e8 stata trovata un'entit\u00e0 corrispondente.
+CWWKD1051.single.opt.lock.exc.useraction=Se si prevede che l'entit\u00e0 non venga trovata nel database, non \u00e8 necessario intervenire. Altrimenti, assicurarsi che venga utilizzata la versione pi\u00f9 recente dell'entit\u00e0.
+
+CWWKD1052.multi.opt.lock.exc=CWWKD1052E: Il metodo {0} dell''interfaccia del repository {1} non ha trovato {2} delle entit\u00e0 {3} {4} nel database. Verificare che le istanze delle entit\u00e0 fornite al metodo {0} siano basate sulla versione pi\u00f9 recente di ciascuna entit\u00e0. La versione pi\u00f9 recente di un''entit\u00e0 pu\u00f2 essere ottenuta da un metodo find o dal valore del risultato di uno dei seguenti metodi del ciclo di vita: {5}.
+CWWKD1052.multi.opt.lock.exc.explanation=Una o pi\u00f9 entit\u00e0 non sono state trovate nel database.
+CWWKD1052.multi.opt.lock.exc.useraction=Se si prevede che un'entit\u00e0 non venga trovata nel database, non \u00e8 necessario intervenire. Altrimenti, assicurarsi che venga utilizzata la versione pi\u00f9 recente di ciascuna entit\u00e0.
+
+CWWKD1053.empty.result=CWWKD1053E: Il tipo di ritorno {0} del metodo {1} dell''interfaccia del repository {2} non \u00e8 in grado di restituire un risultato vuoto. Se ci si aspetta un risultato vuoto, il metodo del repository deve restituire un array o uno dei seguenti tipi di ritorno: {3}.
+CWWKD1053.empty.result.explanation=Il tipo di ritorno del metodo repository non consente di restituire un risultato vuoto.
+CWWKD1053.empty.result.useraction=Aggiornare il metodo del repository per utilizzare uno dei tipi di ritorno che possono rappresentare un risultato vuoto.
+
+CWWKD1054.non.unique.result=CWWKD1054E: Il metodo {0} dell''interfaccia del repository {1} ha il tipo di ritorno {2}, che non \u00e8 in grado di restituire risultati {3}. Per limitare a un solo risultato, utilizzare uno dei seguenti modelli di Jakarta Data: {4}.
+CWWKD1054.non.unique.result.explanation=Il tipo di ritorno del metodo repository non consente di restituire pi\u00f9 risultati.
+CWWKD1054.non.unique.result.useraction=Aggiornare il metodo del repository per utilizzare un tipo di ritorno che supporti pi\u00f9 risultati o aggiornare il metodo del repository per restituire solo un singolo risultato.
+
+CWWKD1055.unsupported.entity.prop=CWWKD1055E: La propriet\u00e0 {0} dell''entit\u00e0 {1} ha un tipo non supportato: {2}. Jakarta Data supporta i tipi di enumerazione Java, i tipi temporali {3} e i seguenti tipi di base: {4}. Il fornitore di dati Jakarta integrato supporta anche alcuni tipi di Jakarta Persistence, come gli embeddables.
+CWWKD1055.unsupported.entity.prop.explanation=Jakarta Data non supporta il tipo utilizzato dalla propriet\u00e0 dell'entit\u00e0.
+CWWKD1055.unsupported.entity.prop.useraction=Aggiornare la propriet\u00e0 dell'entit\u00e0 per utilizzare uno dei tipi supportati.
+
+CWWKD1056.unsupported.keyword=CWWKD1056E: Il metodo {0} dell''interfaccia del repository {1} ha un nome che include la parola chiave {2}, che non \u00e8 una parola chiave supportata dallo schema Jakarta Data Query by Method Name.
+CWWKD1056.unsupported.keyword.explanation=Il nome del metodo include una parola chiave che non \u00e8 riconosciuta come parte del pattern supportato Jakarta Data Query by Method Name.
+CWWKD1056.unsupported.keyword.useraction=Rinominare il metodo del repository per rimuovere la parola chiave non supportata.
+
+CWWKD1057.no.args.constr.inacc=CWWKD1057E: Il tipo di ritorno {0} del metodo {1} dell''interfaccia del repository {2} non \u00e8 valido per un metodo del repository, perch\u00e9 la classe {3} non ha un costruttore pubblico senza parametri.
+CWWKD1057.no.args.constr.inacc.explanation=\u00c8 necessario un costruttore pubblico senza parametri per convertire il risultato nella classe specificata.
+CWWKD1057.no.args.constr.inacc.useraction=Aggiornare il metodo del repository in modo che abbia un tipo di ritorno supportato da Jakarta Data o che sia una sottoclasse di Iterable con un costruttore pubblico che non abbia parametri.
+
+CWWKD1058.no.args.constr.err=CWWKD1058E: Il tipo di ritorno del metodo {1} dell''interfaccia del repository {2} non \u00e8 valido per un metodo del repository perch\u00e9 il costruttore della classe {3} ha generato un errore: {4}.
+CWWKD1058.no.args.constr.err.explanation=Il costruttore pubblico senza parametri \u00e8 fallito a causa di un errore.
+CWWKD1058.no.args.constr.err.useraction=Correggere l'errore nel costruttore o aggiornare il metodo del repository per utilizzare un tipo di ritorno diverso.
+
+CWWKD1059.prop.cast.err=CWWKD1059E: Il metodo {0} dell''interfaccia del deposito {1} non pu\u00f2 accedere alla propriet\u00e0 {2} dell''entit\u00e0 {3} perch\u00e9 il campo o il metodo {4} della classe {5} \u00e8 incompatibile con un valore {6}.
+CWWKD1059.prop.cast.err.explanation=Una propriet\u00e0 dell'entit\u00e0 o una propriet\u00e0 correlata della sua gerarchia non \u00e8 compatibile con il tipo previsto.
+CWWKD1059.prop.cast.err.useraction=Rivedere il modello dell'entit\u00e0 e verificare che siano stati utilizzati i tipi corretti per ogni propriet\u00e0.
+
+CWWKD1060.name.out.of.scope=CWWKD1060E: L''interfaccia del repository {0} nell''applicazione {1} configura un valore {2} per l''attributo {3}, ma i nomi {3} non sono accessibili all''artefatto che fornisce l''interfaccia del repository. Utilizzare invece un nome {4}.
+CWWKD1060.name.out.of.scope.explanation=Lo spazio dei nomi specificato non \u00e8 accessibile dall'artefatto in cui \u00e8 definita l'interfaccia del repository.
+CWWKD1060.name.out.of.scope.useraction=Aggiornare l'annotazione Repository per specificare un nome di archivio dati visibile al modulo o alla libreria che fornisce l'interfaccia del repository.
+
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: L''interfaccia del repository {0}, definita nel modulo enterprise bean {1} dell''applicazione {2}, configura un valore {2} per l''attributo {3}. Tuttavia, i nomi {4} non sono accessibili ai moduli enterprise bean. Utilizzare un nome appartenente a uno dei seguenti spazi dei nomi: {5}.
+CWWKD1061.comp.name.in.ejb.explanation=Lo spazio dei nomi specificato non \u00e8 accessibile al modulo enterprise bean in cui \u00e8 definita l'interfaccia del repository.
+CWWKD1061.comp.name.in.ejb.useraction=Aggiornare l'annotazione Repository per specificare un nome di archivio dati visibile al modulo enterprise bean che fornisce l'interfaccia del repository.
+
+CWWKD1062.resource.not.found=CWWKD1062E: Il metodo {0} dell''interfaccia del deposito {1} non \u00e8 in grado di individuare la risorsa {2} con il filtro {3}.
+CWWKD1062.resource.not.found.explanation=La risorsa non \u00e8 stata trovata.
+CWWKD1062.resource.not.found.useraction=Assicurarsi che la risorsa specificata e tutte le altre risorse da cui dipende esistano e siano configurate correttamente.
+
+CWWKD1063.unsupported.resource=CWWKD1063E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 ottenere una risorsa {2} perch\u00e9 il provider Jakarta Persistence non supporta l''operazione di unwrap che restituisce un''istanza {3}.
+CWWKD1063.unsupported.resource.explanation=Il provider Jakarta Persistence non supporta l'operazione di unwrap che restituisce il tipo di risorsa specificato.
+CWWKD1063.unsupported.resource.useraction=Rimuove il metodo di accesso alle risorse non supportato dall'interfaccia del repository.
+
+CWWKD1064.datastore.error=CWWKD1064E: Il metodo {0} dell''interfaccia del repository {1} non \u00e8 in grado di ottenere l''archivio dati {2} per il repository a causa del seguente errore: {3}.
+CWWKD1064.datastore.error.explanation=Si \u00e8 verificato un errore durante il tentativo di ottenere l'archivio dati.
+CWWKD1064.datastore.error.useraction=Assicurarsi che l'archivio dati specificato e tutte le altre risorse da cui dipende esistano e siano configurate correttamente.
+
+CWWKD1065.ddlgen.timeout=CWWKD1065E: La generazione DDL per l''interfaccia del repository {0} non \u00e8 riuscita perch\u00e9 il data store {1} non ha completato la generazione DDL entro {2} secondi per le seguenti entit\u00e0: {3}.
+CWWKD1065.ddlgen.timeout.explanation=Il tentativo di generazione del DDL \u00e8 scaduto e non \u00e8 stato completato.
+CWWKD1065.ddlgen.timeout.useraction=Tentare nuovamente la generazione del DDL quando il sistema e il database non sono sotto carico.
+
+CWWKD1066.ddlgen.failed=CWWKD1066E: La generazione DDL per l''interfaccia del repository {0} che utilizza il data store {1} ha riscontrato un errore durante il tentativo di generazione DDL per le seguenti entit\u00e0: {2}. L''errore \u00e8: {3}.
+CWWKD1066.ddlgen.failed.explanation=Il tentativo di generazione del DDL non \u00e8 riuscito e non \u00e8 stato completato.
+CWWKD1066.ddlgen.failed.useraction=Indagare l'errore e apportare correzioni all'interfaccia del repository, alle entit\u00e0, alla configurazione dell'archivio dati o al database.
+
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: La generazione del DDL per l''interfaccia del repository {0} \u00e8 fallita perch\u00e9 il data store {1} non era disponibile o non era in grado di rendere disponibili le seguenti entit\u00e0 entro {2} secondi: {3}.
+CWWKD1067.ddlgen.emf.timeout.explanation=L'acquisizione delle risorse necessarie per la generazione del DDL \u00e8 scaduta e non \u00e8 stata completata.
+CWWKD1067.ddlgen.emf.timeout.useraction=Tentare nuovamente la generazione del DDL quando il sistema e il database non sono sotto carico.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: L''interfaccia del repository {0} ha pi\u00f9 entit\u00e0 denominate {1} che sono fornite da classi diverse: {2}. Utilizzare le seguenti annotazioni di entit\u00e0 di Jakarta Persistence per assegnare un nome di entit\u00e0 e un nome di tabella univoci a ogni classe di entit\u00e0: {3}.
+CWWKD1068.entity.name.conflict.explanation=I nomi delle entit\u00e0 e delle tabelle sono dedotti dal nome della classe non qualificata o assegnati dalle annotazioni di Jakarta Persistence.
+CWWKD1068.entity.name.conflict.useraction=Rinominare le entit\u00e0 o aggiungere le annotazioni di Jakarta Persistence per risolvere esplicitamente il conflitto di nomi.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: L''interfaccia del repository {0} ha pi\u00f9 entit\u00e0 denominate {1} che sono fornite da classi diverse: {2}. Quando i record Java vengono usati come entit\u00e0, deve essere possibile aggiungere un suffisso di Entit\u00e0 al nome dell''entit\u00e0 senza che si crei un conflitto di nomi. Ad esempio: {2}.
+CWWKD1069.record.entity.name.conflict.explanation=I nomi delle entit\u00e0 e delle tabelle sono dedotti dal nome della classe non qualificata o assegnati dalle annotazioni di Jakarta Persistence.
+CWWKD1069.record.entity.name.conflict.useraction=Rinominare le entit\u00e0 o passare alle entit\u00e0 di Jakarta Persistence per risolvere il conflitto di nomi.
+
+CWWKD1070.record.convert.err=CWWKD1070E: Il record {0} fornito al metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere usato come entit\u00e0 a causa del seguente errore: {3}.
+CWWKD1070.record.convert.err.explanation=Non \u00e8 possibile utilizzare il record Java come entit\u00e0.
+CWWKD1070.record.convert.err.useraction=Definire l'entit\u00e0 come entit\u00e0 Jakarta Persistence invece di usare un'entit\u00e0 record Java.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: Il record {0} non pu\u00f2 essere usato come entit\u00e0 perch\u00e9 ha una o pi\u00f9 variabili di tipo: {1}.
+CWWKD1071.record.with.type.var.explanation=Le classi di entit\u00e0 non possono avere variabili di tipo generico.
+CWWKD1071.record.with.type.var.useraction=Rimuove le variabili di tipo dal record.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: Il record {0} non pu\u00f2 essere usato come entit\u00e0 perch\u00e9 i suoi componenti {1} e {2} si risolvono entrambi nello stesso nome di propriet\u00e0 dell''entit\u00e0.
+CWWKD1072.record.comp.conflict.explanation=I nomi delle propriet\u00e0 delle entit\u00e0 devono essere univoci, ignorando le maiuscole e le minuscole.
+CWWKD1072.record.comp.conflict.useraction=Rinominare uno dei componenti del record per evitare il conflitto.
+
+CWWKD1073.offset.exceeds.max=CWWKD1073E: Il punto di partenza {0} del limite {1} fornito al metodo {2} dell''interfaccia del deposito {3} supera il valore massimo consentito di {4}.
+CWWKD1073.offset.exceeds.max.explanation=Il punto di partenza del limite \u00e8 troppo grande.
+CWWKD1073.offset.exceeds.max.useraction=Aggiungere restrizioni alla query per ridurre il numero di risultati corrispondenti.
+
+CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: Il metodo {0} dell''interfaccia del deposito {1} non deve combinare la parola chiave {2} con la parola chiave {3} nella stessa condizione Query by Method Name.
+CWWKD1074.qbmn.incompat.keywords.explanation=Le parole chiave Query by Method Name specificate non sono compatibili tra loro.
+CWWKD1074.qbmn.incompat.keywords.useraction=Rinominare il metodo per non combinare le parole chiave sulla stessa condizione.
+
+CWWKD1075.entity.prop.conflict=CWWKD1075E: L''entit\u00e0 {0} non pu\u00f2 avere una propriet\u00e0 chiamata {1} e una propriet\u00e0 chiamata {2}, perch\u00e9 la specifica Jakarta Data considera questi nomi come alias della stessa propriet\u00e0 dell''entit\u00e0.
+CWWKD1075.entity.prop.conflict.explanation=C'\u00e8 una collisione tra i nomi di due propriet\u00e0 dell'entit\u00e0 a causa del carattere di sottolineatura.
+CWWKD1075.entity.prop.conflict.useraction=Non utilizzare il carattere di sottolineatura nei nomi delle propriet\u00e0 delle entit\u00e0.
+
+CWWKD1076.repo.disposed=CWWKD1076E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 essere invocato perch\u00e9 l''applicazione che definisce il repository si \u00e8 fermata. L''istanza del repository \u00e8 {2}.
+CWWKD1076.repo.disposed.explanation=I metodi del repository non devono essere utilizzati al di fuori del ciclo di vita dell'applicazione che lo definisce.
+CWWKD1076.repo.disposed.useraction=Assicurarsi che il metodo del repository non venga utilizzato al di fuori dell'ambito dell'applicazione che lo definisce.
+
+CWWKD1077.defaultds.not.found=CWWKD1077E: L''artefatto applicativo {0} ha un''interfaccia di repository {1} che usa o si affida all''archivio dati {2}, che deve essere configurato nella configurazione del server definendo un elemento dataSource con un identificatore DefaultDataSource. Per esempio, {3} In alternativa, assegnare al valore dataStore dell''annotazione Repository l''identificatore di un elemento databaseStore o il nome JNDI di un riferimento di risorsa di origine dati o di unit\u00e0 di persistenza accessibile all''artefatto applicativo. Un elemento databaseStore pu\u00f2 essere definito nella configurazione del server. Ad esempio, {4} Un componente applicativo pu\u00f2 usare l''annotazione Resource per definire un riferimento a una risorsa dell''origine dati. Ad esempio, {5}, che richiede che la configurazione del server abbia un elemento di configurazione dataSource con un attributo {6}. Un componente applicativo pu\u00f2 usare l''annotazione PersistenceUnit per definire un riferime\
+    nto a un''unit\u00e0 di persistenza. Ad esempio, {7}, che richiede che il file persistence.xml abbia un elemento persistence-unit con un attributo name corrispondente. Ad esempio, {8}
+CWWKD1077.defaultds.not.found.explanation=I repository di Jakarta Data sono predefiniti all'origine dati predefinita di Jakarta EE, che deve essere configurata nella configurazione del server.
+CWWKD1077.defaultds.not.found.useraction=Configurare l'origine dati predefinita di Jakarta EE o specificare un archivio dati diverso per il repository.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: Una o pi\u00f9 interfacce di repository{0}) dell''artefatto applicativo {1} specificano un archivio dati {2} che non corrisponde all''ID di un elemento dataSource o di un elemento databaseStore nella configurazione del server, oppure non corrisponde al nome JNDI di un''origine dati, a un riferimento a una risorsa di origine dati o a un riferimento a un''unit\u00e0 di persistenza accessibile all''artefatto applicativo, oppure una delle risorse correlate non \u00e8 configurata correttamente. Un elemento dataSource pu\u00f2 essere definito nella configurazione del server. Ad esempio, {3} Un elemento databaseStore pu\u00f2 essere definito nella configurazione del server. Ad esempio, {4} Un componente applicativo pu\u00f2 usare l''annotazione Resource per definire un riferimento a una risorsa dell''origine dati. Ad esempio, {5}, che richiede che la configurazione del server abbia un elemento di configurazione dataSource con un attributo {6}. Un componente appl\
+    icativo pu\u00f2 usare l''annotazione PersistenceUnit per definire un riferimento a un''unit\u00e0 di persistenza. Ad esempio, {7}, che richiede che il file persistence.xml abbia un elemento persistence-unit con un attributo name corrispondente. Ad esempio, {8}
+CWWKD1078.datastore.not.found.explanation=L'archivio dati di un repository Jakarta Data pu\u00f2 essere l'ID di un elemento dataSource o databaseStore nella configurazione del server, oppure pu\u00f2 essere un nome JNDI di un'origine dati, un riferimento alla risorsa dell'origine dati o un riferimento all'unit\u00e0 di persistenza.
+CWWKD1078.datastore.not.found.useraction=Assicurarsi che la risorsa sia configurata correttamente. Se si usa un nome JNDI, assicurarsi che l'ambito del nome JNDI renda la risorsa accessibile all'artefatto applicativo che fornisce il repository.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: Una o pi\u00f9 interfacce di repository{0}) dell''artefatto applicativo {1} specificano un archivio di dati con il nome {2} Ma un''origine dati, un riferimento alla risorsa dell''origine dati o un riferimento all''unit\u00e0 di persistenza con quel nome JNDI non \u00e8 accessibile all''artefatto applicativo, oppure una delle risorse correlate non \u00e8 configurata correttamente. Un componente applicativo pu\u00f2 usare l''annotazione Resource per definire un riferimento a una risorsa dell''origine dati. Ad esempio, {3}, che punta a un elemento di configurazione del server dataSource con un attributo {4}. Un componente applicativo pu\u00f2 usare l''annotazione PersistenceUnit per definire un riferimento a un''unit\u00e0 di persistenza. Ad esempio, {5}, che richiede che il file persistence.xml abbia un elemento persistence-unit con un attributo name corrispondente. Ad esempio, {6} Un componente applicativo pu\u00f2 usare l''annotazione DataSourceDefinition per \
+    definire un''origine dati. In alternativa, un elemento dataSource pu\u00f2 definire un''origine dati nella configurazione del server. Ad esempio, {7}
+CWWKD1079.jndi.not.found.explanation=Quando l'archivio dati di un repository Jakarta Data \u00e8 impostato su un nome JNDI di un'origine dati, un riferimento a una risorsa dell'origine dati o un riferimento a un'unit\u00e0 di persistenza, il nome JNDI deve essere accessibile all'artefatto applicativo che fornisce il repository e l'origine dati o l'unit\u00e0 di persistenza devono essere configurate correttamente.
+CWWKD1079.jndi.not.found.useraction=Assicurarsi che la risorsa sia configurata correttamente e che l'ambito del nome JNDI renda la risorsa accessibile all'artefatto applicativo che fornisce il repository.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: Una o pi\u00f9 interfacce del repository{0}) dell''artefatto applicativo {1} non sono disponibili a causa di un errore. L''errore potrebbe essere dovuto a un problema di configurazione, oppure l''archivio dati {2} del repository potrebbe non essere disponibile. L''errore \u00e8: {3}.
+CWWKD1080.datastore.general.err.explanation=Un errore impedisce di utilizzare i repository specificati.
+CWWKD1080.datastore.general.err.useraction=Individuare le interfacce del repository e la configurazione dell'archivio dati, apportando le correzioni necessarie.
+
+CWWKD1081.entity.general.err=CWWKD1081E: A causa di un errore, l''entit\u00e0 {0} non \u00e8 disponibile per una o pi\u00f9 interfacce di deposito{1}) che utilizzano l''archivio dati {2}. Errore: {3}.
+CWWKD1081.entity.general.err.explanation=Un errore impedisce di utilizzare l'entit\u00e0 specificata.
+CWWKD1081.entity.general.err.useraction=Individuare l'entit\u00e0 e apportare le correzioni necessarie.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: L''unit\u00e0 di persistenza per l''archivio dati {0} non definisce una o pi\u00f9 classi di entit\u00e0{1}) che una o pi\u00f9 interfacce di repository{2}), che utilizzano l''archivio dati, richiedono.
+CWWKD1082.entity.classes.missing.explanation=I repository utilizzano classi di entit\u00e0 che devono essere definite nell'unit\u00e0 di persistenza.
+CWWKD1082.entity.classes.missing.useraction=Includere tutte le classi di entit\u00e0 nell'unit\u00e0 di persistenza.

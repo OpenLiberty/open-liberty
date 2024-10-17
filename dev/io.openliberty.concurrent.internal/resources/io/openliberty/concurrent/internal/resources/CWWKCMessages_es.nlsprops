@@ -46,7 +46,19 @@ CWWKC1204.not.serializable=CWWKC1204E: No se puede crear un proxy contextual ser
 CWWKC1204.not.serializable.explanation=Los tipos de contexto de hebra de terceros no son compatibles con la serializaci\u00f3n y no se pueden configurar para que se propaguen para proxies contextuales serializables.
 CWWKC1204.not.serializable.useraction=Actualice la aplicaci\u00f3n para solicitar un proxy contextual no serializable o aseg\u00farese de que no hay ning\u00fan tipo de contexto de terceros configurado para que se propague.
 
-CWWKC1217.no.virtual.threads=CWWKC1217I: La especificaci\u00f3n Concurrency requiere que virtual=true sea ignorado en la definici\u00f3n {0} {1} en el artefacto de aplicaci\u00f3n {2} porque Java {3} no soporta hilos virtuales.
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: El artefacto de aplicaci\u00f3n {0} no puede especificar los calificadores {1} en la anotaci\u00f3n {2} o elemento descriptor de despliegue {3} que tiene el nombre {4} porque la caracter\u00edstica {5} no est\u00e1 habilitada.
+CWWKC1205.qualifiers.require.cdi.explanation=La funci\u00f3n CDI es un requisito previo para especificar calificadores en una definici\u00f3n de recurso.
+CWWKC1205.qualifiers.require.cdi.useraction=Activa la funci\u00f3n CDI.
+
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: El artefacto de aplicaci\u00f3n {0} especifica una anotaci\u00f3n {1} o un elemento descriptor de despliegue {2} que tiene el nombre {3} y la lista de calificadores {4}. La lista de calificadores incluye un valor {5} que no es una anotaci\u00f3n. Todos los elementos de la lista deben ser clases de anotaci\u00f3n anotadas con @Qualifier y @Retention(RUNTIME). Por ejemplo, {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Cada valor de la lista de calificadores debe ser una clase de anotaci\u00f3n.
+CWWKC1206.qualifier.must.be.anno.useraction=Aseg\u00farese de que todos los valores de la lista de calificadores son clases de anotaci\u00f3n.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: El artefacto de aplicaci\u00f3n {0} especifica una anotaci\u00f3n {1} o un elemento descriptor de despliegue {2} que tiene el nombre {3} y la lista de calificadores {4}. La lista de calificadores incluye la anotaci\u00f3n {5}, que no est\u00e1 anotada con @jakartajakarta.inject.Qualifier y @Retention(RUNTIME). Un ejemplo de calificador v\u00e1lido es: {6}
+CWWKC1207.lacks.qualifier.anno.explanation=La anotaci\u00f3n Qualifier indica que la anotaci\u00f3n es un calificador. La anotaci\u00f3n Retenci\u00f3n controla la disponibilidad de las anotaciones.
+CWWKC1207.lacks.qualifier.anno.useraction=A\u00f1ade las anotaciones @Qualifier y @Retention(RUNTIME) a la clase qualifier.
+
+CWWKC1217.no.virtual.threads=CWWKC1217I: La especificaci\u00f3n Concurrency requiere que virtual=true sea ignorado en la anotaci\u00f3n {1} del artefacto de aplicaci\u00f3n {0} o en el elemento descriptor de despliegue {2} con el nombre {3} porque Java {4} no soporta hilos virtuales.
 CWWKC1217.no.virtual.threads.explanation=Los hilos virtuales s\u00f3lo est\u00e1n disponibles en Java 21 y versiones posteriores.
 CWWKC1217.no.virtual.threads.useraction=Actualice a Java 21 o posterior para permitir el uso de hilos virtuales.
 

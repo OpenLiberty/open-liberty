@@ -46,7 +46,19 @@ CWWKC1204.not.serializable=CWWKC1204E: Nelze vytvo\u0159it serializovateln\u00fd
 CWWKC1204.not.serializable.explanation=Typy kontextu podprocesu t\u0159et\u00edch stran nejsou kompatibiln\u00ed se serializac\u00ed, a nelze je nakonfigurovat pro \u0161\u00ed\u0159en\u00ed pro serializovateln\u00e9 kontextov\u00e9 servery proxy.
 CWWKC1204.not.serializable.useraction=Aktualizujte aplikaci, aby po\u017eadovala kontextov\u00fd proxy server, kter\u00fd nelze serializovat, nebo zajist\u011bte, aby nebyly nakonfigurov\u00e1ny \u017e\u00e1dn\u00e9 typy kontextu t\u0159et\u00edch stran k \u0161\u00ed\u0159en\u00ed
 
-CWWKC1217.no.virtual.threads=CWWKC1217I: Specifikace Concurrency vy\u017eaduje, aby byl virtual=true ignorov\u00e1n v definici {0} {1} v artefaktu aplikace {2} , proto\u017ee Java {3} nepodporuje virtu\u00e1ln\u00ed vl\u00e1kna.
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: Artefakt aplikace {0} nem\u016f\u017ee specifikovat {1} kvalifik\u00e1tory v anotaci {2} nebo prvku deskriptoru nasazen\u00ed {3} , kter\u00fd m\u00e1 n\u00e1zev {4} , proto\u017ee funkce {5} nen\u00ed povolena.
+CWWKC1205.qualifiers.require.cdi.explanation=Funkce CDI je nezbytn\u00fdm p\u0159edpokladem pro ur\u010den\u00ed kvalifik\u00e1tor\u016f v definici prost\u0159edku.
+CWWKC1205.qualifiers.require.cdi.useraction=Povolte funkci CDI.
+
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: Artefakt aplikace {0} ur\u010duje anotaci {1} nebo prvek deskriptoru nasazen\u00ed {2} , kter\u00fd m\u00e1 n\u00e1zev {3} a seznam kvalifik\u00e1tor\u016f {4} . Seznam kvalifik\u00e1tor\u016f obsahuje hodnotu {5} , kter\u00e1 nen\u00ed anotac\u00ed. V\u0161echny prvky v seznamu mus\u00ed b\u00fdt anota\u010dn\u00ed t\u0159\u00eddy, kter\u00e9 jsou anotov\u00e1ny pomoc\u00ed @Qualifier a @Retention(RUNTIME). Nap\u0159\u00edklad {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Ka\u017ed\u00e1 hodnota v seznamu kvalifik\u00e1tor\u016f mus\u00ed b\u00fdt anota\u010dn\u00ed t\u0159\u00eddou.
+CWWKC1206.qualifier.must.be.anno.useraction=Ujist\u011bte se, \u017ee v\u0161echny hodnoty v seznamu kvalifik\u00e1tor\u016f jsou anota\u010dn\u00ed t\u0159\u00eddy.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Artefakt aplikace {0} ur\u010duje anotaci {1} nebo prvek deskriptoru nasazen\u00ed {2} , kter\u00fd m\u00e1 n\u00e1zev {3} a seznam kvalifik\u00e1tor\u016f {4} . Seznam kvalifik\u00e1tor\u016f obsahuje anotaci {5} , kter\u00e1 nen\u00ed anotov\u00e1na pomoc\u00ed @ jakarta.inject.Qualifier a @Retention(RUNTIME). P\u0159\u00edklad platn\u00e9ho kvalifik\u00e1toru je: {6}
+CWWKC1207.lacks.qualifier.anno.explanation=Anotace kvalifik\u00e1toru ozna\u010duje, \u017ee anotace je kvalifik\u00e1tor. Anotace Zachov\u00e1n\u00ed \u0159\u00edd\u00ed dostupnost anotac\u00ed.
+CWWKC1207.lacks.qualifier.anno.useraction=P\u0159idejte do t\u0159\u00eddy kvalifik\u00e1toru anotace @Qualifier a @Retention(RUNTIME).
+
+CWWKC1217.no.virtual.threads=CWWKC1217I: Specifikace Concurrency vy\u017eaduje, aby byl virtual=true ignorov\u00e1n v anotaci {1} artefaktu aplikace {0} nebo prvku deskriptoru nasazen\u00ed {2} s n\u00e1zvem {3} , proto\u017ee Java {4} nepodporuje virtu\u00e1ln\u00ed vl\u00e1kna.
 CWWKC1217.no.virtual.threads.explanation=Virtu\u00e1ln\u00ed vl\u00e1kna jsou k dispozici pouze v Jav\u011b 21 a nov\u011bj\u0161\u00edch.
 CWWKC1217.no.virtual.threads.useraction=Aktualizujte na Java 21 nebo nov\u011bj\u0161\u00ed, abyste umo\u017enili pou\u017e\u00edv\u00e1n\u00ed virtu\u00e1ln\u00edch vl\u00e1ken.
 

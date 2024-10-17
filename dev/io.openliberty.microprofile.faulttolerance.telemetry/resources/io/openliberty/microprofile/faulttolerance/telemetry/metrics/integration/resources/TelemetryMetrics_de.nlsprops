@@ -29,25 +29,25 @@
 
 ft.invocations.total.description=Gibt an, wie oft die Methode aufgerufen wurde
 
-ft.retry.calls.total.description=Gibt an, wie oft die Wiederholungslogik ausgef\u00fchrt wurde. Dies ist immer ein Mal pro Methodenaufruf.
+ft.retry.calls.total.description=Die Anzahl der Wiederholungsversuche, die die Logik ausgef\u00fchrt wurde. Dieser Wert ist immer gleich einmal pro Methodenaufruf.
 
 ft.retry.retries.total.description=Gibt an, wie oft die Methode wiederholt wurde.
 
-ft.timeout.calls.total.description=Gibt an, wie oft die Zeitlimitlogik ausgef\u00fchrt wurde. Dies ist in der Regel einmal pro Methodenaufruf, kann aber null Mal sein, wenn der Trennschalter die Ausf\u00fchrung verhindert, oder mehrmals, wenn die Methode wiederholt wird.
+ft.timeout.calls.total.description=Wie oft die Timeout-Logik ausgef\u00fchrt wurde. Dieser Wert ist normalerweise gleich einmal pro Methodenaufruf. Sie kann jedoch Null sein, wenn der Schutzschalter die Ausf\u00fchrung verhindert, oder mehr als einmal pro Methodenaufruf, wenn die Methode erneut versucht wird.
 
 ft.timeout.executionDuration.description=Histogramm der Ausf\u00fchrungszeiten f\u00fcr die Methode.
 
-ft.circuitbreaker.calls.total.description=Gibt an, wie oft die Logik des Sicherungsautomaten ausgef\u00fchrt wurde. Dies ist in der Regel einmal pro Methodenaufruf, kann aber mehr als einmal sein, wenn der Methodenaufruf wiederholt wird.
+ft.circuitbreaker.calls.total.description=Die Anzahl der Ausl\u00f6sungen der Schutzschalterlogik. Dieser Wert ist in der Regel gleich einmal pro Methodenaufruf, kann aber auch mehr als einmal sein, wenn die Methode erneut versucht wird.
 
-ft.circuitbreaker.state.total.description=Zeit, die der Trennschalter in jedem Status verbracht hat.
+ft.circuitbreaker.state.total.description=Die Zeit, die der Leistungsschalter in jedem Zustand verbracht hat.
 
-ft.circuitbreaker.opened.total.description=Gibt an, wie oft der Trennschalter vom Status 'Geschlossen' in den Status 'Offen' versetzt wurde.
+ft.circuitbreaker.opened.total.description=Anzahl der Ausl\u00f6sungen des Leistungsschalters vom geschlossenen Zustand in den offenen Zustand.
 
-ft.bulkhead.calls.total.description=Gibt an, wie oft die Bulkhead-Logik ausgef\u00fchrt wurde. Dies ist in der Regel einmal pro Methodenaufruf, kann aber null Mal sein, wenn der Trennschalter die Ausf\u00fchrung verhindert hat, oder mehr als einmal, wenn der Methodenaufruf wiederholt wird.
+ft.bulkhead.calls.total.description=Die Anzahl der Durchl\u00e4ufe der Schottlogik. Dieser Wert ist normalerweise gleich einmal pro Methodenaufruf. Sie kann jedoch Null sein, wenn der Schutzschalter die Ausf\u00fchrung verhindert, oder mehr als einmal pro Methodenaufruf, wenn die Methode erneut versucht wird.
 
 ft.bulkhead.executionsRunning.description=Die Anzahl der momentan aktiven Ausf\u00fchrungen.
 
-ft.bulkhead.executionsWaiting.description=Anzahl der Ausf\u00fchrungen, die derzeit in der Warteschlange warten.
+ft.bulkhead.executionsWaiting.description=Anzahl der Ausf\u00fchrungen, die sich derzeit in der Warteschlange befinden.
 
 ft.bulkhead.runningDuration.description=Histogramm der Zeit, die Methodenausf\u00fchrungen ausgef\u00fchrt wurden.
 

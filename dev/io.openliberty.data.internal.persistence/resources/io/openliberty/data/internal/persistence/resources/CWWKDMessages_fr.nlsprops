@@ -90,7 +90,7 @@ CWWKD1015.null.entity.param=CWWKD1015E: La m\u00e9thode {0} de l''interface de d
 CWWKD1015.null.entity.param.explanation=Les m\u00e9thodes de cycle de vie n\u00e9cessitent une instance d'entit\u00e9 non nulle.
 CWWKD1015.null.entity.param.useraction=Mise \u00e0 jour du code de l'application pour \u00e9viter de fournir une valeur d'entit\u00e9 nulle \u00e0 la m\u00e9thode de d\u00e9p\u00f4t.
 
-CWWKD1016.incompat.entity.param=CWWKD1016E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} n\u00e9cessite une entit\u00e9 {0}, mais une valeur {1} a \u00e9t\u00e9 fournie.
+CWWKD1016.incompat.entity.param=CWWKD1016E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} requiert une entit\u00e9 {2}, mais une valeur {3} a \u00e9t\u00e9 fournie.
 CWWKD1016.incompat.entity.param.explanation=La m\u00e9thode de cycle de vie n'accepte que les valeurs d'entit\u00e9 du type d\u00e9clar\u00e9.
 CWWKD1016.incompat.entity.param.useraction=Mettre \u00e0 jour le code de l'application pour fournir une valeur d'entit\u00e9 du m\u00eame type que celui d\u00e9clar\u00e9 par la m\u00e9thode du r\u00e9f\u00e9rentiel.
 
@@ -165,3 +165,198 @@ CWWKD1033.ql.orderby.disallowed.useraction=Remplacer la clause ORDER BY par des 
 CWWKD1034.ql.where.required=CWWKD1034E: La requ\u00eate sp\u00e9cifi\u00e9e par la m\u00e9thode {0} de l''interface de r\u00e9f\u00e9rentiel {1} doit se terminer par une clause WHERE car la m\u00e9thode renvoie {2}. La clause WHERE se termine \u00e0 la position {3}, mais la longueur de la requ\u00eate est {4}. La requ\u00eate est la suivante : {5}.
 CWWKD1034.ql.where.required.explanation=Une clause WHERE est n\u00e9cessaire lors de l'utilisation de la pagination bas\u00e9e sur le curseur.
 CWWKD1034.ql.where.required.useraction=Ajoutez une clause WHERE \u00e0 la requ\u00eate.
+
+CWWKD1035.incompat.page.mode=CWWKD1035E: Une demande de page avec le mode de pagination {0} ne doit pas \u00eatre fournie \u00e0 la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} car la m\u00e9thode renvoie {3} au lieu de {4}.
+CWWKD1035.incompat.page.mode.explanation=Le mode de pagination demand\u00e9 n'est pas compatible avec le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1035.incompat.page.mode.useraction=Utilisez un type de retour Page pour le mode de pagination OFFSET et un type de retour CursoredPage pour les modes de pagination CURSOR_NEXT et CURSOR_PREVIOUS.
+
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: Un curseur de {0} \u00e9l\u00e9ments fourni \u00e0 la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} ne peut pas \u00eatre utilis\u00e9 avec des crit\u00e8res de tri de taille {3} car le nombre et l''ordre des \u00e9l\u00e9ments du curseur doivent correspondre aux crit\u00e8res de tri. Le curseur est compos\u00e9 de : {4}. Les crit\u00e8res de tri sont : {5}.
+CWWKD1036.cursor.size.mismatch.explanation=Le nombre d'\u00e9l\u00e9ments du curseur doit correspondre \u00e0 la taille des crit\u00e8res de tri combin\u00e9s de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1036.cursor.size.mismatch.useraction=Corrigez les \u00e9l\u00e9ments du curseur ou les crit\u00e8res de tri pour qu'ils aient tous deux la m\u00eame taille.
+
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Impossible d''obtenir un curseur \u00e0 partir du r\u00e9sultat {0} de la m\u00e9thode {1} de l''interface de d\u00e9p\u00f4t {2}. Les requ\u00eates qui utilisent la pagination bas\u00e9e sur le curseur doivent renvoyer des r\u00e9sultats du m\u00eame type que le type d''entit\u00e9, qui est {3}. Le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel est {4}.
+CWWKD1037.cursor.rtrn.mismatch.explanation=La pagination par curseur n'est possible que lorsque la m\u00e9thode du r\u00e9f\u00e9rentiel renvoie le type d'entit\u00e9.
+CWWKD1037.cursor.rtrn.mismatch.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour qu'elle renvoie le type d'entit\u00e9.
+
+CWWKD1038.no.prev.offset.page=CWWKD1038E: Un num\u00e9ro de page ant\u00e9rieur \u00e0 {0} ne peut \u00eatre demand\u00e9 pour la m\u00e9thode {1} de l''interface de d\u00e9p\u00f4t {2} car la m\u00e9thode Page.hasPrevious renvoie un message faux, indiquant qu''il n''y a pas de page pr\u00e9c\u00e9dente.
+CWWKD1038.no.prev.offset.page.explanation=La pagination offset n'autorise pas les num\u00e9ros de page inf\u00e9rieurs \u00e0 1.
+CWWKD1038.no.prev.offset.page.useraction=Assurez-vous que le num\u00e9ro de page demand\u00e9 est un nombre positif et utilisez la m\u00e9thode Page.hasPrevious pour vous assurer qu'il est valide de demander la page pr\u00e9c\u00e9dente.
+
+CWWKD1039.no.prev.cursor.page=CWWKD1039E: Une page pr\u00e9c\u00e9dente ne peut pas \u00eatre demand\u00e9e pour la m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} car la m\u00e9thode Page.hasPrevious renvoie un message faux, indiquant qu''il n''y a pas de page pr\u00e9c\u00e9dente.
+CWWKD1039.no.prev.cursor.page.explanation=La pagination bas\u00e9e sur le curseur ne permet pas de demander une page pr\u00e9c\u00e9dente lorsque l'on sait que la page actuelle contient les r\u00e9sultats du d\u00e9but de l'ensemble de donn\u00e9es.
+CWWKD1039.no.prev.cursor.page.useraction=Utilisez la m\u00e9thode Page.hasPrevious pour vous assurer qu'il est possible de demander la page pr\u00e9c\u00e9dente.
+
+CWWKD1040.no.next.page=CWWKD1040E: Une page suivante ne peut pas \u00eatre demand\u00e9e pour la m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} car {2} renvoie un message faux, indiquant qu''il n''y a pas de page suivante.
+CWWKD1040.no.next.page.explanation=Il n'est pas possible de demander une page suivante lorsque l'on sait que la page actuelle contient la fin de l'ensemble de donn\u00e9es.
+CWWKD1040.no.next.page.useraction=Utilisez la m\u00e9thode hasNext pour vous assurer qu'il est possible de demander la page suivante.
+
+CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} a un type de retour {2} mais il manque un param\u00e8tre de type PageRequest \u00e0 la suite des param\u00e8tres des conditions de la requ\u00eate.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=Les m\u00e9thodes du r\u00e9f\u00e9rentiel avec les types de retour Page et CursoredPage doivent avoir un param\u00e8tre PageRequest.
+CWWKD1041.rtrn.mismatch.pagereq.useraction=Ajouter un param\u00e8tre PageRequest \u00e0 la signature de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+
+CWWKD1042.no.totals=CWWKD1042E: Les pages r\u00e9cup\u00e9r\u00e9es par la m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} n''incluent pas le nombre total d''\u00e9l\u00e9ments et de pages parce que la demande de page {2} sp\u00e9cifie la valeur false pour requestTotal. Pour demander une page avec le d\u00e9compte total, utilisez la m\u00e9thode PageRequest.withTotal au lieu de la m\u00e9thode PageRequest.withoutTotal.
+CWWKD1042.no.totals.explanation=La m\u00e9thode PageRequest.withoutTotal sp\u00e9cifie que les pages demand\u00e9es n'incluent pas le nombre total d'\u00e9l\u00e9ments et de pages.
+CWWKD1042.no.totals.useraction=Utilisez la m\u00e9thode PageRequest.withTotal pour demander le nombre total d'\u00e9l\u00e9ments et de pages.
+
+CWWKD1043.offset.exceeds.max=CWWKD1043E: Le d\u00e9calage {0} n\u00e9cessaire pour la demande de page {1} fournie \u00e0 la m\u00e9thode {2} de l''interface du r\u00e9f\u00e9rentiel {3} d\u00e9passe la valeur maximale autoris\u00e9e de {4}.
+CWWKD1043.offset.exceeds.max.explanation=La combinaison du num\u00e9ro de page et de la taille maximale de la page est trop importante.
+CWWKD1043.offset.exceeds.max.useraction=Ajouter des restrictions \u00e0 la requ\u00eate pour r\u00e9duire le nombre de r\u00e9sultats correspondants.
+
+CWWKD1044.invalid.resource.type=CWWKD1044E: La m\u00e9thode d''acc\u00e8s \u00e0 la ressource {0} du r\u00e9f\u00e9rentiel {1} ne peut pas renvoyer une ressource {2}. Les types de retour pris en charge pour les m\u00e9thodes d''acc\u00e8s aux ressources sont les suivants : {3}.
+CWWKD1044.invalid.resource.type.explanation=Le type de retour de la m\u00e9thode d'acc\u00e8s \u00e0 la ressource ne fait pas partie des types pris en charge par Jakarta Data.
+CWWKD1044.invalid.resource.type.useraction=Supprimez la m\u00e9thode ou mettez-la \u00e0 jour pour qu'elle renvoie l'un des types pris en charge.
+
+CWWKD1045.unknown.entity.anno=CWWKD1045E: Le fournisseur int\u00e9gr\u00e9 de Jakarta Data ne peut pas fournir une impl\u00e9mentation de l''interface de d\u00e9p\u00f4t {0} parce que la classe d''entit\u00e9 {1} utilis\u00e9e par le d\u00e9p\u00f4t comprend une annotation d''entit\u00e9 non reconnue. Les annotations d''entit\u00e9 suivantes se trouvent sur la classe d''entit\u00e9 : {2}. Les annotations d''entit\u00e9 prises en charge sont les suivantes : {3}.
+CWWKD1045.unknown.entity.anno.explanation=Le fournisseur de donn\u00e9es Jakarta int\u00e9gr\u00e9 ne prend pas en charge l'une des annotations d'entit\u00e9.
+CWWKD1045.unknown.entity.anno.useraction=Supprimez l'annotation d'entit\u00e9 non reconnue ou utilisez l'attribut provider de l'annotation Repository pour s\u00e9lectionner un fournisseur Jakarta Data qui reconna\u00eet l'annotation d'entit\u00e9.
+
+CWWKD1046.result.convert.err=CWWKD1046E: Le r\u00e9sultat {0} de la m\u00e9thode {1} de l''interface {2} du r\u00e9f\u00e9rentiel ne peut pas \u00eatre converti dans le type de retour {3} de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1046.result.convert.err.explanation=La valeur du r\u00e9sultat n'est pas compatible avec le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1046.result.convert.err.useraction=Assurez-vous que le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel est coh\u00e9rent avec le type de r\u00e9sultat renvoy\u00e9 par la requ\u00eate.
+
+CWWKD1047.result.out.of.range=CWWKD1047E: Le r\u00e9sultat {0} de la m\u00e9thode {1} de l''interface {2} du r\u00e9f\u00e9rentiel ne peut pas \u00eatre converti dans le type de retour {3} de la m\u00e9thode du r\u00e9f\u00e9rentiel car le r\u00e9sultat n''est pas compris entre {4} et {5}.
+CWWKD1047.result.out.of.range.explanation=La valeur du r\u00e9sultat n'est pas compatible avec le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel car elle se situe en dehors de la plage de valeurs pouvant \u00eatre converties.
+CWWKD1047.result.out.of.range.useraction=Ajustez le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel pour permettre le retour de la valeur.
+
+CWWKD1048.result.exceeds.max=CWWKD1048E: Le r\u00e9sultat {0} de la m\u00e9thode {1} de l''interface {2} du r\u00e9f\u00e9rentiel ne peut pas \u00eatre converti dans le type de retour {3} de la m\u00e9thode du r\u00e9f\u00e9rentiel car la valeur du r\u00e9sultat d\u00e9passe la valeur maximale de {4}.
+CWWKD1048.result.exceeds.max.explanation=La valeur du r\u00e9sultat n'est pas compatible avec le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel car elle d\u00e9passe la valeur maximale qui peut \u00eatre convertie dans ce type.
+CWWKD1048.result.exceeds.max.useraction=Ajustez le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel pour permettre le retour de la valeur.
+
+CWWKD1049.count.convert.err=CWWKD1049E: La valeur de comptage {0} de la m\u00e9thode {1} de l''interface {2} du r\u00e9f\u00e9rentiel ne peut pas \u00eatre convertie dans le type de retour {3} de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1049.count.convert.err.explanation=La valeur de comptage n'est pas compatible avec le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1049.count.convert.err.useraction=Ajustez le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel pour permettre le retour de la valeur.
+
+CWWKD1050.opt.lock.exc=CWWKD1050E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} n''a pas trouv\u00e9 d''entit\u00e9 {2} correspondant aux propri\u00e9t\u00e9s de l''entit\u00e9 : {3}. V\u00e9rifier que l''instance d''entit\u00e9 fournie \u00e0 la m\u00e9thode {0} est bas\u00e9e sur la version la plus r\u00e9cente de l''entit\u00e9. La version la plus r\u00e9cente de l''entit\u00e9 peut \u00eatre obtenue \u00e0 partir d''une m\u00e9thode de recherche ou de la valeur de r\u00e9sultat de l''une des m\u00e9thodes de cycle de vie suivantes : {4}.
+CWWKD1050.opt.lock.exc.explanation=Aucune entit\u00e9 correspondante n'a \u00e9t\u00e9 trouv\u00e9e.
+CWWKD1050.opt.lock.exc.useraction=Si l'on s'attend \u00e0 ce que l'entit\u00e9 ne soit pas trouv\u00e9e dans la base de donn\u00e9es, aucune action n'est n\u00e9cessaire. Dans le cas contraire, il faut s'assurer que la version la plus r\u00e9cente de l'entit\u00e9 est utilis\u00e9e.
+
+CWWKD1051.single.opt.lock.exc=CWWKD1051E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} n''a pas trouv\u00e9 d''entit\u00e9 {2} correspondante dans la base de donn\u00e9es. V\u00e9rifier que l''instance d''entit\u00e9 fournie \u00e0 la m\u00e9thode {0} est bas\u00e9e sur la version la plus r\u00e9cente de l''entit\u00e9. La version la plus r\u00e9cente de l''entit\u00e9 peut \u00eatre obtenue \u00e0 partir d''une m\u00e9thode de recherche ou de la valeur de r\u00e9sultat de l''une des m\u00e9thodes de cycle de vie suivantes : {3}.
+CWWKD1051.single.opt.lock.exc.explanation=Aucune entit\u00e9 correspondante n'a \u00e9t\u00e9 trouv\u00e9e.
+CWWKD1051.single.opt.lock.exc.useraction=Si l'on s'attend \u00e0 ce que l'entit\u00e9 ne soit pas trouv\u00e9e dans la base de donn\u00e9es, aucune action n'est n\u00e9cessaire. Dans le cas contraire, il faut s'assurer que la version la plus r\u00e9cente de l'entit\u00e9 est utilis\u00e9e.
+
+CWWKD1052.multi.opt.lock.exc=CWWKD1052E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} n''a pas trouv\u00e9 {2} des entit\u00e9s {3} {4} dans la base de donn\u00e9es. V\u00e9rifier que les instances d''entit\u00e9s fournies \u00e0 la m\u00e9thode {0} sont bas\u00e9es sur la version la plus r\u00e9cente de chaque entit\u00e9. La version la plus r\u00e9cente d''une entit\u00e9 peut \u00eatre obtenue \u00e0 partir d''une m\u00e9thode de recherche ou de la valeur de r\u00e9sultat de l''une des m\u00e9thodes de cycle de vie suivantes : {5}.
+CWWKD1052.multi.opt.lock.exc.explanation=Une ou plusieurs entit\u00e9s n'ont pas \u00e9t\u00e9 trouv\u00e9es dans la base de donn\u00e9es.
+CWWKD1052.multi.opt.lock.exc.useraction=Si l'on s'attend \u00e0 ce qu'une entit\u00e9 ne soit pas trouv\u00e9e dans la base de donn\u00e9es, aucune action n'est n\u00e9cessaire. Dans le cas contraire, il convient de s'assurer que la version la plus r\u00e9cente de chaque entit\u00e9 est utilis\u00e9e.
+
+CWWKD1053.empty.result=CWWKD1053E: Le type de retour {0} de la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} ne peut pas renvoyer un r\u00e9sultat vide. Si un r\u00e9sultat vide est attendu, la m\u00e9thode de d\u00e9p\u00f4t doit renvoyer un tableau ou l''un des types de retour suivants : {3}.
+CWWKD1053.empty.result.explanation=Le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel ne lui permet pas de renvoyer un r\u00e9sultat vide.
+CWWKD1053.empty.result.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour utiliser l'un des types de retour pouvant repr\u00e9senter un r\u00e9sultat vide.
+
+CWWKD1054.non.unique.result=CWWKD1054E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} a le type de retour {2}, qui n''est pas capable de renvoyer des r\u00e9sultats {3}. Pour se limiter \u00e0 un seul r\u00e9sultat, utilisez l''un des mod\u00e8les de donn\u00e9es Jakarta suivants : {4}.
+CWWKD1054.non.unique.result.explanation=Le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel ne permet pas de renvoyer plusieurs r\u00e9sultats.
+CWWKD1054.non.unique.result.useraction=Mettez \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour utiliser un type de retour prenant en charge plusieurs r\u00e9sultats ou mettez \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour qu'elle ne renvoie qu'un seul r\u00e9sultat.
+
+CWWKD1055.unsupported.entity.prop=CWWKD1055E: La propri\u00e9t\u00e9 {0} de l''entit\u00e9 {1} a un type non pris en charge : {2}. Jakarta Data prend en charge les types d''\u00e9num\u00e9ration Java, les types temporels {3} et les types de base suivants : {4}. Le fournisseur de donn\u00e9es Jakarta int\u00e9gr\u00e9 prend \u00e9galement en charge certains types de persistance Jakarta, tels que les donn\u00e9es int\u00e9grables.
+CWWKD1055.unsupported.entity.prop.explanation=Jakarta Data ne prend pas en charge le type utilis\u00e9 par la propri\u00e9t\u00e9 de l'entit\u00e9.
+CWWKD1055.unsupported.entity.prop.useraction=Mettre \u00e0 jour la propri\u00e9t\u00e9 de l'entit\u00e9 pour utiliser l'un des types pris en charge.
+
+CWWKD1056.unsupported.keyword=CWWKD1056E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} a un nom qui inclut un mot-cl\u00e9 {2}, qui n''est pas un mot-cl\u00e9 pris en charge par le mod\u00e8le Jakarta Data Query by Method Name.
+CWWKD1056.unsupported.keyword.explanation=Le nom de la m\u00e9thode comprend un mot-cl\u00e9 qui n'est pas reconnu comme faisant partie du mod\u00e8le de requ\u00eate Jakarta Data Query by Method Name pris en charge.
+CWWKD1056.unsupported.keyword.useraction=Renommer la m\u00e9thode du r\u00e9f\u00e9rentiel pour supprimer le mot-cl\u00e9 non pris en charge.
+
+CWWKD1057.no.args.constr.inacc=CWWKD1057E: Le type de retour {0} de la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} n''est pas valide pour une m\u00e9thode de r\u00e9f\u00e9rentiel car la classe {3} ne dispose pas d''un constructeur public sans param\u00e8tres.
+CWWKD1057.no.args.constr.inacc.explanation=Un constructeur public sans param\u00e8tres est n\u00e9cessaire pour convertir le r\u00e9sultat dans la classe sp\u00e9cifi\u00e9e.
+CWWKD1057.no.args.constr.inacc.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour qu'elle ait un type de retour support\u00e9 par Jakarta Data ou pour qu'elle soit une sous-classe de Iterable avec un constructeur public qui n'a pas de param\u00e8tres.
+
+CWWKD1058.no.args.constr.err=CWWKD1058E: Le type de retour {0} de la m\u00e9thode {1} de l''interface de d\u00e9p\u00f4t {2} n''est pas valide pour une m\u00e9thode de d\u00e9p\u00f4t parce que le constructeur de la classe {3} a soulev\u00e9 une erreur : {4}.
+CWWKD1058.no.args.constr.err.explanation=Le constructeur public sans param\u00e8tres a \u00e9chou\u00e9 en raison d'une erreur.
+CWWKD1058.no.args.constr.err.useraction=Corrigez l'erreur dans le constructeur ou mettez \u00e0 jour la m\u00e9thode de d\u00e9p\u00f4t pour utiliser un type de retour diff\u00e9rent.
+
+CWWKD1059.prop.cast.err=CWWKD1059E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} ne peut pas acc\u00e9der \u00e0 la propri\u00e9t\u00e9 {2} de l''entit\u00e9 {3} car le champ ou la m\u00e9thode {4} de la classe {5} est incompatible avec une valeur {6}.
+CWWKD1059.prop.cast.err.explanation=Une propri\u00e9t\u00e9 de l'entit\u00e9 ou une propri\u00e9t\u00e9 connexe de sa hi\u00e9rarchie n'est pas compatible avec le type attendu.
+CWWKD1059.prop.cast.err.useraction=Examinez le mod\u00e8le d'entit\u00e9 et v\u00e9rifiez que les types corrects sont utilis\u00e9s pour chaque propri\u00e9t\u00e9.
+
+CWWKD1060.name.out.of.scope=CWWKD1060E: L''interface de r\u00e9f\u00e9rentiel {0} dans l''application {1} configure une valeur {2} pour l''attribut {3}, mais les noms {3} ne sont pas accessibles \u00e0 l''artefact qui fournit l''interface de r\u00e9f\u00e9rentiel. Utilisez plut\u00f4t un nom {4}.
+CWWKD1060.name.out.of.scope.explanation=L'espace de noms sp\u00e9cifi\u00e9 n'est pas accessible \u00e0 partir de l'artefact o\u00f9 l'interface du r\u00e9f\u00e9rentiel est d\u00e9finie.
+CWWKD1060.name.out.of.scope.useraction=Mettre \u00e0 jour l'annotation Repository pour sp\u00e9cifier un nom de magasin de donn\u00e9es visible par le module ou la biblioth\u00e8que fournissant l'interface du r\u00e9f\u00e9rentiel.
+
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: L''interface de r\u00e9f\u00e9rentiel {0} d\u00e9finie dans le module de haricot d''entreprise {1} de l''application {2} configure une valeur {2} pour l''attribut {3}. Cependant, les noms {4} ne sont pas accessibles aux modules de haricots d''entreprise. Utilisez un nom appartenant \u00e0 l''un des espaces de noms suivants : {5}.
+CWWKD1061.comp.name.in.ejb.explanation=L'espace de noms sp\u00e9cifi\u00e9 n'est pas accessible au module de l'enterprise bean dans lequel l'interface du r\u00e9f\u00e9rentiel est d\u00e9finie.
+CWWKD1061.comp.name.in.ejb.useraction=Mettre \u00e0 jour l'annotation Repository pour sp\u00e9cifier un nom de magasin de donn\u00e9es visible par le module de l'enterprise bean qui fournit l'interface du repository.
+
+CWWKD1062.resource.not.found=CWWKD1062E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} ne parvient pas \u00e0 localiser la ressource {2} avec le filtre {3}.
+CWWKD1062.resource.not.found.explanation=La ressource est introuvable.
+CWWKD1062.resource.not.found.useraction=Assurez-vous que la ressource sp\u00e9cifi\u00e9e et toutes les autres ressources dont elle d\u00e9pend existent et sont correctement configur\u00e9es.
+
+CWWKD1063.unsupported.resource=CWWKD1063E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} ne peut pas obtenir une ressource {2} car le fournisseur de Jakarta Persistence ne prend pas en charge l''op\u00e9ration de d\u00e9ballage renvoyant une instance {3}.
+CWWKD1063.unsupported.resource.explanation=Le fournisseur Jakarta Persistence ne prend pas en charge l'op\u00e9ration de d\u00e9ballage renvoyant le type de ressource sp\u00e9cifi\u00e9.
+CWWKD1063.unsupported.resource.useraction=Supprime la m\u00e9thode d'acc\u00e8s aux ressources non prise en charge de l'interface du r\u00e9f\u00e9rentiel.
+
+CWWKD1064.datastore.error=CWWKD1064E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} ne peut pas obtenir le magasin de donn\u00e9es {2} pour le r\u00e9f\u00e9rentiel en raison de l''erreur suivante : {3}.
+CWWKD1064.datastore.error.explanation=Une erreur s'est produite lors de la tentative d'obtention du magasin de donn\u00e9es.
+CWWKD1064.datastore.error.useraction=Assurez-vous que le magasin de donn\u00e9es sp\u00e9cifi\u00e9 et toutes les autres ressources dont il d\u00e9pend existent et sont correctement configur\u00e9s.
+
+CWWKD1065.ddlgen.timeout=CWWKD1065E: La g\u00e9n\u00e9ration DDL pour l''interface de r\u00e9f\u00e9rentiel {0} a \u00e9chou\u00e9 parce que le magasin de donn\u00e9es {1} n''a pas termin\u00e9 la g\u00e9n\u00e9ration DDL dans un d\u00e9lai de {2} secondes pour les entit\u00e9s suivantes : {3}.
+CWWKD1065.ddlgen.timeout.explanation=La tentative de g\u00e9n\u00e9ration de DDL a d\u00e9pass\u00e9 le temps imparti et n'a pas abouti.
+CWWKD1065.ddlgen.timeout.useraction=R\u00e9essayer la g\u00e9n\u00e9ration DDL lorsque le syst\u00e8me et la base de donn\u00e9es ne sont pas sollicit\u00e9s.
+
+CWWKD1066.ddlgen.failed=CWWKD1066E: La g\u00e9n\u00e9ration DDL pour l''interface de r\u00e9f\u00e9rentiel {0} qui utilise le magasin de donn\u00e9es {1} a rencontr\u00e9 une erreur lors de la tentative de g\u00e9n\u00e9ration DDL pour les entit\u00e9s suivantes : {2}. L''erreur est la suivante : {3}.
+CWWKD1066.ddlgen.failed.explanation=La tentative de g\u00e9n\u00e9ration de DDL a \u00e9chou\u00e9 et ne s'est pas termin\u00e9e.
+CWWKD1066.ddlgen.failed.useraction=Examinez l'erreur et apportez des corrections \u00e0 l'interface du r\u00e9f\u00e9rentiel, aux entit\u00e9s, \u00e0 la configuration du magasin de donn\u00e9es ou \u00e0 la base de donn\u00e9es.
+
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: La g\u00e9n\u00e9ration DDL pour l''interface du r\u00e9f\u00e9rentiel {0} a \u00e9chou\u00e9 car le magasin de donn\u00e9es {1} n''\u00e9tait pas disponible ou n''\u00e9tait pas en mesure de mettre \u00e0 disposition les entit\u00e9s suivantes dans un d\u00e9lai de {2} secondes : {3}.
+CWWKD1067.ddlgen.emf.timeout.explanation=L'acquisition des ressources n\u00e9cessaires \u00e0 la g\u00e9n\u00e9ration des DDL a pris du retard et n'a pas abouti.
+CWWKD1067.ddlgen.emf.timeout.useraction=R\u00e9essayer la g\u00e9n\u00e9ration DDL lorsque le syst\u00e8me et la base de donn\u00e9es ne sont pas sollicit\u00e9s.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: L''interface du r\u00e9f\u00e9rentiel {0} comporte plusieurs entit\u00e9s nomm\u00e9es {1} qui sont fournies par diff\u00e9rentes classes : {2}. Utilisez les annotations d''entit\u00e9 Jakarta Persistence suivantes pour attribuer un nom d''entit\u00e9 et un nom de table uniques \u00e0 chaque classe d''entit\u00e9 : {3}.
+CWWKD1068.entity.name.conflict.explanation=Les noms des entit\u00e9s et des tables sont d\u00e9duits du nom de la classe non qualifi\u00e9e ou attribu\u00e9s par les annotations Jakarta Persistence.
+CWWKD1068.entity.name.conflict.useraction=Renommez les entit\u00e9s ou ajoutez des annotations Jakarta Persistence pour r\u00e9soudre explicitement le conflit de noms.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: L''interface du r\u00e9f\u00e9rentiel {0} comporte plusieurs entit\u00e9s nomm\u00e9es {1} qui sont fournies par diff\u00e9rentes classes : {2}. Lorsque des enregistrements Java sont utilis\u00e9s comme entit\u00e9s, il doit \u00e9galement \u00eatre possible d''ajouter un suffixe "Entit\u00e9" au nom de l''entit\u00e9 sans qu''il en r\u00e9sulte un conflit de nom. Par exemple : {2}.
+CWWKD1069.record.entity.name.conflict.explanation=Les noms des entit\u00e9s et des tables sont d\u00e9duits du nom de la classe non qualifi\u00e9e ou attribu\u00e9s par les annotations Jakarta Persistence.
+CWWKD1069.record.entity.name.conflict.useraction=Renommez les entit\u00e9s ou passez aux entit\u00e9s Jakarta Persistence pour r\u00e9soudre le conflit de noms.
+
+CWWKD1070.record.convert.err=CWWKD1070E: L''enregistrement {0} fourni \u00e0 la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} ne peut pas \u00eatre utilis\u00e9 comme entit\u00e9 en raison de l''erreur suivante : {3}.
+CWWKD1070.record.convert.err.explanation=Il n'est pas possible d'utiliser l'enregistrement Java comme une entit\u00e9.
+CWWKD1070.record.convert.err.useraction=D\u00e9finir l'entit\u00e9 comme une entit\u00e9 Jakarta Persistence au lieu d'utiliser une entit\u00e9 Java record.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: L''enregistrement {0} ne peut pas \u00eatre utilis\u00e9 comme entit\u00e9 car il poss\u00e8de une ou plusieurs variables de type : {1}.
+CWWKD1071.record.with.type.var.explanation=Les classes d'entit\u00e9s ne peuvent pas avoir de variables de type g\u00e9n\u00e9rique.
+CWWKD1071.record.with.type.var.useraction=Supprimer les variables de type de l'enregistrement.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: L''enregistrement {0} ne peut pas \u00eatre utilis\u00e9 en tant qu''entit\u00e9 car ses composants {1} et {2} renvoient tous deux au m\u00eame nom de propri\u00e9t\u00e9 de l''entit\u00e9.
+CWWKD1072.record.comp.conflict.explanation=Les noms des propri\u00e9t\u00e9s des entit\u00e9s doivent \u00eatre uniques, sans tenir compte de la casse.
+CWWKD1072.record.comp.conflict.useraction=Renommez l'un des composants de l'enregistrement pour \u00e9viter le conflit.
+
+CWWKD1073.offset.exceeds.max=CWWKD1073E: Le point de d\u00e9part {0} de la limite {1} fournie \u00e0 la m\u00e9thode {2} de l''interface du r\u00e9f\u00e9rentiel {3} d\u00e9passe la valeur maximale autoris\u00e9e de {4}.
+CWWKD1073.offset.exceeds.max.explanation=Le point de d\u00e9part de la limite est trop \u00e9lev\u00e9.
+CWWKD1073.offset.exceeds.max.useraction=Ajouter des restrictions \u00e0 la requ\u00eate pour r\u00e9duire le nombre de r\u00e9sultats correspondants.
+
+CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} ne doit pas combiner le mot-cl\u00e9 {2} avec le mot-cl\u00e9 {3} dans la m\u00eame condition d''interrogation par nom de m\u00e9thode.
+CWWKD1074.qbmn.incompat.keywords.explanation=Les mots-cl\u00e9s Requ\u00eate par nom de m\u00e9thode sp\u00e9cifi\u00e9s ne sont pas compatibles entre eux.
+CWWKD1074.qbmn.incompat.keywords.useraction=Renommer la m\u00e9thode pour ne pas combiner les mots-cl\u00e9s sur la m\u00eame condition.
+
+CWWKD1075.entity.prop.conflict=CWWKD1075E: L''entit\u00e9 {0} ne peut pas avoir une propri\u00e9t\u00e9 nomm\u00e9e {1} et une propri\u00e9t\u00e9 nomm\u00e9e {2} car la sp\u00e9cification de Jakarta Data consid\u00e8re que ces noms sont des alias pour la m\u00eame propri\u00e9t\u00e9 de l''entit\u00e9.
+CWWKD1075.entity.prop.conflict.explanation=Il y a une collision entre les noms de deux propri\u00e9t\u00e9s d'entit\u00e9 en raison du caract\u00e8re de soulignement.
+CWWKD1075.entity.prop.conflict.useraction=Ne pas utiliser le caract\u00e8re de soulignement dans les noms des propri\u00e9t\u00e9s des entit\u00e9s.
+
+CWWKD1076.repo.disposed=CWWKD1076E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} ne peut pas \u00eatre invoqu\u00e9e car l''application qui d\u00e9finit le r\u00e9f\u00e9rentiel s''est arr\u00eat\u00e9e. L''instance du r\u00e9f\u00e9rentiel est {2}.
+CWWKD1076.repo.disposed.explanation=Les m\u00e9thodes du r\u00e9f\u00e9rentiel ne doivent pas \u00eatre utilis\u00e9es en dehors du cycle de vie de l'application qui d\u00e9finit le r\u00e9f\u00e9rentiel.
+CWWKD1076.repo.disposed.useraction=Veiller \u00e0 ce que la m\u00e9thode du r\u00e9f\u00e9rentiel ne soit pas utilis\u00e9e en dehors du champ d'application de l'application qui d\u00e9finit le r\u00e9f\u00e9rentiel.
+
+CWWKD1077.defaultds.not.found=CWWKD1077E: L''artefact d''application {0} poss\u00e8de une interface de r\u00e9f\u00e9rentiel {1} qui utilise ou utilise par d\u00e9faut le magasin de donn\u00e9es {2}, qui doit \u00eatre configur\u00e9 dans la configuration du serveur en d\u00e9finissant un \u00e9l\u00e9ment dataSource dont l''identifiant est DefaultDataSource. Par exemple, {3} Il est \u00e9galement possible d''attribuer \u00e0 la valeur dataStore de l''annotation Repository l''identifiant d''un \u00e9l\u00e9ment databaseStore ou le nom JNDI d''une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es ou d''une r\u00e9f\u00e9rence d''unit\u00e9 de persistance accessible \u00e0 l''artefact d''application. Un \u00e9l\u00e9ment databaseStore peut \u00eatre d\u00e9fini dans la configuration du serveur. Par exemple, {4} Un composant d''application peut utiliser l''annotation Resource pour d\u00e9finir une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es. Par exemple, {5}, qui exige que la\
+    \ configuration du serveur ait un \u00e9l\u00e9ment de configuration dataSource avec un attribut {6}. Un composant d''application peut utiliser l''annotation PersistenceUnit pour d\u00e9finir une r\u00e9f\u00e9rence d''unit\u00e9 de persistance. Par exemple, {7}, qui exige que le fichier persistence.xml contienne un \u00e9l\u00e9ment persistence-unit avec un attribut name correspondant. Par exemple, {8}
+CWWKD1077.defaultds.not.found.explanation=Les r\u00e9f\u00e9rentiels Jakarta Data utilisent par d\u00e9faut la source de donn\u00e9es par d\u00e9faut de Jakarta EE, qui doit \u00eatre configur\u00e9e dans la configuration du serveur.
+CWWKD1077.defaultds.not.found.useraction=Configurez la source de donn\u00e9es par d\u00e9faut de Jakarta EE ou sp\u00e9cifiez un magasin de donn\u00e9es diff\u00e9rent pour le r\u00e9f\u00e9rentiel.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: Une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{0}) de l''artefact d''application {1} sp\u00e9cifient un magasin de donn\u00e9es {2} qui ne correspond pas \u00e0 l''ID d''un \u00e9l\u00e9ment dataSource ou d''un \u00e9l\u00e9ment databaseStore dans la configuration du serveur, ou qui ne correspond pas au nom JNDI d''une source de donn\u00e9es, d''une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es ou d''une r\u00e9f\u00e9rence d''unit\u00e9 de persistance qui est accessible \u00e0 l''artefact d''application, ou l''une des ressources connexes n''est pas configur\u00e9e correctement. Un \u00e9l\u00e9ment dataSource peut \u00eatre d\u00e9fini dans la configuration du serveur. Par exemple, {3} Un \u00e9l\u00e9ment databaseStore peut \u00eatre d\u00e9fini dans la configuration du serveur. Par exemple, {4} Un composant d''application peut utiliser l''annotation Resource pour d\u00e9finir une r\u00e9f\u00e9rence de ressource de source de donn\u00e9\
+    es. Par exemple, {5}, qui exige que la configuration du serveur ait un \u00e9l\u00e9ment de configuration dataSource avec un attribut {6}. Un composant d''application peut utiliser l''annotation PersistenceUnit pour d\u00e9finir une r\u00e9f\u00e9rence d''unit\u00e9 de persistance. Par exemple, {7}, qui exige que le fichier persistence.xml contienne un \u00e9l\u00e9ment persistence-unit avec un attribut name correspondant. Par exemple, {8}
+CWWKD1078.datastore.not.found.explanation=Le magasin de donn\u00e9es d'un r\u00e9f\u00e9rentiel Jakarta Data peut \u00eatre l'ID d'un \u00e9l\u00e9ment dataSource ou d'un \u00e9l\u00e9ment databaseStore dans la configuration du serveur, ou il peut s'agir d'un nom JNDI d'une source de donn\u00e9es, d'une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es ou d'une r\u00e9f\u00e9rence d'unit\u00e9 de persistance.
+CWWKD1078.datastore.not.found.useraction=Assurez-vous que la ressource est correctement configur\u00e9e. Si vous utilisez un nom JNDI, assurez-vous que la port\u00e9e du nom JNDI rend la ressource accessible \u00e0 l'artefact d'application qui fournit le r\u00e9f\u00e9rentiel.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: Une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{0}) de l''artefact d''application {1} sp\u00e9cifient un magasin de donn\u00e9es avec le nom JNDI {2} JNDI, mais une source de donn\u00e9es, une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es ou une r\u00e9f\u00e9rence d''unit\u00e9 de persistance avec ce nom JNDI n''est pas accessible \u00e0 l''artefact d''application, ou l''une des ressources associ\u00e9es n''est pas configur\u00e9e correctement. Un composant d''application peut utiliser l''annotation Resource pour d\u00e9finir une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es. Par exemple, {3}, qui pointe vers un \u00e9l\u00e9ment de configuration du serveur dataSource avec un attribut {4}. Un composant d''application peut utiliser l''annotation PersistenceUnit pour d\u00e9finir une r\u00e9f\u00e9rence d''unit\u00e9 de persistance. Par exemple, {5}, qui exige que le fichier persistence.xml contienne un \u00e9l\u00e9ment persisten\
+    ce-unit avec un attribut name correspondant. Par exemple, {6} Un composant d''application peut utiliser l''annotation DataSourceDefinition pour d\u00e9finir une source de donn\u00e9es. Un \u00e9l\u00e9ment dataSource peut \u00e9galement d\u00e9finir une source de donn\u00e9es dans la configuration du serveur. Par exemple, {7}
+CWWKD1079.jndi.not.found.explanation=Lorsque le magasin de donn\u00e9es d'un r\u00e9f\u00e9rentiel Jakarta Data est d\u00e9fini sur le nom JNDI d'une source de donn\u00e9es, une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es ou une r\u00e9f\u00e9rence d'unit\u00e9 de persistance, le nom JNDI doit \u00eatre accessible \u00e0 l'artefact d'application qui fournit le r\u00e9f\u00e9rentiel, et la source de donn\u00e9es ou l'unit\u00e9 de persistance doit \u00eatre configur\u00e9e correctement.
+CWWKD1079.jndi.not.found.useraction=Assurez-vous que la ressource est correctement configur\u00e9e et que la port\u00e9e du nom JNDI rend la ressource accessible \u00e0 l'artefact d'application qui fournit le r\u00e9f\u00e9rentiel.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: Une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{0}) de l''artefact d''application {1} ne sont pas disponibles en raison d''une erreur. L''erreur peut \u00eatre due \u00e0 un probl\u00e8me de configuration, ou le magasin de donn\u00e9es {2} pour le r\u00e9f\u00e9rentiel peut ne pas \u00eatre disponible. L''erreur est la suivante : {3}.
+CWWKD1080.datastore.general.err.explanation=Une erreur emp\u00eache l'utilisation des d\u00e9p\u00f4ts sp\u00e9cifi\u00e9s.
+CWWKD1080.datastore.general.err.useraction=Localisez les interfaces du r\u00e9f\u00e9rentiel et la configuration du magasin de donn\u00e9es et apportez les corrections n\u00e9cessaires.
+
+CWWKD1081.entity.general.err=CWWKD1081E: En raison d''une erreur, l''entit\u00e9 {0} n''est pas disponible pour une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{1}) qui utilisent le magasin de donn\u00e9es {2}. Erreur : {3}.
+CWWKD1081.entity.general.err.explanation=Une erreur emp\u00eache l'utilisation de l'entit\u00e9 sp\u00e9cifi\u00e9e.
+CWWKD1081.entity.general.err.useraction=Localiser l'entit\u00e9 et apporter les corrections n\u00e9cessaires.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: L''unit\u00e9 de persistance du magasin de donn\u00e9es {0} ne d\u00e9finit pas une ou plusieurs classes d''entit\u00e9s{1}) dont une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{2}), qui utilisent le magasin de donn\u00e9es, ont besoin.
+CWWKD1082.entity.classes.missing.explanation=Les r\u00e9f\u00e9rentiels utilisent des classes d'entit\u00e9s qui doivent \u00eatre d\u00e9finies dans l'unit\u00e9 de persistance.
+CWWKD1082.entity.classes.missing.useraction=Inclure toutes les classes d'entit\u00e9s dans l'unit\u00e9 de persistance.

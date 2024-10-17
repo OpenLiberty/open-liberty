@@ -46,7 +46,19 @@ CWWKC1204.not.serializable=CWWKC1204E: N\u00e3o \u00e9 poss\u00edvel criar um pr
 CWWKC1204.not.serializable.explanation=Os tipos de contexto de encadeamento de terceiros n\u00e3o s\u00e3o compat\u00edveis com a serializa\u00e7\u00e3o e n\u00e3o podem ser configurados para serem propagados para proxies contextuais serializ\u00e1veis.
 CWWKC1204.not.serializable.useraction=Atualize o aplicativo para solicitar um proxy contextual n\u00e3o serializ\u00e1vel ou certifique-se de que nenhum tipo de contexto de terceiros esteja configurado para ser propagado.
 
-CWWKC1217.no.virtual.threads=CWWKC1217I: A especifica\u00e7\u00e3o de simultaneidade exige que virtual=true seja ignorado na defini\u00e7\u00e3o {0} {1} no artefato de aplicativo {2} porque o Java {3} n\u00e3o oferece suporte a threads virtuais.
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: O artefato de aplicativo {0} n\u00e3o pode especificar os qualificadores {1} na anota\u00e7\u00e3o {2} ou no elemento descritor de implanta\u00e7\u00e3o {3} que tem o nome {4} porque o recurso {5} n\u00e3o est\u00e1 ativado.
+CWWKC1205.qualifiers.require.cdi.explanation=O recurso CDI \u00e9 um pr\u00e9-requisito para a especifica\u00e7\u00e3o de qualificadores em uma defini\u00e7\u00e3o de recurso.
+CWWKC1205.qualifiers.require.cdi.useraction=Ativar o recurso CDI.
+
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: O artefato de aplicativo {0} especifica uma anota\u00e7\u00e3o {1} ou um elemento descritor de implanta\u00e7\u00e3o {2} que tem o nome {3} e a lista de qualificadores {4}. A lista de qualificadores inclui um valor {5} que n\u00e3o \u00e9 uma anota\u00e7\u00e3o. Todos os elementos da lista devem ser classes de anota\u00e7\u00e3o anotadas com @Qualifier e @Retention(RUNTIME). Por exemplo, {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Cada valor na lista de qualificadores deve ser uma classe de anota\u00e7\u00e3o.
+CWWKC1206.qualifier.must.be.anno.useraction=Certifique-se de que todos os valores da lista de qualificadores sejam classes de anota\u00e7\u00e3o.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: O artefato de aplicativo {0} especifica uma anota\u00e7\u00e3o {1} ou um elemento descritor de implanta\u00e7\u00e3o {2} que tem o nome {3} e a lista de qualificadores {4}. A lista de qualificadores inclui a anota\u00e7\u00e3o {5}, que n\u00e3o \u00e9 anotada com @jakartajakarta.inject.Qualifier e @Retention(RUNTIME). Um exemplo de um qualificador v\u00e1lido \u00e9: {6}
+CWWKC1207.lacks.qualifier.anno.explanation=A anota\u00e7\u00e3o Qualifier indica que a anota\u00e7\u00e3o \u00e9 um qualificador. A anota\u00e7\u00e3o Retention controla a disponibilidade das anota\u00e7\u00f5es.
+CWWKC1207.lacks.qualifier.anno.useraction=Adicione as anota\u00e7\u00f5es @Qualifier e @Retention(RUNTIME) \u00e0 classe do qualificador.
+
+CWWKC1217.no.virtual.threads=CWWKC1217I: A especifica\u00e7\u00e3o Concurrency exige que virtual=true seja ignorado na anota\u00e7\u00e3o {1} do artefato do aplicativo {0} ou no elemento descritor de implanta\u00e7\u00e3o {2} com o nome {3} porque o Java {4} n\u00e3o oferece suporte a threads virtuais.
 CWWKC1217.no.virtual.threads.explanation=Os threads virtuais est\u00e3o dispon\u00edveis somente no Java 21 e posterior.
 CWWKC1217.no.virtual.threads.useraction=Atualize para o Java 21 ou posterior para permitir o uso de threads virtuais.
 

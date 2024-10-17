@@ -50,10 +50,6 @@ CWWKC1100.resource.unavailable=CWWKC1100E: A(z) {0} er\u0151forr\u00e1s nem \u00
 CWWKC1100.resource.unavailable.explanation=El\u00e9rhetetlenn\u00e9 v\u00e1lhat az er\u0151forr\u00e1s a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa miatt vagy az\u00e9rt is, mert vagy az er\u0151forr\u00e1s, vagy egy m\u00e1sik szolg\u00e1ltat\u00e1s, amelyt\u0151l az er\u0151forr\u00e1s f\u00fcgg, be\u00e1ll\u00edt\u00e1sait m\u00f3dos\u00edtott\u00e1k.
 CWWKC1100.resource.unavailable.useraction=Ellen\u0151rizze az er\u0151forr\u00e1s be\u00e1ll\u00edt\u00e1sait, valamint minden m\u00e1s olyan er\u0151forr\u00e1s konfigur\u00e1ci\u00f3j\u00e1t, amelyt\u0151l az er\u0151forr\u00e1s f\u00fcgg.
 
-CWWKC1110.task.canceled=CWWKC1110I: A(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt {0} feladat megszak\u00edt\u00e1sra ker\u00fclt.
-CWWKC1110.task.canceled.explanation=A feladat v\u00e9grehajt\u00e1sa megszak\u00edt\u00e1sra ker\u00fclt.
-CWWKC1110.task.canceled.useraction=Nincs teend\u0151.
-
 CWWKC1101.task.failed=CWWKC1101E: A(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt {0} feladat a k\u00f6vetkez\u0151 hib\u00e1val meghi\u00fasult: {2}.
 CWWKC1101.task.failed.explanation=Egy v\u00e9grehajt\u00f3nak elk\u00fcld\u00f6tt feladat meghi\u00fasult. Az okot a kiv\u00e9tel\u00fczenet tartalmazza.
 CWWKC1101.task.failed.useraction=Jav\u00edtsa ki a hiba kiv\u00e1lt\u00f3 ok\u00e1t \u00e9s k\u00fcldje el \u00fajra a feladatot.
@@ -66,6 +62,10 @@ CWWKC1103.skip.run.failed=CWWKC1103E: A(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1l
 CWWKC1103.skip.run.failed.explanation=A trigger skipRun m\u0171velete meghi\u00fasult, ez\u00e9rt a feladat aktu\u00e1lis v\u00e9grehajt\u00e1si k\u00eds\u00e9rlete kihagy\u00e1sra ker\u00fclt.
 CWWKC1103.skip.run.failed.useraction=Jav\u00edtsa ki a hiba kiv\u00e1lt\u00f3 ok\u00e1t \u00e9s d\u00f6ntse el, hogy elk\u00fcldi-e \u00fajra a feladatot.
 
+CWWKC1110.task.canceled=CWWKC1110I: A(z) {0} feladat, amelyet elk\u00fcldtek a(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak, t\u00f6r\u00f6lve lett.
+CWWKC1110.task.canceled.explanation=A feladatot t\u00f6r\u00f6lt\u00e9k.
+CWWKC1110.task.canceled.useraction=Nincs teend\u0151.
+
 CWWKC1111.task.invalid=CWWKC1111E: A(z) {0} feladat nem \u00e9rv\u00e9nyes.
 CWWKC1111.task.invalid.explanation=A feladat nem k\u00fcldhet\u0151 el, mert nem \u00e9rv\u00e9nyes.
 CWWKC1111.task.invalid.useraction=Friss\u00edtse az alkalmaz\u00e1st, hogy \u00e9rv\u00e9nyes feladatot k\u00fcldj\u00f6n az ExecutorService sz\u00e1m\u00e1ra.
@@ -77,6 +77,14 @@ CWWKC1112.all.tasks.canceled.useraction=Nincs teend\u0151.
 CWWKC1120.future.get.rejected=CWWKC1120E: A taskSubmitted \u00e9s taskStarting ManagedTaskListener met\u00f3dusoknak \u00e1tadott Future \u00e9rt\u00e9k nem haszn\u00e1lhat\u00f3 a feladat befejez\u00e9s\u00e9re v\u00e1rakoz\u00e1shoz.
 CWWKC1120.future.get.rejected.explanation=A taskSubmitted \u00e9s taskStarting ManagedTaskListener  met\u00f3dusok azon a sz\u00e1lon futnak, amely a feladatot elk\u00fcldi vagy elind\u00edtja. Ez\u00e9rt az ezen met\u00f3dusoknak \u00e1tadott Future \u00e9rt\u00e9ket nem szabad a feladatra v\u00e1rakoz\u00e1shoz haszn\u00e1lni.
 CWWKC1120.future.get.rejected.useraction=Az alkalmaz\u00e1st friss\u00edt\u00e9s\u00e9vel ker\u00fclje el get megh\u00edv\u00e1s\u00e1t a taskSubmitted \u00e9s taskStarting met\u00f3dusoknak \u00e1tadott Future \u00e9rt\u00e9kre.
+
+CWWKC1121.virtual.invalid=CWWKC1121E: A {0} annot\u00e1ci\u00f3 vagy {1} telep\u00edt\u00e9sle\u00edr\u00f3 elem, amelynek neve {0} , a virtual=true \u00e9rt\u00e9ket adja meg, de a virtu\u00e1lis sz\u00e1lak a Java 21 el\u0151tt nem \u00e1llnak rendelkez\u00e9sre. A haszn\u00e1lt Java szint: {1} .
+CWWKC1121.virtual.invalid.explanation=A virtu\u00e1lis sz\u00e1lak nem \u00e1llnak rendelkez\u00e9sre a haszn\u00e1lt Java verzi\u00f3ban.
+CWWKC1121.virtual.invalid.useraction=Friss\u00edtsen egy \u00fajabb Java-verzi\u00f3ra, amely t\u00e1mogatja a virtu\u00e1lis sz\u00e1lakat.
+
+CWWKC1122.mod.unavail=CWWKC1122E: A(z {0} alkalmaz\u00e1s vagy a hozz\u00e1 tartoz\u00f3 {1} modul nem \u00e9rhet\u0151 el.
+CWWKC1122.mod.unavail.explanation=A ManagedThreadFactory p\u00e9ld\u00e1ny beszerz\u00e9s\u00e9hez el\u00e9rhet\u0151nek kell lennie a ManagedThreadFactory konfigur\u00e1ci\u00f3t meghat\u00e1roz\u00f3 alkalmaz\u00e1snak \u00e9s modulnak.
+CWWKC1122.mod.unavail.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az alkalmaz\u00e1s elindult, \u00e9s az alkalmaz\u00e1s tartalmazza a ManagedThreadFactory konfigur\u00e1ci\u00f3t meghat\u00e1roz\u00f3 modult.
 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: A(z) {0} fel\u00fcgyelt v\u00e9grehajt\u00f3nak elk\u00fcld\u00f6tt feladat {1} v\u00e9grehajt\u00e1si tulajdons\u00e1got tartalmaz {2} \u00e9rt\u00e9kkel, ami fel\u00fcgyelt v\u00e9grehajt\u00f3k eset\u00e9ben nem \u00e9rv\u00e9nyes.
 CWWKC1130.xprop.value.invalid.explanation=Bizonyos v\u00e9grehajt\u00e1si tulajdons\u00e1gok fel\u00fcgyelt v\u00e9grehajt\u00f3k eset\u00e9ben nem \u00e9rv\u00e9nyesek, de m\u00e1s er\u0151forr\u00e1st\u00edpusok eset\u00e9ben (p\u00e9ld\u00e1ul kontextus szolg\u00e1ltat\u00e1s vagy fel\u00fcgyelt sz\u00e1lgy\u00e1r) \u00e9rv\u00e9nyesek lehetnek.
