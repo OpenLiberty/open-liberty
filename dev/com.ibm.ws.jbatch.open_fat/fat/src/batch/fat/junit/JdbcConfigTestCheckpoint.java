@@ -1,5 +1,6 @@
 package batch.fat.junit;
 
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import org.junit.ClassRule;
@@ -81,11 +82,16 @@ public class JdbcConfigTestCheckpoint extends BatchFATHelper {
         BatchAppUtils.addDropinsBatchFATWar(server);
         BatchAppUtils.addDropinsBonusPayoutWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
-
+        
+        // Disabling security test for checkpoint
+        FATSuite.configureBootStrapProperties(server, Collections.singletonMap("websphere.java.security.exempt","true"));
+    
         // Start server
         server.setServerConfigurationFile("JDBCPersistenceCheckpoint/jdbc.config.myschema1.server.xml");
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
         server.startServer("JdbcConfig.log");
+        
+        // Apply config and restore
         server.waitForStringInLog("CWWKF0011I", 20000);
         FatUtils.waitForSmarterPlanet(server);
 
