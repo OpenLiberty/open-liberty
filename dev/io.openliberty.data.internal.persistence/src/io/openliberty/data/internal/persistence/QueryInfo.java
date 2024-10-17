@@ -32,6 +32,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -248,13 +249,16 @@ public class QueryInfo {
     int paramCount;
 
     /**
-     * Names that are specified by the <code>Param</code> annotation for each query parameter.
-     * An empty list is a marker that named parameters are present, but need to be populated into the list.
-     * Population is deferred to ensure the order of the list matches the order of parameters in the method signature.
-     * A null value indicates positional parameters (?1, ?2, ...) are used rather than named parameters
-     * or there are no parameters at all.
+     * Names of named parameters in query language, ordered according to the
+     * position in which each appears as a repository method parameter.
+     * Repository method parameters identify the name with the
+     * <code>Param</code> annotation if present, or otherwise by the
+     * name of the parameter (if the -parameters compiler option is enabled).
+     * A null value indicates positional parameters (?1, ?2, ...) are used
+     * rather than named parameters or there are no parameters at all.
+     * TODO can we use an empty set for none?
      */
-    private List<String> paramNames;
+    private LinkedHashSet<String> paramNames;
 
     /**
      * The interface that is annotated with @Repository.
@@ -494,7 +498,7 @@ public class QueryInfo {
                     isLiteral = true;
                     isNamedParamOrEmbedded = false;
                 }
-            } else if (Character.isLetter(ch)) {
+            } else if (Character.isJavaIdentifierStart(ch)) {
                 if (isNamedParamOrEmbedded || isLiteral) {
                     q.append(ch);
                 } else {
@@ -949,6 +953,58 @@ public class QueryInfo {
                    List.of("Connection", "DataSource", "EntityManager"),
                    List.of("count", "delete", "exists", "find"),
                    entityInfo.getExampleMethodNames());
+    }
+
+    /**
+     * Locate the names of named parameters after the specified point in the query
+     * and populate them into the paramNames list.
+     *
+     * @param ql      query language
+     * @param startAt starting position in the query language
+     */
+    @Trivial
+    private LinkedHashSet<String> findNamedParameters(String ql, int startAt) {
+        LinkedHashSet<String> qlParamNames = new LinkedHashSet<>();
+
+        int length = ql.length();
+        boolean isLiteral = false;
+        StringBuilder paramName = null;
+        for (; startAt < length; startAt++) {
+            char ch = ql.charAt(startAt);
+            if (!isLiteral && ch == ':') {
+                paramName = new StringBuilder(30);
+            } else if (ch == '\'') {
+                if (isLiteral) {
+                    if (startAt + 1 < length && ql.charAt(startAt + 1) == '\'')
+                        startAt++; // escaped ' within a literal
+                    else
+                        isLiteral = false;
+                } else {
+                    isLiteral = true;
+                    if (paramName != null) {
+                        qlParamNames.add(paramName.toString());
+                        paramName = null;
+                    }
+                }
+            } else if (Character.isJavaIdentifierStart(ch)) {
+                if (paramName != null) {
+                    paramName.append(ch);
+                    while (length > startAt + 1 && Character //
+                                    .isJavaIdentifierPart(ch = ql.charAt(startAt + 1))) {
+                        paramName.append(ch);
+                        startAt++;
+                    }
+                }
+            } else if (paramName != null) {
+                qlParamNames.add(paramName.toString());
+                paramName = null;
+            }
+        }
+
+        if (paramName != null)
+            qlParamNames.add(paramName.toString());
+
+        return qlParamNames;
     }
 
     /**
@@ -2335,71 +2391,6 @@ public class QueryInfo {
                 }
             }
 
-            // If we don't already know from generating the JPQL, find out how many
-            // parameters the JPQL takes and which parameters are named parameters.
-            if (query != null || paramNames != null) {
-                int initialParamCount = paramCount;
-                Parameter[] params = method.getParameters();
-                List<Integer> paramPositions = null;
-                Class<?> paramType;
-                boolean hasParamAnnotation = false;
-                for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(paramType = params[i].getType()); i++) {
-                    Param param = params[i].getAnnotation(Param.class);
-                    hasParamAnnotation |= param != null;
-                    String paramName = param == null ? null : param.value();
-                    if (param == null && jpql != null && params[i].isNamePresent()) {
-                        String name = params[i].getName();
-                        if (paramPositions == null)
-                            paramPositions = getParameterPositions(jpql);
-                        for (int p = 0; p < paramPositions.size() && paramName == null; p++) {
-                            int pos = paramPositions.get(p); // position at which the named parameter name must appear
-                            int next = pos + name.length(); // the next character must not be alphanumeric for the name to be a match
-                            if (jpql.regionMatches(paramPositions.get(p), name, 0, name.length())
-                                && (next >= jpql.length() || !Character.isLetterOrDigit(jpql.charAt(next)))) {
-                                paramName = name;
-                                paramPositions.remove(p);
-                            }
-                        }
-                    }
-                    if (paramName != null) {
-                        if (paramNames == null)
-                            paramNames = new ArrayList<>();
-                        if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
-                            // TODO is this correct to do when @Query has a named parameter with type of the IdClass?
-                            // It seems like the JPQL would not be consistent.
-                            for (int p = 1, numIdClassParams = entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
-                                paramNames.add(new StringBuilder(paramName).append('_').append(p).toString());
-                                if (p > 1) {
-                                    paramCount++;
-                                    paramAddedCount++;
-                                }
-                            }
-                        else
-                            paramNames.add(paramName);
-                    }
-                    paramCount++;
-
-                    if (initialParamCount != 0)
-                        throw exc(UnsupportedOperationException.class,
-                                  "CWWKD1019.mixed.positional.named",
-                                  method.getName(),
-                                  repositoryInterface.getName());
-
-                    int numParamNames = paramNames == null ? 0 : paramNames.size();
-                    if (numParamNames > 0 && numParamNames != paramCount)
-                        if (hasParamAnnotation) {
-                            throw exc(UnsupportedOperationException.class,
-                                      "CWWKD1019.mixed.positional.named",
-                                      method.getName(),
-                                      repositoryInterface.getName());
-                        } else { // we might have mistaken a literal value for a named parameter
-                            paramNames = null;
-                            paramCount -= paramAddedCount;
-                            paramAddedCount = 0;
-                        }
-                }
-            }
-
             // The @OrderBy annotation from Jakarta Data provides sort criteria statically
             if (orderBy.length > 0) {
                 //type = type == null ? Type.FIND : type;
@@ -2457,6 +2448,9 @@ public class QueryInfo {
 
         boolean isCursoredPage = CursoredPage.class.equals(multiType);
         boolean countPages = isCursoredPage || Page.class.equals(multiType);
+
+        // for collecting names of named parameters:
+        LinkedHashSet<String> qlParamNames = new LinkedHashSet<>();
 
         int length = ql.length();
         int startAt = 0;
@@ -2531,6 +2525,14 @@ public class QueryInfo {
                     }
                 }
             }
+
+            qlParamNames = findNamedParameters(ql, startAt);
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(tc, ql, "DELETE query",
+                         "  " + jpql,
+                         "  entity [" + entityInfo.name + "] [" + entityVar + "]",
+                         "  :named " + qlParamNames);
         } else if (firstChar == 'U' || firstChar == 'u') { // UPDATE EntityName[ SET ... WHERE ...]
             if (startAt + 13 < length
                 && ql.regionMatches(true, startAt + 1, "PDATE", 0, 5)
@@ -2577,6 +2579,14 @@ public class QueryInfo {
                     }
                 }
             }
+
+            qlParamNames = findNamedParameters(ql, startAt);
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(tc, ql, "UPDATE query",
+                         "  " + jpql,
+                         "  entity [" + entityInfo.name + "] [" + entityVar + "]",
+                         "  :named " + qlParamNames);
         } else { // SELECT ... or FROM ... or WHERE ... or ORDER BY ...
             int select0 = -1, selectLen = 0; // starts after SELECT
             int from0 = -1, fromLen = 0; // starts after FROM
@@ -2591,12 +2601,16 @@ public class QueryInfo {
                 // The end of the SELECT clause is a FROM, WHERE, GROUP BY, HAVING, or ORDER BY clause, or the end of the query
             }
 
+            boolean isEmbedded = false;
             boolean isLiteral = false;
-            boolean isNamedParamOrEmbedded = false;
+            StringBuilder paramName = null;
             for (; startAt < length; startAt++) {
                 char ch = ql.charAt(startAt);
                 if (!isLiteral && (ch == ':' || ch == '.')) {
-                    isNamedParamOrEmbedded = true;
+                    if (ch == ':')
+                        paramName = new StringBuilder(30);
+                    else
+                        isEmbedded = true;
                 } else if (ch == '\'') {
                     if (isLiteral) {
                         if (startAt + 1 < length && ql.charAt(startAt + 1) == '\'')
@@ -2605,10 +2619,22 @@ public class QueryInfo {
                             isLiteral = false;
                     } else {
                         isLiteral = true;
-                        isNamedParamOrEmbedded = false;
+                        if (isEmbedded) {
+                            isEmbedded = false;
+                        } else if (paramName != null) {
+                            qlParamNames.add(paramName.toString());
+                            paramName = null;
+                        }
                     }
-                } else if (Character.isLetter(ch)) {
-                    if (!isNamedParamOrEmbedded && !isLiteral) {
+                } else if (Character.isJavaIdentifierStart(ch)) {
+                    if (paramName != null) {
+                        paramName.append(ch);
+                        while (length > startAt + 1 && Character //
+                                        .isJavaIdentifierPart(ch = ql.charAt(startAt + 1))) {
+                            paramName.append(ch);
+                            startAt++;
+                        }
+                    } else if (!isEmbedded && !isLiteral) {
                         int by;
                         if (from0 < 0 && where0 < 0 && length > startAt + 4
                             && ql.regionMatches(true, startAt, "FROM", 0, 4)
@@ -2664,9 +2690,20 @@ public class QueryInfo {
                         }
                     }
                 } else if (Character.isDigit(ch)) {
+                    if (paramName != null)
+                        paramName.append(ch);
                 } else if (!isLiteral) {
-                    isNamedParamOrEmbedded = false;
+                    if (isEmbedded) {
+                        isEmbedded = false;
+                    } else if (paramName != null) {
+                        qlParamNames.add(paramName.toString());
+                        paramName = null;
+                    }
                 }
+            }
+            if (paramName != null) {
+                qlParamNames.add(paramName.toString());
+                paramName = null;
             }
 
             if (select0 >= 0 && selectLen == 0)
@@ -2739,7 +2776,8 @@ public class QueryInfo {
                          "    FROM [" + (fromLen > 0 ? ql.substring(from0, from0 + fromLen) : "") + "]",
                          "   WHERE [" + (whereLen > 0 ? ql.substring(where0, where0 + whereLen) : "") + "]",
                          "  [" + (orderLen > 0 ? ql.substring(order0, order0 + orderLen) : "") + "]",
-                         "  entity [" + entityName + "] [" + entityVar + "]");
+                         "  entity [" + entityName + "] [" + entityVar + "]",
+                         "  :named " + qlParamNames);
             }
 
             boolean hasEntityVar = entityVar_.length() > 0;
@@ -2870,6 +2908,48 @@ public class QueryInfo {
                     q.append(ql.substring(order0, order0 + orderLen));
 
             jpql = q.toString();
+        }
+
+        // Find out how many parameters the method supplies to the query
+        // and which of those parameters are named parameters.
+        int qlParamNameCount = qlParamNames.size();
+        Parameter[] params = method.getParameters();
+        Class<?> paramType;
+        for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(paramType = params[i].getType()); i++) {
+            Param param = params[i].getAnnotation(Param.class);
+            String paramName = null;
+            if (param != null) {
+                // @Param annotation
+                paramName = param.value();
+            } else if (qlParamNameCount > 0 && params[i].isNamePresent()) {
+                // name of parameter (if using -parameters)
+                paramName = params[i].getName();
+            }
+            if (paramName != null) {
+                if (paramNames == null)
+                    paramNames = new LinkedHashSet<>();
+                if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
+                    // TODO is this correct to do when @Query has a named parameter with type of the IdClass?
+                    // It seems like the JPQL would not be consistent.
+                    for (int p = 1, numIdClassParams = entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
+                        paramNames.add(new StringBuilder(paramName).append('_').append(p).toString());
+                        if (p > 1) {
+                            paramCount++;
+                            paramAddedCount++;
+                        }
+                    }
+                else if (!paramNames.add(paramName))
+                    ; // TODO error for duplicate param name passed in to method
+            }
+            paramCount++;
+        }
+
+        int numParamNames = paramNames == null ? 0 : paramNames.size();
+        if (numParamNames > 0 && numParamNames != paramCount) {
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1019.mixed.positional.named",
+                      method.getName(),
+                      repositoryInterface.getName());
         }
     }
 
@@ -3368,27 +3448,35 @@ public class QueryInfo {
                       methodParamForQueryCount,
                       jpql);
 
-        int namedParamCount = paramNames == null ? 0 : paramNames.size();
+        Iterator<String> namedParams = paramNames == null //
+                        ? Collections.emptyIterator() //
+                        : paramNames.iterator();
         for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
             Object arg = args[i];
 
             if (arg == null || entityInfo.idClassAttributeAccessors == null || !entityInfo.idType.isInstance(arg)) {
-                if (p < namedParamCount) {
+                if (namedParams.hasNext()) {
+                    String paramName = namedParams.next();
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + loggable(arg));
-                    query.setParameter(paramNames.get(p++), arg);
+                        Tr.debug(this, tc, "set :" + paramName + ' ' + loggable(arg));
+                    query.setParameter(paramName, arg);
+                    p++;
                 } else { // positional parameter
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + loggable(arg));
                     query.setParameter(++p, arg);
                 }
             } else { // split IdClass argument into parameters
+                // TODO should not do this. JPQL might not want it split.
+                // For example, ID(THIS) = :idClassValue
                 for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                     Object param = accessor instanceof Method ? ((Method) accessor).invoke(arg) : ((Field) accessor).get(arg);
-                    if (p < namedParamCount) {
+                    if (namedParams.hasNext()) {
+                        String paramName = namedParams.next();
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + loggable(param));
-                        query.setParameter(paramNames.get(p++), param);
+                            Tr.debug(this, tc, "set :" + paramName + ' ' + loggable(param));
+                        query.setParameter(paramName, param);
+                        p++;
                     } else { // positional parameter
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + loggable(param));
