@@ -34,6 +34,7 @@ import com.ibm.ws.security.token.ltpa.internal.LTPAKeyFileCreatorImpl;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
+import com.ibm.ws.crypto.common.FipsUtils;
 
 /**
  * Load or create an LTPA keys file, something that looks like this:
@@ -47,14 +48,14 @@ import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
  * com.ibm.websphere.ltpa.Realm=SecureRealm
  *
  *
- * com.ibm.websphere.ltpa.3DESKey=YJ8ARFn0k2S5S5LONNdZG/mLvfYxa4gH3/cGjIn+mR4\=
+ * com.ibm.websphere.ltpa.SharedKey=YJ8ARFn0k2S5S5LONNdZG/mLvfYxa4gH3/cGjIn+mR4\=
  * com.ibm.websphere.ltpa.PrivateKey=vzJcMLGvZqZqbrCGF7zTHAmXAhaZpuZ1XGT0iRq+9Y7VY29/UoIeJkunVyWUSmGrlfqD8kLc5jWUKBMynpg3tQqYKEls5iaO8DtI5FiGWE79gDUYzIkMjGei6S23KqE62Rq+
  * BcrjJv9XYcoGJhLvnE9wftBRrNeI6WPO44KywBSH0sgilyqOvxF87YumiCazbFsbCuBBlDh0daVvosM6zCfQGEsP
  * /e2AQRg4N6kkLbswaeE+i8AoNs2eIGpuicAx5avCgeBT8WwYUhkl3qDaYlR8/kHXOIOPt7/6oW//8yPpvWcHaxEdW4rZrdjH3TEh7CyVN6u6fS7CiOwgodJXrXPpLajqr6nFZxMSwMSyEcQ\=
  * com.ibm.websphere.ltpa.PublicKey=ANKHjHZGY0Ry2jG6kWAOOdGFr8IDhP3igXAAtKNRjhz1SuHcgLq0ZF+mA50pfRBFuFWGxa8WEPthfMyx/xEncHMcoakGXJH1woLL3Bp+LYd/
  * HlYYOHnLtmcWYQOPseqn638nkRWVpVsayIWx9jonjFJx+vbsi5ah3volxurVWZe/AQAB
  * <p>
- * com.ibm.websphere.ltpa.3DESKey_1=YJ8ARFn0k2S5S5LONNdZG/mLvfYxa4gH3/cGjIn+mR4\=
+ * com.ibm.websphere.ltpa.SharedKey_1=YJ8ARFn0k2S5S5LONNdZG/mLvfYxa4gH3/cGjIn+mR4\=
  * com.ibm.websphere.ltpa.PrivateKey_1=vzJcMLGvZqZqbrCGF7zTHAmXAhaZpuZ1XGT0iRq+9Y7VY29/UoIeJkunVyWUSmGrlfqD8kLc5jWUKBMynpg3tQqYKEls5iaO8DtI5FiGWE79gDUYzIkMjGei6S23KqE62Rq+
  * BcrjJv9XYcoGJhLvnE9wftBRrNeI6WPO44KywBSH0sgilyqOvxF87YumiCazbFsbCuBBlDh0daVvosM6zCfQGEsP
  * /e2AQRg4N6kkLbswaeE+i8AoNs2eIGpuicAx5avCgeBT8WwYUhkl3qDaYlR8/kHXOIOPt7/6oW//8yPpvWcHaxEdW4rZrdjH3TEh7CyVN6u6fS7CiOwgodJXrXPpLajqr6nFZxMSwMSyEcQ\=
@@ -80,6 +81,8 @@ public class LTPAKeyInfoManager {
     private final Map<String, String> realmCache = new Hashtable<String, String>();
 
     private static List<LTPAValidationKeysInfo> ltpaValidationKeysInfos = new ArrayList<LTPAValidationKeysInfo>();
+
+    private static final boolean fipsEnabled = FipsUtils.isFIPSEnabled();
 
     /**
      * Load the contents of the properties file.
@@ -211,9 +214,9 @@ public class LTPAKeyInfoManager {
         //Check to see if the LTPA key import file exists, create the keys and file if not
         WsResource ltpaKeyFileResource = getLTPAKeyFileResource(locService, keyImportFile);
 
-        if (ltpaKeyFileResource != null) {
+        if (ltpaKeyFileResource != null && !fipsEnabled) {
             props = loadPropertiesFile(ltpaKeyFileResource);
-        } else if (validationKey) { //validationKeys file does not exist so error
+        } else if (validationKey && !fipsEnabled) { //validationKeys file does not exist so error
             Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", keyImportFile);
             return;
         } else { //Primary keys file does not exist so create the primary key
