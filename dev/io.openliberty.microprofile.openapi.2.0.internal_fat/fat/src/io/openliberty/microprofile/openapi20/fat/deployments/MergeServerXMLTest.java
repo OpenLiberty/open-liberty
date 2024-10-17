@@ -76,6 +76,7 @@ public class MergeServerXMLTest {
         //This will be ignored because we have openapi includes/excludes in server.xml
         server.setAdditionalSystemProperties(
                                              Collections.singletonMap("mp_openapi_extensions_liberty_merged_include", "none"));
+        server.saveServerConfiguration();
         server.startServer();
         server.waitForStringInLogUsingMark("CWWKF0011I"); //ready to run a smarter planet
     }
@@ -106,6 +107,7 @@ public class MergeServerXMLTest {
         if (!failedToStop.isEmpty()) {
             throw new AssertionError("The following apps failed to stop: " + failedToStop);
         }
+        server.restoreServerConfiguration();
     }
 
     @Test
@@ -197,6 +199,13 @@ public class MergeServerXMLTest {
 
     @Test
     public void testMPConfigIgnoredInServerXMLMode() throws Exception {
+
+        MpOpenAPIElement.MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
+                                                .addIncludedApplicaiton("all")
+                                                .buildAndPushToServer();
+
+        //The combo of all and an exclude should be all except testEar/test2, but since this is set via
+        //mpConfig this should be ignored.
         setMergeConfig(null, "testEar/test2", null);
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
