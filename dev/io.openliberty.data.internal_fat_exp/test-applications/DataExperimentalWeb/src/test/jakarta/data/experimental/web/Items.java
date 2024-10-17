@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.experimental.web;
 
+import static io.openliberty.data.repository.Is.Op.GreaterThanEqual;
+import static io.openliberty.data.repository.Is.Op.Substringed;
 import static io.openliberty.data.repository.function.Rounded.Direction.DOWN;
 import static io.openliberty.data.repository.function.Rounded.Direction.UP;
 import static jakarta.data.repository.By.ID;
@@ -30,9 +32,8 @@ import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Is;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.comparison.Contains;
-import io.openliberty.data.repository.comparison.GreaterThanEqual;
 import io.openliberty.data.repository.function.Rounded;
 import io.openliberty.data.repository.update.Add;
 import io.openliberty.data.repository.update.Divide;
@@ -65,7 +66,7 @@ public interface Items {
     long inflateAllPrices(@Multiply("price") float rateOfIncrease);
 
     @Update
-    long inflatePrices(@By("name") @Contains String nameContains,
+    long inflatePrices(@By("name") @Is(Substringed) String nameSubstring,
                        @Multiply("price") float rateOfIncrease);
 
     @Exists
@@ -113,7 +114,7 @@ public interface Items {
 
     @Find
     @OrderBy("price")
-    Item[] versionedAtOrAbove(@By("version") @GreaterThanEqual long minVersion);
+    Item[] versionedAtOrAbove(@By("version") @Is(GreaterThanEqual) long minVersion);
 
     @Find
     @OrderBy("name")
