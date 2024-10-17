@@ -73,7 +73,9 @@ public class DBRerouteTest extends SimpleTest {
 		final Duration meanStartTime = FATUtils.startServers(runner, server, server2, server3);
 		final float perfFactor = (float)normalStartTime.getSeconds() / (float)meanStartTime.getSeconds();
 		Log.info(DBRerouteTest.class, "beforeTests", "Mean startup time: "+meanStartTime+", Perf factor="+perfFactor);
-		setTestQuerySuffix("perfFactor="+perfFactor);
+		if (perfFactor < 1f) {
+			setTestQuerySuffix("perfFactor="+perfFactor);
+		}
 	}
 
 	@AfterClass
@@ -82,5 +84,7 @@ public class DBRerouteTest extends SimpleTest {
 
 		DBTestBase.cleanupWSATTest(server);
 		DBTestBase.cleanupWSATTest(server2);
+		
+		setTestQuerySuffix(null);
 	}
 }
