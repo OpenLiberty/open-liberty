@@ -140,10 +140,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         this.amountToBuffer = size;
         this.bbSize = (49152 < size) ? 32768 : 8192;
 
-        // make sure we never create larger frames than the max http2 frame size
-        Integer h2size = (Integer) this.getVc().getStateMap().get("h2_frame_size");
-        if (h2size != null && h2size < bbSize) {
-            this.bbSize = h2size;
+        if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl)) {
+            if (!((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
+                // make sure we never create larger frames than the max http2 frame size
+                Integer h2size = (Integer) this.getVc().getStateMap().get("h2_frame_size");
+                if (h2size != null && h2size < bbSize) {
+                    this.bbSize = h2size;
+                }
+            }
         }
 
         int numBuffers = (size / this.bbSize);
@@ -163,9 +167,13 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
      */
     @Override
     public void clear() {
+        // CLear the output buffers if Netty is not in use. Netty will clear when buffer conversion is used
+//        if (null != this.output && !((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
         if (null != this.output) {
             for (int i = 0; i < this.output.length; i++) {
                 if (null != this.output[i]) {
+                    // Will only release the buffers if Netty is not in use
+//                    if (!((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty())
                     this.output[i].release();
                     this.output[i] = null;
                 }
@@ -503,20 +511,24 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             Tr.debug(tc, "Flushing buffers: " + this);
         }
 
-        if (this.isc.getResponse() == null) {
-            IOException x = new IOException("response Object(s) (e.g. getObjectFactory()) are null");
-            throw x;
-        }
-
-        if (!this.isc.getResponse().isCommitted()) {
-            if (obs != null && !this.WCheadersWritten) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "obs  ->" + obs);
-                }
-                obs.alertOSFirstFlush();
+        if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl)) {
+            // if (!((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
+            if (this.isc.getResponse() == null) {
+                IOException x = new IOException("response Object(s) (e.g. getObjectFactory()) are null");
+                throw x;
             }
 
-            this.isc.getResponse().setCommitted();
+            if (!this.isc.getResponse().isCommitted()) {
+                if (obs != null && !this.WCheadersWritten) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "obs  ->" + obs);
+                    }
+                    obs.alertOSFirstFlush();
+                }
+
+                this.isc.getResponse().setCommitted();
+            }
+            // }
         }
 
         if (this.ignoreFlush) {
@@ -528,12 +540,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
 
         final boolean writingBody = (hasBufferedContent());
+
         // flip the last buffer for the write...
         if (writingBody && null != this.output[this.outputIndex]) {
             this.output[this.outputIndex].flip();
         }
         try {
             WsByteBuffer[] content = (writingBody) ? this.output : null;
+
             if (isClosed() || this.isClosing) {
                 if (!hasFinished) { //if we've already called finishResponseMessage - don't call again
                     // on a closed stream, use the final write api
@@ -574,6 +588,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             this.bufferedCount = 0;
             this.outputIndex = 0;
             // Note: this logic only works for sync writes
+//            if (writingBody && !((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
             if (writingBody) {
                 this.output[0].clear();
                 for (int i = 1; i < this.output.length; i++) {

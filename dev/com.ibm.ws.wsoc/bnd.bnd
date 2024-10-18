@@ -33,10 +33,13 @@ Export-Package: \
   com.ibm.ws.wsoc.configurator.*;thread-context=true
 
 Import-Package: \
+  io.openliberty.netty.internal*, \
   !*.internal.*, \
   !com.ibm.ws.kernel.boot.cmdline, \
   io.openliberty.wsoc.speclevel, \
   io.openliberty.wsoc.ssl, \
+  com.ibm.ws.http.netty,\
+  com.ibm.ws.http.netty.inbound, \
   *
 
 Private-Package: \
@@ -80,14 +83,16 @@ Service-Component: \
   com.ibm.ws.wsoc.outbound.wsocOutbound;\
     implementation:=com.ibm.ws.wsoc.outbound.WsocOutboundChain;\
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
+    nettyBundle=io.openliberty.netty.internal.NettyFramework;\
+    nettyTlsProvider=io.openliberty.netty.internal.tls.NettyTlsProvider;\
     tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     httpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     configuration-policy:=require;\
     dynamic:='tcpOptions,httpOptions,sslOptions';\
     modified:='modified'; \
-    optional:='sslOptions,sslSupport';\
-    greedy:='tcpOptions,httpOptions,sslOptions'; \
+    optional:='sslOptions,sslSupport,nettyTlsProvider';\
+    greedy:='nettyTlsProvider,tcpOptions,httpOptions,sslOptions'; \
     properties:='service.vendor=IBM', \
   ${bSymbolicName}_${replace;${bVersion};\\.;_}.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
@@ -110,6 +115,7 @@ instrument.classesExcludes: \
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.kernel.boot.core,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.injection.core;version=latest,\
@@ -118,9 +124,13 @@ instrument.classesExcludes: \
 	com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	io.openliberty.wsoc.ssl.internal;version=latest
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.wsoc.ssl.internal;version=latest,\
+	io.openliberty.netty.internal;version=latest,\
+	io.openliberty.netty.internal.impl;version=latest,\
+	io.openliberty.io.netty,\
+	io.openliberty.io.netty.ssl
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

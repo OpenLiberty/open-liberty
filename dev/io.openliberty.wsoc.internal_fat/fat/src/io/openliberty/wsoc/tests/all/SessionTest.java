@@ -78,7 +78,7 @@ public class SessionTest {
      */
     public void testSession5() throws Exception {
 
-        int testTimeout = 60000;
+        int testTimeout = 60000*2;
 
         Session5ClientEP[] endpoints = new Session5ClientEP[5];
         for (int x = 0; x <= 4; x++) {

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.http2.test.connection;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -108,13 +109,13 @@ public class H2Connection {
     private final AtomicBoolean waitingForACK = new AtomicBoolean(false);
     private final FrameSettings ackSettingsFrame;
 
-    private boolean closeCalled = false;
+    private final AtomicBoolean closeCalled = new AtomicBoolean(false);
 
     private static String sendBackPriority1 = "SEND.BACK.PRIORITY.1";
     private static String sendBackWinUpdate1 = "SEND.BACK.WINDOW.UPDATE.1";
     private static String sendBackPing1 = "SEND.BACK.PING.1";
 
-    private static final String CLASS_NAME = "H2Connection";
+    private static final String CLASS_NAME = H2Connection.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public H2Connection(String hostName, int httpDefaultPort, FramesListener framesListener, CountDownLatch blockUntilConnectionIsDone) {
@@ -291,14 +292,14 @@ public class H2Connection {
         return frameByteBuffer;
     }
 
-    public long processRead() {
+    public long processRead(int timeout) {
 
         WsByteBuffer readBuffer = bufferMgr.allocate(utils.IO_DEFAULT_BUFFER_SIZE);
         readConn.setBuffer(readBuffer);
 
         long bytesRead = 0L;
         try {
-            bytesRead = readConn.read(1, utils.IO_DEFAULT_TIMEOUT);
+            bytesRead = readConn.read(1, timeout);
         } catch (IOException e) {
             bytesRead = -1L;
         }
@@ -310,23 +311,14 @@ public class H2Connection {
         return bytesRead;
     }
 
+    public long processRead() {
+        return processRead(utils.IO_DEFAULT_TIMEOUT);
+    }
+
     public void startAsyncRead() {
 
-        if (closeCalled)
+        if (this.closeCalled.get())
             return;
-
-        if (wasServer101ResponseReceived()) {
-            int count = 0;
-            // don't read until we have sent the client preface
-            // wait up to 5 seconds for preface to be received after the 101 is received, before reading for the first Settings frame
-            while ((!getPrefaceSent() && count < 50)) {
-                count++;
-                try {
-                    Thread.sleep(10);
-                } catch (Exception x) {
-                }
-            }
-        }
 
         if (slicedBuffer == null) {
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -454,6 +446,10 @@ public class H2Connection {
     }
 
     public void processData() {
+        processData(true);
+    }
+
+    public void processData(boolean readAfter) {
         WsByteBuffer currentBuffer = readConn.getBuffer();
 
         currentBuffer.flip();
@@ -464,64 +460,18 @@ public class H2Connection {
 
         int frameReadStatus = 0;
 
+        boolean server101ResponseReceived = wasServer101ResponseReceived();
+
         try {
-            if (wasServer101ResponseReceived()) {
+            if (server101ResponseReceived) {
 
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "currentBuffer hc: " + currentBuffer.hashCode()
                                                                          + " position: " + currentBuffer.position() + " limit: " + currentBuffer.limit());
                 }
 
-                frameReadStatus = frameReadProcessor.processNextBuffer(currentBuffer);
+                frameReadStatus = processFrameAfter101Received(currentBuffer);
 
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "after calling processNextBuffer, frameReadStatus: " + frameReadStatus);
-                }
-
-                if (frameReadStatus != Constants.BP_FRAME_IS_NOT_COMPLETE) {
-
-                    // buffer frame has been read in, position is at the start of the payload
-                    // we'll go ahead and set up the frame and process the payload
-                    com.ibm.ws.http.channel.h2internal.frames.Frame currentFrame = frameReadProcessor.getCurrentFrame();
-
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Processing frame object: currentFrame hc: " + currentFrame.hashCode()
-                                                                             + " CurrentFrame toString: \n" + currentFrame.getFrameType());
-                    }
-
-                    if (!wasServerFirstConnectReceived()) {
-                        if (currentFrame.getFrameType() == FrameTypes.SETTINGS) {
-                            if (LOGGER.isLoggable(Level.FINEST)) {
-                                LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Settings frame received for the first time.");
-                            }
-                            setServerFirstConnectReceived(true);
-                        } else {
-                            if (LOGGER.isLoggable(Level.SEVERE)) {
-                                LOGGER.logp(Level.SEVERE, CLASS_NAME, "processData", "The first frame sent by the server was not a Settings frame.");
-                            }
-                            reportedExceptions.add(new Exception("The first frame sent by the server was not a Settings frame."));
-                        }
-                    }
-
-                    //Can't use frameReadProcessor.processCompleteFrame here because we don't use H2InboundLink in the test code
-                    currentFrame.processPayload(frameReadProcessor);
-                    currentFrame.validate(new H2ConnectionSettings());
-
-                    if (frameReadStatus > 0) {
-                        slicedBuffer = currentBuffer.slice();
-                        if (LOGGER.isLoggable(Level.FINEST)) {
-                            LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Buffer has been sliced, it has " + slicedBuffer.limit() + " bytes.");
-                        }
-                    }
-
-                    processFrame(currentFrame);
-
-                    streamResultManager.addResponseFrame(currentFrame);
-
-                    // send back a frame if Data Payload says to do so
-                    testFrameForSendBack(currentFrame);
-
-                }
             } else {
                 //means we are still reading HTTP 1.1 responses (like the Upgrade 101 response, or something else if not H2 is not supported)
                 // since we won't send the magic/preface until reading in the 101 response,
@@ -538,7 +488,7 @@ public class H2Connection {
             reportedExceptions.add(e);
         } finally {
             //Reset frame read processor here if a complete frame was processed
-            if (frameReadStatus != Constants.BP_FRAME_IS_NOT_COMPLETE) {
+            if (server101ResponseReceived && frameReadStatus != Constants.BP_FRAME_IS_NOT_COMPLETE) {
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Calling frameReadProcessor.reset(true) on frameReadProcessor: " + frameReadProcessor);
                 }
@@ -549,7 +499,68 @@ public class H2Connection {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Calling startAsyncRead()");
         }
-        startAsyncRead();
+        if (readAfter)
+            startAsyncRead();
+    }
+
+    private int processFrameAfter101Received(WsByteBuffer currentBuffer) throws IOException, ReceivedFrameAfterEndOfStream, ReceivedHeadersFrameAfterEndOfHeaders, ReceivedUnexpectedGoAwayExcetion, Http2Exception {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "currentBuffer hc: " + currentBuffer.hashCode()
+                                                                 + " position: " + currentBuffer.position() + " limit: " + currentBuffer.limit());
+        }
+
+        int frameReadStatus = 0;
+
+        frameReadStatus = frameReadProcessor.processNextBuffer(currentBuffer);
+
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "after calling processNextBuffer, frameReadStatus: " + frameReadStatus);
+        }
+
+        if (frameReadStatus != Constants.BP_FRAME_IS_NOT_COMPLETE) {
+
+            // buffer frame has been read in, position is at the start of the payload
+            // we'll go ahead and set up the frame and process the payload
+            com.ibm.ws.http.channel.h2internal.frames.Frame currentFrame = frameReadProcessor.getCurrentFrame();
+
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Processing frame object: currentFrame hc: " + currentFrame.hashCode()
+                                                                     + " CurrentFrame toString: \n" + currentFrame.getFrameType());
+            }
+
+            if (!wasServerFirstConnectReceived()) {
+                if (currentFrame.getFrameType() == FrameTypes.SETTINGS) {
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                        LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Settings frame received for the first time.");
+                    }
+                    setServerFirstConnectReceived(true);
+                } else {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.logp(Level.SEVERE, CLASS_NAME, "processData", "The first frame sent by the server was not a Settings frame.");
+                    }
+                    reportedExceptions.add(new Exception("The first frame sent by the server was not a Settings frame."));
+                }
+            }
+
+            //Can't use frameReadProcessor.processCompleteFrame here because we don't use H2InboundLink in the test code
+            currentFrame.processPayload(frameReadProcessor);
+            currentFrame.validate(new H2ConnectionSettings());
+
+            if (frameReadStatus > 0) {
+                slicedBuffer = currentBuffer.slice();
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processData", "Buffer has been sliced, it has " + slicedBuffer.limit() + " bytes.");
+                }
+            }
+
+            processFrame(currentFrame);
+
+            streamResultManager.addResponseFrame(currentFrame);
+
+            // send back a frame if Data Payload says to do so
+            testFrameForSendBack(currentFrame);
+        }
+        return frameReadStatus;
     }
 
     private void testFrameForSendBack(com.ibm.ws.http.channel.h2internal.frames.Frame f) {
@@ -738,13 +749,13 @@ public class H2Connection {
     }
 
     public void close() {
-        closeCalled = true;
+        this.closeCalled.set(true);
         if (LOGGER.isLoggable(Level.FINEST))
             LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Connection close() called in connection " + this + ".");
         //Channel wants to be one to close the connection.
         reportedExceptions.addAll(streamResultManager.compareAllStreamResults());
 
-        if (processRead() >= 0) {
+        if (processRead(1000) >= 0) {
             if (LOGGER.isLoggable(Level.FINEST))
                 LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Server has not closed the connection yet. Checking again in 2 seconds.");
             try {
@@ -752,9 +763,10 @@ public class H2Connection {
             } catch (InterruptedException e) {
             }
         }
-        if (processRead() >= 0) {
+        if (processRead(1000) >= 0) {
             reportedExceptions.add(new ConnectionNotClosedAfterGoAwayException("Connection has not been closed by the server after it sent GOAWAY frame"));
         }
+        outConn1.close(null);
     }
 
     public boolean wasServer101ResponseReceived() {
@@ -789,6 +801,10 @@ public class H2Connection {
         this.serverFirstConnectReceived = received;
     }
 
+    public boolean isClosedCalled() {
+        return this.closeCalled.get();
+    }
+
     public void addExpectedFrames(ArrayList<Frame> frames) throws CompressionException, IOException, ExpectedPushPromiseDoesNotIncludeLinkHeaderException {
         streamResultManager.addExpectedFrames(frames);
     }
@@ -817,7 +833,7 @@ public class H2Connection {
             if (LOGGER.isLoggable(Level.FINEST))
                 LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "HTTP 1.1 read: " + utils.printByteArrayWithHex(buffer.array(), buffer.limit()));
             response.append(utils.printByteArrayWithHex(buffer.array(), buffer.limit()));
-            checkResponseHeaders(response.toString());
+            checkResponseHeaders(response.toString(), buffer);
         }
 
         /*
@@ -830,23 +846,63 @@ public class H2Connection {
          * <LF><CR>
          * <LF>
          */
-        private void checkResponseHeaders(String responseHeaders) throws UnexpectedUpgradeHeader {
+        private void checkResponseHeaders(String responseHeaders, WsByteBuffer originalBuffer) throws UnexpectedUpgradeHeader {
             String[] headerNamesAndValues;
+            boolean additionalDataFound = false;
             if (responseHeaders.contains("<CR>\n<LF><CR>\n<LF>")) { //we have the H1.1 headers at this point
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Original HTTP 1.1 response read: " + responseHeaders);
+                additionalDataFound = responseHeaders.split("<CR>\\n<LF><CR>\\n<LF>").length > 1; // If there is more data after the end, we should notify
+                responseHeaders = responseHeaders.substring(0, responseHeaders.indexOf("<CR>\n<LF><CR>\n<LF>") + "<CR>\n<LF><CR>\n<LF>".length());
                 headerNamesAndValues = responseHeaders.split("<CR>\n<LF>");
                 boolean switchingProtocols = false, upgradeH2c = false, connectionUpgrade = false;
                 for (String header_value : headerNamesAndValues) {
-                    if (header_value.equals("HTTP/1.1 101 Switching Protocols")) {
+                    if (header_value.equalsIgnoreCase("HTTP/1.1 101 Switching Protocols")) {
                         switchingProtocols = true;
-                    } else if (header_value.equals("Upgrade: h2c")) {
+                    } else if (header_value.equalsIgnoreCase("Upgrade: h2c")) {
                         upgradeH2c = true;
-                    } else if (header_value.equals("Connection: Upgrade")) {
+                    } else if (header_value.equalsIgnoreCase("Connection: Upgrade")) {
                         connectionUpgrade = true;
                     }
                 }
-                if (switchingProtocols && upgradeH2c && connectionUpgrade)
+
+                if (switchingProtocols && upgradeH2c && connectionUpgrade) {
                     setServer101ResponseReceived(true);
-                else
+                    if (additionalDataFound) {
+                        if (LOGGER.isLoggable(Level.FINEST))
+                            LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Additional data read with HTTP 1.1 upgrade response. Handing over to continue H2C processing.");
+                        // To process additional data, we need to get the length of the read 101 response to continue after that. In utils,
+                        // where the response is parsed, the byte 0x0D is replaced by <CR> and the byte 0x0A is replaced with \n<LF>. To match the
+                        // length we actually read, we need to replace <CR> and <LF> with an appropriate length to the original bytes received
+                        int lengthRead = responseHeaders.replaceAll("<CR>", " ").replaceAll("<LF>", "").length();
+                        byte[] arr = originalBuffer.array();
+                        if (LOGGER.isLoggable(Level.FINEST)) {
+                            LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Length read: " + lengthRead);
+                            LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Buffer length: " + originalBuffer.limit());
+                        }
+                        byte[] leftOverData = new byte[originalBuffer.limit() - lengthRead];
+                        for (int index = 0; lengthRead < originalBuffer.limit(); lengthRead++, index++) {
+                            leftOverData[index] = arr[lengthRead];
+                        }
+
+                        WsByteBuffer remainingBuff = bufferMgr.wrap(leftOverData);
+                        // Buffer is flipped when processing frames so will set the position to the length we just wrote
+                        remainingBuff.position(leftOverData.length);
+                        if (LOGGER.isLoggable(Level.FINEST)) {
+                            LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Remaining byte array to handle: " + Arrays.toString(remainingBuff.array()));
+                        }
+                        readConn.setBuffer(remainingBuff);
+                        if (!isClosedCalled()) {
+                            // Process data but do not read after to avoid clash of async threads
+                            processData(false);
+                        } else {
+                            if (LOGGER.isLoggable(Level.FINEST)) {
+                                LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame",
+                                            "Got additional data in buffer while a closed was called. Will not do any further processing.");
+                            }
+                        }
+                    }
+                } else
                     throw new UnexpectedUpgradeHeader(responseHeaders);
             }
         }
@@ -859,6 +915,10 @@ public class H2Connection {
      */
     public boolean didFrameArrive(Frame expectedFrame) {
         return streamResultManager.didframeArrive(expectedFrame);
+    }
+
+    public boolean receivedAllFrames() {
+        return streamResultManager.receivedAllFrames();
     }
 
     public AtomicBoolean getWaitingForACK() {

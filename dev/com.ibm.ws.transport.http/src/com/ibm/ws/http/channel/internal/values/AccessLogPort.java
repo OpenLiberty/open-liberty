@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,10 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.values;
 
+import java.util.Objects;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
@@ -45,7 +46,7 @@ public class AccessLogPort extends AccessLogData {
                        HttpResponseMessage response, HttpRequestMessage request,
                        Object data) {
         logSafe(accessLogEntry, getPort(response, request, data));
-        return true;
+        return Boolean.TRUE;
     }
 
     public static String getPort(HttpResponseMessage response, HttpRequestMessage request, Object data) {
@@ -60,28 +61,23 @@ public class AccessLogPort extends AccessLogData {
     }
 
     public static String getLocalPort(HttpResponseMessage response, HttpRequestMessage request, Object data) {
-        HttpRequestMessageImpl requestMessageImpl = null;
+
         String localPort = null;
-        if (request != null) {
-            requestMessageImpl = (HttpRequestMessageImpl) request;
+
+        if (Objects.nonNull(request)) {
+            localPort = Objects.nonNull(request.getServiceContext()) ? Integer.toString(request.getServiceContext().getLocalPort()) : null;
         }
 
-        if (requestMessageImpl != null) {
-            localPort = Integer.toString(requestMessageImpl.getServiceContext().getLocalPort());
-        }
         return localPort;
     }
 
     public static String getRemotePort(HttpResponseMessage response, HttpRequestMessage request, Object data) {
-        HttpRequestMessageImpl requestMessageImpl = null;
+
         String remotePort = null;
-        if (request != null) {
-            requestMessageImpl = (HttpRequestMessageImpl) request;
+        if (Objects.nonNull(request)) {
+            remotePort = Objects.nonNull(request.getServiceContext()) ? Integer.toString(request.getServiceContext().getRemotePort()) : null;
         }
 
-        if (requestMessageImpl != null) {
-            remotePort = Integer.toString(requestMessageImpl.getServiceContext().getRemotePort());
-        }
         return remotePort;
     }
 }
