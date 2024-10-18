@@ -70,6 +70,7 @@ generate.replacement: true
 	com.ibm.json4j;version=latest,\
 	org.bitbucket.b_c.jose4j,\
 	com.unboundid.ldap.sdk,\
+    com.ibm.ws.common.crypto;version=latest,\
 	com.ibm.ws.com.unboundid
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
