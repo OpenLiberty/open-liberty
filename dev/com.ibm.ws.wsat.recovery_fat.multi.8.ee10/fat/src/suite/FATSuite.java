@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,7 +42,7 @@ public class FATSuite extends TxTestContainerSuite {
         beforeSuite(DatabaseContainerType.Postgres);
 	}
 
-	@ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
 }
