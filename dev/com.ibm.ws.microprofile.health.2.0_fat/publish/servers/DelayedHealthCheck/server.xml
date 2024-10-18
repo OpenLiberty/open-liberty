@@ -10,7 +10,8 @@
         <feature>componenttest-1.0</feature>
     </featureManager>
 	
-	<logging traceSpecification="*=info:HEALTH=all"/>
+	<!-- Enable trace for debug purposes only.-->
+	<!--logging traceSpecification="*=info:HEALTH=all"/-->
 
 	<application location="DelayedHealthCheckApp.war"/>
     <webContainer deferServletLoad="false"/>
