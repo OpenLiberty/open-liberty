@@ -126,7 +126,7 @@ public class OpenAPIVersionTest extends FATServletClient {
                 expectedMessage = "CWWKO1681W: The configured " + invalidVersion + " OpenAPI version is not in a valid format";
                 break;
             case NOT_SUPPORTED:
-                expectedMessage = "CWWKO1682W: The configured " + invalidVersion + " OpenAPI version is not supported by this version of mpOpenAPI";
+                expectedMessage = "CWWKO1682W: This version of mpOpenAPI does not support the configured " + invalidVersion + " OpenAPI version.";
                 break;
             default:
                 throw new IllegalStateException("Unknown expected error condition: " + errorCondition);
