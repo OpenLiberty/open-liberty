@@ -273,14 +273,13 @@ public class Machine {
             String[] params = null;
             OperatingSystem os = getOperatingSystem();
             if (os == OperatingSystem.WINDOWS) {
-                cmd = "cmd.exe";
-                params = new String[] { "/C", "ver" };
+                cmd = "ver";
             } else if (os == OperatingSystem.MAC) {
-                cmd = "/bin/sh";
-                params = new String[] { "-c", "\"sysctl", "kern.version\"" };
+                cmd = "sysctl";
+                params = new String[] { "kern.version" };
             } else {
-                cmd = "/bin/sh";
-                params = new String[] { "-c", "\"cat", "/proc/version\"" };
+                cmd = "cat";
+                params = new String[] { "/proc/version" };
             }
             Log.finer(c, method, "Command to get OS version: " + cmd + " " + Arrays.toString(params));
             this.osVersion = LocalProvider.executeCommand(this, cmd, params, null, null, 0).getStdout().trim();
