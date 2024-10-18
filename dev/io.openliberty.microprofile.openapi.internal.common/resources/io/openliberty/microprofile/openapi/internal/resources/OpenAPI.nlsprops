@@ -152,3 +152,8 @@ OPENAPI_VERSION_INVALID_CWWK06181W.useraction=Update the openAPIVersion attribut
 OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W=CWWKO1682W: This version of mpOpenAPI does not support the configured {0} OpenAPI version. The supported values are {1}. The default version of {2} is used instead.
 OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.explanation=The openAPIVersion attribute of the mpOpenAPI configuration element is set to an OpenAPI version that is not supported by the running version of the mpOpenAPI feature.
 OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Update the openAPIVersion attribute to one of the supported values from the error message, or use a version of the mpOpenAPI feature that supports the configured OpenAPI version.
+
+# "mpOpenAPI", "info", "title" and "version" are names in server.xml and should not be translated
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: The mpOpenAPI info configuration element in the server.xml file is invalid. Both the title and version attributes must be set. The info element will be ignored.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=The title and version fields are required properties in the info object of an OpenAPI document. When configuring the info object, a value must be provided for the title and version attributes.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Ensure that the title and version attributes are set to valid values in the mpOpenAPI info element.

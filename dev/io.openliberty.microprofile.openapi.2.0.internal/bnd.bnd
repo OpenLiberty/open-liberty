@@ -70,6 +70,7 @@ WS-TraceGroup: MPOPENAPI
     io.openliberty.org.eclipse.microprofile.openapi.2.0;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.cm;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
     com.ibm.ws.adaptable.module;version=latest,\
     com.ibm.ws.anno;version=latest,\

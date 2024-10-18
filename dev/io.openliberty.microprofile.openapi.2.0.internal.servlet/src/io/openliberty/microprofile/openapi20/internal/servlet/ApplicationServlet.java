@@ -32,6 +32,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIInfoConfig;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIVersionConfig;
@@ -49,6 +50,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
     private ServiceTracker<ApplicationRegistry, ApplicationRegistry> appRegistryTracker;
     private ServiceTracker<OpenAPIModelOperations, OpenAPIModelOperations> modelOperationsTracker;
     private ServiceTracker<OpenAPIVersionConfig, OpenAPIVersionConfig> versionConfigTracker;
+    private ServiceTracker<OpenAPIInfoConfig, OpenAPIInfoConfig> infoConfigTracker;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -60,6 +62,8 @@ public class ApplicationServlet extends OpenAPIServletBase {
         modelOperationsTracker.open();
         versionConfigTracker = new ServiceTracker<>(bundleContext, OpenAPIVersionConfig.class, null);
         versionConfigTracker.open();
+        infoConfigTracker = new ServiceTracker<>(bundleContext, OpenAPIInfoConfig.class, null);
+        infoConfigTracker.open();
     }
 
     @Override
@@ -68,6 +72,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
         appRegistryTracker.close();
         modelOperationsTracker.close();
         versionConfigTracker.close();
+        infoConfigTracker.close();
     }
 
     /** {@inheritDoc} */
@@ -110,7 +115,14 @@ public class ApplicationServlet extends OpenAPIServletBase {
                     model.setServers(servers);
                 }
 
-                Info configuredInfo = OpenAPIUtils.getConfiguredInfo(ConfigProvider.getConfig());
+                Info configuredInfo;
+                if (ProductInfo.getBetaEdition()) {
+                    configuredInfo = infoConfigTracker.getService().getInfo()
+                                                      .orElseGet(() -> OpenAPIUtils.getConfiguredInfo(ConfigProvider.getConfig()));
+                } else {
+                    configuredInfo = OpenAPIUtils.getConfiguredInfo(ConfigProvider.getConfig());
+                }
+
                 if (configuredInfo != null) {
                     model.setInfo(configuredInfo);
                 }
