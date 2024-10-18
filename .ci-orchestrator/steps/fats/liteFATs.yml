@@ -2,6 +2,9 @@
   conditionalRun:
     - type: ifSet
       value: ${fat.buckets.to.run}
+    - type: ifNotEqual
+      value: ${fat.buckets.to.run}
+      value2: none
   workType: FAT
   timeoutInMinutes: 1920
   properties:
