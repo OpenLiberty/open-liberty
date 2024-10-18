@@ -38,4 +38,5 @@ tested.features: appsecurity-4.0, servlet-5.0, appsecurity-5.0, servlet-6.0
     com.ibm.ws.jmx.connector.client.rest;version=latest,\
 	com.ibm.ws.jmx.connector.client.restConnector;version=latest,\
     com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.ws.jmx
+    com.ibm.ws.jmx,\
+    com.ibm.ws.common.crypto;version=latest

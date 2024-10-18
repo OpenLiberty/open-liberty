@@ -52,14 +52,18 @@ public class FATTest {
 
     private static final String APP_NAME = "ltpaTest";
     private static final String DEFAULT_KEY_PATH = "resources/security/ltpa.keys";
-    private static final String ALTERNATE_KEY_PATH = "resources/security/alternate/testLtpa.keys";
-    private static final String REPLACEMENT_LTPA_KEYS_PATH = "alternate/ltpa.keys";
-    private static final String REPLACEMENT_FIPS_LTPA_KEYS_PATH = "alternateFIPS/ltpa.keys";
+    private static String ALTERNATE_KEY_PATH = "resources/security/alternate/testLtpa.keys";
+    private static String ALTERNATE_KEY_PATH_FIPS = "resources/security/alternateFIPS/testLtpa.keys";
+    private static String REPLACEMENT_LTPA_KEYS_PATH = "alternate/ltpa.keys";
+    private static String REPLACEMENT_FIPS_LTPA_KEYS_PATH = "alternateFIPS/ltpa.keys";
     private static final String CORRUPTED_LTPA_KEYS_PATH = "corrupted/ltpa.keys";
     private static final String DEFAULT_SERVER_XML = "server.xml";
-    private static final String ALTERNATE_SERVER_XML = "alternate/server.xml";
-    private static final String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR = "alternate/serverWithLTPAFileMonitor.xml";
-    private static final String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_AND_WRONG_PASSWORD = "alternate/serverWithLTPAFileMonitorAndWrongPassword.xml";
+    private static String ALTERNATE_SERVER_XML = "alternate/server.xml";
+    private static String ALTERNATE_SERVER_XML_FIPS = "alternateFIPS/server.xml";
+    private static String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR = "alternate/serverWithLTPAFileMonitor.xml";
+    private static String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_FIPS = "alternateFIPS/serverWithLTPAFileMonitor.xml";
+    private static String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_AND_WRONG_PASSWORD = "alternate/serverWithLTPAFileMonitorAndWrongPassword.xml";
+    private static String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_AND_WRONG_PASSWORD_FIPS = "alternateFIPS/serverWithLTPAFileMonitorAndWrongPassword.xml";
     private static final String PWD_DEFAULT = "WebAS";
     private static final String PWD_DEFAULT_ENCODED = "\\{xor\\}CDo9Hgw=";
     private static final String PWD_ANY_ENCODED = "\\{xor\\}";
@@ -89,6 +93,14 @@ public class FATTest {
             e.printStackTrace();
         }
         fipsEnabled = isFipsEnabled;
+
+        if (fipsEnabled) {
+            ALTERNATE_KEY_PATH = ALTERNATE_KEY_PATH_FIPS;
+            REPLACEMENT_LTPA_KEYS_PATH = REPLACEMENT_FIPS_LTPA_KEYS_PATH;
+            ALTERNATE_SERVER_XML = ALTERNATE_SERVER_XML_FIPS;
+            ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR = ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_FIPS;
+            ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_AND_WRONG_PASSWORD = ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_AND_WRONG_PASSWORD_FIPS;
+        }
     }
 
     @Rule
@@ -176,11 +188,7 @@ public class FATTest {
         startServerWithConfigFileAndLog(DEFAULT_SERVER_XML, "validateKeysReloadedAfterModification.log");
         assertFeatureCompleteWithLTPAConfigAndTestApp();
         assertTokenCanBeCreated();
-        if (!fipsEnabled){
-            replaceLTPAKeysFile(ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR, REPLACEMENT_LTPA_KEYS_PATH);
-        } else {
-            replaceLTPAKeysFile(ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR, REPLACEMENT_FIPS_LTPA_KEYS_PATH);
-        }
+        replaceLTPAKeysFile(ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR, REPLACEMENT_LTPA_KEYS_PATH);
         assertLTPAConfigurationReady();
         assertAppDoesNotRestart();
 

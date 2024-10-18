@@ -29,7 +29,7 @@ Export-Package: \
  com.ibm.wsspi.kernel.service.location, \
  com.ibm.wsspi.kernel.service.utils;provide:=true, \
  com.ibm.ws.kernel.service.util;provide:=true, \
- com.ibm.ws.common.crypto, \
+ com.ibm.ws.common.crypto;provide:=true, \
  com.ibm.ws.common.encoder;provide:=true
  
 Private-Package: \
