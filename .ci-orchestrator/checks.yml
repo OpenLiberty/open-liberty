@@ -33,6 +33,12 @@ triggers:
       defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
 
 steps:
+- stepName: PR Changes
+  workType: PRChangesDetection
+  timeoutInMinutes: 30
+  properties:
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
 - stepName: Copyright Header Check
   workType: Jenkins
   projectName: copyrightHeaderCheck
@@ -41,3 +47,17 @@ steps:
   workType: Jenkins
   projectName: prohibitedTermsCheck
   timeoutInMinutes: 120
+- stepName: Code Checklist Creation
+  workType: Jenkins
+  projectName: codeCheckListBuilder
+  timeoutInMinutes: 120
+  dependsOn:
+  - stepName: PR Changes
+    awaitOutputProperties: true
+  properties:
+    is.product.code.changed: ${PR Changes:is.product.code.changed}
+    is.fat.code.changed: ${PR Changes:is.fat.code.changed}
+    is.unittest.code.changed: ${PR Changes:is.unittest.code.changed}    
+    is.bvt.code.changed: ${PR Changes:is.bvt.code.changed}
+    is.test.infra.code.changed: ${PR Changes:is.test.infra.code.changed}
+    is.infra.code.changed: ${PR Changes:is.infra.code.changed}
