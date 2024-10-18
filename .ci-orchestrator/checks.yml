@@ -23,9 +23,6 @@ steps:
 - stepName: PR Changes
   workType: PRChangesDetection
   timeoutInMinutes: 30
-  properties:
-    githubPRApi: ${github_pr_api}
-    githubPRNumber: ${github_pr_number}
 - stepName: Copyright Header Check
   workType: Jenkins
   projectName: copyrightHeaderCheck
