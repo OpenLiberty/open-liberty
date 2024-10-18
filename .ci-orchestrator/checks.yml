@@ -19,19 +19,6 @@ triggers:
     - name: githubPRApi
       defaultValue: ${github_pr_api}
 
-- type: manual
-  triggerName: "libby-manual"
-  description: "Runs CI Orchestrator-managed Jenkins jobs to examine pull request changes and create required status checks"
-  triggerRank: 50
-  groups: ["LibertyDev"]
-  propertyDefinitions:
-    - name: githubPRNumber
-      isRequired: true
-      defaultValue: "Number of Open Liberty pull request to verify"
-      description: "Number of Open Liberty pull request to verify"
-    - name: githubPRApi
-      defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
-
 steps:
 - stepName: PR Changes
   workType: PRChangesDetection
@@ -55,9 +42,9 @@ steps:
   - stepName: PR Changes
     awaitOutputProperties: true
   properties:
-    is.product.code.changed: ${PR Changes:is.product.code.changed}
-    is.fat.code.changed: ${PR Changes:is.fat.code.changed}
-    is.unittest.code.changed: ${PR Changes:is.unittest.code.changed}    
-    is.bvt.code.changed: ${PR Changes:is.bvt.code.changed}
-    is.test.infra.code.changed: ${PR Changes:is.test.infra.code.changed}
-    is.infra.code.changed: ${PR Changes:is.infra.code.changed}
+    isProductCodeChanged: ${PR Changes:is.product.code.changed}
+    isFatCodeChanged: ${PR Changes:is.fat.code.changed}
+    isUnittestCodeChanged: ${PR Changes:is.unittest.code.changed}    
+    isBvtCodeChanged: ${PR Changes:is.bvt.code.changed}
+    isTestInfraCodeChanged: ${PR Changes:is.test.infra.code.changed}
+    isInfraCodeChanged: ${PR Changes:is.infra.code.changed}
