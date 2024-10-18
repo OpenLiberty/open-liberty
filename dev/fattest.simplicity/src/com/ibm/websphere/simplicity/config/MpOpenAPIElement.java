@@ -37,6 +37,8 @@ public class MpOpenAPIElement extends ConfigElement {
     @XmlElement(name = "excludeModule")
     protected List<String> excludedModules;
 
+    protected MpOpenAPIInfoElement info;
+
     /**
      * @return the docPath
      */
@@ -94,6 +96,15 @@ public class MpOpenAPIElement extends ConfigElement {
      */
     public List<String> getExcludedModules() {
         return (excludedModules == null) ? (excludedModules = new ArrayList<String>()) : excludedModules;
+    }
+
+    @XmlElement
+    public MpOpenAPIInfoElement getInfo() {
+        return info;
+    }
+
+    public void setInfo(MpOpenAPIInfoElement info) {
+        this.info = info;
     }
 
     public String getOpenApiVersion() {

@@ -34,8 +34,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -168,27 +166,10 @@ public class OpenAPIVersionTest extends FATServletClient {
      * This varies depending on the current repeat
      */
     private String getDefaultVersion() {
-        if (getOpenAPIFeatureVersion() >= 4.0f) {
+        if (OpenAPITestUtil.getOpenAPIFeatureVersion() >= 4.0f) {
             return "3.1.0";
         } else {
             return "3.0.3";
         }
-    }
-
-    private float getOpenAPIFeatureVersion() {
-        FeatureReplacementAction action = (FeatureReplacementAction) RepeatTestFilter.getMostRecentRepeatAction();
-        String feature = action.getAddFeatures()
-                               .stream()
-                               .map(String::toLowerCase)
-                               .filter(f -> f.startsWith("mpopenapi"))
-                               .findFirst()
-                               .orElseThrow(() -> new IllegalStateException("Current repeat does not add mpOpenAPI"));
-
-        String[] parts = feature.split("-");
-        if (parts.length != 2) {
-            throw new IllegalStateException("Malformed mpOpenAPI feature name: " + feature);
-        }
-
-        return Float.parseFloat(parts[1]);
     }
 }
