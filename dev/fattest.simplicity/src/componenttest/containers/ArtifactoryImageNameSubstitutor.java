@@ -115,7 +115,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
         if (needsArtifactory && !ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
             throw new RuntimeException("Need to swap image " + original.asCanonicalNameString() + " --> " + result.asCanonicalNameString()
                                        + System.lineSeparator() + "Reason: " + reason
-                                       + System.lineSeparator() + "Error: The Artifactory regsitry was not added to the docker config.", //
+                                       + System.lineSeparator() + "Error: The Artifactory registry was not added to the docker config.", //
                             ArtifactoryRegistry.instance().getSetupException());
         }
 
