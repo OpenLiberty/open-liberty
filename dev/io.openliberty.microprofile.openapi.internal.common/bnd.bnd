@@ -24,7 +24,8 @@ Import-Package: \
 
 -dsannotations-inherit: true
 -dsannotations: \
-  io.openliberty.microprofile.openapi.internal.common.OpenAPIEndpointManager
+  io.openliberty.microprofile.openapi.internal.common.OpenAPIEndpointManager,\
+  io.openliberty.microprofile.openapi.internal.common.OpenAPIAppConfigProviderImpl  
 
 Export-Package: \
     io.openliberty.microprofile.openapi.internal.resources; version="1.0",\
@@ -38,16 +39,17 @@ Include-Resource: \
 WS-TraceGroup: MPOPENAPI
 
 -buildpath: \
-    com.ibm.ws.logging;version=latest,\
-    com.ibm.ws.app.manager.wab;version=latest,\
-    com.ibm.ws.logging;version=latest,\
-    com.ibm.ws.kernel.boot.core;version=latest,\
-    com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    com.ibm.websphere.org.osgi.core;version=latest,\
-    com.ibm.websphere.org.osgi.service.component;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    com.ibm.wsspi.org.osgi.service.event;version=latest
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.app.manager.wab;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	org.apache.commons.lang3
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file

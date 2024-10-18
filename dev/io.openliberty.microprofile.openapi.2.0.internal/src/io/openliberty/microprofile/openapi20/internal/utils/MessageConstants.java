@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,7 @@ public class MessageConstants {
     public static final String OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W = "OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W"; //$NON-NLS-1$
     public static final String OPENAPI_MERGE_INVALID_NAME_CWWKO1666W = "OPENAPI_MERGE_INVALID_NAME_CWWKO1666W"; //$NON-NLS-1$
     public static final String OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W = "OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W"; //$NON-NLS-1$
+    public static final String OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W = "OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W";
 
     private MessageConstants() {
         // This class is not meant to be instantiated.

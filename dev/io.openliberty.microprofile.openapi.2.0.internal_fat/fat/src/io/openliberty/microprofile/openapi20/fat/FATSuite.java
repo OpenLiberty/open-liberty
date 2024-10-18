@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,11 @@ import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.openapi20.fat.cache.CacheTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.DeploymentTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.MergeServerXMLTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.MergeServerXMLTestWithUpdate;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeWithServletTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.StartupWarningMessagesTest;
 import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
 
 @RunWith(Suite.class)
@@ -31,9 +34,12 @@ import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
     CacheTest.class,
     DeploymentTest.class,
     MergeConfigTest.class,
+    MergeServerXMLTest.class,
+    MergeServerXMLTestWithUpdate.class,
     MergeTest.class,
     MergeWithServletTest.class,
-    ShutdownTest.class
+    ShutdownTest.class,
+    StartupWarningMessagesTest.class
 })
 public class FATSuite {
     public static RepeatTests repeatDefault(String serverName) {
