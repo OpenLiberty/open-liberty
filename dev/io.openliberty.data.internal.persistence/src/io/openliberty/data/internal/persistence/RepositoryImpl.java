@@ -1007,9 +1007,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         PageRequest pagination = null;
                         List<Sort<Object>> sortList = null;
 
-                        // Jakarta Data allows the method parameter positions after those used as query parameters
-                        // to be used for purposes such as pagination and sorting.
-                        for (int i = queryInfo.paramCount - queryInfo.paramAddedCount; i < (args == null ? 0 : args.length); i++) {
+                        // The first method parameters are used as query parameters.
+                        // Beyond that, they can have other purposes such as
+                        // pagination and sorting.
+                        for (int i = queryInfo.paramCount; //
+                                        i < (args == null ? 0 : args.length); //
+                                        i++) {
                             Object param = args[i];
                             if (param instanceof Limit) {
                                 if (limit == null)

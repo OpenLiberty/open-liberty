@@ -64,6 +64,9 @@ public interface Primes {
     @Query("SELECT (num.name) FROM Prime As num")
     Page<String> all(Sort<Prime> sort, PageRequest pagination);
 
+    @Query("SELECT ID(THIS) WHERE ID(THIS) < ?1 ORDER BY ID(THIS) DESC")
+    List<Long> below(long exclusiveMax);
+
     @Query("SELECT binaryDigits WHERE numberId <= :max")
     @OrderBy(ID)
     LongStream binaryDigitsAsDecimal(long max);
