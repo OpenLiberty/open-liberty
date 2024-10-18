@@ -114,7 +114,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
             connection.stream(c.streamId()).close();
             return;
         } else if (cause instanceof IllegalArgumentException) {
-            FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
+            //Legacy doesnt throw ffdc on processNewInformation
+            //FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "exceptionCaught encountered an IllegalArgumentException : " + cause);
             }
