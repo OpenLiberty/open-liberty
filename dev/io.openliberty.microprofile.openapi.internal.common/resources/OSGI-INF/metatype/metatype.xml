@@ -17,6 +17,11 @@
     <OCD id="io.openliberty.microprofile.openapi" name="%mpOpenAPI" description="%mpOpenAPI.desc" ibm:alias="mpOpenAPI">
         <AD id="docPath" name="%docPath" description="%docPath.desc" default="/openapi" required="false" type="String" />
         <AD id="uiPath" name="%uiPath" description="%uiPath.desc" required="false" type="String" />
+        <AD id="includeApplication" name="%includeApplication" description="%includeApplication.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
+        <AD id="excludeApplication" name="%excludeApplication" description="%excludeApplication.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
+        <AD id="includeModule" name="%includeModule" description="%includeModule.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
+        <AD id="excludeModule" name="%excludeModule" description="%excludeModule.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
+        <AD id="openAPIVersion" name="%openAPIVersion" description="%openAPIVersion.desc" required="false" type="String" ibm:beta="true"/>
     </OCD>
 
     <Designate pid="io.openliberty.microprofile.openapi">

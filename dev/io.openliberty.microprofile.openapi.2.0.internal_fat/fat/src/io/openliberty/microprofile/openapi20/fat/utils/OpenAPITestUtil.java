@@ -27,11 +27,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.junit.Assert;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -48,6 +50,8 @@ import componenttest.topology.impl.LibertyServer;
 public class OpenAPITestUtil {
 
     private final static int TIMEOUT = 30000;
+
+    private final static Logger LOG = Logger.getLogger("OpenAPITestUtil");
 
     /**
      * Change Liberty features (Mark is set first on log. Then wait for feature updated message using mark)
@@ -229,7 +233,9 @@ public class OpenAPITestUtil {
 
     public static JsonNode readYamlTree(String contents) {
         org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml(new SafeConstructor(new LoaderOptions()));
-        return new ObjectMapper().convertValue(yaml.load(contents), JsonNode.class);
+        JsonNode node = new ObjectMapper().convertValue(yaml.load(contents), JsonNode.class);
+        LOG.info(node.toPrettyString());
+        return node;
     }
 
     /**
@@ -305,18 +311,19 @@ public class OpenAPITestUtil {
 
     public static void checkInfo(JsonNode root,
                                  String defaultTitle,
-                                 String defaultVersion) {
+                                 String defaultVersion)
+                    throws JsonProcessingException {
         JsonNode infoNode = root.get("info");
         assertNotNull(infoNode);
 
-        assertNotNull("Title is not specified to the default value", infoNode.get("title"));
-        assertNotNull("Version is not specified to the default value", infoNode.get("version"));
+        assertNotNull("Title is not specified to the default value; " + new ObjectMapper().writeValueAsString(root), infoNode.get("title"));
+        assertNotNull("Version is not specified to the default value" + new ObjectMapper().writeValueAsString(root), infoNode.get("version"));
 
         String title = infoNode.get("title").textValue();
         String version = infoNode.get("version").textValue();
 
-        assertEquals("Incorrect default value for title", defaultTitle, title);
-        assertEquals("Incorrect default value for version", defaultVersion, version);
+        assertEquals("Incorrect default value for title" + new ObjectMapper().writeValueAsString(root), defaultTitle, title);
+        assertEquals("Incorrect default value for version" + new ObjectMapper().writeValueAsString(root), defaultVersion, version);
     }
 
     public static void changeServerPorts(LibertyServer server,
