@@ -40,7 +40,7 @@ jndi.not.installed.useraction=Ensure that a JNDI implementation is provided (e.g
 # MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
 #
-#CMVCPATHNAME com.ibm.ws.crypto.common/resources/com/ibm/ws/crypto/common/resources/CryptoCommonMessages.nlsprops
+#CMVCPATHNAME com.ibm.ws.common.crypto
 #COMPONENTPREFIX CWWKS
 #COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
 #ISMESSAGEFILE TRUE
@@ -48,7 +48,7 @@ jndi.not.installed.useraction=Ensure that a JNDI implementation is provided (e.g
 #NLS_ENCODING=UNICODE
 
 # -------------------------------------------------------------------------------------------------
-# CWWKS5900 - CWWKS5910 com.ibm.ws.cryto.common
+# CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
 # -------------------------------------------------------------------------------------------------
 #Message prefix block: CWWKS5900 - CWWKS5910
 CRYPTO_INSECURE=CWWKS5900W: The {0} configuration element specifies the {1} insecure cryptographic algorithm.  Consider using the {2} secure algorithm instead.

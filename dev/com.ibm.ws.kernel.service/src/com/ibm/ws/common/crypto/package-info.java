@@ -16,7 +16,7 @@
  * included by several different bundles.
  */
 /**
- * @version 1.0.16
+ * @version 1.0
  */
-@org.osgi.annotation.versioning.Version("1.0.16")
+@org.osgi.annotation.versioning.Version("1.0")
 package com.ibm.ws.common.crypto;
