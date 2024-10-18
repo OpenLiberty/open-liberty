@@ -50,10 +50,6 @@ CWWKC1100.resource.unavailable=CWWKC1100E: Die Ressource {0} ist nicht verf\u00f
 CWWKC1100.resource.unavailable.explanation=Wenn eine Ressource nicht mehr verf\u00fcgbar ist, kann dies darauf zur\u00fcckzuf\u00fchren sein, dass der Server heruntergefahren wird oder eine Konfigurations\u00e4nderung an der Ressource selbst oder an einem anderen Service, von dem die Ressource abh\u00e4ngig ist, vorgenommen wurde.
 CWWKC1100.resource.unavailable.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration der Ressource selbst und aller anderen Ressourcen, von denen die Ressource abh\u00e4ngig ist.
 
-CWWKC1110.task.canceled=CWWKC1110I: Die Task {0}, die an den Steuerprogrammservice {1} \u00fcbergeben wurde, wurde abgebrochen.
-CWWKC1110.task.canceled.explanation=Die Ausf\u00fchrung der Task wurde abgebrochen.
-CWWKC1110.task.canceled.useraction=Es ist keine Aktion erforderlich.
-
 CWWKC1101.task.failed=CWWKC1101E: Die Task {0}, die an den Steuerprogrammservice {1} \u00fcbergeben wurde, ist mit dem folgenden Fehler fehlgeschlagen: {2}
 CWWKC1101.task.failed.explanation=Die an das Steuerprogramm \u00fcbergebene Aufgabe ist fehlgeschlagen. Suchen Sie in der Ausnahmenachricht nach der Ursache.
 CWWKC1101.task.failed.useraction=Beheben Sie die Fehlerursache und \u00fcbergeben Sie dann die Task erneut.
@@ -66,6 +62,10 @@ CWWKC1103.skip.run.failed=CWWKC1103E: Die Ausf\u00fchrung der Task {0}, die an d
 CWWKC1103.skip.run.failed.explanation=Die Operation skipRun f\u00fcr den Ausl\u00f6ser ist fehlgeschlagen, was dazu gef\u00fchrt hat, dass der aktuelle Ausf\u00fchrungsversuch f\u00fcr die Task \u00fcbersprungen wird.
 CWWKC1103.skip.run.failed.useraction=Beheben Sie die Fehlerursache und entscheiden Sie dann, ob Sie die Task erneut \u00fcbergeben.
 
+CWWKC1110.task.canceled=CWWKC1110I: Die Aufgabe {0}, die dem ausf\u00fchrenden Dienst {1} vorgelegt wurde, wird abgebrochen.
+CWWKC1110.task.canceled.explanation=Die Aufgabe wurde storniert.
+CWWKC1110.task.canceled.useraction=Es ist keine Aktion erforderlich.
+
 CWWKC1111.task.invalid=CWWKC1111E: Die Task {0} ist nicht g\u00fcltig.
 CWWKC1111.task.invalid.explanation=Die Task kann nicht \u00fcbergeben werden, weil sie nicht g\u00fcltig ist.
 CWWKC1111.task.invalid.useraction=Aktualisieren Sie die Anwendung so, dass sie eine g\u00fcltige Task an den ExecutorService \u00fcbergibt.
@@ -77,6 +77,14 @@ CWWKC1112.all.tasks.canceled.useraction=Es ist keine Aktion erforderlich.
 CWWKC1120.future.get.rejected=CWWKC1120E: Die an die ManagedTaskListener-Methoden taskSubmitted und taskStarting \u00fcbergebene Klasse Future kann nicht zum Warten auf den Taskabschluss verwendet werden.
 CWWKC1120.future.get.rejected.explanation=Die ManagedTaskListener-Methoden taskSubmitted und taskStarting werden in dem Thread ausgef\u00fchrt, der die Task \u00fcbergibt bzw. startet. Deshalb darf die an diese Methoden \u00fcbergebene Klasse Future nicht zum Warten auf die Task verwendet werden.
 CWWKC1120.future.get.rejected.useraction=Aktualisieren Sie die Anwendung so, dass der Aufruf von Get f\u00fcr die an taskSubmitted und taskStarting \u00fcbergebene Klasse Future vermieden wird.
+
+CWWKC1121.virtual.invalid=CWWKC1121E: Die {0} Annotation oder das {1} Deployment Descriptor Element, das den {0} Namen hat, gibt virtual=true an, aber virtuelle Threads sind vor Java 21 nicht verf\u00fcgbar. Die verwendete Java-Ebene ist: {1}.
+CWWKC1121.virtual.invalid.explanation=Virtuelle Threads sind in der verwendeten Java-Version nicht verf\u00fcgbar.
+CWWKC1121.virtual.invalid.useraction=Aktualisieren Sie auf eine neuere Java-Version, die virtuelle Threads unterst\u00fctzt.
+
+CWWKC1122.mod.unavail=CWWKC1122E: Die {0} Anwendung oder ihr {1} Modul ist nicht verf\u00fcgbar.
+CWWKC1122.mod.unavail.explanation=Die Anwendung und das Modul, die die ManagedThreadFactory definieren, m\u00fcssen verf\u00fcgbar sein, um eine ManagedThreadFactory zu erhalten.
+CWWKC1122.mod.unavail.useraction=Vergewissern Sie sich, dass die Anwendung gestartet ist und dass die Anwendung das Modul enth\u00e4lt, das die ManagedThreadFactory definiert.
 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Eine an das verwaltete Steuerprogramm {0} \u00fcbergebene Task enth\u00e4lt die Ausf\u00fchrungseigenschaft {1} mit dem Wert {2}, der f\u00fcr verwaltete Steuerprogramme nicht g\u00fcltig ist.
 CWWKC1130.xprop.value.invalid.explanation=Einige Ausf\u00fchrungseigenschaftswerte sind f\u00fcr verwaltete Steuerprogramme nicht g\u00fcltig, k\u00f6nnen aber f\u00fcr andere Ressourcentypen wie Kontextservices und verwaltete Thread-Factorys g\u00fcltig sein.

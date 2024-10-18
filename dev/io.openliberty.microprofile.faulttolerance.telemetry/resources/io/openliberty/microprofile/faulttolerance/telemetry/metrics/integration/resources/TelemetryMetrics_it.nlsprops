@@ -29,21 +29,21 @@
 
 ft.invocations.total.description=Il numero di volte in cui il metodo \u00e8 stato richiamato.
 
-ft.retry.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica dei tentativi. Questa sar\u00e0 sempre una volta per chiamata di metodo.
+ft.retry.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica di riprova. Questo valore \u00e8 sempre uguale a una volta per ogni chiamata di metodo.
 
 ft.retry.retries.total.description=Il numero di volte in cui il metodo \u00e8 stato riprovato.
 
-ft.timeout.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica di timeout. Di solito, questa sar\u00e0 una volta per chiamata al metodo, ma pu\u00f2 essere zero volte se l'interruttore di circuito impedisce l'esecuzione o pi\u00f9 di una volta se il metodo viene ritentato.
+ft.timeout.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica di timeout. Questo valore \u00e8 in genere pari a una volta per ogni chiamata di metodo. Tuttavia, potrebbe essere zero se l'interruttore impedisce l'esecuzione o pi\u00f9 di una volta per ogni chiamata di metodo se il metodo viene riproposto.
 
 ft.timeout.executionDuration.description=Istogramma dei tempi di esecuzione del metodo.
 
-ft.circuitbreaker.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica dell'interruttore di circuito. Di solito \u00e8 una volta per chiamata al metodo, ma pu\u00f2 essere pi\u00f9 di una volta se la chiamata al metodo viene ritentata.
+ft.circuitbreaker.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica dell'interruttore automatico. Questo valore \u00e8 in genere pari a una volta per ogni chiamata al metodo, ma potrebbe essere pi\u00f9 di una volta se il metodo viene riproposto.
 
-ft.circuitbreaker.state.total.description=Quantit\u00e0 di tempo che l'interruttore di circuito ha trascorso in ogni stato.
+ft.circuitbreaker.state.total.description=Tempo trascorso dall'interruttore in ogni stato.
 
-ft.circuitbreaker.opened.total.description=Numero di volte in cui l'interruttore di circuito \u00e8 passato dallo stato chiuso allo stato aperto.
+ft.circuitbreaker.opened.total.description=Numero di volte in cui l'interruttore \u00e8 passato dallo stato chiuso allo stato aperto.
 
-ft.bulkhead.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica della paratia. Di solito \u00e8 una volta per chiamata al metodo, ma pu\u00f2 essere zero volte se l'interruttore di circuito ha impedito l'esecuzione o pi\u00f9 di una volta se la chiamata al metodo viene ritentata.
+ft.bulkhead.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica della paratia. Questo valore \u00e8 in genere pari a una volta per ogni chiamata di metodo. Tuttavia, potrebbe essere zero se l'interruttore impedisce l'esecuzione o pi\u00f9 di una volta per ogni chiamata di metodo se il metodo viene riproposto.
 
 ft.bulkhead.executionsRunning.description=Numero di esecuzioni attualmente in esecuzione.
 

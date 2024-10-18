@@ -1,4 +1,4 @@
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -64,6 +64,8 @@ nullValueInMap=Odwzorowanie okre\u015bla niepoprawn\u0105 warto\u015b\u0107 kluc
 
 openAPIVersionInvalid=Obiekt OpenAPI musi zawiera\u0107 poprawn\u0105 wersj\u0119 specyfikacji interfejsu OpenAPI. Podana warto\u015b\u0107 ({0}) wersji specyfikacji interfejsu OpenAPI jest niepoprawna
 openAPITagIsNotUnique=Obiekt OpenAPI musi zawiera\u0107 unikalne nazwy znacznik\u00f3w. Nazwa znacznika {0} nie jest unikalna
+#3.1
+openAPIMissingRequiredFields=Obiekt OpenAPI musi zawiera\u0107 co najmniej jedn\u0105 z w\u0142a\u015bciwo\u015bci \u201e\u015bcie\u017cki\u201d, \u201ekomponenty\u201d lub \u201ewebhooki\u201d
 
 operationIdsMustBeUnique=Znaleziono wi\u0119cej ni\u017c jeden obiekt Operation z warto\u015bci\u0105 {0} pola operationId. Warto\u015b\u0107 pola operationId musi by\u0107 unikalna w\u015br\u00f3d wszystkich operacji opisanych i interfejsie API
 
@@ -94,6 +96,7 @@ referenceNotValid=Warto\u015b\u0107 odwo\u0142ania {0} jest niepoprawna
 referenceNotValidFormat=Warto\u015b\u0107 odwo\u0142ania {0} nie jest w poprawnym formacie
 referenceNull=Warto\u015bci\u0105 odwo\u0142ania jest NULL
 referenceToObjectInvalid=Warto\u015b\u0107 {0} jest niepoprawnym odwo\u0142aniem
+referenceNotValidUri=Warto\u015b\u0107 \u201e {0} \u201d nie jest prawid\u0142owym identyfikatorem URI
 
 responseMustContainOneCode=Obiekt Responses musi zawiera\u0107 co najmniej jeden kod odpowiedzi
 responseShouldContainSuccess=Obiekt Responses powinien zawiera\u0107 co najmniej jeden kod odpowiedzi, aby operacja mog\u0142a zako\u0144czy\u0107 si\u0119 pomy\u015blnie
@@ -112,9 +115,21 @@ schemaMultipleOfNotGreaterThanZero=Obiekt Schema musi mie\u0107 w\u0142a\u015bci
 schemaPropertyLessThanZero=W\u0142a\u015bciwo\u015b\u0107 {0} obiektu Schema musi by\u0107 wi\u0119ksza lub r\u00f3wna zero
 schemaTypeDoesNotMatchProperty=W\u0142a\u015bciwo\u015b\u0107 {0} nie jest odpowiednia dla obiektu Schema o typie {1}
 
+#3.1
+schemaPropertyWrongType=Typem w\u0142a\u015bciwo\u015bci \u201e {0} \u201d obiektu schematu musi by\u0107 \u201e {1} \u201d
+schemaPropertyEmptyArray=W\u0142a\u015bciwo\u015b\u0107 \u201e {0} \u201d obiektu schematu jest pust\u0105 tablic\u0105
+schemaPropertyNotUnique=Elementy w\u0142a\u015bciwo\u015bci \u201e {0} \u201d obiektu schematu nie s\u0105 unikatowe
+schemaInvalidType=W\u0142a\u015bciwo\u015b\u0107 \u201etype\u201d obiektu schematu musi zawiera\u0107 warto\u015bci, kt\u00f3re s\u0105 jedn\u0105 z nast\u0119puj\u0105cych warto\u015bci (\u201enull\u201d, \u201eboolean\u201d, \u201eobject\u201d, \u201earray\u201d, \u201enumber\u201d, \u201einteger\u201d lub \u201estring\u201d)
+schemaCollectionElementWrongType=W\u0142a\u015bciwo\u015b\u0107 \u201e {0} \u201d obiektu schematu zawiera warto\u015b\u0107, kt\u00f3rej typem nie jest \u201e {1} \u201d
+schemaDependentRequiredUniqueStrings=Ka\u017cdy element w\u0142a\u015bciwo\u015bci "dependentRequired" musi by\u0107 tablic\u0105 unikalnych ci\u0105g\u00f3w znak\u00f3w
+
 keyNotARegex=Nazwa {0} zadeklarowana w obiekcie Components jest niepoprawna. Musi ona by\u0107 zgodna z wyra\u017ceniem regularnym zdefiniowanym w ramach specyfikacji OpenAPI
 
 serverVariableNotDefined=W obiekcie Server nie zdefiniowano zmiennej {0}
 serverInvalidURL=Obiekt Server musi zawiera\u0107 poprawny adres URL. Warto\u015b\u0107 {0} podana dla adresu URL jest niepoprawna
+
+#3.1
+serverVariableArrayEmpty=Tablica \u201e {0} \u201d w obiekcie zmiennej serwera jest pusta
+serverVariableDefaultNotInEnum=Warto\u015b\u0107 \u201e {0} \u201d w\u0142a\u015bciwo\u015bci \u201edefault\u201d nie jest wymieniona w tablicy \u201eenum\u201d
 
 requiredFieldMissing=Brak wymaganego pola {0} lub ma ono ustawion\u0105 niepoprawn\u0105 warto\u015b\u0107

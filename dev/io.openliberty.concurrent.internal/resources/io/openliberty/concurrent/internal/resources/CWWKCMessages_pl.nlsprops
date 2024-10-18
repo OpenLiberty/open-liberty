@@ -46,7 +46,19 @@ CWWKC1204.not.serializable=CWWKC1204E: Nie mo\u017cna utworzy\u0107 przekszta\u0
 CWWKC1204.not.serializable.explanation=Typy kontekstu w\u0105tku innych firm nie s\u0105 zgodne z przekszta\u0142caniem do postaci szeregowej i nie mo\u017cna ich skonfigurowa\u0107 do propagowania dla przekszta\u0142calnych do postaci szeregowej kontekstowych proxy.
 CWWKC1204.not.serializable.useraction=Zaktualizuj aplikacj\u0119, aby \u017c\u0105da\u0142a nieprzekszta\u0142calnego do postaci szeregowej kontekstowego proxy, lub upewnij si\u0119, \u017ce \u017cadne typy kontekstu innych firm nie s\u0105 skonfigurowane do propagowania.
 
-CWWKC1217.no.virtual.threads=CWWKC1217I: Specyfikacja wsp\u00f3\u0142bie\u017cno\u015bci wymaga, aby parametr virtual=true by\u0142 ignorowany w definicji {0} {1} w artefakcie aplikacji {2} , poniewa\u017c Java {3} nie obs\u0142uguje w\u0105tk\u00f3w wirtualnych.
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: Artefakt aplikacji {0} nie mo\u017ce okre\u015bli\u0107 kwalifikator\u00f3w {1} w adnotacji {2} lub elemencie deskryptora wdro\u017cenia {3} o nazwie {4} , poniewa\u017c funkcja {5} nie jest w\u0142\u0105czona.
+CWWKC1205.qualifiers.require.cdi.explanation=Funkcja CDI jest warunkiem koniecznym okre\u015blenia kwalifikator\u00f3w w definicji zasobu.
+CWWKC1205.qualifiers.require.cdi.useraction=W\u0142\u0105cz funkcj\u0119 CDI.
+
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: Artefakt aplikacji {0} okre\u015bla adnotacj\u0119 {1} lub element deskryptora wdro\u017cenia {2} , kt\u00f3ry ma nazw\u0119 {3} i list\u0119 kwalifikator\u00f3w {4} . Lista kwalifikator\u00f3w zawiera warto\u015b\u0107 {5} , kt\u00f3ra nie jest adnotacj\u0105. Wszystkie elementy na li\u015bcie musz\u0105 by\u0107 klasami adnotacji oznaczonymi adnotacjami @Qualifier i @Retention(RUNTIME). Na przyk\u0142ad {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Ka\u017cda warto\u015b\u0107 na li\u015bcie kwalifikator\u00f3w musi by\u0107 klas\u0105 adnotacji.
+CWWKC1206.qualifier.must.be.anno.useraction=Upewnij si\u0119, \u017ce wszystkie warto\u015bci na li\u015bcie kwalifikator\u00f3w s\u0105 klasami adnotacji.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Artefakt aplikacji {0} okre\u015bla adnotacj\u0119 {1} lub element deskryptora wdro\u017cenia {2} , kt\u00f3ry ma nazw\u0119 {3} i list\u0119 kwalifikator\u00f3w {4} . Lista kwalifikator\u00f3w zawiera adnotacj\u0119 {5} , kt\u00f3ra nie jest opatrzona adnotacjami @ jakarta.inject.Qualifier i @Retention(RUNTIME). Przyk\u0142adem prawid\u0142owego kwalifikatora jest: {6}
+CWWKC1207.lacks.qualifier.anno.explanation=Adnotacja Kwalifikator wskazuje, \u017ce adnotacja jest kwalifikatorem. Adnotacja Retencja kontroluje dost\u0119pno\u015b\u0107 adnotacji.
+CWWKC1207.lacks.qualifier.anno.useraction=Dodaj adnotacje @Qualifier i @Retention(RUNTIME) do klasy kwalifikatora.
+
+CWWKC1217.no.virtual.threads=CWWKC1217I: Specyfikacja wsp\u00f3\u0142bie\u017cno\u015bci wymaga, aby parametr virtual=true by\u0142 ignorowany w adnotacji {1} artefaktu aplikacji {0} lub w elemencie deskryptora wdro\u017cenia {2} o nazwie {3} , poniewa\u017c Java {4} nie obs\u0142uguje w\u0105tk\u00f3w wirtualnych.
 CWWKC1217.no.virtual.threads.explanation=W\u0105tki wirtualne dost\u0119pne s\u0105 tylko w Javie 21 i nowszych.
 CWWKC1217.no.virtual.threads.useraction=Aby umo\u017cliwi\u0107 korzystanie z w\u0105tk\u00f3w wirtualnych, nale\u017cy przeprowadzi\u0107 aktualizacj\u0119 do wersji Java 21 lub nowszej.
 

@@ -46,7 +46,19 @@ CWWKC1204.not.serializable=CWWKC1204E: Impossible de cr\u00e9er un proxy context
 CWWKC1204.not.serializable.explanation=Les types de contexte d'unit\u00e9 d'ex\u00e9cution tiers ne sont pas compatibles avec la s\u00e9rialisation et ne peuvent pas \u00eatre configur\u00e9s pour \u00eatre propag\u00e9s pour les proxys contextuels s\u00e9rialisables.
 CWWKC1204.not.serializable.useraction=Mettez \u00e0 jour l'application pour demander un proxy contextuel non s\u00e9rialisable ou v\u00e9rifiez qu'aucun type de contexte tiers n'est configur\u00e9 pour \u00eatre propag\u00e9.
 
-CWWKC1217.no.virtual.threads=CWWKC1217I: La sp\u00e9cification Concurrency exige que virtual=true soit ignor\u00e9 dans la d\u00e9finition {0} {1} de l''artefact d''application {2} parce que Java {3} ne prend pas en charge les threads virtuels.
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: L''artefact d''application {0} ne peut pas sp\u00e9cifier les qualificateurs {1} sur l''\u00e9l\u00e9ment d''annotation {2} ou de descripteur de d\u00e9ploiement {3} qui a le nom {4} parce que la fonctionnalit\u00e9 {5} n''est pas activ\u00e9e.
+CWWKC1205.qualifiers.require.cdi.explanation=La fonction CDI est une condition pr\u00e9alable \u00e0 la sp\u00e9cification de qualificateurs dans une d\u00e9finition de ressource.
+CWWKC1205.qualifiers.require.cdi.useraction=Activer la fonction CDI.
+
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: L''artefact d''application {0} sp\u00e9cifie une annotation {1} ou un \u00e9l\u00e9ment de descripteur de d\u00e9ploiement {2} qui a le nom {3} et la liste de qualificatifs {4}. La liste des qualificatifs comprend une valeur {5} qui n''est pas une annotation. Tous les \u00e9l\u00e9ments de la liste doivent \u00eatre des classes d''annotations annot\u00e9es avec @Qualifier et @Retention(RUNTIME). Par exemple, {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Chaque valeur de la liste des qualificateurs doit \u00eatre une classe d'annotation.
+CWWKC1206.qualifier.must.be.anno.useraction=Assurez-vous que toutes les valeurs de la liste des qualificateurs sont des classes d'annotation.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: L''artefact d''application {0} sp\u00e9cifie une annotation {1} ou un \u00e9l\u00e9ment de descripteur de d\u00e9ploiement {2} qui a le nom {3} et la liste de qualificatifs {4}. La liste des qualificateurs comprend l''annotation {5}, qui n''est pas annot\u00e9e avec @jakartajakarta.inject.Qualifier et @Retention(RUNTIME). Voici un exemple de qualificatif valide : {6}
+CWWKC1207.lacks.qualifier.anno.explanation=L'annotation Qualifier indique que l'annotation est un qualificatif. L'annotation Retention contr\u00f4le la disponibilit\u00e9 des annotations.
+CWWKC1207.lacks.qualifier.anno.useraction=Ajoutez les annotations @Qualifier et @Retention(RUNTIME) \u00e0 la classe qualifier.
+
+CWWKC1217.no.virtual.threads=CWWKC1217I: La sp\u00e9cification Concurrency exige que virtual=true soit ignor\u00e9 dans l''annotation {1} de l''artefact d''application {0} ou dans l''\u00e9l\u00e9ment du descripteur de d\u00e9ploiement {2} avec le nom {3} parce que Java {4} ne prend pas en charge les threads virtuels.
 CWWKC1217.no.virtual.threads.explanation=Les threads virtuels ne sont disponibles qu'\u00e0 partir de Java 21.
 CWWKC1217.no.virtual.threads.useraction=Mise \u00e0 jour vers Java 21 ou une version plus r\u00e9cente pour permettre l'utilisation de threads virtuels.
 

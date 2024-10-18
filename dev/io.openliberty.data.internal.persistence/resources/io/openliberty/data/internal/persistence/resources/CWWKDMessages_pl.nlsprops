@@ -90,7 +90,7 @@ CWWKD1015.null.entity.param=CWWKD1015E: Metoda {0} interfejsu repozytorium {1} n
 CWWKD1015.null.entity.param.explanation=Metody cyklu \u017cycia wymagaj\u0105 instancji encji innej ni\u017c null.
 CWWKD1015.null.entity.param.useraction=Zaktualizuj kod aplikacji, aby unikn\u0105\u0107 przekazywania warto\u015bci null do metody repozytorium.
 
-CWWKD1016.incompat.entity.param=CWWKD1016E: Metoda {0} interfejsu repozytorium {1} wymaga encji {0} , a podano warto\u015b\u0107 {1} .
+CWWKD1016.incompat.entity.param=CWWKD1016E: Metoda {0} interfejsu repozytorium {1} wymaga encji {2} , ale podano warto\u015b\u0107 {3} .
 CWWKD1016.incompat.entity.param.explanation=Metoda cyklu \u017cycia akceptuje tylko warto\u015bci encji zadeklarowanego typu.
 CWWKD1016.incompat.entity.param.useraction=Zaktualizuj kod aplikacji, aby dostarcza\u0142 warto\u015b\u0107 encji tego samego typu, kt\u00f3ry deklaruje metoda repozytorium.
 
@@ -165,3 +165,198 @@ CWWKD1033.ql.orderby.disallowed.useraction=Zast\u0105p klauzul\u0119 ORDER BY ad
 CWWKD1034.ql.where.required=CWWKD1034E: Zapytanie okre\u015blone przez metod\u0119 {0} interfejsu repozytorium {1} musi ko\u0144czy\u0107 si\u0119 klauzul\u0105 WHERE, poniewa\u017c metoda zwraca {2} . Klauzula WHERE ko\u0144czy si\u0119 na pozycji {3} , ale d\u0142ugo\u015b\u0107 zapytania wynosi {4} . Zapytanie brzmi: {5} .
 CWWKD1034.ql.where.required.explanation=Klauzula WHERE jest wymagana w przypadku korzystania z paginacji opartej na kursorze.
 CWWKD1034.ql.where.required.useraction=Dodaj klauzul\u0119 WHERE do zapytania.
+
+CWWKD1035.incompat.page.mode=CWWKD1035E: \u017b\u0105danie strony z trybem paginacji {0} nie mo\u017ce zosta\u0107 przekazane do metody {1} interfejsu repozytorium {2} , poniewa\u017c metoda zwraca {3} zamiast {4} .
+CWWKD1035.incompat.page.mode.explanation=\u017b\u0105dany tryb paginacji nie jest zgodny z typem zwracanym przez metod\u0119 repozytorium.
+CWWKD1035.incompat.page.mode.useraction=U\u017cyj typu zwracanego Page dla trybu paginacji OFFSET i typu zwracanego CursoredPage dla tryb\u00f3w paginacji CURSOR_NEXT i CURSOR_PREVIOUS.
+
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: Kursor z {0} elementami dostarczony do metody {1} interfejsu repozytorium {2} nie mo\u017ce by\u0107 u\u017cywany z kryteriami sortowania o rozmiarze {3} poniewa\u017c liczba i kolejno\u015b\u0107 element\u00f3w kursora musz\u0105 odpowiada\u0107 kryteriom sortowania. Kursor sk\u0142ada si\u0119 z: {4} . Kryteria sortowania s\u0105 nast\u0119puj\u0105ce: {5} .
+CWWKD1036.cursor.size.mismatch.explanation=Liczba element\u00f3w kursora musi odpowiada\u0107 rozmiarowi \u0142\u0105cznych kryteri\u00f3w sortowania metody repozytorium.
+CWWKD1036.cursor.size.mismatch.useraction=Popraw elementy kursora lub kryteria sortowania tak, aby mia\u0142y ten sam rozmiar.
+
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Nie mo\u017cna uzyska\u0107 kursora z wyniku {0} metody {1} interfejsu repozytorium {2} . Zapytania korzystaj\u0105ce z paginacji opartej na kursorze musz\u0105 zwraca\u0107 wyniki tego samego typu, co typ encji, czyli {3} . Typ zwracany metody repozytorium to {4} .
+CWWKD1037.cursor.rtrn.mismatch.explanation=Paginacja oparta na kursorze jest mo\u017cliwa tylko wtedy, gdy metoda repozytorium zwraca typ encji.
+CWWKD1037.cursor.rtrn.mismatch.useraction=Zaktualizuj metod\u0119 repozytorium, aby zwraca\u0142a typ encji.
+
+CWWKD1038.no.prev.offset.page=CWWKD1038E: Nie mo\u017cna \u017c\u0105da\u0107 numeru strony przed {0} dla metody {1} interfejsu repozytorium {2} , poniewa\u017c metoda Page.hasPrevious zwraca false, co oznacza, \u017ce nie ma poprzedniej strony.
+CWWKD1038.no.prev.offset.page.explanation=Paginacja offsetowa nie pozwala na numeracj\u0119 stron mniejsz\u0105 ni\u017c 1.
+CWWKD1038.no.prev.offset.page.useraction=Upewnij si\u0119, \u017ce \u017c\u0105dany numer strony jest liczb\u0105 dodatni\u0105 i u\u017cyj metody Page.hasPrevious , aby upewni\u0107 si\u0119, \u017ce \u017c\u0105danie poprzedniej strony jest prawid\u0142owe.
+
+CWWKD1039.no.prev.cursor.page=CWWKD1039E: Nie mo\u017cna za\u017c\u0105da\u0107 poprzedniej strony dla metody {0} interfejsu repozytorium {1} , poniewa\u017c metoda Page.hasPrevious zwraca false, co oznacza, \u017ce nie ma poprzedniej strony.
+CWWKD1039.no.prev.cursor.page.explanation=Paginacja oparta na kursorze nie pozwala na \u017c\u0105danie poprzedniej strony, je\u015bli wiadomo, \u017ce bie\u017c\u0105ca strona zawiera wyniki znajduj\u0105ce si\u0119 na pocz\u0105tku zestawu danych.
+CWWKD1039.no.prev.cursor.page.useraction=U\u017cyj metody Page.hasPrevious , aby upewni\u0107 si\u0119, \u017ce \u017c\u0105danie poprzedniej strony jest prawid\u0142owe.
+
+CWWKD1040.no.next.page=CWWKD1040E: Nie mo\u017cna za\u017c\u0105da\u0107 nast\u0119pnej strony dla metody {0} interfejsu repozytorium {1} poniewa\u017c {2} zwraca false, co oznacza, \u017ce nie ma nast\u0119pnej strony.
+CWWKD1040.no.next.page.explanation=Nie mo\u017cna za\u017c\u0105da\u0107 wy\u015bwietlenia nast\u0119pnej strony, je\u015bli wiadomo, \u017ce bie\u017c\u0105ca strona zawiera koniec zestawu danych.
+CWWKD1040.no.next.page.useraction=U\u017cyj metody hasNext , aby upewni\u0107 si\u0119, \u017ce \u017c\u0105danie wy\u015bwietlenia nast\u0119pnej strony jest prawid\u0142owe.
+
+CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: Metoda {0} interfejsu repozytorium {1} ma typ zwracany {2} , ale brakuje jej parametru typu PageRequest nast\u0119puj\u0105cego po parametrach warunk\u00f3w zapytania.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=Metody repozytorium z typami zwracanymi Page i CursoredPage musz\u0105 mie\u0107 parametr PageRequest .
+CWWKD1041.rtrn.mismatch.pagereq.useraction=Dodaj parametr PageRequest do podpisu metody repozytorium.
+
+CWWKD1042.no.totals=CWWKD1042E: Strony pobierane za pomoc\u0105 metody {0} interfejsu repozytorium {1} nie zawieraj\u0105 ca\u0142kowitej liczby element\u00f3w i stron, poniewa\u017c \u017c\u0105danie strony {2} okre\u015bla warto\u015b\u0107 false dla requestTotal . Aby za\u017c\u0105da\u0107 strony zawieraj\u0105cej ca\u0142kowit\u0105 liczb\u0119 element\u00f3w, nale\u017cy u\u017cy\u0107 metody PageRequest.withTotal zamiast metody PageRequest.withoutTotal .
+CWWKD1042.no.totals.explanation=Metoda PageRequest.withoutTotal okre\u015bla, \u017ce \u017c\u0105dane strony nie zawieraj\u0105 ca\u0142kowitej liczby element\u00f3w i stron.
+CWWKD1042.no.totals.useraction=U\u017cyj metody PageRequest.withTotal , aby poprosi\u0107 o \u0142\u0105czn\u0105 liczb\u0119 element\u00f3w i stron.
+
+CWWKD1043.offset.exceeds.max=CWWKD1043E: Przesuni\u0119cie {0} wymagane dla \u017c\u0105dania strony {1} przekazanego metodzie {2} interfejsu repozytorium {3} przekracza maksymaln\u0105 dozwolon\u0105 warto\u015b\u0107 {4} .
+CWWKD1043.offset.exceeds.max.explanation=Kombinacja numeru strony i maksymalnego rozmiaru strony jest zbyt du\u017ca.
+CWWKD1043.offset.exceeds.max.useraction=Dodaj ograniczenia do zapytania, aby zmniejszy\u0107 liczb\u0119 pasuj\u0105cych wynik\u00f3w.
+
+CWWKD1044.invalid.resource.type=CWWKD1044E: Metoda dost\u0119pu do zasobu {0} repozytorium {1} nie mo\u017ce zwr\u00f3ci\u0107 zasobu {2} . Obs\u0142ugiwane typy zwracane dla metod dost\u0119pu do zasob\u00f3w to: {3} .
+CWWKD1044.invalid.resource.type.explanation=Typ zwracany metody dost\u0119pu do zasobu nie jest jednym z typ\u00f3w obs\u0142ugiwanych przez Jakarta Data.
+CWWKD1044.invalid.resource.type.useraction=Usu\u0144 metod\u0119 lub zaktualizuj j\u0105, aby zwraca\u0142a jeden z obs\u0142ugiwanych typ\u00f3w.
+
+CWWKD1045.unknown.entity.anno=CWWKD1045E: Wbudowany dostawca danych Jakarta Data nie mo\u017ce zapewni\u0107 implementacji interfejsu repozytorium {0} , poniewa\u017c klasa encji {1} u\u017cywana przez repozytorium zawiera nierozpoznan\u0105 adnotacj\u0119 encji. W klasie encji znajduj\u0105 si\u0119 nast\u0119puj\u0105ce adnotacje encji: {2} . Obs\u0142ugiwane adnotacje encji to: {3} .
+CWWKD1045.unknown.entity.anno.explanation=Wbudowany dostawca danych Jakarta nie obs\u0142uguje \u017cadnej adnotacji encji.
+CWWKD1045.unknown.entity.anno.useraction=Usu\u0144 nierozpoznan\u0105 adnotacj\u0119 encji lub u\u017cyj atrybutu dostawcy adnotacji repozytorium, aby wybra\u0107 dostawc\u0119 danych Jakarta, kt\u00f3ry rozpoznaje adnotacj\u0119 encji.
+
+CWWKD1046.result.convert.err=CWWKD1046E: Wynik {0} metody {1} interfejsu repozytorium {2} nie mo\u017ce zosta\u0107 przekonwertowany na typ zwracany {3} metody repozytorium.
+CWWKD1046.result.convert.err.explanation=Warto\u015b\u0107 wyniku nie jest zgodna z typem zwracanym przez metod\u0119 repozytorium.
+CWWKD1046.result.convert.err.useraction=Upewnij si\u0119, \u017ce typ zwracany metody repozytorium jest sp\u00f3jny z typem wyniku zwracanego przez zapytanie.
+
+CWWKD1047.result.out.of.range=CWWKD1047E: Wynik {0} metody {1} interfejsu repozytorium {2} nie mo\u017ce zosta\u0107 przekonwertowany na typ zwracany {3} metody repozytorium, poniewa\u017c wynik nie mie\u015bci si\u0119 w zakresie od {4} do {5} .
+CWWKD1047.result.out.of.range.explanation=Warto\u015b\u0107 wyniku nie jest zgodna z typem zwracanym przez metod\u0119 repozytorium, poniewa\u017c znajduje si\u0119 poza zakresem warto\u015bci, kt\u00f3re mo\u017cna przekonwertowa\u0107.
+CWWKD1047.result.out.of.range.useraction=Dostosuj typ zwracany metody repozytorium, aby umo\u017cliwi\u0107 zwrot warto\u015bci.
+
+CWWKD1048.result.exceeds.max=CWWKD1048E: Wynik {0} metody {1} interfejsu repozytorium {2} nie mo\u017ce zosta\u0107 przekonwertowany na typ zwracany {3} metody repozytorium, poniewa\u017c warto\u015b\u0107 wyniku przekracza maksymaln\u0105 warto\u015b\u0107 {4} .
+CWWKD1048.result.exceeds.max.explanation=Warto\u015b\u0107 wyniku nie jest zgodna z typem zwracanym przez metod\u0119 repozytorium, poniewa\u017c przekracza maksymaln\u0105 warto\u015b\u0107, jak\u0105 mo\u017cna przekonwertowa\u0107 na ten typ.
+CWWKD1048.result.exceeds.max.useraction=Dostosuj typ zwracany metody repozytorium, aby umo\u017cliwi\u0107 zwrot warto\u015bci.
+
+CWWKD1049.count.convert.err=CWWKD1049E: Warto\u015b\u0107 licznika {0} z metody {1} interfejsu repozytorium {2} nie mo\u017ce zosta\u0107 przekonwertowana na typ zwracany {3} metody repozytorium.
+CWWKD1049.count.convert.err.explanation=Warto\u015b\u0107 licznika nie jest zgodna z typem zwracanym przez metod\u0119 repozytorium.
+CWWKD1049.count.convert.err.useraction=Dostosuj typ zwracany metody repozytorium, aby umo\u017cliwi\u0107 zwrot warto\u015bci.
+
+CWWKD1050.opt.lock.exc=CWWKD1050E: Metoda {0} interfejsu repozytorium {1} nie znalaz\u0142a encji {2} odpowiadaj\u0105cej w\u0142a\u015bciwo\u015bciom encji: {3} . Sprawd\u017a, czy wyst\u0105pienie encji dostarczone do metody {0} jest oparte na najnowszej wersji encji. Najnowsz\u0105 wersj\u0119 encji mo\u017cna uzyska\u0107 za pomoc\u0105 metody find lub z warto\u015bci wyniku jednej z nast\u0119puj\u0105cych metod cyklu \u017cycia: {4} .
+CWWKD1050.opt.lock.exc.explanation=Nie znaleziono pasuj\u0105cej jednostki.
+CWWKD1050.opt.lock.exc.useraction=Je\u015bli istnieje prawdopodobie\u0144stwo, \u017ce podmiot nie zostanie znaleziony w bazie danych, nie trzeba podejmowa\u0107 \u017cadnych dzia\u0142a\u0144. W przeciwnym wypadku upewnij si\u0119, \u017ce u\u017cywana jest najnowsza wersja jednostki.
+
+CWWKD1051.single.opt.lock.exc=CWWKD1051E: Metoda {0} interfejsu repozytorium {1} nie znalaz\u0142a pasuj\u0105cej encji {2} w bazie danych. Sprawd\u017a, czy wyst\u0105pienie encji dostarczone do metody {0} jest oparte na najnowszej wersji encji. Najnowsz\u0105 wersj\u0119 encji mo\u017cna uzyska\u0107 za pomoc\u0105 metody find lub z warto\u015bci wyniku jednej z nast\u0119puj\u0105cych metod cyklu \u017cycia: {3} .
+CWWKD1051.single.opt.lock.exc.explanation=Nie znaleziono pasuj\u0105cej jednostki.
+CWWKD1051.single.opt.lock.exc.useraction=Je\u015bli istnieje prawdopodobie\u0144stwo, \u017ce podmiot nie zostanie znaleziony w bazie danych, nie trzeba podejmowa\u0107 \u017cadnych dzia\u0142a\u0144. W przeciwnym wypadku upewnij si\u0119, \u017ce u\u017cywana jest najnowsza wersja jednostki.
+
+CWWKD1052.multi.opt.lock.exc=CWWKD1052E: Metoda {0} interfejsu repozytorium {1} nie znalaz\u0142a {2} z {3} {4} encji w bazie danych. Sprawd\u017a, czy wyst\u0105pienia encji dostarczone do metody {0} opieraj\u0105 si\u0119 na najnowszej wersji ka\u017cdej encji. Najnowsz\u0105 wersj\u0119 encji mo\u017cna uzyska\u0107 za pomoc\u0105 metody find lub z warto\u015bci wyniku jednej z nast\u0119puj\u0105cych metod cyklu \u017cycia: {5} .
+CWWKD1052.multi.opt.lock.exc.explanation=Jeden lub wi\u0119cej podmiot\u00f3w nie zosta\u0142o znalezionych w bazie danych.
+CWWKD1052.multi.opt.lock.exc.useraction=Je\u015bli istnieje prawdopodobie\u0144stwo, \u017ce dana jednostka nie zostanie znaleziona w bazie danych, nie trzeba podejmowa\u0107 \u017cadnych dzia\u0142a\u0144. W przeciwnym wypadku nale\u017cy upewni\u0107 si\u0119, \u017ce u\u017cywana jest najnowsza wersja ka\u017cdej jednostki.
+
+CWWKD1053.empty.result=CWWKD1053E: Typ zwracany {0} metody {1} interfejsu repozytorium {2} nie mo\u017ce zwr\u00f3ci\u0107 pustego wyniku. Je\u015bli oczekiwany jest pusty wynik, metoda repozytorium musi zwr\u00f3ci\u0107 tablic\u0119 lub jeden z nast\u0119puj\u0105cych typ\u00f3w zwracanych: {3} .
+CWWKD1053.empty.result.explanation=Typ zwracany przez metod\u0119 repozytorium nie pozwala na zwr\u00f3cenie pustego wyniku.
+CWWKD1053.empty.result.useraction=Zaktualizuj metod\u0119 repozytorium, aby u\u017cywa\u0142a jednego z typ\u00f3w zwracanych, kt\u00f3ry mo\u017ce reprezentowa\u0107 pusty wynik.
+
+CWWKD1054.non.unique.result=CWWKD1054E: Metoda {0} interfejsu repozytorium {1} ma typ zwracany {2} , kt\u00f3ry nie jest w stanie zwraca\u0107 wynik\u00f3w {3} . Aby ograniczy\u0107 si\u0119 do pojedynczego wyniku, u\u017cyj jednego z nast\u0119puj\u0105cych wzorc\u00f3w danych Jakarta: {4} .
+CWWKD1054.non.unique.result.explanation=Typ zwracany przez metod\u0119 repozytorium nie pozwala na zwracanie wielu wynik\u00f3w.
+CWWKD1054.non.unique.result.useraction=Zaktualizuj metod\u0119 repozytorium, aby u\u017cywa\u0142a typu zwracanego obs\u0142uguj\u0105cego wiele wynik\u00f3w lub zaktualizuj metod\u0119 repozytorium, aby zwraca\u0142a nie wi\u0119cej ni\u017c jeden wynik.
+
+CWWKD1055.unsupported.entity.prop=CWWKD1055E: W\u0142a\u015bciwo\u015b\u0107 {0} encji {1} ma nieobs\u0142ugiwany typ: {2} . Jakarta Data obs\u0142uguje typy wyliczeniowe Java, typy czasowe {3} i nast\u0119puj\u0105ce typy podstawowe: {4} . Wbudowany dostawca danych Jakarta Data obs\u0142uguje r\u00f3wnie\u017c niekt\u00f3re typy Jakarta Persistence, takie jak elementy osadzalne.
+CWWKD1055.unsupported.entity.prop.explanation=Jakarta Data nie obs\u0142uguje typu u\u017cywanego przez w\u0142a\u015bciwo\u015b\u0107 encji.
+CWWKD1055.unsupported.entity.prop.useraction=Zaktualizuj w\u0142a\u015bciwo\u015b\u0107 encji, aby u\u017cy\u0107 jednego z obs\u0142ugiwanych typ\u00f3w.
+
+CWWKD1056.unsupported.keyword=CWWKD1056E: Metoda {0} interfejsu repozytorium {1} ma nazw\u0119 zawieraj\u0105c\u0105 s\u0142owo kluczowe {2} , kt\u00f3re nie jest obs\u0142ugiwanym s\u0142owem kluczowym wzorca Jakarta Data Query by Method Name.
+CWWKD1056.unsupported.keyword.explanation=Nazwa metody zawiera s\u0142owo kluczowe, kt\u00f3re nie jest rozpoznawane jako cz\u0119\u015b\u0107 obs\u0142ugiwanego wzorca Jakarta Data Query by Method Name.
+CWWKD1056.unsupported.keyword.useraction=Zmie\u0144 nazw\u0119 metody repozytorium, aby usun\u0105\u0107 nieobs\u0142ugiwane s\u0142owo kluczowe.
+
+CWWKD1057.no.args.constr.inacc=CWWKD1057E: Typ zwracany {0} metody {1} interfejsu repozytorium {2} nie jest prawid\u0142owy dla metody repozytorium, poniewa\u017c klasa {3} nie ma publicznego konstruktora bez parametr\u00f3w.
+CWWKD1057.no.args.constr.inacc.explanation=Aby przekonwertowa\u0107 wynik na okre\u015blon\u0105 klas\u0119, potrzebny jest publiczny konstruktor bez parametr\u00f3w.
+CWWKD1057.no.args.constr.inacc.useraction=Zaktualizuj metod\u0119 repozytorium, aby zwraca\u0142a typ obs\u0142ugiwany przez Jakarta Data lub by\u0142a podklas\u0105 Iterable z publicznym konstruktorem, kt\u00f3ry nie ma parametr\u00f3w.
+
+CWWKD1058.no.args.constr.err=CWWKD1058E: Typ zwracany {0} metody {1} interfejsu repozytorium {2} jest nieprawid\u0142owy dla metody repozytorium, poniewa\u017c konstruktor klasy {3} zg\u0142osi\u0142 b\u0142\u0105d: {4} .
+CWWKD1058.no.args.constr.err.explanation=Publiczny konstruktor bez parametr\u00f3w zako\u0144czy\u0142 si\u0119 niepowodzeniem z powodu b\u0142\u0119du.
+CWWKD1058.no.args.constr.err.useraction=Napraw b\u0142\u0105d w konstruktorze lub zaktualizuj metod\u0119 repozytorium, aby u\u017cywa\u0142a innego typu zwracanego.
+
+CWWKD1059.prop.cast.err=CWWKD1059E: Metoda {0} interfejsu repozytorium {1} nie mo\u017ce uzyska\u0107 dost\u0119pu do w\u0142a\u015bciwo\u015bci {2} encji {3} , poniewa\u017c pole lub metoda {4} klasy {5} jest niezgodna z warto\u015bci\u0105 {6} .
+CWWKD1059.prop.cast.err.explanation=W\u0142a\u015bciwo\u015b\u0107 encji lub powi\u0105zana w\u0142a\u015bciwo\u015b\u0107 z jej hierarchii nie jest zgodna z oczekiwanym typem.
+CWWKD1059.prop.cast.err.useraction=Przejrzyj model encji i sprawd\u017a, czy dla ka\u017cdej w\u0142a\u015bciwo\u015bci u\u017cyto w\u0142a\u015bciwych typ\u00f3w.
+
+CWWKD1060.name.out.of.scope=CWWKD1060E: Interfejs repozytorium {0} w aplikacji {1} konfiguruje warto\u015b\u0107 {2} dla atrybutu {3} , ale nazwy {3} nie s\u0105 dost\u0119pne dla artefaktu, kt\u00f3ry udost\u0119pnia interfejs repozytorium. Zamiast tego u\u017cyj nazwy {4} .
+CWWKD1060.name.out.of.scope.explanation=Okre\u015blona przestrze\u0144 nazw nie jest dost\u0119pna z poziomu artefaktu, w kt\u00f3rym zdefiniowano interfejs repozytorium.
+CWWKD1060.name.out.of.scope.useraction=Zaktualizuj adnotacj\u0119 Repozytorium, aby okre\u015bli\u0107 nazw\u0119 magazynu danych widoczn\u0105 dla modu\u0142u lub biblioteki udost\u0119pniaj\u0105cej interfejs repozytorium.
+
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Interfejs repozytorium {0} zdefiniowany w module przedsi\u0119biorstwa {1} aplikacji {2} konfiguruje warto\u015b\u0107 {2} dla atrybutu {3} . Jednak\u017ce nazwy {4} nie s\u0105 dost\u0119pne dla modu\u0142\u00f3w bean przedsi\u0119biorstwa. U\u017cyj nazwy z jednej z nast\u0119puj\u0105cych przestrzeni nazw: {5} .
+CWWKD1061.comp.name.in.ejb.explanation=Okre\u015blona przestrze\u0144 nazw nie jest dost\u0119pna dla modu\u0142u Enterprise Bean, w kt\u00f3rym zdefiniowano interfejs repozytorium.
+CWWKD1061.comp.name.in.ejb.useraction=Zaktualizuj adnotacj\u0119 repozytorium, aby okre\u015bli\u0107 nazw\u0119 magazynu danych widoczn\u0105 dla modu\u0142u Enterprise Bean, kt\u00f3ry udost\u0119pnia interfejs repozytorium.
+
+CWWKD1062.resource.not.found=CWWKD1062E: Metoda {0} interfejsu repozytorium {1} nie mo\u017ce zlokalizowa\u0107 zasobu {2} przy u\u017cyciu filtru {3} .
+CWWKD1062.resource.not.found.explanation=Zas\u00f3b nie zosta\u0142 znaleziony.
+CWWKD1062.resource.not.found.useraction=Sprawd\u017a, czy okre\u015blony zas\u00f3b i wszystkie inne zasoby, od kt\u00f3rych jest on zale\u017cny, istniej\u0105 i s\u0105 poprawnie skonfigurowane.
+
+CWWKD1063.unsupported.resource=CWWKD1063E: Metoda {0} interfejsu repozytorium {1} nie mo\u017ce uzyska\u0107 zasobu {2} , poniewa\u017c dostawca Jakarta Persistence nie obs\u0142uguje operacji rozpakowywania zwracaj\u0105cej wyst\u0105pienie {3} .
+CWWKD1063.unsupported.resource.explanation=Dostawca Jakarta Persistence nie obs\u0142uguje operacji rozpakowywania zwracaj\u0105cej okre\u015blony typ zasobu.
+CWWKD1063.unsupported.resource.useraction=Usu\u0144 nieobs\u0142ugiwan\u0105 metod\u0119 dost\u0119pu do zasob\u00f3w z interfejsu repozytorium.
+
+CWWKD1064.datastore.error=CWWKD1064E: Metoda {0} interfejsu repozytorium {1} nie mo\u017ce uzyska\u0107 magazynu danych {2} dla repozytorium z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {3} .
+CWWKD1064.datastore.error.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by uzyskania dost\u0119pu do magazynu danych.
+CWWKD1064.datastore.error.useraction=Upewnij si\u0119, \u017ce okre\u015blony magazyn danych i wszystkie inne zasoby, od kt\u00f3rych jest on zale\u017cny, istniej\u0105 i s\u0105 poprawnie skonfigurowane.
+
+CWWKD1065.ddlgen.timeout=CWWKD1065E: Generowanie DDL dla interfejsu repozytorium {0} nie powiod\u0142o si\u0119, poniewa\u017c magazyn danych {1} nie uko\u0144czy\u0142 generowania DDL w ci\u0105gu {2} sekund dla nast\u0119puj\u0105cych jednostek: {3} .
+CWWKD1065.ddlgen.timeout.explanation=Pr\u00f3ba wygenerowania DDL przekroczy\u0142a limit czasu i nie zosta\u0142a uko\u0144czona.
+CWWKD1065.ddlgen.timeout.useraction=Pon\u00f3w pr\u00f3b\u0119 wygenerowania DDL, gdy system i baza danych nie b\u0119d\u0105 obci\u0105\u017cone.
+
+CWWKD1066.ddlgen.failed=CWWKD1066E: Podczas pr\u00f3by generowania DDL dla interfejsu repozytorium {0} , kt\u00f3ry u\u017cywa magazynu danych {1} wyst\u0105pi\u0142 b\u0142\u0105d: {2} . B\u0142\u0105d to: {3} .
+CWWKD1066.ddlgen.failed.explanation=Pr\u00f3ba wygenerowania DDL nie powiod\u0142a si\u0119 i nie zosta\u0142a uko\u0144czona.
+CWWKD1066.ddlgen.failed.useraction=Zbadaj b\u0142\u0105d i wprowad\u017a poprawki w interfejsie repozytorium, encjach, konfiguracji magazynu danych lub bazie danych.
+
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: Generowanie DDL dla interfejsu repozytorium {0} nie powiod\u0142o si\u0119, poniewa\u017c magazyn danych {1} by\u0142 niedost\u0119pny lub nie by\u0142 w stanie udost\u0119pni\u0107 nast\u0119puj\u0105cych encji w ci\u0105gu {2} sekund: {3} .
+CWWKD1067.ddlgen.emf.timeout.explanation=Pozyskiwanie zasob\u00f3w potrzebnych do generowania DDL przekroczy\u0142o limit czasu i nie zosta\u0142o uko\u0144czone.
+CWWKD1067.ddlgen.emf.timeout.useraction=Pon\u00f3w pr\u00f3b\u0119 wygenerowania DDL, gdy system i baza danych nie b\u0119d\u0105 obci\u0105\u017cone.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: Interfejs repozytorium {0} ma wiele encji o nazwie {1} , kt\u00f3re s\u0105 dostarczane przez r\u00f3\u017cne klasy: {2} . U\u017cyj nast\u0119puj\u0105cych adnotacji encji Jakarta Persistence, aby przypisa\u0107 unikaln\u0105 nazw\u0119 encji i nazw\u0119 tabeli do ka\u017cdej klasy encji: {3} .
+CWWKD1068.entity.name.conflict.explanation=Nazwy encji i tabel s\u0105 wywnioskowywane z niekwalifikowanych nazw klas lub przypisywane za pomoc\u0105 adnotacji Jakarta Persistence.
+CWWKD1068.entity.name.conflict.useraction=Zmie\u0144 nazwy jednostek lub dodaj adnotacje Jakarta Persistence, aby wyra\u017anie rozwi\u0105za\u0107 konflikt nazw.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: Interfejs repozytorium {0} ma wiele encji o nazwie {1} , kt\u00f3re s\u0105 dostarczane przez r\u00f3\u017cne klasy: {2} . Gdy rekordy Java s\u0105 u\u017cywane jako encje, musi by\u0107 r\u00f3wnie\u017c mo\u017cliwe dodanie sufiksu Entity do nazwy encji bez powodowania konfliktu nazw. Na przyk\u0142ad: {2} .
+CWWKD1069.record.entity.name.conflict.explanation=Nazwy encji i tabel s\u0105 wywnioskowywane z niekwalifikowanych nazw klas lub przypisywane za pomoc\u0105 adnotacji Jakarta Persistence.
+CWWKD1069.record.entity.name.conflict.useraction=Zmie\u0144 nazwy jednostek lub prze\u0142\u0105cz si\u0119 na jednostki Jakarta Persistence, aby rozwi\u0105za\u0107 konflikt nazw.
+
+CWWKD1070.record.convert.err=CWWKD1070E: Rekord {0} dostarczony do metody {1} interfejsu repozytorium {2} nie mo\u017ce zosta\u0107 u\u017cyty jako encja z powodu nast\u0119puj\u0105cego b\u0142\u0119du: {3} .
+CWWKD1070.record.convert.err.explanation=Nie mo\u017cna u\u017cywa\u0107 rekordu Java jako encji.
+CWWKD1070.record.convert.err.useraction=Zdefiniuj encj\u0119 jako encj\u0119 Jakarta Persistence zamiast u\u017cywa\u0107 encji rekordu Java.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: Rekordu {0} nie mo\u017cna u\u017cy\u0107 jako encji, poniewa\u017c ma jedn\u0105 lub wi\u0119cej zmiennych typu: {1} .
+CWWKD1071.record.with.type.var.explanation=Klasy encji nie mog\u0105 mie\u0107 zmiennych typu generycznego.
+CWWKD1071.record.with.type.var.useraction=Usu\u0144 zmienne typu z rekordu.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: Rekordu {0} nie mo\u017cna u\u017cy\u0107 jako encji, poniewa\u017c jego sk\u0142adnik {1} i sk\u0142adnik {2} odnosz\u0105 si\u0119 do tej samej nazwy w\u0142a\u015bciwo\u015bci encji.
+CWWKD1072.record.comp.conflict.explanation=Nazwy w\u0142a\u015bciwo\u015bci encji musz\u0105 by\u0107 unikalne, bez wzgl\u0119du na wielko\u015b\u0107 liter.
+CWWKD1072.record.comp.conflict.useraction=Zmie\u0144 nazw\u0119 jednego ze sk\u0142adnik\u00f3w rekordu, aby unikn\u0105\u0107 konfliktu.
+
+CWWKD1073.offset.exceeds.max=CWWKD1073E: Punkt pocz\u0105tkowy {0} limitu {1} przekazanego metodzie {2} interfejsu repozytorium {3} przekracza maksymaln\u0105 dozwolon\u0105 warto\u015b\u0107 {4} .
+CWWKD1073.offset.exceeds.max.explanation=Punkt pocz\u0105tkowy limitu jest zbyt du\u017cy.
+CWWKD1073.offset.exceeds.max.useraction=Dodaj ograniczenia do zapytania, aby zmniejszy\u0107 liczb\u0119 pasuj\u0105cych wynik\u00f3w.
+
+CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: Metoda {0} interfejsu repozytorium {1} nie mo\u017ce \u0142\u0105czy\u0107 s\u0142owa kluczowego {2} ze s\u0142owem kluczowym {3} w tym samym warunku Zapytanie wed\u0142ug nazwy metody.
+CWWKD1074.qbmn.incompat.keywords.explanation=Podane s\u0142owa kluczowe zapytania wed\u0142ug nazwy metody nie s\u0105 ze sob\u0105 zgodne.
+CWWKD1074.qbmn.incompat.keywords.useraction=Zmie\u0144 nazw\u0119 metody, aby nie \u0142\u0105czy\u0107 s\u0142\u00f3w kluczowych w tym samym warunku.
+
+CWWKD1075.entity.prop.conflict=CWWKD1075E: Encja {0} nie mo\u017ce mie\u0107 w\u0142a\u015bciwo\u015bci o nazwie {1} i w\u0142a\u015bciwo\u015bci o nazwie {2} , poniewa\u017c specyfikacja Jakarta Data uznaje te nazwy za aliasy tej samej w\u0142a\u015bciwo\u015bci encji.
+CWWKD1075.entity.prop.conflict.explanation=Wyst\u0119puje kolizja pomi\u0119dzy nazwami dw\u00f3ch w\u0142a\u015bciwo\u015bci encji ze wzgl\u0119du na znak podkre\u015blenia.
+CWWKD1075.entity.prop.conflict.useraction=Nie nale\u017cy u\u017cywa\u0107 znaku podkre\u015blenia w nazwach w\u0142a\u015bciwo\u015bci encji.
+
+CWWKD1076.repo.disposed=CWWKD1076E: Nie mo\u017cna wywo\u0142a\u0107 metody {0} interfejsu repozytorium {1} , poniewa\u017c aplikacja definiuj\u0105ca repozytorium zosta\u0142a zatrzymana. Instancja repozytorium to {2} .
+CWWKD1076.repo.disposed.explanation=Metod repozytorium nie wolno u\u017cywa\u0107 poza cyklem \u017cycia aplikacji, kt\u00f3ra definiuje repozytorium.
+CWWKD1076.repo.disposed.useraction=Upewnij si\u0119, \u017ce metoda repozytorium nie jest u\u017cywana poza zakresem aplikacji, kt\u00f3ra definiuje repozytorium.
+
+CWWKD1077.defaultds.not.found=CWWKD1077E: Artefakt aplikacji {0} ma interfejs repozytorium {1} , kt\u00f3ry u\u017cywa lub domy\u015blnie u\u017cywa magazynu danych {2} , kt\u00f3ry musi zosta\u0107 skonfigurowany w konfiguracji serwera przez zdefiniowanie elementu dataSource o identyfikatorze DefaultDataSource . Na przyk\u0142ad {3} Alternatywnie przypisz warto\u015b\u0107 dataStore adnotacji Repository jako identyfikator elementu databaseStore lub nazw\u0119 JNDI odwo\u0142ania do zasobu \u017ar\u00f3d\u0142a danych lub odwo\u0142ania do jednostki trwa\u0142o\u015bci, kt\u00f3ra jest dost\u0119pna dla artefaktu aplikacji. Element databaseStore mo\u017cna zdefiniowa\u0107 w konfiguracji serwera. Na przyk\u0142ad {4} Komponent aplikacji mo\u017ce u\u017cy\u0107 adnotacji Zas\u00f3b w celu zdefiniowania odwo\u0142ania do zasobu \u017ar\u00f3d\u0142a danych. Na przyk\u0142ad {5} wymaga, aby konfiguracja serwera mia\u0142a element konfiguracji dataSource z atrybutem {6} . Komponent aplikacji mo\u017c\
+    e u\u017cy\u0107 adnotacji PersistenceUnit w celu zdefiniowania odwo\u0142ania do jednostki trwa\u0142o\u015bci. Na przyk\u0142ad {7} wymaga, aby plik persistence.xml zawiera\u0142 element persistence-unit z pasuj\u0105cym atrybutem name. Na przyk\u0142ad {8}
+CWWKD1077.defaultds.not.found.explanation=Repozytoria danych Jakarta Data domy\u015blnie korzystaj\u0105 z domy\u015blnego \u017ar\u00f3d\u0142a danych Jakarta EE, kt\u00f3re musi zosta\u0107 skonfigurowane w konfiguracji serwera.
+CWWKD1077.defaultds.not.found.useraction=Skonfiguruj domy\u015blne \u017ar\u00f3d\u0142o danych Jakarta EE lub okre\u015bl inny magazyn danych dla repozytorium.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: Jeden lub wi\u0119cej interfejs\u00f3w repozytorium ( {0} ) z artefaktu aplikacji {1} okre\u015bla magazyn danych {2} , kt\u00f3ry nie pasuje do identyfikatora elementu dataSource lub elementu databaseStore w konfiguracji serwera, nie pasuje do nazwy JNDI \u017ar\u00f3d\u0142a danych, odwo\u0142ania do zasobu \u017ar\u00f3d\u0142a danych lub odwo\u0142ania do jednostki trwa\u0142o\u015bci, do kt\u00f3rej ma dost\u0119p artefakt aplikacji, lub jeden z powi\u0105zanych zasob\u00f3w nie jest poprawnie skonfigurowany. Element dataSource mo\u017cna zdefiniowa\u0107 w konfiguracji serwera. Na przyk\u0142ad {3} element databaseStore mo\u017cna zdefiniowa\u0107 w konfiguracji serwera. Na przyk\u0142ad {4} Komponent aplikacji mo\u017ce u\u017cy\u0107 adnotacji Zas\u00f3b w celu zdefiniowania odwo\u0142ania do zasobu \u017ar\u00f3d\u0142a danych. Na przyk\u0142ad {5} wymaga, aby konfiguracja serwera mia\u0142a element konfiguracji dataSource z atrybutem {6} . Kompo\
+    nent aplikacji mo\u017ce u\u017cy\u0107 adnotacji PersistenceUnit w celu zdefiniowania odwo\u0142ania do jednostki trwa\u0142o\u015bci. Na przyk\u0142ad {7} wymaga, aby plik persistence.xml zawiera\u0142 element persistence-unit z pasuj\u0105cym atrybutem name. Na przyk\u0142ad {8}
+CWWKD1078.datastore.not.found.explanation=Magazynem danych repozytorium danych Jakarta mo\u017ce by\u0107 identyfikator elementu dataSource lub databaseStore w konfiguracji serwera, albo nazwa JNDI \u017ar\u00f3d\u0142a danych, odwo\u0142anie do zasobu \u017ar\u00f3d\u0142a danych lub odwo\u0142anie do jednostki trwa\u0142o\u015bci.
+CWWKD1078.datastore.not.found.useraction=Sprawd\u017a, czy zas\u00f3b jest poprawnie skonfigurowany. W przypadku u\u017cywania nazwy JNDI nale\u017cy upewni\u0107 si\u0119, \u017ce zakres nazwy JNDI umo\u017cliwia dost\u0119p do zasobu artefaktu aplikacji udost\u0119pniaj\u0105cego repozytorium.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: Jeden lub wi\u0119cej interfejs\u00f3w repozytorium ( {0} ) z artefaktu aplikacji {1} okre\u015bla magazyn danych o nazwie JNDI {2} , ale \u017ar\u00f3d\u0142o danych, odwo\u0142anie do zasobu \u017ar\u00f3d\u0142a danych lub odwo\u0142anie do jednostki trwa\u0142o\u015bci o tej nazwie JNDI nie jest dost\u0119pne dla artefaktu aplikacji lub jeden z powi\u0105zanych zasob\u00f3w nie jest poprawnie skonfigurowany. Komponent aplikacji mo\u017ce u\u017cy\u0107 adnotacji Zas\u00f3b w celu zdefiniowania odwo\u0142ania do zasobu \u017ar\u00f3d\u0142a danych. Na przyk\u0142ad {3} wskazuje na element konfiguracji serwera dataSource z atrybutem {4} . Komponent aplikacji mo\u017ce u\u017cy\u0107 adnotacji PersistenceUnit w celu zdefiniowania odwo\u0142ania do jednostki trwa\u0142o\u015bci. Na przyk\u0142ad {5} wymaga, aby plik persistence.xml zawiera\u0142 element persistence-unit z pasuj\u0105cym atrybutem name. Na przyk\u0142ad {6} Komponent aplikacji mo\u017ce u\u017c\
+    y\u0107 adnotacji DataSourceDefinition do zdefiniowania \u017ar\u00f3d\u0142a danych. Alternatywnie element dataSource mo\u017ce definiowa\u0107 \u017ar\u00f3d\u0142o danych w konfiguracji serwera. Na przyk\u0142ad {7}
+CWWKD1079.jndi.not.found.explanation=Je\u015bli magazyn danych repozytorium danych Jakarta jest ustawiony na nazw\u0119 JNDI \u017ar\u00f3d\u0142a danych, odwo\u0142anie do zasobu \u017ar\u00f3d\u0142a danych lub odwo\u0142anie do jednostki trwa\u0142o\u015bci, nazwa JNDI musi by\u0107 dost\u0119pna dla artefaktu aplikacji udost\u0119pniaj\u0105cego repozytorium, a \u017ar\u00f3d\u0142o danych lub jednostka trwa\u0142o\u015bci musz\u0105 by\u0107 poprawnie skonfigurowane.
+CWWKD1079.jndi.not.found.useraction=Sprawd\u017a, czy zas\u00f3b jest poprawnie skonfigurowany i czy zakres nazwy JNDI sprawia, \u017ce zas\u00f3b jest dost\u0119pny dla artefaktu aplikacji, kt\u00f3ry udost\u0119pnia repozytorium.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: Jeden lub wi\u0119cej interfejs\u00f3w repozytorium ( {0} ) z artefaktu aplikacji {1} jest niedost\u0119pny z powodu b\u0142\u0119du. B\u0142\u0105d mo\u017ce by\u0107 spowodowany problemem z konfiguracj\u0105 lub magazyn danych {2} dla repozytorium mo\u017ce by\u0107 niedost\u0119pny. B\u0142\u0105d to: {3} .
+CWWKD1080.datastore.general.err.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d uniemo\u017cliwiaj\u0105cy korzystanie z okre\u015blonych repozytori\u00f3w.
+CWWKD1080.datastore.general.err.useraction=Zlokalizuj interfejsy repozytorium i konfiguracj\u0119 magazynu danych. W razie potrzeby wprowad\u017a poprawki.
+
+CWWKD1081.entity.general.err=CWWKD1081E: Z powodu b\u0142\u0119du encja {0} nie jest dost\u0119pna dla jednego lub wi\u0119kszej liczby interfejs\u00f3w repozytorium ( {1} ), kt\u00f3re u\u017cywaj\u0105 magazynu danych {2} . B\u0142\u0105d: {3}.
+CWWKD1081.entity.general.err.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d uniemo\u017cliwiaj\u0105cy u\u017cycie okre\u015blonej jednostki.
+CWWKD1081.entity.general.err.useraction=Zlokalizuj jednostk\u0119 i wprowad\u017a poprawki, je\u015bli to konieczne.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: Jednostka trwa\u0142o\u015bci dla magazynu danych {0} nie definiuje jednej lub wi\u0119kszej liczby klas encji ( {1} ), kt\u00f3rych wymaga jeden lub wi\u0119ksza liczba interfejs\u00f3w repozytorium ( {2} ) korzystaj\u0105cych z magazynu danych.
+CWWKD1082.entity.classes.missing.explanation=Repozytoria u\u017cywaj\u0105 klas encji, kt\u00f3re musz\u0105 by\u0107 zdefiniowane w jednostce trwa\u0142o\u015bci.
+CWWKD1082.entity.classes.missing.useraction=Uwzgl\u0119dnij wszystkie klasy encji w jednostce trwa\u0142o\u015bci.

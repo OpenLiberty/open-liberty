@@ -29,21 +29,21 @@
 
 ft.invocations.total.description=Nombre de fois o\u00f9 la m\u00e9thode a \u00e9t\u00e9 appel\u00e9e.
 
-ft.retry.calls.total.description=Nombre de fois o\u00f9 la logique de relance a \u00e9t\u00e9 ex\u00e9cut\u00e9e. Il s'agit toujours d'une seule fois par appel de m\u00e9thode.
+ft.retry.calls.total.description=Le nombre de fois que la logique de r\u00e9essai a \u00e9t\u00e9 ex\u00e9cut\u00e9e. Cette valeur est toujours \u00e9gale \u00e0 une fois par appel de m\u00e9thode.
 
 ft.retry.retries.total.description=Nombre de fois o\u00f9 la m\u00e9thode a \u00e9t\u00e9 relanc\u00e9e.
 
-ft.timeout.calls.total.description=Nombre de fois o\u00f9 la logique de d\u00e9lai d'attente a \u00e9t\u00e9 ex\u00e9cut\u00e9e. Cette valeur est g\u00e9n\u00e9ralement une fois par appel de m\u00e9thode, mais peut \u00eatre nulle si le disjoncteur emp\u00eache l'ex\u00e9cution ou plus d'une fois si la m\u00e9thode est relanc\u00e9e.
+ft.timeout.calls.total.description=Nombre de fois o\u00f9 la logique de temporisation a \u00e9t\u00e9 ex\u00e9cut\u00e9e. Cette valeur est g\u00e9n\u00e9ralement \u00e9gale \u00e0 une fois par appel de m\u00e9thode. Toutefois, elle peut \u00eatre nulle si le disjoncteur emp\u00eache l'ex\u00e9cution ou plus d'une fois par appel de m\u00e9thode si la m\u00e9thode est r\u00e9essay\u00e9e.
 
 ft.timeout.executionDuration.description=Histogramme des temps d'ex\u00e9cution de la m\u00e9thode.
 
-ft.circuitbreaker.calls.total.description=Nombre de fois o\u00f9 la logique du disjoncteur a \u00e9t\u00e9 ex\u00e9cut\u00e9e. Il s'agit g\u00e9n\u00e9ralement d'une fois par appel de m\u00e9thode, mais il peut s'agir de plusieurs fois si l'appel de m\u00e9thode est relanc\u00e9.
+ft.circuitbreaker.calls.total.description=Le nombre de fois que la logique du disjoncteur a \u00e9t\u00e9 ex\u00e9cut\u00e9e. Cette valeur est g\u00e9n\u00e9ralement \u00e9gale \u00e0 une fois par appel de m\u00e9thode, mais elle peut \u00eatre sup\u00e9rieure \u00e0 une fois si la m\u00e9thode est relanc\u00e9e.
 
-ft.circuitbreaker.state.total.description=Temps pass\u00e9 par le disjoncteur dans chaque \u00e9tat.
+ft.circuitbreaker.state.total.description=Temps pass\u00e9 par le disjoncteur dans chaque \u00c9tat.
 
 ft.circuitbreaker.opened.total.description=Nombre de fois o\u00f9 le disjoncteur est pass\u00e9 de l'\u00e9tat ferm\u00e9 \u00e0 l'\u00e9tat ouvert.
 
-ft.bulkhead.calls.total.description=Nombre de fois o\u00f9 la logique de cloison a \u00e9t\u00e9 ex\u00e9cut\u00e9e. Cela se produit g\u00e9n\u00e9ralement une fois par appel de m\u00e9thode, mais peut \u00eatre z\u00e9ro fois si le disjoncteur a emp\u00each\u00e9 l'ex\u00e9cution ou plus d'une fois si l'appel de m\u00e9thode est relanc\u00e9.
+ft.bulkhead.calls.total.description=Nombre de fois o\u00f9 la logique de cloison a \u00e9t\u00e9 ex\u00e9cut\u00e9e. Cette valeur est g\u00e9n\u00e9ralement \u00e9gale \u00e0 une fois par appel de m\u00e9thode. Toutefois, elle peut \u00eatre nulle si le disjoncteur emp\u00eache l'ex\u00e9cution ou plus d'une fois par appel de m\u00e9thode si la m\u00e9thode est r\u00e9essay\u00e9e.
 
 ft.bulkhead.executionsRunning.description=Nombre d'ex\u00e9cutions en cours.
 

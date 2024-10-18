@@ -50,10 +50,6 @@ CWWKC1100.resource.unavailable=CWWKC1100E: Prost\u0159edek {0} je nedostupn\u00f
 CWWKC1100.resource.unavailable.explanation=Prost\u0159edek m\u016f\u017ee b\u00fdt nedostupn\u00fd, proto\u017ee se server vyp\u00edn\u00e1 nebo kv\u016fli zm\u011bn\u011b konfigurace, a\u0165 u\u017e prost\u0159edku nebo jin\u00e9 slu\u017eby, na kter\u00e9 z\u00e1vis\u00ed.
 CWWKC1100.resource.unavailable.useraction=Ov\u011b\u0159te konfiguraci prost\u0159edku a v\u0161echny prost\u0159edky, na nich\u017e z\u00e1vis\u00ed.
 
-CWWKC1110.task.canceled=CWWKC1110I: \u00daloha {0}, kter\u00e1 byla odeslan\u00e1 prov\u00e1d\u011bc\u00ed slu\u017eb\u011b {1}, je zru\u0161ena.
-CWWKC1110.task.canceled.explanation=Proveden\u00ed \u00falohy bylo zru\u0161eno.
-CWWKC1110.task.canceled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
-
 CWWKC1101.task.failed=CWWKC1101E: \u00daloha {0}, kter\u00e1 byla odesl\u00e1na prov\u00e1d\u011bc\u00ed slu\u017eb\u011b {1}, se nezda\u0159ila s touto chybou: {2}.
 CWWKC1101.task.failed.explanation=\u00daloha odeslan\u00e1 prov\u00e1d\u011bc\u00ed slu\u017eb\u011b se nezda\u0159ila. P\u0159\u00ed\u010dina je uvedena ve zpr\u00e1v\u011b v\u00fdjimky.
 CWWKC1101.task.failed.useraction=Odstra\u0148te p\u0159\u00ed\u010dinu selh\u00e1n\u00ed a znovu ode\u0161lete \u00falohu.
@@ -66,6 +62,10 @@ CWWKC1103.skip.run.failed=CWWKC1103E: Proveden\u00ed \u00falohy {0}, kter\u00e1 
 CWWKC1103.skip.run.failed.explanation=Operace skipRun pro spou\u0161t\u011b\u010d se nezda\u0159ila, co\u017e zp\u016fsobilo vynech\u00e1n\u00ed aktu\u00e1ln\u00edho pokusu o proveden\u00ed pro \u00falohu.
 CWWKC1103.skip.run.failed.useraction=Odstra\u0148te p\u0159\u00ed\u010dinu selh\u00e1n\u00ed a rozhodn\u011bte se, zda chcete zopakovat odesl\u00e1n\u00ed \u00falohy.
 
+CWWKC1110.task.canceled=CWWKC1110I: \u00daloha {0} , kter\u00e1 byla odesl\u00e1na exekutorsk\u00e9 slu\u017eb\u011b {1} , je zru\u0161ena.
+CWWKC1110.task.canceled.explanation=\u00dakol byl zru\u0161en.
+CWWKC1110.task.canceled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
 CWWKC1111.task.invalid=CWWKC1111E: \u00daloha {0} je neplatn\u00e1.
 CWWKC1111.task.invalid.explanation=\u00dalohu nelze odeslat, proto\u017ee je neplatn\u00e1.
 CWWKC1111.task.invalid.useraction=Aktualizujte aplikaci tak, aby do slu\u017eby ExecutorService odeslala platnou \u00falohu.
@@ -77,6 +77,14 @@ CWWKC1112.all.tasks.canceled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u0
 CWWKC1120.future.get.rejected=CWWKC1120E: T\u0159\u00eddu Future dodan\u00e1 metod\u00e1m taskSubmitted a taskStarting modulu ManagedTaskListener nelze pou\u017e\u00edt pro \u010dek\u00e1n\u00ed na dokon\u010den\u00ed \u00falohy.
 CWWKC1120.future.get.rejected.explanation=Metody taskSubmitted a taskStarting modulu ManagedTaskListener se spou\u0161t\u00ed v podprocesu, kter\u00fd \u00falohu ode\u0161le nebo spust\u00ed. Proto nen\u00ed mo\u017en\u00e9 pou\u017e\u00edt k \u010dek\u00e1n\u00ed na danou \u00falohu t\u0159\u00eddu Future dodanou t\u011bmto metod\u00e1m.
 CWWKC1120.future.get.rejected.useraction=Aktualizujte aplikaci, abyste se vyhnuli vyvol\u00e1n\u00ed metody get nad t\u0159\u00eddou Future, kter\u00e1 je dod\u00e1na metod\u00e1m taskSubmitted a taskStarting.
+
+CWWKC1121.virtual.invalid=CWWKC1121E: Anotace {0} nebo prvek deskriptoru nasazen\u00ed {1} , kter\u00fd m\u00e1 n\u00e1zev {0} ur\u010duje virtual=true, ale virtu\u00e1ln\u00ed vl\u00e1kna nejsou k dispozici p\u0159ed verz\u00ed Java 21. Pou\u017eit\u00e1 \u00farove\u0148 Java je: {1} .
+CWWKC1121.virtual.invalid.explanation=Virtu\u00e1ln\u00ed vl\u00e1kna nejsou k dispozici v pou\u017eit\u00e9 verzi Java.
+CWWKC1121.virtual.invalid.useraction=Aktualizujte na nov\u011bj\u0161\u00ed verzi Java, kter\u00e1 podporuje virtu\u00e1ln\u00ed vl\u00e1kna.
+
+CWWKC1122.mod.unavail=CWWKC1122E: Aplikace {0} nebo jej\u00ed modul {1} nen\u00ed k dispozici.
+CWWKC1122.mod.unavail.explanation=Aplikace a modul, kter\u00e9 definuj\u00ed konfiguraci ManagedThreadFactory , mus\u00ed b\u00fdt k dispozici pro z\u00edsk\u00e1n\u00ed instance ManagedThreadFactory .
+CWWKC1122.mod.unavail.useraction=Ujist\u011bte se, \u017ee je aplikace spu\u0161t\u011bna a \u017ee aplikace obsahuje modul, kter\u00fd definuje konfiguraci ManagedThreadFactory .
 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: \u00daloha odeslan\u00e1 spravovan\u00e9mu prov\u00e1d\u011bc\u00edmu modulu {0} obsahuje vlastnost proveden\u00ed {1} s hodnotou {2}, kter\u00e1 je pro spravovan\u00e9 prov\u00e1d\u011bc\u00ed moduly neplatn\u00e1.
 CWWKC1130.xprop.value.invalid.explanation=N\u011bkter\u00e9 hodnoty vlastnosti proveden\u00ed nejsou platn\u00e9 pro spravovan\u00e9 prov\u00e1d\u011bc\u00ed moduly, ale mohou b\u00fdt platn\u00e9 pro jin\u00e9 typy prost\u0159edk\u016f, nap\u0159. pro kontextovou slu\u017ebu nebo spravovanou tov\u00e1rnu na podprocesy.
