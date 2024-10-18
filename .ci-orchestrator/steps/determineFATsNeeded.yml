@@ -11,6 +11,9 @@
   conditionalRun:
     - type: ifSet
       value: ${fat.buckets.to.run}
+    - type: ifNotEqual
+      value: ${fat.buckets.to.run}
+      value2: none
   timeoutInMinutes: 120
   properties:
     fat.buckets.to.run: ${PR Changes:fat.buckets.to.run}
