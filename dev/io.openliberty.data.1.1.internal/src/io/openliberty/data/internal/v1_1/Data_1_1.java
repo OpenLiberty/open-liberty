@@ -22,6 +22,8 @@ import java.util.Map;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.internal.version.DataVersionCompatibility;
@@ -50,6 +52,8 @@ import jakarta.data.exceptions.MappingException;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DataVersionCompatibility.class)
 public class Data_1_1 implements DataVersionCompatibility {
+    private static final TraceComponent tc = Tr.register(Data_1_1.class);
+
     private static final String FUNCTION_ANNO_PACKAGE = Rounded.class.getPackageName();
 
     private static final Map<String, String> FUNCTION_CALLS = new HashMap<>();
@@ -102,9 +106,15 @@ public class Data_1_1 implements DataVersionCompatibility {
         boolean negated = comparison.isNegative();
 
         if (ignoreCase)
-            attributeExpr.append("LOWER(").append(o_).append(attrName).append(')');
-        else
-            attributeExpr.append(o_).append(attrName);
+            attributeExpr.append("LOWER(");
+
+        if (attrName.charAt(attrName.length() - 1) != ')')
+            attributeExpr.append(o_);
+
+        attributeExpr.append(attrName);
+
+        if (ignoreCase)
+            attributeExpr.append(')');
 
         for (Annotation anno : functionAnnos) {
             if (anno instanceof Rounded && ((Rounded) anno).value() == Rounded.Direction.NEAREST)
@@ -272,20 +282,36 @@ public class Data_1_1 implements DataVersionCompatibility {
     }
 
     @Override
+    @Trivial
     public String[] getUpdateAttributeAndOperation(Annotation[] annos) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        String[] returnValue = null;
         for (Annotation anno : annos)
             if (anno instanceof Assign) {
-                return new String[] { ((Assign) anno).value(), "=" };
+                returnValue = new String[] { ((Assign) anno).value(), "=" };
+                break;
             } else if (anno instanceof Add) {
-                return new String[] { ((Add) anno).value(), "+" };
+                returnValue = new String[] { ((Add) anno).value(), "+" };
+                break;
             } else if (anno instanceof Multiply) {
-                return new String[] { ((Multiply) anno).value(), "*" };
+                returnValue = new String[] { ((Multiply) anno).value(), "*" };
+                break;
             } else if (anno instanceof Divide) {
-                return new String[] { ((Divide) anno).value(), "/" };
+                returnValue = new String[] { ((Divide) anno).value(), "/" };
+                break;
             } else if (anno instanceof SubtractFrom) {
-                return new String[] { ((SubtractFrom) anno).value(), "-" };
+                returnValue = new String[] { ((SubtractFrom) anno).value(), "-" };
+                break;
             }
-        return null;
+
+        if (trace && tc.isDebugEnabled()) {
+            Object[] aa = new Object[annos.length];
+            for (int a = 0; a < annos.length; a++)
+                aa[a] = annos[a] == null ? null : annos[a].annotationType().getName();
+            Tr.debug(this, tc, "getUpdateAttributeAndOperation", aa, returnValue);
+        }
+        return returnValue;
     }
 
     @Override
