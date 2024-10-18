@@ -31,9 +31,11 @@ public class FindActionTest extends  FeatureUtilityToolTest {
         Log.entering(c, methodName);
         setupEnv();
 
-        // rollback wlp version 2 times (e.g 20.0.0.5 -> 20.0.0.3)
-        replaceWlpProperties(getPreviousWlpVersion());
-        replaceWlpProperties(getPreviousWlpVersion());
+        replaceWlpProperties(libertyVersion);
+        //don't connect to Maven Central to reduce network issue
+        copyFileToMinifiedRoot("etc",
+    		    "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+    	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
         Log.exiting(c, methodName);
     }
 
@@ -127,7 +129,7 @@ public class FindActionTest extends  FeatureUtilityToolTest {
         String output = po.getStdout();
 
         // check for apiDiscovery-1.0
-        assertTrue("Should contain apiDiscovery-1.0", output.contains("apiDiscovery-1.0"));
+        assertTrue("Should contain openapi-3.1", output.contains("openapi-3.1"));
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -141,7 +143,7 @@ public class FindActionTest extends  FeatureUtilityToolTest {
      */
     @Test
     public void testFindHiddenFeature() throws Exception {
-        final String METHOD_NAME = "testFindMultipleArgs";
+        final String METHOD_NAME = "testFindHiddenFeature";
         Log.entering(c, METHOD_NAME);
 
         // run the command
