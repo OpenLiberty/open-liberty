@@ -145,10 +145,10 @@ OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W=CWWKO1680W: The {1} application name 
 OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.explanation=The application name reference in the mpOpenAPI configuration element matches the name from an application deployment descriptor, but does not match any application name that is defined in the server.xml file.
 OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.useraction=Check that all applications started correctly and that the names in the configuration element are specified correctly.
 
-OPENAPI_VERSION_INVALID_CWWK06181W=CWWKO1681W: The configured {0} OpenAPI version is not in a valid format, it must be either two or three numbers separated by the period (.) character. The supported values are {1}. The default version of {2} will be used instead.
-OPENAPI_VERSION_INVALID_CWWK06181W.explanation=The openAPIVersion attribute of the mpOpenAPI configuration element is set to a value which is not a valid OpenAPI version.
+OPENAPI_VERSION_INVALID_CWWK06181W=CWWKO1681W: The configured {0} OpenAPI version is not in a valid format, it must be either two or three numbers that are separated by a period (.) character. The supported values are {1}. The default version of {2} is used instead.
+OPENAPI_VERSION_INVALID_CWWK06181W.explanation=The openAPIVersion attribute of the mpOpenAPI configuration element is set to a value that is not a valid OpenAPI version.
 OPENAPI_VERSION_INVALID_CWWK06181W.useraction=Update the openAPIVersion attribute to one of the supported values from the error message.
 
-OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W=CWWKO1682W: The configured {0} OpenAPI version is not supported by this version of mpOpenAPI. The supported values are {1}. The default version of {2} will be used instead.
-OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.explanation=The openAPIVersion attribute of the mpOpenAPI configuration element is set to an OpenAPI version which is not supported by the running version of the mpOpenAPI feature.
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W=CWWKO1682W: This version of mpOpenAPI does not support the configured {0} OpenAPI version. The supported values are {1}. The default version of {2} is used instead.
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.explanation=The openAPIVersion attribute of the mpOpenAPI configuration element is set to an OpenAPI version that is not supported by the running version of the mpOpenAPI feature.
 OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Update the openAPIVersion attribute to one of the supported values from the error message, or use a version of the mpOpenAPI feature that supports the configured OpenAPI version.
