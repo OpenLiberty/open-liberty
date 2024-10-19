@@ -27,18 +27,13 @@ import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.Server;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
-import componenttest.topology.database.container.PostgreSQLContainer;
 import componenttest.topology.impl.LibertyServer;
-import suite.FATSuite;
 
 @RunWith(FATRunner.class)
 public class DBRerouteTest extends SimpleTest {
-
-    public static JdbcDatabaseContainer<?> testContainer;
 
 	@Server("MigrationServer3")
 	public static LibertyServer server3;
@@ -54,23 +49,14 @@ public class DBRerouteTest extends SimpleTest {
 	        	Log.info(DBRerouteTest.class, "setupRunner.run", "Setting up "+s.getServerName()+" for testcontainers");
 
 	            //Get driver name
-	            s.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+	            s.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer).getDriverName());
 
 	            //Setup server DataSource properties
-	            DatabaseContainerUtil.setupDataSourceDatabaseProperties(s, testContainer);
+	            DatabaseContainerUtil.setupDataSourceDatabaseProperties(s, TxTestContainerSuite.testContainer);
 
 	            s.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 	        }
 	    };
-
-        testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_IMAGE)
-                .withDatabaseName(TxTestContainerSuite.POSTGRES_DB)
-                .withUsername(TxTestContainerSuite.POSTGRES_USER)
-                .withPassword(TxTestContainerSuite.POSTGRES_PASS)
-                .withSSL()
-                .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
-        testContainer.setStartupAttempts(2);
-        testContainer.start();
 
 //		System.getProperties().entrySet().stream().forEach(e -> Log.info(RerouteTest.class, "Properties", e.getKey() + " -> " + e.getValue()));
 //		System.getenv().entrySet().stream().forEach(e -> Log.info(RerouteTest.class, "Environment", e.getKey() + " -> " + e.getValue()));
@@ -87,7 +73,9 @@ public class DBRerouteTest extends SimpleTest {
 		final Duration meanStartTime = FATUtils.startServers(runner, server, server2, server3);
 		final float perfFactor = (float)normalStartTime.getSeconds() / (float)meanStartTime.getSeconds();
 		Log.info(DBRerouteTest.class, "beforeTests", "Mean startup time: "+meanStartTime+", Perf factor="+perfFactor);
-		setTestQuerySuffix("perfFactor="+perfFactor);
+		if (perfFactor < 1f) {
+			setTestQuerySuffix("perfFactor="+perfFactor);
+		}
 	}
 
 	@AfterClass
@@ -97,6 +85,6 @@ public class DBRerouteTest extends SimpleTest {
 		DBTestBase.cleanupWSATTest(server);
 		DBTestBase.cleanupWSATTest(server2);
 		
-		testContainer.stop();
+		setTestQuerySuffix(null);
 	}
 }
