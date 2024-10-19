@@ -14,7 +14,6 @@ package io.openliberty.microprofile.openapi20.fat.deployments;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +42,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.openapi20.fat.FATSuite;
@@ -68,9 +68,6 @@ public class MergeServerXMLTest {
     @ClassRule
     public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
 
-    private final Map<String, Archive<?>> deployedConfiguredApps = new HashMap<>(); //configued in server.xml
-    private final List<String> deployedApps = new ArrayList<>(); //apps in dropins
-
     @BeforeClass
     public static void setupServer() throws Exception {
         //This will be ignored because we have openapi includes/excludes in server.xml
@@ -78,7 +75,6 @@ public class MergeServerXMLTest {
                                              Collections.singletonMap("mp_openapi_extensions_liberty_merged_include", "none"));
         server.saveServerConfiguration();
         server.startServer();
-        server.waitForStringInLogUsingMark("CWWKF0011I"); //ready to run a smarter planet
     }
 
     @AfterClass
@@ -89,25 +85,14 @@ public class MergeServerXMLTest {
     @After
     public void cleanup() throws Exception {
         server.setMarkToEndOfLog();
-        server.deleteAllDropinApplications();
 
-        List<String> failedToStop = new ArrayList<>();
-        for (String app : deployedApps) {
-            if (server.waitForStringInLogUsingMark("CWWKZ0009I:.*" + app) == null) {
-                failedToStop.add(app);
-            }
-        }
+        server.deleteAllDropinApplications(); // Will stop all dropin apps
+        server.restoreServerConfiguration(); // Will stop all apps deployed via server.xml
+        server.removeAllInstalledAppsForValidation(); // Validates that all apps stop
 
-        for (String app : deployedConfiguredApps.keySet()) {
-            if (deleteAppFromApps(deployedConfiguredApps.get(app), app) == null) {
-                failedToStop.add(app);
-            }
-        }
-
-        if (!failedToStop.isEmpty()) {
-            throw new AssertionError("The following apps failed to stop: " + failedToStop);
-        }
-        server.restoreServerConfiguration();
+        // Delete everything from the apps directory
+        server.deleteDirectoryFromLibertyServerRoot("apps");
+        LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/apps").mkdir();
     }
 
     @Test
@@ -129,16 +114,10 @@ public class MergeServerXMLTest {
 
         String appName = "serverXMLName";
 
-        MpOpenAPIElement.MpOpenAPIElementBuilder builder = MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
-                                                                                  .addIncludedApplicaiton("serverXMLName")
-                                                                                  .addExcludedModule("serverXMLName/nameFromWar");
-
-        ServerConfiguration serverConfig = server.getServerConfiguration().clone();
-        serverConfig.addApplication(appName, "testEar.ear", "ear");
-        MpOpenAPIElement openAPIConfig = serverConfig.getMpOpenAPIElement();
-        builder.buildAndOverwrite(openAPIConfig);
-
-        server.updateServerConfiguration(serverConfig);
+        MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
+                               .addIncludedApplicaiton("serverXMLName")
+                               .addExcludedModule("serverXMLName/nameFromWar")
+                               .buildAndPushToServer();
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
                                     .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
@@ -153,7 +132,7 @@ public class MergeServerXMLTest {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
                                           .addAsModules(war1, war2, war3);
 
-        deployAppToApps(ear, appName);
+        deployAppToApps(ear, appName, "ear");
 
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
@@ -233,46 +212,18 @@ public class MergeServerXMLTest {
     }
 
     private void deployApp(Archive<?> archive) throws Exception {
-        server.setMarkToEndOfLog();
-        server.setTraceMarkToEndOfDefaultTrace();
-        ShrinkHelper.exportDropinAppToServer(server, archive, SERVER_ONLY, DISABLE_VALIDATION);
-        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I:.*" + getName(archive)));
-        deployedApps.add(getName(archive));
+        ShrinkHelper.exportDropinAppToServer(server, archive, SERVER_ONLY);
     }
 
-    private void deployAppToApps(Archive<?> archive, String appName) throws Exception {
-        deployAppToApps(archive, appName, true);
-    }
-
-    private void deployAppToApps(Archive<?> archive, String appName, boolean serverStarted) throws Exception {
-        server.setMarkToEndOfLog();
-        server.setTraceMarkToEndOfDefaultTrace();
+    private void deployAppToApps(Archive<?> archive, String appName, String appType) throws Exception {
+        // Deploy the app archive
         ShrinkHelper.exportAppToServer(server, archive, SERVER_ONLY, DISABLE_VALIDATION);
-        if (serverStarted) {
-            assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I:.*" + getName(appName)));
-        }
-        deployedConfiguredApps.put(appName, archive);
-    }
-
-    private String deleteAppFromApps(Archive<?> archive, String appName) throws Exception {
+        // Add app to server configuration
         ServerConfiguration sc = server.getServerConfiguration();
-        sc.removeApplicationsByName(appName);
+        sc.addApplication(appName, archive.getName(), appType);
         server.updateServerConfiguration(sc);
-        server.deleteFileFromLibertyServerRoot("apps/" + archive.getName());
-        deployedConfiguredApps.remove(appName);
-        return server.waitForStringInLogUsingMark("CWWKZ0009I:.*" + getName(appName));
-    }
-
-    private String getName(Archive<?> archive) {
-        return getName(archive.getName());
-    }
-
-    private String getName(String fileName) {
-        int lastDot = fileName.lastIndexOf('.');
-        if (lastDot != -1) {
-            fileName = fileName.substring(0, lastDot);
-        }
-        return fileName;
+        // Wait for app to start
+        server.addInstalledAppForValidation(appName);
     }
 
     private void logOnServer(String pathUpToEndpoint, String message) throws Exception {
