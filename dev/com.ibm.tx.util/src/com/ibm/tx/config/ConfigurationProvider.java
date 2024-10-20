@@ -367,4 +367,11 @@ public interface ConfigurationProvider {
      * @return
      */
     public String getUserDir();
+
+    /**
+     * Whether methods annotated with @Transactional are allowed to throw undeclared checked exceptions.
+     *
+     * @return
+     */
+    public boolean isThrowCheckedExceptions();
 }
