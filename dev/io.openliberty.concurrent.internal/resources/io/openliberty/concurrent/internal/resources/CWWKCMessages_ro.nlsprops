@@ -46,7 +46,19 @@ CWWKC1204.not.serializable=CWWKC1204E: Nu se poate crea un proxy de context seri
 CWWKC1204.not.serializable.explanation=Tipurile de context al firului de execu\u021bie ter\u021b\u0103 parte nu sunt compatibile cu serializarea \u0219i nu pot fi configurate pentru a fi propagate pentru proxy-uri de context serializabile.
 CWWKC1204.not.serializable.useraction=Actualiza\u021bi aplica\u021bia pentru a solicita un proxy de context non-serializabil sau asigura\u021bi-v\u0103 c\u0103 nu exist\u0103 tipuri de context ter\u021b\u0103 parte configurate \u00een vederea propag\u0103rii.
 
-CWWKC1217.no.virtual.threads=CWWKC1217I: Specifica\u021bia de concuren\u021b\u0103 necesit\u0103 ca virtual=true s\u0103 fie ignorat \u00een defini\u021bia {0} {1} din artefactul aplica\u021biei {2} deoarece Java {3} nu accept\u0103 fire virtuale.
+CWWKC1205.qualifiers.require.cdi=CWWKC1205E: Artefactul aplica\u021biei {0} nu poate specifica calificatorii {1} pe adnotarea {2} sau elementul descriptor de implementare {3} care are numele {4} deoarece caracteristica {5} nu este activat\u0103.
+CWWKC1205.qualifiers.require.cdi.explanation=Caracteristica CDI este o condi\u021bie prealabil\u0103 pentru specificarea calificatorilor pe o defini\u021bie de resurse.
+CWWKC1205.qualifiers.require.cdi.useraction=Activa\u021bi caracteristica CDI.
+
+CWWKC1206.qualifier.must.be.anno=CWWKC1206E: Artefactul de aplica\u021bie {0} specific\u0103 o adnotare {1} sau un element descriptor de implementare {2} care are numele {3} \u0219i lista de calificatori {4} . Lista de calificative include o valoare {5} care nu este o adnotare. Toate elementele din list\u0103 trebuie s\u0103 fie clase de adnotare care sunt adnotate cu @Qualifier \u0219i @Retention(RUNTIME). De exemplu, {6}
+CWWKC1206.qualifier.must.be.anno.explanation=Fiecare valoare din lista de calificative trebuie s\u0103 fie o clas\u0103 de adnotare.
+CWWKC1206.qualifier.must.be.anno.useraction=Asigura\u021bi-v\u0103 c\u0103 toate valorile din lista de calificatori sunt clase de adnotare.
+
+CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Artefactul de aplica\u021bie {0} specific\u0103 o adnotare {1} sau un element descriptor de implementare {2} care are numele {3} \u0219i lista de calificatori {4} . Lista de calificative include adnotarea {5} , care nu este adnotat\u0103 cu @ jakarta.inject.Qualifier \u0219i @Retention(RUNTIME). Un exemplu de calificativ valid este: {6}
+CWWKC1207.lacks.qualifier.anno.explanation=Adnotarea calificativ indic\u0103 faptul c\u0103 adnotarea este un calificativ. Adnotarea Retention controleaz\u0103 disponibilitatea adnot\u0103rilor.
+CWWKC1207.lacks.qualifier.anno.useraction=Ad\u0103uga\u021bi adnot\u0103rile @Qualifier \u0219i @Retention(RUNTIME) la clasa de calificare.
+
+CWWKC1217.no.virtual.threads=CWWKC1217I: Specifica\u021bia de concuren\u021b\u0103 necesit\u0103 ca virtual=true s\u0103 fie ignorat pe adnotarea {1} al artefactului aplica\u021biei {0} sau elementul descriptor de implementare {2} cu numele {3} deoarece Java {4} nu accept\u0103 fire virtuale.
 CWWKC1217.no.virtual.threads.explanation=Firele virtuale sunt disponibile numai \u00een Java 21 \u0219i versiuni ulterioare.
 CWWKC1217.no.virtual.threads.useraction=Actualiza\u021bi la Java 21 sau o versiune ulterioar\u0103 pentru a permite utilizarea firelor de execu\u021bie virtuale.
 

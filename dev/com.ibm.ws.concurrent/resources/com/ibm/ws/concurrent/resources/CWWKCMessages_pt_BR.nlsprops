@@ -50,10 +50,6 @@ CWWKC1100.resource.unavailable=CWWKC1100E: O recurso {0} est\u00e1 indispon\u00e
 CWWKC1100.resource.unavailable.explanation=Um recurso pode se tornar indispon\u00edvel devido ao encerramento do servidor ou devido a uma mudan\u00e7a na configura\u00e7\u00e3o, para ele mesmo ou para outro recurso do qual ele depende.
 CWWKC1100.resource.unavailable.useraction=Verifique a configura\u00e7\u00e3o do recurso e de todos os recursos dos quais ele depende.
 
-CWWKC1110.task.canceled=CWWKC1110I: A tarefa {0}, que foi enviada ao servi\u00e7o do executor {1}, est\u00e1 cancelada.
-CWWKC1110.task.canceled.explanation=A execu\u00e7\u00e3o da tarefa foi cancelada.
-CWWKC1110.task.canceled.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
-
 CWWKC1101.task.failed=CWWKC1101E: A tarefa {0}, que foi enviada para o servi\u00e7o do executor {1}, falhou com o seguinte erro: {2}.
 CWWKC1101.task.failed.explanation=Uma tarefa enviada para um executor falhou. Consulte a mensagem de exce\u00e7\u00e3o para obter a causa.
 CWWKC1101.task.failed.useraction=Corrija a causa da falha e reenvie a tarefa.
@@ -66,6 +62,10 @@ CWWKC1103.skip.run.failed=CWWKC1103E: A execu\u00e7\u00e3o da tarefa {0}, que fo
 CWWKC1103.skip.run.failed.explanation=A opera\u00e7\u00e3o skipRun para o Acionador falhou, fazendo com que a tentativa de execu\u00e7\u00e3o atual para a tarefa fosse ignorada.
 CWWKC1103.skip.run.failed.useraction=Corrija a causa da falha e decida se a tarefa ser\u00e1 reenviada ou n\u00e3o.
 
+CWWKC1110.task.canceled=CWWKC1110I: A tarefa {0}, que foi enviada ao servi\u00e7o executor {1}, \u00e9 cancelada.
+CWWKC1110.task.canceled.explanation=A tarefa foi cancelada.
+CWWKC1110.task.canceled.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
 CWWKC1111.task.invalid=CWWKC1111E: A tarefa {0} n\u00e3o \u00e9 v\u00e1lida.
 CWWKC1111.task.invalid.explanation=A tarefa n\u00e3o pode ser submetida porque ela n\u00e3o \u00e9 v\u00e1lida.
 CWWKC1111.task.invalid.useraction=Atualize o aplicativo para submeter uma tarefa v\u00e1lida ao ExecutorService.
@@ -77,6 +77,14 @@ CWWKC1112.all.tasks.canceled.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00
 CWWKC1120.future.get.rejected=CWWKC1120E: O Futuro fornecido aos m\u00e9todos taskSubmitted e taskStarting do ManagedTaskListener n\u00e3o pode ser usado para aguardar a conclus\u00e3o da tarefa.
 CWWKC1120.future.get.rejected.explanation=Os m\u00e9todos taskSubmitted e taskStarting do ManagedTaskListener s\u00e3o executados no encadeamento que enviar\u00e1 ou iniciar\u00e1 a tarefa. Portanto, o Futuro fornecido a esses m\u00e9todos n\u00e3o deve ser usado para aguardar pela tarefa.
 CWWKC1120.future.get.rejected.useraction=Atualize o aplicativo para evitar chamar get no Futuro que \u00e9 fornecido para taskSubmitted e taskStarting.
+
+CWWKC1121.virtual.invalid=CWWKC1121E: A anota\u00e7\u00e3o {0} ou o elemento descritor de implanta\u00e7\u00e3o {1} que tem o nome {0} especifica virtual=true, mas os threads virtuais n\u00e3o est\u00e3o dispon\u00edveis antes do Java 21. O n\u00edvel de Java usado \u00e9: {1}.
+CWWKC1121.virtual.invalid.explanation=Os threads virtuais n\u00e3o est\u00e3o dispon\u00edveis na vers\u00e3o do Java utilizada.
+CWWKC1121.virtual.invalid.useraction=Atualize para uma vers\u00e3o mais recente do Java que ofere\u00e7a suporte a threads virtuais.
+
+CWWKC1122.mod.unavail=CWWKC1122E: O aplicativo {0} ou seu m\u00f3dulo {1} n\u00e3o est\u00e1 dispon\u00edvel.
+CWWKC1122.mod.unavail.explanation=O aplicativo e o m\u00f3dulo que definem a configura\u00e7\u00e3o do ManagedThreadFactory devem estar dispon\u00edveis para obter uma inst\u00e2ncia ManagedThreadFactory.
+CWWKC1122.mod.unavail.useraction=Verifique se o aplicativo foi iniciado e se inclui o m\u00f3dulo que define a configura\u00e7\u00e3o do ManagedThreadFactory.
 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Uma tarefa enviada ao executor gerenciado{0} cont\u00e9m uma propriedade de execu\u00e7\u00e3o {1} com o valor {2} que n\u00e3o \u00e9 v\u00e1lido para executores gerenciados.
 CWWKC1130.xprop.value.invalid.explanation=Alguns valores da propriedade de execu\u00e7\u00e3o n\u00e3o s\u00e3o v\u00e1lidos para executores gerenciados, mas podem ser v\u00e1lidos para outros tipos de recursos, como servi\u00e7o de contexto ou factory de encadeamento gerenciado.
