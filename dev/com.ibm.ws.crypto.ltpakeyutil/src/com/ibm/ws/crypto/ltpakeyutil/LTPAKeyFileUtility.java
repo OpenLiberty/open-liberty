@@ -19,7 +19,7 @@ public interface LTPAKeyFileUtility {
 	/**
 	 * Properties used in the LTPA keys file.
 	 */
-	public static final String KEYIMPORT_SECRETKEY = "com.ibm.websphere.ltpa.3DESKey";
+	public static final String KEYIMPORT_SECRETKEY = "com.ibm.websphere.ltpa.SharedKey";
 	public static final String KEYIMPORT_PRIVATEKEY = "com.ibm.websphere.ltpa.PrivateKey";
 	public static final String KEYIMPORT_PUBLICKEY = "com.ibm.websphere.ltpa.PublicKey";
 	public static final String KEYIMPORT_REALM = "com.ibm.websphere.ltpa.Realm";

@@ -11,7 +11,12 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
+ * This package MUST NOT be exported by any bundle that includes it.
+ * Doing so will cause package / classpath namespace conflicts when
+ * included by several different bundles.
+ */
+/**
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-package com.ibm.ws.crypto.common;
+package com.ibm.ws.common.crypto;
