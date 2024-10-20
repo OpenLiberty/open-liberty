@@ -182,6 +182,7 @@ public class OpenAPIUtils {
      * @return {@code true} if all elements of {@code collection} are equal, {@code false} otherwise
      */
     public static <T> boolean allEqual(Collection<? extends T> collection, BiPredicate<? super T, ? super T> comparator) {
+
         Iterator<? extends T> i = collection.iterator();
         if (!i.hasNext()) {
             return true;
@@ -189,7 +190,9 @@ public class OpenAPIUtils {
 
         T first = i.next();
         while (i.hasNext()) {
-            if (!equals(first, i.next(), comparator)) {
+            T next = i.next();
+
+            if (!equals(first, next, comparator)) {
                 return false;
             }
         }
