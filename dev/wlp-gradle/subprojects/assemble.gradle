@@ -22,6 +22,7 @@ if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.
         dependsOn jar
         from project.buildDir
         into buildImage.file('wlp/' + bnd.get('publish.wlp.jar.suffix', 'lib'))
+        fileMode 0644
         include bnd.get('publish.wlp.jar.include', '*.jar')
         def hasIFIXHeaders = [:]
         def fullVersions = [:]
@@ -112,6 +113,7 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
         from new File(project.buildDir, 'distributions')
         include bnd.get('publish.wlp.javadoc.include', '*javadoc.zip')
         into rootProject.file("build.image/wlp/" + bnd.get('publish.wlp.jar.suffix', 'lib') + "/javadoc")
+        fileMode 0644
         rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
     }
     assemble.dependsOn publishJavadoc
@@ -137,6 +139,7 @@ if (!bnd.get('publish.tool.jar', '').empty) {
         dependsOn publishToolScripts
         from project.buildDir
         into buildImage.file('wlp/bin/' + bnd.get('publish.tool.script.subdir', '') + 'tools')
+        fileMode 0644
         include bnd.get('publish.tool.jar', '')
     }
     assemble.dependsOn publishToolJars
@@ -147,6 +150,7 @@ if (project.file('resources/schemas').exists()) {
         dependsOn jar
         from project.file('resources/schemas')
         into buildImage.file('wlp/dev/api/ibm/schema')
+        fileMode 0644
     }
     assemble.dependsOn publishSchemaResources
 }
@@ -156,6 +160,7 @@ if (project.file('publish/platform').exists()) {
         dependsOn jar
         from project.file('publish/platform')
         into buildImage.file('wlp/lib/platform')
+        fileMode 0644
         include '*.mf'
         filter(org.apache.tools.ant.filters.ConcatFilter,
                 append: file(cnf.file('resources/IBM-ProductID.txt')))
@@ -166,6 +171,7 @@ if (project.file('publish/platform').exists()) {
         dependsOn publishPlatformManifests
         from project.file('publish/platform')
         into buildImage.file('wlp/lib/platform')
+        fileMode 0644
         exclude '*.mf'
     }
     assemble.dependsOn publishPlatformFiles
@@ -176,6 +182,7 @@ if (project.file('publish/templates').exists()) {
         dependsOn jar
         from project.file('publish/templates')
         into buildImage.file('wlp/templates')
+        fileMode 0644
     }
     assemble.dependsOn publishTemplates
 }
@@ -195,6 +202,7 @@ if (parseBoolean(bnd.get('publish.wlp.clients', 'false'))) {
         dependsOn jar
         from project.file('publish/clients')
         into buildImage.file('wlp/clients')
+        fileMode 0644
     }
     assemble.dependsOn publishClientScripts
 }
@@ -204,6 +212,7 @@ if (project.file('lib/native').exists()) {
         dependsOn jar
         from project.file('lib/native')
         into buildImage.file('wlp/lib/native')
+        fileMode 0644
     }
     assemble.dependsOn publishLibNative
 }
