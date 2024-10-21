@@ -221,108 +221,168 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
       });
 
       return deferred;
-        },
+    },
 
-        /**
-         * Function used to get the user preferences in the toolbox
-         * 
-         * @returns {Map} Map of preferences
-         */
-        getPreferences : function() {
-            var url = this.__url + "/preferences";
-            var options = {
-                    handleAs : "json"
-            };
-            var xhrDef = xhr.get(url, options);
+    /**
+     * Function used to get the user preferences in the toolbox
+     * 
+     * @returns {Map} Map of preferences
+     */
+    getPreferences : function() {
+        var url = this.__url + "/preferences";
+        var options = {
+                handleAs : "json"
+        };
+        var xhrDef = xhr.get(url, options);
 
-            // Establish the Deferred to be returned.
-            // This allows the caller to cancel the underlying XHR request.
-            var deferred = new Deferred(function cancelXHRDeferred(reason) {
-                xhrDef.cancel(reason);
-            });
+        // Establish the Deferred to be returned.
+        // This allows the caller to cancel the underlying XHR request.
+        var deferred = new Deferred(function cancelXHRDeferred(reason) {
+            xhrDef.cancel(reason);
+        });
 
-            xhrDef.then(function(preferences) {
-                deferred.resolve(preferences, true);
-            }, function(err) {
-                deferred.reject(err, true);
-            }, function(evt) {
-                deferred.progress(evt, true);
-            });
+        xhrDef.then(function(preferences) {
+            deferred.resolve(preferences, true);
+        }, function(err) {
+            deferred.reject(err, true);
+        }, function(evt) {
+            deferred.progress(evt, true);
+        });
 
-            return deferred;
-        },
+        return deferred;
+    },
 
-        /**
-         * Function to update the user preferences in the toolbox.
-         * 
-         * @param {Map} prefs - the preferences to set in the toolbox
-         * @returns {}
-         */
-        updatePreferences: function(prefs) {
-            if (!prefs) {
-              tr.throwMsg("No preferences properties specified!");
-            }
-            var url = this.__url+"/preferences";
-            var options = { handleAs: "json", headers: {"Content-type":"application/json"}, data: JSON.stringify(prefs) };
-            var xhrDef = xhr.put(url, options);
+    /**
+     * Function to update the user preferences in the toolbox.
+     * 
+     * @param {Map} prefs - the preferences to set in the toolbox
+     * @returns {}
+     */
+    updatePreferences: function(prefs) {
+        if (!prefs) {
+          tr.throwMsg("No preferences properties specified!");
+        }
+        var url = this.__url+"/preferences";
+        var options = { handleAs: "json", headers: {"Content-type":"application/json"}, data: JSON.stringify(prefs) };
+        var xhrDef = xhr.put(url, options);
 
-            // Establish the Deferred to be returned.
-            // This allows the caller to cancel the underlying XHR request.
-            var deferred = new Deferred(function cancelXHRDeferred(reason) {
-                xhrDef.cancel(reason);
-            });
+        // Establish the Deferred to be returned.
+        // This allows the caller to cancel the underlying XHR request.
+        var deferred = new Deferred(function cancelXHRDeferred(reason) {
+            xhrDef.cancel(reason);
+        });
 
-            xhrDef.then(function handleAppState(tool) {
-                deferred.resolve(prefs, true);
-            }, function(err) {
-                deferred.reject(err, true);
-            }, function(evt) {
-                deferred.progress(evt, true);
-            });
+        xhrDef.then(function handleAppState(tool) {
+            deferred.resolve(prefs, true);
+        }, function(err) {
+            deferred.reject(err, true);
+        }, function(evt) {
+            deferred.progress(evt, true);
+        });
 
-            return deferred;
-        },
+        return deferred;
+    },
+
+    /**
+     * Function used to get the identity in the toolbox
+     * 
+     * @returns {Map} Map of identity
+     */
+    getIdentity : function() {
+      var url = this.__url + "/identity";
+      var options = {
+              handleAs : "json"
+      };
+      var xhrDef = xhr.get(url, options);
+
+      // Establish the Deferred to be returned.
+      // This allows the caller to cancel the underlying XHR request.
+      var deferred = new Deferred(function cancelXHRDeferred(reason) {
+          xhrDef.cancel(reason);
+      });
+
+      xhrDef.then(function(preferences) {
+          deferred.resolve(preferences, true);
+      }, function(err) {
+          deferred.reject(err, true);
+      }, function(evt) {
+          deferred.progress(evt, true);
+      });
+
+      return deferred;
+    },
+
+    /**
+     * Function to update the identity in the toolbox.
+     * 
+     * @param {Map} identities - the identity to set in the toolbox
+     * @returns {}
+     */
+    updateIdentity: function(identities) {
+        if (!identities) {
+          tr.throwMsg("No identity properties specified!");
+        }
+        var url = this.__url+"/identity";
+        var options = { handleAs: "json", headers: {"Content-type":"application/json"}, data: JSON.stringify(prefs) };
+        var xhrDef = xhr.put(url, options);
+
+        // Establish the Deferred to be returned.
+        // This allows the caller to cancel the underlying XHR request.
+        var deferred = new Deferred(function cancelXHRDeferred(reason) {
+            xhrDef.cancel(reason);
+        });
+
+        xhrDef.then(function handleAppState(tool) {
+            deferred.resolve(prefs, true);
+        }, function(err) {
+            deferred.reject(err, true);
+        }, function(evt) {
+            deferred.progress(evt, true);
+        });
+
+        return deferred;
+    },
         
-        /**
-         * Function used to update all the Tools in the toolbox
-         * 
-         * @param The list of ToolEntry.
-         * @returns {Response} The response
-         */
-        updateToolEntries : function(toolEntries) {
-            if (!toolEntries) {
-              tr.throwMsg("No tool specified!");
-            }
-            console.log("in updateToolEntries: ", toolEntries);
-            console.log("a stringify version", JSON.stringify(toolEntries));
-            var url = this.__url + "/toolEntries"; 
-            var options = {
-                    handleAs : "json", headers: {"Content-type":"application/json"}, data: JSON.stringify(toolEntries)
-            };
-            var xhrDef = xhr.put(url, options);
+    /**
+     * Function used to update all the Tools in the toolbox
+     * 
+     * @param The list of ToolEntry.
+     * @returns {Response} The response
+     */
+    updateToolEntries : function(toolEntries) {
+        if (!toolEntries) {
+          tr.throwMsg("No tool specified!");
+        }
+        console.log("in updateToolEntries: ", toolEntries);
+        console.log("a stringify version", JSON.stringify(toolEntries));
+        var url = this.__url + "/toolEntries"; 
+        var options = {
+                handleAs : "json", headers: {"Content-type":"application/json"}, data: JSON.stringify(toolEntries)
+        };
+        var xhrDef = xhr.put(url, options);
 
-            // Establish the Deferred to be returned.
-            // This allows the caller to cancel the underlying XHR request.
-            var deferred = new Deferred(function cancelXHRDeferred(reason) {
-                xhrDef.cancel(reason);
-            });
+        // Establish the Deferred to be returned.
+        // This allows the caller to cancel the underlying XHR request.
+        var deferred = new Deferred(function cancelXHRDeferred(reason) {
+            xhrDef.cancel(reason);
+        });
 
-            xhrDef.then(function(response) {
-                deferred.resolve(response, true);
-            }, function(err) {
-                deferred.reject(err, true);
-            }, function(evt) {
-                deferred.progress(evt, true);
-            });
+        xhrDef.then(function(response) {
+            deferred.resolve(response, true);
+        }, function(err) {
+            deferred.reject(err, true);
+        }, function(evt) {
+            deferred.progress(evt, true);
+        });
 
-            return deferred;
-        },
+        return deferred;
+    },
         
-        createToolEntry: function(entryProps) {
-            if (entryProps.id !== undefined && entryProps.type !== undefined) {
-                var toolEntry = new Toolbox.ToolEntry(entryProps);
-                return toolEntry;
-            }  
+    createToolEntry: function(entryProps) {
+        if (entryProps.id !== undefined && entryProps.type !== undefined) {
+            var toolEntry = new Toolbox.ToolEntry(entryProps);
+            return toolEntry;
+        }  
     }
   });
 
