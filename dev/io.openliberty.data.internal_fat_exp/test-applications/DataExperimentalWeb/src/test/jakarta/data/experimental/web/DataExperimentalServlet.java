@@ -526,7 +526,7 @@ public class DataExperimentalServlet extends FATServlet {
      * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
      * where the method parameter is annotated with By.
      */
-    // TODO enable once ? is fixed. EclipseLink rejects LOWER(id(o)) with:
+    // TODO enable once #29893 is fixed. EclipseLink rejects LOWER(id(o)) with:
     // The encapsulated expression is not a valid expression.
     //@Test
     public void testIdClassFindByAnnotatedParameter() {

@@ -279,9 +279,6 @@ public interface Primes {
                                                          String numeral,
                                                          @Param("hexadecimal") String hex);
 
-    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = ?1 OR o.numberId=:num)")
-    Collection<Long> matchAnyWithMixedUsageOfPositionalAndNamed(String name, long num);
-
     @Query("SELECT name WHERE numberId < 50 AND LEFT(name, LENGTH(:s)) = :s")
     @OrderBy("name")
     List<String> matchLeftSideOfName(@Param("s") String searchFor);
