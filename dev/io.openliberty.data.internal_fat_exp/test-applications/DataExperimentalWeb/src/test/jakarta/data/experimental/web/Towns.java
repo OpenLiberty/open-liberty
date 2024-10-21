@@ -79,7 +79,7 @@ public interface Towns {
 
     @Exists
     boolean isBiggerThan(@By("population") @Is(GreaterThan) int minPopulation,
-                         TownId id);
+                         @By(ID) TownId id);
 
     @Find
     @OrderBy("stateName")
