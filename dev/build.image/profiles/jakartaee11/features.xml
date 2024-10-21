@@ -15,6 +15,7 @@
 <feature>sessionDatabase-1.0</feature>
 <feature>webCache-1.0</feature>
 <feature>requestTiming-1.0</feature>
+<feature>microProfile-7.0</feature>
 <feature>appAuthentication</feature>
 <feature>appAuthorization</feature>
 <feature>appClientSupport</feature>
@@ -40,6 +41,13 @@
 <feature>messagingClient</feature>
 <feature>messagingSecurity</feature>
 <feature>messagingServer</feature>
+<feature>mpConfig</feature>
+<feature>mpFaultTolerance</feature>
+<feature>mpHealth</feature>
+<feature>mpJwt</feature>
+<feature>mpOpenAPI</feature>
+<feature>mpRestClient</feature>
+<feature>mpTelemetry</feature>
 <feature>pages</feature>
 <feature>persistence</feature>
 <feature>restfulWS</feature>

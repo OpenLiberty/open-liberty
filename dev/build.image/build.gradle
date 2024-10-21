@@ -529,7 +529,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile10Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.microProfile,io.openliberty.mpConfig,io.openliberty.mpMetrics,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.config,io.openliberty.org.eclipse.microprofile.metrics,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion"
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.microProfile,io.openliberty.mpConfig,io.openliberty.mpFaultTolerance,io.openliberty.mpOpenAPI,io.openliberty.mpRestClient,io.openliberty.mpMetrics,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.config,io.openliberty.org.eclipse.microprofile.faulttolerance,io.openliberty.org.eclipse.microprofile.openapi,io.openliberty.org.eclipse.microprofile.rest.client,io.openliberty.org.eclipse.microprofile.metrics,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion"
         outputTo new File(packageDir, "webProfile10")
         doLast {
             copy {
@@ -548,7 +548,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&jakartaee10Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.microProfile,io.openliberty.mpConfig,io.openliberty.mpMetrics,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.config,io.openliberty.org.eclipse.microprofile.metrics,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion"
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.microProfile,io.openliberty.mpConfig,io.openliberty.mpFaultTolerance,io.openliberty.mpOpenAPI,io.openliberty.mpRestClient,io.openliberty.mpMetrics,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.config,io.openliberty.org.eclipse.microprofile.faulttolerance,io.openliberty.org.eclipse.microprofile.openapi,io.openliberty.org.eclipse.microprofile.rest.client,io.openliberty.org.eclipse.microprofile.metrics,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion"
         outputTo new File(packageDir, "jakartaee10")
         doLast {
             copy {
@@ -638,7 +638,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
     
-    //currently noship
+    //GA
     task packageOpenLibertyMicroProfile7(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -900,7 +900,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn cleanupOpenLibertyMicroProfile6Package
     
-    // Currently no-ship: Includes only features listed in profiles/microProfile7/features.xml
+    // GA: Includes only features listed in profiles/microProfile7/features.xml
     task zipOpenLibertyMicroProfile7(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile7
         dependsOn genChecksums
