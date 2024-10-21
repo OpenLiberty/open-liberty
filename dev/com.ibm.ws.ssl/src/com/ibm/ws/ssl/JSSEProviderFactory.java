@@ -174,7 +174,19 @@ public class JSSEProviderFactory {
 
         try {
             try {
-                final String protocol = "SSL";
+                final String protocol;
+
+                String strictSP800Mode = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                    @Override
+                    public String run() {
+                        return System.getProperty("com.ibm.jsse2.sp800-131");
+                    }
+                });
+
+                if (strictSP800Mode != null && strictSP800Mode.equalsIgnoreCase("strict"))
+                    protocol = "TLSv1.2";
+                else
+                    protocol = "SSL";
 
                 AccessController.doPrivileged(new PrivilegedExceptionAction<SSLContext>() {
                     @Override
