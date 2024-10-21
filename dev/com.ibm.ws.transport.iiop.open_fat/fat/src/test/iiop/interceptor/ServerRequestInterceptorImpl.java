@@ -31,10 +31,8 @@ public class ServerRequestInterceptorImpl extends LocalObject implements ServerR
     public void receive_request(ServerRequestInfo ri) throws ForwardRequest {
         System.out.println("### in receive_request()");
         System.out.println("###    operation: '" + ri.operation() + "'");
-        if (ri.operation().equals("sayHello")) {
-            System.out.println("###    raising NO_PERMISSION");
-            throw new NO_PERMISSION("Can't touch this.");
-        }
+        System.out.println("###    raising NO_PERMISSION");
+        throw new NO_PERMISSION("Can't touch this.");
     }
 
     @Override

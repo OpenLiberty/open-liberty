@@ -39,35 +39,31 @@ import junit.framework.AssertionFailedError;
     CosNamingViaStringToObjectFatTest.class,
     IIOPClientEJBTest.class,
     IIOPClientServletTest.class,
+    InterceptorTest.class,
     IORTest.class,
 })
 public class FATSuite {
-    private static final JavaArchive INTERFACES_JAR;
-    private static final JavaArchive TEST_CORBA_BEAN_JAR;
     static final EnterpriseArchive TEST_CORBA_EAR;
     static final WebArchive TEST_CORBA_WEB_WAR;
     static final WebArchive TEST_CORBA_REMOTE_WAR;
 
     static {
         try {
-            INTERFACES_JAR = ShrinkHelper.buildJavaArchive("interfaces.jar", "shared", "test.iiop.common");
-            System.out.println(INTERFACES_JAR);
-
-            TEST_CORBA_BEAN_JAR = ShrinkHelper.buildJavaArchive("test.corba.bean.jar", "test.corba.bean.jar");
-            ShrinkHelper.addDirectory(TEST_CORBA_BEAN_JAR, "test-applications/test.corba.bean.jar.resources");
-            System.out.println(TEST_CORBA_BEAN_JAR);
+            final JavaArchive interfacesJar = ShrinkHelper.buildJavaArchive("interfaces.jar", "shared", "test.iiop.common");
+            final JavaArchive beanJar = ShrinkHelper.buildJavaArchive("test.corba.bean.jar", "test.corba.bean.jar");
+            ShrinkHelper.addDirectory(beanJar, "test-applications/test.corba.bean.jar.resources");
 
             TEST_CORBA_EAR = ShrinkWrap.create(EnterpriseArchive.class, "test.corba.ear");
-            TEST_CORBA_EAR.addAsModule(TEST_CORBA_BEAN_JAR);
-            TEST_CORBA_EAR.addAsLibraries(INTERFACES_JAR);
+            TEST_CORBA_EAR.addAsModule(beanJar);
+            TEST_CORBA_EAR.addAsLibraries(interfacesJar);
             ShrinkHelper.addDirectory(TEST_CORBA_EAR, "test-applications/test.corba.ear.resources");
 
             TEST_CORBA_WEB_WAR = ShrinkHelper.buildDefaultApp("test.corba.web.war", "test.corba.web.war");
-            TEST_CORBA_WEB_WAR.addAsLibrary(INTERFACES_JAR);
+            TEST_CORBA_WEB_WAR.addAsLibrary(interfacesJar);
             ShrinkHelper.addDirectory(TEST_CORBA_WEB_WAR, "test-applications/test.corba.web.war.resources");
 
             TEST_CORBA_REMOTE_WAR = ShrinkHelper.buildDefaultApp("test.corba.remote.war", "test.corba.remote.war");
-            TEST_CORBA_REMOTE_WAR.addAsLibrary(INTERFACES_JAR);
+            TEST_CORBA_REMOTE_WAR.addAsLibrary(interfacesJar);
             ShrinkHelper.addDirectory(TEST_CORBA_REMOTE_WAR, "test-applications/test.corba.remote.war.resources");
         } catch (Exception e) {
             throw (AssertionFailedError)new AssertionFailedError("Could not assemble test applications").initCause(e);
@@ -80,21 +76,26 @@ public class FATSuite {
     public static void installTestFeatures() throws Exception {
         // Use ANY server to install bundles and features
         LibertyServer server = getLibertyServer("bandyball");
-        server.installSystemBundle("test.user.feature");
-        server.installSystemFeature("test.user.feature-1.0");
+        server.installUserBundle("test.user.feature");
+        server.installUserFeature("test.user.feature-1.0");
         server.installSystemBundle("test.iiop");
         server.installSystemFeature("test.iiop-1.0");
         server.installSystemFeature("test.iiop.client-1.0");
-    }
+        server.installSystemBundle("test.iiop.interceptor");
+        server.installSystemFeature("test.iiop.interceptor-1.0");
+   }
 
     @AfterClass
     public static void uninstallTestFeatures() throws Exception {
+        // Use ANY server to uninstall bundles and features
         LibertyServer server = getLibertyServer("buckyball");
-        server.uninstallSystemBundle("test.user.feature");
-        server.uninstallSystemFeature("test.user.feature-1.0");
+        server.uninstallUserBundle("test.user.feature");
+        server.uninstallUserFeature("test.user.feature-1.0");
         server.uninstallSystemBundle("test.iiop");
         server.uninstallSystemFeature("test.iiop-1.0");
         server.uninstallSystemFeature("test.iiop.client-1.0");
+        server.uninstallSystemBundle("test.iiop.interceptor");
+        server.uninstallSystemFeature("test.iiop.interceptor-1.0");
     }
 
 }
