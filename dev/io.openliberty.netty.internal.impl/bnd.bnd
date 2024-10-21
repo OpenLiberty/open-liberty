@@ -22,7 +22,8 @@ WS-TraceGroup: Netty
 Export-Package: \
   io.openliberty.netty.internal.impl, \
   io.openliberty.netty.internal.tcp, \
-  io.openliberty.netty.internal.udp
+  io.openliberty.netty.internal.udp, \
+  io.openliberty.netty.internal.local
 
 Import-Package: \
   com.ibm.ws.channelfw.internal.chains, \
@@ -56,7 +57,15 @@ Private-Package: \
 	io.openliberty.accesslists.internal,\
 	io.openliberty.io.netty;version=latest,\
 	io.openliberty.netty.internal;version=latest,\
-	io.openliberty.endpoint
+	io.openliberty.endpoint,\
+	io.netty.transport,\
+	org.eclipse.osgi,\
+	osgi.core,\
+	biz.aQute.bnd,\
+	org.osgi.service.component.annotations,\
+	org.osgi.service.component,\
+	io.netty.common,\
+	io.netty.handler
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \
