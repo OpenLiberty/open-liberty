@@ -17,6 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60ArrayLengthTest;
+import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60BeanELResolverBeanSupportFullTest;
+import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60BeanELResolverBeanSupportStandaloneTest;
 import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60ModuleVisibilityTest;
 import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60OptionalELResolverTest;
 import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60RecordELResolverTest;
@@ -37,6 +39,8 @@ import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60Recor
 @RunWith(Suite.class)
 @SuiteClasses({
                 EL60ArrayLengthTest.class,
+                EL60BeanELResolverBeanSupportFullTest.class,
+                EL60BeanELResolverBeanSupportStandaloneTest.class,
                 EL60ModuleVisibilityTest.class,
                 EL60OptionalELResolverTest.class,
                 EL60RecordELResolverTest.class
