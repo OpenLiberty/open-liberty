@@ -9,9 +9,14 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline;
 
+import com.ibm.ws.http.netty.NettyHttpConstants;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 
 public class CRLFValidationHandler extends ChannelInboundHandlerAdapter {
 
@@ -37,6 +42,7 @@ public class CRLFValidationHandler extends ChannelInboundHandlerAdapter {
                         if(nextByte == '\n'){
                             leadingCRFLCount++;
                             if (leadingCRFLCount > MAX_CRLF_ALLOWED){
+                                ctx.channel().attr(NettyHttpConstants.THROW_FFDC).set(true);
                                 throw new IllegalArgumentException("Too many leading CRLF characters");
                             }
                         } else {

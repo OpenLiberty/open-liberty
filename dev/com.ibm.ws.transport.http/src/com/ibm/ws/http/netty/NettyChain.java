@@ -46,7 +46,7 @@ import io.openliberty.netty.internal.exception.NettyException;
  */
 public class NettyChain extends HttpChain {
 
-    private static final TraceComponent tc = Tr.register(NettyChain.class, HttpMessages.HTTP_TRACE_NAME, "com.ibm.ws.tcpchannel.internal.resources.TCPChannelMessages");
+    private static final TraceComponent tc = Tr.register(NettyChain.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private NettyFramework nettyFramework;
     private ServerBootstrapExtended bootstrap;
@@ -273,23 +273,23 @@ public class NettyChain extends HttpChain {
                     Tr.debug(this, tc, "Channel failed to bind to port:  " + future.cause());
                 }
 
-                // Check if the exception is or was caused by UnresolvedAddressException
-                Throwable cause = future.cause();
-                boolean unresolvedAddress = false;
+                // // Check if the exception is or was caused by UnresolvedAddressException
+                // Throwable cause = future.cause();
+                // boolean unresolvedAddress = false;
 
-            while (cause != null) {
-                if (cause instanceof java.nio.channels.UnresolvedAddressException) {
-                    unresolvedAddress = true;
-                    break;
-                }
-                cause = cause.getCause();
-            }
+                // while (cause != null) {
+                //     if (cause instanceof java.nio.channels.UnresolvedAddressException) {
+                //         unresolvedAddress = true;
+                //         break;
+                //     }
+                //     cause = cause.getCause();
+                // }
 
-            if (unresolvedAddress) {
-            // Log the specific error message
-                Tr.error(tc, TCPChannelMessageConstants.LOCAL_HOST_UNRESOLVED,
-                     new Object[] {this.endpointName, currentConfig.configHost, currentConfig.configPort});
-            }
+                // if (unresolvedAddress) {
+                //     // Log the specific error message
+                //     Tr.error(tc, TCPChannelMessageConstants.LOCAL_HOST_UNRESOLVED,
+                //         new Object[] {this.endpointName, currentConfig.configHost, currentConfig.configPort});
+                // }
 
                 handleStartupError(new NettyException(future.cause()), currentConfig);
                 
