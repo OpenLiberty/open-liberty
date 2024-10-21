@@ -97,7 +97,7 @@ public class AsynchronousWorkListenerWrapper extends RoutedTask{
 	 * 
 	 * @param asynchWorkListener
 	 */
-	public AsynchronousWorkListenerWrapper(AsynchronousWorkListener asynchWorkListener, int queueIndex) {
+	public AsynchronousWorkListenerWrapper(AsynchronousWorkListener asynchWorkListener, long queueIndex) {
 		_appAsynchWorkListener = asynchWorkListener;
 		_index = queueIndex;
 	}

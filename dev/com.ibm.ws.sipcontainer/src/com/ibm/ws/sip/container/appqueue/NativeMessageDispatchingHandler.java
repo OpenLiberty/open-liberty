@@ -161,7 +161,7 @@ public class NativeMessageDispatchingHandler implements MessageDispatchingHandle
 	 * @see com.ibm.ws.sip.container.appqueue.MessageDispatchingHandler#dispatch(com.ibm.ws.sip.container.util.Queueable)
 	 */
 	public boolean dispatch(Queueable msg){
-		return dispatch( msg, -1);
+		return dispatch( msg, -1L);
 	}	
 
 	/**
@@ -172,7 +172,7 @@ public class NativeMessageDispatchingHandler implements MessageDispatchingHandle
 			c_logger.traceEntry(this, "dispatch message = " + msg +" blockTime="+blockTimeout);
 		}
 
-		int index = msg.getQueueIndex();
+		long index = msg.getQueueIndex();
 		if(index < 0){
 			//this should never happen.
 			if (c_logger.isTraceDebugEnabled()) {
@@ -196,13 +196,13 @@ public class NativeMessageDispatchingHandler implements MessageDispatchingHandle
 	 * @param index
 	 * @return
 	 */
-	protected AppQueueHandler getQueueToProcess(int index, Queueable msg){
-		index = index % s_dispatchers;
+	protected AppQueueHandler getQueueToProcess(long index, Queueable msg){
+		int qIndex = (int) index % s_dispatchers;
 		if (c_logger.isTraceDebugEnabled()) {
-			c_logger.traceDebug(this, "getQueueToProcess", "sending msg to queue no:"+index + " msg="+msg +
-					" handler Q:"+_dispatchersArray[index].getClass().getName());
+			c_logger.traceDebug(this, "getQueueToProcess", "sending msg to queue no:" + qIndex + " msg="+msg +
+					" handler Q:" + _dispatchersArray[(int) qIndex].getClass().getName());
 		}
-		return _dispatchersArray[index];
+		return _dispatchersArray[(int) qIndex];
 	}
 
 	/**

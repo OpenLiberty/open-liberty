@@ -41,7 +41,7 @@ public class ThreadLocalStorage
 	
 	private static ThreadLocal<String> _sipResponseToHeader = new ThreadLocal<String>();
 	
-	private static ThreadLocal<Integer> _queueId = new ThreadLocal<Integer>();
+	private static ThreadLocal<Long> _queueId = new ThreadLocal<Long>();
 	
 	/**
 	 * Used to optimize DomainResolver DNS queries
@@ -100,7 +100,7 @@ public class ThreadLocalStorage
 		
 		if (c_logger.isTraceFailureEnabled()) {
 			try {
-				int tuQueueIndex = SipApplicationSessionImpl.extractAppSessionCounter(tu.getApplicationId()) % NativeMessageDispatchingHandler.s_dispatchers;
+				long tuQueueIndex = SipApplicationSessionImpl.extractAppSessionCounter(tu.getApplicationId()) % NativeMessageDispatchingHandler.s_dispatchers;
 				
 				if(ThreadLocalStorage.getQueueId() == null || ! ThreadLocalStorage.getQueueId().equals(tuQueueIndex)) {
 					c_logger.traceFailure(tu, "traceThreadModelValidity", "Threading model violation! " +
@@ -172,7 +172,7 @@ public class ThreadLocalStorage
 	 * Stores queue id
 	 * @param queueId to store
 	 */
-	public static void setQueueId(Integer queueId)
+	public static void setQueueId(Long queueId)
 	{
 		_queueId.set(queueId);
 	}
@@ -180,7 +180,7 @@ public class ThreadLocalStorage
 	/**
 	 * Returns stored queue id
 	 */
-	public static Integer getQueueId()
+	public static Long getQueueId()
 	{
 		return _queueId.get();
 	}

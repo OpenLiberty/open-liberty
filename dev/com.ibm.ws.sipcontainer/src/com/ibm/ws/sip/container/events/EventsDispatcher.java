@@ -269,7 +269,7 @@ public class EventsDispatcher {
      * @param context
      * @param appQueueIndex
      */
-    public static void sipServletInitiated(SipAppDesc appDescriptor, SipServlet sipServlet, ServletContext context, int appQueueIndex) {
+    public static void sipServletInitiated(SipAppDesc appDescriptor, SipServlet sipServlet, ServletContext context, long appQueueIndex) {
 		if ( appDescriptor.getSipServletListeners().isEmpty()) {
 			if (c_logger.isTraceDebugEnabled()) {
 	    		c_logger.traceExit(null, "dispatchSipServletListeners, no listeners to call");
@@ -649,7 +649,7 @@ public class EventsDispatcher {
      * @param taskNum task type
      * @param appQueueIndex queue number (when possible)
      */
-    private static void dispatchTasksOnCurrentThread( Iterator<? extends EventListener> listenerIter, EventObject evt, SipAppDesc appDesc, int taskNum, int appQueueIndex){
+    private static void dispatchTasksOnCurrentThread( Iterator<? extends EventListener> listenerIter, EventObject evt, SipAppDesc appDesc, int taskNum, long appQueueIndex){
     	for ( ;listenerIter.hasNext();) {
     		EventListener listener = listenerIter.next();
     		    		
