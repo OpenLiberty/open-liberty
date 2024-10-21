@@ -38,6 +38,8 @@ import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
 
 /**
@@ -115,7 +117,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
             return;
         } else if (cause instanceof IllegalArgumentException) {
             //Legacy doesnt throw ffdc on processNewInformation
-            //FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
+            if(context.channel().attr(NettyHttpConstants.THROW_FFDC).get() != null){
+                context.channel().attr(NettyHttpConstants.THROW_FFDC).set(null);
+            }else{
+                FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "exceptionCaught encountered an IllegalArgumentException : " + cause);
             }
