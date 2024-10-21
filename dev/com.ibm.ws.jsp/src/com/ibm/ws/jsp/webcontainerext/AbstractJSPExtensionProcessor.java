@@ -104,6 +104,8 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontainer.extension.WebExtensionProcessor {
     static protected Logger logger;
 
@@ -930,6 +932,23 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
                     logger.logp(Level.FINE, CLASS_NAME, "JSPExtensionProcessor", "Pretouch threw an unexpected exception: ", ex);
                 }
             }
+        } else if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "JSPExtensionProcessor", "PrepareJSPs for checkpoint mode");
+            }
+
+            try {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, "JSPExtensionProcessor", "Starting the synchronous Pretouch logic ");
+                }
+                PrepareJspHelper pretouchHelper = prepareJspHelperFactory.createPrepareJspHelper(this, webapp, jspOptions);
+                pretouchHelper.run();
+            } catch (Exception ex) {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, "JSPExtensionProcessor", "Checkpoint Pretouch threw an unexpected exception: ", ex);
+                }
+            }
+            
         }
         // @BLB End Pretouch
     }
