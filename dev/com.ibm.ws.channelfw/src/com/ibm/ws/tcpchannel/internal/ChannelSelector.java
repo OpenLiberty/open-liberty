@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,6 +29,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 
 /**
@@ -37,6 +40,36 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
     private static final TraceComponent tc = Tr.register(ChannelSelector.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
 
     protected static final long TEN_MINUTES = 600000L;
+
+    // gjd hack begin
+    private final static long selectorSleepLongMillis;
+    private final static int selectorSleepLongNanos;
+    private final static long selectorSleepShortMillis;
+    private final static int selectorSleepShortNanos;
+    private final static int selectorKeysThreshold;
+    private final static boolean gjdPrints;
+    private final static int highCpu;
+    private final static boolean selectorYieldgjd;
+
+    static {
+        String channelSelectorSleepLongMillis = getSystemProperty("channelSelectorSleepLongMillis");
+        selectorSleepLongMillis = (channelSelectorSleepLongMillis == null) ? 1 : Long.parseLong(channelSelectorSleepLongMillis);
+        String channelSelectorSleepLongNanos = getSystemProperty("channelSelectorSleepLongNanos");
+        selectorSleepLongNanos = (channelSelectorSleepLongNanos == null) ? 500000 : Integer.parseInt(channelSelectorSleepLongNanos);
+        String channelSelectorSleepShortMillis = getSystemProperty("channelSelectorSleepShortMillis");
+        selectorSleepShortMillis = (channelSelectorSleepShortMillis == null) ? 0 : Long.parseLong(channelSelectorSleepShortMillis);
+        String channelSelectorSleepShortNanos = getSystemProperty("channelSelectorSleepShortNanos");
+        selectorSleepShortNanos = (channelSelectorSleepShortNanos == null) ? 10000 : Integer.parseInt(channelSelectorSleepShortNanos);
+        String channelSelectorSelectorKeysThreshold = getSystemProperty("channelSelectorSelectorKeysThreshold");
+        selectorKeysThreshold = (channelSelectorSelectorKeysThreshold == null) ? 2 : Integer.parseInt(channelSelectorSelectorKeysThreshold);
+        String channelSelectorHighCpu = getSystemProperty("channelSelectorHighCpu");
+        highCpu = (channelSelectorHighCpu == null) ? 90 : Integer.parseInt(channelSelectorHighCpu);
+        String channelSelectorYield = getSystemProperty("channelSelectorYield");
+        selectorYieldgjd = (channelSelectorYield == null) ? false : Boolean.parseBoolean(channelSelectorYield);
+        String channelSelectorgjdPrints = getSystemProperty("channelSelectorgjdPrints");
+        gjdPrints = (channelSelectorgjdPrints == null) ? false : Boolean.parseBoolean(channelSelectorgjdPrints);
+    }
+    // gjd hack end
 
     // Set to true to cause us to drop out of the loop in the run method.
     protected volatile boolean quit = false;
@@ -125,6 +158,20 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
         int numKeysOnEmptySelect = -1;
         long lastEmptySelectorFFDCTime = 0L;
 
+        // gjd hack begin
+        boolean selectorSleep = false;
+        int selectedKeys = -1;
+
+//        int intervalCycles = 0;
+//        int runningCycles = 0;
+//        int reportCount = 50000;
+//        long timeInSelector = 0;
+//        long timeInPerformRequest = 0;
+        System.out.println("*** gjd *** ChannelSelector sleepLong millis: " + selectorSleepLongMillis + ", nanos: " + selectorSleepLongNanos + ", sleepShort millis: "
+                           + selectorSleepShortMillis + ", nanos: " + selectorSleepShortNanos + ", keys threshold: " + selectorKeysThreshold + ", highCpu: " + highCpu
+                           + "%, yield option: " + selectorYieldgjd);
+        // gjd hack end
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "selector thread started for " + Thread.currentThread().getName() + " . StartImmediately: " + startSelectorImmediately);
         }
@@ -141,6 +188,53 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
         while (!quit) {
             currentTime = CHFWBundle.getApproxTime();
             try {
+                // gjd hack begin
+//                intervalCycles++;
+//                if (intervalCycles >= reportCount) {
+//                    runningCycles += intervalCycles;
+//                    System.out.println("***gjd*** ChannelSelector cycles: " + runningCycles);
+//                    intervalCycles = 0;
+//                }
+//                if (cycleSleepNanos > 0 || cycleSleepMillis > 0) {
+//                    Thread.sleep(cycleSleepMillis, cycleSleepNanos);
+//                    Thread.yield();
+//                }
+                if (gjdPrints) {
+                    System.out.println("*** gjd *** top of while loop - selectorSleep: " + selectorSleep + ", cpuHigh: " + cpuHigh);
+                }
+                if (selectorSleep && checkCpuHigh()) {
+                    try {
+                        if (selectedKeys == 0) {
+                            if (gjdPrints) {
+                                System.out.println("*** gjd *** sleeping " + selectorSleepLongMillis + "." + selectorSleepLongNanos + " ms ");
+                            }
+                            if (selectorYieldgjd) {
+                                Thread.yield();
+                            } else {
+                                Thread.sleep(selectorSleepLongMillis, selectorSleepLongNanos);
+                            }
+                        } else {
+                            if (gjdPrints) {
+                                System.out.println("*** gjd *** sleeping " + selectorSleepShortMillis + "." + selectorSleepShortNanos + " ms ");
+                            }
+                            if (selectorYieldgjd) {
+                                Thread.yield();
+                            } else {
+                                Thread.sleep(selectorSleepShortMillis, selectorSleepShortNanos);
+                            }
+                        }
+                    } catch (InterruptedException ie) {
+                        // ignore it
+                    } catch (IllegalArgumentException ex) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "Illegal argument exception " + ex);
+                        }
+                    } finally {
+                        selectorSleep = false;
+                    }
+                }
+                // gjd hack end
+
                 nothingTimedOut = true;
                 // yielding increases performance by not doing too many selects
                 // this gives 10% performance boost on Daves system, 10% performance
@@ -200,6 +294,17 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
                         continue;
                     }
                 }
+
+                // gjd hack
+                if (gjdPrints) {
+                    System.out.println("*** gjd *** selector.keys().size(): " + selector.keys().size() + ", selectedKeys().size(): " + selector.selectedKeys().size());
+                }
+                selectedKeys = selector.selectedKeys().size();
+                selectorSleep = (selectedKeys < selectorKeysThreshold);
+                if (gjdPrints) {
+                    System.out.println("*** gjd *** setting selectorSleep: " + selectorSleep);
+                }
+                // gjd hack end
 
                 // the following logic is for detecting looping problems in the JDK
                 // it will log an ffdc event if the selector fires in quick succession
@@ -568,4 +673,40 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
             return "Selector queue lock";
         }
     }
+
+    // gjd hack begin
+    /**
+     * privileged access to read system properties
+     *
+     */
+    private static final String getSystemProperty(final String propName) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty(propName);
+            }
+        });
+    }
+
+    private final int cpuCheckInterval = 1500;
+    private long lastCpuCheck = System.currentTimeMillis();
+    private long nextCpuCheck = lastCpuCheck + cpuCheckInterval;
+    private boolean cpuHigh = false;
+
+    /**
+     * check cpuUtil at most every cpuCheckInterval ms
+     *
+     * note: currentTime is called a couple times in the run()
+     * loop above, so we don't need to update that here
+     */
+    private boolean checkCpuHigh() {
+        if (currentTime > nextCpuCheck) {
+            lastCpuCheck = System.currentTimeMillis();
+            nextCpuCheck = lastCpuCheck + cpuCheckInterval;
+            cpuHigh = (CpuInfo.getJavaCpuUsage() > highCpu);
+        }
+        return cpuHigh;
+    }
+
+    // gjd hack end
 }
