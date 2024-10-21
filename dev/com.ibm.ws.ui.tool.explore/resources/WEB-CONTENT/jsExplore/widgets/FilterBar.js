@@ -317,8 +317,11 @@ define([ "dojo/_base/declare", "dojo/_base/window", "dojo/_base/lang", "dojo/par
     },
 
     resourceIsInCurrentFilter : function(resource, filterValue) {
-      //console.log("resource to check to include in filter or not: ", resource);
-      //console.log("filterValue: " + filterValue + "; resourceType: " + this.resourceType);
+      console.log("resource to check to include in filter or not: ", resource);
+      console.log("filterValue: " + filterValue + "; resourceType: " + this.resourceType);
+      console.log("number of up: " + resource.up + " number of down: " + resource.down);
+      console.log("id " + resource.id);
+      console.log("name " + resource.name);
       if (filterValue == "Total") {
         return true;
       } else if (filterValue == "Alert") {

@@ -88,7 +88,8 @@ define([ 'dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/window', 'dojo/Def
      * Refresh the filter counts on change.
      */
     onTallyChange: function(newTally, oldTally) {
-      
+      console.log('this is old tally', oldTally);
+      console.log('this is new tally', newTally);
       if (this.filterBar) {
         // TODO: Change this to push in each card as its added
         // Need to re-draw the cards because something changed state
@@ -697,7 +698,7 @@ define([ 'dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/window', 'dojo/Def
       collectionView.cardList.query().forEach(function(cardObj){
         cardObj.found = false;
       });
-
+      console.log('what is my resourceCollection.type', this.resourceCollection.type);
       // TODO: This is kind of bleh. It would be better to move this into the resourceColleciton itself... (maybe?)
       var getFn;
       if (this.resourceCollection.type === 'applications') {
@@ -719,10 +720,13 @@ define([ 'dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/window', 'dojo/Def
       }
 
       // Select a subset of the resource collection to render
+      console.log('what is max_built_cards', this.max_built_cards);
       var toRender = this.resourceCollection.list.slice(0, this.max_built_cards);
       getFn(toRender).then(function(resources) {
+        console.log("resources.length = " + resources.length);
         for (var r = 0; r < resources.length; r++) {
           var resource = resources[r];
+          console.log("resource = " + resource.name);
           // First call to cardList.get determines if it exists, if not
           var cardObjExists = collectionView.cardList.get(resource.id);
           // Always update the card - this will force it to show if it exists or create it if it doesn't
@@ -734,6 +738,7 @@ define([ 'dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/window', 'dojo/Def
             var cardObj = collectionView.cardList.get(resource.id);
             cardObj.found = true;
             collectionView.resources.push(resource);
+            console.log("resource2 = " + resource.name);
             //listen to maintenance mode change
             if ( "host" === resource.type || "server" === resource.type )
               resource.subscribe(collectionView);
