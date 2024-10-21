@@ -32,8 +32,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -49,8 +48,9 @@ public class JDBCLoadFromAppTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .withoutModification()
-                    .andWith(new JakartaEE9Action())
-                    .andWith(new JakartaEE10Action());
+                    .andWith(FeatureReplacementAction.EE9_FEATURES())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES())
+                    .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     @Server("com.ibm.ws.jdbc.fat.loadfromapp")
     @TestServlets(value = {

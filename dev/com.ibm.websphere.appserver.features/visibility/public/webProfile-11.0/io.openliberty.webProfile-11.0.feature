@@ -13,7 +13,7 @@ Subsystem-Name: Jakarta EE Web Profile 11.0
   io.openliberty.jsonb-3.0, \
   io.openliberty.enterpriseBeansLite-4.0, \
   io.openliberty.websocket-2.2, \
-  com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
+  com.ibm.websphere.appserver.jdbc-4.3; ibm.tolerates:="4.2", \
   io.openliberty.persistence-3.2, \
   io.openliberty.beanValidation-3.1, \
   io.openliberty.restfulWS-4.0, \

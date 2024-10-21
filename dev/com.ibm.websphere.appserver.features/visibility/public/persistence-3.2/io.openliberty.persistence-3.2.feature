@@ -223,7 +223,7 @@ IBM-API-Package: org.eclipse.persistence.descriptors.changetracking; type="inter
 IBM-ShortName: persistence-3.2
 WLP-AlsoKnownAs: jpa-3.2
 Subsystem-Name: Jakarta Persistence 3.2
--features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
+-features=com.ibm.websphere.appserver.jdbc-4.3; ibm.tolerates:="4.2", \
   io.openliberty.persistenceContainer-3.2, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.jsonp-2.1, \
