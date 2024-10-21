@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,9 @@ import componenttest.topology.impl.LibertyServer;
 
 public class MpOpenAPIElement extends ConfigElement {
 
-    protected String docPath;
-    protected String uiPath;
+    private String docPath;
+    private String uiPath;
+    private String openAPIVersion;
 
     @XmlElement(name = "includeApplication")
     protected List<String> includedApplications;
@@ -95,16 +96,30 @@ public class MpOpenAPIElement extends ConfigElement {
         return (excludedModules == null) ? (excludedModules = new ArrayList<String>()) : excludedModules;
     }
 
+    public String getOpenApiVersion() {
+        return openAPIVersion;
+    }
+
+    @XmlAttribute(name = "openAPIVersion")
+    public void setOpenApiVersion(String openApiVersion) {
+        this.openAPIVersion = openApiVersion;
+    }
+
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
+        sb.append("MpOpenAPIElement [");
+        sb.append("docPath=").append(docPath);
+        sb.append(", uiPath=").append(uiPath);
         sb.append(", includeApplication=").append("[" + String.join(",", getIncludedApplications()) + "]");
         sb.append(", excludeApplication=").append("[" + String.join(",", getExcludedApplications()) + "]");
         sb.append(", includeModule=").append("[" + String.join(",", getIncludedModules()) + "]");
         sb.append(", excludeModule=").append("[" + String.join(",", getExcludedModules()) + "]");
+        sb.append(", openAPIVersion=").append(openAPIVersion);
+        sb.append("]");
 
-        return "MpOpenAPIElement [docPath=" + docPath + ", uiPath=" + uiPath + sb.toString() + "]";
+        return sb.toString();
     }
 
     public static class MpOpenAPIElementBuilder {
