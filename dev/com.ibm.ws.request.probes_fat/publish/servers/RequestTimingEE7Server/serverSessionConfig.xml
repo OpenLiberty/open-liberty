@@ -1,0 +1,3 @@
+<server>
+	<httpSession useSeparateSessionInvalidatorThreadPool = "false" delayInvalidationAlarmDuringServerStartup = "90"/>
+</server>

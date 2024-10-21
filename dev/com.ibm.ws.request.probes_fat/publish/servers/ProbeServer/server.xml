@@ -20,8 +20,7 @@
 	<connectionManager maxIdleTime="1s" maxPoolSize="100" minPoolSize="1" reapTime="2s"/>
     </dataSource>
 
- 
-
 	<include location="../fatTestPorts.xml"/>
+	<include location="serverSessionConfig.xml"/>
   	 
 </server>
