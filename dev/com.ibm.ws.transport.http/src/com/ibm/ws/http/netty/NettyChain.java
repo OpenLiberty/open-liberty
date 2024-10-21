@@ -21,7 +21,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
-import com.ibm.ws.http.internal.HttpChain.ActiveConfiguration;
 import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
@@ -99,7 +98,7 @@ public class NettyChain extends HttpChain {
             Tr.entry(this, tc, "Stopping Netty Chain: " + endpointName + ", Current state: " + state.get());
         }
 
-        if (state.get() == ChainState.STARTED) {
+        if (state.get() == ChainState.STARTED || state.get() == ChainState.STARTING) {
             endpointMgr.removeEndPoint(endpointName);
             state.set(ChainState.STOPPING);
 
