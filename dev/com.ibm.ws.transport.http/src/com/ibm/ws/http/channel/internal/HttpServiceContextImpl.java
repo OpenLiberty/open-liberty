@@ -991,14 +991,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.lastHeaderBuffer = HeaderStorage.NOTSET;
 
         // destroy the request message only if we're the "owner"
-        if (null != getMyRequest() && isRequestOwner()) {
-            getMyRequest().destroy();
-        }
+        HttpRequestMessageImpl req = getMyRequest();
+        if (null != req && isRequestOwner())
+            req.clear();
         setMyRequest(null);
         // destroy the response message only if we're the "owner"
-        if (null != getMyResponse() && isResponseOwner()) {
-            getMyResponse().destroy();
-        }
+        HttpResponseMessageImpl resp = getMyResponse();
+        if (resp != null && isResponseOwner())
+            resp.clear();
         setMyResponse(null);
 
         this.myTSC = null;
@@ -1062,12 +1062,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (null != this.myResponse) {
             if (this.bIsResponseOwner) {
                 this.myResponse.clear();
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Response not mine, skipping clear()");
-                }
-                this.myResponse = null;
             }
+            this.myResponse = null;
+
         }
         this.bIsResponseOwner = true;
 

@@ -284,6 +284,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         this.iUrlPort = HeaderStorage.NOTSET;
         this.iHdrPort = NOT_TESTED;
         this.deserialized = false;
+
     }
 
     /*
@@ -294,11 +295,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Destroying this request: " + this);
         }
-        HttpObjectFactory tempFactory = getObjectFactory();
         super.destroy();
-        if (null != tempFactory) {
-            tempFactory.releaseRequest(this);
-        }
     }
 
     @Override
