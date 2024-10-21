@@ -228,62 +228,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
 
     }
 
-    /**
-     * Performs the common steps of a not found exception type test - caller passes in values specific to it's test - all of the
-     * steps are common to a not found exception tests, they these steps are consolidated here
-     *
-     * @param serverCfgFile
-     *            - name of the server 2 config file to reconfig to
-     * @throws Exception
-     */
-    public void notfoundExceptionTest(String serverCfgFile) throws Exception {
-
-        testSAMLServer2.reconfigServer(buildSPServerName(serverCfgFile), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
-        // Create the conversation object which will maintain state for us
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-        
-        // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check
-        // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        webClient.getOptions().setUseInsecureSSL(true); 
-
-        String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*security token could not be authenticated or authorized.*";
-        
-        String testMode = "negative";
-
-        SAMLTestSettings updatedTestSettings = setCallerCXFSettings(partToCheck, testMode);
-
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectationsMatches(null, flowType, updatedTestSettings, null);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive the proper failure.", null, "SOAPFaultException");
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
-
-    }
+    //issue 25405 removed old notfoundExceptionTest() and notfoundExceptionTestEE8(), which are not in use
     
-    public void notfoundExceptionTestEE8(String serverCfgFile) throws Exception {
-
-        testSAMLServer2.reconfigServer(buildSPServerName(serverCfgFile), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
-        // Create the conversation object which will maintain state for us
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-        
-        // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check
-        // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        webClient.getOptions().setUseInsecureSSL(true); 
-
-        String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*An error happened processing a SAML Token: \"invalid user ID\"*";//@AV999 TODO set the message depending on the runtime
-        
-        String testMode = "negative";
-
-        SAMLTestSettings updatedTestSettings = setCallerCXFSettings(partToCheck, testMode);
-
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectationsMatches(null, flowType, updatedTestSettings, null);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive the proper failure.", null, "SOAPFaultException");
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
-
-    }
-
     /**
      * Performs the common steps of a bad attribute type test - caller passes in values specific to it's test - all of the steps
      * are common to a bad attribute exception tests, they these steps are consolidated here
