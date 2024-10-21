@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -322,6 +322,10 @@ public class H2StreamResultManager {
                         LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has not received goaway.");
                     return false;
                 }
+            } else if (Http2Client.lockWaitFor.get()) {
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "Still waiting on frames for Http2Client. Test has not finished");
+                return false;
             }
             if (LOGGER.isLoggable(Level.FINEST))
                 LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has finished.");

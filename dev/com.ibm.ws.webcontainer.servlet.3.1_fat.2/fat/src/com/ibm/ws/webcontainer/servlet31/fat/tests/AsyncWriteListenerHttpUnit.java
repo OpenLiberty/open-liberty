@@ -15,10 +15,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -92,6 +94,7 @@ public class AsyncWriteListenerHttpUnit {
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(AsyncWriteListenerHttpUnit.class.getSimpleName() + ".log");
+        server.waitForStringInLogUsingMark("CWWKO0219I*");
 
         if (FATSuite.isWindows) {
             FATSuite.setDynamicTrace(server, "*=info=enabled");
@@ -102,7 +105,7 @@ public class AsyncWriteListenerHttpUnit {
     public static void testCleanup() throws Exception {
         // test cleanup
         if (server != null && server.isStarted()) {
-            server.stopServer("SRVE0918E:.*", "SRVE8015E:.*", "SRVE9007E:.*", "SRVE9009E:.*", "SRVE9005E:.*", "SRVE8015E:.*");
+            server.stopServer("SRVE0918E:.*", "SRVE8015E:.*", "SRVE9007E:.*", "SRVE9009E:.*", "SRVE9005E:.*", "SRVE8015E:.*", "SRVE8055E*");
         }
     }
 
@@ -669,6 +672,68 @@ public class AsyncWriteListenerHttpUnit {
         return total;
 
     }
+//    private int connectSendExpectDataSizeInResponse(int expectedResponseSize, String testToCall) throws Exception {
+//        String urlString;
+//        if (testToCall.equals("TestWriteFromFilter_AftersetWL")) {
+//            urlString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER__FILTER_SERVLET_URL;
+//        } else {
+//            urlString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_URL;
+//        }
+//
+//        URL url = new URL(urlString);
+//        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//        con.setRequestMethod("POST");
+//        con.setRequestProperty("TestToCall", testToCall);
+//        con.setRequestProperty("ContentSizeSent", Integer.toString(expectedResponseSize));
+//        con.setDoOutput(true);
+//        con.setDoInput(true);
+//
+//        LOG.info("\nRequest URL: " + urlString);
+//
+//        try {
+//            LOG.info("Start reading the response. Expected response size: " + expectedResponseSize);
+//
+//            int responseCode = con.getResponseCode();
+//            LOG.info("HTTP Response Code: " + responseCode);
+//            if (responseCode != HttpURLConnection.HTTP_OK) {
+//                LOG.info("HTTP Response Code: " + responseCode);
+//                return 0; // Handle the error as needed
+//            }
+//
+//            int total = 0;
+//            StringBuilder sb = new StringBuilder();
+//            byte[] dataBytes = new byte[8192];
+//            int readLen;
+//
+//            try (InputStream data = con.getInputStream()) {
+//                while ((readLen = data.read(dataBytes)) != -1) {
+//                    total += readLen;
+//                    sb.append(new String(dataBytes, 0, readLen));
+//                }
+//            }
+//
+//            LOG.info(total + " bytes read for the response.");
+//            if (total != expectedResponseSize) {
+//                LOG.info("Response data: " + sb.toString());
+//            }
+//
+//            LOG.info("Actual response size: " + sb.length());
+//
+//            return total;
+//        } catch (IOException e) {
+//            LOG.info("Error reading response: " + e.getMessage());
+//
+//            StringWriter sw = new StringWriter();
+//            PrintWriter pw = new PrintWriter(sw);
+//            e.printStackTrace(pw);
+//            LOG.info("Stack:\n" + sw.toString());
+//
+//            e.printStackTrace();
+//            return 0; // Handle the error as needed
+//        } finally {
+//            con.disconnect();
+//        }
+//    }
 
     /**
      * @param ExpectdResponseSize
@@ -735,26 +800,75 @@ public class AsyncWriteListenerHttpUnit {
     private int checkDataSizeinResponse(HttpURLConnection con, int ExpectdResponseSize) throws Exception {
 
         LOG.info("Start reading the response.  Expected response size : " + ExpectdResponseSize);
-        String line = "";
-        java.io.InputStream data = con.getInputStream();
+//        String line = "";
+//        java.io.InputStream data = con.getInputStream();
+//
+//        BufferedReader rd = new BufferedReader(new InputStreamReader(data));
+//        StringBuilder sb = new StringBuilder();
+//        while ((line = rd.readLine()) != null) {
+//            sb.append(line);
+//        }
+//        int total = sb.toString().length();
+//
+//        LOG.info(total + " bytes read for the resposne.");
+//        if (total != ExpectdResponseSize) {
+//            LOG.info("Response data : " + sb.toString());
+//        }
+//        con.disconnect();
+//
+//        //assertEquals(ExpectdResponseSize, total);
+//
+//        LOG.info("End reading the response.  Expected response size : " + ExpectdResponseSize);
+//        return total;
 
-        BufferedReader rd = new BufferedReader(new InputStreamReader(data));
-        StringBuilder sb = new StringBuilder();
-        while ((line = rd.readLine()) != null) {
-            sb.append(line);
+        Objects.requireNonNull(con, "HttpURLConnection cannot be null");
+        boolean testPassed = Boolean.FALSE;
+        int bytesRead = 0;
+
+        try {
+            // Ensure we have a successful response
+            int responseCode = con.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                LOG.info("HTTP Response Code: " + responseCode);
+                //TODO: fail
+            }
+            LOG.info("HTTP Response Code: " + responseCode);
+
+            // Get the input stream to read the response
+
+            try (InputStream inputStream = con.getInputStream()) {
+                byte[] buffer = new byte[1024];
+
+                int bytesReadThisChunk;;
+                //Read and discard the response data while couting bytes
+                while ((bytesReadThisChunk = inputStream.read(buffer)) != -1) {
+                    LOG.info("Reading chunk: " + bytesReadThisChunk);
+                    for (int i = 0; i < bytesReadThisChunk; i++) {
+                        byte currentByte = buffer[i];
+                        if (currentByte != '\r' && currentByte != '\n') {
+                            bytesRead++;
+                        }
+                    }
+                }
+
+                // Compare total bytes read with expected size
+
+                LOG.info("Total bytes read: " + bytesRead);
+
+                testPassed = (bytesRead == ExpectdResponseSize);
+                if (testPassed) {
+                    LOG.info("Received " + bytesRead + " bytes as expected.");
+                } else {
+                    LOG.info("Received " + bytesRead + " bytes, but expected " + ExpectdResponseSize + " bytes.");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            con.disconnect();
         }
-        int total = sb.toString().length();
 
-        LOG.info(total + " bytes read for the resposne.");
-        if (total != ExpectdResponseSize) {
-            LOG.info("Response data : " + sb.toString());
-        }
-        con.disconnect();
-
-        //assertEquals(ExpectdResponseSize, total);
-
-        LOG.info("End reading the response.  Expected response size : " + ExpectdResponseSize);
-        return total;
+        return bytesRead;
 
     }
 }

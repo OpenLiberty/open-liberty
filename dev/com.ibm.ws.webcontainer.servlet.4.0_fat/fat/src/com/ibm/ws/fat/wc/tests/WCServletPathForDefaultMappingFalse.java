@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -48,6 +48,7 @@ public class WCServletPathForDefaultMappingFalse {
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WCServletPathForDefaultMappingFalse.class.getSimpleName() + ".log");
+        server.waitForStringInLogUsingMark("CWWKO0219I*");
         LOG.info("Setup : complete, ready for Tests");
     }
 
