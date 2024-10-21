@@ -299,10 +299,16 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         @Override
         @Trivial
         public String toString() {
+            // Both hashCode and identityHashCode are included so that we can correlate
+            // output in Liberty trace, which prints toString for values and method args
+            // but uses uses identityHashCode (id=...) when printing trace for a class
             String tf = threadFactory.toString();
-            return new StringBuilder(tf.length() + 31) //
-                            .append("VirtualThreadExecutor@").append(Integer.toHexString(hashCode())) //
-                            .append(' ').append(tf) //
+            return new StringBuilder(tf.length() + 44) //
+                            .append("VirtualThreadExecutor@") //
+                            .append(Integer.toHexString(hashCode())) //
+                            .append("(id=") //
+                            .append(Integer.toHexString(System.identityHashCode(this))) //
+                            .append(") ").append(tf) //
                             .toString();
         }
     }
@@ -803,14 +809,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         boolean havePermit = false;
         boolean useCurrentThread;
         MaxPolicy policy = maxPolicy;
-        if (policy == MaxPolicy.loose) // can always run inline
+        if (virtual) // always run asynchronously on new virtual thread
+            useCurrentThread = false;
+        else if (policy == MaxPolicy.loose) // can always run inline
             useCurrentThread = true;
-        else if (policy == MaxPolicy.strict) // must acquire a permit to run inline
+        else // policy == MaxPolicy.strict // must acquire a permit to run inline
             useCurrentThread = havePermit = taskCount > 0 && maxConcurrencyConstraint.tryAcquire();
-        else // can run inline on platform threads (loose); Never run inline on virtual threads
-            throw new UnsupportedOperationException("maxPolicy=null"); // currently unreachable, waiting for a pull that is blocked
-        // TODO:
-        // useCurrentThread = !(virtualThreadOps.isSupported() && virtualThreadOps.isVirtual(Thread.currentThread()));
 
         List<PolicyTaskFutureImpl<T>> futures = new ArrayList<PolicyTaskFutureImpl<T>>(taskCount);
         try {
@@ -983,14 +987,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             boolean havePermit = false;
             boolean useCurrentThread;
             MaxPolicy policy = maxPolicy;
-            if (policy == MaxPolicy.loose) // can always run inline
+            if (virtual) // always run asynchronously on new virtual thread
+                useCurrentThread = false;
+            else if (policy == MaxPolicy.loose) // can always run inline
                 useCurrentThread = true;
-            else if (policy == MaxPolicy.strict) // must acquire a permit to run inline
+            else // policy == MaxPolicy.strict // must acquire a permit to run inline
                 useCurrentThread = havePermit = maxConcurrencyConstraint.tryAcquire();
-            else // can run inline on platform threads (loose); Never run inline on virtual threads
-                throw new UnsupportedOperationException("maxPolicy=null"); // currently unreachable, waiting for a pull that is blocked
-            // TODO:
-            // useCurrentThread = !(virtualThreadOps.isSupported() && virtualThreadOps.isVirtual(Thread.currentThread()));
 
             if (useCurrentThread)
                 try {
@@ -1538,7 +1540,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         long u_maxWaitForEnqueue = (Long) props.get("maxWaitForEnqueue");
         boolean u_runIfQueueFull = (Boolean) props.get("runIfQueueFull");
         long u_startTimeout = null == (v = props.get("startTimeout")) ? -1l : (Long) v;
-        boolean useVirtualThreads = null == (v = props.get("virtual")) ? false : (Boolean) v;;
+        boolean useVirtualThreads = null == (v = props.get("virtual")) ? false : (Boolean) v;
 
         // Validation that cannot be performed by metatype:
         if (useVirtualThreads && !virtualThreadOps.isSupported()) {

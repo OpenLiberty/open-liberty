@@ -47,7 +47,6 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinQueryClient;
@@ -66,7 +65,7 @@ public class CrossFeatureZipkinTest {
     private static final Class<?> c = CrossFeatureZipkinTest.class;
 
     public static ZipkinContainer zipkinContainer = new ZipkinContainer().withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
+    public static RepeatTests repeat = TelemetryActions.allMPRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(zipkinContainer).around(repeat);
@@ -151,7 +150,7 @@ public class CrossFeatureZipkinTest {
             Log.info(c, "testCrossFeatureFromTelemetry", span.toString());
         }
         //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
             ZipkinSpan server1 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/1"));
             ZipkinSpan client2 = findOneFrom(spans, span().withKind(SpanKind.CLIENT)
                                                         .withTag(URL_FULL.getKey(), getUrl(opentracingServer) + "/2"));
@@ -198,7 +197,7 @@ public class CrossFeatureZipkinTest {
             Log.info(c, "testCrossFeatureFromOpenTracing", span.toString());
         }
         //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
             ZipkinSpan server1 = findOneFrom(spans, span().withTag(Tags.HTTP_URL.getKey(), getUrl(opentracingServer) + "/1"));
             ZipkinSpan client2 = findOneFrom(spans, span().withTag(Tags.HTTP_URL.getKey(), getUrl(telemetryServer) + "/2"));
             ZipkinSpan server2 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/2"));

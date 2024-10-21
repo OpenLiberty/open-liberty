@@ -42,6 +42,25 @@ import test.jakarta.data.web.DataTestServlet;
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class DataTest extends FATServletClient {
+    /**
+     * Error messages, typically for invalid repository methods, that are
+     * intentionally caused by tests to cover error paths.
+     * These are ignored when checking the messages.log file for errors.
+     */
+    static final String[] EXPECTED_ERROR_MESSAGES = //
+                    new String[] {
+                                   "CWWKD1006E.*delete3",
+                                   "CWWKD1006E.*delete4",
+                                   "CWWKD1008E.*delete5",
+                                   "CWWKD1028E.*findFirst2147483648",
+                                   "CWWKD1041E.*findByNumberIdBetween",
+                                   "CWWKD1046E.*minMaxSumCountAverageFloat",
+                                   "CWWKD1046E.*singleHexDigit",
+                                   "CWWKD1047E.*numberAsByte",
+                                   "CWWKD1049E.*countAsBooleanByNumberIdLessThan",
+                                   "CWWKD1075E.*Apartment2",
+                                   "CWWKD1075E.*Apartment3"
+                    };
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
@@ -79,6 +98,6 @@ public class DataTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(EXPECTED_ERROR_MESSAGES);
     }
 }

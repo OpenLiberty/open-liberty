@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -22,6 +23,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class MP7EE11CompatibleTest {
 
     private static final String SERVER_NAME = "MP70andEE11";

@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -84,12 +85,9 @@ public class TCKRunner {
     private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "60";
     private static final int DEFAULT_MBEAN_TIMEOUT = 60000;
 
-    private static final String DEFAULT_SUITE_FILENAME = "tck-suite.xml";
-    private static final String MVN_FILENAME_PREFIX = "mvnOutput_";
-
     private static final String RELATIVE_POM_FILE = "tck/pom.xml";
     private static final String RELATIVE_POM_FILE2 = "pom.xml";
-    private static final String RELATIVE_TCK_RUNNER = "publish/tckRunner";
+
     private static final String MVN_CLEAN = "clean";
     private static final String MVN_TEST = "test";
     private static final String MVN_DEPENDENCY = "dependency:list";
@@ -97,132 +95,130 @@ public class TCKRunner {
     private static final String SUREFIRE_REPORTS = "surefire-reports";
     private static final String TESTNG_REPORTS = SUREFIRE_REPORTS + "/junitreports";
 
+    private static final String MVN_FILENAME_PREFIX = "mvnOutput_";
     private static final String MVN_TEST_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_TEST + "_";
     private static final String MVN_TARGET_FOLDER_PREFIX = "tck_";
+
     private static final long startNanos = System.nanoTime();
 
-    private final String bucketName;
-    private final String testName;
-    private final LibertyServer server;
-    private final String suiteFileName;
-    private final Map<String, String> additionalMvnProps;
-    private final boolean isTestNG;
-    private final Type type;
-    private final String specName;
-    private final File mavenUserHome;
-    private final File settingsFile;
-    private final File tckRunnerDir;
+    // Builder settings
+    private final LibertyServer server; // Required
+    private final Type type; // Required
+    private final String specName; // Required
 
-    private final Authenticator artifactoryAuthenticator;
+    private String suiteFileName; // Optional
+    private Map<String, String> additionalMvnProps = Collections.emptyMap(); // Optional
+    private String platformVersion = ""; // Optional
+    private String[] qualifiers = new String[] {}; //Optional
+
+    //Artifactory settings
+    private File mavenUserHome;
+    private File settingsFile;
+    private Authenticator artifactoryAuthenticator;
+
+    // Default settings
+    private boolean isTestNG = false;
+    private File tckRunnerDir = new File("publish/tckRunner").getAbsoluteFile();
+
+    /////////// Builder methods //////////////////
 
     /**
-     * runs "mvn clean test" in the tck folder
+     * The starter point for constructing a TCKRunner
      *
-     * @param server     the liberty server which should be used to run the TCK
-     * @param bucketName the name of the test project
-     * @param testName   the name of the method that's being used to launch the TCK
-     * @param type       the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param specName   the formal name for the specification being tested
+     * @return an non-configured TCKRunner
      */
-    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName) throws Exception {
-        runTCK(server, bucketName, testName, type, specName, DEFAULT_SUITE_FILENAME, RELATIVE_TCK_RUNNER, Collections.<String, String> emptyMap());
+    public static TCKRunner build(LibertyServer server, Type type, String specName) {
+        return new TCKRunner(server, type, specName);
     }
 
     /**
-     * runs "mvn clean test" in the tck folder, passing through all the required properties
-     *
-     * @param server          the liberty server which should be used to run the TCK
-     * @param bucketName      the name of the test project
-     * @param testName        the name of the method that's being used to launch the TCK
-     * @param type            the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param specName        the formal name for the specification being tested
-     * @param additionalProps java properties to set when running the mvn command
-     */
-    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName,
-                              Map<String, String> additionalProps) throws Exception {
-        runTCK(server, bucketName, testName, type, specName, DEFAULT_SUITE_FILENAME, RELATIVE_TCK_RUNNER, additionalProps);
-    }
-
-    /**
-     * runs "mvn clean test" in the tck folder, passing through all the required properties
-     *
-     * @param  server        the liberty server which should be used to run the TCK
-     * @param  bucketName    the name of the test project
-     * @param  testName      the name of the method that's being used to launch the TCK
-     * @param  type          the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param  specName      the formal name for the specification being tested
      * @param  suiteFileName the name of the suite xml file
-     * @throws Exception     occurs if anything goes wrong in setting up and running the mvn command.
+     * @return               this TCKRunner
      */
-    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName,
-                              String suiteFileName) throws Exception {
-        runTCK(server, bucketName, testName, type, specName, suiteFileName, RELATIVE_TCK_RUNNER, Collections.<String, String> emptyMap());
-    }
+    public TCKRunner withSuiteFileName(String suiteFileName) {
+        Objects.requireNonNull(suiteFileName);
 
-    /**
-     * runs "mvn clean test" in the tck folder, passing through all the required properties
-     *
-     * @param  server          the liberty server which should be used to run the TCK
-     * @param  bucketName      the name of the test project
-     * @param  testName        the name of the method that's being used to launch the TCK
-     * @param  type            the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param  specName        the formal name for the specification being tested
-     * @param  suiteFileName   the name of the suite xml file
-     * @param  additionalProps java properties to set when running the mvn command
-     * @throws Exception       occurs if anything goes wrong in setting up and running the mvn command.
-     */
-    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
-                              Map<String, String> additionalProps) throws Exception {
-        TCKRunner mvn = new TCKRunner(server, bucketName, testName, type, specName, suiteFileName, RELATIVE_TCK_RUNNER, additionalProps);
-        mvn.runTCK();
-    }
-
-    /**
-     * runs "mvn clean test" in the tck folder, passing through all the required properties
-     *
-     * @param  server            the liberty server which should be used to run the TCK
-     * @param  bucketName        the name of the test project
-     * @param  testName          the name of the method that's being used to launch the TCK
-     * @param  type              the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param  specName          the formal name for the specification being tested
-     * @param  suiteFileName     the name of the suite xml file
-     * @param  relativeTckRunner the relative path to the TCK runner when multiple exist
-     * @param  additionalProps   java properties to set when running the mvn command
-     * @throws Exception         occurs if anything goes wrong in setting up and running the mvn command.
-     */
-    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
-                              String relativeTckRunner, Map<String, String> additionalProps) throws Exception {
-        TCKRunner mvn = new TCKRunner(server, bucketName, testName, type, specName, suiteFileName, relativeTckRunner, additionalProps);
-        mvn.runTCK();
-    }
-
-    /**
-     * Full constructor for MvnUtils. In most cases one of the static convenience methods should be used instead of calling this directly.
-     *
-     * @param  server             the liberty server which should be used to run the TCK
-     * @param  bucketName         the name of the test project
-     * @param  testName           the name of the method that's being used to launch the TCK
-     * @param  type               the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param  specName           the formal name for the specification being tested
-     * @param  suiteFileName      the name of the suite xml file
-     * @param  relativeTckRunner  the relative path to the TCK runner
-     * @param  additionalMvnProps java properties to set when running the mvn command
-     * @throws IOException
-     */
-    private TCKRunner(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
-                      String relativeTckRunner, Map<String, String> additionalMvnProps) throws IOException {
-        this.server = server;
         this.suiteFileName = suiteFileName;
-        this.bucketName = bucketName;
-        this.testName = testName;
-        this.type = type;
-        this.specName = specName;
-        this.additionalMvnProps = additionalMvnProps;
-        this.isTestNG = suiteFileName != null;
-        this.tckRunnerDir = new File(relativeTckRunner).getAbsoluteFile();
+        this.isTestNG = true;
+        return this;
+    }
 
+    /**
+     * Sets suiteFileName to tck-suite.xml
+     *
+     * @return this TCKRunner
+     */
+    public TCKRunner withDefaultSuiteFileName() {
+        this.suiteFileName = "tck-suite.xml";
+        this.isTestNG = true;
+        return this;
+    }
+
+    /**
+     * @param  additionalMvnProps java properties to set when running the mvn command
+     * @return                    this TCKRunner
+     */
+    public TCKRunner withAdditionalMvnProps(Map<String, String> additionalMvnProps) {
+        Objects.requireNonNull(additionalMvnProps);
+
+        this.additionalMvnProps = additionalMvnProps;
+        return this;
+    }
+
+    /**
+     * @param  relativeTCKRunner the relative path to the TCK runner
+     * @return                   this TCKRunner
+     */
+    public TCKRunner withRelativeTCKRunner(String relativeTCKRunner) {
+        Objects.requireNonNull(relativeTCKRunner);
+
+        this.tckRunnerDir = new File(relativeTCKRunner).getAbsoluteFile();
+        return this;
+    }
+
+    /**
+     * @param  platformVersion the version of the Jakarta EE Platform this TCK tests
+     * @return                 this TCKRunner
+     */
+    public TCKRunner withPlatfromVersion(String platformVersion) {
+        Objects.requireNonNull(platformVersion);
+
+        this.platformVersion = platformVersion;
+        return this;
+    }
+
+    /**
+     *
+     * @param  qualifiers necessary to distinguish repeats of a TCK not represented by a RepeatAction, Such as core / web profile.
+     * @return            this TCKRunner
+     */
+    public TCKRunner withQualifiers(String... qualifiers) {
+        Objects.requireNonNull(qualifiers);
+
+        this.qualifiers = qualifiers;
+        return this;
+    }
+
+    /////////// Run method //////////////////
+
+    /**
+     * End point of constructing a TCKRunner.
+     *
+     * Validates configuration and
+     * runs "mvn clean test" in the tck folder,
+     * passing through all the required properties
+     *
+     * @throws IOException If any error occurs writing tck results to the file system.
+     * @throws Exception   If any error occurs running mvn commands.
+     */
+    public void runTCK() throws IOException, Exception {
+        // Assumptions that will prevent TCK from running
+        Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("OS/400")); // skip tests on IBM i due to mvn issue.
+
+        // Validate configured settings
         TCKUtilities.requireDirectory(tckRunnerDir);
 
+        // Configure Artifactory
         File wrapperPropertiesFile = TCKUtilities.exportMvnWrapper(this.tckRunnerDir);
 
         if (TCKUtilities.useArtifactory()) {
@@ -241,25 +237,48 @@ public class TCKRunner {
             this.settingsFile = null;
             Log.info(c, "TCKRunner", "Using default maven environment");
         }
-    }
 
-    /**
-     * run the TCK and process the results
-     */
-    private void runTCK() throws Exception {
-        Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("OS/400")); // skip tests on IBM i due to mvn issue.
-
+        // Run mvn clean test
         ProcessResult testOutput = runCleanTestCmd();
         List<String> failingTestsList = postProcessTestResults(testOutput.getOutput());
         if (failingTestsList.isEmpty()) {
             assertEquals("No tests failed but maven exit code was non-zero", 0, testOutput.getExitCode());
         }
 
+        // Run mvn dependency:list
         List<String> dependencyOutput = runDependencyCmd();
+
+        // Compile and publish results
         TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
         TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
+        if (qualifiers.length > 0)
+            resultsInfo.withQualifiers(this.qualifiers);
+        if (!platformVersion.isEmpty())
+            resultsInfo.withPlatformVersion(this.platformVersion);
+
         TCKResultsWriter.preparePublicationFile(resultsInfo);
     }
+
+    /////////// Constructor //////////////////
+
+    private TCKRunner(LibertyServer server, Type type, String specName) {
+        // Validate required settings
+        Objects.requireNonNull(server, "TCKRunner was built without a configured server");
+        Objects.requireNonNull(type, "TCKRunner was built without a configured type");
+        Objects.requireNonNull(specName, "TCKRunner was built without a configured specName");
+
+        // Validate spec name field
+        if (!Pattern.compile("^[ A-Za-z]+$").matcher(specName).matches()) {
+            throw new IllegalArgumentException("The specName " + specName
+                                               + " is an invalid name as it contains characters other than letters and spaces, or no information at all.");
+        }
+
+        this.server = server;
+        this.type = type;
+        this.specName = specName;
+    }
+
+    /////////// Private helper methods //////////////////
 
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
@@ -383,7 +402,7 @@ public class TCKRunner {
         // based on examining the TCK jar) in which case the value for suiteXmlFile would
         // be different.
         if (isTestNG)
-            stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
+            stringArrayList.add("-DsuiteXmlFile=" + this.suiteFileName);
 
         // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
         stringArrayList.add("-B");
@@ -464,25 +483,13 @@ public class TCKRunner {
     }
 
     /**
-     * Get the name of the suite xml file. Normally this defaults to tck-suite.xml.
-     *
-     * @return the name of the suite xml file
-     */
-    private String getSuiteFileName() {
-        if (isTestNG)
-            return this.suiteFileName;
-        else
-            throw new UnsupportedOperationException("Suite XML file was never set, therefore we assume this is a Junit test.");
-    }
-
-    /**
      * Get the name of the suite. This is generated from the suite xml file name and made unique by adding the repeat ID, if any.
      *
      * @return the name of the suite
      */
     private String getSuiteName() {
         if (isTestNG)
-            return getSuiteFileName().replace(".xml", "") + RepeatTestFilter.getRepeatActionsAsString();
+            return this.suiteFileName.replace(".xml", "") + RepeatTestFilter.getRepeatActionsAsString();
         else //When using junit just use the server name
             return getServerName() + RepeatTestFilter.getRepeatActionsAsString();
     }

@@ -935,4 +935,19 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         for (ApplicationExtensionLibrary appExt : appExtLibs)
             config.addSharedLibraries(appExt.getReference().id());
     }
+
+    @Override
+    public boolean isThreadContextClassLoaderForAppClassLoader(ClassLoader tccl, ClassLoader appClassLoader) {
+       if (! isThreadContextClassLoader(tccl)) {
+           return false;
+       }
+       
+       if (! isAppClassLoader(appClassLoader)) {
+           return false;
+       }
+       
+       ThreadContextClassLoader castedTCCL = (ThreadContextClassLoader) tccl;
+       
+       return castedTCCL.isFor(appClassLoader);
+    }
 }

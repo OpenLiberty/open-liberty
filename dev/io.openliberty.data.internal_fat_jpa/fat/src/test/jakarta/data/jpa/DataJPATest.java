@@ -35,6 +35,28 @@ import test.jakarta.data.jpa.web.DataJPATestServlet;
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class DataJPATest extends FATServletClient {
+    /**
+     * Error messages, typically for invalid repository methods, that are
+     * intentionally caused by tests to cover error paths.
+     * These are ignored when checking the messages.log file for errors.
+     */
+    static final String[] EXPECTED_ERROR_MESSAGES = //
+                    new String[] {
+                                   "CWWKD1010E.*countBySurgePriceGreaterThanEqual",
+                                   "CWWKD1026E.*allSorted",
+                                   "CWWKD1046E.*publicDebtAsByte",
+                                   "CWWKD1046E.*publicDebtAsDouble",
+                                   "CWWKD1046E.*publicDebtAsFloat",
+                                   "CWWKD1046E.*publicDebtAsInt",
+                                   "CWWKD1046E.*publicDebtAsShort",
+                                   "CWWKD1046E.*numFullTimeWorkersAsByte",
+                                   "CWWKD1046E.*numFullTimeWorkersAsDouble",
+                                   "CWWKD1046E.*numFullTimeWorkersAsFloat",
+                                   "CWWKD1046E.*numFullTimeWorkersAsShort",
+                                   "CWWKD1075E.*Apartment2",
+                                   "CWWKD1075E.*Apartment3"
+                    };
+
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
@@ -58,6 +80,6 @@ public class DataJPATest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(EXPECTED_ERROR_MESSAGES);
     }
 }

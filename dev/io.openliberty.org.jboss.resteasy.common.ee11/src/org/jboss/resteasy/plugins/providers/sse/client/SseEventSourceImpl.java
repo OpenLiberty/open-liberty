@@ -86,7 +86,7 @@ public class SseEventSourceImpl implements SseEventSource {
         private ScheduledExecutorService executor;
 
         //tck requires this default behavior
-        private boolean alwaysReconnect = false;
+        private boolean alwaysReconnect = true;
 
         public SourceBuilder() {
             //NOOP
@@ -378,10 +378,26 @@ public class SseEventSourceImpl implements SseEventSource {
                     break;
                 }
                 try {
-                    // Process the event
-                    onEvent(event);
-                    // Read next event
+	            // Liberty change start
+                    if (event != null) {
+	                // Process the event
+                        onEvent(event);
+                    }
+                    // event sink closed
+                    else if (!alwaysReconnect || eventInput == null || eventInput.isClosed()) // liberty change - check for eventInput == null
+                    {
+                        runCompleteConsumers(); // Liberty change - just run completion listeners instead of internalClose()
+                        break;
+                    }
+	            // Liberty change end
+	            // Read next event
                     event = eventInput.read(providers);
+	            // Liberty change start - effectively making this a do/while instead of while loop
+                    if (event == null) {
+                        runCompleteConsumers();
+                        break;
+                    }
+                    // Liberty change end
                 } catch (IOException e) {
                     reconnect(reconnectDelay);
                     break;

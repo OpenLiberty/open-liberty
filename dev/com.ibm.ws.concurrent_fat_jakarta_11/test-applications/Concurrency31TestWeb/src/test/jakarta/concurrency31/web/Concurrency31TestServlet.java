@@ -16,11 +16,18 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINI
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.fail;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
@@ -29,21 +36,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.CronTrigger;
+import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
+import jakarta.enterprise.concurrent.Trigger;
+import jakarta.enterprise.concurrent.ZonedTrigger;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.context.timezone.TimeZone;
 
 @ContextServiceDefinition(name = "java:module/concurrent/my-context",
                           propagated = APPLICATION,
@@ -81,7 +94,7 @@ public class Concurrency31TestServlet extends FATServlet {
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         Runnable action = () -> {
             try {
-                results.add(InitialContext.doLookup("java:comp/concurrent/webdd/virtual-thread-factory"));
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
@@ -97,6 +110,7 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("An error occurred on the thread.", (Throwable) result);
+        assertEquals("TestValue1", result);
     }
 
     /**
@@ -120,7 +134,7 @@ public class Concurrency31TestServlet extends FATServlet {
 
             results.add(curThread);
             try {
-                results.add(InitialContext.doLookup("java:comp/concurrent/virtual-scheduled-executor"));
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
@@ -140,6 +154,7 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("Lookup failed on first execution", (Throwable) result);
+        assertEquals("TestValue1", result);
 
         // execution 2
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -149,6 +164,7 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("Lookup failed on first execution", (Throwable) result);
+        assertEquals("TestValue1", result);
 
         // execution 3
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -158,6 +174,7 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("Lookup failed on first execution", (Throwable) result);
+        assertEquals("TestValue1", result);
 
         // each execution must use a different virtual thread
         assertEquals(uniqueVirtualThreads.toString(), 3, uniqueVirtualThreads.size());
@@ -197,7 +214,7 @@ public class Concurrency31TestServlet extends FATServlet {
     public void testTimedInvokeAllOnVirtualThreads() throws Exception {
         Callable<Object> task = () -> {
             try {
-                InitialContext.doLookup("java:module/concurrent/virtual-executor");
+                InitialContext.doLookup("java:comp/env/TestEntry");
             } catch (Throwable x) {
                 return x;
             }
@@ -238,7 +255,119 @@ public class Concurrency31TestServlet extends FATServlet {
         assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread));
     }
 
-    // TODO after the workaround is removed, write: public void testUntimedInvokeAllOnVirtualThreads() throws Exception {
+    /**
+     * Use ManagedExecutorDefinition with virtual=true to submit multiple task
+     * to run on a virtual thread via the untimed invokeAll method.
+     */
+    @Test
+    public void testUntimedInvokeAllOnVirtualThreads() throws Exception {
+        Callable<Thread> task = () -> {
+            InitialContext.doLookup("java:comp/env/TestEntry");
+            return Thread.currentThread();
+        };
+
+        ManagedExecutorService executor = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-executor");
+
+        List<Future<Thread>> futures = executor.invokeAll(List.of(task, task, task));
+
+        assertEquals(futures.toString(), 3, futures.size());
+
+        Set<Thread> uniqueThreads = new HashSet<Thread>();
+        uniqueThreads.add(Thread.currentThread());
+
+        Thread thread;
+        assertNotNull(thread = futures.get(0).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertNotNull(thread = futures.get(1).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertNotNull(thread = futures.get(2).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertEquals(uniqueThreads.toString(), 4, uniqueThreads.size());
+        uniqueThreads.clear();
+
+        // run from a virtual thread:
+        CompletableFuture<List<Future<Thread>>> ff = new CompletableFuture<>();
+        ManagedThreadFactory threadFactory = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-thread-factory");
+        threadFactory.newThread(() -> {
+            try {
+                uniqueThreads.add(Thread.currentThread());
+                ff.complete(executor.invokeAll(List.of(task, task, task)));
+            } catch (Throwable x) {
+                ff.completeExceptionally(x);
+            }
+        }).start();
+
+        futures = ff.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        assertEquals(futures.toString(), 3, futures.size());
+
+        assertNotNull(thread = futures.get(0).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertNotNull(thread = futures.get(1).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertNotNull(thread = futures.get(2).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+        uniqueThreads.add(thread);
+
+        assertEquals(uniqueThreads.toString(), 4, uniqueThreads.size());
+    }
+
+    /**
+     * Use ManagedExecutorDefinition with virtual=true to submit a single task
+     * to run on a virtual thread via the untimed invokeAny method.
+     */
+    @Test
+    public void testUntimedInvokeAnyOneOnVirtualThread() throws Exception {
+        Callable<Thread> anyTask = () -> {
+            InitialContext.doLookup("java:comp/env/TestEntry");
+            return Thread.currentThread();
+        };
+
+        ManagedExecutorService executor = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-executor");
+
+        Thread thread = executor.invokeAny(List.of(anyTask));
+
+        assertNotSame(Thread.currentThread(), thread); // does not run inline
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+
+        // run from a virtual thread:
+        CompletableFuture<Thread> futureThread = new CompletableFuture<>();
+        ManagedThreadFactory threadFactory = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-thread-factory");
+        Thread newThread = threadFactory.newThread(() -> {
+            try {
+                futureThread.complete(executor.invokeAny(List.of(anyTask)));
+            } catch (Throwable x) {
+                futureThread.completeExceptionally(x);
+            }
+        });
+        newThread.start();
+
+        thread = futureThread.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotSame(newThread, thread); // does not run inline
+        assertEquals(Boolean.TRUE,
+                     Thread.class.getMethod("isVirtual").invoke(thread));
+    }
 
     /**
      * Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
@@ -248,7 +377,7 @@ public class Concurrency31TestServlet extends FATServlet {
     public void testUntimedInvokeAnyOnVirtualThreads() throws Exception {
         Callable<Object> anyTask = () -> {
             try {
-                InitialContext.doLookup("java:module/concurrent/virtual-executor");
+                InitialContext.doLookup("java:comp/env/TestEntry");
             } catch (Throwable x) {
                 return x;
             }
@@ -267,24 +396,265 @@ public class Concurrency31TestServlet extends FATServlet {
         assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread));
     }
 
-    // TODO after the workaround is removed, write: public void testUntimedInvokeAnyOneOnVirtualThread() throws Exception {
+    /**
+     * Use a managed-executor from the application.xml deployment descriptor with
+     * virtual=true to request that tasks run on virtual threads.
+     */
+    @Test
+    public void testVirtualManagedExecutorAppDD() throws Exception {
+        LinkedBlockingQueue<Thread> threads = new LinkedBlockingQueue<>();
+        LinkedBlockingQueue<ZoneId> zoneIds = new LinkedBlockingQueue<>();
+        Callable<Object> action = () -> {
+            threads.add(Thread.currentThread());
+
+            ZoneId zoneId = TimeZone.get();
+            if (zoneId == null)
+                zoneIds.add(ZoneId.of("UTC"));
+            else
+                zoneIds.add(zoneId);
+
+            return InitialContext.doLookup("java:comp/env/TestEntry");
+        };
+
+        ManagedExecutorService executor = InitialContext //
+                        .doLookup("java:global/concurrent/appdd/managed-executor");
+
+        final ZoneId CENTRAL = ZoneId.of("America/Chicago");
+        TimeZone.set(CENTRAL);
+        try {
+            Future<Object> future1 = executor.submit(action);
+            Future<Object> future2 = executor.submit(action);
+            Future<Object> future3 = executor.submit(action);
+            Future<Object> future4 = executor.submit(action);
+            Future<Object> future5 = executor.submit(action);
+
+            TimeZone.set(ZoneId.of("America/New_York"));
+
+            Set<Thread> uniqueVirtualThreads = new HashSet<Thread>();
+
+            Thread thread;
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            thread = threads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            // each execution must use a different virtual thread
+            assertEquals(uniqueVirtualThreads.toString(),
+                         5,
+                         uniqueVirtualThreads.size());
+
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(CENTRAL, zoneIds.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            try {
+                Object found = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+
+            try {
+                Object found = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+
+            try {
+                Object found = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+
+            try {
+                Object found = future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+
+            try {
+                Object found = future5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to look up java:comp name because" +
+                     " application context should be cleared. Found: " + found);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NamingException))
+                    throw x;
+            }
+        } finally {
+            TimeZone.remove();
+        }
+    }
 
     /**
-     * Use ManagedThreadFactoryDefinition with virtual=true to request virtual threads.
-     * TODO It can also define custom context to propagate to the managed virtual thread.
+     * Use a managed-scheduled-executor from the web.xml deployment descriptor with
+     * virtual=true to request that tasks run on virtual threads.
+     */
+    @Test
+    public void testVirtualManagedScheduledExecutorWebDD() throws Exception {
+        Callable<Object[]> action = () -> {
+            return new Object[] {
+                                  Thread.currentThread(),
+                                  TimeZone.get(),
+                                  InitialContext.doLookup("java:comp/env/TestEntry")
+            };
+        };
+
+        ManagedScheduledExecutorService executor = InitialContext //
+                        .doLookup("java:comp/concurrent/webdd/managed-scheduled-executor");
+
+        TimeZone.set(ZoneId.of("America/Chicago"));
+        try {
+            Trigger trigger1 = new CronTrigger( //
+                            "0-59 0-59 0-23 * JAN-DEC SUN-SAT", //
+                            ZoneId.of("America/Chicago")) {
+                @Override
+                public ZonedDateTime getNextRunTime(LastExecution lastExec,
+                                                    ZonedDateTime scheduledAt) {
+                    if (lastExec == null)
+                        return super.getNextRunTime(lastExec, scheduledAt);
+                    else
+                        return null; // only run once
+                }
+            };
+            ScheduledFuture<Object[]> future1 = executor //
+                            .schedule(action, trigger1);
+
+            Trigger trigger2 = new ZonedTrigger() {
+                @Override
+                public ZonedDateTime getNextRunTime(LastExecution lastExec,
+                                                    ZonedDateTime scheduledAt) {
+                    if (lastExec == null)
+                        return ZonedDateTime.now().plus(20, ChronoUnit.MILLIS);
+                    else
+                        return null; // only run once
+                }
+            };
+            TimeZone.set(ZoneId.of("America/Denver"));
+            ScheduledFuture<Object[]> future2 = executor //
+                            .schedule(action, trigger2);
+
+            TimeZone.set(ZoneId.of("America/Juneau"));
+            ScheduledFuture<Object[]> future3 = executor //
+                            .schedule(action, 30, TimeUnit.MILLISECONDS);
+
+            TimeZone.set(ZoneId.of("Pacific/Honolulu"));
+            ScheduledFuture<Object[]> future4 = executor //
+                            .schedule(action, 40, TimeUnit.MILLISECONDS);
+
+            TimeZone.set(ZoneId.of("America/Los_Angeles"));
+
+            Set<Thread> uniqueVirtualThreads = new HashSet<Thread>();
+
+            Object[] results;
+            Thread thread;
+
+            results = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(ZoneId.of("America/Chicago"), results[1]);
+            assertEquals("TestValue1", results[2]);
+            thread = (Thread) results[0];
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            results = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(ZoneId.of("America/Denver"), results[1]);
+            assertEquals("TestValue1", results[2]);
+            thread = (Thread) results[0];
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            results = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(ZoneId.of("America/Juneau"), results[1]);
+            assertEquals("TestValue1", results[2]);
+            thread = (Thread) results[0];
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            results = future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(ZoneId.of("Pacific/Honolulu"), results[1]);
+            assertEquals("TestValue1", results[2]);
+            thread = (Thread) results[0];
+            assertEquals(Boolean.TRUE,
+                         Thread.class.getMethod("isVirtual").invoke(thread));
+            uniqueVirtualThreads.add(thread);
+
+            // each execution must use a different virtual thread
+            assertEquals(uniqueVirtualThreads.toString(),
+                         4,
+                         uniqueVirtualThreads.size());
+
+            assertEquals(ZoneId.of("America/Los_Angeles"), TimeZone.get());
+        } finally {
+            TimeZone.remove();
+        }
+    }
+
+    /**
+     * Use ManagedThreadFactoryDefinition with virtual=true to request virtual
+     * threads. Also covers propagating a cleared custom thread context to a
+     * virtual thread.
      */
     @Test
     public void testVirtualThreadFactoryAnno() throws Exception {
+        LinkedBlockingQueue<ZoneId> timeZones = new LinkedBlockingQueue<>();
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         Runnable action = () -> {
             try {
-                results.add(InitialContext.doLookup("java:module/concurrent/virtual-thread-factory"));
+                ZoneId zoneId = TimeZone.get();
+                if (zoneId == null)
+                    timeZones.add(ZoneId.of("UTC"));
+                else
+                    timeZones.add(zoneId);
+
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
         };
 
-        ManagedThreadFactory threadFactory = InitialContext.doLookup("java:module/concurrent/virtual-thread-factory");
+        TimeZone.set(ZoneId.of("America/New_York"));
+
+        ManagedThreadFactory threadFactory = InitialContext //
+                        .doLookup("java:module/concurrent/virtual-thread-factory");
         Thread thread1 = threadFactory.newThread(action);
         assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread1));
         thread1.start();
@@ -292,6 +662,12 @@ public class Concurrency31TestServlet extends FATServlet {
         Thread thread2 = threadFactory.newThread(action);
         assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread2));
         thread2.start();
+
+        assertEquals(ZoneId.of("UTC"),
+                     timeZones.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(ZoneId.of("UTC"),
+                     timeZones.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         Object result;
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -301,19 +677,22 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("An error occurred on the other virtual thread.", (Throwable) result);
+        assertEquals("TestValue1", result);
+
+        assertEquals(ZoneId.of("America/New_York"), TimeZone.get());
+        TimeZone.remove();
     }
 
     /**
      * Use a managed-thread-factory from the application.xml deployment descriptor with virtual=true
      * to request virtual threads.
-     * TODO It can also define custom context to propagate to the managed virtual thread.
      */
     @Test
     public void testVirtualThreadFactoryAppDD() throws Exception {
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         Runnable action = () -> {
             try {
-                results.add(InitialContext.doLookup("java:app/concurrent/appdd/virtual-thread-factory"));
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
@@ -329,33 +708,79 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("An error occurred on the virtual thread.", (Throwable) result);
+        assertEquals("TestValue1", result);
     }
 
     /**
-     * Use a managed-thread-factory from the web.xml deployment descriptor with virtual=true
-     * to request virtual threads.
-     * TODO It can also define custom context to propagate to the managed virtual thread.
+     * Use a managed-thread-factory from the web.xml deployment descriptor with
+     * virtual=true to request virtual threads. Verify that application context
+     * and a custom thread context are propagated to the managed thread, being
+     * captured from the main thread upon lookup of the ManagedThreadFactory.
      */
     @Test
     public void testVirtualThreadFactoryWebDD() throws Exception {
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         Runnable action = () -> {
             try {
-                results.add(InitialContext.doLookup("java:comp/concurrent/webdd/virtual-thread-factory"));
+                ZoneId zoneId = TimeZone.get();
+                if (zoneId == null)
+                    results.add(ZoneId.of("UTC"));
+                else
+                    results.add(zoneId);
+
+                results.add(InitialContext.doLookup("java:comp/env/TestEntry"));
             } catch (Throwable x) {
                 results.add(x);
             }
         };
 
-        ManagedThreadFactory threadFactory = InitialContext.doLookup("java:comp/concurrent/webdd/virtual-thread-factory");
-        Thread thread1 = threadFactory.newThread(action);
+        TimeZone.set(ZoneId.of("America/Denver"));
+
+        ManagedThreadFactory threadFactory1 = InitialContext //
+                        .doLookup("java:comp/concurrent/webdd/virtual-thread-factory");
+
+        TimeZone.set(ZoneId.of("America/Los_Angeles"));
+
+        Thread thread1 = threadFactory1.newThread(action);
         assertEquals(Thread.NORM_PRIORITY, thread1.getPriority());
-        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread1));
+        assertEquals(Boolean.TRUE, //
+                     Thread.class.getMethod("isVirtual").invoke(thread1));
+
+        ManagedThreadFactory threadFactory2 = InitialContext //
+                        .doLookup("java:comp/concurrent/webdd/virtual-thread-factory");
+
+        TimeZone.set(ZoneId.of("America/Juneau"));
+
         thread1.start();
 
         Object result;
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(ZoneId.of("America/Denver"), result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
-            throw new AssertionError("An error occurred on the virtual thread.", (Throwable) result);
+            throw new AssertionError("An error occurred on the virtual thread.", //
+                            (Throwable) result);
+        assertEquals("TestValue1", result);
+
+        Thread thread2 = threadFactory2.newThread(action);
+        assertEquals(Thread.NORM_PRIORITY, thread2.getPriority());
+        assertEquals(Boolean.TRUE, //
+                     Thread.class.getMethod("isVirtual").invoke(thread2));
+
+        thread2.start();
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(ZoneId.of("America/Los_Angeles"), result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("An error occurred on the virtual thread.", //
+                            (Throwable) result);
+        assertEquals("TestValue1", result);
+
+        assertEquals(ZoneId.of("America/Juneau"), TimeZone.get());
+
+        TimeZone.remove();
     }
 }

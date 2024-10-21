@@ -17,6 +17,9 @@ import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.Zipkin
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasNoParent;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasParentSpanId;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.span;
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
+// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasProperty;
@@ -40,29 +43,25 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinQueryClient;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
-import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
-import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
 
 /**
  * Test exporting traces to a Zipkin server with the OpenTelemetry Collector
@@ -84,7 +83,7 @@ public class ZipkinOtelCollectorTest {
                                                                                                                                                                    .withNetworkAliases("otel-collector-zipkin")
                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(ZipkinOtelCollectorTest.class,
                                                                                                                                                                                                           "otelCol"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(network)
@@ -119,7 +118,8 @@ public class ZipkinOtelCollectorTest {
     }
 
     @Test
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID})
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID,
+                     TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
     public void testBasicTelemetry1() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
 
@@ -137,7 +137,8 @@ public class ZipkinOtelCollectorTest {
     }
 
     @Test
-    @SkipForRepeat({MicroProfileActions.MP60_ID, TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID})
+    @SkipForRepeat({ MicroProfileActions.MP60_ID, TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID,
+                     MicroProfileActions.MP61_ID })
     public void testBasicTelemetry2() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
 

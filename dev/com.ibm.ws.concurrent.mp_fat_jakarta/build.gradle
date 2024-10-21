@@ -19,6 +19,6 @@ configurations {
 dependencies {
   requiredLibs project(':com.ibm.websphere.security')
   requiredLibs project(':com.ibm.tx.jta')
-  requiredLibs project(':io.openliberty.org.eclipse.microprofile')
+  requiredLibs project(path: ':io.openliberty.org.eclipse.microprofile', configuration: 'contextpropagation13')
 }
 

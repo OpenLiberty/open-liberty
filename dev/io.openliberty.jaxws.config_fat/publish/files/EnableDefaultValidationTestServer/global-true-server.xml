@@ -1,0 +1,14 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.2</feature>
+        <feature>jaxws-2.2</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <webServiceClient enableDefaultValidation="true" />
+    
+    <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
+    
+</server>

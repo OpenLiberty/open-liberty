@@ -24,6 +24,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.sql.Statement;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,6 +40,7 @@ import javax.resource.spi.ResourceAllocationException;
 import javax.sql.DataSource;
 
 import com.ibm.tx.config.ConfigurationProviderManager;
+import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -379,9 +382,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
     // This flag is set to "true" when the new HADB locking scheme has been enabled for peer recovery
     private static volatile boolean _useNewLockingScheme;
-    private static int _logGoneStaleTime = 10; // If a timestamp has not been updated in _logGoneStaleTime seconds, we assume that
-    // the owning server has crashed. The default is 10 seconds. Note in Liberty this default is enforced in metatype.xml.
-    private int _peerLockTimeBetweenHeartbeats = 5;
+
+    private final Duration _logGoneStaleTime = Duration.ofSeconds(ConfigurationProviderManager.getConfigurationProvider().getPeerTimeBeforeStale()); // If a timestamp has not been updated in _logGoneStaleTime seconds, we assume that
+    // the owning server has crashed. The default is 10 seconds.
+    private final Duration _peerLockTimeBetweenHeartbeats = Duration.ofSeconds(ConfigurationProviderManager.getConfigurationProvider().getTimeBetweenHeartbeats());
 
     private static final long _reservedConnectionActiveSectionIDSet = 255L;
     private static final long _reservedConnectionActiveSectionIDUnset = 1L;
@@ -692,7 +696,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 if (currentSqlEx != null) {
                                     // Set the exception that will be reported
                                     nonTransientException = currentSqlEx;
-                                    OpenLogRetry openLogRetry = new OpenLogRetry();
+
+                                    final OpenLogRetry openLogRetry = new OpenLogRetry();
                                     openLogRetry.setNonTransientException(currentSqlEx);
                                     // The following method will reset "nonTransientException" if it cannot recover
                                     if (_sqlTransientErrorHandlingEnabled) {
@@ -824,10 +829,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * attributes from metadata.
      *
      * @return The Connection.
+     * @throws InternalLogException
+     * @throws SQLException
      *
      * @exception
      */
-    private Connection getFirstConnection() throws Exception {
+    private Connection getFirstConnection() throws InternalLogException, SQLException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getFirstConnection");
         Connection conn = null;
@@ -2216,7 +2223,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             if (currentSqlEx != null) {
                                 // Set the exception that will be reported
                                 nonTransientException = currentSqlEx;
-                                ForceSectionsRetry forceSectionsRetry = new ForceSectionsRetry();
+
+                                final ForceSectionsRetry forceSectionsRetry = new ForceSectionsRetry();
                                 forceSectionsRetry.setNonTransientException(currentSqlEx);
                                 // The following method will reset "nonTransientException" if it cannot recover
                                 if (_sqlTransientErrorHandlingEnabled) {
@@ -2370,7 +2378,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     insertStatement.setBytes(6, element.getData());
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Insert row, serverName: " + _serverName + " clientId: " + (short) _recoveryAgent.clientIdentifier()
-                                     + "ruId: " + element.getRuId() + " sectionId: " + element.getSectionId() + " item: " + (short) element.getIndex());
+                                     + " ruId: " + element.getRuId() + " sectionId: " + element.getSectionId() + " item: " + (short) element.getIndex());
                     insertStatement.addBatch();
                 }
             }
@@ -2383,7 +2391,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     updateStatement.setBytes(1, element.getData());
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Update row, serverName: " + _serverName + " clientId: " + (short) _recoveryAgent.clientIdentifier()
-                                     + "ruId: " + element.getRuId() + " sectionId: " + element.getSectionId());
+                                     + " ruId: " + element.getRuId() + " sectionId: " + element.getSectionId());
                     updateStatement.addBatch();
                 }
             }
@@ -2394,7 +2402,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     removeStatement.setLong(3, element.getRuId());
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Delete row, serverName: " + _serverName + " clientId: " + (short) _recoveryAgent.clientIdentifier()
-                                     + "ruId: " + element.getRuId());
+                                     + " ruId: " + element.getRuId());
                     removeStatement.addBatch();
                 }
             }
@@ -2407,7 +2415,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (numUpdates[i] == Statement.SUCCESS_NO_INFO)
                             Tr.debug(tc, "Execution " + i + ": unknown number of rows updated");
                         else
-                            Tr.debug(tc, "Execution " + i + "successful: " + numUpdates[i] + " rows updated");
+                            Tr.debug(tc, "Execution " + i + " successful: " + numUpdates[i] + " rows updated");
                     }
                 }
             }
@@ -2421,7 +2429,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (numUpdates[i] == Statement.SUCCESS_NO_INFO)
                             Tr.debug(tc, "Execution " + i + ": unknown number of rows updated");
                         else
-                            Tr.debug(tc, "Execution " + i + "successful: " + numUpdates[i] + " rows updated");
+                            Tr.debug(tc, "Execution " + i + " successful: " + numUpdates[i] + " rows updated");
                     }
                 }
             }
@@ -2435,7 +2443,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (numUpdates[i] == Statement.SUCCESS_NO_INFO)
                             Tr.debug(tc, "Execution " + i + ": unknown number of rows updated");
                         else
-                            Tr.debug(tc, "Execution " + i + "successful: " + numUpdates[i] + " rows updated");
+                            Tr.debug(tc, "Execution " + i + " successful: " + numUpdates[i] + " rows updated");
                     }
                 }
             }
@@ -4216,9 +4224,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 throw new LogClosedException();
                             }
 
-                            HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
-                            sqlSuccess = heartbeatRetry.retryAndReport(this, _serverName, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
-                                                                       SQLRetry.getLightweightRetrySleepTime());
+                            final HeartbeatRetry heartbeatRetry = new HeartbeatRetry();
+                            sqlSuccess = heartbeatRetry.retryAndReport(this, _serverName, currentSqlEx);
                             if (!sqlSuccess)
                                 nonTransientException = heartbeatRetry.getNonTransientException();
                         } else {
@@ -4289,7 +4296,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // We found the HA Lock row
                 long storedTimestamp = lockingRS.getLong(1);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Acquired lock on HA Lock row, stored timestamp is: " + storedTimestamp);
+                    Tr.debug(tc, "Acquired lock on HA Lock row, stored timestamp is: " + Utils.traceTime(storedTimestamp));
                 long fir1 = System.currentTimeMillis();
                 String updateString = "UPDATE " +
                                       _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
@@ -4427,7 +4434,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             Tr.exit(tc, "claimLocalRecoveryLogs", "server stopping");
                         return false;
                     }
-                    ClaimLocalRetry claimLocalRetry = new ClaimLocalRetry();
+
+                    final ClaimLocalRetry claimLocalRetry = new ClaimLocalRetry();
                     sqlSuccess = claimLocalRetry.retryAndReport(this, _serverName, currentSqlEx);
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
@@ -4480,24 +4488,20 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         boolean doPeerClaim = false;
         String updateString = "";
         String reportString = "";
-        String queryString = "";
 
-        Statement lockingStmt = null;
-        ResultSet lockingRS = null;
+        // Get the current time for comparison with that stored in the database.
+        final Instant now = Instant.now();
 
-        try {
-            // First we process the control record in the partner_log
-            // Get the current time for comparison with that stored in the database.
-            long curTimestamp = System.currentTimeMillis();
-            lockingStmt = conn.createStatement();
-            queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
-                          " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                          (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                          " WHERE RU_ID=-1" +
-                          (_isSQLServer ? "" : " FOR UPDATE");
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
-            lockingRS = lockingStmt.executeQuery(queryString);
+        // First we process the control record in the partner_log
+        String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
+                             " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
+                             (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                             " WHERE RU_ID=-1" +
+                             (_isSQLServer ? "" : " FOR UPDATE");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
+
+        try (Statement lockingStmt = conn.createStatement(); ResultSet lockingRS = lockingStmt.executeQuery(queryString)) {
 
             if (lockingRS.next()) {
                 // We found the HA Lock row
@@ -4527,10 +4531,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "This server ALREADY OWNS the partner_log HA lock row");
 
-                        long fir1 = System.currentTimeMillis();
                         updateString = "UPDATE " +
                                        _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                       " SET RUSECTION_ID = " + fir1 +
+                                       " SET RUSECTION_ID = " + now.toEpochMilli() +
                                        " WHERE RU_ID = -1";
                         reportString = "Claim the partner_log for the local server using - ";
                     } else {
@@ -4539,39 +4542,37 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Another server owns the partner_log HA lock row, we will aggressively claim it,  "
                                          + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix
-                                         + ", currenttime: " + curTimestamp + ", storedTime: " + storedTimestamp);
+                                         + ", storedTime: " + Utils.traceTime(storedTimestamp));
 
                         // Claim the logs by updating the server name and timestamp.
-                        long fir1 = System.currentTimeMillis();
                         updateString = "UPDATE " +
                                        _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
                                        " SET SERVER_NAME = '" + _currentProcessServerName +
-                                       "', RUSECTION_ID = " + fir1 +
+                                       "', RUSECTION_ID = " + now.toEpochMilli() +
                                        " WHERE RU_ID = -1";
                         reportString = "Claim the partner_log for the local server from a peer using - ";
                     }
 
                 } else {
                     // In the peer case only claim the recovery records if ownership is stale
-                    if (curTimestamp - storedTimestamp > _logGoneStaleTime * 1000) {
+                    if (now.isAfter(Instant.ofEpochMilli(storedTimestamp).plusSeconds(_logGoneStaleTime.getSeconds()))) {
                         // CASE3 - A Peer server is claiming STALE logs
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Timestamp is STALE for " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix
-                                         + ", currenttime: " + curTimestamp + ", storedTime: " + storedTimestamp);
+                                         + ", storedTime: " + Utils.traceTime(storedTimestamp));
                         doPeerClaim = true;
                         // Ownership is stale, claim the logs by updating the server name and timestamp.
-                        long fir1 = System.currentTimeMillis();
                         updateString = "UPDATE " +
                                        _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
                                        " SET SERVER_NAME = '" + _currentProcessServerName +
-                                       "', RUSECTION_ID = " + fir1 +
+                                       "', RUSECTION_ID = " + now.toEpochMilli() +
                                        " WHERE RU_ID = -1";
                         reportString = "Claim peer partner_log from a peer server using - ";
                     } else {
                         // CASE4 - A Peer server is attempting to claim logs that are not stale
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Timestamp is NOT STALE for " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix
-                                         + ", currenttime: " + curTimestamp + ", storedTime: " + storedTimestamp);
+                                         + ", storedTime: " + Utils.traceTime(storedTimestamp));
                         // In this case we do not update the control record
                         doUpdate = false;
                     }
@@ -4588,28 +4589,27 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     // We have successfully claimed the recovery logs.
                     isClaimed = true;
                 }
-
             } else {
                 // We didn't find the partner_log HA Lock row in the table. This is unexpected
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "openLog", "InternalLogException didn't find the partner_log HA Lock row in the table");
                 throw new InternalLogException("Could not find partner_log HA Lock row");
             }
+        }
 
-            // Now update the ownership of the tran_log. We follow the same pattern as for the partner_log
-            if (isClaimed) {
-                // reset the isClaimed flag
-                isClaimed = false;
-                lockingStmt = conn.createStatement();
-                queryString = "SELECT SERVER_NAME" +
-                              " FROM " + _recoveryTableName + "TRAN_LOG" + _recoveryTableNameSuffix +
-                              (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                              " WHERE RU_ID=-1" +
-                              (_isSQLServer ? "" : " FOR UPDATE");
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
-                lockingRS = lockingStmt.executeQuery(queryString);
+        // Now update the ownership of the tran_log. We follow the same pattern as for the partner_log
+        if (isClaimed) {
+            // reset the isClaimed flag
+            isClaimed = false;
+            queryString = "SELECT SERVER_NAME" +
+                          " FROM " + _recoveryTableName + "TRAN_LOG" + _recoveryTableNameSuffix +
+                          (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                          " WHERE RU_ID=-1" +
+                          (_isSQLServer ? "" : " FOR UPDATE");
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
 
+            try (Statement lockingStmt = conn.createStatement(); ResultSet lockingRS = lockingStmt.executeQuery(queryString)) {
                 if (lockingRS.next()) {
                     // We found the HA Lock row
                     String storedServerName = lockingRS.getString(1);
@@ -4683,18 +4683,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     throw new InternalLogException("Could not find tran_log HA Lock row");
                 }
             }
-
-        } finally {
-            if (lockingRS != null && !lockingRS.isClosed())
-                lockingRS.close();
-            if (lockingStmt != null && !lockingStmt.isClosed())
-                lockingStmt.close();
-
         }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "internalClaimRecoveryLogs", isClaimed);
-
         return isClaimed;
     }
 
@@ -4818,9 +4810,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         return false;
                     }
 
-                    ClaimPeerRetry claimPeerRetry = new ClaimPeerRetry();
-                    sqlSuccess = claimPeerRetry.retryAndReport(this, _serverName, currentSqlEx, SQLRetry.getLightweightRetryAttempts(),
-                                                               SQLRetry.getLightweightRetrySleepTime());
+                    final ClaimPeerRetry claimPeerRetry = new ClaimPeerRetry();
+                    sqlSuccess = claimPeerRetry.retryAndReport(this, _serverName, currentSqlEx);
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
                         isClaimed = claimPeerRetry.isClaimed();
@@ -4842,79 +4833,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.exit(tc, "claimPeerRecoveryLogs", isClaimed);
 
         return isClaimed;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setTimeBeforeLogStale()
-     */
-    @Override
-    public void setTimeBeforeLogStale(int timeBeforeStale) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setTimeBeforeLogStale", timeBeforeStale);
-        _logGoneStaleTime = timeBeforeStale;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setTimeBetweenHeartbeats()
-     */
-    @Override
-    public void setTimeBetweenHeartbeats(int timeBetweenHeartbeats) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setTimeBetweenHeartbeats", timeBetweenHeartbeats);
-
-        _peerLockTimeBetweenHeartbeats = timeBetweenHeartbeats;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLogRetryInterval(int)
-     */
-    @Override
-    public void setLogRetryInterval(int logRetryInterval) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLogRetryInterval", logRetryInterval);
-        SQLRetry.setTransientRetrySleepTime(logRetryInterval * 1000);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLogRetryLimit(int)
-     */
-    @Override
-    public void setLogRetryLimit(int logRetryLimit) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLogRetryLimit", logRetryLimit);
-        SQLRetry.setTransientRetryAttempts(logRetryLimit);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightLogRetryInterval(int)
-     */
-    @Override
-    public void setLightweightLogRetryInterval(int lightweightLogRetryInterval) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLightweightLogRetryInterval", lightweightLogRetryInterval);
-        SQLRetry.setLightweightRetrySleepTime(lightweightLogRetryInterval * 1000);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setLightweightLogRetryLimit(int)
-     */
-    @Override
-    public void setLightweightLogRetryLimit(int lightweightLogRetryLimit) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "setLightweightLogRetryLimit", lightweightLogRetryLimit);
-        SQLRetry.setLightweightRetryAttempts(lightweightLogRetryLimit);
     }
 
     /*
@@ -4958,7 +4876,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the local recovery log claim code to be retried in an HA RDBMS environment.
      *
      */
-    class ClaimLocalRetry extends SQLRetry {
+    private class ClaimLocalRetry extends LogRetry {
 
         boolean _isClaimed = false;
 
@@ -4996,7 +4914,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the peer recovery log claim code to be retried in an HA RDBMS environment.
      *
      */
-    class ClaimPeerRetry extends SQLRetry {
+    private class ClaimPeerRetry extends LightweightLogRetry {
 
         boolean _isClaimed = false;
 
@@ -5030,7 +4948,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the heartbeat code to be retried in an HA RDBMS environment.
      *
      */
-    class HeartbeatRetry extends SQLRetry {
+    private class HeartbeatRetry extends LightweightLogRetry {
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
@@ -5061,7 +4979,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the force sections code to be retried in an HA RDBMS environment.
      *
      */
-    class ForceSectionsRetry extends SQLRetry {
+    private class ForceSectionsRetry extends LogRetry {
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {
@@ -5099,7 +5017,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * This concrete class extends SQLRetry providing the openLog code to be retried in an HA RDBMS environment.
      *
      */
-    class OpenLogRetry extends SQLRetry {
+    private class OpenLogRetry extends LogRetry {
 
         @Override
         public void retryCode(Connection conn) throws SQLException, Exception {

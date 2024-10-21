@@ -19,8 +19,7 @@ fat.project: true
 fat.test.container.images: \
     jaegertracing/all-in-one:1.54, \
     openzipkin/zipkin-slim:2.23, \
-    otel/opentelemetry-collector:0.74.0 ,\
-    alpine:3.16
+    otel/opentelemetry-collector:0.74.0
 
 grpcVersion=1.57.2
 
@@ -28,6 +27,9 @@ tested.features:\
   cdi-2.0,\
   cdi-1.2,\
   cdi-4.1,\
+  concurrent-1.0,\
+  concurrent-3.1,\
+  concurrent-3.0,\
   mpTelemetry-1.1,\
   mpTelemetry-1.0,\
   mpTelemetry-2.0,\
@@ -45,6 +47,7 @@ tested.features:\
   restfulWS-3.1,\
   restfulWS-4.0,\
   restfulwsclient-4.0,\
+  servlet-3.1,\
   servlet-6.0,\
   servlet-6.1,\
   servlet-4.0

@@ -388,22 +388,8 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
             RecoveryLogFactory factory = _customLogFactories.get(customLogId);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Retrieved factory, " + factory);
-            if (factory == null) {
-                if (tc.isEventEnabled())
-                    Tr.event(tc, "Custom recovery log factory NOT FOUND for ", customLogId);
-
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "getLeaseLog");
-                throw new InvalidLogPropertiesException();
-            }
-
-            leaseLog = factory.createLeaseLog(customLogProperties);
-            if (leaseLog == null) {
-                if (tc.isEventEnabled())
-                    Tr.event(tc, "Custom recovery log factory returned NULL lease log", customLogId);
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "getLeaseLog");
-                throw new InvalidLogPropertiesException();
+            if (factory != null) {
+                leaseLog = factory.createLeaseLog(customLogProperties);
             }
         } else if (logProperties instanceof FileLogProperties) {
             // Set up FileLogProperites
@@ -414,19 +400,16 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
 
             Path logDirStem = Paths.get(fileLogProperties.logDirectoryStem());
 
-            // If necessary, create a new RecoveryLog object to be returned to the caller.
             leaseLog = FileSharedServerLeaseLog.getFileSharedServerLeaseLog(logDirStem, localRecoveryIdentity, recoveryGroup);
-        } else {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "getLeaseLog");
-            throw new InvalidLogPropertiesException();
         }
 
-        leaseLog.setPeerRecoveryLeaseTimeout(leaseLength);
+        if (leaseLog != null) {
+            leaseLog.setPeerRecoveryLeaseTimeout(leaseLength);
+        }
 
+        _leaseLog = leaseLog;
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getLeaseLog", leaseLog);
-        _leaseLog = leaseLog;
         return leaseLog;
     }
 

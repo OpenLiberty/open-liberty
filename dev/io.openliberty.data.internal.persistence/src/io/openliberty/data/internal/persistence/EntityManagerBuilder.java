@@ -12,12 +12,14 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +35,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
@@ -42,6 +45,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -60,6 +65,13 @@ public abstract class EntityManagerBuilder {
     private static final TraceComponent tc = Tr.register(EntityManagerBuilder.class);
 
     /**
+     * The dataStore value of the Repository annotation,
+     * or that value prefixed with java:comp/env,
+     * or if unspecified, then java:comp/DefaultDataSource
+     */
+    protected final String dataStore;
+
+    /**
      * Mapping of entity class (as seen by the user, not a generated record entity class)
      * to entity information.
      */
@@ -76,16 +88,28 @@ public abstract class EntityManagerBuilder {
     protected final ClassLoader repositoryClassLoader;
 
     /**
+     * The repository interfaces that require the entity manager.
+     */
+    protected final Set<Class<?>> repositoryInterfaces;
+
+    /**
      * Common constructor for subclasses.
      *
-     * @param provider
-     * @param repositoryClassLoader
-     * @param entityTypes
+     * @param provider              core OSGi service for our built-in provider
+     * @param repositoryClassLoader class loader of repository interfaces
+     * @param repositoryInterface   repository interfaces
+     * @param dataStore             value derived from the dataStore of the
+     *                                  Repository annotation
      */
     @Trivial
-    protected EntityManagerBuilder(DataProvider provider, ClassLoader repositoryClassLoader) {
+    protected EntityManagerBuilder(DataProvider provider,
+                                   ClassLoader repositoryClassLoader,
+                                   Set<Class<?>> repositoryInterfaces,
+                                   String dataStore) {
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
+        this.repositoryInterfaces = repositoryInterfaces;
+        this.dataStore = dataStore;
     }
 
     /**
@@ -95,15 +119,21 @@ public abstract class EntityManagerBuilder {
      * @param entityTypes entity classes as known by the user, not generated.
      * @throws Exception if an error occurs.
      */
+    // FFDC is not needed because exceptions are logged to Tr.error
+    // and also re-thrown upon CompletableFuture<EntityInfo>.get()
+    @FFDCIgnore(Throwable.class)
     protected void collectEntityInfo(Set<Class<?>> entityTypes) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
         EntityManager em = createEntityManager();
         try {
+            Set<Class<?>> missingEntityTypes = new HashSet<>(entityTypes);
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
                 Map<String, String> attributeNames = new HashMap<>();
                 Map<String, List<Member>> attributeAccessors = new HashMap<>();
                 SortedSet<String> attributeNamesForUpdate = new TreeSet<>();
                 SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
+                SortedMap<String, Member> idClassAttributeAccessors = null;
                 Map<String, Class<?>> collectionElementTypes = new HashMap<>();
                 Map<Class<?>, List<String>> relationAttributeNames = new HashMap<>();
                 Queue<Attribute<?, ?>> relationships = new LinkedList<>();
@@ -113,169 +143,224 @@ public abstract class EntityManagerBuilder {
                 Class<?> idType = null;
                 String versionAttrName = null;
 
-                for (Attribute<?, ?> attr : entityType.getAttributes()) {
-                    String attributeName = attr.getName();
-                    PersistentAttributeType attributeType = attr.getPersistentAttributeType();
-                    switch (attributeType) {
-                        case BASIC:
-                        case ELEMENT_COLLECTION:
-                            attributeNamesForUpdate.add(attributeName);
-                            break;
-                        case EMBEDDED:
-                        case ONE_TO_ONE:
-                        case MANY_TO_ONE:
-                            relationAttributeNames.put(attr.getJavaType(), new ArrayList<>());
-                            relationships.add(attr);
-                            relationPrefixes.add(attributeName);
-                            relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
-                            break;
-                        case ONE_TO_MANY:
-                        case MANY_TO_MANY:
-                            attributeNamesForUpdate.add(attributeName); // TODO is this correct?
-                            break;
-                        default:
-                            throw new RuntimeException(); // unreachable unless more types are added
-                    }
+                Class<?> jpaEntityClass = entityType.getJavaType();
+                Class<?> userEntityClass = recordClass == null ? jpaEntityClass : recordClass;
+                missingEntityTypes.remove(userEntityClass);
 
-                    Member accessor = recordClass == null ? attr.getJavaMember() : recordClass.getMethod(attributeName);
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "collecting info for " +
+                                       userEntityClass.getName());
 
-                    attributeNames.put(attributeName.toLowerCase(), attributeName);
-                    attributeAccessors.put(attributeName, Collections.singletonList(accessor));
-                    attributeTypes.put(attributeName, attr.getJavaType());
-                    if (attr.isCollection()) {
-                        if (attr instanceof PluralAttribute)
-                            collectionElementTypes.put(attributeName, ((PluralAttribute<?, ?, ?>) attr).getElementType().getJavaType());
-                    } else {
-                        SingularAttribute<?, ?> singleAttr = attr instanceof SingularAttribute ? (SingularAttribute<?, ?>) attr : null;
-                        if (singleAttr != null && singleAttr.isId()) {
-                            attributeNames.put(ID, attributeName);
-                            idType = singleAttr.getJavaType();
-                        } else if (singleAttr != null && singleAttr.isVersion()) {
-                            versionAttrName = attributeName;
-                        } else if (Collection.class.isAssignableFrom(attr.getJavaType())) {
-                            // collection attribute that is not annotated with ElementCollection
-                            collectionElementTypes.put(attributeName, Object.class);
-                        }
-                    }
-                }
-
-                // Guard against recursive processing of OneToOne (and similar) relationships
-                // by tracking whether we have already processed each entity class involved.
-                Set<Class<?>> entityTypeClasses = new HashSet<>();
-                entityTypeClasses.add(entityType.getJavaType());
-
-                for (Attribute<?, ?> attr; (attr = relationships.poll()) != null;) {
-                    String prefix = relationPrefixes.poll();
-                    List<Member> accessors = relationAccessors.poll();
-                    ManagedType<?> relation = model.managedType(attr.getJavaType());
-                    if (relation instanceof EntityType && !entityTypeClasses.add(attr.getJavaType()))
-                        break;
-                    List<String> relAttributeList = relationAttributeNames.get(attr.getJavaType());
-                    for (Attribute<?, ?> relAttr : relation.getAttributes()) {
-                        String relationAttributeName = relAttr.getName();
-                        String fullAttributeName = prefix + '.' + relationAttributeName;
-                        List<Member> relAccessors = new LinkedList<>(accessors);
-                        relAccessors.add(relAttr.getJavaMember());
-                        relAttributeList.add(fullAttributeName);
-
-                        PersistentAttributeType attributeType = relAttr.getPersistentAttributeType();
+                try {
+                    for (Attribute<?, ?> attr : entityType.getAttributes()) {
+                        String attributeName = attr.getName();
+                        PersistentAttributeType attributeType = attr.getPersistentAttributeType();
                         switch (attributeType) {
                             case BASIC:
                             case ELEMENT_COLLECTION:
-                                attributeNamesForUpdate.add(fullAttributeName);
+                                if (attributeNamesForUpdate != null)
+                                    attributeNamesForUpdate.add(attributeName);
                                 break;
-                            case EMBEDDED:
                             case ONE_TO_ONE:
                             case MANY_TO_ONE:
-                                relationAttributeNames.put(relAttr.getJavaType(), new ArrayList<>());
-                                relationships.add(relAttr);
-                                relationPrefixes.add(fullAttributeName);
-                                relationAccessors.add(relAccessors);
+                                attributeNamesForUpdate = null; // must use merge instead
+                                // continue
+                            case EMBEDDED:
+                                relationAttributeNames.put(attr.getJavaType(), new ArrayList<>());
+                                relationships.add(attr);
+                                relationPrefixes.add(attributeName);
+                                relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
                                 break;
                             case ONE_TO_MANY:
                             case MANY_TO_MANY:
-                                attributeNamesForUpdate.add(fullAttributeName); // TODO is this correct?
+                                attributeNamesForUpdate = null; // must use merge instead
                                 break;
                             default:
                                 throw new RuntimeException(); // unreachable unless more types are added
                         }
 
-                        // Allow the simple attribute name if it doesn't overlap
-                        relationAttributeName = relationAttributeName.toLowerCase();
-                        attributeNames.putIfAbsent(relationAttributeName, fullAttributeName);
+                        Member accessor = recordClass == null ? attr.getJavaMember() : recordClass.getMethod(attributeName);
 
-                        // Allow a qualified name such as @OrderBy("address.street.name")
-                        relationAttributeName = fullAttributeName.toLowerCase();
-                        attributeNames.put(relationAttributeName, fullAttributeName);
-
-                        // Allow a qualified name such as findByAddress_Street_Name if it doesn't overlap
-                        String relationAttributeName_ = relationAttributeName.replace('.', '_');
-                        attributeNames.putIfAbsent(relationAttributeName_, fullAttributeName);
-
-                        // Allow a qualified name such as findByAddressStreetName if it doesn't overlap
-                        String relationAttributeNameUndelimited = relationAttributeName.replace(".", "");
-                        attributeNames.putIfAbsent(relationAttributeNameUndelimited, fullAttributeName);
-
-                        attributeAccessors.put(fullAttributeName, relAccessors);
-
-                        attributeTypes.put(fullAttributeName, relAttr.getJavaType());
-                        if (relAttr.isCollection()) {
-                            if (relAttr instanceof PluralAttribute)
-                                collectionElementTypes.put(fullAttributeName, ((PluralAttribute<?, ?, ?>) relAttr).getElementType().getJavaType());
-                        } else if (relAttr instanceof SingularAttribute) {
-                            SingularAttribute<?, ?> singleAttr = ((SingularAttribute<?, ?>) relAttr);
-                            if (singleAttr.isId() && attributeNames.putIfAbsent(ID, fullAttributeName) == null) {
+                        attributeNames.put(attributeName.toLowerCase(), attributeName);
+                        attributeAccessors.put(attributeName, Collections.singletonList(accessor));
+                        attributeTypes.put(attributeName, attr.getJavaType());
+                        if (attr.isCollection()) {
+                            if (attr instanceof PluralAttribute)
+                                collectionElementTypes.put(attributeName, ((PluralAttribute<?, ?, ?>) attr).getElementType().getJavaType());
+                        } else {
+                            SingularAttribute<?, ?> singleAttr = attr instanceof SingularAttribute ? (SingularAttribute<?, ?>) attr : null;
+                            if (singleAttr != null && singleAttr.isId()) {
+                                attributeNames.put(ID, attributeName);
                                 idType = singleAttr.getJavaType();
-                            } else if (singleAttr.isVersion()) {
-                                versionAttrName = relationAttributeName_; // to be suitable for query-by-method
+                            } else if (singleAttr != null && singleAttr.isVersion()) {
+                                versionAttrName = attributeName;
+                            } else if (Collection.class.isAssignableFrom(attr.getJavaType())) {
+                                // collection attribute that is not annotated with ElementCollection
+                                collectionElementTypes.put(attributeName, Object.class);
                             }
                         }
                     }
-                }
 
-                attributeNamesForUpdate.remove(ID);
-                String idAttrName = attributeNames.get(ID);
-                if (idAttrName != null)
-                    attributeNamesForUpdate.remove(idAttrName);
-                if (versionAttrName != null)
-                    attributeNamesForUpdate.remove(versionAttrName);
+                    // Guard against recursive processing of OneToOne (and similar) relationships
+                    // by tracking whether we have already processed each entity class involved.
+                    Set<Class<?>> entityTypeClasses = new HashSet<>();
+                    entityTypeClasses.add(entityType.getJavaType());
 
-                SortedMap<String, Member> idClassAttributeAccessors = null;
-                if (!entityType.hasSingleIdAttribute()) {
-                    // Per JavaDoc, the above means there is an IdClass.
-                    // An EclipseLink extension that allows an Id on an embeddable of an entity
-                    // is an exception to this, which we indicate with idClassType null.
-                    Type<?> idClassType = getIdType(entityType);
-                    if (idClassType != null) {
-                        @SuppressWarnings("unchecked")
-                        Set<SingularAttribute<?, ?>> idClassAttributes = (Set<SingularAttribute<?, ?>>) (Set<?>) entityType.getIdClassAttributes();
-                        if (idClassAttributes != null) {
-                            attributeNames.remove(ID);
-                            idType = idClassType.getJavaType();
-                            idClassAttributeAccessors = getIdClassAccessors(idType, idClassAttributes);
+                    for (Attribute<?, ?> attr; (attr = relationships.poll()) != null;) {
+                        String prefix = relationPrefixes.poll();
+                        List<Member> accessors = relationAccessors.poll();
+                        ManagedType<?> relation = model.managedType(attr.getJavaType());
+                        if (relation instanceof EntityType && !entityTypeClasses.add(attr.getJavaType()))
+                            break;
+                        List<String> relAttributeList = relationAttributeNames.get(attr.getJavaType());
+                        for (Attribute<?, ?> relAttr : relation.getAttributes()) {
+                            String relationAttributeName = relAttr.getName();
+                            String fullAttributeName = prefix + '.' + relationAttributeName;
+                            List<Member> relAccessors = new LinkedList<>(accessors);
+                            relAccessors.add(relAttr.getJavaMember());
+                            relAttributeList.add(fullAttributeName);
+
+                            PersistentAttributeType attributeType = relAttr.getPersistentAttributeType();
+                            switch (attributeType) {
+                                case BASIC:
+                                case ELEMENT_COLLECTION:
+                                    if (attributeNamesForUpdate != null)
+                                        attributeNamesForUpdate.add(fullAttributeName);
+                                    break;
+                                case ONE_TO_ONE:
+                                case MANY_TO_ONE:
+                                    attributeNamesForUpdate = null; // must use merge instead
+                                    // continue
+                                case EMBEDDED:
+                                    relationAttributeNames.put(relAttr.getJavaType(), new ArrayList<>());
+                                    relationships.add(relAttr);
+                                    relationPrefixes.add(fullAttributeName);
+                                    relationAccessors.add(relAccessors);
+                                    break;
+                                case ONE_TO_MANY:
+                                case MANY_TO_MANY:
+                                    attributeNamesForUpdate = null; // must use merge instead
+                                    break;
+                                default:
+                                    throw new RuntimeException(); // unreachable unless more types are added
+                            }
+
+                            // Allow a qualified name such as @OrderBy("address.street.name")
+                            // No chance of conflicts because attributes defined on the entity cannot have a period
+                            String fullAttributeNameLower = fullAttributeName.toLowerCase();
+                            attributeNames.put(fullAttributeNameLower, fullAttributeName);
+
+                            // Allow a qualified name such as findByAddress_Street_Name if it doesn't overlap
+                            // Check for conflicts with attributes defined on the entity to avoid ambiguous queries and sorts
+                            String relationAttributeName_ = fullAttributeNameLower.replace('.', '_');
+                            String conflictingAttribute = attributeNames.putIfAbsent(relationAttributeName_, fullAttributeName);
+
+                            if (conflictingAttribute != null)
+                                throw exc(MappingException.class,
+                                          "CWWKD1075.entity.prop.conflict",
+                                          userEntityClass.getName(),
+                                          fullAttributeName,
+                                          conflictingAttribute);
+
+                            // Allow a qualified name such as findByAddressStreetName if it doesn't overlap
+                            // Check for conflicts with attributes defined on the entity to avoid ambiguous queries and sorts
+                            String relationAttributeNameUndelimited = fullAttributeNameLower.replace(".", "");
+                            conflictingAttribute = attributeNames.putIfAbsent(relationAttributeNameUndelimited, fullAttributeName);
+
+                            // TODO need to handle the situation where a field name on the base entity conflicts with the column name
+                            // of an embeddable.  See issue: https://github.com/OpenLiberty/open-liberty/issues/29643
+
+                            // Precedence for this valid scenario is defined under
+                            // 2.9.2. Scenario 2: Customer Repository with
+                            // Resolution that requires a Delimiter
+                            if (conflictingAttribute != null && trace && tc.isDebugEnabled())
+                                Tr.debug(tc, "overlapping undelimited name " +
+                                             relationAttributeNameUndelimited +
+                                             " will resolve to basic attribute " +
+                                             conflictingAttribute + " instead of " +
+                                             fullAttributeName);
+
+                            attributeAccessors.put(fullAttributeName, relAccessors);
+
+                            attributeTypes.put(fullAttributeName, relAttr.getJavaType());
+                            if (relAttr.isCollection()) {
+                                if (relAttr instanceof PluralAttribute)
+                                    collectionElementTypes.put(fullAttributeName, ((PluralAttribute<?, ?, ?>) relAttr).getElementType().getJavaType());
+                            } else if (relAttr instanceof SingularAttribute) {
+                                SingularAttribute<?, ?> singleAttr = ((SingularAttribute<?, ?>) relAttr);
+                                if (singleAttr.isId() && attributeNames.putIfAbsent(ID, fullAttributeName) == null) {
+                                    idType = singleAttr.getJavaType();
+                                } else if (singleAttr.isVersion()) {
+                                    versionAttrName = relationAttributeName_; // to be suitable for query-by-method
+                                }
+                            }
                         }
                     }
+
+                    String idAttrName = attributeNames.get(ID);
+
+                    if (attributeNamesForUpdate != null) {
+                        attributeNamesForUpdate.remove(ID);
+                        if (idAttrName != null)
+                            attributeNamesForUpdate.remove(idAttrName);
+                        if (versionAttrName != null)
+                            attributeNamesForUpdate.remove(versionAttrName);
+                    }
+
+                    if (!entityType.hasSingleIdAttribute()) {
+                        // Per JavaDoc, the above means there is an IdClass.
+                        // An EclipseLink extension that allows an Id on an embeddable of an entity
+                        // is an exception to this, which we indicate with idClassType null.
+                        Type<?> idClassType = getIdType(entityType);
+                        if (idClassType != null) {
+                            @SuppressWarnings("unchecked")
+                            Set<SingularAttribute<?, ?>> idClassAttributes = (Set<SingularAttribute<?, ?>>) (Set<?>) entityType.getIdClassAttributes();
+                            if (idClassAttributes != null) {
+                                attributeNames.remove(ID);
+                                idType = idClassType.getJavaType();
+                                idClassAttributeAccessors = getIdClassAccessors(idType, idClassAttributes);
+                            }
+                        }
+                    }
+
+                    EntityInfo entityInfo = new EntityInfo( //
+                                    entityType.getName(), //
+                                    jpaEntityClass, //
+                                    recordClass, //
+                                    attributeAccessors, //
+                                    attributeNames, //
+                                    attributeNamesForUpdate, //
+                                    attributeTypes, //
+                                    collectionElementTypes, //
+                                    relationAttributeNames, //
+                                    idType, //
+                                    idClassAttributeAccessors, //
+                                    versionAttrName, //
+                                    this);
+
+                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).complete(entityInfo);
+                } catch (Throwable x) { // Ignored FFDC
+                    if (!(x instanceof DataException))
+                        x = exc(CompletionException.class,
+                                "CWWKD1081.entity.general.err",
+                                userEntityClass.getName(),
+                                getClassNames(repositoryInterfaces),
+                                dataStore,
+                                x.getMessage()).initCause(x);
+                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture) //
+                                    .completeExceptionally(x);
                 }
+            }
 
-                Class<?> jpaEntityClass = entityType.getJavaType();
-                Class<?> userEntityClass = recordClass == null ? jpaEntityClass : recordClass;
-
-                EntityInfo entityInfo = new EntityInfo( //
-                                entityType.getName(), //
-                                jpaEntityClass, //
-                                recordClass, //
-                                attributeAccessors, //
-                                attributeNames, //
-                                attributeNamesForUpdate, //
-                                attributeTypes, //
-                                collectionElementTypes, //
-                                relationAttributeNames, //
-                                idType, //
-                                idClassAttributeAccessors, //
-                                versionAttrName, //
-                                this);
-
-                entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).complete(entityInfo);
+            if (!missingEntityTypes.isEmpty()) {
+                DataException x = exc(DataException.class,
+                                      "CWWKD1082.entity.classes.missing",
+                                      dataStore,
+                                      getClassNames(missingEntityTypes),
+                                      getClassNames(repositoryInterfaces));
+                for (Class<?> ec : missingEntityTypes)
+                    entityInfoMap.computeIfAbsent(ec, EntityInfo::newFuture) //
+                                    .completeExceptionally(x);
             }
         } finally {
             if (em != null)
@@ -291,12 +376,42 @@ public abstract class EntityManagerBuilder {
     public abstract EntityManager createEntityManager();
 
     /**
-     * Obtains the DataSource that is used by the EntityManager.
+     * Returns an alphabetized comma-delimited list of the class names as text
+     * that can be used in NLS messages. For example:
+     * org.example.MyEntity1, org.example.MyEntity2, org.example.MyEntity3
      *
-     * @return the DataSource that is used by the EntityManager.
-     * @throws UnsupportedOperationException if the DataSource cannot be obtained from the EntityManager.
+     * @param classes the list of classes.
+     * @return an alphabetized comma-delimited list of the class names as text.
      */
-    public abstract DataSource getDataSource();
+    @Trivial
+    public static final String getClassNames(Iterable<Class<?>> classes) {
+        TreeSet<String> names = new TreeSet<>();
+        for (Class<?> c : classes)
+            names.add(c.getName());
+        StringBuilder s = new StringBuilder();
+        boolean first = true;
+        for (String name : names)
+            if (first) {
+                s.append(name);
+                first = false;
+            } else {
+                s.append(", ").append(name);
+            }
+        return s.toString();
+    }
+
+    /**
+     * Obtains the DataSource that is used by the EntityManager.
+     * This method is used by resource accessor methods of a repository.
+     *
+     * @param repoMethod    repository resource accessor method.
+     * @param repoInterface repository interface.
+     * @return the DataSource that is used by the EntityManager.
+     * @throws UnsupportedOperationException if the DataSource cannot be obtained
+     *                                           from the EntityManager.
+     */
+    public abstract DataSource getDataSource(Method repoMethod,
+                                             Class<?> repoInterface);
 
     @FFDCIgnore(NoSuchFieldException.class)
     private static final SortedMap<String, Member> getIdClassAccessors(Class<?> idType,

@@ -144,7 +144,7 @@ public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension i
 
     private ContextBeginnerEnder createContextBeginnerEnderIfCheckpointEnabled() {
         if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
-            return ServiceCaller.callOnce(OLReactiveMessaging30Extension.class, CDIService.class, 
+            return ServiceCaller.runOnce(OLReactiveMessaging30Extension.class, CDIService.class, 
                 (cdiService) -> { return ((CDIRuntime) cdiService).cloneActiveContextBeginnerEnder(); }).get(); //Call get because if we can't get context from CDIservice inside a CDI extension throwing an exception is better than covering this up.
         }
         return null;

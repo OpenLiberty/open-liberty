@@ -31,6 +31,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -308,7 +310,12 @@ public abstract class HTTPConduit
 
     static {
 
-        String autoRedirectPolicy = System.getProperty("jaxws.http.autoredirect");
+        String autoRedirectPolicy = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("jaxws.http.autoredirect");
+            }
+        });
         if (LOG.isLoggable(Level.FINEST)) {
             LOG.finest("jaxws.http.autoredirect property is set to " + autoRedirectPolicy);
         }

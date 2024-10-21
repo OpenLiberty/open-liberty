@@ -21,6 +21,7 @@ src: \
   test-applications/clientcontextinjection/src,\
   test-applications/complexclient/src,\
   test-applications/handleresponses/src,\
+  test-applications/hostnameverification/src,\
   test-applications/ibmjson4j/src,\
   test-applications/jackson/src,\
   test-applications/jaxrs20clientcallback/src,\

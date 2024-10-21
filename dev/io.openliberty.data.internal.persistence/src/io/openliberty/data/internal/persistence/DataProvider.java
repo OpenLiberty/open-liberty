@@ -102,6 +102,11 @@ public class DataProvider implements //
 
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
 
+    /**
+     * Maximum number of array or list elements to output.
+     */
+    private static final int MAX_OUTPUT = 20;
+
     @Reference
     public CDIService cdiService;
 
@@ -210,13 +215,20 @@ public class DataProvider implements //
 
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appInfo.getName());
+        String appName = appInfo.getName();
+        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appName);
         if (futures != null) {
             for (FutureEMBuilder futureEMBuilder : futures) {
                 // This delays createEMBuilder until restore.
                 // While this works by avoiding all connections to the data source, it does make restore much slower.
                 // TODO figure out how to do more work on restore without having to make a connection to the data source
                 CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+
+                // Application is ready for DDL generation; register with DDLGen MBean.
+                // Only those using the Persistence Service will participate, but all will
+                // be registered since that is not known until createEMBuilder completes.
+                // Those not participating will return a null DDL file name and be skipped.
+                futureEMBuilder.registerDDLGenerationParticipant(appName);
             }
         }
     }
@@ -469,7 +481,7 @@ public class DataProvider implements //
         if (a != null) {
             StringBuilder s = new StringBuilder();
             int len = Array.getLength(value);
-            int maxOutput = len <= 20 ? len : 20;
+            int maxOutput = len <= MAX_OUTPUT ? len : MAX_OUTPUT;
             s.append(a.getName()).append('[').append(len).append("]: {");
             for (int i = 0; i < maxOutput; i++) {
                 Object v = loggable(Array.get(value, i));
@@ -494,7 +506,7 @@ public class DataProvider implements //
         } else if (value instanceof Iterable) {
             StringBuilder s = new StringBuilder();
             int len = value instanceof Collection ? ((Collection<?>) value).size() : -1;
-            int maxOutput = 20;
+            int maxOutput = MAX_OUTPUT;
             s.append(c.getName());
             if (len >= 0)
                 s.append('(').append(len).append("): {");
@@ -519,6 +531,47 @@ public class DataProvider implements //
                                             .append(Integer.toHexString(value.hashCode()));
         }
         return loggable;
+    }
+
+    /**
+     * Appends a suffix if the repository class/package/method is considered
+     * loggable. Otherwise returns only the prefix.
+     *
+     * @param repoClass      repository class.
+     * @param method         repository method.
+     * @param prefix         first part of value to always include.
+     * @param possibleSuffix suffix to only include if logValues allows.
+     * @return loggable value.
+     */
+    @Trivial
+    String loggableAppend(Class<?> repoClass,
+                          Method method,
+                          String prefix,
+                          Object... possibleSuffix) {
+        StringBuilder b = new StringBuilder(prefix);
+        String className;
+        if (possibleSuffix != null &&
+            !logValues.isEmpty() &&
+            (logValues.contains("*") ||
+             logValues.contains(repoClass.getPackageName()) ||
+             logValues.contains(className = repoClass.getName()) ||
+             logValues.contains(className + '.' + method.getName())))
+            for (Object s : possibleSuffix)
+                if (s != null && s.getClass().isArray()) {
+                    int len = Array.getLength(s);
+                    int maxOutput = len <= MAX_OUTPUT ? len : MAX_OUTPUT;
+                    b.append(s.getClass().getComponentType()) //
+                                    .append('[').append(len).append("] {");
+                    for (int i = 0; i < maxOutput; i++)
+                        b.append(i == 0 ? " " : ", ").append(Array.get(s, i));
+                    if (len > maxOutput)
+                        b.append(", ...");
+                    b.append(" }");
+                } else {
+                    b.append(s);
+                }
+
+        return b.toString();
     }
 
     /**

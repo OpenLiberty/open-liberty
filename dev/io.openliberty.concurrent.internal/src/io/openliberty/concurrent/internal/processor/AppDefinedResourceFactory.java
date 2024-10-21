@@ -33,7 +33,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -59,7 +58,7 @@ public class AppDefinedResourceFactory implements QualifiedResourceFactory {
     /**
      * ResourceFactoryBuilder instance that created this resource factory.
      */
-    private final ResourceFactoryBuilder builder;
+    private final ConcurrencyResourceFactoryBuilder builder;
 
     /**
      * Filter for a ContextService that this resource factory depends upon.
@@ -126,11 +125,19 @@ public class AppDefinedResourceFactory implements QualifiedResourceFactory {
      * @param qualifierNames       names of qualifier annotation classes from the resource definition. Null indicates none.
      * @throws InvalidSyntaxException if the filter has incorrect syntax
      */
-    AppDefinedResourceFactory(ResourceFactoryBuilder builder, BundleContext bundleContext, String appName, //
-                              String id, String jndiName, String filter, //
-                              String contextSvcJndiName, String contextSvcFilter,
-                              MetaData declaringMetadata, ClassLoader declaringClassLoader,
+    AppDefinedResourceFactory(ConcurrencyResourceFactoryBuilder builder,
+                              BundleContext bundleContext,
+                              String appName,
+                              String id,
+                              String jndiName,
+                              String filter,
+                              String contextSvcJndiName,
+                              String contextSvcFilter,
+                              MetaData declaringMetadata,
+                              ClassLoader declaringClassLoader,
                               List<String> qualifierNames) throws ClassNotFoundException, InvalidSyntaxException {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         this.appName = appName;
         this.builder = builder;
         this.id = id;
@@ -147,9 +154,42 @@ public class AppDefinedResourceFactory implements QualifiedResourceFactory {
 
             for (String qualifierClassName : qualifierNames) {
                 Class<?> qualifierClass = declaringClassLoader.loadClass(qualifierClassName);
-                if (!qualifierClass.isInterface())
-                    throw new IllegalArgumentException("The " + qualifierClassName + " class is not a valid qualifier class" +
-                                                       " because it is not an annotation."); // TODO NLS
+                if (!qualifierClass.isAnnotation())
+                    throw new IllegalArgumentException(Tr //
+                                    .formatMessage(tc,
+                                                   "CWWKC1206.qualifier.must.be.anno",
+                                                   declaringMetadata.getName(),
+                                                   builder.getDefinitionAnnotationClass().getSimpleName(),
+                                                   builder.getDDElementName(),
+                                                   jndiName,
+                                                   qualifierNames,
+                                                   qualifierClass.getName(),
+                                                   getQualifierExample(qualifierClass)));
+
+                boolean isQualifier = false;
+                for (Annotation anno : qualifierClass.getAnnotations()) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, qualifierClass.getSimpleName() +
+                                           " has annotation " + anno);
+                    if (anno.annotationType().getName() //
+                                    .equals("jakarta.inject.Qualifier")) {
+                        isQualifier = true;
+                        break;
+                    }
+                }
+
+                if (!isQualifier)
+                    throw new IllegalArgumentException(Tr //
+                                    .formatMessage(tc,
+                                                   "CWWKC1207.lacks.qualifier.anno",
+                                                   declaringMetadata.getName(),
+                                                   builder.getDefinitionAnnotationClass().getSimpleName(),
+                                                   builder.getDDElementName(),
+                                                   jndiName,
+                                                   qualifierNames,
+                                                   qualifierClass.getName(),
+                                                   getQualifierExample(qualifierClass)));
+
                 qualifiers.add(Annotation.class.cast(Proxy.newProxyInstance(declaringClassLoader,
                                                                             new Class<?>[] { Annotation.class, qualifierClass },
                                                                             new QualifierProxy(qualifierClass))));
@@ -265,6 +305,23 @@ public class AppDefinedResourceFactory implements QualifiedResourceFactory {
     @Override
     public MetaData getDeclaringMetadata() {
         return declaringMetadata;
+    }
+
+    /**
+     * Returns text showing an example of a valid qualifier with the specified
+     * class name.
+     *
+     * @param qualifierClass class to create valid example of.
+     * @return text showing an example of a valid qualifier.
+     */
+    @Trivial
+    private String getQualifierExample(Class<?> qualifierClass) {
+        return new StringBuilder() //
+                        .append("@Qualifier @Retention(RUNTIME) @Target(FIELD)") //
+                        .append(" public @interface ") //
+                        .append(qualifierClass.getSimpleName()) //
+                        .append(" {}") //
+                        .toString();
     }
 
     @Override

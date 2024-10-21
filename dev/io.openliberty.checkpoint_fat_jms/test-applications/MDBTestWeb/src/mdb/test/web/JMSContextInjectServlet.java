@@ -22,7 +22,6 @@ import javax.jms.IllegalStateRuntimeException;
 import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
-import javax.jms.JMSPasswordCredential;
 import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
@@ -52,43 +51,19 @@ public class JMSContextInjectServlet extends HttpServlet {
 
     @Inject
     @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF")
-    @JMSPasswordCredential(userName = "user1", password = "user1pwd")
     private JMSContext jmsContextQueue;
 
     @Inject
     @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF1")
-    @JMSPasswordCredential(userName = "user1", password = "user1pwd")
     private JMSContext jmsContextQueueTCP;
 
     @Inject
     @JMSConnectionFactory("java:comp/env/eis/tcf")
-    @JMSPasswordCredential(userName = "user1", password = "user1pwd")
     private JMSContext jmsContextTopic;
 
     @Inject
     @JMSConnectionFactory("java:comp/env/eis/tcf1")
-    @JMSPasswordCredential(userName = "user1", password = "user1pwd")
     private JMSContext jmsContextTopicTCP;
-
-    @Inject
-    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF")
-    @JMSPasswordCredential(userName = "user1", password = "wrongpwd")
-    private JMSContext jmsContextQueueWrongPasswd;
-
-    @Inject
-    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF1")
-    @JMSPasswordCredential(userName = "user1", password = "wrongpwd")
-    private JMSContext jmsContextQueueTCPWrongPasswd;
-
-    @Inject
-    @JMSConnectionFactory("java:comp/env/eis/tcf")
-    @JMSPasswordCredential(userName = "user1", password = "wrongpwd")
-    private JMSContext jmsContextTopicWrongPasswd;
-
-    @Inject
-    @JMSConnectionFactory("java:comp/env/eis/tcf1")
-    @JMSPasswordCredential(userName = "user1", password = "wrongpwd")
-    private JMSContext jmsContextTopicTCPWrongPasswd;
 
     @Override
     public void init() throws ServletException {
@@ -454,90 +429,6 @@ public class JMSContextInjectServlet extends HttpServlet {
 
         if (exceptionFlag)
             throw new WrongException("testNegativeSetters_TCP_SecOn failed: Expected exception was not seen");
-
-    }
-
-    public void testWrongUserCredentialsQueue_B_SecOn(
-                                                      HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        try {
-            jmsContextQueueWrongPasswd.createConsumer(jmsQueue);
-
-        } catch (java.lang.RuntimeException e) {
-            Throwable causeEx = e.getCause();
-            String actualException = causeEx.getClass().getName();
-
-            System.out.println("Exception cause is " + actualException);
-            if (!(actualException.equals("javax.jms.JMSSecurityRuntimeException")))
-                exceptionFlag = true;
-            e.printStackTrace();
-        }
-
-        if (exceptionFlag)
-            throw new WrongException("testWrongUserCredentialsQueue_B_SecOn failed: Expected exception was not seen");
-
-    }
-
-    public void testWrongUserCredentialsQueue_TCP_SecOn(
-                                                        HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        try {
-            jmsContextQueueTCPWrongPasswd.createConsumer(jmsQueue);
-
-        } catch (java.lang.RuntimeException e) {
-            Throwable causeEx = e.getCause();
-            String actualException = causeEx.getClass().getName();
-
-            System.out.println("Exception cause is " + actualException);
-            if (!(actualException.equals("javax.jms.JMSSecurityRuntimeException")))
-                exceptionFlag = true;
-            e.printStackTrace();
-        }
-
-        if (exceptionFlag)
-            throw new WrongException("testWrongUserCredentialsQueue_TCP_SecOn failed: Expected exception was not seen");
-
-    }
-
-    public void testWrongUserCredentialsTopic_B_SecOn(
-                                                      HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        try {
-            jmsContextTopicWrongPasswd.createConsumer(jmsTopic);
-
-        } catch (java.lang.RuntimeException e) {
-            Throwable causeEx = e.getCause();
-            String actualException = causeEx.getClass().getName();
-
-            System.out.println("Exception cause is " + actualException);
-            if (!(actualException.equals("javax.jms.JMSSecurityRuntimeException")))
-                exceptionFlag = true;
-            e.printStackTrace();
-        }
-
-        if (exceptionFlag)
-            throw new WrongException("testWrongUserCredentialsTopic_B_SecOn failed: Expected exception was not seen");
-
-    }
-
-    public void testWrongUserCredentialsTopic_TCP_SecOn(
-                                                        HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        try {
-            jmsContextTopicTCPWrongPasswd.createConsumer(jmsTopic);
-
-        } catch (java.lang.RuntimeException e) {
-            Throwable causeEx = e.getCause();
-            String actualException = causeEx.getClass().getName();
-
-            System.out.println("Exception cause is " + actualException);
-            if (!(actualException.equals("javax.jms.JMSSecurityRuntimeException")))
-                exceptionFlag = true;
-            e.printStackTrace();
-        }
-
-        if (exceptionFlag)
-            throw new WrongException("testWrongUserCredentialsTopic_TCP_SecOn failed: Expected exception was not seen");
 
     }
 

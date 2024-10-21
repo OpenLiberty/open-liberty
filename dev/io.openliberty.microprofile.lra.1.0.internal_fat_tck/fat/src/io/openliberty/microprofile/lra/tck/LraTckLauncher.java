@@ -98,11 +98,10 @@ public class LraTckLauncher {
         // This is the currently passing test methods from TckTests
         additionalProps.put("test", "TckTests#*LRA*+join*");
 
-        String bucketName = "io.openliberty.microprofile.lra.1.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchLRA10TCK";
-        Type type = Type.MICROPROFILE;
-        String specName = "LRA";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build(server, Type.MICROPROFILE, "LRA")
+                        .withDefaultSuiteFileName()
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
     /**
@@ -124,11 +123,10 @@ public class LraTckLauncher {
         additionalProps.put("lra.tck.base.url", protocol + "://" + host + ":" + port);
         additionalProps.put("lraTestsToRun", "**/*Test*.java");
 
-        String bucketName = "io.openliberty.microprofile.lra.1.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchLRA10TCKFull";
-        Type type = Type.MICROPROFILE;
-        String specName = "LRA";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build(server, Type.MICROPROFILE, "LRA")
+                        .withDefaultSuiteFileName()
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
 
     }
 }

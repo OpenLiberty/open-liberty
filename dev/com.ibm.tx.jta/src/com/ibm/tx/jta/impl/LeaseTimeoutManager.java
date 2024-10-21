@@ -1,7 +1,3 @@
-package com.ibm.tx.jta.impl;
-
-import java.time.Instant;
-
 /*******************************************************************************
  * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -14,7 +10,9 @@ import java.time.Instant;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
+import java.time.Instant;
 import java.util.ArrayList;
 
 import com.ibm.tx.TranConstants;
@@ -64,10 +62,7 @@ public class LeaseTimeoutManager {
         private LeaseRenewer(int delay, SharedServerLeaseLog leaseLog) {
             _leaseLog = leaseLog;
 
-            // Renew lease
-            renewLease();
-            // Schedule the next renewal irrespective of the success or failure of the last renewal attempt
-            schedule(delay);
+            alarm(delay);
         }
 
         /*
@@ -112,15 +107,8 @@ public class LeaseTimeoutManager {
 
             boolean leaseRenewed = false;
             try {
-                if (_leaseLog.lockLocalLease(_recoveryIdentity)) {
-                    _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
-
-                    _leaseLog.releaseLocalLease(_recoveryIdentity);
-                    leaseRenewed = true;
-                } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Could not lock lease for " + _recoveryIdentity);
-                }
+                _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
+                leaseRenewed = true;
             } catch (Exception e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Swallow exception " + e);
@@ -157,7 +145,7 @@ public class LeaseTimeoutManager {
 
             if (!FrameworkState.isStopping() && _recoveryAgent != null && !_recoveryAgent.isServerStopping()) {
                 ArrayList<String> peersToRecover = _recoveryAgent.processLeasesForPeers(_recoveryIdentity, _recoveryGroup);
-                if (_recoveryDirector != null && _recoveryDirector instanceof RecoveryDirectorImpl && peersToRecover != null && !peersToRecover.isEmpty()) {
+                if (_recoveryDirector instanceof RecoveryDirectorImpl && peersToRecover != null && !peersToRecover.isEmpty()) {
                     try {
                         ((RecoveryDirectorImpl) _recoveryDirector).peerRecoverServers(_recoveryAgent, _recoveryIdentity, peersToRecover);
                     } catch (RecoveryFailedException e) {

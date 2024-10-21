@@ -6,6 +6,7 @@
       <feature>wasJmsSecurity-1.0</feature>
       <feature>jndi-1.0</feature>
       <feature>mdb-3.2</feature>
+      <feature>cdi-2.0</feature>
       <feature>testjmsinternals-1.0</feature>
       <feature>timedexit-1.0</feature>
     </featureManager>
@@ -98,12 +99,12 @@
     </jmsQueue> 
              
     <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
-        <properties.wasJms  userName="user1" password="user1pwd"/> 
+        <properties.wasJms  userName="${USER_NAME}" password="${USER_PASSWORD}"/> 
     </jmsQueueConnectionFactory>
     <connectionManager id="ConMgr6" maxPoolSize="2"/>
     
     <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr5">
-        <properties.wasJms userName="user1" password="user1pwd" remoteServerAddress="localhost:${jms_port}:BootstrapBasicMessaging" /> 
+        <properties.wasJms userName="${USER_NAME}" password="${USER_PASSWORD}" remoteServerAddress="localhost:${jms_port}:BootstrapBasicMessaging" /> 
     </jmsQueueConnectionFactory>
     <connectionManager id="ConMgr5" maxPoolSize="2"/>
 
@@ -122,18 +123,18 @@
 
 
     <jmsTopicConnectionFactory jndiName="eis/tcf1" connectionManagerRef="ConMgr2">
-        <properties.wasJms userName="user1" password="user1pwd" remoteServerAddress="localhost:${jms_port_ssl}:BootstrapSecureMessaging"  /> 
+        <properties.wasJms userName="${USER_NAME}" password="${USER_PASSWORD}" remoteServerAddress="localhost:${jms_port_ssl}:BootstrapSecureMessaging"  /> 
     </jmsTopicConnectionFactory>
     <connectionManager id="ConMgr2" maxPoolSize="2"/>
     
     <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr4">
-        <properties.wasJms userName="user1" password="user1pwd" /> 
+        <properties.wasJms userName="${USER_NAME}" password="${USER_PASSWORD}" /> 
     </jmsTopicConnectionFactory>
     <connectionManager id="ConMgr4" maxPoolSize="2"/>
 
     <jmsActivationSpec id="MDBTestApp/MDBQueue">
-        <properties.wasJms />
+        <properties.wasJms userName="${USER_NAME}" password="${USER_PASSWORD}" />
     </jmsActivationSpec>
-
+    <cdi emptyBeansXmlCDI3Compatibility="true"/>
 
 </server>

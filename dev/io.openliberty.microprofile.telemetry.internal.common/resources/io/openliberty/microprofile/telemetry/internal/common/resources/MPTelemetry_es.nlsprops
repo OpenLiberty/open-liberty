@@ -55,6 +55,15 @@ CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: La funci\u00f3n de registro
 CWMOT5005.mptelemetry.unknown.log.source.explanation=El entorno de ejecuci\u00f3n Liberty no proporciona la fuente de registro especificada.
 CWMOT5005.mptelemetry.unknown.log.source.useraction=Compruebe la informaci\u00f3n de configuraci\u00f3n y especifique una de las fuentes admitidas para MicroProfile Telemetr\u00eda.
 
+CWMOT5006.tel.enabled.conflict=CWMOT5006W: Configuraci\u00f3n conflictiva para la propiedad de configuraci\u00f3n otel.sdk.disabled detectada para la aplicaci\u00f3n {0}. El valor final es otel.sdk.disabled=false. La telemetr\u00eda no puede desactivarse para una aplicaci\u00f3n cuando est\u00e1 activada para el tiempo de ejecuci\u00f3n.
+CWMOT5006.tel.enabled.conflict.explanation: MicroProfile La telemetr\u00eda puede habilitarse para todo el servidor mediante propiedades del sistema o variables de entorno. Si no est\u00e1 habilitado para todo el servidor, se puede habilitar para cada aplicaci\u00f3n configurando las propiedades de MicroProfile Config; por ejemplo, configurando variables en el archivo server.xml. Esta advertencia se da si hay una configuraci\u00f3n expl\u00edcita que deshabilita Telemetr\u00eda para todo el servidor, que es anulada por una propiedad MP Config que habilita Telemetr\u00eda para una aplicaci\u00f3n.
+CWMOT5006.tel.enabled.conflict.useraction: Especifique la configuraci\u00f3n para activar o desactivar las instancias de OpenTelemetry utilizando variables de entorno y propiedades del sistema u otras fuentes de MP Config, pero no ambas.
+
+CWMOT5007.tel.enabled.conflict=CWMOT5007W: Configuraci\u00f3n conflictiva para la propiedad de configuraci\u00f3n otel.sdk.disabled detectada para la aplicaci\u00f3n {0}. El valor final es otel.sdk.disabled=false porque la propiedad que habilita la telemetr\u00eda para la aplicaci\u00f3n anula la propiedad que deshabilita la telemetr\u00eda para el runtime.
+CWMOT5007.tel.enabled.conflict.explanation: MicroProfile La telemetr\u00eda puede habilitarse para todo el servidor mediante propiedades del sistema o variables de entorno. Si no est\u00e1 habilitado para todo el servidor, se puede habilitar para una aplicaci\u00f3n configurando las propiedades de MicroProfile Config; por ejemplo, configurando variables en el archivo server.xml. Este aviso se produce si Telemetr\u00eda est\u00e1 habilitada para todo el servidor, pero las propiedades MicroProfile Config deshabilitan Telemetr\u00eda para una aplicaci\u00f3n. Como la telemetr\u00eda est\u00e1 activada para todo el servidor, la configuraci\u00f3n para esa aplicaci\u00f3n se ignora.
+CWMOT5007.tel.enabled.conflict.useraction: Especifique la configuraci\u00f3n para activar o desactivar las instancias de OpenTelemetry utilizando variables de entorno y propiedades del sistema u otras fuentes de MP Config, pero no ambas.
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

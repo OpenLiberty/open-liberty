@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,8 +22,8 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
+import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
 
 /**
@@ -50,7 +50,7 @@ public class HeaderValidator extends TypeValidator<Header> {
             String reference = t.getRef();
 
             if (reference != null && !reference.isEmpty()) {
-                ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                helper.validateReference(context, key, reference, Header.class);
                 return;
             }
 

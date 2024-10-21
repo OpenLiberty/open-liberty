@@ -12,23 +12,29 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.RecordComponent;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.util.UUID;
 
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Inheritance;
@@ -56,10 +62,13 @@ public class EntityInfo {
     // lower case attribute name --> properly cased/qualified JPQL attribute name
     final Map<String, String> attributeNames;
 
-    // names of attributes to use for entity update.
-    // excludes id and version.
-    // excludes inner relation attributes, such as location.address when there is also a location.address.zipcode
-    // TODO updates (and probably deletes) of entities with an embeddable id is not implemented yet.
+    /**
+     * Names of attributes to use for entity update,
+     * or null if em.merge must be used instead.
+     * Excludes id and version.
+     * Excludes inner relation attributes, such as location.address
+     * when there is also a location.address.zipcode
+     */
     final SortedSet<String> attributeNamesForEntityUpdate;
 
     // properly cased/qualified JPQL attribute name --> type
@@ -113,34 +122,6 @@ public class EntityInfo {
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
 
         validate();
-    }
-
-    /**
-     * Obtains the value of an entity attribute.
-     *
-     * @param entity        the entity from which to obtain the value.
-     * @param attributeName name of the entity attribute.
-     * @return the value of the attribute.
-     */
-    Object getAttribute(Object entity, String attributeName) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        List<Member> accessors = attributeAccessors.get(attributeName);
-        if (accessors == null)
-            throw new IllegalArgumentException(attributeName); // should never occur
-
-        Object value = entity;
-        for (Member accessor : accessors) {
-            Class<?> type = accessor.getDeclaringClass();
-            if (type.isInstance(value)) {
-                if (accessor instanceof Method)
-                    value = ((Method) accessor).invoke(value);
-                else // Field
-                    value = ((Field) accessor).get(value);
-            } else {
-                throw new MappingException("Value of type " + value.getClass().getName() + " is incompatible with attribute type " + type.getName()); // TODO NLS
-            }
-        }
-
-        return value;
     }
 
     Collection<String> getAttributeNames() {
@@ -223,18 +204,8 @@ public class EntityInfo {
      */
     @Trivial
     final Object toRecord(Object entity) throws Exception {
-        // TODO replace this method by including a toRecord method on an interface that is implemented
-        // by the generated entity, then cast to the interface and invoke it to get the record.
-        RecordComponent[] components = recordClass.getRecordComponents();
-        Class<?>[] argTypes = new Class<?>[components.length];
-        Object[] args = new Object[components.length];
-        int a = 0;
-        for (RecordComponent component : components) {
-            PropertyDescriptor desc = new PropertyDescriptor(component.getName(), entity.getClass());
-            argTypes[a] = component.getType();
-            args[a++] = desc.getReadMethod().invoke(entity);
-        }
-        return recordClass.getConstructor(argTypes).newInstance(args);
+        Method toRecord = entity.getClass().getMethod("toRecord");
+        return toRecord.invoke(entity);
     }
 
     @Override
@@ -252,15 +223,35 @@ public class EntityInfo {
      */
     @Trivial
     private void validate() {
-        for (Class<?> attrType : attributeTypes.values())
+        for (Entry<String, Class<?>> attrType : attributeTypes.entrySet())
             // ZonedDateTime is not one of the supported Temporal types
             // Jakarta Data and Jakarta Persistence and does not behave
             // correctly in EclipseLink where we have observed reading back
             // a different value from the database than was persisted.
             // If proper support is added for it in the future, then this
             // can be removed.
-            if (ZonedDateTime.class.equals(attrType))
-                throw new MappingException("The " + getType().getName() + " entity has an attribute of type " +
-                                           ZonedDateTime.class.getName() + ", which is not supported."); // TODO NLS
+            if (ZonedDateTime.class.equals(attrType.getValue()))
+                throw exc(MappingException.class,
+                          "CWWKD1055.unsupported.entity.prop",
+                          attrType.getKey(),
+                          entityClass.getName(),
+                          attrType.getValue(),
+                          List.of(Instant.class.getSimpleName(),
+                                  LocalDate.class.getSimpleName(),
+                                  LocalDateTime.class.getSimpleName(),
+                                  LocalTime.class.getSimpleName()),
+                          List.of(BigDecimal.class.getSimpleName(),
+                                  BigInteger.class.getSimpleName(),
+                                  Boolean.class.getSimpleName(), "boolean",
+                                  Byte.class.getSimpleName(), "byte",
+                                  "byte[]",
+                                  Character.class.getSimpleName(), "char",
+                                  Double.class.getSimpleName(), "double",
+                                  Float.class.getSimpleName(), "float",
+                                  Integer.class.getSimpleName(), "int",
+                                  Long.class.getSimpleName(), "long",
+                                  Short.class.getSimpleName(), "short",
+                                  String.class.getSimpleName(),
+                                  UUID.class.getSimpleName()));
     }
 }

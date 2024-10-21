@@ -29,25 +29,25 @@
 
 ft.invocations.total.description=Num\u0103rul de ori metoda a fost numit.
 
-ft.retry.calls.total.description=Num\u0103rul de ori logica retry a fost rulat. Acest lucru va fi \u00eentotdeauna o dat\u0103 pe apel metod\u0103.
+ft.retry.calls.total.description=De c\u00e2te ori a fost rulat\u0103 logica de re\u00eencercare. Aceast\u0103 valoare este \u00eentotdeauna egal\u0103 cu o dat\u0103 pe apel de metod\u0103.
 
 ft.retry.retries.total.description=Num\u0103rul de ori metoda a fost rejudecat.
 
-ft.timeout.calls.total.description=Num\u0103rul de ori logica timeout a fost rulat. Acest lucru va fi, de obicei, o dat\u0103 pe apel metod\u0103, dar poate fi de zero ori \u00een cazul \u00een care \u00eentrerup\u0103torul previne executarea sau mai mult dec\u00e2t o dat\u0103 \u00een cazul \u00een care metoda este rejudecat.
+ft.timeout.calls.total.description=De c\u00e2te ori a fost rulat\u0103 logica timeout. Aceast\u0103 valoare este de obicei egal\u0103 cu o dat\u0103 pe apel de metod\u0103. Cu toate acestea, ar putea fi zero dac\u0103 \u00eentrerup\u0103torul de circuit \u00eempiedic\u0103 execu\u021bia sau de mai multe ori pe apel de metod\u0103 dac\u0103 metoda este re\u00eencercat\u0103.
 
 ft.timeout.executionDuration.description=Histograma timpilor de executie pentru metoda.
 
-ft.circuitbreaker.calls.total.description=De num\u0103rul de ori logica \u00eentrerup\u0103tor de circuit a fost rulat. Acest lucru va fi, de obicei, o dat\u0103 pe apel metod\u0103, dar poate fi mai mult dec\u00e2t o dat\u0103 \u00een cazul \u00een care apelul metoda este rejudecat.
+ft.circuitbreaker.calls.total.description=De c\u00e2te ori a fost rulat\u0103 logica \u00eentreruptorului. Aceast\u0103 valoare este de obicei egal\u0103 cu o dat\u0103 pe apel de metod\u0103, dar poate fi mai mult de o dat\u0103 dac\u0103 metoda este re\u00eencercat\u0103.
 
-ft.circuitbreaker.state.total.description=Cantitatea de timp pe care \u00eentrerup\u0103torul de circuit a petrecut-o \u00een fiecare stat.
+ft.circuitbreaker.state.total.description=Cantitatea de timp petrecut\u0103 de \u00eentrerup\u0103tor \u00een fiecare stare.
 
-ft.circuitbreaker.opened.total.description=Num\u0103rul de ori \u00eentrerup\u0103torul de circuit s-a mutat de la stat \u00eenchis la stat deschis.
+ft.circuitbreaker.opened.total.description=De c\u00e2te ori \u00eentrerup\u0103torul a trecut de la starea \u00eenchis la starea deschis\u0103.
 
-ft.bulkhead.calls.total.description=Num\u0103rul de ori logica bulkhead a fost rulat. Acest lucru va fi, de obicei, o dat\u0103 pe apel metod\u0103, dar poate fi de zero ori \u00een cazul \u00een care \u00eentrerup\u0103torul de circuit a \u00eempiedicat executarea sau mai mult dec\u00e2t o dat\u0103
+ft.bulkhead.calls.total.description=De c\u00e2te ori a fost rulat\u0103 logica peretelui. Aceast\u0103 valoare este de obicei egal\u0103 cu o dat\u0103 pe apel de metod\u0103. Cu toate acestea, ar putea fi zero dac\u0103 \u00eentrerup\u0103torul de circuit \u00eempiedic\u0103 execu\u021bia sau de mai multe ori pe apel de metod\u0103 dac\u0103 metoda este re\u00eencercat\u0103.
 
 ft.bulkhead.executionsRunning.description=Num\u0103rul execu\u021biilor \u00een curs de desf\u0103\u0219urare.
 
-ft.bulkhead.executionsWaiting.description=Num\u0103rul de execu\u021bii care a\u0219teapt\u0103 \u00een prezent coada.
+ft.bulkhead.executionsWaiting.description=Num\u0103rul de execu\u021bii care a\u0219teapt\u0103 \u00een prezent \u00een coad\u0103.
 
 ft.bulkhead.runningDuration.description=Histograma timpului pe care execu\u021biile metodei l-au petrecut alerg\u00e2nd.
 

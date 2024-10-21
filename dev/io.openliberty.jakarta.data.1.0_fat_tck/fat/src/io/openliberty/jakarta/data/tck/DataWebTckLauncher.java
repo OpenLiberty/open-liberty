@@ -63,6 +63,8 @@ public class DataWebTckLauncher {
         additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "servlet");
         additionalProps.put("jakarta.profile", "web");
+        additionalProps.put("jakarta.tck.database.type", "relational");
+        additionalProps.put("jakarta.tck.database.name", FATSuite.relationalDatabase.getClass().getSimpleName());
 
         //Always skip signature tests on Web profile (already tested in core profile)
         additionalProps.put("included.groups", "web & persistence & !signature");
@@ -71,14 +73,14 @@ public class DataWebTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
-        String testName = this.getClass() + ":launchDataTckWeb";
-        Type type = Type.JAKARTA;
-        String specName = "Data (Web, Persistence)";
-        String relativeTckRunner = "publish/tckRunner/platform/";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
+        TCKRunner.build(server, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("web", "persistence")
+                        .withRelativeTCKRunner("publish/tckRunner/platform/")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
     // Cannot test NoSQL database on Web profile since the persistence feature is automatically included

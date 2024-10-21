@@ -13,14 +13,17 @@
 package test.jakarta.data.datastore;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
@@ -41,9 +44,9 @@ public abstract class DDLGenScriptHelper {
      * @param server The target server to execute the ddlgen command.
      *
      * @return The generated ddl file names.
-     * @throws Exception Ff an error occurs running the ddlgen command or locating the ddl files.
+     * @throws Exception if an error occurs running the ddlgen command or locating the ddl files.
      */
-    public static List<String> getDDLFiles(LibertyServer server) throws Exception {
+    public static List<String> getGeneratedDDLFiles(LibertyServer server) throws Exception {
         String methodName = "getDDLFiles";
         Properties env = new Properties();
         String scriptName;
@@ -88,7 +91,21 @@ public abstract class DDLGenScriptHelper {
             Log.info(DDLGenScriptHelper.class, methodName, "    " + fileName);
         }
 
+        Collections.sort(ddlFileNames);
+
         return ddlFileNames;
+    }
+
+    /**
+     * Find the expected DDL file location and return the expected file names
+     *
+     * @param type - The type of database
+     * @return The expected ddl file names.
+     */
+    public static List<String> getExpectedDDLFiles() {
+        File ddlDir = new File("test-resources/ddl/");
+        assertTrue(ddlDir.isDirectory());
+        return Stream.of(ddlDir.listFiles()).map(file -> file.getName()).sorted().toList();
     }
 
     /**
@@ -100,32 +117,22 @@ public abstract class DDLGenScriptHelper {
      * @return The SQL statements read from the specified DDL file.
      * @throws Exception If an error occurs reading the specified DDL file.
      */
-    public static List<String> readSQLFromDDLFile(LibertyServer server, String ddlFileName) {
-        String methodName = "readSQLFromDDLFile";
+    public static List<String> readSQLFromGeneratedDDLFile(LibertyServer server, String ddlFileName) throws Exception {
+        String methodName = "readSQLFromGeneratedDDLFile";
         String line;
         ArrayList<String> sqlFromDDL = new ArrayList<String>();
 
-        try {
-            RemoteFile ddlFile = server.getFileFromLibertyServerRoot("ddl/" + ddlFileName);
+        RemoteFile ddlFile = server.getFileFromLibertyServerRoot("ddl/" + ddlFileName);
 
-            assertTrue("Expected DDL file could not be opened for reading : " + ddlFile.getAbsolutePath(), ddlFile.exists());
-            if (!ddlFile.exists()) {
-                throw new Exception("Expected DDL file could not be opened for reading : " + ddlFile.getAbsolutePath());
-            }
-
-            try (BufferedReader reader = new BufferedReader(new FileReader(ddlFile.getAbsolutePath()))) {
-                while ((line = reader.readLine()) != null) {
-                    sqlFromDDL.add(line);
-                }
-            }
-        } catch (Exception ex) {
-            fail("Unexpected exception reading DDL file : " + ddlFileName);
+        assertTrue("Expected DDL file could not be opened for reading : " + ddlFile.getAbsolutePath(), ddlFile.exists());
+        if (!ddlFile.exists()) {
+            throw new Exception("Expected DDL file could not be opened for reading : " + ddlFile.getAbsolutePath());
         }
 
-        // SQL EXIT may be added to the end of the file for some databases (Oracle); remove it
-        int lastIndex = sqlFromDDL.size() - 1;
-        if (sqlFromDDL.get(lastIndex).equals("EXIT;")) {
-            sqlFromDDL.remove(lastIndex);
+        try (BufferedReader reader = new BufferedReader(new FileReader(ddlFile.getAbsolutePath()))) {
+            while ((line = reader.readLine()) != null) {
+                sqlFromDDL.add(line);
+            }
         }
 
         Log.info(DDLGenScriptHelper.class, methodName, "SQL found in DDL File : " + ddlFileName);
@@ -134,6 +141,22 @@ public abstract class DDLGenScriptHelper {
         }
 
         return sqlFromDDL;
+    }
+
+    /**
+     * Read the specified DDL file and return all of the SQL statements found in the file.
+     *
+     * @param type        - The type of database
+     * @param ddlFileName - The name of the DDL file
+     *
+     * @return The SQL statements read from the specified DDL file.
+     * @throws IOException If an error occurs reading the specified DDL file.
+     *
+     */
+    public static List<String> readSQLFromExpectedDDLFile(String ddlFileName) throws IOException {
+        File ddlFile = new File("test-resources/ddl/" + ddlFileName);
+        assertTrue(ddlFile.isFile());
+        return Files.lines(ddlFile.toPath()).toList();
     }
 
 }

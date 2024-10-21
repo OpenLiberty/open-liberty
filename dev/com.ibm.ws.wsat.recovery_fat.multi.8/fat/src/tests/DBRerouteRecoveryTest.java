@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.AllowedFFDC;
@@ -37,11 +38,6 @@ import componenttest.topology.impl.LibertyServer;
 @AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException" })
 @RunWith(FATRunner.class)
 public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
-
-    private static final String POSTGRES_DB = "testdb";
-    private static final String POSTGRES_USER = "postgresUser";
-    private static final String POSTGRES_PASS = "superSecret";
-    public static PostgreSQLContainer testContainer;
 
 	@Server("WSATRecovery3")
 	public static LibertyServer server3;
@@ -58,25 +54,14 @@ public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 	        	Log.info(DBRerouteRecoveryTest.class, "setupRunner.run", "Setting up "+s.getServerName()+" for testcontainers");
 
 	            //Get driver name
-	            s.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+	            s.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer).getDriverName());
 
 	            //Setup server DataSource properties
-	            DatabaseContainerUtil.setupDataSourceDatabaseProperties(s, testContainer);
+	            DatabaseContainerUtil.setupDataSourceDatabaseProperties(s, TxTestContainerSuite.testContainer);
 
 	            s.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 	        }
 	    };
-
-	    // The Dockerfile for 'jonhawkes/postgresql-ssl:1.0' can be found in the com.ibm.ws.jdbc_fat_postgresql project
-	    testContainer = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
-	                    .withDatabaseName(POSTGRES_DB)
-	                    .withUsername(POSTGRES_USER)
-	                    .withPassword(POSTGRES_PASS)
-	                    .withSSL()
-	                    .withLogConsumer(new SimpleLogConsumer(DBRerouteRecoveryTest.class, "postgre-ssl"));
-
-        testContainer.setStartupAttempts(2);
-        testContainer.start();
 
 //		System.getProperties().entrySet().stream().forEach(e -> Log.info(RerouteTest.class, "Properties", e.getKey() + " -> " + e.getValue()));
 //		System.getenv().entrySet().stream().forEach(e -> Log.info(RerouteTest.class, "Environment", e.getKey() + " -> " + e.getValue()));
@@ -106,8 +91,6 @@ public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 
 		DBTestBase.cleanupWSATTest(server1);
 		DBTestBase.cleanupWSATTest(server2);		
-
-		testContainer.stop();
 	}
 
 	@Before

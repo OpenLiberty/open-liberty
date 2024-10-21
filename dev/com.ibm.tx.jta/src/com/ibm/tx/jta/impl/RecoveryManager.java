@@ -758,6 +758,31 @@ public class RecoveryManager implements Runnable {
     }
 
     /**
+     * Update server lease if peer recovery is enabled
+     *
+     * @param recoveryIdentity
+     */
+    public void updateServerLease(String recoveryIdentity) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "updateServerLease", this, recoveryIdentity);
+        try {
+            if (_leaseLog != null) {
+                _leaseLog.updateServerLease(recoveryIdentity, _recoveryGroup, false);
+            }
+        } catch (Exception e) {
+            // Unless server is stopping, FFDC exception but allow processing to continue
+            if (FrameworkState.isStopping()) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Ignoring exception: ", e);
+            } else {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteServerLease", "701", this);
+            }
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "updateServerLease");
+    }
+
+    /**
      * When we are operating in a peer recovery environment it is desirable to be able to delete the home server's
      * recovery logs where it has shutdown cleanly. This method accomplishes this operation.
      */
@@ -1429,8 +1454,6 @@ public class RecoveryManager implements Runnable {
         if (!_recoveryCompleted) {
             _recoveryCompleted = true;
             _recoveryInProgress.post();
-
-            signalRecoveryComplete();
         }
 
         if (_failureScopeController.localFailureScope()) {
@@ -1464,10 +1487,6 @@ public class RecoveryManager implements Runnable {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "recoveryFailed");
-    }
-
-    protected void signalRecoveryComplete() {
-        // Not used in JTM
     }
 
     // Checks to see if shutdown processing has begun. If it has, this method causes signals recovery

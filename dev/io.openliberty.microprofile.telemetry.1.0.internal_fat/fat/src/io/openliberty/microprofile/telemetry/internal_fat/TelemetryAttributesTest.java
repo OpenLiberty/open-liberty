@@ -30,6 +30,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.ResourceServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -46,7 +47,7 @@ public class TelemetryAttributesTest extends FATServletClient {
 
     //This test tests resources that were added to Liberty in MPTel 2.0
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.telemetry20Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

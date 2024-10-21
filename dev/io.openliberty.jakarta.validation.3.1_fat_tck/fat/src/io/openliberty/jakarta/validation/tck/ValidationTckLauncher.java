@@ -20,13 +20,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs the entire Jakarta Validation TCK against Full
@@ -50,6 +52,8 @@ public class ValidationTckLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        final OperatingSystem os = server.getMachine().getOperatingSystem();
         /*
          * Server config:
          * - Path that jimage will output modules for signature testing
@@ -64,6 +68,9 @@ public class ValidationTckLauncher {
          * - exclude.tests used for skipping tests if we find a TCK bug that needs a service release
          */
         additionalProps.put("validation.provider", validationProvider);
+        if (os == OperatingSystem.LINUX || os == OperatingSystem.AIX || os == OperatingSystem.ZOS) {
+            additionalProps.put("javafx.platform", "linux");
+        }
         additionalProps.put("exclude.tests", "");
 
         //Configure server and install user feature
@@ -77,10 +84,10 @@ public class ValidationTckLauncher {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer( //ignoring warnings due to Hibernate Validator CDI integration and annotations
-                "CWNBV0200W",
-                "CWNEN0047W",
-                "CWNEN0049W",
-                "CWNEN0048W");
+                          "CWNBV0200W",
+                          "CWNEN0047W",
+                          "CWNEN0049W",
+                          "CWNEN0048W");
 
         server.uninstallSystemFeature(validationCustomFeature);
     }
@@ -92,16 +99,10 @@ public class ValidationTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchValidation31TCK() throws Exception {
 
-        /**
-         * The runTCKMvnCmd will set the following properties for use by
-         * arquillian [ wlp, tck_server, tck_port, tck_failSafeUndeployment,
-         * tck_appDeployTimeout, tck_appUndeployTimeout ] and then run the mvn
-         * test command.
-         */
-        String bucketName = "io.openliberty.jakarta.validation.3.1_fat_tck";
-        String testName = this.getClass() + ":launchValidation31TCK";
-        Type type = Type.JAKARTA;
-        String specName = "Validation ";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, "tck-tests.xml", additionalProps);
+        TCKRunner.build(server, Type.JAKARTA, "Validation")
+                        .withPlatfromVersion("11")
+                        .withSuiteFileName("tck-tests.xml")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 }

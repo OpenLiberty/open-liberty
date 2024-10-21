@@ -11,6 +11,8 @@ package io.openliberty.jaxws.fat.stubclient.client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -18,7 +20,7 @@ import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 
-@WebServiceClient(name = "SimpleEchoService", targetNamespace = "http://stubclient.fat.jaxws.openliberty.io/", wsdlLocation = "WEB-INF/wsdl/SimpleEcho.wsdl")
+@WebServiceClient(name = "SimpleEchoService", targetNamespace = "http://stubclient.fat.jaxws.openliberty.io/")
 public class SimpleEchoService
     extends Service
 {
@@ -26,14 +28,23 @@ public class SimpleEchoService
     private static final URL SIMPLEECHOSERVICE_WSDL_LOCATION;
     private static final WebServiceException SIMPLEECHOSERVICE_EXCEPTION;
     private static final QName SIMPLEECHOSERVICE_QNAME = new QName("http://stubclient.fat.jaxws.openliberty.io/", "SimpleEchoService");
-
+    private final static Logger logger = Logger.getLogger(SimpleEchoService.class.getName());
+    
     static {
         URL url = null;
         WebServiceException e = null;
+        String urlString = null;
         try {
-            URL baseUrl = SimpleEchoService.class.getClassLoader().getResource(".");
-            url = new URL(baseUrl, "../wsdl/SimpleEcho.wsdl");
+            String host = System.getProperty("hostName");
+            if (host == null) {
+                logger.info("Failed to obtain host from system property, hostName, falling back to localhost");
+                host = "localhost";
+            }
+            urlString = new StringBuilder().append("http://" + host + ":").append(Integer.getInteger("bvt.prop.HTTP_default")).append("/simpleTestService/SimpleEchoService?wsdl").toString();
+            logger.info("URL : " + urlString + " will be used for SimpleEchoService.");
+            url = new URL(urlString);
         } catch (MalformedURLException ex) {
+            logger.warning("Failed to create URL for the wsdl Location: " + urlString);
             e = new WebServiceException(ex);
         }
         SIMPLEECHOSERVICE_WSDL_LOCATION = url;

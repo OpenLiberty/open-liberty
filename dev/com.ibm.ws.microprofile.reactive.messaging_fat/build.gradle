@@ -1,8 +1,12 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
-    kafkaClient
-    requiredLibs.extendsFrom kafkaClient
+    kafkaClient {
+      transitive = false
+    }
+    requiredLibs.extendsFrom kafkaClient {
+      transitive = false
+    }
 }
 
 dependencies {
@@ -20,6 +24,8 @@ dependencies {
     requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl')
     requiredLibs project(':com.ibm.ws.io.smallrye.reactive.streams-operators')
     requiredLibs project(':com.ibm.ws.crypto.passwordutil');
+    requiredLibs project(':com.ibm.ws.kernel.service');
+    requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'reactivestreams10');
     requiredLibs project(path: ':io.openliberty.microprofile.reactive.messaging.internal_fat.common', configuration: 'original');
 }
 

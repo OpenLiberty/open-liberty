@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,6 @@
 package com.ibm.ws.security.authorization.jacc.internal;
 
 import java.security.AccessController;
-import java.security.Policy;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.util.ArrayList;
@@ -49,6 +48,8 @@ import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.ws.security.authorization.jacc.MethodInfo;
 import com.ibm.ws.security.authorization.jacc.RoleInfo;
 import com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManager;
+import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
+import com.ibm.ws.security.authorization.jacc.common.ProviderServiceProxy;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityPropagator;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityValidator;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBService;
@@ -57,20 +58,15 @@ import com.ibm.ws.security.authorization.jacc.web.WebSecurityPropagator;
 import com.ibm.ws.security.authorization.jacc.web.WebSecurityValidator;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.security.authorization.jacc.ProviderService;
 
 @Component(service = JaccService.class, name = "com.ibm.ws.security.authorization.jacc", configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
 public class JaccServiceImpl implements JaccService {
     private static final TraceComponent tc = Tr.register(JaccServiceImpl.class);
 
-    private static final String JACC_FACTORY = "javax.security.jacc.PolicyConfigurationFactory.provider";
-    private static final String JACC_FACTORY_EE9 = "jakarta.security.jacc.PolicyConfigurationFactory.provider";
-    private static final String JACC_POLICY_PROVIDER = "javax.security.jacc.policy.provider";
-    private static final String JACC_POLICY_PROVIDER_EE9 = "jakarta.security.jacc.policy.provider";
     private static final String JACC_EJB_METHOD_ARGUMENT = "RequestMethodArgumentsRequired";
-    static final String KEY_JACC_PROVIDER_SERVICE = "jaccProviderService";
+    static final String KEY_JACC_PROVIDER_SERVICE_PROXY = "jaccProviderServiceProxy";
     private final String KEY_LOCATION_ADMIN = "locationAdmin";
-    private final AtomicServiceReference<ProviderService> jaccProviderService = new AtomicServiceReference<ProviderService>(KEY_JACC_PROVIDER_SERVICE);
+    private final AtomicServiceReference<ProviderServiceProxy> jaccProviderServiceProxy = new AtomicServiceReference<ProviderServiceProxy>(KEY_JACC_PROVIDER_SERVICE_PROXY);
     private final AtomicServiceReference<WsLocationAdmin> locationAdminRef = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_ADMIN);
 
     private static final String KEY_SERVLET_SERVICE = "servletService";
@@ -80,20 +76,17 @@ public class JaccServiceImpl implements JaccService {
 
     private String policyName = null;
     private String factoryName = null;
-    private String originalSystemPolicyName = null;
-    private String originalSystemFactoryName = null;
 
+    private PolicyProxy policyProxy = null;
     private PolicyConfigurationFactory pcf = null;
 
-    @Reference(service = ProviderService.class, policy = ReferencePolicy.DYNAMIC, name = KEY_JACC_PROVIDER_SERVICE)
-    protected void setJaccProviderService(ServiceReference<ProviderService> reference) {
-        jaccProviderService.setReference(reference);
-        initializeSystemProperties(reference);
+    @Reference(service = ProviderServiceProxy.class, policy = ReferencePolicy.DYNAMIC, name = KEY_JACC_PROVIDER_SERVICE_PROXY)
+    protected void setJaccProviderServiceProxy(ServiceReference<ProviderServiceProxy> reference) {
+        jaccProviderServiceProxy.setReference(reference);
     }
 
-    protected void unsetJaccProviderService(ServiceReference<ProviderService> reference) {
-        jaccProviderService.unsetReference(reference);
-        restoreSystemProperties();
+    protected void unsetJaccProviderServiceProxy(ServiceReference<ProviderServiceProxy> reference) {
+        jaccProviderServiceProxy.unsetReference(reference);
     }
 
     @Reference(service = WsLocationAdmin.class, name = KEY_LOCATION_ADMIN)
@@ -125,8 +118,13 @@ public class JaccServiceImpl implements JaccService {
 
     @Activate
     protected void activate(ComponentContext cc) {
+        jaccProviderServiceProxy.activate(cc);
+        ProviderServiceProxy serviceProxy = jaccProviderServiceProxy.getService();
+        if (serviceProxy != null) {
+            policyName = serviceProxy.getPolicyName();
+            factoryName = serviceProxy.getFactoryName();
+        }
         Tr.info(tc, "JACC_SERVICE_STARTING", new Object[] { policyName, factoryName });
-        jaccProviderService.activate(cc);
         locationAdminRef.activate(cc);
         servletServiceRef.activate(cc);
         ejbServiceRef.activate(cc);
@@ -138,123 +136,16 @@ public class JaccServiceImpl implements JaccService {
     }
 
     @Modified
-    protected void modify(Map<String, Object> props) {}
+    protected void modify(Map<String, Object> props) {
+    }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
         locationAdminRef.deactivate(cc);
-        jaccProviderService.deactivate(cc);
+        jaccProviderServiceProxy.deactivate(cc);
         servletServiceRef.deactivate(cc);
         ejbServiceRef.deactivate(cc);
         Tr.info(tc, "JACC_SERVICE_STOPPED", new Object[] { policyName });
-    }
-
-    private void initializeSystemProperties(ServiceReference<ProviderService> reference) {
-        Object obj = reference.getProperty(JACC_POLICY_PROVIDER);
-        if (obj != null && obj instanceof String) {
-            policyName = (String) obj;
-        }
-        if (policyName == null) {
-            obj = reference.getProperty(JACC_POLICY_PROVIDER_EE9);
-            if (obj != null && obj instanceof String) {
-                policyName = (String) obj;
-            }
-        }
-
-        obj = reference.getProperty(JACC_FACTORY);
-        if (obj != null && obj instanceof String) {
-            factoryName = (String) obj;
-        }
-        if (factoryName == null) {
-            obj = reference.getProperty(JACC_FACTORY_EE9);
-            if (obj != null && obj instanceof String) {
-                factoryName = (String) obj;
-            }
-        }
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "Meta data : policyName : " + policyName + " factoryName : " + factoryName);
-
-        originalSystemPolicyName = null;
-        originalSystemFactoryName = null;
-
-        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                String systemPolicyName = System.getProperty(JACC_POLICY_PROVIDER);
-                if (systemPolicyName == null) {
-                    systemPolicyName = System.getProperty(JACC_POLICY_PROVIDER_EE9);
-                }
-
-                String systemFactoryName = System.getProperty(JACC_FACTORY);
-                if (systemFactoryName == null) {
-                    systemFactoryName = System.getProperty(JACC_FACTORY_EE9);
-                }
-
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "System properties : policyName : " + systemPolicyName + " factoryName : " + systemFactoryName);
-                }
-                if (systemPolicyName == null) {
-                    if (policyName != null) {
-                        System.setProperty(JACC_POLICY_PROVIDER, policyName);
-                        System.setProperty(JACC_POLICY_PROVIDER_EE9, policyName);
-                    } else if (policyName == null) {
-                        Tr.error(tc, "JACC_POLICY_IS_NOT_SET");
-                        return null;
-                    }
-                } else {
-                    if (policyName == null) {
-                        policyName = systemPolicyName;
-                    } else if (!systemPolicyName.equals(policyName)) {
-                        Tr.warning(tc, "JACC_INCONSISTENT_POLICY_CLASS", new Object[] { systemPolicyName, policyName });
-                        System.setProperty(JACC_POLICY_PROVIDER, policyName);
-                        System.setProperty(JACC_POLICY_PROVIDER_EE9, policyName);
-                        originalSystemPolicyName = systemPolicyName;
-                    }
-                }
-                if (systemFactoryName == null) {
-                    if (factoryName != null) {
-                        System.setProperty(JACC_FACTORY, factoryName);
-                        System.setProperty(JACC_FACTORY_EE9, factoryName);
-                    } else if (factoryName == null) {
-                        Tr.error(tc, "JACC_FACTORY_IS_NOT_SET");
-                        return null;
-                    }
-                } else {
-                    if (factoryName == null) {
-                        factoryName = systemFactoryName;
-                    } else if (!systemFactoryName.equals(factoryName)) {
-                        Tr.warning(tc, "JACC_INCONSISTENT_FACTORY_CLASS", new Object[] { systemFactoryName, factoryName });
-                        System.setProperty(JACC_FACTORY, factoryName);
-                        System.setProperty(JACC_FACTORY_EE9, factoryName);
-                        originalSystemFactoryName = systemFactoryName;
-                    }
-                }
-                return null;
-            }
-        });
-    }
-
-    private void restoreSystemProperties() {
-        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                if (originalSystemPolicyName != null) {
-                    System.setProperty(JACC_POLICY_PROVIDER, originalSystemPolicyName);
-                    System.setProperty(JACC_POLICY_PROVIDER_EE9, originalSystemPolicyName);
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "PolicyName system property is restored by : " + originalSystemPolicyName);
-                    }
-                }
-                if (originalSystemFactoryName != null) {
-                    System.setProperty(JACC_FACTORY, originalSystemFactoryName);
-                    System.setProperty(JACC_FACTORY_EE9, originalSystemFactoryName);
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "PolicyName system property is restored by : " + originalSystemFactoryName);
-                    }
-                }
-                return null;
-            }
-        });
     }
 
     /**
@@ -267,29 +158,29 @@ public class JaccServiceImpl implements JaccService {
             @Override
             public Boolean run() {
 
-                Policy policy = jaccProviderService.getService().getPolicy();
+                policyProxy = jaccProviderServiceProxy.getService().getPolicyProxy();
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "policy object" + policy);
+                    Tr.debug(tc, "policy object" + policyProxy);
                 // in order to support the CTS provider, Policy object should be set prior to
                 // instanciate PolicyConfigFactory class.
-                if (policy == null) {
+                if (policyProxy == null) {
                     Exception e = new Exception("Policy object is null.");
                     Tr.error(tc, "JACC_POLICY_INSTANTIATION_FAILURE", new Object[] { policyName, e });
                     return Boolean.FALSE;
                 }
                 try {
-                    Policy.setPolicy(policy);
-                    policy.refresh();
+                    policyProxy.setPolicy();
+                    policyProxy.refresh();
                 } catch (ClassCastException cce) {
                     Tr.error(tc, "JACC_POLICY_INSTANTIATION_FAILURE", new Object[] { policyName, cce });
                     return Boolean.FALSE;
                 }
 
-                pcf = jaccProviderService.getService().getPolicyConfigFactory();
+                pcf = jaccProviderServiceProxy.getService().getPolicyConfigFactory();
                 if (pcf != null) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "factory object : " + pcf);
-                    PolicyConfigurationManager.initialize(policy, pcf);
+                    PolicyConfigurationManager.initialize(policyProxy, pcf);
                 } else {
                     Tr.error(tc, "JACC_FACTORY_INSTANTIATION_FAILURE", new Object[] { factoryName });
                     return Boolean.FALSE;
@@ -352,7 +243,7 @@ public class JaccServiceImpl implements JaccService {
          */
         uriName = substituteAsterisk(uriName);
         WebUserDataPermission webUDPerm = new WebUserDataPermission(uriName, methodNameArray, transportType);
-        result = wsv.checkDataConstraints(getContextId(applicationName, moduleName), req, webUDPerm);
+        result = wsv.checkDataConstraints(getContextId(applicationName, moduleName), req, webUDPerm, policyProxy);
         return result;
     }
 
@@ -374,7 +265,7 @@ public class JaccServiceImpl implements JaccService {
         String[] methodNameArray = new String[] { methodName };
         uriName = substituteAsterisk(uriName);
         WebResourcePermission webPerm = new WebResourcePermission(uriName, methodNameArray);
-        boolean isAuthorized = wsv.checkResourceConstraints(getContextId(applicationName, moduleName), req, webPerm, subject);
+        boolean isAuthorized = wsv.checkResourceConstraints(getContextId(applicationName, moduleName), req, webPerm, subject, policyProxy);
         return isAuthorized;
     }
 
@@ -392,7 +283,7 @@ public class JaccServiceImpl implements JaccService {
 
     protected boolean isSubjectInRole(WebSecurityValidator wsv, String applicationName, String moduleName, String servletName, String role, Object req, Subject subject) {
         WebRoleRefPermission webRolePerm = new WebRoleRefPermission(servletName, role);
-        return wsv.checkResourceConstraints(getContextId(applicationName, moduleName), req, webRolePerm, subject);
+        return wsv.checkResourceConstraints(getContextId(applicationName, moduleName), req, webRolePerm, subject, policyProxy);
     }
 
     @Override
@@ -437,7 +328,7 @@ public class JaccServiceImpl implements JaccService {
                                    String methodInterface, String methodSignature, List<Object> methodParameters, Object bean, Subject subject) {
         String[] methodSignatureArray = convertMethodSignature(methodSignature);
         final EJBMethodPermission ejbPerm = new EJBMethodPermission(beanName, methodName, methodInterface, methodSignatureArray);
-        return esv.checkResourceConstraints(getContextId(applicationName, moduleName), methodParameters, bean, ejbPerm, subject);
+        return esv.checkResourceConstraints(getContextId(applicationName, moduleName), methodParameters, bean, ejbPerm, subject, policyProxy);
     }
 
     @Override
@@ -455,13 +346,13 @@ public class JaccServiceImpl implements JaccService {
     protected boolean isSubjectInRole(EJBSecurityValidator esv, String applicationName, String moduleName, String beanName, String methodName,
                                       List<Object> methodParameters, String role, Object bean, Subject subject) {
         final EJBRoleRefPermission ejbPerm = new EJBRoleRefPermission(beanName, role);
-        return esv.checkResourceConstraints(getContextId(applicationName, moduleName), methodParameters, bean, ejbPerm, subject);
+        return esv.checkResourceConstraints(getContextId(applicationName, moduleName), methodParameters, bean, ejbPerm, subject, policyProxy);
     }
 
     @Override
     public boolean areRequestMethodArgumentsRequired() {
         boolean result = false;
-        ServiceReference<ProviderService> reference = jaccProviderService.getReference();
+        ProviderServiceProxy reference = jaccProviderServiceProxy.getService();
         if (reference != null) {
             Object obj = reference.getProperty(JACC_EJB_METHOD_ARGUMENT);
             if (obj instanceof String) {

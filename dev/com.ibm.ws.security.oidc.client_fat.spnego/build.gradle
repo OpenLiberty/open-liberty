@@ -25,7 +25,6 @@ dependencies {
                project(':io.openliberty.org.apache.commons.codec'), // 1.15 (was 1.4)
                'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
-               project(':io.openliberty.org.apache.commons.logging'), // 1.2 (was 1.1.1)
                project(':com.ibm.ws.org.apache.commons.lang3'), // 3.8 (was ????)
                project(':com.ibm.ws.security.spnego.fat.common')
 }

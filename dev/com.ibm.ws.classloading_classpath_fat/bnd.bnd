@@ -1,0 +1,54 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src, \
+	test-applications/testClassPath1.war/src, \
+	test-applications/testClassPath2.war/src, \
+	test-applications/testClassPath3.war/src, \
+	test-applications/testClient1.jar/src, \
+	test-applications/testEjb1.jar/src, \
+	test-applications/testEjb2.jar/src, \
+	test-applications/testEjb3.jar/src, \
+	test-applications/testLib1.jar/src, \
+	test-applications/testLib2.jar/src, \
+	test-applications/testLib3.jar/src, \
+	test-applications/testLib4.jar/src, \
+	test-applications/testLib5.jar/src, \
+	test-applications/testLib6.jar/src, \
+	test-applications/testLib7.jar/src, \
+	test-applications/testLib8.jar/src, \
+	test-applications/testLib9.jar/src, \
+	test-applications/testLib10.jar/src, \
+	test-applications/testLib11.jar/src, \
+	test-applications/testLib12.jar/src, \
+	test-applications/testLib13.jar/src, \
+	test-applications/testLib14.jar/src, \
+	test-applications/testLib15.jar/src, \
+	test-applications/testLib16.jar/src, \
+	test-applications/testLib17.jar/src, \
+	test-applications/testRar1.rar/src, \
+	test-applications/testResourceAdaptor.jar/src
+
+fat.project: true
+
+tested.features:
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.4.0, \
+	com.ibm.websphere.javaee.ejb.3.2, \
+	fattest.simplicity, \
+	com.ibm.ws.componenttest,\
+	com.ibm.websphere.javaee.connector.1.7

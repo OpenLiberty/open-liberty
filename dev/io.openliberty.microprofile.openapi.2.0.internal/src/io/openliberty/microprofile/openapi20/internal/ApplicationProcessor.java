@@ -48,6 +48,7 @@ import io.openliberty.microprofile.openapi20.internal.cache.CacheEntry;
 import io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer;
 import io.openliberty.microprofile.openapi20.internal.services.ConfigFieldProvider;
 import io.openliberty.microprofile.openapi20.internal.services.ModelGenerator;
+import io.openliberty.microprofile.openapi20.internal.services.ModuleSelectionConfig;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.IndexUtils;
@@ -84,6 +85,9 @@ public class ApplicationProcessor {
 
     @Reference
     private ModelGenerator modelGenerator;
+
+    @Reference
+    private ValidationComponent validationComponent;
 
     /**
      * The processApplication method processes applications that are added to the OpenLiberty instance.
@@ -283,7 +287,7 @@ public class ApplicationProcessor {
                         if (LoggingUtils.isEventEnabled(tc)) {
                             Tr.event(tc, "Validate document");
                         }
-                        OpenAPIUtils.validateDocument(openAPIModel);
+                        validationComponent.validateAndReportErrors(openAPIModel);
                     } catch (Throwable e) {
                         if (LoggingUtils.isEventEnabled(tc)) {
                             Tr.event(tc, "Failed to call OASValidator: " + e.getMessage());

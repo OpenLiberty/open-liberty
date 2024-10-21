@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2008 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -225,8 +225,9 @@ ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: UseFIPS est\u00e1 ativado, mas 
 ssl.config.not.using.fips.CWPKI0049W.explanation=Embora UseFIPS tenha sido ativado, os algoritmos criptogr\u00e1ficos aprovados por FIPS n\u00e3o podem ser usados porque a configura\u00e7\u00e3o de SSL n\u00e3o est\u00e1 usando um Provedor JSSE aprovado por FIPS.
 ssl.config.not.using.fips.CWPKI0049W.useraction=Para assegurar o uso dos algoritmos criptogr\u00e1ficos aprovados por FIPS, modifique a configura\u00e7\u00e3o de SSL para usar um Provedor JSSE aprovado por FIPS.
 # -------------------------------------------------------------------------------------------------
-
-
+ssl.san.warning.CWPKI0050W=CWPKI0050W: O certificado com o alias {0} do {1} keyStore n\u00e3o tem nome alternativo de assunto. A verifica\u00e7\u00e3o de HostName n\u00e3o \u00e9 imposta para serverIdentity comunica\u00e7\u00e3o SSL de controlador coletivo, r\u00e9plica e membro.
+ssl.san.warning.CWPKI0050W.explanation=O certificado padr\u00e3o serverIdentity n\u00e3o tem nome alternativo de sujeito no keyStore. A verifica\u00e7\u00e3o de hostName \u00e9 ignorada para certificados serverIdentity
+ssl.san.warning.CWPKI0050W.useraction=Abra o keyStore e verifique o nome alternativo do assunto em todos os certificados no keyStore. Use os comandos genKey e genKeyController para gerar novos certificados e ativar a verifica\u00e7\u00e3o do nome do host.
 ################################################################################
 # Range 100-110 reserved for TrustManager Prompt
 ################################################################################
@@ -633,9 +634,13 @@ ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: FALHA DE HANDSHAKE SSL: um ass
 ssl.client.handshake.error.CWPKI0823E.explanation=Ocorreu um erro durante o protocolo de reconhecimento SSL.  Isto pode requerer uma exporta\u00e7\u00e3o/importa\u00e7\u00e3o do assinante a partir do host de destino para o TrustStore do cliente.
 ssl.client.handshake.error.CWPKI0823E.useraction=Reveja a mensagem de erro estendida do TrustManager para determinar o que precisa ser alterado entre a configura\u00e7\u00e3o SSL de destino e a configura\u00e7\u00e3o SSL de cliente.
 # -------------------------------------------------------------------------------------------------
-ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: FALHA DE HANDSHAKE SSL: erro de verifica\u00e7\u00e3o do nome do host ao conectar-se com o host [{0}].  O nome do host usado para acessar o servidor n\u00e3o corresponde \u00e0s informa\u00e7\u00f5es de Nome Alternativo SubjectDN ou Subject do certificado do servidor.  A mensagem de erro estendida a partir da exce\u00e7\u00e3o de handshake SSL \u00e9: [{1}].
-ssl.client.handshake.error.CWPKI0824E.explanation=Ocorreu um erro durante o protocolo de reconhecimento SSL.  A verifica\u00e7\u00e3o do nome do host est\u00e1 ativada e a identidade do servidor n\u00e3o pode ser verificada.  O nome do host usado para acessar o servidor n\u00e3o corresponde \u00e0s informa\u00e7\u00f5es de Nome Alternativo SubjectDN ou Subject do certificado do servidor.
+ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: FALHA DE HANDSHAKE SSL: erro\nde verifica\u00e7\u00e3o do nome do host ao conectar-se com o host [{0}].  O nome do host usado para acessar o servidor n\u00e3o corresponde ao certificado do servidor [{1}].  A mensagem de erro estendida da exce\u00e7\u00e3o de handshake SSL \u00e9: [{2}].
+ssl.client.handshake.error.CWPKI0824E.explanation=Ocorreu um erro durante o protocolo de reconhecimento SSL.  A verifica\u00e7\u00e3o do nome do host est\u00e1 ativada e a identidade do servidor n\u00e3o pode ser verificada.  O nome do host usado para acessar o servidor n\u00e3o corresponde \u00e0s informa\u00e7\u00f5es do Subject Alternative Name do certificado do servidor ou SubjectDN .
 ssl.client.handshake.error.CWPKI0824E.useraction=Quando a verifica\u00e7\u00e3o do nome do host est\u00e1 ativada, o servidor que est\u00e1 sendo acessado precisa ser configurado com um certificado que contenha as informa\u00e7\u00f5es apropriadas necess\u00e1rias para verificar a identidade do servidor.
+# -------------------------------------------------------------------------------------------------
+ssl.hnv.disabled.warning.CWPKI0063W=CWPKI0063W: A verifica\u00e7\u00e3o do nome do host est\u00e1 desativada para {0}. As conex\u00f5es TLS/SSL n\u00e3o verificam as identidades do servidor para verificar se o cliente est\u00e1 se comunicando com o servidor correto.
+ssl.hnv.disabled.warning.CWPKI0063W.explanation=A verifica\u00e7\u00e3o do nome do host deve ser ativada para garantir que o nome do host no URL ao qual o cliente est\u00e1 se conectando corresponda ao nome do host no certificado que o servidor envia de volta durante a comunica\u00e7\u00e3o TLS/SSL.
+ssl.hnv.disabled.warning.CWPKI0063W.useraction=Habilite a verifica\u00e7\u00e3o do nome do host definindo a propriedade personalizada de seguran\u00e7a com.ibm.ssl.verifyHostname como true.
 # -------------------------------------------------------------------------------------------------
 ssl.cacerts.error.CWPKI0825W=CWPKI0825W: O atributo trustDefaultCerts est\u00e1 ativado, mas o armazenamento confi\u00e1vel padr\u00e3o falhou ao inicializar. Como o armazenamento confi\u00e1vel padr\u00e3o n\u00e3o foi inicializado, apenas o armazenamento confi\u00e1vel configurado pela configura\u00e7\u00e3o de SSL {0} \u00e9 usado. A exce\u00e7\u00e3o que \u00e9 retornada \u00e9: {1}. 
 ssl.cacerts.error.CWPKI0825W.explanation=O armazenamento confi\u00e1vel padr\u00e3o n\u00e3o foi inicializado porque ele n\u00e3o p\u00f4de ser recuperado do gerenciador de confian\u00e7a. O armazenamento confi\u00e1vel padr\u00e3o n\u00e3o \u00e9 usado para confian\u00e7a. Somente a configura\u00e7\u00e3o SSL definida \u00e9 usada.

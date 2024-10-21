@@ -50,7 +50,7 @@
 		<!-- For artifacts not yet in Maven Central -->
 		<!-- Enable the following during development of a vNext release to use a
 		staged TCK rather than a local -SNAPSHOT -->
-		<repository>
+     <!-- <repository>
 			<id>sonatype-nexus-staging</id>
 			<name>Sonatype Nexus Staging</name>
 			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
@@ -60,7 +60,7 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>
+		</repository>  -->
 	</repositories>
 
 	<dependencyManagement>

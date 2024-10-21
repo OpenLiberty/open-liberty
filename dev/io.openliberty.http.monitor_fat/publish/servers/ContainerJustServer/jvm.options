@@ -1,4 +1,3 @@
--Dcom.ibm.ws.beta.edition=true
 -Dotel.metrics.exporter=otlp
 -Dotel.traces.exporter=none
 -Dotel.logs.exporter=none

@@ -20,7 +20,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 
 @SuppressWarnings("restriction")
-@AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "org.apache.cxf.binding.soap.SoapFault", "javax.xml.stream.XMLStreamException", "com.ctc.wstx.exc.WstxIOException" })
+@AllowedFFDC(value = { "java.net.SocketException", "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "org.apache.cxf.binding.soap.SoapFault", "javax.xml.stream.XMLStreamException", "com.ctc.wstx.exc.WstxIOException" })
 @RunWith(FATRunner.class)
 public class MultiRecoveryTest5 extends MultiRecoveryTest {
 
@@ -54,8 +54,8 @@ public class MultiRecoveryTest5 extends MultiRecoveryTest {
 	}
 
 	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
+	@ExpectedFFDC(value = {"javax.transaction.xa.XAException"})
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException", "javax.transaction.RollbackException"})
 	public void WSTXMPR012AFVT() throws Exception {
 		recoveryTest(server1, server2, "1201","server1");
 	}

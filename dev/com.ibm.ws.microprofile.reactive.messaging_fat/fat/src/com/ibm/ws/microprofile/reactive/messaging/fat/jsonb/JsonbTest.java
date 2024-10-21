@@ -23,7 +23,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractDeliveryBean;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractReceptionBean;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.TestMessageImpl;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

@@ -13,14 +13,16 @@ import static io.openliberty.checkpoint.fat.FATSuite.configureEnvVariable;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static java.util.Collections.emptyMap;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
@@ -29,7 +31,12 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
@@ -161,8 +168,29 @@ public class OpenAPIConfigTest extends FATServletClient {
     private void assertDocumentPath(String path) throws Exception {
         // Check that it parses as a model and contains the expected path from the test
         // app
-        OpenAPI model = new OpenAPIConnection(server, path).downloadModel();
-        assertThat(model.getPaths().toString(), containsString("/configTestPath"));
+        String doc = new OpenAPIConnection(server, path).download();
+        JsonNode model = readYamlTree(doc);
+        checkPaths(model, 1, "/configTestPath");
+    }
+
+    public static void checkPaths(JsonNode root,
+                                  int expectedCount,
+                                  String... containedPaths) {
+        JsonNode pathsNode = root.get("paths");
+        assertNotNull(pathsNode);
+        assertTrue(pathsNode.isObject());
+        ObjectNode paths = (ObjectNode) pathsNode;
+
+        assertEquals("FAIL: Found incorrect number of server objects.", expectedCount, paths.size());
+        List<String> expected = Arrays.asList(containedPaths);
+        expected.stream()
+                        .forEach(path -> assertNotNull("FAIL: OpenAPI document does not contain the expected path " + path,
+                                                       paths.get(path)));
+    }
+
+    public static JsonNode readYamlTree(String contents) {
+        org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml(new SafeConstructor(new LoaderOptions()));
+        return new ObjectMapper().convertValue(yaml.load(contents), JsonNode.class);
     }
 
     /**

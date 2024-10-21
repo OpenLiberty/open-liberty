@@ -28,7 +28,7 @@ public class Item {
     @GeneratedValue
     public UUID pk; // Do not add Id to this name. It should be detectable based on type alone.
 
-    public float price;
+    public double price;
 
     public long version;
 

@@ -10,7 +10,7 @@
   </featureManager>
 
   <library id="CloudantLib">
-    <fileset dir="${shared.resource.dir}/cloudant-2.16"/>
+    <fileset dir="${shared.resource.dir}/cloudant"/>
   </library>
 
   <authData id="cloudantAuthData" user="${cloudant_username}" password="${cloudant_password}"/>
@@ -76,7 +76,7 @@
   <javaPermission className="java.lang.RuntimePermission" name="setFactory"/>
   <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
 
-  <variable name="CloudantCodebase" value="${shared.resource.dir}/cloudant-2.16/cloudant-client-2.16.0.jar"/>  
+  <variable name="CloudantCodebase" value="${shared.resource.dir}/cloudant/cloudant-client-2.20.1.jar"/>  
   <javaPermission codebase="${CloudantCodebase}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.c"/>
   <javaPermission codebase="${CloudantCodebase}" className="java.net.URLPermission" name="${cloudant_url}/_session" actions="POST:ExpectUser-Agent"/>
   <javaPermission codebase="${CloudantCodebase}" className="java.net.URLPermission" name="${cloudant_url_secure}/_session" actions="POST:ExpectUser-Agent"/>

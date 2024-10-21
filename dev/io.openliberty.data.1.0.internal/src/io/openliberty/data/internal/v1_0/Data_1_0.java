@@ -35,7 +35,9 @@ public class Data_1_0 implements DataVersionCompatibility {
                                          Method method, int p,
                                          String o_, String attrName,
                                          boolean isCollection, Annotation[] annos) {
-        return q.append(o_).append(attrName).append("=?").append(qp);
+        if (attrName.charAt(attrName.length() - 1) != ')')
+            q.append(o_);
+        return q.append(attrName).append("=?").append(qp);
     }
 
     @Override

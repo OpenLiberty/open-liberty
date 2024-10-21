@@ -28,34 +28,34 @@ The Program includes some or all of the following that IBM obtained
 under the Apache License, Version 2.0:
 
 @carbon/telemetry [telemetry-0.1.0.tgz],
-@swagger-api/apidom-ast [apidom-ast-0.99.2.tgz],
-@swagger-api/apidom-core [apidom-core-0.99.2.tgz],
-@swagger-api/apidom-error [apidom-error-0.99.0.tgz],
-@swagger-api/apidom-json-pointer [apidom-json-pointer-0.99.2.tgz],
-@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems-0.99.2.tgz],
-@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi-2-0.99.2.tgz],
-@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft-4-0.99.2.tgz],
-@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft-6-0.99.2.tgz],
-@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft-7-0.99.2.tgz],
-@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi-2-0.99.2.tgz],
-@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi-3-0-0.99.2.tgz],
-@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi-3-1-0.99.2.tgz],
-@swagger-api/apidom-ns-workflows-1 [apidom-ns-workflows-1-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json-2-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml-2-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json-2-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json-3-0-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json-3-1-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml-2-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml-3-0-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml-3-1-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-workflows-json-1 [apidom-parser-adapter-workflows-json-1-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-workflows-yaml-1 [apidom-parser-adapter-workflows-yaml-1-0.99.2.tgz],
-@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml-1-2-0.99.2.tgz],
-@swagger-api/apidom-reference [apidom-reference-0.99.2.tgz],
+@swagger-api/apidom-ast [apidom-ast-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-core [apidom-core-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-error [apidom-error-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-json-pointer [apidom-json-pointer-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi-2-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft-4-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft-6-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft-7-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi-2-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi-3-0-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi-3-1-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-ns-workflows-1 [apidom-ns-workflows-1-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json-2-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml-2-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json-2-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json-3-0-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json-3-1-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml-2-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml-3-0-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml-3-1-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-workflows-json-1 [apidom-parser-adapter-workflows-json-1-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-workflows-yaml-1 [apidom-parser-adapter-workflows-yaml-1-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml-1-2-1.0.0-alpha.8.tgz],
+@swagger-api/apidom-reference [apidom-reference-1.0.0-alpha.8.tgz],
 Apache Ant Core [ant], Apache Ant Launcher [ant-launcher],
 Apache Aries JMX API [org.apache.aries.jmx.api],
 Apache Aries JMX Core [org.apache.aries.jmx.core],
@@ -109,11 +109,8 @@ Apache James :: Mime4j :: Storage [apache-mime4j-storage],
 Apache Kafka [kafka-clients],
 Apache MyFaces Buildtools Maven2 Builder Annotations [myfaces-builder-annotations],
 Apache MyFaces Core 4.0 - API [myfaces-api],
-Apache MyFaces Core 4.0 - Impl [myfaces-impl],
 Apache MyFaces JSF-2.3 Core API [myfaces-api],
-Apache MyFaces JSF-2.3 Core Impl [myfaces-impl],
-Apache MyFaces JSF-3.0 Core API [myfaces-api],
-Apache MyFaces JSF-3.0 Core Impl [myfaces-impl], Apache Neethi [neethi],
+Apache MyFaces JSF-3.0 Core API [myfaces-api], Apache Neethi [neethi],
 Apache Velocity [velocity], Apache Velocity - Engine [velocity-engine-core],
 Apache WSS4J DOM WS-Security [wss4j-ws-security-dom],
 Apache WSS4J Streaming WS-Security [wss4j-ws-security-stax],
@@ -200,6 +197,13 @@ OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-semcon
 OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api],
 OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations-support],
 OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-semconv],
+OpenTelemetry Instrumentation for Java [opentelemetry-runtime-telemetry-java8],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-incubator],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations-support],
+OpenTelemetry Instrumentation for Java [opentelemetry-resources],
 OpenTelemetry Java [opentelemetry-exporter-otlp-common],
 OpenTelemetry Java [opentelemetry-exporter-jaeger],
 OpenTelemetry Java [opentelemetry-context],
@@ -240,6 +244,25 @@ OpenTelemetry Java [opentelemetry-exporter-logging],
 OpenTelemetry Java [opentelemetry-exporter-zipkin],
 OpenTelemetry Java [opentelemetry-context],
 OpenTelemetry Java [opentelemetry-api],
+OpenTelemetry Java [opentelemetry-extension-incubator],
+OpenTelemetry Java [opentelemetry-context],
+OpenTelemetry Java [opentelemetry-api],
+OpenTelemetry Java [opentelemetry-api-incubator],
+OpenTelemetry Java [opentelemetry-sdk-logs],
+OpenTelemetry Java [opentelemetry-sdk-common],
+OpenTelemetry Java [opentelemetry-sdk-trace],
+OpenTelemetry Java [opentelemetry-sdk-metrics],
+OpenTelemetry Java [opentelemetry-sdk],
+OpenTelemetry Java [opentelemetry-exporter-logging],
+OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure],
+OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure-spi],
+OpenTelemetry Java [opentelemetry-exporter-common],
+OpenTelemetry Java [opentelemetry-exporter-sender-okhttp],
+OpenTelemetry Java [opentelemetry-exporter-otlp],
+OpenTelemetry Java [opentelemetry-exporter-zipkin],
+OpenTelemetry Java [opentelemetry-exporter-otlp-common],
+OpenTelemetry Java [opentelemetry-extension-trace-propagators],
+OpenTelemetry Semantic Conventions Java [opentelemetry-semconv-incubating],
 OpenTelemetry Semantic Conventions Java [opentelemetry-semconv],
 OpenTracing API [opentracing-api], OpenTracing-noop [opentracing-noop],
 OpenTracing-util [opentracing-util], Prometheus Java Simpleclient [simpleclient],
@@ -307,7 +330,6 @@ acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asm-util,
 asyncutil, carbon-components [carbon-components-10.42.0-rc.0.min.js],
 carbon-components [carbon-components-10.58.3.tgz],
 classfilewriter [jboss-classfilewriter], detect-libc [detect-libc-2.0.3.tgz],
-dompurify [dompurify-3.1.2.tgz],
 error-prone annotations [error_prone_annotations], fastinfoset [FastInfoset],
 geronimo-annotation_1.1_spec, geronimo-ejb_3.1_spec-alt,
 geronimo-interceptor_1.1_spec, geronimo-validation, guice,
@@ -324,7 +346,8 @@ micrometer-registry-prometheus, microprofile-fault-tolerance-api,
 microprofile-metrics-api, microprofile-opentracing-api,
 microprofile-rest-client-api, nekohtml, okhttp, okio [okio-jvm], okio,
 okio [okio-jvm], okio,
-openapi-path-templating [openapi-path-templating-1.5.1.tgz],
+openapi-path-templating [openapi-path-templating-1.6.0.tgz],
+openapi-server-url-templating [openapi-server-url-templating-1.1.0.tgz],
 org.apache.aries.blueprint, org.apache.aries.jndi.core, org.apache.bval.bundle,
 org.osgi.core,
 org.osgi:org.osgi.annotation.versioning [org.osgi.annotation.versioning],
@@ -345,11 +368,10 @@ org.osgi:osgi.annotation [osgi.annotation], org.osgi:osgi.core [osgi.core],
 perfmark:perfmark-api [perfmark-api], proto-google-common-protos, resolver,
 short-unique-id [short-unique-id-5.2.0.tgz], smallrye-reactive-converter-api,
 smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
-snappy-java, swagger-client [swagger-client-3.27.9.tgz],
-swagger-ui [swagger-ui-5.17.9.tgz], tomcat-el-api, tomcat-jasper-el,
+snappy-java, swagger-client [swagger-client-3.28.3.tgz],
+swagger-ui [swagger-ui-5.17.14.tgz], tomcat-el-api, tomcat-jasper-el,
 ts-toolbelt [ts-toolbelt-9.6.0.tgz], tunnel-agent [tunnel-agent-0.6.0.tgz],
-vertx-codegen, yoko-core, yoko-osgi, yoko-rmi-impl, yoko-rmi-spec,
-yoko-spec-corba, yoko-util
+vertx-codegen
 
 
 Apache License
@@ -540,7 +562,7 @@ under the BSD 2 Clause license:
 HdrHistogram (Copyright 2012-2013 2014, 2015, 2016 Gil Tene) (Copyright 2014 Matt Warren) (Copyright 2014 Michael Barker)
 Stax2 API [stax2-api] (Copyright 2008 FasterXML LLC <info@fasterxml.com>)
 Stax2 API [stax2-api](Copyright Not Found)
-apg-lite [apg-lite-1.0.3.tgz] (Copyright 2023 Lowell D. Thomas<br>)
+apg-lite [apg-lite-1.0.4.tgz] (Copyright 2023 Lowell D. Thomas<br>)
 crac(Copyright Not Found)
 rc [rc-1.2.8.tgz] (Copyright 2011 Dominic Tarr) (Copyright 2013 Dominic Tarr)
 zstd-jni(Copyright Not Found)
@@ -617,7 +639,7 @@ Jakarta Activation [jakarta.activation] (Copyright 1997-2020 Oracle and/or its a
 Jakarta Activation [jakarta.activation] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2020 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates)
 Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2022 Oracle and/or its affiliates)
-Jakarta Persistence [jakarta.persistence] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2007-2018 Oracle and/or its affiliates)
+Jakarta Persistence [jakarta.persistence] (Copyright 2007-2018 Oracle and/or its affiliates)
 Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2021 Oracle and) (Copyright 2011-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
@@ -679,8 +701,8 @@ istack common utility code tools [istack-commons-tools] (Copyright 1997-2022 Ora
 jakarta.xml.bind-api (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 management-api (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2011-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 org.eclipse.persistence.core(Copyright Not Found)
-qs [qs-6.12.1.tgz] (Copyright 2014 Nathan LaFreniere and other "contributors" (https://github.com/ljharb/qs/graphs/contributors))
-ramda-adjunct [ramda-adjunct-5.0.0.tgz] (Copyright 2017-2019 Vladim)
+qs [qs-6.13.0.tgz] (Copyright 2014 Nathan LaFreniere and other "contributors" (https://github.com/ljharb/qs/graphs/contributors))
+ramda-adjunct [ramda-adjunct-5.0.1.tgz] (Copyright 2017-2019 Vladim)
 redux-immutable [redux-immutable-4.0.0.tgz] (Copyright 2016 Gajus Kuizinas (http://gajus.com/))
 relaxngDatatype(Copyright Not Found)
 sprintf-js [sprintf-js-1.0.3.tgz] (Copyright 2014 Alexandru Marasteanu)
@@ -752,7 +774,7 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1
 The Program includes some or all of the following that IBM obtained
 under the COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1:
 
-JSR 374 (JSON Processing) Default Provider [javax.json] https://javaee.github.io/jsonp
+JSR 374 (JSON Processing) Default Provider [javax.json] http://www.oracle.com
 activation (https://github.com/javaee/activation/tree/JAF-1_2_0)
 connector (https://mvnrepository.com/artifact/javax.resource/connector-api)
 el (https://github.com/javaee/uel-ri)
@@ -778,49 +800,46 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1
 The Program includes some or all of the following that IBM obtained
 under the COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1:
 
-Expression Language 3.0 API [javax.el-api] http://uel-spec.java.net
+Expression Language 3.0 API [javax.el-api] http://glassfish.org
 Expression Language 3.0 API [jboss-el-api_3.0_spec] http://www.jboss.org
 Extended StAX API [stax-ex] http://stax-ex.java.net/
-JAX-WS API [jaxws-api] https://github.com/javaee/jax-ws-spec
+JAX-WS API [jaxws-api] http://www.oracle.com
 JMS API [javax.jms-api] http://java.net/projects/jms-spec/pages/Home
-JSR 353 (JSON Processing) API [javax.json-api] http://json-processing-spec.java.net
-JSR 353 (JSON Processing) Default Provider [javax.json] http://jsonp.java.net
-JSR 374 (JSON Processing) API [javax.json-api] https://javaee.github.io/jsonp
-Java Architecture for XML Binding [jaxb-api] http://jaxb.java.net/
-Java Authentication Service Provider Interface for Containers API 1.1 [javax.security.auth.message-api] http://jcp.org/en/jsr/detail?id=196
-Java Authorization Contract for Containers API 1.5 [javax.security.jacc-api] http://jcp.org/en/jsr/detail?id=115
+JSR 353 (JSON Processing) API [javax.json-api] http://www.oracle.com
+JSR 353 (JSON Processing) Default Provider [javax.json] http://www.oracle.com
+JSR 374 (JSON Processing) API [javax.json-api] http://www.oracle.com
+Java Architecture for XML Binding [jaxb-api] http://www.oracle.com/
+Java Authentication Service Provider Interface for Containers API 1.1 [javax.security.auth.message-api] https://jaspic-spec.java.net
+Java Authorization Contract for Containers API 1.5 [javax.security.jacc-api] https://jacc-spec.java.net
 Java EE Security API [javax.security.enterprise-api] https://repo.maven.apache.org/maven2/javax/security/enterprise/javax.security.enterprise-api/1.0
-Java Servlet API [javax.servlet-api] http://servlet-spec.java.net
-Java Servlet API [javax.servlet-api] https://javaee.github.io/servlet-spec/
+Java Servlet API [javax.servlet-api] https://glassfish.dev.java.net
+Java Servlet API [javax.servlet-api] https://javaee.github.io
 Java(TM) EE Interceptors 1.2 API [jboss-interceptors-api_1.2_spec] http://www.jboss.org
-JavaBeans Activation Framework [javax.activation] https://repo.maven.apache.org/maven2/com/sun/activation/javax.activation/1.2.0
-JavaMail API [javax.mail] http://javaee.github.io/javamail
-JavaMail API [javax.mail] http://javamail.java.net
-JavaMail API jar [javax.mail-api] https://repo.maven.apache.org/maven2/javax/mail/javax.mail-api/1.5.6
-JavaMail API jar [javax.mail-api] https://repo.maven.apache.org/maven2/javax/mail/javax.mail-api/1.6.2
-JavaServer Pages(TM) API [javax.servlet.jsp-api] http://jsp.java.net
-MIME streaming extension [mimepull] http://mimepull.java.net
-Old JAXB Core [jaxb-core] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-core/2.2.11
-Old JAXB XJC [jaxb-xjc] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-xjc/2.2.11
+JavaBeans Activation Framework (JAF) [activation] http://java.sun.com/products/javabeans/jaf/index.jsp
+JavaBeans Activation Framework [javax.activation] http://www.oracle.com
+JavaMail API [javax.mail] http://www.oracle.com
+JavaMail API jar [javax.mail-api] http://www.oracle.com
+JavaServer Pages(TM) API [javax.servlet.jsp-api] http://glassfish.org
+MIME streaming extension [mimepull] http://www.oracle.com/
+Old JAXB Core [jaxb-core] http://www.oracle.com/
+Old JAXB XJC [jaxb-xjc] http://www.oracle.com/
 Streaming API for XML [stax-api] https://repo.maven.apache.org/maven2/javax/xml/stream/stax-api/1.0-2
-TXW2 Runtime [txw2] http://txw.java.net/
-WebSocket server API [javax.websocket-api] http://websocket-spec.java.net
-activation http://dist.wso2.org/maven2/javax/activation/activation/1.1
+TXW2 Runtime [txw2] http://www.oracle.com/
+WebSocket server API [javax.websocket-api] http://www.oracle.com
 istack common utility code runtime [istack-commons-runtime] https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/2.4
-javax.annotation API [javax.annotation-api] http://jcp.org/en/jsr/detail?id=250
-javax.ejb API [javax.ejb-api] http://ejb-spec.java.net
-javax.enterprise.concurrent-api http://concurrency-ee-spec.java.net
-javax.interceptor API [javax.interceptor-api] http://interceptors-spec.java.net
-javax.json.bind-api https://javaee.github.io/jsonb-spec
-javax.resource API [javax.resource-api] http://connector-spec.java.net
-javax.ws.rs-api http://jax-rs-spec.java.net
+javax.annotation API [javax.annotation-api] https://glassfish.java.net
+javax.annotation API [javax.annotation-api] https://javaee.github.io/glassfish
+javax.ejb API [javax.ejb-api] https://glassfish.java.net
+javax.enterprise.concurrent-api http://www.oracle.com/
+javax.interceptor API [javax.interceptor-api] https://glassfish.java.net
+javax.json.bind-api http://www.oracle.com
+javax.resource API [javax.resource-api] https://glassfish.java.net
 javax.ws.rs-api http://www.oracle.com/
-javax.xml.soap API [javax.xml.soap-api] https://javaee.github.io/javaee-spec/
+javax.xml.soap API [javax.xml.soap-api] http://www.oracle.com
 jdeparser http://www.jboss.org
 jsr181-api (https://github.com/javaee/javax.jws)
-policy http://policy.java.net/
-saaj-impl https://repo.maven.apache.org/maven2/com/sun/xml/messaging/saaj/saaj-impl/1.4.0
-saaj-impl https://repo.maven.apache.org/maven2/com/sun/xml/messaging/saaj/saaj-impl/1.4.0-b03
+policy http://www.oracle.com/
+saaj-impl http://www.oracle.com/
 xmlstreambuffer [streambuffer] http://xmlstreambuffer.java.net/
 
 
@@ -833,7 +852,7 @@ COMMON PUBLIC LICENSE
 The Program includes some or all of the following that IBM obtained
 under the COMMON PUBLIC LICENSE:
 
-JUnit [junit] http://junit.org
+JUnit [junit] http://www.junit.org
 WSDL4J [wsdl4j] http://sf.net/projects/wsdl4j
 
 
@@ -858,72 +877,58 @@ ECLIPSE PUBLIC LICENSE, VERSION 2
 The Program includes some or all of the following that IBM obtained
 under the ECLIPSE PUBLIC LICENSE, VERSION 2:
 
-Angus Mail Provider [angus-mail] http://eclipse-ee4j.github.io/angus-mail
-Angus Mail Provider [angus-mail] http://eclipse-ee4j.github.io/mail
-Console plug-in [org.eclipse.equinox.console] http://www.eclipse.org/platform
-Coordinator [org.eclipse.equinox.coordinator] http://www.eclipse.org/platform
-Eclipse Compiler for Java(TM) [ecj] http://www.eclipse.org/jdt
-Eclipse Compiler for Java(TM) [ecj] https://projects.eclipse.org/projects/eclipse.jdt
-Eclipse Parsson [parsson] https://repo.maven.apache.org/maven2/org/eclipse/parsson/parsson/1.1.0
-Eclipse Parsson [parsson] https://repo.maven.apache.org/maven2/org/eclipse/parsson/parsson/1.1.4
+Angus Mail Provider [angus-mail] https://www.eclipse.org
+Console plug-in [org.eclipse.equinox.console] http://www.eclipse.org/
+Coordinator [org.eclipse.equinox.coordinator] http://www.eclipse.org/
+Eclipse Compiler for Java(TM) [ecj] http://www.eclipse.org/
+Eclipse Compiler for Java(TM) [ecj] https://www.eclipse.org/
 EclipseLink ASM [org.eclipse.persistence.asm] http://www.eclipse.org/eclipselink
 EclipseLink Core [org.eclipse.persistence.core] http://www.eclipse.org/eclipselink
 EclipseLink Hermes Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink JPA [org.eclipse.persistence.jpa] http://www.eclipse.org/eclipselink
-Expression Language 3.0 API [jboss-el-api_3.0_spec] https://projects.eclipse.org/projects/ee4j.el
-GlassFish High Availability APIs and SPI [ha-api] https://repo.maven.apache.org/maven2/org/glassfish/ha/ha-api/3.1.13
-JBoss Jakarta Annotations API [jboss-annotations-api_1.3_spec] https://github.com/jboss/jboss-jakarta-annotations-api_spec
-JSON-B API [jakarta.json.bind-api] https://eclipse-ee4j.github.io/jsonb-api
-JSON-B API [jakarta.json.bind-api] https://jakartaee.github.io/jsonb-api
-JSON-P Default Provider [jakarta.json] https://github.com/eclipse-ee4j/jsonp
-Jakarta Annotations API [jakarta.annotation-api] https://projects.eclipse.org/projects/ee4j.ca
+Expression Language 3.0 API [jboss-el-api_3.0_spec] http://www.jboss.org
+GlassFish High Availability APIs and SPI [ha-api] https://www.eclipse.org
+JBoss Jakarta Annotations API [jboss-annotations-api_1.3_spec] http://www.jboss.org
+JSON-B API [jakarta.json.bind-api] https://www.eclipse.org
+JSON-P Default Provider [jakarta.json] https://www.eclipse.org
+Jakarta Annotations API [jakarta.annotation-api] https://www.eclipse.org
 Jakarta Authentication [jakarta.authentication-api] https://github.com/eclipse-ee4j/authentication
-Jakarta Authentication [jakarta.authentication-api] https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0
-Jakarta Authorization [jakarta.authorization-api] https://github.com/
-Jakarta Authorization [jakarta.authorization-api] https://repo.maven.apache.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0
-Jakarta Enterprise Beans API [jakarta.ejb-api] https://github.com/eclipse-ee4j/ejb-api
-Jakarta Enterprise Beans API [jakarta.ejb-api] https://repo.maven.apache.org/maven2/jakarta/ejb/jakarta.ejb-api/4.0.1
-Jakarta Expression Language API [jakarta.el-api] https://projects.eclipse.org/projects/ee4j.el
-Jakarta Interceptors [jakarta.interceptor-api] https://github.com/eclipse-ee4j/interceptor-api
+Jakarta Authorization [jakarta.authorization-api] http://www.oracle.com
+Jakarta Enterprise Beans API [jakarta.ejb-api] https://projects.eclipse.org/projects/ee4j.ejb
+Jakarta Expression Language API [jakarta.el-api] https://www.eclipse.org
 Jakarta Interceptors [jakarta.interceptor-api] https://github.com/jakartaee/interceptors
-Jakarta Interceptors [jakarta.interceptor-api] https://repo.maven.apache.org/maven2/jakarta/interceptor/jakarta.interceptor-api/2.0.1
-Jakarta JSON Processing API [jakarta.json-api] https://github.com/eclipse-ee4j/jsonp
-Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.0.2
-Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.1.0
-Jakarta Mail API [jakarta.mail-api] http://nexus-importer-index-private.internal.whitesource.io:8081/nexus/service/local/repositories/index-importer-maven-central-mirror/content/jakarta/mail/jakarta.mail-api/2.1.2
-Jakarta Mail API [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.1.1
-Jakarta Mail API [jakarta.mail] http://eclipse-ee4j.github.io/mail
-Jakarta Mail API jar [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.0.1
-Jakarta Messaging API [jakarta.jms-api] https://projects.eclipse.org/projects/ee4j.jms
-Jakarta RESTful WS API [jakarta.ws.rs-api] https://github.com/eclipse-ee4j/
-Jakarta Security [jakarta.security.enterprise-api] https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/2.0.0
-Jakarta Security [jakarta.security.enterprise-api] https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/3.0.0
-Jakarta Server Pages API [jakarta.servlet.jsp-api] https://projects.eclipse.org/projects/ee4j.jsp
-Jakarta Servlet [jakarta.servlet-api] https://projects.eclipse.org/projects/ee4j.servlet
-Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://projects.eclipse.org/projects/ee4j.jstl
-Jakarta Standard Tag Library Implementation [jakarta.servlet.jsp.jstl] https://projects.eclipse.org/projects/ee4j.jstl
-Jakarta WebSocket - Client API [jakarta.websocket-client-api] https://projects.eclipse.org/projects/ee4j.websocket
-Jakarta WebSocket - Server API [jakarta.websocket-api] https://projects.eclipse.org/projects/ee4j.websocket
-Meta Type [org.eclipse.equinox.metatype] http://www.eclipse.org/platform
-OSGi System Bundle [org.eclipse.osgi] https://projects.eclipse.org/projects/eclipse.equinox
-OSGi resource locator [osgi-resource-locator] https://repo.maven.apache.org/maven2/org/glassfish/hk2/osgi-resource-locator/1.0.3
-RESTEasy Tracing API [resteasy-tracing-api] https://resteasy.github.io/
-Region Digraph [org.eclipse.equinox.region] http://www.eclipse.org/platform
-Yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
+Jakarta Interceptors [jakarta.interceptor-api] https://www.eclipse.org
+Jakarta JSON Processing API [jakarta.json-api] https://www.eclipse.org
+Jakarta Mail API [jakarta.mail-api] https://www.eclipse.org
+Jakarta Mail API [jakarta.mail] http://www.oracle.com
+Jakarta Mail API jar [jakarta.mail-api] http://www.oracle.com
+Jakarta Messaging API [jakarta.jms-api] https://www.eclipse.org
+Jakarta RESTful WS API [jakarta.ws.rs-api] https://www.eclipse.org/org/foundation/
+Jakarta Security [jakarta.security.enterprise-api] https://www.eclipse.org
+Jakarta Server Pages API [jakarta.servlet.jsp-api] https://www.eclipse.org
+Jakarta Servlet [jakarta.servlet-api] https://www.eclipse.org
+Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://www.eclipse.org
+Jakarta Standard Tag Library Implementation [jakarta.servlet.jsp.jstl] https://www.eclipse.org
+Jakarta WebSocket - Client API [jakarta.websocket-client-api] https://www.eclipse.org
+Jakarta WebSocket - Server API [jakarta.websocket-api] https://www.eclipse.org
+Meta Type [org.eclipse.equinox.metatype] http://www.eclipse.org/
+OSGi System Bundle [org.eclipse.osgi] https://www.eclipse.org/
+OSGi resource locator [osgi-resource-locator] https://www.eclipse.org
+RESTEasy Tracing API [resteasy-tracing-api] http://www.jboss.org
+Region Digraph [org.eclipse.equinox.region] http://www.eclipse.org/
 che-lib7.0.0-rc-4.0 [che-lib] https://github.com/eclipse-che/che-lib.git
-jakarta.enterprise.concurrent-api https://github.com/eclipse-ee4j/concurrency-api
+jakarta.enterprise.concurrent-api http://www.oracle.com/
 jakarta.json (https://github.com/jakartaee/jsonp-api)
-jakarta.resource API [jakarta.resource-api] https://github.com/
-jakarta.resource API [jakarta.resource-api] https://repo.maven.apache.org/maven2/jakarta/resource/jakarta.resource-api/2.1.0
-jakarta.transaction API [jakarta.transaction-api] https://projects.eclipse.org/projects/ee4j.jta
-jakarta.ws.rs-api https://github.com/eclipse-ee4j/jaxrs-api
+jakarta.resource API [jakarta.resource-api] https://www.eclipse.org
+jakarta.transaction API [jakarta.transaction-api] https://github.com/eclipse-ee4j
+jakarta.ws.rs-api https://www.eclipse.org/org/foundation/
 jakarta.xml.soap-api (https://github.com/javaee/javax.xml.soap)
-javax.transaction API [jakarta.transaction-api] https://projects.eclipse.org/projects/ee4j.jta
-javax.transaction API [jboss-transaction-api_1.3_spec] https://projects.eclipse.org/projects/ee4j.jta
-javax.ws.rs-api [jakarta.ws.rs-api] https://github.com/eclipse-ee4j/jaxrs-api
-jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] https://github.com/eclipse-ee4j/ejb-api
+javax.transaction API [jakarta.transaction-api] https://github.com/eclipse-ee4j
+javax.transaction API [jboss-transaction-api_1.3_spec] https://github.com/eclipse-ee4j
+javax.ws.rs-api [jakarta.ws.rs-api] https://www.eclipse.org/org/foundation/
+jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] http://www.jboss.org
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
-org.eclipse.yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
+org.eclipse.yasson [yasson] http://www.oracle.com/
 
 
 
@@ -940,7 +945,7 @@ inherits [inherits-2.0.4.tgz] (Copyright Isaac Z. Schlueter and Contributors)
 ini [ini-1.3.8.tgz] (Copyright Isaac Z. Schlueter and Contributors)
 minimatch [minimatch-7.4.6.tgz] (Copyright 2011-2023 Isaac Z. Schlueter and Contributors)
 once [once-1.4.0.tgz] (Copyright Isaac Z. Schlueter and Contributors)
-semver [semver-7.6.2.tgz] (Copyright Isaac Z. Schlueter and Contributors) (Copyright Isaac Z. Schlueter and Contributors)
+semver [semver-7.6.3.tgz] (Copyright Isaac Z. Schlueter and Contributors) (Copyright Isaac Z. Schlueter and Contributors)
 wrappy [wrappy-1.0.2.tgz] (Copyright Isaac Z. Schlueter and Contributors)
 
 
@@ -967,11 +972,11 @@ MIT license
 The Program includes some or all of the following that IBM obtained
 under the MIT license:
 
-@babel/runtime [runtime-7.24.5.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/runtime-corejs3 [runtime-corejs3-7.24.5.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@braintree/sanitize-url [sanitize-url-7.0.1.tgz] (Copyright 2017 Braintree)
+@babel/runtime [runtime-7.25.0.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/runtime-corejs3 [runtime-corejs3-7.25.0.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
+@braintree/sanitize-url [sanitize-url-7.0.2.tgz] (Copyright 2017 Braintree)
 @types/hast [hast-2.3.10.tgz] (Copyright Microsoft Corporation)
-@types/ramda [ramda-0.29.12.tgz] (Copyright Microsoft Corporation)
+@types/ramda [ramda-0.30.1.tgz] (Copyright Microsoft Corporation)
 @types/unist [unist-2.0.10.tgz] (Copyright Microsoft Corporation)
 @types/use-sync-external-store [use-sync-external-store-0.0.3.tgz] (Copyright Microsoft Corporation)
 Animal Sniffer Annotations [animal-sniffer-annotations] (Copyright 2009 codehaus.org)
@@ -982,7 +987,6 @@ SLF4J API Module [slf4j-api](Copyright Not Found)
 SLF4J JDK14 Binding [slf4j-jdk14](Copyright Not Found)
 argparse [argparse-1.0.10.tgz] (Copyright 2012 "Vitaly Puzrin" (https://github.com/puzrin)) (Copyright 2012 [Vitaly Puzrin](https://github.com/puzrin)) (Copyright 2012 by Vitaly Puzrin)
 autolinker [autolinker-3.16.2.tgz] (Copyright 2014 Gregory Jacobs (http://greg-jacobs.com))
-axios [axios-0.0.0.tgz](Copyright Not Found)
 balanced-match [balanced-match-1.0.2.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
 base64-js [base64-js-1.5.1.tgz] (Copyright 2014 Jameson Little)
 bl [bl-4.1.0.tgz] (Copyright 2013-2019 bl contributors)
@@ -998,8 +1002,8 @@ classnames [classnames-2.5.1.tgz] (Copyright 2018 Jed Watson)
 comma-separated-tokens [comma-separated-tokens-1.0.8.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 cookie [cookie-0.6.0.tgz] (Copyright 2012-2014 Roman Shtylman <shtylman@gmail.com>) (Copyright 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
 copy-to-clipboard [copy-to-clipboard-3.3.3.tgz] (Copyright 2017 sudodoki <smd.deluzion@gmail.com>)
-core-js [core-js-3.37.1.tgz] (Copyright 2014-2024 Denis Pushkarev)
-core-js-pure [core-js-pure-3.37.1.tgz] (Copyright 2014-2024 Denis Pushkarev)
+core-js [core-js-3.38.0.tgz] (Copyright 2014-2024 Denis Pushkarev)
+core-js-pure [core-js-pure-3.38.0.tgz] (Copyright 2014-2024 Denis Pushkarev)
 crypto-js [enc-base64-min-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 crypto-js [sha256-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 css.escape [css.escape-1.5.1.tgz] (Copyright Mathias Bynens <https://mathiasbynens.be/>)
@@ -1034,7 +1038,6 @@ is-alphabetical [is-alphabetical-1.0.4.tgz] (Copyright 2016 Titus Wormer <titusw
 is-alphanumerical [is-alphanumerical-1.0.4.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 is-decimal [is-decimal-1.0.4.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 is-hexadecimal [is-hexadecimal-1.0.4.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-is-plain-object [is-plain-object-5.0.0.tgz] (Copyright 2014-2017 Jon Schlinkert) (Copyright 2019 "Jon Schlinkert" (https://github.com/jonschlinkert))
 jquery [jquery-3.5.1.min.js] (Copyright 2020 OpenJS Foundation and jQuery contributors)
 jquery [jquery-3.6.3.tgz] (Copyright OpenJS Foundation and other contributors, https://openjsf.org/) (Copyright jQuery Foundation and other contributors, https://jquery.org/)
 js-file-download [js-file-download-0.4.12.tgz] (Copyright 2017 Kenneth Jiang)
@@ -1048,24 +1051,22 @@ mimic-response [mimic-response-3.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus
 minim [minim-0.23.8.tgz] (Copyright 2014 Stephen Mizell)
 minimist [minimist-1.2.8.tgz](Copyright Not Found)
 mkdirp-classic [mkdirp-classic-0.5.3.tgz] (Copyright 2020 James Halliday (mail@substack.net) and Mathias Buus)
-nan [nan-2.19.0.tgz] (Copyright 2018 NAN WG Members / Collaborators (listed above)) (Copyright 2018 NAN contributors" (https://github.com/nodejs/nan#wg-members--collaborators)) (Copyright The contribution was provided directly to me by some other) (Copyright and I have not modified)
+nan [nan-2.20.0.tgz] (Copyright 2018 NAN WG Members / Collaborators (listed above)) (Copyright 2018 NAN contributors" (https://github.com/nodejs/nan#wg-members--collaborators)) (Copyright The contribution was provided directly to me by some other) (Copyright and I have not modified)
 napi-build-utils [napi-build-utils-1.0.2.tgz] (Copyright 2018 inspiredware)
-node-abi [node-abi-3.62.0.tgz] (Copyright 2016 Lukas Geiger)
+node-abi [node-abi-3.65.0.tgz] (Copyright 2016 Lukas Geiger)
 node-abort-controller [node-abort-controller-3.1.1.tgz] (Copyright 2019 Steve Faulkner)
 node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy WÃ¤rting)
 node-fetch-commonjs [node-fetch-commonjs-3.3.2.tgz] (Copyright 2016-2020 Node Fetch Team)
 object-assign [object-assign-4.1.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-object-inspect [object-inspect-1.13.1.tgz] (Copyright 2013 James Halliday)
+object-inspect [object-inspect-1.13.2.tgz] (Copyright 2013 James Halliday)
 parse-entities [parse-entities-2.0.0.tgz] (Copyright 2015 Titus Wormer <mailto:tituswormer@gmail.com>)
 prebuild-install [prebuild-install-7.1.2.tgz] (Copyright 2015 Mathias Buus)
-prismjs [prismjs-1.27.0.tgz] (Copyright 2012 Lea Verou)
-prismjs [prismjs-1.29.0.tgz] (Copyright 2012 Lea Verou)
 process [process-0.11.10.tgz] (Copyright 2013 Roman Shtylman <shtylman@gmail.com>)
 prop-types [prop-types-15.8.1.tgz] (Copyright 2013 Facebook, Inc)
 property-information [property-information-5.6.0.tgz] (Copyright 2013-2015 Facebook, Inc) (Copyright 2015 Titus Wormer <mailto:tituswormer@gmail.com>)
 pump [pump-3.0.0.tgz] (Copyright 2014 Mathias Buus)
 querystringify [querystringify-2.2.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
-ramda [ramda-0.30.0.tgz] (Copyright 2013-2024 Scott Sauyet and Michael Hurley) (Copyright 2014 J. C. Phillipps)
+ramda [ramda-0.30.1.tgz] (Copyright 2013-2024 Scott Sauyet and Michael Hurley) (Copyright 2014 J. C. Phillipps)
 randexp [randexp-0.5.3.tgz] (Copyright 2011 by fent)
 randombytes [randombytes-2.1.0.tgz] (Copyright 2017 crypto-browserify)
 react [react-18.3.1.tgz] (Copyright Facebook, Inc. and its affiliates)
@@ -1078,7 +1079,6 @@ react-inspector [react-inspector-6.0.2.tgz] (Copyright 2017 Xiaoyi Chen)
 react-is [react-is-16.13.1.tgz] (Copyright Facebook, Inc. and its affiliates)
 react-redux [react-redux-9.1.2.tgz] (Copyright 2015 Dan Abramov)
 react-syntax-highlighter [react-syntax-highlighter-15.5.0.tgz] (Copyright 2019 Conor Hastings)
-reactive-streams (Copyright 5000 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and as)
 readable-stream [readable-stream-3.6.2.tgz] (Copyright Node.js contributors)
 redux [redux-5.0.1.tgz] (Copyright 2015 Dan Abramov)
 refractor [refractor-3.6.0.tgz] (Copyright 2017 Titus Wormer <tituswormer@gmail.com>)
@@ -1087,7 +1087,7 @@ remarkable [remarkable-2.0.1.tgz] (Copyright 2014 Jon Schlinkert, Vitaly Puzrin)
 repeat-string [repeat-string-1.6.1.tgz] (Copyright 2014-2015 Jon Schlinkert) (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 "Jon Schlinkert" (http://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](http://github.com/jonschlinkert))
 require.js [require-2.1.15.min.js](Copyright Not Found)
 requires-port [requires-port-1.0.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
-reselect [reselect-5.1.0.tgz] (Copyright 2015-2018 Reselect Contributors)
+reselect [reselect-5.1.1.tgz] (Copyright 2015-2018 Reselect Contributors)
 ret [ret-0.2.2.tgz] (Copyright 2011 by fent)
 safe-buffer [safe-buffer-5.2.1.tgz] (Copyright Feross Aboukhadijeh)
 scheduler [scheduler-0.23.2.tgz] (Copyright Facebook, Inc. and its affiliates)
@@ -1098,7 +1098,6 @@ side-channel [side-channel-1.0.6.tgz] (Copyright 2019 Jordan Harband)
 simple-concat [simple-concat-1.0.1.tgz] (Copyright Feross Aboukhadijeh)
 simple-get [simple-get-4.0.1.tgz] (Copyright Feross Aboukhadijeh)
 space-separated-tokens [space-separated-tokens-1.1.5.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-stampit [stampit-4.3.2.tgz] (Copyright 2013 Eric Elliott)
 stream-browserify [stream-browserify-3.0.0.tgz] (Copyright James Halliday)
 string_decoder [string_decoder-1.3.0.tgz] (Copyright Node.js contributors)
 strip-json-comments [strip-json-comments-2.0.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
@@ -1111,7 +1110,7 @@ tree-sitter-json [tree-sitter-json-0.20.2.tgz] (Copyright 2014 Max Brunsfeld)
 tree-sitter-yaml [tree-sitter-yaml-0.5.0.tgz] (Copyright Ika <ikatyang@gmail.com> (https://github.com/ikatyang))
 ts-mixer [ts-mixer-6.0.4.tgz] (Copyright 2024 Tanner Nielsen)
 type-fest [type-fest-0.20.2.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https:/sindresorhus.com))
-types-ramda [types-ramda-0.29.10.tgz] (Copyright 2013-2023 Scott Sauyet and Michael Hurley)
+types-ramda [types-ramda-0.30.1.tgz] (Copyright 2013-2023 Scott Sauyet and Michael Hurley)
 unraw [unraw-3.0.0.tgz] (Copyright 2019 Ian Sanders)
 url-parse [url-parse-1.5.10.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
 use-sync-external-store [use-sync-external-store-1.2.2.tgz] (Copyright Facebook, Inc. and its affiliates)
@@ -1302,7 +1301,6 @@ PERFORMANCE OF THIS SOFTWARE.
 
 END OF Python License, Version 2 NOTICES AND INFORMATION
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 END OF THE OPEN LIBERTY PROJECT NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

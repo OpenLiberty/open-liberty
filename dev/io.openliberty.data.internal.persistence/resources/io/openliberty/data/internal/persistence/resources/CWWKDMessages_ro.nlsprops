@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,339 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWKD1100 to CWWKD1499
+# All messages must use the range CWWKD1000 to CWWKD1399
 
+CWWKD1000.repo.general.err=CWWKD1000E: Metoda {0} a interfe\u021bei de depozit {1} a \u00eent\u00e2mpinat o eroare. Eroarea poate indica faptul c\u0103 metoda de depozit nu este valid\u0103. Eroarea este: {2} .
+CWWKD1000.repo.general.err.explanation=A fost g\u0103sit\u0103 o eroare cu metoda de depozit specificat\u0103.
+CWWKD1000.repo.general.err.useraction=Localiza\u021bi interfa\u021ba \u0219i metoda de depozit \u0219i determina\u021bi dac\u0103 sunt necesare corec\u021bii.
+
+CWWKD1001.no.primary.entity=CWWKD1001E: Metoda de depozit {0} necesit\u0103 o clas\u0103 de entitate, dar interfa\u021ba de depozit {1} nu specific\u0103 o clas\u0103 de entitate primar\u0103. Pentru a corecta aceast\u0103 eroare, interfa\u021ba de depozit {1} poate extinde unul dintre supertipurile de depozit \u00eencorporate, cum ar fi {2} , \u0219i poate furniza clasa de entitate ca prim parametru de tip.
+CWWKD1001.no.primary.entity.explanation=Metodele de depozit f\u0103r\u0103 o clas\u0103 de entitate proprie necesit\u0103 ca depozitul s\u0103 defineasc\u0103 o clas\u0103 de entitate primar\u0103.
+CWWKD1001.no.primary.entity.useraction=Defini\u021bi o clas\u0103 de entitate primar\u0103 pentru depozit.
+
+CWWKD1002.method.annos.err=CWWKD1002E: Metoda {0} a interfe\u021bei de depozit {1} este adnotat\u0103 cu o combina\u021bie de adnot\u0103ri care nu este valid\u0103: {2} .
+CWWKD1002.method.annos.err.explanation=Aceast\u0103 combina\u021bie de adnot\u0103ri nu este valid\u0103 pentru o singur\u0103 metod\u0103 de depozitare.
+CWWKD1002.method.annos.err.useraction=Localiza\u021bi interfa\u021ba \u0219i metoda de depozit \u0219i determina\u021bi combina\u021bia corect\u0103 de adnot\u0103ri de metod\u0103.
+
+CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} nu este un tip de returnare valid pentru o metod\u0103 de depozit {3} . Tipurile de returnare valide includ: {4} .
+CWWKD1003.lifecycle.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru metodele Inserare, Actualizare \u0219i Salvare.
+CWWKD1003.lifecycle.rtrn.err.useraction=Consulta\u021bi informa\u021biile Jakarta Data Javadoc pentru adnot\u0103rile Inserare, Actualizare \u0219i Salvare pentru tipurile de returnare valide.
+
+CWWKD1004.general.rtrn.err=CWWKD1004E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} nu este un tip de returnare valid pentru o metod\u0103 de depozit.
+CWWKD1004.general.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru tipul de metod\u0103 de depozit.
+CWWKD1004.general.rtrn.err.useraction=Consulta\u021bi informa\u021biile Jakarta Data Javadoc pentru o list\u0103 de tipuri de return\u0103ri valide pentru tipul de metod\u0103 de depozit.
+
+CWWKD1005.find.rtrn.err=CWWKD1005E: Metoda {0} a interfe\u021bei de depozit {1} nu este valid\u0103. Metoda specific\u0103 un tip de returnare {2} care nu este convertibil din tipul de entitate {3} . Tipul de rezultat al unei opera\u021bii de c\u0103utare trebuie s\u0103 fie tipul de entitate, un tip de proprietate de entitate, o \u00eenregistrare Java compus\u0103 din propriet\u0103\u021bi de entitate sau un tip construit de JPQL sau JDQL care este furnizat adnot\u0103rii Interogare. Tipul de returnare al metodei de g\u0103sire a depozitului poate fi tipul de rezultat, o matrice a tipului de rezultat sau oricare dintre urm\u0103toarele tipuri parametrizate cu tipul de rezultat: {4} .
+CWWKD1005.find.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru metodele de g\u0103sire a depozitului.
+CWWKD1005.find.rtrn.err.useraction=Consulta\u021bi informa\u021biile Jakarta Data Javadoc pentru o list\u0103 de tipuri valide de returnare pentru metodele de g\u0103sire a depozitelor.
+
+CWWKD1006.delete.rtrn.err=CWWKD1006E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} nu este un tip de returnare valid pentru o opera\u021bie de \u0219tergere. Tipul returnat trebuie s\u0103 fie void, long, int, boolean, array, List sau Op\u021bional. Un tip de returnare void nu returneaz\u0103 nicio valoare. Un tip de returnare long sau int returneaz\u0103 un num\u0103r de \u0219tergeri. Un tip de returnare boolean returneaz\u0103 un indicator dac\u0103 vreo entitate a fost \u0219tears\u0103. Un tip returnat de matrice, List\u0103 sau Op\u021bional, care este parametrizat fie cu o clas\u0103 de entit\u0103\u021bi {3} , fie cu o clas\u0103 de identificare unic\u0103 {4} , returneaz\u0103 entit\u0103\u021bile \u0219terse sau ID-urile de entit\u0103\u021bi.
+CWWKD1006.delete.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru o opera\u021bie de \u0219tergere.
+CWWKD1006.delete.rtrn.err.useraction=Actualiza\u021bi metoda de depozit pentru a utiliza unul dintre tipurile de returnare acceptate.
+
+CWWKD1007.updel.rtrn.err=CWWKD1007E: Tipul de returnare {0} al metodei {1} a interfe\u0163ei de depozit {2} nu este un tip de returnare valid pentru o opera\u0163ie de depozit {3} . Tipul returnat trebuie s\u0103 fie void, long, int sau boolean. Un tip de returnare void nu returneaz\u0103 nicio valoare. Un tip de returnare long sau int returneaz\u0103 un num\u0103r de entit\u0103\u021bi care se potrivesc. Un tip de returnare boolean returneaz\u0103 un indicator dac\u0103 vreo entitate se potrive\u0219te.
+CWWKD1007.updel.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru o opera\u021bie de actualizare sau \u0219tergere.
+CWWKD1007.updel.rtrn.err.useraction=Actualiza\u021bi metoda de depozit pentru a utiliza unul dintre tipurile de returnare acceptate.
+
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} este ambiguu ca tip de returnare deoarece corespunde mai multor propriet\u0103\u021bi de entitate: {3} . Metoda de depozit trebuie s\u0103 comute la adnotarea Interogare \u0219i s\u0103 foloseasc\u0103 o interogare JDQL sau JPQL cu o clauz\u0103 SELECT care specific\u0103 ce proprietate de entitate s\u0103 returneze.
+CWWKD1008.ambig.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru o metod\u0103 de \u0219tergere.
+CWWKD1008.ambig.rtrn.err.useraction=Actualiza\u021bi metoda de depozit pentru a utiliza adnotarea Interogare pentru a selecta proprietatea entit\u0103\u021bii.
+
+CWWKD1009.lifecycle.param.err=CWWKD1009E: Metoda {0} a interfe\u021bei de depozit {1} nu poate avea {2} parametri, deoarece metoda este adnotat\u0103 cu adnotarea ciclului de via\u021b\u0103 {3} . Metodele de depozit care sunt adnotate cu o adnotare ciclului de via\u021b\u0103 trebuie s\u0103 aib\u0103 exact 1 parametru, care trebuie s\u0103 fie entitatea sau o matrice sau Lista entit\u0103\u021bii.
+CWWKD1009.lifecycle.param.err.explanation=Metodele ciclului de via\u021b\u0103 trebuie s\u0103 aib\u0103 un singur parametru de entitate.
+CWWKD1009.lifecycle.param.err.useraction=Actualiza\u021bi metoda de depozit pentru a avea un singur parametru care este o entitate sau o matrice de List\u0103 a entit\u0103\u021bii.
+
+CWWKD1010.unknown.entity.prop=CWWKD1010E: Metoda {0} a interfe\u021bei de depozit {1} a\u0219teapt\u0103 o proprietate de entitate numit\u0103 {2} care nu se g\u0103se\u0219te \u00een clasa de entitate {3} . Numele de proprietate valide pentru entitate sunt: {4} .
+CWWKD1010.unknown.entity.prop.explanation=Metoda depozitului \u00eencearc\u0103 s\u0103 foloseasc\u0103 o proprietate de entitate care nu exist\u0103.
+CWWKD1010.unknown.entity.prop.useraction=Actualiza\u021bi metoda de depozit pentru a se potrivi cu o proprietate valid\u0103 care este definit\u0103 de entitate.
+
+CWWKD1011.unknown.method.pattern=CWWKD1011E: Metoda {0} a interfe\u021bei de depozit {1} nu se potrive\u0219te cu niciunul dintre modelele definite de Jakarta Data. O metod\u0103 de depozit trebuie fie s\u0103 foloseasc\u0103 adnot\u0103ri, fie s\u0103 fie o metod\u0103 de accesare a resurselor, fie s\u0103 fie denumit\u0103 conform modelului Interogare dup\u0103 Nume Metod\u0103. Adnot\u0103rile precum {2} sunt folosite pentru a defini opera\u021biuni. O metod\u0103 de accesare a resurselor nu trebuie s\u0103 con\u021bin\u0103 parametri \u0219i oricare dintre tipurile de returnare {3} . Modelul Interogare dup\u0103 nume de metod\u0103 trebuie s\u0103 \u00eenceap\u0103 cu unul dintre cele {4} cuvinte cheie, urmat de 0 sau mai multe caractere. Numele metodelor pot include, de asemenea, cuv\u00e2ntul cheie By \u0219i una sau mai multe condi\u021bii delimitate. Exemple de nume de metode de depozit valide sunt: {5} .
+CWWKD1011.unknown.method.pattern.explanation=Metodele de depozit trebuie s\u0103 urmeze tiparele definite de Jakarta Data.
+CWWKD1011.unknown.method.pattern.useraction=Actualiza\u021bi metoda de depozit pentru a adera la unul dintre modelele din Jakarta Data.
+
+CWWKD1012.fd.missing.param.anno=CWWKD1012E: Parametrul {0} al metodei {1} a interfe\u021bei de depozit {2} nu se potrive\u0219te cu o proprietate de entitate. Parametrii care nu se potrivesc cu o proprietate de entitate trebuie s\u0103 fie adnota\u021bi cu adnotarea By sau s\u0103 aib\u0103 unul dintre tipurile de parametri speciali: {3} . Pentru a defini o condi\u021bie pentru restric\u021bionarea rezultatelor interog\u0103rii, parametrul trebuie adnotat cu adnotarea By \u0219i valoarea adnot\u0103rii By trebuie s\u0103 fie atribuit\u0103 pentru a fi numele propriet\u0103\u021bii entit\u0103\u021bii. Alternativ, activa\u021bi op\u021biunea de compilare -parameters \u0219i da\u021bi parametrului acela\u0219i nume ca proprietatea entit\u0103\u021bii.
+CWWKD1012.fd.missing.param.anno.explanation=Parametrii metodelor de c\u0103utare \u0219i \u0219tergere a depozitului trebuie s\u0103 corespund\u0103 propriet\u0103\u021bilor entit\u0103\u021bii sau s\u0103 fie tipuri speciale de parametri Jakarta Data definite.
+CWWKD1012.fd.missing.param.anno.useraction=Actualiza\u021bi metoda depozitului astfel \u00eenc\u00e2t to\u021bi parametrii s\u0103 corespund\u0103 propriet\u0103\u021bilor entit\u0103\u021bii sau s\u0103 aib\u0103 unul dintre tipurile de parametri speciali Jakarta Data.
+
+CWWKD1013.cde.missing.param.anno=CWWKD1013E: Parametrul {0} al metodei {1} a interfe\u021bei de depozit {2} nu se potrive\u0219te cu o proprietate de entitate. Parametrii care nu se potrivesc cu o proprietate de entitate trebuie adnota\u021bi cu adnotarea By \u0219i valoarea de adnotare By trebuie s\u0103 fie atribuit\u0103 pentru a fi numele propriet\u0103\u021bii entit\u0103\u021bii. Alternativ, activa\u021bi op\u021biunea de compilare -parameters \u0219i da\u021bi parametrului acela\u0219i nume ca proprietatea entit\u0103\u021bii.
+CWWKD1013.cde.missing.param.anno.explanation=Parametrii metodelor de num\u0103rare a depozitului, \u0219tergere \u0219i existen\u021b\u0103 trebuie s\u0103 corespund\u0103 propriet\u0103\u021bilor entit\u0103\u021bii.
+CWWKD1013.cde.missing.param.anno.useraction=Actualiza\u021bi metoda depozitului astfel \u00eenc\u00e2t to\u021bi parametrii s\u0103 corespund\u0103 propriet\u0103\u021bilor entit\u0103\u021bii.
+
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: Parametrul {0} al metodei {1} a interfe\u021bei de depozit {2} nu se potrive\u0219te cu o proprietate de entitate. Parametrii care nu corespund unei propriet\u0103\u021bi de entitate trebuie s\u0103 aib\u0103 una dintre adnot\u0103rile parametrilor: {3} . Pentru a defini o condi\u021bie pentru restric\u021bionarea rezultatelor interog\u0103rii, parametrul trebuie adnotat cu adnotarea By \u0219i valoarea de adnotare By trebuie s\u0103 fie atribuit\u0103 pentru a fi numele propriet\u0103\u021bii entit\u0103\u021bii. Alternativ, activa\u021bi op\u021biunea de compilare -parameters \u0219i da\u021bi parametrului acela\u0219i nume ca proprietatea entit\u0103\u021bii.
+CWWKD1014.upd.missing.param.anno.explanation=Parametrii metodelor de actualizare a depozitului trebuie s\u0103 corespund\u0103 propriet\u0103\u021bilor entit\u0103\u021bii.
+CWWKD1014.upd.missing.param.anno.useraction=Actualiza\u021bi metoda depozitului astfel \u00eenc\u00e2t to\u021bi parametrii s\u0103 corespund\u0103 propriet\u0103\u021bilor entit\u0103\u021bii.
+
+CWWKD1015.null.entity.param=CWWKD1015E: Metoda {0} a interfe\u021bei de depozit {1} nu poate accepta o entitate nul\u0103.
+CWWKD1015.null.entity.param.explanation=Metodele ciclului de via\u021b\u0103 necesit\u0103 o instan\u021b\u0103 de entitate non-nul\u0103.
+CWWKD1015.null.entity.param.useraction=Actualiza\u021bi codul aplica\u021biei pentru a evita furnizarea unei valori de entitate nul\u0103 metodei depozitului.
+
+CWWKD1016.incompat.entity.param=CWWKD1016E: Metoda {0} a interfe\u021bei de depozit {1} necesit\u0103 o entitate {2} , dar a fost furnizat\u0103 o valoare {3} .
+CWWKD1016.incompat.entity.param.explanation=Metoda ciclului de via\u021b\u0103 accept\u0103 numai valori de entitate de tipul declarat.
+CWWKD1016.incompat.entity.param.useraction=Actualiza\u021bi codul aplica\u021biei pentru a furniza o valoare de entitate de acela\u0219i tip de entitate pe care o declar\u0103 metoda de depozit.
+
+CWWKD1017.dup.special.param=CWWKD1017E: Metoda {0} a depozitului {1} nu poate avea mai mul\u021bi parametri {2} .
+CWWKD1017.dup.special.param.explanation=Unii dintre parametrii speciali Jakarta Data, inclusiv Limit \u0219i PageRequest, nu pot ap\u0103rea de mai multe ori \u00eentr-o semn\u0103tur\u0103 a metodei de depozit.
+CWWKD1017.dup.special.param.useraction=Actualiza\u021bi semn\u0103tura metodei de depozit pentru a avea cel mult o apari\u021bie a tipului de parametru special Jakarta Data.
+
+CWWKD1018.confl.special.param=CWWKD1018E: Metoda {0} a depozitului {1} nu poate avea un parametru {2} \u0219i un parametru {3} .
+CWWKD1018.confl.special.param.explanation=Unii dintre parametrii speciali Jakarta Data, cum ar fi Limit \u0219i PageRequest, nu pot fi combina\u021bi \u00eentr-o singur\u0103 semn\u0103tur\u0103 a metodei de depozit.
+CWWKD1018.confl.special.param.useraction=Actualiza\u021bi depozitul pentru a nu utiliza ambele tipuri de parametri speciali Jakarta Data \u00een aceea\u0219i semn\u0103tur\u0103 de metod\u0103.
+
+CWWKD1019.mixed.positional.named=CWWKD1019E: Metoda {0} a interfe\u021bei de depozit {1} nu poate avea o interogare cu un amestec de parametri pozi\u021bionali \u0219i parametri numi\u021bi.
+CWWKD1019.mixed.positional.named.explanation=Interog\u0103rile cu parametri trebuie s\u0103 utilizeze to\u021bi parametrii numi\u021bi sau to\u021bi parametrii de pozi\u021bie, nu o combina\u021bie.
+CWWKD1019.mixed.positional.named.useraction=Actualiza\u021bi metoda de depozit pentru a utiliza numai parametrii denumi\u021bi sau numai parametrii pozi\u021bionali.
+
+CWWKD1020.invalid.param.type=CWWKD1020E: Parametrii metodei {0} ai interfe\u021bei de depozit {1} nu trebuie s\u0103 fie de tip {2} deoarece metoda de depozit este o opera\u021biune {3} .
+CWWKD1020.invalid.param.type.explanation=Tipul de parametru nu este permis pe acest tip de metod\u0103.
+CWWKD1020.invalid.param.type.useraction=Actualiza\u021bi metoda depozitului pentru a defini un parametru de metod\u0103 pentru fiecare valoare cerut\u0103 de o compara\u021bie.
+
+CWWKD1021.insufficient.params=CWWKD1021E: Metoda {0} a interfe\u021bei de depozit {1} are {2} parametri, dar condi\u021biile de interogare care sunt definite de metod\u0103 necesit\u0103 {3} parametri. Interogarea JPQL pentru metod\u0103 este: {4} .
+CWWKD1021.insufficient.params.explanation=Condi\u021biile de interogare care definesc compara\u021biile de valori necesit\u0103 un num\u0103r corespunz\u0103tor de parametri ai metodei de depozit pentru a furniza valorile.
+CWWKD1021.insufficient.params.useraction=Actualiza\u021bi metoda depozitului pentru a defini un parametru de metod\u0103 pentru fiecare valoare cerut\u0103 de o compara\u021bie.
+
+CWWKD1022.too.many.params=CWWKD1022E: Condi\u021biile de interogare ale metodei {0} a interfe\u021bei de depozit {1} necesit\u0103 {2} parametri, dar semn\u0103tura metodei de depozit are {3} parametri. Interogarea JPQL pentru metod\u0103 este: {4} .
+CWWKD1022.too.many.params.explanation=Condi\u021biile de interogare care definesc compara\u021biile de valori necesit\u0103 un num\u0103r corespunz\u0103tor de parametri ai metodei de depozit pentru a furniza valorile. Parametrii suplimentari nu sunt permisi.
+CWWKD1022.too.many.params.useraction=Actualiza\u021bi semn\u0103tura metodei de depozit pentru a elimina parametrii suplimentari care nu corespund condi\u021biilor declarate.
+
+CWWKD1023.extra.param=CWWKD1023E: Condi\u021biile de interogare ale metodei {0} a interfe\u021bei de depozit {1} necesit\u0103 {2} parametri, dar metoda de depozit are un parametru suplimentar {3} . Interogarea JPQL pentru metod\u0103 este: {4} .
+CWWKD1023.extra.param.explanation=Condi\u021biile de interogare care definesc compara\u021biile de valori necesit\u0103 un num\u0103r corespunz\u0103tor de parametri ai metodei de depozit pentru a furniza valorile. Parametrii suplimentari nu sunt permisi.
+CWWKD1023.extra.param.useraction=Actualiza\u021bi semn\u0103tura metodei de depozit pentru a elimina parametrii suplimentari care nu corespund condi\u021biilor declarate.
+
+CWWKD1024.missing.entity.prop=CWWKD1024E: Metodei {0} a interfe\u021bei de depozit {1} lipse\u0219te un nume de proprietate a entit\u0103\u021bii sau a fost furnizat cu un parametru c\u0103ruia \u00eei lipse\u0219te un nume de proprietate a entit\u0103\u021bii. Numele de proprietate valide pentru clasa de entitate {2} sunt: {3} .
+CWWKD1024.missing.entity.prop.explanation=Condi\u021biile de interogare \u0219i criteriile de sortare pentru o metod\u0103 de depozit trebuie s\u0103 includ\u0103 un nume de proprietate a entit\u0103\u021bii.
+CWWKD1024.missing.entity.prop.useraction=Inspecta\u021bi declara\u021bia \u0219i utilizarea metodei de depozit pentru a v\u0103 asigura c\u0103 este furnizat un nume de proprietate de entitate pentru fiecare condi\u021bie de interogare \u0219i criteriu de sortare.
+
+CWWKD1025.missing.id.prop=CWWKD1025E: Clasa de entitate {0} care este utilizat\u0103 de metoda {1} a interfe\u021bei de depozit {2} nu are o proprietate ID sau o metod\u0103 de accesare.
+CWWKD1025.missing.id.prop.explanation=Metodele de depozit care \u0219terg \u0219i returneaz\u0103 o entitate trebuie s\u0103 aib\u0103 o proprietate ID.
+CWWKD1025.missing.id.prop.useraction=Dac\u0103 entitatea nu are o singur\u0103 proprietate pentru ID, defini\u021bi metode separate de depozit care interogeaz\u0103 entitatea \u0219i \u0219terge entitatea.
+
+CWWKD1026.ignore.case.not.text=CWWKD1026E: Proprietatea {0} a entit\u0103\u021bii {1} nu este un caracter sau o secven\u021b\u0103 de caractere; prin urmare, criteriile de sortare {2} nu trebuie s\u0103 specifice pentru a ignora majuscule. Tipul propriet\u0103\u021bii este {3} \u0219i a fost furnizat metodei {4} a interfe\u021bei de depozit {5} .
+CWWKD1026.ignore.case.not.text.explanation=Sortarea cu majuscule ignorate este posibil\u0103 numai cu propriet\u0103\u021bile entit\u0103\u021bii care reprezint\u0103 text.
+CWWKD1026.ignore.case.not.text.useraction=Asigura\u021bi-v\u0103 c\u0103 criteriile de sortare sunt aplicate propriet\u0103\u021bii corecte a entit\u0103\u021bii \u0219i elimina\u021bi instruc\u021biunea de a ignora majuscule dac\u0103 proprietatea entit\u0103\u021bii nu reprezint\u0103 text.
+
+CWWKD1027.anno.missing.prop.name=CWWKD1027E: Parametrul {0} al metodei {1} a interfe\u021bei de depozit {2} este adnotat cu o adnotare {3} care nu specific\u0103 un nume de proprietate de entitate ca valoare. Adnotarea trebuie fie s\u0103 specifice numele propriet\u0103\u021bii entit\u0103\u021bii ca valoare, fie op\u021biunea de compilare -parameters trebuie s\u0103 fie activat\u0103 \u0219i parametrul trebuie s\u0103 aib\u0103 acela\u0219i nume ca \u0219i proprietatea entit\u0103\u021bii.
+CWWKD1027.anno.missing.prop.name.explanation=Parametrii metodelor de actualizare a depozitului trebuie s\u0103 corespund\u0103 propriet\u0103\u021bilor entit\u0103\u021bii.
+CWWKD1027.anno.missing.prop.name.useraction=Actualiza\u021bi metoda de depozit pentru a indica proprietatea entit\u0103\u021bii c\u0103reia \u00eei apar\u021bine parametrul.
+
+CWWKD1028.first.exceeds.max=CWWKD1028E: Metoda {0} a interfe\u021bei de depozit {1} solicit\u0103 primele {2} rezultate, care dep\u0103\u0219esc num\u0103rul maxim permis de rezultate: {3} .
+CWWKD1028.first.exceeds.max.explanation=Num\u0103rul maxim de rezultate ale interog\u0103rii este limitat de constr\u00e2ngerile de sistem \u0219i de valoarea specificat\u0103.
+CWWKD1028.first.exceeds.max.useraction=Reduce\u021bi num\u0103rul maxim solicitat de rezultate de interogare la o valoare mai mic\u0103.
+
+CWWKD1029.first.neg.or.zero=CWWKD1029E: Metoda {0} a interfe\u021bei de depozit {1} solicit\u0103 primele {2} rezultate. Num\u0103rul maxim solicitat de rezultate de returnat trebuie s\u0103 fie un num\u0103r pozitiv.
+CWWKD1029.first.neg.or.zero.explanation=Num\u0103rul maxim de rezultate ale interog\u0103rii trebuie s\u0103 fie un num\u0103r pozitiv.
+CWWKD1029.first.neg.or.zero.useraction=Actualiza\u021bi metoda de depozit pentru a specifica un num\u0103r maxim pozitiv de rezultate.
+
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Numele entit\u0103\u021bii lipse\u0219te din interogarea {0} care este specificat\u0103 pentru metoda {1} a depozitului {2} . \u00cen Jakarta Data Query Language, {3} interog\u0103ri ar trebui s\u0103 fie formate ca: {4} .
+CWWKD1030.ql.lacks.entity.explanation=Interogarea con\u021bine o clauz\u0103 care necesit\u0103 numele entit\u0103\u021bii.
+CWWKD1030.ql.lacks.entity.useraction=Actualiza\u021bi interogarea pentru metoda depozitului pentru a include numele entit\u0103\u021bii.
+
+CWWKD1031.ql.similar.entity=CWWKD1031E: Metoda {0} a interfe\u021bei de depozit {1} specific\u0103 o interogare care necesit\u0103 un nume de entitate {2} care nu este g\u0103sit, dar este o potrivire apropiat\u0103 pentru numele de entitate {3} . Interogarea este: {4} .
+CWWKD1031.ql.similar.entity.explanation=Interogarea poate avea o eroare tipografic\u0103 \u00een referin\u021ba la numele entit\u0103\u021bii.
+CWWKD1031.ql.similar.entity.useraction=Examina\u021bi interogarea pentru a v\u0103 asigura c\u0103 este utilizat numele corect al entit\u0103\u021bii.
+
+CWWKD1032.ql.unknown.entity=CWWKD1032E: Metoda {0} a interfe\u021bei de depozit {1} specific\u0103 o interogare care necesit\u0103 un nume de entitate {2} care nu este g\u0103sit. Asigura\u021bi-v\u0103 c\u0103 {2} este numele unei entit\u0103\u021bi valide. Pentru a permite g\u0103sirea entit\u0103\u021bii, da\u021bi depozitului o metod\u0103 de ciclu de via\u021b\u0103 care este adnotat cu una dintre adnot\u0103rile {3} \u0219i furniza\u021bi entitatea ca parametru. Alternativ, solicita\u021bi depozitului s\u0103 extind\u0103 interfa\u021ba DataRepository sau o alt\u0103 interfa\u021b\u0103 de depozit \u00eencorporat\u0103, cu clasa de entitate ca prim\u0103 variabil\u0103 de tip. Interogarea este: {4} .
+CWWKD1032.ql.unknown.entity.explanation=Interogarea poate avea o eroare tipografic\u0103 \u00een referin\u021ba la numele entit\u0103\u021bii sau depozitul nu specific\u0103 clasa de entitate principal\u0103.
+CWWKD1032.ql.unknown.entity.useraction=Examina\u021bi interogarea pentru a v\u0103 asigura c\u0103 este utilizat numele corect al entit\u0103\u021bii. Examina\u021bi defini\u021bia depozitului pentru a v\u0103 asigura c\u0103 este specificat\u0103 clasa de entitate principal\u0103 corect\u0103.
+
+CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Metoda {0} a interfe\u021bei de depozit {1} nu poate specifica o interogare care include o clauz\u0103 ORDER BY deoarece metoda returneaz\u0103 {2} . Elimina\u021bi clauza ORDER BY \u0219i, \u00een schimb, utiliza\u021bi adnotarea {3} pentru a specifica criteriile de sortare static\u0103. Interogarea este: {4} .
+CWWKD1033.ql.orderby.disallowed.explanation=Clauza ORDER BY este incompatibil\u0103 cu paginarea bazat\u0103 pe cursor.
+CWWKD1033.ql.orderby.disallowed.useraction=\u00cenlocui\u021bi clauza ORDER BY cu adnot\u0103ri care specific\u0103 criteriile de sortare.
+
+CWWKD1034.ql.where.required=CWWKD1034E: Interogarea care este specificat\u0103 de metoda {0} a interfe\u021bei de depozit {1} trebuie s\u0103 se \u00eencheie cu o clauz\u0103 WHERE deoarece metoda returneaz\u0103 {2} . Acolo clauza WHERE se termin\u0103 la pozi\u021bia {3} , dar lungimea interog\u0103rii este {4} . Interogarea este: {5} .
+CWWKD1034.ql.where.required.explanation=O clauz\u0103 WHERE este necesar\u0103 c\u00e2nd se utilizeaz\u0103 paginarea bazat\u0103 pe cursor.
+CWWKD1034.ql.where.required.useraction=Ad\u0103uga\u021bi o clauz\u0103 WHERE la interogare.
+
+CWWKD1035.incompat.page.mode=CWWKD1035E: O solicitare de pagin\u0103 cu modul de paginare {0} nu trebuie s\u0103 fie furnizat\u0103 metodei {1} a interfe\u021bei de depozit {2} deoarece metoda returneaz\u0103 {3} \u00een loc de {4} .
+CWWKD1035.incompat.page.mode.explanation=Modul de paginare solicitat nu este compatibil cu tipul de returnare al metodei de depozit.
+CWWKD1035.incompat.page.mode.useraction=Utiliza\u021bi un tip de returnare Pagina pentru modul de paginare OFFSET \u0219i un tip de returnare CursoredPage pentru modurile de paginare CURSOR_NEXT \u0219i CURSOR_PREVIOUS.
+
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: Un cursor cu {0} elemente care este furnizat metodei {1} a interfe\u021bei de depozit {2} nu poate fi utilizat cu criterii de sortare de dimensiune {3} deoarece num\u0103rul \u0219i ordinea elementelor cursorului trebuie s\u0103 corespund\u0103 criteriilor de sortare. Cursorul este format din: {4} . Criteriul de sortare este: {5} .
+CWWKD1036.cursor.size.mismatch.explanation=Num\u0103rul de elemente cursor trebuie s\u0103 se potriveasc\u0103 cu dimensiunea criteriilor de sortare combinate ale metodei de depozit.
+CWWKD1036.cursor.size.mismatch.useraction=Corecta\u021bi elementele cursorului sau criteriile de sortare astfel \u00eenc\u00e2t ambele s\u0103 aib\u0103 aceea\u0219i dimensiune.
+
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Nu se poate ob\u021bine un cursor din rezultatul {0} al metodei {1} a interfe\u021bei de depozit {2} . Interog\u0103rile care utilizeaz\u0103 paginarea bazat\u0103 pe cursor trebuie s\u0103 returneze rezultate de acela\u0219i tip ca tipul de entitate, care este {3} . Tipul de returnare al metodei depozitului este {4} .
+CWWKD1037.cursor.rtrn.mismatch.explanation=Paginarea bazat\u0103 pe cursor este posibil\u0103 numai atunci c\u00e2nd metoda depozitului returneaz\u0103 tipul de entitate.
+CWWKD1037.cursor.rtrn.mismatch.useraction=Actualiza\u021bi metoda de depozit pentru a returna tipul de entitate.
+
+CWWKD1038.no.prev.offset.page=CWWKD1038E: Un num\u0103r de pagin\u0103 anterior lui {0} nu poate fi solicitat pentru metoda {1} a interfe\u021bei de depozit {2} deoarece metoda Page.hasPrevious returneaz\u0103 false, indic\u00e2nd c\u0103 nu exist\u0103 o pagin\u0103 anterioar\u0103.
+CWWKD1038.no.prev.offset.page.explanation=Paginarea offset nu permite numere de pagin\u0103 mai mici de 1.
+CWWKD1038.no.prev.offset.page.useraction=Asigura\u021bi-v\u0103 c\u0103 num\u0103rul de pagin\u0103 solicitat este un num\u0103r pozitiv \u0219i utiliza\u021bi metoda Page.hasPrevious pentru a v\u0103 asigura c\u0103 este valid\u0103 solicitarea paginii anterioare.
+
+CWWKD1039.no.prev.cursor.page=CWWKD1039E: O pagin\u0103 anterioar\u0103 nu poate fi solicitat\u0103 pentru metoda {0} a interfe\u021bei de depozit {1} deoarece metoda Page.hasPrevious returneaz\u0103 false, indic\u00e2nd c\u0103 nu exist\u0103 o pagin\u0103 anterioar\u0103.
+CWWKD1039.no.prev.cursor.page.explanation=Paginarea bazat\u0103 pe cursor nu permite solicitarea unei pagini anterioare atunci c\u00e2nd se \u0219tie c\u0103 pagina curent\u0103 con\u021bine rezultatele la \u00eenceputul setului de date.
+CWWKD1039.no.prev.cursor.page.useraction=Utiliza\u021bi metoda Page.hasPrevious pentru a v\u0103 asigura c\u0103 este valid\u0103 solicitarea paginii anterioare.
+
+CWWKD1040.no.next.page=CWWKD1040E: O pagin\u0103 urm\u0103toare nu poate fi solicitat\u0103 pentru metoda {0} a interfe\u021bei de depozit {1} deoarece {2} returneaz\u0103 false, indic\u00e2nd c\u0103 nu exist\u0103 o pagin\u0103 urm\u0103toare.
+CWWKD1040.no.next.page.explanation=O pagin\u0103 urm\u0103toare nu poate fi solicitat\u0103 c\u00e2nd se \u0219tie c\u0103 pagina curent\u0103 con\u021bine sf\u00e2r\u0219itul setului de date.
+CWWKD1040.no.next.page.useraction=Utiliza\u021bi metoda hasNext pentru a v\u0103 asigura c\u0103 este valid\u0103 solicitarea paginii urm\u0103toare.
+
+CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: Metoda {0} a interfe\u021bei de depozit {1} are un tip de returnare {2} dar nu are un parametru de tip PageRequest care urmeaz\u0103 parametrii pentru condi\u021biile de interogare.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=Metodele de depozit cu tipurile de returnare Page \u0219i CursoredPage trebuie s\u0103 aib\u0103 un parametru PageRequest .
+CWWKD1041.rtrn.mismatch.pagereq.useraction=Ad\u0103uga\u021bi un parametru PageRequest la semn\u0103tura metodei de depozit.
+
+CWWKD1042.no.totals=CWWKD1042E: Paginile care sunt preluate prin metoda {0} a interfe\u021bei de depozit {1} nu includ un num\u0103r total de elemente \u0219i pagini, deoarece solicitarea de pagin\u0103 {2} specific\u0103 o valoare false pentru requestTotal . Pentru a solicita o pagin\u0103 cu num\u0103rul total inclus, utiliza\u021bi metoda PageRequest.withTotal \u00een loc de metoda PageRequest.withoutTotal .
+CWWKD1042.no.totals.explanation=Metoda PageRequest.withoutTotal specific\u0103 faptul c\u0103 paginile solicitate nu includ un num\u0103r total de elemente \u0219i pagini.
+CWWKD1042.no.totals.useraction=Utiliza\u021bi metoda PageRequest.withTotal pentru a solicita un num\u0103r total de elemente \u0219i pagini.
+
+CWWKD1043.offset.exceeds.max=CWWKD1043E: Deplasarea {0} care este necesar\u0103 pentru solicitarea de pagin\u0103 {1} care este furnizat\u0103 metodei {2} a interfe\u021bei de depozit {3} dep\u0103\u0219e\u0219te valoarea maxim\u0103 permis\u0103 de {4} .
+CWWKD1043.offset.exceeds.max.explanation=Combina\u021bia dintre num\u0103rul paginii \u0219i dimensiunea maxim\u0103 a paginii este prea mare.
+CWWKD1043.offset.exceeds.max.useraction=Ad\u0103uga\u021bi restric\u021bii la interogare pentru a reduce num\u0103rul de rezultate potrivite.
+
+CWWKD1044.invalid.resource.type=CWWKD1044E: Metoda de accesare a resurselor {0} din depozitul {1} nu poate returna o resurs\u0103 {2} . Tipurile de returnare acceptate pentru metodele de accesare a resurselor sunt: {3} .
+CWWKD1044.invalid.resource.type.explanation=Tipul de returnare al metodei de accesare a resurselor nu este unul dintre tipurile acceptate pentru Jakarta Data.
+CWWKD1044.invalid.resource.type.useraction=Elimina\u021bi metoda sau actualiza\u021bi-o pentru a returna unul dintre tipurile acceptate.
+
+CWWKD1045.unknown.entity.anno=CWWKD1045E: Furnizorul de date Jakarta \u00eencorporat nu poate oferi o implementare a interfe\u021bei de depozit {0} deoarece clasa de entitate {1} care este utilizat\u0103 de depozit include o adnotare de entitate nerecunoscut\u0103. Urm\u0103toarele adnot\u0103ri de entitate se g\u0103sesc pe clasa de entitate: {2} . Adnot\u0103rile de entit\u0103\u021bi acceptate sunt: {3} .
+CWWKD1045.unknown.entity.anno.explanation=Furnizorul de date Jakarta \u00eencorporat nu accept\u0103 una dintre adnot\u0103rile de entitate.
+CWWKD1045.unknown.entity.anno.useraction=Elimina\u021bi adnotarea de entitate nerecunoscut\u0103 sau utiliza\u021bi atributul de furnizor al adnot\u0103rii Repository pentru a selecta un furnizor de date Jakarta care recunoa\u0219te adnotarea entit\u0103\u021bii.
+
+CWWKD1046.result.convert.err=CWWKD1046E: Rezultatul {0} al metodei {1} a interfe\u021bei de depozit {2} nu poate fi convertit la tipul de returnare {3} al metodei de depozit.
+CWWKD1046.result.convert.err.explanation=Valoarea rezultatului nu este compatibil\u0103 cu tipul de returnare al metodei de depozit.
+CWWKD1046.result.convert.err.useraction=Asigura\u021bi-v\u0103 c\u0103 tipul de returnare al metodei de depozit este \u00een concordan\u021b\u0103 cu tipul de rezultat care este returnat de interogare.
+
+CWWKD1047.result.out.of.range=CWWKD1047E: Rezultatul {0} al metodei {1} a interfe\u021bei de depozit {2} nu poate fi convertit la tipul de returnare {3} al metodei de depozit deoarece rezultatul nu se afl\u0103 \u00een intervalul de la {4} la {5} .
+CWWKD1047.result.out.of.range.explanation=Valoarea rezultat\u0103 nu este compatibil\u0103 cu tipul de returnare pentru metoda depozitului, deoarece se afl\u0103 \u00een afara intervalului de valori care pot fi convertite.
+CWWKD1047.result.out.of.range.useraction=Ajusta\u021bi tipul de returnare al metodei de depozit pentru a permite returnarea valorii.
+
+CWWKD1048.result.exceeds.max=CWWKD1048E: Rezultatul {0} al metodei {1} a interfe\u021bei de depozit {2} nu poate fi convertit la tipul de returnare {3} al metodei de depozit deoarece valoarea rezultatului dep\u0103\u0219e\u0219te valoarea maxim\u0103 a {4} .
+CWWKD1048.result.exceeds.max.explanation=Valoarea rezultatului nu este compatibil\u0103 cu tipul returnat pentru metoda depozitului deoarece dep\u0103\u0219e\u0219te valoarea maxim\u0103 care poate fi convertit\u0103 \u00een acel tip.
+CWWKD1048.result.exceeds.max.useraction=Ajusta\u021bi tipul de returnare al metodei de depozit pentru a permite returnarea valorii.
+
+CWWKD1049.count.convert.err=CWWKD1049E: Valoarea de num\u0103rare, {0} , din metoda {1} a interfe\u021bei de depozit {2} nu poate fi convertit\u0103 \u00een tipul de returnare {3} al metodei de depozit.
+CWWKD1049.count.convert.err.explanation=Valoarea num\u0103rului nu este compatibil\u0103 cu tipul de returnare al metodei de depozit.
+CWWKD1049.count.convert.err.useraction=Ajusta\u021bi tipul de returnare al metodei de depozit pentru a permite returnarea valorii.
+
+CWWKD1050.opt.lock.exc=CWWKD1050E: Metoda {0} a interfe\u021bei de depozit {1} nu a g\u0103sit o entitate {2} care s\u0103 se potriveasc\u0103 cu propriet\u0103\u021bile entit\u0103\u021bii: {3} . Verifica\u021bi dac\u0103 instan\u021ba entit\u0103\u021bii care este furnizat\u0103 metodei {0} se bazeaz\u0103 pe cea mai recent\u0103 versiune a entit\u0103\u021bii. Cea mai recent\u0103 versiune a entit\u0103\u021bii poate fi ob\u021binut\u0103 dintr-o metod\u0103 de c\u0103utare sau din valoarea rezultatului uneia dintre urm\u0103toarele metode de ciclu de via\u021b\u0103: {4} .
+CWWKD1050.opt.lock.exc.explanation=O entitate care se potrive\u0219te nu a fost g\u0103sit\u0103.
+CWWKD1050.opt.lock.exc.useraction=Dac\u0103 este de a\u0219teptat ca entitatea s\u0103 nu fie g\u0103sit\u0103 \u00een baza de date, nu este necesar\u0103 nicio ac\u021biune. \u00cen caz contrar, asigura\u021bi-v\u0103 c\u0103 este utilizat\u0103 cea mai recent\u0103 versiune a entit\u0103\u021bii.
+
+CWWKD1051.single.opt.lock.exc=CWWKD1051E: Metoda {0} a interfe\u021bei de depozit {1} nu a g\u0103sit o entitate {2} potrivit\u0103 \u00een baza de date. Verifica\u021bi dac\u0103 instan\u021ba entit\u0103\u021bii care este furnizat\u0103 metodei {0} se bazeaz\u0103 pe cea mai recent\u0103 versiune a entit\u0103\u021bii. Cea mai recent\u0103 versiune a entit\u0103\u021bii poate fi ob\u021binut\u0103 dintr-o metod\u0103 de c\u0103utare sau din valoarea rezultatului uneia dintre urm\u0103toarele metode de ciclu de via\u021b\u0103: {3} .
+CWWKD1051.single.opt.lock.exc.explanation=O entitate care se potrive\u0219te nu a fost g\u0103sit\u0103.
+CWWKD1051.single.opt.lock.exc.useraction=Dac\u0103 este de a\u0219teptat ca entitatea s\u0103 nu fie g\u0103sit\u0103 \u00een baza de date, nu este necesar\u0103 nicio ac\u021biune. \u00cen caz contrar, asigura\u021bi-v\u0103 c\u0103 este utilizat\u0103 cea mai recent\u0103 versiune a entit\u0103\u021bii.
+
+CWWKD1052.multi.opt.lock.exc=CWWKD1052E: Metoda {0} a interfe\u021bei de depozit {1} nu a g\u0103sit {2} dintre entit\u0103\u021bile {3} {4} din baza de date. Verifica\u021bi dac\u0103 instan\u021bele de entitate care sunt furnizate metodei {0} se bazeaz\u0103 pe cea mai recent\u0103 versiune a fiec\u0103rei entit\u0103\u021bi. Cea mai recent\u0103 versiune a unei entit\u0103\u021bi poate fi ob\u021binut\u0103 dintr-o metod\u0103 de c\u0103utare sau din valoarea rezultatului uneia dintre urm\u0103toarele metode de ciclu de via\u021b\u0103: {5} .
+CWWKD1052.multi.opt.lock.exc.explanation=Una sau mai multe dintre entit\u0103\u021bi nu au fost g\u0103site \u00een baza de date.
+CWWKD1052.multi.opt.lock.exc.useraction=Dac\u0103 este de a\u0219teptat ca o entitate s\u0103 nu fie g\u0103sit\u0103 \u00een baza de date, nu este necesar\u0103 nicio ac\u021biune. \u00cen caz contrar, asigura\u021bi-v\u0103 c\u0103 este utilizat\u0103 cea mai recent\u0103 versiune a fiec\u0103rei entit\u0103\u021bi.
+
+CWWKD1053.empty.result=CWWKD1053E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} nu este capabil s\u0103 returneze un rezultat gol. Dac\u0103 se a\u0219teapt\u0103 un rezultat gol, metoda depozitului trebuie s\u0103 returneze o matrice sau unul dintre urm\u0103toarele tipuri de returnare: {3} .
+CWWKD1053.empty.result.explanation=Tipul de returnare al metodei de depozit nu \u00eei permite s\u0103 returneze un rezultat gol.
+CWWKD1053.empty.result.useraction=Actualiza\u021bi metoda de depozit pentru a utiliza unul dintre tipurile de returnare care pot reprezenta un rezultat gol.
+
+CWWKD1054.non.unique.result=CWWKD1054E: Metoda {0} a interfe\u021bei de depozit {1} are tipul de returnare {2} , care nu este capabil s\u0103 returneze rezultate {3} . Pentru a v\u0103 limita la un singur rezultat, utiliza\u021bi unul dintre urm\u0103toarele modele de date Jakarta: {4} .
+CWWKD1054.non.unique.result.explanation=Tipul de returnare al metodei de depozit nu permite returnarea mai multor rezultate.
+CWWKD1054.non.unique.result.useraction=Actualiza\u021bi metoda depozitului fie pentru a utiliza un tip de returnare care accept\u0103 mai multe rezultate, fie actualiza\u021bi metoda depozitului pentru a nu returna mai mult de un singur rezultat.
+
+CWWKD1055.unsupported.entity.prop=CWWKD1055E: Proprietatea {0} a entit\u0103\u021bii {1} are un tip neacceptat: {2} . Jakarta Data accept\u0103 tipurile de enumerare Java, {3} tipurile temporale \u0219i urm\u0103toarele tipuri de baz\u0103: {4} . Furnizorul de date Jakarta \u00eencorporat accept\u0103 \u0219i unele tipuri Jakarta Persistence, cum ar fi \u00eencorporabile.
+CWWKD1055.unsupported.entity.prop.explanation=Datele Jakarta nu accept\u0103 tipul utilizat de proprietatea entit\u0103\u021bii.
+CWWKD1055.unsupported.entity.prop.useraction=Actualiza\u021bi proprietatea entit\u0103\u021bii pentru a utiliza unul dintre tipurile acceptate.
+
+CWWKD1056.unsupported.keyword=CWWKD1056E: Metoda {0} a interfe\u021bei de depozit {1} are un nume care include un cuv\u00e2nt cheie {2} , care nu este un cuv\u00e2nt cheie acceptat al modelului Jakarta Data Query by Method Name.
+CWWKD1056.unsupported.keyword.explanation=Numele metodei include un cuv\u00e2nt cheie care nu este recunoscut ca parte a modelului acceptat Jakarta Data Query by Method Name.
+CWWKD1056.unsupported.keyword.useraction=Redenumi\u021bi metoda de depozit pentru a elimina cuv\u00e2ntul cheie neacceptat.
+
+CWWKD1057.no.args.constr.inacc=CWWKD1057E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} nu este valid pentru o metod\u0103 de depozit deoarece clasei {3} nu are un constructor public f\u0103r\u0103 parametri.
+CWWKD1057.no.args.constr.inacc.explanation=Este necesar un constructor public f\u0103r\u0103 parametri pentru a converti rezultatul \u00een clasa specificat\u0103.
+CWWKD1057.no.args.constr.inacc.useraction=Actualiza\u021bi metoda de depozit pentru a avea un tip de returnare pe care Jakarta Data \u00eel accept\u0103 sau pentru a fi o subclas\u0103 a Iterable cu un constructor public care nu are parametri.
+
+CWWKD1058.no.args.constr.err=CWWKD1058E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} nu este valid pentru o metod\u0103 de depozit deoarece constructorul clasei {3} a generat o eroare: {4} .
+CWWKD1058.no.args.constr.err.explanation=Constructorul public f\u0103r\u0103 parametri a e\u0219uat din cauza unei erori.
+CWWKD1058.no.args.constr.err.useraction=Remedia\u021bi eroarea din constructor sau actualiza\u021bi metoda de depozit pentru a utiliza un alt tip de returnare.
+
+CWWKD1059.prop.cast.err=CWWKD1059E: Metoda {0} a interfe\u0163ei de depozit {1} nu poate accesa proprietatea {2} a entit\u0103\u0163ii {3} deoarece c\u00e2mpul {4} sau metoda clasei {5} este incompatibil\u0103 cu o valoare {6} .
+CWWKD1059.prop.cast.err.explanation=O proprietate de entitate sau o proprietate aferent\u0103 din ierarhia acesteia nu este compatibil\u0103 cu tipul a\u0219teptat.
+CWWKD1059.prop.cast.err.useraction=Examina\u021bi modelul de entitate \u0219i verifica\u021bi dac\u0103 sunt utilizate tipurile corecte pentru fiecare proprietate.
+
+CWWKD1060.name.out.of.scope=CWWKD1060E: Interfa\u021ba de depozit {0} din aplica\u021bia {1} configureaz\u0103 o valoare {2} pentru atributul {3} , dar numele {3} nu sunt accesibile artefactului care furnizeaz\u0103 interfa\u021ba de depozit. Utiliza\u021bi \u00een schimb un nume {4} .
+CWWKD1060.name.out.of.scope.explanation=Spa\u021biul de nume specificat nu este accesibil din artefactul \u00een care este definit\u0103 interfa\u021ba de depozit.
+CWWKD1060.name.out.of.scope.useraction=Actualiza\u021bi adnotarea depozitului pentru a specifica un nume de depozit de date care este vizibil pentru modulul sau biblioteca care furnizeaz\u0103 interfa\u021ba de depozit.
+
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Interfa\u021ba de depozit {0} care este definit\u0103 \u00een modulul enterprise bean {1} al aplica\u021biei {2} configureaz\u0103 o valoare {2} pentru atributul {3} . Cu toate acestea, numele {4} nu sunt accesibile modulelor enterprise bean. Utiliza\u021bi un nume dintr-unul dintre urm\u0103toarele spa\u021bii de nume: {5} .
+CWWKD1061.comp.name.in.ejb.explanation=Spa\u021biul de nume specificat nu este accesibil pentru modulul enterprise bean unde este definit\u0103 interfa\u021ba de depozit.
+CWWKD1061.comp.name.in.ejb.useraction=Actualiza\u021bi adnotarea Repository pentru a specifica un nume de depozit de date care este vizibil pentru modulul enterprise bean care furnizeaz\u0103 interfa\u021ba de depozit.
+
+CWWKD1062.resource.not.found=CWWKD1062E: Metoda {0} a interfe\u0163ei de depozit {1} nu poate localiza resursa {2} cu filtrul {3} .
+CWWKD1062.resource.not.found.explanation=Resursa nu este g\u0103sit\u0103.
+CWWKD1062.resource.not.found.useraction=Asigura\u021bi-v\u0103 c\u0103 resursa specificat\u0103 \u0219i toate celelalte resurse de care depinde exist\u0103 \u0219i sunt configurate corect.
+
+CWWKD1063.unsupported.resource=CWWKD1063E: Metoda {0} a interfe\u021bei de depozit {1} nu poate ob\u021bine o resurs\u0103 {2} , deoarece furnizorul Jakarta Persistence nu accept\u0103 opera\u021bia de dezactivare care returneaz\u0103 o instan\u021b\u0103 {3} .
+CWWKD1063.unsupported.resource.explanation=Furnizorul de persisten\u021b\u0103 Jakarta nu accept\u0103 opera\u021bia de despachetare care returneaz\u0103 tipul de resurs\u0103 specificat.
+CWWKD1063.unsupported.resource.useraction=Elimina\u021bi metoda de accesare a resurselor neacceptat\u0103 din interfa\u021ba de depozit.
+
+CWWKD1064.datastore.error=CWWKD1064E: Metoda {0} a interfe\u021bei de depozit {1} nu poate ob\u021bine depozitul de date {2} pentru depozit din cauza urm\u0103toarei erori: {3} .
+CWWKD1064.datastore.error.explanation=A ap\u0103rut o eroare la \u00eencercarea de a ob\u021bine depozitul de date.
+CWWKD1064.datastore.error.useraction=Asigura\u021bi-v\u0103 c\u0103 depozitul de date specificat \u0219i toate celelalte resurse de care depinde exist\u0103 \u0219i sunt configurate corect.
+
+CWWKD1065.ddlgen.timeout=CWWKD1065E: Generarea DDL pentru interfa\u021ba de depozit {0} a e\u0219uat deoarece depozitul de date {1} nu a finalizat generarea DDL \u00een {2} secunde pentru urm\u0103toarele entit\u0103\u021bi: {3} .
+CWWKD1065.ddlgen.timeout.explanation=\u00cencercarea de generare DDL a expirat \u0219i nu s-a finalizat.
+CWWKD1065.ddlgen.timeout.useraction=Re\u00eencerca\u021bi generarea DDL c\u00e2nd sistemul \u0219i baza de date nu sunt \u00eenc\u0103rcate.
+
+CWWKD1066.ddlgen.failed=CWWKD1066E: Generarea DDL pentru interfa\u021ba de depozit {0} care utilizeaz\u0103 depozitul de date {1} a \u00eent\u00e2mpinat o eroare la \u00eencercarea de generare DDL pentru urm\u0103toarele entit\u0103\u021bi: {2} . Eroarea este: {3} .
+CWWKD1066.ddlgen.failed.explanation=\u00cencercarea de generare a DDL a e\u0219uat \u0219i nu s-a finalizat.
+CWWKD1066.ddlgen.failed.useraction=Investiga\u021bi eroarea \u0219i efectua\u021bi corec\u021bii la interfa\u021ba depozitului, la entit\u0103\u021bi, la configura\u021bia depozitului de date sau la baza de date.
+
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: Generarea DDL pentru interfa\u021ba de depozit {0} a e\u0219uat deoarece depozitul de date {1} nu a fost disponibil sau nu a putut face disponibile urm\u0103toarele entit\u0103\u021bi \u00een {2} secunde: {3} .
+CWWKD1067.ddlgen.emf.timeout.explanation=Achizi\u021bia resurselor necesare pentru generarea DDL a expirat \u0219i nu a fost finalizat\u0103.
+CWWKD1067.ddlgen.emf.timeout.useraction=Re\u00eencerca\u021bi generarea DDL c\u00e2nd sistemul \u0219i baza de date nu sunt \u00eenc\u0103rcate.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: Interfa\u021ba de depozit {0} are mai multe entit\u0103\u021bi numite {1} care sunt furnizate de diferite clase: {2} . Utiliza\u021bi urm\u0103toarele adnot\u0103ri de entitate Jakarta Persistence pentru a atribui un nume unic de entitate \u0219i un nume de tabel fiec\u0103rei clase de entitate: {3} .
+CWWKD1068.entity.name.conflict.explanation=Numele entit\u0103\u021bilor \u0219i numele tabelelor sunt deduse din numele clasei necalificate sau atribuite de adnot\u0103rile Jakarta Persistence.
+CWWKD1068.entity.name.conflict.useraction=Redenumi\u021bi entit\u0103\u021bile sau ad\u0103uga\u021bi adnot\u0103ri Jakarta Persistence pentru a rezolva \u00een mod explicit conflictul de nume.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: Interfa\u021ba de depozit {0} are mai multe entit\u0103\u021bi numite {1} care sunt furnizate de diferite clase: {2} . C\u00e2nd \u00eenregistr\u0103rile Java sunt utilizate ca entit\u0103\u021bi, trebuie s\u0103 fie posibil\u0103 ad\u0103ugarea unui sufix de Entitate la numele entit\u0103\u021bii f\u0103r\u0103 a avea ca rezultat un conflict de nume. De exemplu: {2} .
+CWWKD1069.record.entity.name.conflict.explanation=Numele entit\u0103\u021bilor \u0219i numele tabelelor sunt deduse din numele clasei necalificate sau atribuite de adnot\u0103rile Jakarta Persistence.
+CWWKD1069.record.entity.name.conflict.useraction=Redenumi\u021bi entit\u0103\u021bile sau comuta\u021bi la entit\u0103\u021bile Jakarta Persistence pentru a rezolva conflictul de nume.
+
+CWWKD1070.record.convert.err=CWWKD1070E: \u00cenregistrarea {0} care este furnizat\u0103 metodei {1} a interfe\u021bei de depozit {2} nu poate fi utilizat\u0103 ca entitate din cauza urm\u0103toarei erori: {3} .
+CWWKD1070.record.convert.err.explanation=Nu este posibil s\u0103 utiliza\u021bi \u00eenregistrarea Java ca entitate.
+CWWKD1070.record.convert.err.useraction=Defini\u021bi entitatea ca o entitate Jakarta Persistence \u00een loc s\u0103 utiliza\u021bi o entitate de \u00eenregistrare Java.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: \u00cenregistrarea {0} nu poate fi utilizat\u0103 ca entitate deoarece are una sau mai multe variabile de tip: {1} .
+CWWKD1071.record.with.type.var.explanation=Clasele de entit\u0103\u021bi nu pot avea variabile de tip generic.
+CWWKD1071.record.with.type.var.useraction=Elimina\u021bi variabilele de tip din \u00eenregistrare.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: \u00cenregistrarea {0} nu poate fi utilizat\u0103 ca entitate, deoarece componenta sa {1} \u0219i componenta {2} se rezolv\u0103 ambele la acela\u0219i nume de proprietate a entit\u0103\u021bii.
+CWWKD1072.record.comp.conflict.explanation=Numele propriet\u0103\u021bilor entit\u0103\u021bilor trebuie s\u0103 fie unice, ignor\u00e2nd majuscule \u0219i minuscule.
+CWWKD1072.record.comp.conflict.useraction=Redenumi\u021bi una dintre componentele de \u00eenregistrare pentru a evita conflictul.
+
+CWWKD1073.offset.exceeds.max=CWWKD1073E: Punctul de pornire {0} al limitei {1} care este furnizat metodei {2} a interfe\u021bei de depozit {3} dep\u0103\u0219e\u0219te valoarea maxim\u0103 permis\u0103 a {4} .
+CWWKD1073.offset.exceeds.max.explanation=Punctul de pornire pentru limit\u0103 este prea mare.
+CWWKD1073.offset.exceeds.max.useraction=Ad\u0103uga\u021bi restric\u021bii la interogare pentru a reduce num\u0103rul de rezultate potrivite.
+
+CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: Metoda {0} a interfe\u021bei de depozit {1} nu trebuie s\u0103 combine cuv\u00e2ntul cheie {2} cu cuv\u00e2ntul cheie {3} \u00een aceea\u0219i condi\u021bie Interogare dup\u0103 nume de metod\u0103.
+CWWKD1074.qbmn.incompat.keywords.explanation=Cuvintele cheie specificate Interogare dup\u0103 Nume metod\u0103 nu sunt compatibile \u00eentre ele.
+CWWKD1074.qbmn.incompat.keywords.useraction=Redenumi\u021bi metoda pentru a nu combina cuvintele cheie \u00een aceea\u0219i condi\u021bie.
+
+CWWKD1075.entity.prop.conflict=CWWKD1075E: Entitatea {0} nu poate avea o proprietate numit\u0103 {1} \u0219i o proprietate numit\u0103 {2} deoarece specifica\u021bia Jakarta Data consider\u0103 c\u0103 aceste nume sunt aliasuri pentru aceea\u0219i proprietate a entit\u0103\u021bii.
+CWWKD1075.entity.prop.conflict.explanation=Exist\u0103 o coliziune \u00eentre numele a dou\u0103 propriet\u0103\u021bi de entitate din cauza caracterului de subliniere.
+CWWKD1075.entity.prop.conflict.useraction=Nu utiliza\u021bi caracterul de subliniere \u00een numele propriet\u0103\u021bilor entit\u0103\u021bilor.
+
+CWWKD1076.repo.disposed=CWWKD1076E: Metoda {0} a interfe\u021bei de depozit {1} nu poate fi invocat\u0103 deoarece aplica\u021bia care define\u0219te depozitul s-a oprit. Instan\u021ba depozitului este {2} .
+CWWKD1076.repo.disposed.explanation=Metodele de depozit nu trebuie utilizate \u00een afara ciclului de via\u021b\u0103 al aplica\u021biei care define\u0219te depozitul.
+CWWKD1076.repo.disposed.useraction=Asigura\u021bi-v\u0103 c\u0103 metoda depozitului nu este utilizat\u0103 \u00een afara domeniului de aplicare al aplica\u021biei care define\u0219te depozitul.
+
+CWWKD1077.defaultds.not.found=CWWKD1077E: Artefactul de aplica\u021bie {0} are o interfa\u021b\u0103 de depozit {1} care utilizeaz\u0103 sau implicit la depozitul de date {2} , care trebuie configurat \u00een configura\u021bia serverului prin definirea unui element dataSource care are un identificator DefaultDataSource . De exemplu, {3} Alternativ, atribui\u021bi valoarea dataStore a adnot\u0103rii Repository s\u0103 fie identificatorul unui element databaseStore sau numele JNDI al unei referin\u021be de resurse sursei de date sau referin\u021b\u0103 la unitatea de persisten\u021b\u0103 care este accesibil\u0103 artefactului aplica\u021biei. Un element databaseStore poate fi definit \u00een configura\u021bia serverului. De exemplu, {4} O component\u0103 de aplica\u021bie poate folosi adnotarea Resurse pentru a defini o referin\u021b\u0103 de resurs\u0103 a sursei de date. De exemplu, {5} , care necesit\u0103 configurarea serverului s\u0103 aib\u0103 un element de configurare dataSource cu un atri\
+    but {6} . O component\u0103 de aplica\u021bie poate folosi adnotarea PersistenceUnit pentru a defini o referin\u021b\u0103 de unitate de persisten\u021b\u0103. De exemplu, {7} , care necesit\u0103 ca fi\u0219ierul persistence.xml s\u0103 aib\u0103 un element persistence-unit cu un atribut de nume care se potrive\u0219te. De exemplu, {8}
+CWWKD1077.defaultds.not.found.explanation=Depozitele de date Jakarta sunt implicite la sursa de date implicit\u0103 Jakarta EE, care trebuie configurat\u0103 \u00een configura\u021bia serverului.
+CWWKD1077.defaultds.not.found.useraction=Configura\u021bi sursa de date implicit\u0103 Jakarta EE sau specifica\u021bi un alt depozit de date pentru depozit.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: Una sau mai multe interfe\u021be de depozit ( {0} ) din artefactul de aplica\u021bie {1} specific\u0103 un depozit de date {2} care nu se potrive\u0219te cu ID-ul unui element dataSource sau al unui element databaseStore \u00een configura\u021bia serverului sau nu se potrive\u0219te cu numele JNDI a unei surse de date, a unei referin\u021be de resurs\u0103 a sursei de date sau a unei referin\u021be de unitate de persisten\u021b\u0103 care este accesibil\u0103 artefactului aplica\u021biei sau una dintre resursele aferente nu este configurat\u0103 corect. Un element dataSource poate fi definit \u00een configura\u021bia serverului. De exemplu, {3} Un element databaseStore poate fi definit \u00een configura\u021bia serverului. De exemplu, {4} O component\u0103 de aplica\u021bie poate folosi adnotarea Resurs\u0103 pentru a defini o referin\u021b\u0103 de resurs\u0103 surs\u0103 de date. De exemplu, {5} , care necesit\u0103 configurarea serverului s\u0103 aib\u0103\
+    \ un element de configurare dataSource cu un atribut {6} . O component\u0103 de aplica\u021bie poate folosi adnotarea PersistenceUnit pentru a defini o referin\u021b\u0103 de unitate de persisten\u021b\u0103. De exemplu, {7} , care necesit\u0103 ca fi\u0219ierul persistence.xml s\u0103 aib\u0103 un element persistence-unit cu un atribut de nume care se potrive\u0219te. De exemplu, {8}
+CWWKD1078.datastore.not.found.explanation=Magazinul de date al unui depozit de date Jakarta poate fi ID-ul unui element dataSource sau al elementului databaseStore din configura\u021bia serverului sau poate fi un nume JNDI al unei surse de date, referin\u021b\u0103 de surs\u0103 de date sau referin\u021b\u0103 de unitate de persisten\u021b\u0103.
+CWWKD1078.datastore.not.found.useraction=Asigura\u021bi-v\u0103 c\u0103 resursa este configurat\u0103 corect. Dac\u0103 utiliza\u021bi un nume JNDI, asigura\u021bi-v\u0103 c\u0103 domeniul de aplicare al numelui JNDI face resursa accesibil\u0103 artefactului aplica\u021biei care furnizeaz\u0103 depozitul.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: Una sau mai multe interfe\u021be de depozit ( {0} ) din artefactul de aplica\u021bie {1} specific\u0103 un depozit de date cu numele JNDI {2} , dar o surs\u0103 de date, o referin\u021b\u0103 de surs\u0103 de date sau o referin\u021b\u0103 la unitatea de persisten\u021b\u0103 cu acel nume JNDI nu este accesibil\u0103 la artefactul aplica\u021biei sau una dintre resursele aferente nu este configurat\u0103 corect. O component\u0103 de aplica\u021bie poate folosi adnotarea Resurse pentru a defini o referin\u021b\u0103 de resurs\u0103 surs\u0103 de date. De exemplu, {3} , care indic\u0103 un element de configurare a serverului dataSource cu un atribut {4} . O component\u0103 de aplica\u021bie poate folosi adnotarea PersistenceUnit pentru a defini o referin\u021b\u0103 de unitate de persisten\u021b\u0103. De exemplu, {5} , care necesit\u0103 ca fi\u0219ierul persistence.xml s\u0103 aib\u0103 un element persistence-unit cu un atribut de nume care se potrive\u0219te.\
+    \ De exemplu, {6} O component\u0103 de aplica\u021bie poate folosi adnotarea DataSourceDefinition pentru a defini o surs\u0103 de date. Alternativ, un element dataSource poate defini o surs\u0103 de date \u00een configura\u021bia serverului. De exemplu, {7}
+CWWKD1079.jndi.not.found.explanation=C\u00e2nd depozitul de date al unui depozit de date Jakarta este setat la un nume JNDI al unei surse de date, o referin\u021b\u0103 de resurs\u0103 a sursei de date sau o referin\u021b\u0103 la unitatea de persisten\u021b\u0103, numele JNDI trebuie s\u0103 fie accesibil artefactului aplica\u021biei care furnizeaz\u0103 depozitul \u0219i datele sursa sau unitatea de persisten\u021b\u0103 trebuie configurat\u0103 corect.
+CWWKD1079.jndi.not.found.useraction=Asigura\u021bi-v\u0103 c\u0103 resursa este configurat\u0103 corect \u0219i asigura\u021bi-v\u0103 c\u0103 domeniul de aplicare al numelui JNDI face resursa accesibil\u0103 artefactului aplica\u021biei care furnizeaz\u0103 depozitul.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: Una sau mai multe interfe\u021be de depozit ( {0} ) din artefactul aplica\u021biei {1} nu sunt disponibile din cauza unei erori. Eroarea se poate datora unei probleme de configurare sau depozitul de date {2} pentru depozit ar putea s\u0103 nu fie disponibil. Eroarea este: {3} .
+CWWKD1080.datastore.general.err.explanation=O eroare \u00eempiedic\u0103 utilizarea depozitelor specificate.
+CWWKD1080.datastore.general.err.useraction=Localiza\u021bi interfe\u021bele de depozit \u0219i configura\u021bia depozitului de date face corec\u021bii dac\u0103 este necesar.
+
+CWWKD1081.entity.general.err=CWWKD1081E: Din cauza unei erori, entitatea {0} nu este disponibil\u0103 pentru una sau mai multe interfe\u0163e de depozit ( {1} ) care utilizeaz\u0103 depozitul de date {2} . Eroarea este {3}.
+CWWKD1081.entity.general.err.explanation=O eroare \u00eempiedic\u0103 utilizarea entit\u0103\u021bii specificate.
+CWWKD1081.entity.general.err.useraction=Localiza\u021bi entitatea \u0219i face\u021bi corec\u021bii dac\u0103 este necesar.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: Unitatea de persisten\u021b\u0103 pentru depozitul de date {0} nu define\u0219te una sau mai multe clase de entit\u0103\u021bi ( {1} ) pe care le necesit\u0103 una sau mai multe interfe\u021be de depozit ( {2} ), care utilizeaz\u0103 depozitul de date.
+CWWKD1082.entity.classes.missing.explanation=Arhivele folosesc clase de entit\u0103\u021bi care trebuie definite \u00een unitatea de persisten\u021b\u0103.
+CWWKD1082.entity.classes.missing.useraction=Include\u021bi toate clasele de entit\u0103\u021bi \u00een unitatea de persisten\u021b\u0103.

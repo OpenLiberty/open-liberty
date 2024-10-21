@@ -90,6 +90,6 @@ public class DataTestCheckpoint extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(DataTest.EXPECTED_ERROR_MESSAGES);
     }
 }

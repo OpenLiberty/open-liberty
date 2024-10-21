@@ -118,7 +118,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
                  * No JAX-RS applications are currently running inside this OL instance. Create a default OpenAPI model,
                  * add some server definitions to it and then generate the OpenAPI document in the specified format.
                  */
-                OpenAPI defaultOpenAPIModel = OpenAPIUtils.createBaseOpenAPIDocument();
+                OpenAPI defaultOpenAPIModel = modelOperationsTracker.getService().createDefaultOpenApiModel();
                 defaultOpenAPIModel.setServers(getOpenAPIModelServers(request));
                 document = OpenAPIUtils.getOpenAPIDocument(defaultOpenAPIModel, responseFormat);
             }

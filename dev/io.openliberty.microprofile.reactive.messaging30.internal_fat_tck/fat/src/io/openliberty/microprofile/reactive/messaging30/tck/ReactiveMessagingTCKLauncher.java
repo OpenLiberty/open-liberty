@@ -18,6 +18,8 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -37,7 +39,7 @@ public class ReactiveMessagingTCKLauncher {
     public static final String SERVER_NAME = "ReactiveMessaging30TCKServer";
 
     @ClassRule
-    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
+    public static RepeatTests r = ReactiveMessagingActions.reactive30Repeats(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -60,11 +62,9 @@ public class ReactiveMessagingTCKLauncher {
     // InstanceNotFoundException is allowed as it is possible for mpmetrics to be queried during server shutdown when
     // the MBean is not present, this is an expected FFDC in the metrics FAT so we must allow for it here as these tests interact with metrics.
     public void launchReactiveMessaging30Tck() throws Exception {
-        String bucketName = "io.openliberty.microprofile.reactive.messaging30.internal_fat_tck";
-        String testName = this.getClass() + ":launchReactiveMessaging30Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Reactive Messaging";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build(server, Type.MICROPROFILE, "Reactive Messaging")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 
 }

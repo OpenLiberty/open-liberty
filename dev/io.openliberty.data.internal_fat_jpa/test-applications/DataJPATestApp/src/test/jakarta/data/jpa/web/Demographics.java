@@ -91,13 +91,9 @@ public interface Demographics {
 
     // End of type conversion methods
 
-    @Query("SELECT this.publicDebt / this.numFullTimeWorkers" +
+    @Query("SELECT publicDebt / numFullTimeWorkers" +
            "  FROM DemographicInfo" +
-           " WHERE EXTRACT (YEAR FROM this.collectedOn) = ?1")
-    // TODO once #28912 is fixed:
-    //@Query("SELECT publicDebt / numFullTimeWorkers" +
-    //       "  FROM DemographicInfo" +
-    //       " WHERE EXTRACT (YEAR FROM collectedOn) = ?1")
+           " WHERE EXTRACT (YEAR FROM collectedOn) = ?1")
     Optional<BigDecimal> publicDebtPerFullTimeWorker(int year);
 
     @Find

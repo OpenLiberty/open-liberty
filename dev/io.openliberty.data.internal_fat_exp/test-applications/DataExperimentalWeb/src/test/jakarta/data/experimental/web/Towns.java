@@ -10,6 +10,13 @@
  *******************************************************************************/
 package test.jakarta.data.experimental.web;
 
+import static io.openliberty.data.repository.Is.Op.GreaterThan;
+import static io.openliberty.data.repository.Is.Op.GreaterThanEqual;
+import static io.openliberty.data.repository.Is.Op.IgnoreCase;
+import static io.openliberty.data.repository.Is.Op.LessThanEqual;
+import static io.openliberty.data.repository.Is.Op.Not;
+import static io.openliberty.data.repository.Is.Op.NotIgnoreCase;
+import static io.openliberty.data.repository.Is.Op.Prefixed;
 import static jakarta.data.repository.By.ID;
 
 import java.util.Optional;
@@ -28,13 +35,8 @@ import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Is;
 import io.openliberty.data.repository.Or;
-import io.openliberty.data.repository.comparison.GreaterThan;
-import io.openliberty.data.repository.comparison.GreaterThanEqual;
-import io.openliberty.data.repository.comparison.LessThanEqual;
-import io.openliberty.data.repository.comparison.StartsWith;
-import io.openliberty.data.repository.function.IgnoreCase;
-import io.openliberty.data.repository.function.Not;
 import io.openliberty.data.repository.update.Assign;
 
 /**
@@ -49,12 +51,14 @@ public interface Towns {
     boolean areFoundIn(@By("stateName") String state);
 
     @Count
-    long countByStateButNotTown_Or_NotTownButWithTownName(@By("stateName") String state, @By(ID) @Not TownId exceptForInState,
-                                                          @Or @By(ID) @Not TownId exceptForTown, @By("name") String town);
+    long countByStateButNotTown_Or_NotTownButWithTownName(@By("stateName") String state,
+                                                          @By(ID) @Is(Not) TownId exceptForInState,
+                                                          @Or @By(ID) @Is(Not) TownId exceptForTown,
+                                                          @By("name") String town);
 
     @Delete
-    TownId[] deleteWithinPopulationRange(@By("population") @GreaterThanEqual int min,
-                                         @By("population") @LessThanEqual int max);
+    TownId[] deleteWithinPopulationRange(@By("population") @Is(GreaterThanEqual) int min,
+                                         @By("population") @Is(LessThanEqual) int max);
 
     @Exists
     boolean existsById(@By(ID) TownId id);
@@ -65,24 +69,24 @@ public interface Towns {
     @Find
     @OrderBy("name")
     Stream<Town> findByIdIsOneOf(@By(ID) TownId id1,
-                                 @Or @By(ID) @IgnoreCase TownId id2,
+                                 @Or @By(ID) @Is(IgnoreCase) TownId id2,
                                  @Or @By(ID) TownId id3);
 
     @Find
     @OrderBy("stateName")
     Stream<Town> findByNameButNotId(@By("name") String townName,
-                                    @By(ID) @Not TownId exceptFor);
+                                    @By(ID) @Is(Not) TownId exceptFor);
 
     @Exists
-    boolean isBiggerThan(@By("population") @GreaterThan int minPopulation,
-                         TownId id);
+    boolean isBiggerThan(@By("population") @Is(GreaterThan) int minPopulation,
+                         @By(ID) TownId id);
 
     @Find
     @OrderBy("stateName")
     @OrderBy("name")
-    Stream<Town> largerThan(@By("population") @GreaterThan int minPopulation,
-                            @By(ID) @IgnoreCase @Not TownId exceptFor,
-                            @By("stateName") @StartsWith String statePattern);
+    Stream<Town> largerThan(@By("population") @Is(GreaterThan) int minPopulation,
+                            @By(ID) @Is(NotIgnoreCase) TownId exceptFor,
+                            @By("stateName") @Is(Prefixed) String statePattern);
 
     @Update
     int replace(@By(ID) TownId id,
@@ -103,7 +107,7 @@ public interface Towns {
 
     @Find
     @OrderBy(value = ID, descending = true)
-    CursoredPage<Town> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
-                                   @By("population") @LessThanEqual int maxPopulation,
+    CursoredPage<Town> sizedWithin(@By("population") @Is(GreaterThanEqual) int minPopulation,
+                                   @By("population") @Is(LessThanEqual) int maxPopulation,
                                    PageRequest pagination);
 }

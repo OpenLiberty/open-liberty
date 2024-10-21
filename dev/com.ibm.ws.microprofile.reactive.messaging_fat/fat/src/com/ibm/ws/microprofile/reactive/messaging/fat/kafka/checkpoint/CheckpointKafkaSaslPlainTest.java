@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import componenttest.annotation.MaximumJavaLevel;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -44,7 +45,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sasl_plain.KafkaSaslTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.SaslPlainTests;
 
 import componenttest.annotation.CheckpointTest;
@@ -60,6 +61,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * Basic test using a kafka broker with TLS enabled
  */
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 22)
 @CheckpointTest
 public class CheckpointKafkaSaslPlainTest {
 
@@ -68,9 +70,7 @@ public class CheckpointKafkaSaslPlainTest {
     private static final String SERVER_NAME = "CheckpointSimpleRxMessagingServer";
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME,
-                                                                  MicroProfileActions.MP70_EE11,
-                                                                  MicroProfileActions.MP61);
+    public static RepeatTests r = ReactiveMessagingActions.repeatAboveMP61(SERVER_NAME);
 
     public static final Map<String, String> ENV_AFTER_CHECKPOINT = new HashMap<String, String>();
 

@@ -79,15 +79,11 @@ public class ConcurrentTckLauncherWeb {
 
         suiteXmlFile = FATSuite.createSuiteXML(FATSuite.PROFILE.WEB);
 
-        /**
-         * The runTCKMvnCmd will set the following properties for use by arquillian
-         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
-         * and then run the mvn test command.
-         */
-        String bucketName = "io.openliberty.jakarta.concurrency.3.0_fat_tck";
-        String testName = this.getClass() + ":launchConcurrent30TCKWeb";
-        Type type = Type.JAKARTA;
-        String specName = "Concurrency (Web)";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteXmlFile, additionalProps);
+        TCKRunner.build(server, Type.JAKARTA, "Concurrency")
+                        .withPlatfromVersion("10")
+                        .withQualifiers("web")
+                        .withSuiteFileName(suiteXmlFile)
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 }

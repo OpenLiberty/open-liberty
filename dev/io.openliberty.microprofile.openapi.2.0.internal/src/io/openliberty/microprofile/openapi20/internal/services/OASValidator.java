@@ -11,8 +11,14 @@ package io.openliberty.microprofile.openapi20.internal.services;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 
+import io.openliberty.microprofile.openapi20.internal.ValidationComponent;
+
 /**
  * OpenAPI model validator. Checks structural constraints on the model and reports errors for violations.
+ * <p>
+ * Each provider of this service should set the property {@code openapi.version} to the version of the OpenAPI spec they validate.
+ * <p>
+ * Generally, this service should be called through {@link ValidationComponent} which will identify the correct service depending on the version of the OpenAPI spec the model declares.
  */
 public interface OASValidator {
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,6 @@ dependencies {
                project(':com.ibm.ws.webcontainer.security_test.servlets'),
                project(':io.openliberty.jcache.internal_fat.hazelcast'),
                project(':io.openliberty.org.apache.commons.codec'),
-               project(':io.openliberty.org.apache.commons.logging'),
                project(':com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1'),
                project(':com.ibm.ws.security.spnego.fat.common'),
                project(':com.ibm.ws.security.jaas.common'),

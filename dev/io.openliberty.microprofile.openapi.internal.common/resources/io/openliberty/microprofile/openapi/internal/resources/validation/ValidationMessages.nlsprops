@@ -1,4 +1,4 @@
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -64,6 +64,8 @@ nullValueInMap=The map specifies an invalid value for the \"{0}\" key. A map sho
 
 openAPIVersionInvalid=The OpenAPI Object must contain a valid OpenAPI specification version. The \"{0}\" value specified for the OpenAPI specification version is not valid
 openAPITagIsNotUnique=The OpenAPI Object must contain unique tag names. The \"{0}\" tag name is not unique
+#3.1
+openAPIMissingRequiredFields=The OpenAPI Object must contain at least one of the \"paths\", \"components\", or \"webhooks\" properties
 
 operationIdsMustBeUnique=More than one Operation Objects with \"{0}\" value for \"operationId\" field was found. The \"operationId\" must be unique among all operations described in the API
 
@@ -94,6 +96,7 @@ referenceNotValid=The \"{0}\" reference value is invalid
 referenceNotValidFormat=The \"{0}\" reference value is not in a valid format
 referenceNull=The reference value is null
 referenceToObjectInvalid=The \"{0}\" value is an invalid reference
+referenceNotValidUri=The \"{0}\" value is not a valid URI
 
 responseMustContainOneCode=The Responses Object must contain at least one response code
 responseShouldContainSuccess=The Responses Object should contain at least one response code for a successful operation
@@ -112,9 +115,21 @@ schemaMultipleOfNotGreaterThanZero=The Schema Object must have the \"multipleOf\
 schemaPropertyLessThanZero=The \"{0}\" property of the Schema Object must be greater than or equal to zero
 schemaTypeDoesNotMatchProperty=The \"{0}\" property is not appropriate for the Schema Object of \"{1}\" type
 
+#3.1
+schemaPropertyWrongType=The type of the \"{0}\" property of the Schema Object must be \"{1}\"
+schemaPropertyEmptyArray=The \"{0}\" property of the Schema Object is an empty array
+schemaPropertyNotUnique=The elements of the \"{0}\" property of the Schema Object are not unique
+schemaInvalidType=The \"type\" property of the Schema Object must contain values that are one of (\"null\", \"boolean\", \"object\", \"array\", \"number\", \"integer\", or \"string\")
+schemaCollectionElementWrongType=The \"{0}\" property of the Schema Object contains a value whose type is not \"{1}\"
+schemaDependentRequiredUniqueStrings=Each element of the \"dependentRequired\" property must be an array of unique strings
+
 keyNotARegex=The \"{0}\" name declared within the Components Object is invalid. It must match the regular expression as defined by the OpenAPI Specification
 
 serverVariableNotDefined=The \"{0}\" variable in the Server Object is not defined
 serverInvalidURL=The Server Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+
+#3.1
+serverVariableArrayEmpty=The \"{0}\" array in the Server Variable Object is empty
+serverVariableDefaultNotInEnum=The \"{0}\" value of the \"default\" property is not listed in the \"enum\" array
 
 requiredFieldMissing=Required \"{0}\" field is missing or is set to an invalid value

@@ -32,7 +32,6 @@ import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.feature.LibertyFeature;
 
-import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
@@ -44,11 +43,12 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     private final MetaDataSlot slotForOpenTelemetryInfoHolder;
     private final OpenTelemetryInfoFactory openTelemetryInfoFactory;
+    boolean telemetry2OrLater;
 
     //These three are set during activation, and refreshed on checkpoint restore. (runtimeInstance is only set if we need one)
-    private boolean waitingForCheckpointRestore;
-    private boolean isRuntimeEnabled;
-    private LazyInitializer<OpenTelemetryInfo> runtimeInstance = null;
+    private volatile boolean waitingForCheckpointRestore = true;
+    private volatile boolean isRuntimeEnabled = false; //Always false before a checkpoint restore, so we allways prepare what we need if post-checkpoint we're now in app mode.
+    private volatile LazyInitializer<OpenTelemetryInfoInternal> runtimeInstance = null;
 
     @Activate
     public OpenTelemtryLifecycleManagerImpl(@Reference MetaDataSlotService slotService, @Reference OpenTelemetryInfoFactory openTelemetryInfoFactory,
@@ -59,43 +59,34 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
         String shortName = (String) featureRef.getProperty("ibm.featureName");
         //the runtimeMode was added in 2.0
-        final boolean telemetry2OrLater = shortName.startsWith("mpTelemetry-1") ? false : true;
+        telemetry2OrLater = shortName.startsWith("mpTelemetry-1") ? false : true;
 
-        CheckpointHook checkpointHook = new CheckpointHook() {
+        checkThenSetRuntimeFields();
+    }
 
-            @Override
-            public void restore() {
-                waitingForCheckpointRestore = false;
-                checkThenSetRuntimeFields(telemetry2OrLater);
+    private void checkThenSetRuntimeFields() {
+        if (waitingForCheckpointRestore) {
+            synchronized (this) {
+                //restored() true if checkpoint has been restored or was never active
+                if (waitingForCheckpointRestore && CheckpointPhase.getPhase().restored()) {
+                    HashMap<String, String> propreties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
+                    isRuntimeEnabled = telemetry2OrLater && OpenTelemetryPropertiesReader.isEnabled(propreties);
+
+                    if (isRuntimeEnabled) {
+                        runtimeInstance = LazyInitializer.<OpenTelemetryInfoInternal> builder().setInitializer(curryInfoFactory(isRuntimeEnabled)).get();
+                    }
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Configured runtime mode as ", isRuntimeEnabled);
+                    }
+
+                    waitingForCheckpointRestore = false;
+                }
             }
-        };
-
-        // If checkpoint is enabled this statement will register the hook we created above. Then checkpoint returns true so the if statement is false.
-        // If checkpoint is disabled it does nothing and returns false, so the if statement will be true.
-        if (!CheckpointPhase.getPhase().addMultiThreadedHook(checkpointHook)) {
-            //Checkpoint disabled
-            waitingForCheckpointRestore = false;
-            checkThenSetRuntimeFields(telemetry2OrLater);
-        } else {
-            //Checkpoint enabled, before restore.
-            waitingForCheckpointRestore = true;
         }
     }
 
-    private void checkThenSetRuntimeFields(boolean telemetry2OrLater) {
-        HashMap<String, String> propreties = OpenTelemetryPropertiesReader.getRuntimeInstanceTelemetryProperties();
-        isRuntimeEnabled = telemetry2OrLater && !!!OpenTelemetryPropertiesReader.checkDisabled(propreties);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Configured runtime mode as ", isRuntimeEnabled);
-        }
-
-        if (isRuntimeEnabled) {
-            runtimeInstance = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled)).get();
-        }
-    }
-
-    private FailableSupplier<OpenTelemetryInfo, ? extends Exception> curryInfoFactory(final boolean runtimeEnabled) {
+    private FailableSupplier<OpenTelemetryInfoInternal, ? extends Exception> curryInfoFactory(final boolean runtimeEnabled) {
         return () -> {
             return openTelemetryInfoFactory.createOpenTelemetryInfo(runtimeEnabled);
         };
@@ -104,6 +95,8 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
     /** {@inheritDoc} */
     @Override
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+        checkThenSetRuntimeFields();
+
         //We do not actually initialize on application starting, we do that lazily if this is needed.
 
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
@@ -129,8 +122,8 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        LazyInitializer<OpenTelemetryInfo> newSupplier = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(curryInfoFactory(isRuntimeEnabled))
-                                                                        .setCloser(info -> info.dispose()).get();
+        LazyInitializer<OpenTelemetryInfoInternal> newSupplier = LazyInitializer.<OpenTelemetryInfoInternal> builder().setInitializer(curryInfoFactory(isRuntimeEnabled))
+                                                                                .setCloser(info -> info.dispose()).get();
 
         if (oTelRef == null) {
             oTelRef = new OpenTelemetryInfoReference();
@@ -148,6 +141,8 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
+        checkThenSetRuntimeFields();
+
         //We don't use app scoped OpenTelemetry objects if the server scoped object exists
         if (isRuntimeEnabled) {
             return;
@@ -156,10 +151,11 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        LazyInitializer<OpenTelemetryInfo> newSupplier = LazyInitializer.<OpenTelemetryInfo> builder().setInitializer(openTelemetryInfoFactory::createDisposedOpenTelemetryInfo)
-                                                                        .setCloser(info -> info.dispose()).get();
+        LazyInitializer<OpenTelemetryInfoInternal> newSupplier = LazyInitializer.<OpenTelemetryInfoInternal> builder()
+                                                                                .setInitializer(openTelemetryInfoFactory::createDisposedOpenTelemetryInfo)
+                                                                                .setCloser(info -> info.dispose()).get();
 
-        LazyInitializer<OpenTelemetryInfo> oldSupplier = oTelRef.getAndSet(newSupplier);
+        LazyInitializer<OpenTelemetryInfoInternal> oldSupplier = oTelRef.getAndSet(newSupplier);
 
         try {
             oldSupplier.close();
@@ -178,14 +174,14 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
      * Within the context of an application's lifecycle we need to ensure OpenTelemetryInfo
      * is only created once. LazySupplier handles this.
      */
-    private class OpenTelemetryInfoReference extends AtomicReference<LazyInitializer<OpenTelemetryInfo>> {
+    private class OpenTelemetryInfoReference extends AtomicReference<LazyInitializer<OpenTelemetryInfoInternal>> {
 
         private static final long serialVersionUID = -4884222080590544495L;
     }
 
     /** {@inheritDoc} */
     @Override
-    public OpenTelemetryInfo getOpenTelemetryInfo() {
+    public OpenTelemetryInfoInternal getOpenTelemetryInfo() {
         try {
             ApplicationMetaData metaData = null;
             ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
@@ -201,7 +197,8 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     /** {@inheritDoc} */
     @Override
-    public OpenTelemetryInfo getOpenTelemetryInfo(ApplicationMetaData metaData) {
+    public OpenTelemetryInfoInternal getOpenTelemetryInfo(ApplicationMetaData metaData) {
+        checkThenSetRuntimeFields();
 
         if (waitingForCheckpointRestore) {
             //We always return a no-op when waiting for checkpoint
@@ -237,17 +234,14 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         try {
             OpenTelemetryInfoReference atomicRef = (OpenTelemetryInfoReference) metaData.getMetaData(slotForOpenTelemetryInfoHolder);
             if (atomicRef == null) {
-                //If this is triggered by internal code that isn't supposed to call ApplicationStateListener.applicationStarting() don't throw an error
+                //If this is triggered by a WAB or internal code that doesn't have an associated app, and we're in app mode, return a no-op
+                //(in runtime mode we do want to have OpenTelemetry enabled for internal code, e.g., for tracing)
                 String j2EEName = metaData.getJ2EEName().toString();
-                if (j2EEName.startsWith("io.openliberty") || j2EEName.startsWith("com.ibm.ws")
-                    || j2EEName.startsWith("arquillian-liberty-support")) {
-                    Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
-                    return new DisabledOpenTelemetryInfo();
-                }
-                //If it isn't throw something nicer than an NPE.
-                throw new IllegalStateException("Attempted to create openTelemetaryInfo for application " + j2EEName + " which has not gone through ApplicationStarting");
+                Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
+                return new DisabledOpenTelemetryInfo();
+
             }
-            LazyInitializer<OpenTelemetryInfo> supplier = atomicRef.get();
+            LazyInitializer<OpenTelemetryInfoInternal> supplier = atomicRef.get();
             return supplier.get();
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
@@ -257,6 +251,8 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     @Override
     public boolean isRuntimeEnabled() {
+        checkThenSetRuntimeFields();
+
         return isRuntimeEnabled;
     }
 }

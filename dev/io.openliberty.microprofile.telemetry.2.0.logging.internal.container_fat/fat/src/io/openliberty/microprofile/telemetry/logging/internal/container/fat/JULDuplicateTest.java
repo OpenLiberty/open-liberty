@@ -27,7 +27,6 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
@@ -69,6 +68,7 @@ public class JULDuplicateTest {
         ShrinkHelper.exportDropinAppToServer(server, telemetryLogApp,
                                              DeployOptions.SERVER_ONLY);
 
+        server.addEnvVar("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
         server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
 
         server.copyFileToLibertyServerRoot("agent-260/opentelemetry-javaagent.jar");
@@ -90,6 +90,8 @@ public class JULDuplicateTest {
         // Wait for the second message (SESN0176I) to arrive, to ensure all the occurrences of the first message (SRVE0250I) has arrived.
         server.waitForStringInLog("SESN0176I");
 
+        TestUtils.isContainerStarted("LogsExporter", container);
+
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_ALL_SOURCES, messageLogFile, server);
 
@@ -100,26 +102,23 @@ public class JULDuplicateTest {
 
         final String logs = container.getLogs();
 
-        Log.info(c, "testNoDuplicateJULMessageLogsWithOpenTelemetryAgent", logs);
-
         String[] agentMappedJulMsg = logs.split("SRVE0250I");
 
         // There should only be one instance of the JUL message routed to OpenTelemetry.
-        assertTrue("There are duplicate JUL messages.", (agentMappedJulMsg.length - 1) == 1);
-
-        Log.info(c, "testNoDuplicateJULMessageLogsWithOpenTelemetryAgent", logs);
+        assertTrue("There are duplicate JUL messages.",
+                   TestUtils.compareLogSizes("testNoDuplicateJULMessageLogsWithOpenTelemetryAgent", logs, (agentMappedJulMsg.length - 1), 1));
 
         String[] agentMappedJulAppMsg = logs.split("info message");
 
         // There should only be one instance of the JUL App message routed to OpenTelemetry.
-        assertTrue("There are duplicate JUL App messages.", (agentMappedJulAppMsg.length - 1) == 1);
-
-        Log.info(c, "testNoDuplicateJULMessageLogsWithOpenTelemetryAgent", logs);
+        assertTrue("There are duplicate JUL App messages.",
+                   TestUtils.compareLogSizes("testNoDuplicateJULMessageLogsWithOpenTelemetryAgent", logs, (agentMappedJulAppMsg.length - 1), 1));
 
         String[] agentMappedJulAppTrace = logs.split("finest trace");
 
         // There should only be one instance of the JUL Trace message routed to OpenTelemetry.
-        assertTrue("There are duplicate JUL Trace messages.", (agentMappedJulAppTrace.length - 1) == 1);
+        assertTrue("There are duplicate JUL Trace messages.",
+                   TestUtils.compareLogSizes("testNoDuplicateJULMessageLogsWithOpenTelemetryAgent", logs, (agentMappedJulAppTrace.length - 1), 1));
     }
 
     @AfterClass

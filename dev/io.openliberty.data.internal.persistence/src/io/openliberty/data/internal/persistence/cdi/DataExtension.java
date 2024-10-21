@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.DoubleStream;
@@ -47,7 +48,11 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
+import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
+import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
@@ -76,9 +81,14 @@ public class DataExtension implements Extension {
     private static final TraceComponent tc = Tr.register(DataExtension.class);
 
     /**
-     * Id of the default databaseStore configuration element.
+     * JNDI name of the Jakarta EE Default DataSource.
      */
-    static final String DEFAULT_DATA_STORE = "defaultDatabaseStore";
+    static final String DEFAULT_DATA_SOURCE = "java:comp/DefaultDataSource";
+
+    /**
+     * Name of the built-in Jakarta Data provider.
+     */
+    public static final String PROVIDER_NAME = "Liberty";
 
     /**
      * Map of repository annotated type to Repository annotation.
@@ -95,7 +105,8 @@ public class DataExtension implements Extension {
         Repository repository = type.getAnnotation(Repository.class);
 
         String dataProvider = repository.provider();
-        boolean provide = Repository.ANY_PROVIDER.equals(dataProvider) || "OpenLiberty".equalsIgnoreCase(dataProvider); // TODO provider name
+        boolean provide = Repository.ANY_PROVIDER.equals(dataProvider) ||
+                          PROVIDER_NAME.equalsIgnoreCase(dataProvider);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "annotatedRepository to " + (provide ? "provide" : "ignore"),
@@ -124,7 +135,7 @@ public class DataExtension implements Extension {
             Repository repository = repositoryType.getAnnotation(Repository.class);
             String dataStore = repository.dataStore();
             if (dataStore.length() == 0)
-                dataStore = DEFAULT_DATA_STORE;
+                dataStore = DEFAULT_DATA_SOURCE;
             // else
             // Determining whether it is JNDI name for a data source or
             // persistence unit requires attempting to look up the resource.
@@ -138,11 +149,15 @@ public class DataExtension implements Extension {
             Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
             if (discoverEntityClasses(repositoryType, queriesPerEntityClass, primaryEntityClassReturnValue)) {
                 FutureEMBuilder previous = entityGroups.putIfAbsent(futureEMBuilder, futureEMBuilder);
-                futureEMBuilder = previous == null ? futureEMBuilder : previous;
+
+                if (previous != null) {
+                    futureEMBuilder = previous;
+                    futureEMBuilder.addRepositoryInterface(repositoryInterface);
+                }
 
                 for (Class<?> entityClass : queriesPerEntityClass.keySet())
                     if (!Query.class.equals(entityClass))
-                        futureEMBuilder.add(entityClass);
+                        futureEMBuilder.addEntity(entityClass);
 
                 RepositoryProducer<Object> producer = new RepositoryProducer<>( //
                                 repositoryInterface, beanMgr, provider, this, //
@@ -189,7 +204,10 @@ public class DataExtension implements Extension {
                 (EntityManager.class.equals(returnType)
                  || DataSource.class.equals(returnType)
                  || Connection.class.equals(returnType))) {
-                QueryInfo queryInfo = new QueryInfo(method, QueryInfo.Type.RESOURCE_ACCESS);
+                QueryInfo queryInfo = new QueryInfo( //
+                                repositoryInterface, //
+                                method, //
+                                QueryInfo.Type.RESOURCE_ACCESS);
 
                 List<QueryInfo> queries = queriesPerEntity.get(Void.class);
                 if (queries == null)
@@ -228,7 +246,7 @@ public class DataExtension implements Extension {
                     type = null;
                 } else if (type instanceof GenericArrayType) {
                     // The built-in repositories from the spec only allow generics
-                    // for the Entity class and Key/Id class of of these only uses
+                    // for the Entity class and Key/Id class, and of these only uses
                     // the Entity class in return types, not the key.
                     // Custom repository interfaces are not allowed to use generics.
                     Class<?> arrayComponentType = //
@@ -237,7 +255,8 @@ public class DataExtension implements Extension {
                                                          method);
                     returnTypeAtDepth.add(arrayComponentType.arrayType());
                     if (returnArrayComponentType == null) {
-                        returnTypeAtDepth.add(returnArrayComponentType = arrayComponentType);
+                        returnArrayComponentType = arrayComponentType;
+                        returnTypeAtDepth.add(returnArrayComponentType);
                         depth++;
                     }
                     type = null;
@@ -271,7 +290,7 @@ public class DataExtension implements Extension {
                         Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
                         if (typeParams.length == 1 && typeParams[0] instanceof Class) // for example, List<Product>
                             c = (Class<?>) typeParams[0];
-                        else { // could be a method like BasicRepository.saveAll(Iterable<S> entity) {
+                        else { // could be a method like BasicRepository.saveAll(Iterable<S> entity)
                             entityParamType = c;
                             c = null;
                         }
@@ -313,26 +332,26 @@ public class DataExtension implements Extension {
 
             List<QueryInfo> queries;
 
-            if (entityClass == null) {
-                queries = hasQueryAnno ? queriesWithQueryAnno : additionalQueriesForPrimaryEntity;
+            // For efficiency, detect some obvious non-entity types.
+            // Other non-entity types will be detected later.
+            if (QueryInfo.cannotBeEntity(entityClass)) {
+                queries = hasQueryAnno //
+                                ? queriesWithQueryAnno //
+                                : additionalQueriesForPrimaryEntity;
             } else {
-                // TODO find better ways of determining non-entities ******** require @Entity unless found on lifecycle method!!!!!!
-                String packageName = entityClass.getPackageName();
-                if (packageName.startsWith("java.")
-                    || packageName.startsWith("jakarta.")
-                    || entityClass.isPrimitive()
-                    || entityClass.isInterface()) {
-                    queries = hasQueryAnno ? queriesWithQueryAnno : additionalQueriesForPrimaryEntity;
-                } else {
-                    queries = queriesPerEntity.get(entityClass);
-                    if (queries == null)
-                        queriesPerEntity.put(entityClass, queries = new ArrayList<>());
-                    if (hasQueryAnno)
-                        queries = queriesWithQueryAnno;
-                }
+                queries = queriesPerEntity.get(entityClass);
+                if (queries == null)
+                    queriesPerEntity.put(entityClass, queries = new ArrayList<>());
+                if (hasQueryAnno)
+                    queries = queriesWithQueryAnno;
             }
 
-            queries.add(new QueryInfo(method, entityParamType, returnArrayComponentType, returnTypeAtDepth));
+            queries.add(new QueryInfo( //
+                            repositoryInterface, //
+                            method, //
+                            entityParamType, //
+                            returnArrayComponentType, //
+                            returnTypeAtDepth));
         }
 
         // Confirm which classes are actually entity classes and that all entity classes are supported
@@ -398,11 +417,45 @@ public class DataExtension implements Extension {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, repositoryInterface.getName() + " has primary entity class " + primaryEntityClass,
+            Tr.debug(this, tc, repositoryInterface.getName() + " has primary entity " + primaryEntityClass,
                      "and methods that use the following entities:", queriesPerEntity);
 
         primaryEntityClassReturnValue[0] = primaryEntityClass;
         return supportsAllEntities;
+    }
+
+    /**
+     * Construct a RuntimeException or subclass and log the error unless the
+     * error is known to be an error on the part of the application using a
+     * repository method, such as supplying a null PageRequest.
+     *
+     * @param exceptionType RuntimeException or subclass, which must have a
+     *                          constructor that accepts the message as a single
+     *                          String argument.
+     * @param messageId     NLS message ID.
+     * @param args          message arguments.
+     * @return RuntimeException or subclass.
+     */
+    @Trivial
+    public final static <T extends RuntimeException> T exc(Class<T> exceptionType,
+                                                           String messageId,
+                                                           Object... args) {
+        if (!exceptionType.equals(EmptyResultException.class) &&
+            !exceptionType.equals(EntityExistsException.class) &&
+            !exceptionType.equals(IllegalArgumentException.class) &&
+            !exceptionType.equals(IllegalStateException.class) &&
+            !exceptionType.equals(NoSuchElementException.class) &&
+            !exceptionType.equals(NullPointerException.class) &&
+            !exceptionType.equals(OptimisticLockingFailureException.class))
+            Tr.error(tc, messageId, args);
+
+        String message = Tr.formatMessage(tc, messageId, args);
+        try {
+            return exceptionType.getConstructor(String.class).newInstance(message);
+        } catch (Exception x) {
+            // should never occur
+            throw new DataException(messageId + ' ' + Arrays.toString(args));
+        }
     }
 
     /**
@@ -412,9 +465,9 @@ public class DataExtension implements Extension {
      * public interface MyRepository extends DataRepository<MyEntity, IdType>
      *
      * @param repositoryInterface the interface that is annotated with Repository.
-     * @return
+     * @return primary entity type if found. Otherwise null.
      */
-    private static Class<?> getPrimaryEntityType(Class<?> repositoryInterface) {
+    static Class<?> getPrimaryEntityType(Class<?> repositoryInterface) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         Class<?>[] interfaceClasses = repositoryInterface.getInterfaces();
         for (java.lang.reflect.Type interfaceType : repositoryInterface.getGenericInterfaces()) {
@@ -454,13 +507,11 @@ public class DataExtension implements Extension {
                                                  Class<?> repositoryInterface,
                                                  Method method) {
         if (primaryEntityClass == null)
-            throw new MappingException("An entity class is needed by the " + method.getName() +
-                                       " method, but the " + repositoryInterface.getName() +
-                                       " repository interface does not specify a primary entity class." +
-                                       " To correct this, have the " + repositoryInterface.getSimpleName() +
-                                       " interface extend one of the built-in repository supertypes," +
-                                       " such as DataRepository<EntityClass, KeyClass>, supplying the" +
-                                       " entity class as the first type parameter."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1001.no.primary.entity",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      "DataRepository<EntityClass, EntityIdClass>");
         return primaryEntityClass;
     }
 
@@ -489,11 +540,12 @@ public class DataExtension implements Extension {
         if (hasEntityAnnos) {
             Repository repository = repositoryType.getAnnotation(Repository.class);
             if (!Repository.ANY_PROVIDER.equals(repository.provider()))
-                throw new MappingException("Open Liberty's built-in Jakarta Data provider cannot provide the " +
-                                           repositoryType.getJavaClass().getName() + " repository because the repository's " +
-                                           entityClass.getName() + " entity class includes an unrecognized entity annotation. " +
-                                           " The following annotations are found on the entity class: " + Arrays.toString(entityClassAnnos) +
-                                           ". Supported entity annotations are: " + Entity.class.getName() + "."); // TODO NLS
+                throw exc(DataException.class,
+                          "CWWKD1045.unknown.entity.anno",
+                          repositoryType.getJavaClass().getName(),
+                          entityClass.getName(),
+                          Arrays.toString(entityClassAnnos),
+                          Entity.class.getName());
         }
 
         return isSupported;

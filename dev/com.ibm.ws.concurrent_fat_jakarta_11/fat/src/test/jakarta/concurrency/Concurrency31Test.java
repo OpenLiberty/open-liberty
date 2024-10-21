@@ -55,27 +55,12 @@ public class Concurrency31Test extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, Concurrency31TestApp);
 
         // fake third-party library that also includes a thread context provider
-        JavaArchive locationUtilsContextProviderJar = ShrinkWrap.create(JavaArchive.class, "location-utils.jar")
-                        .addPackage("test.context.location")
+        JavaArchive timeZoneContextProviderJar = ShrinkWrap //
+                        .create(JavaArchive.class, "time-zone-context.jar")
+                        .addPackage("test.context.timezone")
                         .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                                              "test.context.location.ZipCodeContextProvider");
-        ShrinkHelper.exportToServer(server, "lib", locationUtilsContextProviderJar);
-
-        // fake thread context provider on its own (this will be made available via a bell)
-        JavaArchive priorityContextProviderJar = ShrinkWrap.create(JavaArchive.class, "priority-context.jar")
-                        .addPackage("test.context.priority")
-                        .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                                              "test.context.priority.PriorityContextProvider");
-        ShrinkHelper.exportToServer(server, "lib", priorityContextProviderJar);
-
-        // fake third-party library that includes multiple thread context providers
-        JavaArchive statUtilsContextProviderJar = ShrinkWrap.create(JavaArchive.class, "stat-utils.jar")
-                        .addPackage("test.context.list")
-                        .addPackage("test.context.timing")
-                        .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                                              "test.context.list.ListContextProvider",
-                                              "test.context.timing.TimestampContextProvider");
-        ShrinkHelper.exportToServer(server, "lib", statUtilsContextProviderJar);
+                                              "test.context.timezone.TimeZoneContextProvider");
+        ShrinkHelper.exportToServer(server, "lib", timeZoneContextProviderJar);
 
         server.startServer();
     }

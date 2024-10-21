@@ -50,7 +50,11 @@ tested.features:\
   pages-3.0,\
   jsp-2.3,\
   jsp-2.2,\
-  el-3.0
+  el-3.0,\
+  faces-4.1,\
+  faces-3.0,\
+  jsf-2.3,\
+  jsf-2.2
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
@@ -69,4 +73,11 @@ fat.test.container.images: otel/opentelemetry-collector-contrib:0.103.0
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	io.openliberty.org.testcontainers;version=latest,\
-	io.openliberty.microprofile.telemetry.internal_fat.common
+	io.openliberty.microprofile.telemetry.internal_fat.common,\
+	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
+	net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest, \
+	net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
+	net.sourceforge.htmlunit:webdriver;version=2.6,\
+	io.openliberty.org.apache.xercesImpl;version=latest,\
+	xml-apis:xml-apis;version=1.4.01

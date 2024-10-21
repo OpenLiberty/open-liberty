@@ -29,25 +29,25 @@
 
 ft.invocations.total.description=Po\u010det vol\u00e1n\u00ed metody.
 
-ft.retry.calls.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy byla spu\u0161t\u011bna logika opakov\u00e1n\u00ed. Toto bude v\u017edy jednou za vol\u00e1n\u00ed metody.
+ft.retry.calls.total.description=Po\u010det spu\u0161t\u011bn\u00ed logiky opakov\u00e1n\u00ed. Tato hodnota je v\u017edy rovna jednou za vol\u00e1n\u00ed metody.
 
 ft.retry.retries.total.description=Po\u010det opakov\u00e1n\u00ed metody.
 
-ft.timeout.calls.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy byla spu\u0161t\u011bna logika \u010dasov\u00e9ho limitu. Toto bude obvykle jednou za vol\u00e1n\u00ed metody, ale m\u016f\u017ee b\u00fdt nula kr\u00e1t, pokud jisti\u010d br\u00e1n\u00ed proveden\u00ed, nebo v\u00edce ne\u017e jednou, pokud je metoda zopakov\u00e1na.
+ft.timeout.calls.total.description=Po\u010det spu\u0161t\u011bn\u00ed logiky \u010dasov\u00e9ho limitu. Tato hodnota se obvykle rovn\u00e1 jednou za vol\u00e1n\u00ed metody. M\u016f\u017ee v\u0161ak b\u00fdt nula, pokud jisti\u010d zabr\u00e1n\u00ed proveden\u00ed, nebo v\u00edce ne\u017e jednou za vol\u00e1n\u00ed metody, pokud je metoda opakov\u00e1na.
 
 ft.timeout.executionDuration.description=Histogram dob prov\u00e1d\u011bn\u00ed pro metodu.
 
-ft.circuitbreaker.calls.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy byla spu\u0161t\u011bna logika jisti\u010de. Toto bude obvykle jednou za vol\u00e1n\u00ed metody, ale m\u016f\u017ee b\u00fdt v\u00edce ne\u017e jednou, pokud je vol\u00e1n\u00ed metody opakov\u00e1no.
+ft.circuitbreaker.calls.total.description=Po\u010det spu\u0161t\u011bn\u00ed logiky jisti\u010de. Tato hodnota je obvykle rovna jedn\u00e9 za vol\u00e1n\u00ed metody, ale m\u016f\u017ee b\u00fdt v\u00edce ne\u017e jednou, pokud je metoda opakov\u00e1na.
 
 ft.circuitbreaker.state.total.description=Doba, kterou jisti\u010d str\u00e1vil v ka\u017ed\u00e9m stavu.
 
-ft.circuitbreaker.opened.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy se jisti\u010d p\u0159esunul z uzav\u0159en\u00e9ho stavu do otev\u0159en\u00e9ho stavu.
+ft.circuitbreaker.opened.total.description=Po\u010det p\u0159epnut\u00ed jisti\u010de ze sepnut\u00e9ho do vypnut\u00e9ho stavu.
 
-ft.bulkhead.calls.total.description=Po\u010det p\u0159\u00edpad\u016f, kdy byla spu\u0161t\u011bna logika p\u0159ep\u00e1\u017eky. Toto bude obvykle jednou za vol\u00e1n\u00ed metody, ale m\u016f\u017ee b\u00fdt nula kr\u00e1t, pokud jisti\u010d zabr\u00e1nil proveden\u00ed, nebo v\u00edce ne\u017e jednou, pokud je vol\u00e1n\u00ed metody opakov\u00e1no.
+ft.bulkhead.calls.total.description=Po\u010det spu\u0161t\u011bn\u00ed logiky p\u0159ep\u00e1\u017eky. Tato hodnota se obvykle rovn\u00e1 jednou za vol\u00e1n\u00ed metody. M\u016f\u017ee v\u0161ak b\u00fdt nula, pokud jisti\u010d zabr\u00e1n\u00ed proveden\u00ed, nebo v\u00edce ne\u017e jednou za vol\u00e1n\u00ed metody, pokud je metoda opakov\u00e1na.
 
 ft.bulkhead.executionsRunning.description=Po\u010det aktu\u00e1ln\u011b spu\u0161t\u011bn\u00fdch proveden\u00ed.
 
-ft.bulkhead.executionsWaiting.description=Po\u010det proveden\u00ed, kter\u00e1 moment\u00e1ln\u011b \u010dekaj\u00ed ve front\u011b.
+ft.bulkhead.executionsWaiting.description=Po\u010det poprav, kter\u00e9 aktu\u00e1ln\u011b \u010dekaj\u00ed ve front\u011b.
 
 ft.bulkhead.runningDuration.description=Histogram \u010dasu, kter\u00fd proveden\u00ed metody str\u00e1vila spu\u0161t\u011bn\u00edm.
 

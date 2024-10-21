@@ -42,6 +42,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
     private static final boolean isMacOSX = System.getProperty("os.name", "unknown").toLowerCase().indexOf("mac os x") >= 0;
 
     private static final int TIMER_DELAY = 2500;
+    private static final int MIN_TIMER_DELAY = isMacOSX ? 15000 : TIMER_DELAY;
     private static final int LONG_TIMER_DELAY = isMacOSX ? 150000 : 5000;
     private static final long NO_CANCEL_DELAY = 0;
 
@@ -80,7 +81,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
     private boolean verifyRetryIntervalAcceptable(long timestampForFirstAttempt, long timestampForSecondAttempt, long minimumDifference) {
         long difference = timestampForSecondAttempt - timestampForFirstAttempt;
         // allow longer timer delay for longer minimum differences; especially on Mac OS X
-        long timer_delay = (minimumDifference < 2 * LONG_TIMER_DELAY) ? TIMER_DELAY : LONG_TIMER_DELAY;
+        long timer_delay = (minimumDifference < 2 * TIMER_DELAY) ? MIN_TIMER_DELAY : LONG_TIMER_DELAY;
         // 500 ms fudge factor for Windows time math and preInvoke delays
         long maxDifference = minimumDifference + timer_delay + 500;
         minimumDifference = minimumDifference - 500;
@@ -330,6 +331,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
 
         svLogger.info("Waiting for timer to fail and expected retries to occur...");
         driverBean.waitForTimersAndCancel(0);
+        long completedTime = System.currentTimeMillis();
 
         svLogger.info("Waking up and checking results...");
         Properties props = driverBean.getResults();
@@ -337,9 +339,22 @@ public class NpTimerConfigRetryServlet extends FATServlet {
         @SuppressWarnings("unchecked")
         ArrayList<Long> timestamps = (ArrayList<Long>) props.get(TimerRetryDriverBean.TIMESTAMP_KEY);
         boolean timerExists = ((Boolean) props.get(TimerRetryDriverBean.TIMER_EXISTS)).booleanValue();
-        assertEquals("Timeout count **" + count + "** was not the expected value of 2. Interval Timer failing at max retries is not rescheduling!", 2, count);
-        assertEquals("Timestamps size **" + timestamps.size() + "** was not the expected value of 2.", 2, timestamps.size());
+        @SuppressWarnings("unchecked")
+        ArrayList<Long> nextTimes = (ArrayList<Long>) props.get(TimerRetryDriverBean.NEXTTIMEOUT_KEY);
+
+        // Tolerate the timer running a 3rd time on slow hardware due to catch-up timeouts
+        long expectedCount = 2;
+        if (nextTimes.get(nextTimes.size() - 1) <= completedTime && count == 3) {
+            expectedCount = 3;
+        }
+
+        assertEquals("Timeout count **" + count + "** was not the expected value of " + expectedCount + ". Interval Timer failing at max retries is not rescheduling!",
+                     expectedCount, count);
+        assertEquals("Timestamps size **" + timestamps.size() + "** was not the expected value of " + expectedCount + ".", expectedCount, timestamps.size());
         assertTrue("Timer did not exist after max retries", timerExists);
+        // TODO: Issue #29851 : Timer should be rescheduled for next interval; not 2x next interval
+        assertTrue("NextTimeout not scheduled correctly: " + (nextTimes.get(1).longValue() - nextTimes.get(0).longValue()),
+                   (nextTimes.get(1).longValue() - nextTimes.get(0).longValue()) == 2 * TimerRetryDriverBean.TIMER_INTERVAL);
     }
 
     /**
@@ -617,7 +632,8 @@ public class NpTimerConfigRetryServlet extends FATServlet {
 
         svLogger.info("Calling BeanD to create situation where retries and regularly scheduled timeouts overlap...");
         driverBean.forceRetrysAndRegularSchedulesToOverlap("testOverlappingRetriesAndRegularlyScheduled", 7);
-        long startTime = System.nanoTime();
+        long startTimeNano = System.nanoTime();
+        long startTimeMillis = System.currentTimeMillis();
 
         svLogger.info("Waiting for timer to fail and expected retries to occur...");
         driverBean.waitForTimersAndCancel(NO_CANCEL_DELAY);
@@ -632,8 +648,12 @@ public class NpTimerConfigRetryServlet extends FATServlet {
         ArrayList<Long> nextTimes = (ArrayList<Long>) props.get(TimerRetryDriverBean.NEXTTIMEOUT_KEY);
 
         // Tolerate a slow system; allow multiple "catch-up" attempts based on actual time
-        long actualDuration = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        svLogger.info("Actual duration = " + actualDuration);
+        // - nanoTime() and currentTimeMillis() varies per OS, so use the max of the two
+        long actualDurationNano = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTimeNano, TimeUnit.NANOSECONDS);
+        long actualDurationMillis = System.currentTimeMillis() - startTimeMillis;
+        long actualDuration = Math.max(actualDurationNano, actualDurationMillis);
+        svLogger.info("Actual duration = max(" + actualDurationNano + ", " + actualDurationMillis + ")");
+
         long expectedCount = Math.max(7, 3 + actualDuration / TIMER_INTERVAL);
         if (expectedCount == 7) {
             assertEquals("Attempt count **" + count + "** was not the expected value of 7.", expectedCount, count);

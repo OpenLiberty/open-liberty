@@ -52,6 +52,17 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     public static RepeatTests defaultRepeat(String serverName) {
         return MicroProfileActions.repeat(serverName,
+            MicroProfileActions.MP70_EE10, // mpOpenAPI-4.0 + EE10 , LITE
+            MicroProfileActions.MP70_EE11, // mpOpenAPI-4.0 + EE11 , FULL
+            MicroProfileActions.MP61, // mpOpenAPI-3.1, FULL
+            MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
+            MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
+            MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
+            MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+    }
+
+    public static RepeatTests repeatPre40(String serverName) {
+        return MicroProfileActions.repeat(serverName,
             MicroProfileActions.MP61, // mpOpenAPI-3.1, LITE
             MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
             MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL

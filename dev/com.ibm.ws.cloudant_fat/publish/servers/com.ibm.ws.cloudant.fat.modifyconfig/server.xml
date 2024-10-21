@@ -9,7 +9,7 @@
   </featureManager>
 
   <library id="CloudantLib">
-    <fileset dir="${shared.resource.dir}/cloudant-2.16"/>
+    <fileset dir="${shared.resource.dir}/cloudant"/>
   </library>
 
   <authData id="cloudantAuth" user="${cloudant_username}" password="${cloudant_password}"/>

@@ -19,7 +19,20 @@ assemble.doLast {
 }
 
 dependencies {
-  requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common')
+  requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common'),
+      'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+      'net.sourceforge.htmlunit:htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+      'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:webdriver:2.6',
+      'org.apache.httpcomponents:httpmime:4.5.3',
+      project(':com.ibm.ws.org.apache.httpcomponents'),
+      'org.brotli:dec:0.1.2',
+      'org.apache.commons:commons-lang3:3.14.0',
+      project(':com.ibm.ws.org.apache.commons.io'),
+      project(':io.openliberty.org.apache.xercesImpl'),
+      'xalan:xalan:2.7.2',
+      'xml-apis:xml-apis:1.4.01'
 }
 
 addRequiredLibraries.dependsOn copyTestContainers

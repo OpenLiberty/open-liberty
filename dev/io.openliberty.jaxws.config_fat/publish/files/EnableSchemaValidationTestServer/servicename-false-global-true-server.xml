@@ -2,11 +2,12 @@
     <featureManager>
         <feature>jsp-2.2</feature>
         <feature>jaxws-2.2</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
     
-    <webServiceClient serviceName="SayHelloService"  enableSchemaValidation="false" />
+    <webServiceClient serviceName="SayHelloService"  enableSchemaValidation="false" enableDefaultValidation="false"/>
     
     <webServiceClient enableSchemaValidation="true" />
     

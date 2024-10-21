@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,6 +45,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLConfig;
+import com.ibm.ws.crypto.common.MessageDigestUtils;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ssl.ConsoleWrapper;
 import com.ibm.ws.ssl.config.KeyStoreManager;
@@ -358,7 +359,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
                                                                                                      + ".\n\nHere's the signer information (verify the digest value matches what is displayed at the server):"));
             for (int j = 0; j < chain.length; j++) {
                 stdout.println("");
-                String shaDigest = KeyStoreManager.getInstance().generateDigest("SHA-1", chain[j]);
+                String shaDigest = KeyStoreManager.getInstance().generateDigest(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, chain[j]);
                 stdout.println(TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.CWPKI0102I", "  Subject DN:    ")
                                + chain[j].getSubjectDN());
                 stdout.println(TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.CWPKI0103I", "  Issuer DN:     ")
@@ -366,7 +367,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
                 stdout.println(TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.CWPKI0104I", "  Serial number: ")
                                + chain[j].getSerialNumber());
                 stdout.println(TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.CWPKI0109I", "  Expires: ") + chain[j].getNotAfter());
-                stdout.println(TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.CWPKI0105I", "  SHA-1 digest:  ") + shaDigest);
+                stdout.println(TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.CWPKI0105I", "  SHA-256 digest:  ") + shaDigest);
                 stdout.println("");
             }
 

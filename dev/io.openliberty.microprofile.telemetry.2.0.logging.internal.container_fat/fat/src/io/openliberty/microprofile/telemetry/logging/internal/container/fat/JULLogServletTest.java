@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.container.fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -67,6 +66,7 @@ public class JULLogServletTest {
         ShrinkHelper.exportDropinAppToServer(server, telemetryLogApp,
                                              DeployOptions.SERVER_ONLY);
 
+        server.addEnvVar("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf");
         server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
 
         server.copyFileToLibertyServerRoot("agent-260/opentelemetry-javaagent.jar");
@@ -84,6 +84,8 @@ public class JULLogServletTest {
     public void testMatchingJULMessageLogsWithContainerViaOpenTelemetryAgent() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
 
+        TestUtils.isContainerStarted("LogsExporter", container);
+
         TimeUnit.SECONDS.sleep(5);
 
         final String logs = container.getLogs();
@@ -91,7 +93,8 @@ public class JULLogServletTest {
         List<String> linesMessagesLog = server.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", server.getDefaultLogFile());
         int bridgedLogsCount = logs.split("LogRecord #").length - 1;
 
-        assertEquals("Messages.log and Telemetry console logs don't match.", linesMessagesLog.size(), bridgedLogsCount);
+        assertTrue("Messages.log and Telemetry console logs don't match.",
+                   TestUtils.compareLogSizes("testMatchingJULMessageLogsWithContainerViaOpenTelemetryAgent", logs, linesMessagesLog.size(), bridgedLogsCount));
     }
 
     @AfterClass

@@ -67,7 +67,9 @@ test.project: true
 generate.replacement: true
 
 # These are the images used by the org.testcontainers and componenttest.topology.database.container packages
-fat.test.container.images: testcontainers/ryuk:0.6.0, testcontainers/sshd:1.1.0, testcontainers/vnc-recorder:1.3.0, kyleaure/db2:1.0, gvenzl/oracle-free:23.3-full-faststart, postgres:14.1-alpine, mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
+fat.test.container.images: testcontainers/ryuk:0.9.0, testcontainers/sshd:1.2.0, testcontainers/vnc-recorder:1.3.0, alpine:3.17,\
+			   kyleaure/db2:1.0, gvenzl/oracle-free:23.3-full-faststart,\
+			   postgres:14.1-alpine, mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
 
 -buildpath: \
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

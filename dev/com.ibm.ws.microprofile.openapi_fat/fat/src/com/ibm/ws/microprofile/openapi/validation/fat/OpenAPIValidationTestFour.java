@@ -1,7 +1,14 @@
 package com.ibm.ws.microprofile.openapi.validation.fat;
 
+import static componenttest.rules.repeater.MicroProfileActions.MP70_EE10_ID;
+import static componenttest.rules.repeater.MicroProfileActions.MP70_EE11_ID;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -12,6 +19,7 @@ import org.junit.runner.RunWith;
 import com.ibm.ws.microprofile.openapi.fat.FATSuite;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -60,120 +68,134 @@ public class OpenAPIValidationTestFour {
         server.stopServer("CWWKO1650E", "CWWKO1651W");
     }
 
+    @SkipForRepeat({
+        MP70_EE10_ID, // Disable for mpOpenAPI-4.0 until we have a fix for
+        MP70_EE11_ID, // https://github.com/smallrye/smallrye-open-api/issues/1987
+    })
     @Test
     public void testRef() throws Exception {
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/invalidRef/schemas/testSchema\" reference value is not in a valid format, Location: #/paths/~1/get/responses/200/content/application~1json/schema/items"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/invalidRef/schemas/testSchema\" value is an invalid reference, Location: #/paths/~1/get/responses/200/content/application~1json/schema/items"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/components/schemas/Date\" reference value is not in a valid format, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/components/schemas/Date\" value is an invalid reference, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/\" reference value is not in a valid format, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/\" value is an invalid reference, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/ \" reference value is not defined within the Components Object, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/ \" value is an invalid reference, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/Airport/Cat\" reference value is not in a valid format, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/Airport/Cat\" value is an invalid reference, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/#\" reference value is not defined within the Components Object, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/#\" value is an invalid reference, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/\" reference value is not in a valid format, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/\" value is an invalid reference, Location: #/paths/~1availability/get/parameters/schema"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/Flight\" reference value is not in a valid format, Location: #/paths/~1availability/get/responses/200/content/applictaion~1json/schema/items"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/Flight\" value is an invalid reference, Location: #/paths/~1availability/get/responses/200/content/applictaion~1json/schema/items"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components//Booking\" reference value is invalid, Location: #/paths/~1bookings/get/responses/200/content/application~1json/schema/items"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components//Booking\" value is an invalid reference, Location: #/paths/~1bookings/get/responses/200/content/application~1json/schema/items"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas\" reference value is not in a valid format, Location: #/paths/~1bookings/post/callbacks/getBookings//get/responses/200/content/application~1json/schema/items"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas\" value is an invalid reference, Location: #/paths/~1bookings/post/callbacks/getBookings//get/responses/200/content/application~1json/schema/items"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/requestBodies/Pet\" reference value is not defined within the Components Object, Location: #/paths/~1bookings/post/requestBody"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/requestBodies/Pet\" value is an invalid reference, Location: #/paths/~1bookings/post/requestBody"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/responses/Pet\" reference value is not defined within the Components Object,*"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
             server
-                .waitForStringInLog(" - Message: The \"#/components/responses/Pet\" value is an invalid reference,*"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+                .findStringsInLogs(" - Message: The \"#/components/responses/Pet\" value is an invalid reference,*"));
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/schemas\" reference value is not defined within the Components Object,*"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/schemas\" value is an invalid reference,*"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/schemas/Pet\" reference value is not defined within the Components Object,*"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(" - Message: The \"#/components/schemas/Pet\" value is an invalid reference,*"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(" - Message: The \"#/components/schemas/Pet\" value is an invalid reference,*"));
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/examples/Pet\" reference value is not defined within the Components Object, Location: #/paths/~1reviews/post/requestBody/content/application~1json/examples/review"));
-        assertNotNull("The Reference validator should have been triggered by the invalid reference",
-            server.waitForStringInLog(
+        assertNotEmpty("The Reference validator should have been triggered by the invalid reference",
+            server.findStringsInLogs(
                 " - Message: The \"#/components/examples/Pet\" value is an invalid reference, Location: #/paths/~1reviews/post/requestBody/content/application~1json/examples/review"));
     }
 
     @Test
     public void testCallbacks() throws Exception {
-        assertNotNull("The Callback validator should have been triggered by the invalid URL",
-            server.waitForStringInLog(
+        assertNotEmpty("The Callback validator should have been triggered by the invalid URL",
+            server.findStringsInLogs(
                 " - Message: The URL template of Callback Object is empty and is not a valid URL, Location: #/paths/~1bookings/post/callbacks/getBookings"));
-        assertNotNull(
+        assertNotEmpty(
             "The Callback validator should have been triggered by the invalid substitution variables in the URL",
-            server.waitForStringInLog(" - Message: The Callback Object contains invalid substitution variables:*"));
-        assertNotNull("The Callback validator should have been triggered by the invalid runtime expression",
-            server.waitForStringInLog(
+            server.findStringsInLogs(" - Message: The Callback Object contains invalid substitution variables:*"));
+        assertNotEmpty("The Callback validator should have been triggered by the invalid runtime expression",
+            server.findStringsInLogs(
                 " - Message: The Callback Object must contain a valid runtime expression as defined in the OpenAPI Specification.*"));
     }
 
     @Test
     public void testPathItems() throws Exception {
-        assertNotNull("The PathItem validator should have been triggered by the by ",
-            server.waitForStringInLog(" - Message: The Path Item Object must contain a valid path.*"));
-        assertNotNull("The PathItem validator should have been triggered by the missing parameter definition",
+        assertNotEmpty("The PathItem validator should have been triggered by the by ",
+            server.findStringsInLogs(" - Message: The Path Item Object must contain a valid path."));
+        assertNotEmpty("The PathItem validator should have been triggered by the missing parameter definition",
             server
-                .waitForStringInLog(" - Message: The Path Item Object must contain a valid path. The format of the*"));
-        assertTrue("The PathItem validator should have been triggered by the by the duplicate path",
-            server.waitForMultipleStringsInLog(2, " - Message: The Path Item Object must contain a valid path.*") == 2);
+                .findStringsInLogs(" - Message: The Path Item Object must contain a valid path. The format of the"));
+        assertThat("The PathItem validator should have been triggered by the by the duplicate path",
+            server.findStringsInLogs(" - Message: The Path Item Object must contain a valid path."),
+            hasSize(4));
+    }
+
+    /**
+     * @param string
+     * @param stringsInLogs
+     */
+    private void assertNotEmpty(String message,
+                                List<String> stringsInLogs) {
+        assertThat(message, stringsInLogs, not(empty()));
     }
 }

@@ -266,7 +266,7 @@ public interface ConfigurationProvider {
      *
      * @return
      */
-    public boolean enableHADBPeerLocking();
+    public boolean enableLogLocking();
 
     /**
      * Configures the length of time between heartbeats when the peer locking scheme is enabled for the Tran recovery logs that are stored in a database.

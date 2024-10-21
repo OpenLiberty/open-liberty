@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.authorization.jacc.common;
 
-import java.security.Policy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +38,15 @@ public class PolicyConfigurationManager implements ApplicationStateListener {
     private static final List<String> pcRunningList = new ArrayList<String>();
 
     private static PolicyConfigurationFactory pcf = null;
-    private static Policy policy = null;
+    private static PolicyProxy policyProxy = null;
     private static EJBSecurityPropagator esp = null;
 
     // for listener..
-    public PolicyConfigurationManager() {}
+    public PolicyConfigurationManager() {
+    }
 
-    public static void initialize(Policy policy, PolicyConfigurationFactory pcf) {
-        PolicyConfigurationManager.policy = policy;
+    public static void initialize(PolicyProxy policyProxy, PolicyConfigurationFactory pcf) {
+        PolicyConfigurationManager.policyProxy = policyProxy;
         PolicyConfigurationManager.pcf = pcf;
         pcConfigsMap.clear();
         pcModulesMap.clear();
@@ -158,7 +158,7 @@ public class PolicyConfigurationManager implements ApplicationStateListener {
                     Tr.error(tc, "JACC_GET_POLICYCONFIGURATION_FAILURE", new Object[] { ctxId, pce });
                 }
             }
-            policy.refresh();
+            policyProxy.refresh();
         }
     }
 
@@ -180,7 +180,7 @@ public class PolicyConfigurationManager implements ApplicationStateListener {
                     Tr.error(tc, "JACC_GET_POLICYCONFIGURATION_FAILURE", new Object[] { ctxId, pce });
                 }
             }
-            policy.refresh();
+            policyProxy.refresh();
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "refresh is invoked after deleting PolicyConfigurations");
             pcModulesMap.remove(appName);

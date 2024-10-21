@@ -50,6 +50,10 @@ public class Constants {
     static final String JSP_APP = "jspApp";
     static final String JSP_CONTEXT_ROOT = "/jspApp";
 
+    //JSF / Jakarta Faces
+    static final String JSF_APP = "jsfApp";
+    static final String JSF_CONTEXT_ROOT = "/jsfApp";
+
     //other
     static final String UNKNOWN_SERVICE = "unknown_service:java";
 

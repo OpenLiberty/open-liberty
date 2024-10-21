@@ -2974,7 +2974,9 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 String userAgent = getServiceContext().getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString();
                 if (userAgent != null && SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent)) {
                     //TODO: do we remove Secure, probably should be retained.
-                    Tr.debug(tc, "Incompatible client for SameSite=None found with the following User-Agent: " + userAgent);
+                    if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Incompatible client for SameSite=None found with the following User-Agent: " + userAgent);
+                    }
                     cookie.setAttribute("samesite", null);
                     // Partitioned should only be included when SameSite=None, so if it is incompatible Partitioned should be removed as well
                     if (partitionedValue != null) {

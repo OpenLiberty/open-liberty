@@ -235,9 +235,9 @@ public class Machine {
      * input path. Note that the actual file is not guaranteed to exist. The input path may
      * represent either a file or a directory.
      *
-     * @param  path The absolute path to a file on the remote device.
-     * @param encoding The character set the file is encoded in
-     * @return      A RemoteFile representing the input abstract path name
+     * @param  path     The absolute path to a file on the remote device.
+     * @param  encoding The character set the file is encoded in
+     * @return          A RemoteFile representing the input abstract path name
      */
     public RemoteFile getFile(String path, Charset encoding) {
         return new RemoteFile(this, path, encoding);
@@ -273,17 +273,16 @@ public class Machine {
             String[] params = null;
             OperatingSystem os = getOperatingSystem();
             if (os == OperatingSystem.WINDOWS) {
-                cmd = "cmd.exe";
-                params = new String[] { "/C", "ver" };
+                cmd = "ver";
             } else if (os == OperatingSystem.MAC) {
-                cmd = "/bin/sh";
-                params = new String[] { "-c", "\"sysctl", "kern.version\"" };
+                cmd = "sysctl";
+                params = new String[] { "kern.version" };
             } else {
-                cmd = "/bin/sh";
-                params = new String[] { "-c", "\"cat", "/proc/version\"" };
+                cmd = "cat";
+                params = new String[] { "/proc/version" };
             }
             Log.finer(c, method, "Command to get OS version: " + cmd + " " + Arrays.toString(params));
-            this.osVersion = LocalProvider.executeCommand(this, cmd, params, null, null).getStdout().trim();
+            this.osVersion = LocalProvider.executeCommand(this, cmd, params, null, null, 0).getStdout().trim();
         }
         Log.exiting(c, method, this.osVersion);
         return this.osVersion;
@@ -454,13 +453,7 @@ public class Machine {
      * @throws Exception
      */
     public ProgramOutput execute(String cmd, String[] parameters, String workDir, Properties envVars, int timeout) throws Exception {
-        // On iSeries, we should be adding the qsh -c flag to the start of any command.
-        // This means commands are executed in a native-like shell, rather than a
-        // PASE environment.
-        if (OperatingSystem.ISERIES.compareTo(getOperatingSystem()) == 0) {
-            cmd = "qsh -c " + cmd;
-        }
-        return LocalProvider.executeCommand(this, cmd, parameters, workDir, envVars);
+        return LocalProvider.executeCommand(this, cmd, parameters, workDir, envVars, timeout);
     }
 
     /**

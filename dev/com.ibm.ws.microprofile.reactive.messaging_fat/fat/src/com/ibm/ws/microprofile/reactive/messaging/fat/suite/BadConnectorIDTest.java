@@ -15,6 +15,7 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleOutgoingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -33,6 +34,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingBean;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -85,9 +87,8 @@ public class BadConnectorIDTest {
     @Test
     public void testBadConnectorID() throws Exception {
         // Message in Reactive Messaging 3.0 added msg identifier and quotes around the channel name. So regex needs to support message id and quotes, but allow for them to be missing.
-        List<String> errors = server
-                        .findStringsInLogs("java.lang.IllegalArgumentException:( SRMSG00072:)? Unknown connector for (`)?" + BasicMessagingBean.CHANNEL_OUT + "(`)?");
-        assertTrue(errors.size() > 0);
+        assertNotNull("Did not find broken connector in logs",server
+                .waitForStringInLog("java.lang.IllegalArgumentException:( SRMSG00072:)? Unknown connector for (`)?" + BasicMessagingBean.CHANNEL_OUT + "(`)?"));
     }
 
     @AfterClass

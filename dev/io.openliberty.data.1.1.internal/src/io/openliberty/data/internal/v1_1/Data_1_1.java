@@ -18,33 +18,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Is;
 import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.comparison.Contains;
-import io.openliberty.data.repository.comparison.EndsWith;
-import io.openliberty.data.repository.comparison.GreaterThan;
-import io.openliberty.data.repository.comparison.GreaterThanEqual;
-import io.openliberty.data.repository.comparison.In;
-import io.openliberty.data.repository.comparison.LessThan;
-import io.openliberty.data.repository.comparison.LessThanEqual;
-import io.openliberty.data.repository.comparison.Like;
-import io.openliberty.data.repository.comparison.StartsWith;
 import io.openliberty.data.repository.function.AbsoluteValue;
 import io.openliberty.data.repository.function.CharCount;
 import io.openliberty.data.repository.function.ElementCount;
 import io.openliberty.data.repository.function.Extract;
-import io.openliberty.data.repository.function.IgnoreCase;
-import io.openliberty.data.repository.function.Not;
 import io.openliberty.data.repository.function.Rounded;
 import io.openliberty.data.repository.function.Trimmed;
 import io.openliberty.data.repository.update.Add;
@@ -61,7 +52,8 @@ import jakarta.data.exceptions.MappingException;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = DataVersionCompatibility.class)
 public class Data_1_1 implements DataVersionCompatibility {
-    private static final String COMPARISON_ANNO_PACKAGE = In.class.getPackageName();
+    private static final TraceComponent tc = Tr.register(Data_1_1.class);
+
     private static final String FUNCTION_ANNO_PACKAGE = Rounded.class.getPackageName();
 
     private static final Map<String, String> FUNCTION_CALLS = new HashMap<>();
@@ -69,8 +61,6 @@ public class Data_1_1 implements DataVersionCompatibility {
         FUNCTION_CALLS.put(AbsoluteValue.class.getSimpleName(), "ABS(");
         FUNCTION_CALLS.put(CharCount.class.getSimpleName(), "LENGTH(");
         FUNCTION_CALLS.put(ElementCount.class.getSimpleName(), "SIZE(");
-        FUNCTION_CALLS.put(IgnoreCase.class.getSimpleName(), "LOWER(");
-        FUNCTION_CALLS.put(Not.class.getSimpleName(), "NOT(");
         FUNCTION_CALLS.put(Rounded.Direction.DOWN.name(), "FLOOR(");
         FUNCTION_CALLS.put(Rounded.Direction.NEAREST.name(), "ROUND(");
         FUNCTION_CALLS.put(Rounded.Direction.UP.name(), "CEILING(");
@@ -91,33 +81,40 @@ public class Data_1_1 implements DataVersionCompatibility {
                                          Method method, int p,
                                          String o_, String attrName,
                                          boolean isCollection, Annotation[] annos) {
-        boolean ignoreCase = false;
         StringBuilder attributeExpr = new StringBuilder();
 
-        Annotation comparisonAnno = null;
+        Is.Op comparison = Is.Op.Equal;
         List<Annotation> functionAnnos = new ArrayList<>();
         for (int a = annos.length - 1; a >= 0; a--) {
-            String annoPackage = annos[a].annotationType().getPackageName();
-            if (COMPARISON_ANNO_PACKAGE.equals(annoPackage)) {
-                if (comparisonAnno == null)
-                    comparisonAnno = annos[a];
-                else
-                    throw new MappingException("The " + Set.of(comparisonAnno, annos[a]) +
-                                               " annotations cannot be combined on parameter " + (p + 1) + " of the " +
-                                               method.getName() + " method of the " +
-                                               method.getDeclaringClass().getName() + " repository."); // TODO NLS
-            } else if (FUNCTION_ANNO_PACKAGE.equals(annoPackage)) {
-                functionAnnos.add(annos[a]);
-                String functionType = annos[a] instanceof Extract ? ((Extract) annos[a]).value().name() //
-                                : annos[a] instanceof Rounded ? ((Rounded) annos[a]).value().name() //
-                                                : annos[a].annotationType().getSimpleName();
-                String functionCall = FUNCTION_CALLS.get(functionType);
-                ignoreCase |= "LOWER(".equals(functionCall);
-                attributeExpr.append(functionCall);
+            if (annos[a] instanceof Is) {
+                comparison = ((Is) annos[a]).value();
+            } else {
+                String annoPackage = annos[a].annotationType().getPackageName();
+                if (FUNCTION_ANNO_PACKAGE.equals(annoPackage)) {
+                    functionAnnos.add(annos[a]);
+                    String functionType = annos[a] instanceof Extract ? ((Extract) annos[a]).value().name() //
+                                    : annos[a] instanceof Rounded ? ((Rounded) annos[a]).value().name() //
+                                                    : annos[a].annotationType().getSimpleName();
+                    String functionCall = FUNCTION_CALLS.get(functionType);
+                    attributeExpr.append(functionCall);
+                }
             }
         }
 
-        attributeExpr.append(o_).append(attrName);
+        Is.Op baseOp = comparison.base();
+        boolean ignoreCase = comparison.ignoreCase();
+        boolean negated = comparison.isNegative();
+
+        if (ignoreCase)
+            attributeExpr.append("LOWER(");
+
+        if (attrName.charAt(attrName.length() - 1) != ')')
+            attributeExpr.append(o_);
+
+        attributeExpr.append(attrName);
+
+        if (ignoreCase)
+            attributeExpr.append(')');
 
         for (Annotation anno : functionAnnos) {
             if (anno instanceof Rounded && ((Rounded) anno).value() == Rounded.Direction.NEAREST)
@@ -127,53 +124,74 @@ public class Data_1_1 implements DataVersionCompatibility {
         }
 
         if (isCollection)
-            if (comparisonAnno != null && !(comparisonAnno instanceof Contains) || ignoreCase)
-                throw new MappingException(new UnsupportedOperationException("The parameter annotation " +
-                                                                             (ignoreCase ? "IgnoreCase" : comparisonAnno.annotationType().getSimpleName()) +
-                                                                             " which is applied to entity property " + attrName +
-                                                                             " is not supported for collection properties.")); // TODO NLS (future)
+            if (ignoreCase ||
+                baseOp != Is.Op.Equal) // TODO also have an operation for collection containing?
+                throw new UnsupportedOperationException("The " + comparison.name() +
+                                                        " comparison that is applied to entity property " +
+                                                        attrName +
+                                                        " is not supported for collection properties."); // TODO NLS (future)
 
-        if (comparisonAnno == null) { // Equals
-            q.append(attributeExpr).append('=');
-            appendParam(q, ignoreCase, qp);
-        } else if (comparisonAnno instanceof GreaterThan) {
-            q.append(attributeExpr).append('>');
-            appendParam(q, ignoreCase, qp);
-        } else if (comparisonAnno instanceof GreaterThanEqual) {
-            q.append(attributeExpr).append(">=");
-            appendParam(q, ignoreCase, qp);
-        } else if (comparisonAnno instanceof LessThan) {
-            q.append(attributeExpr).append('<');
-            appendParam(q, ignoreCase, qp);
-        } else if (comparisonAnno instanceof LessThanEqual) {
-            q.append(attributeExpr).append("<=");
-            appendParam(q, ignoreCase, qp);
-        } else if (comparisonAnno instanceof Contains) {
-            if (isCollection) {
-                q.append(" ?").append(qp).append(" MEMBER OF ").append(attributeExpr);
-            } else {
-                q.append(attributeExpr).append(" LIKE CONCAT('%', ");
+        switch (baseOp) {
+            case Equal:
+                q.append(attributeExpr).append(negated ? "<>" : '=');
+                appendParam(q, ignoreCase, qp);
+                break;
+            case GreaterThan:
+                q.append(attributeExpr).append('>');
+                appendParam(q, ignoreCase, qp);
+                break;
+            case GreaterThanEqual:
+                q.append(attributeExpr).append(">=");
+                appendParam(q, ignoreCase, qp);
+                break;
+            case In:
+                if (ignoreCase)
+                    throw new UnsupportedOperationException(); // should be unreachable
+                q.append(attributeExpr) //
+                                .append(negated ? " NOT" : "") //
+                                .append(" IN ");
+                appendParam(q, ignoreCase, qp);
+                break;
+            case LessThan:
+                q.append(attributeExpr).append('<');
+                appendParam(q, ignoreCase, qp);
+                break;
+            case LessThanEqual:
+                q.append(attributeExpr).append("<=");
+                appendParam(q, ignoreCase, qp);
+                break;
+            // TODO operation for collection containing?
+            //case ???:
+            //    q.append(" ?").append(qp) //
+            //                    .append(negated ? " NOT" : "") //
+            //                    .append(" MEMBER OF ").append(attributeExpr);
+            //    break;
+            case Like:
+                q.append(attributeExpr) //
+                                .append(negated ? " NOT" : "") //
+                                .append(" LIKE ");
+                appendParam(q, ignoreCase, qp);
+                break;
+            case Prefixed:
+                q.append(attributeExpr) //
+                                .append(negated ? " NOT" : "") //
+                                .append(" LIKE CONCAT(");
                 appendParam(q, ignoreCase, qp).append(", '%')");
-            }
-        } else if (comparisonAnno instanceof Like) {
-            q.append(attributeExpr).append(" LIKE ");
-            appendParam(q, ignoreCase, qp);
-        } else if (comparisonAnno instanceof StartsWith) {
-            q.append(attributeExpr).append(" LIKE CONCAT(");
-            appendParam(q, ignoreCase, qp).append(", '%')");
-        } else if (comparisonAnno instanceof EndsWith) {
-            q.append(attributeExpr).append(" LIKE CONCAT('%', ");
-            appendParam(q, ignoreCase, qp).append(')');
-        } else if (comparisonAnno instanceof In) {
-            if (ignoreCase)
-                throw new MappingException("The " + Set.of("IgnoreCase", "In") +
-                                           " annotations cannot be combined on parameter " + (p + 1) + " of the " +
-                                           method.getName() + " method of the " +
-                                           method.getDeclaringClass().getName() + " repository."); // TODO NLS
-            q.append(attributeExpr).append(" IN ");
-            appendParam(q, ignoreCase, qp);
-        } else {
-            throw new UnsupportedOperationException(comparisonAnno.annotationType().toString());
+                break;
+            case Substringed:
+                q.append(attributeExpr) //
+                                .append(negated ? " NOT" : "") //
+                                .append(" LIKE CONCAT('%', ");
+                appendParam(q, ignoreCase, qp).append(", '%')");
+                break;
+            case Suffixed:
+                q.append(attributeExpr) //
+                                .append(negated ? " NOT" : "") //
+                                .append(" LIKE CONCAT('%', ");
+                appendParam(q, ignoreCase, qp).append(')');
+                break;
+            default:
+                throw new UnsupportedOperationException(comparison.name());
         }
 
         return q;
@@ -187,24 +205,25 @@ public class Data_1_1 implements DataVersionCompatibility {
                                                     Annotation[] annos) {
         boolean ignoreCase = false;
         for (int a = annos.length - 1; a >= 0; a--) {
-            String annoPackage = annos[a].annotationType().getPackageName();
-            if (COMPARISON_ANNO_PACKAGE.equals(annoPackage)) {
-                throw new MappingException("The " + annos[a].annotationType().getSimpleName() +
-                                           " annotation cannot be applied to a parameter of the " +
-                                           method.getName() + " method of the " +
-                                           method.getDeclaringClass().getName() +
-                                           " repository because the parameter type is an IdClass."); // TODO NLS
-            } else if (annos[a] instanceof IgnoreCase) {
-                ignoreCase = true;
-            } else if (annos[a] instanceof Not) {
-                q.append(" NOT ");
-            } else if (FUNCTION_ANNO_PACKAGE.equals(annoPackage)) {
-                throw new MappingException("The " + annos[a].annotationType().getSimpleName() +
-                                           " annotation cannot be applied to a parameter of the " +
-                                           method.getName() + " method of the " +
-                                           method.getDeclaringClass().getName() +
-                                           " repository because the parameter type is an IdClass."); // TODO NLS
-
+            if (annos[a] instanceof Is) {
+                Is.Op comparison = ((Is) annos[a]).value();
+                if (comparison.base() != Is.Op.Equal)
+                    throw new MappingException("The " + annos[a] +
+                                               " annotation cannot be applied to a parameter of the " +
+                                               method.getName() + " method of the " +
+                                               method.getDeclaringClass().getName() +
+                                               " repository because the parameter type is an IdClass."); // TODO NLS
+                ignoreCase = comparison.ignoreCase();
+                if (comparison.isNegative())
+                    q.append(" NOT ");
+            } else {
+                String annoPackage = annos[a].annotationType().getPackageName();
+                if (FUNCTION_ANNO_PACKAGE.equals(annoPackage))
+                    throw new MappingException("The " + annos[a].annotationType().getSimpleName() +
+                                               " annotation cannot be applied to a parameter of the " +
+                                               method.getName() + " method of the " +
+                                               method.getDeclaringClass().getName() +
+                                               " repository because the parameter type is an IdClass."); // TODO NLS
             }
         }
 
@@ -263,20 +282,36 @@ public class Data_1_1 implements DataVersionCompatibility {
     }
 
     @Override
+    @Trivial
     public String[] getUpdateAttributeAndOperation(Annotation[] annos) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        String[] returnValue = null;
         for (Annotation anno : annos)
             if (anno instanceof Assign) {
-                return new String[] { ((Assign) anno).value(), "=" };
+                returnValue = new String[] { ((Assign) anno).value(), "=" };
+                break;
             } else if (anno instanceof Add) {
-                return new String[] { ((Add) anno).value(), "+" };
+                returnValue = new String[] { ((Add) anno).value(), "+" };
+                break;
             } else if (anno instanceof Multiply) {
-                return new String[] { ((Multiply) anno).value(), "*" };
+                returnValue = new String[] { ((Multiply) anno).value(), "*" };
+                break;
             } else if (anno instanceof Divide) {
-                return new String[] { ((Divide) anno).value(), "/" };
+                returnValue = new String[] { ((Divide) anno).value(), "/" };
+                break;
             } else if (anno instanceof SubtractFrom) {
-                return new String[] { ((SubtractFrom) anno).value(), "-" };
+                returnValue = new String[] { ((SubtractFrom) anno).value(), "-" };
+                break;
             }
-        return null;
+
+        if (trace && tc.isDebugEnabled()) {
+            Object[] aa = new Object[annos.length];
+            for (int a = 0; a < annos.length; a++)
+                aa[a] = annos[a] == null ? null : annos[a].annotationType().getName();
+            Tr.debug(this, tc, "getUpdateAttributeAndOperation", aa, returnValue);
+        }
+        return returnValue;
     }
 
     @Override

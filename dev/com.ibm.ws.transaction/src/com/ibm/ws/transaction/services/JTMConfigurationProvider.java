@@ -14,6 +14,7 @@ package com.ibm.ws.transaction.services;
 
 import java.io.File;
 import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.JTA.Util;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -821,6 +823,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @FFDCIgnore(value = { PrivilegedActionException.class })
     public void shutDownFramework() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "shutDownFramework", _frameworkShutting);
@@ -853,7 +856,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                         });
                 }
                 _frameworkShutting = true;
-            } catch (Exception e) {
+            } catch (PrivilegedActionException e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "shutDownFramework", e);
 
@@ -872,8 +875,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
-        return (Boolean) _props.get("enableHADBPeerLocking");
+    public boolean enableLogLocking() {
+        return (Boolean) _props.get("enableLogLocking");
     }
 
     /*

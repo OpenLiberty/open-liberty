@@ -24,7 +24,6 @@ import java.util.Collections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -38,7 +37,6 @@ import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.utils.HttpUtils;
@@ -51,11 +49,8 @@ public class CheckpointPhaseTest {
     public TestName testName = new TestName();
     public static final String APP_NAME = "app2";
 
-    @Server("checkpointFATServer")
+    @Server("checkpointPhaseServer")
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat("checkpointFATServer");
 
     @BeforeClass
     public static void setUpClass() throws Exception {

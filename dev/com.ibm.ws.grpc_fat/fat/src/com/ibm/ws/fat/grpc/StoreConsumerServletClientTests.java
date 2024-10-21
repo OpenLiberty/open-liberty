@@ -29,7 +29,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -42,8 +41,6 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-// Skip for EE11: OpenAPI NPE due to @OAuthScope having a name but no description in ConsumerRestAppWrapper.
-@SkipForRepeat(SkipForRepeat.EE11_FEATURES)
 public class StoreConsumerServletClientTests extends FATServletClient {
 
     protected static final Class<?> c = StoreConsumerServletClientTests.class;

@@ -72,6 +72,6 @@ public class DataJPATestCheckpoint extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(DataJPATest.EXPECTED_ERROR_MESSAGES);
     }
 }

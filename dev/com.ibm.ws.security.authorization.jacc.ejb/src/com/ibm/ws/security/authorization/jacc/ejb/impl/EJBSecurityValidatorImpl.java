@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,13 +13,9 @@
 package com.ibm.ws.security.authorization.jacc.ejb.impl;
 
 import java.security.AccessController;
-import java.security.CodeSource;
 import java.security.Permission;
-import java.security.Policy;
-import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,6 +31,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authorization.jacc.common.PolicyContextHandlerImpl;
+import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityValidator;
 
 public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
@@ -48,8 +45,6 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
     private static String[] jaccHandlerKeyArrayEe9 = new String[] { "javax.security.auth.Subject.container", "jakarta.ejb.EnterpriseBean", "jakarta.ejb.arguments",
                                                                     "jakarta.xml.soap.SOAPMessage" };
 
-    private static ProtectionDomain nullPd = new ProtectionDomain(new CodeSource(null, (java.security.cert.Certificate[]) null), null, null, null);
-    private static CodeSource nullCs = new CodeSource(null, (java.security.cert.Certificate[]) null);
     private static PolicyContextHandlerImpl pch = PolicyContextHandlerImpl.getInstance();
 
     /**
@@ -60,10 +55,11 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
      */
     private static boolean isEENineOrHigher = SessionContext.class.getCanonicalName().startsWith("jakarta.ejb");
 
-    public EJBSecurityValidatorImpl() {}
+    public EJBSecurityValidatorImpl() {
+    }
 
     @Override
-    public boolean checkResourceConstraints(String contextId, List<Object> methodParameters, Object bean, Permission ejbPerm, Subject subject) {
+    public boolean checkResourceConstraints(String contextId, List<Object> methodParameters, Object bean, Permission ejbPerm, Subject subject, PolicyProxy policyProxy) {
         boolean result = false;
         final String fci = contextId;
         final HashMap<String, Object> ho = new HashMap<String, Object>();
@@ -88,7 +84,7 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
         }
         final Permission p = ejbPerm;
         try {
-            result = checkMethodConstraints(fci, ma, b, p, s, ho);
+            result = checkMethodConstraints(fci, ma, b, p, s, ho, policyProxy);
         } catch (PrivilegedActionException pae) {
             Tr.error(tc, "JACC_EJB_IMPLIES_FAILURE", new Object[] { contextId, pae.getException() });
         } // Moved resetHandlerInfo to postInvoke.
@@ -100,7 +96,8 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
                                            final EnterpriseBean bean,
                                            final Permission permission,
                                            final Subject subject,
-                                           final HashMap<String, Object> handlerObjects) throws PrivilegedActionException {
+                                           final HashMap<String, Object> handlerObjects,
+                                           final PolicyProxy policyProxy) throws PrivilegedActionException {
         Boolean result = Boolean.FALSE;
         result = AccessController.doPrivileged(
                                                new PrivilegedExceptionAction<Boolean>() {
@@ -145,20 +142,12 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
                                                            }
                                                        }
 
-                                                       ProtectionDomain pd = null;
-                                                       if (subject != null && subject.getPrincipals().size() > 0) {
-                                                           Principal[] principalArray = subject.getPrincipals().toArray(new Principal[subject.getPrincipals().size()]);
-                                                           pd = new ProtectionDomain(nullCs, null, null, principalArray);
-                                                       } else {
-                                                           pd = nullPd;
-                                                       }
-
                                                        if (tc.isDebugEnabled())
                                                            Tr.debug(tc, "Setting JACC handler data");
                                                        PolicyContext.setHandlerData(handlerObjects);
                                                        if (tc.isDebugEnabled())
-                                                           Tr.debug(tc, "Calling JACC implies. PD : " + pd);
-                                                       return Policy.getPolicy().implies(pd, permission);
+                                                           Tr.debug(tc, "Calling JACC implies. subject : " + subject);
+                                                       return policyProxy.implies(contextId, subject, permission);
                                                    }
                                                });
         return result.booleanValue();

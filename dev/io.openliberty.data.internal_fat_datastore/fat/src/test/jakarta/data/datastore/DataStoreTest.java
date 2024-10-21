@@ -12,13 +12,10 @@
  *******************************************************************************/
 package test.jakarta.data.datastore;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -45,6 +42,15 @@ import test.jakarta.data.datastore.webapp.DataStoreWebAppServlet;
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class DataStoreTest extends FATServletClient {
+    /**
+     * Error messages, typically for invalid repository methods, that are
+     * intentionally caused by tests to cover error paths.
+     * These are ignored when checking the messages.log file for errors.
+     */
+    private static final String[] EXPECTED_ERROR_MESSAGES = //
+                    new String[] {
+                                   "CWWKD1063E.*PersistenceUnitRepo"
+                    };
 
     @Server("io.openliberty.data.internal.fat.datastore")
     @TestServlets({
@@ -104,66 +110,35 @@ public class DataStoreTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(EXPECTED_ERROR_MESSAGES);
     }
 
     @Test
     public void testDDLGeneration() throws Exception {
-        // Build a map of expected DDL file names to expected list of SQL commands in that DDL
-        // Note: not the full SQL statements, just the first part through the table names
-        Map<String, List<String>> expectedSQLPerFile = new HashMap<String, List<String>>();
-        expectedSQLPerFile.put("application[DataStoreTestApp].databaseStore[java.app.jdbc.DataSourceDef]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE DSDEntity", "CREATE TABLE DSDEntityEJB", "CREATE TABLE DSDEntityWar", "CREATE TABLE DSDEntityWar2"));
-        expectedSQLPerFile.put("application[DataStoreTestApp].databaseStore[jdbc.ServerDataSource]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE ServerDSEntity"));
-        expectedSQLPerFile.put("application[DataStoreTestApp].databaseStore[ServerDataSource]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE ServerDSEntity"));
-        expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestEJB.jar].databaseStore[java.module.env.jdbc.ServerDataSourceRef]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE ServerDSEntity"));
-        expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestEJB.jar].databaseStore[java.module.jdbc.DataSourceDef]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE EJBModuleDSDEntity"));
-        expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestWeb1.war].databaseStore[java.comp.DefaultDataSource]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE DefDSEntity", "CREATE TABLE DefDSEntity2"));
-        expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestWeb1.war].databaseStore[java.module.env.jdbc.ServerDataSourceRef]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE ServerDSEntity"));
-        expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestWeb2.war].databaseStore[java.comp.DefaultDataSource]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE DefDSEntityWar2"));
-        expectedSQLPerFile.put("application[DataStoreTestApp].module[DataStoreTestWeb2.war].databaseStore[java.module.env.jdbc.ServerDataSourceRef]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE ServerDSEntity"));
-        expectedSQLPerFile.put("databaseStore[defaultDatabaseStore]_persistentExecutor.ddl", //
-                               Arrays.asList("CREATE TABLE WLPPART", "CREATE TABLE WLPTASK", "CREATE TABLE WLPPROP", "ALTER TABLE WLPPART"));
-        expectedSQLPerFile.put("databaseStore[java.global.env.jdbc.ServerDataSourceRef]_repository.ddl", //
-                               Arrays.asList("CREATE TABLE GlobalLibEntity"));
-        expectedSQLPerFile.put("defaultDatabaseStore_repository.ddl", //
-                               Arrays.asList("CREATE TABLE WLPPersistenceUnitEntity", "CREATE TABLE WLPDefDSEntity"));
 
         // Run the ddlgen command and obtain the list of generated files
-        List<String> ddlFileNames = DDLGenScriptHelper.getDDLFiles(server);
+        List<String> ddlGeneratedFileNames = DDLGenScriptHelper.getGeneratedDDLFiles(server);
+        List<String> ddlExpectedFileNames = DDLGenScriptHelper.getExpectedDDLFiles();
 
-        // Verify that all the expected DDL files were found
-        for (String expectedFile : expectedSQLPerFile.keySet()) {
-            assertTrue("Expected DDL file not found : " + expectedFile, ddlFileNames.remove(expectedFile));
-        }
+        // Verify that all the generated DDL files were expected
+        assertEquals("Incorrect number of generated DDL files", ddlExpectedFileNames.size(), ddlGeneratedFileNames.size());
+        for (int i = 0; i < ddlExpectedFileNames.size(); i++) {
 
-        // Verify that no extra DDL files were generated
-        assertTrue("Unexpected DDL file(s) found " + ddlFileNames, ddlFileNames.isEmpty());
+            // Verify that all the generated DDL files had the correct name
+            assertEquals("Incorrect name of generated DDL file", ddlExpectedFileNames.get(i), ddlGeneratedFileNames.get(i));
 
-        // Verify that all of the expected tables are being created
-        // Note: does not verify the entire SQL statement, just the table names
-        expectedSQLPerFile.forEach((expectedFile, expectedSQL) -> {
-            List<String> sqlFromDDL = DDLGenScriptHelper.readSQLFromDDLFile(server, expectedFile);
-            for (String expected : expectedSQL) {
-                boolean found = false;
-                for (String sql : sqlFromDDL) {
-                    if (sql.startsWith(expected)) {
-                        found = true;
-                        break;
-                    }
-                }
-                assertTrue("Expected SQL not found in DDL File : " + expected + " : " + expectedFile, found);
+            List<String> sqlLinesGeneratedDDL = DDLGenScriptHelper.readSQLFromGeneratedDDLFile(server, ddlGeneratedFileNames.get(i));
+            List<String> sqlLinesExpectedDDL = DDLGenScriptHelper.readSQLFromExpectedDDLFile(ddlExpectedFileNames.get(i));
+
+            // Verify that all the generated DDL files had the correct number of lines
+            assertEquals("Incorrect number of lines in generated DDL file " + ddlGeneratedFileNames.get(i),
+                         sqlLinesExpectedDDL.size(), sqlLinesGeneratedDDL.size());
+
+            // Verify that all the gerenerated DDL files had the correct SQL statements in the correct order
+            for (int j = 0; j < sqlLinesExpectedDDL.size(); j++) {
+                assertEquals("Incorrect SQL statement on line " + j + " of generated DDL file " + ddlGeneratedFileNames.get(i),
+                             sqlLinesExpectedDDL.get(j), sqlLinesGeneratedDDL.get(j));
             }
-            assertTrue("Unexpected additional SQL found in file " + expectedFile + ", expected = " + expectedSQL + ", found = " + sqlFromDDL,
-                       expectedSQL.size() == sqlFromDDL.size());
-        });
+        }
     }
 }

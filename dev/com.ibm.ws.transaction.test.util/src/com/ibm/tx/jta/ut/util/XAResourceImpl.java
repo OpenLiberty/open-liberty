@@ -219,18 +219,18 @@ public class XAResourceImpl implements XAResource, Serializable {
         }
     }
 
-    public static int committedCount() {
-        int committedCount = 0;
+    public static int countInState(int state) {
+        int stateCount = 0;
         for (XAResourceData res : _resources.values()) {
 
-            if (res.inState(COMMITTED)) {
-                System.out.println("commitedCount: Resource " + res.key + " is in state COMMITTED");
-                committedCount++;
+            if (res.inState(state)) {
+                System.out.println(state + " count: Resource " + res.key + " is in state " + state);
+                stateCount++;
             } else {
-                System.out.println("commitedCount: Resource " + res.key + " is not in state COMMITTED");
+                System.out.println(state + "count: Resource " + res.key + " is not in state " + state);
             }
         }
-        return committedCount;
+        return stateCount;
     }
 
     public class XAResourceData implements Serializable {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,22 +49,5 @@ public class LeaseLogImpl {
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releasePeerLease(java.lang.String)
      */
     public void releasePeerLease(String recoveryIdentity) throws Exception {
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#lockLocalLease(java.lang.String)
-     */
-    public boolean lockLocalLease(String recoveryIdentity) {
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releaseLocalLease(java.lang.String)
-     */
-    public void releaseLocalLease(String recoveryIdentity) throws Exception {
     }
 }

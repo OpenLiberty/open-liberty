@@ -289,6 +289,9 @@ public class Constants {
     public static final String TRUE = "true";
     public static final String FALSE = "false";
 
+    // START OF UNUSED CONSTANTS
+    //     unused in LIberty but not removed since this class is defined as an API
+
     // unknown cipher
     public static final String SSL_UNKNOWN_CIPHER = "UNKNOWN_CIPHER";
 
@@ -345,6 +348,7 @@ public class Constants {
                     SSL_DH_anon_WITH_3DES_EDE_CBC_SHA = "SSL_DH_anon_WITH_3DES_EDE_CBC_SHA",
                     SSL_DH_anon_WITH_AES_128_CBC_SHA = "SSL_DH_anon_WITH_AES_128_CBC_SHA",
                     SSL_DH_anon_WITH_AES_256_CBC_SHA = "SSL_DH_anon_WITH_AES_256_CBC_SHA";
+    // END OF UNUSED CONSTANTS
 
     /**
      * This method adjusts the supported ciphers to include those appropriate

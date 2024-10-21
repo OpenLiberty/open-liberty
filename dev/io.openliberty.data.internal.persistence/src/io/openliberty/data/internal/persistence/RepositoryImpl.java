@@ -12,13 +12,12 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -31,13 +30,11 @@ import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTransientConnectionException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -80,13 +77,18 @@ import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Table;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Status;
 
@@ -95,6 +97,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     private static final ThreadLocal<Deque<AutoCloseable>> defaultMethodResources = new ThreadLocal<>();
 
+    private static final List<String> LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES = //
+                    List.of(Insert.class.getSimpleName(),
+                            Save.class.getSimpleName(),
+                            Update.class.getSimpleName());
+
     private final AtomicBoolean isDisposed = new AtomicBoolean();
     final CompletableFuture<EntityInfo> primaryEntityInfoFuture;
     final DataProvider provider;
@@ -102,17 +109,41 @@ public class RepositoryImpl<R> implements InvocationHandler {
     final Class<R> repositoryInterface;
     final EntityValidator validator;
 
-    public RepositoryImpl(DataProvider provider, DataExtension extension, FutureEMBuilder futureEMBuilder,
-                          Class<R> repositoryInterface, Class<?> primaryEntityClass,
+    @FFDCIgnore(CompletionException.class)
+    public RepositoryImpl(DataProvider provider,
+                          DataExtension extension,
+                          FutureEMBuilder futureEMBuilder,
+                          Class<R> repositoryInterface,
+                          Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
-        EntityManagerBuilder builder = futureEMBuilder.join();
+        EntityManagerBuilder builder;
+        try {
+            builder = futureEMBuilder.join();
+        } catch (CompletionException x) {
+            // The CompletionException does not have the current stack. Replace it.
+            Throwable cause = x.getCause();
+            if (cause != null)
+                x = new CompletionException(cause.getMessage(), cause);
+            throw x;
+        }
+
         // EntityManagerBuilder implementations guarantee that the future
         // in the following map will be completed even if an error occurs
-        this.primaryEntityInfoFuture = primaryEntityClass == null ? null : builder.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
+        this.primaryEntityInfoFuture = primaryEntityClass == null //
+                        ? null //
+                        : builder.entityInfoMap.computeIfAbsent(primaryEntityClass,
+                                                                EntityInfo::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
         Object validation = provider.validationService;
-        this.validator = validation == null ? null : EntityValidator.newInstance(validation, repositoryInterface);
+        this.validator = validation == null //
+                        ? null //
+                        : EntityValidator.newInstance(validation, repositoryInterface);
+
+        // reusable instance for supplying this instance to completion stages:
+        CompletableFuture<RepositoryImpl<?>> thisCF = queriesPerEntityClass.isEmpty() //
+                        ? null //
+                        : CompletableFuture.completedFuture(this);
 
         List<CompletableFuture<EntityInfo>> entityInfoFutures = new ArrayList<>();
         List<QueryInfo> entitylessQueryInfos = null;
@@ -125,16 +156,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
 
-                CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+                CompletableFuture<EntityInfo> entityInfoFuture = //
+                                builder.entityInfoMap.computeIfAbsent(entityClass,
+                                                                      EntityInfo::newFuture);
                 entityInfoFutures.add(entityInfoFuture);
 
                 for (QueryInfo queryInfo : entry.getValue()) {
                     if (queryInfo.type == QueryInfo.Type.RESOURCE_ACCESS) {
-                        queryInfo.validateParams = validator != null && validator.isValidatable(queryInfo.method)[1];
-                        queries.put(queryInfo.method, CompletableFuture.completedFuture(queryInfo));
+                        queryInfo.validateParams = validator != null &&
+                                                   validator.isValidatable(queryInfo.method)[1];
+                        queries.put(queryInfo.method,
+                                    CompletableFuture.completedFuture(queryInfo));
                     } else {
-                        queries.put(queryInfo.method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(this),
-                                                                                   queryInfo::init));
+                        queries.put(queryInfo.method,
+                                    entityInfoFuture.thenCombine(thisCF,
+                                                                 queryInfo::init));
                     }
                 }
             }
@@ -142,50 +178,94 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (entitylessQueryInfos != null) {
             if (entityInfoFutures.isEmpty()) {
-                MappingException x = new MappingException("The " + repositoryInterface.getName() + " repository does not specify an entity class." + // TODO NLS
-                                                          " To correct this, have the repository interface extend DataRepository" +
-                                                          " or another built-in repository interface and supply the entity class as the first parameter.");
-                for (QueryInfo queryInfo : entitylessQueryInfos)
+                for (QueryInfo queryInfo : entitylessQueryInfos) {
+                    MappingException x = exc(MappingException.class,
+                                             "CWWKD1001.no.primary.entity",
+                                             queryInfo.method,
+                                             repositoryInterface.getName(),
+                                             "DataRepository<EntityClass, EntityIdClass>");
                     queries.put(queryInfo.method, CompletableFuture.failedFuture(x));
+                }
             }
 
-            CompletableFuture<?>[] futures = entityInfoFutures.toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
-            CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = CompletableFuture.allOf(futures) //
-                            .handle((ignore, x) -> {
-                                Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
-                                for (CompletableFuture<EntityInfo> future : entityInfoFutures) {
-                                    if (future.isCompletedExceptionally()) {
-                                        entityInfos.putIfAbsent(EntityInfo.FAILED, future);
-                                    } else if (future.isDone()) {
-                                        EntityInfo entityInfo = future.join();
-                                        CompletableFuture<EntityInfo> conflict = entityInfos.put(entityInfo.name, future);
-                                        if (entityInfo.recordClass != null && conflict == null) {
-                                            String recordName = entityInfo.name.substring(0, entityInfo.name.length() - EntityInfo.RECORD_ENTITY_SUFFIX.length());
-                                            conflict = entityInfos.put(recordName, future);
-                                        }
-                                        if (conflict != null) {
-                                            EntityInfo conflictInfo = conflict.join(); // already completed
-                                            List<String> classNames = List.of((entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName(),
-                                                                              (conflictInfo.recordClass == null ? conflictInfo.entityClass : conflictInfo.recordClass).getName());
-                                            // TODO NLS, consider splitting message for records/normal entities
-                                            MappingException conflictX = new MappingException("The " + classNames + " entities have conflicting names. " +
-                                                                                              "When using records as entities, an entity name consisting of " +
-                                                                                              "the record name suffixed with " + EntityInfo.RECORD_ENTITY_SUFFIX +
-                                                                                              " is generated.");
-                                            entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(conflictX));
-                                        }
-                                    } else {
-                                        entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(x));
-                                    }
-                                }
-                                return entityInfos;
-                            });
+            CompletableFuture<?>[] futures = entityInfoFutures //
+                            .toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
+            CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = //
+                            CompletableFuture.allOf(futures) //
+                                            .handle((VOID, x) -> x) //
+                                            .thenCombine(CompletableFuture.completedFuture(entityInfoFutures),
+                                                         this::allEntityInfoAsMap);
             for (QueryInfo queryInfo : entitylessQueryInfos) {
-                queries.put(queryInfo.method,
-                            allEntityInfo.thenCombine(CompletableFuture.completedFuture(this),
-                                                      queryInfo::init));
+                queries.put(queryInfo.method, allEntityInfo //
+                                .thenCombine(CompletableFuture.completedFuture(this),
+                                             queryInfo::init));
             }
         }
+    }
+
+    /**
+     * Constructs a map of entity name to completed EntityInfo future.
+     *
+     * @param entityInfoFutures completed futures for entity information.
+     * @param x                 failure if any.
+     * @return map of entity name to completed EntityInfo future.
+     */
+    private Map<String, CompletableFuture<EntityInfo>> //
+                    allEntityInfoAsMap(Throwable x,
+                                       List<CompletableFuture<EntityInfo>> futures) {
+        Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
+        for (CompletableFuture<EntityInfo> future : futures) {
+            if (future.isCompletedExceptionally()) {
+                entityInfos.putIfAbsent(EntityInfo.FAILED, future);
+            } else if (future.isDone()) {
+                EntityInfo entityInfo = future.join();
+                CompletableFuture<EntityInfo> conflict = //
+                                entityInfos.put(entityInfo.name, future);
+                if (entityInfo.recordClass != null && conflict == null) {
+                    int end = entityInfo.name.length() -
+                              EntityInfo.RECORD_ENTITY_SUFFIX.length();
+                    String recordName = entityInfo.name.substring(0, end);
+                    conflict = entityInfos.put(recordName, future);
+                }
+                if (conflict != null) {
+                    MappingException conflictX;
+                    EntityInfo conflictInfo = conflict.join(); // already completed
+                    List<String> classNames = List //
+                                    .of(entityInfo.getType().getName(),
+                                        conflictInfo.getType().getName());
+                    if (entityInfo.recordClass == null &&
+                        conflictInfo.recordClass == null) {
+                        conflictX = exc(MappingException.class,
+                                        "CWWKD1068.entity.name.conflict",
+                                        repositoryInterface.getName(),
+                                        entityInfo.name,
+                                        classNames,
+                                        List.of(Entity.class.getName(),
+                                                Table.class.getName()));
+                    } else { // conflict involving one or more record entity
+                        String longerName = entityInfo.name;
+                        String shorterName = entityInfo.name;
+                        if (conflictInfo.name.length() > longerName.length())
+                            longerName = conflictInfo.name;
+                        else
+                            shorterName = conflictInfo.name;
+
+                        conflictX = exc(MappingException.class,
+                                        "CWWKD1069.record.entity.name.conflict",
+                                        repositoryInterface.getName(),
+                                        shorterName,
+                                        classNames,
+                                        longerName);
+                    }
+                    entityInfos.putIfAbsent(EntityInfo.FAILED,
+                                            CompletableFuture.failedFuture(conflictX));
+                }
+            } else {
+                entityInfos.putIfAbsent(EntityInfo.FAILED,
+                                        CompletableFuture.failedFuture(x));
+            }
+        }
+        return entityInfos;
     }
 
     /**
@@ -193,209 +273,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     public void beanDisposed() {
         isDisposed.set(true);
-    }
-
-    /**
-     * Compute the zero-based offset to use as a starting point for a Limit range.
-     *
-     * @param limit limit that was specified by the application.
-     * @return offset value.
-     * @throws IllegalArgumentException if the starting point for the limited range
-     *                                      is not positive or would overflow Integer.MAX_VALUE.
-     */
-    static int computeOffset(Limit range) {
-        long startIndex = range.startAt() - 1;
-        if (startIndex >= 0 && startIndex <= Integer.MAX_VALUE)
-            return (int) startIndex;
-        else
-            throw new IllegalArgumentException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647)."); // TODO
-    }
-
-    /**
-     * Compute the zero-based offset for the start of a page.
-     *
-     * @param pagination requested pagination.
-     * @return offset for the specified page.
-     * @throws IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
-     *                                      or the PageRequest requests cursor-based pagination.
-     */
-    static int computeOffset(PageRequest pagination) {
-        if (pagination.mode() != PageRequest.Mode.OFFSET)
-            throw new IllegalArgumentException("Cursor-based pagination mode " + pagination.mode() +
-                                               " can only be used with repository methods with the following return types: " +
-                                               CursoredPage.class.getName() +
-                                               ". For offset pagination, use a PageRequest without a cursor."); // TODO NLS
-        int maxPageSize = pagination.size();
-        long pageIndex = pagination.page() - 1; // zero-based
-        if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
-            return (int) (pageIndex * maxPageSize);
-        else
-            throw new IllegalArgumentException("The offset for " + pagination.page() + " pages of size " + maxPageSize +
-                                               " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
-    }
-
-    /**
-     * Converts a value to the type that is required by the repository method
-     * return type.
-     *
-     * @param value     value to convert.
-     * @param queryInfo query information.
-     * @return converted value.
-     */
-    @FFDCIgnore(ArithmeticException.class) // reported to user as chained exception
-    @Trivial
-    private Object convert(Object value, QueryInfo queryInfo) {
-        Class<?> fromType = value.getClass();
-        Class<?> toType = queryInfo.singleType;
-        Exception cause = null;
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "convert " + fromType.getSimpleName() +
-                               " to " + toType.getSimpleName());
-
-        if (value instanceof Number &&
-            (QueryInfo.PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
-             Number.class.isAssignableFrom(toType))) {
-            try {
-                if (BigDecimal.class.equals(fromType)) {
-                    BigDecimal v = (BigDecimal) value;
-                    if (long.class.equals(toType) ||
-                        Long.class.equals(toType)) {
-                        return v.longValueExact();
-                    } else if (int.class.equals(toType) ||
-                               Integer.class.equals(toType)) {
-                        return v.intValueExact();
-                    } else if (short.class.equals(toType) ||
-                               Short.class.equals(toType)) {
-                        return v.shortValueExact();
-                    } else if (byte.class.equals(toType) ||
-                               Byte.class.equals(toType)) {
-                        return v.byteValueExact();
-                    } else if (BigInteger.class.equals(toType)) {
-                        return v.toBigIntegerExact();
-                    }
-                } else if (BigInteger.class.equals(fromType)) {
-                    BigInteger v = (BigInteger) value;
-                    if (long.class.equals(toType) ||
-                        Long.class.equals(toType)) {
-                        return v.longValueExact();
-                    } else if (int.class.equals(toType) ||
-                               Integer.class.equals(toType)) {
-                        return v.intValueExact();
-                    } else if (short.class.equals(toType) ||
-                               Short.class.equals(toType)) {
-                        return v.shortValueExact();
-                    } else if (byte.class.equals(toType) ||
-                               Byte.class.equals(toType)) {
-                        return v.byteValueExact();
-                    } else if (BigDecimal.class.equals(toType)) {
-                        return new BigDecimal(v);
-                    }
-                } else if (double.class.equals(fromType) ||
-                           Double.class.equals(fromType)) {
-                    Double v = (Double) value;
-                    if (double.class.equals(toType))
-                        return v;
-                    else if (BigDecimal.class.equals(toType))
-                        return BigDecimal.valueOf(v);
-                } else if (float.class.equals(fromType) ||
-                           Float.class.equals(fromType)) {
-                    Float v = (Float) value;
-                    if (float.class.equals(toType))
-                        return v;
-                    else if (double.class.equals(toType))
-                        return v.doubleValue();
-                    else if (BigDecimal.class.equals(toType))
-                        return BigDecimal.valueOf(v);
-                } else {
-                    Number n = (Number) value;
-                    long v = n.longValue();
-                    if (long.class.equals(toType) ||
-                        Long.class.equals(toType)) {
-                        return v;
-                    } else if (int.class.equals(toType) ||
-                               Integer.class.equals(toType)) {
-                        if (v >= Integer.MIN_VALUE && v <= Integer.MAX_VALUE)
-                            return n.intValue();
-                        else
-                            convertFail(queryInfo.method, fromType,
-                                        Integer.MIN_VALUE, Integer.MAX_VALUE);
-                    } else if (short.class.equals(toType) ||
-                               Short.class.equals(toType)) {
-                        if (v >= Short.MIN_VALUE && v <= Short.MAX_VALUE)
-                            return n.shortValue();
-                        else
-                            convertFail(queryInfo.method, fromType,
-                                        Short.MIN_VALUE, Short.MAX_VALUE);
-                    } else if (byte.class.equals(toType) ||
-                               Byte.class.equals(toType)) {
-                        if (v >= Byte.MIN_VALUE && v <= Byte.MAX_VALUE)
-                            return n.byteValue();
-                        else
-                            convertFail(queryInfo.method, fromType,
-                                        Byte.MIN_VALUE, Byte.MAX_VALUE);
-                    } else if (BigInteger.class.equals(toType)) {
-                        return BigInteger.valueOf(v);
-                    } else if (BigDecimal.class.equals(toType)) {
-                        return BigDecimal.valueOf(v);
-                    } else if (double.class.equals(toType) ||
-                               Double.class.equals(toType)) {
-                        if (Integer.class.equals(fromType) ||
-                            Short.class.equals(fromType) ||
-                            Byte.class.equals(fromType))
-                            return n.doubleValue();
-                    } else if (float.class.equals(toType) ||
-                               Float.class.equals(toType)) {
-                        if (Short.class.equals(fromType) ||
-                            Byte.class.equals(fromType))
-                            return n.floatValue();
-                    }
-                }
-            } catch (ArithmeticException x) {
-                cause = x;
-            }
-        } else if (String.class.equals(toType) ||
-                   CharSequence.class.equals(toType)) {
-            return value.toString();
-        } else if (char.class.equals(toType) ||
-                   Character.class.equals(toType)) {
-            if (value instanceof CharSequence) {
-                CharSequence chars = (CharSequence) value;
-                if (chars.length() == 1)
-                    return chars.charAt(0);
-                else if (chars.isEmpty() && Character.class.equals(toType))
-                    return null;
-            }
-        }
-
-        throw new MappingException("The " + queryInfo.method.getName() + " method of the " +
-                                   queryInfo.method.getDeclaringClass().getName() +
-                                   " repository is unable to convert a " +
-                                   fromType.getName() + " value into a " + toType.getName() +
-                                   " value that is required by the return type of the method.", // TODO NLS
-                        cause);
-    }
-
-    /**
-     * Raises an error for a type conversion failure due to a value being outside of
-     * the specified range.
-     *
-     * @param method   repository method.
-     * @param fromType type from which conversion has failed.
-     * @param min      minimum value for range.
-     * @param max      maximum value for range.
-     * @throws MappingException for the type conversion failure.
-     */
-    private void convertFail(Method method, Class<?> fromType, long min, long max) {
-        Class<?> toType = method.getReturnType();
-        throw new MappingException("The " + method.getName() + " method of the " +
-                                   method.getDeclaringClass().getName() +
-                                   " repository is unable to convert a " +
-                                   fromType.getName() + " value into a " + toType.getName() +
-                                   " value because the value is not within the range of " +
-                                   min + " to " + max + ". A " + toType.getName() +
-                                   " value is required by the return type of the method"); // TODO NLS
     }
 
     /**
@@ -435,20 +312,35 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else {
             if (int.class.equals(type) || Integer.class.equals(type))
                 if (count > Integer.MAX_VALUE)
-                    throw new MappingException("The " + count + " count value cannot be converted to " +
-                                               type.getName() + " because it exceeds " + Integer.MAX_VALUE + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1048.result.exceeds.max",
+                              count,
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              "Integer.MAX_VALUE (" + Integer.MAX_VALUE + ')');
                 else
                     returnValue = count.intValue();
             else if (short.class.equals(type) || Short.class.equals(type))
                 if (count > Short.MAX_VALUE)
-                    throw new MappingException("The " + count + " count value cannot be converted to " +
-                                               type.getName() + " because it exceeds " + Short.MAX_VALUE + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1048.result.exceeds.max",
+                              count,
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              "Short.MAX_VALUE (" + Short.MAX_VALUE + ')');
                 else
                     returnValue = count.shortValue();
             else if (byte.class.equals(type) || Byte.class.equals(type))
                 if (count > Byte.MAX_VALUE)
-                    throw new MappingException("The " + count + " count value cannot be converted to " +
-                                               type.getName() + " because it exceeds " + Byte.MAX_VALUE + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1048.result.exceeds.max",
+                              count,
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              "Byte.MAX_VALUE (" + Byte.MAX_VALUE + ')');
                 else
                     returnValue = count.byteValue();
             else if (BigInteger.class.equals(type))
@@ -456,8 +348,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
             else if (BigDecimal.class.equals(type))
                 returnValue = BigDecimal.valueOf(count);
             else
-                throw new MappingException("The resulting count value cannot be converted from Long type to " +
-                                           type.getName() + " type."); // TODO NLS
+                throw exc(MappingException.class,
+                          "CWWKD1049.count.convert.err",
+                          count,
+                          queryInfo.method.getName(),
+                          repositoryInterface.getName(),
+                          queryInfo.method.getGenericReturnType().getTypeName());
         }
 
         Class<?> returnType = queryInfo.method.getReturnType();
@@ -473,6 +369,45 @@ public class RepositoryImpl<R> implements InvocationHandler {
             else
                 Tr.exit(this, tc, "count", count + " converted to " + returnValue);
         return returnValue;
+    }
+
+    /**
+     * Create a new EmptyResultException.
+     *
+     * @param method repository method that unexpectedly finds an empty result.
+     * @return the EmptyResultException.
+     */
+    @Trivial
+    private EmptyResultException excEmptyResult(Method method) {
+        return exc(EmptyResultException.class,
+                   "CWWKD1053.empty.result",
+                   method.getGenericReturnType().getTypeName(),
+                   method.getName(),
+                   repositoryInterface.getName(),
+                   List.of(List.class.getSimpleName(),
+                           Optional.class.getSimpleName(),
+                           Page.class.getSimpleName(),
+                           CursoredPage.class.getSimpleName(),
+                           Stream.class.getSimpleName()));
+    }
+
+    /**
+     * Create a new NonUniqueResultException.
+     *
+     * @param method repository method that unexpectedly finds multiple results.
+     * @return the NonUniqueResultException.
+     */
+    @Trivial
+    private NonUniqueResultException excNonUniqueResult(QueryInfo queryInfo,
+                                                        int numResults) {
+        throw exc(NonUniqueResultException.class,
+                  queryInfo.method.getName(),
+                  repositoryInterface.getName(),
+                  queryInfo.method.getGenericReturnType().getTypeName(),
+                  numResults,
+                  List.of(// In a future release: @Find @First findByX(...)
+                          "findFirstByX(...)",
+                          "findByX(..., Limit.of(1))"));
     }
 
     /**
@@ -577,13 +512,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (queryInfo.entityParamType.isArray()) {
             int length = Array.getLength(arg);
             results = new ArrayList<>(length);
-            for (int i = 0; i < length; i++) {
-                Object entity = findAndUpdateOne(Array.get(arg, i), queryInfo, em);
-                if (entity == null)
-                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
-                else
-                    results.add(entity);
-            }
+            for (int i = 0; i < length; i++)
+                results.add(findAndUpdateOne(Array.get(arg, i), queryInfo, em));
         } else {
             arg = arg instanceof Stream //
                             ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
@@ -591,30 +521,24 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             results = new ArrayList<>();
             if (arg instanceof Iterable) {
-                for (Object e : ((Iterable<?>) arg)) {
-                    Object entity = findAndUpdateOne(e, queryInfo, em);
-                    if (entity == null)
-                        throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
-                    else
-                        results.add(entity);
-                }
+                for (Object e : ((Iterable<?>) arg))
+                    results.add(findAndUpdateOne(e, queryInfo, em));
             } else {
                 hasSingularEntityParam = true;
                 results = new ArrayList<>(1);
-                Object entity = findAndUpdateOne(arg, queryInfo, em);
-                if (entity == null)
-                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
-                else
-                    results.add(entity);
+                results.add(findAndUpdateOne(arg, queryInfo, em));
             }
         }
         em.flush();
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        if (void.class.equals(returnType) || Void.class.equals(returnType))
+            return null;
 
         if (queryInfo.entityInfo.recordClass != null)
             for (int i = 0; i < results.size(); i++)
                 results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
 
-        Class<?> returnType = queryInfo.method.getReturnType();
         Object returnValue;
         if (queryInfo.returnArrayType != null) {
             Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
@@ -622,22 +546,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else {
             Class<?> multiType = queryInfo.multiType;
             if (multiType == null)
-                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                if (results.size() == 1)
+                    returnValue = results.get(0);
+                else if (results.isEmpty())
+                    returnValue = null;
+                else
+                    throw excNonUniqueResult(queryInfo, results.size());
             else if (multiType.isInstance(results))
                 returnValue = results;
             else if (Stream.class.equals(multiType))
                 returnValue = results.stream();
             else if (Iterable.class.isAssignableFrom(multiType))
-                returnValue = toIterable(multiType, null, results);
+                returnValue = queryInfo.convertToIterable(results, null, multiType);
             else if (Iterator.class.equals(multiType))
                 returnValue = results.iterator();
             else
-                throw new MappingException("The " + returnType.getName() + " return type of the " +
-                                           queryInfo.method.getName() + " method of the " +
-                                           queryInfo.method.getDeclaringClass().getName() +
-                                           " class is not a valid return type for a repository " +
-                                           "@Update" + " method. Valid return types include " +
-                                           getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+                throw exc(MappingException.class,
+                          "CWWKD1003.lifecycle.rtrn.err",
+                          queryInfo.method.getGenericReturnType().getTypeName(),
+                          queryInfo.method.getName(),
+                          repositoryInterface.getName(),
+                          "Update",
+                          getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                              hasSingularEntityParam,
+                                              false));
         }
 
         if (Optional.class.equals(returnType)) {
@@ -645,12 +577,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (returnValue != null && !returnType.isInstance(returnValue)) {
-            throw new MappingException("The " + returnType.getName() + " return type of the " +
-                                       queryInfo.method.getName() + " method of the " +
-                                       queryInfo.method.getDeclaringClass().getName() +
-                                       " class is not a valid return type for a repository " +
-                                       "@Update" + " method. Valid return types include " +
-                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1003.lifecycle.rtrn.err",
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      "Update",
+                      getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                          hasSingularEntityParam,
+                                          false));
         }
 
         return returnValue;
@@ -663,63 +598,82 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param e         the entity or record.
      * @param queryInfo query information.
      * @param em        the entity manager.
-     * @return the entity that is written to the database. Null if not found.
-     * @throws Exception if an error occurs.
+     * @return the entity that is written to the database. Never null.
+     * @throws OptimisticLockingException if the entity is not found.
+     * @throws Exception                  if an error occurs.
      */
     private Object findAndUpdateOne(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
         String jpql = queryInfo.jpql;
         EntityInfo entityInfo = queryInfo.entityInfo;
 
-        int versionParamIndex = 2;
+        int versionParamIndex = entityInfo.idClassAttributeAccessors == null //
+                        ? 2 //
+                        : (entityInfo.idClassAttributeAccessors.size() + 1);
         Object version = null;
         if (entityInfo.versionAttributeName != null) {
-            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            version = queryInfo.getAttribute(e, entityInfo.versionAttributeName);
             if (version == null)
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
-        if (id == null) {
-            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
-            if (version != null)
-                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        Object id = null;
+        String idAttributeName = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            idAttributeName = entityInfo.attributeNames.get(ID);
+            id = queryInfo.getAttribute(e, idAttributeName);
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
             Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
 
-        TypedQuery<?> query = em.createQuery(jpql, queryInfo.singleType); // TODO for records, use the entity class, not the record class
+        Class<?> entityClass = queryInfo.singleType.equals(entityInfo.recordClass) //
+                        ? entityInfo.entityClass //
+                        : queryInfo.singleType;
+
+        TypedQuery<?> query = em.createQuery(jpql, entityClass);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
-        // id parameter(s)
-
-        int p = 0;
-        if (entityInfo.idClassAttributeAccessors != null) {
-            throw new UnsupportedOperationException(); // TODO
-        } else if (id != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
-            query.setParameter(++p, id);
-        }
-
-        // version parameter
-
-        if (entityInfo.versionAttributeName != null && version != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
-            query.setParameter(++p, version);
+        if (entityInfo.idClassAttributeAccessors == null) {
+            int p = 1;
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(id));
+                query.setParameter(p++, id);
+            }
+            if (version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(version));
+                query.setParameter(p, version);
+            }
+        } else {
+            queryInfo.setParametersFromIdClassAndVersion(1, query, e, version);
         }
 
         List<?> results = query.getResultList();
 
-        Object entity;
         if (results.isEmpty()) {
-            entity = null;
-        } else {
-            entity = results.get(0);
-            entity = em.merge(toEntity(e));
+            List<String> entityProps = new ArrayList<>(2);
+            if (id != null)
+                entityProps.add(queryInfo.loggableAppend(idAttributeName,
+                                                         "=", id));
+            if (entityInfo.versionAttributeName != null && version != null)
+                entityProps.add(queryInfo.loggableAppend(entityInfo.versionAttributeName,
+                                                         "=", version));
+            throw exc(OptimisticLockingFailureException.class,
+                      "CWWKD1050.opt.lock.exc",
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      e.getClass().getName(),
+                      entityProps,
+                      LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
         }
-        return entity;
+
+        return em.merge(queryInfo.toEntity(e));
     }
 
     /**
@@ -739,26 +693,37 @@ public class RepositoryImpl<R> implements InvocationHandler {
     /**
      * Request an instance of a resource of the specified type.
      *
-     * @param type resource type.
+     * @param method the repository method.
      * @return instance of the resource. Never null.
      * @throws UnsupportedOperationException if the type of resource is not available.
      */
-    private <T> T getResource(Class<T> type) {
+    private <T> T getResource(Method method) {
         Deque<AutoCloseable> resources = defaultMethodResources.get();
         Object resource = null;
+        Class<?> type = method.getReturnType();
         if (EntityManager.class.equals(type))
             resource = primaryEntityInfoFuture.join().builder.createEntityManager();
         else if (DataSource.class.equals(type))
-            resource = primaryEntityInfoFuture.join().builder.getDataSource();
+            resource = primaryEntityInfoFuture.join().builder //
+                            .getDataSource(method, repositoryInterface);
         else if (Connection.class.equals(type))
             try {
-                resource = primaryEntityInfoFuture.join().builder.getDataSource().getConnection();
+                resource = primaryEntityInfoFuture.join().builder //
+                                .getDataSource(method, repositoryInterface) //
+                                .getConnection();
             } catch (SQLException x) {
                 throw new DataConnectionException(x);
             }
 
         if (resource == null)
-            throw new UnsupportedOperationException("The " + type.getName() + " type of resource is not available from the Jakarta Data provider."); // TODO NLS
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1044.invalid.resource.type",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      type.getName(),
+                      List.of(Connection.class.getName(),
+                              DataSource.class.getName(),
+                              EntityManager.class.getName()));
 
         if (resource instanceof AutoCloseable) {
             if (resources == null) {
@@ -810,7 +775,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             validReturnTypes.add(singularClassName);
         } else {
             validReturnTypes.add(singularClassName + "[]");
-            validReturnTypes.add("Iterable<" + singularClassName + ">");
             validReturnTypes.add("List<" + singularClassName + ">");
         }
 
@@ -837,7 +801,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             int length = Array.getLength(arg);
             results = resultVoid ? null : new ArrayList<>(length);
             for (int i = 0; i < length; i++) {
-                Object entity = toEntity(Array.get(arg, i));
+                Object entity = queryInfo.toEntity(Array.get(arg, i));
                 em.persist(entity);
                 if (results != null)
                     results.add(entity);
@@ -851,7 +815,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (arg instanceof Iterable) {
                 results = resultVoid ? null : new ArrayList<>();
                 for (Object e : ((Iterable<?>) arg)) {
-                    Object entity = toEntity(e);
+                    Object entity = queryInfo.toEntity(e);
                     em.persist(entity);
                     if (results != null)
                         results.add(entity);
@@ -860,7 +824,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
-                Object entity = toEntity(arg);
+                Object entity = queryInfo.toEntity(arg);
                 em.persist(entity);
                 em.flush();
                 if (results != null)
@@ -883,34 +847,45 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 Class<?> multiType = queryInfo.multiType;
                 if (multiType == null)
-                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                    if (results.size() == 1)
+                        returnValue = results.get(0);
+                    else if (results.isEmpty())
+                        returnValue = null;
+                    else
+                        throw excNonUniqueResult(queryInfo, results.size());
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
                     returnValue = results.stream();
                 else if (Iterable.class.isAssignableFrom(multiType))
-                    returnValue = toIterable(multiType, null, results);
+                    returnValue = queryInfo.convertToIterable(results, null, multiType);
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw new MappingException("The " + returnType.getName() + " return type of the " +
-                                               queryInfo.method.getName() + " method of the " +
-                                               queryInfo.method.getDeclaringClass().getName() +
-                                               " class is not a valid return type for a repository " +
-                                               "@Insert" + " method. Valid return types include " +
-                                               getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1003.lifecycle.rtrn.err",
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              "Insert",
+                              getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                                  hasSingularEntityParam,
+                                                  false));
             }
         }
 
         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw new MappingException("The " + returnType.getName() + " return type of the " +
-                                       queryInfo.method.getName() + " method of the " +
-                                       queryInfo.method.getDeclaringClass().getName() +
-                                       " class is not a valid return type for a repository " +
-                                       "@Insert" + " method. Valid return types include " +
-                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1003.lifecycle.rtrn.err",
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      "Insert",
+                      getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                          hasSingularEntityParam,
+                                          false));
         }
 
         return returnValue;
@@ -946,9 +921,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                      provider.loggable(repositoryInterface, method, args));
         try {
             if (isDisposed.get())
-                throw new IllegalStateException("Repository instance " + repositoryInterface.getName() +
-                                                "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy)) +
-                                                " is no longer in scope."); // TODO
+                throw exc(IllegalStateException.class,
+                          "CWWKD1076.repo.disposed",
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          new StringBuilder("RepositoryImpl@") //
+                                          .append(Integer.toHexString(hashCode())) //
+                                          .append("/(proxy)@") //
+                                          .append(Integer.toHexString(System.identityHashCode(proxy))));
 
             if (isDefaultMethod) {
                 Deque<AutoCloseable> resourceStack = defaultMethodResources.get();
@@ -978,40 +958,39 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
 
-            QueryInfo queryInfo = queryInfoFuture.join();
-            EntityInfo entityInfo = queryInfo.entityInfo;
-
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, queryInfo.toString());
-
-            if (queryInfo.validateParams)
-                validator.validateParameters(proxy, method, args);
-
             LocalTransactionCoordinator suspendedLTC = null;
             EntityManager em = null;
             Object returnValue;
             Class<?> returnType = method.getReturnType();
             boolean failed = true;
-
-            boolean requiresTransaction;
-            switch (queryInfo.type) {
-                case FIND:
-                case COUNT:
-                case EXISTS:
-                case RESOURCE_ACCESS:
-                    requiresTransaction = false;
-                    break;
-                default:
-                    requiresTransaction = Status.STATUS_NO_TRANSACTION == provider.tranMgr.getStatus();
-            }
+            Type queryType = null;
+            boolean startedTransaction = false;
 
             try {
-                if (requiresTransaction) {
-                    suspendedLTC = provider.localTranCurrent.suspend();
-                    provider.tranMgr.begin();
+                QueryInfo queryInfo = queryInfoFuture.join();
+                EntityInfo entityInfo = queryInfo.entityInfo;
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, queryInfo.toString());
+
+                if (queryInfo.validateParams)
+                    validator.validateParameters(proxy, method, args);
+
+                switch (queryType = queryInfo.type) {
+                    case FIND:
+                    case COUNT:
+                    case EXISTS:
+                    case RESOURCE_ACCESS:
+                        break;
+                    default:
+                        if (Status.STATUS_NO_TRANSACTION == provider.tranMgr.getStatus()) {
+                            suspendedLTC = provider.localTranCurrent.suspend();
+                            provider.tranMgr.begin();
+                            startedTransaction = true;
+                        }
                 }
 
-                switch (queryInfo.type) {
+                switch (queryType) {
                     case SAVE: {
                         em = entityInfo.builder.createEntityManager();
                         returnValue = save(args[0], queryInfo, em);
@@ -1028,15 +1007,22 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         PageRequest pagination = null;
                         List<Sort<Object>> sortList = null;
 
-                        // Jakarta Data allows the method parameter positions after those used as query parameters
-                        // to be used for purposes such as pagination and sorting.
-                        for (int i = queryInfo.paramCount - queryInfo.paramAddedCount; i < (args == null ? 0 : args.length); i++) {
+                        // The first method parameters are used as query parameters.
+                        // Beyond that, they can have other purposes such as
+                        // pagination and sorting.
+                        for (int i = queryInfo.paramCount; //
+                                        i < (args == null ? 0 : args.length); //
+                                        i++) {
                             Object param = args[i];
                             if (param instanceof Limit) {
                                 if (limit == null)
                                     limit = (Limit) param;
                                 else
-                                    throw new UnsupportedOperationException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
+                                    throw exc(UnsupportedOperationException.class,
+                                              "CWWKD1017.dup.special.param",
+                                              method.getName(),
+                                              repositoryInterface.getName(),
+                                              "Limit");
                             } else if (param instanceof Order) {
                                 @SuppressWarnings("unchecked")
                                 Iterable<Sort<Object>> order = (Iterable<Sort<Object>>) param;
@@ -1045,9 +1031,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (pagination == null)
                                     pagination = (PageRequest) param;
                                 else
-                                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                                            method.getDeclaringClass().getName() +
-                                                                            " repository cannot have multiple PageRequest parameters."); // TODO NLS
+                                    throw exc(UnsupportedOperationException.class,
+                                              "CWWKD1017.dup.special.param",
+                                              method.getName(),
+                                              repositoryInterface.getName(),
+                                              "PageRequest");
                             } else if (param instanceof Sort) {
                                 @SuppressWarnings("unchecked")
                                 List<Sort<Object>> newList = queryInfo.supplySorts(sortList, (Sort<Object>) param);
@@ -1056,13 +1044,26 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 @SuppressWarnings("unchecked")
                                 List<Sort<Object>> newList = queryInfo.supplySorts(sortList, (Sort<Object>[]) param);
                                 sortList = newList;
+                            } else if (param == null) {
+                                // ignore null for empty Sort...
+                            } else {
+                                throw exc(DataException.class,
+                                          "CWWKD1023.extra.param",
+                                          method.getName(),
+                                          repositoryInterface.getName(),
+                                          queryInfo.paramCount,
+                                          method.getParameterTypes()[i].getName(),
+                                          queryInfo.jpql);
                             }
                         }
 
                         if (pagination != null && limit != null)
-                            throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                                    method.getDeclaringClass().getName() +
-                                                                    " repository cannot have both Limit and PageRequest as parameters."); // TODO NLS
+                            throw exc(UnsupportedOperationException.class,
+                                      "CWWKD1018.confl.special.param",
+                                      method.getName(),
+                                      repositoryInterface.getName(),
+                                      "Limit",
+                                      "PageRequest");
 
                         if (sortList == null && queryInfo.hasDynamicSortCriteria())
                             sortList = queryInfo.sorts;
@@ -1076,7 +1077,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 // TODO raise a helpful error to prevent some cases of attempted unordered pagination?
                                 //else if (!queryInfo.hasOrderBy)
                                 //    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                //                                            queryInfo.method.getDeclaringClass().getName() +
+                                //                                            repositoryInterface.getName() +
                                 //                                            " repository has a PageRequest parameter without a way to " +
                                 //                                            " specify a deterministic ordering of results, which is required " +
                                 //                                            " when requesting pages. Use the OrderBy annotation or add a " +
@@ -1111,13 +1112,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (CursoredPage.class.equals(multiType)) {
                             returnValue = new CursoredPageImpl<>(queryInfo, pagination, args);
                         } else if (Page.class.equals(multiType)) {
-                            returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
+                            PageRequest req = limit == null //
+                                            ? pagination //
+                                            : queryInfo.toPageRequest(limit);
+                            returnValue = new PageImpl<>(queryInfo, req, args);
                         } else if (pagination != null && !PageRequest.Mode.OFFSET.equals(pagination.mode())) {
-                            throw new IllegalArgumentException("A PageRequest that specifies the " + pagination.mode() +
-                                                               " mode must not be supplied to the " + method.getName() +
-                                                               " method of the " + method.getDeclaringClass().getName() +
-                                                               " repository because the method returns " + returnType.getName() +
-                                                               " rather than " + CursoredPage.class.getName() + "."); // TODO NLS
+                            throw exc(IllegalArgumentException.class,
+                                      "CWWKD1035.incompat.page.mode",
+                                      pagination.mode(),
+                                      method.getName(),
+                                      repositoryInterface.getName(),
+                                      method.getGenericReturnType().getTypeName(),
+                                      CursoredPage.class.getSimpleName());
                         } else {
                             em = entityInfo.builder.createEntityManager();
 
@@ -1134,8 +1140,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             : pagination != null ? pagination.size() //
                                                             : queryInfo.maxResults;
 
-                            int startAt = limit != null ? computeOffset(limit) //
-                                            : pagination != null ? computeOffset(pagination) //
+                            int startAt = limit != null ? queryInfo.computeOffset(limit) //
+                                            : pagination != null ? queryInfo.computeOffset(pagination) //
                                                             : 0;
 
                             if (maxResults > 0) {
@@ -1154,13 +1160,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (Stream.class.equals(multiType))
                                     returnValue = stream;
                                 else if (IntStream.class.equals(multiType))
-                                    returnValue = stream.mapToInt(RepositoryImpl::toInt);
+                                    returnValue = stream.mapToInt(queryInfo::toInt);
                                 else if (LongStream.class.equals(multiType))
-                                    returnValue = stream.mapToLong(RepositoryImpl::toLong);
+                                    returnValue = stream.mapToLong(queryInfo::toLong);
                                 else if (DoubleStream.class.equals(multiType))
-                                    returnValue = stream.mapToDouble(RepositoryImpl::toDouble);
+                                    returnValue = stream.mapToDouble(queryInfo::toDouble);
                                 else
-                                    throw new UnsupportedOperationException("Stream type " + multiType.getName()); // TODO NLS
+                                    throw exc(UnsupportedOperationException.class,
+                                              "CWWKD1046.result.convert.err",
+                                              List.class.getName(),
+                                              method.getName(),
+                                              repositoryInterface.getName(),
+                                              method.getGenericReturnType().getTypeName());
                             } else {
                                 Class<?> singleType = queryInfo.singleType;
 
@@ -1179,7 +1190,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
                                     for (Object result : results)
                                         if (result == null) {
-                                            throw new DataException("Unable to delete from the database when the query result includes a null value."); // TODO NLS
+                                            throw exc(DataException.class,
+                                                      "CWWKD1046.result.convert.err",
+                                                      null,
+                                                      method.getName(),
+                                                      repositoryInterface.getName(),
+                                                      method.getGenericReturnType().getTypeName());
                                         } else if (entityInfo.entityClass.isInstance(result)) {
                                             em.remove(result);
                                         } else if (entityInfo.idClassAttributeAccessors != null) {
@@ -1189,7 +1205,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 Object value = accessor instanceof Method ? ((Method) accessor).invoke(result) : ((Field) accessor).get(result);
                                                 if (trace && tc.isDebugEnabled())
                                                     Tr.debug(this, tc, queryInfo.jpqlDelete,
-                                                             "set ?" + (numParams + 1) + ' ' + (value == null ? null : value.getClass().getSimpleName()));
+                                                             "set ?" + (numParams + 1) + ' ' + queryInfo.loggable(value));
                                                 delete.setParameter(++numParams, value);
                                             }
                                             delete.executeUpdate();
@@ -1199,22 +1215,31 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 entityInfo.recordClass != null && entityInfo.recordClass.isInstance(result)) {
                                                 List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get(ID));
                                                 if (accessors == null || accessors.isEmpty())
-                                                    throw new MappingException("Unable to find the id attribute on the " + entityInfo.name + " entity."); // TODO NLS
+                                                    throw exc(MappingException.class,
+                                                              "CWWKD1025.missing.id.prop",
+                                                              entityInfo.getType().getName(),
+                                                              method.getName(),
+                                                              repositoryInterface);
                                                 for (Member accessor : accessors)
                                                     value = accessor instanceof Method ? ((Method) accessor).invoke(value) : ((Field) accessor).get(value);
                                             } else if (!entityInfo.idType.isInstance(value)) {
-                                                value = to(entityInfo.idType, result, false);
-                                                if (value == result) // unable to convert value - this should be unreachable since we validated the return type when we constructed the select query
-                                                    throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
-                                                                               (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
-                                                                               ") or the id class (" + entityInfo.idType +
-                                                                               "), not the " + result.getClass().getName() + " class."); // TODO NLS
+                                                value = queryInfo.convert(result,
+                                                                          entityInfo.idType,
+                                                                          false);
+                                                if (value == result)
+                                                    throw exc(MappingException.class,
+                                                              "CWWKD1006.delete.rtrn.err",
+                                                              method.getGenericReturnType().getTypeName(),
+                                                              method.getName(),
+                                                              repositoryInterface.getName(),
+                                                              entityInfo.getType().getName(),
+                                                              entityInfo.idType);
                                             }
 
                                             jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);
                                             if (trace && tc.isDebugEnabled())
                                                 Tr.debug(this, tc, queryInfo.jpqlDelete,
-                                                         "set ?1 " + (value == null ? null : value.getClass().getSimpleName()));
+                                                         "set ?1 " + queryInfo.loggable(value));
                                             delete.setParameter(1, value);
                                             delete.executeUpdate();
                                         }
@@ -1222,11 +1247,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (results.isEmpty() && queryInfo.isOptional) {
                                     returnValue = null;
                                 } else if (multiType == null && entityInfo.entityClass.equals(singleType)) {
-                                    returnValue = oneResult(results);
+                                    returnValue = oneResult(queryInfo, results);
                                 } else if (multiType != null && multiType.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
                                 } else if (multiType != null && Iterable.class.isAssignableFrom(multiType)) {
-                                    returnValue = toIterable(multiType, singleType, results);
+                                    returnValue = queryInfo.convertToIterable(results,
+                                                                              singleType,
+                                                                              multiType);
                                 } else if (Iterator.class.equals(multiType)) {
                                     returnValue = results.iterator();
                                 } else if (queryInfo.returnArrayType != null) {
@@ -1263,8 +1290,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                     Object subarray = Array.newInstance(subarrayType, len);
                                                     for (int j = 0; j < len; j++) {
                                                         Object element = Array.get(result, j);
-                                                        Array.set(subarray, j, subarrayType.isInstance(element) //
-                                                                        ? element : to(subarrayType, element, true));
+                                                        if (!subarrayType.isInstance(element))
+                                                            element = queryInfo.convert(element,
+                                                                                        subarrayType,
+                                                                                        true);
+                                                        Array.set(subarray, j, element);
                                                     }
                                                     Array.set(returnValue, i++, subarray);
                                                 }
@@ -1277,31 +1307,36 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 returnValue = Array.newInstance(queryInfo.returnArrayType, len);
                                                 for (int i = 0; i < len; i++) {
                                                     Object element = Array.get(firstNonNullResult, i);
-                                                    Array.set(returnValue, i, queryInfo.returnArrayType.isInstance(element) //
-                                                                    ? element : to(queryInfo.returnArrayType, element, true));
+                                                    if (!queryInfo.returnArrayType.isInstance(element))
+                                                        element = queryInfo.convert(element,
+                                                                                    queryInfo.returnArrayType,
+                                                                                    true);
+                                                    Array.set(returnValue, i, element);
                                                 }
                                             }
                                         } else {
-                                            // List<Object[]> with multiple Object[] elements cannot convert to a one dimensional array
-                                            throw new NonUniqueResultException(""); // TODO NLS
+                                            // List<Object[]> with multiple Object[] elements
+                                            // cannot convert to a one dimensional array
+                                            throw excNonUniqueResult(queryInfo, size);
                                         }
                                     } else {
-                                        throw new MappingException("The " + queryInfo.returnArrayType.getName() +
-                                                                   " array type that is declared to be returned by the " +
-                                                                   queryInfo.method.getName() + " method of the " +
-                                                                   queryInfo.method.getDeclaringClass().getName() +
-                                                                   " repository is incompatible with the " +
-                                                                   firstNonNullResult.getClass().getName() +
-                                                                   " type of the observed query results."); // TODO NLS
+                                        throw exc(MappingException.class,
+                                                  "CWWKD1055.incompat.result",
+                                                  queryInfo.loggableAppend(firstNonNullResult.getClass().getName(),
+                                                                           " (", firstNonNullResult, ")"),
+                                                  method.getGenericReturnType().getTypeName(),
+                                                  method.getName(),
+                                                  repositoryInterface.getName());
                                     }
                                 } else if (results.isEmpty()) {
-                                    throw new EmptyResultException("Query with return type of " + returnType.getName() +
-                                                                   " returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
+                                    throw excEmptyResult(method);
                                 } else { // single result of other type
-                                    returnValue = oneResult(results);
+                                    returnValue = oneResult(queryInfo, results);
                                     if (returnValue != null &&
                                         !singleType.isAssignableFrom(returnValue.getClass()))
-                                        returnValue = convert(returnValue, queryInfo);
+                                        returnValue = queryInfo.convert(returnValue,
+                                                                        queryInfo.singleType,
+                                                                        true);
                                 }
                             }
                         }
@@ -1359,11 +1394,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (updateCount < numExpected)
                             if (numExpected == 1)
-                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                                throw exc(OptimisticLockingFailureException.class,
+                                          "CWWKD1051.single.opt.lock.exc",
+                                          queryInfo.method.getName(),
+                                          repositoryInterface.getName(),
+                                          queryInfo.entityInfo.entityClass.getName(),
+                                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
                             else
-                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
-                                                                            (numExpected - updateCount) + " of the " +
-                                                                            numExpected + " entities."); // TODO NLS
+                                throw exc(OptimisticLockingFailureException.class,
+                                          "CWWKD1052.multi.opt.lock.exc",
+                                          queryInfo.method.getName(),
+                                          repositoryInterface.getName(),
+                                          numExpected - updateCount,
+                                          numExpected,
+                                          queryInfo.entityInfo.entityClass.getName(),
+                                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
@@ -1393,11 +1438,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (updateCount < numExpected)
                             if (numExpected == 1)
-                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                                throw exc(OptimisticLockingFailureException.class,
+                                          "CWWKD1051.single.opt.lock.exc",
+                                          queryInfo.method.getName(),
+                                          repositoryInterface.getName(),
+                                          queryInfo.entityInfo.entityClass.getName(),
+                                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
                             else
-                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
-                                                                            (numExpected - updateCount) + " of the " +
-                                                                            numExpected + " entities."); // TODO NLS
+                                throw exc(OptimisticLockingFailureException.class,
+                                          "CWWKD1052.multi.opt.lock.exc",
+                                          queryInfo.method.getName(),
+                                          repositoryInterface.getName(),
+                                          numExpected - updateCount,
+                                          numExpected,
+                                          queryInfo.entityInfo.entityClass.getName(),
+                                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
@@ -1429,7 +1484,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case RESOURCE_ACCESS: {
-                        returnValue = getResource(returnType);
+                        returnValue = getResource(method);
                         break;
                     }
                     default:
@@ -1444,29 +1499,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (em != null)
                     em.close();
 
-                if (requiresTransaction) {
-                    try {
+                try {
+                    if (startedTransaction) {
                         int status = provider.tranMgr.getStatus();
                         if (status == Status.STATUS_MARKED_ROLLBACK || failed)
                             provider.tranMgr.rollback();
                         else if (status != Status.STATUS_NO_TRANSACTION)
                             provider.tranMgr.commit();
-                    } finally {
-                        if (suspendedLTC != null)
-                            provider.localTranCurrent.resume(suspendedLTC);
+                    } else {
+                        if (failed && Status.STATUS_ACTIVE == provider.tranMgr.getStatus())
+                            provider.tranMgr.setRollbackOnly();
                     }
-                } else {
-                    if (failed && Status.STATUS_ACTIVE == provider.tranMgr.getStatus())
-                        provider.tranMgr.setRollbackOnly();
+                } finally {
+                    if (suspendedLTC != null)
+                        provider.localTranCurrent.resume(suspendedLTC);
                 }
             }
 
             if (trace && tc.isEntryEnabled()) {
-                boolean hideValue = queryInfo.type == Type.FIND
-                                    || queryInfo.type == Type.FIND_AND_DELETE
-                                    || queryInfo.type == Type.INSERT
-                                    || queryInfo.type == Type.SAVE
-                                    || queryInfo.type == Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT;
+                boolean hideValue = queryType == Type.FIND ||
+                                    queryType == Type.FIND_AND_DELETE ||
+                                    queryType == Type.INSERT ||
+                                    queryType == Type.SAVE ||
+                                    queryType == Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT;
                 Object valueToLog = hideValue //
                                 ? provider.loggable(repositoryInterface, method, returnValue) //
                                 : returnValue;
@@ -1501,16 +1556,24 @@ public class RepositoryImpl<R> implements InvocationHandler {
                primitive == short.class && cl == Short.class;
     }
 
+    /**
+     * Requires a single result.
+     *
+     * @param queryInfo information about the query.
+     * @param results   list of results that is expected to have exactly 1 result.
+     * @return the single result.
+     * @throws EmptyResultException     if the list is empty.
+     * @throws NonUniqueResultException if the list has more than 1 result.
+     */
     @Trivial
-    private final Object oneResult(List<?> results) {
+    private final Object oneResult(QueryInfo queryInfo, List<?> results) {
         int size = results.size();
         if (size == 1)
             return results.get(0);
         else if (size == 0)
-            throw new EmptyResultException("Query returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
+            throw excEmptyResult(queryInfo.method);
         else
-            throw new NonUniqueResultException("Found " + results.size() +
-                                               " results. To limit to a single result, specify Limit.of(1) as a parameter or use the findFirstBy name pattern.");
+            throw excNonUniqueResult(queryInfo, results.size());
     }
 
     /**
@@ -1524,15 +1587,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *                       the entity (or correct version of the entity) was not found.
      */
     private int remove(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
-        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
+        Class<?> entityClass = queryInfo.entityInfo.getType();
 
         if (e == null)
-            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+            throw exc(NullPointerException.class,
+                      "CWWKD1015.null.entity.param",
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName());
 
         if (!entityClass.isInstance(e))
-            throw new IllegalArgumentException("The " + (e == null ? null : e.getClass().getName()) +
-                                               " parameter does not match the " + entityClass.getName() +
-                                               " entity type that is expected for this repository."); // TODO NLS
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1016.incompat.entity.param",
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      entityClass.getName(),
+                      e.getClass().getName());
 
         EntityInfo entityInfo = queryInfo.entityInfo;
         String jpql = queryInfo.jpql;
@@ -1540,14 +1609,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
         int versionParamIndex = (entityInfo.idClassAttributeAccessors == null ? 1 : entityInfo.idClassAttributeAccessors.size()) + 1;
         Object version = null;
         if (entityInfo.versionAttributeName != null) {
-            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            version = queryInfo.getAttribute(e, entityInfo.versionAttributeName);
             if (version == null)
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
         Object id = null;
+        String idAttributeName = null;
         if (entityInfo.idClassAttributeAccessors == null) {
-            id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
+            idAttributeName = queryInfo.getAttributeName(ID, true);
+            id = queryInfo.getAttribute(e, idAttributeName);
             if (id == null) {
                 jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
                 if (version != null)
@@ -1564,16 +1635,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
             int p = 1;
             if (id != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "set ?" + p + ' ' + id.getClass().getSimpleName());
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(id));
                 delete.setParameter(p++, id);
             }
             if (version != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "set ?" + p + ' ' + version.getClass().getSimpleName());
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(version));
                 delete.setParameter(p, version);
             }
         } else {
-            queryInfo.setParametersFromIdClassAndVersion(delete, e, version);
+            queryInfo.setParametersFromIdClassAndVersion(1, delete, e, version);
         }
 
         int numDeleted = delete.executeUpdate();
@@ -1581,11 +1652,22 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (numDeleted == 0) {
             Class<?> returnType = queryInfo.method.getReturnType();
             if (void.class.equals(returnType) || Void.class.equals(returnType)) {
-                if (entityInfo.versionAttributeName == null)
-                    throw new OptimisticLockingFailureException("Entity was not found."); // TODO NLS
-                else
-                    //TODO if the version is 0, let the user know the object returned from the insert/save operation must be used, not the original object
-                    throw new OptimisticLockingFailureException("Version " + version + " of the entity was not found."); // TODO NLS
+                if (idAttributeName == null)
+                    idAttributeName = ID;
+                List<String> entityProps = new ArrayList<>(2);
+                if (id != null)
+                    entityProps.add(queryInfo.loggableAppend(idAttributeName,
+                                                             "=", id));
+                if (entityInfo.versionAttributeName != null && version != null)
+                    entityProps.add(queryInfo.loggableAppend(entityInfo.versionAttributeName,
+                                                             "=", version));
+                throw exc(OptimisticLockingFailureException.class,
+                          "CWWKD1050.opt.lock.exc",
+                          queryInfo.method.getName(),
+                          repositoryInterface.getName(),
+                          e.getClass().getName(),
+                          entityProps,
+                          LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
             }
         } else if (numDeleted > 1) {
             throw new DataException("Found " + numDeleted + " matching entities."); // ought to be unreachable
@@ -1595,172 +1677,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Converts to the specified type, raising an error if the conversion cannot be made.
-     *
-     * @param type               type to convert to.
-     * @param item               item to convert.
-     * @param failIfNotConverted whether or not to fail if unable to convert the value.
-     * @return new instance of the requested type.
-     */
-    @Trivial // avoid tracing value from customer data
-    private static final Object to(Class<?> type, Object item, boolean failIfNotConverted) {
-        Object result = item;
-        if (item == null) {
-            if (type.isPrimitive())
-                throw new MappingException("Query returned a null result which is not compatible with the type that is " +
-                                           "expected by the repository method signature: " + type.getName()); // TODO NLS
-        } else if (item instanceof Number && (type.isPrimitive() || Number.class.isAssignableFrom(type))) {
-            Number n = (Number) item;
-            if (long.class.equals(type) || Long.class.equals(type))
-                result = n.longValue();
-            else if (double.class.equals(type) || Double.class.equals(type))
-                result = n.doubleValue();
-            else if (float.class.equals(type) || Float.class.equals(type))
-                result = n.floatValue();
-            else if (int.class.equals(type) || Integer.class.equals(type))
-                result = n.intValue();
-            else if (short.class.equals(type) || Short.class.equals(type))
-                result = n.shortValue();
-            else if (byte.class.equals(type) || Byte.class.equals(type))
-                result = n.byteValue();
-            else if (boolean.class.equals(type) || Boolean.class.equals(type))
-                result = n.longValue() != 0L;
-            else if (failIfNotConverted)
-                throw new MappingException("Query returned a result of type " + item.getClass().getName() +
-                                           " which is not compatible with the type that is expected by the repository method signature: " +
-                                           type.getName()); // TODO
-        } else if (type.isAssignableFrom(String.class)) {
-            result = item.toString();
-        } else if (failIfNotConverted) {
-            throw new MappingException("Query returned a result of type " + item.getClass().getName() +
-                                       " which is not compatible with the type that is expected by the repository method signature: " +
-                                       type.getName()); // TODO
-        }
-        return result;
-    }
-
-    @Trivial
-    private static final double toDouble(Object o) {
-        if (o instanceof Number)
-            return ((Number) o).doubleValue();
-        else if (o instanceof String)
-            return Double.parseDouble((String) o);
-        else
-            throw new MappingException("Not representable as a double value: " + o.getClass().getName());
-    }
-
-    /**
-     * Converts a record to its generated entity equivalent,
-     * or does nothing if not a record.
-     *
-     * @param o entity or a record that needs conversion to an entity.
-     * @return entity.
-     */
-    @Trivial
-    private static final Object toEntity(Object o) {
-        Object entity = o;
-        Class<?> oClass = o == null ? null : o.getClass();
-        if (o != null && oClass.isRecord())
-            try {
-                Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Entity");
-                Constructor<?> ctor = entityClass.getConstructor(oClass);
-                entity = ctor.newInstance(o);
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | //
-                            InvocationTargetException | NoSuchMethodException | SecurityException x) {
-                throw new MappingException("Unable to convert record " + oClass + " to generated entity class.", //
-                                x instanceof InvocationTargetException ? x.getCause() : x); // TODO NLS
-            }
-        if (entity != o && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "toEntity " + oClass.getName() + " --> " + entity.getClass().getName());
-        return entity;
-    }
-
-    @Trivial
-    private static final int toInt(Object o) {
-        if (o instanceof Number)
-            return ((Number) o).intValue();
-        else if (o instanceof String)
-            return Integer.parseInt((String) o);
-        else
-            throw new MappingException("Not representable as an int value: " + o.getClass().getName());
-    }
-
-    /**
-     * Convert the results list into an Iterable of the specified type.
-     *
-     * @param iterableType the desired type of Iterable.
-     * @param elementType  the type of each element if a find operation. Can be NULL if a save operation.
-     * @param results      results of a find or save operation.
-     * @return results converted to an Iterable of the specified type.
-     */
-    @Trivial
-    private static final Iterable<?> toIterable(Class<?> iterableType, Class<?> elementType, List<?> results) {
-        Collection<Object> list;
-        if (iterableType.isInterface()) {
-            if (iterableType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
-                list = new ArrayList<>(results.size());
-            else if (iterableType.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
-                list = new ArrayDeque<>(results.size());
-            else if (iterableType.isAssignableFrom(LinkedHashSet.class)) // covers Set
-                list = new LinkedHashSet<>(results.size());
-            else
-                throw new UnsupportedOperationException(iterableType + " is an unsupported return type."); // TODO NLS
-        } else {
-            try {
-                @SuppressWarnings("unchecked")
-                Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) iterableType.getConstructor();
-                list = c.newInstance();
-            } catch (NoSuchMethodException x) {
-                throw new MappingException("The " + iterableType.getName() + " result type lacks a public zero parameter constructor.", x); // TODO NLS
-            } catch (IllegalAccessException | InstantiationException x) {
-                throw new MappingException("Unable to access the zero parameter constructor of the " + iterableType.getName() + " result type.", x); // TODO NLS
-            } catch (InvocationTargetException x) {
-                throw new MappingException("The constructor for the " + iterableType.getName() + " result type raised an error: " + x.getCause().getMessage(), x.getCause()); // TODO NLS
-            }
-        }
-        if (results.size() == 1 && results.get(0) instanceof Object[]) {
-            Object[] a = (Object[]) results.get(0);
-            for (int i = 0; i < a.length; i++)
-                list.add(elementType.isInstance(a[i]) ? a[i] : to(elementType, a[i], true));
-        } else {
-            list.addAll(results);
-        }
-        return list;
-    }
-
-    @Trivial
-    private static final long toLong(Object o) {
-        if (o instanceof Number)
-            return ((Number) o).longValue();
-        else if (o instanceof String)
-            return Long.parseLong((String) o);
-        else
-            throw new MappingException("Not representable as a long value: " + o.getClass().getName());
-    }
-
-    /**
-     * Converts a Limit to a PageRequest if possible.
-     *
-     * @param limit Limit.
-     * @return PageRequest.
-     * @throws IllegalArgumentException if the Limit is a range with a starting point above 1.
-     */
-    private static final PageRequest toPageRequest(Limit limit) {
-        if (limit.startAt() != 1L)
-            throw new IllegalArgumentException("Limit with starting point " + limit.startAt() +
-                                               ", which is greater than 1, cannot be used to request pages."); // TODO NLS
-        return PageRequest.ofSize(limit.maxResults());
-    }
-
-    /**
      * Converts an update count to the requested return type.
      *
      * @param i          update count value.
      * @param returnType requested return type.
-     * @param queryInfo  query information.
+     * @param queryInfo  query information, which must have type DELETE or UPDATE.
      * @return converted value.
      */
-    private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {
+    private final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {
         Object result;
         if (int.class.equals(returnType) || Integer.class.equals(returnType) || Number.class.equals(returnType))
             result = i;
@@ -1772,15 +1696,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
             result = null;
         else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
             result = CompletableFuture.completedFuture(toReturnValue(i, queryInfo.singleType, null));
-        else // TODO queryInfo in message
-            throw new UnsupportedOperationException("The " + queryInfo.method.getName() + " method of the " +
-                                                    queryInfo.method.getDeclaringClass().getName() + " repository has a return type, " +
-                                                    returnType + ", that is not supported for repository Update and Delete operations. " +
-                                                    "Supported return types include void (for no result), boolean (to indicate whether " +
-                                                    "or not a matching entity was found), or one of the following types to indicate " +
-                                                    "how many matching entities were found: " +
-                                                    "long, Long, int, Integer, Number" + "."); // TODO NLS
-
+        else
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1007.updel.rtrn.err",
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      queryInfo.type == Type.DELETE ? "Delete" : "Update");
         return result;
     }
 
@@ -1804,7 +1726,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             results = new ArrayList<>();
             int length = Array.getLength(arg);
             for (int i = 0; i < length; i++)
-                results.add(em.merge(toEntity(Array.get(arg, i))));
+                results.add(em.merge(queryInfo.toEntity(Array.get(arg, i))));
             em.flush();
         } else {
             arg = arg instanceof Stream //
@@ -1814,12 +1736,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
                 results = new ArrayList<>();
                 for (Object e : ((Iterable<?>) arg))
-                    results.add(em.merge(toEntity(e)));
+                    results.add(em.merge(queryInfo.toEntity(e)));
                 em.flush();
             } else {
                 hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
-                Object entity = em.merge(toEntity(arg));
+                Object entity = em.merge(queryInfo.toEntity(arg));
                 if (results != null)
                     results.add(entity);
                 em.flush();
@@ -1841,34 +1763,45 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 Class<?> multiType = queryInfo.multiType;
                 if (multiType == null)
-                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                    if (results.size() == 1)
+                        returnValue = results.get(0);
+                    else if (results.isEmpty())
+                        returnValue = null;
+                    else
+                        throw excNonUniqueResult(queryInfo, results.size());
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
                     returnValue = results.stream();
                 else if (Iterable.class.isAssignableFrom(multiType))
-                    returnValue = toIterable(multiType, null, results);
+                    returnValue = queryInfo.convertToIterable(results, null, multiType);
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw new MappingException("The " + returnType.getName() + " return type of the " +
-                                               queryInfo.method.getName() + " method of the " +
-                                               queryInfo.method.getDeclaringClass().getName() +
-                                               " class is not a valid return type for a repository " +
-                                               "@Save" + " method. Valid return types include " +
-                                               getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+                    throw exc(MappingException.class,
+                              "CWWKD1003.lifecycle.rtrn.err",
+                              queryInfo.method.getGenericReturnType().getTypeName(),
+                              queryInfo.method.getName(),
+                              repositoryInterface.getName(),
+                              "Save",
+                              getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                                  hasSingularEntityParam,
+                                                  false));
             }
         }
 
         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw new MappingException("The " + returnType.getName() + " return type of the " +
-                                       queryInfo.method.getName() + " method of the " +
-                                       queryInfo.method.getDeclaringClass().getName() +
-                                       " class is not a valid return type for a repository " +
-                                       "@Save" + " method. Valid return types include " +
-                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+            throw exc(MappingException.class,
+                      "CWWKD1003.lifecycle.rtrn.err",
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      "Save",
+                      getValidReturnTypes(results.get(0).getClass().getSimpleName(),
+                                          hasSingularEntityParam,
+                                          false));
         }
 
         return returnValue;
@@ -1884,33 +1817,47 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws Exception if an error occurs.
      */
     private int update(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
-        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
+        Class<?> entityClass = queryInfo.entityInfo.getType();
 
         if (e == null)
-            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+            throw exc(NullPointerException.class,
+                      "CWWKD1015.null.entity.param",
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName());
 
         if (!entityClass.isInstance(e))
-            throw new IllegalArgumentException("The " + (e == null ? null : e.getClass().getName()) +
-                                               " parameter does not match the " + entityClass.getName() +
-                                               " entity type that is expected for this repository."); // TODO NLS
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1016.incompat.entity.param",
+                      queryInfo.method.getName(),
+                      repositoryInterface.getName(),
+                      entityClass.getName(),
+                      e.getClass().getName());
 
         String jpql = queryInfo.jpql;
         EntityInfo entityInfo = queryInfo.entityInfo;
         Set<String> attrsToUpdate = entityInfo.attributeNamesForEntityUpdate;
 
-        int versionParamIndex = attrsToUpdate.size() + 2;
+        int versionParamIndex = entityInfo.idClassAttributeAccessors == null //
+                        ? (attrsToUpdate.size() + 2) //
+                        : (attrsToUpdate.size() +
+                           entityInfo.idClassAttributeAccessors.size() + 1);
         Object version = null;
         if (entityInfo.versionAttributeName != null) {
-            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            version = queryInfo.getAttribute(e, entityInfo.versionAttributeName);
             if (version == null)
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, queryInfo.getAttributeName(ID, true));
-        if (id == null) {
-            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
-            if (version != null)
-                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        Object id = null;
+        String idAttributeName = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            idAttributeName = entityInfo.attributeNames.get(ID);
+            id = queryInfo.getAttribute(e, idAttributeName);
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
@@ -1919,28 +1866,25 @@ public class RepositoryImpl<R> implements InvocationHandler {
         TypedQuery<?> update = em.createQuery(jpql, entityInfo.entityClass);
 
         // parameters for entity attributes to update:
-
-        int p = 0;
+        int p = 1;
         for (String attrName : attrsToUpdate)
-            QueryInfo.setParameter(++p, update, e,
-                                   entityInfo.attributeAccessors.get(attrName));
+            queryInfo.setParameter(p++, update, e, attrName);
 
-        // id parameter(s)
+        // id and version parameters
+        if (entityInfo.idClassAttributeAccessors == null) {
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(id));
+                update.setParameter(p++, id);
+            }
 
-        if (entityInfo.idClassAttributeAccessors != null) {
-            throw new UnsupportedOperationException(); // TODO
-        } else if (id != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
-            update.setParameter(++p, id);
-        }
-
-        // version parameter
-
-        if (entityInfo.versionAttributeName != null && version != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
-            update.setParameter(++p, version);
+            if (entityInfo.versionAttributeName != null && version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + queryInfo.loggable(version));
+                update.setParameter(p++, version);
+            }
+        } else { // has IdClass
+            queryInfo.setParametersFromIdClassAndVersion(p, update, e, version);
         }
 
         int numUpdated = update.executeUpdate();
