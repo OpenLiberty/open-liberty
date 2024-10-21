@@ -2,6 +2,7 @@
 <classpath>
     <classpathentry kind="src" path="fat/src"/>
     <classpathentry kind="src" path="test-applications/EL60ArrayLengthTest.war/src"/>
+    <classpathentry kind="src" path="test-applications/EL60BeanELResolverTest.war/src/"/>
     <classpathentry kind="src" path="test-applications/EL60ModuleVisibilityTest.war/src"/>
     <classpathentry kind="src" path="test-applications/EL60OptionalELResolverTest.war/src"/>
     <classpathentry kind="src" path="test-applications/EL60RecordELResolverTest.war/src"/>
