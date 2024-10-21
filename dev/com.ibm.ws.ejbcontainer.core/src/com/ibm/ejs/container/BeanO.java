@@ -36,7 +36,6 @@ import javax.transaction.UserTransaction;
 
 import com.ibm.ejs.container.activator.ActivationStrategy;
 import com.ibm.ejs.container.util.EJSPlatformHelper;
-import com.ibm.ejs.csi.NullSecurityCollaborator;
 import com.ibm.ejs.j2c.HandleList;
 import com.ibm.ejs.j2c.HandleListInterface;
 import com.ibm.websphere.csi.BeanInstanceInfo;
@@ -89,7 +88,7 @@ public abstract class BeanO implements EJBContextExtension, // LI3492-2
 {
     private static final String CLASS_NAME = BeanO.class.getName();
     private static final TraceComponent tc = Tr.register(BeanO.class, "EJBContainer", "com.ibm.ejs.container.container");
-
+    public static final java.security.Principal UNAUTHENTICATED_PRINCIPAL = new UnauthenticatedPrincipal();
     // LIDB2775-23.1 ASV60
     protected static final boolean isZOS = EJSPlatformHelper.isZOS(); // LIDB2775-23.7
 
@@ -669,7 +668,7 @@ public abstract class BeanO implements EJBContextExtension, // LI3492-2
     public Principal getCallerPrincipal() {
         EJBSecurityCollaborator<?> securityCollaborator = container.ivSecurityCollaborator;
         if (securityCollaborator == null) {
-            return NullSecurityCollaborator.UNAUTHENTICATED;
+            return UNAUTHENTICATED_PRINCIPAL;
         }
 
         return getCallerPrincipal(securityCollaborator, EJSContainer.getMethodContext());
@@ -2207,6 +2206,13 @@ public abstract class BeanO implements EJBContextExtension, // LI3492-2
 
         return timer;
 
+    }
+
+    private static class UnauthenticatedPrincipal implements java.security.Principal {
+        @Override
+        public String getName() {
+            return "UNAUTHENTICATED";
+        }
     }
 
 } // BeanO
