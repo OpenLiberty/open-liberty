@@ -25,7 +25,7 @@ import componenttest.containers.TestContainerSuite;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-	InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class, InstallVersionlessServerTest.class
+	InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class, InstallVersionlessServerTest.class, FindActionTest.class
 
 })
 public class FATSuite extends TestContainerSuite {
