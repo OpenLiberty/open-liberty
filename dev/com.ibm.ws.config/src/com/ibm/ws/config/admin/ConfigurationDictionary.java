@@ -31,6 +31,7 @@ import org.osgi.framework.Filter;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
+import com.ibm.wsspi.kernel.service.utils.SerializableSchedule;
 
 @Trivial
 public class ConfigurationDictionary extends Dictionary<String, Object> implements Serializable {
@@ -52,7 +53,8 @@ public class ConfigurationDictionary extends Dictionary<String, Object> implemen
                                                                                          Double[].class,
                                                                                          Byte[].class, Short[].class, Character[].class, Boolean[].class });
     /** Set of IBM extended types */
-    static private final List<Class<?>> extendedTypes = Arrays.asList(new Class<?>[] { SerializableProtectedString.class, OnError.class });
+    static private final List<Class<?>> extendedTypes = Arrays.asList(new Class<?>[] { SerializableProtectedString.class, OnError.class, SerializableSchedule.class,
+                                                                                       SerializableSchedule[].class });
 
     static final Comparator<String> CASE_INSENSITIVE = new CaseInsensitive();
 
@@ -157,7 +159,7 @@ public class ConfigurationDictionary extends Dictionary<String, Object> implemen
     private static void validateValue(Object value) {
         Class<?> clazz = value.getClass();
 
-        // Is it in the set of simpleTypes 
+        // Is it in the set of simpleTypes
         if (simpleTypes.contains(clazz))
             return;
 
