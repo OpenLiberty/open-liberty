@@ -64,7 +64,7 @@ public class AuditEncryptionImpl implements AuditEncrypting {
     private String _password = null;
     private String _alias = null;
 
-    private static final String ALGORITHM_DESEDE = "DESede";
+//    private static final String ALGORITHM_DESEDE = "DESede";
 //    private static final String ALGORITHM_RSA = "RSA";
 
     /**
@@ -175,9 +175,9 @@ public class AuditEncryptionImpl implements AuditEncrypting {
             if (crypto != null) {
                 try {
                     if (CryptoUtils.isFips140_3Enabled())
-                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generate3DESKey(), 0, 24, CryptoUtils.CRYPTO_ALGORITHM_RSA);
+                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, 32, CryptoUtils.CRYPTO_ALGORITHM_RSA);
                     else
-                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generate3DESKey(), 0, 24, ALGORITHM_DESEDE);
+                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, 24, CryptoUtils.ENCRYPT_ALGORITHM_DESEDE);
                 } catch (Exception me) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "me.getMessage: " + me.getMessage());

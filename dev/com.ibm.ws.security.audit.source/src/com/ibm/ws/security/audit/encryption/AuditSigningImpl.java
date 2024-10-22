@@ -136,7 +136,11 @@ public class AuditSigningImpl implements AuditSigning {
         javax.crypto.spec.SecretKeySpec sharedKey = null;
         try {
             if (crypto != null) {
-                sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generate3DESKey(), 0, 24, "3DES");
+                if (CryptoUtils.isFips140_3Enabled())
+                    sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, 32, CryptoUtils.CRYPTO_ALGORITHM_RSA);
+                else
+                    sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, 24, CryptoUtils.ENCRYPT_ALGORITHM_DESEDE);
+
             }
 
             if (sharedKey != null) {

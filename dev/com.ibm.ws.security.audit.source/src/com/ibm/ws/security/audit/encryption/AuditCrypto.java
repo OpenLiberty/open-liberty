@@ -53,11 +53,11 @@ final class AuditCrypto {
 //    private static final String ENCRYPT_ALGORITHM = "DESede";
 //    private static final String CIPHER = "DESede/ECB/PKCS5Padding";
     //todo need to move this to CryptoUtils
-    private static final String DESEDE_ECB_CIPHER = "DESede/ECB/PKCS5Padding";
+    //private static final String DESEDE_ECB_CIPHER = "DESede/ECB/PKCS5Padding";
 //    private static final String AES_CBC_CIPHER = "AES/CBC/PKCS5Padding";
     private static IvParameterSpec ivs8 = null;
     private static IvParameterSpec ivs16 = null;
-    private static SecureRandom random = null;
+//    private static SecureRandom random = null;
 
 //    private static final String IBMJCE_NAME = "IBMJCE";
 //    private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
@@ -75,13 +75,15 @@ final class AuditCrypto {
     public static boolean ibmJCEPlusFIPSAvailable = false;
     public static boolean ibmJCEPlusFIPSProviderChecked = false;
 
+    private static final String provider = CryptoUtils.getProvider();
+
 //    private static boolean issuedBetaMessage = false;
 
     /**
      * @param provider
      */
     public AuditCrypto() {
-        fips140_3Enabled = CryptoUtils.isFIPSEnabled();
+//        fips140_3Enabled = CryptoUtils.isFIPSEnabled();
     }
 
     static final boolean cmp(byte[] b1, int off1, byte[] b2, int off2, int n) {
@@ -1245,7 +1247,7 @@ final class AuditCrypto {
                 PrivateKey privKey = kFact.generatePrivate(privKeySpec);
                 Signature rsaSig = null;
                 if (fips140_3Enabled)
-                    rsaSig = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA256WITHRSA, CryptoUtils.IBMJCE_PLUS_FIPS_NAME);
+                    rsaSig = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA256WITHRSA, provider);
                 else
                     rsaSig = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA256WITHRSA);
 
@@ -1630,7 +1632,7 @@ final class AuditCrypto {
                 BigInteger e = new BigInteger(key[1]);
                 KeyFactory kFact = null;
                 if (fips140_3Enabled)
-                    kFact = KeyFactory.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA, CryptoUtils.IBMJCE_PLUS_FIPS_NAME);
+                    kFact = KeyFactory.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA, provider);
                 else
                     kFact = KeyFactory.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA, CryptoUtils.IBMJCE_NAME);
                 if (tc.isDebugEnabled())
@@ -1640,7 +1642,7 @@ final class AuditCrypto {
                 PublicKey pubKey = kFact.generatePublic(pubKeySpec);
                 Signature rsaSig = null;
                 if (fips140_3Enabled)
-                    rsaSig = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA256WITHRSA, CryptoUtils.IBMJCE_PLUS_FIPS_NAME);
+                    rsaSig = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA256WITHRSA, provider);
                 else
                     rsaSig = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA256WITHRSA);
 
@@ -1754,7 +1756,7 @@ final class AuditCrypto {
 
         try {
             if (fips140_3Enabled)
-                keyGen = KeyPairGenerator.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA, CryptoUtils.IBMJCE_PLUS_FIPS_NAME);
+                keyGen = KeyPairGenerator.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA, provider);
             else
                 keyGen = KeyPairGenerator.getInstance(CryptoUtils.CRYPTO_ALGORITHM_RSA);
 
@@ -2002,17 +2004,16 @@ final class AuditCrypto {
         return new SecureRandom().getSeed(length);
     }
 
-    //TODO: UTLE Rename this method
-    static final byte[] generate3DESKey() {
+    static final byte[] generateSharedKey() {
         byte[] rndSeed = null;
         try {
             if (fips140_3Enabled) {
-                int len = 24; // 3DES
+                int len = 32;
                 rndSeed = new byte[len];
                 random(rndSeed, 0, len);
             } else {
                 KeyGenerator keyGen = null;
-                keyGen = KeyGenerator.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_RSA);
+                keyGen = KeyGenerator.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_DESEDE);
                 keyGen.init(new SecureRandom());
                 SecretKey key = keyGen.generateKey();
                 rndSeed = key.getEncoded();
@@ -2384,9 +2385,9 @@ final class AuditCrypto {
     Signature getSignature() throws AuditSigningException {
         Signature signature = null;
         try {
-            if (fips140_3Enabled)
-                signature = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA256WITHRSA, CryptoUtils.IBMJCE_PLUS_FIPS_NAME);
-            else
+            if (fips140_3Enabled) {
+                signature = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA256WITHRSA, provider);
+            } else
                 signature = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA256WITHRSA);
 
         } catch (Exception e) {
@@ -2398,10 +2399,13 @@ final class AuditCrypto {
     }
 
     static String getCipher() {
-        String cipher = DESEDE_ECB_CIPHER;
-        if (fips140_3Enabled)
-            cipher = CryptoUtils.AES_CBC_CIPHER;
-        return cipher;
+//        String cipher = DESEDE_ECB_CIPHER;
+//        if (fips140_3Enabled)
+//            cipher = CryptoUtils.AES_CBC_CIPHER;
+//        return cipher;
+
+        return fips140_3Enabled ? CryptoUtils.AES_GCM_CIPHER : CryptoUtils.DES_ECB_CIPHER;
+//        return cipher;
     }
 
 }
