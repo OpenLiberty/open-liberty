@@ -29,12 +29,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.globalopentelemetry.TelemetryGlobalOpenTelemetryServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
@@ -46,7 +45,7 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -81,7 +80,8 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWMOT5000W", //Cannot get GlobalOpenTelemetry
-                          "CWMOT5001E" //Cannot set GlobalOpenTelemetry
+                          "CWMOT5001E", //Cannot set GlobalOpenTelemetry
+                          "CWMOT5007W" //Warning about conflicting otel.sdk.enabled properties
         );
 
     }

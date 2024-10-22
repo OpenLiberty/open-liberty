@@ -16,7 +16,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(Suite.class)
@@ -36,39 +35,34 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 TelemetryConfigSystemPropTest.class,
                 TelemetryConfigEnvOnlyTest.class,
                 TelemetryConfigNullTest.class,
+                TelemetryConfigRuntimeModeIgnoresMPConfigTest.class,
                 TelemetryServiceNameTest.class,
                 TelemetryShimTest.class,
                 TelemetryLoggingExporterTest.class,
                 TelemetryAPITest.class,
                 MultiThreadedContextTest.class,
                 TelemetryMisconfigTest.class,
+                TelemetryMultipleMetricsTest.class,
                 TelemetryLongRunningTest.class,
                 TelemetryGlobalOpenTelemetryTest.class,
                 TelemetryDisabledTest.class,
                 TelemetryServletTest.class,
-                TelemetryWithSpanErrorTest.class
+                TelemetryUserFeatureTest.class,
+                TelemetryUserFeatureAppScopedTest.class,
+                TelemetryWithSpanErrorTest.class,
+                TelemetryAttributesTest.class,
+                TelemetryRuntimeInstanceTest.class,
+
 })
 public class FATSuite {
-
-    public static RepeatTests allMPRepeats(String serverName) {
-        return TelemetryActions
-                        .repeat(serverName, MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
-                                TelemetryActions.MP61_MPTEL20, TelemetryActions.MP60_MPTEL20, TelemetryActions.MP50_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP14_MPTEL20);
-    }
-
-
-    public static RepeatTests allMPRepeatsWithoutMPTel20(String serverName) {
-        return TelemetryActions
-                        .repeat(serverName, MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
-                                MicroProfileActions.MP60);
-    }
 
     public static String getTelemetryVersionUnderTest() {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             return "1.0";
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP60_MPTEL20_ID) ||  RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)){
+        } else if (RepeatTestFilter.isAnyRepeatActionActive(MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP61_MPTEL20_ID,
+                                                            TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP14_MPTEL20_ID)) {
             return "2.0";
-        } else{
+        } else {
             return "1.1";
         }
     }

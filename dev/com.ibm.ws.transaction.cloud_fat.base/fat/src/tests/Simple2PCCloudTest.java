@@ -13,19 +13,20 @@
 package tests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.ListIterator;
 
-import org.junit.After;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
-import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.Fileset;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -36,24 +37,20 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class Simple2PCCloudTest extends FATServletClient {
+public class Simple2PCCloudTest extends CloudTestBase {
 
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/Simple2PCCloudServlet";
     protected static final int cloud2ServerPort = 9992;
-    private static final long LOG_SEARCH_TIMEOUT = 300000;
 
     @Server("com.ibm.ws.transaction_CLOUD001")
-    public static LibertyServer server1;
+    public static LibertyServer s1;
 
     @Server("com.ibm.ws.transaction_CLOUD002")
-    public static LibertyServer server2;
+    public static LibertyServer s2;
 
     @Server("longLeaseLengthServer1")
     public static LibertyServer longLeaseLengthServer1;
@@ -64,25 +61,21 @@ public class Simple2PCCloudTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ShrinkHelper.defaultApp(server1, APP_NAME, "servlets.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "servlets.*");
-        ShrinkHelper.defaultApp(longLeaseLengthServer1, APP_NAME, "servlets.*");
-        ShrinkHelper.defaultApp(peerPrecedenceServer1, APP_NAME, "servlets.*");
+        server1 = s1;
+        server2 = s2;
 
-        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        longLeaseLengthServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        peerPrecedenceServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-    }
+        final WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "servlets.*");
+        final DeployOptions[] dO = new DeployOptions[0];
 
-    @After
-    public void cleanup() throws Exception {
+        ShrinkHelper.exportAppToServer(server1, app, dO);
+        ShrinkHelper.exportAppToServer(server2, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseLengthServer1, app, dO);
+        ShrinkHelper.exportAppToServer(peerPrecedenceServer1, app, dO);
 
-        // Clean up XA resource files
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
-
-        // Remove tranlog DB
-        server1.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+        server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        longLeaseLengthServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        peerPrecedenceServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }
 
     /**
@@ -94,22 +87,14 @@ public class Simple2PCCloudTest extends FATServletClient {
      */
     @Test
     public void testLeaseTableAccess() throws Exception {
-        final String method = "testLeaseTableAccess";
-        StringBuilder sb = null;
-        String id = "001";
+
+        serversToCleanup = new LibertyServer[] { server1 };
+        toleratedMsgs = new String[] { "CWWKE0701E" };
 
         // Start Server1
         FATUtils.startServers(server1);
 
-        try {
-            sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
-
-        } catch (Throwable e) {
-        }
-        Log.info(this.getClass(), method, "testLeaseTableAccess" + id + " returned: " + sb);
-
-        // "CWWKE0701E" error message is allowed
-        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server1);
+        runTest(server1, SERVLET_NAME, "testLeaseTableAccess");
     }
 
     /**
@@ -123,41 +108,32 @@ public class Simple2PCCloudTest extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testDBBaseRecovery() throws Exception {
-        final String method = "testDBBaseRecovery";
-        StringBuilder sb = null;
-        String id = "001";
-        // Start Server1
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
         FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
-        } catch (Throwable e) {
-        }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
-
-        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
-
-        // Now re-start cloud1
-        ProgramOutput po = server1.startServerAndValidate(false, true, true);
-        if (po.getReturnCode() != 0) {
-            Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-            Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-            Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-            Exception ex = new Exception("Could not restart the server");
-            Log.error(this.getClass(), "recoveryTest", ex);
-            throw ex;
+            runTest(server1, SERVLET_NAME, "setupRec001");
+            fail("setupRec001 did not cause " + server1.getServerName() + " to crash");
+        } catch (IOException e) {
         }
 
-        // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        server1.waitForStringInTrace("Performed recovery for cloud001");
+        // wait for 1st server to have gone away
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
 
-        // Lastly stop server1
-        // "WTRN0075W", "WTRN0076W", "CWWKE0701E" error messages are expected/allowed
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E" }, server1);
+        server1.postStopServerArchive(); // must explicitly collect since crashed server
 
-        // Lastly, clean up XA resource file
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+        // Now restart server1
+        FATUtils.startServers(server1);
+
+        // wait for 2nd server to perform peer recovery
+        assertNotNull(server1.getServerName() + " did not perform recovery",
+                      server1.waitForStringInTrace("Performed recovery for cloud001", FATUtils.LOG_SEARCH_TIMEOUT));
+
+        // check resource states - retry a few times if this fails
+        FATUtils.runWithRetries(() -> runTestWithResponse(server1, SERVLET_NAME, "checkRec001").toString());
     }
 
     /**
@@ -170,44 +146,34 @@ public class Simple2PCCloudTest extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testDBRecoveryTakeover() throws Exception {
-        final String method = "testDBRecoveryTakeover";
-        StringBuilder sb = null;
-        String id = "001";
-        // Start Server1
+
+        serversToCleanup = new LibertyServer[] { server1, server2 };
+
         FATUtils.startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
-        } catch (Throwable e) {
+            runTest(server1, SERVLET_NAME, "setupRec001");
+            fail("setupRec001 did not cause " + server1.getServerName() + " to crash");
+        } catch (IOException e) {
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
+        // wait for 1st server to have gone away
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+
+        server1.postStopServerArchive(); // must explicitly collect since crashed server
 
         // Now start server2
-        server2.setHttpDefaultPort(cloud2ServerPort);
-        ProgramOutput po = server2.startServerAndValidate(false, true, true);
-        final int status = po.getReturnCode();
-        // This test has shown that 22 is success sometimes
-        if (status != 0 && status != 22) {
-            Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-            Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-            Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-            Exception ex = new Exception("Could not restart the server");
-            Log.error(this.getClass(), "recoveryTest", ex);
-            throw ex;
-        }
+        server2.setHttpDefaultPort(Integer.getInteger("HTTP_secondary"));
+        FATUtils.startServers(server2);
 
-        // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
-        assertNotNull(server2.waitForStringInTrace("Performed recovery for cloud001", FATUtils.LOG_SEARCH_TIMEOUT));
-        // "CWWKE0701E" error message is allowed
-        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server2);
+        // wait for 2nd server to perform peer recovery
+        assertNotNull(server2.getServerName() + " did not perform peer recovery",
+                      server2.waitForStringInTrace("Performed recovery for cloud001", FATUtils.LOG_SEARCH_TIMEOUT));
 
-        // Lastly, clean up XA resource files
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+        // check resource states - retry a few times if this fails
+        FATUtils.runWithRetries(() -> runTestWithResponse(server2, SERVLET_NAME, "checkRec001").toString());
     }
 
     /**
@@ -228,30 +194,29 @@ public class Simple2PCCloudTest extends FATServletClient {
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.tx.jta.XAResourceNotAvailableException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException",
                            "java.lang.IllegalStateException" })
     // defect 227411, if cloud002 starts slowly, then access to cloud001's indoubt tx
-    // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
+    // XAResources may need to be retried (tx recovery is, in such cases, working as designed.0
     public void testDBRecoveryCompeteForLogPeerPrecedence() throws Exception {
         final String method = "testDBRecoveryCompeteForLogPeerPrecedence";
-        StringBuilder sb = null;
-        String id = "001";
+
+        serversToCleanup = new LibertyServer[] { peerPrecedenceServer1 };
 
         // Start peerPrecedenceServer1
         FATUtils.startServers(peerPrecedenceServer1);
 
         try {
-            sb = runTestWithResponse(peerPrecedenceServer1, SERVLET_NAME, "modifyLeaseOwner");
-
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(peerPrecedenceServer1, SERVLET_NAME, "setupRec" + id);
-        } catch (Throwable e) {
+            runTest(peerPrecedenceServer1, SERVLET_NAME, "modifyLeaseOwnerAndDie");
+            fail();
+        } catch (IOException e) {
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
         assertNotNull(peerPrecedenceServer1.getServerName() + " didn't crash properly", peerPrecedenceServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
         peerPrecedenceServer1.postStopServerArchive(); // must explicitly collect since crashed server
-        // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
-        // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
-        // Now re-start server1 but we fully expect this to fail
+        // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
+        // and renew our own lease. peerPrecedenceServer1 is a clone of server1 with a longer lease length.
+
+        // Now re-start peerPrecedenceServer1 but we fully expect this to fail
         try {
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
@@ -262,36 +227,10 @@ public class Simple2PCCloudTest extends FATServletClient {
             // may have been produced by the main thread before the recovery thread had completed
             Log.info(this.getClass(), method, "startServerExpectFailure threw exc: " + ex);
         }
-        // Pull in a new server.xml file that ensures that we have a long (5 minute) timeout
-        // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
 
         // Server appears to have failed as expected. Check for log failure string
-        if (peerPrecedenceServer1.waitForStringInLog("RECOVERY_LOG_FAILED") == null) {
-            Exception ex = new Exception("Recovery logs should have failed");
-            Log.error(this.getClass(), "recoveryTestCompeteForLock", ex);
-            throw ex;
-        }
+        assertNotNull("Recovery logs should have failed", peerPrecedenceServer1.waitForStringInLog("RECOVERY_LOG_FAILED"));
         peerPrecedenceServer1.postStopServerArchive();
-        // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
-        // is unstartable because its lease is owned by cloud2.
-        server2.setHttpDefaultPort(cloud2ServerPort);
-        ProgramOutput po = server2.startServerAndValidate(false, true, true);
-        if (po.getReturnCode() != 0) {
-            Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-            Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-            Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-            Exception ex = new Exception("Could not restart the server");
-            Log.error(this.getClass(), "recoveryTest", ex);
-            throw ex;
-        }
-
-        // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
-        server2.waitForStringInTrace("Performed recovery for cloud001");
-        // "CWWKE0701E" error message is allowed
-        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server2);
-
-        // Lastly, clean up XA resource files
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
     }
 
     /**
@@ -313,53 +252,84 @@ public class Simple2PCCloudTest extends FATServletClient {
     // defect 227411, if cloud002 starts slowly, then access to cloud001's indoubt tx
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testDBRecoveryCompeteForLog() throws Exception {
-        final String method = "testDBRecoveryCompeteForLog";
-        StringBuilder sb = null;
-        String id = "001";
+
+        serversToCleanup = new LibertyServer[] { server1, longLeaseLengthServer1 };
+        toleratedMsgs = new String[] { "CWWKE0701E" };
 
         // Start peerPrecedenceServer1
         FATUtils.startServers(server1);
 
         try {
-            sb = runTestWithResponse(server1, SERVLET_NAME, "modifyLeaseOwner");
-
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
-        } catch (Throwable e) {
+            runTest(server1, SERVLET_NAME, "modifyLeaseOwnerAndDie");
+        } catch (IOException e) {
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
         assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
         server1.postStopServerArchive(); // must explicitly collect since crashed server
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
-        // Now re-start "server1" with a long lease length to ensure any lease claim is at startup only
-        ProgramOutput po = longLeaseLengthServer1.startServerAndValidate(false, true, true);
-        if (po.getReturnCode() != 0) {
-            Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-            Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-            Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-            Exception ex = new Exception("Could not restart the server");
-            Log.error(this.getClass(), "recoveryTest", ex);
-            throw ex;
-        }
+        FATUtils.startServers(longLeaseLengthServer1);
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        longLeaseLengthServer1.waitForStringInTrace("Performed recovery for cloud001");
-
-        // "CWWKE0701E" error message is allowed
-        FATUtils.stopServers(new String[] { "CWWKE0701E" }, longLeaseLengthServer1);
-
-        // Lastly, clean up XA resource files
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+        assertNotNull(longLeaseLengthServer1.waitForStringInTrace("Performed recovery for cloud001"));
     }
 
     @Test
-    @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException", "javax.resource.ResourceException" })
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException", "javax.resource.ResourceException",
+                           "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void datasourceChangeTest() throws Exception {
         final String method = "datasourceChangeTest";
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
+        // Start Server1
+        FATUtils.startServers(server1);
+        // Update the server configuration on the fly to force the invalidation of the DataSource
+        ServerConfiguration config = server1.getServerConfiguration();
+        ConfigElementList<Fileset> fsConfig = config.getFilesets();
+        Log.info(this.getClass(), method, "retrieved fileset config " + fsConfig);
+        String sfDirOrig = null;
+
+        Fileset fs = null;
+        ListIterator<Fileset> lItr = fsConfig.listIterator();
+        while (lItr.hasNext()) {
+            fs = lItr.next();
+            Log.info(this.getClass(), method, "retrieved fileset " + fs);
+            sfDirOrig = fs.getDir();
+
+            Log.info(this.getClass(), method, "retrieved Dir " + sfDirOrig);
+            fs.setDir(sfDirOrig + "2");
+        }
+
+        assertNotNull("Couldn't set test config", fs);
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        Log.info(this.getClass(), method, "Reset the config back the way it originally was");
+        fs.setDir(sfDirOrig);
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
+        assertNotNull("No warning message signifying failover", server1.waitForStringInLog("Have recovered from ResourceAllocationException"));
+    }
+
+    @Test
+    @ExpectedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+    @AllowedFFDC(value = { "java.sql.SQLNonTransientConnectionException",
+                           "javax.resource.ResourceException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+    public void datasourceChangeTest2() throws Exception {
+        final String method = "datasourceChangeTest2";
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
         // Start Server1
         FATUtils.startServers(server1);
         // Update the server configuration on the fly to force the invalidation of the DataSource
@@ -379,14 +349,14 @@ public class Simple2PCCloudTest extends FATServletClient {
             fs.setDir(sfDirOrig + "2");
         }
 
+        assertNotNull("Couldn't set test config", fs);
+
         server1.setMarkToEndOfLog();
         server1.updateServerConfiguration(config);
         server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
 
         Log.info(this.getClass(), method, "Reset the config back the way it originally was");
-        // Now reset the config back to the way it was
-        if (fs != null)
-            fs.setDir(sfDirOrig);
+        fs.setDir(sfDirOrig);
 
         server1.setMarkToEndOfLog();
         server1.updateServerConfiguration(config);
@@ -396,9 +366,92 @@ public class Simple2PCCloudTest extends FATServletClient {
         // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
         assertNotNull("No warning message signifying failover", server1.waitForStringInLog("Have recovered from ResourceAllocationException"));
 
-        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server1);
+        String id = "007";
 
-        // Lastly, clean up XA resource files
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+        try {
+            // We expect this to fail since it is gonna crash the server
+            runTest(server1, SERVLET_NAME, "setupRec" + id);
+        } catch (IOException e) {
+        }
+
+        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
+        server1.resetStarted();
+
+        // Now re-start cloud1
+        FATUtils.startServers(server1);
+
+        // Server appears to have started ok. Check for key string to see whether recovery has succeeded
+        server1.waitForStringInTrace("Performed recovery for cloud0011");
+
+        runTest(server1, SERVLET_NAME, "checkRec" + id);
+    }
+
+    @Test
+    @ExpectedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+    @AllowedFFDC(value = { "java.sql.SQLNonTransientConnectionException",
+                           "javax.resource.ResourceException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+    public void datasourceChangeTest3() throws Exception {
+        final String method = "datasourceChangeTest2";
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
+        // Start Server1
+        FATUtils.startServers(server1);
+        // Update the server configuration on the fly to force the invalidation of the DataSource
+        ServerConfiguration config = server1.getServerConfiguration();
+        ConfigElementList<Fileset> fsConfig = config.getFilesets();
+        Log.info(this.getClass(), method, "retrieved fileset config " + fsConfig);
+        String sfDirOrig = null;
+
+        Fileset fs = null;
+        ListIterator<Fileset> lItr = fsConfig.listIterator();
+        while (lItr.hasNext()) {
+            fs = lItr.next();
+            Log.info(this.getClass(), method, "retrieved fileset " + fs);
+            sfDirOrig = fs.getDir();
+
+            Log.info(this.getClass(), method, "retrieved Dir " + sfDirOrig);
+            fs.setDir(sfDirOrig + "2");
+        }
+
+        assertNotNull("Couldn't set test config", fs);
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        Log.info(this.getClass(), method, "Reset the config back the way it originally was");
+
+        // Should see a message like
+        // WTRN0108I: Have recovered from ResourceAllocationException in SQL RecoveryLog partnerlog for server recovery.dblog
+        assertNotNull("No warning message signifying failover", server1.waitForStringInLog("Have recovered from ResourceAllocationException"));
+
+        String id = "007";
+
+        try {
+            // We expect this to fail since it is gonna crash the server
+            runTest(server1, SERVLET_NAME, "setupRec" + id);
+        } catch (IOException e) {
+        }
+
+        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
+        server1.resetStarted();
+
+        // Now re-start cloud1
+        FATUtils.startServers(server1);
+
+        // Server appears to have started ok. Check for key string to see whether recovery has succeeded
+        server1.waitForStringInTrace("Performed recovery for cloud0011");
+
+        runTest(server1, SERVLET_NAME, "checkRec" + id);
+
+        // Test has passed at this point
+
+        Log.info(this.getClass(), method, "Reset the config back the way it originally was");
+        fs.setDir(sfDirOrig);
+
+        server1.setMarkToEndOfLog();
+        server1.updateServerConfiguration(config);
+        server1.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
     }
 }

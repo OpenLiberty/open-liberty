@@ -49,7 +49,7 @@ tested.features:\
         pages-4.0,\
         servlet-6.1,\
         faces-4.1,\
-        beanvalidation-3.1
+        validation-3.1
 	
 fat.project: true
 

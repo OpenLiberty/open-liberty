@@ -91,14 +91,17 @@ public class FixManagerTest {
         Log.exiting(c, METHOD_NAME);
     }
 
-    @Test
-    public void testEmptyString() throws Exception {
-        server.startServer();
-        runTest(server, FEATURE_MANAGER_CONTEXT_ROOT, "emptyFixList");
-    }
+    /**
+     * This test is not able to run within IFix Builds as those will never be empty.
+     */
+//    @Test
+//    public void testEmptyString() throws Exception {
+//        server.startServer();
+//        runTest(server, FEATURE_MANAGER_CONTEXT_ROOT, "emptyFixList");
+//    }
 
     @Test
-    public void testSingleIFixOutput() throws Exception {
+    public void testSingleIFixAddedOutput() throws Exception {
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningInterimFixesTestBundle4_1.0.0.jar");
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningInterimFixesTestBundle4_1.0.0.20130101.jar");
         server.setServerConfigurationFile("singleInterimFixServer.xml");
@@ -108,7 +111,7 @@ public class FixManagerTest {
     }
 
     @Test
-    public void testMultiIFixOutput() throws Exception {
+    public void testMultiIFixAddedOutput() throws Exception {
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningInterimFixesTestBundle1_1.0.0.jar");
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningInterimFixesTestBundle1_1.0.0.20130101.jar");
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningInterimFixesTestBundle2_1.0.0.jar");
@@ -124,7 +127,7 @@ public class FixManagerTest {
     }
 
     @Test
-    public void testSingleTFixOutput() throws Exception {
+    public void testSingleTFixAddedOutput() throws Exception {
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.jar");
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.201204040001-TestAPAR0001.jar");
         server.setServerConfigurationFile("testFixesServer.xml");
@@ -134,7 +137,7 @@ public class FixManagerTest {
     }
 
     @Test
-    public void testMultipleTFixOutput() throws Exception {
+    public void testMultipleTFixAddedOutput() throws Exception {
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.jar");
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.201204040001-TestAPAR0001-TestAPAR0002.jar");
         server.setServerConfigurationFile("testFixesServer.xml");

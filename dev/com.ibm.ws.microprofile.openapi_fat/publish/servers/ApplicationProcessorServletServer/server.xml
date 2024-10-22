@@ -20,6 +20,7 @@
     <feature>ssl-1.0</feature>
     <feature>mpOpenAPI-1.0</feature>
     <feature>servlet-3.1</feature>
+    <feature>mpConfig-1.2</feature>
   </featureManager>
 
   <keyStore id="defaultKeyStore" password="password" />

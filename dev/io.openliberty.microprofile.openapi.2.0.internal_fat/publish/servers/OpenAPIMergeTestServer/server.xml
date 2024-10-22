@@ -15,9 +15,15 @@
   <include location="../fatTestPorts.xml" />
 
   <featureManager>
+    <feature>osgiConsole-1.0</feature>
     <feature>componenttest-1.0</feature>
     <feature>mpOpenAPI-2.0</feature>
+    <feature>mpConfig-2.0</feature>
     <feature>jaxrs-2.1</feature> <!-- EE feature to ensure we get the expected EE version -->
   </featureManager>
+  
+  <mpOpenAPI>​
+    <includeApp>none</includeApp>​ <!-- This will be ignored because beta is disabled. Remove it when we remove the beta guards -->
+  </mpOpenAPI>
 
 </server>

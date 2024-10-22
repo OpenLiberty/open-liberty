@@ -57,7 +57,7 @@ public class FATSuite {
     // If we are running on Java 11, have EE10 be the lite mode test to run.
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

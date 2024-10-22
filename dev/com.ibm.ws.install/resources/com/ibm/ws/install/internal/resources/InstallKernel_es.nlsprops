@@ -950,3 +950,19 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: El ID de clave p\u00fablica {0} no coin
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Es posible que la clave p\u00fablica haya cambiado. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Si la clave p\u00fablica es un archivo local, aseg\u00farese de proporcionar el archivo correcto.
 
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: No se ha podido encontrar la plataforma {0}.
+ERROR_MISSING_PLATFORM_NAME.explanation=No se ha encontrado el nombre de la plataforma especificado por la variable de configuraci\u00f3n o de entorno.
+ERROR_MISSING_PLATFORM_NAME.useraction=Compruebe la ortograf\u00eda del nombre de la plataforma y la versi\u00f3n, por ejemplo, microProfile-6.1.
+
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: No se pudo determinar la plataforma. No se pueden instalar las siguientes funciones sin versi\u00f3n: {0}.
+ERROR_NO_DERIVED_PLATFORM.explanation= La plataforma no estaba fijada o no pod\u00eda derivarse de las caracter\u00edsticas versionadas existentes. 
+ERROR_NO_DERIVED_PLATFORM.useraction=A\u00f1ade una plataforma para funciones sin versiones.
+
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: El comando installFeature no admite funciones sin versi\u00f3n.
+ERROR_VERSIONLESS_INSTALL.explanation= La funci\u00f3n que ha intentado instalar con el comando installFeature no tiene una versi\u00f3n especificada en el nombre de la funci\u00f3n.
+ERROR_VERSIONLESS_INSTALL.useraction=Utilice el comando installServerFeatures, que admite funciones sin versi\u00f3n, o instale una funci\u00f3n diferente que no sea sin versi\u00f3n.
+
+LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Instalaci\u00f3n utilizando las siguientes plataformas: {0}.
+LOG_INSTALL_WITH_PLATFORM.explanation=Las versiones de plataforma especificadas se utilizaron para resolver funciones sin versi\u00f3n.
+LOG_INSTALL_WITH_PLATFORM.useraction=No se requiere ninguna acci\u00f3n.
+

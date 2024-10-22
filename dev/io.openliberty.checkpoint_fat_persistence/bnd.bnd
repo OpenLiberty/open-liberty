@@ -17,13 +17,12 @@ src: \
 	fat/src,\
 	test-applications/db2fat/src,\
 	test-applications/jpafat/src,\
-	test-applications/sessionCacheApp/src
+	test-applications/sessionCacheApp/src,\
+	test-applications/jakartaDataApp/src
 
 fat.project: true
 
-
-
-fat.test.container.images: kyleaure/db2-ssl:3.0
+fat.test.container.images: kyleaure/db2-ssl:3.0,postgres:16.0-alpine
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
@@ -43,6 +42,11 @@ fat.test.container.images: kyleaure/db2-ssl:3.0
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2,\
 	com.ibm.websphere.javaee.jaxrs.2.1,\
-	com.ibm.websphere.javaee.transaction.1.2
+	com.ibm.websphere.javaee.transaction.1.2,\
+	io.openliberty.jakarta.data.1.0, \
+	io.openliberty.jakarta.persistence.3.1,\
+	io.openliberty.jakarta.cdi.4.0,\
+	io.openliberty.jakarta.restfulWS.3.0,\
+	org.postgresql:postgresql;version=42.7.2
 
 tested.features=checkpoint,jdbc-4.3,jdbc-4.2,jdbc-4.1

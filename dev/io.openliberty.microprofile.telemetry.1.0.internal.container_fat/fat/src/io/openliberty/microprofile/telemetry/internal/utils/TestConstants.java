@@ -47,6 +47,20 @@ public class TestConstants {
     public static final String ENV_OTEL_EXPORTER_ZIPKIN_ENDPOINT = "OTEL_EXPORTER_ZIPKIN_ENDPOINT";
 
     /**
+     * Environment variable to set the metrics exporter
+     */
+    public static final String ENV_OTEL_METRICS_EXPORTER = "OTEL_METRICS_EXPORTER";
+
+    /**
+     * Environment variable to set the logs exporter
+     */
+    public static final String ENV_OTEL_LOGS_EXPORTER = "OTEL_LOGS_EXPORTER";
+
+    /**
+     * Environment variable to set the time interval to send metrics to the exporter
+     */
+    public static final String ENV_OTEL_METRIC_EXPORT_INTERVAL = "OTEL_METRIC_EXPORT_INTERVAL";
+    /**
      * Environment variable to set the maximum time to wait before sending a batch of traces to the trace server
      */
     public static final String ENV_OTEL_BSP_SCHEDULE_DELAY = "OTEL_BSP_SCHEDULE_DELAY";
@@ -57,7 +71,12 @@ public class TestConstants {
     public static final String NULL_TRACE_ID = "00000000000000000000000000000000";
 
     /**
-     * Environment variable to enable TLS, defualts to false.
+     * Environment variable to change the OTLP protocol, defaults to http/protobuf for the Java Agent v2.0.0+ and was previously default to grpc
+     */
+    public static final String ENV_OTEL_EXPORTER_OTLP_PROTOCOL = "OTEL_EXPORTER_OTLP_PROTOCOL";
+
+    /**
+     * Environment variable to enable TLS, defaults to false.
      */
     public static final String ENV_COLLECTOR_OTLP_GRPC_TLS_ENABLED = "COLLECTOR_OTLP_GRPC_TLS_ENABLED";
 
@@ -85,6 +104,5 @@ public class TestConstants {
     public static final DockerImageName DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR = DockerImageName.parse("otel/opentelemetry-collector:0.74.0");
     public static final DockerImageName DOCKER_IMAGE_ALL_IN_ONE = DockerImageName.parse("jaegertracing/all-in-one:1.54");
     public static final DockerImageName DOCKER_IMAGE_ZIPKIN_SLIM = DockerImageName.parse("openzipkin/zipkin-slim:2.23");
-
 
 }

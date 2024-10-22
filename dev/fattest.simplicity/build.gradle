@@ -12,6 +12,29 @@
  *******************************************************************************/
 import org.apache.tools.ant.filters.ReplaceTokens
 
+configurations {
+	projectDependencies { transitive = false }
+}
+
+dependencies {
+	projectDependencies project(':com.ibm.websphere.javaee.jaxb.2.2'),
+	                    project(':com.ibm.websphere.javaee.jsonp.1.0'),
+	                    project(':com.ibm.ws.common.encoder'),
+	                    project(':com.ibm.ws.componenttest'),
+	                    project(':com.ibm.ws.jaxb.tools'),
+	                    project(':com.ibm.ws.junit.extensions'),
+	                    project(':com.ibm.ws.logging.core'),
+	                    project(':com.ibm.ws.org.glassfish.json'),
+	                    project(':com.ibm.ws.org.slf4j.api'),
+	                    project(':com.ibm.ws.org.slf4j.simple'),
+	                    project(':io.openliberty.com.fasterxml.jackson'),
+	                    project(':io.openliberty.org.apache.commons.logging'),
+	                    project(':io.openliberty.org.bouncycastle.bcpkix-jdk18on'),
+	                    project(':io.openliberty.org.bouncycastle.bcprov-jdk18on'),
+	                    project(':io.openliberty.org.bouncycastle.bcutil-jdk18on'),
+	                    project(':io.openliberty.org.testcontainers')	               
+}
+
 task assembleBootstrap(type: Copy) {
     inputs.property("javaHome", System.properties.('java.home').replace('\\', '\\\\').replace(':', '\\:'))
     def javaHome = System.properties.('java.home').replace('\\', '\\\\').replace(':', '\\:')
@@ -20,28 +43,43 @@ task assembleBootstrap(type: Copy) {
     filter(ReplaceTokens, tokens: [JAVA_HOME: javaHome])
 }
 
+task assembleBinaryDependencyJar(type:Copy) {
+	from jar
+	into new File(buildDir, 'lib')
+	include 'fattest.simplicity.jar'
+}
+
+task assembleBinaryDependencyProject(type:Copy) {
+	from configurations.projectDependencies
+	into new File(buildDir, 'lib')
+	rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
+}
+
+task assembleBinaryDependencyMaven(type:Copy) {
+	dependsOn ':cnf:copyMavenLibs'
+	from cnf.file('mavenlibs')
+	into new File(buildDir, 'lib')
+	include 'infra.buildtasks-core-7.0.2.jar'
+	include 'asm-all-5.2.jar'
+	include 'org.apache.aries.util-*.jar'
+	include 'osgi.core*.jar'
+	include 'jsch-*.jar'
+}
+
+task assembleBinaryDependencySource(type:Copy) {
+	from sourceSets.main.runtimeClasspath.findAll {
+		it.getAbsolutePath().contains('.m2') ||
+		it.getAbsolutePath().contains('.ibmartifactory') ||
+		it.getAbsolutePath().contains('.ibmdhe')
+	}
+	into new File(buildDir, 'lib')
+}
+
 task assembleBinaryDependencies() {
-    dependsOn ':com.ibm.ws.jaxb.tools:jar'
-    File buildDirLib = new File(buildDir, 'lib')
-    outputs.dir buildDirLib
-    doLast {
-        // Copy maven dependencies of this project into a directory that can be included by the junit
-        // task of every FAT bucket, effectively making all of fattest.simplicty's dependencies transitive
-        sourceSets.main.runtimeClasspath.each {
-            def path = it.getAbsolutePath()
-            if((path.contains('.m2') || path.contains('.ibmartifactory') || path.contains('.ibmdhe')) && 
-               !(new File(buildDirLib, it.getName()).exists())) {
-                copy {
-                    from path
-                    into buildDirLib
-                }
-            }
-        }
-        copy {
-            from new File(project(':com.ibm.ws.jaxb.tools').buildDir, 'com.ibm.ws.jaxb.tools.jar')
-            into buildDirLib
-        }
-    }
+	dependsOn assembleBinaryDependencySource
+	dependsOn assembleBinaryDependencyMaven
+	dependsOn assembleBinaryDependencyProject
+	dependsOn assembleBinaryDependencyJar
 }
 
 configurations {
@@ -83,11 +121,11 @@ task extractArquillianSupportJakartaFeature21(type:Sync) {
     }
 }
 
-jar {
+jar { // NOTE: this is called by fat.gradle:autoFVT
     dependsOn assembleBootstrap
-    dependsOn assembleBinaryDependencies
     dependsOn extractArquillianSupportFeature
     dependsOn extractArquillianSupportJakartaFeature21
+    finalizedBy assembleBinaryDependencies
 }
 
 task publishArquillianSupportFeature(type:Copy) {
@@ -99,4 +137,6 @@ task publishArquillianSupportFeature(type:Copy) {
     into(buildImage.file('wlp'))
 }
 
-assemble.dependsOn publishArquillianSupportFeature
+assemble {
+    dependsOn publishArquillianSupportFeature
+}

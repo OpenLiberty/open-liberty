@@ -12,7 +12,9 @@
  *******************************************************************************/
 
 configurations {
-  hibernate
+  hibernate {
+    transitive = false
+  }
 }
 
 dependencies {

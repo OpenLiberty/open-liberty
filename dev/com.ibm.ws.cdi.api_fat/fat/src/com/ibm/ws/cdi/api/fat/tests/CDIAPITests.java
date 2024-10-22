@@ -17,6 +17,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -46,6 +48,7 @@ import com.ibm.ws.cdi.api.fat.apps.injectInjectionPoint.InjectInjectionPointServ
 import com.ibm.ws.cdi.api.fat.apps.injectInjectionPointBeansXML.InjectInjectionPointBeansXMLServlet;
 import com.ibm.ws.cdi.api.fat.apps.injectInjectionPointParam.InjectInjectionPointAsParamServlet;
 import com.ibm.ws.cdi.api.fat.apps.injectInjectionPointXML.InjectInjectionPointXMLServlet;
+import com.ibm.ws.cdi.api.fat.apps.threads.extension.CDIExtension;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebBrowserFactory;
 import com.ibm.ws.fat.util.browser.WebResponse;
@@ -71,6 +74,7 @@ public class CDIAPITests extends FATServletClient {
     public static final String SERVER_NAME = "cdi12APIServer";
 
     public static final String CDI_CURRENT_APP_NAME = "cdiCurrentTest";
+    public static final String CDI_CURRENT_THREADS_APP_NAME = "cdiCurrentThreadsTest";
     public static final String ALTERABLE_CONTEXT_APP_NAME = "alterableContextsApp";
     public static final String CONVERSATION_FILTER_APP_NAME = "appConversationFilter";
     public static final String INJECT_IP_AS_PARAM_APP_NAME = "injectInjectionPointAsParam";
@@ -172,6 +176,45 @@ public class CDIAPITests extends FATServletClient {
         response = browser.request(HttpUtils.createURL(server, "/appConversationFilter/test?op=status&cid=" + cid).toString());
         String status = response.getResponseBody();
         assertEquals("Wrong status", Boolean.FALSE.toString(), status);
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testCDICurrentInUnmanagedThreadsAndTCCLMatching() throws Exception {
+
+        List<String> messages = new ArrayList<String>();
+        messages.add("found beanmanager in ProcessAnnotatedType : true");
+        messages.add("found beanmanager in BeforeBeanDiscovery : true");
+        messages.add("found beanmanager in ProcessInjectionTarget : true");
+        messages.add("found beanmanager in ProcessBeanAttributes : true");
+        messages.add("found beanmanager in ProcessBean : true");
+        messages.add("found beanmanager in ProcessManagedBean : true");
+        messages.add("found beanmanager in ProcessInjectionPoint : true");
+        messages.add("found beanmanager in AfterTypeDiscovery : true");
+        messages.add("found beanmanager in AfterBeanDiscovery : true");
+        messages.add("found beanmanager in AfterDeploymentValidation : true");
+
+        messages.add("Found the correct classloader in ProcessAnnotatedType");
+        messages.add("Found the correct classloader in BeforeBeanDiscovery");
+        messages.add("Found the correct classloader in ProcessInjectionTarget");
+        messages.add("Found the correct classloader in ProcessBeanAttributes");
+        messages.add("Found the correct classloader in ProcessBean");
+        messages.add("Found the correct classloader in ProcessManagedBean");
+        messages.add("Found the correct classloader in ProcessInjectionPoint");
+        messages.add("Found the correct classloader in AfterTypeDiscovery");
+        messages.add("Found the correct classloader in AfterBeanDiscovery");
+        messages.add("Found the correct classloader in AfterDeploymentValidation");
+
+        server.setMarkToEndOfLog();
+
+        WebArchive cdiCurrentTheads = ShrinkWrap.create(WebArchive.class, CDI_CURRENT_THREADS_APP_NAME + ".war")
+                                                .addPackage(CDIExtension.class.getPackage());
+        cdiCurrentTheads.addAsManifestResource(CDIExtension.class.getPackage(), "permissions.xml", "permissions.xml");
+        CDIArchiveHelper.addCDIExtensionFile(cdiCurrentTheads, CDIExtension.class.getPackage());
+        ShrinkHelper.exportToServer(server, "dropins", cdiCurrentTheads, DeployOptions.SERVER_ONLY);
+        server.waitForStringsInLogUsingMark(messages);
+
+        server.getApplicationMBean(CDI_CURRENT_THREADS_APP_NAME).stop();
     }
 
     @Test

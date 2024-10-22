@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,10 +25,10 @@ import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
 
 /**
  *
@@ -69,7 +69,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
         }
     }
 
-    private void validateParameters(ValidationHelper helper, Context context, String pathStr, PathItem pathItem) {
+    public void validateParameters(ValidationHelper helper, Context context, String pathStr, PathItem pathItem) {
         Set<String> definedSharedPathParameters = new HashSet<>(), definedSharedQueryParameters = new HashSet<>(),
                         definedSharedHeaderParameters = new HashSet<>(),
                         definedSharedCookieParameters = new HashSet<>();
@@ -80,9 +80,9 @@ public class PathItemValidator extends TypeValidator<PathItem> {
                 Parameter parameter = param;
                 String reference = parameter.getRef();
                 if (reference != null && !reference.isEmpty()) {
-                    Object componentItem = ReferenceValidator.getInstance().validate(helper, context, null, reference);
-                    if (parameter.getClass().isInstance(componentItem)) {
-                        parameter = (Parameter) componentItem;
+                    Parameter referencedParameter = helper.validateReference(context, null, reference, Parameter.class);
+                    if (referencedParameter != null) {
+                        parameter = referencedParameter;
                     }
                 }
 
@@ -144,9 +144,9 @@ public class PathItemValidator extends TypeValidator<PathItem> {
                     String reference = parameter.getRef();
 
                     if (reference != null && !reference.isEmpty()) {
-                        Object componentItem = ReferenceValidator.getInstance().validate(helper, context, null, reference);
-                        if (parameter.getClass().isInstance(componentItem)) {
-                            parameter = (Parameter) componentItem;
+                        Parameter referencedParameter = helper.validateReference(context, null, reference, Parameter.class);
+                        if (referencedParameter != null) {
+                            parameter = referencedParameter;
                         }
                     }
 

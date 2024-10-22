@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -41,7 +38,12 @@ tested.features: \
   servlet-6.0,\
   mphealth-3.0,\
   mphealth-3.1,\
-  mpConfig-1.4
+  mpConfig-1.4,\
+  mpconfig-3.1,\
+  expressionlanguage-6.0,\
+  appsecurity-6.0,\
+  cdi-4.1,\
+  servlet-6.1
   
 
 -buildpath: \

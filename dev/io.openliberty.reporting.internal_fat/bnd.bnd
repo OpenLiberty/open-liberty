@@ -15,6 +15,9 @@ src: \
 		
 fat.project: true
 
+tested.features: \
+	checkpoint
+
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	org.hamcrest:hamcrest-all;version='1.3',\

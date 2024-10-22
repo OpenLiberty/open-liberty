@@ -774,6 +774,14 @@ warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Ocorreu um tempo limite
 warning.timeoutWaitingForServerProcessToStop.explanation=O servidor n\u00e3o parou no tempo permitido pelo valor de tempo limite. Isso pode ser devido a um encerramento lento do servidor ou uma interrup\u00e7\u00e3o do servidor.   
 warning.timeoutWaitingForServerProcessToStop.useraction=Se o servidor ainda estiver em execu\u00e7\u00e3o, considere aumentar o valor de tempo limite para o comando 'server stop'. Em sistemas UNIX-like, o comando de parada do servidor aguarda o processo do servidor parar. No Windows, o comando espera obter um bloqueio no arquivo console.log . Use as ferramentas de monitoramento de arquivo para verificar se outro programa, como um editor, bloqueou o arquivo console.log
 
+warning.manual.PPV.env.var=CWWKE0969W: Uma vari\u00e1vel de ambiente manual PREFERRED_PLATFORM_VERSION foi especificada durante o pacote do servidor.
+warning.manual.PPV.env.var.explanation=Uma vari\u00e1vel de ambiente PREFERRED_PLATFORM_VERSION manual foi configurada no ambiente mas n\u00e3o ser\u00e1 inclu\u00edda no pacote do servidor.
+warning.manual.PPV.env.var.useraction=Para reter a vari\u00e1vel de ambiente PREFERRED_PLATFORM_VERSION, especifique-a no arquivo de configura\u00e7\u00e3o server.env .
+
+error.read.server.env=CWWKE0970E: N\u00e3o \u00e9 poss\u00edvel ler o arquivo server.env no local {}.
+error.read.server.env.explanation=Falha ao ler o arquivo server.env
+error.read.server.env.useraction=N\u00e3o \u00e9 poss\u00edvel ler o arquivo server.env  Verifique as permiss\u00f5es de arquivo e tente novamente a opera\u00e7\u00e3o
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi iniciado com o ID de processo {1}.

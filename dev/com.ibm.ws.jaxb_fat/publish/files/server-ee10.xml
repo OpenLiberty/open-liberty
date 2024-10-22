@@ -1,0 +1,10 @@
+
+<server>
+    <featureManager>
+        <feature>webprofile-10.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    <webApplication name="thirdPartyJaxbApp" location="thirdPartyJaxbApp.war" context-root="thirdPartyJaxbApp">
+    </webApplication>
+    <include location="../fatTestPorts.xml"/>
+</server>

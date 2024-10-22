@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -27,6 +28,7 @@ import componenttest.topology.utils.FATServletClient;
 import jaxrs21sse.clientbehavior.SseClientBehaviorTestServlet;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE11_FEATURES) // Behavior change EE11 so change servlet or create new 4.0 tests
 public class SseClientBehaviorTest extends FATServletClient {
 
     static final String appName = "SseClientBehaviorApp";

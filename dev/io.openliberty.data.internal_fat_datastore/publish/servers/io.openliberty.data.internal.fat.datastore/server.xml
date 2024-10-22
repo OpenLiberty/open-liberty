@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2023 IBM Corporation and others.
+    Copyright (c) 2023,2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -15,20 +15,40 @@
   <featureManager>
     <feature>componenttest-2.0</feature>
     <feature>data-1.0</feature>
+    <feature>enterpriseBeans-4.0</feature>
     <feature>jndi-1.0</feature>
-    <feature>persistence-3.1</feature>
-    <feature>servlet-6.0</feature>
+    <feature>persistence-3.2</feature>
+    <feature>servlet-6.1</feature>
+    <feature>localConnector-1.0</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
+
+  <data>
+    <logValues>test.jakarta.data.datastore.ejb</logValues>
+    <logValues>test.jakarta.data.datastore.global.lib.GlobalLibRepo</logValues>
+    <logValues>test.jakarta.data.datastore.lib</logValues>
+    <logValues>test.jakarta.data.datastore.web</logValues>
+    <logValues>test.jakarta.data.datastore.web2</logValues>
+    <logValues>test.jakarta.data.datastore.webapp</logValues>
+  </data>
 
   <application location="DataStoreTestApp.ear">
     <classloader commonLibraryRef="DerbyLib"/>
   </application>
 
+  <application location="DataStoreWebApp.war">
+    <!-- implicitly has access to libraries in lib/global -->
+  </application>
+
   <library id="DerbyLib">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
   </library>
+
+  <authData id="ResRefAuth1" user="resrefuser1" password="resrefpwd1"/> <!-- for web module 1 -->
+  <authData id="ResRefAuth2" user="resrefuser2" password="resrefpwd2"/> <!-- for web module 2 -->
+  <authData id="ResRefAuth3" user="resrefuser3" password="resrefpwd3"/> <!-- for EJB -->
+  <authData id="ResRefAuth4" user="resrefuser4" password="resrefpwd4"/> <!-- for global library -->
 
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyLib"/>

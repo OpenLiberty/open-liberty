@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import org.eclipse.microprofile.openapi.models.OpenAPI;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,11 +27,13 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.microprofile.openapi.fat.FATSuite;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
+import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -280,43 +282,43 @@ public class OpenAPIConfigTest {
 
         // Default HTTP protocol port with different host and matching docPath returns
         // single server entry
-        OpenAPI model = new OpenAPIConnection(server, "/foo").header("Referer", "http://testurl1/foo").downloadModel();
-        assertThat(model.getServers(), Matchers.hasSize(1));
+        String model = new OpenAPIConnection(server, "/foo").header("Referer", "http://testurl1/foo").download();
+        assertThat(getServerUrls(model), Matchers.hasSize(1));
         // check that the server hostname has changed to supplied value
         assertThat("Check that the servers entry use the host from the referer header",
-            model.getServers().get(0).getUrl(), Matchers.containsString("http://testurl1/" + APP_NAME));
+            getServerUrls(model).get(0), Matchers.containsString("http://testurl1/" + APP_NAME));
 
         // Default HTTPS protocol port with matching uiPath returns single server entry
-        model = new OpenAPIConnection(server, "/foo").header("Referer", "https://testurl2/bar").downloadModel();
-        assertThat(model.getServers(), Matchers.hasSize(1));
+        model = new OpenAPIConnection(server, "/foo").header("Referer", "https://testurl2/bar").download();
+        assertThat(getServerUrls(model), Matchers.hasSize(1));
         ;
         // check that the host name has changed and has maintained HTTPS protocol
         assertThat("Check that the servers entry use the host from the referer header",
-            model.getServers().get(0).getUrl(),
+            getServerUrls(model).get(0),
             Matchers.containsString("https://testurl2/" + APP_NAME));
 
         // If the referer path does not match either UI or Doc endpoints that the
         // original hostname is used when config is not default
         model = new OpenAPIConnection(server, "/foo")
-            .header("Referer", "http://testurl3:" + server.getHttpDefaultPort() + "/random/").downloadModel();
+            .header("Referer", "http://testurl3:" + server.getHttpDefaultPort() + "/random/").download();
         System.out.println(model.toString());
         // Path mismatch, should revert to server host and server http port
         // Only a single server should be returned as HTTPS is disabled
-        assertThat(model.getServers(), Matchers.hasSize(1));
+        assertThat(getServerUrls(model), Matchers.hasSize(1));
         ;
         // Server in String should correspond to the Request URL
-        assertThat("Check host reverts to the requestUrl host", model.getServers().get(0).getUrl(),
+        assertThat("Check host reverts to the requestUrl host", getServerUrls(model).get(0),
             Matchers
                 .containsString("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME));
 
         // Path does not match either doc or ui paths, but does end in `/ui`, so server
         // entries should revert to default host
-        model = new OpenAPIConnection(server, "/foo").header("Referer", "http://testurl4/random/ui").downloadModel();
+        model = new OpenAPIConnection(server, "/foo").header("Referer", "http://testurl4/random/ui").download();
         System.out.println(model.toString());
         // Only a single server should be returned as HTTPS is disabled
-        assertThat(model.getServers(), Matchers.hasSize(1));
+        assertThat(getServerUrls(model), Matchers.hasSize(1));
         // Server in should correspond to the Request URL
-        assertThat("Check host reverts to the requestUrl host", model.getServers().get(0).getUrl(),
+        assertThat("Check host reverts to the requestUrl host", getServerUrls(model).get(0),
             Matchers
                 .containsString("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME));
     }
@@ -467,8 +469,9 @@ public class OpenAPIConfigTest {
     private void assertDocumentPath(String path) throws Exception {
         // Check that it parses as a model and contains the expected path from the test
         // app
-        OpenAPI model = new OpenAPIConnection(server, path).downloadModel();
-        MatcherAssert.assertThat(model.getPaths(), Matchers.hasKey("/configTestPath"));
+        String doc = new OpenAPIConnection(server, path).download();
+        JsonNode model = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(model, 1, "/configTestPath");
     }
 
     /**
@@ -481,6 +484,24 @@ public class OpenAPIConfigTest {
         OpenAPIConnection connection = new OpenAPIConnection(server, path);
         connection.expectedResponseCode(404);
         connection.download();
+    }
+
+    private List<String> getServerUrls(String openapiYaml) {
+        JsonNode node = OpenAPITestUtil.readYamlTree(openapiYaml);
+        JsonNode servers = node.get("servers");
+        if (!servers.isArray()) {
+            return Collections.emptyList();
+        }
+
+        ArrayList<String> result = new ArrayList<>();
+        for (JsonNode server : servers) {
+            String url = server.get("url").asText(null);
+            if (url != null) {
+                result.add(url);
+            }
+        }
+
+        return result;
     }
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2022, 2023 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2022, 2024 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which accompanies this distribution, 
     and is available at 
@@ -21,8 +21,8 @@
 
     <properties>
         <jakarta.concurrent.tck.groupid>jakarta.enterprise.concurrent</jakarta.concurrent.tck.groupid>
-        <jakarta.concurrent.tck.version>3.1.0-SNAPSHOT</jakarta.concurrent.tck.version>
-        <jakarta.concurrent.version>3.1.0</jakarta.concurrent.version>
+        <jakarta.concurrent.tck.version>3.1.1-SNAPSHOT</jakarta.concurrent.tck.version>
+        <jakarta.concurrent.version>3.1.1</jakarta.concurrent.version>
         
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
         <arquillian.liberty.managed>2.1.3</arquillian.liberty.managed>
@@ -180,6 +180,7 @@
                         <tck_port>${tck_port}</tck_port>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                         <java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
+                        <jimage.dir>${jimage.dir}</jimage.dir>
                     </systemPropertyVariables>
                     <groups>${jakarta.tck.platform}</groups> <!-- Groups to include i.e. web/full -->
                     <reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>

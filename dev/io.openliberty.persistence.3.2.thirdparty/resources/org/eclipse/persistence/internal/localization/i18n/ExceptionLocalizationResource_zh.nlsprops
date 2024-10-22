@@ -47,6 +47,8 @@ NULL_PARAMETER_PASSED_TO_SET_PARAMETER=\u4f20\u9012\u81f3\u201csetParameter\u201
 
 PARAMETER_NILL_NOT_FOUND=\u4f20\u9012\u81f3 getParameterValue() \u7684\u53c2\u6570\u4e3a null
 
+RIGHT_JOIN_NOT_SUPPORTED=\u4e0d\u652f\u6301\u53f3\u8fde\u63a5
+
 add_attribute_key_was_null=\u5bf9\u5c5e\u6027\u7c7b\u578b\u7684\u5b50\u7c7b\u6307\u5b9a AttributeGroup \u65f6\uff0c\u7c7b\u578b\u53c2\ufffd\ufffd\u4e0d\u5f97\u4e3a null
 
 argument_collection_was_null=\u53c2\u6570\u96c6\u5408\u4e3a null
@@ -99,9 +101,19 @@ cant_persist_detatched_object=\u65e0\u6cd5\u4fdd\u5b58\u5df2\u62c6\u79bb\u5bf9\u
 
 cant_refresh_not_managed_object=\u65e0\u6cd5\u5237\u65b0\u975e\u53d7\u7ba1\u5bf9\u8c61\uff1a{0}\u3002
 
+configured_pu_name_conflict=\u65e0\u6cd5\u521b\u5efa\u540d\u4e3a {0}\u7684\u5df2\u914d\u7f6e\u6301\u4e45\u6027\u5355\u5143\u3002 \u5728\u5b9a\u5236\u6301\u4e45\u6027\u5355\u5143\u4e2d\u627e\u5230\u4e86\u6b64\u540d\u79f0\u3002
+
 create_insertion_failed=\u521b\u5efa\u63d2\u5165\u5931\u8d25\u3002
 
 criteria_no_constructor_found=\u901a\u8fc7\u5c06\u9009\u62e9\u6807\u51c6\u7c7b\u578b\u7528\u4f5c\u81ea\u53d8\u91cf\u6765\u4e3a\u6784\u9020\u51fd\u6570\u68c0\u67e5\u7c7b {0} \u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002\u5982\u679c\u6b64 CriteriaQuery \u4e0d\u4f1a\u6210\u4e3a\u6784\u9020\u51fd\u6570\u67e5\u8be2\uff0c\u8bf7\u9a8c\u8bc1\u67e5\u8be2\u662f\u5426\u4e0e\u8fd4\u56de\u7c7b\u578b\u5339\u914d\u3002
+
+custom_pu_create_error=\u65e0\u6cd5\u521b\u5efa\u540d\u4e3a {0}\u7684\u5b9a\u5236\u6301\u4e45\u6027\u5355\u5143\u3002
+
+custom_pu_create_error_no_caller=\u65e0\u6cd5\u521b\u5efa\u540d\u79f0\u4e3a {0}\u7684\u5b9a\u5236\u6301\u4e45\u6027\u5355\u5143\u3002 \u5728\u5806\u6808\u4e2d\u627e\u4e0d\u5230\u8c03\u7528\u8005\u65b9\u6cd5\u3002
+
+custom_pu_create_error_no_caller_class_url=\u65e0\u6cd5\u521b\u5efa\u540d\u79f0\u4e3a {0}\u7684\u5b9a\u5236\u6301\u4e45\u6027\u5355\u5143\u3002 \u627e\u4e0d\u5230\u8c03\u7528\u8005\u7c7b {1} URL\u3002
+
+custom_pu_name_conflict=\u65e0\u6cd5\u521b\u5efa\u540d\u4e3a {0}\u7684\u5b9a\u5236\u6301\u4e45\u6027\u5355\u5143\u3002 \u5728 xml \u914d\u7f6e\u4e2d\u627e\u5230\u4e86\u6b64\u540d\u79f0\u3002
 
 directory_not_exist=\u76ee\u5f55 {0} \u4e0d\u5b58\u5728\u3002
 
@@ -124,6 +136,8 @@ ejb30-wrong-type-for-query-hint=\u67e5\u8be2 {0} \u67e5\u8be2\u63d0\u793a {1} \u
 entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager \u5c5e\u6027\u51b2\u7a81\uff1ajakarta.persistence.driver \u548c/\u6216 jakarta.persistence.url \u9700\u8981 DefaultConnector\uff0c\u4f46\u6301\u4e45\u6027\u5355\u5143\u4f7f\u7528\u5916\u90e8\u4e8b\u52a1\u63a7\u5236\u5668\uff0c\u56e0\u6b64\u9700\u8981 JNDIConnector\u3002
 
 entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager \u5c5e\u6027\u51b2\u7a81\uff1ajakarta.persistence.driver \u548c/\u6216 jakarta.persistence.url \u9700\u8981 DefaultConnector\uff0c\u4f46 jakarta.persistence.jtaDataSource \u548c/\u6216 jakarta.persistence.nonjtaDataSource \u9700\u8981 JNDIConnector\u3002
+
+entity_manager_with_connection_failed=\u7528\u6237\u4ee3\u7801\u5931\u8d25\uff0c\u53d1\u751f\u9519\u8bef: {0}
 
 entity_no_longer_exists_in_db=\u5b9e\u4f53\u5728\u6570\u636e\u5e93 {0} \u4e2d\u4e0d\u5b58\u5728\u3002
 
@@ -148,6 +162,8 @@ error_unmarshalling_return=\u5bf9\u8fd4\u56de\u5185\u5bb9\u53d6\u6d88\u7f16\u7ec
 file_exists=\u6587\u4ef6 {0} \u5df2\u5b58\u5728\u3002
 
 file_not_exist=\u6587\u4ef6 {0} \u4e0d\u5b58\u5728\u3002
+
+find_option_class_unknown=\u4e0d\u652f\u6301\u5b9e\u73b0 {0} \u7c7b\u7684 FindOption
 
 finder_query_failed=\u67e5\u627e\u7a0b\u5e8f\u67e5\u8be2\u5931\u8d25\uff1a
 
@@ -207,9 +223,9 @@ jmx_enabled_platform_mbean_runtime_exception=\u5bf9\u5c55\u793a EclipseLink \u4f
 
 join_trans_called_on_entity_trans=\u5bf9\u8d44\u6e90\u672c\u5730 EntityManager \u8c03\u7528\u4e86 joinTransaction\uff0c\u8be5 EntityManager \u65e0\u6cd5\u9488\u5bf9 JTA \u4e8b\u52a1\u8fdb\u884c\u6ce8\u518c\u3002
 
-jpa21-ddl-create-script-target-not-specified=\u4e3a\u811a\u672c\u751f\u6210 DDL \u65f6\uff0c\u5fc5\u987b\u4f7f\u7528 [jakarta.persistence.schema-generation.scripts.create-target] \u5c5e\u6027\u6307\u5b9a\u521b\u5efa\u811a\u672c\u76ee\u6807\u3002
+jpa21-ddl-create-script-target-not-specified=\u751f\u6210\u811a\u672c DDL \u65f6\uff0c\u5fc5\u987b\u4f7f\u7528 [{0}] \u5c5e\u6027\u6307\u5b9a\u521b\u5efa\u811a\u672c\u76ee\u6807\u3002
 
-jpa21-ddl-drop-script-target-not-specified=\u4e3a\u811a\u672c\u751f\u6210 DDL \u65f6\uff0c\u5fc5\u987b\u4f7f\u7528 [jakarta.persistence.schema-generation.scripts.drop-target] \u5c5e\u6027\u6307\u5b9a\u5220\u9664\u811a\u672c\u76ee\u6807\u3002
+jpa21-ddl-drop-script-target-not-specified=\u751f\u6210\u811a\u672c DDL \u65f6\uff0c\u5fc5\u987b\u4f7f\u7528 [{0}] \u5c5e\u6027\u6307\u5b9a\u5220\u9664\u811a\u672c\u76ee\u6807\u3002
 
 jpa21-ddl-invalid-source-script-type=\u6240\u63d0\u4f9b\u7684\u6e90\u811a\u672c {0} \u5c5e\u4e8e\u65e0\u6548\u7c7b\u578b {0}\u3002\u6709\u6548\u6e90\u811a\u672c\u7c7b\u578b\u4e3a java.io.Reader \u6216\u7528\u4e8e\u6307\u5b9a\u6587\u4ef6 URL \u7684\u5b57\u7b26\u4e32\u3002
 
@@ -253,6 +269,12 @@ jpa_helper_invalid_read_all_query=\u7c7b\u578b\u4e3a {0} \u7684\u67e5\u8be2\u4e0
 
 jpa_helper_invalid_report_query=\u7c7b\u578b\u4e3a {0} \u7684\u67e5\u8be2\u4e0d\u662f EclipseLink \u62a5\u544a\u67e5\u8be2\uff0c\u56e0\u6b64\u65e0\u6cd5\u8f6c\u6362\u3002
 
+jpa_non_persistent_class=[{0}] \u7c7b\u4e0d\u662f\u6301\u4e45\u7c7b\u3002
+
+jpa_persistence_util_get_version_no_version_in_class=PersistenceUtil.getVersion(entity) \u662f\u4f7f\u7528 [{0}] \u5bf9\u8c61\u8c03\u7528\u7684\uff0c\u8be5\u5bf9\u8c61\u6ca1\u6709\u7248\u672c\u5c5e\u6027\u3002
+
+jpa_persistence_util_get_version_non_persistent_class=PersistenceUtil.getVersion(entity) \u662f\u4f7f\u7528 [{0}] \u5bf9\u8c61\u8c03\u7528\u7684\uff0c\u8be5\u5bf9\u8c61\u4e0d\u662f\u6301\u4e45\u5bf9\u8c61\u3002
+
 jpa_persistence_util_non_persistent_class=\u8c03\u7528 PersistenceUtil.getIdentifier(entity) \u65f6\u6307\u5b9a\u7684\u5bf9\u8c61 [{0}] \u4e0d\u662f\u6301\u4e45\u5bf9\u8c61\u3002
 
 json_ora21c_jsonvalue_to_oraclevalue=\u65e0\u6cd5\u5c06 JsonValue \u8f6c\u6362\u4e3a OracleJsonValue\u3002
@@ -268,6 +290,8 @@ json_pgsql_pgobject_conversion=\u6570\u636e\u5e93 PGobject \u8f6c\u6362\u5931\u8
 json_pgsql_unknown_type=\u4ece\u6570\u636e\u5e93\u8fd4\u56de\u4e86\u672a\u77e5\u7684 JSON \u7c7b\u578b\u3002
 
 lock_called_without_version_locking=\u5bf9 entityManager.lock(Object entity, LockModeType lockMode) \u7684\u8c03\u7528\u9700\u8981\u542f\u7528\u7248\u672c\u9501\u5b9a\u3002
+
+lock_option_class_unknown=\u4e0d\u652f\u6301 LockOption \u5b9e\u73b0\u7c7b {0}
 
 managed_component_not_found=EntityGraph {0} \u4e2d\u5217\u793a\u7684\u5c5e\u6027 {1} \u5f15\u7528\u4e86\u540d\u4e3a {2} \u7684\u5b50\u56fe\uff0c\u4f46\u627e\u4e0d\u5230\u8be5\u5b50\u56fe\u3002
 
@@ -320,6 +344,8 @@ no_entities_retrieved_for_get_reference=\ufffd\ufffd\ufffd\u4e0d\u5230\u5bf9\u5e
 no_entities_retrieved_for_get_single_result=getSingleResult() \u672a\u68c0\u7d22\u4efb\u4f55\u5b9e\u4f53\u3002
 
 no_entity_graph_of_name=\u6ca1\u6709\u4efb\u4f55\u540d\u79f0\u4e3a {0} \u7684 EntityGraph
+
+no_key_in_entity=\u65e0\u6cd5\u5c06 {0} \u7684\u8fde\u63a5\u6dfb\u52a0\u5230 {1} \uff0c\u56e0\u4e3a\u76ee\u6807\u7c7b\u7f3a\u5c11\u6e90\u7c7b\u578b\u7684\u5c5e\u6027
 
 not_an_entity=\u5bf9\u8c61 {0} \u4e0d\u662f\u5df2\u77e5\u5b9e\u4f53\u7c7b\u578b\u3002
 
@@ -375,9 +401,23 @@ position_param_not_found=\u4f4d\u7f6e {0} \u6ca1\u6709\u53c2\u6570\u3002
 
 pu_configured_for_resource_local=\u65e0\u6cd5\u521b\u5efa\u5e26\u6709 SynchronizationType \u7684 EntityManager\uff0c\u56e0\u4e3a PersistenceUnit \u662f\u4f7f\u7528\u8d44\u6e90\u672c\u5730\u4e8b\u52a1\u914d\u7f6e\u7684\u3002
 
+refresh_option_class_unknown=\u4e0d\u652f\u6301\u5b9e\u73b0\u7c7b {0} \u7684 RefreshOption
+
 remove_deletion_failed=Remove deletion failed:
 
 rollback_because_of_rollback_only=\u4e8b\u52a1\u201c\u5df2\u56de\u6eda\u201d\uff0c\u56e0\u4e3a\u4e8b\u52a1\u8bbe\u7f6e\u4e3a RollbackOnly\u3002
+
+schema_validation=\u6a21\u5f0f\u9a8c\u8bc1
+
+schema_validation_failed=\u6a21\u5f0f\u9a8c\u8bc1\u5931\u8d25
+
+schema_validation_missing_table=\u5728\u6a21\u5f0f\u4e2d\u627e\u4e0d\u5230 {0} \u8868 vas
+
+schema_validation_table_different_columns={0} \u8868\u5728\u6a21\u5f0f\u4e2d\u5177\u6709\u4e0d\u540c\u7684\u5217
+
+schema_validation_table_missing_columns={0} \u8868\u5728\u6a21\u5f0f\u4e2d\u7f3a\u5c11\u5217
+
+schema_validation_table_surplus_columns={0} \u8868\u5728\u6a21\u5f0f\u4e2d\u5177\u6709\u591a\u4f59\u7684\u5217
 
 sdo_helper_invalid_changesummary=\u6240\u63d0\u4f9b ChangeSummary [{0}] \u4e0d\u662f EclipseLink SDOChangeSummary\uff0c\u56e0\u6b64\u65e0\u6cd5\u8f6c\u6362\u3002
 
@@ -434,6 +474,10 @@ sdo_helper_invalid_xsdhelper=\u6240\u63d0\u4f9b XSDHelper [{0}] \u4e0d\u662f Ecl
 subclass_sought_not_a_managed_type=\u5bfb\u6c42\u7684\u5b50\u56fe\u7c7b\u578b {0} \u4e0d\u662f\u4ee5\u4e0b\u5c5e\u6027\u7684\u53d7\u7ba1\u7c7b\u578b\uff1a{1}\u3002
 
 too_many_results_for_get_single_result=\u4ece Query.getSingleResult() \u8fd4\u56de\u4e86\u591a\u4e2a\u7ed3\u679c
+
+truncate_tables_failed=\u8868\u622a\u65ad\u5931\u8d25
+
+typed_query_reference_is_null=\u5bf9\u547d\u540d\u67e5\u8be2\u7684\u5f15\u7528\u4e3a\u7a7a
 
 unable_to_find_named_query=\u627e\u4e0d\u5230\u540d\u79f0\u4e3a {0} \u7684 NamedQuery\u3002
 

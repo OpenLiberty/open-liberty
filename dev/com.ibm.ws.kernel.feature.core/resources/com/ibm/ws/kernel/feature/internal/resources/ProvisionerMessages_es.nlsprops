@@ -225,19 +225,50 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: La configuraci\u00f3n incluye u
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=La configuraci\u00f3n incluye una combinaci\u00f3n incompatible de caracter\u00edsticas. Para evitar un comportamiento no v\u00e1lido, el gestor de caracter\u00edsticas ha inhabilitado todas las caracter\u00edsticas.
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Especifique una versi\u00f3n diferente de las caracter\u00edsticas configuradas que han causado el conflicto.
 
-# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlaformCommonToProgModels
+# CWWK0047E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlatformCommonToProgModels
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: Las caracter\u00edsticas {2} y {3} no se pueden cargar al mismo tiempo. La caracter\u00edstica {2} de {0} es incompatible con la caracter\u00edstica {3} de {1}. La configuraci\u00f3n incluye una combinaci\u00f3n incompatible de {6} caracter\u00edsticas que no se soporta.  Las caracter\u00edsticas configuradas {4} y {5} incluyen una combinaci\u00f3n incompatible de caracter\u00edsticas. No se soporta la configuraci\u00f3n.  Actualice la configuraci\u00f3n para utilizar versiones compatibles de las caracter\u00edsticas configuradas que soportan los modelos de programaci\u00f3n {0} o {1}.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=La configuraci\u00f3n de servidor contiene una combinaci\u00f3n incompatible de caracter\u00edsticas para los modelos de programaci\u00f3n indicados.  Este conflicto se puede producir si se configuran directamente las dos caracter\u00edsticas incompatibles en la configuraci\u00f3n de servidor o si las caracter\u00edsticas configuradas incluyen versiones diferentes de una caracter\u00edstica que son incompatibles.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Intente especificar una versi\u00f3n compatible de las caracter\u00edsticas configuradas que han provocado el conflicto en el archivo server.xml.  Si no hay disponible ninguna otra versi\u00f3n, las caracter\u00edsticas configuradas no son compatibles entre s\u00ed y no se pueden configurar a la vez.
 
-UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: No se ha podido encontrar un valor para la variable de entorno PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Tiene caracter\u00edsticas sin versi\u00f3n en la configuraci\u00f3n y no se ha podido encontrar la variable de entorno PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Compruebe que la variable de entorno, PREFERRED_FEATURE_VERSIONS, existe y se ha escrito correctamente.
+# CWWKF0048E  {0} = the unknown platform value in the environment variable
+UNKNOWN_PLATFORM_VALUE_ENV_VAR=CWWKF0048E: El {0} El valor de la variable de entorno de plataforma PREFERRED_PLATFORM_VERSIONS no contiene una versi\u00f3n v\u00e1lida.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.explanation=Cada valor de la variable de entorno de plataforma debe ser una plataforma conocida. Las plataformas conocidas son una versi\u00f3n de javaee, jakartaee o microProfile.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.useraction=Compruebe que la variable de entorno contenga solo plataformas conocidas.
 
-# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: La variable de entorno, PREFERRED_FEATURE_VERSIONS, no contiene un valor para {0}
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Para cada caracter\u00edstica sin versi\u00f3n de la configuraci\u00f3n, debe haber un valor de versi\u00f3n preferido para ella dentro de PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=A\u00f1adir un valor en PREFERRED_FEATURE_VERSIONS para la caracter\u00edstica
+# CWWKF0049E  {0} = set of duplicate platforms
+DUPLICATE_PLATFORMS=CWWKF0049E: Las siguientes versiones de plataforma configuradas est\u00e1n en conflicto: {0}.
+DUPLICATE_PLATFORMS.explanation=Se especific\u00f3 m\u00e1s de una versi\u00f3n para la misma plataforma.
+DUPLICATE_PLATFORMS.useraction=Elimine todas las versiones de la plataforma menos una.
+
+# CWWKF0050E  {0} = the versionless features that cannot be resolved
+UNRESOLVED_VERSIONLESS_FEATURE=CWWKF0050E: El {0} Las funciones sin versi\u00f3n no se pueden resolver.
+UNRESOLVED_VERSIONLESS_FEATURE.explanation=Las funciones sin versi\u00f3n necesitan una plataforma designada antes de poder resolverse.
+UNRESOLVED_VERSIONLESS_FEATURE.useraction=Aseg\u00farese de que haya un elemento de plataforma especificado para su funci\u00f3n.
+
+# CWWKF0051I  {0} = the versionless features: {1} = the features that were resolved from the versionless features
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: El {0} funciones sin versi\u00f3n resueltas para {1}
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=Las funciones versionadas que se resolvieron a partir de las funciones sin versi\u00f3n.
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=No se requiere ninguna acci\u00f3n.
+
+# CWWKF0052E  {0} = the unknown platform
+UNKNOWN_PLATFORM_ELEMENT=CWWKF0052E: El {0} la plataforma no es v\u00e1lida
+UNKNOWN_PLATFORM_ELEMENT.explanation=El elemento de plataforma especificado no es una plataforma conocida. Las plataformas conocidas son una versi\u00f3n de javaee, jakartaee o microProfile
+UNKNOWN_PLATFORM_ELEMENT.useraction=Aseg\u00farese de que la plataforma configurada sea una plataforma conocida.
+
+# CWWKF0053I  {0} = the resolved platforms
+RESOLVED_PLATFORM=CWWKF0053I: La resoluci\u00f3n de caracter\u00edsticas seleccion\u00f3 el {0} plataformas.
+RESOLVED_PLATFORM.explanation=Las versiones de la plataforma se seleccionaron para permitir la resoluci\u00f3n de funciones sin versi\u00f3n. Las versiones de la plataforma se obtuvieron a partir de elementos de la plataforma, de funciones versionadas o de una variable de entorno.
+RESOLVED_PLATFORM.useraction=No se requiere ninguna acci\u00f3n.
+
+# CWWKF0054E  {0} = the versionless feature that cannot be resolved: {1} = the resolved platform
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM=CWWKF0054E: El {0} La caracter\u00edstica sin versi\u00f3n no tiene una versi\u00f3n que pertenezca al {1} plataforma.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.explanation=No hay ninguna versi\u00f3n de la funci\u00f3n disponible para la versi\u00f3n de la plataforma. Se complet\u00f3 la resoluci\u00f3n de la funci\u00f3n, pero no se seleccion\u00f3 una versi\u00f3n de la funci\u00f3n.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Elimine la funci\u00f3n sin versi\u00f3n, especifique una versi\u00f3n de plataforma diferente o utilice una funci\u00f3n versionada.
+
+# CWWKF0055E  {0} = the versionless features
+NO_RESOLVED_PLATFORM=CWWKF0055E: El {0} Las funciones sin versi\u00f3n no tienen una plataforma configurada.
+NO_RESOLVED_PLATFORM.explanation=Cada tipo de caracter\u00edstica sin versi\u00f3n debe tener una plataforma configurada. Si se configuran funciones sin versi\u00f3n de javaee o jakartaee, requieren una plataforma javaee o jakartaee correspondiente. Si microProfile Las funciones sin versi\u00f3n est\u00e1n configuradas, requieren una microProfile plataforma.
+NO_RESOLVED_PLATFORM.useraction=Agregue un elemento de plataforma, una caracter\u00edstica versionada o una variable de entorno.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

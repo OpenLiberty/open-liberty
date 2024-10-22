@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.cloudant.fat;
 
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,7 +21,8 @@ import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -41,11 +41,8 @@ public class FATSuite extends TestContainerSuite {
         System.setProperty("javax.net.debug", "all");
     }
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        HttpUtils.trustAllCertificates();
-        HttpUtils.trustAllHostnames();
-        HttpUtils.setDefaultAuth("adminuser", "adminpwd");
+    public static HttpsRequest createHttpsRequestWithAdminUser(LibertyServer server, String path) {
+        return new HttpsRequest(server, path).allowInsecure().basicAuth("adminuser", "adminpwd");
     }
 
 }

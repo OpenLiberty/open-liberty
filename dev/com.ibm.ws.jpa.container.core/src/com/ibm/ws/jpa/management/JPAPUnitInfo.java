@@ -968,15 +968,16 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
             Tr.debug(tc, "createContainerEMF integration-properties: {0}", props);
         }
 
-        EntityManagerFactory emfactory;
 
         // Push the ThreadContextClassLoader, not the app classloader
         ClassLoader tcclassloader = getJPAComponent().createThreadContextClassLoader(ivClassLoader);
 
         Object oldClassLoader = svThreadContextAccessor.pushContextClassLoaderForUnprivileged(tcclassloader);
+        EntityManagerFactory emfactory = null;
+        PersistenceProvider provider = null;
         try {
             Class<?> providerClass = ivClassLoader.loadClass(ivProviderClassName);
-            PersistenceProvider provider = (PersistenceProvider) providerClass.newInstance();
+            provider = (PersistenceProvider) providerClass.newInstance();
 
             // Use properties defined in default persistence providers in factory creation.
             // Properties defined in PU are used in createEntityManager to override factory settings.
@@ -988,9 +989,28 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
             Tr.error(tc,
                      "CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E",
                      ivProviderClassName, ivArchivePuId.getPuName(), e.getLocalizedMessage());
-            if (isTraceOn && tc.isEntryEnabled())
-                Tr.exit(tc, "createEMFactory : null", e);
-            throw e; // d743091
+            if (e.getMessage().contains("Syntax error parsing")) {
+                // In the event of a syntax error, the call is being re-attempted.
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Encountered a syntax error, initiating retry process");
+                }
+                try {
+                    if(provider!=null) {
+                        emfactory = provider.createContainerEntityManagerFactory(puInfo, integrationProperties); 
+                    }
+                } catch (Exception e2) {
+                    FFDCFilter.processException(e2, CLASS_NAME + ".createEMFactory",
+                                                "997", this);
+                    Tr.error(tc,
+                             "CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E",
+                             ivProviderClassName, ivArchivePuId.getPuName(), e2.getLocalizedMessage());
+                }
+            } 
+            if (emfactory == null) {
+                if (isTraceOn && tc.isEntryEnabled())
+                    Tr.exit(tc, "createEMFactory : null", e);
+                throw e;
+            }
         } catch (ClassNotFoundException cnfe) {
             // ClassNotFoundException is expected during module start for WABs since they don't actually use JPAPUnitInfo.
             // Perhaps the module start code flow should be completely disabled for them instead?

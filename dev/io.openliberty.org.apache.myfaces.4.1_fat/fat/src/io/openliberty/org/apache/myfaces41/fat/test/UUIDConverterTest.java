@@ -82,18 +82,55 @@ public class UUIDConverterTest {
 
 
     /**
-     *  Verify that jakarta.faces.FULL_STATE_SAVING_VIEW_IDS is marked as deprecated in the logs
+     *  Verify the UUID conversion works with an explicit converter (f:converter tag)
      *
      * @throws Exception
      */
     @Test
-    public void testSuccessfulUUIDConverter() throws Exception {
+    public void testSuccessfulExplicitUUIDConverter() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
             server.setMarkToEndOfLog();
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(server, APP_NAME, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(server, APP_NAME, "index_explicit_converter.xhtml");
+
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+
+            HtmlElement uuidElement = (HtmlElement) page.getElementById("form:uuid");
+            String clientWindowJS = uuidElement.asText();
+
+            // Get the form.
+            HtmlForm form = page.getFormByName("form");
+
+            // Get the button and click it.
+            HtmlSubmitInput contentLengthButton = form.getInputByName("form:button");
+            page = contentLengthButton.click();
+
+            System.out.println(uuidElement.getTextContent());
+
+            assertTrue("UUID not found on page!",  page.asText().contains(uuidElement.getTextContent()));
+            
+            assertFalse("Set ID call not found!", server.findStringsInLogsAndTraceUsingMark("SETID: class java.util.UUID").isEmpty());
+
+            server.resetLogMarks();
+        }
+    }
+
+    /**
+     *   Verify the UUID conversion works with an implicitly converter (no tag or converter specified)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSuccessfulImplicitUUIDConverter() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+
+            server.setMarkToEndOfLog();
+
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(server, APP_NAME, "index_implicit_converter.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 

@@ -22,8 +22,9 @@ Export-Package: \
 	io.openliberty.microprofile.telemetry.internal.common.constants;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.info;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.resources;version='1.0',\
-	io.openliberty.microprofile.telemetry.internal.common.rest;version='1.0';thread-context=true
+	io.openliberty.microprofile.telemetry.internal.common.rest;version='1.0';thread-context=true,\
+	io.openliberty.microprofile.telemetry.spi;version='1.0'
 
 
 -dsannotations: \
-	io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfoFactoryImpl
+	io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemtryLifecycleManagerImpl

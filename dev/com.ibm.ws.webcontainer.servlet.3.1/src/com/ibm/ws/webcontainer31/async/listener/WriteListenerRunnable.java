@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer31.async.listener;
 
@@ -67,7 +64,8 @@ public class WriteListenerRunnable implements Runnable{
     public void run() {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
-            Tr.debug(tc, "Run WriteListenerRunnable start, WriteListener enabled: " + this._listener +" , current thread -->"+ Thread.currentThread().getName()); 
+            Tr.entry(tc, "Run WriteListenerRunnable start, WriteListener enabled: " + this._listener +" , current thread -->"+ Thread.currentThread().getName() +
+                     " , outputStream [" + this._hout + "] , AsyncWriteCallBack [" + this._cb + "]"); 
         }
         //clean up everything on this thread
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
@@ -80,14 +78,22 @@ public class WriteListenerRunnable implements Runnable{
         //Push the original thread's context onto the current thread, also save off the current thread's context
         _tcm.pushContextData();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
-            Tr.debug(tc, "Invoking the onWritePossible first time");
+            Tr.debug(tc, "Invoking the onWritePossible first time , " + this._listener);
         }
         WebContainerRequestState.getInstance(true).setAttribute("com.ibm.ws.webcontainer.WriteAllowedonThisThread", true); 
         if(_hout != null){
             synchronized(_hout) {
                 try {     
                     //call onWritePossible
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
+                        Tr.debug(tc, "ENTER listener onWritePossible , " + this._listener);
+                    }
+
                     this._listener.onWritePossible();
+                    
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
+                        Tr.debug(tc, "RETURN from listener onWritePossible , " + this._listener);
+                    }
                     
                 } catch (Exception e){
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
@@ -100,7 +106,7 @@ public class WriteListenerRunnable implements Runnable{
                     //Revert back to the thread's current context
                     _tcm.popContextData();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                        Tr.debug(tc, "Run WriteListenerRunnable done");
+                        Tr.exit(tc, "Run WriteListenerRunnable done for [" + this._listener + "]");
                     }
                 }
             }
@@ -112,7 +118,7 @@ public class WriteListenerRunnable implements Runnable{
 
             } catch (IOException ioe){
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                    Tr.debug(tc, "An exception occurred during the onWritePossible : " + ioe); 
+                    Tr.debug(tc, "An exception occurred during the onWritePossible for [" + this._listener + ". Exception: " + ioe); 
                 }
                 this._listener.onError(ioe);
             }
@@ -120,7 +126,7 @@ public class WriteListenerRunnable implements Runnable{
                 //Revert back to the thread's current context
                 _tcm.popContextData();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                    Tr.debug(tc, "Run WriteListenerRunnable done");
+                    Tr.exit(tc, "Run WriteListenerRunnable done for [" + this._listener + "]");
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import com.ibm.ws.cdi.jee.jsf.SimpleJSFTest;
 import com.ibm.ws.cdi.jee.jsf.SimpleJSFWithSharedLibTest;
 import com.ibm.ws.cdi.jee.jsp.SimpleJSPTest;
 import com.ibm.ws.cdi.jee.servlet.ServletStartupTest;
+import com.ibm.ws.cdi.jee.session.CDISessionPersistenceTest;
 import com.ibm.ws.cdi.jee.webservices.CDI12WebServicesTest;
 
 import componenttest.rules.repeater.EERepeatActions;
@@ -34,11 +35,13 @@ import componenttest.rules.repeater.RepeatTests;
                 InjectIntoPathTest.class,
                 JEEInjectionTargetTest.class,
                 ServletStartupTest.class,
+                CDISessionPersistenceTest.class,
                 SimpleJSFTest.class,
                 SimpleJSFWithSharedLibTest.class,
                 SimpleJSPTest.class,
                 Faces40CDISessionPersistence.class,
 })
+
 public class FATSuite {
 
     //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code

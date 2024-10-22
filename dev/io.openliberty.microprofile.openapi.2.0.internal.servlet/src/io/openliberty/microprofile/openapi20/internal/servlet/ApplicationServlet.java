@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.servlet;
 
@@ -32,9 +29,12 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIVersionConfig;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIUtils;
@@ -47,6 +47,8 @@ public class ApplicationServlet extends OpenAPIServletBase {
     private static final TraceComponent tc = Tr.register(ApplicationServlet.class);
 
     private ServiceTracker<ApplicationRegistry, ApplicationRegistry> appRegistryTracker;
+    private ServiceTracker<OpenAPIModelOperations, OpenAPIModelOperations> modelOperationsTracker;
+    private ServiceTracker<OpenAPIVersionConfig, OpenAPIVersionConfig> versionConfigTracker;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -54,12 +56,18 @@ public class ApplicationServlet extends OpenAPIServletBase {
         BundleContext bundleContext = (BundleContext) config.getServletContext().getAttribute("osgi-bundlecontext");
         appRegistryTracker = new ServiceTracker<>(bundleContext, ApplicationRegistry.class, null);
         appRegistryTracker.open();
+        modelOperationsTracker = new ServiceTracker<>(bundleContext, OpenAPIModelOperations.class, null);
+        modelOperationsTracker.open();
+        versionConfigTracker = new ServiceTracker<>(bundleContext, OpenAPIVersionConfig.class, null);
+        versionConfigTracker.open();
     }
 
     @Override
     public void destroy() {
         super.destroy();
         appRegistryTracker.close();
+        modelOperationsTracker.close();
+        versionConfigTracker.close();
     }
 
     /** {@inheritDoc} */
@@ -87,7 +95,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
             if (currentProvider != null) {
 
                 // Take a shallow copy of the model so we can change the servers and info
-                OpenAPI model = OpenAPIUtils.shallowCopy(currentProvider.getModel());
+                OpenAPI model = modelOperationsTracker.getService().shallowCopy(currentProvider.getModel());
 
                 if (OpenAPIUtils.containsServersDefinition(currentProvider.getModel())) {
                     if (LoggingUtils.isEventEnabled(tc)) {
@@ -107,13 +115,17 @@ public class ApplicationServlet extends OpenAPIServletBase {
                     model.setInfo(configuredInfo);
                 }
 
+                if (ProductInfo.getBetaEdition()) {
+                    versionConfigTracker.getService().applyConfig(model);
+                }
+
                 document = OpenAPIUtils.getOpenAPIDocument(model, responseFormat);
             } else {
                 /*
                  * No JAX-RS applications are currently running inside this OL instance. Create a default OpenAPI model,
                  * add some server definitions to it and then generate the OpenAPI document in the specified format.
                  */
-                OpenAPI defaultOpenAPIModel = OpenAPIUtils.createBaseOpenAPIDocument();
+                OpenAPI defaultOpenAPIModel = modelOperationsTracker.getService().createDefaultOpenApiModel();
                 defaultOpenAPIModel.setServers(getOpenAPIModelServers(request));
                 document = OpenAPIUtils.getOpenAPIDocument(defaultOpenAPIModel, responseFormat);
             }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -655,3 +655,9 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Utilisez le noeud final de d
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: Le client {0} OpenID Connect utilise la m\u00e9thode d''authentification de noeud final de jeton {1}. Cette m\u00e9thode d''authentification requiert un secret client, mais aucun secret client n''est configur\u00e9.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=La m\u00e9thode d'authentification de noeud final de jeton sp\u00e9cifi\u00e9e dans le message requiert un secret client pour l'authentification aupr\u00e8s du noeud final de jeton du fournisseur OpenID Connect.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Configurez un secret client pour le client OpenID Connect ou remplacez la m\u00e9thode d'authentification de noeud final de jeton du client par une m\u00e9thode qui ne n\u00e9cessite pas de secret client.
+
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
+# used by client
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS2352E: Une demande envoy\u00e9e \u00e0 [{0}] n''est pas valide. Un cookie requis dont le nom commence par WASReqURLOidc manque. Le nom d''h\u00f4te utilis\u00e9 pour acc\u00e9der au client peut ne pas correspondre au nom enregistr\u00e9 aupr\u00e8s du fournisseur.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Le client a re\u00e7u une demande qui ne comportait pas de cookie requis.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=V\u00e9rifiez la configuration du client et la configuration du fournisseur OpenID Connect. Le cookie manquant peut \u00eatre d\u00fb \u00e0 l'acc\u00e8s au client avec un nom d'h\u00f4te diff\u00e9rent du nom d'h\u00f4te de la redirection enregistr\u00e9e aupr\u00e8s du fournisseur. Si l'attribut sameSiteCookie de l'\u00e9l\u00e9ment webAppSecurity de la configuration du serveur est d\u00e9fini sur Strict, essayez de d\u00e9finir la valeur sur Lax ou Aucun.

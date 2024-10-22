@@ -69,6 +69,10 @@ CONFIG_ATTRIBUTE_IGNORED=SESN0311W: Meg lett adva a(z) {0} konfigur\u00e1ci\u00f
 CONFIG_ATTRIBUTE_IGNORED.explanation=A megadott konfigur\u00e1ci\u00f3 figyelmen k\u00edv\u00fcl marad, mivel azt a megadott cacheManagerRef szolg\u00e1ltatja.
 CONFIG_ATTRIBUTE_IGNORED.useraction=Nincs teend\u0151.
 
+UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: A {0} HTTP munkamenet gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s attrib\u00fatum megv\u00e1ltozott a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9se \u00f3ta. Ha az attrib\u00fatum \u00e9rt\u00e9ke a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont ut\u00e1n m\u00f3dosul, de a kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sa el\u0151tt az alkalmaz\u00e1s nem haszn\u00e1lja a friss\u00edtett \u00e9rt\u00e9ket.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=A megadott konfigur\u00e1ci\u00f3s attrib\u00fatum nem m\u00f3dos\u00edthat\u00f3 a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont \u00e9s a kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sa k\u00f6z\u00f6tt.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=\u00c1ll\u00edtsa be az attrib\u00fatum \u00e9rt\u00e9k\u00e9t a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1sa el\u0151tt.
+
 INTERNAL_SERVER_ERROR=Bels\u0151 kiszolg\u00e1l\u00f3hiba
 
 SESSION_CACHE_CONFIG_MESSAGE=Ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 tartalmaz-e \u00e9rv\u00e9nyes httpSessionCache konfigur\u00e1ci\u00f3t. Tekintse meg a minta konfigur\u00e1ci\u00f3t. {0}

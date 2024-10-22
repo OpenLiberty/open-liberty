@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +65,10 @@ public class HungRequestTiming {
     private static final String TRACE_LOG = "logs/trace.log";
 
     private static final String SERVER_NAME = "HungRequestTimingServer";
+
+    // Need to set a formatter to use in the test cases.
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HHmmss");
+
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
@@ -502,8 +509,8 @@ public class HungRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testHungRequestTiming() throws Exception {
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
-        server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 30s");
+        server.setServerConfigurationFile("server_hungRequestThreshold30.xml");
         String srvConfigCompletedMsg = server.waitForStringInLog("CWWKG0017I|CWWKG0018I", 90000);
 
         assertNotNull("The server configuration was successfully updated message was not found!", srvConfigCompletedMsg);
@@ -527,67 +534,74 @@ public class HungRequestTiming {
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung completion message : " + lines.get(0));
 
         lines = server.findStringsInFileInLibertyServerRoot("CWWKE0067I", MESSAGE_LOG);
-        CommonTasks.writeLogMsg(Level.INFO, "----> Java dump size : " + lines.size());
+        CommonTasks.writeLogMsg(Level.INFO, "----> Number of Java dumps : " + lines.size());
+        assertTrue("Expected 3 Java Dumps but found : " + lines.size(), (lines.size() == 3));
 
-        assertTrue("Expected 3 java dumps but found : " + lines.size(), (lines.size() == 3));
+        List<String> timerStartLine = server.findStringsInFileInLibertyServerRoot("Starting thread dump scheduler", TRACE_LOG);
+        server.waitForStringInLog("CWWKE0068I", 30000); //  Wait for the Java core created message, with the file path.
+        lines = server.findStringsInFileInLibertyServerRoot("CWWKE0068I", MESSAGE_LOG);
+        assertTrue("No Java core generated warnings found!", (lines.size() > 0));
+
         for (String line : lines) {
             CommonTasks.writeLogMsg(Level.INFO, "----> Dump file : " + line);
         }
+
         int javaCoreCount = 0;
-        long next = 0;
-        long previous = -2;
+        LocalTime prevDumpFileTime = null;
+        LocalTime currDumpFileTime = null;
+        Duration timeDiffBetweenDumps = null;
 
-        List<String> timerStartLine = server.findStringsInFileInLibertyServerRoot("Starting thread dump scheduler", TRACE_LOG);
-        lines = server.findStringsInFileInLibertyServerRoot("CWWKE0068I", MESSAGE_LOG);
-
-        assertTrue("No Java core generated warnings found!", (lines.size() > 0));
         for (String line : lines) {
             String javaDumpName = line.substring(line.lastIndexOf("java"));
-            CommonTasks.writeLogMsg(Level.INFO, "----> Java dump name : " + javaDumpName);
-            if (javaDumpName != null | javaDumpName != "") {
+            CommonTasks.writeLogMsg(Level.INFO, "----> Processing Java dump file : " + javaDumpName);
+
+            if (javaDumpName != null && !javaDumpName.isEmpty()) {
                 javaCoreCount++;
-                String time_hhMM = "";
+                String time_HHmmss = "";
                 String seconds = "";
 
+                // Parse the Hours, minutes and seconds from the Java Dump File name
+                // e.g javacore.20240815.144030.98608.0001.txt
+                time_HHmmss = javaDumpName.substring(18, 24); // This would be 144030, from the above example.
+                CommonTasks.writeLogMsg(Level.INFO, "----> time_HHmmss : " + time_HHmmss);
+
                 if (javaCoreCount == 1) {
-                    time_hhMM = timerStartLine.get(0).replace(":", "").substring(12, 16);
-                    seconds = timerStartLine.get(0).substring(18, 20);
-                    CommonTasks.writeLogMsg(Level.INFO, "----> timerStartLine : " + timerStartLine.get(0));
+                    // Processing the first file, just need to store the time it was generated, to be used later.
+                    CommonTasks.writeLogMsg(Level.INFO, "Processing the first java dump file.");
+                    prevDumpFileTime = LocalTime.parse(time_HHmmss, FORMATTER);
+                    continue;
                 } else {
-                    time_hhMM = javaDumpName.substring(18, 22);
-                    seconds = javaDumpName.substring(22, 24);
+                    currDumpFileTime = LocalTime.parse(time_HHmmss, FORMATTER);
                 }
 
-                CommonTasks.writeLogMsg(Level.INFO, "----> time_hhMM : " + time_hhMM);
-                CommonTasks.writeLogMsg(Level.INFO, "----> seconds : " + seconds);
-                next = new Integer(time_hhMM).longValue();
+                // Find the time elapsed between the current dump file and the previous dump file.
+                timeDiffBetweenDumps = Duration.between(prevDumpFileTime, currDumpFileTime);
 
-                if (previous != -2) {
-                    if (!(next - previous == 1)) {
-                        // Sometimes, due to the system clock not being in-sync, if the first
-                        // java core is generated at hhMM:00 seconds, the second javacore will be
-                        // generated at hhMM:59 seconds, instead of hhMM+1:00, hence, we need to check
-                        // this scenario. Only fail the test case, if the difference (next-previous) is
-                        // not equal to 1 and the seconds of the second javacore is not 59, then the
-                        // java core did not generate 1 minute apart.
-                        assertTrue("Java core are not generated 1 min apart.", (seconds.contains("59")));
-                    }
-                    // If time_hhMM is 1359, then next min is 1400, difference is not 1
-                    // Therefore we shall add 40 to it to make it 1399, so that next value is 1400
+                if (timeDiffBetweenDumps.isNegative()) {
+                    // This handles the case when the dump files are generated at 23:59pm and 00:00 (midnight), the next day.
+                    // Adds another day to the Duration time difference to handle the negative.
+                    CommonTasks.writeLogMsg(Level.INFO, "The java dumps were generated across two days.");
+                    timeDiffBetweenDumps = timeDiffBetweenDumps.plusDays(1);
                 }
 
-                if (time_hhMM.endsWith("59")) {
-                    next += 40;
-                    //2359,0000 for such date values , if starts with 23, set the previous value to -1.
-                    if (time_hhMM.startsWith("23")) {
-                        next = -1;
-                    }
+                long elapsedMins = timeDiffBetweenDumps.toMinutes() % 60; // There are 60 mins in an hour, extracting only the minutes.
+                long elapsedSecs = timeDiffBetweenDumps.getSeconds() % 60; // There are 60 seconds in a minute, extracting only the seconds.
+                CommonTasks.writeLogMsg(Level.INFO, "The java dump file " + javaDumpName + " was generated after " + elapsedMins + " minute and " + elapsedSecs + " seconds.");
+
+                if (elapsedMins == 0) {
+                    // Handles the case, when there are system/env related issues, and the java dumps are generated around 50+ secs, and not in the full 1 min.
+                    assertTrue("Java dumps are not generated 1 min apart.", (elapsedSecs > 50));
+                } else {
+                    // This verifies if the java dumps are generated 1 minute apart, including intermittent cases where the system might be really slow,
+                    // and causes the dumps to be generated within 1 min and 30 seconds, which is tolerable.
+                    assertTrue("Java dumps are not generated 1 min apart.", (elapsedMins == 1 && elapsedSecs < 30));
                 }
 
-                previous = next;
-
+                // Cache the current dump file time, to compare with the next dump file.
+                prevDumpFileTime = currDumpFileTime;
             }
         }
+
         CommonTasks.writeLogMsg(Level.INFO, "----> Java cores are generated 1 min apart");
 
         assertTrue("Expected 3 Hung detection warnings but found : " + javaCoreCount, (javaCoreCount == 3));

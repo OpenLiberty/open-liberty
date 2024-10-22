@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLTransientException;
+import java.time.Duration;
 import java.util.List;
 
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -39,14 +40,8 @@ public abstract class SQLRetry {
     private Throwable _nonTransientException;
     private static boolean _logRetriesEnabled;
 
-    private static final int DEFAULT_TRANSIENT_RETRY_SLEEP_TIME = 10000; // In milliseconds, ie 10 seconds
-    private static final int DEFAULT_TRANSIENT_RETRY_ATTEMPTS = 180; // We'll keep retrying for 30 minutes. Excessive?
-    private static int _transientRetrySleepTime = DEFAULT_TRANSIENT_RETRY_SLEEP_TIME;
-    private static int _transientRetryAttempts = DEFAULT_TRANSIENT_RETRY_ATTEMPTS;
-    private static final int LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME = 1000; // In milliseconds, ie 1 second
-    private static final int LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS = 2; // We'll keep retrying for 2 seconds in the lightweight case
-    private static int _lightweightRetrySleepTime = LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME;
-    private static int _lightweightRetryAttempts = LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS;
+    protected int _retryLimit;
+    protected Duration _retryInterval;
 
     /**
      * This method provides drives the retry loop in retryAfterSQLException and reports and handles the outcome.
@@ -61,13 +56,13 @@ public abstract class SQLRetry {
      * @return
      */
     public boolean retryAndReport(SQLRetriableLog recoveryLog, String serverName, SQLException currentSqlEx) {
-        boolean theReturn = retryAndReport(recoveryLog, serverName, currentSqlEx, _transientRetryAttempts, _transientRetrySleepTime);
+        boolean theReturn = retryAndReport(recoveryLog, serverName, currentSqlEx, _retryLimit, _retryInterval);
         return theReturn;
     }
 
-    public boolean retryAndReport(SQLRetriableLog recoveryLog, String serverName, SQLException currentSqlEx, int retryAttempts, int retrySleepTime) {
+    private boolean retryAndReport(SQLRetriableLog recoveryLog, String serverName, SQLException currentSqlEx, int retryLimit, Duration retryInterval) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "retryAndReport ", new Object[] { recoveryLog, serverName, currentSqlEx, retryAttempts, retrySleepTime });
+            Tr.entry(tc, "retryAndReport ", recoveryLog, serverName, currentSqlEx, retryLimit, retryInterval);
         boolean failAndReport = true;
         if (currentSqlEx != null) {
             // Set the exception that will be reported
@@ -75,7 +70,7 @@ public abstract class SQLRetry {
                 Tr.debug(tc, "Set the exception that will be reported: " + currentSqlEx);
             _nonTransientException = currentSqlEx;
             // The following method will reset "_nonTransientException" if it cannot recover
-            failAndReport = retryAfterSQLException(recoveryLog, currentSqlEx, retryAttempts, retrySleepTime);
+            failAndReport = retryAfterSQLException(recoveryLog, currentSqlEx, retryLimit, retryInterval);
         }
 
         // We've been through the while loop
@@ -91,7 +86,7 @@ public abstract class SQLRetry {
     }
 
     public boolean retryAfterSQLException(SQLRetriableLog retriableLog, SQLException sqlex) {
-        boolean failAndReport = retryAfterSQLException(retriableLog, sqlex, _transientRetryAttempts, _transientRetrySleepTime);
+        boolean failAndReport = retryAfterSQLException(retriableLog, sqlex, _retryLimit, _retryInterval);
         return failAndReport;
     }
 
@@ -105,9 +100,9 @@ public abstract class SQLRetry {
      * @param transientRetrySleepTime
      * @return
      */
-    public boolean retryAfterSQLException(SQLRetriableLog retriableLog, SQLException sqlex, int retryAttempts, int retrySleepTime) {
+    private boolean retryAfterSQLException(SQLRetriableLog retriableLog, SQLException sqlex, int retryLimit, Duration retryInterval) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "retryAfterSQLException ", retriableLog, sqlex, retryAttempts, retrySleepTime);
+            Tr.entry(tc, "retryAfterSQLException ", retriableLog, sqlex, retryLimit, retryInterval);
 
         boolean shouldRetry = true;
         boolean failAndReport = false;
@@ -123,7 +118,7 @@ public abstract class SQLRetry {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Not retrying because the server is stopping");
                 failAndReport = true;
-            } else if (operationRetries++ < retryAttempts) {
+            } else if (operationRetries++ < retryLimit) {
                 // We havent exceeded the number of retry attempts
 
                 initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
@@ -155,9 +150,9 @@ public abstract class SQLRetry {
                             Tr.debug(tc, "reset the sqlex to " + sqlex2);
                         sqlex = sqlex2;
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "sleeping for " + retrySleepTime + " millisecs");
+                            Tr.debug(tc, "sleeping for " + retryInterval.getSeconds() + " seconds");
                         try {
-                            Thread.sleep(retrySleepTime);
+                            Thread.sleep(retryInterval.toMillis());
                         } catch (InterruptedException ie) {
                         }
                     } catch (Throwable exc) {
@@ -437,61 +432,5 @@ public abstract class SQLRetry {
      */
     public static void setLogRetriesEnabled(boolean logRetriesEnabled) {
         SQLRetry._logRetriesEnabled = logRetriesEnabled;
-    }
-
-    /**
-     * @return the _transientRetrySleepTime
-     */
-    public static int getTransientRetrySleepTime() {
-        return _transientRetrySleepTime;
-    }
-
-    /**
-     * @param transientRetrySleepTime the _transientRetrySleepTime to set
-     */
-    public static void setTransientRetrySleepTime(int transientRetrySleepTime) {
-        SQLRetry._transientRetrySleepTime = transientRetrySleepTime;
-    }
-
-    /**
-     * @return the _transientRetryAttempts
-     */
-    public static int getTransientRetryAttempts() {
-        return _transientRetryAttempts;
-    }
-
-    /**
-     * @param _transientRetryAttempts the _transientRetryAttempts to set
-     */
-    public static void setTransientRetryAttempts(int transientRetryAttempts) {
-        SQLRetry._transientRetryAttempts = transientRetryAttempts;
-    }
-
-    /**
-     * @return the _lightweightRetrySleepTime
-     */
-    public static int getLightweightRetrySleepTime() {
-        return _lightweightRetrySleepTime;
-    }
-
-    /**
-     * @param lightweightRetrySleepTime the _lightweightRetrySleepTime to set
-     */
-    public static void setLightweightRetrySleepTime(int lightweightRetrySleepTime) {
-        SQLRetry._lightweightRetrySleepTime = lightweightRetrySleepTime;
-    }
-
-    /**
-     * @return the _lightweightRetryAttempts
-     */
-    public static int getLightweightRetryAttempts() {
-        return _lightweightRetryAttempts;
-    }
-
-    /**
-     * @param lightweightRetryAttempts the _lightweightRetryAttempts to set
-     */
-    public static void setLightweightRetryAttempts(int lightweightRetryAttempts) {
-        SQLRetry._lightweightRetryAttempts = lightweightRetryAttempts;
     }
 }

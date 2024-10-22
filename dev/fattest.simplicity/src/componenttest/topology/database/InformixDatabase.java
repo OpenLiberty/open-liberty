@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.BootstrapProperty;
 
@@ -60,7 +61,7 @@ public class InformixDatabase extends Database {
                                          + uniquifier + "/"
                                          + testBucketName + "/ifxsql/" + dbtype.toLowerCase() + "/";
         Log.finer(c, method, "Remote sql commands file path: " + remoteMachineIfxSqlPath);
-        RemoteFile destFile = new RemoteFile(databaseMachine, remoteMachineIfxSqlPath);
+        RemoteFile destFile = databaseMachine.getFile(remoteMachineIfxSqlPath);
         destFile.mkdirs();
         IfxRunCmdFile = remoteMachineIfxSqlPath + "runIFXCmd_" + uniquifier + ".sql";
         Log.finer(c, method, "IfxRunCmdFile: " + IfxRunCmdFile);
@@ -85,8 +86,7 @@ public class InformixDatabase extends Database {
             Log.info(c, method, "Use specified database name: " + dbname);
             String db_dropandcreate = bootstrap.getValue(BootstrapProperty.DB_DROPANDCREATE.getPropertyName());
             Log.info(c, method, "Drop and create set to: " + db_dropandcreate);
-            boolean dropandcreate = db_dropandcreate == null
-                            ? false : db_dropandcreate.equalsIgnoreCase("true") ? true : false;
+            boolean dropandcreate = db_dropandcreate == null ? false : db_dropandcreate.equalsIgnoreCase("true") ? true : false;
             Log.info(c, method, "Drop and create is: " + dropandcreate);
             if (dropandcreate) {
                 Log.info(c, method, "Dropping and creating database");

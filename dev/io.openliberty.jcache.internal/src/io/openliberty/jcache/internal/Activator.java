@@ -12,7 +12,10 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -41,7 +44,8 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  *
  */
 public class Activator implements BundleActivator, ServiceTrackerCustomizer<Condition, Boolean>, ConfigurationListener, RuntimeUpdateListener {
-    public static final String CACHE_MANAGER_CONFIG_CONDITION = "jcache.cachemanager.config";
+    public static final String CACHE_CONFIG_CONDITION = "jcache.cache.config";
+    private static final Set<String> pids = new HashSet<>(Arrays.asList("io.openliberty.jcache.cachemanager", "io.openliberty.jcache.cachingprovider", "io.openliberty.jcache.cache"));
     private final AtomicReference<ServiceRegistration<Condition>> conditionReg = new AtomicReference<>();
     volatile ServiceTracker<Condition, Boolean> runningConditionTracker;
     volatile BundleContext bc;
@@ -82,7 +86,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Cond
 
     @Override
     public void configurationEvent(ConfigurationEvent event) {
-        if ("io.openliberty.jcache.cachemanager".equals(event.getFactoryPid())
+        if (pids.contains(event.getFactoryPid())
             && (event.getType() == ConfigurationEvent.CM_UPDATED || event.getType() == ConfigurationEvent.CM_DELETED)) {
             // using == Boolean.TRUE here because getService may return null
             if (runningConditionTracker.getService() == Boolean.TRUE) {
@@ -124,7 +128,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Cond
                 reg.unregister();
             }
             return bc.registerService(Condition.class, Condition.INSTANCE,
-                                      FrameworkUtil.asDictionary(Collections.singletonMap(Condition.CONDITION_ID, CACHE_MANAGER_CONFIG_CONDITION)));
+                                      FrameworkUtil.asDictionary(Collections.singletonMap(Condition.CONDITION_ID, CACHE_CONFIG_CONDITION)));
         });
     }
 }

@@ -950,3 +950,19 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: L''ID chiave pubblica {0} non corrispon
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=La chiave pubblica potrebbe essere stata modificata. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Se la chiave pubblica \u00e8 un file locale, assicurarsi di fornire il file corretto.
 
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: Non \u00e8 stato possibile trovare la piattaforma {0}.
+ERROR_MISSING_PLATFORM_NAME.explanation=Il nome della piattaforma specificato dalla configurazione o dalla variabile d'ambiente non \u00e8 stato trovato.
+ERROR_MISSING_PLATFORM_NAME.useraction=Controllare l'ortografia del nome e della versione della piattaforma, ad esempio microProfile-6.1.
+
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: Non \u00e8 stato possibile determinare la piattaforma. Le seguenti funzioni senza versione non possono essere installate: {0}.
+ERROR_NO_DERIVED_PLATFORM.explanation= La piattaforma non \u00e8 stata impostata o non \u00e8 stato possibile ricavarla dalle funzionalit\u00e0 esistenti in versione. 
+ERROR_NO_DERIVED_PLATFORM.useraction=Aggiungere una piattaforma per le funzionalit\u00e0 senza versione.
+
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: Il comando installFeature non supporta le funzioni senza versione.
+ERROR_VERSIONLESS_INSTALL.explanation= La funzione che si \u00e8 cercato di installare con il comando installFeature non ha una versione specificata nel nome della funzione.
+ERROR_VERSIONLESS_INSTALL.useraction=Utilizzare il comando installServerFeatures, che supporta le funzioni senza versione, oppure installare una funzione diversa che non sia senza versione.
+
+LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Installazione con le seguenti piattaforme: {0}.
+LOG_INSTALL_WITH_PLATFORM.explanation=Le versioni della piattaforma specificate sono state utilizzate per risolvere le funzioni senza versione.
+LOG_INSTALL_WITH_PLATFORM.useraction=Non \u00e8 richiesta alcuna azione.
+

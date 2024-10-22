@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,16 @@
 package io.openliberty.checkpoint.fat.springboot;
 
 import static componenttest.topology.utils.FATServletClient.getTestMethodSimpleName;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.Properties;
 
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
@@ -30,7 +40,8 @@ import componenttest.topology.impl.LibertyServer;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 BasicSpringBootTests.class,
-                BasicSpringBootWefluxTests.class
+                BasicSpringBootWefluxTests.class,
+                BasicSpringBootFailStart.class
 })
 
 public class FATSuite {
@@ -52,5 +63,19 @@ public class FATSuite {
         app.setLocation(appFile.getName());
         config.getSpringBootApplications().add(app);
         server.updateServerConfiguration(config);
+    }
+
+    static public void configureBootStrapProperties(LibertyServer server, Map<String, String> properties) throws Exception, IOException, FileNotFoundException {
+        Properties bootStrapProperties = new Properties();
+        File bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
+        if (bootStrapPropertiesFile.isFile()) {
+            try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
+                bootStrapProperties.load(in);
+            }
+        }
+        bootStrapProperties.putAll(properties);
+        try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
+            bootStrapProperties.store(out, "");
+        }
     }
 }

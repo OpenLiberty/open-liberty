@@ -953,3 +953,19 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: Identyfikator klucza publicznego {0} ni
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Mo\u017cliwe, \u017ce klucz publiczny uleg\u0142 zmianie. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Je\u015bli klucz publiczny jest plikiem lokalnym, upewnij si\u0119, \u017ce wybrano poprawny plik.
 
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: Nie znaleziono platformy {0} .
+ERROR_MISSING_PLATFORM_NAME.explanation=Nie znaleziono nazwy platformy okre\u015blonej w zmiennej konfiguracyjnej lub \u015brodowiskowej.
+ERROR_MISSING_PLATFORM_NAME.useraction=Sprawd\u017a pisowni\u0119 nazwy platformy i jej wersji, na przyk\u0142ad microProfile-6.1 .
+
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: Nie mo\u017cna ustali\u0107 platformy. Nie mo\u017cna zainstalowa\u0107 nast\u0119puj\u0105cych funkcji bez wersji: {0} .
+ERROR_NO_DERIVED_PLATFORM.explanation= Platforma nie zosta\u0142a ustawiona lub nie mog\u0142a zosta\u0107 wyprowadzona z istniej\u0105cych funkcji wersjonowanych. 
+ERROR_NO_DERIVED_PLATFORM.useraction=Dodaj platform\u0119 dla funkcji bez wersji.
+
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: Polecenie installFeature nie obs\u0142uguje funkcji bez wersji.
+ERROR_VERSIONLESS_INSTALL.explanation= Funkcja, kt\u00f3r\u0105 pr\u00f3bowa\u0142e\u015b zainstalowa\u0107 za pomoc\u0105 polecenia installFeature , nie ma okre\u015blonej wersji w nazwie funkcji.
+ERROR_VERSIONLESS_INSTALL.useraction=U\u017cyj polecenia installServerFeatures , kt\u00f3re obs\u0142uguje funkcje bez wersji, lub zainstaluj inn\u0105 funkcj\u0119, kt\u00f3ra nie jest bez wersji.
+
+LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Instalacja przy u\u017cyciu nast\u0119puj\u0105cych platform: {0} .
+LOG_INSTALL_WITH_PLATFORM.explanation=Do rozwi\u0105zania funkcji bez wersji wykorzystano podane wersje platformy.
+LOG_INSTALL_WITH_PLATFORM.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+

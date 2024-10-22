@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,19 +35,18 @@ import org.junit.rules.TestRule;
 import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ImmutableAttributes;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ProvisioningDetails;
+import com.ibm.ws.kernel.feature.internal.util.FeatureTestConstants;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 import junit.framework.Assert;
 import test.common.SharedOutputManager;
-import test.utils.SharedConstants;
 
-/**
- *
- */
+//@formatter:off
 public class FeatureDefinitionUtilsTest {
+    static final SharedOutputManager outputMgr =
+        SharedOutputManager.getInstance().trace("*=audit=enabled:featureManager=all=enabled");
 
-    static final SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=audit=enabled:featureManager=all=enabled");
     static WsLocationAdmin locSvc;
 
     @Rule
@@ -58,7 +57,7 @@ public class FeatureDefinitionUtilsTest {
 
     @Test
     public void testSimpleReadManifestWriteCache() throws Exception {
-        File featureFile = new File(SharedConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf");
+        File featureFile = new File(FeatureTestConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf");
 
         ProvisioningDetails details = new ProvisioningDetails(featureFile, null);
         ImmutableAttributes iAttr = FeatureDefinitionUtils.loadAttributes("", featureFile, details);
@@ -294,7 +293,7 @@ public class FeatureDefinitionUtilsTest {
     public void testImmutableAttributeFlags() throws Exception {
         // Round-trip through the cache will convert to absolute path. We need the input file to
         // have also been constructed from an absolute path so it will match..
-        File featureFile = new File(SharedConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
+        File featureFile = new File(FeatureTestConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
 
         // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -307,6 +306,7 @@ public class FeatureDefinitionUtilsTest {
         writer.write("IBM-App-ForceRestart: install \n");
         writer.write("IBM-API-Package: javax.servlet.annotation;  type=\"spec\", \n");
         writer.write(" com.ibm.wsspi.webcontainer;  type=\"internal\" \n");
+        writer.write("WLP-Platform: javaee-6.0,javaee-7.0,javaee-8.0,jakartaee-9.1\n");
         writer.flush();
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
@@ -316,6 +316,16 @@ public class FeatureDefinitionUtilsTest {
         Assert.assertFalse("API-service flag should be false", iAttr.hasApiServices);
         Assert.assertTrue("API-package flag should be true", iAttr.hasApiPackages);
         Assert.assertFalse("SPI-package flag should be false", iAttr.hasSpiPackages);
+
+        List<String> platforms = iAttr.platforms;
+
+        List<String> expectedPlatforms = Arrays.asList("javaee-6.0", "javaee-7.0", "javaee-8.0", "jakartaee-9.1");
+        int i = 0;
+        for (String platform : platforms) {
+            Assert.assertEquals("Platform list not as expected.", expectedPlatforms.get(i), platform);
+            i++;
+        }
+        //Assert.assertEquals("Platform list not as expected.", "[javaee-6.0,javaee-7.0,javaee-8.0,jakartaee-9.1]", .toString());
 
         // Do nothing that would trigger more detailed fluff up of API/SPI here..
         // Want to make sure it gets into the cache anyway..
@@ -340,7 +350,7 @@ public class FeatureDefinitionUtilsTest {
     public void testProvisioningDetailsExtraLines() throws Exception {
         // Round-trip through the cache will convert to absolute path. We need the input file to
         // have also been constructed from an absolute path so it will match..
-        File featureFile = new File(SharedConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
+        File featureFile = new File(FeatureTestConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
 
         // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -458,3 +468,4 @@ public class FeatureDefinitionUtilsTest {
         }
     }
 }
+//@formatter:on

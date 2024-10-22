@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -728,7 +728,7 @@ WTRN0130_BRANCH_COUPLING=WTRN0130W: Nie mo\u017cna znale\u017a\u0107 modu\u0142u
 WTRN0130_BRANCH_COUPLING.explanation=Obs\u0142uga funkcji powi\u0105zania ga\u0142\u0119zi zasob\u00f3w jest dost\u0119pna tylko w w\u0119z\u0142ach w wersji 8.0 lub nowszych.
 WTRN0130_BRANCH_COUPLING.useraction=Zainstaluj modu\u0142 na serwerze aplikacji w wersji 8.0 (lub nowszej) lub przy u\u017cyciu edytora deskryptora wdra\u017cania aplikacji z pakietu narz\u0119dzi do tworzenia aplikacji usu\u0144 wszystkie ustawienia funkcji powi\u0105zania ga\u0142\u0119zi zasob\u00f3w przed zainstalowaniem modu\u0142u.  Mo\u017cna tego dokona\u0107, przechodz\u0105c do sekcji powi\u0105zania ga\u0142\u0119zi w rozszerzeniach produktu WebSphere i usuwaj\u0105c ustawienie powi\u0105zania ga\u0142\u0119zi dla ka\u017cdego zasobu transakcyjnego.
 
-WTRN0131_BRANCH_COUPLING_CLUSTER=WTRN0131W: Nie mo\u017cna wdro\u017cy\u0107 aplikacji {0} w w\u0119\u017ale {1} w klastrze {2}, poniewa\u017c aplikacja okre\u015bla obs\u0142ug\u0119 funkcji powi\u0105zania ga\u0142\u0119zi zasob\u00f3w, kt\u00f3ra nie jest obs\u0142ugiwana w w\u0119\u017ale.
+WTRN0131_BRANCH_COUPLING_CLUSTER=WTRN0131W: Nie mo\u017cna wdro\u017cy\u0107 aplikacji {0} w w\u0119\u017ale {1} w klastrze {2}, poniewa\u017c aplikacja okre\u015bla obs\u0142ug\u0119 funkcji powi\u0105zania ga\u0142\ufffd\ufffdzi zasob\u00f3w, kt\u00f3ra nie jest obs\u0142ugiwana w w\u0119\u017ale.
 WTRN0131_BRANCH_COUPLING_CLUSTER.explanation=Obs\u0142uga funkcji powi\u0105zania ga\u0142\u0119zi zasob\u00f3w jest dost\u0119pna tylko w w\u0119z\u0142ach w wersji 8.0 lub nowszych.  W\u0119ze\u0142 nie zostanie dodany do klastra.
 WTRN0131_BRANCH_COUPLING_CLUSTER.useraction=Utw\u00f3rz elementy klastra w w\u0119z\u0142ach, w kt\u00f3rych zainstalowano serwer aplikacji w wersji 8.0 (lub nowszej), lub przy u\u017cyciu edytora deskryptora wdra\u017cania aplikacji z pakietu narz\u0119dzi do tworzenia aplikacji usu\u0144 wszystkie ustawienia funkcji powi\u0105zania ga\u0142\u0119zi zasob\u00f3w przed utworzeniem elementu klastra.   Mo\u017cna tego dokona\u0107, przechodz\u0105c do sekcji powi\u0105zania ga\u0142\u0119zi w rozszerzeniach produktu WebSphere i usuwaj\u0105c ustawienie powi\u0105zania ga\u0142\u0119zi dla ka\u017cdego zasobu transakcyjnego.
 
@@ -875,7 +875,7 @@ WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Popraw wszystkie warunki wskazane pr
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: \u017b\u0105danie punktu kontrolnego serwera si\u0119 nie powiod\u0142o, poniewa\u017c us\u0142uga transakcji nie mog\u0142a rozpocz\u0105\u0107 transakcji.
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty nie obs\u0142uguje aplikacji, kt\u00f3re rozpoczynaj\u0105 lub wymagaj\u0105 transakcji podczas uruchamiania aplikacji, gdy za\u017c\u0105dano punktu kontrolnego serwera.
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=U\u017cyj opcji punktu kontrolnego serwera o warto\u015bci at=deployment lub zmodyfikuj aplikacj\u0119, aby rozpocz\u0105\u0107 transakcje po jej uruchomieniu.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Skonfiguruj punkt kontrolny tak, aby wyst\u0119powa\u0142 przed uruchomieniem aplikacji, u\u017cywaj\u0105c opcji punktu kontrolnego beforeApplub zmodyfikuj aplikacj\u0119 tak, aby rozpoczyna\u0142a transakcje po uruchomieniu.
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Aplikacja rozpocz\u0119\u0142a lub wymaga\u0142a transakcji podczas \u017c\u0105dania punktu kontrolnego serwera. Podczas tworzenia transakcji dla tego w\u0105tku zosta\u0142 przechwycony nast\u0119puj\u0105cy stos wywo\u0142a\u0144: {0}

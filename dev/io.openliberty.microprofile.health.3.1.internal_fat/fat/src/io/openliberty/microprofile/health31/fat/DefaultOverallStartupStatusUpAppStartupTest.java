@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.health31.fat;
 
@@ -26,6 +23,7 @@ import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,6 +35,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -64,11 +65,17 @@ public class DefaultOverallStartupStatusUpAppStartupTest {
     @Server(INVALID_SERVER_NAME)
     public static LibertyServer server2;
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
+                                                             MicroProfileActions.MP70_EE10, // mpHealth-4.0 LITE
+                                                             MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL
+                                                             MicroProfileActions.MP41); // mpHealth-3.1 FULL
+
     public void setupClass(LibertyServer server, String testName) throws Exception {
         log("setupClass", testName + " - Deploying the Delayed App into the apps directory and starting the server.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.health31.delayed.health.check.app");
-        ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION, DeployOptions.SERVER_ONLY);
 
         if (!server.isStarted())
             server.startServer(false, false);

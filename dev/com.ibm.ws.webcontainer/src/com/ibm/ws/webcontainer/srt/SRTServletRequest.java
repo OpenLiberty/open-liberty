@@ -1857,6 +1857,11 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
     public HashMap getInputStreamData() throws IOException
     {
+        return getInputStreamData(-1);
+    }
+
+    public HashMap getInputStreamData(long maxAllowedLength) throws IOException
+    {
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
             logger.entering(CLASS_NAME, "getInputStreamData");
             logger.logp(Level.FINE, CLASS_NAME,"getInputStreamData","[" + this + "]");
@@ -1882,7 +1887,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         inStreamInfo.put(INPUT_STREAM_CONTENT_DATA_LENGTH, new Integer(len));
 
         // 516133 allow for no post data
-        if (len > 0)
+        if (len > 0 && (maxAllowedLength > 0 && len <= maxAllowedLength))
         {
             byte[] postedBytes = new byte[len];
 

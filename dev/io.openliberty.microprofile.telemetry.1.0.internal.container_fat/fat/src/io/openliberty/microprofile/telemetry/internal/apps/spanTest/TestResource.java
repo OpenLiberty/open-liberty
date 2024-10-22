@@ -12,6 +12,9 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.apps.spanTest;
 
+import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -82,5 +85,45 @@ public class TestResource {
         Span span = Span.current();
         span.setAttribute(TEST_ATTRIBUTE_KEY, TEST_ATTRIBUTE_VALUE);
         return span.getSpanContext().getTraceId();
+    }
+
+    @GET
+    @Path("/waitForGarbageCollection")
+    public String waitForGarbageCollection() {
+        long startTime = System.nanoTime();
+
+        // This unusual bit of code is to give the gc something to clean up, with methods
+        // We can call so the JIT cannot short circuit.
+        String garbageString = new String("garbage");
+        WeakReference<String> weakRef = new WeakReference<String>(garbageString);
+        garbageString = null;
+
+        for (int i = 0; i < 10; ++i) {
+            System.gc();
+            // give the GC some time to actually do its thing
+
+            String fromWeakRef = weakRef.get();
+
+            // If our WeakReference returned null we know the garbage collector has acted
+            if (fromWeakRef == null) {
+                return "GC success";
+            } else {
+                // Do something with the weak string to be absolutely sure
+                // The JIT doesn't optimise it away
+                @SuppressWarnings("unused")
+                String alsoIgnored = fromWeakRef.replaceAll("a", "A");
+            }
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        long stopTime = System.nanoTime();
+        long seconds = TimeUnit.SECONDS.toSeconds(stopTime - startTime);
+
+        throw new IllegalStateException("The garbage collector did not run after " + seconds + "seconds");
     }
 }

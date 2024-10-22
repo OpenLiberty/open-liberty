@@ -788,6 +788,14 @@ warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: A timeout occurred whil
 warning.timeoutWaitingForServerProcessToStop.explanation=The server did not stop within the time allowed by the timeout value. This might be due to a slow server shutdown or a server hang.   
 warning.timeoutWaitingForServerProcessToStop.useraction=If the server is still running, consider increasing the timeout value for the 'server stop' command. On UNIX-like systems, the server stop command waits for the server process to stop. On Windows, the command waits to obtain a lock on the console.log file. Use file monitoring tools to check whether another program, such as an editor, locked the console.log file.
 
+warning.manual.PPV.env.var=CWWKE0969W: A manual PREFERRED_PLATFORM_VERSION environment variable was specified during server packaging.
+warning.manual.PPV.env.var.explanation=A manual PREFERRED_PLATFORM_VERSION environment variable was set in the environment but will not be included in the server package.
+warning.manual.PPV.env.var.useraction=To retain the PREFERRED_PLATFORM_VERSION environment variable, specify it in the server.env configuration file.
+
+error.read.server.env=CWWKE0970E: Unable to read the server.env file at the {} location.
+error.read.server.env.explanation=Failure to read the server.env file.
+error.read.server.env.useraction=Unable to read the server.env file.  Check file permissions and retry the operation.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.

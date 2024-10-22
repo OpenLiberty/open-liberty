@@ -12,6 +12,11 @@
  *******************************************************************************/
 package test.jakarta.data.experimental.web;
 
+import static io.openliberty.data.repository.Is.Op.GreaterThanEqual;
+import static io.openliberty.data.repository.Is.Op.In;
+import static io.openliberty.data.repository.Is.Op.LessThanEqual;
+import static io.openliberty.data.repository.Is.Op.Not;
+import static io.openliberty.data.repository.Is.Op.Prefixed;
 import static io.openliberty.data.repository.function.Extract.Field.DAY;
 import static io.openliberty.data.repository.function.Extract.Field.HOUR;
 import static io.openliberty.data.repository.function.Extract.Field.MINUTE;
@@ -49,14 +54,11 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
+import io.openliberty.data.repository.Is;
+import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.comparison.GreaterThanEqual;
-import io.openliberty.data.repository.comparison.In;
-import io.openliberty.data.repository.comparison.LessThanEqual;
-import io.openliberty.data.repository.comparison.StartsWith;
 import io.openliberty.data.repository.function.ElementCount;
 import io.openliberty.data.repository.function.Extract;
-import io.openliberty.data.repository.function.Not;
 
 /**
  * Covers various patterns that are extensions to Jakarta Data, such as
@@ -80,13 +82,13 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     @Find
     @Select("meetingID")
     @OrderBy("meetingID")
-    List<Long> endsInMonth(@By("stop") @Extract(MONTH) @In Iterable<Integer> months);
+    List<Long> endsInMonth(@By("stop") @Extract(MONTH) @Is(In) Iterable<Integer> months);
 
     @Find
     @Select("meetingID")
     @OrderBy("meetingID")
-    long[] endsWithinDays(@By("stop") @Extract(DAY) @GreaterThanEqual int minDayOfMonth,
-                          @By("stop") @Extract(DAY) @LessThanEqual int maxDayOfMonth);
+    long[] endsWithinDays(@By("stop") @Extract(DAY) @Is(GreaterThanEqual) int minDayOfMonth,
+                          @By("stop") @Extract(DAY) @Is(LessThanEqual) int maxDayOfMonth);
 
     @Find
     @Select("meetingId")
@@ -130,15 +132,25 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     Stream<Reservation> findByStopOrStart(OffsetDateTime stop, OffsetDateTime start);
 
+    @Find
     @Select("location")
-    Stream<String> findByStopOrStartOrStart(OffsetDateTime stop, OffsetDateTime start1, OffsetDateTime start2);
+    Stream<String> findByStopOrStartAtAnyOf(OffsetDateTime stop,
+                                            @Or @By("start") OffsetDateTime start1,
+                                            @Or @By("start") OffsetDateTime start2);
 
+    @Find
     @Select("meetingID")
-    LongStream findByStopOrStartOrStartOrStart(OffsetDateTime stop, OffsetDateTime start1, OffsetDateTime start2, OffsetDateTime start3);
+    LongStream findByStopOrStartAtAnyOf(OffsetDateTime stop,
+                                        @Or @By("start") OffsetDateTime start1,
+                                        @Or @By("start") OffsetDateTime start2,
+                                        @Or @By("start") OffsetDateTime start3);
 
     // Use a stream of record as the return type
+    @Find
     @Select({ "start", "stop" })
-    Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
+    Stream<ReservedTimeSlot> findByStoppingAtAnyOf(@By("stop") OffsetDateTime stop1,
+                                                   @Or @By("stop") OffsetDateTime stop2,
+                                                   @Or @By("stop") OffsetDateTime stop3);
 
     Page<Reservation> findByHostStartsWith(String hostPrefix, PageRequest pagination, Sort<Reservation> sort);
 
@@ -152,8 +164,12 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     List<Long> findMeetingIdByStopWithSecond(int second);
 
     // Use a record as the return type
+    @Find
     @Select({ "start", "stop" })
-    ReservedTimeSlot[] findTimeSlotByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+    @OrderBy("start")
+    ReservedTimeSlot[] findTimeSlotWithin(String location,
+                                          @By("start") @Is(GreaterThanEqual) OffsetDateTime startAfter,
+                                          @By("start") @Is(LessThanEqual) OffsetDateTime startBefore);
 
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
@@ -166,14 +182,14 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     @Find
     @Select("location")
     @OrderBy("location")
-    List<String> locationsThatStartWith(@By("location") @StartsWith String beginningOfLocationName);
+    List<String> locationsThatStartWith(@By("location") @Is(Prefixed) String beginningOfLocationName);
 
     int removeByHostNotIn(Collection<String> hosts);
 
     @Find
     @Select("meetingID")
     @OrderBy("meetingID")
-    List<Long> startsInQuarterOtherThan(@By("start") @Extract(QUARTER) @Not int quarterToExclude);
+    List<Long> startsInQuarterOtherThan(@By("start") @Extract(QUARTER) @Is(Not) int quarterToExclude);
 
     @Find
     @Select("meetingID")
@@ -183,8 +199,8 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     @Find
     @Select("meetingId")
     @OrderBy("host")
-    List<Long> startsWithinHoursWithMinute(@By("start") @Extract(HOUR) @GreaterThanEqual int minHour,
-                                           @By("start") @Extract(HOUR) @LessThanEqual int maxHour,
+    List<Long> startsWithinHoursWithMinute(@By("start") @Extract(HOUR) @Is(GreaterThanEqual) int minHour,
+                                           @By("start") @Extract(HOUR) @Is(LessThanEqual) int maxHour,
                                            @By("start") @Extract(MINUTE) int minute);
 
     int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);

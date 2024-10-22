@@ -20,18 +20,20 @@ Bundle-Description:  Jakarta Faces, MyFaces 4.1 API
 Implementation-Version: 4.1.0
 
 Export-Package: \
-  jakarta.faces.*; version=${Implementation-Version}, \
-  org.apache.myfaces.core.api.shared.*; version=${Implementation-Version}
+    jakarta.faces.*; version=${Implementation-Version}, \
+    org.apache.myfaces.core.api.shared.*; version=${Implementation-Version}
 
 DynamicImport-Package: \
-  io.openliberty.faces40.internal.spi, \
-  com.ibm.ws.managedobject, \
-  org.apache.myfaces.cdi.util, \
-  org.apache.myfaces.spi
+    io.openliberty.faces40.internal.spi, \
+    com.ibm.ws.managedobject, \
+    org.apache.myfaces.cdi.util, \
+    org.apache.myfaces.spi
 
 # Use this format (4.1.0.RC#)  once we have an official release and not an RC Version
 -includeresource: \
-	@${repo;org.apache.myfaces.core:myfaces-api;4.1.0.RC1;EXACT}!/!(META-INF/maven/*|module-info.class)
+    @${repo;org.apache.myfaces.core:myfaces-api;4.1.0.RC2;EXACT}!/!(META-INF/maven/*|module-info.class), \
+    META-INF=@src/META-INF, \
+    org/apache/myfaces=${bin}/org/apache/myfaces
 
 instrument.disabled: true
 
@@ -39,9 +41,9 @@ publish.wlp.jar.suffix: dev/api/spec
 
 # Use this format (4.1.0.RC#) once we have an official release and not an RC Version
 -buildpath: \
-    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.1.0.RC1
+    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.1.0.RC2,\
+    io.openliberty.jakarta.expressionLanguage.6.0;version=latest
     # org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9;strategy=exact, \
-    # io.openliberty.jakarta.expressionLanguage.5.0;version=latest, \
-    # io.openliberty.jakarta.servlet.6.0;version=latest, \
-    # io.openliberty.jakarta.cdi.4.0;version=latest
+    # io.openliberty.jakarta.servlet.6.1;version=latest, \
+    # io.openliberty.jakarta.cdi.4.1;version=latest
 

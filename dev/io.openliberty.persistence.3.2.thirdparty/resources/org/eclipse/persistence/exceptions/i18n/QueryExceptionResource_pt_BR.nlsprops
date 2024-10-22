@@ -341,7 +341,7 @@
 
 6174=Nenhum valor foi fornecido para a propriedade de sess\u00e3o [{0}]. Essa exce\u00e7\u00e3o \u00e9 poss\u00edvel ao usar crit\u00e9rios adicionais ou colunas de discriminador de locat\u00e1rio sem especificar a propriedade contextual associada. Essas propriedades devem ser configuradas por meio das propriedades EntityManager, EntityManagerFactory ou unidade de persist\u00eancia. Se estiver usando EclipseLink nativo, essas propriedades dever\u00e3o ser configuradas diretamente na sess\u00e3o.
 
-6175=Consultas SQL nativo foram desativadas. Isso \u00e9 feito configurando a propriedade de unidade de persist\u00eancia "eclipselink.jdbc.allow-native-sql-queries" como false ou tendo pelo menos uma entidade multilocat\u00e1rio definida em sua unidade de persist\u00eancia. Verifique a especifica\u00e7\u00e3o de sua unidade de persist\u00eancia. Para permitir consultas sql nativo, configure essa propriedade como true. Como alternativa, consultas individuais poder\u00e3o efetuar bypass dessa configura\u00e7\u00e3o definindo a dica de consulta "eclipselink.jdbc.allow-native-sql-query" como true.
+6175=Consultas SQL nativo foram desativadas. Isso \u00e9 feito configurando a propriedade da unidade de persist\u00eancia "{0}" como false ou tendo pelo menos uma entidade de diversos locat\u00e1rios definida na unidade de persist\u00eancia. Verifique a especifica\u00e7\u00e3o de sua unidade de persist\u00eancia. Para permitir consultas sql nativo, configure essa propriedade como true. Como alternativa, consultas individuais podem ignorar essa configura\u00e7\u00e3o configurando a sugest\u00e3o de consulta "{1}" como true.
 
 6176=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao inicializar o construtor da classe [{0}]: [{1}]
 

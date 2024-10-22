@@ -12,7 +12,7 @@ package io.openliberty.reporting.internal.fat.response;
 
 public class Cves {
 
-    private String cveId;
+    private String id;
 
     private String url;
 
@@ -21,16 +21,16 @@ public class Cves {
     }
 
     public Cves(String cveId, String url) {
-        this.cveId = cveId;
+        this.id = cveId;
         this.url = url;
     }
 
-    public String getCveId() {
-        return this.cveId;
+    public String getId() {
+        return this.id;
     }
 
-    public void setCveId(String cveId) {
-        this.cveId = cveId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUrl() {

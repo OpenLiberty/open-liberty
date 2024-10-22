@@ -17,7 +17,7 @@ import com.ibm.ws.webcontainer.osgi.request.IRequestFactory;
 import com.ibm.ws.webcontainer.osgi.response.IResponseFactory;
 import com.ibm.wsspi.http.HttpInboundConnection;
 
-import io.openliberty.webcontainer60.osgi.request.IRequest60Impl;
+import io.openliberty.webcontainer61.osgi.request.IRequest61Impl;
 import io.openliberty.webcontainer61.osgi.response.IResponse61Impl;
 
 @Component(property = { "service.vendor=IBM", "service.ranking:Integer=61", "servlet.version=6.1" })
@@ -30,7 +30,7 @@ public class IRequestResponseFactory61Impl implements IRequestFactory, IResponse
      */
     @Override
     public IRequest createRequest(HttpInboundConnection inboundConnection) {
-        return new IRequest60Impl(inboundConnection);
+        return new IRequest61Impl(inboundConnection);
     }
 
     /*

@@ -50,7 +50,7 @@ Import-Package: \
   javax.inject,\
   javax.ws.rs.core,\
   org.eclipse.microprofile.rest.client.*;version='!',\
-  org.jboss.resteasy.*; version="[4.7.0,7.0)",\
+  org.jboss.resteasy.*; version="[4.7.0,8.0)",\
   *
 
 DynamicImport-Package: \
@@ -106,11 +106,3 @@ Include-Resource:\
   javax.activation:activation;version=1.1,\
   com.ibm.websphere.appserver.api.basics,\
   com.ibm.ws.kernel.service
-
--testpath: \
-  ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
-  com.ibm.websphere.javaee.mail.1.6,\
-  com.ibm.ws.org.apache.commons.io,\
-  io.openliberty.org.apache.commons.logging,\
-  com.ibm.ws.org.apache.httpcomponents,\
-  com.ibm.ws.org.glassfish.json.1.1

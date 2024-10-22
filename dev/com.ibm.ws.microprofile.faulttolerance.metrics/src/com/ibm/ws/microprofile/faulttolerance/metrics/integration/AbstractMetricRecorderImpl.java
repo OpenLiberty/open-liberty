@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,14 +13,6 @@
 package com.ibm.ws.microprofile.faulttolerance.metrics.integration;
 
 import java.util.function.LongSupplier;
-
-import org.eclipse.microprofile.metrics.Counter;
-import org.eclipse.microprofile.metrics.Gauge;
-import org.eclipse.microprofile.metrics.Histogram;
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.MetricType;
-import org.eclipse.microprofile.metrics.MetricUnits;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -32,6 +24,14 @@ import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider.AsyncTy
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.MetricUnits;
 
 /**
  *
@@ -312,9 +312,9 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
 
     @Trivial
     @Override
-    public synchronized void reportCircuitOpen() {
+    public synchronized void reportCircuitOpen(long now) {
         if (circuitBreakerState != CircuitBreakerState.OPEN) {
-            recordEndOfCircuitBreakerState(circuitBreakerState);
+            recordEndOfCircuitBreakerState(circuitBreakerState, now);
             circuitBreakerState = CircuitBreakerState.OPEN;
             circuitBreakerTimesOpenedCounter.inc();
         }
@@ -323,26 +323,24 @@ public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
     /** {@inheritDoc} */
     @Trivial
     @Override
-    public synchronized void reportCircuitHalfOpen() {
+    public synchronized void reportCircuitHalfOpen(long now) {
         if (circuitBreakerState != CircuitBreakerState.HALF_OPEN) {
-            recordEndOfCircuitBreakerState(circuitBreakerState);
+            recordEndOfCircuitBreakerState(circuitBreakerState, now);
             circuitBreakerState = CircuitBreakerState.HALF_OPEN;
         }
     }
 
     @Trivial
     @Override
-    public synchronized void reportCircuitClosed() {
+    public synchronized void reportCircuitClosed(long now) {
         if (circuitBreakerState != CircuitBreakerState.CLOSED) {
-            recordEndOfCircuitBreakerState(circuitBreakerState);
+            recordEndOfCircuitBreakerState(circuitBreakerState, now);
             circuitBreakerState = CircuitBreakerState.CLOSED;
         }
     }
 
     @Trivial
-    private void recordEndOfCircuitBreakerState(CircuitBreakerState oldState) {
-        long now = System.nanoTime();
-
+    private void recordEndOfCircuitBreakerState(CircuitBreakerState oldState, long now) {
         switch (oldState) {
             case CLOSED:
                 closedNanos += (now - lastCircuitBreakerTransitionTime);

@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/simpleTestService/src, \
+  test-applications/testWebServiceClient/src
+	
+fat.project: true
+
+# These features get added programmatically
+tested.features: \
+  jaxws-2.2,\
+  jaxws-2.3, \
+  jaxb-2.3, \
+  jsp-2.2, \
+  jsp-2.3, \
+  pages-3.0, \
+  servlet-4.0, \
+  servlet-5.0, \
+  xmlBinding-3.0, \
+  xmlWS-3.0, \
+  expressionlanguage-5.0, \
+  xmlws-4.0, \
+  xmlbinding-4.0, \
+  pages-3.1, \
+  servlet-6.0
+
+-buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.jws.1.0;version=latest,\
+	com.sun.xml.messaging.saaj:saaj-impl;version=1.4.0,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	io.openliberty.org.apache.commons.logging;version=latest

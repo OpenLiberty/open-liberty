@@ -53,19 +53,19 @@ public class DataStandaloneTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", "/jimage/output/");
         additionalProps.put("jakarta.profile", "none");
-
-        //FIXME Always skip signature tests since our implementation has experimental API
-        additionalProps.put("included.groups", "standalone & nosql & !signature");
+        additionalProps.put("jakarta.tck.database.type", "document");
+        additionalProps.put("jakarta.tck.database.name", FATSuite.noSQLDatabase.getClass().getSimpleName());
+        additionalProps.put("included.groups", "standalone & nosql");
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
-        String testName = this.getClass() + ":launchDataTckStandaloneNoSQL";
-        Type type = Type.JAKARTA;
-        String specName = "Data (Standalone, NoSQL)";
-        String relativeTckRunner = "publish/tckRunner/standalone/";
-        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
+        TCKRunner.build(DONOTSTART, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("standalone", "NoSQL")
+                        .withRelativeTCKRunner("publish/tckRunner/platform/")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 }

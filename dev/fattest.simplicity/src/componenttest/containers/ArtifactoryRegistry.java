@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package componenttest.containers;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Base64;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
@@ -23,8 +24,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.ibm.websphere.simplicity.log.Log;
-
-import componenttest.topology.utils.ExternalTestService;
 
 /**
  * This class maintains the Artifactory registry information.
@@ -39,7 +38,10 @@ public class ArtifactoryRegistry {
      * Expect this to be set on remote build machines, and local build machines that want to test against
      * remote docker hosts.
      */
-    private static final String artifactoryRegistryKey = "fat.test.artifactory.docker.server";
+    static final String artifactoryRegistryKey = "fat.test.artifactory.docker.server";
+
+    static final String artifactoryRegistryUser = "fat.test.artifactory.download.user";
+    static final String artifactoryRegistryToken = "fat.test.artifactory.download.token";
 
     private String registry = ""; //Blank registry is the default setting
     private String authToken;
@@ -68,7 +70,7 @@ public class ArtifactoryRegistry {
 
         // Priority 2: Are we able to get an auth token to Artifactory?
         try {
-            authToken = requestAuthToken();
+            authToken = generateAuthToken();
         } catch (Throwable t) {
             isArtifactoryAvailable = false;
             setupException = t;
@@ -99,6 +101,22 @@ public class ArtifactoryRegistry {
         return isArtifactoryAvailable;
     }
 
+    /**
+     * Generates a temporary copy of the config.json file and returns the file.
+     */
+    public File generateTempDockerConfig(String registry) throws Exception {
+        if (authToken == null) {
+            throw new IllegalStateException("Auth token was not available", setupException);
+        }
+
+        File configDir = new File(System.getProperty("java.io.tmpdir"), ".docker");
+        File configFile = generateDockerConfig(registry, authToken, configDir);
+
+        Log.info(c, "generateTempDockerConfig", "Creating a temporary docker configuration file at: " + configFile.getAbsolutePath());
+
+        return configFile;
+    }
+
     //  SETUP METHODS
 
     private static String findRegistry() {
@@ -111,14 +129,31 @@ public class ArtifactoryRegistry {
         return registry;
     }
 
-    private static String requestAuthToken() throws Exception {
-        Log.info(c, "requestAuthToken", "Requesting Artifactory registry auth token from consul");
-        String token = ExternalTestService.getProperty("docker-hub-mirror/auth-token");
-        if (token == null || token.isEmpty() || token.startsWith("${")) {
-            throw new IllegalStateException("No valid Artifactory registry auth token was returned from consul");
+    private static String generateAuthToken() throws Exception {
+        final String m = "generateAuthToken";
+        Log.info(c, m, "Generating Artifactory registry auth token from system properties:"
+                       + " [ " + artifactoryRegistryUser + ", " + artifactoryRegistryToken + "]");
+
+        String username = System.getProperty(artifactoryRegistryUser);
+        String token = System.getProperty(artifactoryRegistryToken);
+
+        if (username == null || username.isEmpty() || username.startsWith("${")) {
+            throw new IllegalStateException("No Artifactory username configured. System property '" + artifactoryRegistryUser + "' was: " + username
+                                            + " Ensure Artifactory properties are set in gradle.startup.properties");
         }
-        Log.info(c, "getRegistryAuthToken", "Got Artifactory registry auth token starting with: " + token.substring(0, 4) + "....");
-        return token;
+
+        if (token == null || token.isEmpty() || token.startsWith("${")) {
+            throw new IllegalStateException("No Artifactory username configured. System property '" + artifactoryRegistryToken
+                                            + " was not set. Ensure Artifactory properties are set in gradle.startup.properties");
+        }
+
+        Log.finer(c, m, "Generating Artifactory registry auth token for user " + username);
+
+        String authData = username + ':' + token;
+        String authToken = Base64.getEncoder().encodeToString(authData.getBytes());
+
+        Log.info(c, m, "Generated Artifactory registry auth token starting with: " + authToken.substring(0, 4) + "....");
+        return authToken;
     }
 
     /**

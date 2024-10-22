@@ -17,3 +17,4 @@ Subsystem-Name: Jakarta Enterprise Beans 4.0 Persistent Timers
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
+WLP-Platform: jakartaee-9.1,jakartaee-10.0,jakartaee-11.0

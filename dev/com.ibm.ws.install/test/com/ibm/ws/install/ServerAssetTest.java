@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,12 +19,16 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.ibm.ws.install.internal.InstallUtils;
+import com.ibm.ws.install.internal.InstallUtils.FeaturesPlatforms;
 import com.ibm.ws.install.internal.asset.ServerAsset;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 
@@ -94,6 +98,29 @@ public class ServerAssetTest {
             if (dServerXML.exists())
                 dServerXML.delete();
         }
+    }
+
+    @Test
+    public void testGetServerFeaturesAndPlatforms() throws Exception {
+        initializeTestCase("testGetServerFeaturesAndPlatforms");
+
+        File sServerXML = new File("publish/servers/serverA/server.xml");
+        File dServerXML = new File(testDir, "server.xml");
+
+        try {
+            copyFile(sServerXML, dServerXML);
+            assertTrue("Cannot find server.xml file: " + dServerXML.getCanonicalPath(), dServerXML.isFile());
+
+            ServerAsset sa = new ServerAsset(dServerXML);
+            File serverXmlFile = sa.getServerXmlFile();
+            FeaturesPlatforms fp = InstallUtils.getFeatures(serverXmlFile.getAbsolutePath(), serverXmlFile.getName(), new HashSet<String>());
+            assertTrue(fp.getFeatures().containsAll(Arrays.asList("genericCoreFeature", "featureA-1.0", "featureB-1.0", "featureC-1.0")));
+            assertTrue(fp.getPlatforms().containsAll(Arrays.asList("jakartaee-10.0")));
+        } finally {
+            if (dServerXML.exists())
+                dServerXML.delete();
+        }
+
     }
 
     private static void copyFile(File sourceFile, File destFile) throws IOException {

@@ -85,7 +85,7 @@
 
 50028=Uma nova inst\u00e2ncia de [{0}] n\u00e3o p\u00f4de ser criada.
 
-50029=A classe [{0}] fornecida no XmlCustomizer n\u00e3o implementa a interface org.eclipse.persistence.config.DescriptorCustomizer.
+50029=A classe [{0}] fornecida na interface XmlCustomizer n\u00e3o implementa org.eclipse.persistence.descriptors.DescriptorCustomizer .
 
 50030=Foi feita uma tentativa de configurar mais de uma propriedade XmlID na classe [{1}].  A propriedade [{0}] n\u00e3o pode ser configurada como XmlID, porque a propriedade [{2}] j\u00e1 est\u00e1 configurada como XmlID.
 

@@ -951,3 +951,19 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: L''ID de cl\u00e9 publique {0} ne corre
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=La cl\u00e9 publique a peut-\u00eatre \u00e9t\u00e9 modifi\u00e9e. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Si la cl\u00e9 publique est un fichier local, veillez \u00e0 fournir le fichier correct.
 
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: La plateforme {0} n''a pas pu \u00eatre trouv\u00e9e.
+ERROR_MISSING_PLATFORM_NAME.explanation=Le nom de la plate-forme sp\u00e9cifi\u00e9 par la configuration ou la variable d'environnement n'a pas \u00e9t\u00e9 trouv\u00e9.
+ERROR_MISSING_PLATFORM_NAME.useraction=V\u00e9rifiez l'orthographe du nom et de la version de la plate-forme, par exemple, microProfile-6.1.
+
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: La plate-forme n''a pas pu \u00eatre d\u00e9termin\u00e9e. Les fonctionnalit\u00e9s sans version suivantes ne peuvent pas \u00eatre install\u00e9es : {0}.
+ERROR_NO_DERIVED_PLATFORM.explanation= La plateforme n'a pas \u00e9t\u00e9 d\u00e9finie ou n'a pas pu \u00eatre d\u00e9riv\u00e9e des fonctionnalit\u00e9s existantes versionn\u00e9es. 
+ERROR_NO_DERIVED_PLATFORM.useraction=Ajouter une plateforme pour les fonctionnalit\u00e9s sans version.
+
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: La commande installFeature ne prend pas en charge les fonctionnalit\u00e9s sans version.
+ERROR_VERSIONLESS_INSTALL.explanation= La fonctionnalit\u00e9 que vous avez essay\u00e9 d'installer \u00e0 l'aide de la commande installFeature n'a pas de version sp\u00e9cifi\u00e9e dans le nom de la fonctionnalit\u00e9.
+ERROR_VERSIONLESS_INSTALL.useraction=Utilisez la commande installServerFeatures, qui prend en charge les fonctionnalit\u00e9s sans version, ou installez une fonctionnalit\u00e9 diff\u00e9rente qui n'est pas sans version.
+
+LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Installation sur les plates-formes suivantes : {0}.
+LOG_INSTALL_WITH_PLATFORM.explanation=Les versions de plate-forme sp\u00e9cifi\u00e9es ont \u00e9t\u00e9 utilis\u00e9es pour r\u00e9soudre les fonctionnalit\u00e9s sans version.
+LOG_INSTALL_WITH_PLATFORM.useraction=Aucune action n'est requise.
+

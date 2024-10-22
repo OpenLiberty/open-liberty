@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.experimental.web;
 
+import static io.openliberty.data.repository.Is.Op.In;
+
 import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -24,8 +26,8 @@ import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 
+import io.openliberty.data.repository.Is;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.comparison.In;
 import io.openliberty.data.repository.update.Assign;
 
 /**
@@ -35,7 +37,7 @@ import io.openliberty.data.repository.update.Assign;
 public interface Shipments {
     @Update
     boolean cancel(long id,
-                   @By("status") @In Set<String> currentStatus,
+                   @By("status") @Is(In) Set<String> currentStatus,
                    @Assign("status") String newStatus,
                    @Assign("canceledAt") OffsetDateTime timeOfCancellation);
 

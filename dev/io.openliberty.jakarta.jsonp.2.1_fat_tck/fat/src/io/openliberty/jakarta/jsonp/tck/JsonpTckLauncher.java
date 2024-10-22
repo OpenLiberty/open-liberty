@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -38,6 +39,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 11)
+@MaximumJavaLevel(javaLevel = 21) //Possibility to fail on Java 23 due to CLDR updates https://jdk.java.net/23/release-notes#JDK-8319990
 public class JsonpTckLauncher {
 
     //This is a standalone test no server needed
@@ -66,11 +68,10 @@ public class JsonpTckLauncher {
         // Persist the java.io.tempdir property from this test client to the TCK.
         additionalProps.put("java.io.tmpdir", PrivHelper.getProperty("java.io.tmpdir", "/tmp"));
 
-        String bucketName = "io.openliberty.jakarta.jsonp.2.1_fat_tck";
-        String testName = this.getClass() + ":launchJsonp21TCK";
-        Type type = Type.JAKARTA;
-        String specName = "JSON Processing";
-        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonp")
+                        .withPlatfromVersion("10")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
     /**
@@ -80,21 +81,16 @@ public class JsonpTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchJsonp21PluggabilityTCK() throws Exception {
 
-        /**
-         * The runTCKMvnCmd will set the following properties for use by arquillian
-         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
-         * and then run the mvn test command.
-         */
         // Including jakarta.json-tck-tests and jakarta.json-tck-tests-pluggability together causes
         // exceptions due to collisions, so created 2 separate profiles which are then
         // run individually
         Map<String, String> additionalPluggabilityProps = new HashMap<>();
         additionalPluggabilityProps.put("run-tck-tests-pluggability", "true");
 
-        String bucketName = "io.openliberty.jakarta.jsonp.2.1_fat_tck";
-        String testName = this.getClass() + ":launchJsonp21PluggabilityTCK";
-        Type type = Type.JAKARTA;
-        String specName = "JSON Processing";
-        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, additionalPluggabilityProps);
+        TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonp")
+                        .withPlatfromVersion("10")
+                        .withQualifiers("pluggability")
+                        .withAdditionalMvnProps(additionalPluggabilityProps)
+                        .runTCK();
     }
 }

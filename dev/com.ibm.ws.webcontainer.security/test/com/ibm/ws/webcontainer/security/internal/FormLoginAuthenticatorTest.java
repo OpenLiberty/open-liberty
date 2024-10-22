@@ -132,6 +132,8 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(null));
                 allowing(webAppSecConfig).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                allowing(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(null));
 
             }
         });
@@ -287,11 +289,12 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue("/snoop"));
                 allowing(extReq).getMethod();
                 will(returnValue("POST"));
-                one(extReq).getAttribute(PostParameterHelper.ATTRIB_HASH_MAP); //
+                allowing(extReq).getAttribute(PostParameterHelper.ATTRIB_HASH_MAP); //
                 will(returnValue(paramMap)); //
-                one(extReq).setAttribute(PostParameterHelper.ATTRIB_HASH_MAP, null); //
-                one(extReq).setInputStreamData((HashMap) paramMap); //
-                allowing(extReq).getInputStreamData();
+                allowing(extReq).setAttribute(PostParameterHelper.ATTRIB_HASH_MAP, null); //
+                allowing(extReq).setInputStreamData((HashMap) paramMap); //
+                allowing(webAppSecConfig).postParamMaxRequestBodySize();
+                allowing(extReq).getInputStreamData(1024 * 1024 * 128L);
                 will(returnValue(paramMap));
                 allowing(extReq).sizeInputStreamData(paramMap);
                 will(returnValue(100L));
@@ -319,6 +322,8 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(true));
                 allowing(webAppSecConfig).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                allowing(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(null));
             }
         });
 
@@ -398,7 +403,7 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(paramMap)); //
                 allowing(extReq).setAttribute(PostParameterHelper.ATTRIB_HASH_MAP, null);//
                 allowing(extReq).setInputStreamData((HashMap) paramMap); //
-                allowing(extReq).getInputStreamData();
+                allowing(extReq).getInputStreamData(1024 * 1024 * 128L);
                 will(returnValue(paramMap));
                 allowing(extReq).isSecure();
                 will(returnValue(true));
@@ -411,9 +416,9 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(session));
                 allowing(extReq).getParameterNames();
                 will(returnValue(paramEnum));
-                one(session).setAttribute(PostParameterHelper.INITIAL_URL, reqURI);
-                one(session).setAttribute(PostParameterHelper.PARAM_NAMES, null);
-                one(session).setAttribute(PostParameterHelper.PARAM_VALUES, paramMap);
+                allowing(session).setAttribute(PostParameterHelper.INITIAL_URL, reqURI);
+                allowing(session).setAttribute(PostParameterHelper.PARAM_NAMES, null);
+                allowing(session).setAttribute(PostParameterHelper.PARAM_VALUES, paramMap);
 
                 // Back in handleRedirect()
                 allowing(extReq).getQueryString();
@@ -426,6 +431,8 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(true));
                 allowing(webAppSecConfig).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                allowing(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(null));
             }
         });
 

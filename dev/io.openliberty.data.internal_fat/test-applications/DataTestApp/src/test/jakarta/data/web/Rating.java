@@ -1,0 +1,49 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package test.jakarta.data.web;
+
+import java.util.Set;
+
+/**
+ * Entity that is a Java record with embeddable and collection attributes.
+ */
+public record Rating(
+                int id,
+                Item item,
+                int numStars,
+                Reviewer reviewer,
+                Set<String> comments) {
+
+    public static record Reviewer(
+                    String firstName, // TODO nested record embeddable for Name(first, last) ?
+                    String lastName,
+                    String email) {
+    }
+
+    public static class Item {
+        public String name;
+
+        public float price;
+
+        public Item() {
+        }
+
+        public Item(String name, float price) {
+            this.name = name;
+            this.price = price;
+        }
+
+        @Override
+        public String toString() {
+            return "Item: " + name + " $" + price;
+        }
+    }
+}

@@ -16,3 +16,4 @@ Subsystem-Name: Jakarta JSON Binding 3.0 Container
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: jakartaee-10.0,jakartaee-11.0

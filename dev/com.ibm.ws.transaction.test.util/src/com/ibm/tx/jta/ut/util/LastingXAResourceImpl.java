@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,9 +28,6 @@ import javax.sql.DataSource;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.Xid;
 
-/**
- *
- */
 public class LastingXAResourceImpl extends XAResourceImpl {
 
     /**  */
@@ -44,8 +41,8 @@ public class LastingXAResourceImpl extends XAResourceImpl {
     protected static boolean _attemptedFileInit;
 
     public static boolean STORE_STATE_IN_DATABASE = true;
-    public static boolean INTERRUPT_IN_RECOVERY = false;
-    private static dbStore _dbStore = null;
+    public static boolean INTERRUPT_IN_RECOVERY;
+    private static dbStore _dbStore;
 
     static {
         stateKeeper = new LastingStateKeeperImpl();
@@ -62,7 +59,6 @@ public class LastingXAResourceImpl extends XAResourceImpl {
             if (_dbStore == null) {
                 try {
 					_dbStore = new dbStore();
-	                _dbStore.clear();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -494,20 +490,8 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                     String resKey = xares.key;
                     if (DEBUG_OUTPUT) {
                         System.out.println("putXAResources Insert row for key: " + resKey);
-                        System.out.println("And data with XID: " + xares.getXid());
+                        System.out.println("And data with XID: " + xares.getXids());
                     }
-
-                    // By storing an object of type XID (a local implementation of the standard xid interface and in the same package as this class)
-                    // we can later get recovery to work. This almost seems like black magic but relies on the ability of the current recovery code
-                    // to be able to (a) see the XID implementation of the xid interface and (b) to convert the XID into an XidImpl.
-                    // If I leave the stored Xid as an XidImpl, the user feature gets a ClassDefNotFound exc when deserializing an XidImpl. It cannot
-                    // see the appropriate system feature's classes.
-                    Xid oldXID = xares.getXid();
-                    int newFormatId = oldXID.getFormatId();
-                    byte[] newGid = oldXID.getGlobalTransactionId();
-                    byte[] newBranchQualifier = oldXID.getBranchQualifier();
-                    XID newXID = new XID(newFormatId, newGid, newBranchQualifier);
-                    xares.setXid(newXID);
 
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -594,4 +578,11 @@ public class LastingXAResourceImpl extends XAResourceImpl {
 	public static LastingXAResourceImpl getLastingXAResourceImpl() {
         return new LastingXAResourceImpl();
 	}
+
+    public synchronized static int loadState() {
+        final int numResources = stateKeeper.loadState();
+        _stateLoaded = true;
+        printState();
+        return numResources;
+    }
 }

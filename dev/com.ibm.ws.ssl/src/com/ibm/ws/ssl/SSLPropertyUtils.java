@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.ssl;
 
+import java.net.InetAddress;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -151,7 +152,8 @@ public class SSLPropertyUtils {
         if (properties != null) {
             // get the cipher suites
             String[] ciphers = SSLConfigManager.getInstance().getCipherList(properties, socket);
-            sslParameters = createSSLParameters(properties, sslParameters, ciphers);
+            String endpointIdentificationAlgorithm = getEndpointIdentificationAlgorithm(properties, socket, null);
+            sslParameters = createSSLParameters(properties, sslParameters, ciphers, endpointIdentificationAlgorithm);
             socket.setSSLParameters(sslParameters);
         }
 
@@ -169,7 +171,8 @@ public class SSLPropertyUtils {
         if (properties != null) {
             // get the cipher suites
             String[] ciphers = SSLConfigManager.getInstance().getCipherList(properties, socket);
-            sslParameters = createSSLParameters(properties, sslParameters, ciphers);
+            String endpointIdentificationAlgorithm = getEndpointIdentificationAlgorithm(properties, null, socket);
+            sslParameters = createSSLParameters(properties, sslParameters, ciphers, endpointIdentificationAlgorithm);
             socket.setSSLParameters(sslParameters);
         }
 
@@ -181,7 +184,7 @@ public class SSLPropertyUtils {
      * Returns SSLParameters to set on the Socket.
      * SSLParameters consist of cipher suites, protocol and hostname verification.
      */
-    private static SSLParameters createSSLParameters(Properties properties, SSLParameters sslParameters, String[] ciphers) {
+    private static SSLParameters createSSLParameters(Properties properties, SSLParameters sslParameters, String[] ciphers, String endpointIdentificationAlgorithm) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "createSSLParameters properties=" + properties
                          + "\nsslParameters=" + sslParameters + "\nciphers=" + ciphers);
@@ -196,16 +199,44 @@ public class SSLPropertyUtils {
             if (protocols != null)
                 sslParameters.setProtocols(protocols);
 
-            //Enable hostname verification
-            String enableEndpointId = properties.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
-            if (enableEndpointId != null && enableEndpointId.equalsIgnoreCase("true")) {
-                sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
-            }
+            //Set hostname verification
+            sslParameters.setEndpointIdentificationAlgorithm(endpointIdentificationAlgorithm);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "createSSLParameters sslParameters=" + sslParameters);
 
         return sslParameters;
+    }
+
+    private static String getEndpointIdentificationAlgorithm(Properties properties, SSLSocket sslSocket, SSLServerSocket serverSocket) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(tc, "getEndpointIdentificationAlgorithm");
+        String endpointId = "HTTPS";
+
+        String verifyHostname = properties.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true");
+        if ("true".equalsIgnoreCase(verifyHostname)) {
+            String allowHostList = properties.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS, "");
+            InetAddress remoteInetAddr = null;
+            if (sslSocket != null)
+                remoteInetAddr = sslSocket.getInetAddress();
+            else if (serverSocket != null)
+                remoteInetAddr = serverSocket.getInetAddress();
+
+            if (remoteInetAddr != null) {
+                if (Constants.isSkipHostnameVerificationForHosts(remoteInetAddr.getHostName(), allowHostList) ||
+                    Constants.isSkipHostnameVerificationForHosts(remoteInetAddr.getHostAddress(), allowHostList)) {
+                    endpointId = null;
+                }
+            }
+            else {
+                if (tc.isDebugEnabled()) Tr.debug(tc, "remoteInetAddr is NULL, Socket is not connected at this moment. " + Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS + " property is not used.");
+            }
+        } else {
+            endpointId = null;
+        }
+
+        // endpointId == null means Hostname Verification is DISABLED
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(tc, "getEndpointIdentificationAlgorithm " + endpointId);
+        return endpointId;
     }
 }

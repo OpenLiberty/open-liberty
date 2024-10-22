@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
-
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Properties;
@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * replacePackages, containsWildcard, and stripWildcard methods
  * were pulled from https://github.com/tbitonti/jakartaee-prototype
  * -- org.eclipse.transformer.action.impl.SignatureRuleImpl
- * 
+ *
  * @param  text           String embedding zero, one, or more package names.
  * @param  packageRenames map of names and replacement values
  * @return                The text with all embedded package names replaced. Original text if no
@@ -38,9 +38,19 @@ public class EE9PackageReplacementHelper {
     private static final Logger Log = Logger.getLogger(EE9PackageReplacementHelper.class.getName());
 
     public EE9PackageReplacementHelper(String rulesPath) {
+        File rulesFile = new File(rulesPath);
+        if (!rulesFile.exists()) {
+            String mesg = "Unable to find the transformer rules for doing package replacement for ExpectedFFDC and AllowedFFDC annotations.\n" +
+                          "IF applications are already Jakarta-based, update to call setSkipTransformation(true) on your JakartaEEAction repeat action(s)\n" +
+                          "or update MicroProfileActions or EERepeatActions repeat method call to pass true to a repeat method with a skipTransformation argument.\n" +
+                          "OTHERWISE, did you include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FAT's build.gradle file?";
+            Log.severe(mesg);
+            throw new RuntimeException(mesg);
+
+        }
         Properties appProps = new Properties();
         try {
-            appProps.load(new FileInputStream(rulesPath));
+            appProps.load(new FileInputStream(rulesFile));
             packageRenameRules = (Map) appProps;
         } catch (Exception e) {
             Log.warning("Error occured when reading in " + rulesPath);
@@ -49,9 +59,9 @@ public class EE9PackageReplacementHelper {
     }
 
     public EE9PackageReplacementHelper() {
-            this(System.getProperty("user.dir") + "/autoFVT-templates/" + "jakarta-renames.properties");
+        this(System.getProperty("user.dir") + "/autoFVT-templates/" + "jakarta-renames.properties");
     }
-    
+
     public String replacePackages(String text) {
         return replacePackages(text, this.packageRenameRules);
     }
@@ -69,12 +79,12 @@ public class EE9PackageReplacementHelper {
 
         Log.info("Initial text [ " + text + " ]");
 
-		String initialText = text;
+        String initialText = text;
 
-		for (Map.Entry<String, String> renameEntry : packageRenames.entrySet() ) {
-			String key = renameEntry.getKey();
-			int keyLen = key.length();
-			
+        for (Map.Entry<String, String> renameEntry : packageRenames.entrySet()) {
+            String key = renameEntry.getKey();
+            int keyLen = key.length();
+
             boolean matchSubpackages = containsWildcard(key);
             if (matchSubpackages) {
                 key = stripWildcard(key);
@@ -125,7 +135,7 @@ public class EE9PackageReplacementHelper {
      */
     public boolean isTruePackageMatch(String text, int matchStart, int keyLen, boolean matchSubpackages) {
 
-        //       Log.info("isTruePackageMatch:" 
+        //       Log.info("isTruePackageMatch:"
         //                           + " text[" + text + "]"
         //                           + " key[" + text.substring(matchStart, matchStart + keyLen) + "]"
         //                           + " tail[" + text.substring(matchStart + keyLen)
@@ -145,15 +155,15 @@ public class EE9PackageReplacementHelper {
 
             char charAfterMatch = text.charAt(matchEnd);
 
-            // Check the next character can also be part of a package name then 
+            // Check the next character can also be part of a package name then
             // we are looking at a larger package name, and thus not a match.
             if (Character.isJavaIdentifierPart(charAfterMatch)) {
                 return false;
             }
 
-            // If the next char is dot, check the character after the dot.  Assume an upper case letter indicates the start of a 
-            // class name and thus the end of the package name which indicates a match. ( This means this doesn't work 
-            // for package names that do not follow the convention of using lower case characters ).            
+            // If the next char is dot, check the character after the dot.  Assume an upper case letter indicates the start of a
+            // class name and thus the end of the package name which indicates a match. ( This means this doesn't work
+            // for package names that do not follow the convention of using lower case characters ).
             // If lower case, then it indicates we are looking at a larger package name, and thus not a match.
             // If the character after the dot is a number, also assume the number is a continuation of the package name.
             if (!matchSubpackages) {
@@ -173,13 +183,13 @@ public class EE9PackageReplacementHelper {
     /**
      * Determines if the key contains a wildcard suffix which indicates
      * that sub-package names are to be matched.
-     * 
+     *
      * Packages names and their replacements are specified in properties files
      * in key=value pairs or more specifically oldPackageName=newPackageName
-     * 
+     *
      * The key can contain a ".*" suffix which indicates that sub-packages are a
      * match.
-     * 
+     *
      * @param  key package name
      * @return     true if sub-packages are to be matched
      */
@@ -193,7 +203,7 @@ public class EE9PackageReplacementHelper {
 
     public String stripWildcard(String key) {
         if (key.endsWith(".*")) {
-            key = key.substring(0, key.length() - 2 );
+            key = key.substring(0, key.length() - 2);
         }
         return key;
     }

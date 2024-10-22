@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,8 @@
  *******************************************************************************/
 package tests;
 
-import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -25,14 +25,15 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode
 @RunWith(FATRunner.class)
-@AllowedFFDC(value = { "java.sql.SQLRecoverableException", "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
+@AllowedFFDC(value = { "java.sql.SQLRecoverableException", "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException",
+                       "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
 public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1 {
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
-    public static LibertyServer firstServer;
+    public static LibertyServer s1;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002")
-    public static LibertyServer secondServer;
+    public static LibertyServer s2;
 
     public static String[] serverNames = new String[] {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001",
@@ -41,7 +42,7 @@ public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setup(firstServer, secondServer, "Simple2PCCloudServlet", "cloud001");
+        setup(s1, s2, "Simple2PCCloudServlet", "cloud001");
     }
 
     @AfterClass
@@ -49,8 +50,8 @@ public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1
         dropTables();
     }
 
-    @After
+    @Before
     public void tearDown() throws Exception {
-        tidyServersAfterTest(server1, server2);
+        serversToCleanup = new LibertyServer[] { s1, s2 };
     }
 }

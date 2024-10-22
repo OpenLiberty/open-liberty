@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Virtual Thread API Access
+Bundle-SymbolicName: io.openliberty.threading.virtual
+Bundle-Description: Virtual Thread API access; version=${bVersion}
+
+WS-TraceGroup: threading
+
+instrument.classesExcludes: io/openliberty/threading/virtual/resources/*.class
+
+publish.wlp.jar.disabled: true
+
+Export-Package: io.openliberty.threading.virtual
+
+-buildpath: \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest

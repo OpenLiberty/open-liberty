@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,14 +62,17 @@ public interface RecoveryLog {
      * in the client service.
      * </p>
      *
+     * @param localRecovery
+     *
      * @exception LogCorruptedException    The recovery log has become corrupted and
      *                                         cannot be opened.
      * @exception LogAllocationException   The recovery log could not be created.
      * @exception InternalLogException     An unexpected failure has occured.
      * @exception LogIncompatibleException An attempt has been made to open a recovery log
      *                                         that is not compatible with this service
+     * @throws PeerLogsMissingException
      */
-    public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException, LogIncompatibleException;
+    public void openLog(boolean localRecovery) throws LogCorruptedException, LogAllocationException, InternalLogException, LogIncompatibleException, PeerLogsMissingException;
 
     //------------------------------------------------------------------------------
     // Method: RecoveryLog.closeLog

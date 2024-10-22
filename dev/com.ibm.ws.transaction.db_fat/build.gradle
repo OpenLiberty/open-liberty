@@ -17,11 +17,15 @@ configurations {
 }
 
 dependencies {
-  requiredLibs project(":com.ibm.ws.transaction.fat.util")
+  requiredLibs (project(":com.ibm.ws.transaction.fat.util")) {
+    transitive = false
+  }
 }
 
 dependencies {
-  postgres 'org.postgresql:postgresql:42.7.2'
+  postgres ('org.postgresql:postgresql:42.7.2') {
+    transitive = false
+  }
 }
 
 task copySharedPostgres(type: Copy) {

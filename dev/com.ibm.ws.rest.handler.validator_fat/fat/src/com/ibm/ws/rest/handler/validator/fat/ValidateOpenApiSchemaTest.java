@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -127,7 +127,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      * honors the format=json parameter.
      */
     private void testAllValidatorsAsJSON(String contextRoot) throws Exception {
-        HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation?format=json");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, contextRoot + "/platform/validation?format=json");
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
         JsonObject paths = json.getJsonObject("paths");
@@ -171,7 +171,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      * is returned in YAML format by default.
      */
     private void testAllValidatorsAsYAML(String contextRoot) throws Exception {
-        HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, contextRoot + "/platform/validation");
         String yaml = request.run(String.class);
         SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
         assertNotNull(result);
@@ -200,7 +200,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      */
     @Test
     public void testDefaultDataSource() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/dataSource/DefaultDataSource")
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/DefaultDataSource")
                         .requestProp("X-Validation-User", "dbuser1")
                         .requestProp("X-Validation-Password", "dbpwd1");
         JsonObject json = request.run(JsonObject.class);
@@ -224,7 +224,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      */
     @Test
     public void testDefaultJMSConnectionFactory() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/DefaultJMSConnectionFactory");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsConnectionFactory/DefaultJMSConnectionFactory");
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
         assertEquals(err, "DefaultJMSConnectionFactory", json.getString("uid"));
@@ -266,7 +266,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         try (AutoCloseable x = withoutFeatures("cloudant-1.0")) {
 
             //Test that cloudant elements have been removed from the OpenAPI document.
-            HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
+            HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, contextRoot + "/platform/validation");
             JsonObject json = request.requestProp("Accept", "application/json").run(JsonObject.class);
             String err = "Unexpected json response: " + json.toString();
             JsonObject paths = json.getJsonObject("paths");
@@ -313,7 +313,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
                                                "connectors", "messaging", "messagingClient", "messagingServer")) {
 
             //Test that JCA and JMS elements have been removed from the OpenAPI document.
-            HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
+            HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, contextRoot + "/platform/validation");
             String yaml = request.run(String.class);
             SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
             assertNotNull(result);
@@ -362,7 +362,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         //Disable JDBC.
         try (AutoCloseable x = withoutFeatures("jdbc")) {
             //Test that JDBC elements have been removed from the OpenAPI document.
-            HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
+            HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, contextRoot + "/platform/validation");
             String yaml = request.run(String.class);
             SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
             assertNotNull(result);
@@ -412,7 +412,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         try (AutoCloseable x = withoutFeatures("jms", "wasjmsclient", "wasjmsserver",
                                                "messaging", "messagingClient", "messagingServer")) {
             //Test that JMS elements have been removed from the OpenAPI document.
-            HttpsRequest request = new HttpsRequest(server, contextRoot + "/platform/validation");
+            HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, contextRoot + "/platform/validation");
             String yaml = request.run(String.class);
             SwaggerParseResult result = new OpenAPIParser().readContents(yaml, null, null, null);
             assertNotNull(result);
@@ -444,7 +444,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
     @AllowedFFDC("java.lang.ClassNotFoundException")
     @Test
     public void testWrongLibraryForCloudant() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/cldb");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/cloudantDatabase/cldb");
         JsonObject json = request.run(JsonObject.class);
         String err = "Unexpected json response: " + json.toString();
         assertEquals(err, "cldb", json.getString("uid"));

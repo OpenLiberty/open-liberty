@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer31.srt;
 
@@ -37,7 +34,6 @@ import com.ibm.websphere.servlet31.request.IRequest31;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.webcontainer.servlet.RequestUtils;
 import com.ibm.ws.webcontainer.srt.SRTInputStream;
-import com.ibm.ws.webcontainer.srt.SRTRequestContext;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
@@ -374,9 +370,15 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
 
     public HashMap getInputStreamData() throws IOException
     {
+        return getInputStreamData(-1);
+    }
+
+    public HashMap getInputStreamData(long maxAllowedLength) throws IOException
+    {
+        String methodName = "getInputStreamData";
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-            logger.entering(CLASS_NAME, "getInputStreamData");
-            logger.logp(Level.FINE, CLASS_NAME,"getInputStreamData","[" + this + "]");
+            logger.entering(CLASS_NAME, methodName);
+            logger.logp(Level.FINE, CLASS_NAME,methodName,"[" + this + "]");
         }
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
@@ -398,7 +400,7 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
 
         inStreamInfo.put(INPUT_STREAM_CONTENT_DATA_LENGTH, len);
 
-        if (len>0) {        
+        if (len>0 && (maxAllowedLength > 0 && len <= maxAllowedLength)) {
             int bufferLen=0, MaxBufferSize = WCCustomProperties.SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA;
             long arraySize = len/MaxBufferSize;
             if (len%MaxBufferSize>0) arraySize++;
@@ -409,7 +411,7 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
 
             byte[][] bytes = new byte[(int)arraySize][];
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-                logger.logp(Level.FINE, CLASS_NAME, "getInputStreamData","data length = " + Long.toString(len) + ", MaxBufferSize = " + MaxBufferSize + ", Array size = " + arraySize);
+                logger.logp(Level.FINE, CLASS_NAME, methodName,"data length = " + Long.toString(len) + ", MaxBufferSize = " + MaxBufferSize + ", Array size = " + arraySize);
 
             for (int i= 0; len > lenRead ; i++)
             {
@@ -422,7 +424,7 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
                 bytes[i]  = new byte[bufferLen];
 
                 if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-                    logger.logp(Level.FINE, CLASS_NAME, "getInputStreamData","buffer " + i + " of length " + bufferLen + ", left to read = " + Long.toString(len-lenRead));
+                    logger.logp(Level.FINE, CLASS_NAME, methodName,"buffer " + i + " of length " + bufferLen + ", left to read = " + Long.toString(len-lenRead));
                 offset = 0;
                 do {
                     inputLen = in.read(bytes[i], offset, bufferLen - offset);
@@ -430,7 +432,7 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
                         String msg = nls.getString("post.body.contains.less.bytes.than.specified", "post body contains less bytes than specified by content-length");
                         throw new IOException(msg);
                     }
-                    logger.logp(Level.FINE, CLASS_NAME, "getInputStreamData","read of " +  inputLen + " bytes.");
+                    logger.logp(Level.FINE, CLASS_NAME, methodName,"read of " +  inputLen + " bytes.");
                     offset += inputLen;
                 }
                 while ((bufferLen - offset) > 0);  
@@ -438,6 +440,7 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
             }     
             inStreamInfo.put(INPUT_STREAM_CONTENT_DATA, bytes);
         } else {
+            logger.logp(Level.FINE, CLASS_NAME, methodName, "Content length (" + len + ") was either <= 0 or > " + maxAllowedLength + ", so no bytes were read");
             inStreamInfo.put(INPUT_STREAM_CONTENT_DATA, null);
         }
 
@@ -446,8 +449,8 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
         }
 
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-            logger.logp(Level.FINE, CLASS_NAME,"getInputStreamData","ContentType = " + this.getContentType() + ", data length = " + len);
-            logger.exiting(CLASS_NAME, "getInputStreamData");
+            logger.logp(Level.FINE, CLASS_NAME,methodName,"ContentType = " + this.getContentType() + ", data length = " + len);
+            logger.exiting(CLASS_NAME, methodName);
         }
 
         return inStreamInfo;

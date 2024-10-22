@@ -14,9 +14,9 @@
     
     <featureManager>
         <feature>componentTest-2.0</feature>
-        <feature>restfulWS-3.1</feature>
+        <feature>restfulWS-3.0</feature>
         <feature>mpRestClient-3.0</feature>
-        <feature>jsonb-3.0</feature>
+        <feature>jsonb-2.0</feature>
         <feature>transportSecurity-1.0</feature>
 	</featureManager>
 	
@@ -38,6 +38,6 @@
     <!-- <webApplication contextRoot="/" /> -->
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
-    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+	<ssl id="defaultSSLConfig" />
 
 </server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,14 +17,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.Policy;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -445,7 +442,7 @@ public class KernelBootstrap {
 
             NameBasedLocalBundleRepository repo = new NameBasedLocalBundleRepository(bootProps.getInstallRoot());
             File bestMatchFile = repo.selectBundle("com.ibm.ws.org.eclipse.equinox.region",
-                                                   VersionUtility.stringToVersionRange("[1.0,1.0.100)"));
+                                                   VersionUtility.stringToVersionRange("[1.0,1.1)"));
             if (bestMatchFile == null) {
                 throw new LaunchException("Could not find bundle for " + "com.ibm.ws.org.eclipse.equinox.region"
                                           + ".", BootstrapConstants.messages.getString("error.missingBundleException"));
@@ -564,7 +561,7 @@ public class KernelBootstrap {
         //retrieve information for header
         String serverName = bootProps.get(BootstrapConstants.INTERNAL_SERVER_NAME);
         String wlpUserDir = System.getProperty("wlp.user.dir");
-        String serverHostName = getServerHostName();
+        String serverHostName = KernelUtils.getServerHostName();
         String datetime = getDatetime();
         String sequenceNumber = getSequenceNumber();
 
@@ -636,29 +633,6 @@ public class KernelBootstrap {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         String datetime = dateFormat.format(System.currentTimeMillis());
         return datetime;
-    }
-
-    private static String getServerHostName() {
-        String serverHostName = null;
-        //Resolve server name to be the DOCKER HOST name or the cannonical host name.
-        String containerHost = System.getenv("CONTAINER_HOST");
-        if (containerHost == null || containerHost.equals("") || containerHost.length() == 0) {
-            try {
-                serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                    @Override
-                    public String run() throws UnknownHostException {
-                        return InetAddress.getLocalHost().getCanonicalHostName();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                serverHostName = "";
-            }
-        } else {
-            serverHostName = containerHost;
-        }
-        return serverHostName;
     }
 
     /**

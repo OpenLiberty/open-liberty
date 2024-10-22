@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.internal;
 
@@ -33,6 +30,8 @@ import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * Represents security configurable options for web applications.
@@ -73,7 +72,9 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
     public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
     public static final String CFG_KEY_SAME_SITE_COOKIE = "sameSiteCookie";
+    public static final String CFG_KEY_PARTITIONED_COOKIE = "partitionedCookie";
     public static final String CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH = "useContextRootForSSOCookiePath";
+    public static final String CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS = "postParamMaxRequestBodySize";
 
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;
@@ -105,7 +106,9 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final String loginFormContextRoot;
     private final String basicAuthRealmName;
     private final String sameSiteCookie;
+    private Boolean partitionedCookie = null; // in BETA, mark as final once GA'ed
     private final Boolean useContextRootForSSOCookiePath;
+    private final Long postParamMaxRequestBodySize;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -145,7 +148,11 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
             put(CFG_KEY_SAME_SITE_COOKIE, "sameSiteCookie");
+            if (ProductInfo.getBetaEdition()) {
+                put(CFG_KEY_PARTITIONED_COOKIE, "partitionedCookie");
+            }
             put(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH, "useContextRootForSSOCookiePath");
+            put(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS, "postParamMaxRequestBodySize");
         }
     };
 
@@ -190,6 +197,17 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         sameSiteCookie = (String) newProperties.get(CFG_KEY_SAME_SITE_COOKIE);
         useContextRootForSSOCookiePath = (Boolean) newProperties.get(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH);
+        postParamMaxRequestBodySize = (Long) newProperties.get(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS);
+
+        String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
+        if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
+            // we want partitionedCookie to be null unless the value is true or false
+            // defer is the default value which mean that the channel config determines the partitioned value
+            // if the value is true / false then this config was explicltly set by the user
+            partitionedCookie = getBooleanValue(CFG_KEY_PARTITIONED_COOKIE, partValue);
+        } else { // defer scenario - partitioned should not set on any cookies by the security code
+            partitionedCookie = null;
+        }
 
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
@@ -592,8 +610,42 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         return sameSiteCookie;
     }
 
+    // Boolean object is used so that we can distinguish between
+    // true/false/not set
+    @Override
+    public Boolean getPartitionedCookie() {
+        return partitionedCookie;
+    }
+
+    @Override
+    public boolean isPartitionedCookie() {
+        if (partitionedCookie!=null && partitionedCookie==Boolean.TRUE) {
+          return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean isUseContextRootForSSOCookiePath() {
         return useContextRootForSSOCookiePath;
     }
+
+    @Override
+    public long postParamMaxRequestBodySize() {
+        return postParamMaxRequestBodySize.longValue();
+    }
+
+    // This method is for config users that need to know if an admin has provided a true/false or no value for a
+    // boolean config attribute.  The current infrastructure does not properly support this
+    public static Boolean getBooleanValue(String attribute, String strValue) {
+      Boolean retVal = null;
+      if (strValue!=null && strValue.length()>0) {
+        //only values that config gives us are true/false/defer
+        if ("true".equalsIgnoreCase(strValue) || "false".equalsIgnoreCase(strValue)) {
+          retVal = Boolean.valueOf(strValue);
+        } 
+      }
+      return(retVal);
+    }
+
 }

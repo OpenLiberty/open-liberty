@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,10 @@ package com.ibm.ws.webcontainer.security.jacc15.fat.audit;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.ClassRule;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.FeatureReplacementAction;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
@@ -82,6 +86,13 @@ public class BasicAuthAuditAUTHZTest {
     // is annotated with @Rule - junit can make the test method name changes to that field, which should
     // (hopefully) be reflected in the static references as well.
     private static TestName _name = new TestName();
+
+    /**
+     * Need the first repeat to make sure that audit-2.0 from a previous repeat gets put back to audit-1.0
+     */
+    @ClassRule
+    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServers("com.ibm.ws.webcontainer.security.fat.basicauth.audit").fullFATOnly())
+                    .andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServers("com.ibm.ws.webcontainer.security.fat.basicauth.audit"));
 
     @Rule
     public TestName name = _name;

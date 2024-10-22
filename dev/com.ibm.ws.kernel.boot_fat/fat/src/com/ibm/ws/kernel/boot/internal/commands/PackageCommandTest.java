@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -71,6 +72,10 @@ public class PackageCommandTest {
     private LibertyServer bootstrapFatServer;
     private String bootstrapFatInstallPath;
     private String bootstrapFatServerPath;
+
+    private static final String PPV_KEY = "PREFERRED_PLATFORM_VERSIONS";
+    private static final String PPV_VALUE = "jakartaee-10.0, jakartaee-9.1, microProfile-4.0";
+    private static final String PPV_WARN_MSG = "CWWKE0969W";
 
     @Before
     public void before() throws Exception {
@@ -690,6 +695,63 @@ public class PackageCommandTest {
         }
     }
 
+    /**
+     * Tests that when the PPV environment variable is specified manually that the
+     * server package (archive option only) command throws a warning.
+     */
+    @Test
+    public void test_PPV_Warning() throws Exception {
+        LibertyServer server = bootstrapFatServer;
+
+        // Add PPV env variable manually
+        Properties envVars = new Properties();
+        envVars.setProperty(PPV_KEY, PPV_VALUE);
+
+        ensureProductExt(server);
+
+        String[] packageCmd = { "--archive=" + archiveNameZip };
+
+        verifyPackageWarning(server, packageCmd, PPV_WARN_MSG, envVars);
+    }
+
+    /**
+     * Tests that when the PPV environment variable is specified manually that the
+     * server package (archive and minify options utilized) command throws a warning.
+     */
+    @Test
+    public void test_PPV_Warning_Minify() throws Exception {
+        LibertyServer server = bootstrapFatServer;
+
+        // Add PPV env variable manually
+        Properties envVars = new Properties();
+        envVars.setProperty(PPV_KEY, PPV_VALUE);
+
+        ensureProductExt(server);
+
+        String[] packageCmd = { "--archive=" + archiveNameZip, "--include=minify" };
+
+        verifyPackageWarning(server, packageCmd, PPV_WARN_MSG, envVars);
+    }
+
+    /**
+     * Tests that when the PPV environment variable is set in the server.env there is
+     * no warning during a server package.
+     */
+    @Test
+    public void test_PPV_NoWarning() throws Exception {
+        LibertyServer server = bootstrapFatServer;
+
+        ensureProductExt(server);
+
+        // Add PPV Environment variable to server.env
+        server.addEnvVar(PPV_KEY, PPV_VALUE);
+
+        String packageName = archiveNameZip;
+        String packagePath = bootstrapFatServerPath + File.separator + packageName;
+        String[] packageCmd = { "--archive=" + archiveNameZip };
+        verifyPackage(server, packageCmd, packageName, packagePath);
+    }
+
     private static class CloseableServer implements Closeable {
         private final LibertyServer server;
 
@@ -778,6 +840,10 @@ public class PackageCommandTest {
         return server.executeServerScript("package", packageCmd).getStdout();
     }
 
+    private String packageServer(LibertyServer server, String[] packageCmd, Properties envVars) throws Exception {
+        return server.executeServerScript("package", packageCmd, envVars).getStdout();
+    }
+
     private void verifyPackage(
                                LibertyServer server,
                                String[] packageCmd, String packageName, String packagePath) throws Exception {
@@ -802,12 +868,34 @@ public class PackageCommandTest {
         } else {
             System.out.println("Package file was created [ " + packagePath + " ]");
         }
+        if (stdout.contains(PPV_WARN_MSG)) {
+            fail("Packaging should not have contained " + PPV_WARN_MSG + " warning!  STDOUT = " + stdout);
+        }
     }
 
     private void verifyPackageError(LibertyServer server, String[] packageCmd, String errorText) throws Exception {
         String stdout = packageServer(server, packageCmd);
         if (!stdout.contains(errorText)) {
             fail("Packaging output missing error " + errorText + ". STDOUT = " + stdout);
+        }
+    }
+
+    /**
+     * This method does a package of the server passing in the env variables outside of the server.env file,
+     * and then checks to ensure the warning message is output during the packaging process.
+     *
+     * @param server
+     * @param packageCmd
+     * @param warningText
+     * @param envVars
+     * @throws Exception
+     */
+    private void verifyPackageWarning(LibertyServer server, String[] packageCmd, String warningText, Properties envVars) throws Exception {
+
+        String stdout = packageServer(server, packageCmd, envVars);
+
+        if (!stdout.contains(warningText)) {
+            fail("Packaging output missing warning " + warningText + ". STDOUT = " + stdout);
         }
     }
 }

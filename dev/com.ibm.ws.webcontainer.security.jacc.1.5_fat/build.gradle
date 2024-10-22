@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,16 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
                project(':io.openliberty.org.apache.commons.codec'),
-               project(':io.openliberty.org.apache.commons.logging'),
                project(':com.ibm.websphere.javaee.servlet.3.0'),
                project(':com.ibm.ws.security.audit_fat.common.tooling'),
                project(':com.ibm.ws.webcontainer.security_test.servlets'),
@@ -397,6 +402,7 @@ zipAutoFVT {
  ******************************************************************
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
+autoFVT.dependsOn ':io.openliberty.security.authorization.jacc.testprovider:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
 autoFVT.dependsOn ':com.ibm.ws.org.apache.directory.server:assemble' // Probably don't need.
 autoFVT.doLast {
@@ -429,9 +435,15 @@ autoFVT.doLast {
      rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.1.jar'
   }
   copy {
+     from new File(project(':io.openliberty.security.authorization.jacc.testprovider').projectDir, "/build/libs/io.openliberty.security.authorization.jacc.testprovider.jar") 
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'io.openliberty.security.authorization.jacc.testprovider.jar', 'io.openliberty.security.authorization.jacc.testprovider_3.0.jar'
+  }
+  copy {
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-1.0.mf")  
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.0.mf")  
      from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.1.mf")  
+     from new File(project(':io.openliberty.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-3.0.mf")  
      into new File(autoFvtDir, 'publish/features')
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,13 +59,10 @@ dependencies {
   json 'org.json:json:20080701'
   httpclient project(':com.ibm.ws.org.apache.httpcomponents'),
 	project(':io.openliberty.org.apache.commons.logging')
-  requiredLibs 'commons-httpclient:commons-httpclient:3.1',
-    project(':io.openliberty.org.apache.commons.logging'),
-    project(':com.ibm.ws.org.apache.httpcomponents'),
+  requiredLibs project(':com.ibm.ws.org.apache.httpcomponents'),
     project(':io.openliberty.com.fasterxml.jackson'),
     'org.apache.wink:wink-client:1.4',
     'org.apache.wink:wink-common:1.4',
-    project(':com.ibm.ws.org.slf4j.api'),
     project(':io.openliberty.org.apache.commons.codec'),
     'org.apache.cxf:cxf-core:3.4.3',
     'org.apache.cxf:cxf-rt-frontend-jaxrs:3.4.3',

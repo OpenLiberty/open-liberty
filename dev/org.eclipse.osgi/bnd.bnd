@@ -21,4 +21,5 @@ instrument.disabled: true
    org/eclipse=${bin}/org/eclipse
 
 -buildpath: \
-	org.eclipse.platform:org.eclipse.osgi;version=3.18.600
+	org.eclipse.platform:org.eclipse.osgi;version=3.18.600, \
+	io.openliberty.com.ibm.oti.shared;version=latest

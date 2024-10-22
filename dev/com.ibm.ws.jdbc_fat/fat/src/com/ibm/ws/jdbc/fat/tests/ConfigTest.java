@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -1501,10 +1502,12 @@ public class ConfigTest extends FATServletClient {
                 }
                 break;
             case DataSourceProperties.ORACLE_JDBC:
-                // Database Rotation infrastructure guarantees that the _g driver is used
+                // ~Database Rotation infrastructure guarantees that the _g driver is used~
+                // Database Rotation now uses Oracle 23 which does not have the _g driver
+                // The base driver now supports trace, but the levels and trace strings have changed
                 platform = "Oracle";
                 traceSpec = "oracle.*=all";
-                traceString = "oracle.jdbc.driver.OracleDriver";
+                traceString = Pattern.quote("createNSProperties entering args (oracle.jdbc.") + ".*" + Pattern.quote(")");
                 break;
             case DataSourceProperties.DATADIRECT_SQLSERVER:
                 platform = "SQL Server (DataDirect)";

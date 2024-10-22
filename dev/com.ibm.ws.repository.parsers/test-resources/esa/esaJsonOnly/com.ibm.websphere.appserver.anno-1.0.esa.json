@@ -1,0 +1,34 @@
+{
+   "description": "<h2 id=\"ibm-wasdev-feature-instructions-title\">Command Line Install<\/h2><div id=\"ibm-wasdev-feature-instructions-content\"> To install the feature from the command line type:<br\/><code>bin\/featureManager install com.ibm.websphere.appserver.anno-1.0 --when-file-exists=ignore<\/code> <\/div>",
+   "licenseId": "http:\/\/www.ibm.com\/licenses\/wlp-featureterms-v1",
+   "licenseType": "UNSPECIFIED",
+   "name": "com.ibm.websphere.appserver.anno-1.0",
+   "provider": {
+      "name": "IBM",
+      "url": "http:\/\/www.ibm.com"
+   },
+   "type": "com.ibm.websphere.Feature",
+   "wlpInformation": {
+      "appliesTo": "com.ibm.websphere.appserver; productVersion=8.5.5.6",
+      "displayPolicy": "HIDDEN",
+      "downloadPolicy": "INSTALLER",
+      "installPolicy": "MANUAL",
+      "javaSEVersionRequirements": {
+         "minVersion": "1.6.0",
+         "rawRequirements": [
+            "com.ibm.ws.anno_1.0.9.jar: (&(osgi.ee=JavaSE)(version>=1.6))"
+         ]
+      },
+      "mainAttachmentSize": 2285,
+      "provideFeature": [
+         "com.ibm.websphere.appserver.anno-1.0"
+      ],
+      "requireFeature": [
+         "com.ibm.websphere.appserver.artifact-1.0",
+         "com.ibm.websphere.appserver.javax.annotation-1.1"
+      ],
+      "typeLabel": "Feature",
+      "visibility": "PRIVATE",
+      "webDisplayPolicy": "HIDDEN"
+   }
+}

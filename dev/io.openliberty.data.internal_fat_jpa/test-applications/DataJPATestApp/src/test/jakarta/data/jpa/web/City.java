@@ -18,11 +18,13 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.Version;
 
 /**
- *
+ * Entity with a composite id (using IdClass) and version.
  */
 @Entity
 @IdClass(CityId.class)
 public class City {
+    // TODO uncomment to reproduce EclipseLink bug with selecting an attribute that is a collection type.
+    //@ElementCollection(fetch = FetchType.EAGER)
     public Set<Integer> areaCodes;
 
     @Version
@@ -44,6 +46,12 @@ public class City {
         this.stateName = state;
         this.population = population;
         this.areaCodes = areaCodes;
+    }
+
+    static City of(CityId id, int population, Set<Integer> areaCodes, long version) {
+        City city = new City(id.name, id.getStateName(), population, areaCodes);
+        city.changeCount = version;
+        return city;
     }
 
     @Override

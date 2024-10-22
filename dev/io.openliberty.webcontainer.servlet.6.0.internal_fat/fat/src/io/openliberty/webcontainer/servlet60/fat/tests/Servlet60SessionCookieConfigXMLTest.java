@@ -1,19 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.webcontainer.servlet60.fat.tests;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -107,12 +106,20 @@ public class Servlet60SessionCookieConfigXMLTest {
                 //fail-fast check
                 assertTrue("The response did not contain the following String: " + expectedGeneralResponse, responseText.contains(expectedGeneralResponse));
 
+                //Application checked all the attributes and reported back here.
                 String headerValue = response.getHeader("TestResult").getValue();
-
-                LOG.info("\n TestResult : " + headerValue);
-
+                LOG.info("\n TestResult : " + headerValue + "\n");
                 assertTrue("The response does not contain Result [PASS]. TestResult header [" + headerValue + "]", headerValue.contains("Result [PASS]"));
 
+                //Check Set-Cookie seen by client
+                headerValue = response.getHeader("Set-Cookie").getValue();
+                LOG.info("\n Set-Cookie : " + headerValue + "\n");
+                ArrayList<String> preDefinedAttList = new ArrayList<String>(Arrays.asList("attnameunique=attvalueunique_viawebxml", "attname2=attvalue2_viawebxml",
+                                                                                          "attname1=attvalue1_viawebxml"));
+                headerValue = headerValue.toLowerCase();
+                for (String att : preDefinedAttList) {
+                    assertTrue("The Set-Cookie header does not contain the attribute pair [" + att + "]", headerValue.contains(att));
+                }
             }
         }
     }

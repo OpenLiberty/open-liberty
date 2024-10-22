@@ -76,7 +76,7 @@ Import-Package: \
   *
     
 Export-Package: \
-  org.glassfish.jaxb.*;version="4.0";thread-context=true
+  org.glassfish.jaxb.*;version="4.0"
 
 Include-Resource: \
   @${repo;org.glassfish.jaxb:codemodel;${jaxb-version}}!/!(META-INF/maven/*|module-info.class), \

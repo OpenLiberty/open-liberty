@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-	~ Copyright (c) 2022, 2023 IBM Corporation and others. All rights reserved. 
+	~ Copyright (c) 2022, 2024 IBM Corporation and others. All rights reserved. 
 	~ This program and the accompanying materials are made available under the 
 	~ terms of the Eclipse Public License 2.0 which accompanies this distribution, 
 	~ and is available at 
@@ -21,27 +21,6 @@
 
 	<artifactId>tck.runner.platform</artifactId>
 	<name>Jakarta Data TCK Runner TCK Module</name>
-
-	<repositories>
-		<!-- For artifacts not yet in Maven Central -->
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Sonatype Nexus Staging</name>
-			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<!-- For artifacts not yet in Stagging repo use DHE -->
-		<repository>
-			<name>IBM DHE Maven repository</name>
-			<id>DHE</id>
-			<url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
-		</repository>
-	</repositories>
 
 	<properties>
 		<!-- Used in arquillian.xml passed from test suite -->
@@ -72,7 +51,15 @@
 			<scope>system</scope>
 			<systemPath>${io.openliberty.data.internal}</systemPath>
 		</dependency>
-
+		<!-- impl - persistence - internal bundle -->
+		<!-- Necessary to avoid ClassNotFoundException from Arquillian -->
+		<dependency>
+			<groupId>io.openliberty.jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-impl</artifactId>
+			<version>3.2</version>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.persistence.3.2.thirdparty}</systemPath>
+		</dependency>
 		<!-- The Liberty Arquillian plugin -->
 		<dependency>
 			<groupId>io.openliberty.arquillian</groupId>
@@ -85,9 +72,9 @@
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.0</version>
+			<version>6.1</version>
 			<scope>system</scope>
-			<systemPath>${io.openliberty.jakarta.servlet.6.0}</systemPath>
+			<systemPath>${io.openliberty.jakarta.servlet.6.1}</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.transaction</groupId>
@@ -99,9 +86,9 @@
 		<dependency>
 			<groupId>jakarta.enterprise</groupId>
 			<artifactId>jakarta.enterprise.cdi-api</artifactId>
-			<version>4.0</version>
+			<version>4.1</version>
 			<scope>system</scope>
-			<systemPath>${io.openliberty.jakarta.cdi.4.0}</systemPath>
+			<systemPath>${io.openliberty.jakarta.cdi.4.1}</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.weld5</groupId>
@@ -123,7 +110,7 @@
 
 		<!-- Test dependency for signature testing -->
 		<dependency>
-			<groupId>org.netbeans.tools</groupId>
+			<groupId>jakarta.tck</groupId>
 			<artifactId>sigtest-maven-plugin</artifactId>
 			<version>${sigtest.version}</version>
 		</dependency>
@@ -185,9 +172,14 @@
 						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
 						<jimage.dir>${jimage.dir}</jimage.dir>
 						<jakarta.tck.skip.deployment>false</jakarta.tck.skip.deployment>
+						<jakarta.tck.database.type>${jakarta.tck.database.type}</jakarta.tck.database.type>
+						<jakarta.tck.database.name>${jakarta.tck.database.name}</jakarta.tck.database.name>
 					</systemPropertyVariables>
+					<excludes>
+						<exclude>${excluded.tests}</exclude>
+					</excludes>
 					<groups>${included.groups}</groups>
-					<reportNameSuffix>${jakarta.profile}</reportNameSuffix>
+					<reportNameSuffix>${jakarta.profile}-${jakarta.tck.database.type}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
 				</configuration>
 			</plugin>

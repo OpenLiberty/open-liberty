@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -84,6 +84,21 @@ public abstract class JPATestServlet extends FATServlet {
     protected boolean isUsingJPA22Feature() {
         Set<String> instFeatureSet = getInstalledFeatures();
         return instFeatureSet.contains("jpa-2.2");
+    }
+
+    protected boolean isUsingJPA30Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("persistence-3.0");
+    }
+
+    protected boolean isUsingJPA31Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("persistence-3.1");
+    }
+
+    protected boolean isUsingJPA32Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("persistence-3.2");
     }
 
     protected boolean isUsingJPA21ContainerFeature(boolean onlyContainerFeature) {

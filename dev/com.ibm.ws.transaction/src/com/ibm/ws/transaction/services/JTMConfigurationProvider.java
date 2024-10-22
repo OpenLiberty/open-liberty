@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.transaction.services;
 
 import java.io.File;
 import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -40,6 +42,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.JTA.Util;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -82,6 +85,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     private String _recoveryIdentity;
     private String _recoveryGroup;
+    private String _dbName = "";
     private TransactionManagerService tmsRef;
     private byte[] _applId;
 
@@ -132,7 +136,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             _props = properties;
         }
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "activate  properties set to " + _props);
+            Tr.debug(tc, "activate properties set to " + _props);
 
         // There is additional work to do if we are storing transaction log in an RDBMS. The key
         // determinant that we are using an RDBMS is the specification of the dataSourceRef
@@ -145,9 +149,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
         if (_isSQLRecoveryLog) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "activate  working with Tran Log in an RDBMS");
+                Tr.debug(tc, "activate working with Tran Log in an RDBMS");
 
             ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
+
+            validateAndCacheDBName();
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "pre-activate  datasourceFactory ref " + dataSourceFactoryRef +
@@ -426,6 +432,19 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getServerName {0}", serverName);
         return serverName;
+    }
+
+    @Override
+    @Trivial
+    public String getUserDir() {
+        String userDir = "";
+        synchronized (this) {
+            if (locationService != null)
+                userDir = locationService.resolveString("${wlp.user.dir}");
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getUserDir {0}", userDir);
+        return userDir;
     }
 
     @Override
@@ -804,6 +823,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @FFDCIgnore(value = { PrivilegedActionException.class })
     public void shutDownFramework() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "shutDownFramework", _frameworkShutting);
@@ -836,7 +856,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                         });
                 }
                 _frameworkShutting = true;
-            } catch (Exception e) {
+            } catch (PrivilegedActionException e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "shutDownFramework", e);
 
@@ -855,8 +875,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
-        return (Boolean) _props.get("enableHADBPeerLocking");
+    public boolean enableLogLocking() {
+        return (Boolean) _props.get("enableLogLocking");
     }
 
     /*
@@ -1095,5 +1115,28 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isPropagateXAResourceTransactionTimeout {0}", b);
         return b;
+    }
+
+    @Override
+    @Trivial
+    public String getTransactionLogDBName() {
+        return _dbName;
+    }
+
+    static final Pattern DB_NAME_PATTERN = Pattern.compile("[a-zA-Z][0-9a-zA-Z]*");
+
+    private void validateAndCacheDBName() {
+        _dbName = (String) _props.get("transactionLogDBName");
+
+        if (_dbName == null) {
+            _dbName = "";
+        } else {
+            _dbName = _dbName.trim();
+            if (!DB_NAME_PATTERN.matcher(_dbName).matches()) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "{0} is not a valid database name", _dbName);
+                _dbName = "";
+            }
+        }
     }
 }

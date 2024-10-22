@@ -774,6 +774,14 @@ warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Un timeout a avut loc \
 warning.timeoutWaitingForServerProcessToStop.explanation=Serverul nu s-a oprit \u00een timpul acordat de valoarea timeout. Acest lucru s-ar putea datora unei opriri lente a serverului sau unui server.   
 warning.timeoutWaitingForServerProcessToStop.useraction=\u00cen cazul \u00een care serverul este \u00eenc\u0103 \u00een func\u021biune, ia \u00een considerare cre\u0219terea valorii de timeout pentru comanda 'server stop'. Pe sistemele de tip UNIX, comanda de oprire a serverului asteapta ca procesul serverului sa se opreasca. Pe Windows, comanda a\u0219teapt\u0103 s\u0103 ob\u021bin\u0103 o blocare pe fi\u0219ierul console.log . Utiliza\u021bi instrumente de monitorizare a fi\u0219ierelor pentru a verifica dac\u0103 un alt program, cum ar fi un editor, a blocat fi\u0219ierul console.log .
 
+warning.manual.PPV.env.var=CWWKE0969W: O variabil\u0103 de mediu PREFERRED_PLATFORM_VERSION a fost specificat\u0103 \u00een timpul ambal\u0103rii serverului.
+warning.manual.PPV.env.var.explanation=O variabila de mediu PREFERRED_PLATFORM_VERSION manual a fost setata in mediu dar nu va fi inclusa in pachetul server.
+warning.manual.PPV.env.var.useraction=Pentru a re\u0163ine variabila de mediu PREFERRED_PLATFORM_VERSION, specifica\u0163i-o \u00een fi\u015fierul de configurare server.env
+
+error.read.server.env=CWWKE0970E: Nu am putut citi fi\u0219ierul server.env la loca\u021bia {}.
+error.read.server.env.explanation=E\u0219ecul de a citi fi\u0219ierul de tip " server.env .
+error.read.server.env.useraction=Imposibil de citit fi\u0219ierul de tip " server.env .  Verifica\u021bi permisiunile de fi\u0219iere \u0219i re\u00eencerca\u021bi opera\u021biunea.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

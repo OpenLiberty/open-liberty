@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.utils;
 
@@ -59,6 +56,21 @@ public class JSFUtils {
           .append(contextRoot)
           .append("/")
           .append(path);
+
+        return sb.toString();
+    }
+
+    public static String createSeleniumURLString(LibertyServer server, String contextRoot, String path) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("http://")
+                        .append("host.testcontainers.internal")
+                        .append(":")
+                        .append(server.getHttpDefaultPort())
+                        .append("/")
+                        .append(contextRoot)
+                        .append("/")
+                        .append(path);
 
         return sb.toString();
     }

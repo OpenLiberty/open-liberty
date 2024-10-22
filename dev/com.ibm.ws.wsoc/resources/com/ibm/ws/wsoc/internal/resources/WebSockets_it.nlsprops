@@ -1,17 +1,12 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
-#
-
 
 #COMPONENTPREFIX CWWKH
 #COMPONENTNAMEFOR CWWKH WebSphere WebSocket
@@ -228,9 +223,9 @@ missingslashornull.uri=CWWKH0052E: Si \u00e8 verificata un''eccezione durante la
 missingslashornull.uri.explanation=ServerEndpoint non valido perch\u00e9 lURI dell'endpoint \u00e8 null o non inizia con / nella classe endpoint. Applicazione WebSocket non disponibile per le richieste.
 missingslashornull.uri.useraction=Definire un URI endpoint non null che inizi con /. Dopo aver risolto il problema, ridistribuire l'applicazione.
 
-wsoc.feature.not.loaded.correctly=CWWKH0053E: La funzione websocket non \u00e8 stata caricata con una versione accettabile.
-wsoc.feature.not.loaded.correctly.explanation=La funzione websocket viene caricata con una versione che corrisponde alla specifica Java [Jakarta] EE di quella funzione websocket. La funzione \u00e8 stata caricata senza alcuna versione definita.
-wsoc.feature.not.loaded.correctly.useraction=Controllare il file server.xml per verificare l'esistenza di pi\u00f9 funzioni websocket. \u00c8 possibile specificarne solo una.
+wsoc.feature.not.loaded.correctly=CWWKH0053E: Il contenitore websocket non \u00e8 stato caricato con una versione accettabile.
+wsoc.feature.not.loaded.correctly.explanation=Il contenitore websocket \u00e8 stato caricato senza una versione accettabile. L'applicazione potrebbe comportarsi in modo diverso rispetto al previsto.
+wsoc.feature.not.loaded.correctly.useraction=Controllare il file server.xml per verificare l'esistenza di pi\u00f9 funzioni websocket. Il file non deve specificare pi\u00f9 di una funzionalit\u00e0 websocket.
 
 scheme.incorrect.error=CWWKH0054E: Nell''URI {0} \u00e8 stato utilizzato uno schema non identificato.
 scheme.incorrect.error.explanation=Durante la gestione della richiesta \u00e8 stato trovato uno schema non identificato. 
@@ -239,3 +234,7 @@ scheme.incorrect.error.useraction=Il tipo di schema deve essere http, https, ws 
 upgradeHttpToWebSocket.failed=CWWKH0055E: La chiamata jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket non \u00e8 riuscita a causa di {0}. 
 upgradeHttpToWebSocket.failed.explanation=Il server non ha potuto aggiornare la richiesta HTTP o HTTPS con il protocollo ws/wss.
 upgradeHttpToWebSocket.failed.useraction=Verificare l'errore per risalire al motivo per cui l'aggiornamento della richiesta ha avuto esito negativo.
+
+maxmessagesize.exceeded=CWWKH0056E: Il valore maxMessageSize per il metodo {0} supera Integer.MAX_VALUE per la classe {1}.
+maxmessagesize.exceeded.explanation=Il parametro di annotazione maxMessageSize OnMessage imposta la dimensione massima del messaggio in byte per un metodo. maxMessageSize pu\u00f2 essere impostato solo su un valore massimo di Integer.MAX_VALUE.
+maxmessagesize.exceeded.useraction=Ridurre il valore del parametro maxMessageSize a non pi\u00f9 di Integer.MAX_VALUE.

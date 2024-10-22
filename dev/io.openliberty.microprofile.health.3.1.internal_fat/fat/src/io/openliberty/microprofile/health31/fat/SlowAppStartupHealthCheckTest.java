@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.health31.fat;
 
@@ -70,8 +67,9 @@ public class SlowAppStartupHealthCheckTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP61, // mpHealth-4.0 LITE
-                                                             MicroProfileActions.MP41); // mpHealth-3.0 FULL
+                                                             MicroProfileActions.MP70_EE10, // mpHealth-4.0 LITE
+                                                             MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL
+                                                             MicroProfileActions.MP41); // mpHealth-3.1 FULL
 
     public void setupClass(LibertyServer server, String testName) throws Exception {
         log("setupClass", testName + " - Deploying the Delayed App into the apps directory and starting the server.");

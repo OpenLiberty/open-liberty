@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -66,6 +67,10 @@ public class AsmServiceTest extends JPAFATServletClient {
     private final static Set<String> createSet = new HashSet<String>();
     private final static Set<String> populateSet = new HashSet<String>();
     private static long timestart = 0;
+
+    private final static String[] IGNORED_WARNINGS = new String[] {
+                                                                    "CWWJP9991W", // From Eclipselink drop-and-create tables option
+    };
 
     public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
@@ -201,7 +206,7 @@ public class AsmServiceTest extends JPAFATServletClient {
             setupDatabaseApp(server);
             setupTestApplication(server);
             runTest(server);
-            server.stopServer();
+            server.stopServer(IGNORED_WARNINGS);
             if (server.defaultTraceFileExists()) {
                 List<String> asmImplMsgList = server.findStringsInTrace("[eclipselink] " + expectedAsmImpl + " ASM implementation is used.");
                 Assert.assertFalse(asmImplMsgList.isEmpty());
@@ -219,7 +224,7 @@ public class AsmServiceTest extends JPAFATServletClient {
     @Test
     public void testWithDefaultASM() throws Exception {
         // Default should be Eclipselink's ASM.
-        runAsmTest(serverWithDefaultAsm, "EclipseLink");
+        runAsmTest(serverWithDefaultAsm, JakartaEEAction.isEE11OrLaterActive() ? "OW2" : "EclipseLink");
     }
 
     @Test

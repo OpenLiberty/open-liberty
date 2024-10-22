@@ -50,10 +50,6 @@ CWWKC1100.resource.unavailable=CWWKC1100E: La ressource {0} est indisponible.
 CWWKC1100.resource.unavailable.explanation=Une ressource peut devenir indisponible lorsqu'un serveur est en cours d'arrpet ou en cas de modification de configuration, soit le concernant soit concernant un autre service dont il d\u00e9pend.
 CWWKC1100.resource.unavailable.useraction=V\u00e9rifiez la configuration de la ressource et des ressources dont il d\u00e9pend.
 
-CWWKC1110.task.canceled=CWWKC1110I: La t\u00e2che {0}, qui a \u00e9t\u00e9 soumise au service de programme d''ex\u00e9cution {1}, est annul\u00e9e.
-CWWKC1110.task.canceled.explanation=L'ex\u00e9cution de la t\u00e2che est annul\u00e9e.
-CWWKC1110.task.canceled.useraction=Aucune action n'est requise.
-
 CWWKC1101.task.failed=CWWKC1101E: La t\u00e2che {0}, qui a \u00e9t\u00e9 soumise au service de programme d''ex\u00e9cution {1}, a \u00e9chou\u00e9 avec l''erreur suivante : {2}.
 CWWKC1101.task.failed.explanation=Une t\u00e2che soumise \u00e0 un programme d'ex\u00e9cution a \u00e9chou\u00e9. Veuillez vous reporter au message d'exception pour en conna\u00eetre la cause.
 CWWKC1101.task.failed.useraction=Corrigez la cause de l'\u00e9chec et soumettez la t\u00e2che \u00e0 nouveau.
@@ -66,6 +62,10 @@ CWWKC1103.skip.run.failed=CWWKC1103E: L''ex\u00e9cution de la t\u00e2che {0}, qu
 CWWKC1103.skip.run.failed.explanation=L'op\u00e9ration skipRun du d\u00e9clencheur a \u00e9chou\u00e9 et la tentative d'ex\u00e9cution en cours de la t\u00e2che a \u00e9t\u00e9 ignor\u00e9e.
 CWWKC1103.skip.run.failed.useraction=Corriger la cause de l'\u00e9chec et d\u00e9cidez si vous souhaitez ou non soumettre la t\u00e2che \u00e0 nouveau.
 
+CWWKC1110.task.canceled=CWWKC1110I: La t\u00e2che {0}, qui a \u00e9t\u00e9 soumise au service d''ex\u00e9cution {1}, est annul\u00e9e.
+CWWKC1110.task.canceled.explanation=La t\u00e2che a \u00e9t\u00e9 annul\u00e9e.
+CWWKC1110.task.canceled.useraction=Aucune action n'est requise.
+
 CWWKC1111.task.invalid=CWWKC1111E: La t\u00e2che {0} n''est pas valide.
 CWWKC1111.task.invalid.explanation=La t\u00e2che ne peut pas \u00eatre soumise car elle n'est pas valide.
 CWWKC1111.task.invalid.useraction=Mettez \u00e0 jour l'application afin de soumettre une t\u00e2che valide sur le service ExecutorService.
@@ -77,6 +77,14 @@ CWWKC1112.all.tasks.canceled.useraction=Aucune action n'est requise.
 CWWKC1120.future.get.rejected=CWWKC1120E: Les \u00e9l\u00e9ments fournis ult\u00e9rieurement aux m\u00e9thodes ManagedTaskListener taskSubmitted et taskStarting ne peuvent pas \u00eatre utilis\u00e9s pour attendre l'ach\u00e8vement des t\u00e2ches.
 CWWKC1120.future.get.rejected.explanation=Le m\u00e9thodes ManagedTaskListener taskSubmitted et taskStarting s'ex\u00e9cutent sur l'unit\u00e9 d'ex\u00e9cution qui va soumettre ou d\u00e9marrer la t\u00e2che. Par cons\u00e9quent, l'\u00e9l\u00e9ment Future fourni pour ces m\u00e9thodes ne doit pas \u00eatre utilis\u00e9 pour attendre la t\u00e2che.
 CWWKC1120.future.get.rejected.useraction=Mettez \u00e0 jour l'application afin d'\u00e9viter que l'appel se poursuive sur l'\u00e9l\u00e9ment Future qui est fourni pour taskSubmitted et taskStarting.
+
+CWWKC1121.virtual.invalid=CWWKC1121E: L''annotation {0} ou l''\u00e9l\u00e9ment du descripteur de d\u00e9ploiement {1} qui porte le nom {0} sp\u00e9cifie virtual=true, mais les threads virtuels ne sont pas disponibles avant Java 21. Le niveau Java utilis\u00e9 est : {1}.
+CWWKC1121.virtual.invalid.explanation=Les threads virtuels ne sont pas disponibles dans la version Java utilis\u00e9e.
+CWWKC1121.virtual.invalid.useraction=Mise \u00e0 jour vers une version plus r\u00e9cente de Java qui prend en charge les threads virtuels.
+
+CWWKC1122.mod.unavail=CWWKC1122E: L''application {0} ou son module {1} n''est pas disponible.
+CWWKC1122.mod.unavail.explanation=L'application et le module qui d\u00e9finissent la configuration de ManagedThreadFactory doivent \u00eatre disponibles pour obtenir une instance de ManagedThreadFactory.
+CWWKC1122.mod.unavail.useraction=Assurez-vous que l'application est d\u00e9marr\u00e9e et qu'elle inclut le module qui d\u00e9finit la configuration de ManagedThreadFactory.
 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Une t\u00e2che soumise pour le programme d''ex\u00e9cution g\u00e9r\u00e9 {0} contient une propri\u00e9t\u00e9 d''ex\u00e9cution {1} avec la valeur {2} qui n''est pas valide pour les programmes d''ex\u00e9cution g\u00e9r\u00e9s.
 CWWKC1130.xprop.value.invalid.explanation=Certaines valeurs de propri\u00e9t\u00e9 d'ex\u00e9cution ne sont pas valides pour les programmes d'ex\u00e9cution g\u00e9r\u00e9s, mais peuvent l'\u00eatre pour d'autres types de ressource, par exemple le service de contexte ou la fabrique d'unit\u00e9s d'ex\u00e9cution g\u00e9r\u00e9e.

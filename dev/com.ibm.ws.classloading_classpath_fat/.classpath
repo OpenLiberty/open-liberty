@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/testClassPath1.war/src"/>
+	<classpathentry kind="src" path="test-applications/testClassPath2.war/src"/>
+	<classpathentry kind="src" path="test-applications/testClassPath3.war/src"/>
+	<classpathentry kind="src" path="test-applications/testClient1.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testEjb1.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testEjb2.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testEjb3.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib1.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib2.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib3.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib4.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib5.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib6.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib7.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib8.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib9.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib10.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib11.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib12.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib13.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib14.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib15.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib16.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testLib17.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testRar1.rar/src"/>
+	<classpathentry kind="src" path="test-applications/testResourceAdaptor.jar/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

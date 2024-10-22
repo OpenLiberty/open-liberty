@@ -25,6 +25,10 @@
 
   <authData id="auth1" user="auth1user" password="auth1pwd"/>
 
+  <data>
+    <logValues>*</logValues>
+  </data>
+
   <dataSource id="DefaultDataSource" containerAuthDataRef="auth1">
     <jdbcDriver libraryRef="DerbyLib"/>
     <properties.derby.embedded createDatabase="create" databaseName="memory:defaultdb"/>

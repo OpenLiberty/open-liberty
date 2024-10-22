@@ -21,4 +21,5 @@
     <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default.secure" actions="read"/>
     <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_secondary" actions="read"/>
     <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_secondary.secure" actions="read"/>
+    <javaPermission className="java.security.AllPermission"/>
 </server>

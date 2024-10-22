@@ -29,12 +29,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -46,9 +45,7 @@ public class JaxWSVirtualHostTest {
     private static final String virtualhostWar = "virtualhost";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+    public static RepeatTests r = FATSuite.defaultEERepeat(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -56,7 +53,7 @@ public class JaxWSVirtualHostTest {
     @BeforeClass
     public static void setup() throws Exception {
 
-        ShrinkHelper.defaultDropinApp(server, virtualhostWar, "com.ibm.ws.jaxws.virtualhost.services");
+        ShrinkHelper.defaultDropinApp(server, virtualhostWar, new DeployOptions[] { DeployOptions.OVERWRITE }, "com.ibm.ws.jaxws.virtualhost.services");
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer("jaxwsVirtuaHostTest.log");

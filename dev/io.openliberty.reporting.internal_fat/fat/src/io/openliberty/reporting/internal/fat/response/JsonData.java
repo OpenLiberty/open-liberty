@@ -14,6 +14,7 @@ public class JsonData {
     public String id;
     public String productEdition;
     public String productVersion;
+    public String productName;
     public String[] features;
     public String javaVendor;
     public String javaVersion;

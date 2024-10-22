@@ -109,9 +109,10 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
                                  + "/"
                                  + WSCoorConstants.COORDINATION_REGISTRATION_ENDPOINT;
 
-                EndpointReferenceType localRegEpr = WSATUtil.createEpr(regHost, tranService != null ? tranService.getRecoveryId() : null);
+                final String recoveryId = tranService != null ? tranService.getRecoveryId() : null;
 
-                WSATContext ctx = WSCoorUtil.getHandlerService().handleClientRequest();
+                final WSATContext ctx = WSCoorUtil.getHandlerService().handleClientRequest();
+                final EndpointReferenceType localRegEpr = WSATUtil.createEpr(regHost, ctx.getId(), recoveryId);
 
                 CoordinationContext cc = WSCoorUtil.createCoordinationContext(ctx, localRegEpr);
                 dataBinding = new JAXBDataBinding(CoordinationContext.class);

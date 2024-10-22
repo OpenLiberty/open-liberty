@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -655,3 +655,9 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Verwenden Sie den Abmeldeend
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: Der OpenID Connect-Client {0} verwendet die Authentifizierungsmethode des Tokenendpunkts {1}. Diese Authentifizierungsmethode erfordert einen geheimen Clientschl\u00fcssel, aber es ist kein geheimer Clientschl\u00fcssel konfiguriert.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=Die in der Nachricht angegebene Tokenendpunktauthentifizierungsmethode erfordert einen geheimen Clientschl\u00fcssel f\u00fcr die Authentifizierung beim Tokenendpunkt des OpenID Connect-Providers.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Konfigurieren Sie einen geheimen Clientschl\u00fcssel f\u00fcr den OpenID Connect-Client oder wechseln Sie zur Tokenendpunktauthentifizierungsmethode des Clients, die keinen geheimen Clientschl\u00fcssel erfordert.
+
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
+# used by client
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS2352E: Eine Anforderung f\u00fcr [{0}] ist nicht g\u00fcltig. Ein erforderliches Cookie, dessen Name mit WASReqURLOidc beginnt, fehlt. Der Hostname f\u00fcr den Zugriff auf den Client stimmt m\u00f6glicherweise nicht mit dem Namen \u00fcberein, der beim Provider registriert ist.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Der Client hat eine Anforderung empfangen, die ein erforderliches Cookie nicht enthielt.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Providerkonfiguration und die OpenID Connect-Clientkonfiguration. Das fehlende Cookie kann durch den Zugriff auf den Client mit einem Hostnamen verursacht werden, der sich vom Hostnamen der beim Provider registrierten Umleitung unterscheidet. Wenn das Attribut sameSiteCookie im Element webAppSecurity in der Serverkonfiguration auf Strict gesetzt ist, versuchen Sie, den Wert in Lax oder None zu \u00e4ndern.

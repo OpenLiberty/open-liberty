@@ -70,10 +70,10 @@ public class CVEResponseHandler {
 
                         if (bulletin.containsKey(cveObj.get("url"))) {
                             StringBuilder cve = new StringBuilder(bulletin.get(cveObj.get("url")));
-                            cve.append(", ").append(cveObj.get("cveId"));
+                            cve.append(", ").append(cveObj.get("id"));
                             bulletin.put(cveObj.get("url").toString(), cve.toString());
                         } else {
-                            bulletin.put(cveObj.get("url").toString(), cveObj.get("cveId").toString());
+                            bulletin.put(cveObj.get("url").toString(), cveObj.get("id").toString());
                         }
 
                     }

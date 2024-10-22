@@ -1557,8 +1557,8 @@ servlet.with.same.name.already.exists.explanation=Ehhez az alkalmaz\u00e1shoz m\
 servlet.with.same.name.already.exists.useraction=Nem kell semmit tenni.  Ellen\u0151rizze az \u00fctk\u00f6z\u00e9seket a telep\u00edt\u00e9sle\u00edr\u00f3ban, magyar\u00e1zatokat \u00e9s forr\u00e1sk\u00f3dot, amit dinamikusan adhat hozz\u00e1 ehhez a szervlet be\u00e1ll\u00edt\u00e1shoz. 
 
 servlet.feature.not.loaded.correctly=SRVE8501E: A szervlet t\u00e1rol\u00f3 nem egy elfogadhat\u00f3 v\u00e1ltozattal t\u00f6lt\u00f6tt be.
-servlet.feature.not.loaded.correctly.explanation=A szervlet t\u00e1rol\u00f3 egy olyan v\u00e1ltozattal t\u00f6lt be, amely megfelel az adott szervlet szolg\u00e1ltat\u00e1s Java EE specifik\u00e1ci\u00f3j\u00e1nak. A t\u00e1rol\u00f3 v\u00e1ltozat megad\u00e1sa n\u00e9lk\u00fcl ker\u00fclt bet\u00f6lt\u00e9sre.
-servlet.feature.not.loaded.correctly.useraction=Ellen\u0151rizze, hogy a server.xml f\u00e1jl tartalmazza-e a servlet-3.0 vagy servlet-3.1 szolg\u00e1ltat\u00e1st. Az egyik szolg\u00e1ltat\u00e1st meg kell adni, de nem mindkett\u0151t.
+servlet.feature.not.loaded.correctly.explanation=A szervlet-t\u00e1rol\u00f3 elfogadhat\u00f3 verzi\u00f3 n\u00e9lk\u00fcl lett bet\u00f6ltve. Az alkalmaz\u00e1s a v\u00e1rtt\u00f3l elt\u00e9r\u0151en viselkedhet.
+servlet.feature.not.loaded.correctly.useraction=Ellen\u0151rizd a server.xml f\u00e1jl t\u00f6bb szervlet szolg\u00e1ltat\u00e1s l\u00e9tez\u00e9s\u00e9re.  A f\u00e1jl legfeljebb egy szervlet szolg\u00e1ltat\u00e1st hat\u00e1rozhat meg.
 
 filter.failed.app.destroyed=SRVE8502W: A(z) {0} k\u00e9r\u00e9se nem hajthat\u00f3 v\u00e9gre, mert az alkalmaz\u00e1s le\u00e1llt.
 filter.failed.app.destroyed.explanation=A webes alkalmaz\u00e1s le\u00e1ll\u00edt\u00e1s alatt van, \u00e9s a k\u00e9r\u00e9s nem hajthat\u00f3 v\u00e9gre. Ezt az okozhatta, hogy a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s alatt volt, m\u00edg a k\u00e9r\u00e9st m\u00e9g kezelte.

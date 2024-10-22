@@ -8,13 +8,22 @@
     
     SPDX-License-Identifier: EPL-2.0
  -->
-<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
-              version="2.3">
-              
-    <component>
-        <component-type>jakarta.faces.ViewRoot</component-type>
-        <component-class>io.openliberty.org.apache.myfaces41.fat.namespace.view.NamespacedView</component-class>
-    </component>
+ <faces-config 
+ xmlns="https://jakarta.ee/xml/ns/jakartaee"
+ xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_1.xsd"
+ version="4.1">
+
+            <!-- https://github.com/jakartaee/faces/issues/1760#issuecomment-1985720329 -->
+              <faces-config-extension>
+                <facelets-processing>
+                    <file-extension>.xhtml_xml</file-extension>
+                    <process-as>xml</process-as>
+                </facelets-processing>
+                <facelets-processing>
+                    <file-extension>.xhtml_xhtml</file-extension>
+                    <process-as>xhtml</process-as>
+                </facelets-processing>
+            </faces-config-extension>
+
 </faces-config>

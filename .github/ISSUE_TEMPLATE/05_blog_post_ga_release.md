@@ -14,32 +14,18 @@ Please provide the following information:
 1. If this was previously published in a beta blog post, then provide the link to that `OpenLiberty/open-liberty` beta blog post issue on the next line between the `<GHA-BLOG-BETA-LINK>` tags. If nothing has changed since the beta, you're done and can omit the remaining steps. If you need to make updates/alterations to the beta content, then do all the steps. 
    <GHA-BLOG-BETA-LINK>https://github.com/OpenLiberty/open-liberty/issues/0</GHA-BLOG-BETA-LINK>
 
-   <GHA-BLOG-RELATED-FEATURES>
-2. Which Liberty feature(s) does your update relate to?
-    
-   Human-readable name (eg WebSockets feature):
-   
-   Short feature name (eg websockets-1.0): 
-
-   
-   </GHA-BLOG-RELATED-FEATURES>
-
-   <GHA-BLOG-TARGET-PERSONA>
-3. Who is the target persona? Who do you expect to use the update? eg application developer, operations.
-    
-   
-   </GHA-BLOG-TARGET-PERSONA>
-
    <GHA-BLOG-SUMMARY>
-4. Provide a summary of the update, including the following points:
+Please provide a summary of the update, including the following points:
    
    - A sentence or two that introduces the update to someone new to the general technology/concept.
-
+   - The Human-readable name and short feature name for your feature- eg WebSockets feature (websockets-1.0).
+   - Who is the target persona? Who do you expect to use the update? eg application developer, operations. 
    - What was the problem before and how does your update make their life better? (Why should they care?)
-   
-   - Briefly explain how to make your update work. Include screenshots, diagrams, and/or code snippets, and provide a `server.xml` snippet.
-   
-   - Where can they find out more about this specific update (eg Open Liberty docs, Javadoc) and/or the wider technology?
+   - Briefly explain how to make your update work. Include screenshots, diagrams, and/or code snippets, and provide a `server.xml` snippet.  
+   - Where can they find out more about this specific update (eg Open Liberty docs, Javadoc) and/or the wider technology?  
+    
+    
+
 
    </GHA-BLOG-SUMMARY>
 

@@ -228,18 +228,18 @@ public class DelayFullTest {
 
         runInServlet("testDeliveryDelayForDifferentDelaysTopic");
 
-        String msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicBindingsMessage2");
+        String msg = clientServer.waitForStringInLog("Message received on mdb : TopicBindingsMessage2");
         assertNotNull("Could not find the upload message in the trace.log", msg);
-        msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicBindingsMessage1");
+        msg = clientServer.waitForStringInLog("Message received on mdb : TopicBindingsMessage1");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
         restartServers(MDB_CONFIG_TOPIC_TCP);
 
         runInServlet("testDeliveryDelayForDifferentDelaysTopic_Tcp");
 
-        msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicTCPMessage2");
+        msg = clientServer.waitForStringInLog("Message received on mdb : TopicTCPMessage2");
         assertNotNull("Could not find the upload message in the trace.log", msg);
-        msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicTCPMessage1");
+        msg = clientServer.waitForStringInLog("Message received on mdb : TopicTCPMessage1");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
         restartServers();

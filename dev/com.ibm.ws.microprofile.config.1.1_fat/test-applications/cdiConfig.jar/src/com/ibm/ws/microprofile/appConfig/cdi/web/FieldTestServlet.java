@@ -86,7 +86,9 @@ public class FieldTestServlet extends AbstractBeanServlet {
                      MicroProfileActions.MP41_ID,
                      MicroProfileActions.MP50_ID,
                      MicroProfileActions.MP60_ID,
-                     MicroProfileActions.MP61_ID })
+                     MicroProfileActions.MP61_ID,
+                     MicroProfileActions.MP70_EE10_ID,
+                     MicroProfileActions.MP70_EE11_ID })
     public void testNullWithDefault() throws Exception {
         test("NULL_WITH_DEFAULT_KEY", "null");
     }

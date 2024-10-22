@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,7 +44,7 @@ public class CloudantTestOutboundSSL extends FATServletClient {
     public static final String JEE_APP = "cloudantfat";
     public static final String SERVLET_NAME = "CloudantTestServlet";
     // CWWKO0801E (SSLHandshakeErrorTracker - no cipher suites in common) : See defect 260787
-    public static String[] expectedFailures = { "CWWKG0033W.*does_not_exist", "CWWKO0801E" };
+    public static String[] expectedFailures = { "CWWKG0033W.*does_not_exist", "CWWKO0801E", "CWPKI0063W" };
 
     @BeforeClass
     public static void setUp() throws Exception {

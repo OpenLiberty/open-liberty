@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,6 +35,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import io.openliberty.security.authorization.jacc.internal.proxy.JavaSePolicyProxyImpl;
 import test.common.SharedOutputManager;
 
 public class WebSecurityValidatorImplTest {
@@ -75,7 +76,7 @@ public class WebSecurityValidatorImplTest {
         final String[] mna = new String[] { methodName };
         final WebUserDataPermission wudPerm = new WebUserDataPermission(uriName, mna, null);
         WebSecurityValidatorImpl wsv = new WebSecurityValidatorImpl();
-        assertFalse(wsv.checkDataConstraints(contextId, req, wudPerm));
+        assertFalse(wsv.checkDataConstraints(contextId, req, wudPerm, new JavaSePolicyProxyImpl()));
     }
 
     /**
@@ -91,8 +92,8 @@ public class WebSecurityValidatorImplTest {
         final String[] mna = new String[] { methodName };
         final WebUserDataPermission wudPerm = new WebUserDataPermission(uriName, mna, null);
         WebSecurityValidatorImpl wsv = new WebSecurityValidatorImpl();
-        assertFalse(wsv.checkDataConstraints(contextId, new String(), wudPerm));
-        assertFalse(wsv.checkDataConstraints(contextId, null, wudPerm));
+        assertFalse(wsv.checkDataConstraints(contextId, new String(), wudPerm, new JavaSePolicyProxyImpl()));
+        assertFalse(wsv.checkDataConstraints(contextId, null, wudPerm, new JavaSePolicyProxyImpl()));
     }
 
     /**
@@ -112,7 +113,7 @@ public class WebSecurityValidatorImplTest {
         final Subject subject = new Subject(false, principals, credentials, credentials);
         final WebResourcePermission webPerm = new WebResourcePermission(uriName, mna);
         WebSecurityValidatorImpl wsv = new WebSecurityValidatorImpl();
-        assertFalse(wsv.checkResourceConstraints(contextId, req, webPerm, subject));
+        assertFalse(wsv.checkResourceConstraints(contextId, req, webPerm, subject, new JavaSePolicyProxyImpl()));
     }
 
     /**
@@ -133,8 +134,8 @@ public class WebSecurityValidatorImplTest {
         final Subject subject = new Subject(false, principals, credentials, credentials);
         final WebResourcePermission webPerm = new WebResourcePermission(uriName, mna);
         WebSecurityValidatorImpl wsv = new WebSecurityValidatorImpl();
-        assertFalse(wsv.checkResourceConstraints(contextId, new String(), webPerm, subject));
-        assertFalse(wsv.checkResourceConstraints(contextId, null, webPerm, subject));
+        assertFalse(wsv.checkResourceConstraints(contextId, new String(), webPerm, subject, new JavaSePolicyProxyImpl()));
+        assertFalse(wsv.checkResourceConstraints(contextId, null, webPerm, subject, new JavaSePolicyProxyImpl()));
     }
 
 }

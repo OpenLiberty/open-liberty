@@ -31,7 +31,8 @@ Subsystem-Content: com.ibm.websphere.appserver.servlet-6.1; type="osgi.subsystem
  io.openliberty.appClientSupport-2.0; type="osgi.subsystem.feature",
  io.openliberty.messagingSecurity-3.0; type="osgi.subsystem.feature",
  io.openliberty.messagingServer-3.0; type="osgi.subsystem.feature",
- io.openliberty.messagingClient-3.0; type="osgi.subsystem.feature"
+ io.openliberty.messagingClient-3.0; type="osgi.subsystem.feature",
+ io.openliberty.data-1.0; type="osgi.subsystem.feature"
 Subsystem-SymbolicName: io.extension.jeeTestFeature.internal-11.0;visibility:=private; singleton:=true
 Subsystem-ManifestVersion: 1.0
 

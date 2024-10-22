@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: The audit event name {0} is not supported because the REST endpoint is not enabled.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=To use the specified audit event, the REST Endpoint needs to be enabled.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=Ensure that a feature that enables the REST Endpoint is enabled in the server.xml configuration.

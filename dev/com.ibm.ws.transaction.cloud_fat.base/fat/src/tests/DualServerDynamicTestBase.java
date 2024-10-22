@@ -44,9 +44,6 @@ public class DualServerDynamicTestBase extends CloudTestBase {
     public static final String APP_NAME = "transaction";
     protected static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
 
-    public static LibertyServer server1;
-    public static LibertyServer server2;
-
     protected LibertyServer[] serversUsedInTest;
 
     public static String servletName;

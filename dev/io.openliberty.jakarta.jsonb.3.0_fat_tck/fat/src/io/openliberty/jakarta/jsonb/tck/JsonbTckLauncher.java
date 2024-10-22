@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -39,6 +40,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 11)
+@MaximumJavaLevel(javaLevel = 21) //Fails on Java 23 due to updates to CLDR https://jdk.java.net/23/release-notes#JDK-8319990
 public class JsonbTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
@@ -81,12 +83,10 @@ public class JsonbTckLauncher {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchJsonb30TCK() throws Exception {
-
-        String bucketName = "io.openliberty.jakarta.jsonb.3.0_fat_tck";
-        String testName = this.getClass() + ":launchJsonb30TCK";
-        Type type = Type.JAKARTA;
-        String specName = "JSON Binding";
-        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonb")
+                        .withPlatfromVersion("10")
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
 
     }
 }

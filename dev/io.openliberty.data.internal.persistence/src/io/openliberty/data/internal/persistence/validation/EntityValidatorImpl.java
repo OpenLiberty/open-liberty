@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -87,7 +87,7 @@ public class EntityValidatorImpl implements EntityValidator {
     public <T> void validateParameters(T object, Method method, Object[] args) {
         Set<ConstraintViolation<Object>> violations = methodValidator.validateParameters(object, method, args);
         if (violations != null && !violations.isEmpty())
-            throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
+            throw new ConstraintViolationException(violations);
     }
 
     /**
@@ -102,6 +102,6 @@ public class EntityValidatorImpl implements EntityValidator {
     public <T> void validateReturnValue(T object, Method method, Object returnValue) {
         Set<ConstraintViolation<Object>> violations = methodValidator.validateReturnValue(object, method, returnValue);
         if (violations != null && !violations.isEmpty())
-            throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
+            throw new ConstraintViolationException(violations);
     }
 }

@@ -25,6 +25,7 @@ import com.ibm.ws.jsp23.fat.tests.JSPExceptionTests;
 import com.ibm.ws.jsp23.fat.tests.JSPJava11Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava17Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava21Test;
+import com.ibm.ws.jsp23.fat.tests.JSPJava7Test;
 import com.ibm.ws.jsp23.fat.tests.JSPGlobalTLDTest;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
@@ -50,6 +51,7 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JSPTests.class,
                 JSPExceptionTests.class,
                 JSPSkipMetaInfTests.class,
+                JSPJava7Test.class,
                 JSPJava8Test.class,
                 JSPJava11Test.class,
                 JSPJava17Test.class,

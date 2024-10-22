@@ -1,17 +1,12 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
-#
-
 
 #COMPONENTPREFIX CWWKH
 #COMPONENTNAMEFOR CWWKH WebSphere WebSocket
@@ -228,9 +223,9 @@ missingslashornull.uri=CWWKH0052E: Ocorreu uma exce\u00e7\u00e3o durante a imple
 missingslashornull.uri.explanation=ServerEndpoint \u00e9 inv\u00e1lido porque o Endpoint URI \u00e9 nulo ou n\u00e3o come\u00e7a com / na classe de terminal. O aplicativo WebSocket n\u00e3o est\u00e1 dispon\u00edvel para solicita\u00e7\u00f5es.
 missingslashornull.uri.useraction=Definir Endpoint URI n\u00e3o nulo iniciando com /. Depois de resolver o problema, implemente o aplicativo novamente.
 
-wsoc.feature.not.loaded.correctly=CWWKH0053E: O recurso Websocket n\u00e3o foi carregado com uma vers\u00e3o aceit\u00e1vel.
-wsoc.feature.not.loaded.correctly.explanation=O recurso Websocket est\u00e1 carregado com uma vers\u00e3o que corresponde \u00e0 especifica\u00e7\u00e3o Java [Jakarta] EE desse recurso Websocket. O recurso foi carregado sem uma vers\u00e3o definida.
-wsoc.feature.not.loaded.correctly.useraction=Verifique o arquivo server.xml para a exist\u00eancia de diversos recursos Websocket. Apenas um deve ser especificado.
+wsoc.feature.not.loaded.correctly=CWWKH0053E: O cont\u00eainer do websocket n\u00e3o foi carregado com uma vers\u00e3o aceit\u00e1vel.
+wsoc.feature.not.loaded.correctly.explanation=O cont\u00eainer do websocket foi carregado sem uma vers\u00e3o aceit\u00e1vel. O aplicativo pode se comportar de forma diferente do esperado.
+wsoc.feature.not.loaded.correctly.useraction=Verifique o arquivo server.xml para a exist\u00eancia de diversos recursos Websocket. O arquivo n\u00e3o deve especificar mais de um recurso de websocket.
 
 scheme.incorrect.error=CWWKH0054E: Um esquema n\u00e3o identificado foi usado no URI {0}.
 scheme.incorrect.error.explanation=Um esquema n\u00e3o identificado foi encontrado durante o tratamento da solicita\u00e7\u00e3o. 
@@ -239,3 +234,7 @@ scheme.incorrect.error.useraction=O tipo de esquema deve ser http, https, ws ou 
 upgradeHttpToWebSocket.failed=CWWKH0055E: A chamada jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket falhou devido a {0}. 
 upgradeHttpToWebSocket.failed.explanation=O servidor n\u00e3o p\u00f4de fazer upgrade da solicita\u00e7\u00e3o HTTP ou HTTPS para o protocolo ws/wss.
 upgradeHttpToWebSocket.failed.useraction=Revise o erro para identificar por que o upgrade da solicita\u00e7\u00e3o falhou.
+
+maxmessagesize.exceeded=CWWKH0056E: O maxMessageSize para o m\u00e9todo {0} excede Integer.MAX_VALUE para a classe {1}.
+maxmessagesize.exceeded.explanation=O par\u00e2metro de anota\u00e7\u00e3o maxMessageSize OnMessage define o tamanho m\u00e1ximo da mensagem em bytes para um m\u00e9todo. maxMessageSize pode ser definido apenas para um valor m\u00e1ximo de Integer.MAX_VALUE.
+maxmessagesize.exceeded.useraction=Reduza o valor do par\u00e2metro maxMessageSize para n\u00e3o mais do que Integer.MAX_VALUE.

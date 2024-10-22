@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -655,3 +655,9 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Utilizzare l'endpoint di dis
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: Il client {0} OpenID Connect utilizza il metodo di autenticazione dell''endpoint del token {1}. Questo metodo di autenticazione richiede un segreto client, ma non \u00e8 stato configurato un segreto client.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=Il metodo di autenticazione dell'endpoint del token specificato nel messaggio richiede un segreto client per l'autenticazione con l'endpoint del token del provider OpenID Connect.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Configurare un segreto client per il client OpenID Connect oppure cambiare il metodo di autenticazione dell'endpoint del token del client utilizzandone uno che non richieda un segreto client.
+
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
+# used by client
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS2352E: Una richiesta per [{0}] non \u00e8 valida. Un cookie richiesto con un nome che inizia con WASReqURLOidc \u00e8 mancante. Il nome host utilizzato per accedere al client potrebbe non corrispondere al nome registrato sul provider.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Il client ha ricevuto una richiesta che non includeva un cookie richiesto.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verificare la configurazione del provider OpenID Connect e del client. Il cookie mancante potrebbe essere causato dall'accesso al client con un nome host diverso dal nome host del reindirizzamento registrato con il fornitore. Se l'attributo sameSiteCookie nell'elemento webAppSecurity nella configurazione del server \u00e8 impostato su Strict, provare a impostare il valore su Lax o None.

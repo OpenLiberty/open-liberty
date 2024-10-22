@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -115,11 +115,17 @@ public class JspOptions {
     String overriddenJspOptions = new String();
     
     public JspOptions() {
-        setJavaSourceLevel(8); // Changed in PR 25494
+        // Note: Use setJdkSourceLevel for backward compatability 
+        // If setJavaSourceLevel is used, then jdkSourceLevel will be ignored if set via the server.xml
+        // See issue https://github.com/OpenLiberty/open-liberty/issues/27858 for more details
+        setJdkSourceLevel(18); // Updated to 1.8 in 25494
     }   
     
     public JspOptions(Properties jspParams) {
-        setJavaSourceLevel(8); // Changed in PR 25494
+        // Note: Use setJdkSourceLevel for backward compatability 
+        // If setJavaSourceLevel is used, then jdkSourceLevel will be ignored if set via the server.xml
+        // See issue https://github.com/OpenLiberty/open-liberty/issues/27858 for more details
+        setJdkSourceLevel(18); // Updated to 1.8 in 25494
         populateOptions(jspParams);
     }
     

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent.Severity;
 import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
 import io.smallrye.openapi.runtime.io.operation.OperationConstant;
 
 /**
@@ -43,13 +43,17 @@ public class OperationValidator extends TypeValidator<Operation> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Operation t) {
         if (t != null) {
-            final String id = t.getOperationId();
-            if (id != null && helper.addOperationId(id)) {
-                final String message = Tr.formatMessage(tc, ValidationMessageConstants.OPERATION_IDS_MUST_BE_UNIQUE, id);
-                helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(OperationConstant.PROP_OPERATION_ID), message));
-            }
+            validateId(helper, context, t);
             final APIResponses responses = t.getResponses();
             ValidatorUtils.validateRequiredField(responses, context, OperationConstant.PROP_RESPONSES).ifPresent(helper::addValidationEvent);
+        }
+    }
+
+    public void validateId(ValidationHelper helper, Context context, Operation t) {
+        final String id = t.getOperationId();
+        if (id != null && helper.addOperationId(id)) {
+            final String message = Tr.formatMessage(tc, ValidationMessageConstants.OPERATION_IDS_MUST_BE_UNIQUE, id);
+            helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(OperationConstant.PROP_OPERATION_ID), message));
         }
     }
 }

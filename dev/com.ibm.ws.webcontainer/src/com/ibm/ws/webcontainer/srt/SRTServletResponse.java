@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.srt;
 
@@ -584,7 +581,15 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
 // code above LIBERTY only
             }
             catch (Throwable th) {
-                logger.logp(Level.SEVERE, CLASS_NAME,"closeResponseOutput", "Error.while.closing.response.output",th);
+                //Client can close the connection and causes this closing error. Since there is no re-throw and the response is winding down,
+                //there is no benefit other than this random alarm message(s) in console log.
+                //Since 6.1, log to console under trace.
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.SEVERE)) {
+                    logger.logp(Level.SEVERE, CLASS_NAME,"closeResponseOutput", "Error.while.closing.response.output",th);
+                }
+                else {
+                    logger.logp(Level.FINE, CLASS_NAME,"closeResponseOutput", "Error.while.closing.response.output",th);
+                }
             }
         }
         //Not sure if we should be doing this outside of writeClosed

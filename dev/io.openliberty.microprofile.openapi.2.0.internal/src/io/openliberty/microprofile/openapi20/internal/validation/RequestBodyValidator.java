@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,7 +42,7 @@ public class RequestBodyValidator extends TypeValidator<RequestBody> {
         String reference = t.getRef();
 
         if (reference != null && !reference.isEmpty()) {
-            ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+            helper.validateReference(context, key, reference, RequestBody.class);
             return;
         }
         ValidatorUtils.validateRequiredField(t.getContent(), context, RequestBodyConstant.PROP_CONTENT).ifPresent(helper::addValidationEvent);

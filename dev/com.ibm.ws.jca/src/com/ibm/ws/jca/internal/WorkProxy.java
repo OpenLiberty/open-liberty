@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.ResourceAdapterAssociation;
@@ -52,6 +53,9 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * A wrapper for Work.
  * This wrapper takes care of execution context handling, work listener notification
@@ -63,16 +67,16 @@ public class WorkProxy implements Callable<Void>, Runnable {
      *
      * @pre theWork != null
      *
-     * @param theWork the actual Work object that is passed in by the RA.
-     * @param theStartTimeout abort the request after this amount of time has passed
-     *            and the actual Work has not yet started.
-     *            A start timeout occurs when the thread pool is to busy
-     *            to allocate a thread to start the work on.
-     * @param theContext controls what context information is used by the thread to
-     *            establish its context
-     * @param theListener send state changes to the Work to this object.
-     * @param bootstrapContext the bootstrap context.
-     * @param runningWork list of work that is running.
+     * @param theWork             the actual Work object that is passed in by the RA.
+     * @param theStartTimeout     abort the request after this amount of time has passed
+     *                                and the actual Work has not yet started.
+     *                                A start timeout occurs when the thread pool is to busy
+     *                                to allocate a thread to start the work on.
+     * @param theContext          controls what context information is used by the thread to
+     *                                establish its context
+     * @param theListener         send state changes to the Work to this object.
+     * @param bootstrapContext    the bootstrap context.
+     * @param runningWork         list of work that is running.
      * @param applyDefaultContext determines whether or not to apply default context for thread context types that aren't otherwise specified or configured.
      * @throws ResourceException if unable to associate with the resource adapter.
      */
@@ -91,6 +95,12 @@ public class WorkProxy implements Callable<Void>, Runnable {
         lsnr = theListener;
         this.bootstrapContext = bootstrapContext;
         this.runningWork = runningWork;
+
+        if (!CheckpointPhase.getPhase().restored()) {
+            CheckpointHookForNewWorkProxy.add(bootstrapContext.resourceAdapterID, work.toString());
+            throw new WorkRejectedException(Utils.getMessage("J2CA8602.work.submit.not.supported.checkpoint", work, bootstrapContext.resourceAdapterID));
+        }
+
         // JCA 11.4
         // If the resource adapter returns a null or an empty List when the WorkManager
         // makes a call to the getWorkContexts method, the WorkManager must treat it as if no
@@ -322,8 +332,8 @@ public class WorkProxy implements Callable<Void>, Runnable {
      * Handle a work context setup failure.
      *
      * @param workContext the work context.
-     * @param errorCode error code from javax.resource.spi.work.WorkContextErrorCodes
-     * @param cause Throwable to chain as the cause. Can be null.
+     * @param errorCode   error code from javax.resource.spi.work.WorkContextErrorCodes
+     * @param cause       Throwable to chain as the cause. Can be null.
      * @return WorkCompletedException to raise the the invoker.
      */
     private WorkCompletedException contextSetupFailure(Object context, String errorCode, Throwable cause) {
@@ -455,4 +465,30 @@ public class WorkProxy implements Callable<Void>, Runnable {
      * obtain the listener.
      */
     protected WorkListener lsnr;
+
+    /**
+     * Fail checkpoint whenever an RA submits work during application startup.
+     */
+    private static class CheckpointHookForNewWorkProxy implements CheckpointHook {
+
+        @Override
+        public void prepare() {
+            throw new IllegalStateException(Utils.getMessage("J2CA8601.work.submit.failed.checkpoint", raId, workId));
+        }
+
+        private final String raId, workId;
+
+        private CheckpointHookForNewWorkProxy(String raId, String workId) {
+            this.raId = raId;
+            this.workId = workId;
+        }
+
+        private static final AtomicBoolean alreadyAdded = new AtomicBoolean(false);
+
+        private static void add(String raId, String workId) {
+            if (alreadyAdded.compareAndSet(false, true)) {
+                CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHookForNewWorkProxy(raId, workId));
+            }
+        }
+    }
 }

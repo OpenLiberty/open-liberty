@@ -86,3 +86,4 @@ Subsystem-Name: Java Servlets 3.1
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: javaee-7.0

@@ -774,6 +774,14 @@ warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Beim Warten auf das Sto
 warning.timeoutWaitingForServerProcessToStop.explanation=Der Server wurde nicht innerhalb der durch den Zeitlimitwert zul\u00e4ssigen Zeit gestoppt. Dies kann auf einen langsamen Serverabschluss oder eine Serverblockierung zur\u00fcckzuf\u00fchren sein.   
 warning.timeoutWaitingForServerProcessToStop.useraction=Wenn der Server noch aktiv ist, sollten Sie den Zeitlimitwert f\u00fcr den Befehl 'server stop' erh\u00f6hen. Auf UNIX-\u00e4hnlichen Systemen wartet der Befehl server stop darauf, dass der Serverprozess gestoppt wird. Unter Windows wartet der Befehl auf eine Sperre f\u00fcr die Datei console.log . Verwenden Sie Datei\u00fcberwachungstools, um zu pr\u00fcfen, ob ein anderes Programm, z. B. ein Editor, die Datei console.log gesperrt hat.
 
+warning.manual.PPV.env.var=CWWKE0969W: Beim Packen des Servers wurde eine manuelle Umgebungsvariable preferRED_PLATFORM_VERSION angegeben.
+warning.manual.PPV.env.var.explanation=Eine manuelle Umgebungsvariable preferRED_PLATFORM_VERSION wurde in der Umgebung festgelegt, wird aber nicht in das Serverpaket eingeschlossen.
+warning.manual.PPV.env.var.useraction=Um die Umgebungsvariable preferRED_PLATFORM_VERSION beizubehalten, geben Sie sie in der Konfigurationsdatei server.env an.
+
+error.read.server.env=CWWKE0970E: Die Datei server.env an der Position {} kann nicht gelesen werden.
+error.read.server.env.explanation=Fehler beim Lesen der Datei server.env .
+error.read.server.env.useraction=Die Datei server.env kann nicht gelesen werden.  \u00dcberpr\u00fcfen Sie die Dateiberechtigungen und wiederholen Sie die Operation.
+
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

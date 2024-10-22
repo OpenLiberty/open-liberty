@@ -139,7 +139,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
                                          Container moduleContainer, Entry altDDEntry,
                                          String moduleURI,
                                          ModuleClassLoaderFactory moduleClassLoaderFactory,
-                                         ModuleClassesInfoProvider moduleClassesInfo,
+                                         ManifestClassPathProvider moduleClassesInfo,
                                          List<ContainerInfo> containerInfos) throws UnableToAdaptException {
             super(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, ContainerInfo.Type.WEB_MODULE, moduleClassLoaderFactory, moduleClassesInfo, WebApp.class);
             this.classesContainerInfo.addAll(containerInfos);

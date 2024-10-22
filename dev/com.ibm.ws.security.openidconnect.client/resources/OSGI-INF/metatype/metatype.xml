@@ -53,7 +53,7 @@
   		 <AD id="includeIdTokenInSubject" name="%includeIdTokenInSubject" description="%includeIdTokenInSubject.desc"  required="false" type="Boolean" default="true"/>
   		 <AD id="accessTokenInLtpaCookie" name="%accessTokenInLtpaCookie" description="%accessTokenInLtpaCookie.desc"  required="false" type="Boolean" default="false"/>
          <AD id="initialStateCacheCapacity" name="%initialStateCacheCapacity" description="%initialStateCacheCapacity.desc" required="false" type="Integer" min="0" default="3000" />
-         <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc" required="false" type="Boolean" default="false"/>
+         <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc" required="false" type="Boolean" default="true"/>
          <AD id="discoveryEndpointUrl" name="%discoveryEndpointUrl" description="%discoveryEndpointUrl.desc" required="false" type="String" />
          <AD id="authorizationEndpointUrl" name="%authorizationEndpointUrl" description="%authorizationEndpointUrl.desc" required="false" type="String" />
          <AD id="tokenEndpointUrl" name="%tokenEndpointUrl" description="%tokenEndpointUrl.desc" required="false" type="String" />
@@ -89,8 +89,8 @@
          <AD id="uniqueUserIdentifier" name="%userUniqueIdentifier" description="%userUniqueIdentifier.desc" required="false" type="String" default="uniqueSecurityName" />
          <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="post" >
-                <Option label="basic" value="basic" />
-                <Option label="post"  value="post" />
+                <Option label="%tokenEndpointAuthMethod.basic" value="basic" />
+                <Option label="%tokenEndpointAuthMethod.post"  value="post" />
                 <Option label="%tokenEndpointAuthMethod.privateKeyJwt" value="private_key_jwt" />
          </AD>
          <AD id="tokenEndpointAuthSigningAlgorithm" name="%tokenEndpointAuthSigningAlgorithm" description="%tokenEndpointAuthSigningAlgorithm.desc" required="false"

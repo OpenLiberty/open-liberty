@@ -15,6 +15,7 @@ Subsystem-Name: Secure Socket Layer 1.0
  com.ibm.ws.channel.ssl, \
  com.ibm.websphere.security, \
  com.ibm.ws.crypto.certificateutil, \
+ com.ibm.ws.crypto.common, \
  io.openliberty.wsoc.ssl.internal, \
  io.openliberty.endpoint, \
  io.openliberty.io.netty, \
@@ -23,8 +24,8 @@ Subsystem-Name: Secure Socket Layer 1.0
  io.openliberty.netty.internal.tls.impl
 -jars=com.ibm.websphere.appserver.spi.ssl; location:=dev/spi/ibm/, \
  com.ibm.websphere.appserver.api.ssl; location:=dev/api/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.ssl_1.5-javadoc.zip, \
- dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.ssl_1.6-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.ssl_1.6-javadoc.zip, \
+ dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.ssl_1.7-javadoc.zip
 kind=ga
 edition=core
 superseded-by=transportSecurity-1.0

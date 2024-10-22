@@ -17,7 +17,7 @@
 # Note:
 #Last used error meessage code was SESN8502I
 #
-#Use 8600 - 8699 for Servlet 6.0 - EE10
+#Use 8600 - 8699 for Servlet 6.0 (EE10) and above
 #
 # -----------------------------------------------
 cookie.attribute.name.null=SESN8600E: El nombre de atributo en la clase Cookie es nulo.
@@ -27,3 +27,13 @@ cookie.attribute.name.null.useraction=Aseg\u00farese de que el nombre de atribut
 cookie.attribute.name.invalid.[{0}]=SESN8601E: El nombre de atributo [{0}] contiene caracteres no v\u00e1lidos.
 cookie.attribute.name.invalid.[{0}].explanation=El nombre de atributo contiene al menos uno de los siguientes caracteres separadores, que no se pueden utilizar en el nombre de atributo en la clase Cookie: ( ) < > @ , ; :  " / [ ] ? = { }
 cookie.attribute.name.invalid.[{0}].useraction=Aseg\u00farese de que el nombre de atributo no contenga ning\u00fan car\u00e1cter separador y que el nombre de atributo sea v\u00e1lido.
+# -----------------------------------------------
+# Servlet 6.1
+session.is.invalid=SESN8602E: La sesi\u00f3n no es v\u00e1lida.
+session.is.invalid.explanation=La sesi\u00f3n actual ha caducado y no es v\u00e1lida.
+session.is.invalid.useraction=Intente iniciar sesi\u00f3n o vuelva a obtener una nueva sesi\u00f3n.
+# -----------------------------------------------
+# Servlet 6.1
+session.id.is.invalid=SESN8603E: El ID de sesi\u00f3n no es v\u00e1lido.
+session.id.is.invalid.explanation=El ID de sesi\u00f3n ha cambiado desde el \u00faltimo acceso.
+session.id.is.invalid.useraction=El ID de sesi\u00f3n ha cambiado desde el \u00faltimo acceso. Intente iniciar la sesi\u00f3n de nuevo.

@@ -52,3 +52,7 @@ CWWKF1705.failed.response.useraction=Fix the communication issue and try again.
 CWWKF1706.issue.parsing=CWWKF1706W: Issue when parsing Product Information.
 CWWKF1706.issue.parsing.explanation=The service cannot successfully parse the product information.
 CWWKF1706.issue.parsing.useraction=Fix the communication issue and try again.
+
+CWWKF1707.internal.error=CWWKF1706W: An internal error occurred when the Liberty runtime checked for security vulnerabilities. The error is: {0}
+CWWKF1707.internal.error.explanation=An error occurred that prevented the Liberty runtime from checking for security vulnerabilities.
+CWWKF1707.internal.error.useraction=Review the server message.log file and FFDC logs to identify the problem.

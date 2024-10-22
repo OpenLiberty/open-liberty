@@ -36,11 +36,15 @@ import com.ibm.websphere.simplicity.config.Monitor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+// TODO Currently Infinispan does not support Java 23 with the versions of Infinispan we support
+// The @MaximumJavaLevel annotation should be removed once the this issue is fixed in a version of Infinispan we support
+@MaximumJavaLevel(javaLevel = 22)
 @RunWith(FATRunner.class)
 public class SessionCacheConfigUpdateTest extends FATServletClient {
 

@@ -12,8 +12,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common.cdi;
 
-import static java.util.function.Predicate.not;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -123,7 +121,7 @@ public abstract class AbstractWithSpanInterceptor {
         @Override
         public String extract(final InvocationContext context) {
             return getWithSpanBinding(context).map(WithSpan::value) // If present, use the value as the name ...
-                                              .filter(not(String::isEmpty)) // ... as long as it's not empty ...
+                                              .filter((s) -> !s.isEmpty()) // ... as long as it's not empty ...
                                               .orElse(getNameFromMethod(context.getMethod())); // ... otherwise compute a name for the method
         }
 

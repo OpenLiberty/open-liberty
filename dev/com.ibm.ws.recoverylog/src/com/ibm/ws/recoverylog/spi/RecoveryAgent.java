@@ -194,15 +194,23 @@ public interface RecoveryAgent {
 
     public boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception;
 
+    public void releasePeerLeaseForRecovery(String recoveryIdentityToRecover) throws Exception;
+
     /**
-     * Returns a flag to indicate if the HADB peer server locking
-     * scheme is enabled.
+     * Returns a flag to indicate if peer server locking is enabled where transaction logs are stored in a database.
      *
-     * by default, HADB locking is DISABLED.
+     * by default, peer server locking is ENABLED.
      *
      * @return boolean
      */
-    public boolean isDBTXLogPeerLocking();
+    public boolean isLogLockingEnabled();
+
+    /**
+     * Returns a flag to indicate whether recovery logs are to be written to an RDBMS or a FileSystem.
+     *
+     * @return boolean
+     */
+    public boolean isSQLRecoveryLog();
 
     /**
      * Retrieve reference to a Recovery Log that is stored in an

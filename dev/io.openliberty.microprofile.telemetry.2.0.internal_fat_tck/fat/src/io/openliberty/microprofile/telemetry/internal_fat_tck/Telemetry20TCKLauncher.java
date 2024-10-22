@@ -27,20 +27,19 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  * There is a detailed output on specific
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.EXPERIMENTAL) //Change this back to Lite when the 2.0 version of the telemetry TCK is published. I've tested locally with a snapshot and it passed everything.
+@Mode(TestMode.LITE)
 public class Telemetry20TCKLauncher {
 
-    private static final String SERVER_NAME = "Telemetry11TCKServer";
+    private static final String SERVER_NAME = "Telemetry20TCKServer";
 
     @ClassRule
-    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
+    public static RepeatTests r = FATSuite.allMPTel20Repeats(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -58,10 +57,10 @@ public class Telemetry20TCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchTelemetry20Tck() throws Exception {
-        String bucketName = "io.openliberty.microprofile.telemetry.2.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchTelemetry20Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Telemetry";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        String suiteName = "tck-suite-application.xml";
+
+        TCKRunner.build(server, Type.MICROPROFILE, "Telemetry")
+                        .withSuiteFileName(suiteName)
+                        .runTCK();
     }
 }

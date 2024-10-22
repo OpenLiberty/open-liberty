@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public class DualServerPeerLockingTest1 extends DualServerPeerLockingTest {
      */
     @Test
     public void testDynamicCloudRecovery007() throws Exception {
-        dynamicTest(firstServer, secondServer, 7, 2);
+        dynamicTest(s1, s2, 7, 2);
     }
 
     /**
@@ -42,7 +42,7 @@ public class DualServerPeerLockingTest1 extends DualServerPeerLockingTest {
      */
     @Test
     public void testDynamicCloudRecovery090() throws Exception {
-        dynamicTest(firstServer, secondServer, 90, 3);
+        dynamicTest(s1, s2, 90, 3);
     }
 
     /**
@@ -72,7 +72,7 @@ public class DualServerPeerLockingTest1 extends DualServerPeerLockingTest {
      */
     @Test
     public void testDynamicCloudRecoveryInterruptedPeerRecovery() throws Exception {
-        dynamicTest(firstServer, secondServer, "InterruptedPeerRecovery", 2);
+        dynamicTest(s1, s2, "InterruptedPeerRecovery", 2);
     }
 
     /**
@@ -87,7 +87,7 @@ public class DualServerPeerLockingTest1 extends DualServerPeerLockingTest {
 
         // Delete existing DB files, so that the tables that support transaction recovery
         // are created from scratch.
-        firstServer.deleteFileFromLibertyInstallRoot("/usr/shared/resources/data/tranlogdb");
-        dynamicTest(firstServer, secondServer, 7, 2);
+        s1.deleteFileFromLibertyInstallRoot("/usr/shared/resources/data/tranlogdb");
+        dynamicTest(s1, s2, 7, 2);
     }
 }

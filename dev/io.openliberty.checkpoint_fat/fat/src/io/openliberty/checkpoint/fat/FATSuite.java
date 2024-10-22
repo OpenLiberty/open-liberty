@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -39,8 +41,11 @@ import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -150,6 +155,22 @@ public class FATSuite {
         }
     }
 
+    static public void removeBootStrapProperties(LibertyServer server, String... keys) throws Exception, IOException, FileNotFoundException {
+        File bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
+        if (bootStrapPropertiesFile.isFile()) {
+            Properties bootStrapProperties = new Properties();
+            try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
+                bootStrapProperties.load(in);
+            }
+            for (String key : keys) {
+                bootStrapProperties.remove(key);
+            }
+            try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
+                bootStrapProperties.store(out, "");
+            }
+        }
+    }
+
     static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
         Properties serverEnvProperties = new Properties();
         serverEnvProperties.putAll(newEnv);
@@ -185,10 +206,60 @@ public class FATSuite {
         }
     }
 
+    public static RepeatTests defaultEERepeat(String serverName) {
+        return eeRepeatStartingAt(serverName, EEVersion.EE11);
+    }
+
+    private static List<FeatureSet> descendingEEs = Arrays.asList(EERepeatActions.EE11, EERepeatActions.EE10, EERepeatActions.EE8);
+
+    public static RepeatTests eeRepeatStartingAt(String serverName, EEVersion highest) {
+        FeatureSet liteMode = null;
+        FeatureSet[] fullMode = {};
+        for (int i = 0; i < descendingEEs.size(); i++) {
+            liteMode = descendingEEs.get(i);
+            if (liteMode.getEEVersion() == highest || liteMode.getEEVersion().ordinal() < highest.ordinal()) {
+                fullMode = descendingEEs.subList(i + 1, descendingEEs.size()).toArray(new FeatureSet[0]);
+                break;
+            }
+        }
+        return EERepeatActions.repeat(serverName, liteMode, fullMode);
+    }
+
     public static RepeatTests defaultMPRepeat(String serverName) {
         return MicroProfileActions.repeat(serverName,
-                                          MicroProfileActions.MP61, // first test in LITE mode
-                                          MicroProfileActions.MP41, // rest are FULL mode
+                                          MicroProfileActions.MP70_EE10, // first test in LITE mode
+                                          // Nothing specific for EE 11 that we should repeat for checkpoint
+                                          // MicroProfileActions.MP70_EE11,
+                                          MicroProfileActions.MP61, // rest are FULL mode
+                                          MicroProfileActions.MP41,
                                           MicroProfileActions.MP50);
+    }
+
+    public static final String MP50_MPTEL11_ID = MicroProfileActions.MP50_ID + "_MPTEL11";
+    public static final FeatureSet MP50_MPTEL11 = MicroProfileActions.MP50
+                    .addFeature("mpTelemetry-1.1")
+                    .build(MP50_MPTEL11_ID);
+    public static final String MP41_MPTEL11_ID = MicroProfileActions.MP41_ID + "_MPTEL11";
+    public static final FeatureSet MP41_MPTEL11 = MicroProfileActions.MP41
+                    .addFeature("mpTelemetry-1.1")
+                    .build(MP41_MPTEL11_ID);
+
+    public static RepeatTests mpTelemetryRepeat(String serverName) {
+        return MicroProfileActions.repeat(serverName,
+                                          // first test in LITE mode
+                                          MicroProfileActions.MP70_EE10,
+                                          MicroProfileActions.MP61, // rest are FULL mode
+                                          MP50_MPTEL11,
+                                          MP41_MPTEL11);
+    }
+
+    public static RepeatTests mpTelemetryRepeat2(String serverName) {
+        return MicroProfileActions.repeat(serverName,
+                                          // first test in LITE mode
+                                          // TODO need to figure out why mpTelemetry-2.0 isn't working for the test app
+                                          //MicroProfileActions.MP70_EE10,
+                                          MicroProfileActions.MP61, // rest are FULL mode
+                                          MP50_MPTEL11,
+                                          MP41_MPTEL11);
     }
 }

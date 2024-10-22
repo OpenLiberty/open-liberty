@@ -1,0 +1,73 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  kernel {
+    transitive = false
+  }
+}
+
+dependencies {
+  kernel project(':org.eclipse.osgi'),
+      project(':com.ibm.ws.logging.core'),
+      project(':com.ibm.ws.kernel.boot.cmdline'),
+      project(':com.ibm.ws.kernel.boot.common'),
+      project(':com.ibm.ws.kernel.boot.core'),
+      project(':com.ibm.ws.kernel.boot.nested'),
+      project(':com.ibm.ws.kernel.service'),
+      project(':com.ibm.ws.kernel.feature.core'),
+      project(':com.ibm.ws.runtime.update'),
+      project(':com.ibm.websphere.org.osgi.core'),
+      project(':com.ibm.websphere.appserver.features'),
+      project(':com.ibm.websphere.org.osgi.service.cm'),
+      project(':com.ibm.websphere.org.osgi.service.component'),
+      project(':com.ibm.wsspi.org.osgi.namespace.service'),
+      project(':com.ibm.wsspi.org.osgi.service.component.annotations'),
+      project(':com.ibm.wsspi.org.osgi.service.event'),
+      project(':com.ibm.ws.org.eclipse.equinox.region'),
+      project(':com.ibm.ws.org.apache.aries.util'),
+      project(':com.ibm.ws.org.osgi.annotation.versioning'),
+      'biz.aQute.bnd:biz.aQute.bnd:6.4.1'
+}
+
+task addJunitdependencies(type: Copy) {
+  from configurations.kernel
+  into "${buildDir}/autoFVT/lib/"
+}
+
+// TODO: Maybe, delete / copy might be replaced with sync.
+
+task deleteFeatures() {
+  doLast {
+    delete "${buildDir}/autoFVT/lib/features"
+  }
+}
+
+task copyFeatures() {
+  mustRunAfter deleteFeatures
+
+  doLast {
+    copy {
+      from(fileTree(project(':com.ibm.websphere.appserver.features').file('visibility')))
+      into "${buildDir}/autoFVT/lib/features"
+    }
+  }
+}
+
+addRequiredLibraries {
+  dependsOn addDerby
+  dependsOn addJunitdependencies
+  dependsOn deleteFeatures
+  dependsOn copyFeatures
+}
+

@@ -24,3 +24,4 @@ Subsystem-Name: MicroProfile Health 3.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-4.0

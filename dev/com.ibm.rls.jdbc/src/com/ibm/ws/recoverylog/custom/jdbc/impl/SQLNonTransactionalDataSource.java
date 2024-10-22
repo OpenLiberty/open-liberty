@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -74,11 +74,12 @@ public class SQLNonTransactionalDataSource {
      * Locates a DataSource in config
      *
      * @return The DataSource.
+     * @throws InternalLogException
      *
      * @exception
      */
     @FFDCIgnore(Exception.class)
-    public DataSource getDataSource() throws Exception {
+    public DataSource getDataSource() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getDataSource");
 

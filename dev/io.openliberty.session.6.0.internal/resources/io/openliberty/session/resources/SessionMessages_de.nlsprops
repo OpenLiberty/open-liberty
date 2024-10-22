@@ -17,7 +17,7 @@
 # Note:
 #Last used error meessage code was SESN8502I
 #
-#Use 8600 - 8699 for Servlet 6.0 - EE10
+#Use 8600 - 8699 for Servlet 6.0 (EE10) and above
 #
 # -----------------------------------------------
 cookie.attribute.name.null=SESN8600E: Der Attributname in der Cookie-Klasse ist null.
@@ -27,3 +27,13 @@ cookie.attribute.name.null.useraction=Stellen Sie sicher, dass der Attributname 
 cookie.attribute.name.invalid.[{0}]=SESN8601E: Der Attributname [{0}] enth\u00e4lt ung\u00fcltige Zeichen.
 cookie.attribute.name.invalid.[{0}].explanation=Der Attributname enth\u00e4lt mindestens eines der folgenden Trennzeichen, das im Attributnamen in der Cookie-Klasse nicht verwendet werden kann: () < > @,;: " /[]? = { }
 cookie.attribute.name.invalid.[{0}].useraction=Stellen Sie sicher, dass der Attributname keine Trennzeichen enth\u00e4lt und dass der Attributname g\u00fcltig ist.
+# -----------------------------------------------
+# Servlet 6.1
+session.is.invalid=SESN8602E: Die Sitzung ist ung\u00fcltig.
+session.is.invalid.explanation=Die aktuelle Sitzung ist abgelaufen und ung\u00fcltig.
+session.is.invalid.useraction=Versuchen Sie, sich anzumelden oder eine neue Sitzung abzurufen.
+# -----------------------------------------------
+# Servlet 6.1
+session.id.is.invalid=SESN8603E: Die Sitzungs-ID ist ung\u00fcltig.
+session.id.is.invalid.explanation=Die Sitzungs-ID hat sich seit dem letzten Zugriff ge\u00e4ndert.
+session.id.is.invalid.useraction=Die Sitzungs-ID hat sich seit dem letzten Zugriff ge\u00e4ndert. Versuchen Sie erneut sich anzumelden.

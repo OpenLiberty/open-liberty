@@ -19,14 +19,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.ibm.websphere.kernel.server.ServerInfoMBean;
+import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.feature.FixManager;
 import com.ibm.ws.kernel.feature.Visibility;
-import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
-import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 
 import io.openliberty.reporting.internal.utils.HashUtils;
 
@@ -48,6 +46,7 @@ public class DataCollector {
         data.put("id", uniqueID);
         data.put("productEdition", productEdition);
         data.put("productVersion", productVersion);
+        data.put("productName", productName);
         data.put("features", String.join(",", installedFeatures));
         data.put("javaVendor", javaVendor);
         data.put("javaVersion", javaRuntimeInfo);
@@ -68,6 +67,8 @@ public class DataCollector {
     private final String productVersion;
     private final String productEdition;
 
+    private final String productName = "Liberty";
+
     private final Set<String> iFixSet = new HashSet<>();
 
     private final String os;
@@ -85,44 +86,47 @@ public class DataCollector {
      * @throws IOException
      * @throws DataCollectorException
      */
-    public DataCollector(FeatureProvisioner featureProvisioner, FixManager FixManager, ServerInfoMBean serverInfo) throws IOException, DataCollectorException {
+    public DataCollector(FeatureProvisioner featureProvisioner, FixManager FixManager, ServerInfoMBean serverInfo,
+                         Map<String, ? extends ProductInfo> allProductInfo) throws IOException, DataCollectorException {
 
-        Map<String, ? extends ProductInfo> allProductInfo;
-        try {
-            allProductInfo = ProductInfo.getAllProductInfo();
+        javaRuntimeInfo = serverInfo.getJavaRuntimeVersion();
 
-            uniqueID = HashUtils.hashString(serverInfo.getInstallDirectory()); // placeholder.
+        installedFeatures.addAll(getPublicFeatures(featureProvisioner));
 
-            javaRuntimeInfo = serverInfo.getJavaRuntimeVersion();
+        String javaVM = System.getProperty("java.vendor").toLowerCase();
 
-            installedFeatures.addAll(getPublicFeatures(featureProvisioner));
-
-            String javaVM = System.getProperty("java.vendor").toLowerCase();
-
-            if (javaVM == null) {
-                javaVM = System.getProperty("java.vm.name", "unknown").toLowerCase();
-            }
-
-            javaVendor = javaVM;
-
-            iFixSet.addAll(FixManager.getIFixes());
-
-            os = System.getProperty("os.name");
-
-            osArch = System.getProperty("os.arch");
-
-            // the key is the productId
-            if (allProductInfo.containsKey("com.ibm.websphere.appserver")) {
-                productVersion = allProductInfo.get("com.ibm.websphere.appserver").getVersion();
-                productEdition = allProductInfo.get("com.ibm.websphere.appserver").getEdition();
-            } else {
-                productVersion = allProductInfo.get("io.openliberty").getVersion();
-                productEdition = allProductInfo.get("io.openliberty").getEdition();
-            }
-
-        } catch (ProductInfoParseException | DuplicateProductInfoException | ProductInfoReplaceException e) {
-            throw new DataCollectorException("Unable to parse Product Info", e);
+        if (javaVM == null) {
+            javaVM = System.getProperty("java.vm.name", "unknown").toLowerCase();
         }
+
+        javaVendor = javaVM;
+
+        iFixSet.addAll(FixManager.getIFixes());
+
+        os = System.getProperty("os.name");
+
+        osArch = System.getProperty("os.arch");
+
+        // the key is the productId
+        if (allProductInfo.containsKey("com.ibm.websphere.appserver")) {
+            productVersion = allProductInfo.get("com.ibm.websphere.appserver").getVersion();
+            productEdition = allProductInfo.get("com.ibm.websphere.appserver").getEdition();
+        } else {
+            productVersion = allProductInfo.get("io.openliberty").getVersion();
+            productEdition = allProductInfo.get("io.openliberty").getEdition();
+        }
+
+        StringBuilder input = new StringBuilder();
+
+        input.append(serverInfo.getInstallDirectory());
+        input.append(productEdition);
+        input.append(javaVendor);
+        input.append(osArch);
+        input.append(os);
+        input.append(KernelUtils.getServerHostName());
+
+        uniqueID = HashUtils.hashString(input.toString()); // placeholder.
+
     }
 
     /**

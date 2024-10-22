@@ -50,17 +50,23 @@ public interface Packages extends BasicRepository<Package, Integer> {
     @Query("DELETE FROM Package")
     int deleteEverything();
 
-    Optional<Integer> deleteFirst(Sort<Package> sort);
+    Optional<Integer> delete1(Limit limit, Sort<Package> sort);
 
-    int[] deleteFirst2(Sort<?>... sorts);
+    int[] delete2(Limit limit, Sort<?>... sorts);
 
-    LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort<?>... sorts);
+    LinkedList<?> delete2ByHeightLessThan(float maxHeight, Limit limit, Sort<?>... sorts);
 
-    long[] deleteFirst3(Sort<Package> sort); // invalid return type is not the entity or id
+    long[] delete3(Limit limit, Sort<Package> sort); // invalid return type is not the entity or id
 
-    List<String> deleteFirst4(Sort<Package> sort); // invalid return type is not the entity or id
+    List<String> delete4(Limit limit, Sort<Package> sort); // invalid return type is not the entity or id
 
-    Collection<Number> deleteFirst5(Sort<Package> sort); // invalid return type is not the entity or id
+    Collection<Number> delete5(Limit limit, Sort<Package> sort); // invalid return type is not the entity or id
+
+    List<Package> deleteFirst2(); // 'first2' should be ignored and this should delete all entities
+
+    Package deleteFirst5ByWidthLessThan(float maxWidth); // 'first5' should be ignored and the number of results should be limited by the condition
+
+    Optional<Package> deleteFirst(); // 'first' should be ignored and this should delete all entities (expect failure since the result will be non-unique)
 
     @Delete
     Object[] destroy(Limit limit, Sort<Package> sort);
@@ -95,7 +101,7 @@ public interface Packages extends BasicRepository<Package, Integer> {
     List<Package> take(@By("description") String desc);
 
     @Delete
-    @OrderBy("id")
+    @OrderBy("width")
     List<Package> takeOrdered(String description);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);

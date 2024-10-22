@@ -35,7 +35,7 @@ public class HttpSession extends ConfigElement {
     private Boolean cookieSecure;
     private Boolean cookieHttpOnly;
     private String cookieSameSite;
-    private Boolean cookiePartitioned;
+    private String cookiePartitioned;
     private Integer maxInMemorySessionCount;
     private Boolean allowOverflow;
     private String invalidationTimeout;
@@ -340,12 +340,12 @@ public class HttpSession extends ConfigElement {
         this.cookieSameSite = cookieSameSite;
     }
 
-    public Boolean getCookiePartitioned() {
+    public String getCookiePartitioned() {
         return cookiePartitioned;
     }
 
     @XmlAttribute
-    public void setCookiePartitioned(Boolean cookiePartitioned) {
+    public void setCookiePartitioned(String cookiePartitioned) {
         this.cookiePartitioned = cookiePartitioned;
     }
 

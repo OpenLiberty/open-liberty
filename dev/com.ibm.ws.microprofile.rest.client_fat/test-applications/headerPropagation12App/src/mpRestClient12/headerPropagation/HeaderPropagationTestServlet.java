@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -112,7 +112,7 @@ public class HeaderPropagationTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID}) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
+    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID}) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
     public void testSendCustomHeaderViaFactory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String allHeaders = ClientBuilder.newClient()
@@ -131,7 +131,7 @@ public class HeaderPropagationTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID}) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
+    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID}) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
     public void testSendCustomHeaderViaCDIEnabledFactory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String allHeaders = ClientBuilder.newClient()

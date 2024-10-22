@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -59,6 +60,7 @@ public class EJBInWarServiceSecurityTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
 
         ExplodedShrinkHelper.explodedApp(server, "EJBInWarServiceSecurity", "com.ibm.samples.jaxws",
                                          "com.ibm.samples.servlet");

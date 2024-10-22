@@ -51,7 +51,7 @@ import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.Reactiv
 import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.RmTelemetryProcessingBean;
 import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.RmTelemetryReceptionBean;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.KafkaTests;
-import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 /**
  * Assert that Reactive Messaging works as expected with Telemetry enabled on the server.
@@ -67,9 +67,7 @@ public class ReactiveMessagingTelemetryTestWithJAXRS extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME,
-                                                                  ReactiveMessagingActions.MP61_RM30,
-                                                                  ReactiveMessagingActions.MP50_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.telemetryRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {

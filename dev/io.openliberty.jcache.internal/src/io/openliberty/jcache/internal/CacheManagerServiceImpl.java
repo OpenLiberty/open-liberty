@@ -12,7 +12,7 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal;
 
-import static io.openliberty.jcache.internal.Activator.CACHE_MANAGER_CONFIG_CONDITION;
+import static io.openliberty.jcache.internal.Activator.CACHE_CONFIG_CONDITION;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import java.io.IOException;
@@ -81,12 +81,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
      */
     @Activate
     public void activate(Map<String, Object> config) {
-        id = (String) config.get(KEY_ID);
-        /*
-         * Get the URI.
-         */
-        this.uriValue = (String) config.get(KEY_URI);
-        configureProperties(config);
+        processConfiguration(config);
         /*
          * Schedule a task to initialize the CacheManager in the background. This will
          * alleviate delays on the first request to any caches that use this
@@ -102,7 +97,13 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         });
     }
 
-    private void configureProperties(Map<String, Object> config) {
+    private void processConfiguration(Map<String, Object> config) {
+        id = (String) config.get(KEY_ID);
+        /*
+         * Get the URI.
+         */
+        this.uriValue = (String) config.get(KEY_URI);
+
         /*
          * Get the configured vendor properties.
          */
@@ -125,7 +126,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
     @Modified
     public void modified(Map<String, Object> config) {
-        configureProperties(config);
+        processConfiguration(config);
     }
 
     /**
@@ -284,7 +285,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         this.scheduledExecutorService = null;
     }
 
-    @Reference(name = "configCondition", service = Condition.class, target = "(" + Condition.CONDITION_ID + "=" + CACHE_MANAGER_CONFIG_CONDITION + ")")
+    @Reference(name = "configCondition", service = Condition.class, target = "(" + Condition.CONDITION_ID + "=" + CACHE_CONFIG_CONDITION + ")")
     protected void setConfigCondition(Condition configCondition) {
         // do nothing; this is just a reference that we use to force the component to recycle
     }

@@ -42,9 +42,6 @@ public class PrivateHeaderTest {
     private static final String SESSION_ID_LISTENER_JAR_NAME = "SessionIdListener";
     private static final String TEST_SERVLET_31_JAR_NAME = "TestServlet31";
     private static final String TEST_SERVLET_31_APP_NAME = "TestServlet31";
-
-    private static final String PRIVATE_HEADERS_APP_NAME = "PrivateHeadersTestServlet";
-
     private static final String PRIVATE_HEADERS_TEST_SERVLET_URL = "/TestServlet31/PrivateHeadersTestServlet";
 
     @BeforeClass
@@ -94,8 +91,6 @@ public class PrivateHeaderTest {
         LOG.info("\n /************************************************************************************/");
 
         String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + PRIVATE_HEADERS_TEST_SERVLET_URL;
-        StringBuilder sb = new StringBuilder();
-        String line = "";
         final String ExpectedData = "scheme=https";
 
         try {
@@ -140,8 +135,7 @@ public class PrivateHeaderTest {
         LOG.info("\n /************************************************************************************/");
 
         String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + PRIVATE_HEADERS_TEST_SERVLET_URL;
-        StringBuilder sb = new StringBuilder();
-        String line = "";
+
         final String ExpectedData = "scheme=http";
 
         try {
@@ -185,8 +179,6 @@ public class PrivateHeaderTest {
         LOG.info("\n /************************************************************************************/");
 
         String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + PRIVATE_HEADERS_TEST_SERVLET_URL;
-        StringBuilder sb = new StringBuilder();
-        String line = "";
         final String ExpectedData = "version=HTTP/1.1";
 
         try {
@@ -232,8 +224,6 @@ public class PrivateHeaderTest {
         LOG.info("\n /************************************************************************************/");
 
         String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + PRIVATE_HEADERS_TEST_SERVLET_URL;
-        StringBuilder sb = new StringBuilder();
-        String line = "";
         final String ExpectedData = "version=HTTP/1.1";
 
         try {
@@ -280,8 +270,6 @@ public class PrivateHeaderTest {
         LOG.info("\n /************************************************************************************/");
 
         String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + PRIVATE_HEADERS_TEST_SERVLET_URL;
-        StringBuilder sb = new StringBuilder();
-        String line = "";
         final String ExpectedData = "200.200.200.200";
 
         try {
@@ -327,8 +315,6 @@ public class PrivateHeaderTest {
         LOG.info("\n /************************************************************************************/");
 
         String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + PRIVATE_HEADERS_TEST_SERVLET_URL;
-        StringBuilder sb = new StringBuilder();
-        String line = "";
         final String UnExpectedData = "[127::::1";
 
         try {

@@ -54,6 +54,6 @@ public class CoordinatorCheckServlet extends HttpServlet {
 
 	protected String get(HttpServletRequest request) throws ServletException, IOException {
 
-		return Integer.toString(XAResourceImpl.committedCount());
+		return Integer.toString(XAResourceImpl.countInState(XAResourceImpl.COMMITTED));
 	}
 }

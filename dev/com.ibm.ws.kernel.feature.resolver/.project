@@ -27,6 +27,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.kernel.boot.core/src</locationURI>
 		</link>
 		<link>
+			<name>com.ibm.ws.kernel.feature.common</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.kernel.feature.common/src</locationURI>
+		</link>
+		<link>
 			<name>com.ibm.ws.kernel.feature.core</name>
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.kernel.feature.core/src</locationURI>
