@@ -111,4 +111,19 @@ public interface Voters extends BasicRepository<Voter, Integer> {
                            @Param("street") String street,
                            String city, // extra, unused parameter
                            String stateCode); // extra, unused parameter
+
+    /**
+     * This invalid method has a query that requires a single positional parameter,
+     * but the method supplies 3 parameters.
+     */
+    @Query("WHERE LENGTH(address) > ?1 ORDER BY ssn ASC")
+    List<Voter> withAddressLongerThan(int min1, int min2, int min3);
+
+    /**
+     * This invalid method has a query that requires a positional parameter,
+     * but the method uses the Param annotation to defined a named parameter
+     * instead.
+     */
+    @Query("WHERE LENGTH(address) < ?1 ORDER BY ssn ASC")
+    List<Voter> withAddressShorterThan(@Param("maxLength") int maxAddressLength);
 }

@@ -214,6 +214,24 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an error is raised for a repository method with a query that
+     * requires 1 positional parameter, but the method supplies 3 parameters.
+     */
+    @Test
+    public void testExtraPositionalParameters() {
+        try {
+            List<Voter> found = voters.withAddressLongerThan(20, 25, 30);
+            fail("Method with extra positional parameters ought to raise an" +
+                 " error. Instead found: " + found);
+        } catch (IllegalArgumentException x) {
+            // Error is detected by EclipseLink
+            if (x.getMessage() == null ||
+                !x.getMessage().contains("WHERE LENGTH(address) > ?1"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify an error is raised for a repository method that has a Param annotation
      * that specifies a name value that does not match the name of a named parameter
      * from the query.
@@ -248,6 +266,25 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1084E:") ||
                 !x.getMessage().contains("bornIn"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised for a repository method that attempts to use
+     * the Param annotation (which is for named parameters only) to supply its
+     * single positional parameter.
+     */
+    @Test
+    public void testParamUsedForPositionalParameter() {
+        try {
+            List<Voter> found = voters.withAddressShorterThan(100);
+            fail("Method that tries to use Param for a positional parameter" +
+                 " ought to raise an error. Instead found: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1086E:") ||
+                !x.getMessage().contains("(maxLength)"))
                 throw x;
         }
     }

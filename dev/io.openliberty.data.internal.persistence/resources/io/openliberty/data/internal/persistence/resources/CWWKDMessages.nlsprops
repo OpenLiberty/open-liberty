@@ -871,3 +871,16 @@ CWWKD1085.extra.method.params=CWWKD1085E: The parameters of the {0} method \
 CWWKD1085.extra.method.params.explanation=All of the method parameters must be \
  used by the query or be Jakarta Data defined parameter types.
 CWWKD1085.extra.method.params.useraction=Remove the extra method parameters.
+
+CWWKD1086.named.params.unused=CWWKD1086E: The parameters of the {0} method \
+ of the {1} repository interface define named parameters ({2}) that are not \
+ used in the Query annotation value: {3}. You can refer to named parameters \
+ in a query by using the : character followed by the parameter name. \
+ For example, {4}. You can refer to positional parameters in a query by using \
+ the ? character followed by the ordinal value, starting with ?1. Do not \
+ annotated method parameters to have the Param annotation when the query \
+ uses positional parameters or has no parameters.
+CWWKD1086.named.params.unused.explanation=The Param annotation can only be used \
+ when the query has named parameters.
+CWWKD1086.named.params.unused.useraction=Remove the Param annotation or switch \
+ the query to use named parameters.

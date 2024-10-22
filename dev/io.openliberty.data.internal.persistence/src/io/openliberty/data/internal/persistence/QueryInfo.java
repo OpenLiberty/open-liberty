@@ -939,31 +939,41 @@ public class QueryInfo {
     @Trivial
     private MappingException excExtraMethodArgNamedParams(Set<String> extras,
                                                           Set<String> qlRequired) {
-        boolean first = true;
+        String firstExtraParam = null;
         StringBuilder extraParamNames = new StringBuilder();
         for (String name : extras) {
-            if (!first)
+            if (firstExtraParam == null)
+                firstExtraParam = name;
+            else
                 extraParamNames.append(", ");
             extraParamNames.append(name);
-            first = false;
         }
 
-        first = true;
+        boolean isFirst = true;
         StringBuilder qlParamNames = new StringBuilder();
         for (String name : qlRequired) {
-            if (!first)
+            if (!isFirst)
                 qlParamNames.append(", ");
             qlParamNames.append(':').append(name);
-            first = false;
+            isFirst = false;
         }
 
-        return exc(MappingException.class,
-                   "CWWKD1085.extra.method.params",
-                   method.getName(),
-                   repositoryInterface.getName(),
-                   extraParamNames,
-                   qlParamNames,
-                   method.getAnnotation(Query.class).value());
+        if (qlRequired.isEmpty())
+            return exc(MappingException.class,
+                       "CWWKD1086.named.params.unused",
+                       method.getName(),
+                       repositoryInterface.getName(),
+                       extraParamNames,
+                       method.getAnnotation(Query.class).value(),
+                       ':' + firstExtraParam);
+        else
+            return exc(MappingException.class,
+                       "CWWKD1085.extra.method.params",
+                       method.getName(),
+                       repositoryInterface.getName(),
+                       extraParamNames,
+                       qlParamNames,
+                       method.getAnnotation(Query.class).value());
     }
 
     /**
