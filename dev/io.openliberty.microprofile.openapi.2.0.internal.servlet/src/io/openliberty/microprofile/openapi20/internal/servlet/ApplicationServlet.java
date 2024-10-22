@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.servlet;
 
@@ -32,10 +29,12 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIVersionConfig;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIUtils;
@@ -49,6 +48,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
 
     private ServiceTracker<ApplicationRegistry, ApplicationRegistry> appRegistryTracker;
     private ServiceTracker<OpenAPIModelOperations, OpenAPIModelOperations> modelOperationsTracker;
+    private ServiceTracker<OpenAPIVersionConfig, OpenAPIVersionConfig> versionConfigTracker;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -58,6 +58,8 @@ public class ApplicationServlet extends OpenAPIServletBase {
         appRegistryTracker.open();
         modelOperationsTracker = new ServiceTracker<>(bundleContext, OpenAPIModelOperations.class, null);
         modelOperationsTracker.open();
+        versionConfigTracker = new ServiceTracker<>(bundleContext, OpenAPIVersionConfig.class, null);
+        versionConfigTracker.open();
     }
 
     @Override
@@ -65,6 +67,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
         super.destroy();
         appRegistryTracker.close();
         modelOperationsTracker.close();
+        versionConfigTracker.close();
     }
 
     /** {@inheritDoc} */
@@ -110,6 +113,10 @@ public class ApplicationServlet extends OpenAPIServletBase {
                 Info configuredInfo = OpenAPIUtils.getConfiguredInfo(ConfigProvider.getConfig());
                 if (configuredInfo != null) {
                     model.setInfo(configuredInfo);
+                }
+
+                if (ProductInfo.getBetaEdition()) {
+                    versionConfigTracker.getService().applyConfig(model);
                 }
 
                 document = OpenAPIUtils.getOpenAPIDocument(model, responseFormat);
