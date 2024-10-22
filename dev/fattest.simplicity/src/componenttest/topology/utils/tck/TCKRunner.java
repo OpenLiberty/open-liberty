@@ -205,11 +205,10 @@ public class TCKRunner {
     /**
      * Writes a logging.properties file to the tckRunnerDir, and adds 'logging.config.file' property to maven command.
      *
-     * The
+     * The resulting log file will be output to 'autoFVT/results' and will have the form '<spec-name>[-qualifiers]-tck-client.log'
      *
-     * @param  logPrefix logging file prefix for example 'data' will result in log files in the form 'data-tck-client.log'
-     * @param  logs      zero or more additional packages and levels to be logged
-     * @return           this TCKRunner
+     * @param  logs zero or more additional packages and levels to be logged
+     * @return      this TCKRunner
      */
     public TCKRunner withLogging(Map<String, Level> logs) {
         Objects.requireNonNull(logs);
