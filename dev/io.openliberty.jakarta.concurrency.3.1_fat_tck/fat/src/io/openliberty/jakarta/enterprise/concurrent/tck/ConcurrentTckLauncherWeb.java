@@ -14,6 +14,7 @@ package io.openliberty.jakarta.enterprise.concurrent.tck;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -86,6 +87,7 @@ public class ConcurrentTckLauncherWeb {
                         .withPlatfromVersion("11")
                         .withQualifiers("web")
                         .withAdditionalMvnProps(additionalProps)
+                        .withLogging(Map.of("ee.jakarta.tck.concurrent", Level.ALL))
                         .runTCK();
     }
 }
