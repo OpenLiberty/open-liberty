@@ -2969,8 +2969,8 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 }
             }
 
-            // Must be in beta to check for SameSite=None Incompatible clients
-            if (ProductInfo.getBetaEdition() && cookie.getAttribute("samesite") != null && cookie.getAttribute("samesite").equals(HttpConfigConstants.SameSite.NONE.getName())) {
+            // Check for SameSite=None Incompatible clients
+            if (cookie.getAttribute("samesite") != null && cookie.getAttribute("samesite").equals(HttpConfigConstants.SameSite.NONE.getName())) {
                 String userAgent = getServiceContext().getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString();
                 if (userAgent != null && SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent)) {
                     //TODO: do we remove Secure, probably should be retained.
