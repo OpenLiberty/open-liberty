@@ -310,7 +310,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // output. Use this signal to run tasks, mostly likely tasks that will
         // finish the port listening logic, that need to run at the end of server
         // startup
-    	System.out.println("Started setServerStarted");
         FutureTask<ChannelFuture> task;
         CountDownLatch latch = new CountDownLatch(serverStartedTasks.size());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -342,7 +341,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             isActive = true;
             syncStarted.notifyAll();
         }
-        System.out.println("Finished setServerStarted");
     }
     
     private class StartTaskRunnable implements Runnable{
