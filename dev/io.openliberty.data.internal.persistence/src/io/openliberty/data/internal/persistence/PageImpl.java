@@ -165,7 +165,7 @@ public class PageImpl<T> implements Page<T> {
     @Override
     public PageRequest previousPageRequest() {
         if (pageRequest.page() > 1)
-            return PageRequest.ofPage(pageRequest.page() - 2, pageRequest.size(), pageRequest.requestTotal());
+            return PageRequest.ofPage(pageRequest.page() - 1, pageRequest.size(), pageRequest.requestTotal());
         else
             throw exc(NoSuchElementException.class,
                       "CWWKD1038.no.prev.offset.page",

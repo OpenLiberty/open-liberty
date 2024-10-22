@@ -1828,9 +1828,6 @@ public class QueryInfo {
                 // Look for single entity attribute with the desired type:
                 String singleAttributeName = null;
                 for (Map.Entry<String, Class<?>> entry : entityInfo.attributeTypes.entrySet()) {
-                    // TODO include type variable for collection element in comparison?
-                    // JPA metamodel might not be including this information
-                    Class<?> collectionElementType = entityInfo.collectionElementTypes.get(entry.getKey());
                     Class<?> attributeType = entry.getValue();
                     if (attributeType.isPrimitive())
                         attributeType = wrapperClassIfPrimitive(attributeType);
@@ -1873,7 +1870,6 @@ public class QueryInfo {
                                 first = false;
                             }
                         else
-                            // TODO include/exclude Page/CursoredPage based on whether PageRequest is supplied?
                             throw exc(MappingException.class,
                                       "CWWKD1005.find.rtrn.err",
                                       method.getName(),
@@ -2295,20 +2291,6 @@ public class QueryInfo {
                 throw new DataException(x instanceof InvocationTargetException ? x.getCause() : x);
             }
         return cursorValues.toArray();
-    }
-
-    /**
-     * Identifies possible positions of named parameters within the JPQL.
-     *
-     * @param jpql JPQL
-     * @return possible positions of named parameters within the JPQL.
-     */
-    @Trivial
-    private static List<Integer> getParameterPositions(String jpql) { // TODO move this to where we are already stepping through the QL
-        List<Integer> positions = new ArrayList<>();
-        for (int index = 0; (index = jpql.indexOf(':', index)) >= 0;)
-            positions.add(++index);
-        return positions;
     }
 
     /**

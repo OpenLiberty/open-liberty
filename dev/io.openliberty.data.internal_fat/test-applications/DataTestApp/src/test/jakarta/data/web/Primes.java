@@ -104,6 +104,12 @@ public interface Primes {
     @Asynchronous
     CompletableFuture<Short> countByNumberIdBetweenAndEvenNot(long first, long last, boolean isOdd);
 
+    @Asynchronous
+    @Find
+    CompletableFuture<Page<Long>> divisibleByTwo(boolean even,
+                                                 PageRequest req,
+                                                 Order<Prime> order);
+
     @Find
     Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort<?>... sorts);
 

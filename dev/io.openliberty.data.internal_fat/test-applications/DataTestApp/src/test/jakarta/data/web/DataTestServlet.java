@@ -480,6 +480,41 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Asynchronous repository method that returns a CompletableFuture of Page.
+     */
+    @Test
+    public void testCompletableFutureOfPage() throws ExecutionException, //
+                    InterruptedException, TimeoutException {
+        PageRequest page1req = PageRequest.ofPage(1).size(4);
+        PageRequest page3req = PageRequest.ofPage(3).size(4);
+
+        Order<Prime> asc = Order.by(Sort.asc(ID));
+
+        CompletableFuture<Page<Long>> cf1 = //
+                        primes.divisibleByTwo(false, page1req, asc);
+
+        CompletableFuture<Page<Long>> cf3 = //
+                        primes.divisibleByTwo(false, page3req, asc);
+
+        Page<Long> page1 = cf1.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+        Page<Long> page3 = cf3.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+
+        assertEquals(List.of(3L, 5L, 7L, 11L),
+                     page1.content());
+
+        assertEquals(List.of(29L, 31L, 37L, 41L),
+                     page3.content());
+
+        PageRequest page2req = page3.previousPageRequest();
+        assertEquals(page2req, page1.nextPageRequest());
+
+        assertEquals(List.of(13L, 17L, 19L, 23L),
+                     primes.divisibleByTwo(false, page2req, asc)
+                                     .thenApply(Page::content)
+                                     .get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
      * Asynchronous repository method that returns a CompletionStage of CursoredPage.
      */
     @Test
