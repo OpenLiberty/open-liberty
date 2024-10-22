@@ -512,7 +512,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * in sequence.
      *
      * @param FailureScope The FailureScope to process.
-     * @throws RecoveryFailedException if the server is stopping
+     * @return boolean success
      */
     @Override
     @FFDCIgnore({ RecoveryFailedException.class, LogsUnderlyingTablesMissingException.class })
@@ -521,10 +521,9 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             Tr.entry(tc, "directInitialization", new Object[] { failureScope, this });
 
         if (FrameworkState.isStopping()) {
-            RecoveryFailedException rfe = new RecoveryFailedException("Server is stopping");
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "directInitialization", rfe);
-            throw rfe;
+                Tr.exit(tc, "directInitialization", "Server is stopping");
+            return;
         }
 
         // Use configuration to determine if recovery is local (for z/OS).
