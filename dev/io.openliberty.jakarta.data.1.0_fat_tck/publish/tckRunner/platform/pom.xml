@@ -169,7 +169,7 @@
 						<tck_port>${tck_port}</tck_port>
 						<tck_protocol>${tck_protocol}</tck_protocol>
 						<sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
-						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
+						<java.util.logging.config.file>${logging.config.file}</java.util.logging.config.file>
 						<jimage.dir>${jimage.dir}</jimage.dir>
 						<jakarta.tck.skip.deployment>false</jakarta.tck.skip.deployment>
 						<jakarta.tck.database.type>${jakarta.tck.database.type}</jakarta.tck.database.type>

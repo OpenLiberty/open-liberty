@@ -88,6 +88,7 @@ public class DataCoreTckLauncher {
                         .withQualifiers("core", "persistence")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
+                        .withLogging(FATSuite.getLoggingConfig())
                         .runTCK();
     }
 
@@ -127,6 +128,7 @@ public class DataCoreTckLauncher {
                         .withQualifiers("core", "NoSQL")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
+                        .withLogging(FATSuite.getLoggingConfig())
                         .runTCK();
     }
 }

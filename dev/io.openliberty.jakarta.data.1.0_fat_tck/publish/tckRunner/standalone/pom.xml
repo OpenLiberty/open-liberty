@@ -126,7 +126,7 @@
 						<usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
 					</statelessTestsetReporter>
 					<systemPropertyVariables>
-						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
+						<java.util.logging.config.file>${logging.config.file}</java.util.logging.config.file>
 						<jimage.dir>${jimage.dir}</jimage.dir>
 						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.data-api.jar:${jimage.dir}/java.base:${jimage.dir}/java.rmi:${jimage.dir}/java.sql:${jimage.dir}/java.naming</signature.sigTestClasspath>
 						<jakarta.tck.skip.deployment>true</jakarta.tck.skip.deployment>

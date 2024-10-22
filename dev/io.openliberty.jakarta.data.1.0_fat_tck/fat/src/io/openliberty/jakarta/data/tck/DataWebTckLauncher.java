@@ -80,6 +80,7 @@ public class DataWebTckLauncher {
                         .withQualifiers("web", "persistence")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
+                        .withLogging(FATSuite.getLoggingConfig())
                         .runTCK();
     }
 
