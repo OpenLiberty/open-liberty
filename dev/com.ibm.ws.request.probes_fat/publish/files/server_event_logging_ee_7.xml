@@ -24,6 +24,7 @@
     </dataSource>
     
  	<include location="../fatTestPorts.xml"/>
+ 	<include location="serverSessionConfig.xml"/>
   	<logging traceSpecification="*=fine"/>
   
   	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
