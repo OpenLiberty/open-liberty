@@ -105,9 +105,9 @@ public class HttpServerStatsMonitor extends StatisticActions {
 	/**
 	 * Resolve Network Protocol Info  - move to common utility package
 	 * @param protocolInfo
-	 * @param httpStat
+	 * @param httpStatsBuilder
 	 */
-	private void resolveNetwortProtocolInfo(String protocolInfo, HttpStatAttributes.Builder httpStatsBuilder) {
+	private void resolveNetworkProtocolInfo(String protocolInfo, HttpStatAttributes.Builder httpStatsBuilder) {
 		String[] networkInfo = protocolInfo.trim().split("/");
 		
 	
@@ -169,7 +169,7 @@ public class HttpServerStatsMonitor extends StatisticActions {
 					builder.withHttpRoute(httpRequest.getURI());
 					builder.withRequestMethod(httpRequest.getMethod());
 					builder.withScheme(httpRequest.getScheme());
-					resolveNetwortProtocolInfo(httpRequest.getVersion(), builder);
+					resolveNetworkProtocolInfo(httpRequest.getVersion(), builder);
 
 			 } catch(Exception e) {
 				 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

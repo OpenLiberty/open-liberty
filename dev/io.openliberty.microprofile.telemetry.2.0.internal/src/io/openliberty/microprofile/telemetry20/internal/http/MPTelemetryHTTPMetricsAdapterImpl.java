@@ -220,7 +220,7 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter, App
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc,
-                     String.format("Detected that application %s has stopped. Removed a corresponding Map<String, Attributes> entry? [%b]", (map != null)));
+                     String.format("Detected that application %s has stopped. Removed a corresponding Map<String, Attributes> entry? [%b]", appName, (map != null)));
         }
     }
 }
