@@ -65,11 +65,13 @@ public class MPMetricsHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
         Tag requestMethodTag = new Tag(Constants.HTTP_REQUEST_METHOD, httpStatAttributes.getRequestMethod());
         Tag urlSchemeTag = new Tag(Constants.URL_SCHEME, httpStatAttributes.getScheme());
 
-        Integer status = httpStatAttributes.getResponseStatus().orElse(-1);
-        Tag responseStatusTag = new Tag(Constants.HTTP_RESPONSE_STATUS_CODE,
-                status == -1 ? "" : status.toString().trim());
+        Integer status = httpStatAttributes.getResponseStatus();
 
-        Tag httpRouteTag = new Tag(Constants.HTTP_ROUTE, httpStatAttributes.getHttpRoute().orElse(""));
+        Tag responseStatusTag = new Tag(Constants.HTTP_RESPONSE_STATUS_CODE,
+                (status == null ? "" : status.toString().trim()));
+
+        String httpRoute = httpStatAttributes.getHttpRoute();
+        Tag httpRouteTag = new Tag(Constants.HTTP_ROUTE, (httpRoute == null ? "" : httpRoute));
 
         Tag networkProtocolVersionTag = new Tag(Constants.NETWORK_PROTOCOL_VERSION,
                 httpStatAttributes.getNetworkProtocolVersion());
@@ -77,8 +79,9 @@ public class MPMetricsHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
         Tag serverNameTag = new Tag(Constants.SERVER_ADDRESS, httpStatAttributes.getServerName());
         Tag serverPortTag = new Tag(Constants.SERVER_PORT, String.valueOf(httpStatAttributes.getServerPort()));
 
-        String errorType = httpStatAttributes.getErrorType().orElse("");
-        Tag errorTypeTag = new Tag(Constants.ERROR_TYPE, errorType);
+        String errorType = httpStatAttributes.getErrorType();
+
+        Tag errorTypeTag = new Tag(Constants.ERROR_TYPE, (errorType == null ? "" : errorType));
 
         Tag[] ret = new Tag[] { requestMethodTag, urlSchemeTag, responseStatusTag, httpRouteTag,
                 networkProtocolVersionTag, serverNameTag, serverPortTag, errorTypeTag };

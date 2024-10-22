@@ -85,11 +85,11 @@ public class ServletFilter implements Filter {
 		} finally {
 			long elapsednanos = System.nanoTime()-nanosStart;
 			
-			//holder for http attributes
-			HttpStatAttributes httpStatsAttributesHolder = new HttpStatAttributes();
+			//builder for HttpStatAttributes
+			HttpStatAttributes.Builder builder = HttpStatAttributes.builder();
 
 			// Retrieve the HTTP request attributes
-			resolveRequestAttributes(servletRequest, httpStatsAttributesHolder);
+			resolveRequestAttributes(servletRequest, builder);
 
 			/*
 			 *  Retrieve the HTTP response attribute (i.e. the response status)
@@ -101,18 +101,18 @@ public class ServletFilter implements Filter {
 			if (servletException != null ) {
 				if (servletException instanceof ServletErrorReport) {
 					ServletErrorReport ser = (ServletErrorReport) servletException;
-					httpStatsAttributesHolder.setResponseStatus(ser.getErrorCode());
+					builder.withResponseStatus(ser.getErrorCode());
 				} else {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
 						Tr.debug(tc, String.format("Servlet Exception occured, but could not obtain a ServletErrorReport. Default to a 500 response. The exception [%s].",servletException));
 					}
-					httpStatsAttributesHolder.setResponseStatus(500);
+					builder.withResponseStatus(500);
 				}
 				
 			} else if (exception != null) {
-				httpStatsAttributesHolder.setResponseStatus(resolveStatusForException(exception));
+				builder.withResponseStatus(resolveStatusForException(exception));
 			} else {
-				resolveResponseAttributes(servletResponse, httpStatsAttributesHolder);
+				resolveResponseAttributes(servletResponse, builder);
 			}
 
 			// attempt to retrieve the `httpRoute` from the RESTful filter
@@ -125,7 +125,7 @@ public class ServletFilter implements Filter {
 					//SRTServletRequest allows us to get the WebAppDispatcher
 					SRTServletRequest srtServletRequest = (SRTServletRequest) servletRequest;
 					
-					httpRoute = resolveHttpRoute(srtServletRequest, contextPath, httpStatsAttributesHolder);
+					httpRoute = resolveHttpRoute(srtServletRequest, contextPath);
 				} else {
 					//This shouldn't happen.
 					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
@@ -135,14 +135,14 @@ public class ServletFilter implements Filter {
 				
 			}
 			
-			httpStatsAttributesHolder.setHttpRoute(httpRoute);//httpRoute
+			builder.withHttpRoute(httpRoute);//httpRoute
 
 			/*
 			 * Pass information onto HttpServerStatsMonitor.
 			 */
 			HttpServerStatsMonitor httpMetricsMonitor = HttpServerStatsMonitor.getInstance();
 			if (httpMetricsMonitor != null) {
-				httpMetricsMonitor.updateHttpStatDuration(httpStatsAttributesHolder, Duration.ofNanos(elapsednanos), appName);
+				httpMetricsMonitor.updateHttpStatDuration(builder, Duration.ofNanos(elapsednanos), appName);
 			} else {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 					Tr.debug(tc, "Could not acquire instance of HttpServerStatsMonitor. Can not proceed to create/update Mbean.");
@@ -156,23 +156,23 @@ public class ServletFilter implements Filter {
 	/**
 	 * Resolve HTTP attributes related to request
 	 * @param servletRequest
-	 * @param httpStat
+	 * @param builder
 	 */
-	private void resolveRequestAttributes(ServletRequest servletRequest, HttpStatAttributes httpStat) {
+	private void resolveRequestAttributes(ServletRequest servletRequest, HttpStatAttributes.Builder builder) {
 		
 		// Retrieve the HTTP request attributes
 		if (HttpServletRequest.class.isInstance(servletRequest)) {
 			
 			HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 			
-			httpStat.setRequestMethod(httpServletRequest.getMethod());
+			builder.withRequestMethod(httpServletRequest.getMethod());
 
-			httpStat.setScheme(httpServletRequest.getScheme());
+			builder.withScheme(httpServletRequest.getScheme());
 
-			resolveNetworkProtocolInfo(httpServletRequest.getProtocol(), httpStat);
+			resolveNetworkProtocolInfo(httpServletRequest.getProtocol(), builder);
 
-			httpStat.setServerName(httpServletRequest.getServerName());
-			httpStat.setServerPort(httpServletRequest.getServerPort());
+			builder.withServerName(httpServletRequest.getServerName());
+			builder.withServerPort(httpServletRequest.getServerPort());
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, String.format("Expected an HttpServletRequest, instead got [%s].",servletRequest.getClass().toString()));
@@ -184,13 +184,13 @@ public class ServletFilter implements Filter {
 	 * Resolve HTTP attributes related to response
 	 * 
 	 * @param servletResponse
-	 * @param httpStat
+	 * @param builder
 	 */
-	private void resolveResponseAttributes(ServletResponse servletResponse, HttpStatAttributes httpStat) {
+	private void resolveResponseAttributes(ServletResponse servletResponse, HttpStatAttributes.Builder builder) {
 
 		if (servletResponse instanceof HttpServletResponse) {
 			HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-			httpStat.setResponseStatus(httpServletResponse.getStatus());
+			builder.withResponseStatus(httpServletResponse.getStatus());
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, String.format("Expected an HttpServletResponse, instead got [%s].",servletResponse.getClass().toString()));
@@ -201,9 +201,9 @@ public class ServletFilter implements Filter {
 	/**
 	 * Resolve Network Protocol Info  - move to common utility package
 	 * @param protocolInfo
-	 * @param httpStat
+	 * @param builder
 	 */
-	private void resolveNetworkProtocolInfo(String protocolInfo, HttpStatAttributes httpStat) {
+	private void resolveNetworkProtocolInfo(String protocolInfo, HttpStatAttributes.Builder builder) {
 		String[] networkInfo = protocolInfo.trim().split("/");
 		String networkProtocolName = null;
 		String networkVersion = "";
@@ -216,8 +216,8 @@ public class ServletFilter implements Filter {
 			//there shouldn't be more than two values.
 		}
 		
-		httpStat.setNetworkProtocolName(networkProtocolName);
-		httpStat.setNetworkProtocolVersion(networkVersion);
+		builder.withNetworkProtocolName(networkProtocolName);
+		builder.withNetworkProtocolVersion(networkVersion);
 	}
 	
 	/**
@@ -257,7 +257,7 @@ public class ServletFilter implements Filter {
         return status;
 	}
 	
-	private String resolveHttpRoute(SRTServletRequest srtServletRequest, String contextPath, HttpStatAttributes httpStatsAttributesHolder) {
+	private String resolveHttpRoute(SRTServletRequest srtServletRequest, String contextPath) {
 		String httpRoute = null;		
 		
 		String pathInfo = srtServletRequest.getPathInfo();
