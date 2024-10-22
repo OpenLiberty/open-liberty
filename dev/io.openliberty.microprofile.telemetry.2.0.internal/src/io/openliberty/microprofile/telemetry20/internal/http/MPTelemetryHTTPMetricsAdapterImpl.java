@@ -107,9 +107,9 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter, App
         String appName = getApplicationName();
         appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
 
-        String keyID = httpStatAttributes.getKeyID();
+        String keyID = httpStatAttributes.getHttpStatID();
 
-        //Key is the keyID generated for each httpStatsAttribute
+        // Key is the HttpStasID generated for each httpStatsAttribute
         Map<String, Attributes> attributesMap = appNameToAttributesMap.computeIfAbsent(appName, x -> new ConcurrentHashMap<String, Attributes>());
         Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveAttributes(httpStatAttributes));
 

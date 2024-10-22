@@ -17,7 +17,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public class HttpStatAttributes {
 	
-	private final String key_id;
+	private final String httpStat_ID;
 	
 	private static final TraceComponent tc = Tr.register(HttpStatAttributes.class);
 	
@@ -76,12 +76,15 @@ public class HttpStatAttributes {
 		this.httpRoute = (builder.httpRoute.isPresent() ? builder.httpRoute.get() : null);
 		this.responseStatus = (builder.responseStatus.isPresent() ? builder.responseStatus.get() : null);
 		
-		key_id = resolveKeyID();
+		httpStat_ID = resolveKeyID();
 	}
 	
 	/**
 	 * Resolve the object name (specifically the name property)
 	 * <code> domain:type=type,name="this"</code>
+	 * 
+	 * This is also used by {@link HttpServerStatsMonitor} when registering MBean
+	 * into the {@link MeterCollection}
 	 * 
 	 * @param httpStatAttributes
 	 * @return
@@ -172,8 +175,8 @@ public class HttpStatAttributes {
 		return responseStatus;
 	}
 	
-	public String getKeyID() {
-		return key_id;
+	public String getHttpStatID() {
+		return httpStat_ID;
 	}
 
 	@Override

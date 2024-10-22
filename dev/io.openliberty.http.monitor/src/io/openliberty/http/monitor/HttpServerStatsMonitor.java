@@ -202,7 +202,7 @@ public class HttpServerStatsMonitor extends StatisticActions {
 		/*
 		 * Create and/or update MBean
 		 */
-		String keyID = httpStatsAttributes.getKeyID();
+		String keyID = httpStatsAttributes.getHttpStatID();
 				
 
 		HttpServerStats httpServerStats = HttpConnByRoute.get(keyID);
