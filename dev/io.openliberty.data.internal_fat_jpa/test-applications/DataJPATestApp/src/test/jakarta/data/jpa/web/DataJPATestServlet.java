@@ -3763,7 +3763,10 @@ public class DataJPATestServlet extends FATServlet {
                                      .collect(Collectors.toList()));
 
         assertEquals(List.of(1, 2, 3, 4),
-                     orders.versions());
+                     orders.versionsAsc());
+
+        assertEquals(List.of(4, 3, 2, 1),
+                     orders.versionsDesc());
 
         orders.deleteAll();
     }
