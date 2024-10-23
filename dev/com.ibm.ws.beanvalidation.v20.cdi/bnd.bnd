@@ -63,5 +63,6 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 	com.ibm.ws.org.hibernate.validator.cdi;version=latest,\
 	com.ibm.ws.kernel.feature,\
 	io.openliberty.org.hibernate.validator.cdi.9.0;version=latest,\
-	io.openliberty.org.hibernate.validator.9.0;version=latest
+	io.openliberty.org.hibernate.validator.9.0;version=latest,\
+	io.openliberty.jakarta.validation.3.1;version=latest
 	
