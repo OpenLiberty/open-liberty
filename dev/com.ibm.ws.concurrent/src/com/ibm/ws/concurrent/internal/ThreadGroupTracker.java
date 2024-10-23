@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013,2022 IBM Corporation and others.
+ * Copyright (c) 2013,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,6 +40,15 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
  */
 public class ThreadGroupTracker implements ComponentMetaDataListener {
     /**
+     * Associates Virtual Threads and ForkJoinWorkerThreads to a ThreadGroup.
+     * Although not actually in the thread group, this allows us to interrupt these
+     * threads upon application stop and/or removal of the configured
+     * managedThreadFactory.
+     */
+    static final ConcurrentHashMap<Thread, ThreadGroup> OTHER_ACTIVE_THREADS = //
+                    new ConcurrentHashMap<>();
+
+    /**
      * Reference to the deferrable scheduled executor.
      */
     private ScheduledExecutorService deferrableScheduledExecutor;
@@ -47,7 +56,9 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
     /**
      * Thread groups categorized by Java EE name and managed thread factory identifier.
      */
-    private final ConcurrentHashMap<String, ConcurrentHashMap<String, ThreadGroup>> metadataIdentifierToThreadGroups = new ConcurrentHashMap<String, ConcurrentHashMap<String, ThreadGroup>>();
+    private final ConcurrentHashMap<String, //
+                    ConcurrentHashMap<String, ThreadGroup>> metadataIdentifierToThreadGroups = //
+                                    new ConcurrentHashMap<String, ConcurrentHashMap<String, ThreadGroup>>();
 
     /**
      * The metadata identifier service.
@@ -266,11 +277,12 @@ public class ThreadGroupTracker implements ComponentMetaDataListener {
         @FFDCIgnore(IllegalThreadStateException.class)
         @Override
         public Void run() {
-            // Interrupt individual managed ForkJoinWorkerThreads because we are unable to add these to the ThreadGroup
-            for (Iterator<Entry<ManagedForkJoinWorkerThread, ThreadGroup>> it = //
-                            ManagedForkJoinWorkerThread.ACTIVE_THREADS.entrySet().iterator(); //
+            // Interrupt virtual threads and managed ForkJoinWorkerThreads
+            // separately because these are not capable of being in a ThreadGroup
+            for (Iterator<Entry<Thread, ThreadGroup>> it = //
+                            OTHER_ACTIVE_THREADS.entrySet().iterator(); //
                             it.hasNext();) {
-                Entry<ManagedForkJoinWorkerThread, ThreadGroup> entry = it.next();
+                Entry<Thread, ThreadGroup> entry = it.next();
                 if (groups.contains(entry.getValue())) {
                     entry.getKey().interrupt();
                     it.remove();

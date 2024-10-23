@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import static com.ibm.ws.concurrent.internal.ThreadGroupTracker.OTHER_ACTIVE_THREADS;
+
 import java.util.ArrayList;
 
 import com.ibm.websphere.ras.Tr;
@@ -58,8 +60,18 @@ class ManagedVirtualThreadAction implements Runnable {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "run " + action.getClass().getName());
 
+        Thread thread = Thread.currentThread();
+        OTHER_ACTIVE_THREADS.put(thread, threadFactory.threadGroup);
         try {
-            ArrayList<ThreadContext> contextAppliedToThread = threadFactory.threadContextDescriptor.taskStarting();
+            // EE Concurrency 3.4.4:
+            // Threads that are created by a ManagedThreadFactory instance
+            // but are started after the ManagedThreadFactory has shut down
+            // [are] required to start with an interrupted status.
+            if (threadFactory.service.isShutdown.get())
+                thread.interrupt();
+
+            ArrayList<ThreadContext> contextAppliedToThread = //
+                            threadFactory.threadContextDescriptor.taskStarting();
             try {
                 action.run();
             } finally {
@@ -73,6 +85,8 @@ class ManagedVirtualThreadAction implements Runnable {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run", x);
             throw x;
+        } finally {
+            OTHER_ACTIVE_THREADS.remove(thread);
         }
 
         if (trace && tc.isEntryEnabled())
