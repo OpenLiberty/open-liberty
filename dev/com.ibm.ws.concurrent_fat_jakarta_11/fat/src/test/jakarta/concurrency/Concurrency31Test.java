@@ -12,6 +12,11 @@
  *******************************************************************************/
 package test.jakarta.concurrency;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collections;
+import java.util.List;
+
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -23,6 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -67,6 +73,41 @@ public class Concurrency31Test extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        try {
+            // Test that virtual threads are interrupted (two of them will print to
+            // System.out after interrupt) when the application stops.
+            ServerConfiguration config = server.getServerConfiguration();
+            config.getApplications()
+                            .removeBy("location", "Concurrency31TestApp.ear");
+            server.setMarkToEndOfLog(server.getDefaultLogFile());
+            server.updateServerConfiguration(config);
+
+            String[] expected = {
+                                  "WWKZ0009I.*Concurrency31TestApp",
+                                  "O TestVirtualThreadsInterruptedWhenAppStopped1",
+                                  "O TestVirtualThreadsInterruptedWhenAppStopped2"
+            };
+            List<String> found = server //
+                            .waitForConfigUpdateInLogUsingMark(Collections.emptySet(),
+                                                               expected);
+
+            // waitForConfigUpdateInLogUsingMark returns additional lines
+            // that we didn't ask for, so we cannot compare the count.
+            // Instead, check for each separately.
+
+            assertEquals(found.toString(), 1, found.stream()
+                            .filter(line -> line.matches(".*" + expected[0] + ".*"))
+                            .count());
+
+            assertEquals(found.toString(), 1, found.stream()
+                            .filter(line -> line.contains(expected[1]))
+                            .count());
+
+            assertEquals(found.toString(), 1, found.stream()
+                            .filter(line -> line.contains(expected[2]))
+                            .count());
+        } finally {
+            server.stopServer();
+        }
     }
 }
