@@ -94,6 +94,7 @@ final class AuditCrypto {
 //        fips140_3Enabled = CryptoUtils.isFIPSEnabled();
     }
 
+    @Trivial
     static final boolean cmp(byte[] b1, int off1, byte[] b2, int off2, int n) {
         while (--n >= 0)
             if (b1[off1++] != b2[off2++])
@@ -101,6 +102,7 @@ final class AuditCrypto {
         return true;
     }
 
+    @Trivial
     static final int msbf(byte[] data, int off, int n) {
         int v = 0;
         do {
@@ -109,16 +111,19 @@ final class AuditCrypto {
         return v;
     }
 
+    @Trivial
     static final int msbf2(byte[] data, int i) {
         return (((data[i] & 0xFF) << 8) | (data[i + 1] & 0xFF));
     }
 
+    @Trivial
     static final void msbf(int v, byte[] data, int off, int n) {
         do {
             data[off++] = (byte) (v >>> ((--n) * 8));
         } while (n > 0);
     }
 
+    @Trivial
     static final void msbf4(int v, byte[] data, int i) {
         data[i] = (byte) (v >>> 24);
         data[i + 1] = (byte) (v >>> 16);
@@ -126,11 +131,13 @@ final class AuditCrypto {
         data[i + 3] = (byte) v;
     }
 
+    @Trivial
     static final void msbf2(int v, byte[] data, int i) {
         data[i] = (byte) (v >>> 8);
         data[i + 1] = (byte) v;
     }
 
+    @Trivial
     static final int lsbf(byte[] data, int i, int n) {
         int v = 0;
         do {
@@ -139,11 +146,13 @@ final class AuditCrypto {
         return v;
     }
 
+    @Trivial
     static final int lsbf4(byte[] data, int i) {
         return (data[i] & 0xFF) | ((data[i + 1] & 0xFF) << 8) |
                ((data[i + 2] & 0xFF) << 16) | (data[i + 3] << 24);
     }
 
+    @Trivial
     static final void lsbf4(int v, byte[] data, int i) {
         data[i] = (byte) v;
         data[i + 1] = (byte) (v >>> 8);
@@ -151,12 +160,14 @@ final class AuditCrypto {
         data[i + 3] = (byte) (v >>> 24);
     }
 
+    @Trivial
     static void lsbf2(int v, byte[] data, int i) {
         data[i] = (byte) v;
         data[i + 1] = (byte) (v >>> 8);
     }
 
     private static double[] ETB = new double[16];
+
     static {
         double d = ETB[0] = 0.001;
         double log2d = Math.log(2 * d);
@@ -171,6 +182,7 @@ final class AuditCrypto {
     private static int[] ones = new int[16];
     private static int[] block = new int[16];
 
+    @Trivial
     static final void trng(byte[] to, int off, int len) {
         long accu = 0;
         int bits = 0, i, m, j;
@@ -223,6 +235,7 @@ final class AuditCrypto {
 
     static int trMix = 128;
 
+    @Trivial
     static final void random(byte[] to, int off, int n) {
 
         if (!seedInitialized) {
@@ -269,6 +282,7 @@ final class AuditCrypto {
         }
     }
 
+    @Trivial
     static final void sha(int[] state, byte[] data, int off, int len, byte[] to, int pos) {
         int A, B, C, D, E;
         {
@@ -368,22 +382,27 @@ final class AuditCrypto {
         }
     }
 
+    @Trivial
     private static final int FF(int a, int b, int c, int d, int x, int l, int r, int ac) {
         return (((a += ((b & c) | (~b & d)) + x + ac) << l) | (a >>> r)) + b;
     }
 
+    @Trivial
     private static final int GG(int a, int b, int c, int d, int x, int l, int r, int ac) {
         return (((a += ((b & d) | (c & ~d)) + x + ac) << l) | (a >>> r)) + b;
     }
 
+    @Trivial
     private static final int HH(int a, int b, int c, int d, int x, int l, int r, int ac) {
         return (((a += (b ^ c ^ d) + x + ac) << l) | (a >>> r)) + b;
     }
 
+    @Trivial
     private static final int II(int a, int b, int c, int d, int x, int l, int r, int ac) {
         return (((a += (c ^ (b | ~d)) + x + ac) << l) | (a >>> r)) + b;
     }
 
+    @Trivial
     static final void md5(int[] state, byte[] data, int off, int len, byte[] to, int pos) {
         int a, b, c, d;
         {
@@ -552,6 +571,7 @@ final class AuditCrypto {
         } while (++i < 256);
     }
 
+    @Trivial
     static final void md2(byte[][] state, byte[] data, int off, int len, byte[] to, int pos) {
         byte[] C;
         byte[] X;
@@ -598,6 +618,7 @@ final class AuditCrypto {
         System.arraycopy(X, 0, to, pos, 16);
     }
 
+    @Trivial
     static final byte[] rc4key(byte[] rawKey, int off, int len) {
         final byte[] S = new byte[256 + 2];
         int i = 0, j = 0;
@@ -661,6 +682,7 @@ final class AuditCrypto {
         } while (++c < 56);
     }
 
+    @Trivial
     static final int[] desKey(boolean encrypt, byte[] rawKey, int off, int len) {
         int[] pc = PC;
         final int key[] = new int[len * 4];
@@ -809,6 +831,7 @@ final class AuditCrypto {
         }
     }
 
+    @Trivial
     static final void des(boolean encrypt, int[] key, byte[] iv,
                           byte[] data, int off, int len,
                           byte[] to, int pos) {
@@ -1102,6 +1125,7 @@ final class AuditCrypto {
         }
 
         @Override
+        @Trivial
         public boolean equals(Object to) {
             if (!(to instanceof CachingKey)) {
                 return false;
@@ -1371,6 +1395,7 @@ final class AuditCrypto {
 
     protected static final HashMap verifyKeysMap = new HashMap();
 
+    @Trivial
     static class CachingVerifyKey {
 
         boolean reused = false;
@@ -1432,6 +1457,7 @@ final class AuditCrypto {
         }
 
         @Override
+        @Trivial
         public boolean equals(Object to) {
             if (!(to instanceof CachingVerifyKey)) {
                 return false;
@@ -1551,6 +1577,7 @@ final class AuditCrypto {
     }
 
     static final Comparator cachingVerifyKeyComparator = new Comparator() {
+        @Trivial
         @Override
         public int compare(Object o1, Object o2) {
             CachingVerifyKey k1 = (CachingVerifyKey) o1;
@@ -1566,6 +1593,7 @@ final class AuditCrypto {
     };
 
     static final Comparator cachingKeyComparator = new Comparator() {
+        @Trivial
         @Override
         public int compare(Object o1, Object o2) {
             CachingKey k1 = (CachingKey) o1;
@@ -1694,10 +1722,12 @@ final class AuditCrypto {
         return verified;
     }
 
+    @Trivial
     static final byte[] padISO9796(byte[] data, int off, int len, int sigbits) {
         return padISO9796(data, off, len, sigbits, false);
     }
 
+    @Trivial
     static final byte[] padISO9796(byte[] data, int off, int len, int sigbits, boolean useJCE) {
         byte[] pad = null;
         if (fips140_3Enabled || useJCE) {
@@ -1803,6 +1833,7 @@ final class AuditCrypto {
         return key;
     }
 
+    @Trivial
     static final boolean dsa(int mode, byte[][] key, byte[] data, int off, int len,
                              byte[] sig, int pos) {
         int i = 0, j, l;
@@ -1874,6 +1905,7 @@ final class AuditCrypto {
         return v.equals(p[4]);
     }
 
+    @Trivial
     static final byte getBits(String s, int pos, int len) {
         int i, j;
         byte a = (byte) (s.charAt((i = pos / 7)));
@@ -1885,6 +1917,7 @@ final class AuditCrypto {
         return a;
     }
 
+    @Trivial
     static final void printBytes(String name, byte[] b, int off, int len) {
         System.out.println(name);
         StringBuffer buf = new StringBuffer();
@@ -1914,6 +1947,7 @@ final class AuditCrypto {
         System.out.println();
     }
 
+    @Trivial
     static final boolean verifyBuf(byte[] b, int N, String alg) {
         for (int i = 0; i < 1024 * N; i++)
             if (b[i] != (byte) (i % 128)) {
@@ -1924,6 +1958,7 @@ final class AuditCrypto {
         return false;
     }
 
+    @Trivial
     static final boolean testRSAKeys(byte[] b, byte[][] privKey, byte[][] pubKey) {
         int l = pubKey[0].length;
         if (pubKey[0][0] == 0)
@@ -1951,6 +1986,7 @@ final class AuditCrypto {
         return false;
     }
 
+    @Trivial
     static final boolean testDSAKeys(byte[] b, byte[][] privKey, byte[][] pubKey) {
         int l = privKey[0].length;
         if (privKey[0][0] == 0)
@@ -2348,6 +2384,7 @@ final class AuditCrypto {
      * @return an unpadded byte array or <i>null</i> if the input array
      *         was not properly padded.
      */
+    @Trivial
     private static final byte[] unpadPKCS5(byte aB[]) {
         if (null == aB)
             return null;
@@ -2378,6 +2415,7 @@ final class AuditCrypto {
      * @param aB any byte array
      * @return a new, PKCS #5 padded byte array.
      */
+    @Trivial
     private static final byte[] padPKCS5(byte aB[]) {
         if (null == aB)
             return null;
@@ -2394,6 +2432,7 @@ final class AuditCrypto {
     /**
      * Convert a byte[] to a hexadecimal string
      **/
+    @Trivial
     public static String toHexString(byte[] bytes) {
         String hexString = null;
         for (int i = 0; i < bytes.length; i++) {
