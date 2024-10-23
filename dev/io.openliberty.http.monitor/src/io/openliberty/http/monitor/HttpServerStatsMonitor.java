@@ -20,8 +20,6 @@ import com.ibm.websphere.monitor.meters.MeterCollection;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.pmi.factory.StatisticActions;
 
@@ -305,17 +303,16 @@ public class HttpServerStatsMonitor extends StatisticActions {
 		/*
 		 * Status, Route  and errorType may be null.
 		 * In which cas we will not append it to the name property
-		 */
-		responseStatus.ifPresent(status -> sb.append(";status:" + status));
-
-		
-		httpRoute.ifPresent(route -> {
-			sb.append(";httpRoute:" + route.replace("*", "\\*"));
-		});
-
-		errorType.ifPresent(error -> {
-			sb.append(";errorType:" + error);
-		});
+		*/
+		if (responseStatus.isPresent()) {
+			sb.append(";status:" + Integer.toString(responseStatus.get()));
+		}
+		if (httpRoute.isPresent()) {
+			sb.append(";httpRoute:" + httpRoute.get().replace("*", "\\*"));
+		}
+		if (errorType.isPresent()) {
+			sb.append(";errorType:" + errorType.get());
+		}
 
 		sb.append("\""); // ending quote
 		return sb.toString();

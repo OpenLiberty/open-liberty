@@ -89,7 +89,6 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
         double seconds = duration.toNanos() * NANO_CONVERSION;
         httpHistogram.record(seconds,
                              retrieveAttributes(httpStatAttributes), ctx);
-
     }
 
     private Attributes retrieveAttributes(HttpStatAttributes httpStatAttributes) {
@@ -98,16 +97,21 @@ public class MPTelemetryHTTPMetricsAdapterImpl implements HTTPMetricAdapter {
         attributesBuilder.put(HTTP_REQUEST_METHOD, httpStatAttributes.getRequestMethod());
         attributesBuilder.put(URL_SCHEME, httpStatAttributes.getScheme());
 
-        httpStatAttributes.getResponseStatus().ifPresent(status -> attributesBuilder.put(HTTP_RESPONSE_STATUS_CODE, Long.valueOf(status)));
-
-        httpStatAttributes.getHttpRoute().ifPresent(route -> attributesBuilder.put(HTTP_ROUTE, route));
+        if (httpStatAttributes.getResponseStatus().isPresent()) {
+            attributesBuilder.put(HTTP_RESPONSE_STATUS_CODE, Long.valueOf(httpStatAttributes.getResponseStatus().get()));
+        }
+        if (httpStatAttributes.getHttpRoute().isPresent()) {
+            attributesBuilder.put(HTTP_ROUTE, httpStatAttributes.getHttpRoute().get());
+        }
 
         attributesBuilder.put(NETWORK_PROTOCOL_VERSION, httpStatAttributes.getNetworkProtocolVersion());
 
         attributesBuilder.put(SERVER_ADDRESS, httpStatAttributes.getServerName());
         attributesBuilder.put(SERVER_PORT, Long.valueOf(httpStatAttributes.getServerPort()));
 
-        httpStatAttributes.getErrorType().ifPresent(error -> attributesBuilder.put(ERROR_TYPE, error));
+        if (httpStatAttributes.getErrorType().isPresent()) {
+            attributesBuilder.put(ERROR_TYPE,httpStatAttributes.getErrorType().get());
+        }
 
         return attributesBuilder.build();
     }
