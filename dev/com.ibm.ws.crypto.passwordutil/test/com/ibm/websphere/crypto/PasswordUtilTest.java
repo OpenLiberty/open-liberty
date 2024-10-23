@@ -38,7 +38,7 @@ public class PasswordUtilTest {
      *
      * @throws Exception
      */
-    @BeforeClass
+    //@BeforeClass
     public static void setUpBeforeClass() throws Exception {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
@@ -49,7 +49,7 @@ public class PasswordUtilTest {
      *
      * @throws Exception
      */
-    @AfterClass
+    //@AfterClass
     public static void tearDownAfterClass() throws Exception {
         // Make stdout and stderr "normal"
         outputMgr.restoreStreams();
@@ -60,7 +60,7 @@ public class PasswordUtilTest {
      *
      * @throws Exception
      */
-    @After
+    //@After
     public void tearDown() throws Exception {
         // Clear the output generated after each method invocation
         outputMgr.resetStreams();
@@ -133,7 +133,6 @@ public class PasswordUtilTest {
 
     @Test
     public void testAESEncoding() throws Exception {
-        assertEquals("The password was not decoded correctly", "alternatepwd", PasswordUtil.decode("{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ=="));
         String encoding = PasswordUtil.encode("WebAS", "aes");
         assertTrue("The encoded password should start with {aes} " + encoding, encoding.startsWith("{aes}"));
         String encoding2 = PasswordUtil.encode("WebAS", "aes");
@@ -142,6 +141,9 @@ public class PasswordUtilTest {
         assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding));
         assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding2));
         assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode("{aes}AGTpzRDW//VE3Jshg1fd89rxw/JMjHfFM9UdYdVNIUt2"));
+
+        assertEquals("Did not decode password encoded with PBKDF2withHmacSHA1 encoded password", "alternatepwd", PasswordUtil.decode("{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ=="));
+        assertEquals("Did not decode password encoded with PBKDF2withHmacSHA256 encoded password", "alternatepwd", PasswordUtil.decode("{aes}ARABI+HrHnU1lZbb4/MydV8HJMlvxhjF3+KVvgpaUr1Kd386Zq77MfZL6/YrHeLG+T+mICHPqYpaXPmawtNkVfxBJo/TsZ212HxpZeYpN39CreAnSQmoz63FU/n5oxQ8VHSW2/yWssbCTZmVOYFA"));
     }
 
     @Test
