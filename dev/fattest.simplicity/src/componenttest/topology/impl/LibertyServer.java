@@ -5652,11 +5652,6 @@ public class LibertyServer implements LogMonitorClient {
             ServerConfigurationFactory.getInstance().marshal(serverConfig, os);
         }
 
-        if (LOG.isLoggable(Level.INFO) && logOnUpdate) {
-            LOG.info("Server configuration before update:");
-            logServerConfiguration(Level.INFO, false);
-        }
-
         // replace the file
         // This logic does not need to be time protected (as we do in method
         // replaceServerConfiguration) because of the "extra random text" logic
