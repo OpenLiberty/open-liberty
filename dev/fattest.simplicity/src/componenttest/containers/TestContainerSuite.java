@@ -24,6 +24,7 @@ import org.junit.rules.ExternalResource;
 import org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.fat.util.Props;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.ExternalTestService;
@@ -85,8 +86,42 @@ public class TestContainerSuite {
     private static void setupTestcontainers() {
         if (setupComplete)
             return;
+        configureLogging();
         generateTestcontainersConfig();
         setupComplete = true;
+    }
+
+    /**
+     * Configures system properties for the SLF4J simpleLogger.
+     * This will output SLF4J logs to a file instead of System.err which is the default behavior.
+     *
+     * TODO Consider creating a custom SLF4J logger that sends output to the com.ibm.websphere.simplicity.log.Log (non trivial)
+     */
+    private static void configureLogging() {
+        final String m = "configureLogging";
+        if (System.getProperty("org.slf4j.simpleLogger.logFile") == null) {
+            String logFile = Props.getInstance().getFileProperty(Props.DIR_LOG).getAbsoluteFile() + "/testcontainer.log";
+
+            Log.info(c, m, "The SLF4J simpleLogger is being configured with a logFile of " + logFile);
+
+            // Output location
+            System.setProperty("org.slf4j.simpleLogger.logFile", logFile);
+
+            // Output pattern
+            System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
+            System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "[mm/dd/YYY HH:mm:ss:SSS z]");
+        } else {
+            Log.info(c, m, "The SLF4J simpleLogger was already configured with a logFile of " +
+                           System.getProperty("org.slf4j.simpleLogger.logFile") +
+                           ". Therefore expect testcontainers logs to be found in the aformentioned location");
+        }
+
+        // Levels
+        System.setProperty("org.slf4j.simpleLogger.log.org.testcontainers", "debug");
+        System.setProperty("org.slf4j.simpleLogger.log.tc", "info");
+        System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava", "warn");
+        System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire", "off");
+
     }
 
     private static void generateTestcontainersConfig() {
