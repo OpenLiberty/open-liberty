@@ -10,6 +10,7 @@
 <feature>sessionDatabase-1.0</feature>
 <feature>webCache-1.0</feature>
 <feature>requestTiming-1.0</feature>
+<feature>microProfile-7.0</feature>
 <feature>appAuthentication</feature>
 <feature>appSecurity</feature>
 <feature>cdi</feature>
@@ -21,6 +22,13 @@
 <feature>jdbc</feature>
 <feature>jsonb</feature>
 <feature>jsonp</feature>
+<feature>mpConfig</feature>
+<feature>mpFaultTolerance</feature>
+<feature>mpHealth</feature>
+<feature>mpJwt</feature>
+<feature>mpOpenAPI</feature>
+<feature>mpRestClient</feature>
+<feature>mpTelemetry</feature>
 <feature>pages</feature>
 <feature>persistence</feature>
 <feature>restfulWS</feature>
