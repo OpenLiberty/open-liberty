@@ -32,9 +32,8 @@
         <AD id="application-bnd" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.javaee.dd.appbnd" required="false" name="%appBnd.name" description="%appBnd.desc" />-->
         <AD name="%earapp.addWebModuleClassPathTo.name" description="%earapp.addWebModuleClassPathTo.desc"
             id="webModuleClassPathLoader"
-            required="false" 
-            type="String" 
-            ibm:beta="true" >
+            required="false"
+            type="String" >
             <Option label="%earapp.addWebModuleClassPathTo.warLoader" value="war"/>
             <Option label="%earapp.addWebModuleClassPathTo.earLoader" value="ear"/>
         </AD>
