@@ -160,13 +160,20 @@ public class TestContainerSuite {
                 tcProps.setProperty("docker.host", ExternalDockerClientFilter.instance().getHost());
                 tcProps.setProperty("docker.tls.verify", ExternalDockerClientFilter.instance().getVerify());
                 tcProps.setProperty("docker.cert.path", ExternalDockerClientFilter.instance().getCertPath());
+
+                // If we are using a remote docker host while running locally, set timeout to 5s, otherwise set timeout to 10s
+                // NOTE: if we want to increase this timeout in the future, we also need to increase the timeout of
+                // the ExternalDockerClientFilter which tests the connection to the docker host prior.
+                tcProps.setProperty("client.ping.timeout", FATRunner.FAT_TEST_LOCALRUN ? "5" : "10");
             } else {
                 Log.warning(c, "Unable to find valid External Docker Client");
             }
         } else {
+            tcProps.remove("docker.client.strategy");
             tcProps.remove("docker.host");
             tcProps.remove("docker.tls.verify");
             tcProps.remove("docker.cert.path");
+            tcProps.remove("client.ping.timeout");
         }
 
         //Always use ArtifactoryImageNameSubstitutor
