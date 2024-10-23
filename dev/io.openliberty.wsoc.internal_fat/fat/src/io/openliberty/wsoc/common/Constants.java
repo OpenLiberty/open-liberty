@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,8 +47,8 @@ public class Constants {
     static int[] directTimeouts = {
                                     15000, //SHORT
                                     15000, //CONNECT
-                                    25000, //DEFAULT
-                                    45000, //LONG
+                                    60000, //DEFAULT
+                                    80000, //LONG
                                     120000 //EXTRUN_SHORT
     };
 
@@ -64,6 +64,7 @@ public class Constants {
      */
     public static int getDefaultTimeout() {
         return getTimeout(TimeoutType.DEFAULT_TIMEOUT);
+
     }
 
     /**

@@ -30,6 +30,7 @@ import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.openliberty.http.ext.HttpRequestExt;
 
 /**
@@ -70,6 +71,22 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
         }
     }
 
+    /**
+     * Initialize with a new connection.
+     *
+     * @param context
+     */
+    public void init(FullHttpRequest request, HttpInboundServiceContext context) {
+
+        this.message = context.getRequest();
+
+        if (this.useEE7Streams) {
+            this.body = new HttpInputStreamEE7(context, request);
+        } else {
+            this.body = new HttpInputStreamImpl(context, request);
+        }
+    }
+
     /*
      * @see com.ibm.websphere.http.HttpRequest#getBody()
      */
@@ -99,6 +116,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public List<HttpCookie> getCookies(String name) {
+
         return this.message.getAllCookies(name);
     }
 
@@ -107,6 +125,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public List<HttpCookie> getCookies() {
+        List<HttpCookie> cookies = message.getAllCookies();
         return this.message.getAllCookies();
     }
 
@@ -281,9 +300,15 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public boolean isTrailersReady() {
+        boolean trailersNull;
+        if (message instanceof HttpBaseMessageImpl) {
+            trailersNull = ((HttpBaseMessageImpl) message).getTrailersImpl() != null;
+        } else
+            trailersNull = message.getTrailers() != null;
+
         if (!message.isChunkedEncodingSet()
             || !message.containsHeader(HttpHeaderKeys.HDR_TRAILER)
-            || ((HttpBaseMessageImpl) message).getTrailersImpl() != null
+            || trailersNull
             || (message.getVersionValue().getMajor() <= 1 && message.getVersionValue().getMinor() < 1))
             return true;
         return false;

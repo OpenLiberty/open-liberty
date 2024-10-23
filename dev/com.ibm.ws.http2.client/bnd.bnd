@@ -45,7 +45,16 @@ Export-Package: \
   com.ibm.ws.http.dispatcher.internal, \
   com.ibm.ws.http.dispatcher.internal.channel, \
   com.ibm.ws.http.internal, \
-  com.ibm.ws.http.logging.internal
+  com.ibm.ws.http.netty, \
+  com.ibm.ws.http.netty.cookie, \
+  com.ibm.ws.http.netty.message, \
+  com.ibm.ws.http.netty.pipeline, \
+  com.ibm.ws.http.netty.pipeline.inbound, \
+  com.ibm.ws.http.netty.pipeline.outbound, \
+  com.ibm.ws.http.netty.pipeline.http2, \
+  com.ibm.ws.http.logging.internal, \
+  io.openliberty.http.options, \
+  io.openliberty.http.utils
   
 Import-Package: \
   !com.ibm.ws.http.channel.h2internal, \
@@ -65,4 +74,6 @@ Import-Package: \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	io.openliberty.io.netty,\
+	io.netty.buffer

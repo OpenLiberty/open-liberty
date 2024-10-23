@@ -31,15 +31,17 @@ public class ReadListenerGetTrailers implements ReadListener {
     private HttpServletRequest request = null;
     private AsyncContext ac = null;
     private PrintWriter pw = null;
+    private boolean usingNetty;
 
     private static final Logger LOG = Logger.getLogger(ReadListenerGetTrailers.class.getName());
 
     public ReadListenerGetTrailers(ServletInputStream in, HttpServletResponse r,
-                                   AsyncContext c, HttpServletRequest req) {
+                                   AsyncContext c, HttpServletRequest req, boolean usingNetty) {
         input = in;
         res = r;
         ac = c;
         request = req;
+        this.usingNetty = usingNetty;
     }
 
     @Override
@@ -50,23 +52,26 @@ public class ReadListenerGetTrailers implements ReadListener {
 
         pw.println("ReadListenerGetTrailers onDataAvailable method called");
 
-        if (request.isTrailerFieldsReady()) {
-            pw.println("FAIL : isTrailerFieldsReady() returned true before data was read.");
-        } else {
-            pw.println("PASS : isTrailerFieldsReady() returned false before data was read.");
-            try {
-                request.getTrailerFields();
-                pw.println("FAIL : getTrailerFields() did not throw IllegalStateException before data was read.");
-            } catch (IllegalStateException ise) {
-                pw.println("PASS : getTrailerFields() threw IllegalStateException before data was read.");
+        if(!usingNetty){
+            if (request.isTrailerFieldsReady()) {
+                pw.println("FAIL : isTrailerFieldsReady() returned true before data was read.");
+            } else {
+                pw.println("PASS : isTrailerFieldsReady() returned false before data was read.");
+                try {
+                    request.getTrailerFields();
+                    pw.println("FAIL : getTrailerFields() did not throw IllegalStateException before data was read.");
+                } catch (IllegalStateException ise) {
+                    pw.println("PASS : getTrailerFields() threw IllegalStateException before data was read.");
+                }
             }
+        } else if(!request.isTrailerFieldsReady()){
+            pw.println("FAIL : isTrailerFieldsReady() returned false while using Netty.");
         }
 
         int len = -1;
         byte b[] = new byte[1024];
 
         while (input.isReady() && (len = input.read(b)) != -1) {
-
             LOG.info("ReadListenerGetTrailers onDataAvailable, isReady true num bytes read : " + len);
         }
 

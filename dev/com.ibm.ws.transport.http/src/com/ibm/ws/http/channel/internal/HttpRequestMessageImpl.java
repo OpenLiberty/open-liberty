@@ -99,7 +99,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     /** Request method for the message */
     private transient MethodValues myMethod = MethodValues.UNDEF;
     /** Scheme (protocol) for the message */
-    private transient SchemeValues myScheme = null;
+    protected transient SchemeValues myScheme = null;
     /** Request-Resource as a byte[] */
     private byte[] myURIBytes = SLASH;
     /** URI as a string */
@@ -1917,6 +1917,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         return getServiceContext().getStartNanoTime();
     }
 
+    @Override
     public String getRemoteUser() {
         String remoteUser = "";
 
@@ -2204,4 +2205,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         }
         return true;
     }
+    
+    @Override
+    public long getEndTime() { return 0; }
 }

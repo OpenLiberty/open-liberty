@@ -26,6 +26,7 @@ Export-Package: io.openliberty.netty.internal.tls.impl
 
 Import-Package: \
   io.openliberty.netty.internal.tls,\
+  io.openliberty.netty.internal.exception,\
   ${defaultPackageImport}
 
 -dsannotations: \

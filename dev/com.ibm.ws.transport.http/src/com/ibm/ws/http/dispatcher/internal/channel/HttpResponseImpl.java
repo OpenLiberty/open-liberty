@@ -339,6 +339,8 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
     public void setTrailer(String name, String value) {
 
         HttpTrailers trailers = message.createTrailers();
+        if (trailers == null)// Netty implementation
+            trailers = message.getTrailers();
         HeaderKeys key = HttpHeaderKeys.find(name, false);
 
         if (trailers.containsDeferredTrailer(key)) {
@@ -359,6 +361,8 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
     @Override
     public void writeTrailers() {
         HttpTrailers trailers = message.createTrailers();
+        if (trailers == null)// Netty implementation
+            trailers = message.getTrailers();
         trailers.computeRemainingTrailers();
 
     }

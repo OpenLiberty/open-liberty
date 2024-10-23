@@ -48,15 +48,17 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 public class HttpChain implements ChainEventListener {
     private static final TraceComponent tc = Tr.register(HttpChain.class);
 
-    enum ChainState {
+    public enum ChainState {
         UNINITIALIZED(0, "UNINITIALIZED"),
         DESTROYED(1, "DESTROYED"),
         INITIALIZED(2, "INITIALIZED"),
         STOPPED(3, "STOPPED"),
         QUIESCED(4, "QUIESCED"),
-        STARTED(5, "STARTED");
+        STARTED(5, "STARTED"),
+        STARTING(6, "STARTING"),
+        STOPPING(7, "STOPPING");
 
-        final int val;
+        public final int val;
         final String name;
 
         @Trivial
@@ -80,30 +82,34 @@ public class HttpChain implements ChainEventListener {
                     return "QUIESCED";
                 case 5:
                     return "STARTED";
+                case  6:
+                    return "STARTING";
+                case  7:
+                    return "STOPPING";
             }
             return "UNKNOWN";
         }
     }
 
-    private final StopWait stopWait = new StopWait();
-    private final HttpEndpointImpl owner;
-    private final boolean isHttps;
+    protected final StopWait stopWait = new StopWait();
+    protected final HttpEndpointImpl owner;
+    protected final boolean isHttps;
 
-    private String endpointName;
-    private String tcpName;
-    private String sslName;
-    private String httpName;
-    private String dispatcherName;
-    private String chainName;
-    private ChannelFramework cfw;
-    private EndPointMgr endpointMgr;
+    protected String endpointName;
+    protected String tcpName;
+    protected String sslName;
+    protected String httpName;
+    protected String dispatcherName;
+    protected String chainName;
+    protected ChannelFramework cfw;
+    protected EndPointMgr endpointMgr;
 
     /**
      * The state of the chain according to values from {@link ChainState}.
      * Aside from the initial value assignment, new values are only assigned from
      * within {@link ChainEventListener} methods.
      */
-    private final AtomicInteger chainState = new AtomicInteger(ChainState.UNINITIALIZED.val);
+    protected final AtomicInteger chainState = new AtomicInteger(ChainState.UNINITIALIZED.val);
 
     /**
      * Toggled by enable/disable methods. This serves only to block activity
@@ -115,7 +121,7 @@ public class HttpChain implements ChainEventListener {
      * A snapshot of the configuration (collection of properties objects) last used
      * for a start/update operation.
      */
-    private volatile ActiveConfiguration currentConfig = null;
+    protected volatile ActiveConfiguration currentConfig = null;
 
     /**
      * Create the new chain with it's parent endpoint
@@ -171,6 +177,14 @@ public class HttpChain implements ChainEventListener {
                 Tr.debug(this, tc, "Error stopping chain " + chainName, this, e);
             }
         }
+    }
+
+    public HttpEndpointImpl getOwner() {
+        return this.owner;
+    }
+
+    public boolean isHttps() {
+        return this.isHttps;
     }
 
     /**
@@ -418,19 +432,19 @@ public class HttpChain implements ChainEventListener {
                     if (compressionOptions.get("id").equals("defaultCompression")) {
                         //Put the internal compression set to false since the element was not configured to be used
                         chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION, "false");
-                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, null);
-                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES_INTERNAL, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM_INTERNAL, null);
                     }
 
                     else {
                         chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION, "true");
                         //Check if the compression is configured to use content-type filter
                         if (compressionOptions.containsKey("types")) {
-                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, compressionOptions.get("types"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES_INTERNAL, compressionOptions.get("types"));
 
                         }
                         if (compressionOptions.containsKey("serverPreferredAlgorithm")) {
-                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, compressionOptions.get("serverPreferredAlgorithm"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM_INTERNAL, compressionOptions.get("serverPreferredAlgorithm"));
                         }
                     }
 
@@ -447,15 +461,15 @@ public class HttpChain implements ChainEventListener {
                         boolean enableSameSite = false;
                         if (samesiteOptions.containsKey("lax")) {
                             enableSameSite = true;
-                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX, samesiteOptions.get("lax"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX_INTERNAL, samesiteOptions.get("lax"));
                         }
                         if (samesiteOptions.containsKey("none")) {
                             enableSameSite = true;
-                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE, samesiteOptions.get("none"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE_INTERNAL, samesiteOptions.get("none"));
                         }
                         if (samesiteOptions.containsKey("strict")) {
                             enableSameSite = true;
-                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, samesiteOptions.get("strict"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT_INTERNAL, samesiteOptions.get("strict"));
                         }
                         if (samesiteOptions.containsKey("partitioned")) {
                             enableSameSite = true;
@@ -574,7 +588,7 @@ public class HttpChain implements ChainEventListener {
         }
     }
 
-    private void handleStartupError(Exception e, ActiveConfiguration cfg) {
+    public void handleStartupError(Exception e, ActiveConfiguration cfg) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Error starting chain " + chainName, this, e);
         }
@@ -705,7 +719,7 @@ public class HttpChain implements ChainEventListener {
      * Publish an event relating to a chain starting/stopping with the
      * given properties set about the chain.
      */
-    private void postEvent(String t, ActiveConfiguration c, Exception e) {
+    protected void postEvent(String t, ActiveConfiguration c, Exception e) {
         Map<String, Object> eventProps = new HashMap<String, Object>(4);
 
         eventProps.put(HttpServiceConstants.ENDPOINT_NAME, endpointName);
@@ -738,16 +752,16 @@ public class HttpChain implements ChainEventListener {
     /**
      * Get the state of the chain.
      *
-     * @return An interger representation of the state.
+     * @return An integer representation of the state.
      */
     public int getChainState() {
         return chainState.get();
     }
 
-    private final class ActiveConfiguration {
+    public final class ActiveConfiguration {
         final boolean isHttps;
-        final int configPort;
-        final String configHost;
+        public final int configPort;
+        public final String configHost;
         final String resolvedHost;
 
         final Map<String, Object> tcpOptions;
@@ -760,18 +774,18 @@ public class HttpChain implements ChainEventListener {
         final Map<String, Object> endpointOptions;
 
         volatile int activePort = -1;
-        boolean validConfiguration = false;
+        public boolean validConfiguration = false;
 
-        ActiveConfiguration(boolean isHttps,
-                            Map<String, Object> tcp,
-                            Map<String, Object> ssl,
-                            Map<String, Object> http,
-                            Map<String, Object> remoteIp,
-                            Map<String, Object> compression,
-                            Map<String, Object> samesite,
-                            Map<String, Object> headers,
-                            Map<String, Object> endpoint,
-                            String resolvedHostName) {
+        public ActiveConfiguration(boolean isHttps,
+                                   Map<String, Object> tcp,
+                                   Map<String, Object> ssl,
+                                   Map<String, Object> http,
+                                   Map<String, Object> remoteIp,
+                                   Map<String, Object> compression,
+                                   Map<String, Object> samesite,
+                                   Map<String, Object> headers,
+                                   Map<String, Object> endpoint,
+                                   String resolvedHostName) {
             this.isHttps = isHttps;
             tcpOptions = tcp;
             sslOptions = ssl;
@@ -795,6 +809,18 @@ public class HttpChain implements ChainEventListener {
          */
         public void clearActivePort() {
             activePort = -1;
+        }
+        
+        public String getResolvedHost() {
+            return resolvedHost;
+        }
+        
+        public int getConfigPort() {
+            return configPort;
+        }
+        
+        public String getEndpointPID() {
+            return (String) endpointOptions.get(Constants.SERVICE_PID);
         }
 
         /**
@@ -849,7 +875,7 @@ public class HttpChain implements ChainEventListener {
          * maps: if the map instances are the same, there have been no
          * updates.
          */
-        protected boolean unchanged(ActiveConfiguration other) {
+        public boolean unchanged(ActiveConfiguration other) {
             if (other == null)
                 return false;
 
@@ -933,13 +959,13 @@ public class HttpChain implements ChainEventListener {
         }
     }
 
-    private class StopWait {
+    public class StopWait {
 
         @Trivial
         StopWait() {
         }
 
-        synchronized void waitForStop(long timeout, HttpChain chain) {
+        public synchronized void waitForStop(long timeout, HttpChain chain) {
             // HttpChain parameter helps with debug..
 
             // wait for the configured timeout (the parameter) + a smidgen of time

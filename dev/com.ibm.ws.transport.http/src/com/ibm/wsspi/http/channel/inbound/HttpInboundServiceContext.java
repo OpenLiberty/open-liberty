@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,14 +27,14 @@ import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 
 /**
  * This is the interface for an inbound Http connection.
- * 
+ *
  * @ibm-private-in-use
  */
 public interface HttpInboundServiceContext extends HttpServiceContext {
 
     /**
      * Set the response object in the service context for usage.
-     * 
+     *
      * @param msg
      * @throws IllegalResponseObjectException
      */
@@ -46,11 +46,11 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
 
     /**
      * Send the headers for the outgoing response synchronously.
-     * 
+     *
      * @throws IOException
-     *             -- if a socket exception occurs
+     *                                  -- if a socket exception occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     void sendResponseHeaders() throws IOException, MessageSentException;
 
@@ -66,12 +66,12 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * The boolean bForce parameter allows the caller to force the asynchronous
      * action even if it could be handled immediately. The return code will always
      * be null and the callback always used.
-     * 
+     *
      * @param cb
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     VirtualConnection sendResponseHeaders(InterChannelCallback cb, boolean bForce) throws MessageSentException;
 
@@ -84,12 +84,12 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * Note: if headers have not already been sent, then the first call to this
      * method will send the headers.
-     * 
+     *
      * @param body
      * @throws IOException
-     *             -- if a socket exception occurs
+     *                                  -- if a socket exception occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     void sendResponseBody(WsByteBuffer[] body) throws IOException, MessageSentException;
 
@@ -111,25 +111,25 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * The boolean bForce parameter allows the caller to force the asynchronous
      * action even if it could be handled immediately. The return code will always
      * be null and the callback always used.
-     * 
+     *
      * @param body
      * @param callback
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     VirtualConnection sendResponseBody(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException;
 
     /**
      * Send an array of raw body buffers out synchronously. This method will
      * avoid any body modifications, such as compression or chunked-encoding.
-     * 
+     *
      * @param body
      * @throws IOException
-     *             -- if a socket error occurs
+     *                                  -- if a socket error occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     void sendRawResponseBody(WsByteBuffer[] body) throws IOException, MessageSentException;
 
@@ -144,13 +144,13 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * The force parameter allows the caller to force the asynchronous call and to
      * always have the callback used, thus the return code will always be null.
-     * 
+     *
      * @param body
      * @param callback
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     VirtualConnection sendRawResponseBody(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException;
 
@@ -165,13 +165,13 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * Note: if headers have not already been sent, then the first call to this
      * method will send the headers. If this was a chunked encoded message, then
      * the zero-length chunk is automatically appended.
-     * 
+     *
      * @param body
-     *            (last set of buffers to send, null if no body data)
+     *                 (last set of buffers to send, null if no body data)
      * @throws IOException
-     *             -- if a socket exception occurs
+     *                                  -- if a socket exception occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     void finishResponseMessage(WsByteBuffer[] body) throws IOException, MessageSentException;
 
@@ -195,14 +195,14 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * The boolean bForce parameter allows the caller to force the asynchronous
      * action even if it could be handled immediately. The return code will always
      * be null and the callback always used.
-     * 
+     *
      * @param body
-     *            (last set of body data, null if no body information)
+     *                   (last set of body data, null if no body information)
      * @param cb
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     VirtualConnection finishResponseMessage(WsByteBuffer[] body, InterChannelCallback cb, boolean bForce) throws MessageSentException;
 
@@ -212,13 +212,13 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * method will avoid any body modification, such as compression or chunked
      * encoding and simply send the buffers as-is. If the headers have not
      * been sent yet, then they will be prepended to the input data.
-     * 
+     *
      * @param body
-     *            -- null if there is no body data
+     *                 -- null if there is no body data
      * @throws IOException
-     *             -- if a socket exception occurs
+     *                                  -- if a socket exception occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     void finishRawResponseMessage(WsByteBuffer[] body) throws IOException, MessageSentException;
 
@@ -235,24 +235,24 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * The force flag allows the caller to force the asynchronous communication
      * such that the callback is always used.
-     * 
+     *
      * @param body
-     *            -- null if there is no more body data
+     *                   -- null if there is no more body data
      * @param cb
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     VirtualConnection finishRawResponseMessage(WsByteBuffer[] body, InterChannelCallback cb, boolean bForce) throws MessageSentException;
 
     /**
      * Sends an error code and page back to the client asynchronously and
      * closes the connection.
-     * 
+     *
      * @param error
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     void sendError(HttpError error) throws MessageSentException;
 
@@ -269,14 +269,14 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * Once given a buffer, we keep no record of that buffer. It is the users
      * responsibility to release it.
-     * 
+     *
      * @return WsByteBuffer[]
      * @throws IOException
-     *             -- if a socket exception happens
+     *                                      -- if a socket exception happens
      * @throws IllegalHttpBodyException
-     *             -- if a malformed request body is
-     *             present such that the server should send an HTTP 400 Bad Request
-     *             back to the client.
+     *                                      -- if a malformed request body is
+     *                                      present such that the server should send an HTTP 400 Bad Request
+     *                                      back to the client.
      */
     WsByteBuffer[] getRequestBodyBuffers() throws IOException, IllegalHttpBodyException;
 
@@ -295,13 +295,13 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * Once given a buffer, we keep no record of that buffer. It is the users
      * responsibility to release it.
-     * 
+     *
      * @param callback
      * @param bForce
      * @return VirtualConnection (null if an async read is in progress,
      *         non-null if data is ready)
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     VirtualConnection getRequestBodyBuffers(InterChannelCallback callback, boolean bForce) throws BodyCompleteException;
 
@@ -313,14 +313,14 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * Once given a buffer, we keep no record of that buffer. It is the users
      * responsibility to release it.
-     * 
+     *
      * @return WsByteBuffer
      * @throws IOException
-     *             -- if a socket exception happens
+     *                                      -- if a socket exception happens
      * @throws IllegalHttpBodyException
-     *             -- if a malformed request body is
-     *             present such that the server should send an HTTP 400 Bad Request
-     *             back to the client.
+     *                                      -- if a malformed request body is
+     *                                      present such that the server should send an HTTP 400 Bad Request
+     *                                      back to the client.
      */
     WsByteBuffer getRequestBodyBuffer() throws IOException, IllegalHttpBodyException;
 
@@ -340,13 +340,13 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * Once given a buffer, we keep no record of that buffer. It is the users
      * responsibility to release it.
-     * 
+     *
      * @param callback
      * @param bForce
      * @return VirtualConnection (null if an async read is in progress,
      *         non-null if data is ready)
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     VirtualConnection getRequestBodyBuffer(InterChannelCallback callback, boolean bForce) throws BodyCompleteException;
 
@@ -359,14 +359,14 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * The caller is responsible for releasing these buffers when complete as the
      * HTTP Channel does not keep track of them.
-     * 
+     *
      * @return WsByteBuffer
      * @throws IOException
-     *             -- if a socket exception happens
+     *                                      -- if a socket exception happens
      * @throws IllegalHttpBodyException
-     *             -- if a malformed request body is
-     *             present such that the server should send an HTTP 400 Bad Request
-     *             back to the client.
+     *                                      -- if a malformed request body is
+     *                                      present such that the server should send an HTTP 400 Bad Request
+     *                                      back to the client.
      */
     WsByteBuffer getRawRequestBodyBuffer() throws IOException, IllegalHttpBodyException;
 
@@ -379,14 +379,14 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * The caller is responsible for releasing these buffers when complete as the
      * HTTP Channel does not keep track of them.
-     * 
+     *
      * @return WsByteBuffer[]
      * @throws IOException
-     *             -- if a socket exceptions happens
+     *                                      -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *             -- if a malformed request body is
-     *             present such that the server should send an HTTP 400 Bad Request
-     *             back to the client.
+     *                                      -- if a malformed request body is
+     *                                      present such that the server should send an HTTP 400 Bad Request
+     *                                      back to the client.
      */
     WsByteBuffer[] getRawRequestBodyBuffers() throws IOException, IllegalHttpBodyException;
 
@@ -403,12 +403,12 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * The caller is responsible for releasing these buffers when finished with
      * them as the HTTP Channel keeps no reference to them.
-     * 
+     *
      * @param cb
      * @param bForce
      * @return VirtualConnection
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     VirtualConnection getRawRequestBodyBuffer(InterChannelCallback cb, boolean bForce) throws BodyCompleteException;
 
@@ -425,13 +425,33 @@ public interface HttpInboundServiceContext extends HttpServiceContext {
      * <p>
      * The caller is responsible for releasing these buffers when finished with
      * them as the HTTP Channel keeps no reference to them.
-     * 
+     *
      * @param cb
      * @param bForce
      * @return VirtualConnection
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     VirtualConnection getRawRequestBodyBuffers(InterChannelCallback cb, boolean bForce) throws BodyCompleteException;
+
+    /**
+     * @return
+     */
+    boolean useForwardedHeadersInAccessLog();
+
+    /**
+     * @return
+     */
+    String getForwardedRemoteProto();
+
+    /**
+     * @return
+     */
+    String getForwardedRemoteAddress();
+
+    /**
+     * @return
+     */
+    String getForwardedRemoteHost();
 
 }
