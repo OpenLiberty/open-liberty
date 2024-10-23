@@ -169,6 +169,9 @@ public class DynamicConfigRule implements TestRule {
 
                 server.setMarkToEndOfLog();
                 server.setServerConfigurationFile(serverXmlFileName);
+                // start server & checkpoint
+                // stop server, copy in next server.xml config
+                // restore
                 server.waitForConfigUpdateInLogUsingMark(null);
 
                 try {

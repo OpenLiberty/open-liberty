@@ -23,6 +23,7 @@ import com.ibm.ws.jbatch.test.BatchAppUtils;
 import batch.fat.util.BatchFATHelper;
 import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -34,6 +35,8 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class CDITestCheckpoint extends BatchFATHelper {
 
     private static final Class testClass = CDITestCheckpoint.class;
+    // save off the original server value so it can be restored after class
+    private static final LibertyServer superServer = BatchFATHelper.server;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -54,6 +57,8 @@ public class CDITestCheckpoint extends BatchFATHelper {
         if (server != null && server.isStarted()) {
             server.stopServer("CWWKY0041W");
         }
+        // restore back to original server
+        server = superServer;
     }
 
     @Test
