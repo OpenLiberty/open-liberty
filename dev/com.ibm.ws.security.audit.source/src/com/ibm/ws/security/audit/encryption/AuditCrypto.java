@@ -16,9 +16,12 @@ package com.ibm.ws.security.audit.encryption;
  *
  */
 import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -26,6 +29,7 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Arrays;
@@ -35,14 +39,17 @@ import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.wsspi.security.audit.AuditSigningException;
 
@@ -71,6 +78,7 @@ final class AuditCrypto {
 //    private static final String ENCRYPT_ALGORITHM_DESEDE = "DESede";
 //    private static final String ENCRYPT_ALGORITHM_RSA = "RSA";
     private static boolean fips140_3Enabled = CryptoUtils.isFips140_3Enabled();
+    private static final String encryptAlgorithm = CryptoUtils.getEncryptionAlgorithm();
 
     public static boolean ibmJCEPlusFIPSAvailable = false;
     public static boolean ibmJCEPlusFIPSProviderChecked = false;
@@ -2050,42 +2058,47 @@ final class AuditCrypto {
                     return null;
                 }
 
-                SecretKey sKey = null;
+//                SecretKey sKey = null;
+//
+//                if (cipher.indexOf("AES") != -1) {
+//                    // 16 bytes = 128 bit key
+//                    sKey = new SecretKeySpec(key, 0, 16, "AES");
+//                } else {
+//                    DESedeKeySpec kSpec = new DESedeKeySpec(key);
+//                    SecretKeyFactory kFact = null;
+//                    kFact = SecretKeyFactory.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_DESEDE);
+//
+//                    sKey = kFact.generateSecret(kSpec);
+//                }
 
-                if (fips140_3Enabled || cipher.indexOf("AES") != -1) {
-                    // 16 bytes = 128 bit key
-                    sKey = new SecretKeySpec(key, 0, 16, "AES");
-                } else {
-                    DESedeKeySpec kSpec = new DESedeKeySpec(key);
-                    SecretKeyFactory kFact = null;
-                    kFact = SecretKeyFactory.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_DESEDE);
-
-                    sKey = kFact.generateSecret(kSpec);
-                }
-
-                Cipher ci = null;
-                ci = Cipher.getInstance(cipher);
-
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "The Provider Cipher used to encrypt: " + ci.getProvider());
-                    Tr.debug(tc, "The Algorithm Cipher used to encrypt: " + ci.getAlgorithm());
-                }
-                if (cipher.indexOf("ECB") == -1) {
-                    if (fips140_3Enabled || cipher.indexOf("AES") != -1) {
-                        if (ivs16 == null) {
-                            setIVS16(key);
-                        }
-                        ci.init(Cipher.ENCRYPT_MODE, sKey, ivs16);
-                    } else {
-                        if (ivs8 == null) {
-                            setIVS8(key);
-                        }
-                        ci.init(Cipher.ENCRYPT_MODE, sKey, ivs8);
-                    }
-                } else {
-                    ci.init(Cipher.ENCRYPT_MODE, sKey);
-                }
-
+                SecretKey sKey = constructSecretKey(key, cipher);
+//                Cipher ci = null;
+//                ci = Cipher.getInstance(cipher);
+//
+//                if (tc.isDebugEnabled()) {
+//                    Tr.debug(tc, "The Provider Cipher used to encrypt: " + ci.getProvider());
+//                    Tr.debug(tc, "The Algorithm Cipher used to encrypt: " + ci.getAlgorithm());
+//                }
+//                if (cipher.indexOf("GCM") != -1) {
+//                    byte[] iv = new byte[12];
+//                    GCMParameterSpec params = new GCMParameterSpec(128, iv);
+//                    ci.init(Cipher.ENCRYPT_MODE, sKey, params);
+//                } else if (cipher.indexOf("ECB") == -1) {
+//                    if (cipher.indexOf("AES") != -1) {
+//                        if (ivs16 == null) {
+//                            setIVS16(key);
+//                        }
+//                        ci.init(Cipher.ENCRYPT_MODE, sKey, ivs16);
+//                    } else {
+//                        if (ivs8 == null) {
+//                            setIVS8(key);
+//                        }
+//                        ci.init(Cipher.ENCRYPT_MODE, sKey, ivs8);
+//                    }
+//                } else {
+//                    ci.init(Cipher.ENCRYPT_MODE, sKey);
+//                }
+                Cipher ci = createCipher(Cipher.ENCRYPT_MODE, key, cipher, sKey);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "encrypt() Cipher.doFinal()\n   data: " + new String(data));
                 mesg = ci.doFinal(data);
@@ -2112,6 +2125,10 @@ final class AuditCrypto {
             } catch (java.security.InvalidAlgorithmParameterException e) {
                 Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
                 com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditCrypto", "2279");
+            } catch (NoSuchProviderException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                e.printStackTrace();
             }
 
         } else {
@@ -2159,43 +2176,46 @@ final class AuditCrypto {
                     return null;
                 }
 
-                SecretKey sKey = null;
+//                SecretKey sKey = null;
+//
+//                if (cipher.indexOf("AES") != -1) {
+//                    // 16 bytes = 128 bit key
+//                    sKey = new SecretKeySpec(key, 0, 16, "AES");
+//                } else {
+//                    DESedeKeySpec kSpec = new DESedeKeySpec(key);
+//                    SecretKeyFactory kFact = null;
+//                    kFact = SecretKeyFactory.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_DESEDE);
+//                    sKey = kFact.generateSecret(kSpec);
+//                }
+                SecretKey sKey = constructSecretKey(key, cipher);
 
-                if (fips140_3Enabled || cipher.indexOf("AES") != -1) {
-                    // 16 bytes = 128 bit key
-                    sKey = new SecretKeySpec(key, 0, 16, "AES");
-                } else {
-                    DESedeKeySpec kSpec = new DESedeKeySpec(key);
-                    SecretKeyFactory kFact = null;
-                    kFact = SecretKeyFactory.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_DESEDE);
-                    sKey = kFact.generateSecret(kSpec);
-                }
+//                Cipher ci = null;
+//                ci = Cipher.getInstance(cipher);
+//
+//                if (tc.isDebugEnabled()) {
+//                    Tr.debug(tc, "The Provider Cipher used to decrypt: " + ci.getProvider());
+//                    Tr.debug(tc, "The Algorithm Cipher used to decrypt: " + ci.getAlgorithm());
+//                }
+//
+//                if (cipher.indexOf("ECB") == -1) {
+//                    if (cipher.indexOf("AES") != -1) {
+//
+//                        if (ivs16 == null) {
+//                            setIVS16(key);
+//                        }
+//                        ci.init(Cipher.DECRYPT_MODE, sKey, ivs16);
+//                    } else {
+//
+//                        if (ivs8 == null) {
+//                            setIVS8(key);
+//                        }
+//                        ci.init(Cipher.DECRYPT_MODE, sKey, ivs8);
+//                    }
+//                } else {
+//                    ci.init(Cipher.DECRYPT_MODE, sKey);
+//                }
 
-                Cipher ci = null;
-                ci = Cipher.getInstance(cipher);
-
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "The Provider Cipher used to decrypt: " + ci.getProvider());
-                    Tr.debug(tc, "The Algorithm Cipher used to decrypt: " + ci.getAlgorithm());
-                }
-
-                if (cipher.indexOf("ECB") == -1) {
-                    if (cipher.indexOf("AES") != -1) {
-
-                        if (ivs16 == null) {
-                            setIVS16(key);
-                        }
-                        ci.init(Cipher.DECRYPT_MODE, sKey, ivs16);
-                    } else {
-
-                        if (ivs8 == null) {
-                            setIVS8(key);
-                        }
-                        ci.init(Cipher.DECRYPT_MODE, sKey, ivs8);
-                    }
-                } else {
-                    ci.init(Cipher.DECRYPT_MODE, sKey);
-                }
+                Cipher ci = createCipher(Cipher.DECRYPT_MODE, key, cipher, sKey);
 
                 tmpMesg = ci.doFinal(mesg);
 
@@ -2224,6 +2244,10 @@ final class AuditCrypto {
             } catch (java.security.InvalidAlgorithmParameterException e) {
                 Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
                 com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.auditAuditCrypto", "2408");
+            } catch (NoSuchProviderException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                e.printStackTrace();
             }
         } else {
             int len = key.length;
@@ -2246,6 +2270,70 @@ final class AuditCrypto {
         }
 
         return tmpMesg;
+    }
+
+    /**
+     * @param key
+     * @param cipher
+     * @return
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
+    @Trivial
+    private static SecretKey constructSecretKey(byte[] key, String cipher) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+        SecretKey sKey = null;
+        if (cipher.indexOf("AES") != -1) {
+            // 16 bytes = 128 bit key
+            sKey = new SecretKeySpec(key, 0, 16, "AES");
+        } else {
+            DESedeKeySpec kSpec = new DESedeKeySpec(key);
+            SecretKeyFactory kFact = null;
+
+            kFact = (provider == null) ? SecretKeyFactory.getInstance(encryptAlgorithm) : SecretKeyFactory.getInstance(encryptAlgorithm, provider);
+
+            sKey = kFact.generateSecret(kSpec);
+        }
+        return sKey;
+    }
+
+    /**
+     * @param key
+     * @param cipher
+     * @param sKey
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     */
+    @Trivial
+    private static Cipher createCipher(int cipherMode, byte[] key, String cipher,
+                                       SecretKey sKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchProviderException {
+
+        Cipher ci = null;
+        ci = (provider == null) ? Cipher.getInstance(cipher) : Cipher.getInstance(cipher, provider);
+
+        if (cipher.indexOf("ECB") == -1) {
+            if (cipher.indexOf("GCM") != -1) {
+                byte[] iv = new byte[12];
+                GCMParameterSpec params = new GCMParameterSpec(128, iv);
+                ci.init(cipherMode, sKey, params);
+            } else if (cipher.indexOf("AES") != -1) {
+                if (ivs16 == null) {
+                    setIVS16(key);
+                }
+                ci.init(cipherMode, sKey, ivs16);
+            } else {
+                if (ivs8 == null) {
+                    setIVS8(key);
+                }
+                ci.init(cipherMode, sKey, ivs8);
+            }
+        } else {
+            ci.init(cipherMode, sKey);
+        }
+        return ci;
     }
 
     /**
