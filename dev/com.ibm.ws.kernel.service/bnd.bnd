@@ -50,6 +50,7 @@ Import-Package: !com.sun.management, !com.ibm.lang.management, *
 
 instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class, \
   com/ibm/ws/kernel/**/internal/resources/*.class, \
+  com/ibm/ws/common/crypto/*.class, \
   com/ibm/ws/common/encoder/*.class, \
   com/ibm/ws/common/internal/encoder/*.class
 

@@ -20,6 +20,8 @@ Bundle-Description: Common Crypto; version=${bVersion}
 Export-Package: \
   com.ibm.ws.common.crypto
 
+Import-Package: \
+  com.ibm.ws.kernel.productinfo
 test.project: true
 
 generate.replacement: true
