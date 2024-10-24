@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.fat.utils;
 
@@ -26,8 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -42,6 +42,8 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -404,4 +406,96 @@ public class OpenAPITestUtil {
         assertTrue(childNode.isObject());
         return (ObjectNode) childNode;
     }
+
+    /**
+     * Checks if two JsonNode objects are recursively equal, ignoring the order of object properties
+     * 
+     * @param n1 the first node to compare
+     * @param n2 the second node to compare
+     * @return whether they are equal ignoring property order
+     */
+    public static boolean equalIgnoringPropertyOrder(JsonNode n1, JsonNode n2) {
+        if (n1 == n2) {
+            return true;
+        }
+
+        if (n1 == null || n2 == null) {
+            return false;
+        }
+
+        if (n1.getNodeType() != n2.getNodeType()) {
+            return false;
+        }
+
+        if (n1.isArray()) {
+            ArrayNode a1 = (ArrayNode) n1;
+            ArrayNode a2 = (ArrayNode) n2;
+            if (a1.size() != a2.size()) {
+                return false;
+            }
+            for (int i = 0; i < a1.size(); i++) {
+                if (!equalIgnoringPropertyOrder(a1.get(i), a2.get(i))) {
+                    return false;
+                }
+            }
+        } else if (n1.isObject()) {
+            ObjectNode o1 = (ObjectNode) n1;
+            ObjectNode o2 = (ObjectNode) n2;
+            if (o1.size() != o2.size()) {
+                return false;
+            }
+            for (Entry<String, JsonNode> entry : o1.properties()) {
+                JsonNode v1 = entry.getValue();
+                JsonNode v2 = o2.get(entry.getKey());
+                if (!equalIgnoringPropertyOrder(v1, v2)) {
+                    return false;
+                }
+            }
+        } else {
+            if (!Objects.equals(n1, n2)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void assertEqualIgnoringPropertyOrder(JsonNode expected, JsonNode actual) {
+        assertEqualIgnoringPropertyOrder("", expected, actual);
+    }
+
+    public static void assertEqualIgnoringPropertyOrder(String message, JsonNode expected, JsonNode actual) {
+        if (!equalIgnoringPropertyOrder(expected, actual)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(message).append("\n");
+            sb.append("Expected:\n").append(expected.toPrettyString()).append("\n");
+            sb.append("Actual:\n").append(actual.toPrettyString()).append("\n");
+            throw new AssertionError(sb.toString());
+        }
+    }
+
+    /**
+     * Get the version of the mpOpenAPI feature under test.
+     * <p>
+     * Retrieves the current {@code FeatureReplacementAction} and checks which version of the mpOpenAPI feature it adds
+     * 
+     * @return the mpOpenAPI feature version
+     * @throws IllegalStateException if the current repeat action does not add any mpOpenAPI feature
+     */
+    public static float getOpenAPIFeatureVersion() {
+        FeatureReplacementAction action = (FeatureReplacementAction) RepeatTestFilter.getMostRecentRepeatAction();
+        String feature = Stream.concat(action.getAddFeatures().stream(),
+                                       action.getAlwaysAddFeatures().stream())
+                               .map(String::toLowerCase)
+                               .filter(f -> f.startsWith("mpopenapi"))
+                               .findFirst()
+                               .orElseThrow(() -> new IllegalStateException("Current repeat does not add mpOpenAPI"));
+
+        String[] parts = feature.split("-");
+        if (parts.length != 2) {
+            throw new IllegalStateException("Malformed mpOpenAPI feature name: " + feature);
+        }
+
+        return Float.parseFloat(parts[1]);
+    }
+
 }
