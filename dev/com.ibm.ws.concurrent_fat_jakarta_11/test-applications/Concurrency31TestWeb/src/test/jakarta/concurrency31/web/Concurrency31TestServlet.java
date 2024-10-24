@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -77,12 +78,24 @@ public class Concurrency31TestServlet extends FATServlet {
     // Maximum number of nanoseconds to wait for a task to finish.
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    /**
+     * A single instance to share across tests that are okay with using context that
+     * was captured during servlet init.
+     */
+    private ManagedThreadFactory virtualThreadFactory;
+
     @Override
     public void destroy() {
     }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        try {
+            virtualThreadFactory = (ManagedThreadFactory) InitialContext //
+                            .doLookup("java:module/concurrent/virtual-thread-factory");
+        } catch (NamingException x) {
+            throw new ServletException(x);
+        }
     }
 
     /**
@@ -297,9 +310,7 @@ public class Concurrency31TestServlet extends FATServlet {
 
         // run from a virtual thread:
         CompletableFuture<List<Future<Thread>>> ff = new CompletableFuture<>();
-        ManagedThreadFactory threadFactory = InitialContext //
-                        .doLookup("java:module/concurrent/virtual-thread-factory");
-        threadFactory.newThread(() -> {
+        virtualThreadFactory.newThread(() -> {
             try {
                 uniqueThreads.add(Thread.currentThread());
                 ff.complete(executor.invokeAll(List.of(task, task, task)));
@@ -352,9 +363,7 @@ public class Concurrency31TestServlet extends FATServlet {
 
         // run from a virtual thread:
         CompletableFuture<Thread> futureThread = new CompletableFuture<>();
-        ManagedThreadFactory threadFactory = InitialContext //
-                        .doLookup("java:module/concurrent/virtual-thread-factory");
-        Thread newThread = threadFactory.newThread(() -> {
+        Thread newThread = virtualThreadFactory.newThread(() -> {
             try {
                 futureThread.complete(executor.invokeAny(List.of(anyTask)));
             } catch (Throwable x) {
@@ -782,5 +791,32 @@ public class Concurrency31TestServlet extends FATServlet {
         assertEquals(ZoneId.of("America/Juneau"), TimeZone.get());
 
         TimeZone.remove();
+    }
+
+    /**
+     * Starts two virtual threads that will remain blocked until they are
+     * interrupted, which should occur when the application stops.
+     * When interrupted, the threads print a message to System.out that
+     * the test can check for later.
+     */
+    @Test
+    public void testVirtualThreadsInterruptedWhenAppStopped() {
+        CountDownLatch blocker = new CountDownLatch(1);
+
+        virtualThreadFactory.newThread(() -> {
+            try {
+                blocker.await();
+            } catch (InterruptedException x) {
+                System.out.println("TestVirtualThreadsInterruptedWhenAppStopped1");
+            }
+        }).start();
+
+        virtualThreadFactory.newThread(() -> {
+            try {
+                blocker.await();
+            } catch (InterruptedException x) {
+                System.out.println("TestVirtualThreadsInterruptedWhenAppStopped2");
+            }
+        }).start();
     }
 }

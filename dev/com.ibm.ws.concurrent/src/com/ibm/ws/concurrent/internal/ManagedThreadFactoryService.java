@@ -32,8 +32,10 @@ import javax.enterprise.concurrent.ManagedThreadFactory;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
@@ -67,7 +69,8 @@ import io.openliberty.threading.virtual.VirtualThreadOps;
  * Unlike ManagedExecutorService and ManagedScheduledExecutorService, we need a separate instance of ManagedThreadFactory
  * for each lookup/injection because, per the spec, thread context is captured at that point.
  */
-@Component(configurationPid = "com.ibm.ws.concurrent.managedThreadFactory", configurationPolicy = ConfigurationPolicy.REQUIRE,
+@Component(configurationPid = "com.ibm.ws.concurrent.managedThreadFactory",
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ResourceFactory.class, ApplicationRecycleComponent.class },
            property = { "creates.objectClass=java.util.concurrent.ThreadFactory",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedThreadFactory" })
@@ -107,7 +110,8 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     /**
      * Reference to the context service for this managed thread factory service.
      */
-    private final AtomicServiceReference<WSContextService> contextSvcRef = new AtomicServiceReference<WSContextService>("ContextService");
+    private final AtomicServiceReference<WSContextService> contextSvcRef = //
+                    new AtomicServiceReference<WSContextService>("ContextService");
 
     /**
      * Specifies whether or not to create daemon threads.
@@ -122,7 +126,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     /**
      * Default execution properties for thread context capture.
      */
-    private Map<String, String> defaultExecutionProperties;
+    private final Map<String, String> defaultExecutionProperties;
 
     /**
      * Default thread priority. Null if unspecified.
@@ -135,26 +139,25 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     final AtomicBoolean isShutdown = new AtomicBoolean();
 
     /**
+     * The metadata identifier service.
+     */
+    private final MetaDataIdentifierService metadataIdentifierService;
+
+    /**
      * Name of this managed thread factory.
      * The name is the jndiName if specified, otherwise the config id.
      */
-    private String name;
+    private final String name;
 
     /**
      * Thread group for the managed thread factory.
      */
-    private ThreadGroup threadGroup;
+    private final ThreadGroup threadGroup;
 
     /**
      * Tracks thread groups for application components.
      */
-    private ThreadGroupTracker threadGroupTracker;
-
-    /**
-     * Virtual thread operations that were introduced in Java 21
-     */
-    @Reference
-    protected VirtualThreadOps virtualThreadOps;
+    private final ThreadGroupTracker threadGroupTracker;
 
     /**
      * Factory that creates virtual threads if greater than Java 21
@@ -162,7 +165,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
      * on less than Java 21.
      * Null if not configured to create virtual threads.
      */
-    private ThreadFactory virtualThreadFactory;
+    private final ThreadFactory virtualThreadFactory;
 
     /**
      * Metadata factory for the web container.
@@ -173,23 +176,38 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     protected DeferredMetaDataFactory webMetadataFactory;
 
     /**
-     * The metadata identifier service.
-     */
-    private MetaDataIdentifierService metadataIdentifierService;
-
-    /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
      *
      * @param componentContext DeclarativeService defined/populated component context
      */
+    @Activate
     @Trivial
-    protected void activate(ComponentContext componentContext) {
+    public ManagedThreadFactoryService(ComponentContext componentContext,
+                                       @Reference(name = "ContextService",
+                                                  service = WSContextService.class,
+                                                  target = "(id=unbound)") //
+                                       ServiceReference<WSContextService> ref,
+                                       @Reference //
+                                       MetaDataIdentifierService metadataSvc,
+                                       @Reference //
+                                       ThreadGroupTracker threadGroupTracker,
+                                       @Reference //
+                                       VirtualThreadOps virtualThreadOps) {
         Dictionary<String, ?> properties = componentContext.getProperties();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "activate", properties);
+            Tr.entry(this, tc, "activate",
+                     properties,
+                     "ContextService: " + ref,
+                     metadataSvc,
+                     threadGroupTracker,
+                     virtualThreadOps);
 
+        this.metadataIdentifierService = metadataSvc;
+        this.threadGroupTracker = threadGroupTracker;
+
+        contextSvcRef.setReference(ref);
         contextSvcRef.activate(componentContext);
 
         String jndiName = (String) properties.get(JNDI_NAME);
@@ -228,6 +246,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
      *
      * @param componentContext DeclarativeService defined/populated component context
      */
+    @Deactivate
     protected void deactivate(ComponentContext componentContext) {
         isShutdown.set(true);
 
@@ -356,63 +375,6 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     }
 
     /**
-     * Declarative Services method for setting the context service reference
-     *
-     * @param ref reference to the service
-     */
-    @Reference(target = "(id=unbound)")
-    protected void setContextService(ServiceReference<WSContextService> ref) {
-        contextSvcRef.setReference(ref);
-    }
-
-    /**
-     * Declarative Services method for setting the ThreadGroupTracker service
-     *
-     * @param the service
-     */
-    @Reference
-    protected void setThreadGroupTracker(ThreadGroupTracker svc) {
-        threadGroupTracker = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the metadata identifier service
-     *
-     * @param the service
-     */
-    @Reference
-    protected void setMetadataIdentifierService(MetaDataIdentifierService svc) {
-        metadataIdentifierService = svc;
-    }
-
-    /**
-     * Declarative Services method for unsetting the context service reference
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetContextService(ServiceReference<WSContextService> ref) {
-        contextSvcRef.unsetReference(ref);
-    }
-
-    /**
-     * Declarative Services method for unsetting the ThreadGroupTracker service
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetThreadGroupTracker(ThreadGroupTracker svc) {
-        threadGroupTracker = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the metadata identifier service
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetMetadataIdentifierService(MetaDataIdentifierService svc) {
-        metadataIdentifierService = null;
-    }
-
-    /**
      * Creates a thread group.
      */
     @Trivial
@@ -519,7 +481,6 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                 thread = new ManagedThreadImpl(this, runnable, threadName);
             } else {
                 thread = virtualThreadFactory.newThread(new ManagedVirtualThreadAction(this, runnable));
-                // TODO track virtual threads similar to what ThreadGroupTracker does and interrupt when the application component goes away.
             }
 
             if (trace && tc.isEntryEnabled())

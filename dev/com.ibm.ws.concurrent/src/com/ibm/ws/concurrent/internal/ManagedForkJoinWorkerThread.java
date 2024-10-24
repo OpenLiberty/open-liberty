@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,10 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import static com.ibm.ws.concurrent.internal.ThreadGroupTracker.OTHER_ACTIVE_THREADS;
+
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
 
@@ -32,13 +33,6 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
  */
 class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements ManageableThread {
     private static final TraceComponent tc = Tr.register(ManagedForkJoinWorkerThread.class);
-
-    /**
-     * Associates ForkJoinWorkerThreads with a ThreadGroup.
-     * Although not actually in the thread group, this allows us to interrupt these
-     * threads upon application stop and/or removal of the configured managedThreadFactory.
-     */
-    static final ConcurrentHashMap<ManagedForkJoinWorkerThread, ThreadGroup> ACTIVE_THREADS = new ConcurrentHashMap<>();
 
     /**
      * Managed thread factory instance that created this thread.
@@ -97,7 +91,7 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
         if (threadFactory.service.isShutdown.get())
             interrupt();
         else
-            ACTIVE_THREADS.put(this, threadFactory.threadGroup);
+            OTHER_ACTIVE_THREADS.put(this, threadFactory.threadGroup);
 
         super.onStart();
     }
@@ -128,7 +122,7 @@ class ManagedForkJoinWorkerThread extends ForkJoinWorkerThread implements Manage
                 Tr.exit(this, tc, "run", x);
             throw x;
         } finally {
-            ACTIVE_THREADS.remove(this);
+            OTHER_ACTIVE_THREADS.remove(this);
         }
 
         if (trace && tc.isEntryEnabled())
