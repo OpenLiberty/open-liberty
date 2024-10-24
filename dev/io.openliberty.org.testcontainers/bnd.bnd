@@ -14,7 +14,7 @@
 bVersion: 1.0
 
 #Common Versions
-testContainerVersion: 1.20.2
+testContainerVersion: 1.20.3
 dockerJavaVersion: 3.4.0
 
 Bundle-Name: FAT Testcontainer Bundle

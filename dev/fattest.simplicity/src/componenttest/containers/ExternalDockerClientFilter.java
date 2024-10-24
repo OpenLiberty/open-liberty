@@ -144,7 +144,7 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
             Log.info(c, m, "Pinging URL: " + dockerHost);
             SocketFactory sslSf = config.getSSLConfig().getSSLContext().getSocketFactory();
             String resp = new HttpsRequest(dockerHost + "/_ping") //
-                            .timeout(10_000) //
+                            .timeout(10_000) // 10 seconds
                             .sslSocketFactory(sslSf) //
                             .run(String.class);
             Log.info(c, m, "Ping successful. Response: " + resp);
