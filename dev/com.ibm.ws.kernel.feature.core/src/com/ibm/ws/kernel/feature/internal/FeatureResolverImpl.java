@@ -982,6 +982,9 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
         }
 
+        //Loops through the versionless features that were filtered out before resolution
+        //going through each of the linking features, find the versioned feature that was added
+        //and map them together in the result.versionedFeature map
         for (String versionless : filteredVersionless) {
             boolean added = false;
             ProvisioningFeatureDefinition versionlessFD = selectionContext.getRepository().getFeature(versionless);
@@ -999,7 +1002,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 for (FeatureResource versionedFeature : selectionContext.getRepository().getFeature(linking).getConstituents(null)) {
                     //Find the right public feature (should only be one) - set the result
                     ProvisioningFeatureDefinition versionedFeatureDef = selectionContext.getRepository().getFeature(versionedFeature.getSymbolicName());
-                    if (versionedFeatureDef.getVisibility() != Visibility.PUBLIC) {
+                    if (versionedFeatureDef == null || versionedFeatureDef.getVisibility() != Visibility.PUBLIC) {
                         continue;
                     }
                     result.addVersionlessFeature(versionless, versionedFeatureDef.getFeatureName());
