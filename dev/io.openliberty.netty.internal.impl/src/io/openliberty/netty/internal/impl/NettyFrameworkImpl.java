@@ -494,6 +494,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Override
     public ChannelFuture stop(Channel channel) {
     	synchronized (activeChannelMap) {
+    		ChannelFuture closeFuture = channel.close();
 	    	ChannelGroup group = activeChannelMap.get(channel);
 	    	if(group != null) {
 	    		group.close().addListener(innerFuture -> {
@@ -503,7 +504,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 	    		});
 	    		activeChannelMap.remove(channel);
 	    	}
-	    	return channel.close();
+	    	return closeFuture;
     	}
     }
 
