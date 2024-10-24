@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.fat.deployments;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil.assertEqualIgnoringPropertyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -43,6 +44,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.openapi20.fat.FATSuite;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
@@ -66,6 +68,7 @@ public class MergeConfigServerXMLTest {
 
     @BeforeClass
     public static void startup() throws Exception {
+        server.saveServerConfiguration();
         server.startServer();
     }
 
@@ -77,8 +80,13 @@ public class MergeConfigServerXMLTest {
 
     @After
     public void cleanup() throws Exception {
-        server.deleteAllDropinApplications();
-        server.removeAllInstalledAppsForValidation();
+        server.deleteAllDropinApplications(); // Will stop all dropin apps
+        server.restoreServerConfiguration(); // Will stop all apps deployed via server.xml
+        server.removeAllInstalledAppsForValidation(); // Validates that all apps stop
+
+        // Delete everything from the apps directory
+        server.deleteDirectoryFromLibertyServerRoot("apps");
+        LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/apps").mkdir();
     }
 
     @Test
@@ -538,31 +546,114 @@ public class MergeConfigServerXMLTest {
         assertEqualIgnoringPropertyOrder(expectedInfo, openapiNode.path("info"));
     }
 
+    @Test
+    public void testInvalidServerXML() throws Exception {
+
+        ServerConfiguration config = server.getServerConfiguration();
+        MpOpenAPIElement mpOpenAPI = config.getMpOpenAPIElement();
+
+        clearMergeConfig(mpOpenAPI);
+        mpOpenAPI.getIncludedApplications().add("testEar/invalid");
+        mpOpenAPI.getIncludedModules().add("testEar");
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(null);
+
+        List<String> list = new ArrayList<>(Arrays.asList("CWWKO1678W", "CWWKO1679W"));
+        server.waitForStringsInLogUsingMark(list); // Will throw exception if messages are not found
+    }
+
+    @Test
+    public void testMultiModuleEarWithServerXMLAppNameAndWebXmlModuleName() throws Exception {
+
+        String appName = "serverXMLName";
+
+        setMergeConfig(list("serverXMLName"), list("serverXMLName/nameFromWar"), null);
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .setWebXML(new WebXmlAsset("nameFromWar"));
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
+                                          .addAsModules(war1, war2, war3);
+
+        deployAppToApps(ear, appName, "ear");
+
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
+        OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
+        OpenAPITestUtil.checkServerContextRoots(openapiNode, "");
+    }
+
+    @Test
+    public void testMultiModuleEarComplexServerXML() throws Exception {
+
+        setMergeConfig(list("testEar"), list("testEar/test3", "testEar/test4"), null);
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war4 = ShrinkWrap.create(WebArchive.class, "test4.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
+                                          .addAsModules(war1, war2, war3, war4);
+
+        deployApp(ear);
+
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
+        OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
+        OpenAPITestUtil.checkServerContextRoots(openapiNode, "");
+    }
+
     private void setMergeConfig(List<String> included, List<String> excluded, MpOpenAPIInfoElement info) throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         MpOpenAPIElement mpOpenAPI = config.getMpOpenAPIElement();
 
-        List<String> includedApplications = mpOpenAPI.getIncludedApplications();
-        includedApplications.clear();
-        includedApplications.addAll(applications(included));
+        clearMergeConfig(mpOpenAPI);
 
-        List<String> includedModules = mpOpenAPI.getIncludedModules();
-        includedModules.clear();
-        includedModules.addAll(modules(included));
-
-        List<String> excludedApplications = mpOpenAPI.getExcludedApplications();
-        excludedApplications.clear();
-        excludedApplications.addAll(applications(excluded));
-
-        List<String> excludedModules = mpOpenAPI.getExcludedModules();
-        excludedModules.clear();
-        excludedModules.addAll(modules(excluded));
+        mpOpenAPI.getIncludedApplications().addAll(applications(included));
+        mpOpenAPI.getIncludedModules().addAll(modules(included));
+        mpOpenAPI.getExcludedApplications().addAll(applications(excluded));
+        mpOpenAPI.getExcludedModules().addAll(modules(excluded));
 
         mpOpenAPI.setInfo(info);
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(null);
+    }
+
+    private static void clearMergeConfig(MpOpenAPIElement mpOpenAPI) {
+        List<String> includedApplications = mpOpenAPI.getIncludedApplications();
+        includedApplications.clear();
+
+        List<String> includedModules = mpOpenAPI.getIncludedModules();
+        includedModules.clear();
+
+        List<String> excludedApplications = mpOpenAPI.getExcludedApplications();
+        excludedApplications.clear();
+
+        List<String> excludedModules = mpOpenAPI.getExcludedModules();
+        excludedModules.clear();
+
+        mpOpenAPI.setInfo(null);
     }
 
     private static List<String> list(String... values) {
@@ -594,6 +685,17 @@ public class MergeConfigServerXMLTest {
     private void removeApp(Archive<?> app) throws Exception {
         server.deleteFileFromLibertyServerRoot("dropins/" + app.getName());
         server.removeInstalledAppForValidation(getInstalledName(app.getName()));
+    }
+
+    private void deployAppToApps(Archive<?> archive, String appName, String appType) throws Exception {
+        // Deploy the app archive
+        ShrinkHelper.exportAppToServer(server, archive, SERVER_ONLY, DISABLE_VALIDATION);
+        // Add app to server configuration
+        ServerConfiguration sc = server.getServerConfiguration();
+        sc.addApplication(appName, archive.getName(), appType);
+        server.updateServerConfiguration(sc);
+        // Wait for app to start
+        server.addInstalledAppForValidation(appName);
     }
 
     private String getInstalledName(String archiveName) {

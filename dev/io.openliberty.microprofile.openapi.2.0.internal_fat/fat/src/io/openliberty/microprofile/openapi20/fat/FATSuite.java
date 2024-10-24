@@ -23,7 +23,6 @@ import io.openliberty.microprofile.openapi20.fat.deployments.DeploymentTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigBothTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigServerXMLTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigTest;
-import io.openliberty.microprofile.openapi20.fat.deployments.MergeServerXMLTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeWithServletTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.StartupWarningMessagesTest;
@@ -38,7 +37,6 @@ import io.openliberty.microprofile.openapi20.fat.version.OpenAPIVersionTest;
     MergeConfigTest.class,
     MergeConfigServerXMLTest.class,
     MergeConfigBothTest.class,
-    MergeServerXMLTest.class,
     MergeTest.class,
     MergeWithServletTest.class,
     OpenAPIVersionTest.class,
