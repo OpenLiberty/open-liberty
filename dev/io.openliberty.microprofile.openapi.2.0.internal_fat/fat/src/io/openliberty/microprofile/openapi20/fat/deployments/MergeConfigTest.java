@@ -77,7 +77,55 @@ public class MergeConfigTest {
 
     @Mode(TestMode.LITE)
     @Test
+    public void testDefaultInclusion() throws Exception {
+        // start server
+        server.startServer();
+
+        // deploy app 1
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war1);
+
+        // deploy app 2
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war2);
+
+        // Download the documentation
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+
+        if (OpenAPITestUtil.getOpenAPIFeatureVersion() < 4.0f) {
+            // Default is first module only
+            // check that documentation includes only app 1
+            OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+
+            // Test that a message was output
+            assertThat(server.findStringsInLogs(" I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled.*test1"),
+                       hasSize(1));
+
+            // remove app 1
+            removeApp(war1);
+
+            // check that documentation includes only app 2
+            doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+            openapiNode = OpenAPITestUtil.readYamlTree(doc);
+            OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+        } else {
+            // Default is all modules
+            // Check that documentation includes both app 1 and app 2
+            OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
+
+            // Check there's no "first module only" message
+            assertThat(server.findStringsInLogs("CWWKO1663I"),
+                       hasSize(0));
+        }
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
     public void testFirstModuleOnly() throws Exception {
+        setMergeConfig("first", null, null);
         // start server
         server.startServer();
 
@@ -113,6 +161,7 @@ public class MergeConfigTest {
 
     @Test
     public void testFirstModuleOnlyEar() throws Exception {
+        setMergeConfig("first", null, null);
         // start server
         server.startServer();
 
