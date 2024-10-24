@@ -20,10 +20,9 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.openapi20.fat.cache.CacheTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.DeploymentTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigBothTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigServerXMLTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigTest;
-import io.openliberty.microprofile.openapi20.fat.deployments.MergeServerXMLTest;
-import io.openliberty.microprofile.openapi20.fat.deployments.MergeServerXMLTestWithUpdate;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeWithServletTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.StartupWarningMessagesTest;
@@ -37,8 +36,7 @@ import io.openliberty.microprofile.openapi20.fat.version.OpenAPIVersionTest;
     DeploymentTest.class,
     MergeConfigTest.class,
     MergeConfigServerXMLTest.class,
-    MergeServerXMLTest.class,
-    MergeServerXMLTestWithUpdate.class,
+    MergeConfigBothTest.class,
     MergeTest.class,
     MergeWithServletTest.class,
     OpenAPIVersionTest.class,

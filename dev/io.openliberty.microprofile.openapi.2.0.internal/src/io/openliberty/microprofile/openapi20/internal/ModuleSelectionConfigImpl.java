@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
@@ -49,7 +47,6 @@ import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
 /**
  * Handles reading the merge include/exclude configuration properties and indicating whether a particular module should be included or excluded.
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPIAppConfigProvider.OpenAPIAppConfigListener {
 
     private static final TraceComponent tc = Tr.register(ModuleSelectionConfigImpl.class);
@@ -62,7 +59,7 @@ public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPI
     }
 
     @Reference
-    private OpenAPIAppConfigProvider configFromServerXMLProvider;
+    protected OpenAPIAppConfigProvider configFromServerXMLProvider;
 
     @Activate
     public void activate() {
@@ -236,6 +233,14 @@ public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPI
             }
         }
 
+    }
+
+    protected enum DefaultInclusion {
+        ALL, FIRST
+    }
+
+    protected DefaultInclusion getDefaultInclusion() {
+        return DefaultInclusion.FIRST;
     }
 
     /**
@@ -422,9 +427,17 @@ public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPI
                                        .filter(Optional::isPresent)
                                        .map(Optional::get)
                                        .collect(Collectors.toList());
+                } else {
+                    DefaultInclusion defaultInclusion = getDefaultInclusion();
+                    if (defaultInclusion == DefaultInclusion.FIRST) {
+                        isFirst = true;
+                    } else {
+                        isAll = true;
+                    }
                 }
             } else {
-                String inclusion = configFromMPConfig.getOptionalValue(Constants.MERGE_INCLUDE_CONFIG, String.class).orElse("first");
+                String defaultInclude = getDefaultInclusion() == DefaultInclusion.FIRST ? "first" : "all";
+                String inclusion = configFromMPConfig.getOptionalValue(Constants.MERGE_INCLUDE_CONFIG, String.class).orElse(defaultInclude);
                 Tr.debug(this, tc, "Names in config: " + configFromMPConfig.getPropertyNames());
                 Tr.debug(this, tc, "Inclusion read from config: " + inclusion);
 
