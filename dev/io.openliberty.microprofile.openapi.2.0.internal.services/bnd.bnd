@@ -29,6 +29,7 @@ WS-TraceGroup: MPOPENAPI
 -buildpath: \
     io.openliberty.io.smallrye.openapi.core;version=latest,\
     io.openliberty.microprofile.openapi.2.0.internal;version=latest,\
+    io.openliberty.microprofile.openapi.internal.common;version=latest,\
     io.openliberty.org.eclipse.microprofile.openapi.2.0,\
     com.ibm.ws.org.jboss.jandex;version=latest,\
     com.ibm.ws.adaptable.module;version=latest,\

@@ -55,8 +55,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
     io.openliberty.microprofile.openapi20.internal.css.CustomCSSProcessor,\
     io.openliberty.microprofile.openapi20.internal.DefaultHostListenerImpl,\
     io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer,\
-    io.openliberty.microprofile.openapi20.internal.validation.OASValidator30Impl,\
-    io.openliberty.microprofile.openapi20.internal.ModuleSelectionConfigImpl
+    io.openliberty.microprofile.openapi20.internal.validation.OASValidator30Impl
 
 WS-TraceGroup: MPOPENAPI
 
