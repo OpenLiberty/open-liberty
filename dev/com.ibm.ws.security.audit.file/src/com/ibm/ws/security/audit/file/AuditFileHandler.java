@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -60,8 +60,8 @@ import com.ibm.ws.security.audit.event.AuditMgmtEvent;
 import com.ibm.ws.security.audit.logutils.FileLog;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.collector.manager.BufferManager;
-import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.CollectorManager;
+import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -224,6 +224,7 @@ public class AuditFileHandler implements SynchronousHandler {
         Map<String, Object> configuration = (Map) cc.getProperties();
         thisConfiguration = configuration;
 
+        //TODO: UTLE - new config option to enable FIPS 140-3 or just use SSL config?
         if (configuration != null && !configuration.isEmpty()) {
             for (Map.Entry<String, Object> entry : configuration.entrySet()) {
                 String key = entry.getKey();
@@ -438,7 +439,7 @@ public class AuditFileHandler implements SynchronousHandler {
     /**
      * Given a Map, add the corresponding JSON to the given JSONObject.
      *
-     * @param jo - JSONObject
+     * @param jo  - JSONObject
      * @param map - Java Map object
      */
     private JSONObject map2JSON(JSONObject jo, Map<String, Object> map) {
@@ -504,7 +505,7 @@ public class AuditFileHandler implements SynchronousHandler {
     /**
      * Given a Java array, add the corresponding JSON to the given JSONArray object
      *
-     * @param ja - JSONArray object
+     * @param ja    - JSONArray object
      * @param array - Java array object
      */
     private JSONArray array2JSON(JSONArray ja, Object[] array) {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import javax.management.ObjectName;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -62,6 +63,9 @@ public class AuditEncryptionImpl implements AuditEncrypting {
     private String _provider = null;
     private String _password = null;
     private String _alias = null;
+
+//    private static final String ALGORITHM_DESEDE = "DESede";
+//    private static final String ALGORITHM_RSA = "RSA";
 
     /**
      * <p>
@@ -170,7 +174,10 @@ public class AuditEncryptionImpl implements AuditEncrypting {
         try {
             if (crypto != null) {
                 try {
-                    sharedKey = new javax.crypto.spec.SecretKeySpec(AuditCrypto.generate3DESKey(), 0, 24, "DESede");
+                    if (CryptoUtils.isFips140_3Enabled())
+                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, 32, CryptoUtils.CRYPTO_ALGORITHM_RSA);
+                    else
+                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, 24, CryptoUtils.ENCRYPT_ALGORITHM_DESEDE);
                 } catch (Exception me) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "me.getMessage: " + me.getMessage());
