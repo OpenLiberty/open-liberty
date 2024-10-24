@@ -389,13 +389,25 @@ public class ServerConfigTest {
 
         try {
             assertNotNull("The server configuration was not updated when setting it to polled", server.waitForStringInLog("CWWKF0011I")); //server has started
-            server.getServerConfigurationFile().delete();
+            RemoteFile serverxml = server.getServerConfigurationFile();
+            serverxml.delete();
             assertNotNull("The server configuration was updated after server.xml was deleted", server.waitForStringInLog("CWWKG0110E"));
+
+            //server should still be running even without server.xml
+            assertTrue("Server is not running after the server.xml was deleted", server.isStarted());
+
+            //server status should give an error
+            assertTrue("Server status command did not return an error stating there is no server.xml", server.executeServerScript("status", null).getStdout().contains("CWWKE0010E"));
+
+            //The server should not update after a config file is added
+            server.addDropinDefaultConfiguration("dropins/simple.xml");
+            assertNull("The server configuration was updated after server.xml was deleted", server.waitForStringInLog("CWWKG0017I"));
 
             //server can't be stopped without a server.xml. Refresh the serverxml so the server can be stopped.
             server.refreshServerXMLFromPublish();
-            assertNotNull("The server configuration was updated after server.xml was added back", server.waitForStringInLog("CWWKG0018I"));
+            assertNotNull("The server configuration was not updated after server.xml was added back", server.waitForStringInLog("CWWKG0017I"));
         } finally {
+            server.refreshServerXMLFromPublish();
             server.stopServer("CWWKG0110E");
         }
     }
