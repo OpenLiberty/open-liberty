@@ -130,7 +130,14 @@ public class OpenAPIAppConfigProviderImpl implements OpenAPIAppConfigProvider {
     }
 
     private static boolean isNotValidModuleName(String elementName) {
-        if (elementName.indexOf('/') <= 0) {
+        //Check it contains at least one '/' and at least one character
+        //before and after the first '/'
+
+        //The looseness of this rule is intentional. If the name is not valid
+        //under liberty rules we'll emit a different error message when we can't
+        //link this name to an actual module
+        if (elementName.indexOf('/') < 0
+            || elementName.indexOf('/') == elementName.length() - 1) {
             Tr.warning(tc, INVALID_MODULE_WARNING, elementName, elementName);
             return true;
         }
@@ -138,7 +145,8 @@ public class OpenAPIAppConfigProviderImpl implements OpenAPIAppConfigProvider {
     }
 
     private static boolean isNotValidAppName(String elementName) {
-        if (elementName.indexOf('/') > 0) {
+        if (elementName.indexOf('/') >= 0
+            || elementName.length() == 0) {
             Tr.warning(tc, INVALID_APP_WARNING, elementName, elementName);
             return true;
         }

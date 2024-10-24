@@ -132,13 +132,13 @@ OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=OpenAPI path segment "/." o
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Remove any path "/." or "/.." segment from the path.
 
 # {1} - the server.xml element name, either includeApplication or excludeApplication
-OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W=CWWKO1678W: The configured {0} application name in the {1} element is not valid because it contains the "/" character.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W=CWWKO1678W: The configured {0} application name in the {1} element is not valid because it contains the "/" character or was empty.
 OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.explanation=An application cannot name cannot include a "/" as the "/" is used to separate the application from its component modules.
 OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.useraction=Remove the "/" from the includeApplication or excludeApplication element in your server.xml file, or convert that element to includeModule or excludeModule to reference a single module.
 
 # {1} - the server.xml element name, either includeModule or excludeModule
 OPEN_API_SLASH_IN_MODULE_CWWKO1679W=CWWKO1679W: The configured {0} module name in the {1} element is not valid as it is not in the format "<application-name>/<module-name>".
-OPEN_API_SLASH_IN_MODULE_CWWKO1679W.explanation=A module must be in the format "<application-name>/<module-name>"; therefore, a module name without a "/" is not valid.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.explanation=A module must be in the format "<application-name>/<module-name>"; therefore, a module name without a "/" or an empty application name or module name is not valid.
 OPEN_API_SLASH_IN_MODULE_CWWKO1679W.useraction=Correct the includeModule or excludeModule element in your server.xml file, or convert that element to includeApplication or excludeApplication to reference an entire application.
 
 OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W=CWWKO1680W: The {1} application name in the {0} configuration element does not match the name of any deployed application, but it matches either the name from the deployment descriptor or the archive name of the {2} application. The application name that is used here must be the one specified in the server.xml file, or if no name is specified, the archive file name without the extension.
