@@ -1720,10 +1720,6 @@ public class RecoveryManager implements Runnable {
                     if (_leaseLog != null && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
                         // Careful, recovery may have been attempted and failed
                         if ((_tranLog == null && _xaLog == null) || (_tranLog != null && !_tranLog.failed() && _xaLog != null && !_xaLog.failed())) {
-                            Tr.audit(tc,
-                                     "WTRN0108I: Server with identity " + _localRecoveryIdentity + " has recovered the logs of peer server "
-                                         + _failureScopeController.serverName());
-
                             boolean shouldDeleteLease = true;
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Should peer recovery logs be retained {0}", _retainPeerLogs);
@@ -1748,6 +1744,10 @@ public class RecoveryManager implements Runnable {
                             // Don't delete lease if recovery log deletion was attempted and failed
                             if (shouldDeleteLease)
                                 deleteServerLease(_failureScopeController.serverName(), true);
+
+                            Tr.audit(tc,
+                                     "WTRN0108I: Server with identity " + _localRecoveryIdentity + " has recovered the logs of peer server "
+                                         + _failureScopeController.serverName());
                         } else {
                             Tr.audit(tc,
                                      "WTRN0107W: Server with identity " + _localRecoveryIdentity + " attempted but failed to recover the logs of peer server "

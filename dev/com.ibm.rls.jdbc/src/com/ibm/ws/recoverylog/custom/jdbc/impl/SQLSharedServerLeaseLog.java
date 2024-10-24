@@ -1494,7 +1494,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
                 } else {
                     Tr.audit(tc, "WTRN0108I: Have recovered from SQLException for server with recovery identity " + myRecoveryIdentity +
-                                 "when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover + ", was peer claimed: " + peerClaimed);
+                                 " when claiming peer lease for server with recovery identity " + recoveryIdentityToRecover + ", was peer claimed: " + peerClaimed);
                 }
             }
 
