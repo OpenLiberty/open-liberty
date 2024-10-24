@@ -202,6 +202,18 @@ public class MergeConfigTest {
     }
 
     @Test
+    public void testInvalidAppNameJustSlash() throws Exception {
+        setMergeConfig("/", "", null);
+        server.startServer();
+
+        //CWWKO1666W: Invalid name in the applications we're trying to merge
+        assertThat(server.findStringsInTrace("CWWKO1666W"), hasSize(1));
+
+        // Expect this warning because we're testing an invalid name
+        server.stopServer("CWWKO1666W");
+    }
+
+    @Test
     public void testModuleInclusion() throws Exception {
         setMergeConfig("testEar/test2", null, null);
         server.startServer();

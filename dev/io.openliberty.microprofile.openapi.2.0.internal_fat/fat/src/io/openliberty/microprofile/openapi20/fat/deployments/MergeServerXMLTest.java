@@ -41,6 +41,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -102,6 +104,36 @@ public class MergeServerXMLTest {
         MpOpenAPIElement.MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
                                                 .addIncludedApplicaiton("testEar/invalid")
                                                 .addExcludedModule("testEar")
+                                                .buildAndPushToServer();
+
+        List<String> list = new ArrayList<>(Arrays.asList("CWWKO1678W", "CWWKO1679W"));
+        server.waitForStringsInLogUsingMark(list);
+
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testInvalidServerXMLEmptyNames() throws Exception {
+        server.setMarkToEndOfLog();
+
+        MpOpenAPIElement.MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
+                                                .addIncludedApplicaiton("")
+                                                .addExcludedModule("testEar/")
+                                                .buildAndPushToServer();
+
+        List<String> list = new ArrayList<>(Arrays.asList("CWWKO1678W", "CWWKO1679W"));
+        server.waitForStringsInLogUsingMark(list);
+
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testInvalidServerXMLJustSlash() throws Exception {
+        server.setMarkToEndOfLog();
+
+        MpOpenAPIElement.MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
+                                                .addIncludedApplicaiton("/")
+                                                .addExcludedModule("/")
                                                 .buildAndPushToServer();
 
         List<String> list = new ArrayList<>(Arrays.asList("CWWKO1678W", "CWWKO1679W"));
