@@ -86,7 +86,6 @@ public class HttpStatAttributes {
 	 * This is also used by {@link HttpServerStatsMonitor} when registering MBean
 	 * into the {@link MeterCollection}
 	 *
-	 * @param httpStatAttributes
 	 * @return
 	 */
 	private String resolveKeyID() {
