@@ -9,20 +9,15 @@
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces41.fat.flow.beans;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Named;
-
 import java.io.Serializable;
-import java.util.UUID;
-import jakarta.inject.Inject;
 
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.flow.FlowScoped;
-import jakarta.faces.flow.Flow;
+import jakarta.inject.Named;
 
 @FlowScoped("simple")
 @Named("flowBean")
 public class FlowBean implements Serializable {
 
-    
+    private static final long serialVersionUID = 1L;
+
 }

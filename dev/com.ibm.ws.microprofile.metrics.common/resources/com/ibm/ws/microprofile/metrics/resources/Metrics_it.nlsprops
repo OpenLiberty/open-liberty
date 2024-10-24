@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=Fornire le dipendenze neces
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: La funzione delle metriche MicroProfile \u00e8 configurata per utilizzare il seguente attributo libraryRef: [{0}]
 libraryRefConfigured.info.CWMMC0014I.explanation=La funzione delle metriche MicroProfile \u00e8 configurata per utilizzare un attributo libraryRef. Questa libreria di riferimento deve contenere la libreria di base Micrometer, le dipendenze e le librerie Micrometer di destinazione.
 libraryRefConfigured.info.CWMMC0014I.useraction=Non \u00e8 richiesta alcuna azione.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: Il valore {0} non \u00e8 valido per la propriet\u00e0 {1} . Sono accettati solo valori interi e decimali.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=I valori dell'istogramma configurato sono non validi.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Configurare i valori solo con numeri interi e decimali.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: Il valore {0} non \u00e8 valido per la propriet\u00e0 {1} . Vengono accettati solo valori interi con un'unit\u00e0 di tempo (ad esempio ms, s, m, h).
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=I valori del timer configurato non sono validi.
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Configurare con valori interi e unit\u00e0 di tempo (ad esempio ms, s, m, h).
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: Il valore {0} non \u00e8 valido per la propriet\u00e0 {1} . I valori devono essere compresi tra 0.0 e 1.0 inclusi per essere accettati.
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=I valori percentili configurati non sono validi.
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Configurare i valori nell'intervallo inclusivo da 0.0 a 1.0 da accettare.
 
 #Memory usedHeap message
 memory.usedHeap.description=Visualizza la quantit\u00e0 di memoria heap utilizzata in byte.

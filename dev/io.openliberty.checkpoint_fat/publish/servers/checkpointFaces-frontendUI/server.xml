@@ -22,7 +22,7 @@
         <feature>mpRestClient-2.0</feature>
     </featureManager>
 
-    <include location="../fatTestPorts.xml"/>
+    <include location="../fatTestCommon.xml"/>
         
     <!--
     <variable name="default.http.port" defaultValue="9090"/>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ public class MP11ConfigSettings {
     // if you recreate the rsa_cert.pem file, please update the PublicKey value saved here.
     public final static String rsaPrefix = "-----BEGIN PUBLIC KEY-----";
     public final static String rsaSuffix = "-----END PUBLIC KEY-----";
-    public final static String SimplePublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl66sYoc5HXGHnrtGCMZ6G8zLHnAl+xhP7bOQMmqwEqtwI+yJJG3asvLhJQiizP0cMA317ekJE6VAJ2DBT8g2npqJSXK/IuVQokM4CNp0IIbD66qgVLJ4DS1jzf6GFciJAiGOHztl8ICd7/q0EvuYcwd/sUjTrwRpkLcEH2Z/FE2sh4a82UwyxZkX3ghbZ/3MFtsMjzw0cSqKPUrgGCr4ZcAWZeoye81cLybY5Vb/5/eZfkeBIDwSSssqJRmsNBFs23c+RAymtKaP7wsQw5ATEeI7pe0kiWLpqH4wtsDVyN1C/p+vZJSia0OQJ/z89b5OkmpFC6qGBGxC7eOk71wCJwIDAQAB";
+    public final static String SimplePublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3dxGYp7LZLwUgmn6ts091rymORWnZH34OWjovHR8JQx7Evc1eFqAlDBZptk7pET9xav5568wvYUJJ1cK9CdY/frP9saV7xas49xqo8o47AgzbhfB9Qkm3RTkK3Qv2Y43CSckkAAaKoG2rZQl4e9T1i9Mi3Qh7k8Iq4iwEYtX+iSo3ZytjhX9RkPR+IlkAAK1DEae8oDdoEDvCUB3lCRig+R3hKhi2xayGt0OX13bGC/OC+h76onzDJkGrNX7YRf01D6wdhikzWkzR3NNp7ko8VhhXK+1PrSKflPIUQfL3JmwRm8iqZK9z5ivVm4LT19ZE9ZI+a8GftN1nioaStJ8pQIDAQAB";
     public final static String ComplexPublicKey = rsaPrefix + SimplePublicKey + rsaSuffix;
     public final static String PemFile = "rsa_key.pem";
     public final static String ComplexPemFile = "rsa_key_withCert.pem";

@@ -26,14 +26,17 @@ tested.features: mpConfig-2.0,\
                  cdi-2.0,\
                  cdi-3.0,\
                  cdi-4.0,\
+                 cdi-4.1,\
                  servlet-3.1,\
                  servlet-4.0, \
                  servlet-5.0, \
                  servlet-6.0,\
+                 servlet-6.1,\
                  localconnector-1.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.3;version=latest,\
-	com.ibm.websphere.javaee.cdi.2.0;version=latest
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	io.openliberty.microprofile.config.internal_repeat_tests;version=latest

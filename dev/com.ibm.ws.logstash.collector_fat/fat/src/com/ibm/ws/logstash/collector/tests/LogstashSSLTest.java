@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class LogstashSSLTest extends LogstashCollectorTest {
+
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("LogstashServer");
     protected static Machine machine = null;
     private static boolean connected = false;
@@ -61,6 +63,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         os = System.getProperty("os.name").toLowerCase();
         if (os != null && (os.contains("os/390") || os.contains("z/os") || os.contains("zos")))
             runTest = false;
@@ -266,6 +269,17 @@ public class LogstashSSLTest extends LogstashCollectorTest {
     public void testLogstashForAuditEvent() throws Exception {
         testName = "testLogstashForAuditEvent";
         setConfig("server_logs_audit.xml");
+        clearContainerOutput();
+
+        createTraceEvent(testName);
+
+        assertNotNull("Did not find " + LIBERTY_AUDIT, waitForStringInContainerOutput(LIBERTY_AUDIT));
+    }
+
+    @Test
+    public void testLogstashForAudit20Event() throws Exception {
+        testName = "testLogstashForAuditEvent";
+        setConfig("server_logs_audit20.xml");
         clearContainerOutput();
 
         createTraceEvent(testName);

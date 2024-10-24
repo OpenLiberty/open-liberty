@@ -20,6 +20,10 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import org.junit.ClassRule;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.FeatureReplacementAction;
+
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.simplicity.log.Log;
@@ -47,6 +51,10 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class PureAnnA08JAASLoginFromEJBJACCAuditTest extends EJBAnnTestBase {
+
+    @ClassRule
+    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServers(Constants.SERVER_EJB_AUDIT).fullFATOnly())
+                    .andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServers(Constants.SERVER_EJB_AUDIT));
 
     protected static Class<?> logClass = PureAnnA08JAASLoginFromEJBJACCAuditTest.class;
 

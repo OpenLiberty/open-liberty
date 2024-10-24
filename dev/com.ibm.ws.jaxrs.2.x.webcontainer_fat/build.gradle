@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,15 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
-  jackson2x
-  jersey
+  jackson2x {
+    transitive = false
+  }
+  jersey {
+    transitive = false
+  }
+  requiredLibs {
+    transitive = false
+  }
 }
 
 configurations.jersey {
@@ -24,15 +31,11 @@ configurations.jersey {
 dependencies {
   jackson2x project(':io.openliberty.com.fasterxml.jackson'),
     project(':io.openliberty.com.fasterxml.jackson.jaxrs')
-  requiredLibs 'commons-httpclient:commons-httpclient:3.1',
-    project(':io.openliberty.org.apache.commons.logging'),
-    project(':com.ibm.ws.org.apache.httpcomponents'),
+  requiredLibs project(':com.ibm.ws.org.apache.httpcomponents'),
     'org.apache.httpcomponents:httpmime:4.3.1',
-    project(':io.openliberty.com.fasterxml.jackson'),
     'org.apache.wink:wink-client:1.4',
     'org.apache.wink:wink-common:1.4',
     'org.apache.wink:wink-client-apache-httpclient:1.4',
-    project(':com.ibm.ws.org.slf4j.api'),
     project(':io.openliberty.org.apache.commons.codec')
   jersey 'org.glassfish.hk2.external:aopalliance-repackaged:2.3.0-b10',
     'org.ow2.asm:asm-debug-all:5.2',

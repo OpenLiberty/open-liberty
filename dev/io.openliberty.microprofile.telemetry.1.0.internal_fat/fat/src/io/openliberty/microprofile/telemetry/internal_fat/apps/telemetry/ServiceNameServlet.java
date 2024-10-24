@@ -13,6 +13,10 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry;
 import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.hasResourceAttribute;
 import static org.junit.Assert.assertThat;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -22,9 +26,6 @@ import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/testServiceName")
@@ -47,6 +48,8 @@ public class ServiceNameServlet extends FATServlet {
     public static final String APP_NAME = "TelemetryApp";
 
     //Tests if otel.service.name is set to the application name by default
+    //On otel 2.0+ this will get the application name because otel is only set
+    //to sdk disabled false in the app
     @Test
     public void testServiceNameConfig() {
         Span span = tracer.spanBuilder("span").startSpan();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,8 @@ public class SseTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP70_EE11, // 4.0_EE11
+                                                             MicroProfileActions.MP70_EE10, // 4.0_EE10
                                                              MicroProfileActions.MP61,
                                                              MicroProfileActions.MP40, //mpRestClient-2.0
                                                              MicroProfileActions.MP50); // 3.0

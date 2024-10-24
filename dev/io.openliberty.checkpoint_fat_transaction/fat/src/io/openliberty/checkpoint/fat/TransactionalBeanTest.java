@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.transactional.web.TransactionalBeanServlet;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
@@ -47,7 +47,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Verify the server (CDI) maintains transaction boundaries for @Transactional managed
- * beans within servers restored after checkpoint at=applications.
+ * beans within servers restored after checkpoint at=afterAppStart.
  *
  * The jakarta.transaction.Transactional annotation provides the application the ability
  * to declaratively control transaction boundaries on CDI managed beans, as well as classes

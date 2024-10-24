@@ -139,6 +139,13 @@
      			<Option label="%sameSiteCookieStrict" value="Strict"/>
         </AD>    
         
+        <AD id="partitionedCookie" name="%partitionedCookie" description="%partitionedCookie.desc"
+            required="false" type="String" default="defer">
+            <Option label="%partitionedCookieTrue"  value="true"/>
+            <Option label="%partitionedCookieFalse" value="false"/>
+            <Option label="%partitionedCookieDefer" value="defer"/>
+        </AD>
+
         <AD id="useContextRootForSSOCookiePath" name="%useContextRootForSSOCookiePath" description="%useContextRootForSSOCookiePath.desc" 
             required="false" type="Boolean" default="false"/>
      			

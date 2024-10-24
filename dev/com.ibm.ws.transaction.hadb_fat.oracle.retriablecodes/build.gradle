@@ -11,13 +11,18 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
 // Define G:A:V coordinates of each dependency
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.transaction.hadb_fat.derby.1"),
                project(":com.ibm.ws.transaction.hadb_fat.oracle.1"),
-               project(":com.ibm.ws.transaction.fat.util"),
-               project(':io.openliberty.org.apache.commons.logging')
+               project(":com.ibm.ws.transaction.fat.util")
 }
 
 task copyCommonFiles {
@@ -43,7 +48,7 @@ task copyTxJdbcDrivers(type: Copy) {
   mustRunAfter jar
   from configurations.jdbcDrivers
   into new File(autoFvtDir, 'publish/shared/resources/ifx')
-  rename 'ojdbc8_g.*.jar', 'anomyous.jar'
+  rename 'ojdbc8.*.jar', 'anomyous.jar'
 }
 
 autoFVT.doLast {

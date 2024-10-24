@@ -1258,9 +1258,9 @@ system.java.compiler.not.found=JSPG0304W: Atributul JSP, useJDKCompiler, este se
 system.java.compiler.not.found.explanation=Containerul JSP nu a putut g\u0103si compilatorul sistemului, care de obicei indic\u0103 faptul c\u0103 fi\u015fierul Java SDK jar, tools.jar, nu a fost g\u0103sit \u00een calea clasei.
 system.java.compiler.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul Java SDK jar, tools.jar, este \u00een calea clasei \u015fi verifica\u0163i c\u0103 Java SDK suport\u0103 Java Compiler API. Vede\u0163i Java Specification Request 199 pentru informa\u0163ii suplimentare.
 
-jsp.feature.not.loaded.correctly=CWWJS0001E: Caracteristica Pages (fost\u0103 JSP) nu s-a \u00eenc\u0103rcat cu o versiune acceptabil\u0103.
-jsp.feature.not.loaded.correctly.explanation=Caracteristica s-a \u00eenc\u0103rcat cu o versiune care nu este acceptabil\u0103. Este posibil ca aplica\u021bia s\u0103 nu se comporte a\u0219a cum era de a\u0219teptat.
-jsp.feature.not.loaded.correctly.useraction=Verifica\u021bi dac\u0103 \u00een fi\u0219ierul server.xml exist\u0103 mai multe caracteristici Pages (JSP). Fi\u0219ierul trebuie s\u0103 specifice cel mult o caracteristic\u0103 Pages (JSP).
+jsp.feature.not.loaded.correctly=CWWJS0001E: Containerul de pagini (JSP) nu s-a \u00eenc\u0103rcat cu o versiune acceptabil\u0103.
+jsp.feature.not.loaded.correctly.explanation=Containerul de pagini (JSP) a fost \u00eenc\u0103rcat f\u0103r\u0103 o versiune acceptabil\u0103. Este posibil ca aplica\u021bia s\u0103 nu se comporte a\u0219a cum era de a\u0219teptat.
+jsp.feature.not.loaded.correctly.useraction=Verific\u0103 server.xml fi\u0219ier pentru existen\u021ba caracteristicilor de mai multe pagini (JSP). Fi\u0219ierul trebuie s\u0103 specifice cel mult o caracteristic\u0103 Pages (JSP).
 
 jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Valoare invalid\u0103 pentru atributul errorOnELNotFound
 jsp.error.page.invalid.erroronelnotfound.explanation=

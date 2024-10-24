@@ -1,0 +1,24 @@
+<server description="Telemetry10Servlet">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>pages-3.1</feature>
+        <feature>mpTelemetry-1.0</feature>
+        <feature>componentTest-2.0</feature>
+    </featureManager>
+    
+    <!-- ignored since we will run in runtime mode but this will cause a warning -->
+    <variable name="otel.sdk.disabled" value="true"/>
+
+    <application type="war" location="TelemetryServletTestApp.war">
+        <classloader apiTypeVisibility="+third-party" />
+    </application>
+
+    <!-- For HttpURLConnection -->
+    <javaPermission className="java.net.URLPermission" name="http://localhost:-/-" actions="GET:" />
+    <javaPermission className="java.util.PropertyPermission" name="jaxws.http.autoredirect" actions="read"/>
+    
+    
+</server>

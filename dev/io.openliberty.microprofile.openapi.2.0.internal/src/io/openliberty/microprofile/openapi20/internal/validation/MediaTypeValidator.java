@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,10 +24,9 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
 
 /**
  *
@@ -65,13 +64,8 @@ public class MediaTypeValidator extends TypeValidator<MediaType> {
                 String ref = schema.getRef();
                 if (StringUtils.isNotBlank(ref)) { //if $ref is set, go to the class specified in $ref and look at the properties
 
-                    ReferenceValidator referenceValidator = ReferenceValidator.getInstance();
-                    Object component = referenceValidator.validate(helper, context, key, ref);
-                    if (!schema.getClass().isInstance(component)) {
-                        final String message = Tr.formatMessage(tc, ValidationMessageConstants.REFERENCE_TO_OBJECT_INVALID, ref);
-                        helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
-                    } else {
-                        Schema componentSchema = (Schema) component;
+                    Schema componentSchema = helper.validateReference(context, key, ref, Schema.class);
+                    if (componentSchema != null) {
                         Map<String, Schema> schemaProperties = componentSchema != null ? componentSchema.getProperties() : null;
 
                         for (String encodingProperty : encodingProperties) {

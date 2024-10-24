@@ -85,7 +85,7 @@
 
 50028=Une nouvelle instance de [{0}] n''a pas pu \u00eatre cr\u00e9\u00e9e.
 
-50029=La classe [{0}] fournie sur l''\u00e9l\u00e9ment XmlCustomizer n''impl\u00e9mente pas l''interface org.eclipse.persistence.config.DescriptorCustomizer.
+50029=La classe [{0}] fournie dans XmlCustomizer n''impl\u00e9mente pas l''interface org.eclipse.persistence.descriptors.DescriptorCustomizer .
 
 50030=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour d\u00e9finir plusieurs propri\u00e9t\u00e9s XmlID sur la classe [{1}].  La propri\u00e9t\u00e9 [{0}] ne peut pas \u00eatre d\u00e9finie comme XmlID, car la propri\u00e9t\u00e9 [{2}] est d\u00e9j\u00e0 d\u00e9finie comme XmlID.
 

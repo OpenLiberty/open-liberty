@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,8 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
+
+import org.junit.Test;
 
 import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.UserTransactionFactory;
@@ -112,6 +115,32 @@ public class SimpleServlet extends FATServlet {
 
     public void testUserTranLookup(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final Object ut = new InitialContext().lookup("java:comp/UserTransaction");
+
+        if (ut instanceof javax.transaction.UserTransaction) {
+            ((UserTransaction) ut).begin();
+            ((UserTransaction) ut).commit();
+        } else {
+            if (ut == null) {
+                throw new Exception("UserTransaction instance was null");
+            } else {
+                throw new Exception("UserTransaction lookup did not work: " + ut.getClass().getCanonicalName());
+            }
+        }
+    }
+
+    @Test
+    public void testUserTranLookupOutsideEE() throws Exception {
+        final Object[] utHolder = { null };
+        Thread t = new Thread(() -> {
+            try {
+                utHolder[0] = new InitialContext().lookup("jta/usertransaction");
+            } catch (NamingException e) {
+                utHolder[0] = e;
+            }
+        });
+        t.start();
+        t.join();
+        final Object ut = utHolder[0];
 
         if (ut instanceof javax.transaction.UserTransaction) {
             ((UserTransaction) ut).begin();

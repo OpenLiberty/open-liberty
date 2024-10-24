@@ -5,6 +5,7 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.monitor-1.0))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.servlet-5.0)(osgi.identity=io.openliberty.servlet.internal-6.0)(osgi.identity=io.openliberty.servlet.internal-6.1)))"
 IBM-Install-Policy: when-satisfied
--bundles=com.ibm.ws.webcontainer.monitor.jakarta; start-phase:=APPLICATION_EARLY
+-bundles=com.ibm.ws.webcontainer.monitor.jakarta; start-phase:=APPLICATION_EARLY, \
+  io.openliberty.http.monitor.jakarta
 kind=ga
 edition=core

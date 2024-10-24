@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -546,28 +546,17 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     /**
-     * TODO move this to ReturnCode class
      *
-     * @param rc
-     * @return
-     */
-    private static boolean isReturnCodeOK(ReturnCode rc) {
-        return rc.getCode() == ReturnCode.OK.getCode();
-    }
-
-    /**
      * @param productMatches
      * @param props
      */
     protected static ReturnCode matchLibertyProperties(List productMatches, Properties props) {
-        Iterator<ProductMatch> matches = productMatches.iterator();
-        ReturnCode rc = ReturnCode.OK;
-        while (matches.hasNext() && ReturnCode.isReturnCodeOK(rc)) {
-            ProductMatch match = matches.next();
-            int result = match.matches(props);
-            rc = getReturnCode(props, match, result);
+        if (productMatches.isEmpty()) {
+            return ReturnCode.OK;
         }
-        return rc;
+        //Returns the ProductMatch object from productMatches with the lowest value returned from ProductMatch.matches(props)
+        ProductMatch match = (ProductMatch) productMatches.stream().min((o1, o2) -> ((ProductMatch) o1).matches(props) - ((ProductMatch) o2).matches(props)).get();
+        return getReturnCode(props, match, match.matches(props));
     }
 
     /**

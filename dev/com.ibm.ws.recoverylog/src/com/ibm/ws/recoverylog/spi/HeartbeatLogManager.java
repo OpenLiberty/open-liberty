@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.recoverylog.spi;
+
+import java.time.Duration;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -32,10 +34,9 @@ public class HeartbeatLogManager {
 
     private static TimeoutInfo _info;
 
-    public static void setTimeout(HeartbeatLog heartbeatLog, int peerLockTimeBetweenHeartbeats) {
+    public static void setTimeout(HeartbeatLog heartbeatLog, Duration peerLockTimeBetweenHeartbeats) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setTimeout",
-                     new Object[] { heartbeatLog, peerLockTimeBetweenHeartbeats });
+            Tr.entry(tc, "setTimeout", heartbeatLog, peerLockTimeBetweenHeartbeats);
 
         // Stop any existing timeout
         stopTimeout();
@@ -51,7 +52,7 @@ public class HeartbeatLogManager {
     private static class TimeoutInfo implements AlarmListener {
         protected HeartbeatLog _heartbeatLog;
 
-        protected final int _duration;
+        protected final Duration _duration;
 
         private Alarm _alarm;
 
@@ -59,17 +60,16 @@ public class HeartbeatLogManager {
 
         private final AlarmManager _alarmManager = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager();
 
-        protected TimeoutInfo(HeartbeatLog heartbeatLog, int duration) {
+        protected TimeoutInfo(HeartbeatLog heartbeatLog, Duration duration) {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "TimeoutInfo",
-                         new Object[] { heartbeatLog, duration });
+                Tr.entry(tc, "TimeoutInfo", heartbeatLog, duration);
 
             _duration = duration;
 
             _heartbeatLog = heartbeatLog;
 
             if (_heartbeatLog != null)
-                _alarm = _alarmManager.scheduleAlarm(_duration * 1000l, this, null);
+                _alarm = _alarmManager.scheduleAlarm(_duration.toMillis(), this, null);
 
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "TimeoutInfo");
@@ -103,7 +103,7 @@ public class HeartbeatLogManager {
             // Respawn the alarm
             synchronized (this) {
                 if (_heartbeatLog != null && _isHeartbeating)
-                    _alarm = _alarmManager.scheduleAlarm(_duration * 1000l, this, null);
+                    _alarm = _alarmManager.scheduleAlarm(_duration.toMillis(), this, null);
             }
 
             if (tc.isEntryEnabled())

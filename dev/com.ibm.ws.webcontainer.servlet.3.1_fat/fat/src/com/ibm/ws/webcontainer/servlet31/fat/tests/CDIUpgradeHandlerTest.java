@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -23,28 +21,31 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
-import com.ibm.ws.fat.util.browser.WebResponse;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * CDI Tests
@@ -70,13 +71,13 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * </ul>
  */
 @RunWith(FATRunner.class)
-public class CDIUpgradeHandlerTest extends LoggingTest {
+public class CDIUpgradeHandlerTest {
+
+    private static final Logger LOG = Logger.getLogger(CDIUpgradeHandlerTest.class.getName());
 
     // Server instance ...
-
-    /** A single shared server used by all of the tests. */
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_cdiUpgradeHandlerServer");
+    @Server("servlet31_cdiUpgradeHandlerServer")
+    public static LibertyServer LS;
 
     private static final String CDI12_TEST_V2_JAR_NAME = "CDI12TestV2";
     private static final String CDI12_TEST_V2_UPGRADE_APP_NAME = "CDI12TestV2Upgrade";
@@ -93,57 +94,42 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
                                                                         "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2upgrade.war.cdi.upgrade.handlers",
                                                                         "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2upgrade.war.cdi.upgrade.servlets");
         CDI12TestV2UpgradeApp = CDI12TestV2UpgradeApp.addAsLibrary(CDI12TestV2Jar);
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_UPGRADE_APP_NAME);
-            LOG.info("addAppToServer : " + CDI12_TEST_V2_UPGRADE_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2UpgradeApp);
-        }
-        SHARED_SERVER.startIfNotStarted();
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_UPGRADE_APP_NAME);
+
+        // Export the application.
+        ShrinkHelper.exportDropinAppToServer(LS, CDI12TestV2UpgradeApp);
+
+        // Start the server and use the class name so we can find logs easily
+        LS.startServer(CDIUpgradeHandlerTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer(null);
+        if (LS != null && LS.isStarted()) {
+            LS.stopServer();
         }
     }
 
     /**
-     * Log text at the info level. Use the shared server to perform the logging.
+     * Log text at the info level.
      *
      * @param text Text which is to be logged.
      */
     public static void logInfo(String text) {
-        SHARED_SERVER.logInfo(text);
-    }
-
-    /**
-     * Wrapper for {@link #createWebBrowserForTestCase()} with relaxed protection.
-     *
-     * @return A web brower.
-     */
-    protected WebBrowser createWebBrowser() {
-        return createWebBrowserForTestCase();
+        LOG.info(text);
     }
 
     // Test helpers ...
 
-    protected static final boolean IS_HTTP_URL = true;
-    protected static final boolean IS_NOT_HTTP_URL = false;
-
     /**
-     * Answer the URL text for a relative URI for the shared server.
+     * Answer the URL text for a relative URI for the server.
      *
      * @param relativeURL The relative URI for the URL.
      *
      * @return Text of the URL.
      */
     protected String getRequestURL(String relativeURL) {
-        return SHARED_SERVER.getServerUrl(IS_HTTP_URL, relativeURL);
+        return "http://" + LS.getHostname() + ":" + LS.getHttpDefaultPort() + relativeURL;
     }
 
     /**
@@ -151,12 +137,9 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
      * response has expected text. Throw an exception if the expected
      * text is not present or if the unexpected text is present.
      *
-     * The request path is used to create a request URL via {@link SharedServer.getServerUrl}.
-     *
      * Both the expected text and the unexpected text are tested using a contains
      * test. The test does not look for an exact match.
      *
-     * @param webBrowser          Simulated web browser instance through which the request is made.
      * @param requestPath         The path which will be requested.
      * @param expectedResponses   Expected response text. All elements are tested.
      * @param unexpectedResponses Unexpected response text. All elements are tested.
@@ -166,12 +149,7 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
      *                       unexpected response text is present.
      */
 
-    /** Standard failure text. Usually unexpected. */
-    public static final String[] FAILED_RESPONSE = new String[] { "FAILED" };
-
     public static final String LOG_CLASS_NAME = "CDIUpgradeHandlerTestImpl";
-
-    private static final Logger LOG = Logger.getLogger(CDIUpgradeHandlerTest.class.getName());
 
     private static void logStart(String methodName, String testName) {
         LOG.info("\n *****************START********** " + LOG_CLASS_NAME + ": TEST: " + testName + " (" + methodName + ")");
@@ -249,29 +227,23 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
 
         logStart(methodName, testName);
 
-        WebBrowser browserS1R1 = createWebBrowser();
-        browserS1R1.setAutoRedirect(false);
-        browserS1R1.setAcceptCookies(true);
-
+        HttpClientParams params = new HttpClientParams();
+        params.setCookiePolicy(CookiePolicy.DEFAULT);
+        HttpClient client = new HttpClient(params);
         Properties propertiesS1R1 = getNoUpgradeRequestProperties(testName);
-        browserS1R1.setFormValues(propertiesS1R1);
-
-        // @formatter:off
-        WebResponse responseS1R1 =
-            verifyResponse(browserS1R1, UPGRADE_URL,
-                                           new String[] { EXPECTED_NO_UPGRADE_RESPONSE },
-                                           CDIUpgradeHandlerTest.FAILED_RESPONSE);
-        // @formatter:on
-
-        List<String> sessionS1R1 = responseS1R1.getCookie("JSESSIONID", true);
-        String sessionIdS1R1;
-        if ((sessionS1R1 != null) && (!sessionS1R1.isEmpty())) {
-            sessionIdS1R1 = sessionS1R1.get(0);
-        } else {
-            sessionIdS1R1 = null;
+        // Taken directly from HttpClientBrowser in com.ibm.ws.fat.util.browser
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        if (propertiesS1R1 != null) {
+            for (Map.Entry<Object, Object> entry : propertiesS1R1.entrySet()) {
+                nameValuePairs.add(new NameValuePair((String) entry.getKey(), (String) entry.getValue()));
+            }
         }
 
-        displayLog(sessionIdS1R1, EXPECTED_LOG1, CDIUpgradeHandlerTest.FAILED_RESPONSE);
+        NameValuePair[] postParams = nameValuePairs.toArray(new NameValuePair[] {});
+
+        verifyStringsInResponse(client, UPGRADE_CONTEXT_ROOT, UPGRADE_URL_FRAGMENT, new String[] { EXPECTED_NO_UPGRADE_RESPONSE }, postParams);
+
+        verifyOutputMatchesExpectedLog(EXPECTED_LOG1);
 
         logFinish(methodName, testName);
     }
@@ -287,23 +259,19 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
         performUpgrade();
         // make sure server side is finished onWritePossible
         // wait till see this message CDITestWriteListener: onWritePossible: EXIT
-        SHARED_SERVER.getLibertyServer().waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+        LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
 
         LOG.info("implTestCDIUpgrade : Now check the results and compare it with [ EXPECTED_LOG2 ]");
 
-        displayLog(NULL_SESSION_ID,
-                   EXPECTED_LOG2,
-                   CDIUpgradeHandlerTest.FAILED_RESPONSE);
+        verifyOutputMatchesExpectedLog(EXPECTED_LOG2);
 
         performUpgrade();
 
-        SHARED_SERVER.getLibertyServer().waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+        LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
 
         LOG.info("implTestCDIUpgrade : Now check the results and compare it with  [ EXPECTED_LOG3 ]");
 
-        displayLog(NULL_SESSION_ID,
-                   EXPECTED_LOG3,
-                   CDIUpgradeHandlerTest.FAILED_RESPONSE);
+        verifyOutputMatchesExpectedLog(EXPECTED_LOG3);
 
         logFinish(methodName, testName);
     }
@@ -454,26 +422,42 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
         LOG.info("Closed socket [ " + socket + " ] [ " + urlText + " ]");
     }
 
-    //
+    private void verifyOutputMatchesExpectedLog(String[] expectedLog) throws Exception {
+        HttpClientParams params = new HttpClientParams();
+        params.setCookiePolicy(CookiePolicy.DEFAULT);
+        // Create our HttpClient
+        HttpClient client = new HttpClient(params);
 
-    private static final String NULL_SESSION_ID = null;
-
-    private void displayLog(String sessionId, String[] expectedLog, String[] unexpectedLog) throws Exception {
-        WebBrowser logBrowser = createWebBrowser();
-        logBrowser.setAutoRedirect(false);
-        logBrowser.setAcceptCookies(true);
-
+        // Make properties to mimic a form submission
         Properties logProperties = getLogRequestProperties();
-
-        if (sessionId != null) {
-            logProperties.setProperty("JSESSIONID", sessionId);
+        // Taken directly from HttpClientBrowser in com.ibm.ws.fat.util.browser
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        if (logProperties != null) {
+            for (Map.Entry<Object, Object> entry : logProperties.entrySet()) {
+                nameValuePairs.add(new NameValuePair((String) entry.getKey(), (String) entry.getValue()));
+            }
         }
 
-        logBrowser.setFormValues(logProperties);
+        // Convert properties into array that can be added as parameters to represent a form
+        NameValuePair[] postParams = nameValuePairs.toArray(new NameValuePair[] {});
 
-        verifyResponse(logBrowser, UPGRADE_URL,
-                       expectedLog,
-                       unexpectedLog);
+        verifyStringsInResponse(client, UPGRADE_CONTEXT_ROOT, UPGRADE_URL_FRAGMENT, expectedLog, postParams);
+
+    }
+
+    private void verifyStringsInResponse(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings, NameValuePair[] postParams) throws Exception {
+        PostMethod post = new PostMethod("http://" + LS.getHostname() + ":" + LS.getHttpDefaultPort() + contextRoot + path);
+        post.addParameters(postParams);
+        int responseCode = client.executeMethod(post);
+        String responseBody = post.getResponseBodyAsString();
+        LOG.info("Response : " + responseBody);
+
+        assertEquals("Expected " + 200 + " status code was not returned!",
+                     200, responseCode);
+
+        for (String expectedResponse : expectedResponseStrings) {
+            assertTrue("The response did not contain: " + expectedResponse, responseBody.contains(expectedResponse));
+        }
     }
 
     //
@@ -576,13 +560,4 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
         ":CDITestWriteListener:onWritePossible:Method:Dependent:MethodBean:RV:WP:RA:"
     };
     // @formatter:off
-
-    /* (non-Javadoc)
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,7 @@ import componenttest.logging.ffdc.IgnoredFFDCs;
 import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
 import componenttest.rules.repeater.EE9PackageReplacementHelper;
 import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatTestAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -191,13 +192,18 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         Statement statement = new Statement() {
             @Override
             public void evaluate() throws Throwable {
+                String m = "evaluate";
+
                 if (!RepeatTestFilter.shouldRun(method)) {
                     throw new AssumptionViolatedException("Test skipped for current RepeatAction");
                 }
                 Map<String, Long> tmpDirFilesBeforeTest = createDirectorySnapshot("/tmp");
                 try {
-                    Log.info(c, "evaluate", "entering " + getTestClass().getName() + "." + method.getName());
-
+                    Log.info(c, m, "***********************************");
+                    Log.info(c, m, "");
+                    Log.info(c, m, "entering " + getTestClass().getName() + "." + method.getName());
+                    Log.info(c, m, "");
+                    Log.info(c, m, "***********************************");
                     Map<String, FFDCInfo> ffdcBeforeTest = retrieveFFDCCounts();
 
                     superStatement.evaluate();
@@ -208,7 +214,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     Map<String, FFDCInfo> unexpectedFFDCs = null;
                     ArrayList<String> errors = new ArrayList<String>();
 
-                    List<String> expectedFFDCs = getExpectedFFDCAnnotationFromTest(method);
+                    //Uses Set to avoid duplicates of the FFDC header
+                    Set<String> expectedFFDCs = getExpectedFFDCAnnotationFromTest(method);
                     /*
                      * Encountering an occasional timing issue where the expectedFFDC isn't found in time and either fails
                      * the test expecting the FFDC or it bleeds over into another test. Attempting to mitigate with a short
@@ -260,7 +267,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     }
 
                     for (FFDCInfo ffdcInfo : unexpectedFFDCs.values()) {
-                        ffdcInfo.ffdcHeader = getFFDCHeader(new RemoteFile(ffdcInfo.machine, ffdcInfo.ffdcFile));
+                        ffdcInfo.ffdcHeader = getFFDCHeader(ffdcInfo.machine.getFile(ffdcInfo.ffdcFile));
                     }
 
                     for (IgnoredFFDC ffdcToIgnore : IgnoredFFDCs.FFDCs) {
@@ -304,7 +311,11 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 } finally {
                     Map<String, Long> tmpDirFilesAfterTest = createDirectorySnapshot("/tmp");
                     compareDirectorySnapshots("/tmp", tmpDirFilesBeforeTest, tmpDirFilesAfterTest);
-                    Log.info(c, "evaluate", "exiting " + getTestClass().getName() + "." + method.getName());
+                    Log.info(c, m, "***********************************");
+                    Log.info(c, m, "");
+                    Log.info(c, m, "exiting " + getTestClass().getName() + "." + method.getName());
+                    Log.info(c, m, "");
+                    Log.info(c, m, "***********************************");
                 }
             }
 
@@ -673,31 +684,32 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         return ffdcList;
     }
 
-    public List<String> getExpectedFFDCAnnotationFromTest(FrameworkMethod m) {
+    public Set<String> getExpectedFFDCAnnotationFromTest(FrameworkMethod m) {
 
-        ArrayList<String> annotationListPerClass = new ArrayList<String>();
+        Set<String> annotationListPerClass = new HashSet<String>();
         ExpectedFFDC[] ffdcs = m.getMethod().getAnnotationsByType(ExpectedFFDC.class);
 
         for (ExpectedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
                 String[] exceptionClasses = ffdc.value();
-                if (JakartaEEAction.isEE9OrLaterActive()) {
-                    String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
-                    System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
-                    int index = 0;
-                    for (String exceptionClass : exceptionClasses) {
-                        if (ee9Helper == null) {
-                            ee9Helper = new EE9PackageReplacementHelper();
-                        }
-                        jakarta9ReplacementExceptionClasses[index++] = ee9Helper.replacePackages(exceptionClass);
-                    }
-                    exceptionClasses = jakarta9ReplacementExceptionClasses;
-                }
                 if (RepeatTestFilter.isAnyRepeatActionActive()) {
+                    RepeatTestAction repeatTestAction = RepeatTestFilter.getMostRecentRepeatAction();
+                    boolean doExceptionPackageReplacement = repeatTestAction instanceof JakartaEEAction && !((JakartaEEAction) repeatTestAction).isSkipTransformation();
                     for (String repeatAction : ffdc.repeatAction()) {
-                        if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
+                        boolean isAllRepeatActions = repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS);
+                        boolean isSpecificRepeatAction = !isAllRepeatActions && RepeatTestFilter.isRepeatActionActive(repeatAction);
+                        if (isAllRepeatActions || isSpecificRepeatAction) {
                             for (String exceptionClass : exceptionClasses) {
-                                annotationListPerClass.add(exceptionClass);
+                                // If package replacement is disabled, or the ExpectedFFDC is for a specific repeat action, there is no need
+                                // to do the package replacement processing.
+                                if (!doExceptionPackageReplacement || isSpecificRepeatAction) {
+                                    annotationListPerClass.add(exceptionClass);
+                                } else {
+                                    if (ee9Helper == null) {
+                                        ee9Helper = new EE9PackageReplacementHelper();
+                                    }
+                                    annotationListPerClass.add(ee9Helper.replacePackages(exceptionClass));
+                                }
                             }
                         }
                     }
@@ -735,23 +747,24 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         for (AllowedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
                 String[] exceptionClasses = ffdc.value();
-                if (JakartaEEAction.isEE9OrLaterActive()) {
-                    String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
-                    System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
-                    int index = 0;
-                    for (String exceptionClass : exceptionClasses) {
-                        if (ee9Helper == null) {
-                            ee9Helper = new EE9PackageReplacementHelper();
-                        }
-                        jakarta9ReplacementExceptionClasses[index++] = ee9Helper.replacePackages(exceptionClass);
-                    }
-                    exceptionClasses = jakarta9ReplacementExceptionClasses;
-                }
                 if (RepeatTestFilter.isAnyRepeatActionActive()) {
+                    RepeatTestAction repeatTestAction = RepeatTestFilter.getMostRecentRepeatAction();
+                    boolean doExceptionPackageReplacement = repeatTestAction instanceof JakartaEEAction && !((JakartaEEAction) repeatTestAction).isSkipTransformation();
                     for (String repeatAction : ffdc.repeatAction()) {
-                        if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
+                        boolean isAllRepeatActions = repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS);
+                        boolean isSpecificRepeatAction = !isAllRepeatActions && RepeatTestFilter.isRepeatActionActive(repeatAction);
+                        if (isAllRepeatActions || isSpecificRepeatAction) {
                             for (String exceptionClass : exceptionClasses) {
-                                annotationListPerClass.add(exceptionClass);
+                                // If package replacement is disabled, or the exception class is the default of all ffdc, or the AllowedFFDC is for
+                                // a specific repeat action, there is no need to do the package replacement processing.
+                                if (!doExceptionPackageReplacement || AllowedFFDC.ALL_FFDC.equals(exceptionClass) || isSpecificRepeatAction) {
+                                    annotationListPerClass.add(exceptionClass);
+                                } else {
+                                    if (ee9Helper == null) {
+                                        ee9Helper = new EE9PackageReplacementHelper();
+                                    }
+                                    annotationListPerClass.add(ee9Helper.replacePackages(exceptionClass));
+                                }
                             }
                         }
                     }

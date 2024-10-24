@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2866,30 +2866,38 @@ public class MessageItem extends Item implements SIMPMessage, TransactionCallbac
         if (!redeliveryCountReached)
         {
             unlock(lockID, transaction, incrementUnlock);
+            
+            // There's a possibility that since we unlocked this item and returned, the message could have been removed by something else already.
+            // If that has happened, then we can't update the redelivery count as there's nowhere to update it.
+            // Originally we only handled this case if it was detected during the persistRedeliveredCount(), which resulted in a window during which
+            // the NotInMessageStore exception would get thrown on instead of being caught.
+            //To close this, we will do all the following processing within the try/catch block
+            
+            try {
+                SIMPItemStream itemStream = (SIMPItemStream) getItemStream();
+                BaseDestinationHandler bdh = getDestinationHandler(false, itemStream);
 
-            SIMPItemStream itemStream = (SIMPItemStream) getItemStream();
-            BaseDestinationHandler bdh = getDestinationHandler(false, itemStream);
+                // proceed if and only if the redeliverycount column exists
+                if (bdh.isRedeliveryCountPersisted() && bdh.getMessageProcessor().getMessageStore().isRedeliveryCountColumnAvailable()) {
 
-            // proceede if and only if the redeliverycount column exists
-            if (bdh.isRedeliveryCountPersisted() && bdh.getMessageProcessor().getMessageStore().isRedeliveryCountColumnAvailable()) {
+                    int rdl_count = guessRedeliveredCount();
 
-                int rdl_count = guessRedeliveredCount();
-
-                try {
                     persistRedeliveredCount(rdl_count);
 
-                } catch (NotInMessageStore e) {
-                    // No FFDC code needed
-                    SibTr.exception(tc, e);
-                    // It is possible that the message has already been removed from the itemStream,  
-                    // as it has already been unlocked.
-                }
+                    //updating the value in MFP.
+                    if (msg != null)
+                        msg.setRedeliveredCount(rdl_count);
 
-                //updating the value in MFP.
-                if (msg != null)
-                    msg.setRedeliveredCount(rdl_count);
-
+                }           	
             }
+            catch (NotInMessageStore e) {
+              // No FFDC code needed
+              SibTr.exception(tc, e);
+              // It is possible that the message has already been removed from the itemStream,  
+              // as it has already been unlocked.
+            }
+            
+
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

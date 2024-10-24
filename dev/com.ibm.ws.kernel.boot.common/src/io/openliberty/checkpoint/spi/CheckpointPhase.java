@@ -70,6 +70,13 @@ public enum CheckpointPhase {
      */
     public static final String CONDITION_PROCESS_RUNNING_ID = "io.openliberty.process.running";
 
+    /**
+     * The ID of the condition service that indicates the Liberty process will have a checkpoint done
+     * in the future. This condition will be unregistered just before the JVM goes into single-thread
+     * mode to prepare for the checkpoint.
+     */
+    public static final String CONDITION_BEFORE_CHECKPOINT_ID = "io.openliberty.before.checkpoint";
+
     private static final String SERVICE_RANKING = "service.ranking";
 
     /**
@@ -123,9 +130,11 @@ public enum CheckpointPhase {
     static CheckpointPhase THE_PHASE = CheckpointPhase.INACTIVE;
 
     /**
-     * Returns true if the process has been restored
+     * Returns true if the process has been restored or if Liberty was
+     * launched with no checkpoint action (the {@link #INACTIVE} checkpoint phase).
      *
-     * @return true if the process has been restored
+     * @return true if the process has been restored or this is the
+     *         {@link #INACTIVE} checkpoint phase.
      */
     final public boolean restored() {
         return this == INACTIVE || restored;

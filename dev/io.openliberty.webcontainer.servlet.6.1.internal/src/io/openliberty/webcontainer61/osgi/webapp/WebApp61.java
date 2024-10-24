@@ -79,7 +79,7 @@ public class WebApp61 extends WebApp40 implements ServletContext {
      */
     @Override
     public void setRequestCharacterEncoding(Charset charset) {
-        String encoding = charset.name();
+        String encoding = (charset == null ? null : charset.name());
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.entering(CLASS_NAME, "setRequestCharacterEncoding, Charset name [" + encoding + "]");
         }
@@ -113,8 +113,7 @@ public class WebApp61 extends WebApp40 implements ServletContext {
      */
     @Override
     public void setResponseCharacterEncoding(Charset charset) {
-        String encoding = charset.name();
-
+        String encoding = (charset == null ? null : charset.name());
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.entering(CLASS_NAME, "setResponseCharacterEncoding, Charset name [" + encoding + "]");
         }

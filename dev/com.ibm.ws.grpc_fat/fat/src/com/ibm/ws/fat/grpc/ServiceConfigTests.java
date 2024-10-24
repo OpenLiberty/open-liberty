@@ -88,6 +88,8 @@ public class ServiceConfigTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        
+        grpcServer.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         grpcServer.startServer(ServiceConfigTests.class.getSimpleName() + ".log");
 
         LOG.info("ServiceConfigTests : setUp() : add helloWorldService  app");

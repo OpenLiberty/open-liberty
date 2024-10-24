@@ -47,6 +47,8 @@ NULL_PARAMETER_PASSED_TO_SET_PARAMETER=An "setParameter" wurde ein Nullparameter
 
 PARAMETER_NILL_NOT_FOUND=An getParameterValue() wurde ein Nullparameter \u00fcbergeben
 
+RIGHT_JOIN_NOT_SUPPORTED=Rechter Join wird nicht unterst\u00fctzt
+
 add_attribute_key_was_null=Bei der Angabe einer Attributgruppe f\u00fcr eine Unterklasse eines Attributtyps darf der Typparameter nicht null sein.
 
 argument_collection_was_null=Die Argumentsammlung ist null.
@@ -99,9 +101,19 @@ cant_persist_detatched_object=Das freigegebene Objekt kann nicht persistent gesp
 
 cant_refresh_not_managed_object=Ein nicht verwaltetes Objekt kann nicht aktualisiert werden: {0}.
 
+configured_pu_name_conflict=Es kann keine konfigurierte Persistenzeinheit mit dem Namen {0}erstellt werden. Dieser Name wurde in angepassten Persistenzeinheiten gefunden.
+
 create_insertion_failed=Die Erstellung einer Einf\u00fcgung ist fehlgeschlagen.
 
 criteria_no_constructor_found=Beim Untersuchen der Klasse {0} f\u00fcr einen Konstruktor mit Auswahlkriterientypen als Argumente ist eine Ausnahme eingetreten. Wenn CriteriaQuery nicht als Konstruktorabfrage vorgesehen ist, vergewissern Sie sich, dass die Auswahl dem R\u00fcckgabetyp entspricht.
+
+custom_pu_create_error=Es kann keine angepasste Persistenzeinheit mit dem Namen {0}erstellt werden.
+
+custom_pu_create_error_no_caller=Es kann keine angepasste Persistenzeinheit mit dem Namen {0}erstellt werden. Es wurde keine Aufrufmethode im Stack gefunden.
+
+custom_pu_create_error_no_caller_class_url=Es kann keine angepasste Persistenzeinheit mit dem Namen {0}erstellt werden. Es wurde keine URL der Aufrufklasse {1} gefunden.
+
+custom_pu_name_conflict=Es kann keine angepasste Persistenzeinheit mit dem Namen {0}erstellt werden. Dieser Name wurde in der XML-Konfiguration gefunden.
 
 directory_not_exist=Das Verzeichnis {0} ist nicht vorhanden.
 
@@ -124,6 +136,8 @@ ejb30-wrong-type-for-query-hint=Die Abfrage {0} mit dem Abfragehinweis {1} ist f
 entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Konflikt hinsichtlich der EntityManager-Eigenschaften: "javax.persistence.driver" und/oder "javax.persistence.url" erfordern "DefaultConnector", aber die Persistenzeinheit verwendet einen externen Transaktionscontroller. Daher ist "JNDIConnector" erforderlich.
 
 entity_manager_properties_conflict_default_connector_vs_jndi_connector=Konflikt hinsichtlich der EntityManager-Eigenschaften: "jakarta.persistence.driver" und/oder "jakarta.persistence.url" erfordern "DefaultConnector", aber "jakarta.persistence.jtaDataSource" und/oder "jakarta.persistence.nonjtaDataSource" erfordern "JNDIConnector".
+
+entity_manager_with_connection_failed=Der Benutzercode ist mit einem Fehler fehlgeschlagen: {0}
 
 entity_no_longer_exists_in_db=Die Entit\u00e4t ist nicht mehr in der Datenbank vorhanden: {0}.
 
@@ -148,6 +162,8 @@ error_unmarshalling_return=Fehler beim Unmarshalling der R\u00fcckgabe
 file_exists=Die Datei {0} ist bereits vorhanden.
 
 file_not_exist=Die Datei {0} ist nicht vorhanden.
+
+find_option_class_unknown=Die FindOption , die die Klasse {0} implementiert, wird nicht unterst\u00fctzt
 
 finder_query_failed=Die Finderabfrage ist fehlgeschlagen:
 
@@ -207,9 +223,9 @@ jmx_enabled_platform_mbean_runtime_exception=Beim Aufrufen einer JMX-MBean-Laufz
 
 join_trans_called_on_entity_trans=joinTransaction wurde f\u00fcr einen EntityManager vom Typ resource-local aufgerufen, der nicht f\u00fcr eine JTA-Transaktion registriert werden kann.
 
-jpa21-ddl-create-script-target-not-specified=Beim Generieren von DDL f\u00fcr Scripts muss unter Verwendung der Eigenschaften [jakarta.persistence.schema-generation.scripts.create-target] ein Ziel f\u00fcr das Erstellen von Scripts angegeben werden.
+jpa21-ddl-create-script-target-not-specified=Beim Generieren von DDL f\u00fcr Scripts muss ein Erstellungsscriptziel mit der Eigenschaft [{0}] angegeben werden.
 
-jpa21-ddl-drop-script-target-not-specified=Beim Generieren von DDL f\u00fcr Scripts muss unter Verwendung der Eigenschaft [javax.persistence.schema-generation.scripts.drop-target] ein Ziel zum Ablegen von Scripts angegeben werden.
+jpa21-ddl-drop-script-target-not-specified=Beim Generieren von DDL f\u00fcr Scripts muss ein Ziel f\u00fcr das L\u00f6schscript mit der Eigenschaft [{0}] angegeben werden.
 
 jpa21-ddl-invalid-source-script-type=Das angegebene Quellenscript {0} hat einen ung\u00fcltigen Typ {0}. Die folgenden Quellenscripttypen sind g\u00fcltig: java.io.Reader oder eine Zeichenfolge, die eine Datei-URL angibt.
 
@@ -253,6 +269,12 @@ jpa_helper_invalid_read_all_query=Die Abfrage vom Typ {0} ist keine EclipseLink-
 
 jpa_helper_invalid_report_query=Die Abfrage vom Typ {0} ist keine EclipseLink-Berichtsabfrage und konnte daher nicht konvertiert werden.
 
+jpa_non_persistent_class=Die Klasse [{0}] ist keine persistente Klasse.
+
+jpa_persistence_util_get_version_no_version_in_class=PersistenceUtil.getVersion(Entit\u00e4t) wurde mit dem Objekt [{0}] aufgerufen, das kein Versionsattribut hat.
+
+jpa_persistence_util_get_version_non_persistent_class=PersistenceUtil.getVersion(Entit\u00e4t) wurde mit dem Objekt [{0}] aufgerufen, das kein persistentes Objekt ist.
+
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) wurde mit dem Objekt [{0}] aufgerufen, das kein persistentes Objekt ist.
 
 json_ora21c_jsonvalue_to_oraclevalue=JsonValue konnte nicht in OracleJsonValue konvertiert werden.
@@ -268,6 +290,8 @@ json_pgsql_pgobject_conversion=Umsetzung des Datenbank-PGobject fehlgeschlagen.
 json_pgsql_unknown_type=Unbekannter JSON-Typ von Datenbank zur\u00fcckgegeben.
 
 lock_called_without_version_locking=Aufrufe von entityManager.lock(Object entity, LockModeType lockMode) erfordern, dass die Versionssperrung aktiviert ist.
+
+lock_option_class_unknown=Die LockOption -Implementierungsklasse {0} wird nicht unterst\u00fctzt.
 
 managed_component_not_found=Ein Attribut {1}, das im EntityGraph {0} aufgef\u00fchrt ist, referenziert einen Untergraphen mit dem Namen {2}, der nicht gefunden werden kann.
 
@@ -320,6 +344,8 @@ no_entities_retrieved_for_get_reference=Die Entity f\u00fcr die ID {0} konnte ni
 no_entities_retrieved_for_get_single_result=getSingleResult() hat keine Entit\u00e4ten abgerufen.
 
 no_entity_graph_of_name=Es ist kein EntityGraph mit dem Namen {0} vorhanden.
+
+no_key_in_entity=Verkn\u00fcpfung von {0} zu {1} kann nicht hinzugef\u00fcgt werden, da in der Zielklasse ein Attribut des Quellentyps fehlt
 
 not_an_entity=Objekt: {0} ist kein bekannter Entit\u00e4tstyp.
 
@@ -375,9 +401,23 @@ position_param_not_found=An der Position {0} ist kein Parameter vorhanden.
 
 pu_configured_for_resource_local=Es konnte kein EntityManager mit SynchronizationType erstellt werden, weil PersistenceUnit mit Transaktionen vom Typ resource-local konfiguriert ist.
 
+refresh_option_class_unknown=Die RefreshOption -Implementierungsklasse {0} wird nicht unterst\u00fctzt.
+
 remove_deletion_failed=Die Operation zum Entfernen ist fehlgeschlagen:
 
 rollback_because_of_rollback_only=F\u00fcr die Transaktion wurde ein Rollback durchgef\u00fchrt, weil sie auf RollbackOnly gesetzt wurde.
+
+schema_validation=Schemapr\u00fcfung
+
+schema_validation_failed=Schemapr\u00fcfung fehlgeschlagen
+
+schema_validation_missing_table=Der Tabellenbereich {0} wurde im Schema nicht gefunden.
+
+schema_validation_table_different_columns=Die Tabelle {0} enth\u00e4lt unterschiedliche Spalten im Schema.
+
+schema_validation_table_missing_columns=In der {0} -Tabelle fehlen Spalten im Schema
+
+schema_validation_table_surplus_columns=Die Tabelle {0} enth\u00e4lt \u00fcbersch\u00fcssige Spalten im Schema
 
 sdo_helper_invalid_changesummary=Die angegebene ChangeSummary [{0}] ist kein EclipseLink-SDOChangeSummary und konnte daher nicht konvertiert werden.
 
@@ -434,6 +474,10 @@ sdo_helper_invalid_xsdhelper=Der angegebene XSDHelper [{0}] ist kein EclipseLink
 subclass_sought_not_a_managed_type=Der gesuchte Untergraphtyp {0} ist kein verwalteter Typ f\u00fcr das Attribut {1}.
 
 too_many_results_for_get_single_result=Von Query.getSingleResult() wurden mehrere Ergebnisse zur\u00fcckgegeben.
+
+truncate_tables_failed=Abschneiden der Tabellen fehlgeschlagen
+
+typed_query_reference_is_null=Verweis auf eine benannte Abfrage ist null
 
 unable_to_find_named_query=Die benannte Abfrage (NamedQuery) mit dem Namen {0} wurde nicht gefunden.
 

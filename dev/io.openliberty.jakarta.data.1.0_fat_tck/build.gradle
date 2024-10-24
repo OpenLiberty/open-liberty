@@ -13,7 +13,7 @@
  apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 ext {
-  jnosqlVersion = '1.1.0'
+  jnosqlVersion = '1.1.2'
 }
 
 configurations {
@@ -24,8 +24,7 @@ configurations {
 
 dependencies {
   def withoutJakartaAPI = { 
-  	exclude group: 'jakarta.nosql', module: 'nosql-core'
-  	exclude group: 'jakarta.nosql', module: 'nosql-document'
+  	exclude group: 'jakarta.nosql', module: 'jakarta.nosql-api'
   }
   
   jnosql "org.eclipse.jnosql.databases:jnosql-mongodb:${jnosqlVersion}", withoutJakartaAPI

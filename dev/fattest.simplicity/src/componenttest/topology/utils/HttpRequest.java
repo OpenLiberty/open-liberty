@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,9 @@
  *******************************************************************************/
 package componenttest.topology.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayInputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +25,20 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonStructure;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.commons.httpclient.methods.OptionsMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.methods.TraceMethod;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -106,13 +117,9 @@ public class HttpRequest {
     }
 
     public HttpRequest basicAuth(String user, String pass) {
-        try {
-            String userPass = user + ':' + pass;
-            String base64Auth = Base64.getEncoder().encodeToString((userPass).getBytes("UTF-8"));
-            this.basicAuth = "Basic " + base64Auth;
-        } catch (UnsupportedEncodingException e) {
-            // nothing to be done
-        }
+        String userPass = user + ':' + pass;
+        String base64Auth = Base64.getEncoder().encodeToString((userPass).getBytes(StandardCharsets.UTF_8));
+        this.basicAuth = "Basic " + base64Auth;
         return this;
     }
 
@@ -131,100 +138,151 @@ public class HttpRequest {
             Log.info(c, "run", reqMethod + ' ' + url);
         }
 
-        HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+        /*
+         * We use Apache HTTP client since java.net URL/URLConnection code is not isolated enough
+         * for testing. For example, some code overrides the URLStreamHandlerFactory when used
+         * as a client and that makes it so that the URLConnections returned are the HttpsURLConnectionOldImpl
+         * which is not the expected HttpsUrlConnection.
+         */
+
+        /*
+         * Set timeouts for the request and then create the HTTP client.
+         */
+        HttpConnectionManager cm = new MultiThreadedHttpConnectionManager();
+        if (timeout != null) {
+            cm.getParams().setConnectionTimeout(timeout);
+            cm.getParams().setSoTimeout(timeout);
+        }
+        HttpClient httpClient = new HttpClient(cm);
+        configureClient(httpClient);
+
+        /*
+         * Create a request based on the request method specified.
+         */
+        HttpMethod request = null;
+        switch (reqMethod) {
+            case "POST":
+                request = new PostMethod(url);
+                break;
+            case "HEAD":
+                request = new HeadMethod(url);
+                break;
+            case "OPTIONS":
+                request = new OptionsMethod(url);
+                break;
+            case "PUT":
+                request = new PutMethod(url);
+                break;
+            case "DELETE":
+                request = new DeleteMethod(url);
+                break;
+            case "TRACE":
+                request = new TraceMethod(url);
+                break;
+            case "GET":
+            default:
+                if (json != null) {
+                    throw new IllegalStateException("Cannot send a payload on a GET request.");
+                }
+                request = new GetMethod(url);
+                break;
+        }
 
         try {
-            configureConnection(con);
-
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setRequestMethod(reqMethod);
-
-            if ("GET".equals(con.getRequestMethod()) && json != null) {
-                throw new IllegalStateException("Writing a JSON body to a GET request will force the connection to be switched to a POST request at the JDK layer.");
-            }
-
+            /*
+             * Add the payload.
+             */
             if (json != null) {
-                con.setRequestProperty("Content-Type", "application/json");
-                OutputStream out = con.getOutputStream(); //This line will change a GET request to a POST request
-                out.write(json.getBytes("UTF-8"));
-                out.close();
+                request.setRequestHeader("Content-Type", "application/json");
+                StringRequestEntity stringEntity = new StringRequestEntity(json, "application/json", StandardCharsets.UTF_8.toString());
+                ((EntityEnclosingMethod) request).setRequestEntity(stringEntity);
             } else {
-                con.setRequestProperty("Content-Type", "text/html");
+                request.setRequestHeader("Content-Type", "text/html");
             }
 
-            if (type.getPackage().toString().startsWith("javax.json"))
-                con.setRequestProperty("Accept", "application/json");
-
-            if (basicAuth != null)
-                con.setRequestProperty("Authorization", basicAuth);
-
-            if (props != null)
-                for (Map.Entry<String, String> entry : props.entrySet())
-                    con.setRequestProperty(entry.getKey(), entry.getValue());
-
-            if (timeout != null) {
-                con.setConnectTimeout(timeout);
-                con.setReadTimeout(timeout);
+            if (type.getPackage().toString().startsWith("javax.json")) {
+                request.setRequestHeader("Accept", "application/json");
             }
 
-            responseCode = con.getResponseCode();
-
-            if (!silent) {
-                Log.info(c, "finishedRequest", reqMethod + ' ' + url);
+            /*
+             * Add basic auth header.
+             */
+            if (basicAuth != null) {
+                request.setRequestHeader("Authorization", basicAuth);
             }
+
+            /*
+             * Add any additional headers.
+             */
+            if (props != null) {
+                for (Map.Entry<String, String> entry : props.entrySet()) {
+                    request.addRequestHeader(entry.getKey(), entry.getValue());
+                }
+            }
+
+            /*
+             * Set the expected response code if one is not already set.
+             */
             if (expectedResponseCode.isEmpty()) {
                 expectCode(HttpURLConnection.HTTP_OK);
             }
+
+            /*
+             * Send the request.
+             */
+            if (!silent) {
+                Log.info(c, "run", "Sending HTTP Request: " + request.getName() + " " + url);
+            }
+            httpClient.executeMethod(request);
+            /*
+             * Check for the expected response code.
+             */
+            responseCode = request.getStatusCode();
+            if (!silent) {
+                Log.info(c, "run", "Received HTTP Response:  " + responseCode + " " + request.getStatusLine());
+            }
             if (!expectedResponseCode.contains(responseCode)) {
                 Log.info(c, "run", "Got unexpected response code: " + responseCode);
-                throw new Exception("Unexpected response (See HTTP_* constant values on HttpURLConnection): " + responseCode);
+                throw new Exception("Unexpected response: " + responseCode);
             }
-            if (responseCode / 100 == 2) { // response codes in the 200s mean success
-                if (JsonArray.class.equals(type))
-                    return type.cast(Json.createReader(con.getInputStream()).readArray());
-                else if (JsonObject.class.equals(type))
-                    return type.cast(Json.createReader(con.getInputStream()).readObject());
-                else if (JsonStructure.class.equals(type))
-                    return type.cast(Json.createReader(con.getInputStream()).read());
-                else if (String.class.equals(type)) {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    InputStream in = con.getInputStream();
-                    int numBytesRead;
-                    for (byte[] b = new byte[8192]; (numBytesRead = in.read(b)) != -1;)
-                        out.write(b, 0, numBytesRead);
-                    in.close();
-                    return type.cast(out.toString("UTF-8"));
-                } else
+
+            String responseBody = request.getResponseBodyAsString();
+            if (responseBody != null && !responseBody.isEmpty()) {
+                printResponseContents(responseBody);
+                if (JsonArray.class.equals(type)) {
+                    return type.cast(Json.createReader(new ByteArrayInputStream(responseBody.getBytes(StandardCharsets.UTF_8))).readArray());
+                } else if (JsonObject.class.equals(type)) {
+                    return type.cast(Json.createReader(new ByteArrayInputStream(responseBody.getBytes(StandardCharsets.UTF_8))).readObject());
+                } else if (JsonStructure.class.equals(type)) {
+                    return type.cast(Json.createReader(new ByteArrayInputStream(responseBody.getBytes(StandardCharsets.UTF_8))).read());
+                } else if (String.class.equals(type)) {
+                    return type.cast(responseBody);
+                } else {
                     throw new IllegalArgumentException(type.getName());
-            } else if (con.getErrorStream() != null) {
-                if (JsonArray.class.equals(type))
-                    return type.cast(Json.createReader(con.getErrorStream()).readArray());
-                else if (JsonObject.class.equals(type))
-                    return type.cast(Json.createReader(con.getErrorStream()).readObject());
-                else if (JsonStructure.class.equals(type))
-                    return type.cast(Json.createReader(con.getErrorStream()).read());
-                else if (String.class.equals(type)) {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    InputStream in = con.getErrorStream();
-                    int numBytesRead;
-                    for (byte[] b = new byte[8192]; (numBytesRead = in.read(b)) != -1;)
-                        out.write(b, 0, numBytesRead);
-                    in.close();
-                    return type.cast(out.toString("UTF-8"));
-                } else
-                    throw new IllegalArgumentException(type.getName());
+                }
             } else {
                 return null;
             }
         } finally {
-            con.disconnect();
+            request.releaseConnection();
         }
     }
 
-    void configureConnection(HttpURLConnection con) {}
+    void configureClient(HttpClient httpClient) {}
 
     public int getResponseCode() {
         return responseCode;
+    }
+
+    private void printResponseContents(String contents) {
+        final int charsToPrint = 500;
+        StringBuffer sb = new StringBuffer();
+        if (contents.length() > charsToPrint) {
+            sb.append(contents.substring(0, charsToPrint));
+            sb.append("<<<" + (contents.length() - charsToPrint) + " ADDITIONAL BYTES REDACTED>>>\n");
+        } else {
+            sb.append(contents);
+        }
+        Log.info(c, "run", "Received HTTP Response contents:  \n" + sb.toString());
     }
 }

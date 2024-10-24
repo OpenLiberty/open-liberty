@@ -16,7 +16,7 @@
  */
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
-ext.distsDirectory= new File(project.buildDir, 'distributions')
+ext.distsDirectory = new File(project.buildDir, 'distributions')
 
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
@@ -57,7 +57,7 @@ dependencies {
 		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
 		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
-		'com.oracle.database.jdbc.debug:ojdbc8_g:21.8.0.0'
+		'com.oracle.database.jdbc:ojdbc8:23.4.0.24.05'
 
   jakartaTransformer 'commons-cli:commons-cli:1.5.0',
        project(':com.ibm.ws.org.slf4j.api'),
@@ -127,7 +127,7 @@ task copyJdbcDrivers(type: Copy) {
   rename 'jcc.*.jar', 'jcc.jar'
   rename 'derby-.*.jar', 'derby.jar'
   rename 'derbyclient-.*.jar', 'derbyclient.jar'
-  rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
+  rename 'ojdbc8.*.jar', 'ojdbc8.jar'
   rename 'postgresql.*.jar', 'postgresql.jar'
   rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
 }
@@ -152,7 +152,19 @@ task autoFVT {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
+  dependsOn ':fattest.simplicity:jar'
   enabled project.file('fat').exists()
+
+  ext.getFeature = { line ->
+    def fStart = line.indexOf('<feature>')
+    if (fStart == -1)
+      return null
+    fStart = fStart + '<feature>'.length()
+    def fEnd = line.indexOf('</feature>')
+    if ( fEnd == -1 )
+      return null
+    return line.substring(fStart, fEnd).trim().toLowerCase()
+  }
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
   // TODO: Be smart about when to recreate the autoFVT.zip
@@ -278,18 +290,21 @@ task autoFVT {
 
     // Copy the component test libs
     // TODO: It looks like the componenttest.app.jar got combined into something else, so this is now way more source in the jar than was there before. This might need changing then.
-    copy {
+    /*copy {
       from project(':com.ibm.ws.componenttest').buildDir
       include 'com.ibm.ws.componenttest.jar'
       rename 'com.ibm.ws.componenttest.jar', 'componenttest.app.jar'
       into new File(autoFvtDir, 'lib')
-    }
+    }*/
 
     // Copy the fattest libs
-    copy {
-      from project(':fattest.simplicity').buildDir
-      include 'fattest*.*'
-      into new File(autoFvtDir, 'lib')
+    // TCK project's depend on the fattest.simplicity.jar being in the autoFVT/lib directory for their pom.xml files
+    if (project.name.contains('tck')) {
+      copy {
+        from project(':fattest.simplicity').buildDir
+        include 'fattest.simplicity.jar'
+        into new File(autoFvtDir, 'lib')
+      }
     }
 
     // TODO: This is to compensate for the fact that the ant build of fattest.simplicity produced this jar but the gradle build doesn't
@@ -343,36 +358,42 @@ task autoFVT {
 
     // Produce a list of features tested by this FAT
     def featureDeps = [] as Set
+
     // Include features added explictly via bnd.bnd
     def testedFeatures = bnd.get('tested.features')
     if(testedFeatures != null)
       testedFeatures.split(',').each{ featureDeps.add(it.trim().toLowerCase()) }
+
     // Scan publish/ dir for features
     if(publishDir.exists()) {
       publishDir.eachFileRecurse(groovy.io.FileType.FILES) {
         if(it.name.endsWith('.xml')) {
           file(it).eachLine { line ->
-            if(line.contains("<feature>")) {
-              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
-              featureDeps.add(feature.trim().toLowerCase())
+            def feature = getFeature(line)
+            if ( feature != null ) {
+              // println "Recording feature [ " + feature + " ]"
+              featureDeps.add(feature)
             }
           }
         }
       }
     }
+
     // Scan FAT files dir for features
     if(new File(autoFvtDir, 'lib/LibertyFATTestFiles').exists()){
       new File(autoFvtDir, 'lib/LibertyFATTestFiles').eachFileRecurse(groovy.io.FileType.FILES) {
         if(it.name.endsWith('.xml')) {
           file(it).eachLine { line ->
-            if(line.contains("<feature>")) {
-              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
-              featureDeps.add(feature.trim().toLowerCase())
+            def feature = getFeature(line)
+            if ( feature != null ) {
+              // println "Recording feature [ " + feature + " ]"
+              featureDeps.add(feature)
             }
           }
         }
       }
     }
+
     if(featureDeps.size() > 0) {
       println "This FAT tests the following features: " + featureDeps
       def fatDeps = new groovy.json.JsonBuilder()
@@ -452,19 +473,19 @@ task runfat(type: Exec) {
   
   //Make sure to check if we have a property, otherwise we will end up setting "null" as the value
   if ( gradle.userProps.containsKey("artifactory.download.server") )
-  	environment "artifactory.download.server", gradle.userProps.getProperty("artifactory.download.server")
+	environment "ARTIFACTORY_DOWNLOAD_SERVER", gradle.userProps.getProperty("artifactory.download.server")
 
   if ( gradle.userProps.containsKey("artifactory.download.user") )
-  	environment "artifactory.download.user", gradle.userProps.getProperty("artifactory.download.user")
+	environment "ARTIFACTORY_DOWNLOAD_USER", gradle.userProps.getProperty("artifactory.download.user")
 
   if ( gradle.userProps.containsKey("artifactory.download.token") )
-  	environment "artifactory.download.token", gradle.userProps.getProperty("artifactory.download.token")
+	environment "ARTIFACTORY_DOWNLOAD_TOKEN", gradle.userProps.getProperty("artifactory.download.token")
 
   if ( gradle.userProps.containsKey("artifactory.docker.server") )
-  	environment "artifactory.docker.server", gradle.userProps.getProperty("artifactory.docker.server")
+	environment "ARTIFACTORY_DOCKER_SERVER", gradle.userProps.getProperty("artifactory.docker.server")
 
   if ( gradle.userProps.containsKey("artifactory.force.external.repo") )
-  	environment "artifactory.force.external.repo", gradle.userProps.getProperty("artifactory.force.external.repo")
+	environment "ARTIFACTORY_FORCE_EXTERNAL_REPO", gradle.userProps.getProperty("artifactory.force.external.repo")
   
   //Add fat.test.localrun to JVM environment.
   //Not accessible during builds since tests are run on child systems with a different JVM

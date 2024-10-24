@@ -61,12 +61,13 @@ Subsystem-Name: Jakarta RESTful Web Services 4.0 Client
   io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.org.apache.httpcomponents, \
   io.openliberty.org.jboss.logging35, \
-  io.openliberty.org.jboss.resteasy.common.ee10
+  io.openliberty.org.jboss.resteasy.common.ee11
 -jars=\
   io.openliberty.jaxrs30; location:="dev/api/ibm/,lib/"
 -files=\
   dev/api/ibm/javadoc/io.openliberty.jaxrs30_1.0-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0

@@ -52,3 +52,7 @@ CWWKF1705.failed.response.useraction=Opravte probl\u00e9m s komunikac\u00ed a zk
 CWWKF1706.issue.parsing=CWWKF1706W: Probl\u00e9m p\u0159i anal\u00fdze informac\u00ed o produktu.
 CWWKF1706.issue.parsing.explanation=Slu\u017eba nem\u016f\u017ee \u00fasp\u011b\u0161n\u011b analyzovat informace o produktu.
 CWWKF1706.issue.parsing.useraction=Opravte probl\u00e9m s komunikac\u00ed a zkuste to znovu.
+
+CWWKF1707.internal.error=CWWKF1706W: P\u0159i kontrole ohro\u017een\u00ed zabezpe\u010den\u00ed b\u011bhov\u00fdm prost\u0159ed\u00edm serveru Liberty do\u0161lo k intern\u00ed chyb\u011b. Chyba je: {0}
+CWWKF1707.internal.error.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 zabr\u00e1nila b\u011bhov\u00e9mu prost\u0159ed\u00ed Liberty v kontrole ohro\u017een\u00ed zabezpe\u010den\u00ed.
+CWWKF1707.internal.error.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.

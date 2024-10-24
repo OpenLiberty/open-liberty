@@ -225,19 +225,50 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: Konfigurace zahrnuje nekompatib
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=Konfigurace zahrnuje nekompatibiln\u00ed kombinaci funkc\u00ed. Aby se zabr\u00e1nilo neplatn\u00e9mu chov\u00e1n\u00ed, zak\u00e1zal spr\u00e1vce funkc\u00ed v\u0161echny funkce.
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Uve\u010fte jinou verzi nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 zp\u016fsobuj\u00ed konflikt.
 
-# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlaformCommonToProgModels
+# CWWK0047E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlatformCommonToProgModels
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: Funkce {2} a {3} nelze na\u010d\u00edst sou\u010dasn\u011b. Funkce {2} prvku {0} nen\u00ed kompatibiln\u00ed s prvkem {3} s funkc\u00ed {1}. Konfigurace obsahuje nekompatibiln\u00ed kombinaci funkc\u00ed {6}, kter\u00e9 nejsou podporov\u00e1ny. Konfigurovan\u00e9 funkce {4} a {5} obsahuj\u00ed nekompatibiln\u00ed kombinaci funkc\u00ed. Va\u0161e konfigurace nen\u00ed podporov\u00e1na. Aktualizujte konfiguraci tak, aby pou\u017e\u00edvala kompatibiln\u00ed verze nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 podporuj\u00ed programovac\u00ed modely {0} nebo {1}.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=Konfigurace serveru obsahuje nekompatibiln\u00ed kombinaci funkc\u00ed pro uveden\u00e9 programovac\u00ed modely. K tomuto konfliktu doch\u00e1z\u00ed, pokud jsou dv\u011b nekompatibiln\u00ed funkce nakonfigurov\u00e1ny p\u0159\u00edmo v konfiguraci serveru nebo pokud nakonfigurovan\u00e9 funkce zahrnuj\u00ed r\u016fzn\u00e9 verze nekompatibiln\u00ed funkce.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Pokuste se zadat do souboru server.xml kompatibiln\u00ed verzi nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 zp\u016fsobuj\u00ed konflikt. Pokud nem\u00e1te k dispozici jin\u00e9 verze, nejsou nakonfigurovan\u00e9 funkce mezi sebou kompatibiln\u00ed a nelze je sou\u010dasn\u011b nakonfigurovat.
 
-UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: Pro prom\u011bnnou prost\u0159ed\u00ed PREFERRED_FEATURE_VERSIONS nebyla nalezena hodnota
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=V konfiguraci m\u00e1te funkce bez verze a prom\u011bnnou prost\u0159ed\u00ed PREFERRED_FEATURE_VERSIONS nelze nal\u00e9zt
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Zkontrolujte, zda prom\u011bnn\u00e1 prost\u0159ed\u00ed PREFERRED_FEATURE_VERSIONS existuje a je spr\u00e1vn\u011b zapsan\u00e1.
+# CWWKF0048E  {0} = the unknown platform value in the environment variable
+UNKNOWN_PLATFORM_VALUE_ENV_VAR=CWWKF0048E: The {0} hodnota prom\u011bnn\u00e9 prost\u0159ed\u00ed platformy PREFERRED_PLATFORM_VERSIONS neobsahuje platnou verzi.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.explanation=Ka\u017ed\u00e1 hodnota v prom\u011bnn\u00e9 prost\u0159ed\u00ed platformy mus\u00ed b\u00fdt zn\u00e1m\u00e1 platforma. Zn\u00e1m\u00e9 platformy jsou verze javaee, jakartaee, pop\u0159 microProfile.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.useraction=Zkontrolujte, zda prom\u011bnn\u00e1 prost\u0159ed\u00ed obsahuje pouze zn\u00e1m\u00e9 platformy.
 
-# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: Prom\u011bnn\u00e1 prost\u0159ed\u00ed PREFERRED_FEATURE_VERSIONS neobsahuje hodnotu pro {0}
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Pro ka\u017edou funkci bez verze ve va\u0161\u00ed konfiguraci mus\u00ed b\u00fdt v r\u00e1mci parametru PREFERRED_FEATURE_VERSIONS uvedena up\u0159ednost\u0148ovan\u00e1 hodnota verze.
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=P\u0159idejte hodnotu v parametru PREFERRED_FEATURE_VERSIONS pro funkci
+# CWWKF0049E  {0} = set of duplicate platforms
+DUPLICATE_PLATFORMS=CWWKF0049E: N\u00e1sleduj\u00edc\u00ed nakonfigurovan\u00e9 verze platformy jsou v konfliktu: {0}.
+DUPLICATE_PLATFORMS.explanation=Pro stejnou platformu byla zad\u00e1na v\u00edce ne\u017e jedna verze.
+DUPLICATE_PLATFORMS.useraction=Odeberte v\u0161echny verze platformy krom\u011b jedn\u00e9.
+
+# CWWKF0050E  {0} = the versionless features that cannot be resolved
+UNRESOLVED_VERSIONLESS_FEATURE=CWWKF0050E: The {0} funkce bez verze nelze vy\u0159e\u0161it
+UNRESOLVED_VERSIONLESS_FEATURE.explanation=Funkce bez verze pot\u0159ebuj\u00ed ur\u010denou platformu, ne\u017e je lze vy\u0159e\u0161it.
+UNRESOLVED_VERSIONLESS_FEATURE.useraction=Ujist\u011bte se, \u017ee je pro va\u0161i funkci specifikov\u00e1n prvek platformy.
+
+# CWWKF0051I  {0} = the versionless features: {1} = the features that were resolved from the versionless features
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: The {0} funkce bez verze vy\u0159e\u0161eny {1}
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=Verzovan\u00e9 funkce, kter\u00e9 byly vy\u0159e\u0161eny z funkc\u00ed bez verze.
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# CWWKF0052E  {0} = the unknown platform
+UNKNOWN_PLATFORM_ELEMENT=CWWKF0052E: The {0} platforma nen\u00ed platn\u00e1
+UNKNOWN_PLATFORM_ELEMENT.explanation=Zadan\u00fd prvek platformy nen\u00ed zn\u00e1m\u00e1 platforma. Zn\u00e1m\u00e9 platformy jsou verze javaee, jakartaee, pop\u0159 microProfile
+UNKNOWN_PLATFORM_ELEMENT.useraction=Ujist\u011bte se, \u017ee nakonfigurovan\u00e1 platforma je zn\u00e1m\u00e1 platforma.
+
+# CWWKF0053I  {0} = the resolved platforms
+RESOLVED_PLATFORM=CWWKF0053I: Vybr\u00e1no rozli\u0161en\u00ed funkce {0} platformy.
+RESOLVED_PLATFORM.explanation=Verze platformy byly vybr\u00e1ny tak, aby umo\u017e\u0148ovaly rozli\u0161en\u00ed funkc\u00ed bez verze. Verze platformy byly z\u00edsk\u00e1ny z prvk\u016f platformy, z verzovan\u00fdch funkc\u00ed nebo z prom\u011bnn\u00e9 prost\u0159ed\u00ed.
+RESOLVED_PLATFORM.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# CWWKF0054E  {0} = the versionless feature that cannot be resolved: {1} = the resolved platform
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM=CWWKF0054E: The {0} funkce bez verze nem\u00e1 verzi, kter\u00e1 pat\u0159\u00ed do {1} plo\u0161ina.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.explanation=Pro verzi platformy nen\u00ed k dispozici \u017e\u00e1dn\u00e1 verze funkce. Rozli\u0161en\u00ed funkce bylo dokon\u010deno, ale nebyla vybr\u00e1na verze funkce.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=Bu\u010f odeberte funkci bez verze, zadejte jinou verzi platformy nebo pou\u017eijte funkci s verz\u00ed.
+
+# CWWKF0055E  {0} = the versionless features
+NO_RESOLVED_PLATFORM=CWWKF0055E: The {0} funkce bez verze nemaj\u00ed nakonfigurovanou platformu.
+NO_RESOLVED_PLATFORM.explanation=Ka\u017ed\u00fd typ funkce bez verze mus\u00ed m\u00edt nakonfigurovanou platformu. Pokud jsou nakonfigurov\u00e1ny funkce javaee nebo jakartaee bez verze, vy\u017eaduj\u00ed odpov\u00eddaj\u00edc\u00ed platformu javaee nebo jakartaee. Li microProfile jsou nakonfigurov\u00e1ny funkce bez verze, vy\u017eaduj\u00ed a microProfile plo\u0161ina.
+NO_RESOLVED_PLATFORM.useraction=P\u0159idejte bu\u010f prvek platformy, funkci s verz\u00ed nebo prom\u011bnnou prost\u0159ed\u00ed.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

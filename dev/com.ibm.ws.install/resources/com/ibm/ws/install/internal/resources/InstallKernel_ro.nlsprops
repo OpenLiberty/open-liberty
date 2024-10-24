@@ -950,3 +950,19 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: ID-ul de cheie public\u0103 {0} nu se p
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Este posibil s\u0103 se fi modificat cheia public\u0103. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=\u00cen cazul \u00een care cheia public\u0103 este un fi\u0219ier local, asigura\u021bi-v\u0103 c\u0103 furniza\u021bi fi\u0219ierul corect.
 
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: Platforma {0} nu a putut fi g\u0103sit\u0103.
+ERROR_MISSING_PLATFORM_NAME.explanation=Numele platformei care este specificat de variabila de configurare sau de mediu nu a fost g\u0103sit.
+ERROR_MISSING_PLATFORM_NAME.useraction=Verifica\u021bi ortografia numelui \u0219i versiunii platformei, de exemplu, microProfile-6.1 .
+
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: Platforma nu a putut fi determinat\u0103. Urm\u0103toarele caracteristici f\u0103r\u0103 versiune nu pot fi instalate: {0} .
+ERROR_NO_DERIVED_PLATFORM.explanation= Platforma nu a fost setat\u0103 sau nu a putut fi derivat\u0103 din caracteristicile versiuni existente. 
+ERROR_NO_DERIVED_PLATFORM.useraction=Ad\u0103uga\u021bi o platform\u0103 pentru func\u021bii f\u0103r\u0103 versiune.
+
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: Comanda installFeature nu accept\u0103 func\u021bii f\u0103r\u0103 versiune.
+ERROR_VERSIONLESS_INSTALL.explanation= Caracteristica pe care a\u021bi \u00eencercat s\u0103 o instala\u021bi folosind comanda installFeature nu are o versiune specificat\u0103 \u00een numele caracteristicii.
+ERROR_VERSIONLESS_INSTALL.useraction=Utiliza\u021bi comanda installServerFeatures , care accept\u0103 func\u021bii f\u0103r\u0103 versiune, sau instala\u021bi o alt\u0103 caracteristic\u0103 care nu este f\u0103r\u0103 versiune.
+
+LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Instalarea utiliz\u00e2nd urm\u0103toarele platforme: {0} .
+LOG_INSTALL_WITH_PLATFORM.explanation=Versiunile de platform\u0103 specificate au fost utilizate pentru a rezolva func\u021biile f\u0103r\u0103 versiune.
+LOG_INSTALL_WITH_PLATFORM.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+

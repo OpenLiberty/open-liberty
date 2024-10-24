@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -29,14 +29,17 @@ Import-Package: \
 
 Private-Package: io.openliberty.microprofile.openapi31.internal.services.impl
 
--dsannotations: io.openliberty.microprofile.openapi31.internal.services.impl.ConfigFieldProvider31Impl
+-dsannotations-options: inherit
+-dsannotations: io.openliberty.microprofile.openapi31.internal.services.impl.*
 
 WS-TraceGroup: MPOPENAPI
 
 -buildpath: \
     io.openliberty.io.smallrye.openapi3.core;version=latest,\
+    io.openliberty.io.smallrye.jandex3;version=latest,\
     io.openliberty.microprofile.openapi.2.0.internal;version=latest,\
     io.openliberty.org.eclipse.microprofile.openapi.3.1,\
+    com.ibm.ws.adaptable.module;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\

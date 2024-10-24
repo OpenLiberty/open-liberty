@@ -751,7 +751,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             pretty = status.toString();
         }
 
-        if (authResult.getStatus().equals(AuthResult.RETURN)) {
+        if (AuthStatus.SEND_SUCCESS != status && authResult.getStatus().equals(AuthResult.RETURN)) {
             Tr.info(tc, "JASPI_PROVIDER_FAILED_AUTHENTICATE", new Object[] { status, jaspiRequest.getHttpServletRequest().getRequestURI(),
                                                                              jaspiProviderServiceRef.getService() != null ? jaspiProviderServiceRef.getService().getClass() : null });
         }

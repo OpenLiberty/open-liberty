@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -42,8 +42,8 @@ healthcheck.bean.call.exception.CWMMH0050E.explanation=Ur\u010den\u00e1 metoda v
 healthcheck.bean.call.exception.CWMMH0050E.useraction=P\u0159ezkoumejte metodu vol\u00e1n\u00ed v r\u00e1mci objektu typu HealthCheck bean, abyste identifikovali v\u00fdjimku, ke kter\u00e9 do\u0161lo.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMMH0052W=CWMMH0052W: Metoda {0} implementuj\u00edc\u00ed HealthCheckResponse v aplikaci {1} v modulu {2}, nahl\u00e1sila stav {3} s daty {4}.
-healthcheck.application.down.CWMMH0052W.explanation=Stav DOWN m\u016f\u017ee zp\u016fsobit, \u017ee slu\u017eba monitorov\u00e1n\u00ed provede na tomto serveru akci.
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: Odezva {0} implementuj\u00edc\u00ed HealthCheckv aplikaci {1} v modulu {2}nahl\u00e1sila stav {3} pro kontrolu stavu {4}a s daty {5}.
+healthcheck.application.down.CWMMH0052W.explanation=Stav DOWN m\u016f\u017ee zp\u016fsobit, \u017ee slu\u017eba monitorov\u00e1n\u00ed bude na tomto serveru pracovat.
 healthcheck.application.down.CWMMH0052W.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. Toto varov\u00e1n\u00ed je z\u00e1znamem stavu DOWN.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet

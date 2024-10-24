@@ -27,6 +27,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -35,14 +37,15 @@ import concurrent.mp.fat.v13.ee9.web.MPContextProp1_3_EE9_TestServlet;
 @RunWith(FATRunner.class)
 public class MPContextProp1_3_EE9_Test extends FATServletClient {
 
+    private static final String SERVER_NAME = "com.ibm.ws.concurrent.mp.fat.1.3.ee9";
     private static final String APP_NAME = "MPContextProp1_3_EE9_App";
 
-    @Server("com.ibm.ws.concurrent.mp.fat.1.3.ee9")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = MPContextProp1_3_EE9_TestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.repeat("com.ibm.ws.concurrent.mp.fat.1.3.ee9", FATSuite.MP61_CTX13, FATSuite.MP50_CTX13);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, true, MicroProfileActions.MP70_EE11, MicroProfileActions.MP61, MicroProfileActions.MP50);
 
     @BeforeClass
     public static void setUp() throws Exception {

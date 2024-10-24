@@ -38,7 +38,7 @@ test.project: true
 # has dependencies on these features, they must be be explicitly added to
 # the tested features list.
 
-tested.features: connectors-2.1, xmlbinding-4.0, noship-1.0
+tested.features: connectors-2.1, xmlbinding-4.0
 
 -sub: *.bnd
 

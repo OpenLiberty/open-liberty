@@ -60,12 +60,18 @@ import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.cdi.liberty.ExtensionMetaData;
+import com.ibm.ws.classloading.LibertyClassLoadingService;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
     private static final TraceComponent tc = Tr.register(WebSphereCDIDeploymentImpl.class);
+
+    @SuppressWarnings("rawtypes")
+    private static final ServiceCaller<LibertyClassLoadingService> classLoadingServiceCaller = new ServiceCaller<LibertyClassLoadingService>(WebSphereCDIDeploymentImpl.class,
+                                                                                                                                             LibertyClassLoadingService.class);
 
     private final String id;
     private final Map<String, WebSphereBeanDeploymentArchive> deploymentDBAs = new HashMap<String, WebSphereBeanDeploymentArchive>();
@@ -116,7 +122,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         //create a resource injection service for this deployment
         this.injectionServices = new WebSphereInjectionServicesImpl(this);
         this.cdiRuntime = cdiRuntime;
-        this.cdi = new CDIImpl(cdiRuntime);
+        this.cdi = new CDIImpl(cdiRuntime, this);
     }
 
     /**
@@ -473,12 +479,24 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
             ClassLoader oldCL = null;
 
             try {
-                for (ClassLoader classLoader : extensionClassLoaders) {
+                for (final ClassLoader classLoader : extensionClassLoaders) {
+
+                    //We had a customer who wishes to ensure the TCCL is the same in the constructor and in the observer methods.
+                    //This is only possible for one TCCL per application due to limitations in weld.
+                    boolean matchesAppTCCL = classLoadingServiceCaller.run((@SuppressWarnings("rawtypes") LibertyClassLoadingService cl) -> {
+                        return cl.isThreadContextClassLoaderForAppClassLoader(application.getTCCL(), classLoader);
+                    }).orElseThrow(() -> new IllegalStateException("ClassLoadingService missing"));;
+
+                    ClassLoader newTCCL = classLoader;
+                    if (matchesAppTCCL) {
+                        newTCCL = application.getTCCL();
+                    }
+
                     //This ensures that oldCL will be set to the TCCL from before the first itteration of the loop
                     if (oldCL != null) {
-                        CDIUtils.getAndSetLoader(classLoader);
+                        CDIUtils.getAndSetLoader(newTCCL);
                     } else {
-                        oldCL = CDIUtils.getAndSetLoader(classLoader);
+                        oldCL = CDIUtils.getAndSetLoader(newTCCL);
                     }
 
                     Iterable<Metadata<Extension>> extensionIt = bootstrap.loadExtensions(classLoader);

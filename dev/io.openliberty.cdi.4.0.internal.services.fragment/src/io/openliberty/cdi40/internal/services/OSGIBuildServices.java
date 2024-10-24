@@ -32,7 +32,7 @@ public class OSGIBuildServices implements BuildServices {
     public AnnotationBuilderFactory annotationBuilderFactory() {
         //Use OSGi to lookup an instance of BuildServices
         //OSGIBuildServices itself will not be found because it is only Service Loaded and is not an OSGi Service
-        Optional<AnnotationBuilderFactory> factoryOpt = ServiceCaller.callOnce(OSGIBuildServices.class, BuildServices.class,
+        Optional<AnnotationBuilderFactory> factoryOpt = ServiceCaller.runOnce(OSGIBuildServices.class, BuildServices.class,
                                                                                (bs) -> {
                                                                                    return bs.annotationBuilderFactory();
                                                                                });

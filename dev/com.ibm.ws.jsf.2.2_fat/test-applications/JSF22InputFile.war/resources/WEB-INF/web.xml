@@ -36,4 +36,10 @@
     <welcome-file-list>
         <welcome-file>fileUploadTest.jsf</welcome-file>
     </welcome-file-list>
+
+    <!-- Required for testAjaxInputFile to ensure any errors are alerted  -->
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
 </web-app>

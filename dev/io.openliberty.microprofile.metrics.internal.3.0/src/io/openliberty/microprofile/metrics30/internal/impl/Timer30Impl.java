@@ -235,14 +235,30 @@ public class Timer30Impl implements Timer {
         return elapsedTime;
     }
 
+    /**
+     * Returns a map of timer buckets
+     *
+     * @return a map of timer buckets
+     */
     public Map<String, Map<Double, BucketValue>> getBuckets() {
         return manager.getBuckets();
     }
 
+    /**
+     * Returns user configured list of percentiles
+     *
+     * @return user configured list of percentiles
+     */
     public double[] getConfiguredPercentiles() {
         return percentiles;
     }
 
+    /**
+     * Sets and returns user configured list of percentiles
+     *
+     * @param metadata
+     * @return user configured list of percentiles
+     */
     public double[] setConfiguredPercentiles(Metadata metadata) {
         Optional<String> percentileConfiguration = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.percentiles", String.class);
         String metricName = metadata.getName();

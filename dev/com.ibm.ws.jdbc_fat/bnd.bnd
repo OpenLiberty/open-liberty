@@ -23,7 +23,7 @@ src: \
 	test-applications/dsdfat_global_lib/src
 
 fat.project: true
-fat.test.databases: true
+tested.features: databaseRotation
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 # fat.test.use.remote.docker: true

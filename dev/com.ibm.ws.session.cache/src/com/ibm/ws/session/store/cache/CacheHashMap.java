@@ -306,7 +306,14 @@ public class CacheHashMap extends BackedHashMap {
                     // ignore - some JCache providers might raise this instead of returning null when modified during iterator
                     entry = null;
                 }
-                String id = entry == null ? null : entry.getKey();
+                String id;
+                try {
+                    id = entry == null ? null : entry.getKey();
+                } catch (ClassCastException e) {
+                    id = null;
+                    if (trace && tc.isDebugEnabled())
+                        tcInvoke(tcSessionMetaCache, "Ignore unexpected entry key = ", entry.getKey());
+                }
                 ArrayList<?> value = id == null ? null : entry.getValue();
 
                 if (trace && tc.isDebugEnabled())
@@ -883,10 +890,16 @@ public class CacheHashMap extends BackedHashMap {
                 SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
 
                 long curAccessTime = sess.getCurrentAccessTime();
-                if (sessionInfo == null || sessionInfo.getLastAccess() != curAccessTime) {
+                if (sessionInfo == null) {
                     if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "session not available in backend " + id);
+                    updateCount = 0; // means an invalidation thread beat us
+                } else if (sessionInfo.getLastAccess() != curAccessTime) {
+                    if (trace && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "session current access time: " + curAccessTime);
-                    updateCount = 0;
+                        Tr.debug(this, tc, "session last - current time different: " + (sessionInfo.getLastAccess() - curAccessTime));
+                    }
+                    updateCount = 0; 
                 } else if (sessionInfo.getLastAccess() >= nowTime) { // avoid setting last access when the cache already has a later time
                     updateCount = 1; // be consistent with Statement.executeUpdate which returns 1 when the row matches but no changes are made
                 } else {
@@ -1177,7 +1190,14 @@ public class CacheHashMap extends BackedHashMap {
                 // ignore - some JCache providers might raise this instead of returning null when modified during iterator
                 entry = null;
             }
-            String id = entry == null ? null : entry.getKey();
+            String id;
+            try {
+                id = entry == null ? null : entry.getKey();
+            } catch (ClassCastException e) {
+                id = null;
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "Ignore unexpected entry key = ", entry.getKey());
+            }
             ArrayList<?> value = id == null ? null : entry.getValue();
 
             if (trace && tc.isDebugEnabled())

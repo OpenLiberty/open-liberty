@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,9 @@
  *******************************************************************************/
 package com.ibm.websphere.simplicity;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,9 +44,9 @@ public class Machine {
     private final ConnectionInfo connInfo;
     protected OperatingSystem os;
     private String bootstrapFileKey;
-    private String osVersion;
-    private String rawOSName;
-    private String tempDir;
+    protected String osVersion;
+    protected String rawOSName;
+    protected String tempDir;
     private static int[] existingWindowsProcesses;
     protected String workDir;
     protected boolean isLocal = false;
@@ -99,7 +101,7 @@ public class Machine {
             if (connInfo.getHost().contains("localhost"))
                 machine = getLocalMachine();
             else
-                machine = new Machine(connInfo);
+                machine = RemoteMachineFactory.createRemoteMachine(connInfo);
             machineCache.put(connInfo, machine);
         }
         Log.exiting(c, "getMachine", machine);
@@ -229,6 +231,19 @@ public class Machine {
     }
 
     /**
+     * Constructs a RemoteFile object that represents the path to the remote file indicated by the
+     * input path. Note that the actual file is not guaranteed to exist. The input path may
+     * represent either a file or a directory.
+     *
+     * @param  path     The absolute path to a file on the remote device.
+     * @param  encoding The character set the file is encoded in
+     * @return          A RemoteFile representing the input abstract path name
+     */
+    public RemoteFile getFile(String path, Charset encoding) {
+        return new RemoteFile(this, path, encoding);
+    }
+
+    /**
      * Get the {@link OperatingSystem} that this Machine is running
      *
      * @return A representation of the operating system of the remote machine
@@ -258,17 +273,16 @@ public class Machine {
             String[] params = null;
             OperatingSystem os = getOperatingSystem();
             if (os == OperatingSystem.WINDOWS) {
-                cmd = "cmd.exe";
-                params = new String[] { "/C", "ver" };
+                cmd = "ver";
             } else if (os == OperatingSystem.MAC) {
-                cmd = "/bin/sh";
-                params = new String[] { "-c", "\"sysctl", "kern.version\"" };
+                cmd = "sysctl";
+                params = new String[] { "kern.version" };
             } else {
-                cmd = "/bin/sh";
-                params = new String[] { "-c", "\"cat", "/proc/version\"" };
+                cmd = "cat";
+                params = new String[] { "/proc/version" };
             }
-            Log.finer(c, method, "Command to get OS version: " + cmd + " " + params);
-            this.osVersion = LocalProvider.executeCommand(this, cmd, params, null, null).getStdout().trim();
+            Log.finer(c, method, "Command to get OS version: " + cmd + " " + Arrays.toString(params));
+            this.osVersion = LocalProvider.executeCommand(this, cmd, params, null, null, 0).getStdout().trim();
         }
         Log.exiting(c, method, this.osVersion);
         return this.osVersion;
@@ -439,13 +453,7 @@ public class Machine {
      * @throws Exception
      */
     public ProgramOutput execute(String cmd, String[] parameters, String workDir, Properties envVars, int timeout) throws Exception {
-        // On iSeries, we should be adding the qsh -c flag to the start of any command.
-        // This means commands are executed in a native-like shell, rather than a
-        // PASE environment.
-        if (OperatingSystem.ISERIES.compareTo(getOperatingSystem()) == 0) {
-            cmd = "qsh -c " + cmd;
-        }
-        return LocalProvider.executeCommand(this, cmd, parameters, workDir, envVars);
+        return LocalProvider.executeCommand(this, cmd, parameters, workDir, envVars, timeout);
     }
 
     /**
@@ -472,7 +480,7 @@ public class Machine {
      * @return                    The result of the command
      * @throws ExecutionException
      */
-    public AsyncProgramOutput executeAsync(String cmd, String[] parameters) throws Exception {
+    public ProgramOutput executeAsync(String cmd, String[] parameters) throws Exception {
         return LocalProvider.executeCommandAsync(this, cmd, parameters, workDir, null);
     }
 

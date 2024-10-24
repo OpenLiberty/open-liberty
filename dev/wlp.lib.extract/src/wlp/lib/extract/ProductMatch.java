@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package wlp.lib.extract;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -43,6 +44,8 @@ public final class ProductMatch {
     public static final int INVALID_EDITION = -3;
     public static final int INVALID_INSTALL_TYPE = -4;
     public static final int INVALID_LICENSE = -5;
+    public static final String NOT_OPENLIBERTY_PRODUCTID = "com.ibm.websphere.appserver";
+    public static final String OPENLIBERTY_PRODUCTID = "io.openliberty";
 
     /**
      * @param substring
@@ -55,11 +58,12 @@ public final class ProductMatch {
             version = getValue(substring);
         } else if (substring.startsWith("productEdition")) {
             String editionStr = getValue(substring);
-            for (int startIndex = 0, endIndex = editionStr.indexOf(',');; startIndex = endIndex, endIndex = editionStr.indexOf(',', ++startIndex)) {
-                editions.add(editionStr.substring(startIndex, endIndex == -1 ? editionStr.length() : endIndex));
-                if (endIndex == -1) {
-                    break;
-                }
+            Collections.addAll(editions, editionStr.split(","));
+        } else if (substring.startsWith("edition")) {
+            //If editions contains Open, add supported WebSphere editions.
+            if (!editions.isEmpty() && editions.contains("Open")) {
+                String editionStr = getValue(substring);
+                Collections.addAll(editions, editionStr.split(","));
             }
         } else if (substring.startsWith("productInstallType")) {
             installType = getValue(substring);
@@ -68,6 +72,13 @@ public final class ProductMatch {
         }
     }
 
+    /**
+     * This method matches Liberty properties against feature metadata to find out if it's supported .
+     * Special case: Open Liberty properties file with `Open_Web` edition means it's a Core edition.
+     * Features that are not valid in Core edition has editions=[Open], otherwise all OL features have empty editions list.
+     *
+     * @param props - Liberty properties
+     */
     public int matches(Properties props) {
         if (productId.equals(props.getProperty("com.ibm.websphere.productId"))) {
             if (version != null) {

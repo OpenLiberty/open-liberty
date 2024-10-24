@@ -330,7 +330,7 @@ public class FailoverTest1 extends FailoverTest {
     }
 
     @Test
-    @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogClosedException", })
+    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException", "java.lang.IllegalStateException" })
     public void testHADBNonRecoverableStartupFailover() throws Exception {
         final String method = "testHADBNonRecoverableStartupFailover";
 

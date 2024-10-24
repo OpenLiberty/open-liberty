@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E: Impossibile creare un timer per l''adattato
 J2CA8510.create.timed.out.explanation=La creazione del timer sta richiedendo pi\u00f9 tempo del previsto.
 J2CA8510.create.timed.out.useraction=Verificare se vi \u00e8 un carico elevato sul sistema ed eventualmente ridurlo.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: La richiesta del punto di controllo del server ha avuto esito negativo perch\u00e9 l''adattatore di risorse {0} ha creato un timer.
+J2CA8511.create.timer.failed.checkpoint.explanation=Liberty non supporta gli adattatori di risorse che creano un timer mentre le applicazioni vengono avviate quando viene richiesto un punto di controllo del server.
+J2CA8511.create.timer.failed.checkpoint.useraction=Configurare il punto di controllo in modo che si verifichi prima dell'avvio dell'applicazione utilizzando l'opzione beforeAppAvvia punto di controllo server.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: non \u00e8 possibile creare un timer per l''adattatore di risorse {0} durante la richiesta del punto di controllo del server.
+J2CA8512.create.timer.not.supported.checkpoint.explanation=Liberty non supporta la creazione di timer da parte degli adattatori di risorse mentre le applicazioni vengono avviate quando \u00e8 necessario un punto di controllo del server.
+J2CA8512.create.timer.not.supported.checkpoint.useraction=Configurare il punto di controllo in modo che si verifichi prima dell'avvio dell'applicazione utilizzando l'opzione beforeAppAvvia punto di controllo server.
+
 J2CA8600.work.start.timeout=J2CA8600E: Il lavoro {0} inoltrato dall''adattatore di risorse {1} non \u00e8 iniziato in {2} millisecondi.
 J2CA8600.work.start.timeout.explanation=Il tentativo di avviare il lavoro \u00e8 scaduto.
 J2CA8600.work.start.timeout.useraction=Verificare se vi \u00e8 un carico elevato sul sistema ed eventualmente ridurlo, oppure contattare il vendor dell'adattatore di risorse per stabilire se occorre incrementare il timeout del lavoro utilizzato quando si inoltra al gestore dei lavori JCA.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: La richiesta del punto di controllo del server ha avuto esito negativo perch\u00e9 l''adattatore risorse {0} ha inoltrato il lavoro {1}.
+J2CA8601.work.submit.failed.checkpoint.explanation=Liberty non supporta gli adattatori di risorse che inoltrano il lavoro mentre le applicazioni vengono avviate quando \u00e8 richiesto un checkpoint del server.
+J2CA8601.work.submit.failed.checkpoint.useraction=Configurare il punto di controllo in modo che si verifichi prima dell'avvio dell'applicazione utilizzando l'opzione beforeAppAvvia punto di controllo server.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: Il lavoro {0} inoltrato dall''adattatore di risorse {1} \u00e8 stato rifiutato durante la richiesta di checkpoint del server.
+J2CA8602.work.submit.not.supported.checkpoint.explanation=Liberty non supporta l'inoltro del lavoro da parte degli adattatori di risorse mentre le applicazioni vengono avviate quando \u00e8 richiesto un punto di controllo del server.
+J2CA8602.work.submit.not.supported.checkpoint.useraction=Configurare il punto di controllo in modo che si verifichi prima dell'avvio dell'applicazione utilizzando l'opzione beforeAppAvvia punto di controllo server.
 
 # 8622 deleted
 
@@ -168,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=Consultare la documentazione del prov
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Gli adattatori di risorse di archivi bean non sono supportati.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Il file beans.xml nella directory META-INF sar\u00e0 ignorato poich\u00e9 gli adattatori di risorse di archivi bean gestiti CDI non sono supportati.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Rimuovere il file beans.xml dalla directory META-INF poich\u00e9 gli adattatori di risorse di archivi bean gestiti CDI non sono supportati.
-
-
-

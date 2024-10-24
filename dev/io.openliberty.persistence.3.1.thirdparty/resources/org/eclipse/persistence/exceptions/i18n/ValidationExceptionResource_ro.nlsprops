@@ -261,7 +261,7 @@
 
 7149=Atributul cheii primare compuse [{2}] de tipe [{4}] a clasei de intrare [{0}] ar trebui s\u0103 fie de acela\u015fi tip a\u015fa cum a fost definit \u00een clasa sa de chei primare [{1}]. Astfel, ar trebui s\u0103 fie de tip [{3}].
 
-7150=Specifica\u0163ie invalid\u0103 a cheii primare compuse. Numele c\u00e2mpurilor de chei primare sau propriet\u0103\u0163i din clasa de chei primare [{1}] \u015fi cele ale clasei de bean entitate [{0}] trebuie s\u0103 corespund\u0103 \u015fi tipurile acestea trebuiesc s\u0103 fie acelea\u015fi. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i specificat elementele ID pentru atributele corespunz\u0103toare \u00een XML \u015fi/sau un @Id \u00een c\u00e2mpurile corespunz\u0103toare sau propriet\u0103\u0163ile clasei de entit\u0103\u0163i.
+7150=Specifica\u0163ie invalid\u0103 a cheii primare compuse. Numele c\u00e2mpurilor de chei primare sau propriet\u0103\u0163i din clasa de chei primare [{1}] \u015fi cele ale clasei de bean entitate [{0}] trebuie s\u0103 corespund\u0103 \u015fi tipurile acestea trebuiesc s\u0103 fie acelea\u015fi. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i specificat elementele ID pentru atributele corespunz\u0103toare \u00een XML \u015fi/sau un @Id \u00een c\u00e2mpurile corespunz\u0103toare sau propriet\u0103\ufffd\ufffdile clasei de entit\u0103\u0163i.
 
 7151=Tipul [{1}] pentru atributul [{0}] din clasa de entit\u0103\u0163i [{2}] nu este un tip valid pentru o mapare enumerat\u0103. Atributul trebuie definit ca \u015fi enumerare Java.
 
@@ -633,9 +633,11 @@
 
 7356=Procedur\u0103: [{1}] nu poate fi executat deoarece {0} nu suport\u0103 momentan parametrii de ie\u015fire multiplii
 
-7357=URL-ul [{0}] pentru resursa [{1}] face parte dintr-o r\u0103d\u0103cin\u0103 de persisten\u021b\u0103 valid\u0103, a\u0219a cum este definit\u0103 de Specifica\u021bia JPA.
+7357="[{0} ]" URL pentru "[{1} ]" nu apar\u021bine unei r\u0103d\u0103cini valide de persisten\u021b\u0103, a\u0219a cum este definit\u0103 de specifica\u021bia Jakarta Persistence
 
 7358=A fost furnizat un nume de serviciu ASM incorect.
 
 7359=Nu exist\u0103 niciun serviciu ASM disponibil.
+
+7360=Parola bazei de date a fost criptat\u0103 de un algoritm depreciat. Recripta\u021bi-l prin `passwordUpdate.sh` din eclipselink.zip pachet
 

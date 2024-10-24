@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,9 @@ package io.openliberty.microprofile.openapi20.internal.services;
 
 import java.util.Collection;
 
+import io.openliberty.microprofile.openapi20.internal.utils.IndexUtils;
 import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.runtime.scanner.FilteredIndexView;
 
 /**
  * Provides the {@link ConfigField ConfigFields} for a specific version of the {@link OpenApiConfig} interface
@@ -32,6 +34,15 @@ public interface ConfigFieldProvider {
      * @return the fields which can be read from {@code OpenApiConfig}
      */
     public Collection<ConfigField> getConfigFields();
+
+    /**
+     * Get the {@link ConfigField ConfigFields} which affect the building of the Jandex index.
+     * <p>
+     * This should include all the config fields used by {@link IndexUtils} and {@link FilteredIndexView} to choose which classes to index.
+     *
+     * @return the fields which affect class indexing
+     */
+    public Collection<ConfigField> getIndexingConfigFields();
 
     /**
      * Serialize the configured servers from the config for the given path

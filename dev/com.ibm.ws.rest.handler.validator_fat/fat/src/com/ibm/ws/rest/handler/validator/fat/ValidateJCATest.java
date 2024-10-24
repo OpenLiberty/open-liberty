@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -102,7 +102,7 @@ public class ValidateJCATest extends FATServletClient {
      */
     @Test
     public void testApplicationAuthForConnectionFactoryWithDefaultUser() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=application").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/cf1?auth=application").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "cf1", json.getString("uid"));
         assertEquals(err, "cf1", json.getString("id"));
@@ -128,7 +128,7 @@ public class ValidateJCATest extends FATServletClient {
     public void testApplicationAuthForConnectionFactoryWithSpecifiedUser() throws Exception {
         String encodedUser = URLEncoder.encode("user\u217b1", "UTF-8");
         String encodedPwd = URLEncoder.encode("1user\u217b", "UTF-8");
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=application&headerParamsURLEncoded=true")
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/cf1?auth=application&headerParamsURLEncoded=true")
                         .requestProp("X-Validation-User", encodedUser)
                         .requestProp("X-Validation-Password", encodedPwd);
         JsonObject json = request.method("GET").run(JsonObject.class);
@@ -157,7 +157,7 @@ public class ValidateJCATest extends FATServletClient {
     @AllowedFFDC("java.sql.SQLNonTransientConnectionException")
     @Test
     public void testApplicationAuthForJCADataSourceWithSpecifiedUserFails() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/ds5?auth=application")
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/ds5?auth=application")
                         .requestProp("X-Validation-User", "user5")
                         .requestProp("X-Validation-Password", "5user");
         JsonObject json = request.method("GET").run(JsonObject.class);
@@ -213,7 +213,9 @@ public class ValidateJCATest extends FATServletClient {
      */
     @Test
     public void testConnectionFactoryNotFound() throws Exception {
-        String response = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/NotAConfiguredConnectionFactory").expectCode(404).run(String.class);
+        String response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/NotAConfiguredConnectionFactory")
+                        .expectCode(404)
+                        .run(String.class);
         String err = "unexpected response: " + response;
         assertTrue(err, response.contains("CWWKO1500E") && response.contains("connectionFactory") && response.contains("NotAConfiguredConnectionFactory"));
     }
@@ -223,7 +225,7 @@ public class ValidateJCATest extends FATServletClient {
      */
     @Test
     public void testContainerAuthForConnectionFactoryWithDefaultAuthData() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=container").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/cf1?auth=container").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "cf1", json.getString("uid"));
         assertEquals(err, "cf1", json.getString("id"));
@@ -248,7 +250,8 @@ public class ValidateJCATest extends FATServletClient {
     @Test
     public void testContainerAuthForConnectionFactoryWithSpecifiedAuthData() throws Exception {
         String encodedAuthAlias = URLEncoder.encode("auth-\u2171", "UTF-8");
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1?auth=container&authAlias=" + encodedAuthAlias).run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/cf1?auth=container&authAlias=" + encodedAuthAlias)
+                        .run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "cf1", json.getString("uid"));
         assertEquals(err, "cf1", json.getString("id"));
@@ -274,7 +277,9 @@ public class ValidateJCATest extends FATServletClient {
     @Test
     public void testCustomLoginModuleForJCADataSource() throws Exception {
         String encodedLoginNameProp = "loginName=" + URLEncoder.encode("\u2159lmUser", "UTF-8"); // \u2159 is '1/6'
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry&headerParamsURLEncoded=true")
+        JsonObject json = FATSuite
+                        .createHttpsRequestWithAdminUser(server,
+                                                         "/ibm/api/validation/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry&headerParamsURLEncoded=true")
                         .method("GET")
                         .requestProp("X-Login-Config-Props", encodedLoginNameProp + ",loginNum=6")
                         .run(JsonObject.class);
@@ -302,7 +307,7 @@ public class ValidateJCATest extends FATServletClient {
      */
     @Test
     public void testCustomLoginPropertyThatLacksProperDelimiter() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry")
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/ds5?auth=container&loginConfig=customLoginEntry")
                         .method("GET")
                         .requestProp("X-Login-Config-Props", "loginName|myName") // correct delimiter is '=', not '|'
                         .run(JsonObject.class);
@@ -326,7 +331,7 @@ public class ValidateJCATest extends FATServletClient {
     @AllowedFFDC("java.io.IOError")
     @Test
     public void testErrorOnTestConnection() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1")
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/cf1")
                         .requestProp("X-Validation-User", "testerruser1") // this user name is a signal to force a testConnection failure
                         .requestProp("X-Validation-Password", "1testerruser");
         JsonObject json = request.method("GET").run(JsonObject.class);
@@ -371,7 +376,7 @@ public class ValidateJCATest extends FATServletClient {
     @AllowedFFDC("javax.resource.spi.ResourceAllocationException")
     @Test
     public void testFailTestConnection() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1")
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/cf1")
                         .requestProp("X-Validation-User", "testfailuser1") // this user name is a signal to force a testConnection failure
                         .requestProp("X-Validation-Password", "1testfailuser");
         JsonObject json = request.method("GET").run(JsonObject.class);
@@ -401,7 +406,7 @@ public class ValidateJCATest extends FATServletClient {
      */
     @Test
     public void testJaasLoginModuleForContainerAuthWithLoginProperties() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/jaasLoginCF?auth=container")
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/jaasLoginCF?auth=container")
                         .requestProp("X-Login-Config-Props", "loginName=JAASUser,loginNum=6")
                         .run(JsonObject.class);
         String err = "Unexpected json response: " + json;
@@ -428,7 +433,7 @@ public class ValidateJCATest extends FATServletClient {
     @AllowedFFDC("javax.resource.spi.SecurityException")
     @Test
     public void testJaasLoginModuleForContainerAuthWithoutLoginProperties() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/jaasLoginCF?auth=container")
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/jaasLoginCF?auth=container")
                         .run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "jaasLoginCF", json.getString("uid"));
@@ -457,7 +462,7 @@ public class ValidateJCATest extends FATServletClient {
     })
     @Test
     public void testMultipleConnectionFactories() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory");
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory");
         JsonArray json = request.method("GET").run(JsonArray.class);
         String err = "unexpected response: " + json;
 
@@ -601,7 +606,7 @@ public class ValidateJCATest extends FATServletClient {
     @AllowedFFDC("javax.resource.spi.ResourceAdapterInternalException")
     @Test
     public void testResourceExceptionOnTestConnection() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1")
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/cf1")
                         .requestProp("X-Validation-User", "testresxuser1") // this user name is a signal to force a testConnection failure
                         .requestProp("X-Validation-Password", "1testresxuser");
         JsonObject json = request.method("GET").run(JsonObject.class);
@@ -645,7 +650,7 @@ public class ValidateJCATest extends FATServletClient {
     @AllowedFFDC({ "java.lang.IllegalStateException", "javax.resource.ResourceException" })
     @Test
     public void testRuntimeExceptionOnTestConnection() throws Exception {
-        HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1")
+        HttpsRequest request = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/cf1")
                         .requestProp("X-Validation-User", "testrunxuser1") // this user name is a signal to force a testConnection failure
                         .requestProp("X-Validation-Password", "1testrunxuser");
         JsonObject json = request.method("GET").run(JsonObject.class);
@@ -684,7 +689,7 @@ public class ValidateJCATest extends FATServletClient {
      */
     @Test
     public void testTopLevelConnectionFactoryWithID() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/cf1").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/cf1").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "cf1", json.getString("uid"));
         assertEquals(err, "cf1", json.getString("id"));
@@ -712,7 +717,7 @@ public class ValidateJCATest extends FATServletClient {
     })
     @Test
     public void testTopLevelConnectionFactoryWithoutIDWithChainedExceptions() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/connectionFactory[default-1]").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory/connectionFactory%5Bdefault-1%5D").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "connectionFactory[default-1]", json.getString("uid"));
         assertNull(err, json.get("id"));

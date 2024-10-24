@@ -2,13 +2,13 @@
 name: Open Liberty Feature Template
 about: Steps for Feature Creation and Delivery (Open Liberty org members only)
 title: 'Open Liberty Feature Template'
-labels: Epic
+labels: Epic,Feature
 assignees: ''
 
 ---
 ## Description
 
-Replace this comment with a high level description of the feature. Include enough detail such that the feature can be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2). As needed, add links to any specifications used by the feature.
+Replace this comment with a high level description of the feature. Include enough detail such that the feature can be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/45). As needed, add links to any specifications used by the feature.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## Documents
@@ -25,7 +25,7 @@ When available, add links to required feature documents. Use "N/A" to mark parti
     - Click "Share" > select "People with link" > click "Link Settings" > under "Link Expiration" select "Disable Shared Link on" > set an expiration date ~10 years into the future
     - If you lack permissions, contact [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect)
 - FTS: Link to Feature Test Summary GH Issue
-- Beta Blog: Link to Beta Blog Post GH Issue
+- Beta Blog(s): Link to Beta Blog Post GH Issue(s)
 - GA Blog: Link to GA Blog Post GH Issue
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,7 +60,7 @@ The [OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chie
 ### **Prioritization**
 - [ ] Feature owner adds label `Prioritization - Requested`
   - This puts the feature on the radar of the [OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) and [OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager). They are responsible for querying for new features that need to be prioritized.
-- [ ] [OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager) adds feature to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
+- [ ] [OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager) adds feature to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/45)
 - [ ] Priority assigned
   - Attend the Liberty Backlog Prioritization meeting
   - `Prioritization - Requested` label removed ([OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager) or feature owner)
@@ -113,7 +113,7 @@ Design preliminaries determine whether a formal design, which will be provided b
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Implementation**
 
-A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/2) before any implementation work may begin to be delivered (inaccessible/no-ship).  However, a design focused approach should still be applied to features, and developers should think about the feature design prior to writing and delivering any code.  
+A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/45) before any implementation work may begin to be delivered (inaccessible/no-ship).  However, a design focused approach should still be applied to features, and developers should think about the feature design prior to writing and delivering any code.  
 Besides being prioritized, a feature must also be socialized (or No Design Approved) before any beta code may be delivered.  All new Liberty content must be inaccessible in our GA releases until it is [Feature Complete](#feature-complete) by either marking it `kind=noship` or [beta fencing](#beta-code) it.  
 Code may not GA until this feature has obtained the `Design Approved` or `No Design Approved` label, along with all other tasks outlined in the [GA](#ga) section.
 
@@ -142,7 +142,8 @@ In order to facilitate early feedback from users, all new features and functiona
 - [ ] [Beta fence](https://github.com/OpenLiberty/open-liberty/wiki/Beta-Fencing) the functionality
   - E.g. `kind=beta`, `ibm:beta`, `ProductInfo.getBetaEdition()`
 - [ ] Beta development complete and feature ready for inclusion in a beta release
-  - Add label `target:beta` and the appropriate `target:YY00X-beta` (where YY00X is the targeted beta version).
+  - Add label `target:beta` and the appropriate `target:YY00X-beta` (where YY00X is the targeted beta version) to the feature issue.
+    - Note: This is expected to be done only once, for the initial beta that includes this feature. You do not need to add a `target:YY00(X+1)-beta`, `target:YY00(X+2)-beta`, etc. label for each additional beta that includes this feature.
 - [ ] Feature delivered into beta
   - ([OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager)) adds label `release:YY00X-beta` (where YY00X is the first beta version that included the functionality).
 
@@ -150,6 +151,9 @@ In order to facilitate early feedback from users, all new features and functiona
 - [ ] Beta blog issue created and populated using the [Open Liberty BETA blog post](https://github.com/OpenLiberty/open-liberty/issues/new/choose) template.
   - Add a link to the beta blog issue in the [Documents](#documents) section.
   - Note: This is for inclusion into the overall [beta release blog post](https://openliberty.io/blog/?search=beta&key=tag).  If, in addition, you'd also like to create a dedicated blog post about your feature, then follow the "Standalone Feature Blog Post" instructions under the [Other Deliverables](#other-deliverables) section.
+  - A feature may have multiple beta blogs associated with it. This is especially useful for features that are continuously adding functionality each release and want to advertise what is new since the previous beta.
+    - Each beta blog issue should have the appropriate `target:YY00X-beta` label added to it.
+    - Include each beta blog issue in the [Documents](#documents) section.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **GA**

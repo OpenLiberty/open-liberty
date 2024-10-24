@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ package com.ibm.ws.webcontainer.srt;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 
 public class SRTServletRequestPart implements Part {
@@ -239,46 +242,61 @@ public class SRTServletRequestPart implements Part {
         return returnValue;
     }
 
-    @Override
-    public void write(String fileName) throws IOException {
-        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
-            logger.logp(Level.FINE, CLASS_NAME,"write", "fileName [" + fileName + "]");
-        }
-        if (System.getSecurityManager() != null) {
-            try {
-                final String finalFileName = fileName;
-                AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>() {
-                    public Object run() throws Exception {
-                        File f = new File(_part.getStoreLocation().getParentFile(), finalFileName);
-
-                        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
-                            logger.logp(Level.FINE, CLASS_NAME,"write", "location [" + f +"]");
-                            logger.logp(Level.FINE, CLASS_NAME,"write", "location from part.getStoreLocation [" + _part.getStoreLocation() +"]");
-                        }
-
-                        _part.write(f);
-                        return null;
-                    }
-                });
-            } catch (PrivilegedActionException e) {
-                Exception e1 = e.getException();
-                throw new IOException(e1);
-            }
-        } else {
-            File f = new File(_part.getStoreLocation().getParentFile(), fileName);
-
-            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
-                logger.logp(Level.FINE, CLASS_NAME,"write", "location [" + f +"]");
-                logger.logp(Level.FINE, CLASS_NAME,"write", "location from part.getStoreLocation [" + _part.getStoreLocation() +"]");
-            }
-            
-            try {
-                _part.write(f);
-            } catch (Exception e) {
-                throw new IOException(e);
-            }
-        }	    
-    }
+	@Override
+	public void write(String fileName) throws IOException {
+		if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+			logger.logp(Level.FINE, CLASS_NAME, "write", "fileName -> " + fileName + ", this->" + this);
+		}
+		if (System.getSecurityManager() != null) {
+			try {
+				final String finalFileName = fileName;
+				AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>() {
+					public Object run() throws Exception {
+						File f;
+						Path path = Paths.get(finalFileName);
+						if (WCCustomProperties.ALLOW_ABSOLUTE_FILENAME_FOR_WRITE && path.isAbsolute()) { // PH62271
+                            f = new File(finalFileName);
+							if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+								logger.logp(Level.FINE, CLASS_NAME, "write",
+										"location [" + f + "] isAbsolute");
+							}
+						} else {
+                            f = new File(_part.getStoreLocation().getParentFile(), finalFileName);
+							if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+								logger.logp(Level.FINE, CLASS_NAME, "write",
+										"location from part.getStoreLocation [" + _part.getStoreLocation() + "]");
+							}
+						}
+						_part.write(f);
+						return null;
+					}
+				});
+			} catch (PrivilegedActionException e) {
+				Exception e1 = e.getException();
+				throw new IOException(e1);
+			}
+		} else {
+			File f;
+			Path path = Paths.get(fileName);
+			if (WCCustomProperties.ALLOW_ABSOLUTE_FILENAME_FOR_WRITE && path.isAbsolute()) { // PH62271
+                f = new File(fileName);
+				if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+					logger.logp(Level.FINE, CLASS_NAME, "write", "location [" + f + "] isAbsolute");
+				}
+			} else {
+                f = new File(_part.getStoreLocation().getParentFile(), fileName);
+				if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+					logger.logp(Level.FINE, CLASS_NAME, "write",
+							"location from part.getStoreLocation [" + _part.getStoreLocation() + "]");
+				}
+			}
+			try {
+				_part.write(f);
+			} catch (Exception e) {
+				throw new IOException(e);
+			}
+		}
+	}
 
     public boolean isFormField() {
         boolean returnValue;

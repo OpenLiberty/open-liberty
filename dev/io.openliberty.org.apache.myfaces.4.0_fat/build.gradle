@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -70,13 +70,17 @@ dependencies {
             strictly '9.4.9.v20180320'
         }
     }
+    // transitive = false makes it so that io.openliberty.faces.fat.selenium.util.internal dependencies are not imported
+    // it is required to keep from guava-android being imported
+    // guava-android is missing the toImmutableSortedSet method which is required so guava-android cannot be included
+    requiredLibs( project(':io.openliberty.faces.fat.selenium.util.internal') ) {
+        transitive = false
+    }
     requiredLibs 'org.brotli:dec:0.1.2'
     requiredLibs 'xalan:xalan:2.7.2'
     requiredLibs 'xml-apis:xml-apis:1.4.01'
     requiredLibs project(':com.ibm.ws.org.apache.commons.io')
-    requiredLibs project(':com.ibm.ws.org.slf4j.api')
     requiredLibs project(':io.openliberty.org.apache.commons.codec')
-    requiredLibs project(':io.openliberty.org.apache.commons.logging')
     requiredLibs project(':io.openliberty.org.apache.xercesImpl')
 //  mojarra40 'org.glassfish:jakarta.faces:4.0.0'
 //  mojarra40 'org.glassfish:jakarta.faces:4.1.0-SNAPSHOT'
@@ -90,5 +94,4 @@ dependencies {
 //addRequiredLibraries {
 //    dependsOn addMojarra40
 //}
-addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn copyTestContainers

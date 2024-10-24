@@ -69,6 +69,10 @@ CONFIG_ATTRIBUTE_IGNORED=SESN0311W: Okre\u015blono atrybut konfiguracji {0}, ale
 CONFIG_ATTRIBUTE_IGNORED.explanation=Podana konfiguracja zosta\u0142a ignorowana, poniewa\u017c jest ona udost\u0119pniana przez okre\u015blone ustawienie cacheManagerRef.
 CONFIG_ATTRIBUTE_IGNORED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
+UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: Atrybut konfiguracyjny pami\u0119ci podr\u0119cznej sesji HTTP {0} zosta\u0142 zmieniony od momentu utworzenia punktu kontrolnego dla serwera. Je\u015bli warto\u015b\u0107 atrybutu zostanie zmieniona po punkcie kontrolnym serwera, ale przed odtworzeniem procesu serwera, aplikacja nie u\u017cyje zaktualizowanej warto\u015bci.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=Podany atrybut konfiguracji nie mo\u017ce by\u0107 modyfikowany w czasie mi\u0119dzy punktem kontrolnym serwera a odtwarzaniem procesu serwera.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Ustaw warto\u015b\u0107 atrybutu przed wykonaniem punktu kontrolnego serwera.
+
 INTERNAL_SERVER_ERROR=Wewn\u0119trzny b\u0142\u0105d serwera
 
 SESSION_CACHE_CONFIG_MESSAGE=Upewnij si\u0119, \u017ce konfiguracja serwera zawiera poprawn\u0105 konfiguracj\u0119 httpSessionCache. Zapoznaj si\u0119 z przyk\u0142adow\u0105 konfiguracj\u0105. {0}

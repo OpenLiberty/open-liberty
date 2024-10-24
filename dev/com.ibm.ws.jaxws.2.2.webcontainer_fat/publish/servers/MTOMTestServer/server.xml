@@ -1,10 +1,19 @@
 <server>
-    <featureManager>
-        <feature>servlet-3.1</feature>
-        <feature>jaxws-2.2</feature>
-    </featureManager>
+       <featureManager>
+	<feature>localConnector-1.0</feature>
+	<feature>jsp-2.3</feature>
+	<feature>jaxws-2.2</feature>
+	<feature>jndi-1.0</feature>
+	<feature>timedexit-1.0</feature>
+	<feature>servlet-3.1</feature>
+  </featureManager>
 
-    <include location="../fatTestPorts.xml"/>
+  <httpEndpoint httpPort="9988" httpsPort="9989"
+		id="defaultHttpEndpoint" />
+		
+		<webApplication name="testMTOM" contextRoot="testMTOM" location="testMTOM.war">
+		</webApplication>
+    <logging traceSpecification="org.apache.cxf.*=all:com.ibm.ws.jaxws*=all" />
     
     <!-- TESTING THE UPLOAD! -->
   	<!-- <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>

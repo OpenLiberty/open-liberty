@@ -14,8 +14,12 @@ Subsystem-Name: Jakarta Authorization 3.0
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.jakarta.authorization-3.0
 -bundles=\
-  io.openliberty.security.authorization.internal.jacc
+  io.openliberty.security.authorization.internal.jacc.common, \
+  io.openliberty.security.authorization.internal.jacc.3.0
 kind=noship
 edition=full
--jars=io.openliberty.jacc; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/io.openliberty.jacc_1.0-javadoc.zip
+#TODO re-enable files and update location for jar to dev/api/ibm
+-jars=io.openliberty.jacc.3.0; location:="lib/"
+#-files=dev/api/ibm/javadoc/io.openliberty.jacc.3.0_1.0-javadoc.zip
+WLP-Platform: jakartaee-11.0
+WLP-InstantOn-Enabled: true

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -689,7 +690,22 @@ public class HttpUtils {
         }
     }
 
-    private static String read(InputStream in) throws IOException {
+    /**
+     * @deprecated We should not be using SSLv3 or DSA certificates, this is for legacy tests only
+     */
+    @Deprecated
+    public static void enableSSLv3() {
+        String protocols = "SSLv3,TLSv1";
+        protocols += ",TLSv1.1,TLSv1.2";
+
+        System.setProperty("com.ibm.jsse2.disableSSLv3", "false");
+        System.setProperty("https.protocols", protocols);
+        Security.setProperty("jdk.tls.disabledAlgorithms", "");
+
+        Log.info(c, "enableSSLv3", "Enabled SSLv3.  https.protocols=" + protocols);
+    }
+
+    public static String read(InputStream in) throws IOException {
         if (in == null) {
             return null;
         }

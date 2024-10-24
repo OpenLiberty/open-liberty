@@ -9,10 +9,12 @@ singleton=true
   com.ibm.websphere.appserver.jaxrs-2.1, \
   com.ibm.websphere.appserver.eeCompatible-8.0
 -bundles=\
+  com.ibm.ws.collector, \
   com.ibm.ws.cdi.interfaces, \
   io.openliberty.microprofile.telemetry.2.0.internal, \
+  io.openliberty.microprofile.telemetry.2.0.logging.internal, \
   io.openliberty.io.opentelemetry.2.0, \
   io.openliberty.microprofile.telemetry.internal.common
-kind=noship
-edition=full
+kind=ga
+edition=core
 WLP-Activation-Type: parallel 

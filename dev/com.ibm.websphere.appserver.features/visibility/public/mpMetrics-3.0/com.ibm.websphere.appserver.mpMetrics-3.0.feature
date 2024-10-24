@@ -22,3 +22,4 @@ Subsystem-Name: MicroProfile Metrics 3.0
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
+WLP-Platform: microProfile-4.0,microProfile-4.1

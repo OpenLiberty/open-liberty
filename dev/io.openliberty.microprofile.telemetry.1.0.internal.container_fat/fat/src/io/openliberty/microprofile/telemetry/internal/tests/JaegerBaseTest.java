@@ -44,7 +44,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 import componenttest.annotation.SkipForRepeat;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-// MP Telemetry 2.0 does not consume io.opentelemetry.semconv.trace.attributes.SemanticAttributes
+// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
 
@@ -75,7 +75,7 @@ public abstract class JaegerBaseTest {
     protected abstract JaegerQueryClient getJaegerClient();
 
     @Test
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP60_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID})
     public void testBasicTelemetry1() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
         String traceId = request.run(String.class);

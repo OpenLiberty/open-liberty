@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,17 +47,18 @@ public class StartLevelFrameworkListener implements FrameworkListener, ShutdownH
      * operation...).
      */
     @Override
+    @SuppressWarnings("deprecation")
     public void frameworkEvent(FrameworkEvent event) {
         switch (event.getType()) {
             case FrameworkEvent.ERROR:
                 status.addStartException(event.getBundle(), event.getThrowable());
                 break;
 
-            // Wake up the listener if a startlevel changed event occurs, 
+            // Wake up the listener if a startlevel changed event occurs,
             // or the framework is stopped...
             case FrameworkEvent.STOPPED:
             case FrameworkEvent.STOPPED_UPDATE:
-            case FrameworkEvent.STOPPED_BOOTCLASSPATH_MODIFIED:
+            case FrameworkEvent.STOPPED_BOOTCLASSPATH_MODIFIED: // Deprecated
             case FrameworkEvent.STARTLEVEL_CHANGED:
                 levelReached(false);
                 break;

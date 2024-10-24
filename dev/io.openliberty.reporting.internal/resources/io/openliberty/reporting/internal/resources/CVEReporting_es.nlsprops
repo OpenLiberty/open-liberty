@@ -52,3 +52,7 @@ CWWKF1705.failed.response.useraction=Arregle el problema de comunicaci\u00f3n e 
 CWWKF1706.issue.parsing=CWWKF1706W: Problema al analizar la informaci\u00f3n del producto.
 CWWKF1706.issue.parsing.explanation=El servicio no puede analizar correctamente la informaci\u00f3n del producto.
 CWWKF1706.issue.parsing.useraction=Arregle el problema de comunicaci\u00f3n e int\u00e9ntelo de nuevo.
+
+CWWKF1707.internal.error=CWWKF1706W: Se ha producido un error interno cuando el tiempo de ejecuci\u00f3n de Liberty ha comprobado si hay vulnerabilidades de seguridad. El error es: {0}
+CWWKF1707.internal.error.explanation=Se ha producido un error que ha impedido que el tiempo de ejecuci\u00f3n de Liberty compruebe si hay vulnerabilidades de seguridad.
+CWWKF1707.internal.error.useraction=Revise el archivo message.log del servidor y los registros FFDC para identificar el problema.

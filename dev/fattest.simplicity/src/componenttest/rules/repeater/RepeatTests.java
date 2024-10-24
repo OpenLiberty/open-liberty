@@ -109,7 +109,7 @@ public class RepeatTests extends ExternalResource {
 
     @Override
     public Statement apply(Statement statement, Description description) {
-        return new CompositeRepeatTestActionStatement(actions, statement);
+        return new CompositeRepeatTestActionStatement(actions, statement, description);
     }
 
     private static class CompositeRepeatTestActionStatement extends Statement {
@@ -117,16 +117,20 @@ public class RepeatTests extends ExternalResource {
 
         private final Statement statement;
         private final List<RepeatTestAction> actions;
+        private final Description description;
 
-        private CompositeRepeatTestActionStatement(List<RepeatTestAction> actions, Statement statement) {
+        private CompositeRepeatTestActionStatement(List<RepeatTestAction> actions, Statement statement, Description description) {
             this.statement = statement;
             this.actions = actions;
+            this.description = description;
         }
 
         @Override
         public void evaluate() throws Throwable {
             final String m = "evaluate";
             ArrayList<Throwable> errors = new ArrayList<>();
+
+            String descriptionDisplayName = description != null ? description.getDisplayName() : "tests";
 
             Log.info(c, m, "All tests attempt to run " + actions.size() + " times:");
             for (int i = 0; i < actions.size(); i++)
@@ -138,16 +142,21 @@ public class RepeatTests extends ExternalResource {
                     if (shouldRun(action)) {
                         Log.info(c, m, "===================================");
                         Log.info(c, m, "");
-                        Log.info(c, m, "Running tests with action: " + action);
+                        Log.info(c, m, "Running " + descriptionDisplayName + " with action: " + action);
                         Log.info(c, m, "");
                         Log.info(c, m, "===================================");
                         action.setup();
                         statement.evaluate();
                         action.cleanup();
+                        Log.info(c, m, "===================================");
+                        Log.info(c, m, "");
+                        Log.info(c, m, "Exiting " + descriptionDisplayName + " with action: " + action);
+                        Log.info(c, m, "");
+                        Log.info(c, m, "===================================");
                     } else {
                         Log.info(c, m, "===================================");
                         Log.info(c, m, "");
-                        Log.info(c, m, "Skipping tests with action: " + action);
+                        Log.info(c, m, "Skipping " + descriptionDisplayName + " with action: " + action);
                         Log.info(c, m, "");
                         Log.info(c, m, "===================================");
                     }

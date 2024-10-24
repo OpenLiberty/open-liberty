@@ -413,18 +413,6 @@ public class VisibilityTest {
                         break;
                     }
                 }
-            } else if (baseFeatureName.equals("com.ibm.websphere.appserver.org.eclipse.persistence-")) {
-                // The 2.6 and 2.7 versions are used by the jpa-2.6 and 2.7 features, but in 3.0 and later features it is not used by the persistence features.
-                // As such, the 2.6 and 2.7 features are in core and the 3.0 and later versions are in base because they are only used by base features.
-                // If future versions end up being needed by core features, this test will fail and need to be updated.
-                for (Iterator<FeatureInfo> it = featureInfos.iterator(); it.hasNext();) {
-                    FeatureInfo featureInfo = it.next();
-                    if ((featureInfo.getName().equals("com.ibm.websphere.appserver.org.eclipse.persistence-2.6") ||
-                         featureInfo.getName().equals("com.ibm.websphere.appserver.org.eclipse.persistence-2.7"))
-                        && featureInfo.getEdition().equals("core")) {
-                        it.remove();
-                    }
-                }
             } else if (baseFeatureName.equals("com.ibm.websphere.appserver.passwordUtilities-")) {
                 // The 1.0 feature depended on a jca / connectors feature which is in base.
                 // When 1.1 was created, the dependency on jca / connectors was removed to allow it to move to core.
@@ -454,6 +442,70 @@ public class VisibilityTest {
         }
         if (errorMessage.length() != 0) {
             Assert.fail("Found features with the same base name with errors: " + '\n' + errorMessage.toString());
+        }
+    }
+
+    /**
+     * Tests that all features with the same base short name have the same edition.
+     * This includes both versioned and versionless features
+     */
+    @Test
+    public void testMatchingEditionShortNames() {
+        StringBuilder errorMessage = new StringBuilder();
+
+        Map<String, Set<FeatureInfo>> baseFeatureNameMap = new HashMap<>();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            FeatureInfo featureInfo = entry.getValue();
+            if (featureInfo.getShortName() == null) {
+                continue;
+            }
+            String feature = featureInfo.getShortName();
+            int lastIndex = feature.indexOf('-');
+
+            String baseFeatureName = lastIndex == -1 ? feature : feature.substring(0, lastIndex);
+            Set<FeatureInfo> featureInfos = baseFeatureNameMap.get(baseFeatureName);
+            if (featureInfos == null) {
+                featureInfos = new HashSet<>();
+                baseFeatureNameMap.put(baseFeatureName, featureInfos);
+            }
+            if (!featureInfo.getKind().equals("noship")) {
+                featureInfos.add(featureInfo);
+            }
+        }
+
+        for (Entry<String, Set<FeatureInfo>> featureInfosEntry : baseFeatureNameMap.entrySet()) {
+            String baseFeatureName = featureInfosEntry.getKey();
+            Set<FeatureInfo> featureInfos = featureInfosEntry.getValue();
+
+            if (baseFeatureName.equals("passwordUtilities")) {
+                // The 1.0 feature depended on a jca / connectors feature which is in base.
+                // When 1.1 was created, the dependency on jca / connectors was removed to allow it to move to core.
+                // If a future version comes along and it doesn't match core, this test will fail and need to be updated.
+                for (Iterator<FeatureInfo> it = featureInfos.iterator(); it.hasNext();) {
+                    FeatureInfo featureInfo = it.next();
+                    if (featureInfo.getName().equals("com.ibm.websphere.appserver.passwordUtilities-1.0") && featureInfo.getEdition().equals("base")) {
+                        it.remove();
+                        break;
+                    }
+                }
+            }
+
+            if (featureInfos.size() == 1) {
+                continue;
+            }
+
+            String edition = null;
+            for (FeatureInfo featureInfo : featureInfos) {
+                if (edition == null) {
+                    edition = featureInfo.getEdition();
+                } else if (!edition.equals(featureInfo.getEdition())) {
+                    errorMessage.append("Mismatched edition ").append(featureInfos).append("\n\n");
+                    break;
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features with the same base short name with errors: " + '\n' + errorMessage.toString());
         }
     }
 
@@ -578,6 +630,67 @@ public class VisibilityTest {
     }
 
     /**
+     * This is similar to the testMissingBetaFeatures test except specific to versionless features to make sure that
+     * if the private versionless feature is marked noship or beta, but its dependent features are marked
+     * beta or ga, that it should fail to say that the versionless private features should be updated to have a different kind.
+     */
+    @Test
+    public void testMissingBetaOrGAVersionlessFeatures() {
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            String featureName = entry.getKey();
+            FeatureInfo featureInfo = entry.getValue();
+            if(featureName.equals("io.openliberty.internal.versionless.jsp-2.2")){
+                continue;
+            }
+            if (!featureInfo.isAutoFeature() && featureName.startsWith("io.openliberty.internal.versionless") && featureName.contains("-")) {
+                String kind = featureInfo.getKind();
+                if ("ga".equals(kind)) {
+                    continue;
+                }
+
+                boolean containsNoShipFeature = false;
+                boolean containsBetaFeature = false;
+                for (String depFeatureName : featureInfo.getDependentFeatures().keySet()) {
+                    FeatureInfo depFeature = features.get(depFeatureName);
+                    if (depFeature == null) {
+                        continue;
+                    }
+                    if ("noship".equals(depFeature.getKind()) && !depFeatureName.equals("io.openliberty.noShip-1.0")) {
+                        containsNoShipFeature = true;
+                        break;
+                    }
+                    if ("beta".equals(depFeature.getKind())) {
+                        containsBetaFeature = true;
+                    }
+                }
+
+                if (!containsNoShipFeature) {
+                    if ("noship".equals(kind)) {
+                        errorMessage.append("Found issues with " + featureName + '\n');
+                        errorMessage.append("     The feature is marked noship, but all dependencies are beta or ga\n");
+                    } else if (!containsBetaFeature) {
+                        String publicVersionlessFeatureName = featureName.replace(".internal", "");
+                        publicVersionlessFeatureName = publicVersionlessFeatureName.substring(0, publicVersionlessFeatureName.indexOf('-'));
+                        FeatureInfo publicFeatureInfo = features.get(publicVersionlessFeatureName);
+                        String publicVersionlessFeatureKind = publicFeatureInfo.getKind();
+                        if ("ga".equals(publicVersionlessFeatureKind)) {
+                            errorMessage.append("Found issues with " + featureName + '\n');
+                            errorMessage.append("     The feature is marked beta, but all dependencies are ga and the public feature is ga\n");
+                        }
+                    }
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found versionless features that are marked noship or beta, but contain only beta/ga features: " + '\n' +
+                        "If you recently marked a feature beta, you may need to update the versionless feature to not depend on the noShip-1.0 feature and update the kind to beta or ga.\n"
+                        +
+                        errorMessage.toString());
+        }
+    }
+
+    /**
      * Tests to make sure that public and protected features are correctly referenced in a feature
      * when a dependent feature includes a public or protected feature with a tolerates attribute.
      */
@@ -695,11 +808,8 @@ public class VisibilityTest {
         allowedToleratedFeatures.add("com.ibm.websphere.appserver.appSecurity-");
         allowedToleratedFeatures.add("com.ibm.websphere.appserver.jdbc-");
 
-        // data-1.0 will be updated to not tolerate EE 10 features when it ships with EE 11.0 and
-        // can depend on EE 11 features because they are also in beta.
         // restfulWSLogging-3.0 hopefully never will see the light of day and will be done differently.
         Set<String> expectedFailingFeatures = new HashSet<>();
-        expectedFailingFeatures.add("io.openliberty.data-1.0");
         expectedFailingFeatures.add("io.openliberty.restfulWSLogging-3.0");
         Map<String, String> visibilityMap = new HashMap<>();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
@@ -732,10 +842,15 @@ public class VisibilityTest {
             // MicroProfile features do not currently follow this convention.  They may need to in the future.
             // openapi features are stabilized and were not updated to support EE 9.
             // opentracing is also now stabilized and does not support running with EE 10+
-            if (featureInfo.getVisibility().equals("public") && (featureName.startsWith("io.openliberty.mp") || featureName.startsWith("com.ibm.websphere.appserver.mp")
+            // MicroProfile 6.1 tolerates both MpTelemetry 1.1 and MpTelemetry 2.0
+            // MicroProfile 7.0 tolerates both EE10 and EE11
+            if (featureInfo.getVisibility().equals("public") && (featureName.startsWith("io.openliberty.mp")
+                                                                 || featureName.startsWith("com.ibm.websphere.appserver.mp")
                                                                  || featureName.startsWith("com.ibm.websphere.appserver.opentracing")
                                                                  || featureName.startsWith("com.ibm.websphere.appserver.openapi")
-                                                                 || featureName.startsWith("com.ibm.websphere.appserver.microProfile-1."))) {
+                                                                 || featureName.startsWith("com.ibm.websphere.appserver.microProfile-1.")
+                                                                 || featureName.startsWith("io.openliberty.microProfile-6.1")
+                                                                 || featureName.startsWith("io.openliberty.microProfile-7."))) {
                 continue;
             }
 
@@ -780,6 +895,9 @@ public class VisibilityTest {
             if (featureInfo.isAutoFeature()) {
                 continue;
             }
+            if (featureInfo.getBaseName().contains("versionless")) {
+                continue;
+            }
             String feature = entry.getKey();
             int lastIndex = feature.indexOf('-');
             if (lastIndex == -1) {
@@ -793,6 +911,9 @@ public class VisibilityTest {
             String featureName = entry.getKey();
 
             FeatureInfo featureInfo = entry.getValue();
+            if (featureInfo.getBaseName().contains("versionless")) {
+                continue;
+            }
             Set<String> processedFeatures = new HashSet<>();
             Map<String, Attrs> depFeatures = featureInfo.getDependentFeatures();
             Set<String> rootDepFeatureWithoutTolerates = new HashSet<>();
@@ -886,7 +1007,8 @@ public class VisibilityTest {
             toleratedFeatures.put(feature.substring(0, feature.lastIndexOf('-') + 1), depFeatureWithTolerate);
             processedFeatures.add(feature);
         } else if (!hasToleratesAncestor && rootDepFeatures.contains(feature) && !feature.startsWith("com.ibm.websphere.appserver.eeCompatible-")
-                   && !feature.startsWith("io.openliberty.mpCompatible-") && !feature.startsWith("io.openliberty.servlet.internal-")) {
+                   && !feature.startsWith("io.openliberty.mpCompatible-") && !feature.startsWith("io.openliberty.servlet.internal-") 
+                   && !feature.startsWith("io.openliberty.internal.mpVersion-")) {
             if (!isApiJarFalse) {
                 Set<String> errors = featureErrors.get(feature);
                 if (errors == null) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,13 @@
  *******************************************************************************/
 package test.jakarta.data.jpa;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -39,7 +41,6 @@ import test.jakarta.data.jpa.web.DataJPATestServlet;
 @MinimumJavaLevel(javaLevel = 17)
 @CheckpointTest
 public class DataJPATestCheckpoint extends FATServletClient {
-    private static String jdbcJarName;
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
@@ -50,45 +51,27 @@ public class DataJPATestCheckpoint extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Get driver type
-        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        jdbcJarName = type.getDriverName();
-
         // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
+        DatabaseContainerUtil.setupDataSourcePropertiesForCheckpoint(server, testContainer);
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp", "test.jakarta.data.jpa.web");
         ShrinkHelper.exportAppToServer(server, war);
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
-        server.addCheckpointRegexIgnoreMessage("DSRA8020E.*data.createTables");
-        server.addCheckpointRegexIgnoreMessage("DSRA8020E.*data.dropTables");
-        server.addCheckpointRegexIgnoreMessage("DSRA8020E.*data.tablePrefix");
+
+        Map<String, String> envVars = new HashMap<>();
+        envVars.put("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
+
+        //Server started, application started, checkpoint taken, server is now stopped.
+        //Configure environment variable used by servlet
+        server.addEnvVarsForCheckpoint(envVars);
+
+        server.checkpointRestore();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        // TODO if we decide to add the ability to put Jakarta Data properties onto DataSourceDefinition properties,
-        // then an update will be needed to com.ibm.ws.jdbc.internal.JDBCDriverService.create to ignore them for the data source:
-        // W DSRA8020E: Warning: The property 'data.createTables' does not exist on the DataSource class ...
-        server.stopServer("DSRA8020E.*data.createTables",
-                          "DSRA8020E.*data.dropTables",
-                          "DSRA8020E.*data.tablePrefix");
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDeleteEntityThatHasAnIdClass() throws Exception {
-        runTest(server, "DataJPATestApp", "testFindAndDeleteEntityThatHasAnIdClass&jdbcJarName=" + jdbcJarName);
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testUnannotatedCollection() throws Exception {
-        runTest(server, "DataJPATestApp", "testUnannotatedCollection&jdbcJarName=" + jdbcJarName);
+        server.stopServer(DataJPATest.EXPECTED_ERROR_MESSAGES);
     }
 }

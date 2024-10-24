@@ -580,8 +580,8 @@ public class CommonTest {
                 if (includeFiles != null) {
                     String[] files = includeFiles.split("\\s*,\\s*");
                     for (String fileName : files) {
-                        RemoteFile x = new RemoteFile(machine, clientRoot + "/"
-                                                               + fileName);
+                        RemoteFile x = machine.getFile(clientRoot + "/"
+                                                       + fileName);
                         if (x.exists()) {
                             props.clear();
                             InputStream is = null;
@@ -638,7 +638,7 @@ public class CommonTest {
 
     public static RemoteFile getClientBootstrapPropertiesFile(Machine machine,
                                                               String clientRoot) throws Exception {
-        return new RemoteFile(machine, clientRoot + "/bootstrap.properties");
+        return machine.getFile(clientRoot + "/bootstrap.properties");
     }
 
     /**

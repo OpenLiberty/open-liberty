@@ -1,0 +1,43 @@
+type: pipeline_definition
+product: Liberty
+name: Open Liberty Delivery Requirements Verification
+description: "Examines Open Liberty code changes for delivery standards compliance"
+triggers:
+- type: github
+  description: "Runs CI Orchestrator-managed Jenkins jobs to examine pull request changes and create required status checks"
+  triggerName: "libby"
+  triggerRank: 50
+  groups: ["LibertyDev"]
+  keyword: "!libby"
+  aliasKeywords:
+    - "#run-libby-bot"
+    - "#run-libby"
+    - "#libby"
+  propertyDefinitions:
+    - name: githubPRNumber
+      defaultValue: ${github_pr_number}
+    - name: githubPRApi
+      defaultValue: ${github_pr_api}
+
+- type: manual
+  triggerName: "libby-manual"
+  description: "Runs CI Orchestrator-managed Jenkins jobs to examine pull request changes and create required status checks"
+  triggerRank: 50
+  groups: ["LibertyDev"]
+  propertyDefinitions:
+    - name: githubPRNumber
+      isRequired: true
+      defaultValue: "Number of Open Liberty pull request to verify"
+      description: "Number of Open Liberty pull request to verify"
+    - name: githubPRApi
+      defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
+
+steps:
+- stepName: Copyright Header Check
+  workType: Jenkins
+  projectName: copyrightHeaderCheck
+  timeoutInMinutes: 120
+- stepName: Prohibited Terms Check
+  workType: Jenkins
+  projectName: prohibitedTermsCheck
+  timeoutInMinutes: 120

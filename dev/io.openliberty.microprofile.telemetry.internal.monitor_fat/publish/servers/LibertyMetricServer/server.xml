@@ -1,0 +1,16 @@
+<server>
+    <featureManager>
+        <feature>mpTelemetry-2.0</feature>
+        <feature>servlet-6.1</feature>
+        <feature>requestTiming-1.0</feature>
+    </featureManager>
+
+	<!--  not testing for slow/hung requests increase values to avoid any test slowness throwing errors -->
+	<requestTiming slowRequestThreshold="30s" hungRequestThreshold="6m">
+	</requestTiming>
+
+
+    <include location="../fatTestPorts.xml"/>
+    <include location="serverConfig.xml"/>
+</server>
+

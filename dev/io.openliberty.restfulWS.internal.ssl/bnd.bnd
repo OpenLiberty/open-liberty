@@ -38,7 +38,7 @@ Export-Package: io.openliberty.restfulWS.internal.ssl.component;thread-context=t
 Import-Package: \
   !org.eclipse.microprofile.rest.client,\
   !org.eclipse.microprofile.rest.client.spi,\
-  org.jboss.resteasy.client.jaxrs;version="[4.7.0,7.0.0)",\
+  org.jboss.resteasy.client.jaxrs;version="[4.7.0,8.0.0)",\
   jakarta.ws.rs.*;version="[3.0,5.0)",\
   *
 

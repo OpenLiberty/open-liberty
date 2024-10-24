@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.config.xml.internal;
 
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -92,6 +93,20 @@ public class ConfigRefresher {
     void stop() {
         configurationMonitor.stopConfigurationMonitoring();
         runtimeUpdateManagerTracker.close();
+    }
+
+    /*
+     * Called after configuration change is detected.
+     * If the server.xml does not exist, no config updates will be made.
+     * Otherwise, make config updates as normal.
+     */
+    public void refreshConfigurationIfServerXMLExists(){
+        if(!serverXMLConfig.configRootFile().exists()){
+            Tr.error(tc, "error.config.root.deleted", serverXMLConfig.configRootFile().getName());
+        }
+        else{
+            refreshConfiguration();
+        }
     }
 
     public void refreshConfiguration() {

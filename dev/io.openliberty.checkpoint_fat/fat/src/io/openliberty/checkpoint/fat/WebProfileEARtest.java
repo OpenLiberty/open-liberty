@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,15 +20,17 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import ejbEARapp.StatelessBean;
@@ -39,6 +41,9 @@ import webEARapp.WebEARapp;
 @RunWith(FATRunner.class)
 @CheckpointTest
 public class WebProfileEARtest {
+
+    @ClassRule
+    public static RepeatTests repeatTest = FATSuite.defaultEERepeat("webProfileEARserver");
 
     public static final String EAR_NAME = "webProfileEARapp";
     public static final String EJB_APP_NAME = "ejbEARapp";
@@ -62,20 +67,13 @@ public class WebProfileEARtest {
                         .addAsModule(webapp2War)
                         .addAsModule(ejbJar);
         ShrinkHelper.exportAppToServer(server, ear, DeployOptions.OVERWRITE);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server.startServer();
+        server.checkpointRestore();
     }
 
     @Test
     public void testEARdeployment() throws Exception {
-
-        server.startServer();
-        HttpUtils.findStringInUrl(server, "webApp1/EARappServlet", "Hello from EJB");
-        HttpUtils.findStringInUrl(server, "webApp2/webEARapp", "Hello from webEARapp");
-        server.stopServer();
-
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
-        server.startServer();
-
-        server.checkpointRestore();
         HttpUtils.findStringInUrl(server, "webApp1/EARappServlet", "Hello from EJB");
         HttpUtils.findStringInUrl(server, "webApp2/webEARapp", "Hello from webEARapp");
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *******************************************************************************/
 
 addRequiredLibraries.dependsOn addDerby
-addRequiredLibraries.dependsOn addJakartaTransformer
 
 configurations {
   requiredLibs {
@@ -20,5 +19,6 @@ configurations {
 dependencies {
   requiredLibs project(':com.ibm.websphere.security')
   requiredLibs project(':com.ibm.tx.jta')
-  requiredLibs project(':io.openliberty.org.eclipse.microprofile')
+  requiredLibs project(path: ':io.openliberty.org.eclipse.microprofile', configuration: 'contextpropagation13')
 }
+

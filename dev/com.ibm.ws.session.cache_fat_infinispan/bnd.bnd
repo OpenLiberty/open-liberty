@@ -24,4 +24,5 @@ fat.project: true
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.jcache.1.1.core;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    com.ibm.ws.session;version=latest
+    com.ibm.ws.session;version=latest,\
+    io.openliberty.com.google.gson;version=latest

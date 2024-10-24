@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.jaxrs20.clientconfig;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -39,7 +40,11 @@ public class JAXRSClientConfigHolder {
 
     // a cached map of search results
     // that have been processed to look up the best match for the uri strings
-    private static volatile Map<String, Map<String, String>> resolvedConfigInfo = new HashMap<>();
+    private static volatile Map<String, Map<String, String>> resolvedConfigInfo = new LinkedHashMap<String, Map<String, String>>(500,0.75f,true) {
+        protected boolean removeEldestEntry(Map.Entry<String, Map<String, String>> eldest) {
+            return true;
+        }
+    };
 
     private static boolean wildcardsPresentInConfigInfo = false;
 

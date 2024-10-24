@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,8 @@ import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
+import componenttest.annotation.SkipForRepeat;
+
 
 @RunWith(FATRunner.class)
 public class ClassloadingTest extends FATServletClient {
@@ -40,19 +42,21 @@ public class ClassloadingTest extends FATServletClient {
     @Server("jsf.container.2.3_fat.config")
     public static LibertyServer server;
 
+    private static boolean isEE11;
     private static boolean isEE10;
     private static boolean isEE9;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        isEE10 = JakartaEEAction.isEE10OrLaterActive();
+        isEE11 = JakartaEEAction.isEE11Active();
+        isEE10 = JakartaEEAction.isEE10Active();
         isEE9 = JakartaEEAction.isEE9Active();
         // Build test app with JSF (Mojarra) and a test servlet
         WebArchive jsfApp = ShrinkHelper.buildDefaultApp(JSF_APP, "jsf.container.bean", "jsf.container.nojsf.web");
 
-        // Don't add the managed bean package for EE10
-        if (!isEE10) {
+        // Only add the managed bean package for EE9 or earlier
+        if (!isEE10 && !isEE11) {
             jsfApp.addPackage("jsf.container.bean.jsf23");
         }
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "publish/files/permissions");
@@ -67,7 +71,12 @@ public class ClassloadingTest extends FATServletClient {
         WebArchive mojarraAppWar;
 
         // Multiple checks due to the managed bean refactoring for faces 4.0
-        if (isEE10) {
+        if (isEE11) {
+            mojarraLibraryLocation = "publish/files/mojarra41/";
+            mojarraAppWar = ShrinkHelper.buildDefaultApp(JSF_EAR_APP, "jsf.container.bean", "jsf.container.nojsf.web")
+                            .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"))
+                            .addAsLibraries(new File(mojarraLibraryLocation).listFiles());
+        } else if (isEE10) {
             mojarraLibraryLocation = "publish/files/mojarra40/";
             mojarraAppWar = ShrinkHelper.buildDefaultApp(JSF_EAR_APP, "jsf.container.bean", "jsf.container.nojsf.web")
                             .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"))
@@ -120,7 +129,9 @@ public class ClassloadingTest extends FATServletClient {
     }
 
     private void runTest() throws Exception {
-        if (isEE10) {
+        if (isEE11) {
+            server.setServerConfigurationFile("server_" + testName.getMethodName().replace("_EE11_FEATURES", "") + ".xml");
+        } else if (isEE10) {
             server.setServerConfigurationFile("server_" + testName.getMethodName().replace("_EE10_FEATURES", "") + ".xml");
         } else if (isEE9) {
             server.setServerConfigurationFile("server_" + testName.getMethodName().replace("_EE9_FEATURES", "") + ".xml");
@@ -134,7 +145,7 @@ public class ClassloadingTest extends FATServletClient {
         HttpUtils.findStringInReadyUrl(server, '/' + JSF_APP + "/TestBean.jsf",
                                        "CDI Bean value:",
                                        ":CDIBean::PostConstructCalled:");
-        if (!isEE10) {
+        if (!(isEE10 || isEE11)) {
             HttpUtils.findStringInReadyUrl(server, '/' + JSF_APP + "/TestBean.jsf",
                                            "JSF Bean value:",
                                            ":JSFBean::PostConstructCalled:");
@@ -144,7 +155,7 @@ public class ClassloadingTest extends FATServletClient {
         HttpUtils.findStringInReadyUrl(server, '/' + JSF_EAR_APP + "/TestBean.jsf",
                                        "CDI Bean value:",
                                        ":CDIBean::PostConstructCalled:");
-        if (!isEE10) {
+        if (!(isEE10 || isEE11)) {
             HttpUtils.findStringInReadyUrl(server, '/' + JSF_EAR_APP + "/TestBean.jsf",
                                            "JSF Bean value:",
                                            ":JSFBean::PostConstructCalled:");

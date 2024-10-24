@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.sse.fat;
-
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -71,6 +68,7 @@ public class BasicSseTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(SkipForRepeat.EE11_FEATURES) // JAXB removed from Jakarta Rest in EE11
     public void testJaxbSse() throws Exception {
         runTest(server, SERVLET_PATH, "testJaxbSse");
     }
@@ -86,7 +84,7 @@ public class BasicSseTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({EE9_FEATURES, EE10_FEATURES}) // per spec discussions, only unrecoverable connection-related errors should trigger onError
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // per spec discussions, only unrecoverable connection-related errors should trigger onError
     public void testErrorSse() throws Exception {
         runTest(server, SERVLET_PATH, "testErrorSse");
     }

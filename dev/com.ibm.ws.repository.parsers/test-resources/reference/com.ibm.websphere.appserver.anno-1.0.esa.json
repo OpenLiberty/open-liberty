@@ -1,0 +1,108 @@
+
+{
+    "description":"<h2 id=\"ibm-wasdev-feature-instructions-title\">Command Line Install</h2><div id=\"ibm-wasdev-feature-instructions-content\"> To install the feature from the command line type:<br/><code>bin/featureManager install com.ibm.websphere.appserver.anno-1.0 --when-file-exists=ignore</code> </div>",
+    "licenseId":"http://www.ibm.com/licenses/wlp-featureterms-v1",
+    "licenseType":"UNSPECIFIED",
+    "name":"com.ibm.websphere.appserver.anno-1.0",
+    "provider":{
+        "name":"IBM",
+        "url":"http://www.ibm.com"
+    },
+    "type":"com.ibm.websphere.Feature",
+    "version":"1.0.0",
+    "wlpInformation":{
+        "appliesTo":"com.ibm.websphere.appserver; productVersion=8.5.5.6",
+        "appliesToFilterInfo":[
+            {
+                "editions":[
+                    "Liberty Core",
+                    "Base",
+                    "Express",
+                    "Developers",
+                    "ND",
+                    "z/OS"
+                ],
+                "hasMaxVersion":"true",
+                "maxVersion":{
+                    "compatibilityLabel":"8.5.5.6",
+                    "inclusive":true,
+                    "label":"8.5.5",
+                    "value":"8.5.5.6"
+                },
+                "minVersion":{
+                    "compatibilityLabel":"8.5.5.6",
+                    "inclusive":true,
+                    "label":"8.5.5",
+                    "value":"8.5.5.6"
+                },
+                "productId":"com.ibm.websphere.appserver"
+            }
+        ],
+        "displayPolicy":"HIDDEN",
+        "downloadPolicy":"INSTALLER",
+        "ibmInstallTo":"core",
+        "installPolicy":"MANUAL",
+        "javaSEVersionRequirements":{
+            "minVersion":"1.6.0",
+            "rawRequirements":[
+                "com.ibm.ws.anno_1.0.9.jar: (&(osgi.ee=JavaSE)(version>=1.6))"
+            ],
+            "versionDisplayString":"Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 23"
+        },
+        "links":[
+            {
+                "label":"Features that this feature enables",
+                "linkLabelProperty":"name",
+                "query":[
+                    "wlpInformation.provideFeature=com.ibm.websphere.appserver.javax.annotation-1.1&wlpInformation.appliesToFilterInfo.minVersion.value=8.5.5.6&type=com.ibm.websphere.Feature",
+                    "wlpInformation.provideFeature=com.ibm.websphere.appserver.artifact-1.0&wlpInformation.appliesToFilterInfo.minVersion.value=8.5.5.6&type=com.ibm.websphere.Feature"
+                ]
+            },
+            {
+                "label":"Features that enable this feature",
+                "linkLabelProperty":"name",
+                "query":[
+                    "wlpInformation.requireFeature=com.ibm.websphere.appserver.anno-1.0&wlpInformation.appliesToFilterInfo.minVersion.value=8.5.5.6&type=com.ibm.websphere.Feature"
+                ]
+            },
+            {
+                "label":"Features that this feature supersedes",
+                "linkLabelProperty":"name"
+            },
+            {
+                "label":"Features that supersede this feature",
+                "linkLabelProperty":"name"
+            },
+            {
+                "label":"Features that supersede this feature",
+                "linkLabelProperty":"name",
+                "linkLabelSuffix":" (optional)"
+            }
+        ],
+        "mainAttachmentSHA256":"049440a790d45103bb35adbd88b6b1d003b369974c9c861be5177fc0e682bad3",
+        "mainAttachmentSize":2285,
+        "provideFeature":[
+            "com.ibm.websphere.appserver.anno-1.0"
+        ],
+        "requireFeature":[
+            "com.ibm.websphere.appserver.javax.annotation-1.1",
+            "com.ibm.websphere.appserver.artifact-1.0"
+        ],
+        "requireFeatureWithTolerates":[
+            {
+                "feature":"com.ibm.websphere.appserver.javax.annotation-1.1",
+                "tolerates":[
+                    "1.2"
+                ]
+            },
+            {
+                "feature":"com.ibm.websphere.appserver.artifact-1.0"
+            }
+        ],
+        "singleton":"false",
+        "typeLabel":"Feature",
+        "vanityRelativeURL":"features-com.ibm.websphere.appserver.anno-1.0",
+        "visibility":"PRIVATE",
+        "webDisplayPolicy":"HIDDEN"
+    }
+}

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -151,7 +151,7 @@ public abstract class CommonSSLTest {
         Log.info(c, "createSSLClientWithTrust", "Copying remote truststore: " + serverTrustStorePath);
 
         RemoteFile remoteTrustStore = server.getFileFromLibertyServerRoot(serverTrustStorePath);
-        RemoteFile localTrustStore = new RemoteFile(Machine.getLocalMachine(), LOCAL_TRUSTSTORE_PATH);
+        RemoteFile localTrustStore = Machine.getLocalMachine().getFile(LOCAL_TRUSTSTORE_PATH);
         localTrustStore.copyFromSource(remoteTrustStore);
         assertTrue("Remote truststore did not copy to the local machine",
                    localTrustStore.exists());
@@ -183,10 +183,10 @@ public abstract class CommonSSLTest {
         Log.info(c, "createSSLClientWithTrust", "Copying remote truststore: " + serverTrustStorePath);
         Log.info(c, "createSSLClientWithTrust", "Copying remote keystore: " + serverKeyStorePath);
         RemoteFile remoteKeyStore = server.getFileFromLibertyServerRoot(serverKeyStorePath);
-        RemoteFile localKeyStore = new RemoteFile(Machine.getLocalMachine(), LOCAL_KEYSTORE_PATH);
+        RemoteFile localKeyStore = Machine.getLocalMachine().getFile(LOCAL_KEYSTORE_PATH);
         localKeyStore.copyFromSource(remoteKeyStore);
         RemoteFile remoteTrustStore = server.getFileFromLibertyServerRoot(serverTrustStorePath);
-        RemoteFile localTrustStore = new RemoteFile(Machine.getLocalMachine(), LOCAL_TRUSTSTORE_PATH);
+        RemoteFile localTrustStore = Machine.getLocalMachine().getFile(LOCAL_TRUSTSTORE_PATH);
         localTrustStore.copyFromSource(remoteTrustStore);
         assertTrue("Remote truststore did not copy to the local machine",
                    localTrustStore.exists());
@@ -205,7 +205,7 @@ public abstract class CommonSSLTest {
     protected SSLBasicAuthClient createOSGISSLClientWithTrust(String serverTrustStorePath, String serverTrustStorePassword) throws Exception {
         Log.info(c, "createOSGISSLClientWithTrust", "Copying remote truststore: " + serverTrustStorePath);
         RemoteFile remoteTrustStore = server.getFileFromLibertyServerRoot(serverTrustStorePath);
-        RemoteFile localTrustStore = new RemoteFile(Machine.getLocalMachine(), LOCAL_TRUSTSTORE_PATH);
+        RemoteFile localTrustStore = Machine.getLocalMachine().getFile(LOCAL_TRUSTSTORE_PATH);
         localTrustStore.copyFromSource(remoteTrustStore);
         assertTrue("Remote truststore did not copy to the local machine",
                    localTrustStore.exists());
@@ -281,7 +281,7 @@ public abstract class CommonSSLTest {
             Log.info(c, "verifyDefaultCert", "Verify Remote keystore successfully was created correctly");
 
             RemoteFile remoteKeyStore = server.getFileFromLibertyServerRoot(filePath);
-            RemoteFile localKeyStore = new RemoteFile(Machine.getLocalMachine(), LOCAL_TRUSTSTORE_PATH);
+            RemoteFile localKeyStore = Machine.getLocalMachine().getFile(LOCAL_TRUSTSTORE_PATH);
             localKeyStore.copyFromSource(remoteKeyStore);
             assertTrue("Remote truststore did not copy to the local machine",
                        localKeyStore.exists());

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -61,29 +63,42 @@ public class FeatureInfoCommandTask extends BaseCommandTask {
 
         for (Map.Entry<String, Map<String, ProvisioningFeatureDefinition>> prodFeatureEntries : processor.getFeatureDefinitionsByProduct().entrySet()) {
             String productName = prodFeatureEntries.getKey();
-            boolean headingPrinted = false;
+            boolean productIsCore = productName.equals(ManifestFileProcessor.CORE_PRODUCT_NAME);
+            ArrayList<String> prodFeatures = new ArrayList<String>();
+
             for (Map.Entry<String, ProvisioningFeatureDefinition> entry : prodFeatureEntries.getValue().entrySet()) {
                 // entry.getKey() this is the longer Subsystem-SymbolicName
                 FeatureDefinition featureDefintion = entry.getValue();
                 String featureName = featureDefintion.getFeatureName();
 
-                if (featureDefintion.getVisibility() == Visibility.PUBLIC) {
-                    if (productName.equals(ManifestFileProcessor.CORE_PRODUCT_NAME)) {
-                        commandConsole.printInfoMessage(featureName);
-                    } else {
-                        if (headingPrinted == false) {
-                            commandConsole.printlnInfoMessage("");
-                            commandConsole.printInfoMessage("Product Extension: ");
-                            commandConsole.printlnInfoMessage(productName);
-                            headingPrinted = true;
-                        }
-                        int colonIndex = featureName.indexOf(":");
-                        commandConsole.printInfoMessage(featureName.substring(colonIndex + 1));
+                //a lack of '-' and presence of 'versionless' indicates that the feature is versionless and should be excluded from this list
+                if (featureDefintion.getVisibility() == Visibility.PUBLIC && !(featureName.indexOf("-") == -1 && entry.getKey().indexOf("versionless") != -1)) {
+
+                    //collect all features to be sorted
+                    if (productIsCore) {
+                        prodFeatures.add(featureName);
                     }
+                    else{
+                        int colonIndex = featureName.indexOf(":");
+                        prodFeatures.add(featureName.substring(colonIndex + 1));
+                    }
+                }
+            }
+
+            //sort and print features
+            if(prodFeatures.size() > 0){
+                Collections.sort(prodFeatures);
+
+                if(!productIsCore){
                     commandConsole.printlnInfoMessage("");
+                    commandConsole.printInfoMessage("Product Extension: ");
+                    commandConsole.printlnInfoMessage(productName);
+                }
+    
+                for(String featureName : prodFeatures){
+                    commandConsole.printlnInfoMessage(featureName);
                 }
             }
         }
-
     }
 }

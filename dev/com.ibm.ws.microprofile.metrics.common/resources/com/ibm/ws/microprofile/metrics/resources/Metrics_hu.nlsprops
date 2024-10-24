@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=Adja meg a mikrom\u00e9tere
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: A MicroProfile Metrics szolg\u00e1ltat\u00e1s a k\u00f6vetkez\u0151 libraryRefhaszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva: [{0}]
 libraryRefConfigured.info.CWMMC0014I.explanation=A MicroProfile Metrics szolg\u00e1ltat\u00e1s a libraryRefhaszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva. A hivatkozott k\u00f6nyvt\u00e1rnak tartalmaznia kell a Mikrom\u00e9teres mag k\u00f6nyvt\u00e1rat, a c\u00e9l mikrom\u00e9teres k\u00f6nyvt\u00e1rakat \u00e9s f\u00fcgg\u0151s\u00e9geket.
 libraryRefConfigured.info.CWMMC0014I.useraction=Nem kell semmit tennie.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: A {0} \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a {1} tulajdons\u00e1ghoz. Csak eg\u00e9sz sz\u00e1m \u00e9s decim\u00e1lis \u00e9rt\u00e9kek fogadhat\u00f3k el.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=A be\u00e1ll\u00edtott hisztogram \u00e9rt\u00e9kek \u00e9rv\u00e9nytelenek.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=\u00c1ll\u00edtsa be az \u00e9rt\u00e9keket eg\u00e9sz sz\u00e1mmal \u00e9s tizedesjegyekkel.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: A {0} \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a {1} tulajdons\u00e1ghoz. Csak egy id\u0151egys\u00e9ggel (p\u00e9ld\u00e1ul ms, s, m, h) rendelkez\u0151 eg\u00e9sz \u00e9rt\u00e9kek fogadhat\u00f3k el.
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=A be\u00e1ll\u00edtott id\u0151m\u00e9r\u0151 \u00e9rt\u00e9kek \u00e9rv\u00e9nytelenek.
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Konfigur\u00e1l\u00e1s eg\u00e9sz sz\u00e1m \u00e9rt\u00e9kekkel \u00e9s id\u0151egys\u00e9gekkel (p\u00e9ld\u00e1ul ms, s, m, h).
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: A {0} \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a {1} tulajdons\u00e1ghoz. Az \u00e9rt\u00e9keknek a 0.0 \u00e9s 1.0 k\u00f6z\u00f6tti tartom\u00e1nyba kell esni\u00fck.
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=A be\u00e1ll\u00edtott sz\u00e1zal\u00e9koszt\u00e1ly \u00e9rt\u00e9kek \u00e9rv\u00e9nytelenek.
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=\u00c1ll\u00edtsa be a 0.0 \u00e9rt\u00e9ket a 1.0 inkluz\u00edv tartom\u00e1nyra.
 
 #Memory usedHeap message
 memory.usedHeap.description=A haszn\u00e1lt kupacmem\u00f3ria mennyis\u00e9g\u00e9t jelen\u00edti meg byte-ban.

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,8 +21,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,9 +35,30 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import com.ibm.ws.kernel.boot.cmdline.Utils;
-import com.ibm.ws.kernel.boot.jmx.service.VirtualMachineHelper;
 
 class HotSpotJavaDumperImpl extends JavaDumper {
+    /**
+     * The current process ID, or null if it could not be determined.
+     */
+    private static final String PID = getPID();
+
+    /**
+     * Return the current process ID.
+     */
+    private static String getPID() {
+        String name = ManagementFactory.getRuntimeMXBean().getName();
+        int index = name.indexOf('@');
+        if (index == -1) {
+            return null;
+        }
+
+        String pid = name.substring(0, index);
+        if (!pid.matches("[0-9]+")) {
+            return null;
+        }
+
+        return pid;
+    }
 
     /**
      * The next sequence number to use for dump file names.
@@ -54,6 +79,13 @@ class HotSpotJavaDumperImpl extends JavaDumper {
      * Name for "com.sun.management:type=DiagnosticCommand".
      */
     private final ObjectName diagnosticCommandName;
+
+    /**
+     * Lazily-initialized VirtualMachine for generating Java dumps.
+     * 
+     * @see #getVirtualMachine
+     */
+    private VirtualMachine vm;
 
     HotSpotJavaDumperImpl(MBeanServer platformMBeanServer, ObjectName diagName, ObjectName diagCommandName) {
         this.platformMBeanServer = platformMBeanServer;
@@ -77,9 +109,9 @@ class HotSpotJavaDumperImpl extends JavaDumper {
 
     /**
      * Create a dump file with a unique name.
-     *
+     * 
      * @param outputDir the directory to contain the file
-     * @param prefix    the prefix for the filename
+     * @param prefix the prefix for the filename
      * @param extension the file extension, not including a leading "."
      * @return the created file
      */
@@ -87,7 +119,6 @@ class HotSpotJavaDumperImpl extends JavaDumper {
         String dateTime = new SimpleDateFormat("yyyyMMdd.HHmmss").format(new Date());
         File outputFile;
         do {
-            String PID = VirtualMachineHelper.getPID();
             String pid = PID == null ? "" : PID + '.';
             int sequenceNumber = nextSequenceNumber.getAndIncrement();
             outputFile = new File(outputDir, String.format("%s.%s.%s%04d.%s", prefix, dateTime, pid, sequenceNumber, extension));
@@ -98,7 +129,7 @@ class HotSpotJavaDumperImpl extends JavaDumper {
 
     /**
      * Create a heap dump. This is the same as jmap -dump:file=...
-     *
+     * 
      * @param outputDir the server output directory
      * @return the resulting file
      */
@@ -126,7 +157,7 @@ class HotSpotJavaDumperImpl extends JavaDumper {
     /**
      * Create a thread dump. This is the same output normally printed to the
      * console when a kill -QUIT or Ctrl-Break is sent to the process.
-     *
+     * 
      * @param outputDir the server output directory
      * @return the resulting file, or null if the dump could not be created
      */
@@ -136,20 +167,20 @@ class HotSpotJavaDumperImpl extends JavaDumper {
         // JREs (not JDKs) and sometimes fails to connect, but we prefer it when
         // available because DiagnosticCommand returns the entire thread dump as
         // a single String, which risks OutOfMemoryError.
-        Method remoteDataDumpMethod = null;
+        VirtualMachine vm = null;
         try {
-            remoteDataDumpMethod = VirtualMachineHelper.getRemoteDumpMethod();
-            if (remoteDataDumpMethod == null && diagnosticCommandName == null) {
+            vm = getAttachedVirtualMachine();
+            if (vm == null && diagnosticCommandName == null) {
                 // Neither Java Attach nor DiagnosticCommand are available, so
                 // it's not possible to create a thread dump.
                 return null;
             }
-        } catch (RuntimeException e) {
+        } catch (VirtualMachineException e) {
             // Sometimes Java Attach fails spuriously.  If DiagnosticCommand is
             // available, try that.  Otherwise, propagate the failure.
             if (diagnosticCommandName == null) {
                 Throwable cause = e.getCause();
-                throw cause instanceof RuntimeException ? (RuntimeException) cause : e;
+                throw cause instanceof RuntimeException ? (RuntimeException) cause : new RuntimeException(cause);
             }
         }
 
@@ -162,8 +193,8 @@ class HotSpotJavaDumperImpl extends JavaDumper {
             // Use a filename that resembles an IBM javacore.
             outputFile = createNewFile(outputDir, "javadump", "txt");
 
-            if (remoteDataDumpMethod != null) {
-                input = remoteDataDump(remoteDataDumpMethod);
+            if (vm != null) {
+                input = vm.remoteDataDump();
                 input = new BufferedInputStream(input);
 
                 output = new FileOutputStream(outputFile);
@@ -206,25 +237,123 @@ class HotSpotJavaDumperImpl extends JavaDumper {
         return outputFile;
     }
 
-    private InputStream remoteDataDump(Method remoteDataDumpMethod) throws IOException {
+    /**
+     * Returns sun.tools.attach.HotSpotVirtualMachine, if possible.
+     */
+    private synchronized VirtualMachine getAttachedVirtualMachine() throws VirtualMachineException {
+        if (PID == null) {
+            // Java Attach requires a PID.
+            return null;
+        }
+
+        if (vm == null) {
+            vm = createVirtualMachine();
+        }
+        return vm.isAttached() ? vm : null;
+    }
+
+    /**
+     * Create a VirtualMachine wrapper.
+     */
+    private VirtualMachine createVirtualMachine() throws VirtualMachineException {
+        ClassLoader toolsClassLoader;
+
+        File toolsJar = getToolsJar();
+        if (toolsJar == null) {
+            // The attach classes are on the boot classpath on Mac.
+            toolsClassLoader = HotSpotJavaDumperImpl.class.getClassLoader();
+        } else {
+            try {
+                toolsClassLoader = new URLClassLoader(new URL[] { toolsJar.getAbsoluteFile().toURI().toURL() });
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         try {
-            // Pass -l, which is the jstack argument for a "long listing".
-            Object[] dumpArgs = new Object[] { "-l" };
-            return (InputStream) remoteDataDumpMethod.invoke(VirtualMachineHelper.getVirtualMachine(), new Object[] { dumpArgs });
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
+            Class<?> vmClass = toolsClassLoader.loadClass("com.sun.tools.attach.VirtualMachine");
+            Method attachMethod = vmClass.getMethod("attach", new Class<?>[] { String.class });
+            Object toolsVM = attachMethod.invoke(null, new Object[] { PID });
+            Method remoteDataDumpMethod = toolsVM.getClass().getMethod("remoteDataDump", new Class<?>[] { Object[].class });
+            return new VirtualMachine(toolsVM, remoteDataDumpMethod);
+        } catch (ClassNotFoundException e) {
+            // The class isn't found, so we won't be able to create dumps.
         } catch (InvocationTargetException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof IOException) {
-                throw (IOException) cause;
+            throw new VirtualMachineException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return new VirtualMachine(null, null);
+    }
+
+    /**
+     * Gets tools.jar from the JDK, or null if not found (for example, when
+     * running with a JRE rather than a JDK, or when running on Mac).
+     */
+    private static File getToolsJar() {
+        String javaHome = System.getProperty("java.home");
+        File file = new File(javaHome, "../lib/tools.jar");
+        if (!file.exists()) {
+            file = new File(javaHome, "lib/tools.jar");
+            if (!file.exists()) {
+                return null;
             }
-            if (cause instanceof Error) {
-                throw (Error) cause;
+        }
+
+        return file;
+    }
+
+    @SuppressWarnings("serial")
+    private static class VirtualMachineException extends Exception {
+        VirtualMachineException(Throwable cause) {
+            super(cause);
+        }
+    }
+
+    /**
+     * Create a wrapper for sun.tools.attach.HotSpotVirtualMachine.
+     */
+    private static class VirtualMachine {
+        /**
+         * sun.tools.attach.HotSpotVirtualMachine
+         */
+        private final Object vm;
+
+        /**
+         * InputStream sun.tools.attach.HotSpotVirtualMachine.remoteDataDump(Object[])
+         */
+        private final Method remoteDataDumpMethod;
+
+        VirtualMachine(Object vm, Method remoteDataDumpMethod) {
+            this.vm = vm;
+            this.remoteDataDumpMethod = remoteDataDumpMethod;
+        }
+
+        public boolean isAttached() {
+            return vm != null;
+        }
+
+        public InputStream remoteDataDump() throws IOException {
+            try {
+                // Pass -l, which is the jstack argument for a "long listing".
+                Object[] dumpArgs = new Object[] { "-l" };
+                return (InputStream) remoteDataDumpMethod.invoke(vm, new Object[] { dumpArgs });
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            } catch (InvocationTargetException e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof IOException) {
+                    throw (IOException) cause;
+                }
+                if (cause instanceof Error) {
+                    throw (Error) cause;
+                }
+                if (cause instanceof RuntimeException) {
+                    throw (RuntimeException) cause;
+                }
+                throw new RuntimeException(cause);
             }
-            if (cause instanceof RuntimeException) {
-                throw (RuntimeException) cause;
-            }
-            throw new RuntimeException(cause);
         }
     }
 }

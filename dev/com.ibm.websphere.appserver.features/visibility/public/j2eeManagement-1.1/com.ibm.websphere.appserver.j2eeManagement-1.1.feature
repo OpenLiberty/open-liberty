@@ -73,3 +73,4 @@ Subsystem-Name: J2EE Management 1.1
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.j2eemanagement_1.1-javadoc.zip
 kind=ga
 edition=base
+WLP-Platform: javaee-6.0,javaee-7.0,javaee-8.0

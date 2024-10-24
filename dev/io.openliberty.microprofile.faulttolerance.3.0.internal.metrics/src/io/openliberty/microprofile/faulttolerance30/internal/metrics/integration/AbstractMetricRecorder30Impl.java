@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,14 +26,6 @@ import java.util.EnumMap;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 
-import org.eclipse.microprofile.metrics.Counter;
-import org.eclipse.microprofile.metrics.Gauge;
-import org.eclipse.microprofile.metrics.Histogram;
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.MetricUnits;
-import org.eclipse.microprofile.metrics.Tag;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
@@ -44,6 +36,14 @@ import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider.AsyncTy
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.Tag;
 
 /**
  * Records Fault Tolerance metrics for the FT 3.0 spec
@@ -368,7 +368,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
 
     @Trivial
     @Override
-    public synchronized void reportCircuitOpen() {
+    public synchronized void reportCircuitOpen(long now) {
         if (circuitBreakerState != CircuitBreakerState.OPEN) {
             recordEndOfCircuitBreakerState(circuitBreakerState);
             circuitBreakerState = CircuitBreakerState.OPEN;
@@ -379,7 +379,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     /** {@inheritDoc} */
     @Trivial
     @Override
-    public synchronized void reportCircuitHalfOpen() {
+    public synchronized void reportCircuitHalfOpen(long now) {
         if (circuitBreakerState != CircuitBreakerState.HALF_OPEN) {
             recordEndOfCircuitBreakerState(circuitBreakerState);
             circuitBreakerState = CircuitBreakerState.HALF_OPEN;
@@ -388,7 +388,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
 
     @Trivial
     @Override
-    public synchronized void reportCircuitClosed() {
+    public synchronized void reportCircuitClosed(long now) {
         if (circuitBreakerState != CircuitBreakerState.CLOSED) {
             recordEndOfCircuitBreakerState(circuitBreakerState);
             circuitBreakerState = CircuitBreakerState.CLOSED;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016,2023 IBM Corporation and others.
+ * Copyright (c) 2016,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -105,15 +105,15 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         // get the shared resources and apps dirs
         application = SPRING_BOOT_30_APP_BASE;
         // make sure the usr/shared/resources folder exists
-        sharedResourcesDir = new RemoteFile(server.getFileFromLibertyInstallRoot(""), "usr/shared/resources");
+        sharedResourcesDir = server.getMachine().getFile(server.getFileFromLibertyInstallRoot(""), "usr/shared/resources");
         sharedResourcesDir.mkdirs();
         appsDir = server.getFileFromLibertyServerRoot("apps");
     }
 
     @After
     public void deleteThinAppsAndStopServer() throws Exception {
-        new RemoteFile(appsDir, SPRING_BOOT_30_BASE_THIN).delete();
-        new RemoteFile(appsDir, SPRING_BOOT_30_WAR_THIN).delete();
+        server.getMachine().getFile(appsDir, SPRING_BOOT_30_BASE_THIN).delete();
+        server.getMachine().getFile(appsDir, SPRING_BOOT_30_WAR_THIN).delete();
         server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_LIB_INDEX_CACHE);
         // note that stop server also deletes the shared and workarea library caches
         String methodName = testName.getMethodName();
@@ -249,7 +249,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         // Move over the lib index from the default location it got stored
         RemoteFile libCache = server.getFileFromLibertyServerRoot("apps/" + SPRING_LIB_INDEX_CACHE);
         Assert.assertTrue("Expected lib cache does not exist: " + libCache.getAbsolutePath(), libCache.isDirectory());
-        Assert.assertTrue("Failed to move the lib cache to the shared area", libCache.rename(new RemoteFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE)));
+        Assert.assertTrue("Failed to move the lib cache to the shared area", libCache.rename(server.getMachine().getFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE)));
 
         configureServerThin();
         super.testBasicSpringBootApplication();
@@ -257,12 +257,12 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Test
     public void testSetTargets() throws Exception {
-        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot("/"), "thinnedApp." + SPRING_APP_TYPE);
+        RemoteFile thinApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot("/"), "thinnedApp." + SPRING_APP_TYPE);
 
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
         cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
-        cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
+        cmd.add("--targetLibCachePath=" + server.getMachine().getFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
         cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
 
@@ -271,7 +271,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
         // Move over the thin app to the apps/ folder from the destination.
         Assert.assertTrue("Expected thin app does not exist: " + thinApp.getAbsolutePath(), thinApp.isFile());
-        Assert.assertTrue("Failed to move the thinApp to the apps folder", thinApp.rename(new RemoteFile(appsDir, SPRING_BOOT_30_BASE_THIN)));
+        Assert.assertTrue("Failed to move the thinApp to the apps folder", thinApp.rename(server.getMachine().getFile(appsDir, SPRING_BOOT_30_BASE_THIN)));
 
         configureServerThin();
         super.testBasicSpringBootApplication();
@@ -281,7 +281,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     public void testLibertyUberJarThinning() throws Exception {
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
-        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
+        RemoteFile thinApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
 
         // NOTE this is mimicking what the boost plugin does when doing a 'package'
         // The current support for thinning Liberty Uber JAR is very limited and expects the
@@ -291,7 +291,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
         cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
-        cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
+        cmd.add("--targetLibCachePath=" + server.getMachine().getFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
         cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
         dropinFiles.add(thinApp);
@@ -308,7 +308,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
         // Move over the Liberty uber JAR to apps/ folder using the thin app name
         Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
-        Assert.assertTrue("Failed to move the Liberty uber JAR to the apps folder", libertyUberJar.rename(new RemoteFile(appsDir, SPRING_BOOT_30_BASE_THIN)));
+        Assert.assertTrue("Failed to move the Liberty uber JAR to the apps folder", libertyUberJar.rename(server.getMachine().getFile(appsDir, SPRING_BOOT_30_BASE_THIN)));
         thinApp.delete();
 
         configureServerThin();
@@ -319,12 +319,12 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     public void testDefaultHostWithAppPortRunLibertyUberJarWithSSL() throws Exception {
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
-        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
+        RemoteFile thinApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
 
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
         cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
-        cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
+        cmd.add("--targetLibCachePath=" + server.getMachine().getFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
         cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
         dropinFiles.add(thinApp);
@@ -448,13 +448,13 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     public void testInvalidLibertyUberJar() throws Exception {
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
-        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
+        RemoteFile thinApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
 
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
         cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
         //Put lib.index.cache in wrong location
-        cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, "libraries/" + SPRING_LIB_INDEX_CACHE).getAbsolutePath());
+        cmd.add("--targetLibCachePath=" + server.getMachine().getFile(sharedResourcesDir, "libraries/" + SPRING_LIB_INDEX_CACHE).getAbsolutePath());
         cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
         dropinFiles.add(thinApp);
@@ -471,7 +471,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
         // Move over the Liberty uber JAR to apps/ folder using the thin app name
         Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
-        Assert.assertTrue("Failed to move the Liberty uber JAR to the apps folder", libertyUberJar.rename(new RemoteFile(appsDir, SPRING_BOOT_30_BASE_THIN)));
+        Assert.assertTrue("Failed to move the Liberty uber JAR to the apps folder", libertyUberJar.rename(server.getMachine().getFile(appsDir, SPRING_BOOT_30_BASE_THIN)));
         thinApp.delete();
 
         configureServerThin();
@@ -487,12 +487,12 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         //Configure app in wrong location
         String dropinsSpring = "thin/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
-        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
+        RemoteFile thinApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
 
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
         cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
-        cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
+        cmd.add("--targetLibCachePath=" + server.getMachine().getFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
         cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
         dropinFiles.add(thinApp);
@@ -509,7 +509,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
         // Move over the Liberty uber JAR to apps/ folder using the thin app name
         Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
-        Assert.assertTrue("Failed to move the Liberty uber JAR to the apps folder", libertyUberJar.rename(new RemoteFile(appsDir, SPRING_BOOT_30_BASE_THIN)));
+        Assert.assertTrue("Failed to move the Liberty uber JAR to the apps folder", libertyUberJar.rename(server.getMachine().getFile(appsDir, SPRING_BOOT_30_BASE_THIN)));
         thinApp.delete();
 
         configureServerThin();
@@ -523,7 +523,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     @Test
     public void testParentCache() throws Exception {
         // prime the parent lib cache
-        RemoteFile parentLibCache = new RemoteFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE);
+        RemoteFile parentLibCache = server.getMachine().getFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE);
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
         cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());

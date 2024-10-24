@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests;
 
@@ -62,6 +59,8 @@ public class TestMultiModuleConfigLoad extends FATServletClient {
     //run against EE10, EE9, EE8 and EE7 features
     @ClassRule
     public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL,
+                                                              MicroProfileActions.MP70_EE10,
+                                                              MicroProfileActions.MP70_EE11,
                                                               MicroProfileActions.MP61,
                                                               MicroProfileActions.MP13,
                                                               RepeatFaultTolerance.MP21_METRICS20,

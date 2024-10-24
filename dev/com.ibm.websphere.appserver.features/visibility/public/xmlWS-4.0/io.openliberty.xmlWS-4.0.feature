@@ -70,3 +70,4 @@ edition=base
 WLP-AlsoKnownAs: jaxws-4.0
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-10.0,jakartaee-11.0

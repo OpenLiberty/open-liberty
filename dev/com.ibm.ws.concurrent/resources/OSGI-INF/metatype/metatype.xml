@@ -95,7 +95,7 @@
   <AD id="maxPriority"                        type="Integer" required="false" max="10" min="1" name="%maxPriority" description="%maxPriority.desc"/>
   <AD id="qualifiers"                         type="String"  required="false" cardinality="-1000" name="internal" description="internal use only"/>
   <AD id="service.ranking"                    type="Integer" default="-1000" name="internal" description="internal use only"/>
-  <AD id="virtual"                            type="Boolean" default="false" name="internal" description="internal use only"/>
+  <AD id="virtual"                            type="Boolean" default="false" ibm:beta="true" name="%virtual" description="%virtual.desc"/>
   <AD id="javaCompDefaultName"                type="String"  required="false" name="internal" description="internal use only" />  
  </OCD>
 

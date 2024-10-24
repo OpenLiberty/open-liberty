@@ -86,7 +86,7 @@ public class SameSite extends ConfigElement {
 
     /**
      * 
-     * @param partitioned Determines if cookies should be paritioned 
+     * @param partitioned Determines if cookies should be partitioned 
      */
     @XmlAttribute
     public void setPartitioned(Boolean partitioned) {

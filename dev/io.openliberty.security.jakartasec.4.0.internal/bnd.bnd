@@ -1,0 +1,55 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Bundle-Name: Jakarta Security 4.0
+Bundle-SymbolicName: io.openliberty.security.jakartasec.4.0.internal
+Bundle-Description: Jakarta Security 4.0; version=${bVersion}
+
+WS-TraceGroup: \
+    OPENIDCONNECT
+
+Private-Package: io.openliberty.security.jakartasec.internal.resources.*
+
+Export-Package: \
+    io.openliberty.security.jakartasec,\
+    io.openliberty.security.jakartasec.credential,\
+    io.openliberty.security.jakartasec.el,\
+    io.openliberty.security.jakartasec.identitystore,\
+    io.openliberty.security.jakartasec.tokens
+
+Import-Package: \
+    *
+
+instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resources/resources/*.class
+
+-buildpath: \
+    io.openliberty.security.jakartasec.3.0.internal;version=latest,\
+    com.ibm.ws.kernel.boot;version=latest,\
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.logging.core;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    io.openliberty.security.jakartasec.2.0.internal,\
+    io.openliberty.jakarta.security.4.0,\
+    io.openliberty.security.oidcclientcore.internal.jakarta,\
+    io.openliberty.jakarta.jsonp.2.1,\
+    io.openliberty.jakarta.servlet.6.1,\
+    com.ibm.ws.org.jose4j;version=latest,\
+    com.ibm.ws.security;version=latest,\
+    io.openliberty.jakarta.expressionLanguage.6.0;version=latest,\
+    com.ibm.json4j;version=latest,\
+    io.openliberty.cdi.4.0.internal.interfaces;version=latest

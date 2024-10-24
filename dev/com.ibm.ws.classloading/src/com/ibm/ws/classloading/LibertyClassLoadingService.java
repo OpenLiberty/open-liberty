@@ -44,4 +44,14 @@ public interface LibertyClassLoadingService<CL extends ClassLoader & LibertyClas
 
     @Override
     CL createThreadContextClassLoader(ClassLoader applicationClassLoader);
+    
+    /**
+     * This method returns whether or not the provided ClassLoader is a ThreadContextClassLoader
+     * and if the second provided ClassLoader is an AppClassLoader. And if the TCCL is for the AppClassLoader 
+     *
+     * @param tccl The thread context class loader object to analyze.
+     * @param appClassLoader The app class loader object to analyze.
+     * @return true if tccl is a ThreadContextClassLoader for an app classloader appClassLoader
+     */
+    boolean isThreadContextClassLoaderForAppClassLoader(ClassLoader tccl, ClassLoader appClassLoader);
 }

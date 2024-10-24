@@ -13,6 +13,7 @@
 package componenttest.topology.database.container;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,9 @@ import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DataSourceProperties;
 import com.ibm.websphere.simplicity.config.DatabaseStore;
+import com.ibm.websphere.simplicity.config.Fileset;
+import com.ibm.websphere.simplicity.config.JavaPermission;
+import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
 import com.ibm.websphere.simplicity.log.Log;
@@ -32,6 +36,8 @@ import componenttest.topology.impl.LibertyServer;
 public final class DatabaseContainerUtil {
     //Logging Constants
     private static final Class<DatabaseContainerUtil> c = DatabaseContainerUtil.class;
+
+    private static String DRIVER_REPLACEMENT = "${env.DB_DRIVER}";
 
     private enum AuthLocation {
         inProperties,
@@ -52,6 +58,25 @@ public final class DatabaseContainerUtil {
     }
 
     /**
+     * performs the same property substitution as {@link DatabaseContainerUtil#setupDataSourceDatabaseProperties(LibertyServer, JdbcDatabaseContainer)}
+     * but ensures we find and swap ${DB_DRIVER} from all filesets because the JVM will return null for env vars before checkpoint.
+     */
+    public static void setupDataSourcePropertiesForCheckpoint(LibertyServer serv, JdbcDatabaseContainer<?> cont) throws CloneNotSupportedException, Exception {
+        boolean isDerby = DatabaseContainerType.valueOf(cont) == DatabaseContainerType.Derby || DatabaseContainerType.valueOf(cont) == DatabaseContainerType.DerbyClient;
+
+        //Get server config
+        ServerConfiguration cloneConfig = serv.getServerConfiguration().clone();
+        //Get datasources to be changed or skip if derby
+        Map<String, DataSource> datasources = isDerby ? Collections.emptyMap() : getDataSources(cloneConfig);
+        //Get authdatas to be changed or skip if derby
+        Map<String, AuthData> authDatas = isDerby ? Collections.emptyMap() : getAuthDatas(cloneConfig);
+        //Get libraries to be changed
+        Map<String, Fileset> libraries = getLibraries(cloneConfig);
+        //Modify those datasources
+        modifyDataSourcePropsForDatabase(datasources, authDatas, libraries, cloneConfig, serv, cont);
+    }
+
+    /**
      * Performs the same property substitution as {@link DatabaseContainerUtil#setupDataSourceProperties(LibertyServer, JdbcDatabaseContainer)}
      * but ensures that we use properties.{database} instead of generic properties.
      */
@@ -64,11 +89,13 @@ public final class DatabaseContainerUtil {
         //Get server config
         ServerConfiguration cloneConfig = serv.getServerConfiguration().clone();
         //Get datasources to be changed
-        Map<String, DataSource> datasources = getDataSources(serv, cloneConfig);
+        Map<String, DataSource> datasources = getDataSources(cloneConfig);
         //Get authdatas to be changed
-        Map<String, AuthData> authDatas = getAuthDatas(serv, cloneConfig);
+        Map<String, AuthData> authDatas = getAuthDatas(cloneConfig);
+        //Provide empty list of libraries
+        Map<String, Fileset> libraries = Collections.emptyMap();
         //Modify those datasources
-        modifyDataSourcePropsForDatabase(datasources, authDatas, cloneConfig, serv, cont);
+        modifyDataSourcePropsForDatabase(datasources, authDatas, libraries, cloneConfig, serv, cont);
     }
 
     /**
@@ -107,17 +134,19 @@ public final class DatabaseContainerUtil {
         //Get server config
         ServerConfiguration cloneConfig = serv.getServerConfiguration().clone();
         //Get datasources to be changed
-        Map<String, DataSource> datasources = getDataSources(serv, cloneConfig);
+        Map<String, DataSource> datasources = getDataSources(cloneConfig);
         //Get authdatas to be changed
-        Map<String, AuthData> authDatas = getAuthDatas(serv, cloneConfig);
+        Map<String, AuthData> authDatas = getAuthDatas(cloneConfig);
+        //Provide empty list of libraries
+        Map<String, Fileset> libraries = Collections.emptyMap();
         //Modify those datasources
-        modifyDataSourcePropsGeneric(datasources, authDatas, cloneConfig, serv, cont);
+        modifyDataSourcePropsGeneric(datasources, authDatas, libraries, cloneConfig, serv, cont);
     }
 
     /*
      * Helper method to get a list of datasources that need to be updated
      */
-    private static Map<String, DataSource> getDataSources(LibertyServer serv, ServerConfiguration cloneConfig) {
+    private static Map<String, DataSource> getDataSources(ServerConfiguration cloneConfig) {
         //Get a list of datasources that need to be updated
         Map<String, DataSource> datasources = new HashMapWithNullKeys<>();
 
@@ -138,7 +167,7 @@ public final class DatabaseContainerUtil {
     /*
      * Helper method to get a list of AuthData elements that need to be updated
      */
-    private static Map<String, AuthData> getAuthDatas(LibertyServer serv, ServerConfiguration cloneConfig) {
+    private static Map<String, AuthData> getAuthDatas(ServerConfiguration cloneConfig) {
         //Get a list of authDatas that need to be updated
         Map<String, AuthData> authDatas = new HashMapWithNullKeys<>();
 
@@ -161,78 +190,96 @@ public final class DatabaseContainerUtil {
     }
 
     /*
+     * Helper method to get a list of Libraries that need to be modified
+     */
+    private static Map<String, Fileset> getLibraries(ServerConfiguration cloneConfig) {
+        //Get a list of authDatas that need to be updated
+        Map<String, Fileset> filesets = new HashMapWithNullKeys<>();
+
+        //Get filesets
+        for (Library lib : cloneConfig.getLibraries())
+            for (Fileset fs : lib.getFilesets())
+                if (fs.getIncludes().equals(DRIVER_REPLACEMENT))
+                    filesets.put(lib.getId(), fs); //Reference library id here since it will be more recognizable
+
+        return filesets;
+    }
+
+    /*
      * Creates generic properties for each database
      */
-    private static void modifyDataSourcePropsGeneric(Map<String, DataSource> datasources, Map<String, AuthData> authDatas,
+    private static void modifyDataSourcePropsGeneric(Map<String, DataSource> datasources, Map<String, AuthData> authDatas, Map<String, Fileset> libraries,
                                                      ServerConfiguration cloneConfig, LibertyServer serv,
                                                      JdbcDatabaseContainer<?> cont) throws Exception {
         //Get database type
         DatabaseContainerType type = DatabaseContainerType.valueOf(cont);
 
-        //Create general properties
-        DataSourceProperties props = new Properties();
-        props.setUser(cont.getUsername());
-        props.setPassword(cont.getPassword());
-        props.setServerName(cont.getHost());
-        props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
-        try {
-            props.setDatabaseName(cont.getDatabaseName());
-        } catch (UnsupportedOperationException e) {
-            if (type.equals(DatabaseContainerType.SQLServer)) {
-                props.setDatabaseName("TEST");
+        if (!datasources.isEmpty()) {
+            //Create general properties
+            DataSourceProperties props = new Properties();
+            props.setUser(cont.getUsername());
+            props.setPassword(cont.getPassword());
+            props.setServerName(cont.getHost());
+            props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
+            try {
+                props.setDatabaseName(cont.getDatabaseName());
+            } catch (UnsupportedOperationException e) {
+                if (type.equals(DatabaseContainerType.SQLServer)) {
+                    props.setDatabaseName("TEST");
+                }
             }
-        }
 
-        //TODO this should not be required even when using general datasource properties
-        // investigating here: https://github.com/OpenLiberty/open-liberty/issues/10066
-        if (type.equals(DatabaseContainerType.DB2)) {
-            props.setExtraAttribute("driverType", "4");
-        }
+            //TODO this should not be required even when using general datasource properties
+            // investigating here: https://github.com/OpenLiberty/open-liberty/issues/10066
+            if (type.equals(DatabaseContainerType.DB2)) {
+                props.setExtraAttribute("driverType", "4");
+            }
 
-        if (type.equals(DatabaseContainerType.SQLServer)) {
-            props.setExtraAttribute("selectMethod", "cursor");
-        }
+            if (type.equals(DatabaseContainerType.SQLServer)) {
+                props.setExtraAttribute("selectMethod", "cursor");
+            }
 
-        if (type.equals(DatabaseContainerType.Oracle)) {
-            Class<?> clazz = type.getContainerClass();
-            Method getSid = clazz.getMethod("getSid");
-            props.setDatabaseName((String) getSid.invoke(cont));
-            props.setExtraAttribute("driverType", "thin");
-        }
+            if (type.equals(DatabaseContainerType.Oracle)) {
+                Class<?> clazz = type.getContainerClass();
+                Method getSid = clazz.getMethod("getSid");
+                props.setDatabaseName((String) getSid.invoke(cont));
+                props.setExtraAttribute("driverType", "thin");
+            }
 
-        // Same properties just without auth data when using containerAuthDataRef, or containerAuthData.
-        DataSourceProperties noAuthProps = (DataSourceProperties) props.clone();
-        noAuthProps.setUser(null);
-        noAuthProps.setPassword(null);
+            // Same properties just without auth data when using containerAuthDataRef, or containerAuthData.
+            DataSourceProperties noAuthProps = (DataSourceProperties) props.clone();
+            noAuthProps.setUser(null);
+            noAuthProps.setPassword(null);
 
-        for (Map.Entry<String, DataSource> entry : datasources.entrySet()) {
-            Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + entry.getKey());
+            for (Map.Entry<String, DataSource> entry : datasources.entrySet()) {
+                Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + entry.getKey());
 
-            AuthLocation authLoc = whereIsAuthData(entry.getValue());
-            switch (authLoc) {
-                case inAuthDataRef:
-                    assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
-                    entry.getValue().replaceDatasourceProperties(noAuthProps);
-                    break;
-                case inEmbeddedAuthData:
-                    assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
-                    entry.getValue().replaceDatasourceProperties(noAuthProps);
-                    break;
-                case inProperties:
-                    entry.getValue().replaceDatasourceProperties(props);
-                    break;
-                case none:
-                    Log.warning(c,
-                                "The datasource (" + entry.getKey()
-                                   + ") did not have username/password set in properties element, ContainerAuthData element, or ContainerAuthDataRef attribute. "
-                                   + "We will assume you have configured a DeploymentDescriptor that DOES reference a AuthData element that has been modified.");
-                    entry.getValue().replaceDatasourceProperties(noAuthProps);
-                    break;
-                default:
-                    //Replace default properties
-                    entry.getValue().replaceDatasourceProperties(props);
-                    break;
+                AuthLocation authLoc = whereIsAuthData(entry.getValue());
+                switch (authLoc) {
+                    case inAuthDataRef:
+                        assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                        entry.getValue().replaceDatasourceProperties(noAuthProps);
+                        break;
+                    case inEmbeddedAuthData:
+                        assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                        entry.getValue().replaceDatasourceProperties(noAuthProps);
+                        break;
+                    case inProperties:
+                        entry.getValue().replaceDatasourceProperties(props);
+                        break;
+                    case none:
+                        Log.warning(c,
+                                    "The datasource (" + entry.getKey()
+                                       + ") did not have username/password set in properties element, ContainerAuthData element, or ContainerAuthDataRef attribute. "
+                                       + "We will assume you have configured a DeploymentDescriptor that DOES reference a AuthData element that has been modified.");
+                        entry.getValue().replaceDatasourceProperties(noAuthProps);
+                        break;
+                    default:
+                        //Replace default properties
+                        entry.getValue().replaceDatasourceProperties(props);
+                        break;
 
+                }
             }
         }
 
@@ -241,6 +288,17 @@ public final class DatabaseContainerUtil {
             //Replace derby auth data
             entry.getValue().setUser(cont.getUsername());
             entry.getValue().setPassword(cont.getPassword());
+        }
+
+        for (Map.Entry<String, Fileset> entry : libraries.entrySet()) {
+            Log.info(c, "setupDataSourceProperties", "FOUND: Library to be enlisted in database rotation.  ID: " + entry.getKey());
+            //Replace includes with driver name
+            entry.getValue().setIncludes(type.getDriverName());
+            //Add all permissions for driver
+            JavaPermission driverPermission = new JavaPermission();
+            driverPermission.setCodeBase("${shared.resource.dir}/jdbc/" + type.getDriverName());
+            driverPermission.setClassName("java.security.AllPermission");
+            cloneConfig.getJavaPermissions().add(driverPermission);
         }
 
         //Update config
@@ -250,65 +308,67 @@ public final class DatabaseContainerUtil {
     /*
      * Creates properties for specific database
      */
-    private static void modifyDataSourcePropsForDatabase(Map<String, DataSource> datasources, Map<String, AuthData> authDatas,
+    private static void modifyDataSourcePropsForDatabase(Map<String, DataSource> datasources, Map<String, AuthData> authDatas, Map<String, Fileset> libraries,
                                                          ServerConfiguration cloneConfig, LibertyServer serv,
                                                          JdbcDatabaseContainer<?> cont) throws Exception {
         //Get database type
         DatabaseContainerType type = DatabaseContainerType.valueOf(cont);
 
-        //Create properties based on type
-        DataSourceProperties props = type.getDataSourceProps();
-        props.setUser(cont.getUsername());
-        props.setPassword(cont.getPassword());
-        props.setServerName(cont.getHost());
-        props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
-        try {
-            props.setDatabaseName(cont.getDatabaseName());
-        } catch (UnsupportedOperationException e) {
-            if (type.equals(DatabaseContainerType.SQLServer)) {
-                props.setDatabaseName("TEST");
+        if (!datasources.isEmpty()) {
+            //Create properties based on type
+            DataSourceProperties props = type.getDataSourceProps();
+            props.setUser(cont.getUsername());
+            props.setPassword(cont.getPassword());
+            props.setServerName(cont.getHost());
+            props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
+            try {
+                props.setDatabaseName(cont.getDatabaseName());
+            } catch (UnsupportedOperationException e) {
+                if (type.equals(DatabaseContainerType.SQLServer)) {
+                    props.setDatabaseName("TEST");
+                }
             }
-        }
 
-        if (type.equals(DatabaseContainerType.Oracle)) {
-            Class<?> clazz = type.getContainerClass();
-            Method getSid = clazz.getMethod("getSid");
-            props.setDatabaseName((String) getSid.invoke(cont));
-        }
+            if (type.equals(DatabaseContainerType.Oracle)) {
+                Class<?> clazz = type.getContainerClass();
+                Method getSid = clazz.getMethod("getSid");
+                props.setDatabaseName((String) getSid.invoke(cont));
+            }
 
-        // Same properties just without auth data when using containerAuthDataRef, or containerAuthData.
-        DataSourceProperties noAuthProps = (DataSourceProperties) props.clone();
-        noAuthProps.setUser(null);
-        noAuthProps.setPassword(null);
+            // Same properties just without auth data when using containerAuthDataRef, or containerAuthData.
+            DataSourceProperties noAuthProps = (DataSourceProperties) props.clone();
+            noAuthProps.setUser(null);
+            noAuthProps.setPassword(null);
 
-        for (Map.Entry<String, DataSource> entry : datasources.entrySet()) {
-            Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + entry.getKey());
+            for (Map.Entry<String, DataSource> entry : datasources.entrySet()) {
+                Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + entry.getKey());
 
-            AuthLocation authLoc = whereIsAuthData(entry.getValue());
-            switch (authLoc) {
-                case inAuthDataRef:
-                    assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
-                    entry.getValue().replaceDatasourceProperties(noAuthProps);
-                    break;
-                case inEmbeddedAuthData:
-                    assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
-                    entry.getValue().replaceDatasourceProperties(noAuthProps);
-                    break;
-                case inProperties:
-                    entry.getValue().replaceDatasourceProperties(props);
-                    break;
-                case none:
-                    Log.warning(c,
-                                "The datasource (" + entry.getKey()
-                                   + ") did not have username/password set in properties element, ContainerAuthData element, or ContainerAuthDataRef attribute. "
-                                   + "We will assume you have configured a DeploymentDescriptor that DOES reference a AuthData element that has been modified.");
-                    entry.getValue().replaceDatasourceProperties(noAuthProps);
-                    break;
-                default:
-                    //Replace default properties
-                    entry.getValue().replaceDatasourceProperties(props);
-                    break;
+                AuthLocation authLoc = whereIsAuthData(entry.getValue());
+                switch (authLoc) {
+                    case inAuthDataRef:
+                        assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                        entry.getValue().replaceDatasourceProperties(noAuthProps);
+                        break;
+                    case inEmbeddedAuthData:
+                        assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                        entry.getValue().replaceDatasourceProperties(noAuthProps);
+                        break;
+                    case inProperties:
+                        entry.getValue().replaceDatasourceProperties(props);
+                        break;
+                    case none:
+                        Log.warning(c,
+                                    "The datasource (" + entry.getKey()
+                                       + ") did not have username/password set in properties element, ContainerAuthData element, or ContainerAuthDataRef attribute. "
+                                       + "We will assume you have configured a DeploymentDescriptor that DOES reference a AuthData element that has been modified.");
+                        entry.getValue().replaceDatasourceProperties(noAuthProps);
+                        break;
+                    default:
+                        //Replace default properties
+                        entry.getValue().replaceDatasourceProperties(props);
+                        break;
 
+                }
             }
         }
 
@@ -317,6 +377,17 @@ public final class DatabaseContainerUtil {
             //Replace derby auth data
             entry.getValue().setUser(cont.getUsername());
             entry.getValue().setPassword(cont.getPassword());
+        }
+
+        for (Map.Entry<String, Fileset> entry : libraries.entrySet()) {
+            Log.info(c, "setupDataSourceProperties", "FOUND: Library to be enlisted in database rotation.  ID: " + entry.getKey());
+            //Replace includes with driver name
+            entry.getValue().setIncludes(type.getDriverName());
+            //Add all permissions for driver
+            JavaPermission driverPermission = new JavaPermission();
+            driverPermission.setCodeBase("${shared.resource.dir}/jdbc/" + type.getDriverName());
+            driverPermission.setClassName("java.security.AllPermission");
+            cloneConfig.getJavaPermissions().add(driverPermission);
         }
 
         //Update config

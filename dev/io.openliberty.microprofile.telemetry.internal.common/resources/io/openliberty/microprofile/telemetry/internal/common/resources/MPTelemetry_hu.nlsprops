@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,3 +46,52 @@ CWMOT5002.telemetry.error.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1j
 CWMOT5003.factory.used.after.shutdown=CWMOT5003W: A(z) {0} alkalmaz\u00e1s megk\u00eds\u00e9relte megszerezni a MicroProfile telemetri\u00e1t az alkalmaz\u00e1s le\u00e1ll\u00edt\u00e1sa ut\u00e1n.
 CWMOT5003.factory.used.after.shutdown.explanation=CWMOT5003.factory.used.after.shutdown.explanation=After egy alkalmaz\u00e1s le\u00e1ll, a MicroProfile telemetria olyan objektumokat ad vissza, amelyek csendes m\u00f3dban nem hajtanak v\u00e9gre m\u0171veleteket. Ez a folyamat a v\u00e1rt telemetriai adatok hi\u00e1ny\u00e1hoz vezethet.
 CWMOT5003.factory.used.after.shutdown.useraction=Tekintse \u00e1t az alkalmaz\u00e1st, hogy mi\u00e9rt pr\u00f3b\u00e1lta meg le\u00e1ll\u00edtani a MicroProfile telemetri\u00e1t. A MicroProfile Telemetria haszn\u00e1lat\u00e1t aktiv\u00e1l\u00f3 m\u0171veletek k\u00f6z\u00e9 tartozik a @WithSpan annot\u00e1ci\u00f3val ell\u00e1tott met\u00f3dus megh\u00edv\u00e1sa vagy egy JAX-RS \u00fcgyf\u00e9l vagy MP REST \u00fcgyf\u00e9l k\u00e9r\u00e9se.
+
+CWMOT5004.factory.used.without.metadata=CWMOT5004W: K\u00e9relmet ny\u00fajtottak be egy OpenTelemetry objektum, de nincs alkalmaz\u00e1s metaadata \u00e9s nincs glob\u00e1lis OpenTelemetry objektum el\u00e9rhet\u0151 volt. 
+CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If nincs glob\u00e1lis OpenTelemetry t\u00e1rgy Liberty's MicroProfile A telemetriai integr\u00e1ci\u00f3s k\u00f3d megpr\u00f3b\u00e1lja megtal\u00e1lni a megfelel\u0151t OpenTelemetry objektum az aktu\u00e1lis alkalmaz\u00e1shoz az aktu\u00e1lis sz\u00e1l alkalmaz\u00e1s metaadatainak haszn\u00e1lat\u00e1val. Mivel azonban nem voltak metaadatok a sz\u00e1lon, ezt nem tudta megtenni. 
+CWMOT5004.factory.used.without.metadata.useraction=Tekintse \u00e1t a k\u00f3dot, hogy megtudja, mi\u00e9rt pr\u00f3b\u00e1lta meg az integr\u00e1ci\u00f3s k\u00f3d MicroProfile Telemetry-t metaadatok \u00e9s egy szerver hat\u00f3k\u00f6r\u0171 OpenTelemetry objektum n\u00e9lk\u00fcl haszn\u00e1lni. Az integr\u00e1ci\u00f3s k\u00f3d val\u00f3sz\u00edn\u0171leg megpr\u00f3b\u00e1l \u00faj sz\u00e1lakat l\u00e9trehozni a ManagedExecutorService fel\u00fclet haszn\u00e1lata n\u00e9lk\u00fcl, \u00e9s egy OpenTelemetry objektumot beszerezni az alkalmaz\u00e1son bel\u00fcl. OpenTemetry objektum alkalmaz\u00e1son k\u00edv\u00fcli beszerz\u00e9s\u00e9hez enged\u00e9lyezze OpenTelemetry egy k\u00f6rnyezeti v\u00e1ltoz\u00f3n vagy egy rendszertulajdons\u00e1gon kereszt\u00fcl.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: A MicroProfile Telemetria napl\u00f3z\u00e1si szolg\u00e1ltat\u00e1sa nem ismeri fel a [ {0} ] napl\u00f3forr\u00e1st.
+CWMOT5005.mptelemetry.unknown.log.source.explanation=A Liberty fut\u00e1si k\u00f6rnyezet nem biztos\u00edtja a megadott napl\u00f3forr\u00e1st.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=Ellen\u0151rizze a konfigur\u00e1ci\u00f3s inform\u00e1ci\u00f3kat, \u00e9s adja meg a MicroProfile Telemetry egyik t\u00e1mogatott forr\u00e1s\u00e1t.
+
+CWMOT5006.tel.enabled.conflict=CWMOT5006W: \u00dctk\u00f6z\u0151 konfigur\u00e1ci\u00f3 az otel.sdk.disabled konfigur\u00e1ci\u00f3s tulajdons\u00e1ghoz a(z) {0} alkalmaz\u00e1shoz. A v\u00e9gs\u0151 \u00e9rt\u00e9k otel.sdk.disabled =false. A telemetria nem tilthat\u00f3 le egy alkalmaz\u00e1sn\u00e1l, ha enged\u00e9lyezve van a fut\u00e1si k\u00f6rnyezetben.
+CWMOT5006.tel.enabled.conflict.explanation: MicroProfile Telemetry rendszertulajdons\u00e1gok vagy k\u00f6rnyezeti v\u00e1ltoz\u00f3k haszn\u00e1lat\u00e1val enged\u00e9lyezhet\u0151 az eg\u00e9sz szerverre. Ha nincs enged\u00e9lyezve a teljes kiszolg\u00e1l\u00f3ra, akkor MicroProfile Config tulajdons\u00e1gainak be\u00e1ll\u00edt\u00e1s\u00e1val minden alkalmaz\u00e1shoz enged\u00e9lyezhet\u0151; p\u00e9ld\u00e1ul v\u00e1ltoz\u00f3k be\u00e1ll\u00edt\u00e1s\u00e1val a server.xml f\u00e1jlban. Ez a figyelmeztet\u00e9s akkor jelenik meg, ha van egy explicit konfigur\u00e1ci\u00f3, amely letiltja a telemetri\u00e1t a teljes kiszolg\u00e1l\u00f3ra vonatkoz\u00f3an, amelyet fel\u00fcl\u00edr egy MP Config tulajdons\u00e1g, amely enged\u00e9lyezi a telemetri\u00e1t egy alkalmaz\u00e1s sz\u00e1m\u00e1ra.
+CWMOT5006.tel.enabled.conflict.useraction: Adja meg az OpenTelemetry p\u00e9ld\u00e1nyok enged\u00e9lyez\u00e9s\u00e9re vagy letilt\u00e1s\u00e1ra vonatkoz\u00f3 be\u00e1ll\u00edt\u00e1sokat k\u00f6rnyezeti v\u00e1ltoz\u00f3k \u00e9s rendszertulajdons\u00e1gok vagy m\u00e1s MP Config-forr\u00e1sok haszn\u00e1lat\u00e1val, de mindkett\u0151vel nem.
+
+CWMOT5007.tel.enabled.conflict=CWMOT5007W: \u00dctk\u00f6z\u0151 konfigur\u00e1ci\u00f3 az otel.sdk.disabled konfigur\u00e1ci\u00f3s tulajdons\u00e1ghoz a(z) {0} alkalmaz\u00e1shoz. A v\u00e9gs\u0151 \u00e9rt\u00e9k az otel.sdk.disabled =false, mert az alkalmaz\u00e1s telemetri\u00e1j\u00e1t enged\u00e9lyez\u0151 tulajdons\u00e1g fel\u00fcl\u00edrja a fut\u00e1sidej\u0171 telemetri\u00e1t tilt\u00f3 tulajdons\u00e1got.
+CWMOT5007.tel.enabled.conflict.explanation: MicroProfile Telemetry rendszertulajdons\u00e1gok vagy k\u00f6rnyezeti v\u00e1ltoz\u00f3k haszn\u00e1lat\u00e1val enged\u00e9lyezhet\u0151 az eg\u00e9sz szerverre. Ha nincs enged\u00e9lyezve a teljes szerverre, akkor MicroProfile Config tulajdons\u00e1gainak be\u00e1ll\u00edt\u00e1s\u00e1val enged\u00e9lyezhet\u0151 egy alkalmaz\u00e1s sz\u00e1m\u00e1ra; p\u00e9ld\u00e1ul v\u00e1ltoz\u00f3k be\u00e1ll\u00edt\u00e1s\u00e1val a server.xml f\u00e1jlban. Ez a figyelmeztet\u00e9s akkor jelenik meg, ha a telemetria enged\u00e9lyezve van a teljes kiszolg\u00e1l\u00f3n, de a MicroProfile Config tulajdons\u00e1gai letiltj\u00e1k a telemetri\u00e1t egy alkalmaz\u00e1sn\u00e1l. Mivel a telemetria a teljes kiszolg\u00e1l\u00f3n enged\u00e9lyezve van, az adott alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t figyelmen k\u00edv\u00fcl hagyja.
+CWMOT5007.tel.enabled.conflict.useraction: Adja meg az OpenTelemetry p\u00e9ld\u00e1nyok enged\u00e9lyez\u00e9s\u00e9re vagy letilt\u00e1s\u00e1ra vonatkoz\u00f3 be\u00e1ll\u00edt\u00e1sokat k\u00f6rnyezeti v\u00e1ltoz\u00f3k \u00e9s rendszertulajdons\u00e1gok vagy m\u00e1s MP Config-forr\u00e1sok haszn\u00e1lat\u00e1val, de mindkett\u0151vel nem.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+threadpool.activeThreads.description=Az akt\u00edvan feladatokat futtat\u00f3 sz\u00e1lak sz\u00e1ma.
+threadpool.size.description=A sz\u00e1lt\u00e1rol\u00f3 m\u00e9rete.
+
+session.activeSessions.description=A jelenleg akt\u00edv munkamenetek sz\u00e1ma. A munkamenet akkor akt\u00edv, amikor a fut\u00e1si k\u00f6rnyezet egy olyan k\u00e9r\u00e9st dolgoz fel, amely az adott felhaszn\u00e1l\u00f3i munkamenetet haszn\u00e1lja.
+session.created.description=A mutat\u00f3 enged\u00e9lyez\u00e9se \u00f3ta bejelentkezett munkamenetek sz\u00e1ma.
+session.invalidated.description=A mutat\u00f3 enged\u00e9lyez\u00e9se \u00f3ta kijelentkezett munkamenetek sz\u00e1ma.
+session.invalidatedbyTimeout.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta eltelt id\u0151t\u00fall\u00e9p\u00e9s miatt kijelentkezett munkamenetek sz\u00e1ma.
+session.live.description=A jelenleg bejelentkezett felhaszn\u00e1l\u00f3k sz\u00e1ma.
+
+connectionpool.handle.count.description=A haszn\u00e1latban l\u00e9v\u0151 kapcsolatok sz\u00e1ma. A sz\u00e1m tartalmazhat t\u00f6bb kapcsolatot, amelyek egyetlen fel\u00fcgyelt kapcsolatb\u00f3l vannak megosztva.
+connectionpool.connection.created.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta l\u00e9trehozott fel\u00fcgyelt kapcsolatok teljes sz\u00e1ma.
+connectionpool.connection.destroyed.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta megsemmis\u00fclt fel\u00fcgyelt kapcsolatok teljes sz\u00e1ma.
+connectionpool.connection.free.description=Az el\u00e9rhet\u0151 fel\u00fcgyelt kapcsolatok sz\u00e1ma.
+connectionpool.connection.waitTime.description=Az a teljes id\u0151tartam, ameddig a csatlakoz\u00e1si k\u00e9relmek a csatlakoz\u00e1sra v\u00e1rtak.
+connectionpool.connection.useTime.description=Az a teljes id\u0151tartam, ameddig az adatforr\u00e1shoz vezet\u0151 \u00f6sszes kapcsolat haszn\u00e1latban volt.
+connectionpool.connection.count.description=A fel\u00fcgyelt kapcsolatok jelenlegi sz\u00e1ma a k\u00e9szletben. Ez az \u00e9rt\u00e9k tartalmazza az el\u00e9rhet\u0151 \u00e9s a haszn\u00e1latban l\u00e9v\u0151 fel\u00fcgyelt kapcsolatokat. Egyetlen fel\u00fcgyelt kapcsolat, amelyet t\u00f6bb kapcsolat is megoszt, csak egyszer sz\u00e1m\u00edt.
+
+requestTiming.processed.description=A szervletk\u00e9r\u00e9sek sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+requestTiming.active.description=A jelenleg fut\u00f3 szervlet-k\u00e9relmek sz\u00e1ma.
+requestTiming.slow.description=A jelenleg fut\u00f3, de lass\u00fa szervletk\u00e9r\u00e9sek sz\u00e1ma.
+requestTiming.hung.description=A jelenleg felf\u00fcggesztett szervlet-k\u00e9relmek sz\u00e1ma.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=A HTTP szerver k\u00e9r\u00e9sek id\u0151tartama.

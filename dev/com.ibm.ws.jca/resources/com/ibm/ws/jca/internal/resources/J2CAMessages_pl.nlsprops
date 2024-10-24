@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E: Nie mo\u017cna utworzy\u0107 licznika czasu
 J2CA8510.create.timed.out.explanation=Utworzenie licznika czasu trwa d\u0142u\u017cej ni\u017c zwykle.
 J2CA8510.create.timed.out.useraction=Sprawd\u017a, czy wyst\u0119puje wysokie obci\u0105\u017cenie w systemie, i rozwa\u017c zmniejszenie go.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: \u017b\u0105danie punktu kontrolnego serwera nie powiod\u0142o si\u0119, poniewa\u017c adapter zasob\u00f3w {0} utworzy\u0142 licznik czasu.
+J2CA8511.create.timer.failed.checkpoint.explanation=Serwer Liberty nie obs\u0142uguje adapter\u00f3w zasob\u00f3w, kt\u00f3re tworz\u0105 licznik czasu, gdy aplikacje s\u0105 uruchamiane po za\u017c\u0105daniu punktu kontrolnego serwera.
+J2CA8511.create.timer.failed.checkpoint.useraction=Punkt kontrolny nale\u017cy skonfigurowa\u0107 tak, aby wyst\u0119powa\u0142 przed uruchomieniem aplikacji, u\u017cywaj\u0105c opcji beforeAppUruchom punkt kontrolny serwera.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: Nie mo\u017cna utworzy\u0107 licznika czasu dla adaptera zasob\u00f3w {0} podczas \u017c\u0105dania punktu kontrolnego serwera.
+J2CA8512.create.timer.not.supported.checkpoint.explanation=Serwer Liberty nie obs\u0142uguje tworzenia licznik\u00f3w czasu przez adaptery zasob\u00f3w, gdy aplikacje s\u0105 uruchamiane po za\u017c\u0105daniu punktu kontrolnego serwera.
+J2CA8512.create.timer.not.supported.checkpoint.useraction=Punkt kontrolny nale\u017cy skonfigurowa\u0107 tak, aby wyst\u0119powa\u0142 przed uruchomieniem aplikacji, u\u017cywaj\u0105c opcji beforeAppUruchom punkt kontrolny serwera.
+
 J2CA8600.work.start.timeout=J2CA8600E: Praca {0} wprowadzona przez adapter zasob\u00f3w {1} nie zosta\u0142a uruchomiona w ci\u0105gu {2} ms.
 J2CA8600.work.start.timeout.explanation=Przekroczono limit czasu uruchamiania pracy.
 J2CA8600.work.start.timeout.useraction=Sprawd\u017a, czy wyst\u0119puje wysokie obci\u0105\u017cenie w systemie, i rozwa\u017c zmniejszenie go lub skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w, aby ustali\u0107, czy powinien zwi\u0119kszy\u0107 limit czasu pracy u\u017cywany podczas wprowadzania pracy do mened\u017cera pracy JCA.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: \u017b\u0105danie punktu kontrolnego serwera nie powiod\u0142o si\u0119, poniewa\u017c adapter zasob\u00f3w {0} wprowadzi\u0142 prac\u0119 {1}.
+J2CA8601.work.submit.failed.checkpoint.explanation=Serwer Liberty nie obs\u0142uguje adapter\u00f3w zasob\u00f3w, kt\u00f3re wysy\u0142aj\u0105ce prac\u0119, gdy aplikacje s\u0105 uruchamiane w momencie \u017c\u0105dania punktu kontrolnego serwera.
+J2CA8601.work.submit.failed.checkpoint.useraction=Punkt kontrolny nale\u017cy skonfigurowa\u0107 tak, aby wyst\u0119powa\u0142 przed uruchomieniem aplikacji, u\u017cywaj\u0105c opcji beforeAppUruchom punkt kontrolny serwera.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: Praca {0} wprowadzona przez adapter zasob\u00f3w {1} zosta\u0142a odrzucona podczas \u017c\u0105dania punktu kontrolnego serwera.
+J2CA8602.work.submit.not.supported.checkpoint.explanation=Serwer Liberty nie obs\u0142uguje wprowadzania pracy przez adaptery zasob\u00f3w, gdy aplikacje s\u0105 uruchamiane po za\u017c\u0105daniu punktu kontrolnego serwera.
+J2CA8602.work.submit.not.supported.checkpoint.useraction=Punkt kontrolny nale\u017cy skonfigurowa\u0107 tak, aby wyst\u0119powa\u0142 przed uruchomieniem aplikacji, u\u017cywaj\u0105c opcji beforeAppUruchom punkt kontrolny serwera.
 
 # 8622 deleted
 
@@ -168,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=Skorzystaj z dokumentacji dostawcy ad
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Archiwa komponentu Bean adaptera zasob\u00f3w nie s\u0105 obs\u0142ugiwane.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Plik beans.xml w katalogu META-INF zostanie zignorowany, poniewa\u017c adaptery zasob\u00f3w archiwum zarz\u0105dzanych komponent\u00f3w bean CDI nie s\u0105 obs\u0142ugiwane.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Usu\u0144 plik beans.xml z katalogu META-INF, poniewa\u017c adaptery zasob\u00f3w archiwum zarz\u0105dzanych komponent\u00f3w bean CDI nie s\u0105 obs\u0142ugiwane.
-
-
-

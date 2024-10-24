@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.1.0-M2</version>
+			<version>6.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.transaction</groupId>
@@ -84,7 +84,7 @@
 
 		<!-- Test dependency for signature testing -->
 		<dependency>
-			<groupId>org.netbeans.tools</groupId>
+			<groupId>jakarta.tck</groupId>
 			<artifactId>sigtest-maven-plugin</artifactId>
 			<version>${sigtest.version}</version>
 		</dependency>
@@ -146,9 +146,11 @@
 						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
 						<jimage.dir>${jimage.dir}</jimage.dir>
 						<jakarta.tck.skip.deployment>false</jakarta.tck.skip.deployment>
+						<jakarta.tck.database.type>${jakarta.tck.database.type}</jakarta.tck.database.type>
+						<jakarta.tck.database.name>${jakarta.tck.database.name}</jakarta.tck.database.name>
 					</systemPropertyVariables>
 					<groups><![CDATA[persistence & ${jakarta.tck.platform}]]></groups>
-					<reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
+					<reportNameSuffix>${jakarta.profile}-${jakarta.tck.database.type}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
 				</configuration>
 			</plugin>

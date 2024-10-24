@@ -21,8 +21,8 @@ javac.target: 17
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Export-Package: \
-  jakarta.enterprise.concurrent;version="3.1.0",\
-  jakarta.enterprise.concurrent.spi;version="3.1.0"
+  jakarta.enterprise.concurrent;version="3.1.1",\
+  jakarta.enterprise.concurrent.spi;version="3.1.1"
 
 DynamicImport-Package: \
   jakarta.enterprise.util,\
@@ -34,14 +34,7 @@ Import-Package: \
   *
 
 -includeresource: \
-  @${repo;jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.1.0.RC2;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
-instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/spec
-
--buildpath: \
-  jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.1.0-RC2;strategy=exact
-  
 -maven-dependencies: \
-   dep1;groupId=jakarta.enterprise.concurrent;artifactId=jakarta.enterprise.concurrent-api;version=3.1.0-RC2;scope=runtime
+   dep1;groupId=jakarta.enterprise.concurrent;artifactId=jakarta.enterprise.concurrent-api;version=3.1.1;scope=runtime

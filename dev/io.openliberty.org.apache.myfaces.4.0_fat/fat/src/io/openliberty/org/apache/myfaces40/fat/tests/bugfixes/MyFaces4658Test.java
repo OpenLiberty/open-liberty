@@ -45,9 +45,9 @@ import componenttest.topology.utils.HttpUtils;
 import io.openliberty.org.apache.myfaces40.fat.FATSuite;
 
 import io.openliberty.org.apache.myfaces40.fat.JSFUtils;
-import io.openliberty.org.apache.myfaces40.fat.selenium_util.CustomDriver;
-import io.openliberty.org.apache.myfaces40.fat.selenium_util.ExtendedWebDriver;
-import io.openliberty.org.apache.myfaces40.fat.selenium_util.WebPage;
+import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 /**
  * https://github.com/OpenLiberty/open-liberty/issues/28118
  */

@@ -74,4 +74,12 @@ public interface Orders extends CrudRepository<PurchaseOrder, UUID> {
 
     @Update
     PurchaseOrder modifyOne(PurchaseOrder orders);
+
+    @Query("SELECT VERSION(THIS)")
+    @OrderBy("version(this)")
+    List<Integer> versionsAsc();
+
+    @Query("SELECT VERSION(THIS)")
+    @OrderBy(value = "versionNum", descending = true)
+    List<Integer> versionsDesc();
 }

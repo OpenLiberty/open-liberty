@@ -55,10 +55,10 @@ public class RepeatFaultTolerance {
     }
 
     /**
-     * @param server The server to repeat on
+     * @param server                   The server to repeat on
      * @param otherFeatureSetsTestMode The test mode to run the otherFeatureSets
-     * @param firstFeatureSet The first FeatureSet to repeat with. This is run in LITE mode.
-     * @param otherFeatureSets The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
+     * @param firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
      * @return A RepeatTests instance
      */
     public static RepeatTests repeat(String serverName, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
@@ -76,11 +76,12 @@ public class RepeatFaultTolerance {
     }
 
     /**
-     * Return a rule to repeat tests for MicroProfile 6.0, 4.0 and 2.0.
-     * This translates to FT 4.0, 3.0 and 1.1 respectively.
+     * Return a rule to repeat tests for MicroProfile 7.0, 4.0 and 2.0.
+     * This translates to FT 4.1, 3.0 and 1.1 respectively.
      * <p>
      * FT 1.x has a mostly separate implementation from 2.x and higher.
      * FT 4.0 is a transformed version of 3.0, which works on EE9.
+     * FT 4.1 is the same as 4.0 but with Telemetry integration added and support for EE10 and EE11.
      *
      * This is the default set of repeats for most FT tests. It provides good coverage of most code paths.
      *
@@ -88,7 +89,10 @@ public class RepeatFaultTolerance {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault(String server) {
-        return repeat(server, TestMode.FULL, MicroProfileActions.MP61, MicroProfileActions.MP40, MicroProfileActions.MP20);
+        return repeat(server, TestMode.FULL,
+                      MicroProfileActions.MP70_EE10, //FT 4.1
+                      MicroProfileActions.MP40, //FT 3.0
+                      MicroProfileActions.MP20); //FT 1.1
     }
 
     /**
@@ -102,6 +106,8 @@ public class RepeatFaultTolerance {
      */
     public static RepeatTests repeatAll(String server) {
         return repeat(server, TestMode.LITE,
+                      MicroProfileActions.MP70_EE10,
+                      MicroProfileActions.MP70_EE11,
                       MicroProfileActions.MP61,
                       MicroProfileActions.MP60,
                       MicroProfileActions.MP13,
@@ -122,6 +128,8 @@ public class RepeatFaultTolerance {
      */
     public static RepeatTests repeat20AndAbove(String server) {
         return repeat(server, TestMode.FULL,
+                      MicroProfileActions.MP70_EE10,
+                      MicroProfileActions.MP70_EE11,
                       MicroProfileActions.MP61,
                       MicroProfileActions.MP60,
                       MicroProfileActions.MP22,

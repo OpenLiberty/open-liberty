@@ -1557,8 +1557,8 @@ servlet.with.same.name.already.exists.explanation=Ya existe un servlet con el mi
 servlet.with.same.name.already.exists.useraction=No es necesaria ninguna acci\u00f3n.  Compruebe los conflictos en el descriptor de despliegue, anotaciones y c\u00f3digo de origen que puedan a\u00f1adir din\u00e1micamente esta configuraci\u00f3n de servlet. 
 
 servlet.feature.not.loaded.correctly=SRVE8501E: El contenedor del servlet no se ha cargado con una versi\u00f3n aceptable.
-servlet.feature.not.loaded.correctly.explanation=El contenedor del servlet se ha cargado con una versi\u00f3n que corresponde a la especificaci\u00f3n Java EE de dicha caracter\u00edstica del servlet. El contenedor se ha cargado sin ninguna versi\u00f3n definida.
-servlet.feature.not.loaded.correctly.useraction=Compruebe el archivo server.xml para ver si existe una caracter\u00edstica servlet-3.0 o servlet-3.1. Se debe definir una de estas caracter\u00edsticas pero no ambas.
+servlet.feature.not.loaded.correctly.explanation=El contenedor de servlets se carg\u00f3 sin una versi\u00f3n aceptable. La aplicaci\u00f3n puede comportarse de forma diferente a la esperada.
+servlet.feature.not.loaded.correctly.useraction=Comprobar el server.xml archivo para comprobar la existencia de m\u00faltiples funciones de servlet.  El archivo no debe especificar m\u00e1s de una caracter\u00edstica de servlet.
 
 filter.failed.app.destroyed=SRVE8502W: La solicitud para {0} no se puede completar porque la aplicaci\u00f3n se ha detenido.
 filter.failed.app.destroyed.explanation=La aplicaci\u00f3n web se est\u00e1 deteniendo y la solicitud no se puede completar. Esta acci\u00f3n podr\u00eda estar provocada por el servidor que se est\u00e1 concluyendo mientras se maneja la solicitud.

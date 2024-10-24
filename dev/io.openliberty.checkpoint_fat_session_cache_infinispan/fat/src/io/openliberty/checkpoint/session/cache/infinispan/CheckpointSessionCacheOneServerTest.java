@@ -101,7 +101,7 @@ public class CheckpointSessionCacheOneServerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         executor.shutdownNow();
-        server.stopServer();
+        server.stopServer("SESN0312W");
         configureEnvVariable(server, emptyMap());
     }
 

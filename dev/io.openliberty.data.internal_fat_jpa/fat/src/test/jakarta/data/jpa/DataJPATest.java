@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -36,7 +35,27 @@ import test.jakarta.data.jpa.web.DataJPATestServlet;
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class DataJPATest extends FATServletClient {
-    private static String jdbcJarName;
+    /**
+     * Error messages, typically for invalid repository methods, that are
+     * intentionally caused by tests to cover error paths.
+     * These are ignored when checking the messages.log file for errors.
+     */
+    static final String[] EXPECTED_ERROR_MESSAGES = //
+                    new String[] {
+                                   "CWWKD1010E.*countBySurgePriceGreaterThanEqual",
+                                   "CWWKD1026E.*allSorted",
+                                   "CWWKD1046E.*publicDebtAsByte",
+                                   "CWWKD1046E.*publicDebtAsDouble",
+                                   "CWWKD1046E.*publicDebtAsFloat",
+                                   "CWWKD1046E.*publicDebtAsInt",
+                                   "CWWKD1046E.*publicDebtAsShort",
+                                   "CWWKD1046E.*numFullTimeWorkersAsByte",
+                                   "CWWKD1046E.*numFullTimeWorkersAsDouble",
+                                   "CWWKD1046E.*numFullTimeWorkersAsFloat",
+                                   "CWWKD1046E.*numFullTimeWorkersAsShort",
+                                   "CWWKD1075E.*Apartment2",
+                                   "CWWKD1075E.*Apartment3"
+                    };
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
@@ -49,9 +68,7 @@ public class DataJPATest extends FATServletClient {
     public static void setUp() throws Exception {
         // Get driver type
         DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        server.addEnvVar("DB_DRIVER", jdbcJarName = type.getDriverName());
-        server.addEnvVar("DB_USER", testContainer.getUsername());
-        server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+        server.addEnvVar("DB_DRIVER", type.getDriverName());
 
         // Set up server DataSource properties
         DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
@@ -63,27 +80,6 @@ public class DataJPATest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        // TODO if we decide to add the ability to put Jakarta Data properties onto DataSourceDefinition properties,
-        // then an update will be needed to com.ibm.ws.jdbc.internal.JDBCDriverService.create to ignore them for the data source:
-        // W DSRA8020E: Warning: The property 'data.createTables' does not exist on the DataSource class ...
-        server.stopServer("DSRA8020E.*data.createTables",
-                          "DSRA8020E.*data.dropTables",
-                          "DSRA8020E.*data.tablePrefix");
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testFindAndDeleteEntityThatHasAnIdClass() throws Exception {
-        runTest(server, "DataJPATestApp", "testFindAndDeleteEntityThatHasAnIdClass&jdbcJarName=" + jdbcJarName);
-    }
-
-    /**
-     * This test has conditional logic based on the JDBC driver/database.
-     */
-    @Test
-    public void testUnannotatedCollection() throws Exception {
-        runTest(server, "DataJPATestApp", "testUnannotatedCollection&jdbcJarName=" + jdbcJarName);
+        server.stopServer(EXPECTED_ERROR_MESSAGES);
     }
 }

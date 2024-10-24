@@ -43,14 +43,11 @@ public class DataNoSQLServlet extends FATServlet {
     }
 
     /**
-     * Load classes from the Jakarta NoSQL mapping layer.
+     * Load classes from the Jakarta NoSQL API layer.
      */
     @Test
     public void testMappingLayerAvailable() throws ClassNotFoundException {
         Class.forName("jakarta.nosql.Entity");
-        Class.forName("jakarta.nosql.column.ColumnTemplate");
-        Class.forName("jakarta.nosql.document.DocumentTemplate");
-        Class.forName("jakarta.nosql.keyvalue.KeyValueTemplate");
 
     }
 

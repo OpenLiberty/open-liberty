@@ -44,7 +44,7 @@ public class CDI30BeansXMLTest extends FATServletClient {
     private static final String BEANS_XML_APP_NAME = "CDI30BeansXMLApp";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE9);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, true, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE9);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = CDI30BeansXMLTestServlet.class, contextRoot = BEANS_XML_APP_NAME)

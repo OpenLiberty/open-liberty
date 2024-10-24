@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import com.ibm.ws.cdi.visibility.tests.ejb.EJBVisibilityTests;
 import com.ibm.ws.cdi.visibility.tests.sharedlib.SharedLibraryTest;
 import com.ibm.ws.cdi.visibility.tests.validatorInJar.ValidatorInJarTest;
 import com.ibm.ws.cdi.visibility.tests.vistest.VisTest;
+import com.ibm.ws.cdi.visibility.tests.vistest.VisTestAddWarCPToEar;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -28,7 +29,8 @@ import com.ibm.ws.cdi.visibility.tests.vistest.VisTest;
                 EJBVisibilityTests.class,
                 SharedLibraryTest.class,
                 ValidatorInJarTest.class,
-                VisTest.class
+                VisTest.class,
+                VisTestAddWarCPToEar.class
 })
 public class FATSuite {
 

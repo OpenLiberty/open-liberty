@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -302,20 +302,22 @@ public class VerifyRepositoryAccuracy {
         Props props = Props.getInstance();
         if (filesToGet.equals(CommonTasks.LOGS)) {
             // Set up the Simplicity objects to the remote files
-            RemoteFile remoteLogsDir = new RemoteFile(server.getMachine(), CommonTasks.getBinaryLogDir(server), "logdata");
+            RemoteFile remoteLogsDir = server.getMachine().getFile(CommonTasks.getBinaryLogDir(server), "logdata");
 
             // Set up the Simplicity object to the local results directory
-            RemoteFile localLogsResultsDir = new RemoteFile(Machine.getLocalMachine(), props.getFileProperty(Props.DIR_LOG).getCanonicalPath()
-                                                                                       + File.separator + VerifyRepositoryAccuracy.class.getSimpleName() + File.separator + "logs");
+            RemoteFile localLogsResultsDir = Machine.getLocalMachine()
+                            .getFile(props.getFileProperty(Props.DIR_LOG).getCanonicalPath()
+                                     + File.separator + VerifyRepositoryAccuracy.class.getSimpleName() + File.separator + "logs");
 
             // Save off the path of the repository log files directory
             localLogsRepositoryPath = localLogsResultsDir.getAbsolutePath();
             localLogsResultsDir.copyFromSource(remoteLogsDir, true, true);
         } else if (filesToGet.equals(CommonTasks.TRACE)) {
-            RemoteFile remoteTraceDir = new RemoteFile(server.getMachine(), CommonTasks.getBinaryTraceDir(server), "tracedata");
-            RemoteFile localTraceResultsDir = new RemoteFile(Machine.getLocalMachine(), props.getFileProperty(Props.DIR_LOG).getCanonicalPath()
-                                                                                        + File.separator + VerifyRepositoryAccuracy.class.getSimpleName() + File.separator
-                                                                                        + "trace");
+            RemoteFile remoteTraceDir = server.getMachine().getFile(CommonTasks.getBinaryTraceDir(server), "tracedata");
+            RemoteFile localTraceResultsDir = Machine.getLocalMachine()
+                            .getFile(props.getFileProperty(Props.DIR_LOG).getCanonicalPath()
+                                     + File.separator + VerifyRepositoryAccuracy.class.getSimpleName() + File.separator
+                                     + "trace");
 
             // Save off the path of the repository trace files directory
             localTraceRepositoryPath = localTraceResultsDir.getAbsolutePath();

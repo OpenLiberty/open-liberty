@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 bVersion=1.0
 
 grpcVersion=1.57.2
-nettyVersion=4.1.100.Final
+nettyVersion=4.1.109.Final
 
 
 src: \
@@ -29,30 +29,40 @@ fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 tested.features:\
-	servlet-4.0,\
-	jaxrs-2.1,\
-	servlet-5.0,\
-	appsecurity-4.0,\
-	expressionlanguage-4.0,\
-	cdi-3.0,\
-	mpOpenAPI-3.0,\
-	mpRestClient-3.0,\
-	mpMetrics-4.0,\
-	mpJwt-2.0,\
-	mpConfig-3.0,\
-	pages-3.0,\
-	jsonb-2.0,\
-	servlet-6.0,\
-	appsecurity-5.0,\
-	expressionlanguage-5.0,\
-	cdi-4.0,\
-	mpOpenAPI-3.1,\
-	mpMetrics-5.0,\
-	mpJwt-2.1,\
-	pages-3.1,\
-	jsonb-3.0,\
-	mpconfig-3.1,\
-	mpmetrics-5.1
+    servlet-4.0,\
+    jaxrs-2.1,\
+    servlet-5.0,\
+    appsecurity-4.0,\
+    expressionlanguage-4.0,\
+    cdi-3.0,\
+    mpOpenAPI-3.0,\
+    mpRestClient-3.0,\
+    mpMetrics-4.0,\
+    mpJwt-2.0,\
+    mpConfig-3.0,\
+    pages-3.0,\
+    jsonb-2.0,\
+    servlet-6.0,\
+    appsecurity-5.0,\
+    expressionlanguage-5.0,\
+    cdi-4.0,\
+    mpOpenAPI-3.1,\
+    mpMetrics-5.0,\
+    mpJwt-2.1,\
+    pages-3.1,\
+    jsonb-3.0,\
+    mpconfig-3.1,\
+    mpmetrics-5.1,\
+    servlet-6.1,\
+    cdi-4.1,\
+    expressionlanguage-6.0,\
+    appsecurity-6.0,\
+    restfulwsclient-4.0,\
+    pages-4.0,\
+    mprestclient-4.0,\
+    mpopenapi-4.0,\
+    restfulws-4.0,\
+    noship-1.0
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
@@ -92,8 +102,8 @@ tested.features:\
     org.brotli:dec;version=0.1.2,\
     net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
     xml-apis:xml-apis;version=1.4.01,\
-    com.google.protobuf:protobuf-java;version=3.23.4, \
-    com.google.protobuf:protobuf-java-util;version=3.23.4, \
+    com.google.protobuf:protobuf-java;version=3.25.5, \
+    com.google.protobuf:protobuf-java-util;version=3.25.5, \
     com.ibm.websphere.javaee.jaxrs.2.1,\
     com.ibm.websphere.javaee.cdi.2.0,\
     com.ibm.websphere.appserver.api.distributedMap;version=latest,\

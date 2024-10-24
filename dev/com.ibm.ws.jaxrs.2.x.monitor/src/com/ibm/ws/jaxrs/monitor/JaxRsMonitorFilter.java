@@ -23,13 +23,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
+import javax.ws.rs.Path;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.monitor.annotation.Monitor;
@@ -50,9 +53,14 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     private static final TraceComponent tc = Tr.register(JaxRsMonitorFilter.class);
+    
+    private static final String REST_HTTP_ROUTE_ATTR = "REST.HTTP.ROUTE";
 
     @Context
     ResourceInfo resourceInfo;
+    
+    @Context
+    HttpServletRequest servletRequest;
     
     // jaxRSCountByName is a MeterCollection that will hold the RESTStats MXBean for each RESTful
     // resource method
@@ -65,6 +73,8 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     static final Set<JaxRsMonitorFilter> instances = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private static final RestMonitorKeyCache monitorKeyCache = new RestMonitorKeyCache();
     private static final String STATS_CONTEXT = "REST_Stats_Context";
+
+    private static final RestRouteCache ROUTE_CACHE = new RestRouteCache();
 
     static {
     	/*
@@ -114,11 +124,31 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      */
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {
-        if (!MonitorAppStateListener.isRESTEnabled()) return;
+	
+        /*
+         * Attempt to resolve HTTP Route of Restful Resource.
+         * If value is resolved, set it into HttpServletRequest's
+         * attribute as "RESTFUL.HTTP.ROUTE"
+         * 
+         * We set this in the first filter because jaxrs-2.x
+         * when encountering an error will not proceed to second filter.
+         */
         Class<?> resourceClass = resourceInfo.getResourceClass();
+        Method resourceMethod = resourceInfo.getResourceMethod();
+        if (resourceClass != null && resourceMethod != null) {
+            String route = getRoute(reqCtx, resourceClass, resourceMethod);
+            if (route != null && !route.isEmpty()) {
+                servletRequest.setAttribute(REST_HTTP_ROUTE_ATTR, route);
+            }
+        }
         
-        if (resourceClass != null) {
-            Method resourceMethod = resourceInfo.getResourceMethod();
+        /*
+         * Above is for HTTP metrics.
+         * Below is for the REST MBean and REST metrics.
+         */
+        if (!MonitorAppStateListener.isRESTEnabled()) return;
+        
+        if (resourceClass != null && resourceMethod != null) {
             MonitorKey monitorKey = monitorKeyCache.getMonitorKey(resourceClass, resourceMethod);
 
             if (monitorKey == null) {
@@ -171,6 +201,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      */
     @Override
     public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
+    	
         if (!MonitorAppStateListener.isRESTEnabled()) return;
         // Check that the StatsContext has been set on the request context.  This will happen when 
         // the ContainerRequestFilter.filter() method is invoked.  Situations, such as an improper jwt will cause the 
@@ -263,6 +294,38 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
                 }
             }
         }
+    }
+
+    private static String getRoute(final ContainerRequestContext request, Class<?> resourceClass, Method resourceMethod) {
+
+        String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
+
+        if (route == null) {
+
+            int checkResourceSize = request.getUriInfo().getMatchedResources().size();
+
+            // Check the resource size using getMatchedResource()
+            // A resource size > 1 indicates that there is a subresource
+            // We can't currently compute the route correctly when subresources are used
+            if (checkResourceSize == 1) {
+
+                String contextRoot = request.getUriInfo().getBaseUri().getPath();
+                UriBuilder template = UriBuilder.fromPath(contextRoot);
+
+                if (resourceClass.isAnnotationPresent(Path.class)) {
+                    template.path(resourceClass);
+                }
+
+                if (resourceMethod.isAnnotationPresent(Path.class)) {
+                    template.path(resourceMethod);
+                }
+
+                route = template.toTemplate();
+                ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
+            }
+        }
+        return route;
+
     }
     
     private void maybeStartNewMinute(REST_Stats stats) {

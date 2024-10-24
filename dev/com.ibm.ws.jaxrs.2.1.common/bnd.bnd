@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -30,6 +30,9 @@ Export-Package: \
   com.ibm.ws.jaxrs20.providers.api,\
   com.ibm.ws.jaxrs21.sse
 
+# The wadl2java tool provided by jaxrs-2.1 uses the same CXF implementation thats probided by jaxrs-2.0, do not
+# import the new version of CXF for these APIs. 
+#
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
@@ -114,7 +117,6 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 	com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.webservices.handler;version=latest,\
 	com.ibm.ws.threading;version=latest,\

@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: N\u00e1zev ud\u00e1losti auditu {0} nen\u00ed podporov\u00e1n, proto\u017ee koncov\u00fd bod REST nen\u00ed povolen.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=Chcete-li pou\u017e\u00edt uvedenou ud\u00e1lost auditu, mus\u00edte povolit koncov\u00fd bod slu\u017eby REST.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=Ujist\u011bte se, \u017ee funkce, kter\u00e1 povoluje koncov\u00fd bod REST, je povolena v konfiguraci server.xml .
