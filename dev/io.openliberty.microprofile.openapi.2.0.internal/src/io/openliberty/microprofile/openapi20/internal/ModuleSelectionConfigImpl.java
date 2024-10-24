@@ -305,7 +305,11 @@ public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPI
         }
     }
 
-    private static final Pattern CONFIG_VALUE_NAME_REFERENCE = Pattern.compile("(.+?)(/(.+))?");
+    /*
+     * At least one character that is not a '/', non-greedy.
+     * Then optionally: Exactly one '/' followed by at least one character.
+     */
+    private static final Pattern CONFIG_VALUE_NAME_REFERENCE = Pattern.compile("([^/]+?)(/(.+))?");
 
     /**
      * Parses a comma separated list of app and module names into a list of {@code ModuleName}
