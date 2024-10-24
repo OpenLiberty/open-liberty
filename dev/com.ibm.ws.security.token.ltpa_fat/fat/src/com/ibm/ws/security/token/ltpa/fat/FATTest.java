@@ -25,14 +25,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
@@ -71,6 +75,8 @@ public class FATTest {
     private static final String PWD_WRONG = "wrongPassword";
     private static final String serverShutdownMessages = "CWWKS4106E";
     private static final LibertyServer server;
+    private static final Class<?> thisClass = FATTest.class;
+    private static RemoteFile messagesLogFile = null;
 
     private static final String EXPECTED_EXCEPTION_BAD_PADDING = "javax.crypto.BadPaddingException";
     private static final String EXPECTED_EXCEPTION_AEAD_BAD_TAG = "javax.crypto.AEADBadTagException";
@@ -106,6 +112,20 @@ public class FATTest {
     @Rule
     public TestRule passwordChecker = new LeakedPasswordChecker(server);
 
+    @Rule
+    public final TestWatcher logger = new TestWatcher() {
+        @Override
+        // Function to make it easier to see when each test starts and ends
+        public void starting(Description description) {
+            Log.info(thisClass, description.getMethodName(), "\n@@@@@@@@@@@@@@@@@\nEntering test " + description.getMethodName() + "\n@@@@@@@@@@@@@@@@@");
+        }
+
+        @Override
+        public void finished(Description description) {
+            Log.info(thisClass, description.getMethodName(), "\n@@@@@@@@@@@@@@@@@\nExiting test " + description.getMethodName() + "\n@@@@@@@@@@@@@@@@@");
+        }
+    };
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         server.addInstalledAppForValidation(APP_NAME);
@@ -116,13 +136,27 @@ public class FATTest {
         deleteExistingLTPAKeysFiles();
     }
 
-    @After
+    @AfterClass
     public void tearDown() throws Exception {
         try {
             server.stopServer(serverShutdownMessages);
         } finally {
             deleteExistingLTPAKeysFiles();
         }
+    }
+
+    @After
+    public void after() throws Exception {
+        Log.info(thisClass, "resetServer", "entering");
+
+        // Make sure the mark is at the end of the log, so we don't use earlier messages.
+        server.setMarkToEndOfLog(messagesLogFile);
+
+        deleteExistingLTPAKeysFiles();
+
+        // Wait for the LTPA configuration to be ready after the change
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I", 5000));
     }
 
     private void deleteExistingLTPAKeysFiles() throws Exception {
@@ -384,7 +418,22 @@ public class FATTest {
 
     private void startServerWithConfigFileAndLog(String configFile, String logFileName) throws Exception {
         server.setServerConfigurationFile(configFile);
+
+        server.setupForRestConnectorAccess();
+
         server.startServer(logFileName);
+
+        assertNotNull("Featurevalid did not report update was complete",
+                      server.waitForStringInLog("CWWKF0008I"));
+        assertNotNull("Security service did not report it was ready",
+                      server.waitForStringInLog("CWWKS0008I"));
+        assertNotNull("The application did not report is was started",
+                      server.waitForStringInLog("CWWKZ0001I"));
+        // Wait for the LTPA configuration to be ready
+        assertNotNull("Expected LTPA configuration ready message not found in the log.",
+                      server.waitForStringInLog("CWWKS4105I"));
+
+        messagesLogFile = server.getDefaultLogFile();
     }
 
     /**

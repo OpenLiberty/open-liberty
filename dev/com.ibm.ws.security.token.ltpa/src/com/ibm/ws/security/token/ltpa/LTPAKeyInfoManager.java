@@ -218,7 +218,7 @@ public class LTPAKeyInfoManager {
             ltpaKeyFileResource = getLTPAKeyFileResource(locService, keyImportFile.substring(0, keyImportFile.length() - 5) + "FIPS" + keyImportFile.substring(keyImportFile.length() - 5));
         }
 
-        if (ltpaKeyFileResource != null){
+        if (ltpaKeyFileResource == null){
             ltpaKeyFileResource = getLTPAKeyFileResource(locService, keyImportFile);
         }
 

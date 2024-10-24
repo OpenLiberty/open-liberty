@@ -39,6 +39,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -53,6 +54,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.webcontainer.security.test.servlets.FormLoginClient;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.CheckForLeakedPasswords;
+import componenttest.vulnerability.LeakedPasswordChecker;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -164,6 +167,9 @@ public class LTPAKeyRotationTests {
     }
 
     @Rule
+    public TestRule passwordChecker = new LeakedPasswordChecker(server);
+
+    @Rule
     public final TestWatcher logger = new TestWatcher() {
         @Override
         // Function to make it easier to see when each test starts and ends
@@ -175,7 +181,6 @@ public class LTPAKeyRotationTests {
         public void finished(Description description) {
             Log.info(thisClass, description.getMethodName(), "\n@@@@@@@@@@@@@@@@@\nExiting test " + description.getMethodName() + "\n@@@@@@@@@@@@@@@@@");
         }
-
     };
 
     @BeforeClass
@@ -248,6 +253,7 @@ public class LTPAKeyRotationTests {
      */
     @Mode(TestMode.LITE)
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileCreationDeletion_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
@@ -302,6 +308,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
@@ -362,6 +369,7 @@ public class LTPAKeyRotationTests {
      * <LI>Unsuccessful authentication to simple servlet since the decryption fails with the swapped Shared values.
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException",  "java.lang.NullPointerException" })
     public void testLTPAFileReplacement_invalidSharedKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
@@ -459,6 +467,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException",  "java.lang.NullPointerException" })
     public void testLTPAFileReplacement_invalidPrivateKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
@@ -556,6 +565,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException",  "java.lang.NullPointerException" })
     public void testLTPAFileReplacement_invalidPublicKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
@@ -654,6 +664,7 @@ public class LTPAKeyRotationTests {
      */
     @Mode(TestMode.LITE)
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileCreationDeletion_monitorValidationKeysDir_false_monitorInterval_0() throws Exception {
         // Configure the server
@@ -751,6 +762,7 @@ public class LTPAKeyRotationTests {
      */
     @Mode(TestMode.LITE)
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileCreationDeletion_monitorValidationKeysDir_false_monitorInterval_10() throws Exception {
         // Configure the server
@@ -805,6 +817,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_false_monitorInterval_10() throws Exception {
         // Configure the server
@@ -863,6 +876,7 @@ public class LTPAKeyRotationTests {
      */
     @Mode(TestMode.LITE)
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileCreationDeletion_monitorValidationKeysDir_true_monitorInterval_0() throws Exception {
         // Configure the server
@@ -910,6 +924,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newValidKey_monitorValidationKeysDir_true_monitorInterval_0() throws Exception {
         // Configure the server
@@ -977,6 +992,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testValidationKeys_fileNameAttribute() throws Exception {
         // Configure the server
@@ -1088,6 +1104,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
     public void testValidationKeys_passwordAttribute() throws Exception {
         // Configure the server
@@ -1180,6 +1197,7 @@ public class LTPAKeyRotationTests {
      */
     @Mode(TestMode.LITE)
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.time.format.DateTimeParseException" })
     public void testValidationKeys_validUntilDateAttribute() throws Exception {
         // Configure the server
@@ -1276,6 +1294,7 @@ public class LTPAKeyRotationTests {
      */
     @Mode(TestMode.LITE)
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testConfiguredValidationKeys() throws Exception {
         // Configure the server
@@ -1347,6 +1366,7 @@ public class LTPAKeyRotationTests {
      */
     @Mode(TestMode.LITE)
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testValidUntilDate_expiringAfterConfigurationAndUsage() throws Exception {
         // Configure the server
@@ -1419,6 +1439,7 @@ public class LTPAKeyRotationTests {
      */
     @Mode(TestMode.LITE)
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testExpiredLtpaToken_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
@@ -1471,6 +1492,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testExpiredLtpaToken_monitorValidationKeysDir_false_monitorInterval_0() throws Exception {
         // Configure the server
@@ -1525,6 +1547,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileCreationDeletion_updateTrigger_disabled() throws Exception {
         // Configure the server
@@ -1590,6 +1613,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileReplacement_newValidKey_updateTrigger_disabled() throws Exception {
         // Configure the server
@@ -1651,6 +1675,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testPrimaryLtpaKeysFileModified_updateTrigger_mbean() throws Exception {
         // Configure the server
@@ -1714,6 +1739,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testPrimaryLtpaKeysFileDeleted_updateTrigger_mbean_validationKeysFileCreated() throws Exception {
         // Configure the server
@@ -1781,6 +1807,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testDifferentDirectoriesForPrimaryKeys() throws Exception {
         // Configure the server
@@ -1879,6 +1906,7 @@ public class LTPAKeyRotationTests {
      * </OL>
      */
     @Test
+    @CheckForLeakedPasswords({ validPassword, validationKeyPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testDifferentDirectoriesForValidationKeys() throws Exception {
         // Configure the server
@@ -2423,7 +2451,7 @@ public class LTPAKeyRotationTests {
     private void resetServer() throws Exception {
         Log.info(thisClass, "resetServer", "entering");
 
-        // Msure the mark is at the end of the log, so we don't use earlier messages.
+        // Make sure the mark is at the end of the log, so we don't use earlier messages.
         moveLogMark();
 
         // We need to put the base config back, otherwise the waits below will timeout on some tests
