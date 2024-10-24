@@ -22,3 +22,4 @@ Subsystem-Name: Java Connector Architecture Security Inflow 1.0
 kind=ga
 edition=base
 WLP-Platform: javaee-6.0,javaee-7.0,javaee-8.0
+WLP-InstantOn-Enabled: true; type:=beta
