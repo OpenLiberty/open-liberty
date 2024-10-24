@@ -206,7 +206,7 @@ public class DelayFullTest {
      * @throws Exception
      */
     @Test
-    public void testDeliveryDelayForDifferentDelays_B() throws Exception {
+    public void testDeliveryDelayForDifferentDelays_Queue() throws Exception {
     	
     	// Configure server to use MDB receiving from "local" Queue
         restartClient(MDB_CONFIG_QUEUE_BINDINGS);
@@ -264,7 +264,7 @@ public class DelayFullTest {
      * @throws Exception
      */
     @Test
-    public void testDeliveryDelayForDifferentDelaysTopic_B() throws Exception {
+    public void testDeliveryDelayForDifferentDelays_Topic() throws Exception {
 
     	// Configure server to use MDB receiving from "local" Topic
     	restartClient(MDB_CONFIG_TOPIC_BINDINGS);
