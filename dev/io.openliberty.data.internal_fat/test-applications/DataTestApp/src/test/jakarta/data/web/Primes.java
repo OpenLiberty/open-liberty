@@ -104,6 +104,12 @@ public interface Primes {
     @Asynchronous
     CompletableFuture<Short> countByNumberIdBetweenAndEvenNot(long first, long last, boolean isOdd);
 
+    @Asynchronous
+    @Find
+    CompletableFuture<Page<Long>> divisibleByTwo(boolean even,
+                                                 PageRequest req,
+                                                 Order<Prime> order);
+
     @Find
     Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort<?>... sorts);
 
@@ -278,9 +284,6 @@ public interface Primes {
                                                          @Param("numName") String numberName,
                                                          String numeral,
                                                          @Param("hexadecimal") String hex);
-
-    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = ?1 OR o.numberId=:num)")
-    Collection<Long> matchAnyWithMixedUsageOfPositionalAndNamed(String name, long num);
 
     @Query("SELECT name WHERE numberId < 50 AND LEFT(name, LENGTH(:s)) = :s")
     @OrderBy("name")

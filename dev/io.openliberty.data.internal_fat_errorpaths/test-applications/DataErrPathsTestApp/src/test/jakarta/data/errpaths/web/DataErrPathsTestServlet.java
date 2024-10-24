@@ -25,6 +25,7 @@ import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.inject.Inject;
@@ -130,6 +131,161 @@ public class DataErrPathsTestServlet extends FATServlet {
             }
         } catch (Exception x) {
             throw new ServletException(x);
+        }
+    }
+
+    /**
+     * Verify an error is raised for a repository method that attempts to use
+     * both named parameters and positional parameters in the same query.
+     */
+    @Test
+    public void testBothNamedAndPositionalParameters() {
+        try {
+            List<Voter> found = voters.livingAt(701,
+                                                "Silver Creek Rd NE",
+                                                "Rochester",
+                                                "MN",
+                                                55906);
+            fail("Method that mixes named parameters with positional parameters" +
+                 " ought to raise an appropriate error. Instead found: " + found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1019E:") ||
+                !x.getMessage().contains("livingAt"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised for a repository method that defines two method
+     * parameters (Param annotation) for the same named parameter.
+     */
+    @Test
+    public void testDuplicateNamedParam() {
+        try {
+            List<Voter> found = voters.bornOn(1977, Month.SEPTEMBER, 9, 26);
+            fail("Method with two Param annotations for the same named parameter" +
+                 " ought to raise an appropriate error. Instead found: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1083E:") ||
+                !x.getMessage().contains("bornOn"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised for a repository method that has extra Param
+     * annotations that do not correspond to any named parameters in the query.
+     */
+    @Test
+    public void testExtraParamAnnos() {
+        try {
+            List<Voter> found = voters.livingOn("E River Rd NE", "Rochester", "MN");
+            fail("Method with extra Param annotations ought to raise an error." +
+                 " Instead found: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1085E:") ||
+                !x.getMessage().contains("livingOn"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised for a repository method that has extra method
+     * parameters that do not correspond to any parameters in the query.
+     */
+    @Test
+    public void testExtraParameters() {
+        try {
+            List<Voter> found = voters.residingAt(701,
+                                                  "Silver Creek Rd NE",
+                                                  "Rochester",
+                                                  "MN");
+            fail("Method with extra method parameters ought to raise an error." +
+                 " Instead found: " + found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1019E:") ||
+                !x.getMessage().contains("residingAt"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised for a repository method with a query that
+     * requires 1 positional parameter, but the method supplies 3 parameters.
+     */
+    @Test
+    public void testExtraPositionalParameters() {
+        try {
+            List<Voter> found = voters.withAddressLongerThan(20, 25, 30);
+            fail("Method with extra positional parameters ought to raise an" +
+                 " error. Instead found: " + found);
+        } catch (IllegalArgumentException x) {
+            // Error is detected by EclipseLink
+            if (x.getMessage() == null ||
+                !x.getMessage().contains("WHERE LENGTH(address) > ?1"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised for a repository method that has a Param annotation
+     * that specifies a name value that does not match the name of a named parameter
+     * from the query.
+     */
+    @Test
+    public void testMismatchedParameterNames() {
+        try {
+            List<Voter> found = voters.livingIn("Rochester", "MN");
+            fail("Method where the Param annotation specifies a name that does" +
+                 " not match a named parameter in the query ought to raise an. " +
+                 " error. Instead found: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1084E:") ||
+                !x.getMessage().contains("livingIn"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised for a repository method that defines two method
+     * parameters (Param annotation) for the same named parameter.
+     */
+    @Test
+    public void testMissingParamAnno() {
+        try {
+            List<Voter> found = voters.bornIn(1951);
+            fail("Method that lacks a Param annotation and runs without the" +
+                 " -parameters compile option ought to raise an error. " +
+                 " Instead found: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1084E:") ||
+                !x.getMessage().contains("bornIn"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised for a repository method that attempts to use
+     * the Param annotation (which is for named parameters only) to supply its
+     * single positional parameter.
+     */
+    @Test
+    public void testParamUsedForPositionalParameter() {
+        try {
+            List<Voter> found = voters.withAddressShorterThan(100);
+            fail("Method that tries to use Param for a positional parameter" +
+                 " ought to raise an error. Instead found: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1086E:") ||
+                !x.getMessage().contains("(maxLength)"))
+                throw x;
         }
     }
 

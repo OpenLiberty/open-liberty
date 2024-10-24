@@ -931,6 +931,122 @@ public class QueryInfo {
     }
 
     /**
+     * Constructs the MappingException for the error where the repository method
+     * defines extra named parameters that are not used by the JDQL or JPQL query.
+     *
+     * @return MappingException.
+     */
+    @Trivial
+    private MappingException excExtraMethodArgNamedParams(Set<String> extras,
+                                                          Set<String> qlRequired) {
+        String firstExtraParam = null;
+        StringBuilder extraParamNames = new StringBuilder();
+        for (String name : extras) {
+            if (firstExtraParam == null)
+                firstExtraParam = name;
+            else
+                extraParamNames.append(", ");
+            extraParamNames.append(name);
+        }
+
+        boolean isFirst = true;
+        StringBuilder qlParamNames = new StringBuilder();
+        for (String name : qlRequired) {
+            if (!isFirst)
+                qlParamNames.append(", ");
+            qlParamNames.append(':').append(name);
+            isFirst = false;
+        }
+
+        if (qlRequired.isEmpty())
+            return exc(MappingException.class,
+                       "CWWKD1086.named.params.unused",
+                       method.getName(),
+                       repositoryInterface.getName(),
+                       extraParamNames,
+                       method.getAnnotation(Query.class).value(),
+                       ':' + firstExtraParam);
+        else
+            return exc(MappingException.class,
+                       "CWWKD1085.extra.method.params",
+                       method.getName(),
+                       repositoryInterface.getName(),
+                       extraParamNames,
+                       qlParamNames,
+                       method.getAnnotation(Query.class).value());
+    }
+
+    /**
+     * Constructs the MappingException for the error where one or more of the
+     * named parameters required by a JDQL or JPQL query are not specified by the
+     * method parameters.
+     *
+     * @return MappingException.
+     */
+    @Trivial
+    private MappingException excLackingMethodArgNamedParams(Set<String> lacking) {
+        String first = null;
+        StringBuilder all = new StringBuilder();
+        for (String name : lacking) {
+            if (first == null)
+                first = name;
+            else
+                all.append(", ");
+            all.append(':').append(name);
+        }
+
+        return exc(MappingException.class,
+                   "CWWKD1084.missing.named.params",
+                   method.getName(),
+                   repositoryInterface.getName(),
+                   all,
+                   method.getAnnotation(Query.class).value(),
+                   "@Param(\"" + first + "\")",
+                   "String " + first);
+    }
+
+    /**
+     * Constructs the UnsupportedOperationException for the error where a repository
+     * method intermixed named and positional parameters for a query.
+     *
+     * @return UnsupportedOperationException.
+     */
+    @Trivial
+    private UnsupportedOperationException excMixedQLParamTypes(int methodNPCount) {
+        String firstNamedParam = null;
+        StringBuilder allNamedParams = new StringBuilder();
+        for (String name : paramNames) {
+            if (firstNamedParam == null)
+                firstNamedParam = name;
+            else
+                allNamedParams.append(", ");
+            allNamedParams.append(':').append(name);
+        }
+
+        Class<?> firstNamedParamType = String.class;
+        for (Parameter p : method.getParameters()) {
+            Param param = p.getAnnotation(Param.class);
+            if (param == null //
+                            ? p.isNamePresent() && firstNamedParam.equals(p.getName()) //
+                            : firstNamedParam.equals(param.value()))
+                firstNamedParamType = p.getType();
+            break;
+        }
+
+        return exc(UnsupportedOperationException.class,
+                   "CWWKD1019.mixed.positional.named",
+                   method.getName(),
+                   repositoryInterface.getName(),
+                   paramCount - methodNPCount,
+                   methodNPCount,
+                   allNamedParams,
+                   method.getAnnotation(Query.class).value(),
+                   ':' + firstNamedParam,
+                   "@Param(\"" + firstNamedParam + "\")",
+                   firstNamedParamType.getSimpleName() + ' ' + firstNamedParam);
+    }
+
+    /**
      * Constructs the UnsupportedOperationException for the general error where
      * a repository method is unrecognized and log the error.
      *
@@ -1712,9 +1828,6 @@ public class QueryInfo {
                 // Look for single entity attribute with the desired type:
                 String singleAttributeName = null;
                 for (Map.Entry<String, Class<?>> entry : entityInfo.attributeTypes.entrySet()) {
-                    // TODO include type variable for collection element in comparison?
-                    // JPA metamodel might not be including this information
-                    Class<?> collectionElementType = entityInfo.collectionElementTypes.get(entry.getKey());
                     Class<?> attributeType = entry.getValue();
                     if (attributeType.isPrimitive())
                         attributeType = wrapperClassIfPrimitive(attributeType);
@@ -1757,7 +1870,6 @@ public class QueryInfo {
                                 first = false;
                             }
                         else
-                            // TODO include/exclude Page/CursoredPage based on whether PageRequest is supplied?
                             throw exc(MappingException.class,
                                       "CWWKD1005.find.rtrn.err",
                                       method.getName(),
@@ -2179,20 +2291,6 @@ public class QueryInfo {
                 throw new DataException(x instanceof InvocationTargetException ? x.getCause() : x);
             }
         return cursorValues.toArray();
-    }
-
-    /**
-     * Identifies possible positions of named parameters within the JPQL.
-     *
-     * @param jpql JPQL
-     * @return possible positions of named parameters within the JPQL.
-     */
-    @Trivial
-    private static List<Integer> getParameterPositions(String jpql) { // TODO move this to where we are already stepping through the QL
-        List<Integer> positions = new ArrayList<>();
-        for (int index = 0; (index = jpql.indexOf(':', index)) >= 0;)
-            positions.add(++index);
-        return positions;
     }
 
     /**
@@ -2871,6 +2969,7 @@ public class QueryInfo {
         // Find out how many parameters the method supplies to the query
         // and which of those parameters are named parameters.
         int qlParamNameCount = qlParamNames.size();
+        boolean hasExtraParam = false;
         Parameter[] params = method.getParameters();
         for (int i = 0; i < params.length &&
                         !SPECIAL_PARAM_TYPES.contains(params[i].getType()); //
@@ -2887,18 +2986,40 @@ public class QueryInfo {
             if (paramName != null) {
                 if (paramNames.isEmpty())
                     paramNames = new LinkedHashSet<>();
-                if (!paramNames.add(paramName))
-                    ; // TODO error for duplicate param name passed in to method
+                boolean isDuplicate = !paramNames.add(paramName);
+                if (qlParamNames.contains(paramName)) {
+                    if (isDuplicate) // duplicate of a valid name
+                        throw exc(MappingException.class,
+                                  "CWWKD1083.dup.method.param",
+                                  method.getName(),
+                                  repositoryInterface.getName(),
+                                  paramName,
+                                  "@Param(\"" + paramName + "\")",
+                                  params[i].getType().getSimpleName() + ' ' + paramName);
+                } else {
+                    hasExtraParam = true;
+                }
             }
         }
 
-        int numParamNames = paramNames.size();
-        if (numParamNames > 0 && numParamNames != paramCount) {
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1019.mixed.positional.named",
-                      method.getName(),
-                      repositoryInterface.getName());
+        int paramNamesCount = paramNames.size();
+        if (hasExtraParam || qlParamNameCount != paramNamesCount) {
+            // Does the method supply all named parameters that the query needs?
+            LinkedHashSet<String> lacking = new LinkedHashSet<>(qlParamNames);
+            lacking.removeAll(paramNames);
+            if (!lacking.isEmpty())
+                throw excLackingMethodArgNamedParams(lacking);
+
+            // Does the method supply any named parameters not needed by the query?
+            Set<String> extras = new LinkedHashSet<>(paramNames);
+            extras.removeAll(qlParamNames);
+            if (!extras.isEmpty())
+                throw excExtraMethodArgNamedParams(extras, qlParamNames);
         }
+
+        // Does the method supply a mixture of named and positional parameters?
+        if (paramNamesCount > 0 && paramNamesCount < paramCount)
+            throw excMixedQLParamTypes(paramNamesCount);
     }
 
     /**

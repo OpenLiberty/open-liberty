@@ -39,12 +39,19 @@ public class DataErrPathsTest extends FATServletClient {
      */
     private static final String[] EXPECTED_ERROR_MESSAGES = //
                     new String[] {
+                                   "CWWJP9991W.*4002", // 2 persistence units attempt to autocreate same table
+                                   "CWWKD1019E.*livingAt", // mix of named/positional parameters
+                                   "CWWKD1019E.*residingAt", // unused parameters
                                    "CWWKD1077E.*test.jakarta.data.errpaths.web.RepoWithoutDataStore",
                                    "CWWKD1078E.*test.jakarta.data.errpaths.web.InvalidNonJNDIRepo",
                                    "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo",
                                    "CWWKD1080E.*test.jakarta.data.errpaths.web.InvalidDatabaseRepo",
                                    "CWWKD1082E.*test.jakarta.data.errpaths.web.WrongPersistenceUnitRefRepo",
-                                   "CWWJP9991W.*4002" // 2 persistence units attempt to autocreate same table
+                                   "CWWKD1083E.*bornOn", // duplicate Param annotations
+                                   "CWWKD1084E.*bornIn", // Param annotation omitted
+                                   "CWWKD1084E.*livingIn", // named parameter mismatch
+                                   "CWWKD1085E.*livingOn", // extra Param annotations
+                                   "CWWKD1086E.*withAddressShorterThan" // Param used for positional parameter
                     };
 
     @Server("io.openliberty.data.internal.fat.errpaths")
