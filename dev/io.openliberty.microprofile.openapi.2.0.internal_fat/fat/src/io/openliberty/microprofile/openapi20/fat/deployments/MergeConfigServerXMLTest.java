@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,8 +48,10 @@ import io.openliberty.microprofile.openapi20.fat.FATSuite;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestResource;
 import io.openliberty.microprofile.openapi20.fat.deployments.test2.DeploymentTestResource2;
+import io.openliberty.microprofile.openapi20.fat.utils.ApplicationXmlAsset;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPIConnection;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil;
+import io.openliberty.microprofile.openapi20.fat.utils.WebXmlAsset;
 
 @RunWith(FATRunner.class)
 public class MergeConfigServerXMLTest {
@@ -68,13 +71,228 @@ public class MergeConfigServerXMLTest {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        server.stopServer("CWWKO1683W"); // Invalid info element
+        server.stopServer("CWWKO1683W" // Invalid info element
+        );
     }
 
     @After
     public void cleanup() throws Exception {
         server.deleteAllDropinApplications();
         server.removeAllInstalledAppsForValidation();
+    }
+
+    @Test
+    public void testDefaultInclusion() throws Exception {
+        setMergeConfig(null, null, null);
+
+        // deploy app 1
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war1);
+
+        // deploy app 2
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war2);
+
+        // Download the documentation
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+
+        if (OpenAPITestUtil.getOpenAPIFeatureVersion() < 4.0f) {
+            // Default is first module only
+            // check that documentation includes only app 1
+            OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+
+            // Test that a message was output
+            assertThat(server.findStringsInLogs(" I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled.*test1"),
+                       hasSize(1));
+
+            // remove app 1
+            removeApp(war1);
+
+            // check that documentation includes only app 2
+            doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+            openapiNode = OpenAPITestUtil.readYamlTree(doc);
+            OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+        } else {
+            // Default is all modules
+            // Check that documentation includes both app 1 and app 2
+            OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
+
+            // Check there's no "first module only" message
+            assertThat(server.findStringsInLogs("CWWKO1663I"),
+                       hasSize(0));
+        }
+    }
+
+    @Test
+    public void testFirstModuleOnly() throws Exception {
+        setMergeConfig(list("first"), null, null);
+
+        // deploy app 1
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war1);
+
+        // deploy app 2
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        deployApp(war2);
+
+        // check that documentation includes only app 1
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+
+        // remove app 1
+        removeApp(war1);
+
+        // check that documentation includes only app 2
+        doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 1, "/test2");
+
+        // Test that merging disabled message was output (at some point)
+        assertThat(server.findStringsInLogs(" I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled."),
+                   hasSize(1));
+    }
+
+    @Test
+    public void testFirstModuleOnlyEar() throws Exception {
+        setMergeConfig(list("first"), null, null);
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+                                          .addAsModules(war1, war2);
+
+        deployApp(ear);
+
+        // check that documentation includes only app 1
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+
+        // Only one module is processed, but we don't know which one it will be
+        OpenAPITestUtil.checkPaths(openapiNode, 1);
+
+        // Test that merging disabled message was output (at some point)
+        assertThat(server.findStringsInLogs(" I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled."),
+                   hasSize(1));
+    }
+
+    @Test
+    public void testWarInclusion() throws Exception {
+        setMergeConfig(list("test2", "test3"), null, null);
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war1);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war2);
+
+        WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war3);
+
+        // check that documentation includes apps 2 & 3
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 2, "/test2/test", "/test3/test");
+    }
+
+    @Test
+    public void testWarExclusion() throws Exception {
+        setMergeConfig(list("all"), list("test2"), null);
+
+        server.setTraceMarkToEndOfDefaultTrace();
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war1);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        deployApp(war2);
+
+        WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war3);
+
+        // check that documentation includes apps 1 & 3, excluding 2
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test3/test");
+
+        // check that merge is traced
+        assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
+        assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(0));
+
+        // check merged model was cached and cache is used on subsequent requests
+        server.setTraceMarkToEndOfDefaultTrace();
+        OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(0));
+        assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(1));
+    }
+
+    @Test
+    public void testModuleInclusion() throws Exception {
+        setMergeConfig(list("testEar/test2"), null, null);
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+
+        WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .setWebXML(new WebXmlAsset("test3-named"));
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
+                                          .addAsModules(war1, war2, war3);
+        deployApp(ear);
+
+        // check that documentation includes only module war2
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 1, "/test2");
+    }
+
+    @Test
+    public void testModuleExclusion() throws Exception {
+        setMergeConfig(list("all"), list("testEar/test3-named", "testEar/test1"), null);
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+
+        WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .setWebXML(new WebXmlAsset("test3-named"));
+
+        ApplicationXmlAsset appXml = new ApplicationXmlAsset("testEar-named").withWebModule(war1, "test1-custom")
+                                                                             .withWebModule(war2, "test2-custom")
+                                                                             .withWebModule(war3, "test3-custom");
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
+                                          .addAsModules(war1, war2, war3)
+                                          .setApplicationXML(appXml);
+
+        deployApp(ear);
+
+        // check that documentation includes module 2, excluding 1 & 3
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 1, "/test2");
     }
 
     @Test
@@ -315,6 +533,15 @@ public class MergeConfigServerXMLTest {
 
     private void deployApp(Archive<?> app) throws Exception {
         ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY);
+    }
+
+    private void removeApp(Archive<?> app) throws Exception {
+        server.deleteFileFromLibertyServerRoot("dropins/" + app.getName());
+        server.removeInstalledAppForValidation(getInstalledName(app.getName()));
+    }
+
+    private String getInstalledName(String archiveName) {
+        return archiveName.endsWith(".war") || archiveName.endsWith(".ear") ? archiveName.substring(0, archiveName.length() - 4) : archiveName;
     }
 
 }
