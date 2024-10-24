@@ -39,6 +39,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ConfigMonitorElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.LibertyFileManager;
@@ -374,6 +375,28 @@ public class ServerConfigTest {
             assertNull("The server configuration was updated even though monitoring is disabled", server.waitForStringInLog("CWWKG0017I", updateDuration));
         } finally {
             server.stopServer();
+        }
+    }
+
+    /**
+     * This test makes sure that if the server.xml is deleted while the server is running, that no configuration changes are made
+     * @throws Exception
+     */
+    @Test
+    public void testServerConfigDeleteUpdate() throws Exception {
+        LibertyServer server = LibertyServerFactory.getStartedLibertyServer("com.ibm.ws.config.update");
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
+
+        try {
+            assertNotNull("The server configuration was not updated when setting it to polled", server.waitForStringInLog("CWWKF0011I")); //server has started
+            server.getServerConfigurationFile().delete();
+            assertNotNull("The server configuration was updated after server.xml was deleted", server.waitForStringInLog("CWWKG0110E"));
+
+            //server can't be stopped without a server.xml. Refresh the serverxml so the server can be stopped.
+            server.refreshServerXMLFromPublish();
+            assertNotNull("The server configuration was updated after server.xml was added back", server.waitForStringInLog("CWWKG0018I"));
+        } finally {
+            server.stopServer("CWWKG0110E");
         }
     }
 
