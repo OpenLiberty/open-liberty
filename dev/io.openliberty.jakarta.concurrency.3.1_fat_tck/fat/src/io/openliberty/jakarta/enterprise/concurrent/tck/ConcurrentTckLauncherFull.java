@@ -16,6 +16,7 @@ import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -90,6 +91,7 @@ public class ConcurrentTckLauncherFull {
                         .withPlatfromVersion("11")
                         .withQualifiers("full")
                         .withAdditionalMvnProps(additionalProps)
+                        .withLogging(Map.of("ee.jakarta.tck.concurrent", Level.ALL))
                         .runTCK();
     }
 }

@@ -82,6 +82,7 @@ public class DataFullTckLauncher {
                         .withQualifiers("full", "persistence")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
+                        .withLogging(FATSuite.getLoggingConfig())
                         .runTCK();
     }
 

@@ -179,7 +179,7 @@
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
-                        <java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
+                        <java.util.logging.config.file>${logging.config.file}</java.util.logging.config.file>
                         <jimage.dir>${jimage.dir}</jimage.dir>
                     </systemPropertyVariables>
                     <groups>${jakarta.tck.platform}</groups> <!-- Groups to include i.e. web/full -->

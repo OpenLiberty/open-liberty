@@ -66,6 +66,7 @@ public class DataStandaloneTckLauncher {
                         .withQualifiers("standalone", "NoSQL")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
+                        .withLogging(FATSuite.getLoggingConfig())
                         .runTCK();
     }
 }

@@ -14,6 +14,8 @@ package io.openliberty.jakarta.data.tck;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -75,6 +77,13 @@ public class FATSuite extends TestContainerSuite {
         } finally {
             Log.info(FATSuite.class, "shouldRunSignatureTests", "Return: " + result + ", because " + reason);
         }
+    }
+
+    public static Map<String, Level> getLoggingConfig() {
+        return Map.of("ee.jakarta.tck.data", Level.ALL,
+                      "org.jboss.arquillian", Level.ALL, //TODO reduce logging once GA
+                      "org.eclipse.jnosql", Level.ALL, //TODO reduce logging once GA
+                      "io.openliberty.arquillian", Level.ALL); //TODO reduce logging once GA
     }
 
     /**

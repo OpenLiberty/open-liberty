@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -110,6 +111,7 @@ public class TCKRunner {
     private Map<String, String> additionalMvnProps = Collections.emptyMap(); // Optional
     private String platformVersion = ""; // Optional
     private String[] qualifiers = new String[] {}; //Optional
+    private Properties loggingProperties; //Optional
 
     //Artifactory settings
     private File mavenUserHome;
@@ -119,6 +121,7 @@ public class TCKRunner {
     // Default settings
     private boolean isTestNG = false;
     private File tckRunnerDir = new File("publish/tckRunner").getAbsoluteFile();
+    private File loggingPropertiesFile = new File(tckRunnerDir, "logging.properties");
 
     /////////// Builder methods //////////////////
 
@@ -173,6 +176,7 @@ public class TCKRunner {
         Objects.requireNonNull(relativeTCKRunner);
 
         this.tckRunnerDir = new File(relativeTCKRunner).getAbsoluteFile();
+        this.loggingPropertiesFile = new File(this.tckRunnerDir, "logging.properties");
         return this;
     }
 
@@ -188,7 +192,6 @@ public class TCKRunner {
     }
 
     /**
-     *
      * @param  qualifiers necessary to distinguish repeats of a TCK not represented by a RepeatAction, Such as core / web profile.
      * @return            this TCKRunner
      */
@@ -196,6 +199,46 @@ public class TCKRunner {
         Objects.requireNonNull(qualifiers);
 
         this.qualifiers = qualifiers;
+        return this;
+    }
+
+    /**
+     * Writes a logging.properties file to the tckRunnerDir, and adds 'logging.config.file' property to maven command.
+     *
+     * The resulting log file will be output to 'autoFVT/results' and will have the form '<spec-name>[-qualifiers]-tck-client.log'
+     *
+     * @param  logs zero or more additional packages and levels to be logged
+     * @return      this TCKRunner
+     */
+    public TCKRunner withLogging(Map<String, Level> logs) {
+        Objects.requireNonNull(logs);
+
+        loggingProperties = new Properties();
+
+        // Handlers we plan to use
+        loggingProperties.put("handlers", "java.util.logging.FileHandler,java.util.logging.ConsoleHandler");
+
+        // Global logger - By default only log warnings
+        loggingProperties.put(".level", "WARNING");
+
+        // Log from packages
+        for (Map.Entry<String, Level> log : logs.entrySet()) {
+            loggingProperties.put(log.getKey() + ".level", log.getValue().getName());
+        }
+
+        // Configure a simple formatter
+        loggingProperties.put("java.util.logging.SimpleFormatter.format", "[%1$tm/%1$te/%1$tY %1$tT:%1$tM %1$tZ] %2$s %4$.1s %5$s %6$s %n");
+
+        // Log warning to console
+        loggingProperties.put("java.util.logging.ConsoleHandler.formatter", "java.util.logging.SimpleFormatter");
+        loggingProperties.put("java.util.logging.ConsoleHandler.level", "WARNING");
+
+        // Log everything else to file
+        loggingProperties.put("java.util.logging.FileHandler.limit", "0");
+        loggingProperties.put("java.util.logging.FileHandler.count", "1");
+        loggingProperties.put("java.util.logging.FileHandler.formatter", "java.util.logging.SimpleFormatter");
+        loggingProperties.put("java.util.logging.FileHandler.level", "ALL");
+
         return this;
     }
 
@@ -236,6 +279,17 @@ public class TCKRunner {
             this.mavenUserHome = null;
             this.settingsFile = null;
             Log.info(c, "TCKRunner", "Using default maven environment");
+        }
+
+        // Output logging.properties
+        if (loggingProperties != null) {
+            String logOutputFileName = Props.getInstance().getFileProperty(Props.DIR_LOG).getAbsolutePath() + '/';
+            logOutputFileName += this.specName.toLowerCase().replace(' ', '-') + '-';
+            logOutputFileName += String.join("-", qualifiers);
+            logOutputFileName += "-tck-client.log";
+
+            loggingProperties.put("java.util.logging.FileHandler.pattern", logOutputFileName);
+            loggingProperties.store(new FileOutputStream(loggingPropertiesFile), "Modified by TCKRunner");
         }
 
         // Run mvn clean test
@@ -403,6 +457,10 @@ public class TCKRunner {
         // be different.
         if (isTestNG)
             stringArrayList.add("-DsuiteXmlFile=" + this.suiteFileName);
+
+        if (loggingProperties != null) {
+            stringArrayList.add("-Dlogging.config.file=" + this.loggingPropertiesFile.getAbsolutePath());
+        }
 
         // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
         stringArrayList.add("-B");
