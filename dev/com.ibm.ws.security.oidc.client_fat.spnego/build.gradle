@@ -20,8 +20,12 @@ dependencies {
                'org.apache.sshd:sshd-core:2.9.2',
                'org.apache.sshd:sshd-scp:2.9.2',
                'net.sourceforge.htmlunit:htmlunit:2.44.0',
+               'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
                'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
                'rhino:js:1.6R5',
+               'xalan:xalan:2.7.2',
+               'org.brotli:dec:0.1.2',
+               project(':io.openliberty.org.apache.xercesImpl'),
                project(':io.openliberty.org.apache.commons.codec'), // 1.15 (was 1.4)
                'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
