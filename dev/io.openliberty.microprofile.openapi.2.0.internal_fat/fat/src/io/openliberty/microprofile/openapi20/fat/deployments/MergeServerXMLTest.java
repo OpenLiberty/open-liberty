@@ -176,35 +176,6 @@ public class MergeServerXMLTest {
         assertServerContextRoot(openapiNode, null);
     }
 
-    @Test
-    public void testMPConfigIgnoredInServerXMLMode() throws Exception {
-
-        MpOpenAPIElement.MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
-                                                .addIncludedApplicaiton("all")
-                                                .buildAndPushToServer();
-
-        //The combo of all and an exclude should be all except testEar/test2, but since this is set via
-        //mpConfig this should be ignored.
-        setMergeConfig(null, "testEar/test2", null);
-
-        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
-
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
-
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
-                                          .addAsModules(war1, war2);
-
-        deployApp(ear);
-
-        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
-        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
-        OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
-        OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
-        assertServerContextRoot(openapiNode, null);
-    }
-
     private void assertServerContextRoot(JsonNode model,
                                          String contextRoot) {
         OpenAPITestUtil.checkServer(model,

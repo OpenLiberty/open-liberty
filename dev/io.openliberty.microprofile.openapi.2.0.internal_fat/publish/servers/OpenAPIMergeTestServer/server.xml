@@ -23,7 +23,7 @@
   </featureManager>
   
   <mpOpenAPI>​
-    <includeApp>none</includeApp>​ <!-- This will be ignored because beta is disabled. Remove it when we remove the beta guards -->
+    <includeApplication>none</includeApplication>​ <!-- This will be ignored because beta is disabled. Remove it when we remove the beta guards -->
   </mpOpenAPI>
 
 </server>
