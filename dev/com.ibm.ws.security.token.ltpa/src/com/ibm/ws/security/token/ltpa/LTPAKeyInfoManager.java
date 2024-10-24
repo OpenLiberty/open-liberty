@@ -212,7 +212,15 @@ public class LTPAKeyInfoManager {
         }
         Properties props = null;
         //Check to see if the LTPA key import file exists, create the keys and file if not
-        WsResource ltpaKeyFileResource = getLTPAKeyFileResource(locService, keyImportFile);
+        WsResource ltpaKeyFileResource = null;
+
+        if (fipsEnabled){
+            ltpaKeyFileResource = getLTPAKeyFileResource(locService, keyImportFile.substring(0, keyImportFile.length() - 5) + "FIPS" + keyImportFile.substring(keyImportFile.length() - 5));
+        }
+
+        if (ltpaKeyFileResource != null){
+            ltpaKeyFileResource = getLTPAKeyFileResource(locService, keyImportFile);
+        }
 
         if (ltpaKeyFileResource != null) {
             props = loadPropertiesFile(ltpaKeyFileResource);
