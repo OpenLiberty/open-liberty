@@ -13,9 +13,6 @@ publish.wlp.jar.suffix: dev/api/third-party
 
 Bundle-SymbolicName: io.openliberty.mpTelemetry.2.0.thirdparty; singleton:=true
 
-javac.source: 11
-javac.target: 11
-
 openTelemetryVersion=1.35.0
 alphaOpenTelemetryVersion=1.35.0.alpha
 
@@ -49,6 +46,4 @@ Export-Package:
   io.openliberty.jakarta.interceptor.2.1;version=latest,\
   io.openliberty.io.opentelemetry.2.0;version=latest
   
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
-
 WS-TraceGroup: TELEMETRY
