@@ -353,31 +353,31 @@
 		
         <condition property="fat.test.artifactory.download.server"
                    value="${artifactory.download.server}"
-                   else="${env.artifactory.download.server}">
+                   else="${env.ARTIFACTORY_DOWNLOAD_SERVER}">
           <isset property="artifactory.download.server" />
         </condition>
         
         <condition property="fat.test.artifactory.download.token"
                    value="${artifactory.download.token}"
-                   else="${env.artifactory.download.token}">
+                   else="${env.ARTIFACTORY_DOWNLOAD_TOKEN}">
           <isset property="artifactory.download.token" />
         </condition>
         
         <condition property="fat.test.artifactory.download.user"
                    value="${artifactory.download.user}"
-                   else="${env.artifactory.download.user}">
+                   else="${env.ARTIFACTORY_DOWNLOAD_USER}">
           <isset property="artifactory.download.user" />
         </condition>
 		
         <condition property="fat.test.artifactory.docker.server"
                    value="${artifactory.docker.server}"
-                   else="${env.artifactory.docker.server}">
+                   else="${env.ARTIFACTORY_DOCKER_SERVER}">
           <isset property="artifactory.docker.server" />
         </condition>
 		
         <condition property="fat.test.artifactory.force.external.repo"
                    value="${artifactory.force.external.repo}"
-                   else="${env.artifactory.force.external.repo}">
+                   else="${env.ARTIFACTORY_FORCE_EXTERNAL_REPO}">
           <isset property="artifactory.force.external.repo" />
         </condition>
 
