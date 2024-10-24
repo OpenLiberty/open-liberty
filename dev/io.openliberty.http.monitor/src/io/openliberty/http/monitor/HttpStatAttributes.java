@@ -85,7 +85,7 @@ public class HttpStatAttributes {
 	 * 
 	 * This is also used by {@link HttpServerStatsMonitor} when registering MBean
 	 * into the {@link MeterCollection}
-	 * 
+	 *
 	 * @param httpStatAttributes
 	 * @return
 	 */
@@ -93,22 +93,22 @@ public class HttpStatAttributes {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("\""); // starting quote
-		sb.append("method:" + requestMethod);
+		sb.append("method:").append(requestMethod);
 		
 		/*
 		 * Status, Route  and errorType may be null.
 		 * In which cas we will not append it to the name property
 		 */
 		if (responseStatus != null) {
-			sb.append(";status:" + responseStatus);
+			sb.append(";status:").append(responseStatus);
 		}
 
 		if (httpRoute != null) {
-			sb.append(";httpRoute:" + httpRoute.replace("*", "\\*"));
+			sb.append(";httpRoute:").append(httpRoute.replace("*", "\\*"));
 		}
 		
 		if (errorType != null) {
-			sb.append(";errorType:" + errorType);
+			sb.append(";errorType:").append(errorType);
 		}
 
 		sb.append("\""); // ending quote
