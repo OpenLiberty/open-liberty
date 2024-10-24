@@ -296,6 +296,62 @@ public class MergeConfigServerXMLTest {
     }
 
     @Test
+    public void testSelectionConfigUpdateWithAppsDeployed() throws Exception {
+        // Set the initial config
+        setMergeConfig(list("none"), null, null);
+        // Deploy apps (ear + war)
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+
+        WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .setWebXML(new WebXmlAsset("test3-named"));
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
+                                          .addAsModules(war1, war2, war3);
+        deployApp(ear);
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "testWar.war")
+                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war);
+
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 0);
+
+        // Include just war
+        setMergeConfig(list("testWar"), null, null);
+        doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+        OpenAPITestUtil.checkServerContextRoots(openapiNode, "/testWar");
+
+        // Include just module
+        setMergeConfig(list("testEar/test1"), null, null);
+        doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+        OpenAPITestUtil.checkServerContextRoots(openapiNode, "/test1");
+
+        // Include war and one module
+        setMergeConfig(list("testWar", "testEar/test3-named"), null, null);
+        doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 2, "/test3-named/test", "/testWar/test");
+        OpenAPITestUtil.checkServerContextRoots(openapiNode, "");
+
+        // Include all exclude a module
+        setMergeConfig(list("all"), list("testEar/test2"), null);
+        doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 3, "/test1/test", "/test3-named/test", "/testWar/test");
+        OpenAPITestUtil.checkServerContextRoots(openapiNode, "");
+    }
+
+    @Test
     public void testInfoConfigured() throws Exception {
         MpOpenAPIInfoElement info = new MpOpenAPIInfoElement();
         info.setTitle("test title");
