@@ -35,3 +35,30 @@ jndi.not.installed=CWWKE0800W: An attempt was made to retrieve an initial contex
 jndi.not.installed.explanation=The JNDI feature provides a JNDI registry and associated utilities.  This is normally required if an application or feature needs to look up entries in a JNDI context.
 jndi.not.installed.useraction=Ensure that a JNDI implementation is provided (e.g. by configuring the JNDI feature in the configuration for this server).
 
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.common.crypto
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
+# -------------------------------------------------------------------------------------------------
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_INSECURE=CWWKS5900W: The {0} configuration element specifies the {1} insecure cryptographic algorithm.  Consider using the {2} secure algorithm instead.
+CRYPTO_INSECURE.explanation=The configured algorithm is no longer considered cryptographically secure.
+CRYPTO_INSECURE.useraction=Use the suggested secure algorithm.
+
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} configuration element specifies the {1} insecure cryptographic algorithm.  The {2} secure algorithm is used instead.
+CRYPTO_INSECURE_REPLACED.explanation=The insecure cryptographic algorithm was replaced with the secure algorithm.
+CRYPTO_INSECURE_REPLACED.useraction=No action is required.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: The {0} configuration element uses the {1} insecure cryptographic algorithm. Consider replacing the configuration with a different provider if security is a concern.
+CRYPTO_INSECURE_PROVIDER.explanation=The algorithm is no longer considered cryptographically secure.
+CRYPTO_INSECURE_PROVIDER.useraction=Consider replacing the configuration with a different provider if security is a concern.

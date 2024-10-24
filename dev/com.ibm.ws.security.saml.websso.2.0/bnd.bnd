@@ -144,7 +144,7 @@ Service-Component: \
 	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
 	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.kernel.service;version=latest, \
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.security.authentication.tai;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
@@ -156,11 +156,12 @@ Service-Component: \
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.websphere.appserver.api.saml20;version=latest,\
 	com.ibm.ws.security.sso.common;version=latest,\
-	com.ibm.websphere.appserver.spi.saml20;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	io.openliberty.org.apache.commons.codec;version=latest, \
-	com.ibm.ws.com.google.guava;version=latest, \
-	com.ibm.ws.crypto.common;version=latest
+	com.ibm.websphere.appserver.spi.saml20;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	com.ibm.ws.com.google.guava;version=latest,\
+	com.ibm.ws.common.crypto;version=latest,\
+	osgi.cmpn
 
 instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages*.class
 
