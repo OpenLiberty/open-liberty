@@ -31,8 +31,6 @@ import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-
 /**
  * Represents security configurable options for web applications.
  */
@@ -148,9 +146,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
             put(CFG_KEY_SAME_SITE_COOKIE, "sameSiteCookie");
-            if (ProductInfo.getBetaEdition()) {
-                put(CFG_KEY_PARTITIONED_COOKIE, "partitionedCookie");
-            }
+            put(CFG_KEY_PARTITIONED_COOKIE, "partitionedCookie");
             put(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH, "useContextRootForSSOCookiePath");
             put(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS, "postParamMaxRequestBodySize");
         }
