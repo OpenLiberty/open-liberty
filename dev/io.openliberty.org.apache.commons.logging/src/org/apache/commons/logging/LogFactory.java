@@ -450,28 +450,13 @@ public abstract class LogFactory {
         // As the properties file (if it exists) will be used one way or
         // another in the end we may as well look for it first.
 
-        Properties props = getConfigurationFile(contextClassLoader, FACTORY_PROPERTIES);
-
-        // Determine whether we will be using the thread context class loader to
-        // load logging classes or not by checking the loaded properties file (if any).
-        ClassLoader baseClassLoader = contextClassLoader;
-        if (props != null) {
-            String useTCCLStr = props.getProperty(TCCL_KEY);
-            if (useTCCLStr != null) {
-                // The Boolean.valueOf(useTCCLStr).booleanValue() formulation
-                // is required for Java 1.2 compatibility.
-                if (Boolean.valueOf(useTCCLStr).booleanValue() == false) {
-                    // Don't use current context classloader when locating any
-                    // LogFactory or Log classes, just use the class that loaded
-                    // this abstract class. When this class is deployed in a shared
-                    // classpath of a container, it means webapps cannot deploy their
-                    // own logging implementations. It also means that it is up to the
-                    // implementation whether to load library-specific config files
-                    // from the TCCL or not.
-                    baseClassLoader = thisClassLoader;
-                }
-            }
+        // For Liberty, never use the thread context class loader
+        Properties props = getConfigurationFile(thisClassLoader, FACTORY_PROPERTIES);
+        if (props == null) {
+            props = new Properties();
         }
+        props.put(TCCL_KEY, "false");
+        ClassLoader baseClassLoader = thisClassLoader;
 
         // Determine which concrete LogFactory subclass to use.
         // First, try a global system property
