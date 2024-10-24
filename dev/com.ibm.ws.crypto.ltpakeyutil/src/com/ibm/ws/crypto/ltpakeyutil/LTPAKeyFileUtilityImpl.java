@@ -53,7 +53,7 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
             byte[] publicKey = pair.getPublic().getEncoded();
             byte[] privateKey = pair.getPrivate().getEncoded();
             byte[] encryptedPrivateKey = encryptor.encrypt(privateKey);
-            byte[] sharedKey = LTPACrypto.generate3DESKey(); // key length is 24 for 3DES
+            byte[] sharedKey = LTPACrypto.generateSharedKey(); // key length is 32 bytes (256 bits) for FIPS (AES), 24 bytes (192 bits) for non-FIPS (3DES)
             byte[] encryptedSharedKey = encryptor.encrypt(sharedKey);
 
             String tmpShared = Base64Coder.base64EncodeToString(encryptedSharedKey);
