@@ -77,6 +77,9 @@ public interface Orders extends CrudRepository<PurchaseOrder, UUID> {
 
     @Query("SELECT VERSION(THIS)")
     @OrderBy("version(this)")
-    @OrderBy("versionNum")
-    List<Integer> versions();
+    List<Integer> versionsAsc();
+
+    @Query("SELECT VERSION(THIS)")
+    @OrderBy(value = "versionNum", descending = true)
+    List<Integer> versionsDesc();
 }
