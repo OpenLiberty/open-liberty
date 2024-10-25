@@ -180,6 +180,7 @@ public class FailoverTestLease extends FATServletClient {
         FATUtils.stopServers(serversToStop);
         FailoverTest.commonCleanup(this.getClass().getName());
         serversToStop = null;
+        FATSuite.dropTables("WAS_LEASES_LOG");
     }
 
     /**
@@ -202,6 +203,8 @@ public class FailoverTestLease extends FATServletClient {
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when updating server lease for server with identity cloud0011
         assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when updating server lease"));
+
+        retriableCloudServer.waitForStringInTrace("<<< END:   driveTransactions");
     }
 
     /**
@@ -234,7 +237,7 @@ public class FailoverTestLease extends FATServletClient {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when deleting server lease"));
         }
 
-        runTest(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
+        retriableCloudServer.waitForStringInTrace("Performed recovery for cloudstale");
     }
 
     /**
@@ -267,7 +270,7 @@ public class FailoverTestLease extends FATServletClient {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException for server with recovery identity"));
         }
 
-        runTest(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
+        retriableCloudServer.waitForStringInTrace("Performed recovery for cloudstale");
     }
 
     /**
@@ -302,6 +305,6 @@ public class FailoverTestLease extends FATServletClient {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when retrieving server leases"));
         }
 
-        runTest(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
+        retriableCloudServer.waitForStringInTrace("Performed recovery for cloudstale");
     }
 }
