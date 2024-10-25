@@ -1,5 +1,11 @@
 - stepName: Compile FATs
   workType: RTC
+  conditionalRun:
+    - type: ifSet
+      value: ${fat.buckets.to.run}
+    - type: ifNotEqual
+      value: ${fat.buckets.to.run}
+      value2: none
   timeoutInMinutes: 1440
   properties:
     build.stub.target: build.CachedWSCD.CompileFATs
