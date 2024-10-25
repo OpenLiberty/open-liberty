@@ -183,7 +183,7 @@ public class TCPUtils {
 					if(!channel.isOpen()) {
 						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 							Tr.debug(tc, "Channel not open so it must have been cancelled. Returning...");
-						}
+						}						
 						return;
 					}
 					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -207,13 +207,31 @@ public class TCPUtils {
 						}
 						return;
 					}
-					if (config.isInbound()) {
-						Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
-								String.valueOf(inetPort), openFuture.cause().getMessage() });
+
+					// Check if the exception is or was caused by UnresolvedAddressException
+					Throwable cause = future.cause();
+					boolean unresolvedAddress = false;
+	
+					while (cause != null) {
+						if (cause instanceof java.nio.channels.UnresolvedAddressException) {
+							unresolvedAddress = true;
+							break;
+						}
+						cause = cause.getCause();
+					}	
+					if (unresolvedAddress) {
+						// Log the specific error message
+						Tr.error(tc, TCPMessageConstants.LOCAL_HOST_UNRESOLVED,
+							new Object[] { config.getExternalName(), newHost, String.valueOf(inetPort) });
 					} else {
-						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-							Tr.debug(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(),
-									newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
+						if (config.isInbound()) {
+							Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
+									String.valueOf(inetPort), openFuture.cause().getMessage() });
+						} else {
+							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+								Tr.debug(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(),
+										newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
+							}
 						}
 					}
 				}

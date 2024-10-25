@@ -254,11 +254,7 @@ public class NettyChain extends HttpChain {
     }
 
     private void channelFutureHandler(ChannelFuture future) {
-        //TODO: check this synchronization behaves as intended
         synchronized (this) {
-
-
-
             if (future.isSuccess()) {
                 state.set(ChainState.STARTED);
                 EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
@@ -266,30 +262,10 @@ public class NettyChain extends HttpChain {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel is now active and listening on port " + getActivePort());
                 }
-
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel failed to bind to port:  " + future.cause());
                 }
-
-                // // Check if the exception is or was caused by UnresolvedAddressException
-                // Throwable cause = future.cause();
-                // boolean unresolvedAddress = false;
-
-                // while (cause != null) {
-                //     if (cause instanceof java.nio.channels.UnresolvedAddressException) {
-                //         unresolvedAddress = true;
-                //         break;
-                //     }
-                //     cause = cause.getCause();
-                // }
-
-                // if (unresolvedAddress) {
-                //     // Log the specific error message
-                //     Tr.error(tc, TCPChannelMessageConstants.LOCAL_HOST_UNRESOLVED,
-                //         new Object[] {this.endpointName, currentConfig.configHost, currentConfig.configPort});
-                // }
-
                 handleStartupError(new NettyException(future.cause()), currentConfig);
                 
                 if (currentConfig != null) {
@@ -403,5 +379,4 @@ public class NettyChain extends HttpChain {
                + ",config=" + currentConfig + "]";
 
     }
-
 }
