@@ -580,9 +580,9 @@ public class DeliveryDelayServlet extends HttpServlet {
     	
      }
     
-		// ------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
 
-		// Methods to send messages with different DeliveryDelay values
+    // Methods to send messages with different DeliveryDelay values
 
 	/**
 	 * Internal method to send 2 message with different deliveryDelay values to a
@@ -660,241 +660,105 @@ public class DeliveryDelayServlet extends HttpServlet {
 		return;
 	}
     
+	// Externally visible variants oftestDeliveryDelayForDifferentDelays()
+	
+	// Simplified API variants
+	
     public void testDeliveryDelayForDifferentDelays(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        JMSContext jmsContext = jmsQCFBindings.createContext();
-
+    	
         Queue queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
-        emptyQueue(jmsQCFBindings, queue);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        jmsProducer.setDeliveryDelay(5000);
-        jmsProducer.send(queue, "QueueBindingsMessage1");
-
-        jmsProducer.setDeliveryDelay(1000);
-        jmsProducer.send(queue, "QueueBindingsMessage2");
+    	sendMessagesWithDifferentDeliveryDelays(jmsQCFBindings, queue, "QueueBindingsMessage", true);
 
         Thread.sleep(8000);
-
-        jmsContext.close();
+        
+        return;
     }
 
     public void testDeliveryDelayForDifferentDelays_Tcp(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFTCP.createContext();
-
+    	
         Queue queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
-        emptyQueue(jmsQCFTCP, queue);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        jmsProducer.setDeliveryDelay(5000);
-        jmsProducer.send(queue, "QueueTCPMessage1");
-
-        jmsProducer.setDeliveryDelay(1000);
-        jmsProducer.send(queue, "QueueTCPMessage2");
+    	sendMessagesWithDifferentDeliveryDelays(jmsQCFTCP, queue, "QueueTCPMessage", true);
 
         Thread.sleep(8000);
-
-        jmsContext.close();
+        
+        return;
     }
 
     public void testDeliveryDelayForDifferentDelaysTopic(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFBindings.createContext();
-
+    	
         Topic topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic");
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        int delay = 14700;
-        jmsProducer.setDeliveryDelay(delay);
-
-        StreamMessage sm = jmsContext.createStreamMessage();
-        String msgText = "TopicBindingsMessage1";
-        sm.writeString(msgText);
-        sm.writeLong( Calendar.getInstance().getTimeInMillis() + delay );
-        jmsProducer.send(topic,sm);
-
-        delay = 10100;
-        jmsProducer.setDeliveryDelay(delay);
-
-        sm = jmsContext.createStreamMessage();
-        msgText = "TopicBindingsMessage2";
-        sm.writeString(msgText);
-        sm.writeLong( Calendar.getInstance().getTimeInMillis() + delay );
-        jmsProducer.send(topic,sm);
+    	sendMessagesWithDifferentDeliveryDelays(jmsTCFBindings, topic, "TopicBindingsMessage", true);
 
         Thread.sleep(20000);
 
-        jmsContext.close();
+    	return;
     }
 
     public void testDeliveryDelayForDifferentDelaysTopic_Tcp(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFTCP.createContext();
-
         Topic topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic");
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        int delay = 15500;
-        jmsProducer.setDeliveryDelay(delay);
-
-        StreamMessage sm = jmsContext.createStreamMessage();
-        String msgText = "TopicTCPMessage1";
-        sm.writeString(msgText);
-        sm.writeLong( Calendar.getInstance().getTimeInMillis() + delay );
-        jmsProducer.send(topic,sm);
-
-        delay = 11100;
-        jmsProducer.setDeliveryDelay(delay);
-
-        sm = jmsContext.createStreamMessage();
-        msgText = "TopicTCPMessage2";
-        sm.writeString(msgText);
-        sm.writeLong( Calendar.getInstance().getTimeInMillis() + delay );
-        jmsProducer.send(topic,sm);
-
+    	sendMessagesWithDifferentDeliveryDelays(jmsTCFTCP, topic, "TopicTCPMessage", true);
+    	
         Thread.sleep(20000);
 
-        jmsContext.close();
+    	return;
     }
+    
+    // Classic API variants
     
     public void testDeliveryDelayForDifferentDelaysClassicApi(
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-            QueueConnection con = jmsQCFBindings.createQueueConnection();
-            con.start();
+        Queue queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
 
-            Queue queue = (Queue)
-                new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
-            emptyQueue(jmsQCFBindings, queue);
+    	sendMessagesWithDifferentDeliveryDelays(jmsQCFBindings, queue, "QueueBindingsMessage-ClassicApi", false);
 
-            QueueSession sessionSender = con.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+        Thread.sleep(8000);
+          
+        return;
+    }
 
-            QueueSender send = sessionSender.createSender(queue);
-            send.setDeliveryDelay(5000);
-            send.send( sessionSender.createTextMessage("QueueBindingsMessage1-ClassicApi") );
-            send.setDeliveryDelay(1000);
-            send.send( sessionSender.createTextMessage("QueueBindingsMessage2-ClassicApi") );
+    public void testDeliveryDelayForDifferentDelaysClassicApi_Tcp(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	
+        Queue queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+    	sendMessagesWithDifferentDeliveryDelays(jmsQCFTCP, queue, "QueueTCPMessage-ClassicApi", false);
 
-            Thread.sleep(8000);
+        Thread.sleep(8000);
+        
+        return;
+    }
 
-            send.close();
-            con.close();
-        }
+    public void testDeliveryDelayForDifferentDelaysTopicClassicApi(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	
+        Topic topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic");
+    	sendMessagesWithDifferentDeliveryDelays(jmsTCFBindings, topic, "TopicBindingsMessage-ClassicApi", false);
 
-        public void testDeliveryDelayForDifferentDelaysClassicApi_Tcp(
-            HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-            QueueConnection con = jmsQCFTCP.createQueueConnection();
-            con.start();
+        Thread.sleep(20000);
 
-            Queue queue = (Queue)
-                new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+        return;
+    }
 
-            QueueSession sessionSender = con.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-            emptyQueue(jmsQCFTCP, queue);
+    public void testDeliveryDelayForDifferentDelaysTopicClassicApi_Tcp(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	
+        Topic topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic");
+    	sendMessagesWithDifferentDeliveryDelays(jmsTCFTCP, topic, "TopicTCPMessage-ClassicApi", false);
 
-            QueueSender send = sessionSender.createSender(queue);
-            send.setDeliveryDelay(5000);
-            send.send( sessionSender.createTextMessage("QueueTCPMessage1-ClassicApi") );
-            send.setDeliveryDelay(1000);
-            send.send( sessionSender.createTextMessage("QueueTCPMessage2-ClassicApi") );
-
-            Thread.sleep(8000);
-
-            send.close();
-            con.close();
-        }
-
-        public void testDeliveryDelayForDifferentDelaysTopicClassicApi(
-            HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-            TopicConnection con = jmsTCFBindings.createTopicConnection();
-            con.start();
-
-            Topic topic = (Topic)
-                new InitialContext().lookup("java:comp/env/eis/topic");
-
-            TopicSession session = con.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-
-            TopicPublisher publisher = session.createPublisher(topic);
-
-            int delay = 15100;
-            publisher.setDeliveryDelay(delay);
-
-            StreamMessage sm = session.createStreamMessage();
-            String msgText = "TopicBindingsMessage1-ClassicApi";
-            sm.writeString(msgText);
-            sm.writeLong( Calendar.getInstance().getTimeInMillis() + delay );
-            publisher.publish(sm);
-
-            delay = 11200;
-            publisher.setDeliveryDelay(delay);
-
-            sm = session.createStreamMessage();
-            msgText = "TopicBindingsMessage2-ClassicApi";
-            sm.writeString(msgText);
-            sm.writeLong(Calendar.getInstance().getTimeInMillis()+delay);
-            publisher.publish(sm);
-
-            Thread.sleep(20000);
-
-            con.close();
-        }
-
-        public void testDeliveryDelayForDifferentDelaysTopicClassicApi_Tcp(
-            HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-            TopicConnection con = jmsTCFTCP.createTopicConnection();
-            con.start();
-
-            Topic topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic");
-
-            TopicSession session = con.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-
-            TopicPublisher publisher = session.createPublisher(topic);
-
-            int delay = 15900;
-            publisher.setDeliveryDelay(delay);
-
-            StreamMessage sm = session.createStreamMessage();
-            String msgText = "TopicTCPMessage1-ClassicApi";
-            sm.writeString(msgText);
-            sm.writeLong(Calendar.getInstance().getTimeInMillis() + delay);
-            publisher.publish(sm);
-
-            delay = 10400;
-            publisher.setDeliveryDelay(delay);
-
-            sm = session.createStreamMessage();
-            msgText = "TopicTCPMessage2-ClassicApi";
-            sm.writeString(msgText);
-            sm.writeLong(Calendar.getInstance().getTimeInMillis() + delay);
-            publisher.publish(sm);
-
-            Thread.sleep(20000);
-
-            con.close();
-        }
+        Thread.sleep(20000);
+        
+        return;
+    }
     
-    
-    
-    
+	// ------------------------------------------------------------------------
 
+    
     public void testDeliveryMultipleMsgs(
             HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFBindings, jmsQueue);
