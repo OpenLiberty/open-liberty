@@ -3591,8 +3591,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "RequestTimingServer", //com.ibm.ws.request.timing_fat
 
-                                                     "ContainerJSPServer", //io.openliberty.http.monitor_fat
-
                                                      "MPServer41", //io.openliberty.microprofile41.internal_fat
                                                      "MPServer", //io.openliberty.microprofile.internal_fat
 
