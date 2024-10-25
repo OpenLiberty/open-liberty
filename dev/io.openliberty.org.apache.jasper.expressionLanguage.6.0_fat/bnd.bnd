@@ -13,6 +13,7 @@ bVersion=1.0
 src: \
     fat/src,\
     test-applications/EL60ArrayLengthTest.war/src,\
+    test-applications/EL60BeanELResolverTest.war/src,\
     test-applications/EL60ModuleVisibilityTest.war/src,\
     test-applications/EL60OptionalELResolverTest.war/src,\
     test-applications/EL60RecordELResolverTest.war/src
