@@ -20,9 +20,9 @@ public class TestBeanBeanInfo extends SimpleBeanInfo {
 
     @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
-        System.out.println("PAN: getPropertyDescriptors()");
         PropertyDescriptor testPropertyDescriptor = null;
         try {
+            // PropertyDescriptor(String propertyName, Class<?> beanClass, String readMethodName, String writeMethodName)
             testPropertyDescriptor = new PropertyDescriptor("test", TestBean.class, "returnTest", "writeTest");
         } catch (IntrospectionException e) {
             e.printStackTrace();
