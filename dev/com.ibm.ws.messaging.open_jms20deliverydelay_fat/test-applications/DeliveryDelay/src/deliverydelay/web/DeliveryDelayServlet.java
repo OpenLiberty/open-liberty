@@ -580,8 +580,85 @@ public class DeliveryDelayServlet extends HttpServlet {
     	
      }
     
+		// ------------------------------------------------------------------------
 
-    // Methods to send messages with different DeliveryDelay values
+		// Methods to send messages with different DeliveryDelay values
+
+	/**
+	 * Internal method to send 2 message with different deliveryDelay values to a
+	 * destination. The second message will have a shorter deliveryDelay than the
+	 * first.
+	 *
+	 * @param connectionFactory
+	 * @param destination
+	 * @param messageTextStem   the base text to put into the sent messages. The
+	 *                          number of each message will be appended to this to
+	 *                          differentiate them
+	 * @param useSimplifiedAPI
+	 */
+	private void sendMessagesWithDifferentDeliveryDelays(ConnectionFactory connectionFactory,
+			Destination destination, String messageTextStem, boolean useSimplifiedAPI) throws Exception {
+
+		String expectedDeliveryTime_PropertyName = "ExpectedDeliveryTime";
+		long delay = Message.DEFAULT_DELIVERY_DELAY;
+
+		if (destination instanceof Queue)
+			emptyQueue(connectionFactory, (Queue) destination);
+		if (useSimplifiedAPI) {
+
+			try (JMSContext jmsContext = connectionFactory.createContext()) {
+				JMSProducer jmsProducer = jmsContext.createProducer();
+
+				delay = defaultTestDeliveryDelay * 2;
+				jmsProducer.setDeliveryDelay(delay);
+				jmsProducer.setProperty(expectedDeliveryTime_PropertyName,
+						(Calendar.getInstance().getTimeInMillis() + delay));
+				jmsProducer.send(destination, messageTextStem + "1");
+
+				delay = defaultTestDeliveryDelay;
+				jmsProducer.setDeliveryDelay(delay);
+				jmsProducer.setProperty(expectedDeliveryTime_PropertyName,
+						(Calendar.getInstance().getTimeInMillis() + delay));
+				jmsProducer.send(destination, messageTextStem + "2");
+
+			}
+
+		} else {
+
+			// Previously the classic API test used the older, domain-specific APIs.
+			// Here, we will use the JMS1.1 unified domain API as it means we can remove
+			// duplication.
+			// For completeness, we could return later to make this part use either type and
+			// test all the combinations.
+
+			try (Connection connection = connectionFactory.createConnection();
+					Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
+
+				connection.start();
+
+				MessageProducer messageProducer = session.createProducer(destination);
+				TextMessage sendMessage = session.createTextMessage();
+
+				delay = defaultTestDeliveryDelay * 2;
+				messageProducer.setDeliveryDelay(delay);
+				sendMessage.setText(messageTextStem + "1");
+				sendMessage.setLongProperty(expectedDeliveryTime_PropertyName,
+						(Calendar.getInstance().getTimeInMillis() + delay));
+				messageProducer.send(sendMessage);
+
+				delay = defaultTestDeliveryDelay;
+				messageProducer.setDeliveryDelay(delay);
+				sendMessage.setText(messageTextStem + "2");
+				sendMessage.setLongProperty(expectedDeliveryTime_PropertyName,
+						(Calendar.getInstance().getTimeInMillis() + delay));
+				messageProducer.send(sendMessage);
+
+			}
+
+		}
+
+		return;
+	}
     
     public void testDeliveryDelayForDifferentDelays(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
