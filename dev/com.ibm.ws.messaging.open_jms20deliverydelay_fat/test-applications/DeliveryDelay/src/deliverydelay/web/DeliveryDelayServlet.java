@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.Enumeration;
 
 import javax.jms.BytesMessage;
+import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -140,11 +141,11 @@ public class DeliveryDelayServlet extends HttpServlet {
         return topic;
     }
 
-    public void emptyQueue(QueueConnectionFactory qcf, Queue q) 
+    public void emptyQueue(ConnectionFactory cf, Queue q) 
         throws TestException {
        
         long messagesReceived = 0; 
-        try (JMSContext jmsContext = qcf.createContext(JMSContext.SESSION_TRANSACTED)) {
+        try (JMSContext jmsContext = cf.createContext(JMSContext.SESSION_TRANSACTED)) {
             JMSConsumer jmsConsumer = jmsContext.createConsumer(q);
             while ( jmsConsumer.receiveNoWait() != null) {messagesReceived++;}
             jmsContext.commit();
@@ -165,7 +166,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         return numMsgs;
     }
 
-    private static final long deliveryDelay = 10000;
+    private static final long defaultTestDeliveryDelay = 10000;
     
     
     /**
@@ -197,10 +198,10 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         long sendDuration = afterSend - beforeSend;
 
-        if ( sendDuration >= deliveryDelay ) {
+        if ( sendDuration >= defaultTestDeliveryDelay ) {
             System.out.println(
                 "WARNING : The time taken to send the message was : " + sendDuration +
-                ", which more than delivery delay " + deliveryDelay + "."+
+                ", which more than delivery delay " + defaultTestDeliveryDelay + "."+
                 " This is too slow to meaningfully test the delivery delay. Please analyse the send time.");
         }
         
@@ -382,13 +383,13 @@ public class DeliveryDelayServlet extends HttpServlet {
         	}
 
             JMSProducer jmsProducer = jmsContext.createProducer();
-            jmsProducer.setDeliveryDelay(deliveryDelay);
+            jmsProducer.setDeliveryDelay(defaultTestDeliveryDelay);
 
             TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + timeStamp());
 
             long afterSend = this.sendAndCheckDeliveryTime(jmsProducer, destination, sentMessage);
 
-            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(deliveryDelay * 2 );
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(defaultTestDeliveryDelay * 2 );
             long afterReceive = System.currentTimeMillis();
 
             // If necessary, unsubscribe the durable subscriber before we check the results. Just print a warning if this fails.
@@ -409,8 +410,8 @@ public class DeliveryDelayServlet extends HttpServlet {
                 throw new TestException("No message received, sentMessage:" + sentMessage);
             if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
-            if(afterReceive - afterSend < deliveryDelay )
-                throw new TestException("Message received to soon, afterSend:" + afterSend + " afterReceive" + afterReceive + " deliveryDelay:" + deliveryDelay
+            if(afterReceive - afterSend < defaultTestDeliveryDelay )
+                throw new TestException("Message received to soon, afterSend:" + afterSend + " afterReceive" + afterReceive + " deliveryDelay:" + defaultTestDeliveryDelay
                         + "\nreceivedMessage:" + receivedMessage);            
 
             
@@ -458,21 +459,21 @@ public class DeliveryDelayServlet extends HttpServlet {
             QueueReceiver receiver = session.createReceiver(queue);
 
             QueueSender sender = session.createSender(queue);
-            sender.setDeliveryDelay(deliveryDelay);
+            sender.setDeliveryDelay(defaultTestDeliveryDelay);
 
             TextMessage sentMessage = session.createTextMessage(methodName() + " at " + timeStamp());
         	
             long afterSend = sendAndCheckDeliveryTime(sender, queue, sentMessage);
             
-            TextMessage receivedMessage = (TextMessage) receiver.receive(deliveryDelay * 2);
+            TextMessage receivedMessage = (TextMessage) receiver.receive(defaultTestDeliveryDelay * 2);
             long afterReceive = System.currentTimeMillis();
 
             if (receivedMessage == null)
                 throw new TestException("No message received, sentMessage:" + sentMessage);
             if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
-            if(afterReceive - afterSend < deliveryDelay )
-                throw new TestException("Message received to soon, afterSend:" + afterSend + " afterReceive" + afterReceive + " deliveryDelay:" + deliveryDelay
+            if(afterReceive - afterSend < defaultTestDeliveryDelay )
+                throw new TestException("Message received to soon, afterSend:" + afterSend + " afterReceive" + afterReceive + " deliveryDelay:" + defaultTestDeliveryDelay
                         + "\nreceivedMessage:" + receivedMessage);            
     		
     	}
@@ -539,13 +540,13 @@ public class DeliveryDelayServlet extends HttpServlet {
             }
 
             TopicPublisher publisher = session.createPublisher(topic);
-            publisher.setDeliveryDelay(deliveryDelay);
+            publisher.setDeliveryDelay(defaultTestDeliveryDelay);
 
             TextMessage sentMessage = session.createTextMessage(methodName() + " at " + timeStamp());
             long afterSend = sendAndCheckDeliveryTime(publisher, topic, sentMessage);
             
             
-            TextMessage receivedMessage = (TextMessage) subscriber.receive(deliveryDelay * 2);
+            TextMessage receivedMessage = (TextMessage) subscriber.receive(defaultTestDeliveryDelay * 2);
             long afterReceive = System.currentTimeMillis();
 
             // If necessary, unsubscribe the durable subscriber before we check the results. Just print a warning if this fails.
@@ -569,8 +570,8 @@ public class DeliveryDelayServlet extends HttpServlet {
             	throw new TestException("No message received, sentMessage:" + sentMessage);
             if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
             	throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
-            if(afterReceive - afterSend < deliveryDelay )
-            	throw new TestException("Message received to soon, afterSend:" + afterSend + " afterReceive" + afterReceive + " deliveryDelay:" + deliveryDelay
+            if(afterReceive - afterSend < defaultTestDeliveryDelay )
+            	throw new TestException("Message received to soon, afterSend:" + afterSend + " afterReceive" + afterReceive + " deliveryDelay:" + defaultTestDeliveryDelay
                         + "\nreceivedMessage:" + receivedMessage);            
 
     	}
@@ -850,7 +851,7 @@ public class DeliveryDelayServlet extends HttpServlet {
                 jmsConsumers[i] = jmsContext.createConsumer(destinations[i]);
 
             JMSProducer jmsProducer = jmsContext.createProducer();
-            jmsProducer.setDeliveryDelay(deliveryDelay);
+            jmsProducer.setDeliveryDelay(defaultTestDeliveryDelay);
 
             TextMessage[] sentMessages = new TextMessage[destinations.length];
             long beforeSend = System.currentTimeMillis();
@@ -859,8 +860,8 @@ public class DeliveryDelayServlet extends HttpServlet {
                 jmsProducer.send(destinations[i], sentMessages[i]);
             }
             long afterSend = System.currentTimeMillis();
-            if (afterSend - beforeSend > deliveryDelay)
-                throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:"+beforeSend+" afterSend:"+afterSend+" deliveryDelay:"+deliveryDelay);
+            if (afterSend - beforeSend > defaultTestDeliveryDelay)
+                throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:"+beforeSend+" afterSend:"+afterSend+" deliveryDelay:"+defaultTestDeliveryDelay);
 
             for (int i = 0; i < destinations.length; i++) {
                 TextMessage receivedMessage = (TextMessage) jmsConsumers[i].receive(30000);
@@ -869,8 +870,8 @@ public class DeliveryDelayServlet extends HttpServlet {
                     throw new TestException("No message received("+i+"), sentMessage:" + sentMessages[i]); 
                 if (!receivedMessage.getText().equals(sentMessages[i].getBody(String.class)))
                     throw new TestException("Wrong message ("+i+") received:" + receivedMessage + " sent:" + sentMessages[i]);
-                if(afterReceive - beforeSend < deliveryDelay )
-                    throw new TestException("Message received to soon, afterSend:"+afterSend+" afterReceive"+afterReceive+" deliveryDelay:"+deliveryDelay
+                if(afterReceive - beforeSend < defaultTestDeliveryDelay )
+                    throw new TestException("Message received to soon, afterSend:"+afterSend+" afterReceive"+afterReceive+" deliveryDelay:"+defaultTestDeliveryDelay
                             +"\nreceivedMessage:" + receivedMessage);
             } 
         }
@@ -975,6 +976,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
+    // TODO: Why do we have this when we could be using the deliveryDelay variable instead? Remove this later.
     private static final int DELIVERY_DELAY = 2000;
 
     public void testTransactedSend_B(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException, InterruptedException {
@@ -1007,15 +1009,15 @@ public class DeliveryDelayServlet extends HttpServlet {
             JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
 
             JMSProducer jmsProducer = jmsContext.createProducer();
-            jmsProducer.setDeliveryDelay(deliveryDelay);
+            jmsProducer.setDeliveryDelay(defaultTestDeliveryDelay);
 
             TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + timeStamp());
             long beforeSend = System.currentTimeMillis();
             jmsProducer.send(destination, sentMessage);
             long afterSend = System.currentTimeMillis();
-            if (afterSend - beforeSend > deliveryDelay)
+            if (afterSend - beforeSend > defaultTestDeliveryDelay)
                 throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:" + beforeSend + " afterSend:" + afterSend
-                        + " deliveryDelay:" + deliveryDelay);
+                        + " deliveryDelay:" + defaultTestDeliveryDelay);
             
             final long commitDelay = 1000;
             Thread.sleep(commitDelay);
@@ -1040,8 +1042,8 @@ public class DeliveryDelayServlet extends HttpServlet {
             
             if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
-            if (afterReceive - beforeSend < deliveryDelay)
-                throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforeSend:" + beforeSend + " deliveryDelay:" + deliveryDelay
+            if (afterReceive - beforeSend < defaultTestDeliveryDelay)
+                throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforeSend:" + beforeSend + " deliveryDelay:" + defaultTestDeliveryDelay
                         + "\nreceivedMessage:" + receivedMessage);
             
         }
@@ -2826,7 +2828,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         // In classic API we can create sender for a single queue.
 
         QueueSender send = sessionSender.createSender(jmsQueue1);
-        send.setDeliveryDelay(deliveryDelay);
+        send.setDeliveryDelay(defaultTestDeliveryDelay);
 
         TextMessage sendMsg1 =
             sessionSender.createTextMessage("testDeliveryMultipleMsgsClassicApi1");
@@ -2881,7 +2883,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         // In classic API we can create sender for a single queue.
 
         QueueSender send = sessionSender.createSender(jmsQueue1);
-        send.setDeliveryDelay(deliveryDelay);
+        send.setDeliveryDelay(defaultTestDeliveryDelay);
 
         TextMessage sendMsg1 =
             sessionSender.createTextMessage("testDeliveryMultipleMsgsClassicApi_Tcp1");
@@ -2930,7 +2932,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         TopicSubscriber sub = sessionSender.createSubscriber(jmsTopic);
 
         TopicPublisher send = sessionSender.createPublisher(jmsTopic);
-        send.setDeliveryDelay(deliveryDelay);
+        send.setDeliveryDelay(defaultTestDeliveryDelay);
 
         TextMessage sendMsg1 =
             sessionSender.createTextMessage("testDeliveryMultipleMsgsTopicClassicApi1");
@@ -2980,7 +2982,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         TopicSubscriber sub = sessionSender.createSubscriber(jmsTopic);
 
         TopicPublisher send = sessionSender.createPublisher(jmsTopic);
-        send.setDeliveryDelay(deliveryDelay);
+        send.setDeliveryDelay(defaultTestDeliveryDelay);
 
         TextMessage sendMsg1 =
             sessionSender.createTextMessage("testDeliveryMultipleMsgsTopicClassicApi_Tcp1");
@@ -3337,15 +3339,15 @@ public class DeliveryDelayServlet extends HttpServlet {
             
             QueueReceiver queueReceiver = queueSession.createReceiver(jmsQueue1);
             QueueSender queueSender = queueSession.createSender(jmsQueue1);
-            queueSender.setDeliveryDelay(deliveryDelay);
+            queueSender.setDeliveryDelay(defaultTestDeliveryDelay);
             
             TextMessage sentMessage = queueSession.createTextMessage(methodName() + " at " + timeStamp());
             long beforeSend = System.currentTimeMillis();
             queueSender.send(sentMessage);
             long afterSend = System.currentTimeMillis();
-            if (afterSend - beforeSend > deliveryDelay)
+            if (afterSend - beforeSend > defaultTestDeliveryDelay)
                 throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:" + beforeSend + " afterSend:" + afterSend
-                        + " deliveryDelay:" + deliveryDelay);
+                        + " deliveryDelay:" + defaultTestDeliveryDelay);
             
             final long commitDelay = 1000;
             Thread.sleep(commitDelay);
@@ -3364,8 +3366,8 @@ public class DeliveryDelayServlet extends HttpServlet {
             
             if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
-            if (afterReceive - beforeSend < deliveryDelay)
-                throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforeSend:" + beforeSend + " deliveryDelay:" + deliveryDelay
+            if (afterReceive - beforeSend < defaultTestDeliveryDelay)
+                throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforeSend:" + beforeSend + " deliveryDelay:" + defaultTestDeliveryDelay
                         + "\nreceivedMessage:" + receivedMessage);
             
         }
@@ -3393,15 +3395,15 @@ public class DeliveryDelayServlet extends HttpServlet {
 
             TopicSubscriber topicSubscriber = topicSession.createSubscriber(jmsTopic);
             TopicPublisher topicPublisher = topicSession.createPublisher(jmsTopic);
-            topicPublisher.setDeliveryDelay(deliveryDelay);
+            topicPublisher.setDeliveryDelay(defaultTestDeliveryDelay);
             
             TextMessage sentMessage = topicSession.createTextMessage(methodName() + " at " + timeStamp());
             long beforePublish = System.currentTimeMillis();
             topicPublisher.publish(sentMessage);
             long afterPublish = System.currentTimeMillis();
-            if (afterPublish - beforePublish > deliveryDelay)
+            if (afterPublish - beforePublish > defaultTestDeliveryDelay)
                 throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforePublish:" + beforePublish + " afterPublish:" + afterPublish
-                        + " deliveryDelay:" + deliveryDelay);
+                        + " deliveryDelay:" + defaultTestDeliveryDelay);
             
             final long commitDelay = 1000;
             Thread.sleep(commitDelay);
@@ -3426,8 +3428,8 @@ public class DeliveryDelayServlet extends HttpServlet {
             
             if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
-            if (afterReceive - beforePublish < deliveryDelay)
-                throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforePublish:" + beforePublish + " deliveryDelay:" + deliveryDelay
+            if (afterReceive - beforePublish < defaultTestDeliveryDelay)
+                throw new TestException("Message received to soon, afterReceive:" + afterReceive + " beforePublish:" + beforePublish + " deliveryDelay:" + defaultTestDeliveryDelay
                         + "\nreceivedMessage:" + receivedMessage);
         }
     }
@@ -4347,7 +4349,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             emptyQueue(queueConnectionFactory, jmsQueue);
             JMSProducer jmsProducer = jmsContext.createProducer();
 
-            long delayMilliseconds = deliveryDelay * 12;
+            long delayMilliseconds = defaultTestDeliveryDelay * 12;
             jmsProducer.setDeliveryDelay(delayMilliseconds);
             TextMessage sendMsg = jmsContext.createTextMessage(this.getClass().getName()+".testSendMessage() deliveryDelay="+delayMilliseconds+" milliseconds, sentAt:"+timeStamp());
             sendMsg.setLongProperty("MustArriveAfter",System.currentTimeMillis()+delayMilliseconds);
@@ -4371,7 +4373,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         try (JMSContext jmsContext = queueConnectionFactory.createContext()) {
             JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
-            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(deliveryDelay*12);
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(defaultTestDeliveryDelay*12);
             if (receivedMessage == null)
                 throw new Exception("No message received");
             if ( !receivedMessage.getText().startsWith(this.getClass().getName()+".testSendMessage() "))
