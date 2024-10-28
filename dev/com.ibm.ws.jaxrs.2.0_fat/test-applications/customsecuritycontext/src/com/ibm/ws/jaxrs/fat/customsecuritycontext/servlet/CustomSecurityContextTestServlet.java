@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @WebServlet(urlPatterns = "/CustomSecurityContextTestServlet")
@@ -36,10 +37,22 @@ public class CustomSecurityContextTestServlet extends FATServlet {
 
     private final String defaultEndpoint = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/SecurityContext/CustomSecurityContextResource/";
     private final String customEndpoint = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/CustomSecurityContext/CustomSecurityContextResource/";
+    private final String defaultParamEndpoint = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/SecurityContext/CustomSecurityContextParamResource/";
+    private final String customParamEndpoint = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/CustomSecurityContext/CustomSecurityContextParamResource/";
+
 
     @Test
     public void testDefaultSecurityContext() throws Exception {
-        String uri = defaultEndpoint + "Get";
+        testDefaultSecurityContext(defaultEndpoint);
+    }
+
+    @Test
+    public void testDefaultSecurityContextParam() throws Exception {
+        testDefaultSecurityContext(defaultParamEndpoint);
+    }
+
+    private void testDefaultSecurityContext(String defaultUri) throws Exception {
+        String uri = defaultUri + "Get";
         String token = "adam:password1";
         String basicAuthentication = "Basic " + Base64.getEncoder().encodeToString(token.getBytes("UTF-8"));
 
@@ -60,8 +73,18 @@ public class CustomSecurityContextTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JAXRS-2.1") // Fails when using RequestScoped resource due to the Proxy not including WrapperIntf so it fails with a ClassCastException
     public void testCustomSecurityContextSetInFilter() throws Exception {
-        String uri = customEndpoint + "Get";
+        testCustomSecurityContextSetInFilter(customEndpoint);
+    }
+
+    @Test
+    public void testCustomSecurityContextSetInFilterParam() throws Exception {
+        testCustomSecurityContextSetInFilter(customParamEndpoint);
+    }
+
+    private void testCustomSecurityContextSetInFilter(String customUri) throws Exception {
+        String uri = customUri + "GetCustom";
         String token = "adam:password1";
         final String basicAuthentication = "Basic " + Base64.getEncoder().encodeToString(token.getBytes("UTF-8"));
 

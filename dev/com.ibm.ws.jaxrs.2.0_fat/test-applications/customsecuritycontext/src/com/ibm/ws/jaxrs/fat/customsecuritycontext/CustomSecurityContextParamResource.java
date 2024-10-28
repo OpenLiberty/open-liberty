@@ -13,7 +13,6 @@
 package com.ibm.ws.jaxrs.fat.customsecuritycontext;
 
 import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
@@ -22,17 +21,17 @@ import javax.ws.rs.core.SecurityContext;
 
 import com.ibm.ws.jaxrs.fat.customsecuritycontext.filter.WrapperIntf;
 
-@Path("CustomSecurityContextResource")
-@RequestScoped
-public class CustomSecurityContextResource {
-
-    @Context
-    SecurityContext securityContext;
+/*
+ * This Resource class is the same as CustomerSecurityContextResource except the @Context is on a method parameter instead.
+ */
+@Path("CustomSecurityContextParamResource")
+public class CustomSecurityContextParamResource {
 
     @GET
     @Path("Get")
     @RolesAllowed("admin")
-    public Response requestSecurityInfo() {
+    public Response requestSecurityInfo(@Context
+                                        SecurityContext securityContext) {
         String name;
         if (securityContext != null && securityContext.getUserPrincipal() != null) {
             name = securityContext.getUserPrincipal().getName();
@@ -45,8 +44,9 @@ public class CustomSecurityContextResource {
     @GET
     @Path("GetCustom")
     @RolesAllowed("admin")
-    public Response requestCustomSecurityInfo() {
+    public Response requestCustomSecurityInfo(@Context
+                                        SecurityContext securityContext) {
         ((WrapperIntf) securityContext).getThis();
-        return requestSecurityInfo();
+        return requestSecurityInfo(securityContext);
     }
 }
