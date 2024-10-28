@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,9 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.jndi.iiop;
 
-import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.regex.Matcher;
@@ -26,10 +25,18 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 
-@Component(configurationPolicy=IGNORE,property={"service.vendor=ibm","osgi.jndi.url.scheme=corbaname"})
-public class CorbanameUrlContextFactory extends UrlContextFactory implements ObjectFactory, ApplicationRecycleComponent {
+/**
+ * One of the context factories should be an {@link ApplicationPrereq}
+ * to represent this bundle being up and running.
+ * This (the most commonly used one) was chosen.
+ */
+
+
+@Component(configurationPolicy=REQUIRE,property={"service.vendor=ibm","osgi.jndi.url.scheme=corbaname"})
+public class CorbanameUrlContextFactory extends UrlContextFactory implements ObjectFactory, ApplicationRecycleComponent, ApplicationPrereq {
     static class Escaper{
         static final TraceComponent tc = Tr.register(CorbanameUrlContextFactory.Escaper.class);
         private static final Pattern PERCENT_TRIPLET = Pattern.compile("%(?:[0-9a-f]{2}|[0-9A-F]{2})");
@@ -88,7 +95,7 @@ public class CorbanameUrlContextFactory extends UrlContextFactory implements Obj
                 // escape dots
                 n = n.replaceAll("\\.", "\\\\.");
 
-                // 
+                //
                 sn.append(n).append("/");
             }
 
@@ -118,8 +125,8 @@ public class CorbanameUrlContextFactory extends UrlContextFactory implements Obj
             return escaped.toString();
         }
 
-        
+
     }
-    
-    
+
+
 }
