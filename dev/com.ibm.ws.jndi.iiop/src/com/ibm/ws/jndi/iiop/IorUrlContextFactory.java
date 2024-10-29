@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jndi.iiop;
 
-import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import javax.naming.spi.ObjectFactory;
 
@@ -21,10 +21,11 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.transport.iiop.spi.ClientORBRef;
+import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 
-@Component(configurationPolicy=IGNORE,property={"service.vendor=ibm","osgi.jndi.url.scheme=ior"})
-public class IorUrlContextFactory extends UrlContextFactory implements ObjectFactory, ApplicationRecycleComponent {
+@Component(configurationPolicy=REQUIRE,property={"service.vendor=ibm","osgi.jndi.url.scheme=ior"})
+public class IorUrlContextFactory extends UrlContextFactory implements ObjectFactory, ApplicationRecycleComponent, ApplicationPrereq {
     @Activate
     public IorUrlContextFactory(@Reference ClientORBRef orbRef) {
         super(orbRef);

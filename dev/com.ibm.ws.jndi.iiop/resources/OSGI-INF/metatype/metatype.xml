@@ -24,6 +24,24 @@
     <AD id="id" name="internal" description="internal use only" type="String"  required="true" />
   </OCD>
 
+  <Designate pid="com.ibm.ws.jndi.iiop.CorbalocUrlContextFactory">
+    <Object ocdref="com.ibm.ws.jndi.iiop.CorbalocUrlContextFactory" />
+  </Designate>
+
+  <OCD id="com.ibm.ws.jndi.iiop.CorbalocUrlContextFactory" name="internal" description="internal use only"
+       ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
+    <AD id="id" name="internal" description="internal use only" type="String"  required="true" />
+  </OCD>
+
+  <Designate pid="com.ibm.ws.jndi.iiop.UrlContextFactory">
+    <Object ocdref="com.ibm.ws.jndi.iiop.UrlContextFactory" />
+  </Designate>
+
+  <OCD id="com.ibm.ws.jndi.iiop.UrlContextFactory" name="internal" description="internal use only"
+       ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
+    <AD id="id" name="internal" description="internal use only" type="String"  required="true" />
+  </OCD>
+
 
 </metatype:MetaData>
 
