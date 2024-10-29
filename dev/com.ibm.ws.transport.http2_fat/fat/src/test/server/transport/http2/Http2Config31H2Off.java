@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -127,6 +128,7 @@ public class Http2Config31H2Off extends FATServletClient {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC("java.lang.IllegalArgumentException")
     public void servlet31H2OffDirectConnection() throws Exception {
         runTest(Http2FullModeTests.defaultServletPath, testName.getMethodName());
     }
