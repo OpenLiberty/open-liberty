@@ -5,6 +5,12 @@
   dependsOn:
     - stepName: Compile FATs
       awaitOutputProperties: true
+  conditionalRun:
+    - type: ifSet
+      value: ${fat.buckets.to.run}
+    - type: ifNotEqual
+      value: ${fat.buckets.to.run}
+      value2: none
   properties:
     build.stub.target: build.CachedWSCD.CompileImageOnly
     skip.fat.tests: true

@@ -2,6 +2,9 @@
   conditionalRun:
     - type: ifSet
       value: ${spawn.feature.start}
+    - type: ifNotEqual
+      value: ${spawn.feature.start}
+      value2: none
   workType: FAT
   timeoutInMinutes: 1920
   properties:
