@@ -12,4 +12,6 @@
  -->
 <server>
   <com.ibm.ws.jndi.iiop.CorbanameUrlContextFactory id="CorbanameUrlContextFactory" />
+  <com.ibm.ws.jndi.iiop.CorbalocUrlContextFactory id="CorbalocUrlContextFactory" />
+  <com.ibm.ws.jndi.iiop.IorUrlContextFactory id="IorUrlContextFactory" />
 </server>

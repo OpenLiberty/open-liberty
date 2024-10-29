@@ -31,11 +31,6 @@ import com.ibm.ws.transport.iiop.spi.ClientORBRef;
 import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 
-/**
- * One of the context factories in this bundle should be an {@link ApplicationPrereq}.
- * This will cause applications to wait until this bundle is ready.
- * This URL context factory was chosen since "corbaname:" is the most common lookup protocol.
- */
 @Component(configurationPolicy=REQUIRE,property={"service.vendor=ibm","osgi.jndi.url.scheme=corbaname"})
 public class CorbanameUrlContextFactory extends UrlContextFactory implements ObjectFactory, ApplicationRecycleComponent, ApplicationPrereq {
     static class Escaper{
