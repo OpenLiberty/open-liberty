@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jndi.iiop;
+
+import static com.ibm.ws.jndi.iiop.CosNameUtil.escapeCorbanameUrlIfNecessary;
 
 import java.util.Hashtable;
 
@@ -50,7 +52,7 @@ static final TraceComponent tc = Tr.register(OrbContext.class);
     @FFDCIgnore(NO_IMPLEMENT.class)
     public Object lookup(String name) throws NamingException {
         final String methodName = "lookup(): ";
-        name = CorbanameUrlContextFactory.Escaper.escapeCorbanameUrlIfNecessary(name);
+        name = escapeCorbanameUrlIfNecessary(name);
         if (tc.isDebugEnabled()) Tr.debug(tc, methodName + "");
         org.omg.CORBA.Object result = orb.string_to_object(name);
         if (tc.isDebugEnabled()) Tr.debug(tc, methodName + ": orb.string_to_object() returned "+result);
