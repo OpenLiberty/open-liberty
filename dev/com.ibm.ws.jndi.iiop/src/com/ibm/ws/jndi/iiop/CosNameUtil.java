@@ -126,11 +126,11 @@ public enum CosNameUtil {
     }
 
     @FFDCIgnore(InvalidNameException.class)
-    static <T extends NamingException> T detailed(T toThrow, Exception initCause, NameComponent...rest_of_name) {
+    static <T extends NamingException> T detailed(T toThrow, Exception initCause, NameComponent... nameRemainder) {
         toThrow.initCause(initCause);
-        if (rest_of_name != null && rest_of_name.length > 0) {
+        if (nameRemainder != null && nameRemainder.length > 0) {
             try {
-                toThrow.setRemainingName(compose(rest_of_name));
+                toThrow.setRemainingName(compose(nameRemainder));
             } catch (InvalidNameException e) {
                 toThrow.addSuppressed(e);
             }
@@ -138,11 +138,9 @@ public enum CosNameUtil {
         return toThrow;
     }
 
-    private static CompositeName compose(NameComponent... rest_of_name) throws InvalidNameException {
+    private static CompositeName compose(NameComponent... nameRemainder) throws InvalidNameException {
         WSName wsName = new WSName();
-        for (int i = 0; i < rest_of_name.length; i++) {
-            wsName = wsName.plus(rest_of_name[i].id);
-        }
+        for (NameComponent nc: nameRemainder) wsName = wsName.plus(nc.id);
         CompositeName cName = new CompositeName();
         cName.add(wsName.toString());
         return cName;
