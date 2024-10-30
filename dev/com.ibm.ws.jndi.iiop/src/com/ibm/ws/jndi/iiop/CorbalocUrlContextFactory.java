@@ -19,13 +19,25 @@ import javax.naming.spi.ObjectFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
+import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.transport.iiop.spi.ClientORBRef;
 import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 
-@Component(configurationPolicy=REQUIRE,property={"service.vendor=ibm","osgi.jndi.url.scheme=corbaloc"})
-public class CorbalocUrlContextFactory extends UrlContextFactory  implements ObjectFactory, ApplicationRecycleComponent, ApplicationPrereq {
+@ObjectClassDefinition(name = "internal", description = "internal use only", localization = "")
+@Ext.ObjectClassClass(ApplicationPrereq.class)
+@interface CorbalocUrlContextFactoryConfig {
+    @AttributeDefinition(name = "internal", description = "internal use only")
+    String id();
+}
+
+@Component(configurationPolicy = REQUIRE, property = "osgi.jndi.url.scheme=corbaloc")
+@Designate(ocd = CorbalocUrlContextFactoryConfig.class)
+public class CorbalocUrlContextFactory extends UrlContextFactory implements ObjectFactory, ApplicationRecycleComponent, ApplicationPrereq {
     @Activate
     public CorbalocUrlContextFactory(@Reference ClientORBRef orbRef) {
         super(orbRef);

@@ -126,5 +126,4 @@ package com.ibm.wsspi.application.lifecycle;
  *   </li>
  * </ol>
  */
-public interface ApplicationPrereq {
-}
+public interface ApplicationPrereq {}
