@@ -32,19 +32,23 @@ public enum CosNameUtil {
     ;
     private static final TraceComponent tc = Tr.register(CosNameUtil.class);
     private static final Pattern PERCENT_TRIPLET = Pattern.compile("%(?:[0-9a-f]{2}|[0-9A-F]{2})");
-    private static final Pattern ALL_LEGAL_CHARS = Pattern.compile("[;/:?@&=+\\$,\\-_.!~*’()0-9A-Za-z]*");
-    private static final Pattern ILLEGAL_NAME = Pattern.compile("(?:[^/]\\./|\\.[^/]*\\.|[^/]\\.$)");
-    private static final BitSet ESCAPE_NOT_NEEDED = new BitSet(256);
+    private static final Pattern ILLEGAL_NAME = Pattern.compile("(?:[^/]\\./|\\.[^/]*\\.|([^/]\\.$))");
+    private static final BitSet ESCAPE_NOT_NEEDED;
+    private static final Pattern ALL_LEGAL_CHARS;
+
     static {
-        for (char c : ";/:?@&=+$,-_.!~*’()".toCharArray()) {
-            ESCAPE_NOT_NEEDED.set(c);
-        }
-        for (char c = '0'; c <= 0xFF; c++) {
-            if (Character.isAlphabetic(c) || Character.isDigit(c)) {
-                ESCAPE_NOT_NEEDED.set(c);
-            }
-        }
+        final String unescapedChars = (
+                "-;/:?@&=+$,_.!~*’()" +
+                "0123456789" +
+                "abcdefghijklmnopqrstuvwxyz" +
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        final BitSet escapeNotNeeded = new BitSet();
+        for (char c : unescapedChars.toCharArray()) escapeNotNeeded.set(c);
+
+        ESCAPE_NOT_NEEDED = escapeNotNeeded;
+        ALL_LEGAL_CHARS = Pattern.compile("[" + unescapedChars + "]*");
     }
+
     public static String escapeCorbanameUrlIfNecessary(String url) {
         final String methodName = "escapeCorbanameUrlIfNecessary(): ";
         if (url == null || !!!url.startsWith("corbaname:") || url.contains("\\"))
