@@ -79,20 +79,8 @@ public enum CosNameUtil {
             if (!matcher.find()) return url; // really, nothing needed replacing!
         }
 
-        StringBuilder sn = new StringBuilder();
-
-        for (String n : stringifiedName.split("/", -1)) {
-            // escape backslashes
-            n = n.replaceAll("\\\\", "\\\\" + "\\\\");
-
-            // escape dots
-            n = n.replaceAll("\\.", "\\\\.");
-
-            //
-            sn.append(n).append("/");
-        }
-
-        sn.setLength(sn.length() - 1);
+        // escape backslashes and dots
+        String sn = stringifiedName.replace("\\", "\\\\").replace(".", "\\.");
 
         // now for the URI escaping...
         // The CosNaming specification v1.4 2.5.3.3 specifies that:
@@ -106,7 +94,7 @@ public enum CosNameUtil {
         // * any of these: ; / : ? @ & = + $ , - _ . ! ~ * ’ ( )
         StringBuilder escaped = new StringBuilder(twoParts[0]).append("#");
         // since we must use an octet-based representation to URI-encode, convert the string into its UTF-8 bytes
-        for (byte b : sn.toString().getBytes(StandardCharsets.UTF_8)) {
+        for (byte b : sn.getBytes(StandardCharsets.UTF_8)) {
             if (ESCAPE_NOT_NEEDED.get(b)) {
                 escaped.append((char) b);
             } else {
