@@ -51,7 +51,7 @@ public enum CosNameUtil {
 
     public static String escapeCorbanameUrlIfNecessary(String url) {
         final String methodName = "escapeCorbanameUrlIfNecessary(): ";
-        if (url == null || !!!url.startsWith("corbaname:") || url.contains("\\"))
+        if (null == url || !url.startsWith("corbaname:") || url.contains("\\"))
             return url;
 
         // split on the first hash, which MUST delimit the start of the stringified name
@@ -76,10 +76,7 @@ public enum CosNameUtil {
             // no characters need to be URI-escaped
             // so just check for illegal dot patterns
             Matcher matcher = ILLEGAL_NAME.matcher(stringifiedName);
-            if (!!!matcher.find()) {
-                // really, nothing needed replacing!
-                return url;
-            }
+            if (!matcher.find()) return url; // really, nothing needed replacing!
         }
 
         StringBuilder sn = new StringBuilder();
