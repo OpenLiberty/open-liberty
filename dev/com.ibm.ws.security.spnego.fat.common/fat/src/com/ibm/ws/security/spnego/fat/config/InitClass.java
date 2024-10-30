@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
+import org.junit.Assume;
 
 import com.ibm.websphere.simplicity.ConnectionInfo;
 import com.ibm.websphere.simplicity.Machine;
@@ -257,9 +258,13 @@ public class InitClass {
         String canonicalHostName = localHost.getCanonicalHostName();
         String ipAddress = localHost.getHostAddress();
         if (canonicalHostName.equals(ipAddress)) {
-            throw new UnknownHostException("Can not resolve the hostname for IP address " + ipAddress +
-                                           "\\n\\ SPNEGO FAT will fail. This is a machine set up issue with the host name. "
-                                           + "\\n\\ This can be fixed by updating the hosts file or DNS server registration.");
+            String asciiArtLineBreak = "\n=======================================================";
+            Log.info(c, methodName, asciiArtLineBreak + "Can not resolve the hostname for IP address " + ipAddress +
+                                    "\n SPNEGO tests cannot run on this machine. This is a machine set up issue with the host name. "
+                                    + "\n This can be fixed by updating the hosts file or DNS server registration."
+                                    + asciiArtLineBreak);
+            Assume.assumeTrue(false); //This will stop the rest of tests from executing
+            return serverCanonicalHostName = "tests cannot run";
         }
         if (canonicalHostName != null && canonicalHostName.length() > CANONICAL_HOST_NAME_CHAR_LIMIT) {
             Log.info(c, methodName, "Canonical host name [" + canonicalHostName + "] is longer than allowed character limit. Using a substring as the host name");
@@ -350,8 +355,8 @@ public class InitClass {
      * "ibm.com", the same value provided for canonicalHostName is returned.
      *
      * @param canonicalHostName
-     * @param issueMsg - Boolean indicating whether a message should be logged if the canonical host name does not
-     *            include the IBM domain.
+     * @param issueMsg          - Boolean indicating whether a message should be logged if the canonical host name does not
+     *                              include the IBM domain.
      * @return
      */
     public static String getShortHostName(String canonicalHostName, boolean issueMsg) {
@@ -396,7 +401,7 @@ public class InitClass {
      * Get an SSH ClientSession to the specified machine.
      *
      * @param sshClient The SSH client.
-     * @param machine The machine to connect to.
+     * @param machine   The machine to connect to.
      * @return The session.
      * @throws IOException If there was an error getting an SSH session to the machine.
      */
