@@ -130,16 +130,16 @@ public class CookieNameOidcClientTests extends CommonTest {
             }
             i++;
         }
+
         boolean foundExpiredCookie = false;
-        String findType = JakartaEEAction.isEE10OrLaterActive()?"matches (?i) max-age=0":"contains expires=";
-        String lowerCookieLine = null;
+        boolean isEE10OrLaterActive = JakartaEEAction.isEE10OrLaterActive();
+        String regex = isEE10OrLaterActive ? ".*;(?i) max-age=0.*$":".*;(?i) expires=.*$";
 
         if (cookieLine != null) {
-            lowerCookieLine = cookieLine.toLowerCase(Locale.ENGLISH);
-            foundExpiredCookie = JakartaEEAction.isEE10OrLaterActive() ? lowerCookieLine.matches("(?i) max-age=0") : 
-                (lowerCookieLine.contains("expires=") && cookieLine.contains("16:00"));
+            foundExpiredCookie = isEE10OrLaterActive ? cookieLine.matches(regex) : 
+                (cookieLine.matches(regex) && cookieLine.contains("16:00"));
         }
-        Assert.assertTrue("Did not find expected expired cookie. The lower cookie line is ["+lowerCookieLine+"]. The match type is ["+findType+"]", foundExpiredCookie);
+        Assert.assertTrue("Did not find expected expired cookie. The cookie line is ["+cookieLine+"]. The regular expression is ["+regex+"]", foundExpiredCookie);
     }
 
     /**
