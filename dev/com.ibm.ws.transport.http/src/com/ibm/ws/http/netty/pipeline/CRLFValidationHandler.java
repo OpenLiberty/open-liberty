@@ -20,7 +20,7 @@ import io.netty.util.AttributeKey;
 
 public class CRLFValidationHandler extends ChannelInboundHandlerAdapter {
 
-    private static final int MAX_CRLF_ALLOWED = 0;
+    private static final int MAX_CRLF_ALLOWED = 2;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

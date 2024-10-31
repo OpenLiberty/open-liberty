@@ -215,7 +215,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         //TODO: check for best default first line max size (changing for jwt test)
         HttpServerCodec sourceCodec = new HttpServerCodec(8192, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize());
-        //pipeline.addLast(CRLF_VALIDATION_HANDLER, new CRLFValidationHandler());
+        pipeline.addLast(CRLF_VALIDATION_HANDLER, new CRLFValidationHandler());
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
