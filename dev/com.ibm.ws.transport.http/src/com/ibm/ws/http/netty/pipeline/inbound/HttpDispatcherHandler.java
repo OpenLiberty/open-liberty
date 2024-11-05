@@ -119,7 +119,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
             //Legacy doesnt throw ffdc on processNewInformation
             if(context.channel().attr(NettyHttpConstants.THROW_FFDC).get() != null){
                 context.channel().attr(NettyHttpConstants.THROW_FFDC).set(null);
-            }else{
+            }else if(!cause.getMessage().contains("possibly HTTP/0.9")){
                 FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
             }
             
