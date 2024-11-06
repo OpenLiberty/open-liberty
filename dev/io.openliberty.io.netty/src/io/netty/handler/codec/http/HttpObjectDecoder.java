@@ -171,6 +171,11 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
     private long contentLength = Long.MIN_VALUE;
     private boolean chunked;
     private boolean isSwitchingToNonHttp1Protocol;
+    
+    // Liberty specific configurations
+    private int limitFieldSize;
+    private int limitNumHeaders;
+    private boolean shouldDoLibertyCheck;
 
     private final AtomicBoolean resetRequested = new AtomicBoolean();
 
@@ -315,8 +320,11 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
         checkNotNull(config, "config");
 
         parserScratchBuffer = Unpooled.buffer(config.getInitialBufferSize());
+        shouldDoLibertyCheck = config.isLibertyHttpHeaderOptionsSet();
         lineParser = new LineParser(parserScratchBuffer, config.getMaxInitialLineLength());
-        headerParser = new HeaderParser(parserScratchBuffer, config.getMaxHeaderSize());
+        headerParser = new HeaderParser(parserScratchBuffer, shouldDoLibertyCheck ? -1 : config.getMaxHeaderSize());
+        limitFieldSize = config.getLimitFieldSize();
+        limitNumHeaders = config.getLimitNumHeaders();
         maxChunkSize = config.getMaxChunkSize();
         chunkedSupported = config.isChunkedSupported();
         headersFactory = config.getHeadersFactory();
@@ -339,7 +347,7 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
         if (resetRequested.get()) {
             resetNow();
         }
-
+        
         switch (currentState) {
         case SKIP_CONTROL_CHARS:
             // Fall-through
@@ -738,8 +746,17 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
                 String trimmedLine = langAsciiString(lineContent, startLine, lineLength).trim();
                 String valueStr = value;
                 value = valueStr + ' ' + trimmedLine;
+                if (shouldDoLibertyCheck && limitFieldSize < name.length()) {
+                	throw new TooLongHttpHeaderException("Size of HTTP header field in incoming request is larger than established limits.");
+                }
             } else {
                 if (name != null) {
+                	if (shouldDoLibertyCheck && limitNumHeaders < headers.size()) {
+                		throw new TooLongHttpHeaderException("Number of HTTP headers in incoming request is larger than established limits.");
+                	}
+                	if (shouldDoLibertyCheck && limitFieldSize < value.length()) {
+                		throw new TooLongHttpHeaderException("Size of HTTP header field in incoming request is larger than established limits.");
+                	}
                     headers.add(name, value);
                 }
                 splitHeader(lineContent, startLine, lineLength);
@@ -754,6 +771,9 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
 
         // Add the last header.
         if (name != null) {
+        	if (shouldDoLibertyCheck && limitNumHeaders < headers.size()) {
+        		throw new TooLongHttpHeaderException("Number of HTTP header is larger than established size.");
+        	}
             headers.add(name, value);
         }
 
@@ -1137,8 +1157,15 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
         public ByteBuf parse(ByteBuf buffer) {
             final int readableBytes = buffer.readableBytes();
             final int readerIndex = buffer.readerIndex();
-            final int maxBodySize = maxLength - size;
-            assert maxBodySize >= 0;
+            long maxAllowedBody;
+            // If -1 this check should be disabled
+            if (maxLength == -1) {
+            	maxAllowedBody = readableBytes - 2L;
+            } else {
+            	maxAllowedBody = maxLength - size;
+                assert maxAllowedBody >= 0;
+            }
+            final long maxBodySize = maxAllowedBody;
             // adding 2 to account for both CR (if present) and LF
             // don't remove 2L: it's key to cover maxLength = Integer.MAX_VALUE
             final long maxBodySizeWithCRLF = maxBodySize + 2L;
@@ -1147,7 +1174,7 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
             assert toIndexExclusive >= readerIndex;
             final int indexOfLf = buffer.indexOf(readerIndex, toIndexExclusive, HttpConstants.LF);
             if (indexOfLf == -1) {
-                if (readableBytes > maxBodySize) {
+                if (maxLength != -1 && readableBytes > maxBodySize) {
                     // TODO: Respond with Bad Request and discard the traffic
                     //    or close the connection.
                     //       No need to notify the upstream handlers - just log.
@@ -1170,7 +1197,7 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
                 return seq;
             }
             int size = this.size + newSize;
-            if (size > maxLength) {
+            if (maxLength != -1 && size > maxLength) {
                 throw newException(maxLength);
             }
             this.size = size;

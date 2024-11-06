@@ -34,6 +34,59 @@ public final class HttpDecoderConfig implements Cloneable {
     private int maxInitialLineLength = HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH;
     private int maxHeaderSize = HttpObjectDecoder.DEFAULT_MAX_HEADER_SIZE;
     private int initialBufferSize = HttpObjectDecoder.DEFAULT_INITIAL_BUFFER_SIZE;
+    
+    // Liberty Http Options
+    private int limitFieldSize = 32768;
+    private int limitNumHeaders = 500;
+    public boolean libertyHttpHeaderOptionsSet = false;
+    
+    /**
+     * Returns whether or not Liberty specific Http Options
+     * have been set for headers. This should be queried in
+     * the HttpObjectDecoder to ignore functionality for Netty
+     * header size control.
+     */
+    public boolean isLibertyHttpHeaderOptionsSet() {
+        return libertyHttpHeaderOptionsSet;
+    }
+    
+    public int getLimitFieldSize() {
+        return limitFieldSize;
+    }
+
+    /**
+     * Set the size limit of each individual header name and value in bytes.
+     *
+     * @param limitFieldSize The fiel size in bytes.
+     * @return This decoder config.
+     */
+    public HttpDecoderConfig setLimitFieldSize(int limitFieldSize) {
+    	// Assume checks are done by Liberty configuration for max and min
+    	System.out.println("Set limit field size");
+        this.limitFieldSize = limitFieldSize;
+        libertyHttpHeaderOptionsSet = true;
+        return this;
+    }
+    
+    public int getLimitNumHeaders() {
+        return limitNumHeaders;
+    }
+
+    /**
+     * Set the amount of headers to allow on a request.
+     *
+     * @param limitNumHeaders The amount of headers.
+     * @return This decoder config.
+     */
+    public HttpDecoderConfig setLimitNumHeaders(int limitNumHeaders) {
+    	// Assume checks are done by Liberty configuration for max and min
+    	System.out.println("Set limit num headers");
+    	this.limitNumHeaders = limitNumHeaders;
+    	libertyHttpHeaderOptionsSet = true;
+        return this;
+    }
+    
+    
 
     public int getInitialBufferSize() {
         return initialBufferSize;

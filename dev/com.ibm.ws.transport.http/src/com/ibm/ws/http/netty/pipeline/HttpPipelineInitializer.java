@@ -12,11 +12,10 @@ package com.ibm.ws.http.netty.pipeline;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLSessionContext;
 
 import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
@@ -25,32 +24,27 @@ import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.pipeline.LibertySslHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
-import com.ibm.ws.http.netty.pipeline.TransportOutboundHandler;
 
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
@@ -104,7 +98,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     @Override
     protected void initChannel(Channel channel) throws Exception {
         Tr.entry(tc, "initChannel");
-        
 
         ChannelPipeline pipeline = channel.pipeline();
 
@@ -120,7 +113,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         pipeline.addLast("AllocatorContextSetter", new AllocatorContextSetter(loggingAllocator));
 
-        if(chain.isHttps()){
+        if (chain.isHttps()) {
             setupSecurePipeline(pipeline);
         } else {
             setupUnsecurePipeline(pipeline);
@@ -130,8 +123,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         Tr.exit(tc, "initChannel");
     }
 
-    private void setupSecurePipeline(ChannelPipeline pipeline) throws NettyException{
-        if(chain.isHttp2Enabled()){
+    private void setupSecurePipeline(ChannelPipeline pipeline) throws NettyException {
+        if (chain.isHttp2Enabled()) {
             setupH2Pipeline(pipeline);
         } else {
             setupHttpsPipeline(pipeline);
@@ -139,7 +132,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     }
 
     private void setupUnsecurePipeline(ChannelPipeline pipeline) {
-        if(chain.isHttp2Enabled()){
+        if (chain.isHttp2Enabled()) {
             setupH2cPipeline(pipeline);
         } else {
             setupHttp11Pipeline(pipeline);
@@ -172,24 +165,22 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
     private SslContext getSslContext() throws NettyException {
         NettyTlsProvider tlsProvider = chain.getOwner().getNettyTlsProvider();
-        if(tlsProvider == null){
+        if (tlsProvider == null) {
             throw new NettyException("TLS Provider is not loaded");
         }
         EndPointInfo ep = this.chain.getEndpointInfo();
         String host = ep.getHost();
         String port = Integer.toString(ep.getPort());
 
-        SslContext context = chain.isHttp2Enabled() ? 
-            tlsProvider.getInboundALPNSSLContext(configOptions.get(ConfigElement.SSL_OPTIONS), host, port)
-            : tlsProvider.getInboundSSLContext(configOptions.get(ConfigElement.SSL_OPTIONS), host, port);
+        SslContext context = chain.isHttp2Enabled() ? tlsProvider.getInboundALPNSSLContext(configOptions.get(ConfigElement.SSL_OPTIONS), host,
+                                                                                           port) : tlsProvider.getInboundSSLContext(configOptions.get(ConfigElement.SSL_OPTIONS),
+                                                                                                                                    host, port);
         if (context == null) {
             throw new NettyException("Failed to create SSL context for endpoint: " + ep.getHost() + ":" + ep.getPort());
         }
 
         return context;
     }
-
-   
 
     /**
      * Utility method for building and H2C pipeline
@@ -244,8 +235,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn on half closure for H1
                 ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
 
-
-
                 pipeline.addBefore("chunkWriteHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 //TODO: this is a very large number, check best practice
                 pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
@@ -274,7 +263,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      */
     private void addPreHttpCodecHandlers(ChannelPipeline pipeline) {
         if (httpConfig.isAccessLoggingEnabled()) {
-            if (pipeline.names().contains(NETTY_HTTP_SERVER_CODEC)){        
+            if (pipeline.names().contains(NETTY_HTTP_SERVER_CODEC)) {
                 pipeline.addLast(new AccessLoggerHandler(httpConfig));
             }
         }
@@ -311,7 +300,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         private final EnumMap<ConfigElement, Map<String, Object>> configOptions = new EnumMap<>(ConfigElement.class);
         private final Set<ConfigElement> activeConfigs = EnumSet.noneOf(ConfigElement.class);
 
-
         public HttpPipelineBuilder(NettyChain chain) {
             this.chain = Objects.requireNonNull(chain, "Netty chain cannot be null");
         }
@@ -322,10 +310,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
             String id = String.valueOf(options.get(HttpConfigConstants.ID));
 
-            if (config == ConfigElement.SSL_OPTIONS){
+            if (config == ConfigElement.SSL_OPTIONS) {
                 configOptions.put(config, options);
                 activeConfigs.add(config);
-            } else if (!isDefaultConfig(config, id)){
+            } else if (!isDefaultConfig(config, id)) {
                 configOptions.put(config, options);
                 activeConfigs.add(config);
             }
@@ -333,7 +321,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             return this;
         }
 
-        private boolean isDefaultConfig(ConfigElement config, String id){
+        private boolean isDefaultConfig(ConfigElement config, String id) {
             switch (config) {
                 case HTTP_OPTIONS:
                     return "defaultHttpOptions".equalsIgnoreCase(id);
@@ -364,7 +352,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
             NettyHttpChannelConfig httpConfig = configBuilder.build();
 
-
             return new HttpPipelineInitializer(chain, httpConfig, configOptions);
         }
     }
@@ -378,19 +365,19 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     }
 
     @Sharable
-    private static class AllocatorContextSetter extends ChannelInboundHandlerAdapter{
+    private static class AllocatorContextSetter extends ChannelInboundHandlerAdapter {
         private final LoggingRecvByteBufAllocator loggingAllocator;
 
-        AllocatorContextSetter(LoggingRecvByteBufAllocator loggingAllocator){
+        AllocatorContextSetter(LoggingRecvByteBufAllocator loggingAllocator) {
             this.loggingAllocator = loggingAllocator;
         }
 
         @Override
-        public void handlerAdded(ChannelHandlerContext context) throws Exception{
+        public void handlerAdded(ChannelHandlerContext context) throws Exception {
             super.handlerAdded(context);
 
             RecvByteBufAllocator.Handle handle = context.channel().unsafe().recvBufAllocHandle();
-            if(handle instanceof LoggingRecvByteBufAllocator.LoggingHandle){
+            if (handle instanceof LoggingRecvByteBufAllocator.LoggingHandle) {
                 ((LoggingRecvByteBufAllocator.LoggingHandle) handle).setChannelHandlerContext(context);
             }
         }

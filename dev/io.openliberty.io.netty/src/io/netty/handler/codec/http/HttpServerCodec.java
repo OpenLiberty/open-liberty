@@ -139,6 +139,17 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
                 .setAllowDuplicateContentLengths(allowDuplicateContentLengths)
                 .setAllowPartialChunks(allowPartialChunks));
     }
+    
+    /**
+     * Creates a server codec instance with liberty specific http options.
+     */
+    public HttpServerCodec(int maxInitialLineLength , int maxChunkSize, int limitFieldSize, int limitNumHeaders) {
+        this(new HttpDecoderConfig()
+                .setMaxInitialLineLength(maxInitialLineLength)
+                .setMaxChunkSize(maxChunkSize)
+                .setLimitFieldSize(limitFieldSize)
+                .setLimitNumHeaders(limitNumHeaders));
+    }
 
     /**
      * Creates a new instance with the specified decoder configuration.
