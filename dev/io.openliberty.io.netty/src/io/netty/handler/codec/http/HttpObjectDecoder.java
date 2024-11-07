@@ -1157,11 +1157,9 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
         public ByteBuf parse(ByteBuf buffer) {
             final int readableBytes = buffer.readableBytes();
             final int readerIndex = buffer.readerIndex();
-            long maxAllowedBody;
+            long maxAllowedBody = 0;
             // If -1 this check should be disabled
-            if (maxLength == -1) {
-            	maxAllowedBody = readableBytes - 2L;
-            } else {
+            if (maxLength != -1) {
             	maxAllowedBody = maxLength - size;
                 assert maxAllowedBody >= 0;
             }
@@ -1169,7 +1167,7 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
             // adding 2 to account for both CR (if present) and LF
             // don't remove 2L: it's key to cover maxLength = Integer.MAX_VALUE
             final long maxBodySizeWithCRLF = maxBodySize + 2L;
-            final int toProcess = (int) Math.min(maxBodySizeWithCRLF, readableBytes);
+            final int toProcess = (int) Math.min(maxLength == -1 ? readableBytes: maxBodySizeWithCRLF, readableBytes);
             final int toIndexExclusive = readerIndex + toProcess;
             assert toIndexExclusive >= readerIndex;
             final int indexOfLf = buffer.indexOf(readerIndex, toIndexExclusive, HttpConstants.LF);
