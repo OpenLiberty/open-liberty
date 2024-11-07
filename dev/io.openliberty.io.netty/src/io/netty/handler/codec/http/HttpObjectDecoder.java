@@ -746,17 +746,14 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
                 String trimmedLine = langAsciiString(lineContent, startLine, lineLength).trim();
                 String valueStr = value;
                 value = valueStr + ' ' + trimmedLine;
-                if (shouldDoLibertyCheck && limitFieldSize < name.length()) {
-                	throw new TooLongHttpHeaderException("Size of HTTP header field in incoming request is larger than established limits.");
-                }
             } else {
                 if (name != null) {
                 	if (shouldDoLibertyCheck && limitNumHeaders < headers.size()) {
-                		throw new TooLongHttpHeaderException("Number of HTTP headers in incoming request is larger than established limits.");
-                	}
-                	if (shouldDoLibertyCheck && limitFieldSize < value.length()) {
-                		throw new TooLongHttpHeaderException("Size of HTTP header field in incoming request is larger than established limits.");
-                	}
+	            		throw new TooLongHttpHeaderException("Number of HTTP headers in incoming request is larger than established limits.");
+	            	}
+                	if (shouldDoLibertyCheck && (limitFieldSize < name.length() || limitFieldSize < value.length())) {
+	                	throw new TooLongHttpHeaderException("Size of HTTP header field in incoming request is larger than established limits.");
+	                }
                     headers.add(name, value);
                 }
                 splitHeader(lineContent, startLine, lineLength);
@@ -772,8 +769,11 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
         // Add the last header.
         if (name != null) {
         	if (shouldDoLibertyCheck && limitNumHeaders < headers.size()) {
-        		throw new TooLongHttpHeaderException("Number of HTTP header is larger than established size.");
+        		throw new TooLongHttpHeaderException("Number of HTTP headers in incoming request is larger than established limits.");
         	}
+        	if (shouldDoLibertyCheck && (limitFieldSize < name.length() || limitFieldSize < value.length())) {
+	        	throw new TooLongHttpHeaderException("Size of HTTP header field in incoming request is larger than established limits.");
+	        }
             headers.add(name, value);
         }
 

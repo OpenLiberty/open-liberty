@@ -33,7 +33,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.TooLongHttpHeaderException;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.HttpConversionUtil;
@@ -128,6 +130,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
             }
             sendErrorMessage(cause);
             return;
+        } else if (cause instanceof TooLongHttpHeaderException) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "exceptionCaught encountered an TooLongHttpHeaderException : " + cause);
+            }
+            sendErrorMessage(cause);
+            return;
         }
         context.close();
     }
@@ -138,6 +146,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         }
         // TODO Need a way to check if headers were already sent or not before sending an entire response
         loadErrorPage(StatusCodes.BAD_REQUEST.getHttpError());
+        HttpUtil.setKeepAlive(errorResponse, false);
         this.context.writeAndFlush(errorResponse);
     }
 
@@ -149,8 +158,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                 Tr.debug(tc, "HttpError returned body of length=" + body.length);
             }
             errorResponse.replace(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(body)));
+            if (HttpUtil.isTransferEncodingChunked(errorResponse))
+                HttpUtil.setTransferEncodingChunked(errorResponse, false);
+            HttpUtil.setContentLength(errorResponse, body.length);
             return;
         }
+        if (HttpUtil.isTransferEncodingChunked(errorResponse))
+            HttpUtil.setTransferEncodingChunked(errorResponse, false);
+        HttpUtil.setContentLength(errorResponse, 0);
         HttpErrorPageService eps = (HttpErrorPageService) HttpDispatcher.getFramework().lookupService(HttpErrorPageService.class);
         if (null == eps) {
             return;
@@ -181,6 +196,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Received body of length=" + body.length);
                 }
+                errorResponse.replace(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(body)));
+                if (HttpUtil.isTransferEncodingChunked(errorResponse))
+                    HttpUtil.setTransferEncodingChunked(errorResponse, false);
+                HttpUtil.setContentLength(errorResponse, body.length);
             }
         }
         return;

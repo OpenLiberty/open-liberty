@@ -310,7 +310,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
             String id = String.valueOf(options.get(HttpConfigConstants.ID));
 
-            if (config == ConfigElement.SSL_OPTIONS) {
+            if (config == ConfigElement.SSL_OPTIONS || config == ConfigElement.HTTP_OPTIONS) {
                 configOptions.put(config, options);
                 activeConfigs.add(config);
             } else if (!isDefaultConfig(config, id)) {

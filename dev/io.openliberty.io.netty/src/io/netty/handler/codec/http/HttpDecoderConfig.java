@@ -62,7 +62,6 @@ public final class HttpDecoderConfig implements Cloneable {
      */
     public HttpDecoderConfig setLimitFieldSize(int limitFieldSize) {
     	// Assume checks are done by Liberty configuration for max and min
-    	System.out.println("Set limit field size");
         this.limitFieldSize = limitFieldSize;
         libertyHttpHeaderOptionsSet = true;
         return this;
@@ -80,7 +79,6 @@ public final class HttpDecoderConfig implements Cloneable {
      */
     public HttpDecoderConfig setLimitNumHeaders(int limitNumHeaders) {
     	// Assume checks are done by Liberty configuration for max and min
-    	System.out.println("Set limit num headers");
     	this.limitNumHeaders = limitNumHeaders;
     	libertyHttpHeaderOptionsSet = true;
         return this;
