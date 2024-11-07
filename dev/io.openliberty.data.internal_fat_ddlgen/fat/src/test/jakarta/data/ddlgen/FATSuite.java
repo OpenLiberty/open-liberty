@@ -12,18 +12,22 @@
  *******************************************************************************/
 package test.jakarta.data.ddlgen;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.topology.database.container.DatabaseContainerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 DDLGenTest.class
 })
-// TODO uncomment once ddlgen is used
-public class FATSuite { //extends TestContainerSuite {
+public class FATSuite extends TestContainerSuite {
+    @ClassRule
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 }

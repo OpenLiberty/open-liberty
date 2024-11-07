@@ -462,7 +462,7 @@ serverEnvDefaults()
 
   # Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
   # shared classes cache created for client operations.
-  # Add -Dcom.ibm.tools.attach.enable=yes to allow self-attach on z/OS
+  # Add -Dcom.ibm.tools.attach.enable=yes to allow self-attach
   
   IBM_JAVA_OPTIONS="-Xquickstart -Dcom.ibm.tools.attach.enable=yes ${SPECIFIED_JAVA_OPTIONS} -Xshareclasses:none"
   export IBM_JAVA_OPTIONS

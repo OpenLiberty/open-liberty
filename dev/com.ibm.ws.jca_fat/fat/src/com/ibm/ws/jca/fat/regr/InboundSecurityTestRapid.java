@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,8 +15,7 @@ package com.ibm.ws.jca.fat.regr;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,24 +23,39 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.CheckpointRule;
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Subset of tests for rapid regression.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@CheckpointTest(alwaysRun = true)
 public class InboundSecurityTestRapid extends JCAFATTest implements RarTests {
     private final static Class<?> c = InboundSecurityTestRapid.class;
     private final String servletName = "InboundSecurityTestServlet";
     private static ServerConfiguration originalServerConfig;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @ClassRule
+    public static CheckpointRule checkpointRule = new CheckpointRule()
+                    .setServerSupplier(InboundSecurityTestRapid::server)
+                    .setBeta(true)
+                    .setCheckpointPhase(CheckpointPhase.AFTER_APP_START)
+                    .setInitialSetup(InboundSecurityTestRapid::setUp)
+                    .setFinalTearDown(InboundSecurityTestRapid::tearDown);
 
+    private static LibertyServer server() {
+        return server;
+    }
+
+    public static void setUp() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.regr", null, true);
         buildFvtAppEar();
 
@@ -56,7 +70,6 @@ public class InboundSecurityTestRapid extends JCAFATTest implements RarTests {
         server.waitForStringInLog("CWWKS4104A"); // Wait for Ltpa keys to be generated
     }
 
-    @AfterClass
     public static void tearDown() throws Exception {
         try {
             server.stopServer("J2CA0670E: .*NonExistentRealm/JosephABCDEF", // EXPECTED

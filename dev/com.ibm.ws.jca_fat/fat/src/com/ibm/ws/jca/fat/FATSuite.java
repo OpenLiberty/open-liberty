@@ -20,7 +20,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jca.fat.app.ConnectionManagerMBeanTest;
 import com.ibm.ws.jca.fat.app.DependantApplicationTest;
 import com.ibm.ws.jca.fat.app.JCATest;
-import com.ibm.ws.jca.fat.regr.InboundSecurityCheckpointTest;
 import com.ibm.ws.jca.fat.regr.InboundSecurityTest;
 import com.ibm.ws.jca.fat.regr.InboundSecurityTestRapid;
 
@@ -39,8 +38,7 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JCATest.class,
                 ConnectionManagerMBeanTest.class,
                 InboundSecurityTest.class,
-                InboundSecurityTestRapid.class,
-                InboundSecurityCheckpointTest.class
+                InboundSecurityTestRapid.class
 })
 public class FATSuite {
 

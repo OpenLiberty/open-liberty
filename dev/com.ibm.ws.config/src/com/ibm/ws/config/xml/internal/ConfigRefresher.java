@@ -94,6 +94,20 @@ public class ConfigRefresher {
         runtimeUpdateManagerTracker.close();
     }
 
+    /*
+     * Called after configuration change is detected.
+     * If the server.xml does not exist, no config updates will be made.
+     * Otherwise, make config updates as normal.
+     */
+    public void refreshConfigurationIfServerXMLExists(){
+        if(!serverXMLConfig.hasConfigRoot() || !serverXMLConfig.configRootFile().exists()){
+            Tr.error(tc, "error.config.root.deleted");
+        }
+        else{
+            refreshConfiguration();
+        }
+    }
+
     public void refreshConfiguration() {
         doRefresh(null);
     }

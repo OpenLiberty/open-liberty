@@ -1046,6 +1046,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 sortList = newList;
                             } else if (param == null) {
                                 // ignore null for empty Sort...
+                                boolean isSort = false;
+                                for (int s = 0; s < queryInfo.sortPositions.length; s++)
+                                    isSort |= queryInfo.sortPositions[s] == i;
+                                if (!isSort)
+                                    // BasicRepository.findAll requires NullPointerException
+                                    throw exc(NullPointerException.class,
+                                              "CWWKD1087.null.param",
+                                              method.getParameterTypes()[i].getName(),
+                                              method.getName(),
+                                              repositoryInterface.getName());
                             } else {
                                 throw exc(DataException.class,
                                           "CWWKD1023.extra.param",
@@ -1065,25 +1075,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                       "Limit",
                                       "PageRequest");
 
-                        if (sortList == null && queryInfo.hasDynamicSortCriteria())
+                        if (sortList == null && queryInfo.sortPositions.length > 0)
                             sortList = queryInfo.sorts;
 
                         if (sortList == null || sortList.isEmpty()) {
-                            if (pagination != null) {
-                                // BasicRepository.findAll(PageRequest, Order) requires NullPointerException when Order is null.
-                                if (queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 2
-                                    && Order.class.equals(queryInfo.method.getParameterTypes()[1]))
-                                    throw new NullPointerException("Order: null");
-                                // TODO raise a helpful error to prevent some cases of attempted unordered pagination?
-                                //else if (!queryInfo.hasOrderBy)
-                                //    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                //                                            repositoryInterface.getName() +
-                                //                                            " repository has a PageRequest parameter without a way to " +
-                                //                                            " specify a deterministic ordering of results, which is required " +
-                                //                                            " when requesting pages. Use the OrderBy annotation or add a " +
-                                //                                            " parameter of type Order, Sort, or Sort... to specify an order" +
-                                //                                            " for results."); // TODO NLS
-                            }
+                            if (pagination != null)
+                                queryInfo.requireOrderedPagination(args);
                         } else {
                             boolean forward = pagination == null || pagination.mode() != PageRequest.Mode.CURSOR_PREVIOUS;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);

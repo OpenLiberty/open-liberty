@@ -87,6 +87,10 @@ class ServerXMLConfiguration {
         return configRoot != null;
     }
 
+    File configRootFile() {
+        return configRoot.asFile();
+    }
+
     private static long getInitialConfigReadTime(BundleContext bundleContext) {
         if (bundleContext == null) {
             return 0;

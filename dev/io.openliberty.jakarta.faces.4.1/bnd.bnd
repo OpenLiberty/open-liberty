@@ -30,10 +30,9 @@ DynamicImport-Package: \
     org.apache.myfaces.spi
 
 # Use this format (4.1.0.RC#)  once we have an official release and not an RC Version
+#  Use META-INF=@src/META-INF for JS overlays
 -includeresource: \
-    @${repo;org.apache.myfaces.core:myfaces-api;4.1.0.RC2;EXACT}!/!(META-INF/maven/*|module-info.class), \
-    META-INF=@src/META-INF, \
-    org/apache/myfaces=${bin}/org/apache/myfaces
+    @${repo;org.apache.myfaces.core:myfaces-api;4.1.0.RC3;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
 
@@ -41,7 +40,7 @@ publish.wlp.jar.suffix: dev/api/spec
 
 # Use this format (4.1.0.RC#) once we have an official release and not an RC Version
 -buildpath: \
-    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.1.0.RC2,\
+    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.1.0.RC3,\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest
     # org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9;strategy=exact, \
     # io.openliberty.jakarta.servlet.6.1;version=latest, \

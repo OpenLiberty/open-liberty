@@ -225,6 +225,12 @@ public interface Primes {
                                                               Order<Prime> order,
                                                               Sort<?>... orderBy);
 
+    CursoredPage<Prime> findByRomanNumeralIgnoreCaseEndsWith(String prefix,
+                                                             PageRequest pageReq);
+
+    Page<Prime> findByRomanNumeralIgnoreCaseStartsWith(String prefix,
+                                                       PageRequest pageReq);
+
     @OrderBy(value = "sumOfBits", descending = true)
     @OrderBy("name")
     Page<Prime> findByRomanNumeralStartsWithAndNumberIdLessThan(String prefix, long max, PageRequest pagination);

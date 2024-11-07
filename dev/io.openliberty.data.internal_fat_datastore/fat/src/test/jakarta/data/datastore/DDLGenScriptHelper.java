@@ -36,6 +36,7 @@ import componenttest.topology.impl.LibertyServer;
 /**
  *
  */
+@Deprecated // TODO switch to use the DDLGenScriptHelper from fattest.simplicity
 public abstract class DDLGenScriptHelper {
 
     /**

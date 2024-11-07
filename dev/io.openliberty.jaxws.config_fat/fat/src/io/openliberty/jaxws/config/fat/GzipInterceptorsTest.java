@@ -93,7 +93,6 @@ public class GzipInterceptorsTest {
     @Test
     public void testEnableGZIPInterceptors() throws Exception {
 
-        gzipServer.reconfigureServer("GzipInterceptorsTestServer/server.xml", "CWWKG0017I");
         String response = runTest(gzipServer, "testWebServiceClient/IgnoreUnexpectedElementTestServiceServlet?target=AddedElement");
         // Log response to output.txt
 	LOG.info("testEnableGZIPInterceptors - Response = " + response);

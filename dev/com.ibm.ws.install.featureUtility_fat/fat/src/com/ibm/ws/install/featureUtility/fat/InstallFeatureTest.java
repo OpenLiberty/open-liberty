@@ -1003,7 +1003,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	}
 
 	/*
-	 * Test installFeature --verify=all from external test container
+	 * Test installFeature --verify=all from external test container with proxy through properties
 	 */
 	@Test
 	public void testProxyAuth() throws Exception {
@@ -1038,6 +1038,79 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    }
 	    
 	    Log.exiting(c, METHOD_NAME);
+	}
+	
+	/*
+	 * Test installFeature --verify=all from external test container with proxy through env
+	 */
+	@Test
+	public void testProxyEnv() throws Exception {
+	    final String METHOD_NAME = "testProxyEnv";
+	    Log.entering(c, METHOD_NAME);
+
+	    String proxyHost = proxyContainer.getHost();
+	    String proxyPort = proxyContainer.getMappedPort(3128).toString();
+
+	    String containerUrl = "http://keyserver:8080/validKey.asc";
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
+	    
+	    Properties envProps = new Properties();
+	    envProps.put("http_proxy", "http://wasngi:test@" + proxyHost + ":" + proxyPort);
+
+
+	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
+
+	    String[] param1s = { "installFeature", "testesa1", "json-1.0",
+		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s, envProps);
+	  
+	    try {
+	    		checkCommandOutput(po, 0, null, filesList);
+	    } catch (AssertionError e) {
+	    		checkProxyLog(METHOD_NAME, proxyContainer);
+	    		throw e;
+	    }
+	    
+	    Log.exiting(c, METHOD_NAME);
+
+	}
+	
+	/*
+	 * Test installFeature --verify=all from external test container with proxy through env
+	 */
+	@Test
+	public void testProxyWrongFormatEnv() throws Exception {
+	    final String METHOD_NAME = "testProxyWrongFormatEnv";
+	    Log.entering(c, METHOD_NAME);
+
+	    String proxyHost = proxyContainer.getHost();
+	    String proxyPort = proxyContainer.getMappedPort(3128).toString();
+
+	    String containerUrl = "http://keyserver:8080/validKey.asc";
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
+	    
+	    Properties envProps = new Properties();
+	    envProps.put("http_proxy", "http://wasngi:test@" + "://" + proxyHost + ":" + proxyPort);
+
+
+	    String[] param1s = { "installFeature", "testesa1", "json-1.0",
+		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s, envProps);
+	  
+	    try {
+	    		checkCommandOutput(po, 21, "CWWKF1401E" , null);
+	    } catch (AssertionError e) {
+	    		throw e;
+	    }
+	    
+	    Log.exiting(c, METHOD_NAME);
+
 	}
 	
 	@Test

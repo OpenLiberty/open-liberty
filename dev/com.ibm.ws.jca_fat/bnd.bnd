@@ -47,5 +47,6 @@ tested.features:\
 	com.ibm.ws.jdbc;version=latest,\
 	com.ibm.websphere.javaee.validation.1.1;version=latest,\
 	org.hamcrest:hamcrest-all;version=1.3,\
-	com.ibm.ws.jca.cm;version=latest
+	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest
 	

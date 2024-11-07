@@ -137,6 +137,29 @@ steps:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
 
+- stepName: Code Checklist Creation
+  workType: Jenkins
+  projectName: codeCheckListBuilder
+  timeoutInMinutes: 120
+  dependsOn:
+  - stepName: PR Changes
+    awaitOutputProperties: true
+  properties:
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
+    isBvtCodeChanged: ${PR Changes:is.bvt.code.changed}
+    isFatCodeChanged: ${PR Changes:is.fat.code.changed}
+    isInfraCodeChanged: ${PR Changes:is.infra.code.changed}
+    isProductCodeChanged: ${PR Changes:is.product.code.changed}
+    isTestInfraCodeChanged: ${PR Changes:is.test.infra.code.changed}
+    isUnittestCodeChanged: ${PR Changes:is.unittest.code.changed}    
+    bvtFilesCount: ${PR Changes:bvt.files.count}
+    fatFilesCount: ${PR Changes:fat.files.count}
+    infraFilesCount: ${PR Changes:infra.files.count}
+    productFilesCount: ${PR Changes:product.files.count}
+    testInfraFilesCount: ${PR Changes:test.infra.files.count}
+    unittestFilesCount: ${PR Changes:unittest.files.count}
+
 - stepGroup: Compile Liberty Images
   projectName: "Open Liberty Personal Build CI Orchestrator - EBC"
   dependsOn:

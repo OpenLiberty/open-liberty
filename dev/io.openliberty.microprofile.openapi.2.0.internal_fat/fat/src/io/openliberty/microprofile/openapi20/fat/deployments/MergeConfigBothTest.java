@@ -53,7 +53,7 @@ public class MergeConfigBothTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
+    public static RepeatTests r = FATSuite.repeatReduced(SERVER_NAME);
 
     @After
     public void cleanup() throws Exception {

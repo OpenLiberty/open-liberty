@@ -109,7 +109,7 @@ public class TestContainerSuite {
 
             // Output pattern
             System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
-            System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "[mm/dd/YYY HH:mm:ss:SSS z]");
+            System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "[MM/dd/yyyy HH:mm:ss:SSS z]");
         } else {
             Log.info(c, m, "The SLF4J simpleLogger was already configured with a logFile of " +
                            System.getProperty("org.slf4j.simpleLogger.logFile") +
@@ -118,7 +118,7 @@ public class TestContainerSuite {
 
         // Levels
         System.setProperty("org.slf4j.simpleLogger.log.org.testcontainers", "debug");
-        System.setProperty("org.slf4j.simpleLogger.log.tc", "info");
+        System.setProperty("org.slf4j.simpleLogger.log.tc", "debug");
         System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava", "warn");
         System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire", "off");
 

@@ -38,6 +38,7 @@ public class MessageConstants {
     public static final String OPENAPI_VERSION_INVALID_CWWK06181W = "OPENAPI_VERSION_INVALID_CWWK06181W";
     public static final String OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W = "OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W";
     public static final String OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W = "OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W";
+    public static final String OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W = "OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W";
 
     private MessageConstants() {
         // This class is not meant to be instantiated.

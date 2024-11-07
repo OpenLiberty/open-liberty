@@ -44,21 +44,28 @@ public class HttpServerStats extends Meter implements HttpServerStatsMXBean {
 		responseTime.setDescription("Cumulative Response Time (NanoSeconds) for a HTTP connection");
 		responseTime.setUnit("ns");
 
-		this.requestMethod = httpStatAttributes.getRequestMethod();
-		this.httpRoute = httpStatAttributes.getHttpRoute().orElse("");
-		this.responseStatus = httpStatAttributes.getResponseStatus().orElse(-1);
+		requestMethod = httpStatAttributes.getRequestMethod();
+		httpRoute = httpStatAttributes.getHttpRoute();
+		if (httpRoute == null) {
+			httpRoute = "";
+		}
+		
+		responseStatus = httpStatAttributes.getResponseStatus();
 
-		this.scheme = httpStatAttributes.getScheme();
+		scheme = httpStatAttributes.getScheme();
 
-		this.networkProtocolName = httpStatAttributes.getNetworkProtocolName();
+		networkProtocolName = httpStatAttributes.getNetworkProtocolName();
 
-		this.networkProtocolVersion = httpStatAttributes.getNetworkProtocolVersion();
+		networkProtocolVersion = httpStatAttributes.getNetworkProtocolVersion();
 
-		this.serverName = httpStatAttributes.getServerName();
+		serverName = httpStatAttributes.getServerName();
 
-		this.serverPort = httpStatAttributes.getServerPort();
+		serverPort = httpStatAttributes.getServerPort();
 
-		this.errorType = httpStatAttributes.getErrorType().orElse("");
+		errorType = httpStatAttributes.getErrorType();
+		if (errorType == null) {
+			errorType = "";
+		}
 	}
 
 	/**

@@ -66,9 +66,8 @@ public class TelemetryUserFeatureAppScopedTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    //Telemetry 20 because we're only testing runtime mode
     @ClassRule
-    public static RepeatTests r = TelemetryActions.telemetry20Repeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 
 /**
@@ -125,6 +126,35 @@ public enum CheckpointPhase {
             }
         }
         THE_PHASE = phase;
+        if (phase != INACTIVE) {
+            phase.addMultiThreadedHook(Integer.MIN_VALUE, new CheckpointHook() {
+                @Override
+                public void prepare() {
+                    debug(() -> "Locking checkpoint write lock for prepare");
+                    checkpointLock.writeLock().lock();
+                };
+
+                @Override
+                public void restore() {
+                    debug(() -> "Unlocking checkpoint write lock for restore");
+                    try {
+                        checkpointLock.writeLock().unlock();
+                    } catch (IllegalMonitorStateException e) {
+                        // ignore
+                    }
+                }
+
+                @Override
+                public void checkpointFailed() {
+                    debug(() -> "Unlocking checkpoint write lock for checkpointFailed");
+                    try {
+                        checkpointLock.writeLock().unlock();
+                    } catch (IllegalMonitorStateException e) {
+                        // ignore
+                    }
+                }
+            });
+        }
     }
 
     static CheckpointPhase THE_PHASE = CheckpointPhase.INACTIVE;
@@ -299,6 +329,22 @@ public enum CheckpointPhase {
     }
 
     /**
+     * A function to call with the checkpoint lock
+     *
+     * @param <T> Exception thrown by the call method
+     */
+    @FunctionalInterface
+    public static interface WithCheckpointLock<R, T extends Throwable> {
+        /**
+         * Called with the checkpoint lock to prevent the JVM from entering single-threaded
+         * mode.
+         *
+         * @throws T with checkpoint lock exception.
+         */
+        public R call() throws T;
+    }
+
+    /**
      * Runs the given function on restore if the runtime has been configured to perform
      * a checkpoint, the function is run after the JVM has re-entered multi-threaded mode;
      * otherwise the function is run immediately from the calling thread synchronously.
@@ -406,6 +452,34 @@ public enum CheckpointPhase {
 
     final synchronized void blockAddHooks() {
         this.blockAddHooks = true;
+    }
+
+    private static final ReentrantReadWriteLock checkpointLock = new ReentrantReadWriteLock();
+
+    /**
+     * Runs the given function while holding the checkpoint lock. This will prevent
+     * the JVM from entering single-thread mode when preparing for a checkpoint.
+     *
+     * @param <R>                The type of value returned by the function
+     * @param <T>                The type of throwable the function may throw
+     * @param withCheckpointLock The function to run
+     * @return The value returned by the function
+     * @throws T Any errors that occur while running the function
+     */
+    public <R, T extends Throwable> R runWithCheckpointLock(WithCheckpointLock<R, T> withCheckpointLock) throws T {
+        if (restored()) {
+            debug(() -> "Calling with no checkpoint lock: " + withCheckpointLock);
+            // call with no read lock on checkpoint
+            return withCheckpointLock.call();
+        }
+        checkpointLock.readLock().lock();
+        try {
+            // call with checkpoint lock to prevent the JVM from going into single-thread mode while running
+            debug(() -> "Calling with checkpoint lock: " + withCheckpointLock);
+            return withCheckpointLock.call();
+        } finally {
+            checkpointLock.readLock().unlock();
+        }
     }
 
     final class StaticCheckpointHook implements CheckpointHook {

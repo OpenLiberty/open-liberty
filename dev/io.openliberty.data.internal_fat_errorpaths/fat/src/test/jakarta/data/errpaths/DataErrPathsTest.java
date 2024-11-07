@@ -46,12 +46,14 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1078E.*test.jakarta.data.errpaths.web.InvalidNonJNDIRepo",
                                    "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo",
                                    "CWWKD1080E.*test.jakarta.data.errpaths.web.InvalidDatabaseRepo",
+                                   "CWWKD1080E.*test.jakarta.data.errpaths.web.Inventions", // has invalid entity class
                                    "CWWKD1082E.*test.jakarta.data.errpaths.web.WrongPersistenceUnitRefRepo",
                                    "CWWKD1083E.*bornOn", // duplicate Param annotations
                                    "CWWKD1084E.*bornIn", // Param annotation omitted
                                    "CWWKD1084E.*livingIn", // named parameter mismatch
                                    "CWWKD1085E.*livingOn", // extra Param annotations
-                                   "CWWKD1086E.*withAddressShorterThan" // Param used for positional parameter
+                                   "CWWKD1086E.*withAddressShorterThan", // Param used for positional parameter
+                                   "CWWKD1090E.*findByAddressOrderBy" // OrderBy anno/keyword conflict
                     };
 
     @Server("io.openliberty.data.internal.fat.errpaths")

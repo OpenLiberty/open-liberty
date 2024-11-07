@@ -12,8 +12,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -193,8 +191,13 @@ public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPI
             }
         }
 
-        for (String unmatchedInclude : includedNotYetSeen.stream().map(ModuleName::toString).collect(toList())) {
-            Tr.warning(tc, MessageConstants.OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W, Constants.MERGE_INCLUDE_CONFIG, unmatchedInclude);
+        for (ModuleName unmatchedInclude : includedNotYetSeen) {
+            if (config.serverxmlmode && ProductInfo.getBetaEdition()) {
+                String elementName = unmatchedInclude.moduleName == null ? "includeApplication" : "includeModule";
+                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W, elementName, unmatchedInclude);
+            } else {
+                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W, Constants.MERGE_INCLUDE_CONFIG, unmatchedInclude);
+            }
         }
 
         //Now we repeat the process for excluded applications and modules, however this time we only throw a warning message if we get a match on the deployment descriptor's name

@@ -23,5 +23,9 @@
   </featureManager>
 
   <keyStore id="defaultKeyStore" password="password" />
+  
+  <mpOpenAPI>
+    <includeApplication>first</includeApplication>
+  </mpOpenAPI>
 
 </server>

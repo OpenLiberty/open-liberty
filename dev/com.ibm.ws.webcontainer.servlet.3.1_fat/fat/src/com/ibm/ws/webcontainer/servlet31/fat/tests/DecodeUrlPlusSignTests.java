@@ -126,7 +126,7 @@ public class DecodeUrlPlusSignTests {
         } finally {
             // Reset the server.xml.
             server.setMarkToEndOfLog();
-            server.updateServerConfiguration(configuration);
+            server.restoreServerConfiguration();
             server.waitForConfigUpdateInLogUsingMark(Collections.singleton(DECODE_URL_PLUS_SIGN_APP_NAME), false);
         }
     }

@@ -6,6 +6,8 @@ receivers:
 exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
+  debug:
+    verbosity: normal
 
 processors:
   batch:
@@ -15,4 +17,4 @@ service:
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [prometheus]
+      exporters: [prometheus, debug]

@@ -14,6 +14,8 @@ package test.jakarta.data.ddlgen.web;
 
 import java.util.Objects;
 
+import test.jakarta.data.ddlgen.web.Part.Identifier;
+
 /**
  * A record entity with a composite id.
  */
@@ -28,7 +30,7 @@ public record Part(Identifier id, String name, float price, int version) {
 
     /**
      * Composite id for the Part entity.
-     * TODO switch to a record once #29460 is fixed
+     * TODO switch to a record once issue is resolved: https://github.com/OpenLiberty/open-liberty/issues/29460
      */
     public static class Identifier {
         public String partNum;

@@ -18,7 +18,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 Bundle-SymbolicName: io.openliberty.org.apache.myfaces.4.1
 Bundle-Description:  Jakarta Faces, MyFaces 4.1 Implementation
 
-Implementation-Version: 4.1.0-RC2
+Implementation-Version: 4.1.0-RC3
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
@@ -28,7 +28,7 @@ instrument.classesExcludes: \
 
 # Use this format (4.1.0.RC#)  until we have an official release and not an RC Version
 Include-Resource: \
-  @${repo;org.apache.myfaces.core:myfaces-impl;4.1.0.RC2;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core:myfaces-impl;4.1.0.RC3;EXACT}!/META-INF/**, \
   @${repo;io.openliberty.jakarta.faces.4.1}!/META-INF/resources/**, \
   @${repo;io.openliberty.jakarta.faces.4.1}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
@@ -118,7 +118,7 @@ Import-Package: \
   *
 
 -buildpath: \
-  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=4.1.0.RC2,\
+  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=4.1.0.RC3,\
   io.openliberty.jakarta.faces.4.1;version=latest,\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer.jakarta;version=latest,\

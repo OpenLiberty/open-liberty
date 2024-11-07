@@ -1239,7 +1239,7 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-core</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
@@ -1249,12 +1249,12 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-jaxrs</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-model</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
@@ -2379,7 +2379,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>4.1.0-RC2</version>
+      <version>4.1.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -2404,7 +2404,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>4.1.0-RC2</version>
+      <version>4.1.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.neethi</groupId>
@@ -3074,7 +3074,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
       <artifactId>microprofile-openapi-api</artifactId>
-      <version>4.0</version>
+      <version>4.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>
@@ -3594,7 +3594,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>5.2.17.Final</version>
+      <version>5.3.20.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -4454,17 +4454,12 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
-      <version>2.2.5.RELEASE</version>
+      <version>2.7.18</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
-      <version>3.0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-autoconfigure</artifactId>
-      <version>3.2.4</version>
+      <version>3.3.5</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -4474,17 +4469,12 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
-      <version>2.2.5.RELEASE</version>
+      <version>2.7.18</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
-      <version>3.0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot</artifactId>
-      <version>3.2.4</version>
+      <version>3.3.5</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>
@@ -4499,12 +4489,12 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
-      <version>5.2.2.RELEASE</version>
+      <version>5.7.13</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
-      <version>6.0.3</version>
+      <version>6.3.4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -4514,12 +4504,12 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>5.2.2.RELEASE</version>
+      <version>5.7.13</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>6.0.3</version>
+      <version>6.3.4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -4529,7 +4519,7 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-crypto</artifactId>
-      <version>6.0.3</version>
+      <version>6.3.4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -4539,17 +4529,12 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
-      <version>5.2.2.RELEASE</version>
+      <version>5.7.13</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
-      <version>5.7.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-      <version>6.0.3</version>
+      <version>6.3.4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4564,17 +4549,17 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>5.2.4.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
       <version>5.3.21</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>6.0.6</version>
+      <version>5.3.39</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>6.1.14</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4594,17 +4579,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-      <version>5.2.4.RELEASE</version>
+      <version>5.3.39</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-      <version>6.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-      <version>6.1.5</version>
+      <version>6.1.14</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4619,17 +4599,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>5.2.4.RELEASE</version>
+      <version>5.3.39</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>6.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>6.1.5</version>
+      <version>6.1.14</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4644,17 +4619,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>5.2.4.RELEASE</version>
+      <version>5.3.39</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>6.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>6.1.5</version>
+      <version>6.1.14</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4665,11 +4635,6 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-expression</artifactId>
       <version>4.3.13.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-expression</artifactId>
-      <version>5.2.4.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4679,7 +4644,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-expression</artifactId>
-      <version>6.0.6</version>
+      <version>5.3.39</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-expression</artifactId>
+      <version>6.1.14</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4694,17 +4664,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>5.2.4.RELEASE</version>
+      <version>5.3.39</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>6.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-      <version>6.1.5</version>
+      <version>6.1.14</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4714,12 +4679,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webflux</artifactId>
-      <version>6.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webflux</artifactId>
-      <version>6.1.5</version>
+      <version>6.1.14</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4729,12 +4689,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>5.2.4.RELEASE</version>
+      <version>5.3.39</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>6.0.6</version>
+      <version>6.1.14</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4744,17 +4704,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-websocket</artifactId>
-      <version>5.0.8.RELEASE</version>
+      <version>5.3.39</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-websocket</artifactId>
-      <version>5.3.21</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-websocket</artifactId>
-      <version>6.0.6</version>
+      <version>6.1.14</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>

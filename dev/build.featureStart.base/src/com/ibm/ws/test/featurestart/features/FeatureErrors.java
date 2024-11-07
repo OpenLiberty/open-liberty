@@ -38,6 +38,11 @@ public class FeatureErrors {
 
         allowedErrors.put("batchSMFLogging-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.jbatch.smflogging" });
         
+        allowedErrors.put("zosLocalAdapters-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.security.thread.zos",
+                                                                 "CWWKE0702E: .* com.ibm.ws.webcontainer" });
+
+        allowedErrors.put("zosWlm-1.0", new String[] { "CWWKB0160W" });
+
         allowedErrors.put("zosAutomaticRestartManager-1.0", new String[] { "CWWKB0758E" });
 
         // requires binaryLogging-1.0 to be enabled via bootstrap.properties

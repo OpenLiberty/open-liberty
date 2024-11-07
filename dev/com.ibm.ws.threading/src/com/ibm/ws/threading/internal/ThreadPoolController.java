@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.CpuInfo;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 // @formatter:off
 /**
@@ -562,13 +564,6 @@ public final class ThreadPoolController {
     private final int maxThreadsToBreakHang;
 
     /**
-     * Reference to the configured ExecutorService implementation that
-     * delegates to the {@link ThreadPoolExecutorImpl} that is controlled
-     * by this controller.
-     */
-    private final ExecutorServiceImpl executorService;
-
-    /**
      * A representation of the action taken by this controller at the end of the
      * previous interval.
      */
@@ -708,8 +703,7 @@ public final class ThreadPoolController {
      * @param executorServce the configured OSGi component that's associated with
      *                           the managed thread pool.
      */
-    ThreadPoolController(ExecutorServiceImpl executorService, ThreadPoolExecutor pool) {
-        this.executorService = executorService;
+    ThreadPoolController(ThreadPoolExecutor pool) {
         this.threadPool = pool;
         this.coreThreads = pool.getCorePoolSize();
         this.currentMinimumPoolSize = this.coreThreads;
@@ -2198,7 +2192,7 @@ public final class ThreadPoolController {
  * expires.
  */
 class IntervalTask extends TimerTask {
-
+    private final CheckpointPhase phase = CheckpointPhase.getPhase();
     final ThreadPoolController threadPoolController;
 
     IntervalTask(ThreadPoolController threadPoolController) {
@@ -2208,7 +2202,7 @@ class IntervalTask extends TimerTask {
     @Override
     public void run() {
         try {
-            threadPoolController.evaluateInterval();
+            phase.runWithCheckpointLock(threadPoolController::evaluateInterval);
         } catch (Throwable t) {
             // Don't let any odd exceptions escape. BCI FFDC only.
         }

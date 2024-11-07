@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -133,6 +133,7 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
         final boolean swallowErrors = Boolean.valueOf(req.getParameter("swallow.errors"));
         final String overrideDefaultSchema = req.getParameter("override.default.schema");
         final URL ddlScriptURL = cl.getResource(ddlScriptName);
+        long timestart = System.currentTimeMillis();
 
         if (ddlScriptURL == null) {
             throw new ServletException("Unable to locate resource " + ddlScriptName);
@@ -174,6 +175,19 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
             int totalCount = 0, successCount = 0;
             int cmdIdx = 0;
             for (String command : commands) {
+
+                // Check if more than 1 minute has passed
+                if ((System.currentTimeMillis() - timestart) > 60000) {
+                    System.out.println("More than 1 minute has passed. Committing and beginning a new transaction.");
+
+                    // Commit the current transaction and begin a new one
+                    tx.commit();
+                    tx.begin();
+
+                    // Reset the start time
+                    timestart = System.currentTimeMillis();
+                }
+
                 final String sql = command.replace("${schemaname}", defaultSchemaName).trim();
                 if ("".equals(sql)) {
                     continue;

@@ -21,15 +21,19 @@ import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_SINGL
 import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_SINGLE_PREPARE_RANK;
 import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_SINGLE_RESTORE;
 import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_SINGLE_RESTORE_RANK;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.WITH_LOCK;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.osgi.service.component.annotations.Component;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.checkpoint.spi.CheckpointPhase.OnRestore;
+import io.openliberty.checkpoint.spi.CheckpointPhase.WithCheckpointLock;
 
 @Component
 public class TestStaticHookRegister {
@@ -156,6 +160,40 @@ public class TestStaticHookRegister {
 
     }
 
+    class TestWithLockHook implements WithCheckpointLock<String, RuntimeException>, CheckpointHook {
+        private final CountDownLatch started = new CountDownLatch(1);
+        private final AtomicLong callTime = new AtomicLong();
+
+        @Override
+        public String call() {
+            started.countDown();
+            try {
+                callTime.set(System.currentTimeMillis());
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                Thread.interrupted();
+            }
+            System.out.println(WITH_LOCK + "CALLED: SUCCESS");
+            System.out.println(WITH_LOCK + "NESTED IN READ: " + CheckpointPhase.getPhase().runWithCheckpointLock(() -> "SUCCESS"));
+
+            return "DONE";
+        }
+
+        @Override
+        public void prepare() {
+            long delayTime = System.currentTimeMillis() - callTime.get();
+            System.out.println(WITH_LOCK + "DELAYED: " + (delayTime < 10000 ? "FAILED" : "SUCCESS"));
+            if (delayTime < 10000) {
+                throw new RuntimeException("FAIL CHECKPOINT - runWithCheckpointLock did not block prepare");
+            }
+            System.out.println(WITH_LOCK + "NESTED IN WRITE: " + CheckpointPhase.getPhase().runWithCheckpointLock(() -> "SUCCESS"));
+        }
+
+        void waitForStart() throws InterruptedException {
+            started.await();
+        }
+    }
+
     public TestStaticHookRegister() throws Throwable {
         CheckpointPhase phase = CheckpointPhase.getPhase();
         phase.addSingleThreadedHook(single);
@@ -164,6 +202,17 @@ public class TestStaticHookRegister {
         registerRankedOnRestoreHooks();
         registerRankedMultiThreadStaticHooks();
         registerRankedSingleThreadStaticHooks();
+
+        startWithCheckpointLockTask();
+    }
+
+    private void startWithCheckpointLockTask() throws InterruptedException {
+        CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
+        TestWithLockHook testWithLockHook = new TestWithLockHook();
+        new Thread(() -> checkpointPhase.runWithCheckpointLock(testWithLockHook)).start();
+        testWithLockHook.waitForStart();
+
+        checkpointPhase.addSingleThreadedHook(Integer.MAX_VALUE, testWithLockHook);
     }
 
     private void registerRankedOnRestoreHooks() throws Throwable {

@@ -1,7 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package io.openliberty.microprofile.openapi20.fat.deployments;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +41,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.openapi20.fat.FATSuite;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestResource;
+import io.openliberty.microprofile.openapi20.fat.deployments.test2.DeploymentTestResource2;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -49,7 +63,7 @@ public class StartupWarningMessagesTest {
     public void cleanup() throws Exception {
         try {
             if (server.isStarted()) {
-                server.stopServer("CWWKO1680W");
+                server.stopServer("CWWKO1680W|CWWKO1684W");
             }
         } finally {
             server.deleteAllDropinApplications();
@@ -70,19 +84,30 @@ public class StartupWarningMessagesTest {
 
         ServerConfiguration serverConfig = server.getServerConfiguration().clone();
         serverConfig.addApplication("nameClash", "test1.war", "war");
+        serverConfig.addApplication("nameUnclashed", "nameClash.war", "war");
 
         MpOpenAPIElement.MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
-                                                //these match the application's deployment descriptor but not its name as set in server.xml.
-                                                //a warning should be emitted informing the user of their likely mistake and how o fix it.
+                                                // "nameClash" matches the server.xml name of one app
+                                                // and the deployment descriptor name of the other
                                                 .addIncludedApplicaiton("nameClash")
                                                 .buildAndOverwrite(serverConfig.getMpOpenAPIElement());
 
         server.updateServerConfiguration(serverConfig);
 
-        ShrinkHelper.exportAppToServer(server, war1, SERVER_ONLY);
+        // Set up validation manually because the name doesn't match the archive filename
+        ShrinkHelper.exportAppToServer(server, war1, SERVER_ONLY, DISABLE_VALIDATION);
+        server.addInstalledAppForValidation("nameClash");
         ShrinkHelper.exportAppToServer(server, war2, SERVER_ONLY, DISABLE_VALIDATION);
+        server.addInstalledAppForValidation("nameUnclashed");
+
         server.startServer();
 
+        // Expect no warning because "nameClash" does match the server.xml name of an app
+        // Example message: CWWKO1680W: The testEar application name in the includeApplication or includeModule configuration element does not match the name of any deployed application but it does match the name from the deployment descriptor of the serverXMLName application. The application name used here must be the application name specified in server.xml, or the archive file name with the extension removed if no name is specified in server.xml.
+        assertThat(server.findStringsInLogs("CWWKO1680W"), is(empty()));
+
+        // Asserts we have no other error messages
+        server.stopServer();
     }
 
     @Test
@@ -128,8 +153,73 @@ public class StartupWarningMessagesTest {
         messages.add("CWWKO1680W: The testEarIncluded application name in the includeApplication configuration.*serverXMLNameIncluded application. The application name");
         messages.add("CWWKO1680W: The testEarExcluded application name in the excludeModule configuration.*serverXMLNameExcluded application. The application name");
         messages.add("CWWKO1680W: The testEarExcluded application name in the excludeApplication configuration.*serverXMLNameExcluded application. The application name");
-        server.waitForStringsInLogUsingMark(messages); //This method asserts the messages exist so no need to check its output.  
+        server.waitForStringsInLogUsingMark(messages); //This method asserts the messages exist so no need to check its output.
 
+        server.stopServer("CWWKO1680W"); // Assert there are no other error messages
+    }
+
+    @Test
+    public void testUnusedConfigWarningPresent() throws Exception {
+        ServerConfiguration serverConfig = server.getServerConfiguration().clone();
+
+        MpOpenAPIElement.MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
+                                                //these match the application's deployment descriptor but not its name as set in server.xml.
+                                                //a warning should be emitted informing the user of their likely mistake and how o fix it.
+                                                .addIncludedApplicaiton("test1")
+                                                .addIncludedApplicaiton("appWibble")
+                                                .addIncludedModule("test1/module")
+                                                .buildAndOverwrite(serverConfig.getMpOpenAPIElement());
+
+        server.updateServerConfiguration(serverConfig);
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        ShrinkHelper.exportDropinAppToServer(server, war1, SERVER_ONLY);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        ShrinkHelper.exportDropinAppToServer(server, war2, SERVER_ONLY);
+
+        server.startServer();
+
+        // Example message: CWWKO1684W: The includeApplication configuration element includes "appWibble" but that does not match any deployed application or web module.
+        List<String> messages = new ArrayList<>();
+        messages.add("CWWKO1684W:.*includeApplication.*appWibble");
+        messages.add("CWWKO1684W:.*includeModule.*test1/module");
+        server.waitForStringsInLogUsingMark(messages);
+
+        // Assert there are no other errors
+        server.stopServer("CWWKO1684W");
+    }
+
+    @Test
+    public void testUnusedConfigWarningNotPresent() throws Exception {
+        ServerConfiguration serverConfig = server.getServerConfiguration().clone();
+
+        MpOpenAPIElement.MpOpenAPIElementBuilder.cloneBuilderFromServerResetAppsAndModules(server)
+                                                //these match the application's deployment descriptor but not its name as set in server.xml.
+                                                //a warning should be emitted informing the user of their likely mistake and how o fix it.
+                                                .addIncludedApplicaiton("test1")
+                                                .addIncludedApplicaiton("test2")
+                                                .buildAndOverwrite(serverConfig.getMpOpenAPIElement());
+
+        server.updateServerConfiguration(serverConfig);
+
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        ShrinkHelper.exportDropinAppToServer(server, war1, SERVER_ONLY);
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        ShrinkHelper.exportDropinAppToServer(server, war2, SERVER_ONLY);
+
+        server.startServer();
+
+        assertNotNull(server.waitForStringInTrace("Checking for unused configuration entries"));
+        assertThat(server.findStringsInLogs("CWWKO1684W"), is(empty())); // No warning about app configured but not deployed
+
+        // Assert there are no other errors
+        server.stopServer();
     }
 
 }

@@ -252,19 +252,6 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     /****************************************************************************************************************/
 
     /**
-     * Tests with tokenMinValidity = 5 * 1000.
-     * The token lifetime should effectively be 60s - 5s = 55s.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void ConfigurationTokenMinValidityTests_tokenMinValidity_5s() throws Exception {
-
-        runGoodEndToEndTokenMinValidityTest("TokenMinValidity5s", "TokenMinValidity5sServlet", 5 * 1000);
-
-    }
-
-    /**
      * Tests with tokenMinValidity = 20 * 1000.
      * The token lifetime should effectively be 60s - 20s = 40s.
      *

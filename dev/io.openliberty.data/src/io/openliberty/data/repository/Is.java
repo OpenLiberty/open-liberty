@@ -12,6 +12,9 @@
  *******************************************************************************/
 package io.openliberty.data.repository;
 
+import static io.openliberty.data.repository.Constants.IGNORE_CASE;
+import static io.openliberty.data.repository.Constants.NOT;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,58 +29,99 @@ public @interface Is {
         Equal,
         GreaterThan,
         GreaterThanEqual,
-        IgnoreCase(Equal),
+        IgnoreCase(Equal, IGNORE_CASE),
         In,
         LessThan,
         LessThanEqual,
         Like,
-        LikeIgnoreCase(Like),
+        LikeIgnoreCase(Like, IGNORE_CASE),
         Prefixed,
-        PrefixedIgnoreCase(Prefixed),
+        PrefixedIgnoreCase(Prefixed, IGNORE_CASE),
         Substringed,
-        SubstringedIgnoreCase(Substringed),
+        SubstringedIgnoreCase(Substringed, IGNORE_CASE),
         Suffixed,
-        SuffixedIgnoreCase(Suffixed),
-        Not(Equal),
-        NotIgnoreCase(Equal),
-        NotIn(In),
-        NotLike(Like),
-        NotLikeIgnoreCase(Like),
-        NotPrefixed(Prefixed),
-        NotPrefixedIgnoreCase(Prefixed),
-        NotSubstringed,
-        NotSubstringedIgnoreCase(Substringed),
-        NotSuffixed(Suffixed),
-        NotSuffixedIgnoreCase(Suffixed);
+        SuffixedIgnoreCase(Suffixed, IGNORE_CASE),
+        Not(NOT, Equal),
+        NotIgnoreCase(NOT, Equal, IGNORE_CASE),
+        NotIn(NOT, In),
+        NotLike(NOT, Like),
+        NotLikeIgnoreCase(NOT, Like, IGNORE_CASE),
+        NotPrefixed(NOT, Prefixed),
+        NotPrefixedIgnoreCase(NOT, Prefixed, IGNORE_CASE),
+        NotSubstringed(NOT, Substringed),
+        NotSubstringedIgnoreCase(NOT, Substringed, IGNORE_CASE),
+        NotSuffixed(NOT, Suffixed),
+        NotSuffixedIgnoreCase(NOT, Suffixed, IGNORE_CASE);
+
+        // The remaining part of this class is here to help Jakarta Data providers
+        // interpret the enumerated constants. It can be removed if it doesn't seem
+        // helpful.
 
         private final Op base;
+
         private final boolean ignoreCase;
-        private final boolean negative;
+
+        private final boolean isNegative;
 
         private Op() {
-            String name = name();
-            base = this;
-            negative = name.startsWith("Not");
-            ignoreCase = name.endsWith("IgnoreCase");
+            this.base = this;
+            this.ignoreCase = false;
+            this.isNegative = false;
         }
 
-        private Op(Op baseOp) {
-            String name = name();
-            base = baseOp;
-            negative = name.startsWith("Not");
-            ignoreCase = name.endsWith("IgnoreCase");
+        private Op(int not, Op baseOp) {
+            this.base = baseOp;
+            this.ignoreCase = false;
+            this.isNegative = not == NOT; 
         }
 
+        private Op(int not, Op baseOp, boolean ignoreCase) {
+            this.base = baseOp;
+            this.ignoreCase = ignoreCase;
+            this.isNegative = not == NOT; 
+        }
+
+        private Op(Op baseOp, boolean ignoreCase) {
+            this.base = baseOp;
+            this.ignoreCase = ignoreCase;
+            this.isNegative = false;
+        }
+
+        /**
+         * The base comparison operation without negation or ignoring of case.
+         * For example, the base operation for {@link Op#NotLike NotLike}
+         * is {@link Op#Like Like}.
+         *
+         * @return the base comparison operation.
+         */
         public Op base() {
             return base;
         }
 
+        /**
+         * Whether to request that case be ignored.
+         *
+         * @return whether to request that case be ignored.
+         */
         public boolean ignoreCase() {
             return ignoreCase;
         }
 
+        /**
+         * Whether this comparison is a negative comparison.
+         * For example, the {@link Op#NotLike NotLike} comparison operation
+         * is a negation of the {@link Op#Like Like} comparison operation.
+         *
+         * @return whether this comparison is a negative comparison.
+         */
         public boolean isNegative() {
-            return negative;
+            return isNegative;
         }
     }
+}
+
+//Internal constants that make constructors for the enumerated values more readable
+class Constants {
+    static final boolean IGNORE_CASE = true;
+    static final int NOT = -1;
 }

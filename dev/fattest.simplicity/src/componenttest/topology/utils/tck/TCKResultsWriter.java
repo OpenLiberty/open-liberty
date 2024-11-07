@@ -51,8 +51,8 @@ public class TCKResultsWriter {
             throw new RuntimeException(e);
         }
 
-        Path outputDirectory = Paths.get("results/" + "TCK_Results_Certifications" + resultInfo.getReadableRepeatName());
-        Path outputPath = Paths.get("results/" + "TCK_Results_Certifications" + resultInfo.getReadableRepeatName(), resultInfo.getFilename());
+        Path outputDirectory = Paths.get("results", resultInfo.getDirectoryName());
+        Path outputPath = outputDirectory.resolve(resultInfo.getFilename());
 
         File outputFile = outputPath.toFile();
         File outputDir = outputDirectory.toFile();
@@ -101,7 +101,7 @@ public class TCKResultsWriter {
         // Note that this copying *only* occurs in CI Orchestrator environments as the code wrapping FAT execution is responsible for performing the upload to LibFS.
         // The use case here is to make .adoc files available in the build directory without having to extract them from the FAT output zip every time.
         try {
-            Path extrasPath = Paths.get("extras/" + "TCK_Results_Certifications" + resultInfo.getReadableRepeatName(), resultInfo.getFilename());
+            Path extrasPath = Paths.get("extras", resultInfo.getDirectoryName(), resultInfo.getFilename());
             Files.createDirectories(extrasPath.getParent());
             Files.copy(outputPath, extrasPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {

@@ -14,15 +14,21 @@ package test.jakarta.data.ddlgen.web;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.junit.Test;
@@ -46,16 +52,29 @@ public class DDLGenTestServlet extends FATServlet {
      * The test bucket must arrange for it to run before other test
      * as part of setup.
      */
-    public void executeDDL() throws SQLException {
-        // TODO read from ddlgen output file
-        String[] ddl = new String[] {
-                                      "CREATE TABLE dbuser.TESTPart (NAME VARCHAR(255), PRICE FLOAT NOT NULL, VERSION INTEGER NOT NULL, ID_VENDOR VARCHAR(255) NOT NULL, ID_PARTNUM VARCHAR(255) NOT NULL, PRIMARY KEY (ID_VENDOR, ID_PARTNUM))"
-        };
-        try (Connection con = adminDataSource.getConnection()) {
-            Statement stmt = con.createStatement();
-            for (String s : ddl) {
-                System.out.println("DDL: " + s);
-                stmt.execute(s);
+    public void executeDDL(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        List<String> files = Arrays.asList(Objects.requireNonNull(request.getParameter("scripts")).split(","));
+        String withDatabaseStore = Objects.requireNonNull(request.getParameter("withDatabaseStore"));
+        String usingDataSource = Objects.requireNonNull(request.getParameter("usingDataSource"));
+
+        DataSource ds = InitialContext.doLookup(usingDataSource);
+
+        for (String file : files) {
+            if (!file.contains(withDatabaseStore))
+                continue;
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                System.out.println("Execute DDL file: " + file);
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.isBlank() || line.equals("EXIT;"))
+                        continue;
+
+                    System.out.println("  Execute SQL Statement: " + line);
+                    try (Connection con = ds.getConnection(); Statement stmt = con.createStatement()) {
+                        stmt.execute(line);
+                    }
+                }
             }
         }
     }

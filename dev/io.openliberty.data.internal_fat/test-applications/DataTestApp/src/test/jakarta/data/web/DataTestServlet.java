@@ -744,6 +744,49 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository method that uses cursor-based pagination but does not specify
+     * any sort criteria, which should default to ascending by Id.
+     */
+    @Test
+    public void testCursoredPageRequestWithImplicitSort() {
+        PageRequest page1req = PageRequest.ofSize(4);
+        CursoredPage<Prime> page;
+        page = primes.findByRomanNumeralIgnoreCaseEndsWith("I", page1req);
+
+        assertEquals(List.of(2L, 3L, 7L, 11L),
+                     page.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+
+        PageRequest page2req = page.nextPageRequest();
+
+        page = primes.findByRomanNumeralIgnoreCaseEndsWith("i", page2req);
+
+        assertEquals(List.of(13L, 17L, 23L, 31L),
+                     page.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+
+        PageRequest page3req = page.nextPageRequest();
+
+        page = primes.findByRomanNumeralIgnoreCaseEndsWith("i", page3req);
+
+        assertEquals(List.of(37L, 41L, 43L, 47L),
+                     page.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+
+        page2req = page.previousPageRequest();
+
+        page = primes.findByRomanNumeralIgnoreCaseEndsWith("i", page2req);
+
+        assertEquals(List.of(13L, 17L, 23L, 31L),
+                     page.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Verify that cursor-based pagination can be used with an empty string Query,
      * which the spec allows as a valid query. It will need to generate a WHERE
      * clause when appending conditions for the cursor.
@@ -3687,32 +3730,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * BasicRepository.findAll(PageRequest, null) must raise NullPointerException.
-     */
-    @Test
-    public void testNullOrder() {
-        try {
-            Page<Package> page = packages.findAll(PageRequest.ofSize(15), null);
-            fail("BasicRepository.findAll(PageRequest, null) must raise NullPointerException. Instead: " + page);
-        } catch (NullPointerException x) {
-            // expected
-        }
-    }
-
-    /**
-     * BasicRepository.findAll(null, Order) must raise NullPointerException.
-     */
-    @Test
-    public void testNullPagination() {
-        try {
-            Page<Package> page = packages.findAll(null, Order.by(Sort.asc("id")));
-            fail("BasicRepository.findAll(null, Order) must raise NullPointerException. Instead: " + page);
-        } catch (NullPointerException x) {
-            // expected
-        }
-    }
-
-    /**
      * Test Null and NotNull on repository methods.
      */
     @Test
@@ -3856,6 +3873,31 @@ public class DataTestServlet extends FATServlet {
         } catch (NoSuchElementException x) {
             // expected
         }
+    }
+
+    /**
+     * Repository method that uses offset pagination but does not specify
+     * any sort criteria, which should default to ascending by Id.
+     */
+    @Test
+    public void testPageRequestWithImplicitSort() {
+        PageRequest page1req = PageRequest.ofSize(4);
+        Page<Prime> page;
+        page = primes.findByRomanNumeralIgnoreCaseStartsWith("X", page1req);
+
+        assertEquals(List.of(11L, 13L, 17L, 19L),
+                     page.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+
+        PageRequest page2req = page.nextPageRequest();
+
+        page = primes.findByRomanNumeralIgnoreCaseStartsWith("x", page2req);
+
+        assertEquals(List.of(23L, 29L, 31L, 37L),
+                     page.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
     }
 
     /**

@@ -29,7 +29,6 @@ import com.ibm.wsspi.http.HttpRequest;
 
 import java.time.Duration;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,7 +42,7 @@ public class HttpServerStatsMonitor extends StatisticActions {
 
 	private static final TraceComponent tc = Tr.register(HttpServerStatsMonitor.class);
 
-	private static final ThreadLocal<HttpStatAttributes> tl_httpStats = new ThreadLocal<HttpStatAttributes>();
+	private static final ThreadLocal<HttpStatAttributes.Builder> tl_httpStatsBuilder = new ThreadLocal<HttpStatAttributes.Builder>();
 	private static final ThreadLocal<Long> tl_startNanos = new ThreadLocal<Long>();
 	
 	private static final ConcurrentHashMap<String,Set<String>> appNameToStat = new ConcurrentHashMap<String,Set<String>>();
@@ -90,25 +89,25 @@ public class HttpServerStatsMonitor extends StatisticActions {
 	public void atSendResponseReturn(@This Object probedHttpDispatcherLinkObj) {
 
 		long elapsedNanos = System.nanoTime() - tl_startNanos.get();
-		HttpStatAttributes retrievedHttpStatAttr = tl_httpStats.get();
+		HttpStatAttributes.Builder retrievedHttpStatAttributesBuilder = tl_httpStatsBuilder.get();
 
-		if (retrievedHttpStatAttr == null) {
+		if (retrievedHttpStatAttributesBuilder == null) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
 				Tr.debug(tc, "Unable to retrieve HttpStatAttributes. Unable to record time.");
 			}
 			return;
 		}
 
-		updateHttpStatDuration(retrievedHttpStatAttr, Duration.ofNanos(elapsedNanos), null);
+		updateHttpStatDuration(retrievedHttpStatAttributesBuilder, Duration.ofNanos(elapsedNanos), null);
 
 	}
 	
 	/**
 	 * Resolve Network Protocol Info  - move to common utility package
 	 * @param protocolInfo
-	 * @param httpStat
+	 * @param httpStatsBuilder
 	 */
-	private void resolveNetwortProtocolInfo(String protocolInfo, HttpStatAttributes httpStat) {
+	private void resolveNetworkProtocolInfo(String protocolInfo, HttpStatAttributes.Builder httpStatsBuilder) {
 		String[] networkInfo = protocolInfo.trim().split("/");
 		
 	
@@ -125,18 +124,18 @@ public class HttpServerStatsMonitor extends StatisticActions {
 			}
 		}
 
-		httpStat.setNetworkProtocolName(networkProtocolName);
-		httpStat.setNetworkProtocolVersion(networkVersion);
+		httpStatsBuilder.withNetworkProtocolName(networkProtocolName);
+		httpStatsBuilder.withNetworkProtocolVersion(networkVersion);
 	}
 	
 	@ProbeAtEntry
 	@ProbeSite(clazz = "com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink", method = "sendResponse", args = "com.ibm.wsspi.http.channel.values.StatusCodes,java.lang.String,java.lang.Exception,boolean")
 	public void atSendResponse(@This Object probedHttpDispatcherLinkObj, @Args Object[] myargs) {
 
-		tl_httpStats.set(null);; //reset just in case
+		tl_httpStatsBuilder.set(null);; //reset just in case
 		
 		tl_startNanos.set(System.nanoTime());
-		HttpStatAttributes httpStatAttributes = new HttpStatAttributes();
+		HttpStatAttributes.Builder builder = HttpStatAttributes.builder();
 
 		/*
 		 *  Get Status Code (and Exception if it exists)
@@ -144,12 +143,12 @@ public class HttpServerStatsMonitor extends StatisticActions {
 		if (myargs.length > 0) {
 			if (myargs[0] != null && myargs[0] instanceof StatusCodes) {
 				StatusCodes statCode = (StatusCodes) myargs[0];
-				httpStatAttributes.setResponseStatus(statCode.getIntCode());
+				builder.withResponseStatus(statCode.getIntCode());
 			}
 
 			if (myargs[2] != null && myargs[2] instanceof Exception) {
 				Exception exception = (Exception) myargs[2];
-				httpStatAttributes.setException(exception);
+				builder.withException(exception);
 			}
 		} else {
 			// uh oh can't resolve status code and/or exceptions
@@ -160,17 +159,17 @@ public class HttpServerStatsMonitor extends StatisticActions {
 
 		if (probedHttpDispatcherLinkObj != null) {
 			HttpDispatcherLink httpDispatcherLink = (HttpDispatcherLink)probedHttpDispatcherLinkObj;
-			httpStatAttributes.setServerName(httpDispatcherLink.getRequestedHost());
-			httpStatAttributes.setServerPort(httpDispatcherLink.getRequestedPort());
+			builder.withServerName(httpDispatcherLink.getRequestedHost());
+			builder.withServerPort(httpDispatcherLink.getRequestedPort());
 			
 			 try {
 
 					HttpRequest httpRequest = httpDispatcherLink.getRequest();
 					
-					httpStatAttributes.setHttpRoute(httpRequest.getURI());
-					httpStatAttributes.setRequestMethod(httpRequest.getMethod());
-					httpStatAttributes.setScheme(httpRequest.getScheme());
-					resolveNetwortProtocolInfo(httpRequest.getVersion(), httpStatAttributes);
+					builder.withHttpRoute(httpRequest.getURI());
+					builder.withRequestMethod(httpRequest.getMethod());
+					builder.withScheme(httpRequest.getScheme());
+					resolveNetworkProtocolInfo(httpRequest.getVersion(), builder);
 
 			 } catch(Exception e) {
 				 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -178,7 +177,7 @@ public class HttpServerStatsMonitor extends StatisticActions {
 				 }
 			 }
 			
-			tl_httpStats.set(httpStatAttributes);
+			tl_httpStatsBuilder.set(builder);
 
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -189,43 +188,38 @@ public class HttpServerStatsMonitor extends StatisticActions {
 
     /**
      * 
-     * @param httpStatAttributes
+     * @param builder
      * @param duration
      * @param appName Can be null (would mean its from these probes -- ergo server, don't have to worry about unloading)
      */
-	public void updateHttpStatDuration(HttpStatAttributes httpStatAttributes, Duration duration, String appName) {
+	public void updateHttpStatDuration(HttpStatAttributes.Builder builder, Duration duration, String appName) {
 
-		/*
-		 * First validate that we got all properties.
-		 */
-		if (!httpStatAttributes.validate()) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, String.format("Invalid HTTP Stats attributes : \n %s", httpStatAttributes.toString()));
-			}
-			return;
-		}
+		HttpStatAttributes httpStatsAttributes;
+		
+		httpStatsAttributes = builder.build();
+		if (httpStatsAttributes == null) return;
 		
 		/*
 		 * Create and/or update MBean
 		 */
-		String key = resolveStatsKey(httpStatAttributes);
+		String keyID = httpStatsAttributes.getHttpStatID();
+				
 
-		HttpServerStats hss = HttpConnByRoute.get(key);
-		if (hss == null) {
-			hss = initializeHttpStat(key, httpStatAttributes, appName);
+		HttpServerStats httpServerStats = HttpConnByRoute.get(keyID);
+		if (httpServerStats == null) {
+			httpServerStats = initializeHttpStat(keyID, httpStatsAttributes, appName);
 			//Shutdown by the monitor-1.0 filter - shows over
-			if (hss == null) {
+			if (httpServerStats == null) {
 				return;
 			}
 		}
 
 		//Monitor bundle when updating statistics will do synchronization
-		hss.updateDuration(duration);
-
+		httpServerStats.updateDuration(duration);
 		
 		
 		if (MetricsManager.getInstance() != null ) {
-			MetricsManager.getInstance().updateHttpMetrics(httpStatAttributes, duration);
+			MetricsManager.getInstance().updateHttpMetrics(httpStatsAttributes, duration);
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "No Available Metric runtimes to forward HTTP stats to.");
@@ -279,43 +273,6 @@ public class HttpServerStatsMonitor extends StatisticActions {
 				HttpConnByRoute.remove(statName);
 			}
 		}
-	}
-	
-
-	/**
-	 * Resolve the object name (specifically the name property)
-	 * <code> domain:type=type,name="this"</code>
-	 * 
-	 * @param httpStatAttributes
-	 * @return
-	 */
-	private String resolveStatsKey(HttpStatAttributes httpStatAttributes) {
-		
-		Optional<String> httpRoute = httpStatAttributes.getHttpRoute();
-		Optional<String> errorType = httpStatAttributes.getErrorType();
-		String requestMethod = httpStatAttributes.getRequestMethod();
-		Optional<Integer> responseStatus = httpStatAttributes.getResponseStatus();
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("\""); // starting quote
-		sb.append("method:" + requestMethod);
-		
-		/*
-		 * Status, Route  and errorType may be null.
-		 * In which cas we will not append it to the name property
-		*/
-		if (responseStatus.isPresent()) {
-			sb.append(";status:" + Integer.toString(responseStatus.get()));
-		}
-		if (httpRoute.isPresent()) {
-			sb.append(";httpRoute:" + httpRoute.get().replace("*", "\\*"));
-		}
-		if (errorType.isPresent()) {
-			sb.append(";errorType:" + errorType.get());
-		}
-
-		sb.append("\""); // ending quote
-		return sb.toString();
 	}
 	
     @ProbeAtEntry

@@ -8,6 +8,7 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -18,15 +19,22 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.microprofile.openapi20.fat.FATSuite;
 import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class ShutdownTest {
 
-    @Server("OpenAPITestServer")
+    private static final String SERVER_NAME = "OpenAPITestServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
 
     @After
     public void cleanup() throws Exception {

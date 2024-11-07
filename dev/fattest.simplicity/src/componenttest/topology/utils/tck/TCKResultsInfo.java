@@ -54,6 +54,8 @@ public class TCKResultsInfo {
     private String platformVersion = "";
     private String[] qualifiers = new String[] {};
 
+    ///// Constructor /////
+
     public TCKResultsInfo(Type type, String specName, LibertyServer server, TCKJarInfo tckJarInfo) {
         this.type = type;
         this.specName = specName;
@@ -66,6 +68,8 @@ public class TCKResultsInfo {
         this.repeat = RepeatTestFilter.getRepeatActionsAsString();
     }
 
+    ///// Optional configuration /////
+
     public void withQualifiers(String[] qualifiers) {
         this.qualifiers = qualifiers;
     }
@@ -73,6 +77,8 @@ public class TCKResultsInfo {
     public void withPlatformVersion(String platformVersion) {
         this.platformVersion = platformVersion;
     }
+
+    ///// Getters /////
 
     /**
      * @return the javaMajorVersion
@@ -189,6 +195,8 @@ public class TCKResultsInfo {
         return this.qualifiers;
     }
 
+    ///// Utility methods /////
+
     /**
      * Returns a human readable full specification name such as "Jakarta Data 1.0"
      *
@@ -227,6 +235,13 @@ public class TCKResultsInfo {
         }
     }
 
+    /**
+     * Returns url where the TCK can be downloaded.
+     * For Jakarta EE - https://download.eclipse.org/
+     * For Microprofile - https://repo1.maven.org
+     *
+     * @return
+     */
     public String getTCKURL() {
         switch (type) {
             case JAKARTA:
@@ -242,6 +257,12 @@ public class TCKResultsInfo {
         }
     }
 
+    /**
+     * Constructs and returns a unique file name for this run of the TCK in the from:
+     * <liberty-version>-<spec-name>-<spec-version>[-qualifiers]-java<java-major-version>-TCKResults.adoc
+     *
+     * @return
+     */
     public String getFilename() {
         String filename = getOpenLibertyVersion()
                           + "-" + getFullSpecName()
@@ -259,20 +280,27 @@ public class TCKResultsInfo {
         return filename;
     }
 
-    public String getReadableRepeatName() {
-        String readableRepeatName = getRepeat();
+    /**
+     * Constructs and returns a unique directory name for this run of the TCK in the form:
+     * TCK_Results_Certifications[<_repeat-action-id> | _remove_<feature-list>_add_<feature-list>]
+     *
+     * @return
+     */
+    public String getDirectoryName() {
+        String directory = "TCK_Results_Certifications";
 
-        if (readableRepeatName.contains("FeatureReplacementAction")) {
-            readableRepeatName = readableRepeatName.replaceAll("FeatureReplacementAction.*REMOVE", "remove")
+        if (getRepeat().contains("FeatureReplacementAction")) {
+            directory += getRepeat().replaceAll("FeatureReplacementAction.*REMOVE ", "remove_")
                             .replaceAll("\\[", "")
                             .replaceAll("\\]", "")
-                            .replaceAll("ADD", "add")
-                            .replaceAll("  ", " ")
+                            .replaceAll(" ADD ", "_add_")
                             .replaceAll(",", "-")
-                            .replaceAll(" ", "_");
+                            .replaceAll(" ", "");
+        } else {
+            directory += getRepeat();
         }
 
-        return readableRepeatName;
+        return directory;
     }
 
 }

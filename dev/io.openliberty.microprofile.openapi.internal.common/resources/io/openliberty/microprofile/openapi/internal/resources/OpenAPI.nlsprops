@@ -157,3 +157,7 @@ OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Update the openAPIVersion at
 OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: The mpOpenAPI info configuration element in the server.xml file is invalid. Both the title and version attributes must be set. The info element will be ignored.
 OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=The title and version fields are required properties in the info object of an OpenAPI document. When configuring the info object, a value must be provided for the title and version attributes.
 OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Ensure that the title and version attributes are set to valid values in the mpOpenAPI info element.
+
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: The {0} configuration element includes "{1}" but that does not match any deployed application or web module.
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=The server is configured to create OpenAPI documentation for the application or module name, but no application or web module with that name was deployed.
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=Check that all applications started correctly and that the names in the configuration are specified correctly.

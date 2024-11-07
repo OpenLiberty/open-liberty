@@ -884,3 +884,27 @@ CWWKD1086.named.params.unused.explanation=The Param annotation can only be used 
  when the query has named parameters.
 CWWKD1086.named.params.unused.useraction=Remove the Param annotation or switch \
  the query to use named parameters.
+
+CWWKD1087.null.param=CWWKD1087E: The {0} parameter of the {1} method of the \
+ {2} repository interface is a null value. Specify a nonnull value.
+CWWKD1087.null.param.explanation=The parameter value must not be null.
+CWWKD1087.null.param.useraction=Specify a nonnull value to the parameter.
+
+CWWKD1088.empty.sorts=CWWKD1088E: The sort criteria that are specified by the \
+ {0} parameter of the {1} method of the {2} repository interface are empty.
+CWWKD1088.empty.sorts.explanation=The sort criteria must not be empty.
+CWWKD1088.empty.sorts.useraction=Specify a value for the sort criteria.
+
+CWWKD1089.unordered.pagination=CWWKD1089E: The {0} method of the {1} repository \
+ interface must specify the sort criteria because the method returns a {2} value. \
+ Unordered data cannot be split into pages.
+CWWKD1089.unordered.pagination.explanation=Pagination requires ordered data.
+CWWKD1089.unordered.pagination.useraction=Use the OrderBy annotation to define \
+ the sort criteria for the repository method.
+
+CWWKD1090.orderby.conflict=CWWKD1090E: The {0} method of the {1} repository \
+ interface cannot combine the OrderBy annotation and the OrderBy keyword.
+CWWKD1090.orderby.conflict.explanation=The OrderBy annotation is not compatible \
+ with the OrderBy keyword.
+CWWKD1090.orderby.conflict.useraction=Use only the OrderBy annotation or the \
+ OrderBy keyword.
