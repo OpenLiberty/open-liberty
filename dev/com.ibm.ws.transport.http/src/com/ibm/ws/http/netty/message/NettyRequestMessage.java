@@ -32,6 +32,7 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.cookie.CookieDecoder;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http2.GrpcServletServices;
@@ -55,6 +56,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.VoidChannelPromise;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpUtil;
@@ -991,8 +993,12 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     @Override
     public List<HttpCookie> getAllCookies() {
         List<HttpCookie> list = new LinkedList<HttpCookie>();
-        String cookieString = headers.get(HttpHeaders.Names.COOKIE);
-        return com.ibm.ws.http.netty.cookie.CookieDecoder.decode(cookieString);
+        List<String> cookieHeaders = headers.getAll(HttpHeaderNames.COOKIE);
+        for(String cookie: cookieHeaders){
+            list.addAll(CookieDecoder.decode(cookie));
+        }
+
+        return list;
 
     }
 
