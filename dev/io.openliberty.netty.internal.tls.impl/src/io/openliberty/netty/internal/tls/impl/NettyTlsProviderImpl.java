@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.osgi.service.component.annotations.Modified;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.*;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.netty.handler.codec.http2.Http2SecurityUtil;
 import io.netty.handler.ssl.*;
@@ -116,6 +117,12 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         	Properties props = createProps(sslOptions);
         	String alias = (String)props.getProperty(ALIAS_KEY);
             AbstractMap.SimpleEntry<SSLContext, SSLConfig> sslContextConfigPair = getSSLContextAndConfig(alias, props, true, host, port, port, false);
+            if (sslContextConfigPair == null){ 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "getInboundALPNSSLContext exception caught creating SSLContext");
+                }
+                return null;
+            }
             jdkContext = sslContextConfigPair.getKey();
             sslConfig = sslContextConfigPair.getValue();
             String protocol = sslConfig.getProperty(Constants.SSLPROP_PROTOCOL);
@@ -159,6 +166,12 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         	Properties props = createProps(sslOptions);
         	String alias = (String)props.getProperty(ALIAS_KEY);
             AbstractMap.SimpleEntry<SSLContext, SSLConfig> sslContextConfigPair = getSSLContextAndConfig(alias, props, true, host, port, port, false);
+            if (sslContextConfigPair == null){ 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "getInboundALPNSSLContext exception caught creating SSLContext");
+                }
+                return null;
+            }
             jdkContext = sslContextConfigPair.getKey();
             sslConfig = sslContextConfigPair.getValue();
             String protocol = sslConfig.getProperty(Constants.SSLPROP_PROTOCOL);
@@ -202,6 +215,12 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         	Properties props = createProps(sslOptions);
         	String alias = (String)props.getProperty(ALIAS_KEY);
             AbstractMap.SimpleEntry<SSLContext, SSLConfig> sslContextConfigPair = getSSLContextAndConfig(alias, props, true, host, port, port, false);
+            if (sslContextConfigPair == null){ 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "getInboundALPNSSLContext exception caught creating SSLContext");
+                }
+                return null;
+            }
             jdkContext = sslContextConfigPair.getKey();
             sslConfig = sslContextConfigPair.getValue();
             String protocol = sslConfig.getProperty(Constants.SSLPROP_PROTOCOL);
@@ -303,6 +322,7 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
      * @return
      * @throws Exception
      */
+    @FFDCIgnore({Exception.class})
     private static AbstractMap.SimpleEntry<SSLContext, SSLConfig> getSSLContextAndConfig(String alias, Properties properties, boolean isInbound, String host,
             String port, String endPoint, Boolean isZWebContainerChain) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -432,11 +452,10 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
             config = new SSLConfig(props);
             context = com.ibm.websphere.ssl.JSSEHelper.getInstance().getSSLContext(connectionInfo, config);
         } catch (Exception e) {
-            // no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception getting SSLContext from properties.", new Object[] { e });
             }
-            throw new NettyException(e);
+            return null;
         }
         return new AbstractMap.SimpleEntry<SSLContext, SSLConfig>(context, config);
     }
