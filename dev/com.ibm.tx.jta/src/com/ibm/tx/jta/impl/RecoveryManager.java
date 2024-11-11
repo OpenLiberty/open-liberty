@@ -1,4 +1,4 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- */
+ *******************************************************************************/
 package com.ibm.tx.jta.impl;
 
 import java.io.IOException;
@@ -1326,13 +1326,20 @@ public class RecoveryManager implements Runnable {
             Tr.entry(tc, "waitForReplayCompletion", localRecovery);
 
         if (!_replayCompleted) {
-            if (tc.isEventEnabled())
-                Tr.event(tc, "starting to wait for replay completion");
+            try {
+                if (tc.isEventEnabled())
+                    Tr.event(tc, "starting to wait for replay completion");
 
-            _replayInProgress.waitEvent();
+                _replayInProgress.waitEvent();
 
-            if (tc.isEventEnabled())
-                Tr.event(tc, "completed wait for replay completion");
+                if (tc.isEventEnabled())
+                    Tr.event(tc, "completed wait for replay completion");
+            } catch (InterruptedException exc) {
+                if (localRecovery && !FrameworkState.isStopping())
+                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.waitForReplayCompletion", "1242", this);
+                if (tc.isEventEnabled())
+                    Tr.event(tc, "Wait for resync complete interrupted.");
+            }
         }
 
         if (tc.isEntryEnabled())
@@ -1365,13 +1372,20 @@ public class RecoveryManager implements Runnable {
             Tr.entry(tc, "waitForRecoveryCompletion", localRecovery);
 
         if (!_recoveryCompleted) {
-            if (tc.isEventEnabled())
-                Tr.event(tc, "starting to wait for recovery completion");
+            try {
+                if (tc.isEventEnabled())
+                    Tr.event(tc, "starting to wait for recovery completion");
 
-            _recoveryInProgress.waitEvent();
+                _recoveryInProgress.waitEvent();
 
-            if (tc.isEventEnabled())
-                Tr.event(tc, "completed wait for recovery completion");
+                if (tc.isEventEnabled())
+                    Tr.event(tc, "completed wait for recovery completion");
+            } catch (InterruptedException exc) {
+                if (localRecovery)
+                    FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.waitForRecoveryCompletion", "1242", this);
+                if (tc.isEventEnabled())
+                    Tr.event(tc, "Wait for recovery complete interrupted.");
+            }
         }
 
         if (tc.isEntryEnabled())
