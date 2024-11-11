@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,8 +23,6 @@ import javax.naming.Name;
 import javax.naming.OperationNotSupportedException;
 import javax.naming.spi.ObjectFactory;
 
-import org.osgi.service.component.annotations.Reference;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -34,21 +32,15 @@ import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 
 public abstract class UrlContextFactory implements ObjectFactory, ApplicationRecycleComponent {
-
     static final TraceComponent tc = Tr.register(UrlContextFactory.class);
-    
-    private ClientORBRef orbRef;
+
+    private final ClientORBRef orbRef;
     private final Set<String> appsToRecycle = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-    
-    @Reference
-    protected void setIIOPClient(ClientORBRef orbRef) {
+
+    protected UrlContextFactory(ClientORBRef orbRef) {
         this.orbRef = orbRef;
     }
-    
-    protected void unsetIIOPClient(ClientORBRef orbRef) {
-        if(this.orbRef==orbRef) orbRef = null;
-    }
-    
+
     @Override
     public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> env) throws Exception {
         final String methodName = "getObjectInstance(): ";
@@ -64,20 +56,20 @@ public abstract class UrlContextFactory implements ObjectFactory, ApplicationRec
             registerCaller();
             return new OrbContext(orbRef.getORB(), env);
         }
-        
+
         if (o instanceof String) {
             if (tc.isDebugEnabled()) Tr.debug(tc, methodName + "object was a string - performing a lookup on new OrbContext");
             registerCaller();
             return new OrbContext(orbRef.getORB(), env).lookup((String) o);
         }
-        
+
         if (o instanceof String[]) {
             if (tc.isDebugEnabled()) Tr.debug(tc, methodName + "object was a string[] - ignoring");
         }
 
         throw new OperationNotSupportedException();
     }
-    
+
     private void registerCaller() {
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (cData != null)
@@ -95,5 +87,4 @@ public abstract class UrlContextFactory implements ObjectFactory, ApplicationRec
         appsToRecycle.removeAll(members);
         return members;
     }
-
 }
