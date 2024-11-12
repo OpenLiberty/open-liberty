@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,6 +29,12 @@ import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.Query;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 
 /**
  * A location for helper methods that do not require any state.
@@ -43,6 +51,11 @@ public class Util {
     static final Set<Class<?>> PRIMITIVE_NUMERIC_TYPES = //
                     Set.of(long.class, int.class, short.class, byte.class,
                            double.class, float.class);
+
+    /**
+     * List of Jakarta Data operation annotations for use in NLS messages.
+     */
+    static final String OP_ANNOS = "Delete, Find, Insert, Query, Save, Update";
 
     /**
      * Return types for deleteBy that distinguish delete-only from find-and-delete.
@@ -118,6 +131,31 @@ public class Util {
                c.isEnum() ||
                Modifier.isInterface(modifiers = c.getModifiers()) ||
                Modifier.isAbstract(modifiers);
+    }
+
+    /**
+     * Identifies whether a method is annotated with a Jakarta Data annotation
+     * that performs and operation, such as Query, Find, or Save. This method is
+     * for use by error reporting only, so it does not need to be very efficient.
+     *
+     * @param method repository method.
+     * @return if the repository method has an annotation indicating an operation.
+     */
+    @Trivial
+    static final boolean hasOperationAnno(Method method) {
+        Set<Class<? extends Annotation>> operationAnnos = //
+                        Set.of(Delete.class,
+                               Insert.class,
+                               Find.class,
+                               Query.class,
+                               Save.class,
+                               Update.class);
+
+        for (Annotation anno : method.getAnnotations())
+            if (operationAnnos.contains(anno.annotationType()))
+                return true;
+
+        return false;
     }
 
     /**

@@ -2464,15 +2464,23 @@ public class QueryInfo {
                     // id(this)
                     attributeName = entityInfo.attributeNames.get(By.ID);
                     if (attributeName == null && failIfNotFound)
-                        throw new MappingException("Entity class " + entityInfo.getType().getName() +
-                                                   " does not have a property named " + name +
-                                                   " or which is designated as the @Id."); // TODO NLS
+                        throw exc(UnsupportedOperationException.class,
+                                  "CWWKD1093.fn.not.applicable",
+                                  name,
+                                  entityInfo.getType().getName(),
+                                  method.getName(),
+                                  repositoryInterface.getName(),
+                                  "@Id");
                 } else if (len == 13 && name.regionMatches(true, 0, "version", 0, 7)) {
                     // version(this)
                     if (entityInfo.versionAttributeName == null && failIfNotFound)
-                        throw new MappingException("Entity class " + entityInfo.getType().getName() +
-                                                   " does not have a property named " + name +
-                                                   " or which is designated as the @Version."); // TODO NLS
+                        throw exc(UnsupportedOperationException.class,
+                                  "CWWKD1093.fn.not.applicable",
+                                  name,
+                                  entityInfo.getType().getName(),
+                                  method.getName(),
+                                  repositoryInterface.getName(),
+                                  "@Version");
                     else
                         attributeName = entityInfo.versionAttributeName;
                 } else {
@@ -2487,10 +2495,10 @@ public class QueryInfo {
             else
                 throw exc(MappingException.class,
                           "CWWKD1010.unknown.entity.prop",
-                          method.getName(),
-                          repositoryInterface.getName(),
                           name,
                           entityInfo.getType().getName(),
+                          method.getName(),
+                          repositoryInterface.getName(),
                           entityInfo.attributeTypes.keySet());
         } else {
             String lowerName = name.toLowerCase();
@@ -2512,15 +2520,23 @@ public class QueryInfo {
                         lowerName = lowerName.replace("_", "");
                         attributeName = entityInfo.attributeNames.get(lowerName);
                         if (attributeName == null && failIfNotFound) {
-                            // TODO If attempting to parse Query by Method Name without a By keyword, then the message
-                            // should also include the possibility that repository method is missing an annotation.
-                            throw exc(MappingException.class,
-                                      "CWWKD1010.unknown.entity.prop",
-                                      method.getName(),
-                                      repositoryInterface.getName(),
-                                      name,
-                                      entityInfo.getType().getName(),
-                                      entityInfo.attributeTypes.keySet());
+                            if (Util.hasOperationAnno(method))
+                                throw exc(MappingException.class,
+                                          "CWWKD1010.unknown.entity.prop",
+                                          name,
+                                          entityInfo.getType().getName(),
+                                          method.getName(),
+                                          repositoryInterface.getName(),
+                                          entityInfo.attributeTypes.keySet());
+                            else
+                                throw exc(MappingException.class,
+                                          "CWWKD1091.method.name.parse.err",
+                                          name,
+                                          entityInfo.getType().getName(),
+                                          method.getName(),
+                                          repositoryInterface.getName(),
+                                          Util.OP_ANNOS,
+                                          entityInfo.attributeTypes.keySet());
                         }
                     }
                 }

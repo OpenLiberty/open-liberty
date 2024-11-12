@@ -125,9 +125,9 @@ CWWKD1009.lifecycle.param.err.explanation=Lifecycle methods must have a single \
 CWWKD1009.lifecycle.param.err.useraction=Update the repository method to have a \
  single parameter that is an entity or an array of List of the entity.
 
-CWWKD1010.unknown.entity.prop=CWWKD1010E: The {0} method of the {1} repository \
- interface expects an entity property named {2} that is not found on the \
- {3} entity class. Valid property names for the entity are: {4}.
+CWWKD1010.unknown.entity.prop=CWWKD1010E: An entity property named {0} is \
+ not found on the {1} entity class for the {2} method of the {3} repository \
+ interface. Valid property names for the entity are: {4}.
 CWWKD1010.unknown.entity.prop.explanation=The repository method is attempting \
  to use an entity property that does not exist.
 CWWKD1010.unknown.entity.prop.useraction=Update the repository method to match \
@@ -909,6 +909,18 @@ CWWKD1090.orderby.conflict.explanation=The OrderBy annotation is not compatible 
 CWWKD1090.orderby.conflict.useraction=Use only the OrderBy annotation or the \
  OrderBy keyword.
 
+CWWKD1091.method.name.parse.err=CWWKD1091E: An entity property named {0} is \
+ not found on the {1} entity class for the {2} method of the {3} repository \
+ interface. Confirm that the repository method either has a name that conforms \
+ to the Query by Method Name pattern or is annotated with one of: {4}. \
+ Valid property names for the entity are: {5}.
+CWWKD1091.method.name.parse.err.explanation=The repository method name was parsed \
+ according to the Query by Method Name pattern because the repository method \
+ does not have a Jakarta Data annotation that indicates the type of operation.
+CWWKD1091.method.name.parse.err.useraction=Correct the repository method name \
+ or annotate the repository method to indicate a Jakarta Data operation such as \
+ Query, Find, or Save.
+
 CWWKD1092.lifecycle.arg.empty=CWWKD1092E: The {0} method of the {1} repository \
  does not accept an empty {2} parameter. The parameter value must contain at \
  least one entity.
@@ -916,3 +928,12 @@ CWWKD1092.lifecycle.arg.empty.explanation=Insert, Update, Save, and Delete metho
  require at least one entity.
 CWWKD1092.lifecycle.arg.empty.useraction=Ensure that the array, List, or Stream \
  that is supplied to the method contains at least one entity.
+
+CWWKD1093.fn.not.applicable=CWWKD1093E: The {0} function cannot be evaluated \
+ for the {1} entity that is used by the {2} method of the {3} repository \
+ interface. The entity does not have a property that is annotated with {4} \
+ or from which {0} can be inferred.
+CWWKD1093.fn.not.applicable.explanation=The function cannot be used on the entity \
+ because the entity lacks an ID or version property.
+CWWKD1093.fn.not.applicable.useraction=Do not use the function in query language \
+ or parameters for the repository method.

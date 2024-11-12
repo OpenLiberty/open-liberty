@@ -42,7 +42,6 @@ public class DataJPATest extends FATServletClient {
      */
     static final String[] EXPECTED_ERROR_MESSAGES = //
                     new String[] {
-                                   "CWWKD1010E.*countBySurgePriceGreaterThanEqual",
                                    "CWWKD1026E.*allSorted",
                                    "CWWKD1046E.*publicDebtAsByte",
                                    "CWWKD1046E.*publicDebtAsDouble",
@@ -55,7 +54,8 @@ public class DataJPATest extends FATServletClient {
                                    "CWWKD1046E.*numFullTimeWorkersAsShort",
                                    "CWWKD1054E.*findByIsControlTrueAndNumericValueBetween",
                                    "CWWKD1075E.*Apartment2",
-                                   "CWWKD1075E.*Apartment3"
+                                   "CWWKD1075E.*Apartment3",
+                                   "CWWKD1091E.*countBySurgePriceGreaterThanEqual"
                     };
 
     @ClassRule
