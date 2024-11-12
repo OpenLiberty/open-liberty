@@ -76,7 +76,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
      * Helper method for creating H2C Upgrade handler
      */
     public static CleartextHttp2ServerUpgradeHandler createCleartextUpgradeHandler(HttpChannelConfig httpConfig, Channel channel) {
-        HttpServerCodec sourceCodec = new HttpServerCodec(HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH*2, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize());
+        HttpServerCodec sourceCodec = new HttpServerCodec(8192, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
         LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, channel);
         final HttpServerUpgradeHandler upgradeHandler = new HttpServerUpgradeHandler(sourceCodec, codec);
         return new CleartextHttp2ServerUpgradeHandler(sourceCodec, upgradeHandler, codec.buildHttp2ConnectionHandler(httpConfig, channel));
@@ -178,7 +178,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
             initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
         builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(Integer.MAX_VALUE).validateHttpHeaders(false);
-        HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(new LibertyInboundHttp2ToHttpAdapter(connection, Integer.MAX_VALUE, false, false, channel)).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).encoderIgnoreMaxHeaderListSize(true).build();
+        HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(new LibertyInboundHttp2ToHttpAdapter(connection, Integer.MAX_VALUE, false, false, channel)).frameLogger(LOGGER).connection(connection).initialSettings(initialSettings).encoderIgnoreMaxHeaderListSize(true).limitFieldSize(httpConfig.getLimitOfFieldSize()).limitNumHeaders(httpConfig.getLimitOnNumberOfHeaders()).maxHeaderBlockSize(httpConfig.getH2MaxHeaderBlockSize()).build();
 
         if (!httpConfig.getH2LimitWindowUpdateFrames()) {
             ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(0.99999f);

@@ -220,6 +220,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parseH2MaxFrameSize(options.get(HttpConfigConstants.PROPNAME_H2_MAX_FRAME_SIZE));
         parseProtocolVersion(options.get(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION));
         parseH2SettingsInitialWindowSize(options.get(HttpConfigConstants.PROPNAME_H2_SETTINGS_INITIAL_WINDOW_SIZE));
+        parseH2MaxHeaderBlockSize(options.get(HttpConfigConstants.PROPNAME_H2_MAX_HEADER_BLOCK_SIZE));
     }
 
     private void parseRemoteIpOptions(Map<String, Object> options) {
