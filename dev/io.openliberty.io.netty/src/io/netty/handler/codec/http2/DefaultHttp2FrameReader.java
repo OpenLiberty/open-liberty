@@ -32,6 +32,7 @@ import static io.netty.handler.codec.http2.Http2CodecUtil.SETTING_ENTRY_LENGTH;
 import static io.netty.handler.codec.http2.Http2CodecUtil.headerListSizeExceeded;
 import static io.netty.handler.codec.http2.Http2CodecUtil.isMaxFrameSizeValid;
 import static io.netty.handler.codec.http2.Http2CodecUtil.readUnsignedInt;
+import static io.netty.handler.codec.http2.Http2Error.ENHANCE_YOUR_CALM;
 import static io.netty.handler.codec.http2.Http2Error.FLOW_CONTROL_ERROR;
 import static io.netty.handler.codec.http2.Http2Error.FRAME_SIZE_ERROR;
 import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
@@ -702,6 +703,12 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
         final void addFragment(ByteBuf fragment, int len, ByteBufAllocator alloc,
                 boolean endOfHeaders) throws Http2Exception {
             if (headerBlock == null) {
+            	// Liberty changes for header block check
+            	if (headersDecoder instanceof LibertyDefaultHttp2HeadersDecoder && len > ((LibertyDefaultHttp2HeadersDecoder)headersDecoder).maxHeaderBlock()) {
+	                    System.out.println("Liberty error!");
+	                    close();
+	                    throw connectionError(ENHANCE_YOUR_CALM, "Stream: " + streamId + " exceeds the maximum header block size configured.");
+	            }
                 if (len > headersDecoder.configuration().maxHeaderListSizeGoAway()) {
                     headerSizeExceeded();
                 }
@@ -713,6 +720,12 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
                     headerBlock = alloc.buffer(len).writeBytes(fragment, len);
                 }
                 return;
+            }
+            // Liberty changes for header block check
+        	if (headersDecoder instanceof LibertyDefaultHttp2HeadersDecoder && ((LibertyDefaultHttp2HeadersDecoder)headersDecoder).maxHeaderBlock() - len < headerBlock.readableBytes()) {
+                    System.out.println("Liberty error!");
+                    close();
+                    throw connectionError(ENHANCE_YOUR_CALM, "Stream: " + streamId + " exceeds the maximum header block size configured.");
             }
             if (headersDecoder.configuration().maxHeaderListSizeGoAway() - len <
                     headerBlock.readableBytes()) {

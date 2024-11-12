@@ -43,6 +43,7 @@ import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_HEADER_LIST_SIZE;
 import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_HEADER_TABLE_SIZE;
 import static io.netty.handler.codec.http2.Http2CodecUtil.headerListSizeExceeded;
 import static io.netty.handler.codec.http2.Http2Error.COMPRESSION_ERROR;
+import static io.netty.handler.codec.http2.Http2Error.ENHANCE_YOUR_CALM;
 import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
 import static io.netty.handler.codec.http2.Http2Exception.connectionError;
 import static io.netty.handler.codec.http2.Http2Exception.streamError;
@@ -94,6 +95,11 @@ final class HpackDecoder {
     private long maxDynamicTableSize;
     private long encoderMaxDynamicTableSize;
     private boolean maxDynamicTableSizeChangeRequired;
+    
+    // Liberty options
+    private int limitFieldSize = 32768;
+    private int limitNumHeaders = 500;
+    
 
     /**
      * Create a new instance.
@@ -104,6 +110,17 @@ final class HpackDecoder {
      */
     HpackDecoder(long maxHeaderListSize) {
         this(maxHeaderListSize, DEFAULT_HEADER_TABLE_SIZE);
+    }
+    
+    /**
+     * Create a new instance with Liberty specific HTTP options
+     * @param limitFieldSize limit the name and value field sizes to be at most this length
+     * @param limitNumHeaders limit the amount of headers for the stream
+     */
+    HpackDecoder(long maxHeaderListSize, int limitFieldSize, int limitNumHeaders) {
+        this(MAX_HEADER_LIST_SIZE, DEFAULT_HEADER_TABLE_SIZE);
+        this.limitFieldSize = limitFieldSize;
+        this.limitNumHeaders = limitNumHeaders;
     }
 
     /**
@@ -125,7 +142,7 @@ final class HpackDecoder {
      */
     void decode(int streamId, ByteBuf in, Http2Headers headers, boolean validateHeaders) throws Http2Exception {
         Http2HeadersSink sink = new Http2HeadersSink(
-                streamId, headers, maxHeaderListSize, validateHeaders);
+                streamId, headers, maxHeaderListSize, validateHeaders, limitFieldSize, limitNumHeaders);
         // Check for dynamic table size updates, which must occur at the beginning:
         // https://www.rfc-editor.org/rfc/rfc7541.html#section-4.2
         decodeDynamicTableSizeUpdates(in);
@@ -530,17 +547,25 @@ final class HpackDecoder {
         private boolean exceededMaxLength;
         private HeaderType previousType;
         private Http2Exception validationException;
+        
+        // Liberty Options
+        private final int limitNumHeaders;
+        private final int limitFieldSize;
 
-        Http2HeadersSink(int streamId, Http2Headers headers, long maxHeaderListSize, boolean validateHeaders) {
+        Http2HeadersSink(int streamId, Http2Headers headers, long maxHeaderListSize, boolean validateHeaders, int limitFieldSize, int limitNumHeaders) {
             this.headers = headers;
             this.maxHeaderListSize = maxHeaderListSize;
             this.streamId = streamId;
             this.validateHeaders = validateHeaders;
+            this.limitFieldSize = limitFieldSize;
+            this.limitNumHeaders = limitNumHeaders;
         }
 
         void finish() throws Http2Exception {
             if (exceededMaxLength) {
-                headerListSizeExceeded(streamId, maxHeaderListSize, true);
+            	// Liberty change to follow the same behavior as Legacy sending a connection error instead of a stream error
+            	throw connectionError(ENHANCE_YOUR_CALM, "Stream: " + streamId + " exceeds the maximum header block size configured.");
+//                headerListSizeExceeded(streamId, maxHeaderListSize, true);
             } else if (validationException != null) {
                 throw validationException;
             }
@@ -556,6 +581,12 @@ final class HpackDecoder {
             }
 
             try {
+            	if(headers.size() >= limitNumHeaders || name.length() > limitFieldSize || value.length() > limitFieldSize) {
+                	// Liberty change to follow the same behavior as Legacy to throw a connection
+                	// error when exceeding header values
+            		validationException = connectionError(COMPRESSION_ERROR, "Headers on stream: " + streamId + " exceed limits configured for the server.");
+            		return;
+                }
                 headers.add(name, value);
                 if (validateHeaders) {
                     previousType = validateHeader(streamId, name, value, previousType);
