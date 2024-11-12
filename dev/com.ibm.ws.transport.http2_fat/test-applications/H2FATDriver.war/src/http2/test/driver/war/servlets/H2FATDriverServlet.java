@@ -1926,10 +1926,10 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         if (USING_NETTY) {
-//            FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
-//            h2Client.addExpectedFrame(rstFrame);
-            FrameGoAway errorFrame = new FrameGoAway(0, "Protocol error: Padding should not be larger than payload length.".getBytes(), PROTOCOL_ERROR, 2147483647, false);
-            h2Client.addExpectedFrame(errorFrame);
+            FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(rstFrame);
+            // FrameGoAway errorFrame = new FrameGoAway(0, "Protocol error: Padding should not be larger than payload length.".getBytes(), PROTOCOL_ERROR, 2147483647, false);
+            // h2Client.addExpectedFrame(errorFrame);
         } else {
             FrameGoAway errorFrame = new FrameGoAway(0, "HEADERS frame must have a header block fragment".getBytes(), COMPRESSION_ERROR, 1, false);
             h2Client.addExpectedFrame(errorFrame);
@@ -3379,8 +3379,14 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
-        h2Client.addExpectedFrame(rstFrame);
+        if (USING_NETTY) {
+            byte[] debugData = "HEADERS frame for stream 3 cannot depend on itself.".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 2147483647, false);
+            h2Client.addExpectedFrame(errorFrame);
+        } else {
+            FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+            h2Client.addExpectedFrame(rstFrame);
+        }
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 

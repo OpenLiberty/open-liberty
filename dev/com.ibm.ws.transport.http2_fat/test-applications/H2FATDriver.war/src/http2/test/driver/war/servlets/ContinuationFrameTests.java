@@ -181,7 +181,7 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] debugData = "Headers on stream: 3 exceed limits configured for the server.".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, USING_NETTY ? 2147483647 : 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -213,7 +213,7 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] debugData = "Headers on stream: 3 exceed limits configured for the server.".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, USING_NETTY ? 2147483647 : 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -245,7 +245,7 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] debugData = "Stream: 3 exceeds the maximum header block size configured.".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, USING_NETTY ? 2147483647 : 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -277,7 +277,7 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] debugData = "Stream: 3 exceeds the maximum header block size configured.".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, USING_NETTY ? 2147483647 : 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
