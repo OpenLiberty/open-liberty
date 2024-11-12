@@ -14,6 +14,7 @@ package test.jakarta.data.errpaths.web;
 
 import java.time.Month;
 import java.util.List;
+import java.util.stream.Stream;
 
 import jakarta.data.Sort;
 import jakarta.data.repository.BasicRepository;
@@ -22,6 +23,7 @@ import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Update;
 
 /**
  * Repository with a valid entity.
@@ -59,6 +61,9 @@ public interface Voters extends BasicRepository<Voter, Integer> {
                        @Param("month") Month monthBorn,
                        @Param("month") int monthNum, // duplicate parameter name
                        @Param("day") int dayBorn);
+
+    @Update
+    List<Voter> changeAll(Stream<Voter> v);
 
     /**
      * This invalid method has a conflict between its OrderBy annotation and

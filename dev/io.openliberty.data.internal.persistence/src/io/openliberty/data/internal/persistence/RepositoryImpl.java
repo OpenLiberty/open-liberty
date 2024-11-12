@@ -847,7 +847,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                            queryInfo.returnArrayType.isInstance(firstNonNullResult)
                                         || queryInfo.returnArrayType.isPrimitive() &&
                                            Util.isWrapperClassFor(queryInfo.returnArrayType,
-                                                                   firstNonNullResult.getClass())) {
+                                                                  firstNonNullResult.getClass())) {
                                         returnValue = Array.newInstance(queryInfo.returnArrayType, size);
                                         int i = 0;
                                         for (Object result : results)
@@ -972,6 +972,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             updateCount = queryInfo.remove(arg, em);
                         }
 
+                        if (numExpected == 0)
+                            throw exc(IllegalArgumentException.class,
+                                      "CWWKD1091.lifecycle.arg.empty",
+                                      method.getName(),
+                                      repositoryInterface.getName(),
+                                      method.getGenericParameterTypes()[0].getTypeName());
+
                         if (updateCount < numExpected)
                             if (numExpected == 1)
                                 throw exc(OptimisticLockingFailureException.class,
@@ -1015,6 +1022,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             numExpected = 1;
                             updateCount = queryInfo.update(arg, em);
                         }
+
+                        if (numExpected == 0)
+                            throw exc(IllegalArgumentException.class,
+                                      "CWWKD1092.lifecycle.arg.empty",
+                                      method.getName(),
+                                      repositoryInterface.getName(),
+                                      method.getGenericParameterTypes()[0].getTypeName());
 
                         if (updateCount < numExpected)
                             if (numExpected == 1)

@@ -19,6 +19,7 @@ import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionException;
+import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
@@ -173,6 +174,74 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1083E:") ||
                 !x.getMessage().contains("bornOn"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify IllegalArgumentException is raised if you attempt to delete an
+     * empty list of entities.
+     */
+    @Test
+    public void testEmptyDelete() {
+        try {
+            voters.deleteAll(List.of());
+            fail("Deleted an empty list of entities.");
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1092E:") ||
+                !x.getMessage().contains("deleteAll"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify IllegalArgumentException is raised if you attempt to delete an
+     * empty array of entities.
+     */
+    @Test
+    public void testEmptyInsert() {
+        try {
+            voters.register(new Voter[] {});
+            fail("Inserted an empty array of entities.");
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1092E:") ||
+                !x.getMessage().contains("register"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify IllegalArgumentException is raised if you attempt to save an
+     * empty list of entities.
+     */
+    @Test
+    public void testEmptySave() {
+        try {
+            List<Voter> saved = voters.saveAll(List.of());
+            fail("Saved an empty list of entities. Result: " + saved);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1092E:") ||
+                !x.getMessage().contains("saveAll"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify IllegalArgumentException is raised if you attempt to update an
+     * empty stream of entities.
+     */
+    @Test
+    public void testEmptyUpdate() {
+        try {
+            List<Voter> updated = voters.changeAll(Stream.of());
+            fail("Updated an empty stream of entities. Result: " + updated);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1092E:") ||
+                !x.getMessage().contains("changeAll"))
                 throw x;
         }
     }

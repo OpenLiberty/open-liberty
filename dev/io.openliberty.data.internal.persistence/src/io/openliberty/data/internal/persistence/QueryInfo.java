@@ -1163,6 +1163,14 @@ public class QueryInfo {
                 results.add(findAndUpdateOne(arg, em));
             }
         }
+
+        if (results.isEmpty())
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1092.lifecycle.arg.empty",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericParameterTypes()[0].getTypeName());
+
         em.flush();
 
         Class<?> returnType = method.getReturnType();
@@ -3501,11 +3509,12 @@ public class QueryInfo {
         ArrayList<Object> results;
 
         boolean hasSingularEntityParam = false;
+        int entityCount = 0;
         if (entityParamType.isArray()) {
             int length = Array.getLength(arg);
             results = resultVoid ? null : new ArrayList<>(length);
-            for (int i = 0; i < length; i++) {
-                Object entity = toEntity(Array.get(arg, i));
+            for (; entityCount < length; entityCount++) {
+                Object entity = toEntity(Array.get(arg, entityCount));
                 em.persist(entity);
                 if (results != null)
                     results.add(entity);
@@ -3519,6 +3528,7 @@ public class QueryInfo {
             if (arg instanceof Iterable) {
                 results = resultVoid ? null : new ArrayList<>();
                 for (Object e : ((Iterable<?>) arg)) {
+                    entityCount++;
                     Object entity = toEntity(e);
                     em.persist(entity);
                     if (results != null)
@@ -3526,6 +3536,7 @@ public class QueryInfo {
                 }
                 em.flush();
             } else {
+                entityCount = 1;
                 hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
                 Object entity = toEntity(arg);
@@ -3535,6 +3546,13 @@ public class QueryInfo {
                     results.add(entity);
             }
         }
+
+        if (entityCount == 0)
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1092.lifecycle.arg.empty",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericParameterTypes()[0].getTypeName());
 
         Class<?> returnType = method.getReturnType();
         Object returnValue;
@@ -3998,11 +4016,12 @@ public class QueryInfo {
         List<Object> results;
 
         boolean hasSingularEntityParam = false;
+        int entityCount = 0;
         if (entityParamType.isArray()) {
             results = new ArrayList<>();
             int length = Array.getLength(arg);
-            for (int i = 0; i < length; i++)
-                results.add(em.merge(toEntity(Array.get(arg, i))));
+            for (; entityCount < length; entityCount++)
+                results.add(em.merge(toEntity(Array.get(arg, entityCount))));
             em.flush();
         } else {
             arg = arg instanceof Stream //
@@ -4011,10 +4030,13 @@ public class QueryInfo {
 
             if (Iterable.class.isAssignableFrom(entityParamType)) {
                 results = new ArrayList<>();
-                for (Object e : ((Iterable<?>) arg))
+                for (Object e : ((Iterable<?>) arg)) {
+                    entityCount++;
                     results.add(em.merge(toEntity(e)));
+                }
                 em.flush();
             } else {
+                entityCount = 1;
                 hasSingularEntityParam = true;
                 results = resultVoid ? null : new ArrayList<>(1);
                 Object entity = em.merge(toEntity(arg));
@@ -4023,6 +4045,13 @@ public class QueryInfo {
                 em.flush();
             }
         }
+
+        if (entityCount == 0)
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1092.lifecycle.arg.empty",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericParameterTypes()[0].getTypeName());
 
         Class<?> returnType = method.getReturnType();
         Object returnValue;

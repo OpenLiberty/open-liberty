@@ -908,3 +908,11 @@ CWWKD1090.orderby.conflict.explanation=The OrderBy annotation is not compatible 
  with the OrderBy keyword.
 CWWKD1090.orderby.conflict.useraction=Use only the OrderBy annotation or the \
  OrderBy keyword.
+
+CWWKD1092.lifecycle.arg.empty=CWWKD1092E: The {0} method of the {1} repository \
+ does not accept an empty {2} parameter. The parameter value must contain at \
+ least one entity.
+CWWKD1092.lifecycle.arg.empty.explanation=Insert, Update, Save, and Delete methods
+ require at least one entity.
+CWWKD1092.lifecycle.arg.empty.useraction=Ensure that the array, List, or Stream \
+ that is supplied to the method contains at least one entity.

@@ -5940,8 +5940,6 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(3, persons.updateSome(ulysses, ursula, uriah));
 
-        assertEquals(0, persons.updateSome());
-
         assertEquals(4, people.deleteBySSN_IdBetween(0L, 999999999L));
     }
 
