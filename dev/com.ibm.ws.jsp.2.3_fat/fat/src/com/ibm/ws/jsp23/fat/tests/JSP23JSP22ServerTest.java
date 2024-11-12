@@ -215,7 +215,7 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_OR_LATER_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     public void testJsp40to31FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
