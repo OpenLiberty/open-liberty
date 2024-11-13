@@ -18,7 +18,6 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,6 +44,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.recoverylog.custom.jdbc.impl.DBUtils.DBProduct;
 import com.ibm.ws.recoverylog.spi.Configuration;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
@@ -144,12 +144,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /**
      * Which RDBMS are we working against?
      */
-    volatile private boolean _isDerby;
-    volatile private boolean _isOracle;
-    volatile private boolean _isPostgreSQL;
-    volatile private boolean _isDB2;
-    volatile private boolean _isSQLServer;
-    volatile private boolean _isNonStandard;
+    private DBProduct dbProduct;
 
     private boolean isolationFailureReported;
 
@@ -853,32 +848,15 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Got connection: " + conn);
-            DatabaseMetaData mdata = conn.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Working with database: " + dbName);
-            if (dbName.toLowerCase().contains("oracle")) {
-                _isOracle = true;
-            } else if (dbName.toLowerCase().contains("db2")) {
-                _isDB2 = true;
-            } else if (dbName.toLowerCase().contains("postgresql")) {
-                _isPostgreSQL = true;
-            } else if (dbName.toLowerCase().contains("microsoft sql")) {
-                _isSQLServer = true;
-            } else if (dbName.toLowerCase().contains("derby")) {
-                _isDerby = true;
-            } else {
-                _isNonStandard = true;
+
+            dbProduct = DBUtils.identifyDB(conn);
+
+            if (DBProduct.Unknown == dbProduct && !SQLRetry.isLogRetriesEnabled()) {
                 // We're not working with the standard set of databases. The "default" behaviour is not to retry for such non-standard, untested databases,
                 // even if the exception is a SQLTransientException. But if the logRetriesEnabled flag has been explicitly set, then we will retry SQL
                 // operations on all databases.
-                if (!SQLRetry.isLogRetriesEnabled())
-                    _sqlTransientErrorHandlingEnabled = false;
+                _sqlTransientErrorHandlingEnabled = false;
             }
-
-            String dbVersion = mdata.getDatabaseProductVersion();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "You are now connected to " + dbName + ", version " + dbVersion);
         }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getFirstConnection", conn);
@@ -913,8 +891,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "Set the logRetriesEnabled flag to false");
             // If _logRetriesEnabled has been reset (config change) and if the database is non-standard, then we will
             // no longer retry SQLExceptions
-            if (SQLRetry.isLogRetriesEnabled() && _isNonStandard)
+            if (SQLRetry.isLogRetriesEnabled() && (dbProduct == null || DBProduct.Unknown == dbProduct))
                 _sqlTransientErrorHandlingEnabled = false;
+
             SQLRetry.setLogRetriesEnabled(false);
         }
 
@@ -966,6 +945,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     Tr.exit(tc, "getConnection", "new SQLException");
                 throw newsqlex;
             }
+        }
+
+        if (dbProduct == null) {
+            dbProduct = DBUtils.identifyDB(conn);
         }
 
         if (tc.isEntryEnabled())
@@ -2492,9 +2475,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT SERVER_NAME" +
                                  " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                 (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE RU_ID=-1" +
-                                 (_isSQLServer ? "" : " FOR UPDATE");
+                                 (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
             lockingRS = lockingStmt.executeQuery(queryString);
@@ -2571,21 +2554,30 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.debug(tc, "SQL State: {0}", sqlState);
             Tr.debug(tc, "Error code: {0}", sqlErrorCode);
         }
-        if (_isDB2) {
-            if (sqlErrorCode == -204)
-                noTable = true;
-        } else if (_isOracle) {
-            if (sqlErrorCode == 942)
-                noTable = true;
-        } else if (_isPostgreSQL) {
-            if (sqlMessage.contains("relation") && sqlMessage.contains("does not exist"))
-                noTable = true;
-        } else if (_isSQLServer) {
-            if (sqlErrorCode == 208)
-                noTable = true;
-        } else if (_isDerby) {
-            if ("42X05".equals(sqlState))
-                noTable = true;
+
+        switch (dbProduct) {
+            case DB2:
+                if (sqlErrorCode == -204)
+                    noTable = true;
+                break;
+            case Derby:
+                if ("42X05".equals(sqlState))
+                    noTable = true;
+                break;
+            case Oracle:
+                if (sqlErrorCode == 942)
+                    noTable = true;
+                break;
+            case Postgresql:
+                if (sqlMessage.contains("relation") && sqlMessage.contains("does not exist"))
+                    noTable = true;
+                break;
+            case Sqlserver:
+                if (sqlErrorCode == 208)
+                    noTable = true;
+                break;
+            default:
+                break;
         }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isTableDeleted", noTable);
@@ -2876,7 +2868,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         try {
             createTableStmt = conn.createStatement();
             String fullTableName = _recoveryTableName + logIdentifierString + _recoveryTableNameSuffix;
-            if (_isOracle) {
+            if (DBProduct.Oracle == dbProduct) {
 
                 String oracleTableString = genericTableCreatePreString + fullTableName + oracleTablePostString;
                 if (tc.isDebugEnabled())
@@ -2891,7 +2883,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 createTableStmt.executeUpdate(oracleTableString);
                 // Create index on the new table
                 createTableStmt.executeUpdate(oracleIndexString);
-            } else if (_isDB2) {
+            } else if (DBProduct.DB2 == dbProduct) {
                 String db2TableString = genericTableCreatePreString + fullTableName + db2TablePostString;
                 String dbName = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDBName();
                 if (!dbName.isEmpty()) {
@@ -2908,7 +2900,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 createTableStmt.executeUpdate(db2TableString);
                 // Create index on the new table
                 createTableStmt.executeUpdate(db2IndexString);
-            } else if (_isPostgreSQL) {
+            } else if (DBProduct.Postgresql == dbProduct) {
                 String postgreSQLTableString = genericTableCreatePreString + fullTableName + postgreSQLTablePostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create PostgreSQL table using: " + postgreSQLTableString);
@@ -2922,7 +2914,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 createTableStmt.execute(postgreSQLTableString);
                 // Create index on the new table
                 createTableStmt.execute(postgreSQLIndexString);
-            } else if (_isSQLServer) {
+            } else if (DBProduct.Sqlserver == dbProduct) {
                 String sqlServerTableString = genericTableCreatePreString + fullTableName + sqlServerTablePostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create SQL Server table using: " + sqlServerTableString);
@@ -3039,9 +3031,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT SERVER_NAME" +
                                  " FROM " + _recoveryTableName + logIdentifierString + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                 (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE RU_ID=-1" +
-                                 (_isSQLServer ? "" : " FOR UPDATE");
+                                 (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the HA LOCKING ROW using - " + queryString);
             lockingRS = lockingStmt.executeQuery(queryString);
@@ -3679,7 +3671,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     public int prepareConnectionForBatch(Connection conn) throws SQLException {
         conn.setAutoCommit(false);
         int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
-        if (_isDB2) {
+
+        if (DBProduct.DB2 == dbProduct) {
             try {
                 initialIsolation = conn.getTransactionIsolation();
                 if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation) {
@@ -3705,7 +3698,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     // closes the connection and resets the isolation level if required
     @Override
     public void closeConnectionAfterBatch(Connection conn, int initialIsolation) throws SQLException {
-        if (_isDB2) {
+        if (DBProduct.DB2 == dbProduct) {
             if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation)
                 try {
                     conn.setTransactionIsolation(initialIsolation);
@@ -3728,9 +3721,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // Use RDBMS SELECT FOR UPDATE to lock table for recovery
         String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                              " FROM " + _recoveryTableName + logIdentifierString + _recoveryTableNameSuffix +
-                             (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                             (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                              " WHERE RU_ID=-1" +
-                             (_isSQLServer ? "" : " FOR UPDATE");
+                             (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE - " + queryString);
         return lockingStmt.executeQuery(queryString);
@@ -4285,9 +4278,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT RUSECTION_ID" +
                                  " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                 (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE RU_ID=-1" +
-                                 (_isSQLServer ? "" : " FOR UPDATE");
+                                 (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
             lockingRS = lockingStmt.executeQuery(queryString);
@@ -4495,9 +4488,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // First we process the control record in the partner_log
         String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                              " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                             (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                             (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                              " WHERE RU_ID=-1" +
-                             (_isSQLServer ? "" : " FOR UPDATE");
+                             (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
 
@@ -4603,9 +4596,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             isClaimed = false;
             queryString = "SELECT SERVER_NAME" +
                           " FROM " + _recoveryTableName + "TRAN_LOG" + _recoveryTableNameSuffix +
-                          (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                          (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                           " WHERE RU_ID=-1" +
-                          (_isSQLServer ? "" : " FOR UPDATE");
+                          (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
 
