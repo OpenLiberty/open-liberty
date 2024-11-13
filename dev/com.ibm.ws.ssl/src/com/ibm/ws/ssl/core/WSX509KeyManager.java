@@ -319,9 +319,6 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
     public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine engine) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "chooseEngineServerAlias", new Object[] { keyType, issuers, engine });
-            System.out.println("WRG+++Major: "+JavaInfo.majorVersion());
-            System.out.println("WRG+++Minor: "+JavaInfo.minorVersion());    
-            System.out.println("WRG+++Micro: "+JavaInfo.microVersion()); 
         String rc = null;
         if (null != customKM && customKM instanceof X509ExtendedKeyManager) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -354,12 +351,13 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "chooseEngineClientAlias, using customKM -> " + customKM.getClass().getName());
             rc = ((X509ExtendedKeyManager) customKM).chooseEngineClientAlias(keyType, issuers, engine);
-        } else {          
-            if(JavaInfo.majorVersion() >=17 && JavaInfo.microVersion() >=11)
-            rc = chooseClientAlias(keyType, issuers, null);
-            else{
-            rc = chooseClientAlias(keyType[0], issuers);
-            }
+        } else {        
+            System.out.println("WRG++++Broken");
+            // if(JavaInfo.majorVersion() >=17 && JavaInfo.microVersion() >=11)
+            //rc = chooseClientAlias(keyType, issuers, null);
+            // else{
+            // rc = chooseClientAlias(keyType[0], issuers);
+            // }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
