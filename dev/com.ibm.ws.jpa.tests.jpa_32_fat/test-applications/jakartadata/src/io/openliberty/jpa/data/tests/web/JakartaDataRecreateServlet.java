@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.jpa.data.tests.web;
 
-import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
@@ -107,11 +106,11 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             em.createQuery("UPDATE Coordinate SET x = :newX, y = y / :yDivisor WHERE id = :id") // FAILURE PARSING QUERY
-                                                                                                // HERE
-                    .setParameter("newX", 11)
-                    .setParameter("yDivisor", 5)
-                    .setParameter("id", id)
-                    .executeUpdate();
+                            // HERE
+                            .setParameter("newX", 11)
+                            .setParameter("yDivisor", 5)
+                            .setParameter("id", id)
+                            .executeUpdate();
             tx.commit();
 
         } catch (Exception e) {
@@ -127,8 +126,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
         tx.begin();
         result = em.createQuery("SELECT this from Coordinate WHERE id = :id", Coordinate.class)
-                .setParameter("id", id)
-                .getSingleResult();
+                        .setParameter("id", id)
+                        .getSingleResult();
         tx.commit();
         assertEquals(id, result.id);
         assertEquals(11, result.x, 0.001);
@@ -147,10 +146,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
             em.persist(character);
 
             result = em.createQuery(
-                    "SELECT hexadecimal FROM AsciiCharacter WHERE hexadecimal IS NOT NULL AND thisCharacter = ?1",
-                    String.class) // FAILURE PARSING QUERY HERE
-                    .setParameter(1, character.getThisCharacter())
-                    .getSingleResult();
+                                    "SELECT hexadecimal FROM AsciiCharacter WHERE hexadecimal IS NOT NULL AND thisCharacter = ?1",
+                                    String.class) // FAILURE PARSING QUERY HERE
+                            .setParameter(1, character.getThisCharacter())
+                            .getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -184,9 +183,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
         try {
             em.persist(p);
             em.createQuery("UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn")
-                    .setParameter("newFirstName", "Jack")
-                    .setParameter("ssn", p.ssn_id)
-                    .executeUpdate();
+                            .setParameter("newFirstName", "Jack")
+                            .setParameter("ssn", p.ssn_id)
+                            .executeUpdate();
 
             tx.commit();
         } catch (Exception e) {
@@ -206,8 +205,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
         tx.begin();
         result = em.createQuery("SELECT this from Person WHERE ssn_id = :ssn", Person.class)
-                    .setParameter("ssn", p.ssn_id)
-                    .getSingleResult();
+                        .setParameter("ssn", p.ssn_id)
+                        .getSingleResult();
         tx.commit();
         assertEquals(p.ssn_id, result.ssn_id);
         assertEquals("Jack", result.firstName);
@@ -231,9 +230,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             result1 = em.createQuery(
-                    "FROM NaturalNumber WHERE isOdd = false AND numType = io.openliberty.jpa.data.tests.models.NaturalNumber.NumberType.PRIME",
-                    NaturalNumber.class)
-                    .getSingleResult();
+                                     "FROM NaturalNumber WHERE isOdd = false AND numType = io.openliberty.jpa.data.tests.models.NaturalNumber.NumberType.PRIME",
+                                     NaturalNumber.class)
+                            .getSingleResult();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -243,9 +242,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             result2 = em.createQuery(
-                    "FROM NaturalNumber WHERE this.isOdd = false AND this.numType = io.openliberty.jpa.data.tests.models.NaturalNumber.NumberType.PRIME",
-                    NaturalNumber.class)
-                    .getSingleResult();
+                                     "FROM NaturalNumber WHERE this.isOdd = false AND this.numType = io.openliberty.jpa.data.tests.models.NaturalNumber.NumberType.PRIME",
+                                     NaturalNumber.class)
+                            .getSingleResult();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -281,11 +280,11 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Ignore("Additional issue: https://github.com/OpenLiberty/open-liberty/issues/28874")
     public void testOLGH28920() throws Exception {
         Rebate r1 = Rebate.of(10.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.SUBMITTED,
-                LocalDateTime.now(), 1);
+                              LocalDateTime.now(), 1);
         Rebate r2 = Rebate.of(12.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.PAID,
-                LocalDateTime.now(), 2);
+                              LocalDateTime.now(), 2);
         Rebate r3 = Rebate.of(14.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.PAID,
-                LocalDateTime.now(), 2);
+                              LocalDateTime.now(), 2);
 
         List<Rebate> paidRebates;
 
@@ -299,13 +298,13 @@ public class JakartaDataRecreateServlet extends FATServlet {
         try {
 
             paidRebates = em.createQuery(
-                    "SELECT NEW io.openliberty.jpa.data.tests.models.Rebate(id, amount, customerId, purchaseMadeAt, purchaseMadeOn, status, updatedAt, version) "
-                            + "FROM Rebate "
-                            + "WHERE customerId=?1 AND status=io.openliberty.jpa.data.tests.models.Rebate.Status.PAID "
-                            + "ORDER BY amount DESC, id ASC",
-                    Rebate.class)
-                    .setParameter(1, "testOLGH28920")
-                    .getResultList();
+                                         "SELECT NEW io.openliberty.jpa.data.tests.models.Rebate(id, amount, customerId, purchaseMadeAt, purchaseMadeOn, status, updatedAt, version) "
+                                         + "FROM Rebate "
+                                         + "WHERE customerId=?1 AND status=io.openliberty.jpa.data.tests.models.Rebate.Status.PAID "
+                                         + "ORDER BY amount DESC, id ASC",
+                                         Rebate.class)
+                            .setParameter(1, "testOLGH28920")
+                            .getResultList();
 
             tx.commit();
         } catch (Exception e) {
@@ -345,9 +344,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             em.createQuery("UPDATE Box SET length = length + ?1, width = width - ?1, height = height * ?2")
-                    .setParameter(1, 1)
-                    .setParameter(2, 2)
-                    .executeUpdate();
+                            .setParameter(1, 1)
+                            .setParameter(2, 2)
+                            .executeUpdate();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -364,8 +363,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
         tx.begin();
         wall = em.createQuery("SELECT this from Box WHERE boxIdentifier = :id", Box.class)
-        .setParameter("id", "testOLGH28909")
-        .getSingleResult();
+                        .setParameter("id", "testOLGH28909")
+                        .getSingleResult();
         tx.commit();
 
         assertEquals("testOLGH28909", wall.boxIdentifier);
@@ -378,9 +377,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28931")
     public void testOLGH28931() throws Exception {
         Business ibmRoc = Business.of(44.05887f, -92.50355f, "Rochester", "Minnesota", 55901, 2800, "37th St", "NW",
-                "IBM Rochester");
+                                      "IBM Rochester");
         Business ibmRTP = Business.of(35.90481f, -78.85026f, "Durham", "North Carolina", 27703, 4204, "Miami Blvd", "S",
-                "IBM RTP");
+                                      "IBM RTP");
 
         Business result;
 
@@ -392,8 +391,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             result = em.createQuery("FROM Business WHERE location.address.city=?1 ORDER BY name", Business.class)
-                    .setParameter(1, "Rochester")
-                    .getSingleResult();
+                            .setParameter(1, "Rochester")
+                            .getSingleResult();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -425,11 +424,11 @@ public class JakartaDataRecreateServlet extends FATServlet {
         try {
 
             em.createQuery("FROM Product WHERE (:rate * price <= :max AND :rate * price >= :min) ORDER BY name",
-                    Product.class)
-                    .setParameter("rate", 4)
-                    .setParameter("max", 100)
-                    .setParameter("min", 1)
-                    .getSingleResult();
+                           Product.class)
+                            .setParameter("rate", 4)
+                            .setParameter("max", 100)
+                            .setParameter("min", 1)
+                            .getSingleResult();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -454,10 +453,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
         try {
             // Execute the query
             BigDecimal result = em.createQuery(
-                    "SELECT publicDebt / numFullTimeWorkers FROM DemographicInfo WHERE EXTRACT(YEAR FROM collectedOn) = ?1",
-                    BigDecimal.class)
-                    .setParameter(1, 2023)
-                    .getSingleResult();
+                                               "SELECT publicDebt / numFullTimeWorkers FROM DemographicInfo WHERE EXTRACT(YEAR FROM collectedOn) = ?1",
+                                               BigDecimal.class)
+                            .setParameter(1, 2023)
+                            .getSingleResult();
 
             // Assuming some assertion or validation
             BigDecimal expected = new BigDecimal("2000.00");
@@ -467,7 +466,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
             BigDecimal tolerance = new BigDecimal("0.01");
 
             assertTrue("Expected: " + expected + ", but was: " + actual, expected.subtract(actual).abs().compareTo(tolerance) < 0);
-
 
             tx.commit();
         } catch (Exception e) {
@@ -489,8 +487,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             em.createNamedQuery("TEST_OLGH_29319", Annuity.class)
-                    .setParameter("holderId", "holder123")
-                    .getSingleResult();
+                            .setParameter("holderId", "holder123")
+                            .getSingleResult();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -510,8 +508,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             em.createQuery("FROM Annuity WHERE annuityHolderId = :holderId", Annuity.class)
-                    .setParameter("holderId", "holder123")
-                    .getSingleResult();
+                            .setParameter("holderId", "holder123")
+                            .getSingleResult();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -541,13 +539,13 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             primes = em.createQuery(
-                    "SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num) ORDER BY o.numberId",
-                    Prime.class)
-                    .setParameter("numberName", "two")
-                    .setParameter("numeral", "III")
-                    .setParameter("hex", "5")
-                    .setParameter("num", 7)
-                    .getResultList();
+                                    "SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num) ORDER BY o.numberId",
+                                    Prime.class)
+                            .setParameter("numberName", "two")
+                            .setParameter("numeral", "III")
+                            .setParameter("hex", "5")
+                            .setParameter("num", 7)
+                            .getResultList();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -602,9 +600,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             result = em.createQuery("SELECT o FROM Package o ORDER BY o.width DESC", Package.class)
-                    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                    .setMaxResults(1)
-                    .getSingleResult();
+                            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                            .setMaxResults(1)
+                            .getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -651,9 +649,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             results = em.createQuery("SELECT o.id FROM Package o ORDER BY o.width DESC", Integer.class)
-                    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                    .setMaxResults(1)
-                    .getResultList();
+                            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                            .setMaxResults(1)
+                            .getResultList();
 
             tx.commit();
         } catch (Exception e) {
@@ -686,7 +684,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @Test
     @SkipIfSysProp({ DB_Postgres, DB_Oracle }) // Reference issue:
-                                               // https://github.com/OpenLiberty/open-liberty/issues/28545
+                                                     // https://github.com/OpenLiberty/open-liberty/issues/28545
     public void testOLGH28545_3() throws Exception {
         deleteAllEntities(Prime.class);
 
@@ -707,10 +705,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             lengths = em.createQuery("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p "
-                    + "WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC", Integer.class)
-                    .setParameter(1, 5)
-                    .setMaxResults(4)
-                    .getResultList();
+                                     + "WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC", Integer.class)
+                            .setParameter(1, 5)
+                            .setMaxResults(4)
+                            .getResultList();
 
             tx.commit();
         } catch (Exception e) {
@@ -765,9 +763,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             rochesters = em
-                    .createQuery("SELECT ID(THIS) FROM City WHERE (name=?1) ORDER BY population DESC", CityId.class)
-                    .setParameter(1, "Rochester")
-                    .getResultList();
+                            .createQuery("SELECT ID(THIS) FROM City WHERE (name=?1) ORDER BY population DESC", CityId.class)
+                            .setParameter(1, "Rochester")
+                            .getResultList();
         } catch (Exception e) {
             tx.rollback();
 
@@ -801,8 +799,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             List<PurchaseOrder> results = em.createQuery("SELECT p FROM Orders p WHERE p.id=?1", PurchaseOrder.class)
-                    .setParameter(1, order1.id)
-                    .getResultList();
+                            .setParameter(1, order1.id)
+                            .getResultList();
 
             assertEquals(1, results.size());
             assertEquals(order1.purchasedBy, results.get(0).purchasedBy);
@@ -854,11 +852,11 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             results = em.createQuery(
-                    "SELECT o FROM DemographicInfo o WHERE (o.publicDebt BETWEEN ?1 AND ?2) ORDER BY o.publicDebt",
-                    DemographicInfo.class)
-                    .setParameter(1, BigDecimal.valueOf(5000000000000.00))
-                    .setParameter(2, BigDecimal.valueOf(10000000000000.00))
-                    .getResultList();
+                                     "SELECT o FROM DemographicInfo o WHERE (o.publicDebt BETWEEN ?1 AND ?2) ORDER BY o.publicDebt",
+                                     DemographicInfo.class)
+                            .setParameter(1, BigDecimal.valueOf(5000000000000.00))
+                            .setParameter(2, BigDecimal.valueOf(10000000000000.00))
+                            .getResultList();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -907,13 +905,13 @@ public class JakartaDataRecreateServlet extends FATServlet {
         try {
 
             maxPrice = em.createQuery("SELECT MAX(price) FROM Item", Double.class)
-                    .getSingleResult();
+                            .getSingleResult();
 
             minPrice = em.createQuery("SELECT MIN(price) FROM Item", Double.class)
-                    .getSingleResult();
+                            .getSingleResult();
 
             avgPrice = em.createQuery("SELECT AVG(price) FROM Item", Double.class)
-                    .getSingleResult();
+                            .getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -952,8 +950,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             RochesterAreaCodes = em.createQuery("SELECT o.areaCodes FROM City o WHERE (o.name=?1)", Set.class)
-                    .setParameter(1, "Rochester")
-                    .getResultList();
+                            .setParameter(1, "Rochester")
+                            .getResultList();
 
             tx.commit();
         } catch (Exception e) {
@@ -993,8 +991,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             RedWingAreaCodes = em.createQuery("SELECT o.areaCodes FROM City o WHERE (o.name=?1)", Set.class)
-                    .setParameter(1, "Red Wing")
-                    .getSingleResult();
+                            .setParameter(1, "Red Wing")
+                            .getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1028,8 +1026,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             RochesterAreaCodes = em.createQuery("SELECT o.areaCodes FROM City o WHERE (o.name=?1)", Set.class)
-                    .setParameter(1, "Rochester")
-                    .getSingleResult();
+                            .setParameter(1, "Rochester")
+                            .getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1059,16 +1057,16 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         tx.begin();
         em.createQuery("UPDATE Line o SET o.pointB = ?1 WHERE (o.id=?2)")
-                .setParameter(1, null)
-                .setParameter(2, unitRadius.id)
-                .executeUpdate(); // UPDATE LINE SET x_B = ? WHERE (ID = ?) bind => [null, 5]
+                        .setParameter(1, null)
+                        .setParameter(2, unitRadius.id)
+                        .executeUpdate(); // UPDATE LINE SET x_B = ? WHERE (ID = ?) bind => [null, 5]
         tx.commit();
 
         tx.begin();
         try {
             origin = em.createQuery("SELECT o FROM Line o WHERE (o.id=?1)", Line.class)
-                    .setParameter(1, unitRadius.id)
-                    .getSingleResult();
+                            .setParameter(1, unitRadius.id)
+                            .getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1088,7 +1086,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @Test
     @SkipIfSysProp({ DB_Postgres, DB_SQLServer }) // Reference issue:
-                                                  // https://github.com/OpenLiberty/open-liberty/issues/28737
+                                                        // https://github.com/OpenLiberty/open-liberty/issues/28737
     public void testOLGH28737() throws Exception {
         deleteAllEntities(Box.class);
 
@@ -1128,7 +1126,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipIfSysProp({ DB_Oracle }) 
+    @SkipIfSysProp({ DB_Oracle })
     // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28289
     // DB2 issue resolved (https://github.com/eclipse-ee4j/eclipselink/issues/2282), Oracle now has issues too
     public void testOLGH28289() throws Exception {
@@ -1149,12 +1147,12 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             tallToShort = em
-                    .createQuery("SELECT o FROM Package o WHERE (o.height<?1) ORDER BY o.height DESC, o.length",
-                            Package.class)
-                    .setParameter(1, 8.0)
-                    .setLockMode(LockModeType.PESSIMISTIC_WRITE) // Cause of issue
-                    .setMaxResults(2)
-                    .getResultList();
+                            .createQuery("SELECT o FROM Package o WHERE (o.height<?1) ORDER BY o.height DESC, o.length",
+                                         Package.class)
+                            .setParameter(1, 8.0)
+                            .setLockMode(LockModeType.PESSIMISTIC_WRITE) // Cause of issue
+                            .setMaxResults(2)
+                            .getResultList();
         } catch (Exception e) {
             tx.rollback();
             throw e;
@@ -1206,8 +1204,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             results = em.createQuery("SELECT o FROM Account o WHERE (o.accountId=?1)", Account.class)
-                    .setParameter(1, AccountId.of(123456, 123456))
-                    .getResultList(); // Unable to recreate
+                            .setParameter(1, AccountId.of(123456, 123456))
+                            .getResultList(); // Unable to recreate
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -1241,14 +1239,14 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             accounts = em
-                    .createQuery(
-                            "SELECT o FROM Account o WHERE (o.accountId IN ?1 OR o.owner=?2) ORDER BY o.owner DESC",
-                            Account.class)
-                    .setParameter(1,
-                            Set.of(AccountId.of(1005380, 70081), AccountId.of(1004470, 70081),
-                                    AccountId.of(1006380, 70081)))
-                    .setParameter(2, "Elizabeth testOLGH27696")
-                    .getResultList();
+                            .createQuery(
+                                         "SELECT o FROM Account o WHERE (o.accountId IN ?1 OR o.owner=?2) ORDER BY o.owner DESC",
+                                         Account.class)
+                            .setParameter(1,
+                                          Set.of(AccountId.of(1005380, 70081), AccountId.of(1004470, 70081),
+                                                 AccountId.of(1006380, 70081)))
+                            .setParameter(2, "Elizabeth testOLGH27696")
+                            .getResultList();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -1292,14 +1290,14 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             em.createQuery("UPDATE Triangle SET this.sides=?2, this.perimeter=?3 WHERE this.distinctKey=?1")
-                    .setParameter(1, t1_0.distinctKey)
-                    .setParameter(2, new byte[] { 36, 77, 85 })
-                    .setParameter(3, (short) (198))
-                    .executeUpdate();
+                            .setParameter(1, t1_0.distinctKey)
+                            .setParameter(2, new byte[] { 36, 77, 85 })
+                            .setParameter(3, (short) (198))
+                            .executeUpdate();
 
             t1_1 = em.createQuery("SELECT o FROM Triangle o WHERE o.distinctKey=?1", Triangle.class)
-                    .setParameter(0, t1_0.distinctKey)
-                    .getSingleResult();
+                            .setParameter(0, t1_0.distinctKey)
+                            .getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1335,8 +1333,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             count = em.createQuery("DELETE FROM Reciept WHERE this.total < :max")
-                    .setParameter("max", 10.00f)
-                    .executeUpdate();
+                            .setParameter("max", 10.00f)
+                            .executeUpdate();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -1377,8 +1375,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             count = em.createQuery("DELETE FROM Product WHERE this.name LIKE ?1")
-                    .setParameter(1, "B%")
-                    .executeUpdate();
+                            .setParameter(1, "B%")
+                            .executeUpdate();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -1402,7 +1400,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @Test
     @SkipIfSysProp({ DB_Postgres, DB_Oracle }) // Reference issue:
-                                               // https://github.com/OpenLiberty/open-liberty/issues/29440
+                                                     // https://github.com/OpenLiberty/open-liberty/issues/29440
     public void testOLGH29440() throws Exception {
         deleteAllEntities(DemographicInfo.class);
 
@@ -1420,10 +1418,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
         try {
 
             result = em.createQuery(
-                    "SELECT this.publicDebt / this.numFullTimeWorkers FROM DemographicInfo WHERE EXTRACT (YEAR FROM this.collectedOn) = ?1",
-                    BigDecimal.class)
-                    .setParameter(1, 2024)
-                    .getSingleResult();
+                                    "SELECT this.publicDebt / this.numFullTimeWorkers FROM DemographicInfo WHERE EXTRACT (YEAR FROM this.collectedOn) = ?1",
+                                    BigDecimal.class)
+                            .setParameter(1, 2024)
+                            .getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1452,13 +1450,12 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipIfSysProp(DB_DB2) // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29443
     public void testOLGH29443() throws Exception {
         deleteAllEntities(DemographicInfo.class);
 
         ZoneId ET = ZoneId.of("America/New_York");
         Instant when = ZonedDateTime.of(2022, 4, 29, 12, 0, 0, 0, ET)
-                .toInstant();
+                        .toInstant();
 
         DemographicInfo US2022 = DemographicInfo.of(2022, 4, 29, 132250000, 6526909395140.41, 23847245116757.60);
         DemographicInfo US2007 = DemographicInfo.of(2007, 4, 30, 121090000, 3833110332444.19, 5007058051986.64);
@@ -1479,10 +1476,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
             tx.begin();
             results = em
-                    .createQuery("SELECT this.numFullTimeWorkers FROM DemographicInfo WHERE this.collectedOn=:when",
-                            BigInteger.class)
-                    .setParameter("when", when)
-                    .getResultList();
+                            .createQuery("SELECT this.numFullTimeWorkers FROM DemographicInfo WHERE this.collectedOn=:when",
+                                         BigInteger.class)
+                            .setParameter("when", when)
+                            .getResultList();
             tx.commit();
 
             try {
@@ -1495,7 +1492,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
                                                                                                                      // is
                                                                                                                      // returned
                 assertEquals("Query should not have returned more than one result after iteration " + i, 1,
-                        results.size());
+                             results.size());
                 assertEquals(US2022.numFullTimeWorkers, results.get(0));
             } catch (AssertionError e) {
                 errors.add(e);
@@ -1503,9 +1500,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
 
         if (!errors.isEmpty()) {
-            throw new AssertionError(
-                    "Executing the same query returned incorrect results " + errors.size() + " out of 10 executions",
-                    errors.get(0));
+            throw new AssertionError("Executing the same query returned incorrect results " + errors.size() + " out of 10 executions", errors.get(0));
         }
     }
 
@@ -1515,9 +1510,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
         Rating.Reviewer jimmy = Rating.Reviewer.of("Jimothy", "Scramble", "J.Scramble@example.com");
         Rating.Item blueBerry = Rating.Item.of("BlueBerry 10", 299.99f);
         Rating rating = Rating.of(1001, blueBerry, 4, jimmy,
-                "The buttons are nice for quick typing",
-                "The power button could have been in a better place",
-                "Poor screen lighting");
+                                  "The buttons are nice for quick typing",
+                                  "The power button could have been in a better place",
+                                  "Poor screen lighting");
 
         Rating result;
 
@@ -1527,8 +1522,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         tx.begin();
         List<String> comments = em.createQuery("SELECT o.comments FROM Rating o WHERE o.id = :id", String.class)
-                .setParameter("id", 1001)
-                .getResultList();
+                        .setParameter("id", 1001)
+                        .getResultList();
         tx.commit();
 
         assertEquals(3, comments.size());
@@ -1536,10 +1531,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             result = em.createQuery("SELECT NEW io.openliberty.jpa.data.tests.models.Rating( "
-                    + " o.id, o.item, o.numStars, o.reviewer, o.comments ) "
-                    + "FROM Rating o WHERE o.id = :id", Rating.class)
-                    .setParameter("id", 1001)
-                    .getSingleResult();
+                                    + " o.id, o.item, o.numStars, o.reviewer, o.comments ) "
+                                    + "FROM Rating o WHERE o.id = :id", Rating.class)
+                            .setParameter("id", 1001)
+                            .getSingleResult();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -1610,12 +1605,12 @@ public class JakartaDataRecreateServlet extends FATServlet {
      *
      * @param clazz - the entity class
      * @param aka   - "also known as" if the table has a different name than the
-     *              entity
+     *                  entity
      */
     private void deleteAllEntities(Class<?> clazz, String aka) throws Exception {
         tx.begin();
         em.createQuery("DELETE FROM " + aka)
-                .executeUpdate();
+                        .executeUpdate();
         tx.commit();
     }
 
@@ -1630,7 +1625,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     private void deleteAllEntities(Class<?> clazz) throws Exception {
         tx.begin();
         em.createQuery("DELETE FROM " + clazz.getSimpleName())
-                .executeUpdate();
+                        .executeUpdate();
         tx.commit();
     }
 
