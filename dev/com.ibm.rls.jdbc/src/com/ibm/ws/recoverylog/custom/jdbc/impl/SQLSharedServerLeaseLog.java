@@ -938,11 +938,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         if (tc.isEntryEnabled())
             Tr.entry(tc, "createLeaseTable", conn, this);
 
-        Statement createTableStmt = null;
-
-        try {
-            createTableStmt = conn.createStatement();
-
+        try (Statement createTableStmt = conn.createStatement()) {
             if (DBProduct.Oracle == dbProduct) {
                 String oracleTableString = oracleTablePreString + _leaseTableName + oracleTablePostString;
                 if (tc.isDebugEnabled())
@@ -983,11 +979,6 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
                 // Create index on the new table
                 createTableStmt.execute(genericIndexString);
-            }
-
-        } finally {
-            if (createTableStmt != null && !createTableStmt.isClosed()) {
-                createTableStmt.close();
             }
         }
 
