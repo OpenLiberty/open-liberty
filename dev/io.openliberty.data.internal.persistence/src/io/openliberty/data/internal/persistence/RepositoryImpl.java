@@ -57,10 +57,12 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
 import io.openliberty.data.internal.persistence.QueryInfo.Type;
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.cdi.FutureEMBuilder;
+import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -302,8 +304,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param original exception to possibly replace.
      * @return exception to replace with, if any. Otherwise, the original.
      */
+    @FFDCIgnore(Exception.class) // secondary error
     @Trivial
-    static RuntimeException failure(Exception original) {
+    static RuntimeException failure(Exception original, EntityManagerBuilder emb) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         RuntimeException x = null;
         if (original instanceof PersistenceException) {
@@ -311,16 +314,26 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(tc, "checking " + cause.getClass().getName() + " with message " + cause.getMessage());
 
-                // TODO If this ever becomes real code, it should be delegated to the JDBC integration layer
-                // where there is more thorough logic that takes into account configuration and database differences
-                if (cause instanceof SQLRecoverableException
-                    || cause instanceof SQLNonTransientConnectionException
-                    || cause instanceof SQLTransientConnectionException)
-                    x = new DataConnectionException(original);
-                else if (cause instanceof SQLSyntaxErrorException)
-                    x = new MappingException(original);
-                else if (cause instanceof SQLIntegrityConstraintViolationException)
-                    x = new EntityExistsException(original);
+                if (emb instanceof DBStoreEMBuilder && cause instanceof SQLException) { //attempt to have the JDBC layer determine if this is a connection exception
+                    try {
+                        WSJdbcDataSource ds = (WSJdbcDataSource) emb.getDataSource(null, null);
+                        if (ds != null && ds.getDatabaseHelper().isConnectionError((java.sql.SQLException) cause)) {
+                            x = new DataConnectionException(original);
+                        }
+                    } catch (Exception e) {
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(tc, "Could not obtain DataSource during Exception checking");
+                    }
+                }
+                if (x == null)
+                    if (cause instanceof SQLRecoverableException
+                        || cause instanceof SQLNonTransientConnectionException
+                        || cause instanceof SQLTransientConnectionException)
+                        x = new DataConnectionException(original);
+                    else if (cause instanceof SQLSyntaxErrorException)
+                        x = new MappingException(original);
+                    else if (cause instanceof SQLIntegrityConstraintViolationException)
+                        x = new EntityExistsException(original);
             }
             if (x == null) {
                 if (original instanceof OptimisticLockException)
@@ -460,6 +473,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         CompletableFuture<QueryInfo> queryInfoFuture = queries.get(method);
         boolean isDefaultMethod = false;
+        EntityManager em = null;
 
         if (queryInfoFuture == null)
             if (method.isDefault()) {
@@ -482,6 +496,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(),
                      provider.loggable(repositoryInterface, method, args));
+
+        EntityInfo entityInfo = null;
+
         try {
             if (isDisposed.get())
                 throw exc(IllegalStateException.class,
@@ -522,7 +539,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
 
             LocalTransactionCoordinator suspendedLTC = null;
-            EntityManager em = null;
+
             Object returnValue;
             Class<?> returnType = method.getReturnType();
             boolean failed = true;
@@ -531,7 +548,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             try {
                 QueryInfo queryInfo = queryInfoFuture.join();
-                EntityInfo entityInfo = queryInfo.entityInfo;
+                entityInfo = queryInfo.entityInfo;
 
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, queryInfo.toString());
@@ -1094,7 +1111,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             return returnValue;
         } catch (Throwable x) {
             if (!isDefaultMethod && x instanceof Exception)
-                x = failure((Exception) x);
+                x = failure((Exception) x, entityInfo == null ? null : entityInfo.builder);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
             throw x;

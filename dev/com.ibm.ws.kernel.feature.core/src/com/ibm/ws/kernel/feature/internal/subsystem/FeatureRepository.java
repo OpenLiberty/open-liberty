@@ -986,7 +986,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             publicFeatureNameToSymbolicName.put(lowerFeature(attr.symbolicName), attr.symbolicName);
         } else if (def.getVisibility() == Visibility.PRIVATE) {
             if ((attr.platforms != null) && !attr.platforms.isEmpty()) {
-                putCompatibilityFeature(def.getPlatformName(), def);
+                for(String plat : def.getPlatformNames()){
+                    putCompatibilityFeature(plat, def);
+                }
             }
         }
 

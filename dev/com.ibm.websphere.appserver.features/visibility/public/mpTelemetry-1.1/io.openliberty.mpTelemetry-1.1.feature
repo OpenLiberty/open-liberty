@@ -35,10 +35,8 @@ IBM-SPI-Package: io.openliberty.microprofile.telemetry.spi
   io.openliberty.org.jetbrains.annotation,\
   io.openliberty.io.zipkin.zipkin2.1.0
 -jars=io.openliberty.mpTelemetry.1.1.thirdparty; location:="dev/api/third-party/,lib/",\
-  io.openliberty.microprofile.telemetry.spi; location:="lib/"
-# commented out until the SPI is moved to GA and the bundle is moved to the dev/spi/ibm direcotry
-#-files=dev/spi/ibm/javadoc/io.openliberty.microprofile.telemetry.spi_1.0-javadoc.zip
-# add dev/spi/ibm/, when the SPI is moved to GA
+  io.openliberty.microprofile.telemetry.spi; location:="dev/spi/ibm/"
+-files=dev/spi/ibm/javadoc/io.openliberty.microprofile.telemetry.spi_1.0-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

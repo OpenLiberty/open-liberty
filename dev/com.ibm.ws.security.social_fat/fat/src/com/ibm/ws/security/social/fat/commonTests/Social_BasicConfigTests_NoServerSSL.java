@@ -76,7 +76,7 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -106,7 +106,7 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_jvmprops_goodTrust");
         String lastStep = perform_social_login;
-        String[] steps = inovke_social_login_actions;
+        String[] steps = invoke_social_login_actions;
         List<validationData> expectations = vData.addSuccessStatusCodesForActions(lastStep, steps);
         expectations = vData.addResponseStatusExpectation(expectations, lastStep, SocialConstants.UNAUTHORIZED_STATUS);
         // Error message may or may not be emitted
@@ -116,7 +116,7 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
         genericTestServer.addIgnoredServerException(MessageConstants.CWWKE1106W_QUIESCE_LISTENERS_NOT_COMPLETE);
         genericTestServer.addIgnoredServerException(MessageConstants.CWWKE1107W_QUIESCE_WAITING_ON_THREAD);
         try {
-            genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+            genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
         } catch (Exception e) {
             if (isAcceptableBadConnectionException(e)) {
                 Log.info(thisClass, "info", "Caught any acceptable bad connection exception (" + e + ")");
@@ -154,7 +154,7 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -178,7 +178,7 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
         WebClient webClient = getAndSaveWebClient();
 
         String lastStep = perform_social_login;
-        String[] steps = inovke_social_login_actions;
+        String[] steps = invoke_social_login_actions;
         if (provider.equals(SocialConstants.TWITTER_PROVIDER)) {
             lastStep = SocialConstants.INVOKE_SOCIAL_RESOURCE;
             steps = SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY;

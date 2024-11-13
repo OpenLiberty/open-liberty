@@ -59,6 +59,7 @@ import componenttest.annotation.processor.TestServletProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.logging.ffdc.IgnoredFFDCs;
 import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
+import componenttest.rules.repeater.CheckpointRule;
 import componenttest.rules.repeater.EE9PackageReplacementHelper;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTestAction;
@@ -115,6 +116,9 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         String testName = super.testName(method);
         if (RepeatTestFilter.isAnyRepeatActionActive()) {
             testName = testName + RepeatTestFilter.getRepeatActionsAsString();
+        }
+        if (CheckpointRule.isActive()) {
+            testName = testName + "_CHECKPOINT_RULE";
         }
         return testName;
     }

@@ -71,7 +71,7 @@ public class SameSiteTests extends SocialCommonTest {
         String subTestPrefix = "(" + inSubTestPrefix + "): ";
         List<validationData> expectations = null;
 
-        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, inovke_social_login_actions);
+        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, invoke_social_login_actions);
         expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.UNAUTHORIZED_STATUS);
         expectations = vData.addExpectation(expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.RESPONSE_MESSAGE, SocialConstants.STRING_CONTAINS, subTestPrefix + "Did not receive Unauthorized in the message.", null, SocialConstants.UNAUTHORIZED_MESSAGE);
         expectations = vData.addExpectation(expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.RESPONSE_FULL, SocialConstants.STRING_CONTAINS, subTestPrefix + "Did not receive the " + SocialMessageConstants.CWWKS5489E_SOCIAL_LOGIN_FAILED + " message in the response", null, SocialMessageConstants.CWWKS5489E_SOCIAL_LOGIN_FAILED);
@@ -230,7 +230,7 @@ public class SameSiteTests extends SocialCommonTest {
             break;
         }
 
-        Object response = genericSocial(_testName, webClient, inovke_social_login_actions, settings, expectations);
+        Object response = genericSocial(_testName, webClient, invoke_social_login_actions, settings, expectations);
 
         validateCookies(response, testExpectation, samesiteSetting, partitionedCookie);
 

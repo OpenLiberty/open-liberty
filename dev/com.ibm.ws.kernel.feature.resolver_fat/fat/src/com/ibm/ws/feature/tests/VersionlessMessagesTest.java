@@ -105,6 +105,16 @@ public class VersionlessMessagesTest {
         startServer_CheckLogs("CWWKF0054E:");
     }
 
+    @Test // 54E
+    public void versionless_NoFeatureVersionExistsForPlatformJakartaee8() throws Exception {
+
+        initTest(SERVER_NAME_NO_VERSION_OF_FEATURE_EXISTS_FOR_PLATFORM, "jakartaee-8.0", "data", null);
+
+        // Expect message: "CWWKF0054E: The {0} versionless feature does not have a version that belongs to the {1} platform.
+        allowedMessages = new String[] { "CWWKF0050E", "CWWKF0055E", "CWWKF0054E" };
+        startServer_CheckLogs("CWWKF0054E:");
+    }
+
     @Test // 55E
     public void versionless_NoConfiguredPlatform() throws Exception {
 

@@ -80,7 +80,7 @@ public class OidcDelegatedSocialLoginWithProvidersTests extends CommonDelegatedT
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfExternalProvidersShouldntRun.class)
@@ -94,7 +94,7 @@ public class OidcDelegatedSocialLoginWithProvidersTests extends CommonDelegatedT
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfExternalProvidersShouldntRun.class)
@@ -107,7 +107,7 @@ public class OidcDelegatedSocialLoginWithProvidersTests extends CommonDelegatedT
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
 }

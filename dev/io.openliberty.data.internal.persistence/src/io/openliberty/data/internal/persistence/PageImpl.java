@@ -32,6 +32,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 /**
+ * A page of results.
  */
 public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
@@ -43,7 +44,12 @@ public class PageImpl<T> implements Page<T> {
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
+    @Trivial
     PageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(tc, "<init>", queryInfo, pageRequest, queryInfo.loggable(args));
+
         if (pageRequest == null)
             queryInfo.missingPageRequest();
 
@@ -63,10 +69,13 @@ public class PageImpl<T> implements Page<T> {
 
             results = query.getResultList();
         } catch (Exception x) {
-            throw RepositoryImpl.failure(x);
+            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
         } finally {
             em.close();
         }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "<init>");
     }
 
     /**
@@ -97,17 +106,22 @@ public class PageImpl<T> implements Page<T> {
 
             return query.getSingleResult();
         } catch (Exception x) {
-            throw RepositoryImpl.failure(x);
+            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
         } finally {
             em.close();
         }
     }
 
     @Override
+    @Trivial
     public List<T> content() {
         int size = results.size();
         int max = pageRequest.size();
-        return size > max ? new ResultList(max) : results;
+        List<T> content = size > max ? new ResultList(max) : results;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "content", queryInfo.loggable(content));
+        return content;
     }
 
     @Override

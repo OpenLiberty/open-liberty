@@ -442,12 +442,12 @@ public class CustomSelectionPageTests extends CommonMultiProviderLocalAuthentica
 
         updatedSocialTestSettings = addParametersToProtectedResourceUrl(updatedSocialTestSettings, paramMap);
 
-        String lastAction = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String lastAction = invoke_social_login_actions[invoke_social_login_actions.length - 1];
 
         List<validationData> expectations = getSuccessfulCustomSelectionPageWithSocialLoginFlowExpectations(updatedSocialTestSettings);
         expectations = addQueryParameterExpectations(expectations, paramMap, lastAction);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /*************************************************** Helper methods ***************************************************/
@@ -461,7 +461,7 @@ public class CustomSelectionPageTests extends CommonMultiProviderLocalAuthentica
 
         List<validationData> expectations = getSuccessfulDefaultSelectionPageExpectations(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -495,7 +495,7 @@ public class CustomSelectionPageTests extends CommonMultiProviderLocalAuthentica
         try {
             Log.info(thisClass, _testName, "Beginning login flow with provider: " + providerName);
 
-            genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, settings, expectations);
+            genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, settings, expectations);
 
         } catch (Exception e) {
             throw new Exception("Error encountered authenticating with Liberty OP provider [" + providerName + "]: " + e.getMessage(), e);
@@ -590,7 +590,7 @@ public class CustomSelectionPageTests extends CommonMultiProviderLocalAuthentica
      * protected resource.
      */
     List<validationData> getSuccessfulCustomSelectionPageWithSocialLoginFlowExpectations(SocialTestSettings settings) throws Exception {
-        List<validationData> expectations = vData.addSuccessStatusCodesForActions(inovke_social_login_actions);
+        List<validationData> expectations = vData.addSuccessStatusCodesForActions(invoke_social_login_actions);
         expectations = setLocalAuthenticationDisabledExpectations(expectations);
         expectations = getGoodCustomSelectionPageForSocialLoginExpectations(expectations, settings);
         expectations = setLoginPageExpectation(expectations, settings, SocialConstants.SELECT_PROVIDER);

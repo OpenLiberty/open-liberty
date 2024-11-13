@@ -383,7 +383,7 @@ public class SocialCommonTest extends CommonTest {
     public final static String GenericConfig = "genericConfig";
     public final static String ProviderConfig = "providerConfig";
 
-    protected static String[] inovke_social_login_actions = null;
+    protected static String[] invoke_social_login_actions = null;
     protected static String[] invoke_social_just_login_actions = null;
     protected static String provider = null;
     protected static String perform_social_login = null;
@@ -470,9 +470,9 @@ public class SocialCommonTest extends CommonTest {
 
         if (requestedProvider.equals(SocialConstants.FACEBOOK_PROVIDER)) {
             if (usesSelection) {
-                inovke_social_login_actions = SocialConstants.FACEBOOK_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
+                invoke_social_login_actions = SocialConstants.FACEBOOK_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
             } else {
-                inovke_social_login_actions = SocialConstants.FACEBOOK_INVOKE_SOCIAL_LOGIN_ACTIONS;
+                invoke_social_login_actions = SocialConstants.FACEBOOK_INVOKE_SOCIAL_LOGIN_ACTIONS;
             }
             invoke_social_just_login_actions = SocialConstants.FACEBOOK_INVOKE_SOCIAL_JUST_LOGIN_ACTIONS;
             perform_social_login = SocialConstants.FACEBOOK_PERFORM_SOCIAL_LOGIN;
@@ -485,9 +485,9 @@ public class SocialCommonTest extends CommonTest {
         }
         if (requestedProvider.equals(SocialConstants.GITHUB_PROVIDER)) {
             if (usesSelection) {
-                inovke_social_login_actions = SocialConstants.GITHUB_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
+                invoke_social_login_actions = SocialConstants.GITHUB_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
             } else {
-                inovke_social_login_actions = SocialConstants.GITHUB_INVOKE_SOCIAL_LOGIN_ACTIONS;
+                invoke_social_login_actions = SocialConstants.GITHUB_INVOKE_SOCIAL_LOGIN_ACTIONS;
             }
             invoke_social_just_login_actions = SocialConstants.GITHUB_INVOKE_SOCIAL_JUST_LOGIN_ACTIONS;
             perform_social_login = SocialConstants.GITHUB_PERFORM_SOCIAL_LOGIN;
@@ -500,9 +500,9 @@ public class SocialCommonTest extends CommonTest {
         }
         if (requestedProvider.equals(SocialConstants.TWITTER_PROVIDER)) {
             if (usesSelection) {
-                inovke_social_login_actions = SocialConstants.TWITTER_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
+                invoke_social_login_actions = SocialConstants.TWITTER_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
             } else {
-                inovke_social_login_actions = SocialConstants.TWITTER_INVOKE_SOCIAL_LOGIN_ACTIONS;
+                invoke_social_login_actions = SocialConstants.TWITTER_INVOKE_SOCIAL_LOGIN_ACTIONS;
             }
             invoke_social_just_login_actions = SocialConstants.TWITTER_INVOKE_SOCIAL_JUST_LOGIN_ACTIONS;
             // the typical login page for twitter is the sign in page - you'll get the log in page if/when you
@@ -517,9 +517,9 @@ public class SocialCommonTest extends CommonTest {
         }
         if (requestedProvider.equals(SocialConstants.LINKEDIN_PROVIDER)) {
             if (usesSelection) {
-                inovke_social_login_actions = SocialConstants.LINKEDIN_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
+                invoke_social_login_actions = SocialConstants.LINKEDIN_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
             } else {
-                inovke_social_login_actions = SocialConstants.LINKEDIN_INVOKE_SOCIAL_LOGIN_ACTIONS;
+                invoke_social_login_actions = SocialConstants.LINKEDIN_INVOKE_SOCIAL_LOGIN_ACTIONS;
             }
             invoke_social_just_login_actions = SocialConstants.LINKEDIN_INVOKE_SOCIAL_JUST_LOGIN_ACTIONS;
             // the typical login page for twitter is the sign in page - you'll get the log in page if/when you
@@ -534,9 +534,9 @@ public class SocialCommonTest extends CommonTest {
         }
         if (requestedProvider.equals(SocialConstants.LIBERTYOP_PROVIDER)) {
             if (usesSelection) {
-                inovke_social_login_actions = SocialConstants.LIBERTYOP_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
+                invoke_social_login_actions = SocialConstants.LIBERTYOP_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
             } else {
-                inovke_social_login_actions = SocialConstants.LIBERTYOP_INVOKE_SOCIAL_LOGIN_ACTIONS;
+                invoke_social_login_actions = SocialConstants.LIBERTYOP_INVOKE_SOCIAL_LOGIN_ACTIONS;
             }
             invoke_social_just_login_actions = SocialConstants.LIBERTYOP_INVOKE_SOCIAL_JUST_LOGIN_ACTIONS;
             perform_social_login = SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN;
@@ -560,9 +560,9 @@ public class SocialCommonTest extends CommonTest {
         }
         if (requestedProvider.equals(SocialConstants.OPENSHIFT_PROVIDER)) {
             if (usesSelection) {
-                inovke_social_login_actions = SocialConstants.OPENSHIFT_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
+                invoke_social_login_actions = SocialConstants.OPENSHIFT_INVOKE_SOCIAL_LOGIN_WITH_SELECTION_ACTIONS;
             } else {
-                inovke_social_login_actions = SocialConstants.OPENSHIFT_INVOKE_SOCIAL_LOGIN_ACTIONS;
+                invoke_social_login_actions = SocialConstants.OPENSHIFT_INVOKE_SOCIAL_LOGIN_ACTIONS;
             }
             invoke_social_just_login_actions = SocialConstants.OPENSHIFT_INVOKE_SOCIAL_JUST_LOGIN_ACTIONS;
             perform_social_login = SocialConstants.OPENSHIFT_PERFORM_SOCIAL_LOGIN;
@@ -1570,7 +1570,7 @@ public class SocialCommonTest extends CommonTest {
      * @throws Exception
      */
     public List<validationData> setGoodSocialExpectations(SocialTestSettings settings, Boolean addJWTTokenChecks, String finalAction) throws Exception {
-        List<validationData> expectations = vData.addSuccessStatusCodesForActions(inovke_social_login_actions);
+        List<validationData> expectations = vData.addSuccessStatusCodesForActions(invoke_social_login_actions);
         if (usesSelectionPanel) {
             expectations = setDefaultSelectionPageExpectations(expectations, settings);
             expectations = setLoginPageExpectation(expectations, settings, SocialConstants.SELECT_PROVIDER);
@@ -1636,7 +1636,7 @@ public class SocialCommonTest extends CommonTest {
 
     public List<validationData> setGoodHelloWorldExpectations(List<validationData> expectations, SocialTestSettings settings, Boolean addJWTTokenChecks, String finalAction) throws Exception {
         if (expectations == null) {
-            expectations = vData.addSuccessStatusCodesForActions(inovke_social_login_actions);
+            expectations = vData.addSuccessStatusCodesForActions(invoke_social_login_actions);
         }
 
         expectations = vData.addExpectation(expectations, finalAction, SocialConstants.RESPONSE_FULL, SocialConstants.STRING_CONTAINS, "Did not get to the HelloWorld App", null, SocialConstants.HELLOWORLD_MSG);
@@ -1659,7 +1659,7 @@ public class SocialCommonTest extends CommonTest {
 
     public List<validationData> setJwtExpectations(List<validationData> expectations, SocialTestSettings settings, String finalAction) throws Exception {
         if (expectations == null) {
-            expectations = vData.addSuccessStatusCodesForActions(inovke_social_login_actions);
+            expectations = vData.addSuccessStatusCodesForActions(invoke_social_login_actions);
         }
         // add validation of JWT Token required claims
         expectations = vData.addExpectation(expectations, finalAction, SocialConstants.RESPONSE_JWT_TOKEN, SocialConstants.STRING_CONTAINS, "Token did NOT validate properly", null, null);
@@ -1693,7 +1693,7 @@ public class SocialCommonTest extends CommonTest {
      */
     public List<validationData> set401ResponseBaseExpectations(SocialTestSettings settings) throws Exception {
 
-        List<validationData> expectations = vData.addSuccessStatusCodesForActions(perform_social_login, inovke_social_login_actions);
+        List<validationData> expectations = vData.addSuccessStatusCodesForActions(perform_social_login, invoke_social_login_actions);
         expectations = vData.addResponseStatusExpectation(expectations, perform_social_login, SocialConstants.UNAUTHORIZED_STATUS);
 
         expectations = setLoginPageExpectation(expectations, settings, SocialConstants.INVOKE_SOCIAL_RESOURCE);

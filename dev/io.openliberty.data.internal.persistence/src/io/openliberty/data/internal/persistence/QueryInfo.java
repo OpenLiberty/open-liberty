@@ -1136,6 +1136,10 @@ public class QueryInfo {
      * @throws Exception                         if an error occurs.
      */
     Object findAndUpdate(Object arg, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findAndUpdate", loggable(arg), em);
+
         List<Object> results;
 
         boolean hasSingularEntityParam = false;
@@ -1217,6 +1221,8 @@ public class QueryInfo {
                                            false));
         }
 
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "findAndUpdate", loggable(returnValue));
         return returnValue;
     }
 
@@ -1232,6 +1238,10 @@ public class QueryInfo {
      * @throws Exception                  if an error occurs.
      */
     private Object findAndUpdateOne(Object e, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findAndUpdateOne", loggable(e), em);
+
         String jpql = this.jpql;
 
         int versionParamIndex = entityInfo.idClassAttributeAccessors == null //
@@ -1302,7 +1312,11 @@ public class QueryInfo {
                       RepositoryImpl.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
         }
 
-        return em.merge(toEntity(e));
+        Object returnValue = em.merge(toEntity(e));
+
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findAndUpdateOne", loggable(returnValue));
+        return returnValue;
     }
 
     /**
@@ -2391,7 +2405,12 @@ public class QueryInfo {
      * @param attributeName name of the entity attribute.
      * @return the value of the attribute.
      */
+    @Trivial
     Object getAttribute(Object entity, String attributeName) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getAttribute", loggable(entity), attributeName);
+
         List<Member> accessors = entityInfo.attributeAccessors.get(attributeName);
         if (accessors == null)
             throw new IllegalArgumentException(attributeName); // should never occur
@@ -2419,6 +2438,8 @@ public class QueryInfo {
             }
         }
 
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getAttribute", loggable(value));
         return value;
     }
 
@@ -2523,7 +2544,8 @@ public class QueryInfo {
             try {
                 List<Member> accessors = entityInfo.attributeAccessors.get(sort.property());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "getCursorValues for " + entity, accessors);
+                    Tr.debug(this, tc, "getCursorValues for " + loggable(entity),
+                             accessors);
                 Object value = entity;
                 for (Member accessor : accessors)
                     if (accessor instanceof Method)
@@ -3468,7 +3490,12 @@ public class QueryInfo {
      *         Insert method signature.
      * @throws Exception if an error occurs.
      */
+    @Trivial
     Object insert(Object arg, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "insert", loggable(arg), em);
+
         boolean resultVoid = void.class.equals(singleType) ||
                              Void.class.equals(singleType);
         ArrayList<Object> results;
@@ -3575,6 +3602,8 @@ public class QueryInfo {
                                            false));
         }
 
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "insert", loggable(returnValue));
         return returnValue;
     }
 
@@ -3805,6 +3834,10 @@ public class QueryInfo {
      *                       was not found.
      */
     int remove(Object e, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "remove", loggable(e), em);
+
         Class<?> entityClass = entityInfo.getType();
 
         if (e == null)
@@ -3891,6 +3924,8 @@ public class QueryInfo {
             throw new DataException("Found " + numDeleted + " matching entities."); // ought to be unreachable
         }
 
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "remove", numDeleted);
         return numDeleted;
     }
 
@@ -3954,6 +3989,10 @@ public class QueryInfo {
      * @throws Exception if an error occurs.
      */
     Object save(Object arg, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "save", loggable(arg), em);
+
         boolean resultVoid = void.class.equals(singleType) ||
                              Void.class.equals(singleType);
         List<Object> results;
@@ -4050,6 +4089,8 @@ public class QueryInfo {
                                            false));
         }
 
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "save", loggable(returnValue));
         return returnValue;
     }
 
@@ -4178,6 +4219,7 @@ public class QueryInfo {
      * @param args  repository method arguments
      * @throws Exception if an error occurs
      */
+    @Trivial // avoid logging customer data
     void setParameters(jakarta.persistence.Query query, Object... args) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -4206,6 +4248,7 @@ public class QueryInfo {
                 query.setParameter(++p, arg);
             }
         }
+
         if (args != null &&
             jpqlParamCount < args.length &&
             type != Type.FIND &&
@@ -4288,6 +4331,7 @@ public class QueryInfo {
      * @param version            the version if versioned, otherwise null.
      * @throws Exception if an error occurs
      */
+    @Trivial // avoid tracing customer data
     void setParametersFromIdClassAndVersion(int startingParamIndex,
                                             jakarta.persistence.Query query,
                                             Object entity,
@@ -4506,7 +4550,12 @@ public class QueryInfo {
      * @return the number of entities updated (1 or 0).
      * @throws Exception if an error occurs.
      */
+    @Trivial
     int update(Object e, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "update", loggable(e), em);
+
         Class<?> entityClass = entityInfo.getType();
 
         if (e == null)
@@ -4580,6 +4629,9 @@ public class QueryInfo {
 
         if (numUpdated > 1) // ought to be unreachable
             throw new DataException("Found " + numUpdated + " matching entities.");
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "update", numUpdated);
         return numUpdated;
     }
 

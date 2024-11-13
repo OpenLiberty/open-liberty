@@ -123,7 +123,7 @@ public class LibertyOP_BasicConfigTests_oidc_usingSocialConfig extends Social_Ba
 
         List<validationData> expectations = set401ResponseBaseExpectations(updatedSocialTestSettings);
         // twitter marks the redirect as bad in the login page that it returns - you fill in your id/pw and the login request fails - throwing an exception
-        //steps = inovke_social_login_actions;
+        //steps = invoke_social_login_actions;
         expectations = vData.addSuccessStatusCodesForActions(SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, perform_social_login, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received a message indicating that there was a problem with the hostname verification", SocialMessageConstants.CWWKS1708E_UNABLE_TO_CONTACT_PROVIDER);
         //expectations = validationTools.addMessageExpectation(genericTestServer, expectations, perform_social_login, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received a message indicating that the signing key was not found", SocialMessageConstants.CWWKS6049E_JWK_NOT_RETURNED);
@@ -133,7 +133,7 @@ public class LibertyOP_BasicConfigTests_oidc_usingSocialConfig extends Social_Ba
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, perform_social_login, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received a message indicating that the signing key was not found", SocialMessageConstants.CWWKS5453E_PROBLEM_CREATING_JWT);
         */
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -160,7 +160,7 @@ public class LibertyOP_BasicConfigTests_oidc_usingSocialConfig extends Social_Ba
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_forwardLoginParameter?login_hint=bob@example.com");
 
-        String lastStep = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String lastStep = invoke_social_login_actions[invoke_social_login_actions.length - 1];
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
         // Ensure that the subject principals do NOT include a JWT
@@ -171,7 +171,7 @@ public class LibertyOP_BasicConfigTests_oidc_usingSocialConfig extends Social_Ba
         expectations = validationTools.addMessageExpectation(testOPServer, expectations, perform_social_login, SocialConstants.TRACE_LOG, SocialConstants.STRING_CONTAINS,
                 "OP trace log did not contain entry indicating that the authzParameter was passed to the OP.", "name:.*response_type.*values:.*\\[code\\].*name:.*mq_authz1.*values:.*\\[mqa1234\\]");
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 }

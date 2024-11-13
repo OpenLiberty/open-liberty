@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.impl.DatabaseHelper;
 import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -249,6 +250,10 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource,
      */
     public final String getDatabaseProductName() {
         return mcf.getHelper().getDatabaseProductName();
+    }
+    
+    public final DatabaseHelper getDatabaseHelper() {
+        return mcf.getHelper();
     }
 
     /**

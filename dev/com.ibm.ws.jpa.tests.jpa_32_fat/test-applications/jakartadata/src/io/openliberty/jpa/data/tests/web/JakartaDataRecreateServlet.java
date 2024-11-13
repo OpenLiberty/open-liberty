@@ -1128,7 +1128,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipIfSysProp({ DB_DB2, DB_Oracle }) // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28289
+    @SkipIfSysProp({ DB_Oracle }) 
+    // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28289
+    // DB2 issue resolved (https://github.com/eclipse-ee4j/eclipselink/issues/2282), Oracle now has issues too
     public void testOLGH28289() throws Exception {
         deleteAllEntities(Package.class);
 

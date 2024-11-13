@@ -3513,8 +3513,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "jsp23jsp22Server", //com.ibm.ws.jsp.2.3_fat
 
-                                                     "MetricsMonitorServer", //io.openliberty.microprofile.metrics.internal.5.x.monitor_fat
-
                                                      "ApplicationProcessorServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
                                                      "OpenAPITestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
                                                      "OpenAPIMergeTestServer", //io.openliberty.microprofile.openapi.2.0.internal_fat
@@ -3546,7 +3544,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "RequestTimingServer", //com.ibm.ws.request.timing_fat
                                                      "HungRequestTimingServer", //com.ibm.ws.request.timing.hung_fat
-                                                     "RequestTimingFeatureWithMetrics", //com.ibm.ws.request.timing.monitor_fat
 
                                                      "com.ibm.ws.rest.handler.config.fat", //com.ibm.ws.rest.handler.config_fat
                                                      "com.ibm.ws.rest.handler.config.openapi.fat", //com.ibm.ws.rest.handler.config_fat

@@ -102,7 +102,7 @@ public class Social_MultiProvider_BasicTests extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -135,7 +135,7 @@ public class Social_MultiProvider_BasicTests extends SocialCommonTest {
         }
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -169,7 +169,7 @@ public class Social_MultiProvider_BasicTests extends SocialCommonTest {
         }
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -208,7 +208,7 @@ public class Social_MultiProvider_BasicTests extends SocialCommonTest {
         }
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -239,7 +239,7 @@ public class Social_MultiProvider_BasicTests extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -270,6 +270,6 @@ public class Social_MultiProvider_BasicTests extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 }

@@ -97,7 +97,7 @@ public class MultiProvider_usingSocialConfig_withQueryParams extends CommonMulti
 
         List<validationData> expectations = getGoodExpectationsForParameterTest(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -123,7 +123,7 @@ public class MultiProvider_usingSocialConfig_withQueryParams extends CommonMulti
 
         List<validationData> expectations = getGoodExpectationsForParameterTest(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -148,7 +148,7 @@ public class MultiProvider_usingSocialConfig_withQueryParams extends CommonMulti
 
         List<validationData> expectations = getGoodExpectationsForParameterTest(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -175,7 +175,7 @@ public class MultiProvider_usingSocialConfig_withQueryParams extends CommonMulti
 
         List<validationData> expectations = getGoodExpectationsForParameterTest(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -200,7 +200,7 @@ public class MultiProvider_usingSocialConfig_withQueryParams extends CommonMulti
 
         List<validationData> expectations = getGoodExpectationsForParameterTest(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -224,7 +224,7 @@ public class MultiProvider_usingSocialConfig_withQueryParams extends CommonMulti
 
         List<validationData> expectations = getGoodExpectationsForParameterTest(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /************************************************* Helper methods *************************************************/
@@ -272,8 +272,8 @@ public class MultiProvider_usingSocialConfig_withQueryParams extends CommonMulti
     List<validationData> getGoodExpectationsForParameterTest(SocialTestSettings socialTestSettings) throws Exception {
         List<validationData> expectations = setGoodSocialExpectations(socialTestSettings, doNotAddJWTTokenValidation);
 
-        String firstAction = inovke_social_login_actions[0];
-        String lastAction = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String firstAction = invoke_social_login_actions[0];
+        String lastAction = invoke_social_login_actions[invoke_social_login_actions.length - 1];
 
         // Add expectations for the default request parameters appearing in both the initial and final request URLs
         expectations = addQueryParameterExpectations(expectations, getRequestParameters(), firstAction);

@@ -15,6 +15,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import org.junit.Assert;
 import org.testcontainers.containers.GenericContainer;
@@ -77,7 +80,7 @@ public abstract class BaseTestClass {
 
     }
 
-    protected String getContainerCollectorMetrics(GenericContainer<?> container) throws Exception {
+    protected String getContainerCollectorMetrics(GenericContainer<?> container) {
         String containerCollectorMetrics = requestContainerHttpServlet("/metrics", container.getHost(), container.getMappedPort(8889), HttpMethod.GET, null);
         Log.info(c, "getContainerCollectorMetrics", containerCollectorMetrics);
         return containerCollectorMetrics;
@@ -95,26 +98,62 @@ public abstract class BaseTestClass {
      
   }
     
+    /**
+     * Waits one second before checking the condition. Will wait 1 second for every retry amount. Uses the default of 5 seconds.
+     *
+     * @param metricsText The /metrics output
+     * @param expectedString String array of expected strings
+     */
+    protected void matchStringsWithRetries(Supplier<String> metricsOutput, String[] expectedString) throws InterruptedException {
+    	matchStringsWithRetries(metricsOutput, expectedString, 5);
+    }
     
-    protected void matchStrings(String metricsText, String[] expectedString) {
-        
+    /**
+     * Waits one second before checking the condition. Will wait 1 second for every retry amount.
+     *
+     * @param metricsText The /metrics output
+     * @param expectedString String array of expected strings
+     * @param maxRetries the amount of retries
+     * @throws InterruptedException
+     */
+    protected void matchStringsWithRetries(Supplier<String> metricsOutput, String[] expectedString, int maxRetries) throws InterruptedException {
+        String metricsString = null;
+        for (int x = 0; x <= maxRetries; x++) {
+            TimeUnit.SECONDS.sleep(1);
+
+            metricsString = metricsOutput.get();
+            if (doMatching.apply(metricsString, expectedString)== true) {
+                Log.info(c, "assertTrueRetryWithTimeout", String.format("It took %d retries and %d seconds of waiting to be succesful)", x, (x + 1)));
+                return;
+            }
+            
+        }
+
+		Assert.fail(String.format("Failed to find all expected strings. The /metrics output is:\n%s", metricsString));
+    	
+
+    }
+    
+    private static BiFunction<String, String[], Boolean> doMatching = (metricsText, expectedString) -> {
+    	
 		for (String m : expectedString) {
 			try (Scanner sc = new Scanner(metricsText)) {
 				boolean isFound = false;
 				while (sc.hasNextLine()) {
 					String line = sc.nextLine();
 					if (line.matches(m)) {
-						isFound=true;
+						isFound = true;
 						break;
 					}
 				}//while
 				if (!isFound) {
-					Log.info(c, "checkStrings", "Failed:\n" + metricsText);
-					Assert.fail("Did not contain string: " + m);
+				Log.info(BaseTestClass.class, "doMatching", String.format("Failed! Did not contain string: %s.)", m));
+					return Boolean.FALSE;
 				}
 			}//try
 		}//for
-    }
+		return Boolean.TRUE;
+    };
    
     
     protected String requestHttpServlet(String servletPath, LibertyServer server) {
@@ -158,6 +197,5 @@ public abstract class BaseTestClass {
                 con.disconnect();
         }
 
-    }
-   
+    }   
 }

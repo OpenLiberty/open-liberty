@@ -96,9 +96,7 @@ public class ConnectionPoolMetricsTest extends BaseTestClass {
         Log.info(c, testName, "------- connectionpool metrics should be available ------");
         
 		// Allow time for the collector to receive and expose metrics
-		TimeUnit.SECONDS.sleep(4);
-        
-		matchStrings(getContainerCollectorMetrics(container), 
+		matchStringsWithRetries(() -> getContainerCollectorMetrics(container), 
                 new String[] { "io_openliberty_connection_pool_handle_count\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_datasource_name=\"jdbc/exampleDS1\",job=\"unknown_service\"\\}.*",
                         "io_openliberty_connection_pool_connection_free\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_datasource_name=\"jdbc/exampleDS1\",job=\"unknown_service\"\\}.*",
                         "io_openliberty_connection_pool_connection_destroyed_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_datasource_name=\"jdbc/exampleDS1\",job=\"unknown_service\"\\}.*",

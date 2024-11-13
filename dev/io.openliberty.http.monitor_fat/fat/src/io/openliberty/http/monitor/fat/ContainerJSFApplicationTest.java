@@ -12,7 +12,6 @@ package io.openliberty.http.monitor.fat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -107,9 +106,8 @@ public class ContainerJSFApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
 
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
-                                           requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                                                 requestMethod));
     }
 
     @Test
@@ -147,10 +145,11 @@ public class ContainerJSFApplicationTest extends BaseTestClass {
         String urlXHTML = "http://" + server.getHostname() + ":"
                           + server.getHttpDefaultPort() + routeXHTML;
         HtmlPage page = (HtmlPage) webClient1.getPage(urlXHTML);
-        TimeUnit.SECONDS.sleep(5);
 
         //Expected count 3 : 1 xhtml, 2 resource
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null, ">2", null));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null,
+                                                                 ">2",
+                                                                 null));
 
         /*
          * Load with .jsf extension
@@ -159,12 +158,13 @@ public class ContainerJSFApplicationTest extends BaseTestClass {
         String urlJSF = "http://" + server.getHostname() + ":"
                         + server.getHttpDefaultPort() + routeJSF;
         page = (HtmlPage) webClient2.getPage(urlJSF);
-        TimeUnit.SECONDS.sleep(5);
 
         //Expected count 5 : + 2 resource loading (since xhtml loaded resources first, they continue to load form the /[jakarta.javax].faces.resource/*.xhtml path
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null, ">4", null));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null,
+                                                                 ">4",
+                                                                 null));
         //We expect 1, default signature just checks for greater than 0
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteJSF, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteJSF, responseStatus, requestMethod));
 
         /*
          * Load with .faces extension
@@ -173,12 +173,13 @@ public class ContainerJSFApplicationTest extends BaseTestClass {
         String urlFaces = "http://" + server.getHostname() + ":"
                           + server.getHttpDefaultPort() + routeFaces;
         page = (HtmlPage) webClient3.getPage(urlFaces);
-        TimeUnit.SECONDS.sleep(5);
 
         //Expected count 7 : + 2 resource loading (since xhtml loaded resources first, they continue to load form the /[jakarta.javax].faces.resource/*.xhtml path
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null, ">6", null));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null,
+                                                                 ">6",
+                                                                 null));
         //We expect 1, default signature just checks for greater than 0
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteFaces, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteFaces, responseStatus, requestMethod));
 
         /*
          * Load with /faces/* mapping
@@ -187,12 +188,13 @@ public class ContainerJSFApplicationTest extends BaseTestClass {
         String urlFacesNode = "http://" + server.getHostname() + ":"
                               + server.getHttpDefaultPort() + routeFacesNode;
         page = (HtmlPage) webClient4.getPage(urlFacesNode);
-        TimeUnit.SECONDS.sleep(5);
 
         //Expected count 9 : + 2 resource loading (since xhtml loaded resources first, they continue to load form the /[jakarta.javax].faces.resource/*.xhtml path
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null, ">8", null));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null,
+                                                                 ">8",
+                                                                 null));
         //We expect 1, default signature just checks for greater than 0
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteFacesNode, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteFacesNode, responseStatus, requestMethod));
 
     }
 
