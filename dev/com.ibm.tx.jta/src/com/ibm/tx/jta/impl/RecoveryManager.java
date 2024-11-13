@@ -86,8 +86,8 @@ public class RecoveryManager implements Runnable {
 
     private final RecoveryAgent _agent;
     protected RecoveryLog _tranLog; // 169107
-    protected RecoveryLog _xaLog; // 169107
-    protected final RecoveryLog _recoverXaLog; //@MD18134A
+    private RecoveryLog _xaLog; // 169107
+    private final RecoveryLog _recoverXaLog; //@MD18134A
 
     private SharedServerLeaseLog _leaseLog;
     private String _recoveryGroup;
