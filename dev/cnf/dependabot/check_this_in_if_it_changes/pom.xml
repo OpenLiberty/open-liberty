@@ -3949,7 +3949,7 @@
     <dependency>
       <groupId>org.jboss.weld.environment</groupId>
       <artifactId>weld-environment-common</artifactId>
-      <version>6.0.0.Beta1</version>
+      <version>6.0.0.CR1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -3969,7 +3969,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>6.0.0.Beta1</version>
+      <version>6.0.0.CR1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -3994,7 +3994,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>6.0.0.Beta1</version>
+      <version>6.0.0.CR1</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>

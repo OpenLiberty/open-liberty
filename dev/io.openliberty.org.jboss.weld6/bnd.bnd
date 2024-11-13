@@ -32,4 +32,4 @@ instrument.disabled: true
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest,\
     io.openliberty.jakarta.cdi.4.1;version=latest,\
-    io.openliberty.org.jboss.logging35;version=latest
+    io.openliberty.org.jboss.logging36;version=latest
