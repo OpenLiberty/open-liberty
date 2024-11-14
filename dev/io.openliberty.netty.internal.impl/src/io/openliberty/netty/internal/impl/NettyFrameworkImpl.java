@@ -165,6 +165,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     protected void unsetExecutorService(ExecutorService executorService) {
     	this.executorService = null;
     }
+    
+    public ExecutorService getExecutorService() {
+    	return this.executorService;
+    }
 
     /**
      * DS method for setting the scheduled executor service reference.

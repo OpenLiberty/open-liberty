@@ -106,7 +106,7 @@ public class TCPUtils {
 		}
 		final ChannelFuture openFuture = oFuture;
 		if (openListener != null) {
-			openFuture.addListener(openListener);
+			openFuture.addListener(generateOpenListenerWrapper(framework, openListener));
 		}
 		final String newHost = inetHost;
 
@@ -238,6 +238,27 @@ public class TCPUtils {
 			}
 		});
 		return openFuture;
+	}
+	
+	private static ChannelFutureListener generateOpenListenerWrapper(NettyFrameworkImpl framework, ChannelFutureListener listener) {
+		return new ChannelFutureListener() {
+		    @Override
+		    public void operationComplete(ChannelFuture future) throws Exception {
+		        framework.getExecutorService().execute(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							listener.operationComplete(future);
+						} catch (Exception e) {
+							System.out.println("Exception caught running open listener!! Closing channel just in case");
+							e.printStackTrace();
+							future.channel().close();
+						}
+					}
+				});
+		    }
+		};
 	}
 
 	private static Channel startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,

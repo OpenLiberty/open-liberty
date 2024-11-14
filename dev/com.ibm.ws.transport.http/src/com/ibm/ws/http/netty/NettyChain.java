@@ -254,6 +254,10 @@ public class NettyChain extends HttpChain {
     }
 
     private void channelFutureHandler(ChannelFuture future) {
+        if(state.get() == ChainState.STOPPING) {
+            System.out.println("Chain: "+ endpointName + ", Current state: " + state.get() + ", is stopping so will not notify any virtual hosts and will just return");
+            return;
+        }
         synchronized (this) {
             if (future.isSuccess()) {
                 state.set(ChainState.STARTED);
