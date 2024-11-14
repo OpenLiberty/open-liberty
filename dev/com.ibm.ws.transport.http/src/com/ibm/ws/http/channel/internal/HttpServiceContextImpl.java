@@ -1646,6 +1646,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return WsByteBuffer, null if no buffer is ready
      */
     public WsByteBuffer getReadBuffer() {
+        Tr.debug(tc, "PMDINH, getReadBuffer ,  currentReadBB [" + currentReadBB + "]");
+
         return this.currentReadBB;
     }
 
@@ -1656,6 +1658,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      */
     public void setReadBuffer(WsByteBuffer buffer) {
         this.currentReadBB = buffer;
+        Tr.debug(tc, "PMDINH, setReadBuffer ,  currentReadBB [" + currentReadBB + "]");
     }
 
     /**
@@ -3272,7 +3275,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (-1 == msg.getBuffersIndex()) {
             // this is the initial pass through the parsing of this message
             if (bTrace && tc.isDebugEnabled()) {
-                Tr.debug(tc, "First buffer of message: " + this.currentReadBB);
+                Tr.debug(tc, "PMDINH, parseMessage , currentReadBB [" + this.currentReadBB + "] , this " + this);
+
+                String _bufferAsString = com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(this.currentReadBB);
+
+                Tr.debug(tc, "PMDINH, parseMessage , NEW REQUEST, _bufferAsString [" + _bufferAsString + "] , this " + this);
+
             }
             if (isSecure()) {
                 this.myChannelConfig.getDebugLog().log(DebugLog.Level.INFO, HttpMessages.MSG_CONN_SSL, this);

@@ -469,6 +469,11 @@ public class UpgradeInputByteBufferUtil {
      * The provided callback will be called when the read is completed and that callback will invoke the ReadListener logic. 
      */
     public void initialRead(){
+        Tr.debug(tc, "PMDINH, initialRead ,  "
+                        + " , _buffer[" + _buffer+ "]"
+                        + " , _tcpChannelCallback [" + _tcpChannelCallback + "] \n"
+                        + " DONE ");
+
         _isInitialRead = true;
         if(_buffer != null){
             _buffer.release();
@@ -478,9 +483,16 @@ public class UpgradeInputByteBufferUtil {
         setAndAllocateBuffer(1);
         configurePreReadBuffer(1);
         
+       
         //This if the first read of the ReadListener, which means force the read to go async
         //We won't get an actual response from this read as it will always come back on another thread
         _tcpContext.getReadInterface().setBuffer(_buffer);
+        
+        Tr.debug(tc, "PMDINH, initialRead , after setAndAllocateBuffer, setBuffer to readInterface...  "
+                        + " , _buffer[" + _buffer+ "]"
+                        + " , _tcpChannelCallback [" + _tcpChannelCallback + "] ...now read data ...\n"
+                        + " DONE ");
+        
         _tcpContext.getReadInterface().read(1, _tcpChannelCallback, true, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
     }
     

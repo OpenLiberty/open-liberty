@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -61,7 +61,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
     protected TCPChannelConfiguration config;
     protected long timeoutTime;
     private int timeoutInterval;
-    private WsByteBuffer[] defaultBuffers = new WsByteBuffer[1];
+    private final WsByteBuffer[] defaultBuffers = new WsByteBuffer[1];
     private ByteBuffer byteBufferArray[] = null;
     private ByteBuffer byteBufferArrayDirect[] = null;
     private boolean missedSet = false;
@@ -80,7 +80,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
 
     /**
      * Constructor.
-     * 
+     *
      * @param link
      */
     protected TCPBaseRequestContext(TCPConnLink link) {
@@ -100,7 +100,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
 
     /**
      * Check whether this context has been aborted previously or not.
-     * 
+     *
      * @return boolean
      */
     protected boolean isAborted() {
@@ -109,7 +109,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
 
     /**
      * Access the connection link for this context object.
-     * 
+     *
      * @return TCPConnLink
      */
     public TCPConnLink getTCPConnLink() {
@@ -123,6 +123,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
     /**
      * @see TCPRequestContext#getInterface()
      */
+    @Override
     public TCPConnectionContext getInterface() {
         return this.oTCPConnLink;
     }
@@ -132,11 +133,13 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
     /* =================================================================== */
 
     /** @see TCPRequestContext#getBuffers() */
+    @Override
     public WsByteBuffer[] getBuffers() {
         return this.buffers;
     }
 
     /** @see TCPRequestContext#setBuffers(WsByteBuffer[]) */
+    @Override
     public void setBuffers(WsByteBuffer[] bufs) {
         this.missedSet = false;
         this.buffers = bufs;
@@ -278,17 +281,23 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
     /**
      * @return WsByteBuffer
      */
+    @Override
     public WsByteBuffer getBuffer() {
         if (this.buffers == null) {
+            Tr.debug(tc, "PMDINH, getBuffer ,  buffers is NULL ; this " + this);
             return null;
         }
+        Tr.debug(tc, "PMDINH, getBuffer , this.buffers[0] [" + this.buffers[0] + "] , this " + this);
+
         return this.buffers[0];
     }
 
     /**
      * @param buf
      */
+    @Override
     public void setBuffer(WsByteBuffer buf) {
+        Tr.debug(tc, "PMDINH, setBuffer ENTER ,  WsByteBuffer [" + buf + "] , this " + this);
 
         this.missedSet = false;
 
@@ -328,14 +337,23 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
             this.byteBufferArray = null;
         }
 
+        //PMDINH
+        if (this.buffers != null) {
+            Tr.debug(tc, "PMDINH, setBuffer EXIT ,  this.buffers[0] [" + this.buffers[0] + "] , this " + this);
+
+        }
+        //PMDINH
     }
 
     /**
      * Clear any buffers that are currently stored.
      */
+    @Override
     public void clearBuffers() {
+
         if (null != this.buffers) {
             for (int i = 0; i < this.buffers.length; i++) {
+                Tr.debug(tc, "PMDINH, clearBuffers ,  this.buffers[i].clear  [" + this.buffers[i] + "] , i [" + i + "], this " + this);
                 this.buffers[i].clear();
             }
         }
@@ -392,7 +410,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
      * comparable format to System.currentTimeMillis) when this request
      * will time out. Should only be invoked if the 'hasTimeout' method
      * returns true for this request.
-     * 
+     *
      * @return long Point in time when request will timeout.
      */
     public long getTimeoutTime() {
@@ -401,7 +419,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
 
     /**
      * Sets the timeout value returned by 'getTimeoutTime'.
-     * 
+     *
      * @param time
      */
     protected void setTimeoutTime(int time) {
@@ -425,7 +443,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
 
     /**
      * Returns true if this request has an associated timeout.
-     * 
+     *
      * @return boolean
      */
     protected boolean hasTimeout() {
@@ -434,7 +452,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
 
     /**
      * Returns timoutInterval of this request.
-     * 
+     *
      * @return int
      */
     public int getTimeoutInterval() {
@@ -443,7 +461,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
 
     /**
      * Introspect this object for FFDC output.
-     * 
+     *
      * @return List<String>
      */
     public List<String> introspect() {
@@ -513,11 +531,11 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
 
     /**
      * Updates the IO byte counters, checks if IO operation is complete
-     * 
+     *
      * @param byteCount
-     *            number of IO bytes for latest read/write
+     *                      number of IO bytes for latest read/write
      * @param type
-     *            0 for read. 1 for write
+     *                      0 for read. 1 for write
      * @return true if IO operation has read/wrote enough bytes, false if not
      */
     // IMPROVEMENT: this shouldn't be public, but needs to be for now.

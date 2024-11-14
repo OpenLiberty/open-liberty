@@ -195,7 +195,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "close streams from HttpDispatcherLink.close");
+                Tr.debug(tc, "close streams from HttpDispatcherLink.close for NON_UPGRADED_STREAMS");
+            }
+
+            Tr.debug(tc, "PMDINH, close streams for NON_UPGRADED_STREAMS "
+                         + " , this.isc.getReadBuffer() [" + this.isc.getReadBuffer() + "]"
+                         + " , this.isc.isBodyComplete() [" + this.isc.isBodyComplete() + "]"
+                         + " , this.isc.isIncomingBodyExpected() [" + this.isc.isIncomingBodyExpected() + "]"
+                         + " DONE ");
+
+            if (this.isc.isReadDataAvailable()) {
+                Tr.debug(tc, "PMDINH, data is available in buffer [" + this.isc.getReadBuffer()
+                             + "] , remaining [" + this.isc.getReadBuffer().remaining() + "]"
+                             + "] , position [" + this.isc.getReadBuffer().position() + "]"
+                             + "] , limit [" + this.isc.getReadBuffer().limit() + "]");
+
             }
 
             Exception errorinClosing = this.closeStreams();
@@ -1273,7 +1287,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
 
                 if (ic.decrementNeeded.compareAndSet(true, false)) {
-                        //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
+                    //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "decrementNeeded is true: decrement active connection");
                     }
@@ -1348,23 +1362,24 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         VirtualConnection vc = link.getVirtualConnection();
         H2InboundLink h2Link = new H2InboundLink(channel, vc, getTCPConnectionContext());
         boolean bodyReadAndQueued = false;
-        if(this.isc != null) {
-            if(this.isc.isIncomingBodyExpected() && !this.isc.isBodyComplete()){
+        if (this.isc != null) {
+            if (this.isc.isIncomingBodyExpected() && !this.isc.isBodyComplete()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Body needed for request. Queueing data locally before upgrade.");
                 }
                 HttpInputStreamImpl body = this.request.getBody();
                 body.setupChannelMultiRead();
                 byte[] inBytes = new byte[1024];
-                try{
+                try {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Starting request read loop.");
                     }
-                    for (int n; (n = body.read(inBytes)) != -1;) {}
+                    for (int n; (n = body.read(inBytes)) != -1;) {
+                    }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Finished request read loop.");
                     }
-                }catch(Exception e){
+                } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Got exception reading request and queueing up data. Can't handle request upgrade to HTTP2.", e);
                     }
@@ -1374,12 +1389,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
                 body.setReadFromChannelComplete();
                 bodyReadAndQueued = true;
-            }else{
+            } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No body needed for request. Continuing upgrade as normal.");
                 }
             }
-        }else {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Failed to get isc, Null value received which could cause issues expecting data. Continuing upgrade as normal.");
             }
@@ -1398,7 +1413,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             // A problem occurred with the connection start up, a trace message will be issued from waitForConnectionInit()
             vc.getStateMap().put(h2InitError, true);
         }
-        if(bodyReadAndQueued)
+        if (bodyReadAndQueued)
             isc.setBodyComplete();
         return rc;
     }
