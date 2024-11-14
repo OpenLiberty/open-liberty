@@ -352,9 +352,9 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
                 Tr.debug(tc, "chooseEngineClientAlias, using customKM -> " + customKM.getClass().getName());
             rc = ((X509ExtendedKeyManager) customKM).chooseEngineClientAlias(keyType, issuers, engine);
         } else {        
-            System.out.println("WRG++++Broken");
             // if(JavaInfo.majorVersion() >=17 && JavaInfo.microVersion() >=11)
-            //rc = chooseClientAlias(keyType, issuers, null);
+            System.out.println("WRG++++This is a bug fix")
+            rc = chooseClientAlias(keyType, issuers, null);
             // else{
             // rc = chooseClientAlias(keyType[0], issuers);
             // }
