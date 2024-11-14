@@ -40,6 +40,8 @@ import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
 
+import java.util.concurrent.Callable;
+
 /**
  *
  */
@@ -280,6 +282,15 @@ public class NettyChain extends HttpChain {
                 }
                 state.set(ChainState.STOPPED);
             }
+            nettyFramework.registerEndpointQuiesce(future.channel(), new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    return null;
+                }
+                
+            });
+
+
             notifyAll();
         }
     }

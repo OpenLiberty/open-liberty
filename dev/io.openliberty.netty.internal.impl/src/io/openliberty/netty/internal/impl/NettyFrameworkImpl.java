@@ -501,11 +501,11 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     		ChannelFuture closeFuture = channel.close();
 	    	ChannelGroup group = activeChannelMap.get(channel);
 	    	if(group != null) {
-	    		group.close().addListener(innerFuture -> {
-	    			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                    Tr.debug(tc, "channel group" + group + " has closed...");
-	                }
-	    		});
+	    		// group.close().addListener(innerFuture -> {
+	    		// 	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	            //         Tr.debug(tc, "channel group" + group + " has closed...");
+	            //     }
+	    		// });
 	    		activeChannelMap.remove(channel);
 	    	}
 	    	return closeFuture;
