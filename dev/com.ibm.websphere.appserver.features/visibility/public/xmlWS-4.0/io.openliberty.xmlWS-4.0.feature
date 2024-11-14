@@ -1,3 +1,4 @@
+# Test commit only; not for merging
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.xmlWS-4.0
 visibility=public
