@@ -1271,8 +1271,6 @@ public class DeliveryDelayServlet extends HttpServlet {
     public void testPersistentMessage(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean testFailed = false;
-
         JMSContext jmsContext = jmsQCFBindings.createContext();
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
         JMSProducer jmsProducer = jmsContext.createProducer();
@@ -1323,8 +1321,6 @@ public class DeliveryDelayServlet extends HttpServlet {
     public void testPersistentMessage_Tcp(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean testFailed = false;
-
         JMSContext jmsContext = jmsQCFTCP.createContext();
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
         JMSProducer jmsProducer = jmsContext.createProducer();
@@ -1373,8 +1369,6 @@ public class DeliveryDelayServlet extends HttpServlet {
     public void testPersistentMessageTopic(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean testFailed = false;
-
         JMSContext jmsContext = jmsTCFBindings.createContext();
         JMSConsumer jmsConsumer1 = jmsContext.createDurableConsumer(jmsTopic, "durPersMsg1");
         JMSConsumer jmsConsumer2 = jmsContext.createDurableConsumer(jmsTopic1, "durPersMsg2");
@@ -1422,8 +1416,6 @@ public class DeliveryDelayServlet extends HttpServlet {
 
     public void testPersistentMessageTopic_Tcp(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
         JMSConsumer jmsConsumer1 = jmsContext.createDurableConsumer(jmsTopic, "durPersMsgTcp1");
