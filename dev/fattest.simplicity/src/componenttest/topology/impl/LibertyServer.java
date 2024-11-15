@@ -7012,7 +7012,7 @@ public class LibertyServer implements LogMonitorClient {
         Log.info(c, method, "Adding installed app: " + app + " for validation");
         installedApplications.add(app);
 
-        if (isStarted) {
+        if (isStarted && isAppValidationExplicitlyEnabled()) {
             waitForAppState(app, AppState.STARTED, APP_START_TIMEOUT);
         }
     }
@@ -7022,7 +7022,7 @@ public class LibertyServer implements LogMonitorClient {
         Log.info(c, method, "Removing installed app: " + app + " for validation");
         installedApplications.remove(app);
 
-        if (isStarted) {
+        if (isStarted && isAppValidationExplicitlyEnabled()) {
             waitForAppState(app, AppState.STOPPED, LOG_SEARCH_TIMEOUT);
         }
     }
@@ -7036,7 +7036,7 @@ public class LibertyServer implements LogMonitorClient {
         List<String> appsRemoved = new ArrayList<>(installedApplications);
         installedApplications.clear();
 
-        if (isStarted) {
+        if (isStarted && isAppValidationExplicitlyEnabled()) {
             for (String app : appsRemoved) {
                 waitForAppState(app, AppState.STOPPED, LOG_SEARCH_TIMEOUT);
             }
@@ -8041,5 +8041,9 @@ public class LibertyServer implements LogMonitorClient {
 
     public String getEnvVar(String var) {
         return envVars.get(var);
+    }
+
+    private boolean isAppValidationExplicitlyEnabled() {
+        return validateApps.orElse(false);
     }
 }
