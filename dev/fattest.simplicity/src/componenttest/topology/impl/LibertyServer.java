@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
@@ -224,7 +225,16 @@ public class LibertyServer implements LogMonitorClient {
     public static final boolean DEFAULT_VALIDATE_APPS = true;
     protected static final String RELEASE_MICRO_VERSION = PrivHelper.getProperty("micro.version");
     protected static final String TMP_DIR = PrivHelper.getProperty("java.io.tmpdir");
-    public static boolean validateApps = DEFAULT_VALIDATE_APPS;
+
+    /*
+     * This is a static meaning that if you disable validateApps for one server it disables it for the whole bucket.
+     * Please use localValidateApps instead
+     */
+    @Deprecated
+    private static boolean validateAppsGlobal = DEFAULT_VALIDATE_APPS;
+
+    //Optional so we know if its explicitly set, if it is this overrides validateAppsGlobal
+    private Optional<Boolean> validateApps = Optional.empty();
 
     protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
 
@@ -1105,12 +1115,45 @@ public class LibertyServer implements LogMonitorClient {
         publishServerXML.copyToDest(serverXML, false, true);
     }
 
+    /**
+     * This method returns the value of a global variable saying if the server should validate apps.
+     *
+     * Please use {@link #setValidateAppsLocal(boolean)} and {@link #getValidateAppsLocal()}
+     * instead as those set the value per server. Also note that the local variable overrides the global
+     */
+    @Deprecated
     public static void setValidateApps(boolean validateApp) {
-        validateApps = validateApp;
+        validateAppsGlobal = validateApp;
     }
 
+    /**
+     * This method returns the value of a global variable saying if the server should validate apps.
+     *
+     * Please use {@link #setValidateAppsLocal(boolean)} and {@link #getValidateAppsLocal()}
+     * instead as those set the value per server. Also note that the local variable overrides the global
+     */
+    @Deprecated
     public boolean getValidateApps() {
-        return validateApps;
+        return validateAppsGlobal;
+    }
+
+    /**
+     * Sets whether the server should validate apps
+     *
+     * @param validateApp if true the server will block until all of the registered apps have started
+     */
+    public void setValidateAppsLocal(boolean validateApp) {
+        validateApps = Optional.of(validateApp);
+    }
+
+    /**
+     * Retruns whether the server will validate apps
+     *
+     * @return the value set with the method setValidateAppsLocal, if that method has not been used it will
+     *         fall back to the value set in {@link #setValidateApps(boolean)}. If neither have been called the default value is true
+     */
+    public boolean getValidateAppsActual() {
+        return validateApps.orElse(validateAppsGlobal);
     }
 
     /**
@@ -1232,7 +1275,7 @@ public class LibertyServer implements LogMonitorClient {
      * @return           the output of the start command
      */
     public ProgramOutput startServer() throws Exception {
-        return startServerAndValidate(DEFAULT_PRE_CLEAN, DEFAULT_CLEANSTART, validateApps);
+        return startServerAndValidate(DEFAULT_PRE_CLEAN, DEFAULT_CLEANSTART, validateApps.orElse(validateAppsGlobal));
     }
 
     /**
@@ -1247,7 +1290,7 @@ public class LibertyServer implements LogMonitorClient {
      */
     public ProgramOutput startServer(String consoleLogFileName) throws Exception {
         this.consoleFileName = consoleLogFileName;
-        return startServerAndValidate(DEFAULT_PRE_CLEAN, DEFAULT_CLEANSTART, validateApps);
+        return startServerAndValidate(DEFAULT_PRE_CLEAN, DEFAULT_CLEANSTART, validateApps.orElse(validateAppsGlobal));
     }
 
     /**
@@ -1259,7 +1302,7 @@ public class LibertyServer implements LogMonitorClient {
      * @return            the output of the start command
      */
     public ProgramOutput startServer(boolean cleanStart) throws Exception {
-        return startServerAndValidate(DEFAULT_PRE_CLEAN, cleanStart, validateApps);
+        return startServerAndValidate(DEFAULT_PRE_CLEAN, cleanStart, validateApps.orElse(validateAppsGlobal));
     }
 
     /**
@@ -1275,7 +1318,7 @@ public class LibertyServer implements LogMonitorClient {
      */
     public ProgramOutput startServer(String consoleFileNameLog, boolean cleanStart) throws Exception {
         this.consoleFileName = consoleFileNameLog;
-        return startServerAndValidate(DEFAULT_PRE_CLEAN, cleanStart, validateApps);
+        return startServerAndValidate(DEFAULT_PRE_CLEAN, cleanStart, validateApps.orElse(validateAppsGlobal));
     }
 
     /**
@@ -1291,7 +1334,7 @@ public class LibertyServer implements LogMonitorClient {
      */
     public ProgramOutput startServer(String consoleFileNameLog, boolean cleanStart, boolean preCleanServer) throws Exception {
         this.consoleFileName = consoleFileNameLog;
-        return startServerAndValidate(preCleanServer, cleanStart, validateApps);
+        return startServerAndValidate(preCleanServer, cleanStart, validateApps.orElse(validateAppsGlobal));
     }
 
     /**
@@ -1308,7 +1351,7 @@ public class LibertyServer implements LogMonitorClient {
     public void startServer(String consoleFileNameLog,
                             boolean cleanStart, boolean preCleanServer, boolean validateTimedExit) throws Exception {
         this.consoleFileName = consoleFileNameLog;
-        startServerAndValidate(preCleanServer, cleanStart, validateApps, false, validateTimedExit);
+        startServerAndValidate(preCleanServer, cleanStart, validateApps.orElse(validateAppsGlobal), false, validateTimedExit);
     }
 
     /**
