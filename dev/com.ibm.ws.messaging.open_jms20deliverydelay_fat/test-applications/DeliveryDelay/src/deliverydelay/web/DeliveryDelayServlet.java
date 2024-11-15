@@ -1260,6 +1260,12 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
+    
+    // Tests for delayed message persistence over server restart.
+    // These tests are each in two parts; a sender part that sends 2 messages, and a receiver part that attempts to receive the messages.
+    // The methods are driven from the Test class, which calls the sender method, restarts the server, and then calls the receiver method.
+    
+    
     // new tests for simplified API
 
     public void testPersistentMessage(
@@ -1464,6 +1470,11 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
+    
+    
+    
+    
+    
     public void testTimeToLiveWithDeliveryDelay(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
