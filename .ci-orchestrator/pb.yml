@@ -149,13 +149,18 @@ steps:
     githubPRNumber: ${github_pr_number}
     isBvtCodeChanged: ${PR Changes:is.bvt.code.changed}
     isFatCodeChanged: ${PR Changes:is.fat.code.changed}
+    isFeatureFilesChanged: ${PR Changes:is.feature.files.changed}
     isInfraCodeChanged: ${PR Changes:is.infra.code.changed}
+    isMsgsFilesChanged: ${PR Changes:is.msgs.files.changed}
+    isNlsFilesChanged: ${PR Changes:is.nls.files.changed}
     isProductCodeChanged: ${PR Changes:is.product.code.changed}
     isTestInfraCodeChanged: ${PR Changes:is.test.infra.code.changed}
     isUnittestCodeChanged: ${PR Changes:is.unittest.code.changed}    
     bvtFilesCount: ${PR Changes:bvt.files.count}
     fatFilesCount: ${PR Changes:fat.files.count}
     infraFilesCount: ${PR Changes:infra.files.count}
+    msgsFiles: ${PR Changes:msgs.files}
+    nlsFiles: ${PR Changes:nls.files}
     productFilesCount: ${PR Changes:product.files.count}
     testInfraFilesCount: ${PR Changes:test.infra.files.count}
     unittestFilesCount: ${PR Changes:unittest.files.count}
