@@ -44,11 +44,11 @@ import io.openliberty.ejbcontainer.remote.checkpoint.fat.tests.Server2ServerTest
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-//                BadApplicationTests.class         //WorksNoCP/??Keep-SeemsDontCareForCP??
-//                RemoteSessionTests.class,
-                RemoteTests.class, //WorksCP/BringUp/??VaryCPPhaseOverEeRepeat??
-//                Server2TraditionalTests.class,    //PERM DISABLE
-                Server2ServerTests.class //GOOD FOR REMOTE RESOLUTION AT CP
+//              BadApplicationTests.class       // Works, but no value to CP
+//              RemoteSessionTests.class,       // Untried. Determine value to CP
+                RemoteTests.class,              // Works w/ CP. Keep for BVT. Vary CP phase over EE repeat?
+//              Server2TraditionalTests.class,  // Perm disable
+                Server2ServerTests.class        // Works w/ CP. Keep for CP remote context lookup tests
 })
 public class FATSuite {
 

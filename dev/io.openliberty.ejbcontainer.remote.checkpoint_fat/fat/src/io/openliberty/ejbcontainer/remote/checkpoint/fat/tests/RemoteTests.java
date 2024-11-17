@@ -130,7 +130,6 @@ public class RemoteTests extends AbstractTest {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES().forServers("checkpointRemoteServer")).andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers("checkpointRemoteServer")).andWith(FeatureReplacementAction.EE10_FEATURES().forServers("checkpointRemoteServer"));
-//    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE10_FEATURES().forServers("checkpointRemoteServer"));
 
     static final String RESTORE_IIOP_PORT = "2814"; //default=2809
     static final String RESTORE_IIOPS_PORT = "2815"; //default=2810
@@ -161,40 +160,6 @@ public class RemoteTests extends AbstractTest {
         });
         server.startServer();
         server.checkpointRestore();
-
-//REMOVE
-//        TestMethod testMethod;
-//        List<String> testMsgs;
-//
-//        switch (testMethod) {
-//            case testMEPsActivateOnlyDuringRestoreBAS:
-//                server.setCheckpoint(CheckpointPhase.BEFORE_APP_START, false, null);
-//                server.addCheckpointRegexIgnoreMessages(IGNORE_REGEX);
-//                server.startServer();
-//                break;
-//            case testMEPsActivateOnlyDuringRestoreAAS:
-//                server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
-//                server.addCheckpointRegexIgnoreMessages(IGNORE_REGEX);
-//                server.startServer();
-//                break;
-//            case testAuthDataUpdatesDuringRestoreAAS:
-//            case testJMSAuthDataUpdatesDuringRestoreAAS:
-//                // Override the endpoint's activationSpec authData at restore
-//                server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, checkpointServer -> {
-//                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
-//                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
-//                        serverEnvWriter.println("AUTHDATA_USER=" + AUTHDATA_USER);
-//                        serverEnvWriter.println("AUTHDATA_PASSWORD=" + AUTHDATA_PASSWORD);
-//                    } catch (FileNotFoundException e) {
-//                        throw new UncheckedIOException(e);
-//                    }
-//                });
-//                server.addCheckpointRegexIgnoreMessages(IGNORE_REGEX);
-//                server.startServer();
-//                break;
-//            default:
-//                throw new Exception("Missing configuration for " + testName);
-//        }
     }
 
     static void assembleAndExportApplications() throws Exception {
@@ -326,56 +291,4 @@ public class RemoteTests extends AbstractTest {
         }
     }
 
-// INVALID TESTS RECONFIGURE AND RESTART THE RESTORED SERVER
-//    private void updateServerConfiguration(ServerConfiguration config) throws Exception {
-//        server.setMarkToEndOfLog();
-//        server.updateServerConfiguration(config);
-//        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote"));
-//    }
-//
-//    private void restoreServerConfiguration() throws Exception {
-//        server.setMarkToEndOfLog();
-//        server.restoreServerConfiguration();
-//        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote"));
-//    }
-//
-//    @Test
-//    public void testAsyncConfigMaxUnclaimedRemoteResults() throws Exception {
-//        server.saveServerConfiguration();
-//        ServerConfiguration config = server.getServerConfiguration();
-//        EJBAsynchronousElement asynchronous = new EJBAsynchronousElement();
-//        asynchronous.setMaxUnclaimedRemoteResults("1");
-//        config.getEJBContainer().setAsynchronous(asynchronous);
-//        try {
-//            updateServerConfiguration(config);
-//            runTest("BasicRemote/BasicRemoteTestServlet");
-//        } finally {
-//            restoreServerConfiguration();
-//        }
-//    }
-//
-//    @Test
-//    public void testAsyncConfigUnclaimedRemoteResultTimeout() throws Exception {
-//        server.saveServerConfiguration();
-//        ServerConfiguration config = server.getServerConfiguration();
-//        EJBAsynchronousElement asynchronous = new EJBAsynchronousElement();
-//        asynchronous.setUnclaimedRemoteResultTimeout("1s");
-//        asynchronous.setExtraAttribute("scheduledExecutorService.target", "(deferrable=false)");
-//        config.getEJBContainer().setAsynchronous(asynchronous);
-//        try {
-//            updateServerConfiguration(config);
-//            runTest("BasicRemote/BasicRemoteTestServlet");
-//        } finally {
-//            restoreServerConfiguration();
-//        }
-//    }
-
-//REMOVE
-//    static enum TestMethod {
-//        testMEPsActivateOnlyDuringRestoreBAS,
-//        testMEPsActivateOnlyDuringRestoreAAS,
-//        testAuthDataUpdatesDuringRestoreAAS,
-//        testJMSAuthDataUpdatesDuringRestoreAAS,
-//        unknown;
-//    }
 }

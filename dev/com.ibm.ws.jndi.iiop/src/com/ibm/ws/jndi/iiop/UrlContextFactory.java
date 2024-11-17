@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -77,11 +77,16 @@ public abstract class UrlContextFactory implements ObjectFactory, ApplicationRec
 
         throw new OperationNotSupportedException();
     }
-    
+
     private void registerCaller() {
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (cData != null)
             appsToRecycle.add(cData.getJ2EEName().getApplication());
+    }
+
+    public String getApplicationName() {
+        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        return(cData != null) ? cData.getJ2EEName().getApplication() : "<null>";
     }
 
     @Override

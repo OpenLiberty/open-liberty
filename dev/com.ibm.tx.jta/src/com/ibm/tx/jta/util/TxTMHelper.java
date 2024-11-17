@@ -439,10 +439,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "shutdown", new Object[] { withCleanup, timeout });
 
+        final boolean inCheckpoint = CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && !CheckpointPhase.getPhase().restored();
+
         if ((_state != TMService.TMStates.STOPPED) && (_state != TMService.TMStates.INACTIVE)
-            || (_state == TMService.TMStates.INACTIVE &&
-                CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && !CheckpointPhase.getPhase().restored())) {
-            // Shutdown during checkpoint to enable recovery logging to reset during restore.
+            || (_state == TMService.TMStates.INACTIVE && inCheckpoint)) {
+            // Shutdown during checkpoint enables recovery logging to reset during restore.
             // This is especially necessary for SQL recovery logging, where the datasource
             // will likely fail to connect during checkpoint, leaving TMState==INACTIVE and
             // the recovery director+agents initialized with potentially stale configuration.
@@ -515,7 +516,14 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
             // ConfigurationProviderManager.stop(true);
 
-            _recoveryAgent.stop(false);
+            if (inCheckpoint && _recoveryAgent == null) {
+                if (tc.isDebugEnabled()) {
+                    // Recovery components may be partially initialized in a failed checkpoint
+                    Tr.debug(tc, "Skip stopping the recovery agent when the agent is not yet initialized during checkpoint");
+                }
+            } else {
+                _recoveryAgent.stop(false);
+            }
 
             // Issue #23676. The JCA component needs TX services at shutdown. If TranManagerSet.cleanup() is called,
             // as it was previously at this point, then that removes the current (shutdown) thread's reference to the TM.
@@ -535,9 +543,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
             LocalTIDTable.clear();
 
-            if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && !CheckpointPhase.getPhase().restored()) {
+            if (inCheckpoint) {
                 // Waiting on the semaphore will cause checkpoint to fail. Skip the wait
                 // as resync never started and will never complete (interrupt).
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Skip waiting on the recovery semaphore during checkpoint.");
                 setResyncException(null);
             } else {
                 _asyncRecoverySemaphore.waitEvent();
