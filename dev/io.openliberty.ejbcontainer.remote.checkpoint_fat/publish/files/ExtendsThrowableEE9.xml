@@ -1,0 +1,14 @@
+<server>
+    <featureManager>
+        <feature>servlet-5.0</feature>
+        <feature>enterpriseBeansHome-4.0</feature>
+        <feature>enterpriseBeansRemote-4.0</feature>
+        <feature>componenttest-2.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}"/>
+    
+    <application id="AppExcExtendsThrowableErrBeanApp" name="AppExcExtendsThrowableErrBeanApp" type="ear" location="AppExcExtendsThrowableErrBean.ear"/>
+</server>

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -30,3 +30,7 @@ invalid.object=Object of type {0} is not a valid remote reference.
 #jndi.entry.bad.name=CWWKN0001W: The name [{0}] could not be parsed, failing with exception [{1}].
 #jndi.entry.bad.name.explanation=The name does not conform to the required syntax.  See the exception for details.
 #jndi.entry.bad.name.useraction=Fix the name to conform to the required syntax.
+
+jndi.orb.context.failed.checkpoint=CWWKN0001W: The name [{0}] could not be parsed, failing with exception [{1}].
+jndi.orb.context.failed.checkpoint.explanation=XXXXX.
+jndi.orb.context.failed.checkpoint.useraction=XXXXX.

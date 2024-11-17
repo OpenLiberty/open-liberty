@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -53,6 +54,7 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import org.osgi.service.condition.Condition;
 
 /**
  * Provides access to the ORB.
@@ -60,6 +62,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @Component(factory = "com.ibm.ws.transport.iiop.internal.ORBWrapperInternal",
                 property = { "service.vendor=IBM" })
 @DSExt.PersistentFactoryComponent
+//@SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef, ClientORBRef, ServerPolicySource {
     private static final TraceComponent tc = Tr.register(ORBWrapperInternal.class);
 
@@ -150,6 +153,11 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
     @Reference(service = AdapterActivatorOp.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     protected void setAdapterActivatorOp(ServiceReference<AdapterActivatorOp> ops) {
         map.putReference((String) ops.getProperty(POA_NAME), ops);
+    }
+
+    @Reference(name="runningCondition", target = "(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
+    protected void setRunningCondition(Condition runningCondition) {
+        // do nothing
     }
 
     protected void unsetAdapterActivatorOp(ServiceReference<AdapterActivatorOp> ops) {
