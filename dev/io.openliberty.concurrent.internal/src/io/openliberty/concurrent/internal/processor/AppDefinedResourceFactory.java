@@ -307,6 +307,12 @@ public class AppDefinedResourceFactory implements QualifiedResourceFactory {
         return declaringMetadata;
     }
 
+    @Override
+    @Trivial
+    public String getName() {
+        return jndiName;
+    }
+
     /**
      * Returns text showing an example of a valid qualifier with the specified
      * class name.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,33 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: The Schedule, {0}, specifies an \
+ empty value for the seconds at which to run. You must specify a non-empty value. \
+ Alternatively, omit the seconds from the Schedule and rely on the default \
+ behavior of scheduling the task to run at the second at the start of the minute.
+CWWKC1410.schedule.lacks.seconds.explanation=The empty array value indicates that \
+ the field must be disregarded when computing scheduled times. The seconds field \
+ cannot accept an empty value because it is the most granular unit and cannot be \
+ disregarded.
+CWWKC1410.schedule.lacks.seconds.useraction=Modify the seconds field of the \
+ Schedule annotation to specify a non-empty value, or omit the seconds field \
+ from the Schedule.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: An error occurred creating a {0} bean \
+ for the {1} annotation or {2} deployment descriptor element with the \
+ {3} name and {4} qualifiers that is defined in the {5} application artifact. \
+ The error is: {5}
+CWWKC1411.qualified.res.err.explanation=An error occurred when creating the \
+ resource or attempting to register it as a bean.
+CWWKC1411.qualified.res.err.useraction=Ensure that the resource is configured \
+ correctly.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: The {0} application artifact includes \
+ multiple {1} resource definitions that have the {2} qualifiers. The names of \
+ the conflicting {1} resource definitions are: {3}.
+CWWKC1412.qualifier.conflict.explanation=Qualifiers must uniquely identify a \
+ resource type.
+CWWKC1412.qualifier.conflict.useraction=Each resource definition of the same \
+ type must have different qualifiers or must not have any qualifiers.
