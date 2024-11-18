@@ -44,6 +44,8 @@ public class UpgradeReadCallback implements TCPReadCompletedCallback {
     private ThreadContextManager _contextManager;
 
     public UpgradeReadCallback(ReadListener rl, UpgradeInputByteBufferUtil uIBBU, ThreadContextManager tcm, SRTUpgradeInputStream31 srtUpgradeStream){
+        Tr.debug(tc, "PMDINH, UpgradeReadCallback constructor , ReadListener [" + rl + "]");
+
         _rl = rl;
         _upgradeStream = uIBBU;
         _contextManager = tcm;
@@ -56,6 +58,10 @@ public class UpgradeReadCallback implements TCPReadCompletedCallback {
     @Override
     @FFDCIgnore(IOException.class)
     public void complete(VirtualConnection vc, TCPReadRequestContext rsc) {
+        Tr.debug(tc, "PMDINH, complete , ReadListener [" + _rl + "], this " + this);
+        
+        Thread.dumpStack();
+
 
         if(vc == null){
             return;

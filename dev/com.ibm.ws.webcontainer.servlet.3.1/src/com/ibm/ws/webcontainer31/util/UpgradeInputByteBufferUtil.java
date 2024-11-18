@@ -472,28 +472,60 @@ public class UpgradeInputByteBufferUtil {
         Tr.debug(tc, "PMDINH, initialRead ,  "
                         + " , _buffer[" + _buffer+ "]"
                         + " , _tcpChannelCallback [" + _tcpChannelCallback + "] \n"
+                        + " , readListener [" + _rl + "] \n"
                         + " DONE ");
 
         _isInitialRead = true;
-        if(_buffer != null){
-            _buffer.release();
-            _buffer = null;
+        
+        boolean handleRemainingData = false;
+         
+        boolean tryFix = true;
+
+        if (tryFix && _upConn.getVirtualConnection().getStateMap().get("NON_UPGRADED_STREAMS_UNREAD_DATA") != null) {
+            WsByteBuffer data = (WsByteBuffer) _upConn.getVirtualConnection().getStateMap().get("NON_UPGRADED_STREAMS_UNREAD_DATA");
+            
+            Tr.debug(tc, "PMDINH, initialRead , remaining data [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(data) + "] , this " + this);
+            
+            if (_buffer == null) 
+                _buffer = data;
+
+            Tr.debug(tc, "PMDINH, initialRead , _buffer [" + _buffer + "] , this " + this);
+            
+            Tr.debug(tc, "PMDINH, initialRead , _buffer remaining data [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(_buffer) + "] , this " + this);
+            
+            Tr.debug(tc, "PMDINH, initialRead , _tcpChannelCallback.complete which calls onDataAvailable");
+            
+            try {
+                _tcpChannelCallback.complete(_upConn.getVirtualConnection(),_tcpContext.getReadInterface());
+            }
+            catch (Exception e) {
+                System.out.println("PMDINH, initialRead , _tcpChannelCallback.complete exception " + e );
+                e.printStackTrace();
+            }
+            
         }
         
-        setAndAllocateBuffer(1);
-        configurePreReadBuffer(1);
+        else {
+            if(_buffer != null){
+                _buffer.release();
+                _buffer = null;
+            }
+
+            setAndAllocateBuffer(1);
+            configurePreReadBuffer(1);
+
+
+            //This if the first read of the ReadListener, which means force the read to go async
+            //We won't get an actual response from this read as it will always come back on another thread
+            _tcpContext.getReadInterface().setBuffer(_buffer);
+
+            Tr.debug(tc, "PMDINH, initialRead , after setAndAllocateBuffer, setBuffer to readInterface...  "
+                            + " , _buffer[" + _buffer+ "]"
+                            + " , _tcpChannelCallback [" + _tcpChannelCallback + "] ...now read data ...\n"
+                            + " DONE ");
+            _tcpContext.getReadInterface().read(1, _tcpChannelCallback, true, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
+        }
         
-       
-        //This if the first read of the ReadListener, which means force the read to go async
-        //We won't get an actual response from this read as it will always come back on another thread
-        _tcpContext.getReadInterface().setBuffer(_buffer);
-        
-        Tr.debug(tc, "PMDINH, initialRead , after setAndAllocateBuffer, setBuffer to readInterface...  "
-                        + " , _buffer[" + _buffer+ "]"
-                        + " , _tcpChannelCallback [" + _tcpChannelCallback + "] ...now read data ...\n"
-                        + " DONE ");
-        
-        _tcpContext.getReadInterface().read(1, _tcpChannelCallback, true, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
     }
     
     /**

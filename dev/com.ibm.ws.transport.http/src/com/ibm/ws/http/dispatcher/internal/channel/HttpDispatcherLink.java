@@ -43,6 +43,7 @@ import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.base.InboundApplicationLink;
@@ -205,11 +206,24 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                          + " DONE ");
 
             if (this.isc.isReadDataAvailable()) {
-                Tr.debug(tc, "PMDINH, data is available in buffer [" + this.isc.getReadBuffer()
-                             + "] , remaining [" + this.isc.getReadBuffer().remaining() + "]"
-                             + "] , position [" + this.isc.getReadBuffer().position() + "]"
-                             + "] , limit [" + this.isc.getReadBuffer().limit() + "]");
+                WsByteBuffer currentBuffer = this.isc.getReadBuffer();
 
+                Tr.debug(tc, "PMDINH, data is available in buffer [" + currentBuffer
+                             + "] , remaining [" + currentBuffer.remaining() + "]"
+                             + "] , position [" + currentBuffer.position() + "]"
+                             + "] , limit [" + currentBuffer.limit() + "]");
+
+                String _bufferAsString = com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(currentBuffer);
+
+                Tr.debug(tc, "PMDINH, close , data in buffer [" + _bufferAsString + "] , this " + this);
+
+                WsByteBuffer newBuffer = HttpDispatcher.getBufferManager().allocate(currentBuffer.remaining());
+                newBuffer.put(currentBuffer);
+                Tr.debug(tc, "PMDINH, close , new buffer [" + newBuffer + "] , this " + this);
+
+                Tr.debug(tc, "PMDINH, close , new buffer datar [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(newBuffer) + "] , this " + this);
+
+                vc.getStateMap().put("NON_UPGRADED_STREAMS_UNREAD_DATA", newBuffer);
             }
 
             Exception errorinClosing = this.closeStreams();
