@@ -974,7 +974,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (numExpected == 0)
                             throw exc(IllegalArgumentException.class,
-                                      "CWWKD1091.lifecycle.arg.empty",
+                                      "CWWKD1092.lifecycle.arg.empty",
                                       method.getName(),
                                       repositoryInterface.getName(),
                                       method.getGenericParameterTypes()[0].getTypeName());
