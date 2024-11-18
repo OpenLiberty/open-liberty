@@ -47,14 +47,6 @@ public enum SubscriptionMessageType implements IntAble {
 
         private static final TraceComponent tc = register(SubscriptionMessageType.class, MSG_GROUP, MSG_BUNDLE);
 
-        /** Integer value of the Subscription Message Types                                  */
-        public static final int UNKNOWN_INT   = UNKNOWN.toInt();
-        public static final int RESET_INT     = RESET.toInt();
-        public static final int CREATE_INT    = CREATE.toInt();
-        public static final int DELETE_INT    = DELETE.toInt();
-        public static final int REQUEST_INT   = REQUEST.toInt();
-        public static final int REPLY_INT     = REPLY.toInt();
-
         private static final Map<Integer,SubscriptionMessageType> types;
 
         static {
