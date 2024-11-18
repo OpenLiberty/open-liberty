@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,7 +37,6 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditService;
 import com.ibm.wsspi.security.registry.RegistryHelper;
-
 
 /**
  * Various and sundry utility methods for auditing.
@@ -89,11 +88,11 @@ public class AuditUtils {
     }
 
     /**
-     * A helper method called from getSessionID(HttpServletRequest req) 
-     * Calls getSession() with access control handling. 
-     * 
+     * A helper method called from getSessionID(HttpServletRequest req)
+     * Calls getSession() with access control handling.
+     *
      * @param req
-     * @return sessionid or null 
+     * @return sessionid or null
      * @throws PrivilegedActionException
      */
     private static String getSessionIDPrivileged(HttpServletRequest req) throws PrivilegedActionException {
@@ -102,11 +101,12 @@ public class AuditUtils {
             return (session != null) ? session.getId() : null;
         });
     }
+
     /**
-     * 
+     *
      * A helper method called from getSessionID(HttpServletRequest req)
-     * Handles exceptions 
-     * 
+     * Handles exceptions
+     *
      * @param req
      * @return sessionid, null or "UnauthorizedSessionRequest"
      */
@@ -124,11 +124,11 @@ public class AuditUtils {
 
     /**
      * A helper method called from getSessionID(HttpServletRequest req)
-     * Returns requested session id or null if a cookie includes requested session id 
-     * 
+     * Returns requested session id or null if a cookie includes requested session id
+     *
      * @param req
      * @param createNew
-     * @return requested session id or null 
+     * @return requested session id or null
      */
     private static String getPrivilegedSessionID(HttpServletRequest req, boolean createNew) {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
@@ -138,7 +138,7 @@ public class AuditUtils {
     }
 
     /**
-     * 
+     *
      * @param req
      * @return session id or null
      */
