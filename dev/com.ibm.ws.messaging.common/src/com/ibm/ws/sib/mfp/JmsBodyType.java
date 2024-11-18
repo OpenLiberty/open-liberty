@@ -53,18 +53,13 @@ public enum JmsBodyType implements IntAble {
 
         private static final TraceComponent tc = register(JmsBodyType.class, MSG_GROUP, MSG_BUNDLE);
 
-        /** Integer value of the NULL JMsBodyType                                   */
-        public static final int NULL_INT   = NULL.toInt();
-        /** Integer value of the BYTES JMsBodyType                                  */
-        public static final int BYTES_INT  = BYTES.toInt();
-        /** Integer value of the MAP JMsBodyType                                    */
-        public static final int MAP_INT    = MAP.toInt();
-        /** Integer value of the OBJECT JMsBodyType                                 */
-        public static final int OBJECT_INT = OBJECT.toInt();
-        /** Integer value of the STREAM JMsBodyType                                 */
-        public static final int STREAM_INT = STREAM.toInt();
-        /** Integer value of the TEXT JMsBodyType                                   */
-        public static final int TEXT_INT   = TEXT.toInt();
+        // TODO remove constants once all dependencies addressed
+        public static final int NULL_INT   = 0;
+        public static final int BYTES_INT  = 1;
+        public static final int MAP_INT    = 2;
+        public static final int OBJECT_INT = 3;
+        public static final int STREAM_INT = 4;
+        public static final int TEXT_INT   = 5;
 
         private static final Map<Integer,JmsBodyType> types;
         private static final Map<String,JmsBodyType> typesByFormat;
@@ -118,6 +113,20 @@ public enum JmsBodyType implements IntAble {
         public static final JmsBodyType getJmsBodyType(Byte aValue) {
                 if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc,"Value = " + aValue);
                 return types.get(aValue.intValue());
+        }
+
+        /**
+         * Returns the corresponding JmsBodyType for a given integer.
+         * This method should NOT be called by any code outside the TEXT component.
+         * It is only public so that it can be accessed by sub-packages.
+         *
+         * @param  aValue         The integer for which an JmsBodyType is required.
+         *
+         * @return The corresponding JmsBodyType
+         */
+        public static final JmsBodyType getJmsBodyType(int aValue) {
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc,"Value = " + aValue);
+            return types.get(aValue);
         }
 
         /**
