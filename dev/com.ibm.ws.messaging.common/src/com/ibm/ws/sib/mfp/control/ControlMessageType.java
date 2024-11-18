@@ -98,38 +98,6 @@ public enum ControlMessageType implements IntAble {
 
         private static String format(String name) { return String.format("%-27s", name); }
 
-        /** Integer value of the Control Message Types                                  */
-        public static final int UNKNOWN_INT                       = UNKNOWN.toInt();
-        public static final int ACKEXPECTED_INT                   = ACKEXPECTED.toInt();
-        public static final int SILENCE_INT                       = SILENCE.toInt();
-        public static final int ACK_INT                           = ACK.toInt();
-        public static final int NACK_INT                          = NACK.toInt();
-        public static final int PREVALUE_INT                      = PREVALUE.toInt();
-        public static final int ACCEPT_INT                        = ACCEPT.toInt();
-        public static final int REJECT_INT                        = REJECT.toInt();
-        public static final int DECISION_INT                      = DECISION.toInt();
-        public static final int REQUEST_INT                       = REQUEST.toInt();
-        public static final int REQUESTACK_INT                    = REQUESTACK.toInt();
-        public static final int REQUESTHIGHESTGENERATEDTICK_INT   = REQUESTHIGHESTGENERATEDTICK.toInt();
-        public static final int HIGHESTGENERATEDTICK_INT          = HIGHESTGENERATEDTICK.toInt();
-        public static final int RESETREQUESTACK_INT               = RESETREQUESTACK.toInt();
-        public static final int RESETREQUESTACKACK_INT            = RESETREQUESTACKACK.toInt();
-        public static final int BROWSEGET_INT                     = BROWSEGET.toInt();
-        public static final int BROWSEEND_INT                     = BROWSEEND.toInt();
-        public static final int BROWSESTATUS_INT                  = BROWSESTATUS.toInt();
-        public static final int COMPLETED_INT                     = COMPLETED.toInt();
-        public static final int DECISIONEXPECTED_INT              = DECISIONEXPECTED.toInt();
-        public static final int CREATESTREAM_INT                  = CREATESTREAM.toInt();
-        public static final int AREYOUFLUSHED_INT                 = AREYOUFLUSHED.toInt();
-        public static final int FLUSHED_INT                       = FLUSHED.toInt();
-        public static final int NOTFLUSHED_INT                    = NOTFLUSHED.toInt();
-        public static final int REQUESTFLUSH_INT                  = REQUESTFLUSH.toInt();
-        public static final int REQUESTCARDINALITYINFO_INT        = REQUESTCARDINALITYINFO.toInt();
-        public static final int CARDINALITYINFO_INT               = CARDINALITYINFO.toInt();
-        public static final int CREATEDURABLE_INT                 = CREATEDURABLE.toInt();
-        public static final int DELETEDURABLE_INT                 = DELETEDURABLE.toInt();
-        public static final int DURABLECONFIRM_INT                = DURABLECONFIRM.toInt();
-
         private static final Map<Integer,ControlMessageType> types;
 
         static {
@@ -165,6 +133,10 @@ public enum ControlMessageType implements IntAble {
         public static final ControlMessageType getControlMessageType(Byte aValue) {
                 if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc,"Value = " + aValue);
                 return types.get(aValue.intValue());
+        }
+
+        public static final ControlMessageType getControlMessageType(int aValue) {
+            return types.get(aValue);
         }
 
         /**
