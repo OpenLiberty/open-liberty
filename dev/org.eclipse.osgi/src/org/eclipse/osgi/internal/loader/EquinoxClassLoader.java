@@ -21,8 +21,10 @@ import org.eclipse.osgi.storage.BundleInfo.Generation;
 
 public class EquinoxClassLoader extends ModuleClassLoader {
 	static {
-		if (!ClassLoader.registerAsParallelCapable()) {
-			throw new IllegalStateException("Failed to register as parallel capabable."); //$NON-NLS-1$
+		try {
+			ClassLoader.registerAsParallelCapable();
+		} catch (Throwable t) {
+			// ignore all exceptions; substrate native image fails here
 		}
 	}
 	private final EquinoxConfiguration configuration;

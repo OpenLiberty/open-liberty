@@ -3289,7 +3289,7 @@
     <dependency>
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.osgi</artifactId>
-      <version>3.18.600</version>
+      <version>3.21.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.transformer</groupId>

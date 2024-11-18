@@ -70,7 +70,8 @@ public class URLStreamHandlerProxy extends URLStreamHandler {
 				new ServiceTrackerCustomizer<URLStreamHandlerService, LazyURLStreamHandlerService>() {
 
 					@Override
-					public LazyURLStreamHandlerService addingService(ServiceReference<URLStreamHandlerService> reference) {
+					public LazyURLStreamHandlerService addingService(
+							ServiceReference<URLStreamHandlerService> reference) {
 						return new LazyURLStreamHandlerService(context, reference);
 					}
 

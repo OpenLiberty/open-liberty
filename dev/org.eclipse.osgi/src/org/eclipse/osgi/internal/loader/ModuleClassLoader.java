@@ -62,8 +62,10 @@ public abstract class ModuleClassLoader extends ClassLoader implements BundleRef
 	 */
 	protected static final PermissionCollection ALLPERMISSIONS;
 	static {
-		if (!ClassLoader.registerAsParallelCapable()) {
-			throw new IllegalStateException("Failed to register as parallel capabable."); //$NON-NLS-1$
+		try {
+			ClassLoader.registerAsParallelCapable();
+		} catch (Throwable t) {
+			// ignore all exceptions; substrate native image fails here
 		}
 	}
 
