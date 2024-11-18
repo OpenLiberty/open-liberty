@@ -26,8 +26,6 @@
 
 # All messages must use the range CWWKO1500 to CWWKO1529
 
-# Test commit only; not for merging
-
 CWWKO1500_NOT_FOUND=CWWKO1500E: No configured instances of the {0} element were found in the server configuration.
 CWWKO1500_NOT_FOUND.explanation=The requested configuration element was not found in the server.xml file.
 CWWKO1500_NOT_FOUND.useraction=Verify that the configuration element exists in the server.xml file and that it is correctly spelled with matching case.

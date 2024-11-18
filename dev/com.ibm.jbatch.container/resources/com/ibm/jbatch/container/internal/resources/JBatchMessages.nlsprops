@@ -36,8 +36,6 @@
 # 0001 - 0100: com.ibm.jbatch.container
 # 
 
-# Test commit only; not for merging
-
 stopping.job.at.shutdown=CWWKY0001I: Issuing stop for job execution {0} because the batch component is deactivating.
 stopping.job.at.shutdown.explanation=This message is for informational purposes only.
 stopping.job.at.shutdown.useraction=No action is required.
