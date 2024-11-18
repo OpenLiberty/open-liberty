@@ -40,10 +40,6 @@ public enum TrmMessageType implements IntAble {
 
         private static final TraceComponent tc = register(TrmMessageType.class, MSG_GROUP, MSG_BUNDLE);
 
-        /** Integer value of the Trm Message Types                                  */
-        public static final int UNKNOWN_INT            = UNKNOWN.toInt();
-        public static final int ROUTE_DATA_INT         = ROUTE_DATA.toInt();
-
         private static final Map<Integer,TrmMessageType> types;
 
         static {
