@@ -21,46 +21,52 @@ import io.netty.util.AttributeKey;
 public class CRLFValidationHandler extends ChannelInboundHandlerAdapter {
 
     private static final int MAX_CRLF_ALLOWED = 2;
+    boolean disabled = true;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if(msg instanceof ByteBuf){
-            ByteBuf buffer = (ByteBuf) msg;
-            buffer.markReaderIndex();
 
-            int leadingCRFLCount = 0;
-            boolean nonCRLFFound = false;
-            byte b;
-            byte nextByte;
+        if(disabled) {super.channelRead(ctx, msg);}
 
-            while(buffer.isReadable() && !nonCRLFFound){
-                b = buffer.readByte();
+        else{
+            if(msg instanceof ByteBuf){
+                ByteBuf buffer = (ByteBuf) msg;
+                buffer.markReaderIndex();
 
-                if(b == '\r'){
-                    if(buffer.isReadable()){
-                        nextByte = buffer.readByte();
-                        if(nextByte == '\n'){
-                            leadingCRFLCount++;
-                            if (leadingCRFLCount > MAX_CRLF_ALLOWED){
-                                ctx.channel().attr(NettyHttpConstants.THROW_FFDC).set(true);
-                                throw new IllegalArgumentException("Too many leading CRLF characters");
+                int leadingCRFLCount = 0;
+                boolean nonCRLFFound = false;
+                byte b;
+                byte nextByte;
+
+                while(buffer.isReadable() && !nonCRLFFound){
+                    b = buffer.readByte();
+
+                    if(b == '\r'){
+                        if(buffer.isReadable()){
+                            nextByte = buffer.readByte();
+                            if(nextByte == '\n'){
+                                leadingCRFLCount++;
+                                if (leadingCRFLCount > MAX_CRLF_ALLOWED){
+                                    ctx.channel().attr(NettyHttpConstants.THROW_FFDC).set(true);
+                                    throw new IllegalArgumentException("Too many leading CRLF characters");
+                                }
+                            } else {
+                                nonCRLFFound = true;
+                                buffer.readerIndex(buffer.readerIndex() -1);
                             }
-                        } else {
+                        } else{
                             nonCRLFFound = true;
-                            buffer.readerIndex(buffer.readerIndex() -1);
                         }
                     } else{
                         nonCRLFFound = true;
                     }
-                } else{
-                    nonCRLFFound = true;
                 }
-            }
 
-            buffer.resetReaderIndex();
-            super.channelRead(ctx, msg);
-        } else {
-            super.channelRead(ctx, msg);
+                buffer.resetReaderIndex();
+                super.channelRead(ctx, msg);
+            } else {
+                super.channelRead(ctx, msg);
+            }
         }
     }
 
