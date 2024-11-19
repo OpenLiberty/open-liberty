@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.time.Duration;
-import java.util.Arrays;
 
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -69,7 +68,7 @@ public class UICustomPathTest {
 
     @Rule
     public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>().withCapabilities(new ChromeOptions()).withAccessToHost(true)
-                                                                                  .withRecordingMode(VncRecordingMode.RECORD_FAILING,
+                                                                                  .withRecordingMode(VncRecordingMode.SKIP,
                                                                                                      Props.getInstance().getFileProperty(Props.DIR_LOG),
                                                                                                      VncRecordingFormat.MP4)
                                                                                   .withLogConsumer(new SimpleLogConsumer(UICustomPathTest.class, "selenium-driver"));
