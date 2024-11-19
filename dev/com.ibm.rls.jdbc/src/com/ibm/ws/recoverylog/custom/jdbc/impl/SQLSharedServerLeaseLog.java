@@ -70,9 +70,9 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     /**
      * Which RDBMS are we working against?
      */
-    volatile private DBProduct dbProduct;
+    private volatile DBProduct dbProduct;
 
-    volatile private boolean _leaseTableExists;
+    private volatile boolean _leaseTableExists;
     private boolean _sqlTransientErrorHandlingEnabled = true;
     private boolean _logRetriesEnabled;
     private int _leaseTimeout;

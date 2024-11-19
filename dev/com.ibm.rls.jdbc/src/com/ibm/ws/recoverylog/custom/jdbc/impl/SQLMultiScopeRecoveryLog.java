@@ -144,7 +144,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /**
      * Which RDBMS are we working against?
      */
-    volatile private DBProduct dbProduct;
+    private volatile DBProduct dbProduct;
 
     private boolean isolationFailureReported;
 
@@ -223,7 +223,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * A flag to indicate that the log was being recovered by a peer
      * but it has been reclaimed by its "home" server.
      */
-    volatile private boolean _peerServerLostLogOwnership;
+    private volatile boolean _peerServerLostLogOwnership;
 
     /**
      * These strings are used for Database table creation. DDL is
