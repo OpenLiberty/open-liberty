@@ -144,7 +144,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /**
      * Which RDBMS are we working against?
      */
-    private DBProduct dbProduct;
+    volatile private DBProduct dbProduct;
 
     private boolean isolationFailureReported;
 
