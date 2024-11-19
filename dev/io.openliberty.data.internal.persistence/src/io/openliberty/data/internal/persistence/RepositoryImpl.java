@@ -82,7 +82,6 @@ import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Inheritance;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
@@ -153,8 +152,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (Query.class.equals(entityClass)) {
                 entitylessQueryInfos = entry.getValue();
             } else {
-                boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
-
                 CompletableFuture<EntityInfo> entityInfoFuture = //
                                 builder.entityInfoMap.computeIfAbsent(entityClass,
                                                                       EntityInfo::newFuture);

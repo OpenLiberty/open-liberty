@@ -30,6 +30,7 @@ import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.repository.Repository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Any;
@@ -187,7 +188,11 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
             if (x instanceof DataException || x.getCause() instanceof DataException)
                 ; // already logged the error
             else
-                x.printStackTrace(); // TODO NLS error message
+                Tr.error(tc, "CWWKD1095.repo.err",
+                         repositoryInterface.getName(),
+                         repositoryInterface.getAnnotation(Repository.class),
+                         primaryEntityClass == null ? null : primaryEntityClass.getName(),
+                         x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "produce", x);
             throw x;

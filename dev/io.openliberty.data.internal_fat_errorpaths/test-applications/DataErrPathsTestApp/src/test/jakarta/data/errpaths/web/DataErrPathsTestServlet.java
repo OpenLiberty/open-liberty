@@ -322,8 +322,9 @@ public class DataErrPathsTestServlet extends FATServlet {
                  "insert two entities. Instead returned: " + inserted);
         } catch (ClassCastException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1046E:") ||
-                !x.getMessage().contains("register"))
+                !x.getMessage().startsWith("CWWKD1094E:") ||
+                !x.getMessage().contains("register") ||
+                !x.getMessage().contains("Voter[]"))
                 throw x;
         }
     }

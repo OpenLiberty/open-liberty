@@ -937,3 +937,22 @@ CWWKD1093.fn.not.applicable.explanation=The function cannot be used on the entit
  because the entity lacks an ID or version property.
 CWWKD1093.fn.not.applicable.useraction=Do not use the function in query language \
  or parameters for the repository method.
+
+CWWKD1094.return.mismatch=CWWKD1094E: The {0} method of the {1} repository \
+ interface has the {2} return type, which is not capable of returning the number \
+ of entities, {3}, that the repository method accepts as a parameter. \
+ Valid return types for a {4} method that accepts multiple entities include: {5}.
+CWWKD1094.return.mismatch.explanation=A repository life cycle method that \
+ returns entities must be able to return the same number of entities as are \
+ accepted by the method.
+CWWKD1094.return.mismatch.useraction=Update the repository method to either use \
+ a return type that can return multiple entities or update the repository method \
+ to accept only a single entity.
+
+CWWKD1095.repo.err=CWWKD1095E: An implementation of the {0} repository interface \
+ cannot be provided due to an error. The repository annotation is {1}. \
+ The primary entity class is {2}. The error is: {3}
+CWWKD1095.repo.err.explanation=The built-in Jakarta Data provider is unable \
+ to provide an instance of the repository due to an error.
+CWWKD1095.repo.err.useraction=Investigate the error and make corrections \
+ to the repository interface, entities, data store configuration, or database.

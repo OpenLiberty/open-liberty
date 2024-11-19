@@ -3590,15 +3590,16 @@ public class QueryInfo {
                     else if (results.isEmpty())
                         returnValue = null;
                     else
-                        // TODO temporarily reusing this message, which is somewhat close.
-                        // Need a more specific one, possibly resuing parts of CWWKD1054,
-                        // but without the Find suggestions
                         throw exc(ClassCastException.class,
-                                  "CWWKD1046.result.convert.err",
-                                  entityInfo.getType().getSimpleName() + "[]",
+                                  "CWWKD1094.return.mismatch",
                                   method.getName(),
                                   repositoryInterface.getName(),
-                                  method.getGenericReturnType().getTypeName());
+                                  method.getGenericReturnType().getTypeName(),
+                                  results.size(),
+                                  "@Insert",
+                                  lifeCycleReturnTypes(entityInfo.getType().getName(),
+                                                       hasSingularEntityParam,
+                                                       false));
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
@@ -4088,15 +4089,16 @@ public class QueryInfo {
                     else if (results.isEmpty())
                         returnValue = null;
                     else
-                        // TODO temporarily reusing this message, which is somewhat close.
-                        // Need a more specific one, possibly resuing parts of CWWKD1054,
-                        // but without the Find suggestions
                         throw exc(ClassCastException.class,
-                                  "CWWKD1046.result.convert.err",
-                                  entityInfo.getType().getSimpleName() + "[]",
+                                  "CWWKD1094.return.mismatch",
                                   method.getName(),
                                   repositoryInterface.getName(),
-                                  method.getGenericReturnType().getTypeName());
+                                  method.getGenericReturnType().getTypeName(),
+                                  results.size(),
+                                  "@Save",
+                                  lifeCycleReturnTypes(entityInfo.getType().getName(),
+                                                       hasSingularEntityParam,
+                                                       false));
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
