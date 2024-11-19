@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2023 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.eclipse.equinox.region.RegionDigraph;
 import org.osgi.framework.Bundle;
@@ -112,9 +112,9 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     private static final int TCCL_LOCK_WAIT = Integer.getInteger("com.ibm.ws.classloading.tcclLockWaitTimeMillis", 15000);
     static final String REFERENCE_GENERATORS = "generators";
 
-    private static final KeyBasedLockStore<String, ReentrantLock> tcclLockStore = new KeyBasedLockStore<>(new Supplier<ReentrantLock>() {
+    private static final KeyBasedLockStore<String, ReentrantLock> tcclLockStore = new KeyBasedLockStore<>(new Function<String, ReentrantLock>() {
         @Override
-        public ReentrantLock get() {
+        public ReentrantLock apply(String key) {
             return new ReentrantLock();
         }
     });
