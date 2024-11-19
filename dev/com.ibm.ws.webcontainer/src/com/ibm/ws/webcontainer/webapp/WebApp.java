@@ -795,6 +795,8 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         // If the web module as a whole is metatadata complete, the non-metadata complete
         // region is empty.
 
+        System.out.println(" ++++ PMDINH, WebApp acceptAnnotations() , className [" + className + "] , acceptPartial [" + acceptPartial+ "] , acceptExcluded [" + acceptExcluded +"]");
+
         if ( config.isMetadataComplete() ) {
             if ( !acceptPartial && !acceptExcluded ) {
                 return false;
@@ -803,12 +805,23 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
         AnnotationTargets_Targets targets = getAnnotationTargets();
         if ( targets == null ) {
+            System.out.println(" ++++ PMDINH, WebApp acceptAnnotations() , getAnnotationTargets in NULL, return false");
+
         	return false; // Annotations failure
         }
 
+        /*
         return ( targets.isSeedClassName(className) ||
                  (acceptPartial && targets.isPartialClassName(className)) ||
                  (acceptExcluded && targets.isExcludedClassName(className)) );
+                 */
+        boolean b  = ( targets.isSeedClassName(className) ||
+                 (acceptPartial && targets.isPartialClassName(className)) ||
+                 (acceptExcluded && targets.isExcludedClassName(className)) );
+        
+        System.out.println(" ++++ PMDINH, WebApp acceptAnnotations() , return b [" + b + "]");
+
+        return b;
     }
 
     /**
@@ -2536,7 +2549,16 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         // investigate all of the ExtensionPointSCIs and determine if there is a need to scan for classes.
         needToScanClassesExtensionPoint = initializeExtensionPointSCIs(myScis, moduleConfig, handleTypesHashMap, onStartupHashMap);
         
+        //PMDINH display classLoader;
+        System.out.println("PMDINH, SCI , ServiceLoader load classLoader [" + this.getClassLoader() + "]");
+        
         ServiceLoader<ServletContainerInitializer> scis = ServiceLoader.load(ServletContainerInitializer.class, this.getClassLoader());
+        
+        
+        System.out.println("PMDINH, SCI , myScis [" + myScis + "]");
+        System.out.println("PMDINH, SCI , scis (ServiceLoader) [" + scis + "]");
+        System.out.println("PMDINH, SCI , onStartupHashMap [" + onStartupHashMap + "]");
+        
             
         //map for classNames and 
         for (ServletContainerInitializer sci:scis) {
@@ -2552,7 +2574,14 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
                 logger.logp(Level.FINE, CLASS_NAME, "initializeServletContainerInitializers","ServletContainerInitializer " +sci.getClass().getName() + " is valid.");
             }
+            
+            
+            System.out.println(" ==== PMDINH, before determineWhetherToAddScis , sci [" + sci + "] , myScis [" + myScis + "]");
+
             determineWhetherToAddScis(sci, myScis);
+            
+            System.out.println(" ==== PMDINH, after determineWhetherToAddScis , myScis [" + myScis + "]");
+ 
             //if the ServletContainerInitializer came from a valid jar, check the HandlesTypes annotation
             if(investigateHandlesTypes(sci, handleTypesHashMap, onStartupHashMap)){
                 needToScanClasses = true;
@@ -2565,6 +2594,9 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         }
         
         //need to use myScis instead of scis as the instances of the ServletContainerInitializer changes in scis
+        
+        System.out.println(" ==== PMDINH, Before for looping;  myScis [" + myScis + "] , onStartupHashMap [" + onStartupHashMap + "]");
+
         for (ServletContainerInitializer sci:myScis) {
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
                 logger.logp(Level.FINE, CLASS_NAME, "initializeServletContainerInitializers", "looping through ServletContainerInitializers again");
@@ -2573,6 +2605,10 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             if (setOfClasses!=null && setOfClasses.isEmpty()) {
                 setOfClasses=null;
             }
+            
+            //PMDINH on tWAS this onStartup is fired but not in Liberty when the .jar is in EAR's lib
+            System.out.println("PMDINH, Checking onStartup for sci [" + sci + "] , setofClasses [" + setOfClasses + "]");
+
             try {
                 sci.onStartup(setOfClasses, ctx);
             } catch (ServletException e) {
@@ -2627,6 +2663,8 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
      * @return - True if we need to scan for classes, False otherwise.
      */
     private boolean investigateHandlesTypes(ServletContainerInitializer sci, HashMap<ServletContainerInitializer, Class[]> handleTypesHashMap, HashMap<ServletContainerInitializer, HashSet<Class<?>>> onStartupHashMap){
+        
+        System.out.println("PMDINH, WebApp investigateHandlesTypes ENTER");
         boolean needToScan = false;
         try {
             HandlesTypes handles = sci.getClass().getAnnotation(HandlesTypes.class);
@@ -2652,6 +2690,9 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 }
             }
         }
+        
+        System.out.println("PMDINH, WebApp investigateHandlesTypes EXIT , needToScan [" + needToScan + "]");
+
         return needToScan;
     }
     

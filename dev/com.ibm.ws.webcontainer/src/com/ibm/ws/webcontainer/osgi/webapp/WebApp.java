@@ -878,7 +878,13 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
   protected void determineWhetherToAddScis(ServletContainerInitializer sci, List<ServletContainerInitializer> scis) {
       // SCIs from DS are already added      
 
-      if (acceptAnnotationsFrom(sci.getClass().getName(), DO_ACCEPT_PARTIAL, DO_NOT_ACCEPT_EXCLUDED)) {
+      //PMDINH if (acceptAnnotationsFrom(sci.getClass().getName(), DO_ACCEPT_PARTIAL, DO_NOT_ACCEPT_EXCLUDED)) {
+      boolean b = acceptAnnotationsFrom(sci.getClass().getName(), DO_ACCEPT_PARTIAL, DO_NOT_ACCEPT_EXCLUDED);
+      
+      System.out.println(" >>>>> PMDINH, osgi WebApp , determineWhetherToAddScis [" + b + "] for sci [" + sci + "]");
+
+      if (b) {
+          System.out.println(" >>>>> PMDINH, osgi WebApp , determineWhetherToAddScis add sci [" + sci + "] to scis");
           scis.add(sci);
       }
   }
@@ -1034,12 +1040,18 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                       }
                       // if @HandlesTypes param is an interface look for implementors, otherwise look for subclasses
                       if ( ((com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets) annoTargets).isInterface(handledTypeName) ) {
+                          System.out.println("PMDINH, WebApp " + methodName + " @HandleTypes is interface; look for implementors ...");
                           String interfaceReason = "Selection on interface [ " + handledTypeName + " ]";
                           Set<String> implementerClassNames = annoTargets.getAllImplementorsOf(handledTypeName);
+                          
+                          System.out.println("   PMDINH, FOUND implementerClassNames SIZE [" + implementerClassNames.size() + "]" );
+                          
                           for ( String implementerClassName : implementerClassNames ) {
+                              System.out.println("   PMDINH, WebApp " + methodName + " look for implementors , name ["+ implementerClassName + "]" );
                               addClassToHandlesTypesStartupSet(implementerClassName, startupTypes, interfaceReason);
                           }
                       } else {
+                          System.out.println("PMDINH, WebApp " + methodName + " @HandleTypes is NOT interface; look for subClass ...");
                           String classesReason = "Selection on sub-classes of [ " + handledTypeName + " ]";
                           for ( String targetClassName : annoTargets.getSubclassNames(handledTypeName)) {
                               addClassToHandlesTypesStartupSet(targetClassName, startupTypes, classesReason);

@@ -1124,6 +1124,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     @Override
     public Set<String> getAllImplementorsOf(String interfaceName) {
+        
+        System.out.println("   PMDINH, annotation , " +CLASS_NAME + ", getAllImplementorsOf [" + interfaceName + "]" );
+
         scanReferenceClasses();
 
         String i_interfaceName = getClassInternMap().intern(interfaceName, Util_InternMap.DO_NOT_FORCE);
