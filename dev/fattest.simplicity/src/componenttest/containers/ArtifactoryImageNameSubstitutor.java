@@ -12,6 +12,9 @@
  *******************************************************************************/
 package componenttest.containers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy;
 import org.testcontainers.utility.DockerImageName;
@@ -40,6 +43,24 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
      */
     private static final String mirror = "wasliberty-docker-remote";
 
+    /**
+     * TODO remove this temp mirror and either build these images at runtime
+     * or pull from a self hosted docker repository
+     *
+     * Artifactory keeps a set of community docker images that have been removed
+     * from DockerHub within this organization specifically for the Liberty builds.
+     */
+    private static final String tempMirror = "wasliberty-infrastructure-docker";
+
+    /**
+     * TODO remove this temp repository list and either build these images at runtime
+     * or pull from a self hosted docker repository
+     *
+     * Artifactory keeps a set of community docker images that have been removed
+     * from DockerHub with this set of repository names.
+     */
+    private static final List<String> tempRepositories = Arrays.asList("kyleaure/");
+
     @Override
     public DockerImageName apply(final DockerImageName original) {
         DockerImageName result = null;
@@ -59,8 +80,8 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
             // Priority 2a: If the image is known to only exist in an Artifactory organization
             if (original.getRepository().contains("wasliberty-")) {
                 result = DockerImageName.parse(original.asCanonicalNameString())
-                                        .withRegistry(ArtifactoryRegistry.instance().getRegistry())
-                                        .asCompatibleSubstituteFor(original);
+                                .withRegistry(ArtifactoryRegistry.instance().getRegistry())
+                                .asCompatibleSubstituteFor(original);
                 needsArtifactory = true;
                 reason = "This image only exists in Artifactory, must use Artifactory registry.";
                 break;
@@ -80,7 +101,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
             // Priority 4: Always use Artifactory if using remote docker host.
             if (DockerClientFactory.instance().isUsing(EnvironmentAndSystemPropertyClientProviderStrategy.class)) {
-                result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
+                result = DockerImageName.parse(whichMirror(original) + '/' + original.asCanonicalNameString())
                                 .withRegistry(ArtifactoryRegistry.instance().getRegistry())
                                 .asCompatibleSubstituteFor(original);
                 needsArtifactory = true;
@@ -98,7 +119,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
             // Priority 6: If Artifactory registry is available use it to avoid rate limits on other registries
             if (ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
-                result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
+                result = DockerImageName.parse(whichMirror(original) + '/' + original.asCanonicalNameString())
                                 .withRegistry(ArtifactoryRegistry.instance().getRegistry())
                                 .asCompatibleSubstituteFor(original);
                 needsArtifactory = true;
@@ -159,6 +180,21 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
                            ". Consider using a pre-built image instead.");
         }
         return isSynthetic || isCommittedImage;
+    }
+
+    /**
+     * Determine which internal mirror a docker image should belong to
+     */
+    private static String whichMirror(DockerImageName dockerImage) {
+        for (String tempRepository : tempRepositories) {
+            if (dockerImage.getRepository().startsWith(tempRepository)) {
+                Log.info(c, "whichMirror", "Using mirror " + tempMirror + " for docker image " + dockerImage.asCanonicalNameString());
+                return tempMirror;
+            }
+        }
+
+        Log.info(c, "whichMirror", "Using mirror " + mirror + " for docker image " + dockerImage.asCanonicalNameString());
+        return mirror;
     }
 
 }
