@@ -1312,26 +1312,17 @@ public class DeliveryDelayServlet extends HttpServlet {
     	return;
     }
     
+    private String testPersistentQueueMessageIdentifier = "testPersistentQueueMessage";
 
     public void testPersistentMessage(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        JMSContext jmsContext = jmsQCFBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        emptyQueue(jmsQCFBindings, jmsQueue);
-        emptyQueue(jmsQCFBindings, jmsQueue1);
-
-        jmsProducer.setDeliveryMode(DeliveryMode.PERSISTENT).setDeliveryDelay(1000);
-
-        jmsProducer.send(jmsQueue, "testPersistentMessage_PersistentMsg");
-
-        jmsProducer.setDeliveryDelay(1000).setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        jmsProducer.send(jmsQueue1, "testPersistentMessage_NonPersistentMsg");
-
-        jmsConsumer.close();
-        jmsContext.close();
+    	// Originally used message text "testPersistentMessage_PersistentMsg" "testPersistentMessage_NonPersistentMsg"
+    	// jmsQCFBindings, jmsQueue, jmsQueue1
+    	
+    	testPersistentMessageSimplifiedAPI_send(jmsQCFBindings, jmsQueue, jmsQueue1, testPersistentQueueMessageIdentifier);
+    	
+    	return;
+    	
     }
 
     public void testPersistentMessageReceive(
@@ -1349,7 +1340,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         if ( ((recMsg1 == null) ||
               (recMsg1.getText() == null) ||
-              !recMsg1.getText().equals("testPersistentMessage_PersistentMsg")) ||
+              !recMsg1.getText().equals("PersistentMessage_" + testPersistentQueueMessageIdentifier)) ||
              (recMsg2 != null) ) {
             testFailed = true;
         }
@@ -1363,23 +1354,16 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
+    private String testPersistentQueueMessageTcpIdentifier = "testPersistentQueueMessageTcp";
+
     public void testPersistentMessage_Tcp(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	// Originally used message text "testPersistentMessage_PersistentMsgTcp" "testPersistentMessage_NonPersistentMsgTcp"
+    	// jmsQCFTCP, jmsQueue, jmsQueue1
+    	
+    	testPersistentMessageSimplifiedAPI_send(jmsQCFTCP, jmsQueue, jmsQueue1, testPersistentQueueMessageTcpIdentifier);
 
-        JMSContext jmsContext = jmsQCFTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        emptyQueue(jmsQCFTCP, jmsQueue);
-        emptyQueue(jmsQCFTCP, jmsQueue1);
-
-        jmsProducer.setDeliveryMode(DeliveryMode.PERSISTENT).setDeliveryDelay(1000);
-        jmsProducer.send(jmsQueue, "testPersistentMessage_PersistentMsgTcp");
-
-        jmsProducer.setDeliveryDelay(1000).setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        jmsProducer.send(jmsQueue1, "testPersistentMessage_NonPersistentMsgTcp");
-
-        jmsConsumer.close();
-        jmsContext.close();
+    	return;
     }
 
     public void testPersistentMessageReceive_Tcp(
@@ -1397,7 +1381,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         if ( ((recMsg1 == null) ||
               (recMsg1.getText() == null) || 
-              !recMsg1.getText().equals("testPersistentMessage_PersistentMsgTcp")) ||
+              !recMsg1.getText().equals("PersistentMessage_" + testPersistentQueueMessageTcpIdentifier)) ||
              (recMsg2 != null) ) {
             testFailed = true;
         }
@@ -1411,31 +1395,29 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
+    private String testPersistentTopicMessageIdentifier = "testPersistentTopicMessage";
+    
     public void testPersistentMessageTopic(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	// Originally used message text "testPersistentMessage_PersistentMsgTopic" "testPersistentMessage_NonPersistentMsgTopic"
+    	// jmsTCFBindings, jmsTopic, jmsTopic1
 
-        JMSContext jmsContext = jmsTCFBindings.createContext();
-        JMSConsumer jmsConsumer1 = jmsContext.createDurableConsumer(jmsTopic, "durPersMsg1");
-        JMSConsumer jmsConsumer2 = jmsContext.createDurableConsumer(jmsTopic1, "durPersMsg2");
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        jmsProducer.setDeliveryMode(DeliveryMode.PERSISTENT) .setDeliveryDelay(1000);
-        jmsProducer.send(jmsTopic, "testPersistentMessage_PersistentMsgTopic");
-
-        jmsProducer.setDeliveryDelay(1000).setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        jmsProducer.send(jmsTopic1, "testPersistentMessage_NonPersistentMsgTopic");
-
-        // First half of test .. verification in the second half.
+    	testPersistentMessageSimplifiedAPI_send(jmsTCFBindings, jmsTopic, jmsTopic1, testPersistentTopicMessageIdentifier);
+    	
+    	return;
     }
 
     public void testPersistentMessageReceiveTopic(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         boolean testFailed = false;
+        
+        String subscriber1Name = "durPersMsg1_" + testPersistentTopicMessageIdentifier;
+        String subscriber2Name = "durPersMsg2_" + testPersistentTopicMessageIdentifier;
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
-        JMSConsumer jmsConsumer1 = jmsContext.createDurableConsumer(jmsTopic, "durPersMsg1");
-        JMSConsumer jmsConsumer2 = jmsContext.createDurableConsumer(jmsTopic1, "durPersMsg2");
+        JMSConsumer jmsConsumer1 = jmsContext.createDurableConsumer(jmsTopic, subscriber1Name);
+        JMSConsumer jmsConsumer2 = jmsContext.createDurableConsumer(jmsTopic1, subscriber2Name);
         JMSProducer jmsProducer = jmsContext.createProducer();
 
         TextMessage recMsg1 = (TextMessage) jmsConsumer1.receive(30000);
@@ -1443,15 +1425,15 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         if ( ((recMsg1 == null) ||
               (recMsg1.getText() == null) ||
-              !recMsg1.getText().equals("testPersistentMessage_PersistentMsgTopic")) ||
-             (recMsg2 != null)) {
+              !recMsg1.getText().equals("PersistentMessage_" + testPersistentTopicMessageIdentifier)) ||
+             (recMsg2 != null) ) {
             testFailed = true;
         }
 
         jmsConsumer1.close();
         jmsConsumer2.close();
-        jmsContext.unsubscribe("durPersMsg1");
-        jmsContext.unsubscribe("durPersMsg2");
+        jmsContext.unsubscribe(subscriber1Name);
+        jmsContext.unsubscribe(subscriber2Name);
         jmsContext.close();
 
         if ( testFailed ) {
@@ -1459,31 +1441,29 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
+    private String testPersistentTopicMessageTcpIdentifier = "testPersistentTopicMessageTcp";
+    
     public void testPersistentMessageTopic_Tcp(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        JMSContext jmsContext = jmsTCFTCP.createContext();
-        JMSConsumer jmsConsumer1 = jmsContext.createDurableConsumer(jmsTopic, "durPersMsgTcp1");
-        JMSConsumer jmsConsumer2 = jmsContext.createDurableConsumer(jmsTopic1, "durPersMsgTcp2");
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        jmsProducer.setDeliveryMode(DeliveryMode.PERSISTENT).setDeliveryDelay(1000);
-        jmsProducer.send(jmsTopic, "testPersistentMessage_PersistentMsgTopicTcp");
-
-        jmsProducer.setDeliveryDelay(1000).setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        jmsProducer.send(jmsTopic1, "testPersistentMessage_NonPersistentMsgTopicTcp");
-
-        // First half of test .. verification in the second half.
+    	// Originally used message text "testPersistentMessage_PersistentMsgTopicTcp" "testPersistentMessage_NonPersistentMsgTopicTcp"
+    	// jmsTCFTCP, jmsTopic, jmsTopic1
+    	
+    	testPersistentMessageSimplifiedAPI_send(jmsTCFTCP, jmsTopic, jmsTopic1, testPersistentTopicMessageTcpIdentifier);
+    	
+    	return;
     }
 
     public void testPersistentMessageReceiveTopic_Tcp(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         boolean testFailed = false;
+        
+        String subscriber1Name = "durPersMsg1_" + testPersistentTopicMessageTcpIdentifier;
+        String subscriber2Name = "durPersMsg2_" + testPersistentTopicMessageTcpIdentifier;
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
-        JMSConsumer jmsConsumer1 = jmsContext.createDurableConsumer(jmsTopic, "durPersMsgTcp1");
-        JMSConsumer jmsConsumer2 = jmsContext.createDurableConsumer(jmsTopic1, "durPersMsgTcp2");
+        JMSConsumer jmsConsumer1 = jmsContext.createDurableConsumer(jmsTopic, subscriber1Name);
+        JMSConsumer jmsConsumer2 = jmsContext.createDurableConsumer(jmsTopic1, subscriber2Name);
         JMSProducer jmsProducer = jmsContext.createProducer();
 
         TextMessage recMsg1 = (TextMessage) jmsConsumer1.receive(30000);
@@ -1491,15 +1471,15 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         if ( ((recMsg1 == null) ||
               (recMsg1.getText() == null) ||
-              !recMsg1.getText().equals("testPersistentMessage_PersistentMsgTopicTcp")) ||
+              !recMsg1.getText().equals("PersistentMessage_" + testPersistentTopicMessageTcpIdentifier)) ||
              (recMsg2 != null) ) {
             testFailed = true;
         }
 
         jmsConsumer1.close();
         jmsConsumer2.close();
-        jmsContext.unsubscribe("durPersMsgTcp1");
-        jmsContext.unsubscribe("durPersMsgTcp2");
+        jmsContext.unsubscribe(subscriber1Name);
+        jmsContext.unsubscribe(subscriber2Name);
         jmsContext.close();
 
         if ( testFailed ) {
