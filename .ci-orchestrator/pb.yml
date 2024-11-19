@@ -10,9 +10,11 @@ triggers:
   groups: ["LibertyDev"]
   keyword: "!pbbeta"
   aliasKeywords:
-    - "#build"
-    - "#pbbeta"
     - "!build"
+    - "!pb"
+    - "#pbbeta"
+    - "#build"
+    - "#pb"
   propertyDefinitions:
     # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step.
     - name: fat.buckets.to.run
@@ -77,7 +79,9 @@ triggers:
   groups: ["LibertyDev"]
   keyword: "!fullpbbeta"
   aliasKeywords:
+    - "!fullpb"
     - "#fullpbbeta"
+    - "#fullpb"
   propertyDefinitions:
     # Run all buckets in full mode.
     - name: fat.buckets.to.run
