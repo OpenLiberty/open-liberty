@@ -105,9 +105,9 @@ public abstract class BaseTestClass {
      * @param expectedString String array of expected strings
      */
     protected void matchStringsWithRetries(Supplier<String> metricsOutput, String[] expectedString) throws InterruptedException {
-	matchStringsWithRetries(metricsOutput, expectedString, 5);
+    	matchStringsWithRetries(metricsOutput, expectedString, 5);
     }
-
+    
     /**
      * Waits one second before checking the condition. Will wait 1 second for every retry amount.
      *
@@ -126,16 +126,16 @@ public abstract class BaseTestClass {
                 Log.info(c, "assertTrueRetryWithTimeout", String.format("It took %d retries and %d seconds of waiting to be succesful)", x, (x + 1)));
                 return;
             }
-
+            
         }
 
 		Assert.fail(String.format("Failed to find all expected strings. The /metrics output is:\n%s", metricsString));
-
+    	
 
     }
     
     private static BiFunction<String, String[], Boolean> doMatching = (metricsText, expectedString) -> {
-
+    	
 		for (String m : expectedString) {
 			try (Scanner sc = new Scanner(metricsText)) {
 				boolean isFound = false;
@@ -197,5 +197,5 @@ public abstract class BaseTestClass {
                 con.disconnect();
         }
 
-    }
+    }   
 }
