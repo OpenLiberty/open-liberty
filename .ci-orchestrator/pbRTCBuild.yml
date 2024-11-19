@@ -12,12 +12,6 @@ triggers:
   - "#pb"
 
 - type: github
-  triggerName: "ol-pb-build"
-  triggerRank: 20
-  groups: ["LibertyDev"]
-  keyword: "!build"
-
-- type: github
   triggerName: "ol-fullpb"
   triggerRank: 20
   groups: ["LibertyDev"]
