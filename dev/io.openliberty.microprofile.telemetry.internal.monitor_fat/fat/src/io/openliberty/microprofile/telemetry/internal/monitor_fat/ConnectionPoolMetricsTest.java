@@ -94,7 +94,7 @@ public class ConnectionPoolMetricsTest extends BaseTestClass {
         checkStrings(requestHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", server),
                 new String[] { "sql: create table cities" });
         Log.info(c, testName, "------- connectionpool metrics should be available ------");
-        
+
 		// Allow time for the collector to receive and expose metrics
 		matchStringsWithRetries(() -> getContainerCollectorMetrics(container),
                 new String[] { "io_openliberty_connection_pool_handle_count\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_datasource_name=\"jdbc/exampleDS1\",job=\"unknown_service\"\\}.*",

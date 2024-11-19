@@ -133,7 +133,7 @@ public abstract class BaseTestClass {
 
 
     }
-    
+
     private static BiFunction<String, String[], Boolean> doMatching = (metricsText, expectedString) -> {
 
 		for (String m : expectedString) {
