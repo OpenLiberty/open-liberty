@@ -1267,6 +1267,51 @@ public class DeliveryDelayServlet extends HttpServlet {
     
     
     // new tests for simplified API
+    
+    // New consolidated simplified API persistent test sender method
+    private void testPersistentMessageSimplifiedAPI_send(ConnectionFactory cf,
+    													Destination persistentMessageDestination,
+    													Destination nonpersistentMessageDestination,
+    													String identifier)
+    													throws Exception {
+    	
+    	boolean pubSub = persistentMessageDestination instanceof Topic;
+    	JMSConsumer jmsConsumer1 = null, jmsConsumer2 = null;
+    	
+    	try (JMSContext jmsContext = cf.createContext()) {
+
+    		  JMSProducer jmsProducer = jmsContext.createProducer();
+
+    		  // If we are sending messages to Topic destinations then there needs to be subscriptions to receive the messages
+    		  if (pubSub) {
+    		    jmsConsumer1 = jmsContext.createDurableConsumer((Topic) persistentMessageDestination, "durPersMsg1_" + identifier);
+    		    jmsConsumer2 = jmsContext.createDurableConsumer((Topic) nonpersistentMessageDestination, "durPersMsg2_" + identifier);
+    		  }
+    		  else {
+    			  // empty the message queue before sending the new messages.
+    			  // This is replicating previous behaviour, but will probably need to be removed if we re-work the tests to run concurrently.
+    			  emptyQueue(cf, (Queue)persistentMessageDestination);
+    			  emptyQueue(cf, (Queue)nonpersistentMessageDestination);
+    		  }
+    		  
+    		  // Send the messages
+    		  jmsProducer.setDeliveryDelay(defaultTestDeliveryDelay).setDeliveryMode(DeliveryMode.PERSISTENT)
+    	      .send(persistentMessageDestination, "PersistentMessage_" + identifier);
+
+    		  jmsProducer.setDeliveryDelay(defaultTestDeliveryDelay).setDeliveryMode(DeliveryMode.NON_PERSISTENT)
+    		  .send(nonpersistentMessageDestination, "NonPersistentMessage_" + identifier);
+
+    	  // If we're running in the pub/sub domain then close the subscribers (the subscriptions will remain open
+    	  if (pubSub) {
+    	    jmsConsumer1.close();
+    	    jmsConsumer2.close();
+    	  }
+
+    	}
+    	
+    	return;
+    }
+    
 
     public void testPersistentMessage(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
