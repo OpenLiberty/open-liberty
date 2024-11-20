@@ -72,7 +72,6 @@ import io.netty.channel.RecvByteBufAllocator;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(context.channel(), tc, "read (async) requested for local: " + localAddress + " remote: " + remoteAddress);
                 }
-                System.out.println("read (async) requested for local: " + localAddress + " remote: " + remoteAddress);
             }
             return delegateHandle.allocate(allocator);
         }

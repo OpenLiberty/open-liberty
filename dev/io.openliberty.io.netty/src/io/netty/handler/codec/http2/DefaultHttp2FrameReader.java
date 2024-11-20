@@ -705,7 +705,6 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
             if (headerBlock == null) {
             	// Liberty changes for header block check
             	if (headersDecoder instanceof LibertyDefaultHttp2HeadersDecoder && len > ((LibertyDefaultHttp2HeadersDecoder)headersDecoder).maxHeaderBlock()) {
-	                    System.out.println("Liberty error!");
 	                    close();
 	                    throw connectionError(ENHANCE_YOUR_CALM, "Stream: " + streamId + " exceeds the maximum header block size configured.");
 	            }
@@ -723,7 +722,6 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
             }
             // Liberty changes for header block check
         	if (headersDecoder instanceof LibertyDefaultHttp2HeadersDecoder && ((LibertyDefaultHttp2HeadersDecoder)headersDecoder).maxHeaderBlock() - len < headerBlock.readableBytes()) {
-                    System.out.println("Liberty error!");
                     close();
                     throw connectionError(ENHANCE_YOUR_CALM, "Stream: " + streamId + " exceeds the maximum header block size configured.");
             }
