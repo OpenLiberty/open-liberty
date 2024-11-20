@@ -296,6 +296,7 @@ public class BestMatch {
         return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces"))) ||
                (library.getArtifactId().equals("tomcat-embed-core")) ||
                (library.getArtifactId().equals("woodstox-core") && (library.getVersion().equals("6.2.6") || library.getVersion().equals("6.2.4"))) ||
+               (library.getArtifactId().equals("commons-io") && (library.getVersion().equals("2.13.0"))) ||
                (library.getArtifactId().equals("netty-codec-http")
                 && (library.getVersion().equals("4.1.73.Final") || library.getVersion().equals("4.1.78.Final") || library.getVersion().equals("4.1.92.Final")))
                ||
