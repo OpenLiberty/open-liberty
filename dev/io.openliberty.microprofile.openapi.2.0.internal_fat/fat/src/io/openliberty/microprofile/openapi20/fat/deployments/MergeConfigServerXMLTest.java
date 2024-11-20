@@ -120,7 +120,7 @@ public class MergeConfigServerXMLTest {
             OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
 
             // Test that merging disabled message was output (at some point)
-            assertThat(server.findStringsInLogs(" I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled."),
+            assertThat(server.findStringsInLogsUsingMark(" I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled.", server.getDefaultLogFile()),
                        hasSize(1));
 
             // remove app 1
@@ -136,7 +136,7 @@ public class MergeConfigServerXMLTest {
             OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
 
             // Check there's no "first module only" message
-            assertThat(server.findStringsInLogs("CWWKO1663I"),
+            assertThat(server.findStringsInLogsUsingMark("CWWKO1663I", server.getDefaultLogFile()),
                        hasSize(0));
         }
     }
