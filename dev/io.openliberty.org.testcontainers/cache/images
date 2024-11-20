@@ -1,5 +1,5 @@
 # NOTICE: This file was automatically updated to reflect changes made to test projects.
-# Please check these changes into GitHub.
+# Please check these changes into GitHub
 alpine:3.17
 confluentinc/cp-kafka:7.1.1
 elastic/logstash:7.16.3
