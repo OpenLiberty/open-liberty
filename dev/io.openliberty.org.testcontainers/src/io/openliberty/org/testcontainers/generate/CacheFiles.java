@@ -11,6 +11,11 @@ import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import org.testcontainers.DockerClientFactory;
+import org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.ImageNameSubstitutor;
+
 public class CacheFiles {
 	
 	public static void main(String[] args) {
@@ -32,8 +37,12 @@ public class CacheFiles {
 		File imageList = new File(projectPath, "cache/images");
 		imageList.delete();
 		
+		File externalsList = new File(projectPath, "cache/externals");
+		externalsList.delete();
+		
 		//Create structures to store data
 		HashSet<String> projects = new HashSet<>();
+		HashSet<String> externals = new HashSet<>();
 		HashSet<String> images = new HashSet<>();
 		
 		//Investigate all bnd.bnd files
@@ -82,7 +91,7 @@ public class CacheFiles {
 								
 								trimmedLine = trimmedLine.replaceAll("\\\\", "");
 								
-								images.addAll(Arrays.asList(trimmedLine.split(",")));
+								externals.addAll(Arrays.asList(trimmedLine.split(",")));
 							}
 						});
 			} catch (Exception e) {
@@ -93,11 +102,25 @@ public class CacheFiles {
 		String header = "# NOTICE: This file was automatically updated to reflect changes made to test projects." + System.lineSeparator() +  
 						"# Please check these changes into GitHub" + System.lineSeparator();
 		
-		images.remove(""); //Remove any blank lines that made it into the list.
+		externals.remove(""); //Remove any blank lines that made it into the list.
+		
+		// Duplicate the externals list with internal organizations		
+		externals.stream()
+		.forEach(image -> {
+			try {
+				DockerImageName applied = ImageNameSubstitutor.instance().apply(DockerImageName.parse(image));
+				images.add(applied.asCanonicalNameString());
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+
 		
 		//Save projects and images to files
 		try (BufferedWriter projectWriter = Files.newBufferedWriter(projectList.toPath(), Charset.defaultCharset());
-			 BufferedWriter imageWriter = Files.newBufferedWriter(imageList.toPath(), Charset.defaultCharset());) {
+			 BufferedWriter imageWriter = Files.newBufferedWriter(imageList.toPath(), Charset.defaultCharset());
+			 BufferedWriter externalsWriter = Files.newBufferedWriter(externalsList.toPath(), Charset.defaultCharset());) {
+			
 			projectWriter.append(header);
 			for(String project : new TreeSet<String>(projects)) {
 				projectWriter.append(project + System.lineSeparator());
@@ -106,6 +129,11 @@ public class CacheFiles {
 			imageWriter.append(header);
 			for(String image : new TreeSet<String>(images)) {
 				imageWriter.append(image + System.lineSeparator());
+			}
+			
+			externalsWriter.append(header);
+			for(String external : new TreeSet<String>(externals)) {
+				externalsWriter.append(external + System.lineSeparator());
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

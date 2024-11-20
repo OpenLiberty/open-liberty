@@ -127,6 +127,16 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
                 break;
             }
 
+            // Priority 7: If we need to mock this behavior for image name generation
+            if (System.getenv().containsKey("MOCK_ARTIFACTORY_BEHAVIOR") && System.getenv().get("MOCK_ARTIFACTORY_BEHAVIOR").equalsIgnoreCase("true")) {
+                result = DockerImageName.parse(whichMirror(original) + '/' + original.asCanonicalNameString())
+                                .withRegistry(ArtifactoryRegistry.instance().getRegistry())
+                                .asCompatibleSubstituteFor(original);
+                needsArtifactory = false; //Just mocking behavior
+                reason = "Mocking artifactory behavior.";
+                break;
+            }
+
             //default - use original
             result = original;
             reason = "Default behavior: use default docker registry.";

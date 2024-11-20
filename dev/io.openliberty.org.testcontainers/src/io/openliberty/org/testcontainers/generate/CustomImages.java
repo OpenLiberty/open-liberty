@@ -28,7 +28,7 @@ public class CustomImages {
 	  	String projectPath = args[0];
 	  	
 	  	// Get image list if it exists
-	  	File imageList = new File(projectPath, "cache/images");
+	  	File imageList = new File(projectPath, "cache/externals");
 	  	if(!imageList.exists()) {
 	  		throw new RuntimeException("No image list was generated.");
 	  	}

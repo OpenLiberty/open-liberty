@@ -17,10 +17,14 @@ configurations {
 dependencies {
   runtime project(':io.openliberty.com.fasterxml.jackson')
   runtime project(':com.ibm.ws.componenttest')
+  runtime project(':fattest.simplicity')
 }
 
 task assembleTestContainerData(type: JavaExec) {
-	classpath = sourceSets.main.runtimeClasspath
+    // Setup environment to mock external state
+    environment "TESTCONTAINERS_IMAGE_SUBSTITUTOR", "componenttest.containers.ArtifactoryImageNameSubstitutor"
+    environment "MOCK_ARTIFACTORY_BEHAVIOR", "true"
+    classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
     main = "io.openliberty.org.testcontainers.generate.CacheFiles"
     args project.getProjectDir()
 }
