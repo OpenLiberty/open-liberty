@@ -30,8 +30,8 @@ task assembleTestContainerData(type: JavaExec) {
 }
 
 task generateCustomImages(type: JavaExec) {
-	dependsOn assembleTestContainerData
-	classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
+    dependsOn assembleTestContainerData
+    classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
     main = "io.openliberty.org.testcontainers.generate.CustomImages"
     args project.getProjectDir()
 }
