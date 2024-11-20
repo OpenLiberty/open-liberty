@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -81,54 +81,22 @@ public class AuditUtils {
         final HttpServletRequest f_req = req;
 
         try {
-            sessionID = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                @Override
-                public String run() throws Exception {
-                    HttpSession session = f_req.getSession();
-                    if (session != null) {
-                        return session.getId();
-                    } else {
-                        return null;
-                    }
-                }
-            });
+            sessionID = getSessionIDPrivileged(f_req);
         } catch (PrivilegedActionException e) {
             if ((e.getException()) instanceof com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException) {
                 if (!req.isRequestedSessionIdFromCookie()) {
-                    sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return f_req.getSession().getId();
-                        }
-                    });
+                    sessionID = getPrivilegedSessionID(f_req, false); 
                 } else {
-                    sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return f_req.getRequestedSessionId();
-                        }
-                    });
+                    sessionID = getPrivilegedRequestedSessionID(f_req); 
                 }
-
             }
         } catch (com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException e) {
             try {
                 if (!req.isRequestedSessionIdFromCookie()) {
-                    sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return f_req.getSession().getId();
-                        }
-                    });
+                    sessionID = getPrivilegedSessionID(f_req, false); 
                 } else {
-                    sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return f_req.getRequestedSessionId();
-                        }
-                    });
+                    sessionID = getPrivilegedRequestedSessionID(f_req);
                 }
-
             } catch (java.lang.NullPointerException ee) {
                 sessionID = "UnauthorizedSessionRequest";
             } catch (com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException ue) {
@@ -137,6 +105,45 @@ public class AuditUtils {
 
         }
         return sessionID;
+    }
+
+    /**
+     * A helper method called from getSessionID(HttpServletRequest req)
+     * Calls getSession() with access control handling.
+     *
+     * @param req
+     * @return sessionid or null
+     * @throws PrivilegedActionException
+     */
+    private static String getSessionIDPrivileged(HttpServletRequest req) throws PrivilegedActionException {
+        return AccessController.doPrivileged((PrivilegedExceptionAction<String>) () -> {
+            HttpSession session = req.getSession(false); // Ensure the audit code does not create a new session
+            return (session != null) ? session.getId() : null;
+        });
+    }
+    
+    /**
+     * A helper method called from getSessionID(HttpServletRequest req)
+     * Returns requested session id or null if a cookie includes requested session id
+     *
+     * @param req
+     * @param createNew
+     * @return requested session id or null
+     */
+    private static String getPrivilegedSessionID(HttpServletRequest req, boolean createNew) {
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+            HttpSession session = req.getSession(createNew);
+            return (session != null) ? session.getId() : null;
+        });
+    }
+
+    /**
+     *
+     * @param req
+     * @return session id or null
+     */
+    private static String getPrivilegedRequestedSessionID(HttpServletRequest req) {
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> req.getRequestedSessionId());
     }
 
     /**

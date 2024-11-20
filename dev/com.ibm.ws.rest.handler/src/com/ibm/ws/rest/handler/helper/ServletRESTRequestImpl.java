@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -226,7 +227,8 @@ public class ServletRESTRequestImpl implements RESTRequest {
      */
     @Override
     public String getSessionId() {
-        return request.getSession().getId();
+        HttpSession session = request.getSession(false);
+        return session == null ? null : request.getSession().getId();
     }
 
 }
