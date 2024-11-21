@@ -35,6 +35,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.stream.ChunkedInput;
+import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 /**
  *
@@ -279,6 +280,9 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
 
         final boolean isWsoc = "WebSocket".equals(protocol);
+        if(isWsoc){
+            nettyChannel.attr(QuiesceHandler.WEBSOCKET_ATTR_KEY).set(true);
+        }
 
         final boolean isH2 = "HTTP2".equals(protocol);
 
