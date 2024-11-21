@@ -21,16 +21,27 @@ dependencies {
 }
 
 task assembleTestContainerData(type: JavaExec) {
+    onlyIf { // Do not execute this task during our builds
+        !isAutomatedBuild
+    }
+    
     // Setup environment to mock external state
     environment "TESTCONTAINERS_IMAGE_SUBSTITUTOR", "componenttest.containers.ArtifactoryImageNameSubstitutor"
     environment "MOCK_ARTIFACTORY_BEHAVIOR", "true"
+    
     classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
     main = "io.openliberty.org.testcontainers.generate.CacheFiles"
     args project.getProjectDir()
 }
 
 task generateCustomImages(type: JavaExec) {
+    onlyIf { // Prototype - should never be run
+        false
+    }
+    
+    // Ensure cache has been generated
     dependsOn assembleTestContainerData
+    
     classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
     main = "io.openliberty.org.testcontainers.generate.CustomImages"
     args project.getProjectDir()
