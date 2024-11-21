@@ -23,6 +23,7 @@ import java.time.Duration;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
@@ -75,6 +76,14 @@ public abstract class WSATTest extends FATServletClient {
                 oldUri.getPath(), newQuery, oldUri.getFragment());
 
         return newUri;
+    }
+
+    public static void deleteStateFiles(LibertyServer... servers) throws Exception {
+    	final String stateFile = XAResourceImpl.getStateFile().getName();
+		Log.info(WSATTest.class, "deleteStateFiles", stateFile);
+		for (LibertyServer server : servers) {
+			server.deleteFileFromLibertyServerRoot(stateFile);
+		}    	
     }
 
 	public static void callClearResourcesServlet(String app, LibertyServer... servers) throws Exception{

@@ -1632,4 +1632,8 @@ public class XAResourceImpl implements XAResource, Serializable {
         setStateFile(stateFile);
         loadState();
     }
+
+	public static File getStateFile() {
+		return STATE_FILE;
+	}
 }
