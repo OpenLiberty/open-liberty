@@ -15,7 +15,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.SimpleUserEventChannelHandler;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.util.AttributeKey;
 
 /**
  * Channel handler which is added to the pipeline to terminates new connections once the 
@@ -29,6 +32,8 @@ public class QuiesceHandler extends SimpleUserEventChannelHandler<QuiesceHandler
 	}
 	
 	public static final QuiesceEvent QUIESCE_EVENT = new QuiesceEvent();
+	public static final AttributeKey<Boolean> WEBSOCKET_ATTR_KEY = AttributeKey.valueOf("websocket");
+
 
 	private static final TraceComponent tc = Tr.register(QuiesceHandler.class, NettyConstants.NETTY_TRACE_NAME,
 			NettyConstants.BASE_BUNDLE);
@@ -53,6 +58,12 @@ public class QuiesceHandler extends SimpleUserEventChannelHandler<QuiesceHandler
 		if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "Received Quiesce Event for " + ctx.channel() + " with callable: " + quiesceTask);
 		}
+		if (Boolean.TRUE.equals(ctx.channel().attr(WEBSOCKET_ATTR_KEY).get())) {
+			// Send close frame and close the channel
+			ctx.writeAndFlush(new CloseWebSocketFrame(1001, "Server shutting down"))
+				.addListener(ChannelFutureListener.CLOSE);
+		}
+		
 		if(quiesceTask != null) {
 			quiesceTask.call();
 		}
