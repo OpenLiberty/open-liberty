@@ -58,14 +58,14 @@ public class UpgradeReadCallback implements TCPReadCompletedCallback {
     @Override
     @FFDCIgnore(IOException.class)
     public void complete(VirtualConnection vc, TCPReadRequestContext rsc) {
-        Tr.debug(tc, "PMDINH, complete , ReadListener [" + _rl + "], this " + this);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "complete ENTER , ReadListener [" + _rl + "], this " + this);
+        }
         
-        Thread.dumpStack();
-
-
         if(vc == null){
             return;
         }
+        
         synchronized(_srtUpgradeStream){
             if(_upgradeStream.isClosing()){
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -111,6 +111,10 @@ public class UpgradeReadCallback implements TCPReadCompletedCallback {
                     }
                     _srtUpgradeStream.notify();
                 }
+            }
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "complete EXIT ");
             }
         }
     }

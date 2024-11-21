@@ -194,36 +194,44 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // so we will have to use close API from SRTConnectionContext31 and call closeStreams.
         String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
         if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
-
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "close streams from HttpDispatcherLink.close for NON_UPGRADED_STREAMS");
+                Tr.debug(tc, "close CLOSE_NON_UPGRADED_STREAMS");
             }
 
-            Tr.debug(tc, "PMDINH, close streams for NON_UPGRADED_STREAMS "
-                         + " , this.isc.getReadBuffer() [" + this.isc.getReadBuffer() + "]"
-                         + " , this.isc.isBodyComplete() [" + this.isc.isBodyComplete() + "]"
-                         + " , this.isc.isIncomingBodyExpected() [" + this.isc.isIncomingBodyExpected() + "]"
-                         + " DONE ");
-
+            /*
+             * Extract the remain upgraded and unread data into a buffer which will be consumed during the initialRead
+             */
             if (this.isc.isReadDataAvailable()) {
                 WsByteBuffer currentBuffer = this.isc.getReadBuffer();
+                int remaining = currentBuffer.remaining();
 
-                Tr.debug(tc, "PMDINH, data is available in buffer [" + currentBuffer
-                             + "] , remaining [" + currentBuffer.remaining() + "]"
-                             + "] , position [" + currentBuffer.position() + "]"
-                             + "] , limit [" + currentBuffer.limit() + "]");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close, unread data [" + remaining + "] , in buffer [" + currentBuffer + "]");
+                }
 
-                String _bufferAsString = com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(currentBuffer);
+                Tr.debug(tc, "PMDINH, close data is available in buffer [" + currentBuffer
+                             + "] , remaining [" + currentBuffer.remaining()
+                             + "] , position [" + currentBuffer.position()
+                             + "] , limit [" + currentBuffer.limit()
+                             + "]");
 
-                Tr.debug(tc, "PMDINH, close , data in buffer [" + _bufferAsString + "] , this " + this);
-
-                WsByteBuffer newBuffer = HttpDispatcher.getBufferManager().allocate(currentBuffer.remaining());
+                WsByteBuffer newBuffer = HttpDispatcher.getBufferManager().allocate(remaining);
                 newBuffer.put(currentBuffer);
-                Tr.debug(tc, "PMDINH, close , new buffer [" + newBuffer + "] , this " + this);
+                newBuffer.flip();
 
-                Tr.debug(tc, "PMDINH, close , new buffer datar [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(newBuffer) + "] , this " + this);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close, save to StateMap the unread data [" + newBuffer.remaining() + "] , in buffer [" + newBuffer + "]");
+                }
 
-                vc.getStateMap().put("NON_UPGRADED_STREAMS_UNREAD_DATA", newBuffer);
+                Tr.debug(tc, "PMDINH, SAVED data in StateMap [" + newBuffer
+                             + "] , remaining [" + newBuffer.remaining()
+                             + "] , position [" + newBuffer.position()
+                             + "] , limit [" + newBuffer.limit()
+                             + "]");
+
+                Tr.debug(tc, "PMDINH, close , StateMap buffer [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(newBuffer) + "] , this " + this);
+
+                vc.getStateMap().put(TransportConstants.NOT_UPGRADED_UNREAD_DATA, newBuffer);
             }
 
             Exception errorinClosing = this.closeStreams();
@@ -233,6 +241,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
 
             vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "close EXIT , saved unread data to StateMap");
+            }
+
             return;
         }
 
