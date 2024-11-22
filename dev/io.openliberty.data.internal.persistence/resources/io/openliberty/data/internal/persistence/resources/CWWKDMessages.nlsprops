@@ -954,5 +954,5 @@ CWWKD1095.repo.err=CWWKD1095E: An implementation of the {0} repository interface
  The primary entity class is {2}. The error is: {3}
 CWWKD1095.repo.err.explanation=The built-in Jakarta Data provider is unable \
  to provide an instance of the repository due to an error.
-CWWKD1095.repo.err.useraction=Investigate the error and make corrections \
- to the repository interface, entities, data store configuration, or database.
+CWWKD1095.repo.err.useraction=Investigate the error and correct \
+ the repository interface, entities, data store configuration, or database.
