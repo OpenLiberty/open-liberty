@@ -19,6 +19,7 @@ configurations {
 dependencies {
   requiredLibs project(":com.ibm.ws.wsat.recovery_fat.lps"),
                project(":com.ibm.ws.wsat.recovery_fat.multi.1"),
+               project(":com.ibm.ws.wsat.recovery_fat.multi.8"),
                project(":com.ibm.ws.transaction.test.util"),
                project(":com.ibm.ws.transaction.fat.util")
 }
