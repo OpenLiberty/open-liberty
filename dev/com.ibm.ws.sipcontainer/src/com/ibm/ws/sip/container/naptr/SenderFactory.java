@@ -54,7 +54,7 @@ public class SenderFactory {
 	public static SendProcessor getNaptrProcessor(boolean useKnownDestination) {
 		
 		if (SipContainerComponent.getDomainResolverService().isNaptrAutoResolveEnabled() && !useKnownDestination) {
-			c_logger.traceDebug("Tibor says about to user NaptrSenderContainer to send!!!");
+			c_logger.traceDebug("Tibor says about to use NaptrSenderContainer to send!!!");
 			SendProcessor processor = (SendProcessor) s_naptrSenderPool.get();
 			processor.setIsPoolable(true);
 			return processor;
@@ -93,5 +93,7 @@ public class SenderFactory {
 			s_naptrSenderPool.putBack(sender);
 		}
 	 }
+
+	
 	
 }

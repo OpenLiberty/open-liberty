@@ -23,9 +23,7 @@ import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
 import com.ibm.sip.util.log.Situation;
 import com.ibm.ws.sip.container.failover.repository.SessionRepository;
-import com.ibm.ws.sip.container.naptr.ISenderListener;
-import com.ibm.ws.sip.container.naptr.SendProcessor;
-import com.ibm.ws.sip.container.naptr.SenderFactory;
+import com.ibm.ws.sip.container.naptr.*;
 import com.ibm.ws.sip.container.parser.SipServletDesc;
 import com.ibm.ws.sip.container.proxy.SubsequentRequestListener;
 import com.ibm.ws.sip.container.servlets.OutgoingSipServletRequest;
@@ -456,7 +454,9 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
      * SenderFactory.
      */
     private void finishToUseSender() {
-    	SenderFactory.finishToUseSender(_sender);
+    	
+    	//SenderFactory.finishToUseSender(_sender);
+    	SenderFactory.finishToUseSender((NaptrSenderContainer) _sender);
 	}
 
 	/**
