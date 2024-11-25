@@ -34,8 +34,9 @@ import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
+import io.openliberty.netty.internal.impl.NettyFrameworkImpl; 
 import io.openliberty.netty.internal.impl.NettyConstants;
+import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 
 public class TCPUtils {
@@ -137,6 +138,11 @@ public class TCPUtils {
                 }else {
                 	synchronized (framework.getOutboundConnections()) {
                 		framework.getOutboundConnections().add(channel);
+						channel.pipeline().addLast("QuiesceHandler", new QuiesceHandler(() -> {
+							System.out.println("closing outbound connection");
+							channel.attr(QuiesceHandler.WEBSOCKET_ATTR_KEY).set(true);
+							return null;
+						}));
                 	}
                 }
 
@@ -265,7 +271,7 @@ public class TCPUtils {
 	private static Channel startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
 			TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener)
 					throws NettyException {
-		if(framework.isStopping()){ // Framework already started and is no longer active
+		if(framework.isStopping()){ // Framework already stopping and is no longer active
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "server is stopping, channel will not be started");
 			}
@@ -283,7 +289,7 @@ public class TCPUtils {
 				return channel;
 			} catch (Exception e) {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-					Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
+					Tr.debug(tc, "NettyFramework signaled- caught exception: " + e.getMessage());
 				}
 			}
 		}
@@ -326,6 +332,7 @@ public class TCPUtils {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "startOutbound (TCP): attempt to connect to host " + inetHost + " port " + inetPort);
 		}
+		System.out.println( " starting outbound channel ");
 		TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
 		return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener);
 	}

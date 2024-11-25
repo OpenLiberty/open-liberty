@@ -286,11 +286,8 @@ public class NettyChain extends HttpChain {
                 @Override
                 public Void call() throws Exception {
                     return null;
-                }
-                
+                }              
             });
-
-
             notifyAll();
         }
     }

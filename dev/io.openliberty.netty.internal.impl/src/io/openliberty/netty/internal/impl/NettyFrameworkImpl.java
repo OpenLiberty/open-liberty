@@ -230,6 +230,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     				}
                     return;
                 }
+                QuiesceState.startQuiesce();
     			NettyQuiesceListener quiesce = new NettyQuiesceListener(this, scheduledExecutorService, timeout);
     			try {
     				// Go through active endpoints and stop accepting connections
@@ -237,6 +238,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     					// Fire custom user event to let know that the endpoint is being stopped
     					channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
     				}
+                    for (Channel channel : outboundConnections){
+                        channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
+                    }
     				// Schedule quiesce tasks
     				quiesce.startTasks();
     			} catch (Exception e) {
@@ -431,10 +435,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Override
     public void registerEndpointQuiesce(Channel chan, Callable quiesce) {
     	synchronized (activeChannelMap) {
-    		if(chan != null && getActiveChannelsMap().containsKey(chan)) {
+            if((chan != null) && getActiveChannelsMap().containsKey(chan)) {
         		ChannelHandler quiesceHandler = new QuiesceHandler(quiesce);
             	chan.pipeline().addLast(quiesceHandler);
-        	}else {
+        	} else {
         		if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                     Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
                 }
