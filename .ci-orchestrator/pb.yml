@@ -141,9 +141,9 @@ steps:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
 
-- stepName: Signed CLA Check
+- stepName: CLA Check
   workType: Jenkins
-  projectName: signedCLACheck
+  projectName: claCheck
   properties:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
