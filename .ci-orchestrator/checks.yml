@@ -39,7 +39,6 @@ steps:
 - stepName: Signed CLA Check
   workType: Jenkins
   projectName: signedCLACheck
-  properties:
   timeoutInMinutes: 120
 
 - stepName: Code Checklist Creation
