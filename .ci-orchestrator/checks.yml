@@ -18,19 +18,30 @@ triggers:
       defaultValue: ${github_pr_number}
     - name: githubPRApi
       defaultValue: ${github_pr_api}
+    - name: githubPRUser
+      defaultValue: ${github_pr_user}
 
 steps:
 - stepName: PR Changes
   workType: PRChangesDetection
   timeoutInMinutes: 30
+
 - stepName: Copyright Header Check
   workType: Jenkins
   projectName: copyrightHeaderCheck
   timeoutInMinutes: 120
+
 - stepName: Prohibited Terms Check
   workType: Jenkins
   projectName: prohibitedTermsCheck
   timeoutInMinutes: 120
+
+- stepName: Signed CLA Check
+  workType: Jenkins
+  projectName: signedCLACheck
+  properties:
+  timeoutInMinutes: 120
+
 - stepName: Code Checklist Creation
   workType: Jenkins
   projectName: codeCheckListBuilder

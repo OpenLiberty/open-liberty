@@ -141,6 +141,14 @@ steps:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
 
+- stepName: Signed CLA Check
+  workType: Jenkins
+  projectName: signedCLACheck
+  properties:
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
+    githubPRUser: ${github_pr_user}
+
 - stepName: Code Checklist Creation
   workType: Jenkins
   projectName: codeCheckListBuilder
