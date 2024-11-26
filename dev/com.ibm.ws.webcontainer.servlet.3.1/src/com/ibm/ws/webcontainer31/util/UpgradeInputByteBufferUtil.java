@@ -172,9 +172,7 @@ public class UpgradeInputByteBufferUtil {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                     Tr.debug(tc, "immediateRead, read from saved buffer [" + _buffer + "] , amount [" + _buffer.remaining() +"]");  
                 } 
-                
-                Tr.debug(tc, "PMDINH, initialRead _buffer data ["  + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(_buffer) + "]"); 
-                
+
                 _upConn.getVirtualConnection().getStateMap().remove(TransportConstants.NOT_UPGRADED_UNREAD_DATA); 
             }
             // Read from the interface 
@@ -510,46 +508,27 @@ public class UpgradeInputByteBufferUtil {
          */
         WsByteBuffer data = null;
         if ((data = (WsByteBuffer) _upConn.getVirtualConnection().getStateMap().get(TransportConstants.NOT_UPGRADED_UNREAD_DATA)) != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                Tr.debug(tc, "initialRead, unread request data size [" + data.remaining() + "]");
-            } 
-
-            Tr.debug(tc, "PMDINH, initialRead StateMap,  [" + data
-                     + "] , remaining [" + data.remaining() 
-                     + "] , position [" + data.position() 
-                     + "] , limit [" + data.limit()
-                     + ", Data [" +  com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(data)
-                     + "]"); 
-
-            setAndAllocateBuffer(data.remaining()); 
+            int remaining = data.remaining();
+            setAndAllocateBuffer(remaining); 
             _buffer.put(data);
             //don't flip here!  It will be flipped during the UpgradeReadCallback.complete
 
-            Tr.debug(tc, "PMDINH, initialRead _buffer [" + _buffer
-                     + "] , remaining [" + _buffer.remaining() 
-                     + "] , position [" + _buffer.position() 
-                     + "] , limit [" + _buffer.limit() 
-                     + "] , DATA [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(_buffer)
-                     + "]"); 
-
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                Tr.debug(tc, "initialRead, saved statemap unread data [" + data.remaining() + "] into _buffer [" + _buffer + "]");
+                Tr.debug(tc, "initialRead, saved unread data [" + remaining + "] from statemap [" + data + "] into _buffer [" + _buffer + "]");
                 Tr.debug(tc, "initialRead, invoke callBack complete [" + _tcpChannelCallback + "]");
             } 
 
             data.release();
             data = null;
            
-            //standin dummy for immediateRead() to check and then remove (so that we don't need to save off the ByteBuffer just for a cleanup)
+            //standin dummy for immediateRead() to check and then remove (so that we don't need to save off the ByteBuffer again just for a cleanup)
             _upConn.getVirtualConnection().getStateMap().put(TransportConstants.NOT_UPGRADED_UNREAD_DATA, "initialRead");
-            
-            Tr.debug(tc, "PMDINH, initialRead _buffer after copied from stateMap DATA [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(_buffer) + "]"); 
            
             //complete() invokes app's onDataAvailable() to read the prepared _buffer
             _tcpChannelCallback.complete(_upConn.getVirtualConnection(), _tcpContext.getReadInterface());
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                Tr.debug(tc, "initialRead, finished all unread data.");
+                Tr.debug(tc, "initialRead, finished all initial unread data.");
             } 
         }
        

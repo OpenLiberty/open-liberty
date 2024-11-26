@@ -345,7 +345,6 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
 
         if (null != this.buffers) {
             for (int i = 0; i < this.buffers.length; i++) {
-                Tr.debug(tc, "PMDINH, clearBuffers ,  this.buffers[i].clear  [" + this.buffers[i] + "] , i [" + i + "], this " + this);
                 this.buffers[i].clear();
             }
         }

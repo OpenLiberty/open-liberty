@@ -3272,7 +3272,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (-1 == msg.getBuffersIndex()) {
             // this is the initial pass through the parsing of this message
             if (bTrace && tc.isDebugEnabled()) {
-
+                Tr.debug(tc, "First buffer of message: " + this.currentReadBB);
                 Tr.debug(tc, "PMDINH, parseMessage , NEW REQUEST [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(this.currentReadBB) + "]");
             }
             if (isSecure()) {

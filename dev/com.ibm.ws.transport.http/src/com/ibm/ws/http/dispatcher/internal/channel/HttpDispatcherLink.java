@@ -197,28 +197,20 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 Tr.debug(tc, "close, CLOSE_NON_UPGRADED_STREAMS");
             }
 
-            // Save the remaining upgraded and unread data into a VC's stateMap buffer which will be consumed in the UpgradeInputByteBufferUtil.initialRead
+            // Save the remain upgrading and unread data into a VC's stateMap which will be consumed in the UpgradeInputByteBufferUtil.initialRead
             if (this.isc.isReadDataAvailable()) {
                 WsByteBuffer currentBuffer = this.isc.getReadBuffer();
-                int remaining = currentBuffer.remaining();
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close, unread data [" + remaining + "] remaining in isc buffer [" + currentBuffer + "]");
-                }
-
-                Tr.debug(tc, "PMDINH, close , StateMap buffer [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(currentBuffer) + "] , this " + this);
-
-                WsByteBuffer newBuffer = HttpDispatcher.getBufferManager().allocate(remaining);
+                //TODO: what needs to be done after isc.getReadBuffer() in order to remove it from isc buffer? for Isaac/Manuel
+                WsByteBuffer newBuffer = HttpDispatcher.getBufferManager().allocate(currentBuffer.remaining());
                 newBuffer.put(currentBuffer);
                 newBuffer.flip();
-                currentBuffer = null;
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close, saved unread data [" + newBuffer.remaining() + "] from isc buffer into a statemap buffer [" + newBuffer + "]");
+                    Tr.debug(tc, "close, saved unread data [" + newBuffer.remaining() + "] from isc buffer [" + currentBuffer + "] to vc statemap [" + newBuffer + "]");
                 }
 
-                Tr.debug(tc, "PMDINH, close , StateMap buffer [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(newBuffer) + "] , this " + this);
-
+                currentBuffer = null;
                 vc.getStateMap().put(TransportConstants.NOT_UPGRADED_UNREAD_DATA, newBuffer);
             }
 
