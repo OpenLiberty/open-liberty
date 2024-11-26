@@ -197,29 +197,24 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 Tr.debug(tc, "close, CLOSE_NON_UPGRADED_STREAMS");
             }
 
-            // Save the remaining upgraded and unread data into a VC's stateMap buffer which will be consumed in the UpgradeInputByteBufferUtil
+            // Save the remaining upgraded and unread data into a VC's stateMap buffer which will be consumed in the UpgradeInputByteBufferUtil.initialRead
             if (this.isc.isReadDataAvailable()) {
                 WsByteBuffer currentBuffer = this.isc.getReadBuffer();
                 int remaining = currentBuffer.remaining();
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close, unread data [" + remaining + "] , in buffer [" + currentBuffer + "]");
+                    Tr.debug(tc, "close, unread data [" + remaining + "] remaining in isc buffer [" + currentBuffer + "]");
                 }
 
-                /*
-                 * Tr.debug(tc, "PMDINH, close data is available in buffer [" + currentBuffer
-                 * + "] , remaining [" + currentBuffer.remaining()
-                 * + "] , position [" + currentBuffer.position()
-                 * + "] , limit [" + currentBuffer.limit()
-                 * + "]");
-                 */
+                Tr.debug(tc, "PMDINH, close , StateMap buffer [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(currentBuffer) + "] , this " + this);
 
                 WsByteBuffer newBuffer = HttpDispatcher.getBufferManager().allocate(remaining);
                 newBuffer.put(currentBuffer);
                 newBuffer.flip();
+                currentBuffer = null;
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close, save unread data [" + newBuffer.remaining() + "] into buffer [" + newBuffer + "]");
+                    Tr.debug(tc, "close, saved unread data [" + newBuffer.remaining() + "] from isc buffer into a statemap buffer [" + newBuffer + "]");
                 }
 
                 Tr.debug(tc, "PMDINH, close , StateMap buffer [" + com.ibm.wsspi.bytebuffer.WsByteBufferUtils.asString(newBuffer) + "] , this " + this);

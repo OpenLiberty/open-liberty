@@ -284,10 +284,8 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
     @Override
     public WsByteBuffer getBuffer() {
         if (this.buffers == null) {
-            Tr.debug(tc, "PMDINH, getBuffer ,  buffers is NULL ; this " + this);
             return null;
         }
-        Tr.debug(tc, "PMDINH, getBuffer , this.buffers[0] [" + this.buffers[0] + "] , this " + this);
 
         return this.buffers[0];
     }
@@ -297,7 +295,8 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
      */
     @Override
     public void setBuffer(WsByteBuffer buf) {
-        Tr.debug(tc, "PMDINH, setBuffer ENTER ,  WsByteBuffer [" + buf + "] , this " + this);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "setBuffer, [" + buf + "] , this [" + this + "]");
 
         this.missedSet = false;
 
@@ -336,13 +335,6 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
             this.buffers = null;
             this.byteBufferArray = null;
         }
-
-        //PMDINH
-        if (this.buffers != null) {
-            Tr.debug(tc, "PMDINH, setBuffer EXIT ,  this.buffers[0] [" + this.buffers[0] + "] , this " + this);
-
-        }
-        //PMDINH
     }
 
     /**
@@ -486,6 +478,7 @@ public class TCPBaseRequestContext implements TCPRequestContext, FFDCSelfIntrosp
     /*
      * @see com.ibm.ws.ffdc.FFDCSelfIntrospectable#introspectSelf()
      */
+    @Override
     public String[] introspectSelf() {
         List<String> rc = introspect();
         return rc.toArray(new String[rc.size()]);
