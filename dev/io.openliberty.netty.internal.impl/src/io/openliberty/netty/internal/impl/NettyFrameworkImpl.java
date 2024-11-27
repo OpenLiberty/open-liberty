@@ -436,12 +436,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Override
     public void registerEndpointQuiesce(Channel chan, Callable quiesce) {
     	synchronized (activeChannelMap) {
-            if((chan != null && getActiveChannelsMap().containsKey(chan)) ) {
+            if(chan != null && getActiveChannelsMap().containsKey(chan)) { 
                 ChannelHandler quiesceHandler = chan.pipeline().get(QuiesceHandler.class);
                 if(quiesceHandler != null){
                     ((QuiesceHandler) quiesceHandler).setQuiesceTask(quiesce);
                 }else{
-                    chan.pipeline.addFirst(new QuiesceHandler(quiesce));
+                    chan.pipeline().addFirst(new QuiesceHandler(quiesce));
                 }
         	} else {
         		if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {

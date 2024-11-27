@@ -140,7 +140,13 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
                     }
                     // If timeout is -1, this will wait indefinitely until signalled
                     if (timeout == -1) {
-                        readCondition.await();
+                        waitTime = TimeUnit.SECONDS.toNanos(1);
+                        try{
+                        readCondition.awaitNanos(waitTime);
+                        }catch(InterruptedException e){
+                            Thread.currentThread().interrupt();
+                            continue; // loop back again
+                        }
                     } else {
                         readCondition.awaitNanos(waitTime);
                     }
