@@ -277,7 +277,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get());
         //check if wsoc
         final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
-        System.out.println("write callded with protocol: " + protocol);
 
         final boolean isWsoc = "WebSocket".equals(protocol);
         if(isWsoc){

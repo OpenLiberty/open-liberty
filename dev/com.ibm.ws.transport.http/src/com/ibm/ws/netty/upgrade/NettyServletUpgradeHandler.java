@@ -59,7 +59,6 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         ctx.channel().closeFuture().addListener(future -> {
-            System.out.println("Channel closeFuture triggered in NettyServletUpgradeHandler");
             signalReadReady();
         });
     }

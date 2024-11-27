@@ -215,7 +215,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      */
     @Override
     public void serverStopping() {
-        System.out.println("serverStopping was called");
         QuiesceState.startQuiesce();
     	if (isActive) {
     		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -437,8 +436,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Override
     public void registerEndpointQuiesce(Channel chan, Callable quiesce) {
     	synchronized (activeChannelMap) {
-            if((chan != null && getActiveChannelsMap().containsKey(chan)) ) { //&& getActiveChannelsMap().containsKey(chan)
-                System.out.println("registering endpoint quiesce");
+            if((chan != null && getActiveChannelsMap().containsKey(chan)) ) {
                 ChannelHandler quiesceHandler = chan.pipeline().get(QuiesceHandler.class);
                 if(quiesceHandler != null){
                     ((QuiesceHandler) quiesceHandler).setQuiesceTask(quiesce);
@@ -512,11 +510,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     		ChannelFuture closeFuture = channel.close();
 	    	ChannelGroup group = activeChannelMap.get(channel);
 	    	if(group != null) {
-	    		// group.close().addListener(innerFuture -> {
-	    		// 	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	            //         Tr.debug(tc, "channel group" + group + " has closed...");
-	            //     }
-	    		// });
 	    		activeChannelMap.remove(channel);
 	    	}
 	    	return closeFuture;

@@ -134,7 +134,11 @@ public class TCPUtils {
                     synchronized (framework.getActiveChannelsMap()) {
                     	framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
                     }
-                }
+                }else {
+                	synchronized (framework.getOutboundConnections()) {
+                		framework.getOutboundConnections().add(channel);
+                	}
+				}
 				// set up a helpful log message
 				String hostLogString = newHost;
 				SocketAddress addr = channel.localAddress();
@@ -321,7 +325,6 @@ public class TCPUtils {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "startOutbound (TCP): attempt to connect to host " + inetHost + " port " + inetPort);
 		}
-		System.out.println( " starting outbound channel ");
 		TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
 		return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener);
 	}
