@@ -60,10 +60,11 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 	 */
 	public NaptrSenderContainer() {
 		if (c_logger.isTraceDebugEnabled()) {
-			c_logger.traceDebug(this, "NaptrSender", 
-					"New NaptrSender created  = " + toString());
+			c_logger.traceDebug(this, "NaptrSenderContainer", 
+					"New NaptrSenderContainer created  = " + toString());
 		}
 		_naptrHandler = new NaptrHandler(this);
+	
 	}
 	
 	/**
@@ -78,7 +79,7 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 		super.cleanItself();
 		if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "cleanItself", 
-					" Clean NaptrSender = " + toString());
+					"EYECATCHER:  Clean NaptrSender = " + toString());
 		}
 	}
 
