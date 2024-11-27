@@ -215,6 +215,8 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      */
     @Override
     public void serverStopping() {
+        System.out.println("serverStopping was called");
+        QuiesceState.startQuiesce();
     	if (isActive) {
     		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
     			Tr.event(this, tc, "Destroying all endpoints (closing all channels): " + activeChannelMap.keySet());
@@ -230,7 +232,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     				}
                     return;
                 }
-                QuiesceState.startQuiesce();
+                
     			NettyQuiesceListener quiesce = new NettyQuiesceListener(this, scheduledExecutorService, timeout);
     			try {
     				// Go through active endpoints and stop accepting connections
@@ -435,9 +437,14 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Override
     public void registerEndpointQuiesce(Channel chan, Callable quiesce) {
     	synchronized (activeChannelMap) {
-            if((chan != null) && getActiveChannelsMap().containsKey(chan)) {
-        		ChannelHandler quiesceHandler = new QuiesceHandler(quiesce);
-            	chan.pipeline().addLast(quiesceHandler);
+            if((chan != null && getActiveChannelsMap().containsKey(chan)) ) { //&& getActiveChannelsMap().containsKey(chan)
+                System.out.println("registering endpoint quiesce");
+                ChannelHandler quiesceHandler = chan.pipeline().get(QuiesceHandler.class);
+                if(quiesceHandler != null){
+                    ((QuiesceHandler) quiesceHandler).setQuiesceTask(quiesce);
+                }else{
+                    chan.pipeline.addFirst(new QuiesceHandler(quiesce));
+                }
         	} else {
         		if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                     Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");

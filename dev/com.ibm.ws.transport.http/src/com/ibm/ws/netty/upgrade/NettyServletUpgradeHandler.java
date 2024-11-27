@@ -28,6 +28,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.VoidChannelPromise;
+import io.openliberty.netty.internal.impl.QuiesceState;
 import io.netty.channel.CoalescingBufferQueue;
 
 /**
@@ -53,6 +54,14 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     public NettyServletUpgradeHandler(Channel channel) {
         this.queue = new CoalescingBufferQueue(channel);
         this.channel = channel;
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        ctx.channel().closeFuture().addListener(future -> {
+            System.out.println("Channel closeFuture triggered in NettyServletUpgradeHandler");
+            signalReadReady();
+        });
     }
 
     @Override
@@ -113,7 +122,6 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     }
 
     public boolean awaitReadReady(long numBytes, int timeout, TimeUnit unit) {
-
         minBytesToRead = numBytes; // Set the minimum number of bytes to read
 
         readLock.lock();
@@ -124,16 +132,13 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
                 dataReady = true;
 
             }else {
-
-
                 long waitTime = timeout == -1 ? Long.MAX_VALUE : unit.toNanos(timeout);
                 long endTime = System.nanoTime() + waitTime;
-                while (totalBytesRead < minBytesToRead && channel.isActive()) {
+                while (totalBytesRead < minBytesToRead && channel.isActive() && !QuiesceState.isQuiesceInProgress()) {
                     if (timeout != -1) { // If timeout is not -1, calculate the remaining wait time
                         waitTime = endTime - System.nanoTime();
                         if (waitTime <= 0) break; // Exit if the wait time has expired
                     }
-
                     // If timeout is -1, this will wait indefinitely until signalled
                     if (timeout == -1) {
                         readCondition.await();

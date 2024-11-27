@@ -34,9 +34,8 @@ import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.impl.NettyFrameworkImpl; 
+import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 import io.openliberty.netty.internal.impl.NettyConstants;
-import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 
 public class TCPUtils {
@@ -135,17 +134,7 @@ public class TCPUtils {
                     synchronized (framework.getActiveChannelsMap()) {
                     	framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
                     }
-                }else {
-                	synchronized (framework.getOutboundConnections()) {
-                		framework.getOutboundConnections().add(channel);
-						channel.pipeline().addLast("QuiesceHandler", new QuiesceHandler(() -> {
-							System.out.println("closing outbound connection");
-							channel.attr(QuiesceHandler.WEBSOCKET_ATTR_KEY).set(true);
-							return null;
-						}));
-                	}
                 }
-
 				// set up a helpful log message
 				String hostLogString = newHost;
 				SocketAddress addr = channel.localAddress();

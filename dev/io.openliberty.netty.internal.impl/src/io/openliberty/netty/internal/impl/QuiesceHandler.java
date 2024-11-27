@@ -28,7 +28,6 @@ import io.openliberty.netty.internal.impl.QuiesceState;
 /**
  * Channel handler which is added to the pipeline to terminates new connections once the 
  * quiesce period is started.
- *
  */
 public class QuiesceHandler extends ChannelDuplexHandler{
 
@@ -48,7 +47,6 @@ public class QuiesceHandler extends ChannelDuplexHandler{
 
 	public QuiesceHandler(Callable quiesceTask) {
 		this.quiesceTask = quiesceTask;
-		System.out.println("Quiesce handler added");
 	}
 
 	public void setQuiesceTask(Callable task){
@@ -91,7 +89,7 @@ public class QuiesceHandler extends ChannelDuplexHandler{
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if (QuiesceState.isQuiesceInProgress() && handleQuiesce(ctx)) {
+		if (QuiesceState.isQuiesceInProgress() && handleQuiesce(ctx)) {
             // Quiesce handled, do not write the message
             return;
         }
@@ -101,26 +99,19 @@ public class QuiesceHandler extends ChannelDuplexHandler{
     private boolean handleQuiesce(ChannelHandlerContext ctx) {
         if (completed) {
             return false; // Already handled
+			
         }
-        completed = true;
-
         Boolean isWebSocket = ctx.channel().attr(WEBSOCKET_ATTR_KEY).get();
-        System.out.println("handling quiesce ... isWebSocket: " + isWebSocket);
 
         if (Boolean.TRUE.equals(isWebSocket)) {
-
-			ctx.executor().schedule(() -> {
-        if (Boolean.TRUE.equals(isWebSocket)) {
-            ctx.writeAndFlush(new CloseWebSocketFrame(1001, "Server shutting down"))
-                .addListener(ChannelFutureListener.CLOSE);
+			completed = true;
+             ctx.writeAndFlush(new CloseWebSocketFrame(1001, "Server shutting down"))
+                 .addListener(ChannelFutureListener.CLOSE);
         } 
-    }, 2, TimeUnit.SECONDS);
-        } else {
-            // Close other connections if necessary
-            //ctx.close();
-        }
-        return true;
+        return completed;
     }
+
+	
 
     static class QuiesceEvent {
     }
