@@ -442,7 +442,8 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
      * remove the transaction from the transaction table
      * 
      */
-    public void clearTransaction(){
+		
+		public void clearTransaction(){
     	markAsTerminated();  
 		removeFromTransactionTable(null); 
 		finishToUseSender();
@@ -454,9 +455,8 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
      * SenderFactory.
      */
     private void finishToUseSender() {
-    	
-    	//SenderFactory.finishToUseSender(_sender);
-    	SenderFactory.finishToUseSender((NaptrSenderContainer) _sender);
+        c_logger.traceDebug(this, "finishToUseSender", "EYECATCHER: calling finishToUseSender, which should trigger clean method");	
+    	SenderFactory.finishToUseSender(_sender);
 	}
 
 	/**

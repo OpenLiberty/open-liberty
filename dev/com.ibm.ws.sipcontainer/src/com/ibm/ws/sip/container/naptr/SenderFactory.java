@@ -54,12 +54,13 @@ public class SenderFactory {
 	public static SendProcessor getNaptrProcessor(boolean useKnownDestination) {
 		
 		if (SipContainerComponent.getDomainResolverService().isNaptrAutoResolveEnabled() && !useKnownDestination) {
-			c_logger.traceDebug("Tibor says about to use NaptrSenderContainer to send!!!");
+			c_logger.traceDebug("EYECATCHER: about to use NaptrSenderContainer to send!!!");
 			SendProcessor processor = (SendProcessor) s_naptrSenderPool.get();
 			processor.setIsPoolable(true);
 			return processor;
 		} 
 		else {
+			c_logger.traceDebug("EYECATCHER: about to use Sender to send!!!");
 			// Will return Sender if Naptr is disabled.
 			return Sender.getInstnace();
 		}
@@ -71,7 +72,7 @@ public class SenderFactory {
 	  *
 	  */
 	 public static void finishToUseSender(SendProcessor sender){
-		 c_logger.traceDebug("Tibor says in finishToUseSender with Sender!");
+		 c_logger.traceDebug("EYECATCHER: in finishToUseSender with Sender!");
 		 if (sender.isPoolable()) {
 			 // clean and put back to the queue only if poolable set to true
 			sender.cleanItself();
@@ -86,7 +87,7 @@ public class SenderFactory {
 	  *
 	  */
 	 public static void finishToUseSender(NaptrSenderContainer sender){
-		 c_logger.traceDebug("Tibor says in finishToUseSender with NaptrSenderContainer!");
+		 c_logger.traceDebug("EYECATCHER: in finishToUseSender with NaptrSenderContainer!");
 		 if (sender.isPoolable()) {
 			 // clean and put back to the queue only if poolable set to true
 			sender.cleanItself();
