@@ -16,8 +16,10 @@ import java.io.File;
 import java.util.WeakHashMap;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.wsspi.anno.service.AnnotationService_KeyService.AppKey;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_ExternalConstants;
+import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;
 
 /**
  * Root of annotation caching data.
@@ -74,7 +76,7 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
                new File( factory.getCacheOptions().getDir() ) );
 
         this.appsLock = new AppsLock();
-        this.apps = new WeakHashMap<String, TargetCacheImpl_DataApp>();
+        this.apps = new WeakHashMap<AppKey, TargetCacheImpl_DataApp>();
 
         this.queriesLock = new QueriesLock();
         this.queries = new WeakHashMap<String, TargetCacheImpl_DataQueries>();
@@ -152,7 +154,7 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
         // EMPTY
     }
     private final AppsLock appsLock;
-    private final WeakHashMap<String, TargetCacheImpl_DataApp> apps;
+    private final WeakHashMap<AppKey, TargetCacheImpl_DataApp> apps;
 
     /**
      * Obtain cache data for an application.
@@ -166,17 +168,17 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
      *
      * @return Cache data for the application.
      */
-    public TargetCacheImpl_DataApp getAppForcing(String appName) {
+    public TargetCacheImpl_DataApp getAppForcing(String appName, AppKey appKey) {
         // Unnamed applications always create new data.
         if ( appName == ClassSource_Factory.UNNAMED_APP ) {
             return createAppData(appName);
         }
 
         synchronized( appsLock ) {
-            TargetCacheImpl_DataApp app = apps.get(appName);
+            TargetCacheImpl_DataApp app = apps.get(appKey);
             if ( app == null ) {
                 app = createAppData(appName);
-                apps.put(appName, app);
+                apps.put(appKey, app);
             }
             return app;
         }

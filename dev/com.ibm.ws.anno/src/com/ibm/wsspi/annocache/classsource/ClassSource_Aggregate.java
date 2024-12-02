@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.ibm.wsspi.anno.service.AnnotationService_KeyService.AppKey;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 
 /**
@@ -157,6 +158,13 @@ public interface ClassSource_Aggregate extends com.ibm.wsspi.anno.classsource.Cl
      * @return The name of the application of this class source.
      */
     String getApplicationName();
+    
+    /**
+     * <p>Answer the unique application scoped object for use as keys in a cache.</p>
+     *
+     * @return The unique application scoped object for use as keys in a cache.
+     */
+    AppKey getApplicationKey();
 
     /**
      * <p>Answer the name of the module of this class source.</p>

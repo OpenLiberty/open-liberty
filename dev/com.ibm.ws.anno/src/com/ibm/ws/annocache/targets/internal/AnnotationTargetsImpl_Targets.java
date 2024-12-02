@@ -39,6 +39,7 @@ import com.ibm.ws.annocache.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.annocache.util.internal.UtilImpl_NonInternSet;
 import com.ibm.ws.annocache.util.internal.UtilImpl_Utils;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.service.AnnotationService_KeyService.AppKey;
 import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Exception;
@@ -437,7 +438,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         // The query logger has its own reference to module data.
 
-        TargetCacheImpl_DataApp appData = getAnnoCache().getAppForcing( getAppName() );
+        TargetCacheImpl_DataApp appData = getAnnoCache().getAppForcing( getAppName(), getAppKey() );
 
         putQueriesData(appData);
 
@@ -462,6 +463,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     protected ClassSource_Aggregate rootClassSource;
 
     protected String appName;
+    protected AppKey appKey;
     protected String modName;
     protected String modCatName;
     protected String modFullName;
@@ -474,6 +476,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     protected void setNames(ClassSource_Aggregate useRootClassSource) {
         this.appName = useRootClassSource.getApplicationName();
+        this.appKey = useRootClassSource.getApplicationKey();
         this.modName = useRootClassSource.getModuleName();
         this.modCatName = useRootClassSource.getModuleCategoryName();
 
@@ -494,6 +497,11 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     @Trivial
     public String getAppName() {
         return appName;
+    }
+    
+    @Trivial
+    public AppKey getAppKey() {
+        return appKey;
     }
     
     @Trivial
@@ -720,7 +728,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
                 "App [ {0} ] Mod [ {1} ]", new Object[] { useAppName, useModFullName });
         }
 
-        TargetCacheImpl_DataApp appData = getAnnoCache().getAppForcing(useAppName);
+        TargetCacheImpl_DataApp appData = getAnnoCache().getAppForcing(useAppName, getAppKey());
         TargetCacheImpl_DataMod modData = appData.getModForcing(useModFullName, getIsLightweight() );
 
         TargetsScannerOverallImpl useOverallScanner =
