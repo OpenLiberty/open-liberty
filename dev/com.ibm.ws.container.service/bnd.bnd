@@ -68,6 +68,7 @@ Private-Package: \
 -dsannotations-inherit: true
 -dsannotations: \
 	com.ibm.ws.container.service.naming.RemoteObjectInstanceFactoryImpl, \
+	com.ibm.ws.container.service.annocache.internal.ApplicationKeyServiceImpl, \
 	com.ibm.ws.container.service.annocache.internal.CDIContainerAnnotationsAdapterImpl, \
 	com.ibm.ws.container.service.annocache.internal.ContainerAnnotationsAdapterImpl, \
 	com.ibm.ws.container.service.annocache.internal.ModuleAnnotationsAdapterImpl, \
