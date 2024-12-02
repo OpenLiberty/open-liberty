@@ -41,6 +41,7 @@
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}">
         <headers add="foo:bar"/>
+        <tcpOptions portOpenRetries="60"/>
     </httpEndpoint>
 
 </server>
