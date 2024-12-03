@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: Das Schema wurde in der Datei [{0
 schemagen.info.schema.file.created.explanation=Der Befehl wurde erfolgreich ausgef\u00fchrt.
 schemagen.info.schema.file.created.useraction=Es ist keine Aktion erforderlich.
 
+error.config.root.deleted=CWWKG0110E: Eine Konfigurationsaktualisierung wurde erkannt, aber die Datei server.xml existiert nicht. Es wurden keine Konfigurations\u00e4nderungen vorgenommen.
+error.config.root.deleted.explanation=Die Datei server.xml wurde gel\u00f6scht. Um die laufenden Anwendungen nicht zu st\u00f6ren, werden keine Konfigurations\u00e4nderungen vorgenommen.
+error.config.root.deleted.useraction=F\u00fcgen Sie die Datei server.xml wieder zum Server hinzu.
+
 # Non-TR message
 error.invalidOCDRef=FEHLER: Die Metatyp-PID [{0}] gibt die ID einer nicht vorhandenen Objektklassendefinition [{1}] an.

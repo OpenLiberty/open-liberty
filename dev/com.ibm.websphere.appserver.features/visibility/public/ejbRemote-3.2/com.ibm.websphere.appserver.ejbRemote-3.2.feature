@@ -67,4 +67,4 @@ Subsystem-Name: Enterprise JavaBeans Remote 3.2
 -files=clients/ejbRemotePortable.jar
 kind=ga
 edition=base
-WLP-Platform: javaee-7.0,javaee-8.0
+WLP-Platform: javaee-7.0,javaee-8.0,jakartaee-8.0

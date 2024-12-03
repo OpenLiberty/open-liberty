@@ -47,6 +47,7 @@ import com.ibm.ws.jaxrs20.client.fat.test.MatchingSSLCiphersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.MisMatchingSSLCiphersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.PathParamTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ProxyClientTest;
+import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLMultipleServersDefaultLibertySSLConfigTest;
 import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLMultipleServersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ThirdpartyJerseyClientTest;
@@ -92,6 +93,7 @@ import componenttest.rules.repeater.RepeatTests;
                 MisMatchingSSLCiphersTest.class,
                 PathParamTest.class,
                 ProxyClientTest.class,
+                SimpleSSLMultipleServersDefaultLibertySSLConfigTest.class,
                 SimpleSSLMultipleServersTest.class,
                 SimpleSSLTest.class,
                 ThirdpartyJerseyClientTest.class,

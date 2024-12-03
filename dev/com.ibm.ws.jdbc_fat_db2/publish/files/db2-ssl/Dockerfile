@@ -1,3 +1,5 @@
+# TODO update to use icr.io/db2_community/db2:11.5.9.0
+
 FROM ibmcom/db2:11.5.7.0
 
 #Contains vulnerable log4j library for features not needed for SSL

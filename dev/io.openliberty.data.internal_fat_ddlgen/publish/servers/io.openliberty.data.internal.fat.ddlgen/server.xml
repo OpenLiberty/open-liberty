@@ -12,46 +12,102 @@
  -->
 <server>
 
-  <featureManager>
-    <!-- Tested features -->
-    <feature>data-1.0</feature>
-    <feature>persistence-3.2</feature>
-    
-    <!-- Necessary for ddlGen script -->
-    <feature>localConnector-1.0</feature>
-    
-    <!-- Necessary for test infrastructure -->
-    <feature>componenttest-2.0</feature>
-    <feature>servlet-6.1</feature>
-  </featureManager>
+	<featureManager>
+		<!-- Tested features -->
+		<feature>data-1.0</feature>
+		<feature>persistence-3.2</feature>
 
-  <include location="../fatTestPorts.xml"/>
+		<!-- Necessary for ddlGen script -->
+		<feature>localConnector-1.0</feature>
 
-  <data>
-    <logValues>test.jakarta.data.ddlgen.web</logValues>
-  </data>
+		<!-- Necessary for test infrastructure -->
+		<feature>componenttest-2.0</feature>
+		<feature>servlet-6.1</feature>
+	</featureManager>
 
-  <authData id="dbadmin" user="dbadmin" password="adminpwd" fat.modify="true"/>
-  <authData id="dbuser" user="dbuser" password="DBuserPassw0rd"/>
+	<include location="../fatTestPorts.xml" />
 
-  <application location="DDLGenTestApp.war"/>
+	<data>
+		<logValues>test.jakarta.data.ddlgen.web</logValues>
+		<createTables>false</createTables> <!-- For test 1-5 ensure tables are not created during application start -->
+	</data>
 
-  <databaseStore id="TestDataStore"
-                 dataSourceRef="TestDataSource"
-                 authDataRef="dbuser"
-                 createTables="false"
-                 schema="dbuser"
-                 tablePrefix="TEST"/>
+	<application location="DDLGenTestApp.war">
+		<classloader commonLibraryRef="JDBCLibrary" />
+	</application>
+	
+	<!-- Administrative user - used to execute DDL files -->
+	<!-- NOTE: For derby we do not use the database admin since by default
+	     every user has it's own schema so you cannot use the admin user
+	     to create a table accessible by the database user
+	-->
+	<dataSource id="AdminDataSource" jndiName="jdbc/AdminDataSource" fat.modify="true">
+		<jdbcDriver libraryRef="JDBCLibrary" />
+		<properties.derby.embedded createDatabase="create" databaseName="memory:testdb"
+			user="dbuser" password="DBuserPassw0rd" />
+	</dataSource>
 
-  <dataSource id="TestDataSource" jndiName="jdbc/TestDataSource" fat.modify="true">
-    <jdbcDriver libraryRef="JDBCLibrary"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
-  </dataSource>
+	<!-- Test 1: the default database -->
+	<dataSource id="DefaultDataSource" fat.modify="true">
+		<jdbcDriver libraryRef="JDBCLibrary" />
+		<properties.derby.embedded createDatabase="create" databaseName="memory:testdb"
+			user="${env.DB_USER}" password="${env.DB_PASS}"/>
+	</dataSource>
+	
+	<!-- Test 2: DataSource id -->
+	<dataSource id="TestDataSource" jndiName="jdbc/TestDataSource" fat.modify="true">
+		<jdbcDriver libraryRef="JDBCLibrary" />
+		<properties.derby.embedded createDatabase="create" databaseName="memory:testdb"
+			user="${env.DB_USER}" password="${env.DB_PASS}"/>
+	</dataSource>
+	
+	<!-- Test 3: DataSource jndiName -->
+	<dataSource id="TestDataSourceJndi" jndiName="jdbc/TestDataSourceJndi" fat.modify="true">
+		<jdbcDriver libraryRef="JDBCLibrary" />
+		<properties.derby.embedded createDatabase="create" databaseName="memory:testdb"
+			user="${env.DB_USER}" password="${env.DB_PASS}"/>
+	</dataSource>
+	
+	<!-- Test 4: Resource reference -->
+	<dataSource id="TestDataSourceResource" jndiName="jdbc/TestDataSourceResource" fat.modify="true">
+		<jdbcDriver libraryRef="JDBCLibrary" />
+		<properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
+		<containerAuthData user="${env.DB_USER}" password="${env.DB_PASS}" />
+	</dataSource>
 
-  <library id="JDBCLibrary">
-    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
-  </library>
+	<!-- Test 5: @DataSourceDefinition -->
+	<!-- NOTE: @DataSourceDefinition cannot be used with Database rotation since annotations are statically defined.
+	     DDLGen with DataSourceDefinition is tested against derby in io.openliberty.data.internal_fat_datastore
+	 -->
+	
+	<!-- Test 6: Persistence Unit -->
+	<dataSource id="TestDataSourcePersistence" jndiName="jdbc/TestDataSourcePersistence" fat.modify="true">
+		<jdbcDriver libraryRef="JDBCLibrary" />
+		<properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
+		<containerAuthData user="${env.DB_USER}" password="${env.DB_PASS}" />
+	</dataSource>
+	
+	<!-- Test 7: DatabaseStore -->
+	<authData id="dbuser" user="${env.DB_USER}" password="${env.DB_PASS}" />
+	
+	<databaseStore id="TestDataStore" dataSourceRef="forDatabaseStore"
+		authDataRef="dbuser" createTables="false"
+		tablePrefix="TEST" schema="${env.DB_USER}" />
 
-  <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+	<dataSource id="forDatabaseStore" jndiName="jdbc/forDatabaseStore" fat.modify="true">
+		<jdbcDriver libraryRef="JDBCLibrary" />
+		<properties.derby.embedded createDatabase="create" databaseName="memory:testdb" />
+	</dataSource>
+
+
+	<!-- Common library and permissions -->
+
+	<library id="JDBCLibrary">
+		<fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}" />
+	</library>
+
+	<javaPermission
+		codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}"
+		className="java.security.AllPermission" />
 
 </server>

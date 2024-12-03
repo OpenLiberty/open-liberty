@@ -261,6 +261,11 @@ public class TCKRunner {
         // Validate configured settings
         TCKUtilities.requireDirectory(tckRunnerDir);
 
+        // Validate server started ok (for tests that start the server in advance)
+        if (server.isStarted()) {
+            TCKUtilities.assertServerHappy(server);
+        }
+
         // Configure Artifactory
         File wrapperPropertiesFile = TCKUtilities.exportMvnWrapper(this.tckRunnerDir);
 

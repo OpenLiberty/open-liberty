@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.launch.internal;
 
+import static com.ibm.ws.kernel.LibertyProcess.CONDITION_LIBERTY_PROCESS_ACTIVE;
 import static io.openliberty.checkpoint.spi.CheckpointPhase.CHECKPOINT_PROPERTY;
 import static io.openliberty.checkpoint.spi.CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY;
 import static io.openliberty.checkpoint.spi.CheckpointPhase.CONDITION_PROCESS_RUNNING_ID;
@@ -51,6 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
@@ -58,6 +60,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 import org.osgi.service.condition.Condition;
@@ -686,6 +689,7 @@ public class FrameworkManager {
                 // not an active checkpoint launch; register the running condition now
                 registerRunningCondition(fwk);
             }
+            registerLibertyActiveCondition(fwk);
             return fwk;
         } catch (BundleException ex) {
             throw ex;
@@ -729,6 +733,25 @@ public class FrameworkManager {
         BundleContext bc = framework.getBundleContext();
         bc.registerService(Condition.class, Condition.INSTANCE,
                            asDictionary(singletonMap(CONDITION_ID, CONDITION_PROCESS_RUNNING_ID)));
+    }
+
+    private static void registerLibertyActiveCondition(Framework framework) {
+        BundleContext bc = framework.getBundleContext();
+
+        final ServiceRegistration<Condition> reg = bc.registerService(Condition.class, Condition.INSTANCE,
+                                                                      asDictionary(singletonMap(CONDITION_ID, CONDITION_LIBERTY_PROCESS_ACTIVE)));
+        // unregister when server is stopping
+        bc.addBundleListener(new SynchronousBundleListener() {
+            @Override
+            public void bundleChanged(BundleEvent event) {
+                Bundle b = event.getBundle();
+                if (b.getBundleId() == 0) {
+                    if (b.getState() == Bundle.STOPPING) {
+                        reg.unregister();
+                    }
+                }
+            }
+        });
     }
 
     private static final String MANAGER_DIR_NAME = ".manager";

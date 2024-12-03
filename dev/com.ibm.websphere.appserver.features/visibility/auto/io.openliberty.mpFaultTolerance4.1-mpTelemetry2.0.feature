@@ -5,5 +5,5 @@ IBM-Provision-Capability: \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.mpTelemetry-2.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.microprofile.faulttolerance.telemetry
-kind=beta
+kind=ga
 edition=core

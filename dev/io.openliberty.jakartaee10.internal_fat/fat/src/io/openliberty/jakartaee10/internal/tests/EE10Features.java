@@ -117,6 +117,7 @@ public class EE10Features {
     //
 
     public EE10Features(String installRoot) throws Exception {
+        FeatureUtilities.removeTestAutoFeatures(new File(installRoot));
         this.serverFeatures_ol = getInstalledFeatures(installRoot, OPEN_LIBERTY_ONLY);
         this.versionedFeatures_ol = getVersionedFeatures(serverFeatures_ol);
 

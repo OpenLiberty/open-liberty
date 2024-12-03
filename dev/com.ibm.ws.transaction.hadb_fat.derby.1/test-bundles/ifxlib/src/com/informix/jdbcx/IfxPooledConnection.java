@@ -12,18 +12,23 @@
  *******************************************************************************/
 package com.informix.jdbcx;
 
+import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.sql.ConnectionEventListener;
 import javax.sql.PooledConnection;
 import javax.sql.StatementEventListener;
 
-import com.informix.jdbcx.IfxConstants.TestType;
+import com.ibm.tx.jta.ut.util.HADBTestConstants.HADBTestType;
+import com.ibm.tx.jta.ut.util.HADBTestControl;
 
 public class IfxPooledConnection implements PooledConnection {
+
+    static {
+        HADBTestControl.init(Paths.get(System.getenv("WLP_OUTPUT_DIR")).getParent().resolve(Paths.get("shared")).toString());
+    }
+
     PooledConnection wrappedPooledConn = null;
     Connection unwrappedConnection = null;
 
@@ -90,153 +95,145 @@ public class IfxPooledConnection implements PooledConnection {
 
         if (!_areParametersSet) {
             _areParametersSet = true;
-            Statement stmt = theConn.createStatement();
-            System.out.println("SIMHADB: IfxPooledConnection created statement - " + stmt);
-            ResultSet rsBasic = null;
             try {
                 System.out.println("SIMHADB: Execute a query to see if we can find the table");
-                rsBasic = stmt.executeQuery("SELECT testtype, failingoperation, numberoffailures, simsqlcode" + " FROM hatable");
-                if (rsBasic.next()) {
-                    final TestType testType = TestType.from(rsBasic.getInt(1));
-                    System.out.println("SIMHADB: Stored column testtype is: " + testType);
-                    int failingOperation = rsBasic.getInt(2);
-                    System.out.println("SIMHADB: Stored column failingoperation is: " + failingOperation);
-                    int numberOfFailuresInt = rsBasic.getInt(3);
-                    System.out.println("SIMHADB: Stored column numberoffailures is: " + numberOfFailuresInt);
-                    int simsqlcodeInt = rsBasic.getInt(4);
-                    System.out.println("SIMHADB: Stored column simsqlcode is: " + simsqlcodeInt);
-                    switch (testType) {
-                        case STARTUP:
-                            // We abuse the failovervalInt parameter. If it is set to
-                            // 999, then we will
-                            // not enable the failover function, so that the server can
-                            // safely shut
-                            // down. But we reset the column, so that next time (on
-                            // startup) failover
-                            // will be enabled
-                            if (failingOperation == 999) {
-                                IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(false);
-                                IfxConnection.setFailoverEnabled(false);
-                                System.out.println("SIMHADB: update HATABLE with faoloverval 0");
-                                stmt.executeUpdate("update hatable set failingoperation = 0 where testtype = 0");
-                                theConn.commit();
-                                System.out.println("SIMHADB: HATABLE committed");
+                HADBTestControl testControl = HADBTestControl.read();
+                System.out.println("HADBtestControl: " + testControl);
+                final HADBTestType testType = testControl.getTestType();
+                System.out.println("SIMHADB: Stored column testtype is: " + testType);
+                int simsqlcodeInt = testControl.getSimsqlcodeInt();
+                System.out.println("SIMHADB: Stored column simsqlcode is: " + simsqlcodeInt);
+                int failingOperation = testControl.getFailingOperation();
+                System.out.println("SIMHADB: Stored column failingoperation is: " + failingOperation);
+                int numberOfFailuresInt = testControl.getNumberOfFailuresInt();
+                System.out.println("SIMHADB: Stored column numberoffailures is: " + numberOfFailuresInt);
+
+                switch (testType) {
+                    case STARTUP:
+                        // We abuse the failovervalInt parameter. If it is set to
+                        // 999, then we will
+                        // not enable the failover function, so that the server can
+                        // safely shut
+                        // down. But we reset the column, so that next time (on
+                        // startup) failover
+                        // will be enabled
+                        if (failingOperation == 999) {
+                            IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(false);
+                            IfxConnection.setFailoverEnabled(false);
+                            HADBTestControl.write(testType, simsqlcodeInt, 0, numberOfFailuresInt);
+                            System.out.println("SIMHADB: update HATABLE with faoloverval 0");
+                            System.out.println("SIMHADB: HATABLE committed");
+                            System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
+                            IfxConnection.setSimSQLCode(simsqlcodeInt);
+                        } else {
+                            if (!IfxConnectionPoolDataSource.isTestingFailoverAtRuntime()) {
+                                System.out.println(
+                                                   "SIMHADB: Already set to test failover at startup, we don't want to change settings");
+                            } else {
+                                System.out.println("SIMHADB: Test failover at startup, make settings");
+                                IfxConnection.setFailoverValue(failingOperation);
+                                IfxConnection.setQueryFailoverEnabled(true);
+                                IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(true);
+                                IfxConnection.setQueryFailoverCounter(0);
+
                                 System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
                                 IfxConnection.setSimSQLCode(simsqlcodeInt);
-                            } else {
-                                if (!IfxConnectionPoolDataSource.isTestingFailoverAtRuntime()) {
-                                    System.out.println(
-                                                       "SIMHADB: Already set to test failover at startup, we don't want to change settings");
-                                } else {
-                                    System.out.println("SIMHADB: Test failover at startup, make settings");
-                                    IfxConnection.setFailoverValue(failingOperation);
-                                    IfxConnection.setQueryFailoverEnabled(true);
-                                    IfxConnectionPoolDataSource.setTestingFailoverAtRuntime(true);
-                                    IfxConnection.setQueryFailoverCounter(0);
-
-                                    System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
-                                    IfxConnection.setSimSQLCode(simsqlcodeInt);
-                                }
                             }
-                            break;
+                        }
+                        break;
 
-                        case RUNTIME:
-                            IfxConnection.setFailoverEnabled(true);
-                            IfxConnection.setFailoverCounter(0);
+                    case RUNTIME:
+                        IfxConnection.setFailoverEnabled(true);
+                        IfxConnection.setFailoverCounter(0);
 
-                            System.out.println(
-                                               "SIMHADB: Test failover at runtime, Stored column failoverval is: " + failingOperation);
-                            if (failingOperation > 0)
-                                IfxConnection.setFailoverValue(failingOperation);
-                            System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
-                            IfxConnection.setSimSQLCode(simsqlcodeInt);
+                        System.out.println(
+                                           "SIMHADB: Test failover at runtime, Stored column failoverval is: " + failingOperation);
+                        if (failingOperation > 0)
+                            IfxConnection.setFailoverValue(failingOperation);
+                        System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
+                        IfxConnection.setSimSQLCode(simsqlcodeInt);
 
-                            if (numberOfFailuresInt > 1) {
-                                IfxConnection.setFailingRetries(numberOfFailuresInt);
-                                IfxConnection.setFailingRetryCounter(0);
-                            }
-                            break;
+                        if (numberOfFailuresInt > 1) {
+                            IfxConnection.setFailingRetries(numberOfFailuresInt);
+                            IfxConnection.setFailingRetryCounter(0);
+                        }
+                        break;
 
-                        case DUPLICATE_RESTART:
-                            IfxConnection.setDuplicationEnabled(true); // Set this so that we will check in IfxPreparedStatement.eExecuteBatch()to see if we should be duplicating rows.
-                            IfxConnection.setDuplicateCounter(0); // Count the number of executeBatch() calls we have made
+                    case DUPLICATE_RESTART:
+                        IfxConnection.setDuplicationEnabled(true); // Set this so that we will check in IfxPreparedStatement.eExecuteBatch()to see if we should be duplicating rows.
+                        IfxConnection.setDuplicateCounter(0); // Count the number of executeBatch() calls we have made
 
-                            // Also enable a halt
-                            IfxConnection.setHaltEnabled(true);
-                            System.out.println(
-                                               "SIMHADB: Test duplication at runtime, Stored column failoverval is: " + failingOperation);
-                            if (failingOperation > 0)
-                                IfxConnection.setFailoverValue(failingOperation); //  When the duplicateCounter reaches this value we'll start collecting duplicate rows
-                            System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
-                            IfxConnection.setSimSQLCode(simsqlcodeInt);
-                            break;
+                        // Also enable a halt
+                        IfxConnection.setHaltEnabled(true);
+                        System.out.println(
+                                           "SIMHADB: Test duplication at runtime, Stored column failoverval is: " + failingOperation);
+                        if (failingOperation > 0)
+                            IfxConnection.setFailoverValue(failingOperation); //  When the duplicateCounter reaches this value we'll start collecting duplicate rows
+                        System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
+                        IfxConnection.setSimSQLCode(simsqlcodeInt);
+                        break;
 
-                        case DUPLICATE_RUNTIME:
-                            IfxConnection.setDuplicationEnabled(true);
-                            IfxConnection.setDuplicateCounter(0);
+                    case DUPLICATE_RUNTIME:
+                        IfxConnection.setDuplicationEnabled(true);
+                        IfxConnection.setDuplicateCounter(0);
 
-                            System.out.println(
-                                               "SIMHADB: Test duplication at runtime, Stored column failoverval is: " + failingOperation);
-                            if (failingOperation > 0)
-                                IfxConnection.setFailoverValue(failingOperation);
-                            System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
-                            IfxConnection.setSimSQLCode(simsqlcodeInt);
-                            break;
+                        System.out.println(
+                                           "SIMHADB: Test duplication at runtime, Stored column failoverval is: " + failingOperation);
+                        if (failingOperation > 0)
+                            IfxConnection.setFailoverValue(failingOperation);
+                        System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
+                        IfxConnection.setSimSQLCode(simsqlcodeInt);
+                        break;
 
-                        case HALT:
-                            IfxConnection.setHaltEnabled(true);
-                            IfxConnection.setHaltCounter(0);
+                    case HALT:
+                        IfxConnection.setHaltEnabled(true);
+                        IfxConnection.setHaltCounter(0);
 
-                            System.out.println(
-                                               "SIMHADB: Test halt at runtime, Stored column failoverval is: " + failingOperation);
-                            if (failingOperation > 0)
-                                IfxConnection.setFailoverValue(failingOperation);
-                            System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
-                            IfxConnection.setSimSQLCode(simsqlcodeInt);
-                            break;
+                        System.out.println(
+                                           "SIMHADB: Test halt at runtime, Stored column failoverval is: " + failingOperation);
+                        if (failingOperation > 0)
+                            IfxConnection.setFailoverValue(failingOperation);
+                        System.out.println("SIMHADB: Set simsqlcode to: " + simsqlcodeInt);
+                        IfxConnection.setSimSQLCode(simsqlcodeInt);
+                        break;
 
-                        case CONNECT:
-                            // Dependent on number of connection attempts, reset _areParametersSet
-                            if (_connectAttempts < numberOfFailuresInt)
-                                _areParametersSet = false;
+                    case CONNECT:
+                        // Dependent on number of connection attempts, reset _areParametersSet
+                        if (_connectAttempts < numberOfFailuresInt)
+                            _areParametersSet = false;
 
-                            if (_areParametersSet) {
-                                // Last time through, need to update hatable to avoid interference with subsequent tests
-                                System.out.println("SIMHADB: update HATABLE with testtype = 99");
-                                stmt.executeUpdate("update hatable set testtype = 99 where testtype = 5");
-                            }
+                        if (_areParametersSet) {
+                            // Last time through, need to update hatable to avoid interference with subsequent tests
+                            HADBTestControl.write(HADBTestType.NONE, simsqlcodeInt, failingOperation, numberOfFailuresInt);
+                        }
 
-                            String sqlReason = "Generated internally";
-                            String sqlState = "Generated reason";
-                            int reasonCode = -777;
+                        String sqlReason = "Generated internally";
+                        String sqlState = "Generated reason";
+                        int reasonCode = -777;
 
-                            System.out.println("SIMHADB: sqlcode set to: " + reasonCode);
-                            // if reason code is "-3" then exception is non-transient, otherwise it is transient
-                            SQLException sqlex = new SQLException(sqlReason, sqlState, reasonCode);
+                        System.out.println("SIMHADB: sqlcode set to: " + reasonCode);
+                        // if reason code is "-3" then exception is non-transient, otherwise it is transient
+                        SQLException sqlex = new SQLException(sqlReason, sqlState, reasonCode);
 
-                            throw sqlex;
+                        throw sqlex;
 
-                        case LEASE:
-                            // We abuse the failovervalInt parameter.
-                            // 770 - lease update test
-                            if (failingOperation == 770) {
-                                IfxConnection.setTestingLeaselogUpdateFlag(true);
-                            } else if (failingOperation == 771) {
-                                IfxConnection.setTestingLeaselogDeleteFlag(true);
-                            } else if (failingOperation == 772) {
-                                IfxConnection.setTestingLeaselogClaimFlag(true);
-                            } else if (failingOperation == 773) {
-                                IfxConnection.setTestingLeaselogGetFlag(true);
-                            }
-                            break;
+                    case LEASE:
+                        // We abuse the failovervalInt parameter.
+                        // 770 - lease update test
+                        if (failingOperation == 770) {
+                            IfxConnection.setTestingLeaselogUpdateFlag(true);
+                        } else if (failingOperation == 771) {
+                            IfxConnection.setTestingLeaselogDeleteFlag(true);
+                        } else if (failingOperation == 772) {
+                            IfxConnection.setTestingLeaselogClaimFlag(true);
+                        } else if (failingOperation == 773) {
+                            IfxConnection.setTestingLeaselogGetFlag(true);
+                        }
+                        break;
 
-                        default:
-                            System.out.println("SIMHADB: unknown test type");
-                            break;
-                    }
-                } else {
-                    System.out.println("SIMHADB: Empty result set");
-                    IfxConnection.setFailoverEnabled(false);
+                    default:
+                        System.out.println("SIMHADB: unknown test type");
+                        break;
                 }
             } catch (SQLException sqle) {
                 int errorCode = sqle.getErrorCode();
@@ -250,11 +247,6 @@ public class IfxPooledConnection implements PooledConnection {
                 System.out.println("SIMHADB: IfxPooledConnection.getConnection caught General exception - " + e);
                 // No table, disable failover
                 IfxConnection.setFailoverEnabled(false);
-            } finally {
-                if (stmt != null)
-                    stmt.close();
-                if (rsBasic != null)
-                    rsBasic.close();
             }
         }
 

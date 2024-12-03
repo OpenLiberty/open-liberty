@@ -1,21 +1,25 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+/* =============================================================================
+ * Copyright (c) 2012,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * =============================================================================
+ */
 package com.ibm.ws.sib.mfp.impl;
 
 import com.ibm.ws.sib.mfp.*;
 import com.ibm.ws.sib.mfp.schema.TrmFirstContactAccess;
 import com.ibm.ws.sib.mfp.trm.*;
 import com.ibm.ws.sib.utils.ras.SibTr;
+
+import static com.ibm.ws.sib.mfp.trm.TrmMessageType.getTrmMessageType;
+
 import com.ibm.websphere.ras.TraceComponent;
 
 /**
@@ -392,13 +396,11 @@ public final class TrmMessageFactoryImpl extends TrmMessageFactory {
     TrmMessage trmMessage = null;
 
     /* Create an instance of the appropriate message subclass                 */
-    switch (messageType) {
-
-      case TrmMessageType.ROUTE_DATA_INT:
+    switch (getTrmMessageType(messageType)) {
+    case ROUTE_DATA:
         trmMessage = new TrmRouteDataImpl(jmo);
         break;
-
-      default:
+    default:
         trmMessage = new TrmMessageImpl(jmo);
     }
 

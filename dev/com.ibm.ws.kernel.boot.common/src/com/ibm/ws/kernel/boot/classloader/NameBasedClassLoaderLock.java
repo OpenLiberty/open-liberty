@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,17 +9,25 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot.classloader;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class NameBasedClassLoaderLock {
 
-    public static final Supplier<NameBasedClassLoaderLock> LOCK_SUPPLIER = new Supplier<NameBasedClassLoaderLock>() {
+    public static final Function<String, NameBasedClassLoaderLock> LOCK_SUPPLIER = new Function<String, NameBasedClassLoaderLock>() {
         @Override
-        public NameBasedClassLoaderLock get() {
-            return new NameBasedClassLoaderLock();
+        public NameBasedClassLoaderLock apply(String className) {
+            return new NameBasedClassLoaderLock(className);
         }
     };
 
-    private NameBasedClassLoaderLock() {
+    private final String className;
+
+    private NameBasedClassLoaderLock(String className) {
+        this.className = className;
+    }
+
+    @Override
+    public String toString() {
+        return "NameBasedClassLoaderLock: " + className;
     }
 }

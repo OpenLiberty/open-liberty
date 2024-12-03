@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,7 +35,7 @@ public class FATSuite extends TestContainerSuite {
 
     // Updated docker image to use TLS1.2 for secure communication
     static final DockerImageName db2Image = DockerImageName.parse("kyleaure/db2-ssl:3.0")
-                    .asCompatibleSubstituteFor("ibmcom/db2");
+                    .asCompatibleSubstituteFor("ibmcom/db2"); //TODO update .asCompatibleSubstituteFor("icr.io/db2_community/db2")
 
     @ClassRule
     public static Db2Container db2 = new Db2Container(db2Image)

@@ -1,3 +1,5 @@
+# TODO update to 17.0-alpine
+
 FROM postgres:14.1-alpine
 
 COPY scripts/initDB.sql /docker-entrypoint-initdb.d/initDB.sql

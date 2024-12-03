@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: prodextn1tool-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.prodextn1-1.0; visibility:=private
 Subsystem-Version: 1.0.0
@@ -11,7 +12,7 @@ Subsystem-Icon: icons/toolicon3.png,icons/toolicon4.png;size=58
 IBM-AdminCenter-Endpoint: prodextn1/welcome
 Subsystem-Content: com.ibm.ws.appserver.prodextn1toolbundle; version="[1,1.1)",
  com.ibm.websphere.appserver.restConnector-1.0; ibm.tolerates:="2.0"; type="osgi.subsystem.feature",
- com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0"; type="osgi.subsystem.feature"
+ com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0,6.1"; type="osgi.subsystem.feature"
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.adminCenter-1.0))"
 IBM-Install-Policy: manual
 Subsystem-Vendor: IBM

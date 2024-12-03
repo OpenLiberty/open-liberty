@@ -15,4 +15,4 @@ Subsystem-Name: Enterprise JavaBeans Persistent Timers 3.2
 -bundles=com.ibm.ws.ejbcontainer.timer.persistent
 kind=ga
 edition=base
-WLP-Platform: javaee-7.0,javaee-8.0
+WLP-Platform: javaee-7.0,javaee-8.0,jakartaee-8.0

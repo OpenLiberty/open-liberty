@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: \u5df2\u5728 [{0}] \u6a94\u6848\u
 schemagen.info.schema.file.created.explanation=\u6307\u4ee4\u5df2\u9806\u5229\u5b8c\u6210\u3002
 schemagen.info.schema.file.created.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
 
+error.config.root.deleted=CWWKG0110E: \u5075\u6e2c\u5230\u8a2d\u5b9a\u66f4\u65b0\uff0c\u4f46server.xml\u4e0d\u5b58\u5728\u3002 \u6c92\u6709\u9032\u884c\u4efb\u4f55\u914d\u7f6e\u66f4\u65b0\u3002
+error.config.root.deleted.explanation=server.xml\u6a94\u6848\u5df2\u522a\u9664\u3002 \u70ba\u4e86\u4e0d\u4e2d\u65b7\u6b63\u5728\u904b\u884c\u7684\u61c9\u7528\u7a0b\u5e8f\uff0c\u7121\u9700\u9032\u884c\u4efb\u4f55\u914d\u7f6e\u66f4\u6539\u3002
+error.config.root.deleted.useraction=\u5c07server.xml\u6a94\u6848\u52a0\u5165\u56de\u4f3a\u670d\u5668\u3002
+
 # Non-TR message
 error.invalidOCDRef=ERROR: metatype PID [{0}] \u6307\u5b9a\u4e86\u4e0d\u5b58\u5728\u7684\u7269\u4ef6\u985e\u5225\u5b9a\u7fa9 ID [{1}]

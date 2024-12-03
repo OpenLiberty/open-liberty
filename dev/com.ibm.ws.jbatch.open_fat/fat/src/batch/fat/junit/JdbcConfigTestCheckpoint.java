@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package batch.fat.junit;
 
 import java.util.Collections;
@@ -8,14 +20,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-
-import batch.fat.util.BatchFATHelper;
-import componenttest.annotation.CheckpointTest;
-
 import com.ibm.ws.jbatch.test.BatchAppUtils;
 import com.ibm.ws.jbatch.test.FatUtils;
 
+import batch.fat.util.BatchFATHelper;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -29,39 +40,6 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class JdbcConfigTestCheckpoint extends BatchFATHelper { 
 
     /**
-     * Used with DynamicConfigRule.
-     */
-    public static Callable<Void> initialSetup = new Callable<Void>() {
-        @Override
-        public Void call() throws Exception {
-            setup();
-            return null;
-        }
-    };
-
-    /**
-     * Used with DynamicConfigRule.
-     */
-    public static Callable<Void> finalTearDown = new Callable<Void>() {
-        @Override
-        public Void call() throws Exception {
-            tearDown();
-            return null;
-        }
-    };
-
-    /**
-     * Used with DynamicConfigRule. Called after each iteration.
-     */
-    public static Callable<Void> afterEach = new Callable<Void>() {
-        @Override
-        public Void call() throws Exception {
-            afterEach();
-            return null;
-        }
-    };
-
-    /**
      * This ClassRule will run all the tests in this class multiple times, against
      * all the given server.xml configuration files.
      *
@@ -69,12 +47,18 @@ public class JdbcConfigTestCheckpoint extends BatchFATHelper {
      * tests (against all configurations) have run.
      */
     @ClassRule
-    public static DynamicConfigRule dynamicConfigRule = new DynamicConfigRule().setServer(server).setInitialSetup(initialSetup).setFinalTearDown(finalTearDown).setAfterEach(afterEach).addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema1.server.xml").addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema2.server.xml").addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema1.tp1.server.xml").addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema1.tp2.server.xml");
-
+    public static DynamicConfigRuleCheckpoint dynamicConfigRuleCheckpoint = new DynamicConfigRuleCheckpoint() //
+                        .setInitialSetup(JdbcConfigTestCheckpoint::setup) //
+                        .setBeforeEach(JdbcConfigTestCheckpoint::beforeEach) //
+                        .setFinalTearDown(JdbcConfigTestCheckpoint::tearDown) //
+                        .addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema1.server.xml") //
+                        .addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema2.server.xml") //
+                        .addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema1.tp1.server.xml") //
+                        .addServerXml("JDBCPersistenceCheckpoint/jdbc.config.myschema1.tp2.server.xml");
     /**
      * Start the server and setup the DB.
      */
-    public static void setup() throws Exception {
+    public static LibertyServer setup() throws Exception {
 
         log("setup", "start server and execute DDLs");
 
@@ -88,23 +72,9 @@ public class JdbcConfigTestCheckpoint extends BatchFATHelper {
     
         // Start server
         server.setServerConfigurationFile("JDBCPersistenceCheckpoint/jdbc.config.myschema1.server.xml");
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
-        server.startServer("JdbcConfig.log");
-        
-        // Apply config and restore
-        server.waitForStringInLog("CWWKF0011I", 20000);
-        FatUtils.waitForSmarterPlanet(server);
-
-        // Setup chunk test data
-        executeSql("jdbc/batch", getChunkInTableSql());
-        executeSql("jdbc/batch", getChunkOutTableSql("APP.OUT4"));
-
-        executeSql("jdbc/myds", getChunkInTableSql());
-        executeSql("jdbc/myds", getChunkOutTableSql("APP.OUT1"));
-        executeSql("jdbc/myds", getChunkOutTableSql("APP.OUT2"));
-
-        executeSql("jdbc/mydsNonTran", getChunkInTableSql());
-        executeSql("jdbc/mydsNonTran", getChunkOutTableSql("APP.OUT3"));
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server.startServer("JdbcConfigTestCheckpoint.log");
+        return server;
     }
 
     /**
@@ -118,11 +88,24 @@ public class JdbcConfigTestCheckpoint extends BatchFATHelper {
     }
 
     /**
-     * Clear out the OUT4 table used by the chunk tests.
+     * Do a Checkpoint restore and setup chunk test data.
      */
-    public static void afterEach() throws Exception {
-        log("afterEach", "");
-        executeSql(DFLT_PERSISTENCE_JNDI, "DELETE FROM APP.OUT4;");
+    public static void beforeEach() throws Exception {
+        log("beforeEach", "");
+       	// Apply config and restore
+        server.waitForStringInLog("CWWKF0011I", 20000);
+        FatUtils.waitForSmarterPlanet(server);
+
+        // Setup chunk test data
+        executeSql("jdbc/batch", getChunkInTableSql());
+        executeSql("jdbc/batch", getChunkOutTableSql("APP.OUT4"));
+
+        executeSql("jdbc/myds", getChunkInTableSql());
+        executeSql("jdbc/myds", getChunkOutTableSql("APP.OUT1"));
+        executeSql("jdbc/myds", getChunkOutTableSql("APP.OUT2"));
+
+        executeSql("jdbc/mydsNonTran", getChunkInTableSql());
+        executeSql("jdbc/mydsNonTran", getChunkOutTableSql("APP.OUT3"));
     }
 
     /**

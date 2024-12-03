@@ -48,7 +48,7 @@ public class TelemetrySourcesTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = TelemetryActions.telemetry20Repeats();
+    public static RepeatTests rt = TelemetryActions.latestTelemetry20Repeats();
 
     public static final String SERVER_XML_ALL_SOURCES = "allSources.xml";
     public static final String SERVER_XML_EMPTY_SOURCE = "emptySource.xml";

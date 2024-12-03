@@ -102,7 +102,8 @@ CWWKD1018.confl.special.param=CWWKD1018E: Die {0} Methode des {1} Repository kan
 CWWKD1018.confl.special.param.explanation=Einige der speziellen Parameter von Jakarta Data, wie Limit und PageRequest, k\u00f6nnen nicht in einer einzigen Repository-Methodensignatur kombiniert werden.
 CWWKD1018.confl.special.param.useraction=Aktualisieren Sie das Repository, damit nicht beide speziellen Parametertypen von Jakarta Data in derselben Methodensignatur verwendet werden.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: Die {0}-Methode der {1}-Repository-Schnittstelle kann keine Abfrage mit einer Mischung aus positionalen und benannten Parametern haben.
+CWWKD1019.mixed.positional.named=CWWKD1019E: Die {0} der {1} kann keine Abfrage haben, die positionale und benannte Parameter vermischt. Die Schnittstelle definiert eine Mischung aus {2} Positionsparametern und
+ {3} benannte Parameter {4} f\u00fcr den Abfrage-Anmerkungswert: {5}. Bei einer Abfrage mit Positionsparametern muss jeder Parameter durch seinen Ordinalwert, beginnend mit ?1, referenziert werden, und die Methodenparameter d\u00fcrfen nicht den Vermerk Param tragen. In einer Abfrage mit benannten Parametern muss jeder Parameter durch seinen Namen referenziert werden, wie z. B. {6}, und die Methodenparameter m\u00fcssen die Annotation Param haben, wie z. B. {7}. Alternativ kann die Kompilieroption -parameters aktiviert werden, so dass die Methodenparameter den benannten Parameter durch \u00dcbereinstimmung mit seinem Namen angeben, z. B. {8}.
 CWWKD1019.mixed.positional.named.explanation=Abfragen mit Parametern m\u00fcssen alle benannten Parameter oder alle Positionsparameter verwenden, nicht eine Kombination.
 CWWKD1019.mixed.positional.named.useraction=Aktualisieren Sie die Repository-Methode, um nur benannte Parameter oder nur Positionsparameter zu verwenden.
 
@@ -270,7 +271,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: Die {0} Repository-Schnittstelle in der 
 CWWKD1060.name.out.of.scope.explanation=Der angegebene Namespace ist von dem Artefakt, in dem die Repository-Schnittstelle definiert ist, nicht zug\u00e4nglich.
 CWWKD1060.name.out.of.scope.useraction=Aktualisieren Sie die Repository-Anmerkung, um einen Datenspeichernamen anzugeben, der f\u00fcr das Modul oder die Bibliothek, die die Repository-Schnittstelle bereitstellt, sichtbar ist.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: Die {0} Repository-Schnittstelle, die im {1} Enterprise Bean-Modul der {2} Anwendung definiert ist, konfiguriert einen {2} Wert f\u00fcr das {3} Attribut. Allerdings sind {4} Namen f\u00fcr Enterprise Bean Module nicht zug\u00e4nglich. Verwenden Sie einen Namen aus einem der folgenden Namespaces: {5}.
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Eine oder mehrere Repository-Schnittstellen{0}), die im {1} Enterprise Bean Modul der {2} Anwendung definiert sind, konfigurieren einen {2} Wert f\u00fcr das {3} Attribut. Allerdings sind {4} Namen f\u00fcr Enterprise Bean Module nicht zug\u00e4nglich. Verwenden Sie einen Namen aus einem der folgenden Namespaces: {5}.
 CWWKD1061.comp.name.in.ejb.explanation=Der angegebene Namespace ist f\u00fcr das Enterprise Bean-Modul, in dem die Repository-Schnittstelle definiert ist, nicht zug\u00e4nglich.
 CWWKD1061.comp.name.in.ejb.useraction=Aktualisieren Sie die Repository-Anmerkung, um einen Datenspeichernamen anzugeben, der f\u00fcr das Enterprise Bean-Modul, das die Repository-Schnittstelle bereitstellt, sichtbar ist.
 
@@ -286,15 +287,15 @@ CWWKD1064.datastore.error=CWWKD1064E: Die {0} der {1} ist aufgrund des folgenden
 CWWKD1064.datastore.error.explanation=Beim Versuch, den Datenspeicher abzurufen, ist ein Fehler aufgetreten.
 CWWKD1064.datastore.error.useraction=Stellen Sie sicher, dass der angegebene Datenspeicher und alle anderen Ressourcen, von denen er abh\u00e4ngt, vorhanden und korrekt konfiguriert sind.
 
-CWWKD1065.ddlgen.timeout=CWWKD1065E: Die DDL-Generierung f\u00fcr die Repository-Schnittstelle {0} ist fehlgeschlagen, da der Datenspeicher {1} die DDL-Generierung innerhalb von {2} Sekunden f\u00fcr die folgenden Entit\u00e4ten nicht abgeschlossen hat: {3}.
+CWWKD1065.ddlgen.timeout=CWWKD1065E: Die DDL-Generierung f\u00fcr eine oder mehrere Repository-Schnittstellen{0}) ist fehlgeschlagen, weil der Datenspeicher {1} die DDL-Generierung innerhalb von {2} Sekunden f\u00fcr die folgenden Entit\u00e4ten nicht abgeschlossen hat: {3}.
 CWWKD1065.ddlgen.timeout.explanation=Der Versuch der DDL-Generierung hat eine Zeit\u00fcberschreitung verursacht und wurde nicht abgeschlossen.
 CWWKD1065.ddlgen.timeout.useraction=Versuchen Sie die DDL-Generierung erneut, wenn das System und die Datenbank nicht belastet sind.
 
-CWWKD1066.ddlgen.failed=CWWKD1066E: Die DDL-Generierung f\u00fcr die Repository-Schnittstelle {0}, die den Datenspeicher {1} verwendet, ist beim Versuch der DDL-Generierung f\u00fcr die folgenden Entit\u00e4ten auf einen Fehler gesto\u00dfen: {2}. Der Fehler ist: {3}.
+CWWKD1066.ddlgen.failed=CWWKD1066E: Bei der DDL-Generierung f\u00fcr eine oder mehrere Repository-Schnittstellen{0}), die den Datenspeicher {1} verwenden, ist ein Fehler bei der DDL-Generierung f\u00fcr die folgenden Entit\u00e4ten aufgetreten: {2}. Der Fehler ist: {3}.
 CWWKD1066.ddlgen.failed.explanation=Der Versuch der DDL-Generierung ist fehlgeschlagen und wurde nicht abgeschlossen.
 CWWKD1066.ddlgen.failed.useraction=Untersuchen Sie den Fehler und nehmen Sie Korrekturen an der Repository-Schnittstelle, den Entit\u00e4ten, der Datenspeicherkonfiguration oder der Datenbank vor.
 
-CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: Die DDL-Generierung f\u00fcr die Repository-Schnittstelle {0} ist fehlgeschlagen, weil der Datenspeicher {1} nicht verf\u00fcgbar war oder nicht in der Lage war, die folgenden Entit\u00e4ten innerhalb von {2} Sekunden bereitzustellen: {3}.
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: Die DDL-Generierung f\u00fcr eine oder mehrere Repository-Schnittstellen{0}) ist fehlgeschlagen, weil der Datenspeicher {1} nicht verf\u00fcgbar war oder die folgenden Entit\u00e4ten nicht innerhalb von {2} Sekunden zur Verf\u00fcgung stellen konnte: {3}.
 CWWKD1067.ddlgen.emf.timeout.explanation=Die Beschaffung der f\u00fcr die DDL-Generierung ben\u00f6tigten Ressourcen hat eine Zeit\u00fcberschreitung verursacht und wurde nicht abgeschlossen.
 CWWKD1067.ddlgen.emf.timeout.useraction=Versuchen Sie die DDL-Generierung erneut, wenn das System und die Datenbank nicht belastet sind.
 
@@ -310,11 +311,11 @@ CWWKD1070.record.convert.err=CWWKD1070E: Der {0}, der an die {1} der {2} \u00fcb
 CWWKD1070.record.convert.err.explanation=Es ist nicht m\u00f6glich, den Java-Datensatz als Entit\u00e4t zu verwenden.
 CWWKD1070.record.convert.err.useraction=Definieren Sie die Entit\u00e4t als Jakarta-Persistenz-Entit\u00e4t, anstatt eine Java-Record-Entit\u00e4t zu verwenden.
 
-CWWKD1071.record.with.type.var=CWWKD1071E: Der Datensatz {0} kann nicht als Entit\u00e4t verwendet werden, da er eine oder mehrere Typvariablen enth\u00e4lt: {1}.
+CWWKD1071.record.with.type.var=CWWKD1071E: Der {0} wird von einer oder mehreren der Repository-Schnittstellen{1}) im {2} als Entit\u00e4t verwendet, aber der Datensatz kann keine Entit\u00e4t sein, weil er eine oder mehrere Typvariablen hat: {3}.
 CWWKD1071.record.with.type.var.explanation=Entit\u00e4tsklassen k\u00f6nnen keine generischen Typvariablen haben.
 CWWKD1071.record.with.type.var.useraction=Entfernen Sie die Typvariablen aus dem Datensatz.
 
-CWWKD1072.record.comp.conflict=CWWKD1072E: Der {0} kann nicht als Entit\u00e4t verwendet werden, da seine {1} und {2} beide auf denselben Entit\u00e4tseigenschaftsnamen aufgel\u00f6st werden.
+CWWKD1072.record.comp.conflict=CWWKD1072E: Der {0} wird von einer oder mehreren der Repository-Schnittstellen{1}) im {2} als Entit\u00e4t verwendet, aber der Datensatz kann keine Entit\u00e4t sein, weil seine {3} und {4} beide auf denselben Entit\u00e4tseigenschaftsnamen aufgel\u00f6st werden.
 CWWKD1072.record.comp.conflict.explanation=Die Namen der Entit\u00e4tseigenschaften m\u00fcssen eindeutig sein und Gro\u00df- und Kleinschreibung ignorieren.
 CWWKD1072.record.comp.conflict.useraction=Benennen Sie eine der Datensatzkomponenten um, um den Konflikt zu vermeiden.
 
@@ -334,8 +335,8 @@ CWWKD1076.repo.disposed=CWWKD1076E: Die Methode {0} der Repository-Schnittstelle
 CWWKD1076.repo.disposed.explanation=Repository-Methoden d\u00fcrfen nicht au\u00dferhalb des Lebenszyklus der Anwendung, die das Repository definiert, verwendet werden.
 CWWKD1076.repo.disposed.useraction=Stellen Sie sicher, dass die Repository-Methode nicht au\u00dferhalb des Bereichs der Anwendung verwendet wird, die das Repository definiert.
 
-CWWKD1077.defaultds.not.found=CWWKD1077E: Das {0} Anwendungsartefakt hat eine {1} Repository-Schnittstelle, die den {2} Datenspeicher verwendet oder standardm\u00e4\u00dfig verwendet. Dieser muss in der Serverkonfiguration konfiguriert werden, indem ein dataSource definiert wird, das den Bezeichner DefaultDataSource hat. Zum Beispiel, {3} Alternativ kann der dataStore der Repository-Annotation dem Bezeichner eines databaseStore oder dem JNDI-Namen einer Datenquellen-Ressourcenreferenz oder einer Persistenzeinheitenreferenz zugewiesen werden, auf die das Anwendungsartefakt zugreifen kann. Ein databaseStore kann in der Serverkonfiguration definiert werden. Zum Beispiel: {4} Eine Anwendungskomponente kann die Anmerkung Ressource verwenden, um einen Verweis auf eine Datenquellenressource zu definieren. Zum Beispiel {5}, der verlangt, dass die Serverkonfiguration ein dataSource mit einem {6} hat. Eine Anwendungskomponente kann die PersistenceUnit verwenden, um eine Referenz auf eine Persistenzeinheit \
-    zu definieren. Zum Beispiel {7}, was voraussetzt, dass die persistence.xml ein persistence-unit-Element mit einem passenden name-Attribut enth\u00e4lt. Zum Beispiel, {8}
+CWWKD1077.defaultds.not.found=CWWKD1077E: Das {0} Anwendungsartefakt hat eine oder mehrere Repository-Schnittstellen{1}), die den {2} Datenspeicher verwenden oder auf diesen verweisen. Dieser Datenspeicher muss in der Serverkonfiguration konfiguriert werden, indem ein dataSource mit dem Bezeichner DefaultDataSource definiert wird. Zum Beispiel, {3} Alternativ kann der dataStore der Repository-Annotation dem Bezeichner eines databaseStore oder dem JNDI-Namen einer Datenquellen-Ressourcenreferenz oder einer Persistenzeinheitenreferenz zugewiesen werden, auf die das Anwendungsartefakt zugreifen kann. Ein databaseStore kann in der Serverkonfiguration definiert werden. Zum Beispiel: {4} Eine Anwendungskomponente kann die Anmerkung Ressource verwenden, um einen Verweis auf eine Datenquellenressource zu definieren. Zum Beispiel {5}, der verlangt, dass die Serverkonfiguration ein dataSource mit einem {6} hat. Eine Anwendungskomponente kann die PersistenceUnit verwenden, um eine Referenz auf eine Persiste\
+    nzeinheit zu definieren. Zum Beispiel {7}, was voraussetzt, dass die persistence.xml ein persistence-unit-Element mit einem passenden name-Attribut enth\u00e4lt. Zum Beispiel, {8}
 CWWKD1077.defaultds.not.found.explanation=Jakarta Data Repositories verwenden standardm\u00e4\u00dfig die Jakarta EE Standarddatenquelle, die in der Serverkonfiguration konfiguriert werden muss.
 CWWKD1077.defaultds.not.found.useraction=Konfigurieren Sie die Standarddatenquelle von Jakarta EE oder geben Sie einen anderen Datenspeicher f\u00fcr das Repository an.
 
@@ -360,3 +361,34 @@ CWWKD1081.entity.general.err.useraction=Suchen Sie die Entit\u00e4t und nehmen S
 CWWKD1082.entity.classes.missing=CWWKD1082E: Die Persistenzeinheit f\u00fcr den Datenspeicher {0} definiert nicht eine oder mehrere Entit\u00e4tsklassen{1}), die eine oder mehrere Repository-Schnittstellen{2}), die den Datenspeicher verwenden, ben\u00f6tigen.
 CWWKD1082.entity.classes.missing.explanation=Repositories verwenden Entit\u00e4tsklassen, die in der Persistenzeinheit definiert werden m\u00fcssen.
 CWWKD1082.entity.classes.missing.useraction=Nehmen Sie alle Entit\u00e4tsklassen in die Persistenzeinheit auf.
+
+CWWKD1083.dup.method.param=CWWKD1083E: Mehrere Parameter in der Methode {0} der Repository-Schnittstelle {1} entsprechen dem genannten Parameter: {2}. Sie k\u00f6nnen einen Methodenparameter mit {3} annotieren, um die Abfragesprache namens Parameter anzugeben. Alternativ k\u00f6nnen Sie die Kompilieroption -parameters aktivieren und einen Methodenparameter in der Form {4} definieren, f\u00fcr den die Param-Anmerkung nicht erforderlich ist.
+CWWKD1083.dup.method.param.explanation=Jeder Methodenparameter muss genau einem Abfrageparameter entsprechen.
+CWWKD1083.dup.method.param.useraction=Pr\u00fcfen Sie, ob jeder der Methodenparameter den richtigen benannten Parameter angibt. Entfernen Sie doppelte Methodenparameter. 
+CWWKD1084.missing.named.params=CWWKD1084E: Die Parameter der {0} der {1} definieren nicht die benannten Parameter{2}), die f\u00fcr den Abfrage-Anmerkungswert erforderlich sind: {3}. Sie k\u00f6nnen einen benannten Parameter f\u00fcr die Abfrage definieren, indem Sie die Param-Anmerkung auf einen entsprechenden Methodenparameter setzen. Zum Beispiel, {4}. Wenn Sie die Kompilieroption -parameters aktivieren, k\u00f6nnen Sie alternativ die Anmerkung Param weglassen, wenn Sie den Methodenparameter so benennen, dass er denselben Namen hat wie der benannte Parameter. Wenn z. B. String der benannte Parametertyp ist, kann der Methodenparameter {5} lauten, was keine Param-Annotation erfordert.
+CWWKD1084.missing.named.params.explanation=Der Abfrage-Anmerkungswert erfordert einen oder mehrere benannte Parameter, die nicht von der Repository-Methode geliefert werden.
+CWWKD1084.missing.named.params.useraction=F\u00fcgen Sie der Repository-Methode Parameter hinzu, um die fehlenden benannten Parameter anzugeben.
+
+CWWKD1085.extra.method.params=CWWKD1085E: Die Parameter der {0} der {1} definieren Abfrageparameter{2}), die mit keinem der benannten Parameter{3}) \u00fcbereinstimmen, die von dem Abfrage-Anmerkungswert verwendet werden: {4}.
+CWWKD1085.extra.method.params.explanation=Alle Methodenparameter m\u00fcssen von der Abfrage verwendet werden oder von Jakarta Data definierte Parametertypen sein.
+CWWKD1085.extra.method.params.useraction=Entfernen Sie die zus\u00e4tzlichen Methodenparameter.
+
+CWWKD1086.named.params.unused=CWWKD1086E: Die Parameter der {0} der {1} definieren benannte Parameter{2}), die nicht im Abfrage-Anmerkungswert verwendet werden: {3}. Sie k\u00f6nnen auf benannte Parameter in einer Abfrage verweisen, indem Sie das Zeichen : gefolgt vom Parameternamen verwenden. Zum Beispiel, {4}. Auf Positionsparameter in einer Abfrage kann mit Hilfe des ? zeichen, gefolgt von einem Ordinalwert, beginnend mit ?1. Vermeiden Sie es, Methodenparameter mit der Param-Anmerkung zu versehen, wenn die Abfrage Positionsparameter verwendet oder keine Parameter hat.
+CWWKD1086.named.params.unused.explanation=Die Param-Anmerkung kann nur verwendet werden, wenn die Abfrage benannte Parameter hat.
+CWWKD1086.named.params.unused.useraction=Entfernen Sie die Param-Anmerkung oder stellen Sie die Abfrage auf die Verwendung benannter Parameter um.
+
+CWWKD1087.null.param=CWWKD1087E: Der Parameter {0} der Methode {1} der Repository-Schnittstelle {2} ist ein Nullwert. Geben Sie einen Wert ungleich Null an.
+CWWKD1087.null.param.explanation=Der Parameterwert darf nicht Null sein.
+CWWKD1087.null.param.useraction=Geben Sie f\u00fcr den Parameter einen Wert ungleich Null an.
+
+CWWKD1088.empty.sorts=CWWKD1088E: Die Sortierkriterien, die durch den Parameter {0} der Methode {1} der Repository-Schnittstelle {2} angegeben werden, sind leer.
+CWWKD1088.empty.sorts.explanation=Die Sortierkriterien d\u00fcrfen nicht leer sein.
+CWWKD1088.empty.sorts.useraction=Geben Sie einen Wert f\u00fcr die Sortierkriterien an.
+
+CWWKD1089.unordered.pagination=CWWKD1089E: Die {0} der {1} muss die Sortierkriterien angeben, da die Methode einen {2} zur\u00fcckgibt. Ungeordnete Daten k\u00f6nnen nicht in Seiten aufgeteilt werden.
+CWWKD1089.unordered.pagination.explanation=Die Paginierung erfordert geordnete Daten.
+CWWKD1089.unordered.pagination.useraction=Verwenden Sie die OrderBy, um die Sortierkriterien f\u00fcr die Repository-Methode zu definieren.
+
+CWWKD1090.orderby.conflict=CWWKD1090E: Die Methode {0} der Repository-Schnittstelle {1} kann die Annotation OrderBy und das Schl\u00fcsselwort OrderBy nicht kombinieren.
+CWWKD1090.orderby.conflict.explanation=Die Annotation OrderBy ist nicht mit dem Schl\u00fcsselwort OrderBy kompatibel.
+CWWKD1090.orderby.conflict.useraction=Verwenden Sie nur die OrderBy oder das Schl\u00fcsselwort OrderBy.

@@ -12,10 +12,16 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.db2;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.Db2Container;
 
@@ -56,6 +62,24 @@ public class DB2Test extends FATServletClient {
         server.startServer();
 
         runTest(server, APP_NAME + '/' + SERVLET_NAME, "initDatabase");
+    }
+
+    @Test
+    public void testCustomTrace() throws Exception {
+        File logDir = new File(server.getLogsRoot());
+        assertTrue(logDir.exists());
+        assertTrue(logDir.isDirectory());
+
+        File jccTraceFile = new File(logDir, "jcc.trace");
+        assertTrue(jccTraceFile.exists());
+        assertEquals(0, Files.lines(jccTraceFile.toPath()).count());
+
+        runTest(server, APP_NAME + '/' + SERVLET_NAME, getTestMethodSimpleName());
+
+        //TODO an additional file jcc.trace_cpds_2 is also generated, is this expected?
+        // if so we could assert that file is always generated.
+
+        assertTrue(Files.lines(jccTraceFile.toPath()).count() > 0);
     }
 
     @AfterClass

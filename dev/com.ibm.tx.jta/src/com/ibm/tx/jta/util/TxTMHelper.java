@@ -382,7 +382,17 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 RecoveryManager._waitForRecovery = _waitForRecovery;
 
                 // Kick off recovery
-                _recLogService.startRecovery(_recoveryLogFactory);
+                try {
+                    _recLogService.startRecovery(_recoveryLogFactory);
+                } catch (Exception e) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Recovery failed with exception", e);
+                    // mark recovery failed
+                    _localRecoveryFailed = true;
+                    // ensure other threads don't wait for recovery to complete
+                    _asyncRecoverySemaphore.post();
+                    throw e;
+                }
 
                 // Defect RTC 99071. Don't make the STATE transition until recovery has been fully
                 // initialised, after replay completion but before resync completion.
@@ -392,6 +402,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Waiting for completion of asynchronous recovery");
                     _asyncRecoverySemaphore.waitEvent();
+                    if (_localRecoveryFailed) {
+                        // this thread awoke but recovery has already failed - bail out now
+                        Tr.debug(tc, "Asynchronous recovery failed on another thread");
+                        return;
+                    }
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Asynchronous recovery is complete");
 

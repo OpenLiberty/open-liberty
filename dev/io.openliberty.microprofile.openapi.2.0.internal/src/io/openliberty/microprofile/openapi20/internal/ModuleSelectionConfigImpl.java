@@ -33,7 +33,6 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIAppConfigProvider;
 import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIServerXMLConfig;
@@ -170,7 +169,7 @@ public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPI
         }
 
         Map<ModuleName, String> includedNotYetSeenButSeenUnderOldNaming = new HashMap<>();
-        if (config.serverxmlmode && ProductInfo.getBetaEdition()) {
+        if (config.serverxmlmode) {
             for (Iterator<ModuleName> iterator = includedNotYetSeen.iterator(); iterator.hasNext();) {
                 ModuleName moduleName = iterator.next();
                 for (ModuleInfo moduleInfo : moduleInfos) {
@@ -192,7 +191,7 @@ public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPI
         }
 
         for (ModuleName unmatchedInclude : includedNotYetSeen) {
-            if (config.serverxmlmode && ProductInfo.getBetaEdition()) {
+            if (config.serverxmlmode) {
                 String elementName = unmatchedInclude.moduleName == null ? "includeApplication" : "includeModule";
                 Tr.warning(tc, MessageConstants.OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W, elementName, unmatchedInclude);
             } else {
@@ -214,7 +213,7 @@ public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPI
         }
 
         Map<ModuleName, String> excludedNotYetSeenButSeenUnderOldNaming = new HashMap<>();
-        if (config.serverxmlmode && ProductInfo.getBetaEdition()) {
+        if (config.serverxmlmode) {
             for (Iterator<ModuleName> iterator = excludedNotYetSeen.iterator(); iterator.hasNext();) {
                 ModuleName moduleName = iterator.next();
                 for (ModuleInfo moduleInfo : moduleInfos) {
@@ -408,13 +407,8 @@ public class ModuleSelectionConfigImpl implements ModuleSelectionConfig, OpenAPI
 
             Config configFromMPConfig = ConfigProvider.getConfig(ApplicationRegistryImpl.class.getClassLoader());
 
-            OpenAPIServerXMLConfig configFromServerXML = null;
-            if (!ProductInfo.getBetaEdition()) {
-                serverxmlmode = false;
-            } else {
-                configFromServerXML = configFromServerXMLProvider.getConfiguration();
-                serverxmlmode = configFromServerXML.wasAnyConfigFound();
-            }
+            OpenAPIServerXMLConfig configFromServerXML = configFromServerXMLProvider.getConfiguration();
+            serverxmlmode = configFromServerXML.wasAnyConfigFound();
 
             if (serverxmlmode) {
                 Tr.debug(this, tc, "Acquired includes statement from server.xml");

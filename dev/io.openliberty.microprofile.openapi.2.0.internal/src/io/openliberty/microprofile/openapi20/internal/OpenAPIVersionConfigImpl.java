@@ -22,7 +22,6 @@ import org.osgi.service.component.annotations.Modified;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIVersionConfig;
 import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
@@ -50,11 +49,6 @@ public class OpenAPIVersionConfigImpl implements OpenAPIVersionConfig {
     @Activate
     @Modified
     protected void activate(Map<?, ?> properties) {
-        if (!ProductInfo.getBetaEdition()) {
-            // Do not read config if we're not the beta edition, to avoid potential for errors while parsing
-            return;
-        }
-
         String versionString = (String) properties.get(VERSION_KEY);
 
         if (Objects.equals(versionString, configuredVersionString)) {
@@ -105,11 +99,6 @@ public class OpenAPIVersionConfigImpl implements OpenAPIVersionConfig {
 
     @Override
     public void applyConfig(OpenAPI model) {
-        if (!ProductInfo.getBetaEdition()) {
-            // Never apply config if we're not the beta edition
-            return;
-        }
-
         // Get the version out of the model
         Optional<OpenAPIVersion> modelVersion = OpenAPIVersion.parse(model.getOpenapi());
 

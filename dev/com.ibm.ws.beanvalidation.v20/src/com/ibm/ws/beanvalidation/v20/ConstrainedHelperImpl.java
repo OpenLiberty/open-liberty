@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,7 +43,6 @@ import org.hibernate.validator.internal.util.TypeResolutionHelper;
 import org.hibernate.validator.internal.util.classhierarchy.ClassHierarchyHelper;
 import org.hibernate.validator.internal.util.logging.Log;
 import org.hibernate.validator.internal.util.logging.LoggerFactory;
-import org.hibernate.validator.internal.util.privilegedactions.GetMethods;
 import org.hibernate.validator.spi.properties.ConstrainableExecutable;
 import org.hibernate.validator.spi.properties.GetterPropertySelectionStrategy;
 import org.osgi.service.component.annotations.Component;
@@ -109,7 +108,7 @@ public class ConstrainedHelperImpl implements ConstrainedHelper {
             List<Method> methods = newArrayList();
 
             for (Class<?> hierarchyClass : ClassHierarchyHelper.getHierarchy(clazz)) {
-                Collections.addAll(methods, run(GetMethods.action(hierarchyClass)));
+                Collections.addAll(methods, run((PrivilegedAction<Method[]>) () -> hierarchyClass.getMethods()));
             }
 
             return methods;

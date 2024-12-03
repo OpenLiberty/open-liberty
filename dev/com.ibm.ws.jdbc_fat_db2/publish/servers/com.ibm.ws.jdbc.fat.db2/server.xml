@@ -65,13 +65,13 @@
   
   <dataSource jndiName="jdbc/db2-using-driver">
     <jdbcDriver libraryRef="DB2Lib"/> 
-  	<properties url="jdbc:db2://${DB2_HOSTNAME}:${DB2_PORT}/${DB2_DBNAME}"
+    <properties url="jdbc:db2://${DB2_HOSTNAME}:${DB2_PORT}/${DB2_DBNAME}"
       user="${DB2_USER}" password="${DB2_PASS}" driverType="4"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/db2-using-driver-type" type="java.sql.Driver">
     <jdbcDriver libraryRef="DB2Lib"/> 
-  	<properties.db2.jcc url="jdbc:db2://${DB2_HOSTNAME}:${DB2_PORT}/${DB2_DBNAME}"
+    <properties.db2.jcc url="jdbc:db2://${DB2_HOSTNAME}:${DB2_PORT}/${DB2_DBNAME}"
       user="${DB2_USER}" password="${DB2_PASS}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
   </dataSource>
   
@@ -82,29 +82,29 @@
       user="${DB2_USER}" password="${DB2_PASS}" driverType="4"/>
   </dataSource>
   
-    <!-- 
-    	 Verify precedence of connection properties on Driver
-    	 NOTE: URL property only exists on Driver not DataSource 
-    -->
-    <dataSource id="driver-property-preferred" jndiName="jdbc/driver-property-preferred" type="java.sql.Driver">
-      <jdbcDriver libraryRef="DB2Lib"/>
-      <properties.db2.jcc url="jdbc:db2://$INVALID:000/$INVALID" 
+  <!-- 
+     Verify precedence of connection properties on Driver
+     NOTE: URL property only exists on Driver not DataSource 
+  -->
+  <dataSource id="driver-property-preferred" jndiName="jdbc/driver-property-preferred" type="java.sql.Driver">
+    <jdbcDriver libraryRef="DB2Lib"/>
+    <properties.db2.jcc url="jdbc:db2://$INVALID:000/$INVALID" 
       serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}" databaseName="${DB2_DBNAME}"
       user="${DB2_USER}" password="${DB2_PASS}"/> 
-    </dataSource>
+  </dataSource>
     
   <!-- 
-  	Verify default values no longer override URL on Driver
-	NOTE: portNumber still needs to be set otherwise the default value 50000 will be used.
+    Verify default values no longer override URL on Driver
+    NOTE: portNumber still needs to be set otherwise the default value 50000 will be used.
   -->  
   <dataSource id="driver-no-override" jndiName="jdbc/driver-no-override" type="java.sql.Driver">
     <jdbcDriver libraryRef="DB2Lib"/>
     <properties.db2.jcc url="jdbc:db2://${DB2_HOSTNAME}:${DB2_PORT}/${DB2_DBNAME}" 
-    					portNumber="${DB2_PORT}" user="${DB2_USER}" password="${DB2_PASS}"/>
+                        portNumber="${DB2_PORT}" user="${DB2_USER}" password="${DB2_PASS}"/>
   </dataSource>
   
   <!-- 
-  	Verify defaults without URL on DataSource
+    Verify defaults without URL on DataSource
   -->  
   <dataSource id="ds-no-url-defaults" jndiName="jdbc/ds-no-url-defaults" type="javax.sql.DataSource">
     <jdbcDriver libraryRef="DB2Lib"/>
@@ -117,9 +117,9 @@
   <dataSource id="ds-client-reroute" jndiName="jdbc/ds-client-reroute">
     <jdbcDriver libraryRef="DB2Lib"/>
     <properties.db2.jcc serverName="host.name.invalid" portNumber="1234" 
-    user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
-    clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT}"
-    maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"/>
+      user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
+      clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT}"
+      maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"/>
   </dataSource>
   
   <!--
@@ -128,10 +128,10 @@
   <dataSource id="ds-client-reroute-cert" jndiName="jdbc/ds-client-reroute-cert">
     <jdbcDriver libraryRef="DB2Lib"/>
     <properties.db2.jcc serverName="host.name.invalid" portNumber="1234" 
-    user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
-    clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT_SECURE}"
-    maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"
-    sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/server.crt"/>
+      user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
+      clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT_SECURE}"
+      maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"
+      sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/server.crt"/>
   </dataSource>
   
   <!--
@@ -140,10 +140,21 @@
   <dataSource id="ds-client-reroute-wrong-cert" jndiName="jdbc/ds-client-reroute-wrong-cert">
     <jdbcDriver libraryRef="DB2Lib"/>
     <properties.db2.jcc serverName="host.name.invalid" portNumber="1234" 
-    user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
-    clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT_SECURE}"
-    maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"
-    sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/wrong.crt"/>
+      user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
+      clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT_SECURE}"
+      maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"
+      sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/wrong.crt"/>
+  </dataSource>
+  
+  <!-- 
+    Verify trace configuration will allow JCC trace to be output to a seperate file
+  -->
+  <dataSource id="ds-custom-trace" jndiName="jdbc/ds-custom-trace">
+    <jdbcDriver libraryRef="DB2Lib"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"
+      user="${DB2_USER}" password="${DB2_PASS}"
+      traceLevel="-1" traceDirectory="${server.output.dir}/logs/" traceFile="jcc.trace"
+      traceFileAppend="true" traceOption="0" />
   </dataSource>
 
   <javaPermission codebase="${shared.resource.dir}db2/*" className="java.security.AllPermission"/>

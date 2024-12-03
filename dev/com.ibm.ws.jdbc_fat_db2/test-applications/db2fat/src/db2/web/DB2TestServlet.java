@@ -80,6 +80,9 @@ public class DB2TestServlet extends FATServlet {
     @Resource(lookup = "jdbc/ds-client-reroute-wrong-cert")
     private DataSource ds_client_reroute_wrong_cert;
 
+    @Resource(lookup = "jdbc/ds-custom-trace")
+    private DataSource ds_custom_trace;
+
     @Resource
     private UserTransaction tran;
 
@@ -386,6 +389,14 @@ public class DB2TestServlet extends FATServlet {
 
             // Caused by: sun.security.validator.ValidatorException
             // Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+        }
+    }
+
+    public void testCustomTrace() throws Throwable {
+        try (Connection con = ds_custom_trace.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 39);
+            stmt.setString(2, "thirty-nine");
+            stmt.execute();
         }
     }
 }

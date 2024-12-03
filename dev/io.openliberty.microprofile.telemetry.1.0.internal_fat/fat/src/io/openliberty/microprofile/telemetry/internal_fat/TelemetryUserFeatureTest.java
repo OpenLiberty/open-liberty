@@ -12,7 +12,6 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -100,7 +99,6 @@ public class TelemetryUserFeatureTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
 
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
 
         server.startServer();

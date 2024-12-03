@@ -20,8 +20,8 @@ Bundle-SymbolicName: io.openliberty.cdi.4.1.thirdparty
 Bundle-Description: WebSphere CDI 4.1 Weld Third Party API
 
 Export-Package:\
- org.jboss.weld.context;version=6.0.0.Beta1, \
- org.jboss.weld.context.*;version=6.0.0.Beta1
+ org.jboss.weld.context;version=6.0.0.CR1, \
+ org.jboss.weld.context.*;version=6.0.0.CR1
 
 Import-Package:*
 

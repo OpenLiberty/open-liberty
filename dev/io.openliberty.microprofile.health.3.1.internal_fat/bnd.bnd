@@ -13,6 +13,7 @@ bVersion=1.0
 src: \
 	fat/src, \
 	test-applications/DelayedHealthCheckApp/src, \
+	test-applications/DelayedHealthCheckAppFast/src, \
 	test-applications/ConfigAdminDropinsCheckApp/src, \
 	test-applications/FailsToStartHealthCheckApp/src, \
 	test-applications/ConfigAdminXmlCheckApp/src

@@ -17,19 +17,19 @@
          name="%openidConnectClient" description="%openidConnectClient.desc">
          <AD id="scope" name="%scope" description="%scope.desc" required="true" type="String"  default="openid profile"  ibm:type="token"/>
          <AD id="clientId" name="%clientId" description="%clientId.desc" required="false" type="String" />
-  		 <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc" required="false" type="String" ibm:type="password"/>
-		 <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
-		 <AD id="redirectJunctionPath" name="%redirectJunctionPath" description="%redirectJunctionPath.desc" required="false" type="String" />
-		 <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc" required="false" type="Boolean" default="true" />
+         <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc" required="false" type="String" ibm:type="password"/>
+         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+         <AD id="redirectJunctionPath" name="%redirectJunctionPath" description="%redirectJunctionPath.desc" required="false" type="String" />
+         <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc" required="false" type="Boolean" default="true" />
          <AD id="issuerIdentifier" name="%issuerIdentifier" description="%issuerIdentifier.desc" required="false" type="String" />
          <AD id="userIdentityToCreateSubject" name="%userIdentityToCreateSubject" description="%userIdentityToCreateSubject.desc"  required="true" type="String"  default="sub" />
          <AD id="mapIdentityToRegistryUser" name="%mapIdentityToRegistryUser" description="%mapIdentityToRegistryUser.desc" required="false" type="Boolean" default="false"/>
          <AD id="oidcclientRequestParameterSupported" name="internal" description="internal use only" required="false" type="Boolean" default="true"/>
-	     <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
-	     <AD id="trustAliasName" name="%trustAliasName" description="%trustAliasName.desc" required="false" type="String" />
-		 <AD id="httpsRequired" name="%httpsRequired" description="%httpsRequired.desc" required="true" type="Boolean" default="true"/>
-  		 <AD id="nonceEnabled" name="%nonceEnabled" description="%nonceEnabled.desc" required="false" type="Boolean" default="false"/>
-  		 <AD id="realmName" name="%realmName" description="%realmName.desc" required="false" type="String" />
+         <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+         <AD id="trustAliasName" name="%trustAliasName" description="%trustAliasName.desc" required="false" type="String" />
+         <AD id="httpsRequired" name="%httpsRequired" description="%httpsRequired.desc" required="true" type="Boolean" default="true"/>
+         <AD id="nonceEnabled" name="%nonceEnabled" description="%nonceEnabled.desc" required="false" type="Boolean" default="false"/>
+         <AD id="realmName" name="%realmName" description="%realmName.desc" required="false" type="String" />
 
          <!--<AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />-->
          <AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.repertoire" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
@@ -50,16 +50,16 @@
              <Option label="%tokenSignAlgorithm.ES512" value="ES512" />
          </AD>
 
-  		 <AD id="includeIdTokenInSubject" name="%includeIdTokenInSubject" description="%includeIdTokenInSubject.desc"  required="false" type="Boolean" default="true"/>
-  		 <AD id="accessTokenInLtpaCookie" name="%accessTokenInLtpaCookie" description="%accessTokenInLtpaCookie.desc"  required="false" type="Boolean" default="false"/>
+         <AD id="includeIdTokenInSubject" name="%includeIdTokenInSubject" description="%includeIdTokenInSubject.desc"  required="false" type="Boolean" default="true"/>
+         <AD id="accessTokenInLtpaCookie" name="%accessTokenInLtpaCookie" description="%accessTokenInLtpaCookie.desc"  required="false" type="Boolean" default="false"/>
          <AD id="initialStateCacheCapacity" name="%initialStateCacheCapacity" description="%initialStateCacheCapacity.desc" required="false" type="Integer" min="0" default="3000" />
          <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc" required="false" type="Boolean" default="true"/>
          <AD id="discoveryEndpointUrl" name="%discoveryEndpointUrl" description="%discoveryEndpointUrl.desc" required="false" type="String" />
          <AD id="authorizationEndpointUrl" name="%authorizationEndpointUrl" description="%authorizationEndpointUrl.desc" required="false" type="String" />
          <AD id="tokenEndpointUrl" name="%tokenEndpointUrl" description="%tokenEndpointUrl.desc" required="false" type="String" />
          <AD id="introspectionTokenTypeHint" name="internal" description="internal use only" type="String" required="false" default="access_token">
-     	 		<Option label="access_token" value="access_token" />
-		 </AD>
+             <Option label="access_token" value="access_token" />
+         </AD>
          <AD id="userInfoEndpointUrl" name="%userInfoEndpointUrl" description="%userInfoEndpointUrl.desc"
             required="false" type="String" />
          <AD id="userInfoEndpointEnabled" name="%userInfoEndpointEnabled" description="%userInfoEndpointEnabled.desc"
@@ -68,19 +68,19 @@
          <AD id="jwkClientId" name="%jwkClientIdentifier" description="%jwkClientIdentifier.desc" required="false"  type="String" />
          <AD id="jwkClientSecret" name="%jwkClientSecret" description="%jwkClientSecret.desc" required="false"  type="String" ibm:type="password"/>
 
-        <!--  use of responseType is preferred -->
+         <!--  use of responseType is preferred -->
          <AD id="grantType" name="%grantType" description="%grantType.desc" required="true" type="String" default="authorization_code">
-         		<Option label="%grantType.authorization_code" value="authorization_code" />
-            	<Option label="%grantType.implicit" value="implicit" />
+             <Option label="%grantType.authorization_code" value="authorization_code" />
+             <Option label="%grantType.implicit" value="implicit" />
          </AD>
 
          <!--  sent by the browser to tell the OP what kind of response it wants.  Preferred to grantType -->
          <AD id="responseType" name="%responseType" description="%responseType.desc" required="false" type="String">
-                <!--  code is an authorization code flow, the other three are implicit code flows. -->
-                <Option label="%responseType.code" value="code" />
-            	<Option label="%responseType.idToken" value="id_token" />
-            	<Option label="%responseType.idTokenToken" value="id_token token" />
-            	<Option label="%responseType.Token" value="token" />
+             <!--  code is an authorization code flow, the other three are implicit code flows. -->
+             <Option label="%responseType.code" value="code" />
+             <Option label="%responseType.idToken" value="id_token" />
+             <Option label="%responseType.idTokenToken" value="id_token token" />
+             <Option label="%responseType.Token" value="token" />
          </AD>
          <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc"
             required="false" type="String"/>
@@ -105,12 +105,12 @@
          <AD id="keyAliasName" name="%keyAliasName" description="%keyAliasName.desc" required="false" type="String" />
          <AD id="jsonWebKey" name="internal" description="internal use only" required="false" type="String" />
          <AD id="prompt" name="internal" description="internal use only" required="false" type="String" />
-          <AD id="jwt" name="internal" description="internal use only" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.jwt"
+         <AD id="jwt" name="internal" description="internal use only" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.jwt"
              required="false" type="String"  />
          <AD id="inboundPropagation" name="%inboundPropagation" description="%inboundPropagation.desc" required="false" type="String" default="none" >
                 <Option label="%inboundPropagation.supported" value="supported" />
-            	<Option label="%inboundPropagation.required" value="required" />
-            	<Option label="%inboundPropagation.none" value="none" />
+                <Option label="%inboundPropagation.required" value="required" />
+                <Option label="%inboundPropagation.none" value="none" />
          </AD>
          <AD id="validationMethod" name="%validationMethod" description="%validationMethod.desc" required="false" type="String" default="introspect">
                 <Option label="%validationMethod.introspect" value="introspect" />
@@ -136,8 +136,8 @@
             required="false" type="Boolean" default="false"/>
          <AD id="reAuthnOnAccessTokenExpire" name="%reAuthnOnAccessTokenExpire" description="%reAuthnOnAccessTokenExpire.desc" required="false" type="Boolean" default="true" />
          <AD id="reAuthnCushion" name="%reAuthnCushion" description="%reAuthnCushion.desc" required="false" type="String" ibm:type="duration" default="0s"/>
-		 <AD id="validateAccessTokenLocally" name="internal" description="internal use only" required="false" type="Boolean" default="true"/>
-		 <AD id="sharedKey" name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
+         <AD id="validateAccessTokenLocally" name="internal" description="internal use only" required="false" type="Boolean" default="true"/>
+         <AD id="sharedKey" name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
          <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only"  required="false" type="Boolean" default="true"/>
          <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
          <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" required="false" type="String" default="300s" ibm:type="duration" />
@@ -163,11 +163,11 @@
                 <Option label="%pkceCodeChallengeMethod.S256" value="S256" />
          </AD>
          <AD id="tokenRequestOriginHeader" name="%tokenRequestOriginHeader" description="%tokenRequestOriginHeader.desc" required="false" type="String" />
-         
-		 <AD id="tokenOrderToFetchCallerClaims" type="String" required="false" name="%tokenOrderToFetchCallerClaims" description="%tokenOrderToFetchCallerClaims.desc" default="IDToken" >        
-        	<Option label="%tokenOrderToFetchCallerClaims.IDToken" value="IDToken" />
-         	<Option label="%tokenOrderToFetchCallerClaims.ACCESSAndIDAndUITokens" value="AccessToken IDToken UserInfo" /> 
-   		 </AD>    
+
+         <AD id="tokenOrderToFetchCallerClaims" type="String" required="false" name="%tokenOrderToFetchCallerClaims" description="%tokenOrderToFetchCallerClaims.desc" default="IDToken" >
+            <Option label="%tokenOrderToFetchCallerClaims.IDToken" value="IDToken" />
+             <Option label="%tokenOrderToFetchCallerClaims.ACCESSAndIDAndUITokens" value="AccessToken IDToken UserInfo" />
+            </AD>
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.client.oidcClientConfig">
@@ -176,7 +176,7 @@
 
      <OCD id="com.ibm.ws.security.openidconnect.client.jwt.metatype" name="internal" description="internal use only"
          ibmui:localization="OSGI-INF/l10n/metatype" >
-     	 <AD id="builder" name="internal" description="internal use only" required="false" type="String" />
+          <AD id="builder" name="internal" description="internal use only" required="false" type="String" />
          <AD id="claims" name="internal" description="internal use only" required="false" type="String" cardinality="400" />
     </OCD>
 
@@ -186,7 +186,7 @@
 
     <OCD id="com.ibm.ws.security.openidconnect.client.param.metatype" name="%oidcClientCustomRequestParam" description="%oidcClientCustomRequestParam.desc"
          ibmui:localization="OSGI-INF/l10n/metatype" >
-     	 <AD id="name" name="%oidcClientCustomRequestParamName" description="%oidcClientCustomRequestParamName.desc" required="false" type="String" />
+         <AD id="name" name="%oidcClientCustomRequestParamName" description="%oidcClientCustomRequestParamName.desc" required="false" type="String" />
          <AD id="value" name="%oidcClientCustomRequestParamValue" description="%oidcClientCustomRequestParamValue.desc" required="false" type="String" />
     </OCD>
 

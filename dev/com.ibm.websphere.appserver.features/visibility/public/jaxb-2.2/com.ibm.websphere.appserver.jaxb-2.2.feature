@@ -35,4 +35,4 @@ Subsystem-Name: Java XML Bindings 2.2
   bin/jaxb/schemagen.bat
 kind=ga
 edition=core
-WLP-Platform: javaee-6.0,javaee-7.0,javaee-8.0
+WLP-Platform: javaee-6.0,javaee-7.0,javaee-8.0,jakartaee-8.0

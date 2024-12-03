@@ -28,6 +28,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.javaee.version.JavaEEVersion;
@@ -45,6 +47,8 @@ import jakarta.enterprise.inject.spi.Extension;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { CDIExtensionMetadata.class, QualifiedResourceFactories.class })
 public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIExtensionMetadataInternal, QualifiedResourceFactories {
+    private static final TraceComponent tc = Tr.register(ConcurrencyExtensionMetadata.class);
+
     private static final Set<Class<?>> beanClasses = Set.of(ContextService.class,
                                                             ManagedExecutorService.class,
                                                             ManagedScheduledExecutorService.class,
@@ -121,20 +125,37 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
      * @param resourceFactory the resource factory
      */
     @Override
-    public void add(String jeeName, QualifiedResourceFactory.Type resourceType,
-                    List<String> qualifierNames, QualifiedResourceFactory resourceFactory) {
+    public void add(String jeeName,
+                    QualifiedResourceFactory.Type resourceType,
+                    List<String> qualifierNames,
+                    QualifiedResourceFactory resourceFactory) {
         List<Map<List<String>, QualifiedResourceFactory>> list = resourceFactories.get(jeeName);
         if (list == null) {
             list = List.of(new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
             resourceFactories.put(jeeName, list);
         }
 
-        Map<List<String>, QualifiedResourceFactory> qualifiersToResourceFactory = list.get(resourceType.ordinal());
-        QualifiedResourceFactory conflict = qualifiersToResourceFactory.put(qualifierNames, resourceFactory);
+        Map<List<String>, QualifiedResourceFactory> qualifiersToResourceFactory = //
+                        list.get(resourceType.ordinal());
+        QualifiedResourceFactory conflict = //
+                        qualifiersToResourceFactory.put(qualifierNames, resourceFactory);
 
-        if (conflict != null)
-            throw new IllegalStateException("The " + jeeName + " application artifact defines multiple " + //
-                                            resourceType + " resources with the " + qualifierNames + " qualifiers."); // TODO NLS and Tr.error
+        if (conflict != null) {
+            Set<String> names = Set.of(resourceFactory.getName(), conflict.getName());
+
+            Tr.error(tc, "CWWKC1412.qualifier.conflict",
+                     jeeName,
+                     resourceType,
+                     resourceFactory.getQualifiers(),
+                     names);
+
+            throw new IllegalStateException(Tr //
+                            .formatMessage(tc, "CWWKC1412.qualifier.conflict",
+                                           jeeName,
+                                           resourceType,
+                                           resourceFactory.getQualifiers(),
+                                           names));
+        }
     }
 
     @Override

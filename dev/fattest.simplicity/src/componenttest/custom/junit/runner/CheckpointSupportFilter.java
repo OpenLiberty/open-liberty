@@ -22,7 +22,7 @@ import componenttest.topology.impl.JavaInfo;
 
 public class CheckpointSupportFilter extends Filter {
 
-    private static final String CHECKPOINT_ONLY_PROPERTY_NAME = "fat.test.run.checkpoint.only";
+    public static final String CHECKPOINT_ONLY_PROPERTY_NAME = "fat.test.run.checkpoint.only";
     private static final boolean CHECKPOINT_ONLY_PROPERTY_VALUE;
 
     static {

@@ -58,6 +58,10 @@ public class DataTest extends FATServletClient {
                                    "CWWKD1046E.*singleHexDigit",
                                    "CWWKD1047E.*numberAsByte",
                                    "CWWKD1049E.*countAsBooleanByNumberIdLessThan",
+                                   "CWWKD1054E.*deleteByDescription",
+                                   "CWWKD1054E.*deleteFirst",
+                                   "CWWKD1054E.*findAsLongBetween",
+                                   "CWWKD1054E.*findByNumberIdBetween",
                                    "CWWKD1075E.*Apartment2",
                                    "CWWKD1075E.*Apartment3"
                     };

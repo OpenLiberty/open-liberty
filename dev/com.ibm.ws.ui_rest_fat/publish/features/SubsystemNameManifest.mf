@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 Subsystem-SymbolicName: com.ibm.websphere.appserver.subsystemname-1.0; visibility:=private
 Subsystem-Name: SubsystemName Display Name
 Subsystem-Version: 1.0.0

@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: ProdExtn1UpdateAutoFeatureTool-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.prodextn1updateautofeaturetool-1.0; visibility:=private
 Subsystem-Name: ProdExtn1 Original AutoFeatureTool Display Name

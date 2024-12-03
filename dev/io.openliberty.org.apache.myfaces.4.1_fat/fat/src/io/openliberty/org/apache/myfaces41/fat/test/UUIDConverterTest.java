@@ -156,8 +156,8 @@ public class UUIDConverterTest {
     }
 
     /**
-     *  Verify that jakarta.faces.FULL_STATE_SAVING_VIEW_IDS is marked as deprecated in the logs
-     *
+     *  Expect conversion to fail because it tests a non-uuid string value (FailBean#id) 
+     * 
      * @throws Exception
      */
     @AllowedFFDC({"java.lang.ClassCastException","jakarta.servlet.ServletException"})

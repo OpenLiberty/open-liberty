@@ -356,6 +356,9 @@ public class VersionlessTest {
                 if (featurePlatform.equals("javaee-6.0")) {
                     continue;
                 }
+                if(featurePlatform.equals("jakartaee-8.0") && platforms.contains("javaee-8.0")){
+                    continue;
+                }
                 if (platforms.contains(featurePlatform)) {
                     matches++;
                 } else {
@@ -369,6 +372,9 @@ public class VersionlessTest {
                         errorMessage.append(featureName).append(" is missing platform ").append(platform).append("\n");
                     }
                 }
+            }
+            if(platforms.contains("javaee-8.0") && !featurePlatforms.contains("jakartaee-8.0")){
+                errorMessage.append(featureName).append(" is missing platform jakartaee-8.0\n");
             }
         }
 

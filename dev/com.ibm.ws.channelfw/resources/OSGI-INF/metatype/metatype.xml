@@ -71,7 +71,9 @@
 
         <AD name="%tcp.waitToAccept" description="%tcp.waitToAccept.desc" 
         	id="waitToAccept" required="false" type="Boolean" default="false" />
-        	
+            
+        <AD name="%tcp.soLinger" description="%tcp.soLinger.desc" 
+            id="soLinger" required="false" type="Integer" default="-1" min="-1" max="65535" />
 
         <AD name="internal" description="internal use only"
             id="service.ranking" required="false" type="Integer" default="0"/>

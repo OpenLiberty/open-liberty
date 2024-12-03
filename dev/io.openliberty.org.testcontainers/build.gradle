@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,72 +10,39 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+configurations {
+  runtime
+}
 
-task assembleTestContainerData {
-	doLast{
-	  	long start = System.currentTimeMillis()
-  	
-	  	//First create a list of projects that use testcontainers
-	  	File projectList = new File(project.getProjectDir(), 'cache/projects')
-	  	projectList.getParentFile().mkdirs()
-	  	projectList.delete()
-	  	
-	  	//Investigate all gradle files
-	  	def projectArr = ['fattest.simplicity']
-	    rootDir.eachDir() { nextDir ->
-	      if(nextDir == project.getProjectDir())
-	        return // continue: do not check this project
-	      
-	      File gradleFile = new File(nextDir, 'build.gradle')
-	      if(gradleFile.exists() && gradleFile.readLines().findAll { it.contains('copyTestContainers') }.size() > 0 )
-	        projectArr << gradleFile.getParentFile().getName() //Cache project name
-	    }
-	    
-	    //Next create a list of all images used by testcontainer projects
-	    File imageList   = new File(project.getProjectDir(), 'cache/images')
-	    imageList.delete()
-	    
-	    //Investigate all bnd files
-	    def imageArr = []
-	    def prefix = 'fat.test.container.images:'
-	    projectArr.each { foundProject ->
-	      File bndFile = new File(rootDir, foundProject + '/bnd.bnd')
-	      
-	      if(bndFile.exists() && bndFile.readLines().findAll { it.contains(prefix) }.size() > 0) {
-	        
-	        //Cache image names
-	        def getNext = false
-	        bndFile.eachLine { line ->
-	          if( line.contains(prefix) || getNext ) {
-	            line = line.replaceAll('\\s', '') - prefix
-	            if ( line[-1] == '\\')
-	              getNext = true
-	            else
-	              getNext = false
-	            
-	            line.split(',').each { image ->
-	              imageArr << image
-	            } //line.split
-	          }//line.contains
-	        }//bndFile.eachLine
-	      }//bndFile.exists
-	    }//projectArr.each
-	    
-	    // Write lists to file
-	    projectList << '# NOTICE: This file was automatically updated to reflect changes made to test projects.' << '\n'
-	    projectList	<< '# Please check these changes into GitHub' << '\n'
-	    projectArr.sort().forEach() { projectList << it << '\n' }
-	    
-	    imageList   << '# NOTICE: This file was automatically updated to reflect changes made to test projects.' << '\n'
-	    imageList	<< '# Please check these changes into GitHub.' << '\n'
-	    imageArr.unique().sort()
-	    imageArr -= '\\'
-	    imageArr.forEach() { imageList << it << '\n' }
-	    
-	    println 'Cached test container project and image data in ' + projectList + ' and ' + imageList
-	    
-	    // Average execution time is 500 ms
-	    long end = System.currentTimeMillis()
-	    println 'Execution time in ms: ' + ( end - start )
-	}
+dependencies {
+  runtime project(':io.openliberty.com.fasterxml.jackson')
+  runtime project(':com.ibm.ws.componenttest')
+  runtime project(':fattest.simplicity')
+}
+
+task assembleTestContainerData(type: JavaExec) {
+    onlyIf { // Do not execute this task during our builds
+        !isAutomatedBuild
+    }
+    
+    // Setup environment to mock external state
+    environment "TESTCONTAINERS_IMAGE_SUBSTITUTOR", "componenttest.containers.ArtifactoryImageNameSubstitutor"
+    environment "MOCK_ARTIFACTORY_BEHAVIOR", "true"
+    
+    classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
+    main = "io.openliberty.org.testcontainers.generate.CacheFiles"
+    args project.getProjectDir()
+}
+
+task generateCustomImages(type: JavaExec) {
+    onlyIf { // Prototype - should never be run
+        false
+    }
+    
+    // Ensure cache has been generated
+    dependsOn assembleTestContainerData
+    
+    classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
+    main = "io.openliberty.org.testcontainers.generate.CustomImages"
+    args project.getProjectDir()
 }

@@ -1,0 +1,48 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Test REST API",
+		"version": "1.0.0",
+		"description": "Test REST API in Liberty with tabs in json",
+		"termsOfService": "http://example.com/terms/",
+		"contact":{
+		   "name": "Open API support team",
+		   "email": "oapisupport@example.com",
+		   "url": "http://www.example.com/support"
+		}
+	},
+	"paths": {
+        "/test": {
+            "get": {
+                "summary": "openapi.json - Get test data",
+                "responses": {
+                    "200": {
+                        "description": "Test data retrieved",
+                        "schema": {
+                            "$ref": "#/components/schemas/TestData"
+                        }
+                    },
+                    "404": {
+                        "description": "Test data not found"
+                    }
+                }
+            }
+				}
+		},
+    "components": {
+        "schemas": {
+            "TestData": {
+                "properties": {
+                    "fieldA": {
+                        "type": "string",
+                        "example": "foo"
+                    },
+                    "fieldB": {
+                        "type": "string",
+                        "example": "bar"
+                    }
+                }
+            }
+        }
+    }
+}

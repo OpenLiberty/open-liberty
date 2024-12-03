@@ -126,30 +126,30 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
         updatedSocialTestSettings.setProviderButtonDisplay("Facebook_1");
         updatedSocialTestSettings.setProviderButton("facebookLogin_displayName1");
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         /* Invoke the other unique provider */
         updatedSocialTestSettings.setProviderButtonDisplay("Facebook_2");
         updatedSocialTestSettings.setProviderButton("facebookLogin_displayName2");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         /* Invoke one of the duplidate provider entries (this one contains valid values) */
         updatedSocialTestSettings.setProviderButtonDisplay("Facebook_3");
         updatedSocialTestSettings.setProviderButton("facebookLogin_displayName3");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         /* Invoke the other duplicate provider entry (which happens to be bad) */
         updatedSocialTestSettings.setProviderButtonDisplay("Facebook_3");
         updatedSocialTestSettings.setProviderButton("facebookLogin_displayName4");
-        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.FACEBOOK_PERFORM_SOCIAL_LOGIN, inovke_social_login_actions);
+        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.FACEBOOK_PERFORM_SOCIAL_LOGIN, invoke_social_login_actions);
         expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.FACEBOOK_PERFORM_SOCIAL_LOGIN, SocialConstants.UNAUTHORIZED_STATUS);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.FACEBOOK_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an unauthorized exception", "Error validating client secret");
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.FACEBOOK_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an error attempting to access the endpoint", SocialMessageConstants.CWWKS5478E_BAD_ENDPOINT_REQUEST);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.FACEBOOK_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received general social login error", SocialMessageConstants.CWWKS5451E_BADTOKEN_INFO);
         expectations = vData.addExpectation(expectations, SocialConstants.FACEBOOK_PERFORM_SOCIAL_LOGIN, SocialConstants.RESPONSE_MESSAGE, SocialConstants.STRING_CONTAINS, "Was expecting the response message to contain: " + SocialConstants.UNAUTHORIZED_MESSAGE, null, SocialConstants.UNAUTHORIZED_MESSAGE);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         /*
          * Invoke using the facebookLogin config button (uses specific config, others use generic - make sure that it behaves
@@ -159,7 +159,7 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
         updatedSocialTestSettings.setProviderButtonDisplay("Facebook_5");
         updatedSocialTestSettings.setProviderButton(SocialConstants.FACEBOOK_LOGIN);
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -180,7 +180,7 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
         updatedSocialTestSettings.setProviderButtonDisplay("Twitter_5");
         updatedSocialTestSettings.setProviderButton(SocialConstants.TWITTER_LOGIN);
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -212,27 +212,27 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
         updatedSocialTestSettings.setProviderButtonDisplay("Linkedin_1");
         updatedSocialTestSettings.setProviderButton("linkedinLogin_displayName1");
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("Linkedin_2");
         updatedSocialTestSettings.setProviderButton("linkedinLogin_displayName2");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("Linkedin_3");
         updatedSocialTestSettings.setProviderButton("linkedinLogin_displayName3");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("Linkedin_3");
         updatedSocialTestSettings.setProviderButton("linkedinLogin_displayName4");
-        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.LINKEDIN_PERFORM_SOCIAL_LOGIN, inovke_social_login_actions);
+        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.LINKEDIN_PERFORM_SOCIAL_LOGIN, invoke_social_login_actions);
         expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.LINKEDIN_PERFORM_SOCIAL_LOGIN, SocialConstants.UNAUTHORIZED_STATUS);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.LINKEDIN_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an unauthorized exception", "Client authentication failed");
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.LINKEDIN_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an error attempting to access the endpoint", SocialMessageConstants.CWWKS5478E_BAD_ENDPOINT_REQUEST);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.LINKEDIN_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received general social login error", SocialMessageConstants.CWWKS5451E_BADTOKEN_INFO);
         expectations = vData.addExpectation(expectations, SocialConstants.LINKEDIN_PERFORM_SOCIAL_LOGIN, SocialConstants.RESPONSE_MESSAGE, SocialConstants.STRING_CONTAINS, "Was expecting the response message to contain: " + SocialConstants.UNAUTHORIZED_MESSAGE, null, SocialConstants.UNAUTHORIZED_MESSAGE);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         /*
          * Invoke using the linkedinLogin config button (uses specific config, others use generic - make sure that it behaves
@@ -242,7 +242,7 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
         updatedSocialTestSettings.setProviderButtonDisplay("Linkedin_5");
         updatedSocialTestSettings.setProviderButton(SocialConstants.LINKEDIN_LOGIN);
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -280,27 +280,27 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
         updatedSocialTestSettings.setProviderButtonDisplay("github_1");
         updatedSocialTestSettings.setProviderButton("githubLogin/displayName1");
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("github_2");
         updatedSocialTestSettings.setProviderButton("githubLogin/displayName2");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("github_3");
         updatedSocialTestSettings.setProviderButton("githubLogin/displayName3");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("github_3");
         updatedSocialTestSettings.setProviderButton("githubLogin/displayName4");
-        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.GITHUB_PERFORM_SOCIAL_LOGIN, inovke_social_login_actions);
+        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.GITHUB_PERFORM_SOCIAL_LOGIN, invoke_social_login_actions);
         expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.GITHUB_PERFORM_SOCIAL_LOGIN, SocialConstants.UNAUTHORIZED_STATUS);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.GITHUB_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an error due to missing claims", SocialMessageConstants.CWWKS5452E_NOTAUTH_DUE_TO_MISSING_CLAIMS);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.GITHUB_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an error processing the response", SocialMessageConstants.CWWKS5490E_CANNOT_PROCESS_RESPONSE);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.GITHUB_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an error getting user info", SocialMessageConstants.CWWKS5461E_ERROR_GETTING_USERINFO);
         expectations = vData.addExpectation(expectations, SocialConstants.GITHUB_PERFORM_SOCIAL_LOGIN, SocialConstants.RESPONSE_MESSAGE, SocialConstants.STRING_CONTAINS, "Was expecting the response message to contain: " + SocialConstants.UNAUTHORIZED_MESSAGE, null, SocialConstants.UNAUTHORIZED_MESSAGE);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         /*
          * Invoke using the githubLogin config button (uses specific config, others use generic - make sure that it behaves
@@ -311,7 +311,7 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
         updatedSocialTestSettings.setProviderButtonDisplay("GitHub_5");
         updatedSocialTestSettings.setProviderButton(SocialConstants.GITHUB_LOGIN);
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -343,28 +343,28 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
         updatedSocialTestSettings.setProviderButtonDisplay("oauth_1");
         updatedSocialTestSettings.setProviderButton("oauth2Login_displayName1");
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("oauth_2");
         updatedSocialTestSettings.setProviderButton("oauth2Login_displayName2");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("oauth_3");
         updatedSocialTestSettings.setProviderButton("oauth2Login_displayName3");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("oauth_3");
         updatedSocialTestSettings.setProviderButton("oauth2Login_displayName4");
-        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, inovke_social_login_actions);
+        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, invoke_social_login_actions);
         expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.UNAUTHORIZED_STATUS);
         expectations = validationTools.addMessageExpectation(testOPServer, expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "OP logs should have shown error validating client.", SocialMessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an unauthorized exception", SocialMessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an error attempting to access the endpoint", SocialMessageConstants.CWWKS5478E_BAD_ENDPOINT_REQUEST);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received general social login error", SocialMessageConstants.CWWKS5451E_BADTOKEN_INFO);
         expectations = vData.addExpectation(expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.RESPONSE_MESSAGE, SocialConstants.STRING_CONTAINS, "Was expecting the response message to contain: " + SocialConstants.UNAUTHORIZED_MESSAGE, null, SocialConstants.UNAUTHORIZED_MESSAGE);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         /* skip provider specific config as it does not exist */
     }
@@ -397,28 +397,28 @@ public class MultiProvider_usingSocialConfig_withDisplayNames extends SocialComm
         updatedSocialTestSettings.setProviderButtonDisplay("oidc_1");
         updatedSocialTestSettings.setProviderButton("oidcLogin_displayName1");
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("oidc_2");
         updatedSocialTestSettings.setProviderButton("oidcLogin_displayName2");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("oidc_3");
         updatedSocialTestSettings.setProviderButton("oidcLogin_displayName3");
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         updatedSocialTestSettings.setProviderButtonDisplay("oidc_3");
         updatedSocialTestSettings.setProviderButton("oidcLogin_displayName4");
-        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, inovke_social_login_actions);
+        expectations = vData.addSuccessStatusCodesForActions(SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, invoke_social_login_actions);
         expectations = vData.addResponseStatusExpectation(expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.BAD_REQUEST_STATUS);
         expectations = validationTools.addMessageExpectation(testOPServer, expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "OP logs should have shown error validating client.", SocialMessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Did not find a CWWKS1406E error message in the logs saying the token request had an invalid credential.", SocialMessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Did not find a CWWKS1708E error message in the logs saying the OIDC client couldn't contact the provider.", SocialMessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER);
         // I believe the SRVE8094W error is a bug in AuthorizationCodeHandler.sendErrorJSON() where the response is being flushed too early
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Did not find a error message for setting a header in a committed response.", SocialMessageConstants.SRVE8094W_CANNOT_SET_HEADER_RESPONSE_COMMITTED);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         /* skip provider specific config as it does not exist */
 

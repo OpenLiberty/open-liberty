@@ -18,7 +18,6 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,6 +44,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.recoverylog.custom.jdbc.impl.DBUtils.DBProduct;
 import com.ibm.ws.recoverylog.spi.Configuration;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
@@ -144,12 +144,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /**
      * Which RDBMS are we working against?
      */
-    volatile private boolean _isDerby;
-    volatile private boolean _isOracle;
-    volatile private boolean _isPostgreSQL;
-    volatile private boolean _isDB2;
-    volatile private boolean _isSQLServer;
-    volatile private boolean _isNonStandard;
+    private volatile DBProduct dbProduct;
 
     private boolean isolationFailureReported;
 
@@ -228,7 +223,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * A flag to indicate that the log was being recovered by a peer
      * but it has been reclaimed by its "home" server.
      */
-    volatile private boolean _peerServerLostLogOwnership;
+    private volatile boolean _peerServerLostLogOwnership;
 
     /**
      * These strings are used for Database table creation. DDL is
@@ -853,32 +848,15 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Got connection: " + conn);
-            DatabaseMetaData mdata = conn.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Working with database: " + dbName);
-            if (dbName.toLowerCase().contains("oracle")) {
-                _isOracle = true;
-            } else if (dbName.toLowerCase().contains("db2")) {
-                _isDB2 = true;
-            } else if (dbName.toLowerCase().contains("postgresql")) {
-                _isPostgreSQL = true;
-            } else if (dbName.toLowerCase().contains("microsoft sql")) {
-                _isSQLServer = true;
-            } else if (dbName.toLowerCase().contains("derby")) {
-                _isDerby = true;
-            } else {
-                _isNonStandard = true;
+
+            dbProduct = DBUtils.identifyDB(conn);
+
+            if (DBProduct.Unknown == dbProduct && !SQLRetry.isLogRetriesEnabled()) {
                 // We're not working with the standard set of databases. The "default" behaviour is not to retry for such non-standard, untested databases,
                 // even if the exception is a SQLTransientException. But if the logRetriesEnabled flag has been explicitly set, then we will retry SQL
                 // operations on all databases.
-                if (!SQLRetry.isLogRetriesEnabled())
-                    _sqlTransientErrorHandlingEnabled = false;
+                _sqlTransientErrorHandlingEnabled = false;
             }
-
-            String dbVersion = mdata.getDatabaseProductVersion();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "You are now connected to " + dbName + ", version " + dbVersion);
         }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getFirstConnection", conn);
@@ -913,8 +891,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "Set the logRetriesEnabled flag to false");
             // If _logRetriesEnabled has been reset (config change) and if the database is non-standard, then we will
             // no longer retry SQLExceptions
-            if (SQLRetry.isLogRetriesEnabled() && _isNonStandard)
+            if (SQLRetry.isLogRetriesEnabled() && (dbProduct == null || DBProduct.Unknown == dbProduct))
                 _sqlTransientErrorHandlingEnabled = false;
+
             SQLRetry.setLogRetriesEnabled(false);
         }
 
@@ -968,6 +947,17 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             }
         }
 
+        if (dbProduct == null) {
+            dbProduct = DBUtils.identifyDB(conn);
+
+            if (DBProduct.Unknown == dbProduct && !SQLRetry.isLogRetriesEnabled()) {
+                // We're not working with the standard set of databases. The "default" behaviour is not to retry for such non-standard, untested databases,
+                // even if the exception is a SQLTransientException. But if the logRetriesEnabled flag has been explicitly set, then we will retry SQL
+                // operations on all databases.
+                _sqlTransientErrorHandlingEnabled = false;
+            }
+        }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getConnection", conn);
         return conn;
@@ -990,20 +980,14 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recover", conn);
 
-        Statement recoveryStmt = null;
-        ResultSet recoveryRS = null;
+        String queryString = "SELECT RU_ID, RUSECTION_ID, RUSECTION_DATA_INDEX, DATA" +
+                             " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
+                             " WHERE SERVER_NAME='" + _serverName +
+                             "' AND SERVICE_ID=" + _recoveryAgent.clientIdentifier();
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Retrieve all rows from table using - " + queryString);
 
-        try {
-            recoveryStmt = conn.createStatement();
-            String queryString = "SELECT RU_ID, RUSECTION_ID, RUSECTION_DATA_INDEX, DATA" +
-                                 " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                 " WHERE SERVER_NAME='" + _serverName +
-                                 "' AND SERVICE_ID=" + _recoveryAgent.clientIdentifier();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Retrieve all rows from table using - " + queryString);
-
-            recoveryRS = recoveryStmt.executeQuery(queryString);
-
+        try (Statement recoveryStmt = conn.createStatement(); ResultSet recoveryRS = recoveryStmt.executeQuery(queryString)) {
             while (recoveryRS.next()) {
                 final long ruId = recoveryRS.getLong(1);
                 if (ruId != -1) {
@@ -1034,11 +1018,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 } else if (tc.isDebugEnabled())
                     Tr.debug(tc, "Bypass locking row with id: " + ruId);
             }
-        } finally {
-            if (recoveryRS != null && !recoveryRS.isClosed())
-                recoveryRS.close();
-            if (recoveryStmt != null && !recoveryStmt.isClosed())
-                recoveryStmt.close();
         }
 
         if (tc.isEntryEnabled())
@@ -2484,21 +2463,17 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tc.isEntryEnabled())
             Tr.entry(tc, "assertLogOwnershipAtRuntime", new java.lang.Object[] { conn, this });
 
-        Statement lockingStmt = null;
-        ResultSet lockingRS = null;
         boolean lockSuccess = false;
 
-        try {
-            lockingStmt = conn.createStatement();
-            String queryString = "SELECT SERVER_NAME" +
-                                 " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                                 " WHERE RU_ID=-1" +
-                                 (_isSQLServer ? "" : " FOR UPDATE");
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
-            lockingRS = lockingStmt.executeQuery(queryString);
+        final String queryString = "SELECT SERVER_NAME" +
+                                   " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
+                                   (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                   " WHERE RU_ID=-1" +
+                                   (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
 
+        try (Statement lockingStmt = conn.createStatement(); ResultSet lockingRS = lockingStmt.executeQuery(queryString)) {
             if (lockingRS.next()) {
                 // We found the HA Lock row
                 String storedServerName = lockingRS.getString(1);
@@ -2518,7 +2493,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Not the home server, failurescope is " + _failureScope);
                         // Instantiate a PeerLostLogOwnershipException which is less "noisy" than its parent InternalLogException
-                        PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Another server (" + storedServerName + ") has locked the HA lock row", null);
+                        final PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Another server (" + storedServerName + ") has locked the HA lock row", null);
                         markFailed(ple, false, true); // second parameter "false" as we do not wish to fire out error messages
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "assertLogOwnershipAtRuntime", ple);
@@ -2527,7 +2502,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         Tr.audit(tc, "WTRN0100E: " +
                                      "Another server (" + storedServerName + ") owns the log cannot force SQL RecoveryLog " + _logName + " for server " + _serverName);
 
-                        InternalLogException ile = new InternalLogException("Another server (" + storedServerName + ") has locked the HA lock row", null);
+                        final InternalLogException ile = new InternalLogException("Another server (" + storedServerName + ") has locked the HA lock row", null);
                         markFailed(ile);
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "assertLogOwnershipAtRuntime", ile);
@@ -2538,7 +2513,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // We didn't find the HA Lock row in the table, mark the log as failed
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Could not find HA Lock row");
-                InternalLogException ile = new InternalLogException("Could not find the HA lock row", null);
+                final InternalLogException ile = new InternalLogException("Could not find the HA lock row", null);
                 Tr.audit(tc, "WTRN0100E: " +
                              "Could not find HA lock row when forcing SQL RecoveryLog " + _logName + " for server " + _serverName);
                 markFailed(ile);
@@ -2546,11 +2521,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     Tr.exit(tc, "assertLogOwnershipAtRuntime", ile);
                 throw ile;
             }
-        } finally {
-            if (lockingRS != null && !lockingRS.isClosed())
-                lockingRS.close();
-            if (lockingStmt != null && !lockingStmt.isClosed())
-                lockingStmt.close();
         }
 
         if (tc.isEntryEnabled())
@@ -2571,22 +2541,32 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.debug(tc, "SQL State: {0}", sqlState);
             Tr.debug(tc, "Error code: {0}", sqlErrorCode);
         }
-        if (_isDB2) {
-            if (sqlErrorCode == -204)
-                noTable = true;
-        } else if (_isOracle) {
-            if (sqlErrorCode == 942)
-                noTable = true;
-        } else if (_isPostgreSQL) {
-            if (sqlMessage.contains("relation") && sqlMessage.contains("does not exist"))
-                noTable = true;
-        } else if (_isSQLServer) {
-            if (sqlErrorCode == 208)
-                noTable = true;
-        } else if (_isDerby) {
-            if ("42X05".equals(sqlState))
-                noTable = true;
+
+        switch (dbProduct) {
+            case DB2:
+                if (sqlErrorCode == -204)
+                    noTable = true;
+                break;
+            case Derby:
+                if ("42X05".equals(sqlState))
+                    noTable = true;
+                break;
+            case Oracle:
+                if (sqlErrorCode == 942)
+                    noTable = true;
+                break;
+            case Postgresql:
+                if (sqlMessage.contains("relation") && sqlMessage.contains("does not exist"))
+                    noTable = true;
+                break;
+            case Sqlserver:
+                if (sqlErrorCode == 208)
+                    noTable = true;
+                break;
+            default:
+                break;
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isTableDeleted", noTable);
         return noTable;
@@ -2616,7 +2596,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         Statement readForUpdateStmt = null;
         Statement updateStmt = null;
-        PreparedStatement specStatement = null;
         ResultSet readForUpdateRS = null;
         boolean lockingRecordExists = false;
 
@@ -2695,7 +2674,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // we create the table... and here (if is already exists without the locking row)
                 short serviceId = (short) 1;
                 String fullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
-                insertLockingRow(conn, specStatement, fullTableName, serviceId, _reservedConnectionActiveSectionIDUnset);
+                insertLockingRow(conn, fullTableName, serviceId, _reservedConnectionActiveSectionIDUnset);
             }
 
         } finally {
@@ -2713,11 +2692,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (updateStmt != null)
                 try {
                     updateStmt.close();
-                } catch (Exception e) {
-                }
-            if (specStatement != null)
-                try {
-                    specStatement.close();
                 } catch (Exception e) {
                 }
         }
@@ -2741,7 +2715,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         Statement readForUpdateStmt = null;
         ResultSet readForUpdateRS = null;
         Statement updateStmt = null;
-        PreparedStatement specStatement = null;
 
         try {
             readForUpdateStmt = conn.createStatement();
@@ -2808,14 +2781,14 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     short serviceId = (short) 1;
                     String fullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
                     long fir1 = System.currentTimeMillis();
-                    insertLockingRow(conn, specStatement, fullTableName, serviceId, fir1);
+                    insertLockingRow(conn, fullTableName, serviceId, fir1);
                 } else {
                     // Handle peer server cases
                     if (ConfigurationProviderManager.getConfigurationProvider().peerRecoveryPrecedence()) {
                         short serviceId = (short) 1;
                         String fullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
                         long fir1 = System.currentTimeMillis();
-                        insertLockingRow(conn, specStatement, fullTableName, serviceId, fir1);
+                        insertLockingRow(conn, fullTableName, serviceId, fir1);
                     } else {
                         // In this case instantiate a PeerLostLogOwnershipException which is less "noisy" than its parent InternalLogException
                         PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("No lock row but this is peer recovery", null);
@@ -2843,11 +2816,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     updateStmt.close();
                 } catch (Exception e) {
                 }
-            if (specStatement != null)
-                try {
-                    specStatement.close();
-                } catch (Exception e) {
-                }
         }
 
         if (tc.isEntryEnabled())
@@ -2870,86 +2838,92 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.entry(tc, "createDBTable", new java.lang.Object[] { conn, this });
 
         Statement createTableStmt = null;
-        PreparedStatement specStatement = null;
         boolean success = false;
 
         try {
             createTableStmt = conn.createStatement();
             String fullTableName = _recoveryTableName + logIdentifierString + _recoveryTableNameSuffix;
-            if (_isOracle) {
 
-                String oracleTableString = genericTableCreatePreString + fullTableName + oracleTablePostString;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create Oracle Table using: " + oracleTableString);
+            switch (dbProduct) {
+                case Oracle:
+                    String oracleTableString = genericTableCreatePreString + fullTableName + oracleTablePostString;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create Oracle Table using: " + oracleTableString);
 
-                String oracleIndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
-                                           " ON " + fullTableName + indexPostString;
+                    String oracleIndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
+                                               " ON " + fullTableName + indexPostString;
 
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create Oracle Index using: " + oracleIndexString);
-                // Create the Oracle table
-                createTableStmt.executeUpdate(oracleTableString);
-                // Create index on the new table
-                createTableStmt.executeUpdate(oracleIndexString);
-            } else if (_isDB2) {
-                String db2TableString = genericTableCreatePreString + fullTableName + db2TablePostString;
-                String dbName = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDBName();
-                if (!dbName.isEmpty()) {
-                    db2TableString = db2TableString + " IN DATABASE " + dbName;
-                }
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create DB2 Table using: " + db2TableString);
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create Oracle Index using: " + oracleIndexString);
+                    // Create the Oracle table
+                    createTableStmt.executeUpdate(oracleTableString);
+                    // Create index on the new table
+                    createTableStmt.executeUpdate(oracleIndexString);
+                    break;
+                case DB2:
+                    String db2TableString = genericTableCreatePreString + fullTableName + db2TablePostString;
+                    String dbName = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDBName();
+                    if (!dbName.isEmpty()) {
+                        db2TableString = db2TableString + " IN DATABASE " + dbName;
+                    }
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create DB2 Table using: " + db2TableString);
 
-                String db2IndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
-                                        " ON " + fullTableName + indexPostString;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create DB2 Index using: " + db2IndexString);
-                // Create the DB2 table
-                createTableStmt.executeUpdate(db2TableString);
-                // Create index on the new table
-                createTableStmt.executeUpdate(db2IndexString);
-            } else if (_isPostgreSQL) {
-                String postgreSQLTableString = genericTableCreatePreString + fullTableName + postgreSQLTablePostString;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create PostgreSQL table using: " + postgreSQLTableString);
-
-                String postgreSQLIndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
-                                               " ON " + fullTableName + postgreSQLIndexPostString;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create PostgreSQL index using: " + postgreSQLIndexString);
-                conn.rollback();
-                // Create the PostgreSQL table
-                createTableStmt.execute(postgreSQLTableString);
-                // Create index on the new table
-                createTableStmt.execute(postgreSQLIndexString);
-            } else if (_isSQLServer) {
-                String sqlServerTableString = genericTableCreatePreString + fullTableName + sqlServerTablePostString;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create SQL Server table using: " + sqlServerTableString);
-
-                String sqlServerIndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
-                                              " ON " + fullTableName + indexPostString;
-
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create SQL Server index using: " + sqlServerIndexString);
-                conn.rollback();
-                // Create the SQL Server table
-                createTableStmt.execute(sqlServerTableString);
-                // Create index on the new table
-                createTableStmt.execute(sqlServerIndexString);
-            } else {
-                String genericTableString = genericTableCreatePreString + fullTableName + genericTablePostString;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create Generic Table using: " + genericTableString);
-
-                String genericIndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
+                    String db2IndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
                                             " ON " + fullTableName + indexPostString;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create Generic Index using: " + genericIndexString);
-                // Create the DB2 table
-                createTableStmt.executeUpdate(genericTableString);
-                // Create index on the new table
-                createTableStmt.executeUpdate(genericIndexString);
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create DB2 Index using: " + db2IndexString);
+                    // Create the DB2 table
+                    createTableStmt.executeUpdate(db2TableString);
+                    // Create index on the new table
+                    createTableStmt.executeUpdate(db2IndexString);
+                    break;
+                case Postgresql:
+                    String postgreSQLTableString = genericTableCreatePreString + fullTableName + postgreSQLTablePostString;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create PostgreSQL table using: " + postgreSQLTableString);
+
+                    String postgreSQLIndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
+                                                   " ON " + fullTableName + postgreSQLIndexPostString;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create PostgreSQL index using: " + postgreSQLIndexString);
+                    conn.rollback();
+                    // Create the PostgreSQL table
+                    createTableStmt.execute(postgreSQLTableString);
+                    // Create index on the new table
+                    createTableStmt.execute(postgreSQLIndexString);
+                    break;
+                case Sqlserver:
+                    String sqlServerTableString = genericTableCreatePreString + fullTableName + sqlServerTablePostString;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create SQL Server table using: " + sqlServerTableString);
+
+                    String sqlServerIndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
+                                                  " ON " + fullTableName + indexPostString;
+
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create SQL Server index using: " + sqlServerIndexString);
+                    conn.rollback();
+                    // Create the SQL Server table
+                    createTableStmt.execute(sqlServerTableString);
+                    // Create index on the new table
+                    createTableStmt.execute(sqlServerIndexString);
+                    break;
+                case Derby:
+                case Unknown:
+                    String genericTableString = genericTableCreatePreString + fullTableName + genericTablePostString;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create Generic Table using: " + genericTableString);
+
+                    String genericIndexString = indexPreString + _recoveryIndexName + logIdentifierString + _recoveryTableNameSuffix +
+                                                " ON " + fullTableName + indexPostString;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Create Generic Index using: " + genericIndexString);
+                    // Create the DB2 table
+                    createTableStmt.executeUpdate(genericTableString);
+                    // Create index on the new table
+                    createTableStmt.executeUpdate(genericIndexString);
+                    break;
             }
 
             // Insert the HA Locking row
@@ -2959,7 +2933,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 fir1 = System.currentTimeMillis();
             }
 
-            insertLockingRow(conn, specStatement, fullTableName, serviceId, fir1);
+            insertLockingRow(conn, fullTableName, serviceId, fir1);
 
             conn.commit(); // the table and index creation may not be transactional but the INSERT of the locking row IS - commit
             success = true;
@@ -2967,9 +2941,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         } finally {
             if (createTableStmt != null && !createTableStmt.isClosed()) {
                 createTableStmt.close();
-            }
-            if (specStatement != null && !specStatement.isClosed()) {
-                specStatement.close();
             }
             if (!success)
                 conn.rollback(); // should not be needed really
@@ -2983,37 +2954,38 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * Insert the control, or HA Locking, row containing metadata into the recovery log table
      *
      * @param conn
-     * @param specStatement
      * @param fullTableName
      * @param serviceId
      * @param sectionId
      * @throws SQLException
      */
-    private void insertLockingRow(Connection conn, PreparedStatement specStatement, String fullTableName, short serviceId, long sectionId) throws SQLException {
+    private void insertLockingRow(Connection conn, String fullTableName, short serviceId, long sectionId) throws SQLException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "insertLockingRow", new java.lang.Object[] { conn, specStatement, fullTableName, serviceId, sectionId, this });
+            Tr.entry(tc, "insertLockingRow", conn, fullTableName, serviceId, sectionId, this);
+
         String insertString = "INSERT INTO " +
                               fullTableName +
                               " (SERVER_NAME, SERVICE_ID, RU_ID, RUSECTION_ID, RUSECTION_DATA_INDEX, DATA)" +
                               " VALUES (?,?,?,?,?,?)";
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Insert LOCKING row using - " + insertString);
-        specStatement = conn.prepareStatement(insertString);
-        specStatement.setString(1, _currentProcessServerName);
-        specStatement.setShort(2, serviceId);
-        specStatement.setLong(3, -1); // NOTE RU_ID SET TO -1
-        specStatement.setLong(4, sectionId);
-        specStatement.setShort(5, (short) 1);
-        byte buf[] = new byte[2];
-        specStatement.setBytes(6, buf);
-        int ret = specStatement.executeUpdate();
+
+        int ret;
+        try (PreparedStatement specStatement = conn.prepareStatement(insertString)) {
+            specStatement.setString(1, _currentProcessServerName);
+            specStatement.setShort(2, serviceId);
+            specStatement.setLong(3, -1); // NOTE RU_ID SET TO -1
+            specStatement.setLong(4, sectionId);
+            specStatement.setShort(5, (short) 1);
+            byte buf[] = new byte[2];
+            specStatement.setBytes(6, buf);
+            ret = specStatement.executeUpdate();
+        }
+
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Have inserted HA LOCKING ROW with return: " + ret);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "insertLockingRow");
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "Have inserted HA Lock row with return: " + ret);
     }
 
     //------------------------------------------------------------------------------
@@ -3031,21 +3003,16 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tc.isEntryEnabled())
             Tr.entry(tc, "dropDBTable", new java.lang.Object[] { conn, logIdentifierString, this });
 
-        Statement dropTableStmt = null;
-        Statement lockingStmt = null;
-        ResultSet lockingRS = null;
         boolean dropSuccess = false;
-        try {
-            lockingStmt = conn.createStatement();
-            String queryString = "SELECT SERVER_NAME" +
-                                 " FROM " + _recoveryTableName + logIdentifierString + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                                 " WHERE RU_ID=-1" +
-                                 (_isSQLServer ? "" : " FOR UPDATE");
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Attempt to select the HA LOCKING ROW using - " + queryString);
-            lockingRS = lockingStmt.executeQuery(queryString);
+        String queryString = "SELECT SERVER_NAME" +
+                             " FROM " + _recoveryTableName + logIdentifierString + _recoveryTableNameSuffix +
+                             (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                             " WHERE RU_ID=-1" +
+                             (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Attempt to select the HA LOCKING ROW using - " + queryString);
 
+        try (Statement lockingStmt = conn.createStatement(); ResultSet lockingRS = lockingStmt.executeQuery(queryString)) {
             if (lockingRS.next()) {
                 // We found the HA Lock row
                 String storedServerName = lockingRS.getString(1);
@@ -3063,13 +3030,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.audit(tc, "WTRN0107W: " +
                              "Could not find the lock row, so cannot delete SQL RecoveryLog " + _logName + " for server " + _serverName);
             }
-            if (lockingRS != null && !lockingRS.isClosed())
-                lockingRS.close();
-            if (lockingStmt != null && !lockingStmt.isClosed())
-                lockingStmt.close();
-            // Proceed if we found the locking row and this server is the owner
-            if (dropSuccess) {
-                dropTableStmt = conn.createStatement();
+        }
+
+        // Proceed if we found the locking row and this server is the owner
+        if (dropSuccess) {
+            try (Statement dropTableStmt = conn.createStatement()) {
 
                 String fullTableName = _recoveryTableName + logIdentifierString + _recoveryTableNameSuffix;
 
@@ -3080,14 +3045,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // Drop the table
                 dropTableStmt.executeUpdate(dropTableString);
             }
-        } finally {
-            if (dropTableStmt != null && !dropTableStmt.isClosed()) {
-                dropTableStmt.close();
-            }
-            if (lockingRS != null && !lockingRS.isClosed())
-                lockingRS.close();
-            if (lockingStmt != null && !lockingStmt.isClosed())
-                lockingStmt.close();
         }
 
         if (tc.isEntryEnabled())
@@ -3679,7 +3636,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     public int prepareConnectionForBatch(Connection conn) throws SQLException {
         conn.setAutoCommit(false);
         int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
-        if (_isDB2) {
+
+        if (DBProduct.DB2 == dbProduct) {
             try {
                 initialIsolation = conn.getTransactionIsolation();
                 if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation) {
@@ -3705,7 +3663,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     // closes the connection and resets the isolation level if required
     @Override
     public void closeConnectionAfterBatch(Connection conn, int initialIsolation) throws SQLException {
-        if (_isDB2) {
+        if (DBProduct.DB2 == dbProduct) {
             if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation)
                 try {
                     conn.setTransactionIsolation(initialIsolation);
@@ -3728,9 +3686,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // Use RDBMS SELECT FOR UPDATE to lock table for recovery
         String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                              " FROM " + _recoveryTableName + logIdentifierString + _recoveryTableNameSuffix +
-                             (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                             (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                              " WHERE RU_ID=-1" +
-                             (_isSQLServer ? "" : " FOR UPDATE");
+                             (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE - " + queryString);
         return lockingStmt.executeQuery(queryString);
@@ -4278,20 +4236,15 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tc.isEntryEnabled())
             Tr.entry(tc, "internalHeartBeat", new Object[] { conn });
 
-        Statement lockingStmt = null;
-        ResultSet lockingRS = null;
+        String queryString = "SELECT RUSECTION_ID" +
+                             " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
+                             (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                             " WHERE RU_ID=-1" +
+                             (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
 
-        try {
-            lockingStmt = conn.createStatement();
-            String queryString = "SELECT RUSECTION_ID" +
-                                 " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
-                                 " WHERE RU_ID=-1" +
-                                 (_isSQLServer ? "" : " FOR UPDATE");
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
-            lockingRS = lockingStmt.executeQuery(queryString);
-
+        try (Statement lockingStmt = conn.createStatement(); ResultSet lockingRS = lockingStmt.executeQuery(queryString)) {
             if (lockingRS.next()) {
                 // We found the HA Lock row
                 long storedTimestamp = lockingRS.getLong(1);
@@ -4315,12 +4268,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Could not find HA Lock row, unable to update timestamp");
             }
-        } finally {
-            if (lockingRS != null && !lockingRS.isClosed())
-                lockingRS.close();
-            if (lockingStmt != null && !lockingStmt.isClosed())
-                lockingStmt.close();
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "internalHeartBeat");
     }
@@ -4495,9 +4444,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // First we process the control record in the partner_log
         String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                              " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                             (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                             (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                              " WHERE RU_ID=-1" +
-                             (_isSQLServer ? "" : " FOR UPDATE");
+                             (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
 
@@ -4603,9 +4552,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             isClaimed = false;
             queryString = "SELECT SERVER_NAME" +
                           " FROM " + _recoveryTableName + "TRAN_LOG" + _recoveryTableNameSuffix +
-                          (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                          (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                           " WHERE RU_ID=-1" +
-                          (_isSQLServer ? "" : " FOR UPDATE");
+                          (DBProduct.Sqlserver == dbProduct ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
 
@@ -4889,7 +4838,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (_serverStopping) {
                 Tr.debug(tc, "Server is stopping will not claim logs");
             } else {
-                int initialIsolation = prepareConnectionForBatch(conn);
+                prepareConnectionForBatch(conn);
                 assertDBTableExists(conn, "PARTNER_LOG");
                 assertDBTableExists(conn, "TRAN_LOG");
 

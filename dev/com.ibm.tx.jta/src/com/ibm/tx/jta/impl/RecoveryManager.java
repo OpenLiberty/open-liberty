@@ -19,6 +19,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.Phaser;
 
 import javax.transaction.SystemException;
 import javax.transaction.xa.Xid;
@@ -78,71 +79,61 @@ public class RecoveryManager implements Runnable {
      * This attribute is used to block requests against RecoveryCoordinators or
      * CoordinatorResources before recovery has completed.
      */
-    protected final EventSemaphore _replayInProgress = new EventSemaphore();
-    protected boolean _replayCompleted;
+    private final Phaser _replayInProgress = new Phaser(1);
+    private final Phaser _recoveryInProgress = new Phaser(1);
 
-    protected final EventSemaphore _recoveryInProgress = new EventSemaphore();
-    protected boolean _recoveryCompleted;
+    private boolean _shutdownInProgress;
 
-    protected boolean _shutdownInProgress;
-
-    protected final RecoveryAgent _agent;
+    private final RecoveryAgent _agent;
     protected RecoveryLog _tranLog; // 169107
-    protected RecoveryLog _xaLog; // 169107
-    protected final RecoveryLog _recoverXaLog; //@MD18134A
+    private RecoveryLog _xaLog; // 169107
+    private final RecoveryLog _recoverXaLog; //@MD18134A
 
-    protected SharedServerLeaseLog _leaseLog;
-    protected String _recoveryGroup;
-    protected String _localRecoveryIdentity;
-    protected boolean _peerTranLogEverOpened = false;
-    protected boolean _peerXaLogEverOpened = false;
+    private SharedServerLeaseLog _leaseLog;
+    private String _recoveryGroup;
+    private String _localRecoveryIdentity;
+    private boolean _peerTranLogEverOpened = false;
+    private boolean _peerXaLogEverOpened = false;
 
-    protected PartnerLogTable _recoveryPartnerLogTable;
+    private PartnerLogTable _recoveryPartnerLogTable;
 
-    protected byte[] _ourApplId;
-    protected int _ourEpoch;
+    private byte[] _ourApplId;
+    private int _ourEpoch;
 
-    protected byte[] _recoveredApplId;
-    protected int _recoveredEpoch;
-    protected String _recoveredServerName;
+    private byte[] _recoveredApplId;
+    private int _recoveredEpoch;
+    private String _recoveredServerName;
 
-    protected int _partnerEntryLowWatermark = -1; /* @MD18134A */
-    protected int _partnerEntryNextId = -1; /* @MD18134A */
+    private int _partnerEntryLowWatermark = -1; /* @MD18134A */
+    private int _partnerEntryNextId = -1; /* @MD18134A */
 
-    protected static final int TRANSACTION_SERVICE_ITEMS = 3;
-    protected static final int PARTNERLOG_SERVICE_ITEMS = 6;
+    private static final int TRANSACTION_SERVICE_ITEMS = 3;
+    private static final int PARTNERLOG_SERVICE_ITEMS = 6;
 
     //
     // The following relate to the service data recoverable unit in the partner log
     // This is reserved and holds the server state, classpath, servername, applid and epoch.
     //
-    protected RecoverableUnit _partnerServiceData;
-    protected RecoverableUnitSection _stateSection;
-    protected RecoverableUnitSection _classpathSection;
-    protected RecoverableUnitSection _partnerServerSection;
-    protected RecoverableUnitSection _partnerApplIdSection;
-    protected RecoverableUnitSection _partnerEpochSection;
-    protected RecoverableUnitSection _partnerLowWatermarkSection; /* @MD18134A */
-    protected RecoverableUnitSection _partnerNextIdSection; /* @MD18134A */
+    private RecoverableUnit _partnerServiceData;
+    private RecoverableUnitSection _stateSection;
+    private RecoverableUnitSection _partnerServerSection;
+    private RecoverableUnitSection _partnerApplIdSection;
+    private RecoverableUnitSection _partnerEpochSection;
+    private RecoverableUnitSection _partnerLowWatermarkSection; /* @MD18134A */
+    private RecoverableUnitSection _partnerNextIdSection; /* @MD18134A */
 
     //
     // The following relate to the service data recoverable unit in the transaction log
     // This is reserved and holds the servername, applid and epoch.
     //
-    protected RecoverableUnit _tranlogServiceData;
-    protected RecoverableUnitSection _tranlogServerSection;
-    protected RecoverableUnitSection _tranlogApplIdSection;
-    protected RecoverableUnitSection _tranlogEpochSection;
-
-    protected String _classPath; // current classpath for recovery
-    // These are static as they are only initialized from the "server's" own log
-    // We use our own classpaths and not from other servers in case we recover
-    // for a filesystem that does not match our own.
-    protected static String _loggedClassPath; // classpath read from the log at startup
+    private RecoverableUnit _tranlogServiceData;
+    private RecoverableUnitSection _tranlogServerSection;
+    private RecoverableUnitSection _tranlogApplIdSection;
+    private RecoverableUnitSection _tranlogEpochSection;
 
     // Server States logged for serviceability
-    public static final int STARTING = 1;
-    public static final int STOPPING = 3;
+    private static final int STARTING = 1;
+    private static final int STOPPING = 3;
 
     protected FailureScopeController _failureScopeController;
 
@@ -155,11 +146,11 @@ public class RecoveryManager implements Runnable {
     /**
      * This set contains a list of all recovering transactions.
      */
-    protected Set<TransactionImpl> _recoveringTransactions;
+    private final Set<TransactionImpl> _recoveringTransactions;
 
-    protected final Object _recoveryMonitor = new Object();
+    private final Object _recoveryMonitor = new Object();
 
-    protected boolean _cleanRemoteShutdown;
+    private boolean _cleanRemoteShutdown;
 
     private boolean _retainHomeLogs = false;
     private boolean _retainPeerLogs = false;
@@ -1325,11 +1316,11 @@ public class RecoveryManager implements Runnable {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "waitForReplayCompletion", localRecovery);
 
-        if (!_replayCompleted) {
+        if (_replayInProgress.getPhase() == 0) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "starting to wait for replay completion");
 
-            _replayInProgress.waitEvent();
+            _replayInProgress.awaitAdvance(0);
 
             if (tc.isEventEnabled())
                 Tr.event(tc, "completed wait for replay completion");
@@ -1346,8 +1337,7 @@ public class RecoveryManager implements Runnable {
         final FailureScopeLifeCycle fslc = makeFailureScopeActive(_failureScopeController.failureScope(), _failureScopeController.localFailureScope());
         _failureScopeController.setFailureScopeLifeCycle(fslc);
 
-        _replayCompleted = true;
-        _replayInProgress.post();
+        _replayInProgress.arrive();
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "replayComplete");
@@ -1364,11 +1354,11 @@ public class RecoveryManager implements Runnable {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "waitForRecoveryCompletion", localRecovery);
 
-        if (!_recoveryCompleted) {
+        if (_recoveryInProgress.getPhase() == 0) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "starting to wait for recovery completion");
 
-            _recoveryInProgress.waitEvent();
+            _recoveryInProgress.awaitAdvance(0);
 
             if (tc.isEventEnabled())
                 Tr.event(tc, "completed wait for recovery completion");
@@ -1386,10 +1376,7 @@ public class RecoveryManager implements Runnable {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recoveryComplete");
 
-        if (!_recoveryCompleted) {
-            _recoveryCompleted = true;
-            _recoveryInProgress.post();
-        }
+        _recoveryInProgress.arrive();
 
         // If the home server is shutting down and we are recovering a peer, then don't drive initialRecoveryComplete()
         boolean bypass = false;
@@ -1437,10 +1424,7 @@ public class RecoveryManager implements Runnable {
 
         replayComplete();
 
-        if (!_recoveryCompleted) {
-            _recoveryCompleted = true;
-            _recoveryInProgress.post();
-        }
+        _recoveryInProgress.arrive();
 
         if (_failureScopeController.localFailureScope()) {
             TMHelper.asynchRecoveryProcessingComplete(t);
@@ -1485,7 +1469,7 @@ public class RecoveryManager implements Runnable {
                 // Put out a message stating the we are stopping recovery processing. Since this method can
                 // be called a number of times in succession (to allow nested method calls to bail out by
                 // calling this method) we only put the message out the first time round.
-                if (!_recoveryCompleted) {
+                if (_recoveryInProgress.getPhase() == 0) {
                     if (tc.isEventEnabled())
                         Tr.event(tc, "Shutdown is in progress, stopping recovery processing");
                     recoveryComplete();

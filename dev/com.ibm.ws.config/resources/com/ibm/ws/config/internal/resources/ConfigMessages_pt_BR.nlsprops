@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: O esquema foi criado no arquivo [
 schemagen.info.schema.file.created.explanation=O comando foi conclu\u00eddo com \u00eaxito.
 schemagen.info.schema.file.created.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
+error.config.root.deleted=CWWKG0110E: Foi detectada uma atualiza\u00e7\u00e3o de configura\u00e7\u00e3o, mas o server.xml n\u00e3o existe. N\u00e3o foram feitas atualiza\u00e7\u00f5es de configura\u00e7\u00e3o.
+error.config.root.deleted.explanation=O arquivo server.xml foi exclu\u00eddo. Para n\u00e3o causar interrup\u00e7\u00f5es nos aplicativos em execu\u00e7\u00e3o, n\u00e3o s\u00e3o feitas altera\u00e7\u00f5es na configura\u00e7\u00e3o.
+error.config.root.deleted.useraction=Adicione o arquivo server.xml de volta ao servidor.
+
 # Non-TR message
 error.invalidOCDRef=ERRO: A PID de metatipo [{0}] especifica o ID de defini\u00e7\u00e3o de classe de objeto n\u00e3o existente [{1}]

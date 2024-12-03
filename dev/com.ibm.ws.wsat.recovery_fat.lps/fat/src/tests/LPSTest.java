@@ -72,8 +72,8 @@ public class LPSTest {
 
 	@Before
 	public void beforeTest() throws Exception {
+		WSATTest.deleteStateFiles(server1, server2);
 		FATUtils.startServers(server1, server2);
-		WSATTest.callClearResourcesServlet("recoveryServer", server1, server2);
 	}
 	
 	@After

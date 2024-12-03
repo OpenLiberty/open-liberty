@@ -10,6 +10,7 @@
 package componenttest.topology.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -272,6 +273,21 @@ public class DDLGenScript {
 
             for (String expectedFile : expectedFileNames) {
                 assertTrue("The expected file " + expectedFile + " was not in " + ddlDir.getAbsolutePath(), getFileNames().contains(expectedFile));
+            }
+
+            return this;
+        }
+
+        /**
+         * Asserts that none of the generated DDL files in the DDL directory contains the provided substring
+         *
+         * @param  unexpectedSubstring a substring you do not expect to find in any DDL file names
+         * @return                     this
+         */
+        public DDLGenScriptResult assertNoDDLFileLike(String unexpectedSubstring) {
+            for (String observedFileName : getFileNames()) {
+                assertFalse("The generated DDL file " + observedFileName + " contained the unexpected substring " + unexpectedSubstring,
+                            observedFileName.contains(unexpectedSubstring));
             }
 
             return this;

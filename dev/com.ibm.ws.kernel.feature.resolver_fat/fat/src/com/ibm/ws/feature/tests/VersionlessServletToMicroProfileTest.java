@@ -36,6 +36,8 @@ public class VersionlessServletToMicroProfileTest extends VersionlessTest {
     public static final String SERVER_NAME_SERVLET6_HEALTH = "Servlet6toHealth";
     public static final String SERVER_NAME_SERVLET6_METRICS = "Servlet6toMetrics";
 
+    public static final String SERVER_JAKARTAEE8 = "jakartaee8";
+
     public static final String[] ALLOWED_ERRORS = { "CWWKF0001E", "CWWKF0048E" };
 
     public static final TestCase[] TEST_CASES = {
@@ -91,6 +93,11 @@ public class VersionlessServletToMicroProfileTest extends VersionlessTest {
         new TestCase("servlet6MetricsMin", SERVER_NAME_SERVLET6_METRICS,
                      PlatformConstants.MICROPROFILE_ASCENDING,
                      new String[] { "mpMetrics-5.0" }, TestCase.NO_FAILURES, ALLOWED_ERRORS,
+                     TestCase.JAVA_11),
+
+        //JAKARTA8 TEST
+        new TestCase("jakartaee8", SERVER_JAKARTAEE8, "",
+                     new String[] { "servlet-4.0", "jpa-2.2"}, TestCase.NO_FAILURES, ALLOWED_ERRORS,
                      TestCase.JAVA_11)
     };
 

@@ -81,9 +81,7 @@ public class LibertyMetricsTest extends BaseTestClass {
 		assertTrue(server.isStarted());
 
 		// Allow time for the collector to receive and expose metrics
-		TimeUnit.SECONDS.sleep(4);
-
-		matchStrings(getContainerCollectorMetrics(container), new String[] {
+		matchStringsWithRetries(() -> getContainerCollectorMetrics(container), new String[] {
 				"io_openliberty_threadpool_active_threads\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unknown_service\"\\}.*",
 				"io_openliberty_threadpool_size\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unknown_service\"\\}.*",
 				"io_openliberty_request_timing_active.*",

@@ -48,6 +48,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
+import io.openliberty.data.internal.persistence.Util;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.EntityExistsException;
@@ -334,7 +335,7 @@ public class DataExtension implements Extension {
 
             // For efficiency, detect some obvious non-entity types.
             // Other non-entity types will be detected later.
-            if (QueryInfo.cannotBeEntity(entityClass)) {
+            if (Util.cannotBeEntity(entityClass)) {
                 queries = hasQueryAnno //
                                 ? queriesWithQueryAnno //
                                 : additionalQueriesForPrimaryEntity;

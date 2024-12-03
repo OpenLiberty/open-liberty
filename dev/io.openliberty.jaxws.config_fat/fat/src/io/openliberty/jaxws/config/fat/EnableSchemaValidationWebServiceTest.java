@@ -78,7 +78,7 @@ public class EnableSchemaValidationWebServiceTest {
 
         server.startServer("EnableSchemaValidationWebServiceTest.log");
 
-        assertNotNull("Application hello does not appear to have started.", server.waitForStringInLog("CWWKZ0001I:.*" + APP_NAME));
+        assertNotNull("Application " + APP_NAME + " does not appear to have started.", server.waitForStringInLog("CWWKZ0001I:.*" + APP_NAME));
     }
 
     @AfterClass

@@ -102,7 +102,8 @@ CWWKD1018.confl.special.param=CWWKD1018E: La m\u00e9thode {0} du r\u00e9f\u00e9r
 CWWKD1018.confl.special.param.explanation=Certains param\u00e8tres sp\u00e9ciaux de Jakarta Data, tels que Limit et PageRequest, ne peuvent pas \u00eatre combin\u00e9s dans une m\u00eame signature de m\u00e9thode de r\u00e9f\u00e9rentiel.
 CWWKD1018.confl.special.param.useraction=Mise \u00e0 jour du r\u00e9f\u00e9rentiel pour ne pas utiliser les deux types de param\u00e8tres sp\u00e9ciaux de Jakarta Data dans la m\u00eame signature de m\u00e9thode.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} ne peut pas avoir une requ\u00eate avec un m\u00e9lange de param\u00e8tres positionnels et de param\u00e8tres nomm\u00e9s.
+CWWKD1019.mixed.positional.named=CWWKD1019E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} ne peut pas avoir une requ\u00eate qui m\u00e9lange des param\u00e8tres positionnels et des param\u00e8tres nomm\u00e9s. L''interface d\u00e9finit une combinaison de {2} param\u00e8tres de position et de
+ {3} param\u00e8tres nomm\u00e9s {4} pour la valeur de l''annotation Query : {5}. Une requ\u00eate avec des param\u00e8tres positionnels doit r\u00e9f\u00e9rencer chaque param\u00e8tre par sa valeur ordinale, en commen\u00e7ant par ?1, et les param\u00e8tres de la m\u00e9thode ne doivent pas avoir l''annotation Param. Dans une requ\u00eate avec des param\u00e8tres nomm\u00e9s, chaque param\u00e8tre doit \u00eatre r\u00e9f\u00e9renc\u00e9 par son nom, comme {6}, et les param\u00e8tres de la m\u00e9thode doivent avoir l''annotation Param, comme {7}. Par ailleurs, l''activation de l''option de compilation -parameters permet aux param\u00e8tres des m\u00e9thodes d''indiquer le param\u00e8tre nomm\u00e9 en faisant correspondre son nom, par exemple {8}.
 CWWKD1019.mixed.positional.named.explanation=Les requ\u00eates avec param\u00e8tres doivent utiliser tous les param\u00e8tres nomm\u00e9s ou tous les param\u00e8tres positionnels, et non une combinaison.
 CWWKD1019.mixed.positional.named.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour n'utiliser que des param\u00e8tres nomm\u00e9s ou des param\u00e8tres positionnels.
 
@@ -270,7 +271,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: L''interface de r\u00e9f\u00e9rentiel {0
 CWWKD1060.name.out.of.scope.explanation=L'espace de noms sp\u00e9cifi\u00e9 n'est pas accessible \u00e0 partir de l'artefact o\u00f9 l'interface du r\u00e9f\u00e9rentiel est d\u00e9finie.
 CWWKD1060.name.out.of.scope.useraction=Mettre \u00e0 jour l'annotation Repository pour sp\u00e9cifier un nom de magasin de donn\u00e9es visible par le module ou la biblioth\u00e8que fournissant l'interface du r\u00e9f\u00e9rentiel.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: L''interface de r\u00e9f\u00e9rentiel {0} d\u00e9finie dans le module de haricot d''entreprise {1} de l''application {2} configure une valeur {2} pour l''attribut {3}. Cependant, les noms {4} ne sont pas accessibles aux modules de haricots d''entreprise. Utilisez un nom appartenant \u00e0 l''un des espaces de noms suivants : {5}.
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{0}) d\u00e9finies dans le module {1} de l''application {2} configurent une valeur {2} pour l''attribut {3}. Cependant, les noms {4} ne sont pas accessibles aux modules de haricots d''entreprise. Utilisez un nom appartenant \u00e0 l''un des espaces de noms suivants : {5}.
 CWWKD1061.comp.name.in.ejb.explanation=L'espace de noms sp\u00e9cifi\u00e9 n'est pas accessible au module de l'enterprise bean dans lequel l'interface du r\u00e9f\u00e9rentiel est d\u00e9finie.
 CWWKD1061.comp.name.in.ejb.useraction=Mettre \u00e0 jour l'annotation Repository pour sp\u00e9cifier un nom de magasin de donn\u00e9es visible par le module de l'enterprise bean qui fournit l'interface du repository.
 
@@ -286,15 +287,15 @@ CWWKD1064.datastore.error=CWWKD1064E: La m\u00e9thode {0} de l''interface du r\u
 CWWKD1064.datastore.error.explanation=Une erreur s'est produite lors de la tentative d'obtention du magasin de donn\u00e9es.
 CWWKD1064.datastore.error.useraction=Assurez-vous que le magasin de donn\u00e9es sp\u00e9cifi\u00e9 et toutes les autres ressources dont il d\u00e9pend existent et sont correctement configur\u00e9s.
 
-CWWKD1065.ddlgen.timeout=CWWKD1065E: La g\u00e9n\u00e9ration DDL pour l''interface de r\u00e9f\u00e9rentiel {0} a \u00e9chou\u00e9 parce que le magasin de donn\u00e9es {1} n''a pas termin\u00e9 la g\u00e9n\u00e9ration DDL dans un d\u00e9lai de {2} secondes pour les entit\u00e9s suivantes : {3}.
+CWWKD1065.ddlgen.timeout=CWWKD1065E: La g\u00e9n\u00e9ration DDL pour une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{0}) a \u00e9chou\u00e9 parce que le magasin de donn\u00e9es {1} n''a pas termin\u00e9 la g\u00e9n\u00e9ration DDL dans un d\u00e9lai de {2} secondes pour les entit\u00e9s suivantes : {3}.
 CWWKD1065.ddlgen.timeout.explanation=La tentative de g\u00e9n\u00e9ration de DDL a d\u00e9pass\u00e9 le temps imparti et n'a pas abouti.
 CWWKD1065.ddlgen.timeout.useraction=R\u00e9essayer la g\u00e9n\u00e9ration DDL lorsque le syst\u00e8me et la base de donn\u00e9es ne sont pas sollicit\u00e9s.
 
-CWWKD1066.ddlgen.failed=CWWKD1066E: La g\u00e9n\u00e9ration DDL pour l''interface de r\u00e9f\u00e9rentiel {0} qui utilise le magasin de donn\u00e9es {1} a rencontr\u00e9 une erreur lors de la tentative de g\u00e9n\u00e9ration DDL pour les entit\u00e9s suivantes : {2}. L''erreur est la suivante : {3}.
+CWWKD1066.ddlgen.failed=CWWKD1066E: La g\u00e9n\u00e9ration DDL pour une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{0}) qui utilisent le magasin de donn\u00e9es {1} a rencontr\u00e9 une erreur lors de la g\u00e9n\u00e9ration DDL pour les entit\u00e9s suivantes : {2}. L''erreur est la suivante : {3}.
 CWWKD1066.ddlgen.failed.explanation=La tentative de g\u00e9n\u00e9ration de DDL a \u00e9chou\u00e9 et ne s'est pas termin\u00e9e.
 CWWKD1066.ddlgen.failed.useraction=Examinez l'erreur et apportez des corrections \u00e0 l'interface du r\u00e9f\u00e9rentiel, aux entit\u00e9s, \u00e0 la configuration du magasin de donn\u00e9es ou \u00e0 la base de donn\u00e9es.
 
-CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: La g\u00e9n\u00e9ration DDL pour l''interface du r\u00e9f\u00e9rentiel {0} a \u00e9chou\u00e9 car le magasin de donn\u00e9es {1} n''\u00e9tait pas disponible ou n''\u00e9tait pas en mesure de mettre \u00e0 disposition les entit\u00e9s suivantes dans un d\u00e9lai de {2} secondes : {3}.
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: La g\u00e9n\u00e9ration DDL pour une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{0}) a \u00e9chou\u00e9 parce que le magasin de donn\u00e9es {1} n''\u00e9tait pas disponible ou n''\u00e9tait pas en mesure de rendre les entit\u00e9s suivantes disponibles dans un d\u00e9lai de {2} secondes : {3}.
 CWWKD1067.ddlgen.emf.timeout.explanation=L'acquisition des ressources n\u00e9cessaires \u00e0 la g\u00e9n\u00e9ration des DDL a pris du retard et n'a pas abouti.
 CWWKD1067.ddlgen.emf.timeout.useraction=R\u00e9essayer la g\u00e9n\u00e9ration DDL lorsque le syst\u00e8me et la base de donn\u00e9es ne sont pas sollicit\u00e9s.
 
@@ -310,11 +311,11 @@ CWWKD1070.record.convert.err=CWWKD1070E: L''enregistrement {0} fourni \u00e0 la 
 CWWKD1070.record.convert.err.explanation=Il n'est pas possible d'utiliser l'enregistrement Java comme une entit\u00e9.
 CWWKD1070.record.convert.err.useraction=D\u00e9finir l'entit\u00e9 comme une entit\u00e9 Jakarta Persistence au lieu d'utiliser une entit\u00e9 Java record.
 
-CWWKD1071.record.with.type.var=CWWKD1071E: L''enregistrement {0} ne peut pas \u00eatre utilis\u00e9 comme entit\u00e9 car il poss\u00e8de une ou plusieurs variables de type : {1}.
+CWWKD1071.record.with.type.var=CWWKD1071E: L''enregistrement {0} est utilis\u00e9 comme une entit\u00e9 par une ou plusieurs interfaces du r\u00e9f\u00e9rentiel{1}) dans l''artefact d''application {2}, mais l''enregistrement ne peut pas \u00eatre une entit\u00e9 parce qu''il a une ou plusieurs variables de type : {3}.
 CWWKD1071.record.with.type.var.explanation=Les classes d'entit\u00e9s ne peuvent pas avoir de variables de type g\u00e9n\u00e9rique.
 CWWKD1071.record.with.type.var.useraction=Supprimer les variables de type de l'enregistrement.
 
-CWWKD1072.record.comp.conflict=CWWKD1072E: L''enregistrement {0} ne peut pas \u00eatre utilis\u00e9 en tant qu''entit\u00e9 car ses composants {1} et {2} renvoient tous deux au m\u00eame nom de propri\u00e9t\u00e9 de l''entit\u00e9.
+CWWKD1072.record.comp.conflict=CWWKD1072E: L''enregistrement {0} est utilis\u00e9 comme entit\u00e9 par une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{1}) dans l''artefact d''application {2}, mais l''enregistrement ne peut pas \u00eatre une entit\u00e9 parce que son composant {3} et son composant {4} r\u00e9solvent tous deux le m\u00eame nom de propri\u00e9t\u00e9 d''entit\u00e9.
 CWWKD1072.record.comp.conflict.explanation=Les noms des propri\u00e9t\u00e9s des entit\u00e9s doivent \u00eatre uniques, sans tenir compte de la casse.
 CWWKD1072.record.comp.conflict.useraction=Renommez l'un des composants de l'enregistrement pour \u00e9viter le conflit.
 
@@ -334,8 +335,8 @@ CWWKD1076.repo.disposed=CWWKD1076E: La m\u00e9thode {0} de l''interface du r\u00
 CWWKD1076.repo.disposed.explanation=Les m\u00e9thodes du r\u00e9f\u00e9rentiel ne doivent pas \u00eatre utilis\u00e9es en dehors du cycle de vie de l'application qui d\u00e9finit le r\u00e9f\u00e9rentiel.
 CWWKD1076.repo.disposed.useraction=Veiller \u00e0 ce que la m\u00e9thode du r\u00e9f\u00e9rentiel ne soit pas utilis\u00e9e en dehors du champ d'application de l'application qui d\u00e9finit le r\u00e9f\u00e9rentiel.
 
-CWWKD1077.defaultds.not.found=CWWKD1077E: L''artefact d''application {0} poss\u00e8de une interface de r\u00e9f\u00e9rentiel {1} qui utilise ou utilise par d\u00e9faut le magasin de donn\u00e9es {2}, qui doit \u00eatre configur\u00e9 dans la configuration du serveur en d\u00e9finissant un \u00e9l\u00e9ment dataSource dont l''identifiant est DefaultDataSource. Par exemple, {3} Il est \u00e9galement possible d''attribuer \u00e0 la valeur dataStore de l''annotation Repository l''identifiant d''un \u00e9l\u00e9ment databaseStore ou le nom JNDI d''une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es ou d''une r\u00e9f\u00e9rence d''unit\u00e9 de persistance accessible \u00e0 l''artefact d''application. Un \u00e9l\u00e9ment databaseStore peut \u00eatre d\u00e9fini dans la configuration du serveur. Par exemple, {4} Un composant d''application peut utiliser l''annotation Resource pour d\u00e9finir une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es. Par exemple, {5}, qui exige que la\
-    \ configuration du serveur ait un \u00e9l\u00e9ment de configuration dataSource avec un attribut {6}. Un composant d''application peut utiliser l''annotation PersistenceUnit pour d\u00e9finir une r\u00e9f\u00e9rence d''unit\u00e9 de persistance. Par exemple, {7}, qui exige que le fichier persistence.xml contienne un \u00e9l\u00e9ment persistence-unit avec un attribut name correspondant. Par exemple, {8}
+CWWKD1077.defaultds.not.found=CWWKD1077E: L''artefact d''application {0} poss\u00e8de une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{1}) qui utilisent ou utilisent par d\u00e9faut le magasin de donn\u00e9es {2}. Ce magasin de donn\u00e9es doit \u00eatre configur\u00e9 dans la configuration du serveur en d\u00e9finissant un \u00e9l\u00e9ment dataSource dont l''identifiant est DefaultDataSource. Par exemple, {3} Il est \u00e9galement possible d''attribuer \u00e0 la valeur dataStore de l''annotation Repository l''identifiant d''un \u00e9l\u00e9ment databaseStore ou le nom JNDI d''une r\u00e9f\u00e9rence de ressource de source de donn\u00e9es ou d''une r\u00e9f\u00e9rence d''unit\u00e9 de persistance accessible \u00e0 l''artefact d''application. Un \u00e9l\u00e9ment databaseStore peut \u00eatre d\u00e9fini dans la configuration du serveur. Par exemple, {4} Un composant d''application peut utiliser l''annotation Resource pour d\u00e9finir une r\u00e9f\u00e9rence de ressource de source de donn\u00e9\
+    es. Par exemple, {5}, qui exige que la configuration du serveur ait un \u00e9l\u00e9ment de configuration dataSource avec un attribut {6}. Un composant d''application peut utiliser l''annotation PersistenceUnit pour d\u00e9finir une r\u00e9f\u00e9rence d''unit\u00e9 de persistance. Par exemple, {7}, qui exige que le fichier persistence.xml contienne un \u00e9l\u00e9ment persistence-unit avec un attribut name correspondant. Par exemple, {8}
 CWWKD1077.defaultds.not.found.explanation=Les r\u00e9f\u00e9rentiels Jakarta Data utilisent par d\u00e9faut la source de donn\u00e9es par d\u00e9faut de Jakarta EE, qui doit \u00eatre configur\u00e9e dans la configuration du serveur.
 CWWKD1077.defaultds.not.found.useraction=Configurez la source de donn\u00e9es par d\u00e9faut de Jakarta EE ou sp\u00e9cifiez un magasin de donn\u00e9es diff\u00e9rent pour le r\u00e9f\u00e9rentiel.
 
@@ -360,3 +361,34 @@ CWWKD1081.entity.general.err.useraction=Localiser l'entit\u00e9 et apporter les 
 CWWKD1082.entity.classes.missing=CWWKD1082E: L''unit\u00e9 de persistance du magasin de donn\u00e9es {0} ne d\u00e9finit pas une ou plusieurs classes d''entit\u00e9s{1}) dont une ou plusieurs interfaces de r\u00e9f\u00e9rentiel{2}), qui utilisent le magasin de donn\u00e9es, ont besoin.
 CWWKD1082.entity.classes.missing.explanation=Les r\u00e9f\u00e9rentiels utilisent des classes d'entit\u00e9s qui doivent \u00eatre d\u00e9finies dans l'unit\u00e9 de persistance.
 CWWKD1082.entity.classes.missing.useraction=Inclure toutes les classes d'entit\u00e9s dans l'unit\u00e9 de persistance.
+
+CWWKD1083.dup.method.param=CWWKD1083E: Les param\u00e8tres multiples de la m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} correspondent au param\u00e8tre nomm\u00e9 : {2}. Vous pouvez annoter un param\u00e8tre de m\u00e9thode avec {3} pour sp\u00e9cifier le langage d''interrogation nomm\u00e9 param\u00e8tre. Vous pouvez \u00e9galement activer l''option de compilation -parameters et d\u00e9finir un param\u00e8tre de m\u00e9thode sous la forme {4}, qui ne n\u00e9cessite pas l''annotation Param.
+CWWKD1083.dup.method.param.explanation=Chaque param\u00e8tre de m\u00e9thode doit correspondre \u00e0 un param\u00e8tre de requ\u00eate.
+CWWKD1083.dup.method.param.useraction=V\u00e9rifier que chacun des param\u00e8tres de la m\u00e9thode sp\u00e9cifie le bon param\u00e8tre nomm\u00e9. Supprimer les param\u00e8tres de m\u00e9thode en double. 
+CWWKD1084.missing.named.params=CWWKD1084E: Les param\u00e8tres de la m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} ne d\u00e9finissent pas les param\u00e8tres nomm\u00e9s{2}) qui sont requis par la valeur d''annotation Query : {3}. Vous pouvez d\u00e9finir un param\u00e8tre nomm\u00e9 pour la requ\u00eate en pla\u00e7ant l''annotation Param sur un param\u00e8tre de m\u00e9thode correspondant. Par exemple, {4}. Par ailleurs, si vous activez l''option de compilation -parameters, vous pouvez omettre l''annotation Param si le param\u00e8tre de la m\u00e9thode porte le m\u00eame nom que le param\u00e8tre nomm\u00e9. Par exemple, si String est le type de param\u00e8tre nomm\u00e9, le param\u00e8tre de la m\u00e9thode peut \u00eatre {5}, ce qui ne n\u00e9cessite pas l''annotation Param.
+CWWKD1084.missing.named.params.explanation=La valeur de l'annotation Query n\u00e9cessite un ou plusieurs param\u00e8tres nomm\u00e9s qui ne sont pas fournis par la m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1084.missing.named.params.useraction=Ajouter des param\u00e8tres \u00e0 la m\u00e9thode de d\u00e9p\u00f4t pour sp\u00e9cifier les param\u00e8tres nomm\u00e9s manquants.
+
+CWWKD1085.extra.method.params=CWWKD1085E: Les param\u00e8tres de la m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} d\u00e9finissent des param\u00e8tres de requ\u00eate{2}) qui ne correspondent \u00e0 aucun des param\u00e8tres nomm\u00e9s{3}) utilis\u00e9s par la valeur d''annotation Query : {4}.
+CWWKD1085.extra.method.params.explanation=Tous les param\u00e8tres de la m\u00e9thode doivent \u00eatre utilis\u00e9s par la requ\u00eate ou \u00eatre des types de param\u00e8tres d\u00e9finis par Jakarta Data.
+CWWKD1085.extra.method.params.useraction=Supprimer les param\u00e8tres suppl\u00e9mentaires de la m\u00e9thode.
+
+CWWKD1086.named.params.unused=CWWKD1086E: Les param\u00e8tres de la m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} d\u00e9finissent des param\u00e8tres nomm\u00e9s{2}), qui ne sont pas utilis\u00e9s dans la valeur d''annotation Query : {3}. Vous pouvez faire r\u00e9f\u00e9rence \u00e0 des param\u00e8tres nomm\u00e9s dans une requ\u00eate en utilisant le caract\u00e8re : suivi du nom du param\u00e8tre. Par exemple, {4}. Les param\u00e8tres positionn\u00e9s dans une requ\u00eate peuvent \u00eatre r\u00e9f\u00e9renc\u00e9s en utilisant la balise ? suivi d''une valeur ordinale, commen\u00e7ant par ?1. \u00c9vitez d''annoter les param\u00e8tres des m\u00e9thodes avec l''annotation Param lorsque la requ\u00eate utilise des param\u00e8tres positionnels ou n''a pas de param\u00e8tres.
+CWWKD1086.named.params.unused.explanation=L'annotation Param ne peut \u00eatre utilis\u00e9e que lorsque la requ\u00eate a des param\u00e8tres nomm\u00e9s.
+CWWKD1086.named.params.unused.useraction=Supprimez l'annotation Param ou modifiez la requ\u00eate pour utiliser des param\u00e8tres nomm\u00e9s.
+
+CWWKD1087.null.param=CWWKD1087E: Le param\u00e8tre {0} de la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} est une valeur nulle. Sp\u00e9cifier une valeur non nulle.
+CWWKD1087.null.param.explanation=La valeur du param\u00e8tre ne doit pas \u00eatre nulle.
+CWWKD1087.null.param.useraction=Sp\u00e9cifier une valeur non nulle pour le param\u00e8tre.
+
+CWWKD1088.empty.sorts=CWWKD1088E: Les crit\u00e8res de tri sp\u00e9cifi\u00e9s par le param\u00e8tre {0} de la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} sont vides.
+CWWKD1088.empty.sorts.explanation=Les crit\u00e8res de tri ne doivent pas \u00eatre vides.
+CWWKD1088.empty.sorts.useraction=Sp\u00e9cifiez une valeur pour les crit\u00e8res de tri.
+
+CWWKD1089.unordered.pagination=CWWKD1089E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} doit sp\u00e9cifier les crit\u00e8res de tri car la m\u00e9thode renvoie une valeur {2}. Les donn\u00e9es non ordonn\u00e9es ne peuvent pas \u00eatre divis\u00e9es en pages.
+CWWKD1089.unordered.pagination.explanation=La pagination n\u00e9cessite des donn\u00e9es ordonn\u00e9es.
+CWWKD1089.unordered.pagination.useraction=Utilisez l'annotation OrderBy pour d\u00e9finir les crit\u00e8res de tri de la m\u00e9thode de d\u00e9p\u00f4t.
+
+CWWKD1090.orderby.conflict=CWWKD1090E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} ne peut pas combiner l''annotation OrderBy et le mot cl\u00e9 OrderBy.
+CWWKD1090.orderby.conflict.explanation=L'annotation OrderBy n'est pas compatible avec le mot-cl\u00e9 OrderBy.
+CWWKD1090.orderby.conflict.useraction=Utilisez uniquement l'annotation OrderBy ou le mot-cl\u00e9 OrderBy.

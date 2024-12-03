@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -130,3 +130,30 @@ OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Ujist\u011bte se, \u017ee cesta 
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Segment cesty "/." nebo "/.." je neplatn\u00fd pro koncov\u00e9 body OpenAPI.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Segment cesty k OpenAPI "/." nebo "/.." je neplatn\u00fd.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Odeberte jak\u00fdkoli segment cesty "/." nebo "/.." z cesty.
+
+# {1} - the server.xml element name, either includeApplication or excludeApplication
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W=CWWKO1678W: Konfigurovan\u00fd n\u00e1zev aplikace {0} v prvku {1} nen\u00ed platn\u00fd, proto\u017ee obsahuje znak \u201e/\u201c nebo je pr\u00e1zdn\u00fd.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.explanation=N\u00e1zev aplikace nem\u016f\u017ee obsahovat znak \u201e/\u201c, proto\u017ee znak \u201e/\u201c se pou\u017e\u00edv\u00e1 k odd\u011blen\u00ed aplikace od jej\u00edch komponentn\u00edch modul\u016f.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.useraction=Odstra\u0148te znak \u201e/\u201c z prvku includeApplication nebo excludeApplication ve va\u0161em souboru server.xml nebo p\u0159eve\u010fte tento prvek na includeModule nebo excludeModule , aby odkazoval na jeden modul.
+
+# {1} - the server.xml element name, either includeModule or excludeModule
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W=CWWKO1679W: Nakonfigurovan\u00fd n\u00e1zev modulu {0} v prvku {1} nen\u00ed platn\u00fd, proto\u017ee nen\u00ed ve form\u00e1tu "<n\u00e1zev-aplikace>/<n\u00e1zev-modulu>".
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.explanation=Modul mus\u00ed b\u00fdt ve form\u00e1tu "<jm\u00e9no-aplikace>/<jm\u00e9no-modulu>"; proto n\u00e1zev modulu bez lom\u00edtka ("/") nebo pr\u00e1zdn\u00fd n\u00e1zev aplikace nebo n\u00e1zev modulu nen\u00ed platn\u00fd.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.useraction=Opravte prvek includeModule nebo excludeModule ve va\u0161em souboru server.xml nebo tento prvek p\u0159eve\u010fte na includeApplication nebo excludeApplication , aby odkazoval na celou aplikaci.
+
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W=CWWKO1680W: N\u00e1zev aplikace {1} v konfigura\u010dn\u00edm prvku {0} neodpov\u00edd\u00e1 n\u00e1zvu \u017e\u00e1dn\u00e9 nasazen\u00e9 aplikace, ale odpov\u00edd\u00e1 bu\u010f n\u00e1zvu z deskriptoru nasazen\u00ed, nebo n\u00e1zvu archivu aplikace {2} . N\u00e1zev aplikace, kter\u00fd je zde pou\u017eit, mus\u00ed b\u00fdt ten, kter\u00fd je zad\u00e1n v souboru server.xml , nebo pokud nen\u00ed zad\u00e1n \u017e\u00e1dn\u00fd n\u00e1zev, n\u00e1zev archivn\u00edho souboru bez p\u0159\u00edpony.
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.explanation=Odkaz na n\u00e1zev aplikace v konfigura\u010dn\u00edm prvku mpOpenAPI odpov\u00edd\u00e1 n\u00e1zvu z deskriptoru nasazen\u00ed aplikace, ale neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu n\u00e1zvu aplikace, kter\u00fd je definov\u00e1n v souboru server.xml .
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.useraction=Zkontrolujte, zda se v\u0161echny aplikace spustily spr\u00e1vn\u011b a zda jsou spr\u00e1vn\u011b zad\u00e1na jm\u00e9na v konfigura\u010dn\u00edm prvku.
+
+OPENAPI_VERSION_INVALID_CWWK06181W=CWWKO1681W: Konfigurovan\u00e1 verze rozhran\u00ed {0} OpenAPI nen\u00ed v platn\u00e9m form\u00e1tu, mus\u00ed to b\u00fdt dv\u011b nebo t\u0159i \u010d\u00edsla odd\u011blen\u00e1 te\u010dkou (.). Podporovan\u00e9 hodnoty jsou {1} . M\u00edsto toho je pou\u017eita v\u00fdchoz\u00ed verze {2} .
+OPENAPI_VERSION_INVALID_CWWK06181W.explanation=Atribut openAPIVersion konfigura\u010dn\u00edho prvku mpOpenAPI je nastaven na hodnotu, kter\u00e1 nen\u00ed platnou verz\u00ed OpenAPI .
+OPENAPI_VERSION_INVALID_CWWK06181W.useraction=Aktualizujte atribut openAPIVersion na jednu z podporovan\u00fdch hodnot z chybov\u00e9 zpr\u00e1vy.
+
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W=CWWKO1682W: Tato verze mpOpenAPI nepodporuje nakonfigurovanou verzi {0} OpenAPI . Podporovan\u00e9 hodnoty jsou {1} . M\u00edsto toho je pou\u017eita v\u00fdchoz\u00ed verze {2} .
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.explanation=Atribut openAPIVersion konfigura\u010dn\u00edho prvku mpOpenAPI je nastaven na verzi OpenAPI , kter\u00e1 nen\u00ed podporov\u00e1na b\u011b\u017e\u00edc\u00ed verz\u00ed funkce mpOpenAPI .
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Aktualizujte atribut openAPIVersion na jednu z podporovan\u00fdch hodnot z chybov\u00e9 zpr\u00e1vy nebo pou\u017eijte verzi funkce mpOpenAPI , kter\u00e1 podporuje nakonfigurovanou verzi OpenAPI .
+
+# "mpOpenAPI", "info", "title" and "version" are names in server.xml and should not be translated
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: Prvek konfigurace informac\u00ed mpOpenAPI v souboru server.xml je neplatn\u00fd. Mus\u00ed b\u00fdt nastaveny atributy title i verze. Prvek info bude ignorov\u00e1n.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=Pole nadpis a verze jsou povinn\u00e9 vlastnosti v informa\u010dn\u00edm objektu dokumentu OpenAPI . P\u0159i konfiguraci objektu info mus\u00ed b\u00fdt zad\u00e1na hodnota pro atributy title a version.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Ujist\u011bte se, \u017ee atributy title a version jsou v informa\u010dn\u00edm prvku mpOpenAPI nastaveny na platn\u00e9 hodnoty.

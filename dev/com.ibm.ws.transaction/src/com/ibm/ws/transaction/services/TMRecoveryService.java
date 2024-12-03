@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * The TMRecoveryService class was introduced under issue #5119 to support a new Declarative Service
@@ -38,20 +39,26 @@ public class TMRecoveryService {
     protected void activate(BundleContext ctxt) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate {0}", ctxt);
-        final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
-        //This needs tidying a little.
-        if (cp != null) {
-            if (cp instanceof JTMConfigurationProvider) {
-                JTMConfigurationProvider jtmCP = (JTMConfigurationProvider) cp;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "it's a jtmconfigurationprovider ");
+        if (!FrameworkState.isStopping()) {
+            final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
-                // Set a reference to this TMRecoveryService into the JTMConfigurationProvider.
-                // If other resources are in place this method will also start recovery by calling
-                // doStart()
-                jtmCP.setTMRecoveryService(this);
+            //This needs tidying a little.
+            if (cp != null) {
+                if (cp instanceof JTMConfigurationProvider) {
+                    JTMConfigurationProvider jtmCP = (JTMConfigurationProvider) cp;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "it's a jtmconfigurationprovider ");
+
+                    // Set a reference to this TMRecoveryService into the JTMConfigurationProvider.
+                    // If other resources are in place this method will also start recovery by calling
+                    // doStart()
+                    jtmCP.setTMRecoveryService(this);
+                }
             }
+        } else {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Framework stopping");
         }
     }
 

@@ -11,7 +11,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.3
+bVersion=1.4
 
 Bundle-SymbolicName: com.ibm.wsspi.thirdparty.equinox
 Bundle-Name: WebSphere Equinox Third-Party SPI

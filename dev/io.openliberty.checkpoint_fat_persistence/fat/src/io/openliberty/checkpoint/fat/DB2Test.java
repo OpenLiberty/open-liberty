@@ -21,7 +21,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
 
@@ -54,7 +53,7 @@ public class DB2Test extends FATServletClient {
 
     // Updated docker image to use TLS1.2 for secure communication
     static final DockerImageName db2Image = DockerImageName.parse("kyleaure/db2-ssl:3.0")
-                    .asCompatibleSubstituteFor("ibmcom/db2");
+                    .asCompatibleSubstituteFor("ibmcom/db2"); //TODO update .asCompatibleSubstituteFor("icr.io/db2_community/db2")
 
     @ClassRule
     public static Db2Container db2 = new Db2Container(db2Image)
@@ -72,9 +71,15 @@ public class DB2Test extends FATServletClient {
 
     final static String SERVER_NAME = "io.openliberty.checkpoint.jdbc.fat.db2";
     @ClassRule
-    public static RepeatTests rt = RepeatTests.with(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.1").withID("JDBC4.1"))
-                    .andWith(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.2").withID("JDBC4.2").fullFATOnly())
-                    .andWith(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*"))
+    public static RepeatTests rt = RepeatTests
+                    .with(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.1").withID("JDBC4.1"))
+                    .andWith(new FeatureReplacementAction().forServers(SERVER_NAME)
+                                    .removeFeatures(Collections.singleton("jdbc-*"))
+                                    .addFeature("jdbc-4.2")
+                                    .withID("JDBC4.2")
+                                    .fullFATOnly())
+                    .andWith(new FeatureReplacementAction().forServers(SERVER_NAME)
+                                    .removeFeatures(Collections.singleton("jdbc-*"))
                                     .addFeature("jdbc-4.3")
                                     .withID("JDBC4.3")
                                     .withMinJavaLevel(SEVersion.JAVA11)

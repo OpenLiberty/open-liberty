@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,34 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: The Schedule annotation, {0}, \
+ specifies an empty value for the seconds at which the task runs. \
+ Specify a nonempty value for the seconds field, or omit the seconds field \
+ from the Schedule annotation. Omitting the seconds field schedules the task \
+ to run at the start of the minute.
+CWWKC1410.schedule.lacks.seconds.explanation=The empty array value indicates that \
+ the seconds field must be disregarded when scheduled times are computed. \
+ Omitting the seconds field schedules the task to run at the start of the minute.
+CWWKC1410.schedule.lacks.seconds.useraction=Modify the seconds field of the \
+ Schedule annotation to specify a nonempty value, or omit the seconds field \
+ from the Schedule annotation.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: The server did not create a {0} bean \
+ for the {1} annotation or {2} deployment descriptor element. \
+ The annotation or deployment descriptor element has the \
+ {3} name and {4} qualifiers and is defined in the {5} application artifact. \
+ The error is {6}
+CWWKC1411.qualified.res.err.explanation=The code did not create the resource \
+ or did not register the resource as a bean.
+CWWKC1411.qualified.res.err.useraction=Ensure that the resource is configured \
+ correctly.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: The {0} application artifact includes \
+ multiple {1} resource definitions that have the {2} qualifiers. The names of \
+ the conflicting {1} resource definitions are {3}.
+CWWKC1412.qualifier.conflict.explanation=Each resource definition of the \
+ same type that has a qualifier must have a different qualifier.
+CWWKC1412.qualifier.conflict.useraction=Ensure that each resource definition \
+ of the same type has a different qualifier or does not have any qualifiers.

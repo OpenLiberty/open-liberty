@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1195,28 +1195,43 @@ abstract class BranchManager implements ProxyParent
 		    if(!("sip".equals(nextHop.getScheme()) || "sips".equals(nextHop.getScheme()))){
 				throw new IllegalArgumentException ("Unsupported Scheme");
 			}
-	    }
-	    ProxyBranchImpl curBranch =  ThreadLocalStorage.getCurrentBranch();
-	    if((curBranch != null) && curBranch.isCancelled()){
-	    	throw new IllegalStateException("Cannot create Branches on a canceled proxy branch during doBranchResponse");
-	    }
-
-		
-	    //if this is a virtual branch we need special treatment
-    	if (isVirtual) {
-    		
-    		if (proxy.isVirtualBranchExists()) {
-    	        //if the virtual branch exists already, we should throw IllegalStateException
-    			throw new IllegalStateException("Virtual Branch Already exists"); 			
-        	}
-    	}else {
-    		//check that no branch was created for this destination
-    		//this check is relevant only for regular branches
+		    
+		    //check that no branch was created for this destination
+		    //this check is relevant only for regular branches
     		if (proxyBranchExists(nextHop)) {
     			throw new IllegalStateException("Duplicate Branch - Attempt to proxy message to the same URI again: " + nextHop);
     		}
-    	}
+	    }
 
+	    if (PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.CHECK_STATE_WHEN_CREATING_PROXY_BRANCH)){
+	    	
+	    	ProxyBranchImpl curBranch =  ThreadLocalStorage.getCurrentBranch();
+	    	
+	    	if((curBranch != null) && curBranch.isCancelled()){
+	    		throw new IllegalStateException("Cannot create Branches on a canceled proxy branch during doBranchResponse");
+	    	}
+	    	
+	    	//if this is a virtual branch we need special treatment
+	    	if (isVirtual) {
+    		
+	    		if (proxy.isVirtualBranchExists()) {
+	    			//if the virtual branch exists already, we should throw IllegalStateException
+	    			throw new IllegalStateException("Virtual Branch Already exists"); 
+							
+	    		}
+	    	}
+	    }
+	    
+	    if(!PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.CHECK_STATE_WHEN_CREATING_PROXY_BRANCH)){
+	    	if (isVirtual) {
+	    		//if the virtual branch exists already, return it
+	    		if (proxy.isVirtualBranchExists()) {
+	    			
+	    			return proxy.getVirtualBranch();
+								
+	        	}
+	    	}
+	    }
 	    // Create a new branch and send the request
 	    ProxyBranchImpl branch = 
 	    	new ProxyBranchImpl(nextHop, this, proxy, createdViaProxyTo,isVirtual);
@@ -2015,3 +2030,4 @@ abstract class BranchManager implements ProxyParent
 	}
 
 }
+

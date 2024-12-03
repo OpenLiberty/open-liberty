@@ -16,4 +16,4 @@ Subsystem-Category: JavaEE7Application
   com.ibm.websphere.appserver.mdb-3.2
 kind=ga
 edition=base
-WLP-Platform: javaee-7.0,javaee-8.0
+WLP-Platform: javaee-7.0,javaee-8.0,jakartaee-8.0

@@ -67,7 +67,7 @@ public class ConfigAdminHealthCheckTest {
 
     public static final String MULTIPLE_APP_NAME = "MultipleHealthCheckApp";
     public static final String DIFFERENT_APP_NAME = "DifferentApplicationNameHealthCheckApp";
-    public static final String DELAYED_APP_NAME = "DelayedHealthCheckApp";
+    public static final String DELAYED_APP_NAME = "DelayedHealthCheckAppFast";
     public static final String FAILS_TO_START_APP_NAME = "FailsToStartHealthCheckApp";
     public static final String SUCCESSFUL_APP_NAME = "SuccessfulHealthCheckApp";
 
@@ -284,7 +284,7 @@ public class ConfigAdminHealthCheckTest {
     public void testMultiWarDetectionDropinsTest() throws Exception {
 
         try {
-            WebArchive war1 = ShrinkHelper.buildDefaultApp(DELAYED_APP_NAME, "io.openliberty.microprofile.health31.delayed.health.check.app");
+            WebArchive war1 = ShrinkHelper.buildDefaultApp(DELAYED_APP_NAME, "io.openliberty.microprofile.health31.delayed.health.check.fast.app");
             WebArchive war2 = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.health31.config.admin.dropins.checks.app");
             EnterpriseArchive testEar = ShrinkWrap.create(EnterpriseArchive.class, "MultiWarApps.ear");
             testEar.addAsModule(war2);
@@ -297,7 +297,7 @@ public class ConfigAdminHealthCheckTest {
         }
 
         log("testReadinessEndpointOnServerStart", "Waiting for Application to start.");
-        String line = server1.waitForStringInLog("Application MultiWarApps started", 110000);
+        String line = server1.waitForStringInLog("Application MultiWarApps started", 30000);
         log("testReadinessEndpointOnServerStart", "Application started. Line Found : " + line);
         assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
 

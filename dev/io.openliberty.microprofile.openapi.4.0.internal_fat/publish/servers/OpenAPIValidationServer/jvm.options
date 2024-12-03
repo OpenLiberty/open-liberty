@@ -1,2 +1,0 @@
-# Needed because OpenAPI version config is gated behind beta fence
--Dcom.ibm.ws.beta.edition=true

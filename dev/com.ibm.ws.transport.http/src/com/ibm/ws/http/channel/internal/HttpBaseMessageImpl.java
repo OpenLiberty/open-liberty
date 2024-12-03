@@ -61,7 +61,6 @@ import com.ibm.wsspi.http.channel.values.ExpectValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * Class representing all of the common data to every HTTP message. This
@@ -2969,8 +2968,8 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 }
             }
 
-            // Must be in beta to check for SameSite=None Incompatible clients
-            if (ProductInfo.getBetaEdition() && cookie.getAttribute("samesite") != null && cookie.getAttribute("samesite").equals(HttpConfigConstants.SameSite.NONE.getName())) {
+            // Check for SameSite=None Incompatible clients
+            if (cookie.getAttribute("samesite") != null && cookie.getAttribute("samesite").equals(HttpConfigConstants.SameSite.NONE.getName())) {
                 String userAgent = getServiceContext().getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString();
                 if (userAgent != null && SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent)) {
                     //TODO: do we remove Secure, probably should be retained.

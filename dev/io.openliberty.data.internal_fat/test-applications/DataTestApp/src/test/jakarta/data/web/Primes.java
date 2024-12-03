@@ -393,6 +393,22 @@ public interface Primes {
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, PageRequest pagination);
 
+    @Query("SELECT romanNumeral" +
+           " WHERE (numberId BETWEEN ?1 AND ?2)" +
+           "    OR (numberId BETWEEN ?3 AND ?4)" +
+           " ORDER BY numberId ASC")
+    Page<String> romanNumerals(long min1, long max1,
+                               long min2, long max2,
+                               PageRequest pageRequest);
+
+    @Query("SELECT DISTINCT(romanNumeral)" +
+           " WHERE (numberId BETWEEN ?1 AND ?2)" +
+           "    OR (numberId BETWEEN ?3 AND ?4)" +
+           " ORDER BY numberId ASC")
+    Page<String> romanNumeralsDistinct(long min1, long max1,
+                                       long min2, long max2,
+                                       PageRequest pageRequest);
+
     @Query("SELECT hex WHERE numberId=:id")
     Optional<Character> singleHexDigit(long id);
 

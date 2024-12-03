@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<web-app id="WebApp_ID" version="3.1" 
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+	
+  <display-name>MYFACES-4695</display-name>
+  
+  <servlet>
+      <servlet-name>Faces Servlet</servlet-name>
+      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+      <servlet-name>Faces Servlet</servlet-name>
+      <url-pattern>*.xhtml</url-pattern>
+  </servlet-mapping>
+
+  <!-- Welcome page -->
+  <welcome-file-list>
+      <welcome-file>index.xhtml</welcome-file>
+  </welcome-file-list>
+    
+</web-app>

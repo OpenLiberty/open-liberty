@@ -20,6 +20,7 @@ configurations {
 // Define G:A:V coordinates of each dependency
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
+			   project(":com.ibm.ws.transaction.test.util"),
   			   project(":com.ibm.ws.transaction.fat.util")
 }
 

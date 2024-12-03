@@ -158,6 +158,18 @@ public class TelemetryActions {
                       MicroProfileActions.MP60);
     }
 
+    /*
+     * This returns one repeat for every released version of MPTelemetry >= 2.0; the latest 2.0, and more to come when they exist.
+     * It also returns a repeat to cover ongoing development if that is not covered by one of the above.
+     */
+    public static RepeatTests latestTelemetry20Repeats() {
+        return latestTelemetry20Repeats(FeatureReplacementAction.ALL_SERVERS);
+    }
+
+    public static RepeatTests latestTelemetry20Repeats(String serverName) {
+        return repeat(serverName, MicroProfileActions.MP70_EE11);
+    }
+
     public static RepeatTests telemetry11Repeats(String serverName) {
         return repeat(serverName, MP14_MPTEL11, MP41_MPTEL11, MP50_MPTEL11, MicroProfileActions.MP61);
     }

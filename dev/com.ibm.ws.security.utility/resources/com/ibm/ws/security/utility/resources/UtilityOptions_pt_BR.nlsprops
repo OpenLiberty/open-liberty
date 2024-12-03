@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,32 +49,19 @@ help.usage.options=\t{0} help [actionName]
 #------------------------------\n at 72 chars -------------------------\n\#
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
-encode.desc=\tCodifique o texto fornecido.
+encode.desc=\tCodificar o texto fornecido.\n\n\tSe a sua senha incluir caracteres especiais, voc\u00ea dever\u00e1 escapar de cada caractere especial para ajudar a garantir que a senha seja codificada corretamente.\n\tOs caracteres especiais e os caracteres de escape podem variar de acordo com o seu sistema operacional.\n\tPor exemplo, em sistemas UNIX, pa$$W0rd deve ser fornecido como pa\\$\\$W0rd.\n\tPara obter mais informa\u00e7\u00f5es, consulte a documenta\u00e7\u00e3o de codifica\u00e7\u00e3o do Open Liberty securityUtility.
 #Note to translator the word "encode" should not be translated
 encode.usage.options=\t{0} encode [options]
 encode.option-key.text=\ \ \ \ textToEncode
-encode.option-desc.text=\tSe nenhum argumento for especificado, a ferramenta entrar\u00e1 no\n\
-\tmodo interativo; caso contr\u00e1rio, o texto fornecido ser\u00e1 codificado.\n\
-\tTexto com espa\u00e7os deve estar totalmente entre aspas se especificado como um argumento.
+encode.option-desc.text=\tSe nenhum argumento for especificado, a ferramenta entrar\u00e1 no\n\tmodo interativo; caso contr\u00e1rio, o texto fornecido ser\u00e1 codificado.\n\tTexto com espa\u00e7os deve estar totalmente entre aspas se especificado como um argumento.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
-encode.option-desc.encoding=\tEspecifique como codificar a senha. As codifica\u00e7\u00f5es suportadas s\u00e3o xor, aes\n\
-\te hash. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. {2}
+encode.option-desc.encoding=\tEspecifique como codificar a senha. As codifica\u00e7\u00f5es suportadas s\u00e3o xor, aes\n\te hash. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. {2}
 encode.option-key.key=\ \ \ \ --key=[chave]
-encode.option-desc.key=\tEspecifique uma chave a ser usada ao codificar usando AES. Ser\u00e1 feito hash dessa\n\
-\tsequ\u00eancia para produzir uma chave de criptografia que ser\u00e1 usada para criptografar\n\
-\te decriptografar a senha. A chave pode ser fornecida ao servidor\n\
-\tdefinindo-se a vari\u00e1vel wlp.password.encryption.key cujo valor \u00e9 a\n\
-\tchave. Se esta op\u00e7\u00e3o n\u00e3o for fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
+encode.option-desc.key=\tEspecifique uma chave a ser usada ao codificar usando AES. Ser\u00e1 feito hash dessa\n\tsequ\u00eancia para produzir uma chave de criptografia que ser\u00e1 usada para criptografar\n\te decriptografar a senha. A chave pode ser fornecida ao servidor\n\tdefinindo-se a vari\u00e1vel wlp.password.encryption.key cujo valor \u00e9 a\n\tchave. Se esta op\u00e7\u00e3o n\u00e3o for fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
 encode.option-key.notrim=\ \ \ \ --notrim
-encode.option-desc.notrim=\tEspecifique se os caracteres de espa\u00e7o ser\u00e3o removidos do in\u00edcio e\n\
-\tdo t\u00e9rmino do texto especificado. Se essa op\u00e7\u00e3o for especificada, o texto\n\
-\tfornecido ser\u00e1 codificado no estado em que se encontra.\n\
-\tSe essa op\u00e7\u00e3o n\u00e3o for especificada, os caracteres de espa\u00e7o do in\u00edcio\n\
-\te do t\u00e9rmino do texto especificado ser\u00e3o removidos. 
+encode.option-desc.notrim=\tEspecifique se os caracteres de espa\u00e7o ser\u00e3o removidos do in\u00edcio e\n\tdo t\u00e9rmino do texto especificado. Se essa op\u00e7\u00e3o for especificada, o texto\n\tfornecido ser\u00e1 codificado no estado em que se encontra.\n\tSe essa op\u00e7\u00e3o n\u00e3o for especificada, os caracteres de espa\u00e7o do in\u00edcio\n\te do t\u00e9rmino do texto especificado ser\u00e3o removidos. 
 encode.option-key.listCustom=\ \ \ \ --listCustom
-encode.option-desc.listCustom=\tExiba as informa\u00e7\u00f5es da criptografia de senha customizada em formato\n \tJavaScript Object Notation (JSON).\n\
-\tAs informa\u00e7\u00f5es consistem em:\n \tname : o nome do algoritmo de criptografia de senha customizada\n \tfeaturename : o nome do recurso\n \tdescription : a descri\u00e7\u00e3o \
-da criptografia de senha customizada
+encode.option-desc.listCustom=\tExiba as informa\u00e7\u00f5es da criptografia de senha customizada em formato\n \tJavaScript Object Notation (JSON).\n\tAs informa\u00e7\u00f5es consistem em:\n \tname : o nome do algoritmo de criptografia de senha customizada\n \tfeaturename : o nome do recurso\n \tdescription : a descri\u00e7\u00e3o da criptografia de senha customizada
 encode.option-key.keyring=\ \ \ \ --keyring=[keyring]
 encode.option-desc.keyring=\tEspecifique o conjunto de chaves SAF no qual a chave de criptografia AES est\u00e1 localizada.
 encode.option-key.keyringType=\ \ \ \ --keyringType=[keyringType]
@@ -91,74 +78,40 @@ encode.option-desc.keyLabel=\tEspecifique o r\u00f3tulo do certificado SAF da ch
 #------------------------------\n at 72 chars -------------------------\n\#
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
-sslCert.desc=\tCrie um certificado SSL padr\u00e3o para uso pelo servidor ou \
-\n\
-\tconfigura\u00e7\u00e3o do cliente. 
+sslCert.desc=\tCrie um certificado SSL padr\u00e3o para uso pelo servidor ou \n\tconfigura\u00e7\u00e3o do cliente. 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\
-\t--password[=password] [options]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\t--password[=password] [options]
 sslCert.required-key.server=\ \ \ \ --server=name
-sslCert.required-desc.server=\tServidor para o qual criar o certificado.  Este argumento \
-n\u00e3o pode    \n \tusado se o argumento --client for usado.
+sslCert.required-desc.server=\tServidor para o qual criar o certificado.  Este argumento n\u00e3o pode    \n \tusado se o argumento --client for usado.
 sslCert.required-key.client=\ \ \ \ --client=name
-sslCert.required-desc.client=\tCliente para o qual criar o certificado.  Este argumento \
-n\u00e3o pode    \n \tser usado se o argumento --server for usado.
+sslCert.required-desc.client=\tCliente para o qual criar o certificado.  Este argumento n\u00e3o pode    \n \tser usado se o argumento --server for usado.
 sslCert.required-key.password=\ \ \ \ --password[=pwd]
-sslCert.required-desc.password=\tSenha do keystore, no m\u00ednimo {1} caracteres.\n\
-\tSe nenhum valor for definido, voc\u00ea ser\u00e1 avisado.
+sslCert.required-desc.password=\tSenha do keystore, no m\u00ednimo {1} caracteres.\n\tSe nenhum valor for definido, voc\u00ea ser\u00e1 avisado.
 sslCert.option-key.validity=\ \ \ \ --validity=days
-sslCert.option-desc.validity=\tN\u00famero de dias em que o certificado \u00e9 v\u00e1lido. O per\u00edodo de validade padr\u00e3o \u00e9  \n\
-\t{2}. O per\u00edodo de validade m\u00ednimo \u00e9 {3}.
+sslCert.option-desc.validity=\tN\u00famero de dias em que o certificado \u00e9 v\u00e1lido. O per\u00edodo de validade padr\u00e3o \u00e9  \n\t{2}. O per\u00edodo de validade m\u00ednimo \u00e9 {3}.
 sslCert.option-key.subject=\ \ \ \ --subject=DN
-sslCert.option-desc.subject=\tDN para o assunto e emissor do certificado. O DN padr\u00e3o se baseia no    \n\
-\tnome do host.
-sslCert.option.addon=O certificado ser\u00e1 criado com o alias {4}.\n\
-O algoritmo de chave \u00e9 {5} e o algoritmo de assinatura \u00e9 {6}.\n\
-Para obter mais controle sobre a cria\u00e7\u00e3o do certificado, use o keytool diretamente.
+sslCert.option-desc.subject=\tDN para o assunto e emissor do certificado. O DN padr\u00e3o se baseia no    \n\tnome do host.
+sslCert.option.addon=O certificado ser\u00e1 criado com o alias {4}.\nO algoritmo de chave \u00e9 {5} e o algoritmo de assinatura \u00e9 {6}.\nPara obter mais controle sobre a cria\u00e7\u00e3o do certificado, use o keytool diretamente.
 sslCert.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
-sslCert.option-desc.password.encoding=\tEspecifique como codificar a senha do keystore. As codifica\u00e7\u00f5es suportadas s\u00e3o\n\
-\txor e aes. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. \n\
-\tUse o comando securityUtility encode --listCustom para verificar se algumas\n \tcriptografias customizadas adicionais s\u00e3o suportadas.
+sslCert.option-desc.password.encoding=\tEspecifique como codificar a senha do keystore. As codifica\u00e7\u00f5es suportadas s\u00e3o\n\txor e aes. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. \n\tUse o comando securityUtility encode --listCustom para verificar se algumas\n \tcriptografias customizadas adicionais s\u00e3o suportadas.
 sslCert.option-key.password.key=\ \ \ \ --passwordKey=[chave]
-sslCert.option-desc.password.key=\tEspecifique uma chave a ser usada ao codificar a senha do keystore usando\n\
-\tAES. Ser\u00e1 feito hash dessa sequ\u00eancia para produzir uma chave de criptografia\n\
-\tque ser\u00e1 usada para criptografar e decriptografar a senha. A chave pode\n\
-\tser fornecida para o servidor definindo-se a vari\u00e1vel\n\
-\twlp.password.encryption.key cujo valor \u00e9 a senha. Se esta op\u00e7\u00e3o n\u00e3o\n\
-\tfor fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
+sslCert.option-desc.password.key=\tEspecifique uma chave a ser usada ao codificar a senha do keystore usando\n\tAES. Ser\u00e1 feito hash dessa sequ\u00eancia para produzir uma chave de criptografia\n\tque ser\u00e1 usada para criptografar e decriptografar a senha. A chave pode\n\tser fornecida para o servidor definindo-se a vari\u00e1vel\n\twlp.password.encryption.key cujo valor \u00e9 a senha. Se esta op\u00e7\u00e3o n\u00e3o\n\tfor fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
 
 sslCert.option-key.createConfigFile=\ \ \ \ --createConfigFile=file
-sslCert.option-desc.createConfigFile=\tOpcional. O fragmento de c\u00f3digo ser\u00e1 gravado no arquivo  especificado\n\
-\tem vez de na tela do console. O arquivo pode ent\u00e3o ser inclu\u00eddo na\n\
-\tconfigura\u00e7\u00e3o server.xml usando o fragmento de c\u00f3digo fornecido.
+sslCert.option-desc.createConfigFile=\tOpcional. O fragmento de c\u00f3digo ser\u00e1 gravado no arquivo  especificado\n\tem vez de na tela do console. O arquivo pode ent\u00e3o ser inclu\u00eddo na\n\tconfigura\u00e7\u00e3o server.xml usando o fragmento de c\u00f3digo fornecido.
 
 sslCert.option-key.keySize=\ \ \ \ --keySize=size
-sslCert.option-desc.keySize=\tTamanho da chave \
-do certificado.  \
-O tamanho da chave padr\u00e3o \u00e9 {7}.
+sslCert.option-desc.keySize=\tTamanho da chave do certificado.  O tamanho da chave padr\u00e3o \u00e9 {7}.
 
 sslCert.option-key.sigAlg=\ \ \ \ algoritmo --sigAlg=signature
-sslCert.option-desc.sigAlg=\tAlgoritmo de assinatura do certificado.\n\
-\tO algoritmo de assinatura padr\u00e3o \u00e9 {8}.
+sslCert.option-desc.sigAlg=\tAlgoritmo de assinatura do certificado.\n\tO algoritmo de assinatura padr\u00e3o \u00e9 {8}.
 
 sslCert.option-key.keyType=\ \ \ \ --keyType
-sslCert.option-desc.keyType=\tOpcional. Por padr\u00e3o, um keystore PKCS12 ser\u00e1 gerado. Para\n\
-\tgerar um keystore JKS, especifique a op\u00e7\u00e3o --keyType com o valor\n\
-\tJKS. N\u00e3o h\u00e1 a necessidade de especificar essa op\u00e7\u00e3o se um keystore PKCS12\n\
-\t\u00e9 esperado.\n\
-\tO PKCS12 possui v\u00e1rias vantagens: ele \u00e9 mais extens\u00edvel; ele suporta\n\
-\talgoritmos criptogr\u00e1ficos mais fortes; e ele \u00e9 amplamente adotado. O PKCS12 \u00e9\n\
-\tfrequentemente o formato fornecido pelas autoridades de certifica\u00e7\u00e3o ao\n\
-\temitir certificados.
+sslCert.option-desc.keyType=\tOpcional. Por padr\u00e3o, um keystore PKCS12 ser\u00e1 gerado. Para\n\tgerar um keystore JKS, especifique a op\u00e7\u00e3o --keyType com o valor\n\tJKS. N\u00e3o h\u00e1 a necessidade de especificar essa op\u00e7\u00e3o se um keystore PKCS12\n\t\u00e9 esperado.\n\tO PKCS12 possui v\u00e1rias vantagens: ele \u00e9 mais extens\u00edvel; ele suporta\n\talgoritmos criptogr\u00e1ficos mais fortes; e ele \u00e9 amplamente adotado. O PKCS12 \u00e9\n\tfrequentemente o formato fornecido pelas autoridades de certifica\u00e7\u00e3o ao\n\temitir certificados.
 
 sslCert.option-key.ext=\ \ \ \ Informa\u00e7\u00f5es da extens\u00e3o --extInfo=certificate
-sslCert.option-desc.ext=\tInforma\u00e7\u00f5es da extens\u00e3o de certificado a serem inclu\u00eddas no certificado.\n\
-\tA extens\u00e3o padr\u00e3o \u00e9 uma entrada de Nome alternativo do assunto que usa o \n\
-\tnome do host. Esta sinaliza\u00e7\u00e3o segue a mesma sintaxe que a sinaliza\u00e7\u00e3o -ext \n\
-\t \
-do comando Java Keytool. Essa sinaliza\u00e7\u00e3o pode ser usada v\u00e1rias vezes no comando\n\
-\ 
-line.
+sslCert.option-desc.ext=\tInforma\u00e7\u00f5es da extens\u00e3o de certificado a serem inclu\u00eddas no certificado.\n\tA extens\u00e3o padr\u00e3o \u00e9 uma entrada de Nome alternativo do assunto que usa o \n\tnome do host. Esta sinaliza\u00e7\u00e3o segue a mesma sintaxe que a sinaliza\u00e7\u00e3o -ext \n\t do comando Java Keytool. Essa sinaliza\u00e7\u00e3o pode ser usada v\u00e1rias vezes no comando\n 
+#line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -168,43 +121,19 @@ line.
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 # Note to translator: the words 'LTPA' and 'ltpa.keys' should not be translated 
-createLTPAKeys.desc=\tCrie um conjunto de \
-chaves de LTPA para uso pelo servidor, ou ele pode ser \
-compartilhado\n \tcom m\u00faltiplos servidores. Se nenhum servidor ou \
-arquivo for especificado, um arquivo ltpa.keys\n \tser\u00e1 criado no \
-diret\u00f3rio atualmente em funcionamento.
+createLTPAKeys.desc=\tCrie um conjunto de chaves de LTPA para uso pelo servidor, ou ele pode ser compartilhado\n \tcom m\u00faltiplos servidores. Se nenhum servidor ou arquivo for especificado, um arquivo ltpa.keys\n \tser\u00e1 criado no diret\u00f3rio atualmente em funcionamento.
 #Note to translator the word "createLTPAKeys" should not be translated
-createLTPAKeys.usage.options=\t{0} \
-createLTPAKeys --password[=pwd] [options]
+createLTPAKeys.usage.options=\t{0} createLTPAKeys --password[=pwd] [options]
 createLTPAKeys.required-key.password=\ \ \ \ --password[=pwd]
-createLTPAKeys.required-desc.password= \
-\tSenha de chaves de LTPA. \
-Se nenhum valor estiver definido, ser\u00e1 solicitado um a voc\u00ea.
+createLTPAKeys.required-desc.password=\tSenha de chaves de LTPA. Se nenhum valor estiver definido, ser\u00e1 solicitado um a voc\u00ea.
 createLTPAKeys.option-key.server=\ \ \ \ --server=name
-createLTPAKeys.option-desc.server= \
-\tServidor para o qual criar as chaves de LTPA.\n\
-\tEste argumento n\u00e3o poder\u00e1 ser usado, se o argumento --file for \
-usado.
-createLTPAKeys.option-key.file= \
-\ \ \ \ --file=name
-createLTPAKeys.option-desc.file=\tO \
-arquivo no qual gravar as chaves de LTPA.\n\
-\tEste argumento n\u00e3o poder\u00e1 ser usado, se o argumento --server for \
-usado.
+createLTPAKeys.option-desc.server=\tServidor para o qual criar as chaves de LTPA.\n\tEste argumento n\u00e3o poder\u00e1 ser usado, se o argumento --file for usado.
+createLTPAKeys.option-key.file=\ \ \ \ --file=name
+createLTPAKeys.option-desc.file=\tO arquivo no qual gravar as chaves de LTPA.\n\tEste argumento n\u00e3o poder\u00e1 ser usado, se o argumento --server for usado.
 createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
-createLTPAKeys.option-desc.password.encoding= \
-\tEspecifique como codificar a senha de chaves de LTPA no \
-server.xml.\n\
-\tAs codifica\u00e7\u00f5es suportadas s\u00e3o xor e aes. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. \n\
-\tUse o comando securityUtility encode --listCustom para verificar se algumas\n \tcriptografias customizadas adicionais s\u00e3o suportadas.
+createLTPAKeys.option-desc.password.encoding=\tEspecifique como codificar a senha de chaves de LTPA no server.xml.\n\tAs codifica\u00e7\u00f5es suportadas s\u00e3o xor e aes. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. \n\tUse o comando securityUtility encode --listCustom para verificar se algumas\n \tcriptografias customizadas adicionais s\u00e3o suportadas.
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[chave]
-createLTPAKeys.option-desc.password.key= \
-\tEspecifique uma chave a ser usada ao codificar a senha de chaves de \
-LTPA usando\n \tAES. Ser\u00e1 feito hash dessa sequ\u00eancia para produzir uma chave de criptografia\n\
-\tque ser\u00e1 usada para criptografar e decriptografar a senha. A chave pode\n\
-\tser fornecida para o servidor definindo-se a vari\u00e1vel\n\
-\twlp.password.encryption.key cujo valor \u00e9 a senha. Se esta op\u00e7\u00e3o n\u00e3o\n\
-\tfor fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
+createLTPAKeys.option-desc.password.key=\tEspecifique uma chave a ser usada ao codificar a senha de chaves de LTPA usando\n \tAES. Ser\u00e1 feito hash dessa sequ\u00eancia para produzir uma chave de criptografia\n\tque ser\u00e1 usada para criptografar e decriptografar a senha. A chave pode\n\tser fornecida para o servidor definindo-se a vari\u00e1vel\n\twlp.password.encryption.key cujo valor \u00e9 a senha. Se esta op\u00e7\u00e3o n\u00e3o\n\tfor fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -220,7 +149,6 @@ tlsProfiler.required-desc.port=\tEspecifique a porta.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\tEspecifique o host.
 tlsProfiler.option-key.file=\ \ \ \ --file
-tlsProfiler.option-desc.file=\tOpcional. O resultado ser\u00e1 gravado no arquivo especificado\n\
-\tem vez de na tela do console.
+tlsProfiler.option-desc.file=\tOpcional. O resultado ser\u00e1 gravado no arquivo especificado\n\tem vez de na tela do console.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tInclua informa\u00e7\u00f5es adicionais sobre protocolos n\u00e3o seguros.

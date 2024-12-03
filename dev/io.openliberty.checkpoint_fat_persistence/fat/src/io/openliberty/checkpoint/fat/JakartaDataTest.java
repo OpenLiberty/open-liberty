@@ -51,7 +51,7 @@ public class JakartaDataTest extends FATServletClient {
     private static final String DATA_APP = "jakartaDataApp";
 
     @ClassRule
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:16.0-alpine")
+    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:17.0-alpine")
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)

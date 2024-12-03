@@ -30,7 +30,8 @@ tested.features:\
 	restfulwsclient-4.0,\
 	restfulws-4.0,\
 	cdi-4.1,\
-	servlet-6.1
+	servlet-6.1,\
+	servlet-6.0
 	
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

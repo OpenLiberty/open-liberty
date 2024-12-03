@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -212,6 +212,16 @@ public class DeploymentTest {
         assertRest();
         assertOpenApiDoc();
         assertCache(war, CacheUsed.CACHE_NOT_USED, CacheWritten.CACHE_NOT_WRITTEN);
+    }
+
+    @Test
+    public void testJsonStaticFileWithTabs() throws Exception {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "testWar.war")
+                                   .addAsManifestResource(DeploymentTest.class.getPackage(), "static-file-with-tabs.json", "openapi.json");
+
+        deployApp(war);
+
+        assertOpenApiDoc();
     }
 
     @Test

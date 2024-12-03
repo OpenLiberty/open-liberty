@@ -1,3 +1,5 @@
+# TODO update to 17.0-alpine
+
 FROM postgres:14.1-alpine
 
 COPY ssl-certs/server.crt /var/lib/postgresql/server.crt

@@ -42,11 +42,10 @@ public class OpenTelemetryAccessor {
      *         is disabled or the application has shut down.
      */
     public static OpenTelemetryInfoInternal getOpenTelemetryInfo() {
-        //TOOD when the SPI is out of beta, make this a redirect to the SPI accessor to avoid code duplication
         Optional<OpenTelemetryInfoInternal> openTelemetryInfo = openTelemetryLifecycleManagerService.run((lifecycle) -> {
             return lifecycle.getOpenTelemetryInfo();
         });
-        return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
+        return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::getInstance);
     }
 
     /**

@@ -94,27 +94,6 @@ public class TxTestUtils {
         }
     }
 
-    public void tryUOWManagerLookup(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        final UOWManager uowm = (UOWManager) new InitialContext().lookup("java:comp/websphere/UOWManager");
-
-        if (!(uowm instanceof UOWManager)) {
-            throw new Exception("Lookup of java:comp/websphere/UOWManager failed");
-        }
-
-        final long localUOWId = uowm.getLocalUOWId();
-
-        uowm.runUnderUOW(UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION, false, new UOWAction() {
-            @Override
-            public void run() throws Exception {
-                if (localUOWId == uowm.getLocalUOWId()) {
-                    throw new Exception("UOWAction not run under new UOW");
-                }
-
-                System.out.println("Expiration time: " + uowm.getUOWExpiration());
-            }
-        });
-    }
-
 	public static void scupperConnection() throws SQLException {
 
         String fails = System.getenv(CONNECTION_MANAGER_FAILS);

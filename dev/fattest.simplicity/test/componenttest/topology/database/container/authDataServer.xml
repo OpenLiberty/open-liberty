@@ -1,0 +1,25 @@
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<authData id="recoveryAuth" user="myUser1" password="myPass1" />
+	<authData id="userAuth" user="myUser2" password="myPass2" />
+	<authData id="unrelatedAuthData" user="nullUser" password="nullPass"/>
+	
+	<dataSource id="DefaultDataSource" containerAuthDataRef="userAuth" recoveryAuthDataRef="recoveryAuth" fat.modify="true">
+		<jdbcDriver libraryRef="JDBCLibrary" />
+		<properties.derby.embedded createDatabase="create" databaseName="memory:testdb"
+			user="${env.DB_USER}" password="${env.DB_PASS}"/>
+		<containerAuthData user="myUser3" password="myPass3" />
+		<containerAuthData id="contAuth" user="myUser4" password="myPass4" /> <!-- Multiple container auths -->
+	</dataSource>
+</server>

@@ -23,7 +23,7 @@ public class DatabaseContainerTypeTest {
     @Test
     public void testValueOfContainer() {
         assertEquals(DatabaseContainerType.DB2, //
-                     DatabaseContainerType.valueOf(new Db2Container(DockerImageName.parse("kyleaure/db2:1.0").asCompatibleSubstituteFor("ibmcom/db2"))));
+                     DatabaseContainerType.valueOf(new Db2Container(DockerImageName.parse("icr.io/db2_community/db2:11.5.9.0"))));
         assertEquals(DatabaseContainerType.Derby, //
                      DatabaseContainerType.valueOf(new DerbyNoopContainer()));
         assertEquals(DatabaseContainerType.DerbyClient, //
@@ -31,9 +31,9 @@ public class DatabaseContainerTypeTest {
         assertEquals(DatabaseContainerType.Oracle, //
                      DatabaseContainerType.valueOf(new OracleContainer(DockerImageName.parse("gvenzl/oracle-free:23.3-full-faststart"))));
         assertEquals(DatabaseContainerType.Postgres, //
-                     DatabaseContainerType.valueOf(new PostgreSQLContainer(DockerImageName.parse("postgres:14.1-alpine"))));
+                     DatabaseContainerType.valueOf(new PostgreSQLContainer(DockerImageName.parse("postgres:17.0-alpine"))));
         assertEquals(DatabaseContainerType.SQLServer,
-                     DatabaseContainerType.valueOf(new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04"))));
+                     DatabaseContainerType.valueOf(new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU28-ubuntu-20.04"))));
     }
 
     @Test

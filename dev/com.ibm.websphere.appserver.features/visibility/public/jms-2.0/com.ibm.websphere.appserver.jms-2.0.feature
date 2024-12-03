@@ -21,4 +21,4 @@ Subsystem-Name: Java Message Service 2.0
 kind=ga
 edition=base
 WLP-InstantOn-Enabled: true
-WLP-Platform: javaee-7.0,javaee-8.0
+WLP-Platform: javaee-7.0,javaee-8.0,jakartaee-8.0

@@ -48,6 +48,14 @@ public interface QualifiedResourceFactory extends ResourceFactory {
     MetaData getDeclaringMetadata();
 
     /**
+     * Returns the name of the resource definition, which is typically a
+     * JNDI name in java:comp, java:module, java:app, or java:global
+     *
+     * @return the name.
+     */
+    String getName();
+
+    /**
      * Returns instances of the qualifier annotations for this resource factory.
      *
      * @return qualifier annotations for this resource factory.

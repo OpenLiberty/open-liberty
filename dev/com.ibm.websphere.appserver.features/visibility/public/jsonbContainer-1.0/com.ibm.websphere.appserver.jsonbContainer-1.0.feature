@@ -14,4 +14,4 @@ Subsystem-Name: JavaScript Object Notation Binding 1.0 via Bells
 -bundles=com.ibm.ws.jsonb.service
 kind=ga
 edition=core
-WLP-Platform: javaee-8.0
+WLP-Platform: javaee-8.0,jakartaee-8.0

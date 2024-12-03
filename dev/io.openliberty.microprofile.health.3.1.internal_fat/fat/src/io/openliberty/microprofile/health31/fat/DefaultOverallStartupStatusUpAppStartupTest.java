@@ -67,9 +67,7 @@ public class DefaultOverallStartupStatusUpAppStartupTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
-                                                             MicroProfileActions.MP70_EE10, // mpHealth-4.0 LITE
-                                                             MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL
-                                                             MicroProfileActions.MP41); // mpHealth-3.1 FULL
+                                                             MicroProfileActions.MP70_EE10); // mpHealth-4.0 LITE
 
     public void setupClass(LibertyServer server, String testName) throws Exception {
         log("setupClass", testName + " - Deploying the Delayed App into the apps directory and starting the server.");

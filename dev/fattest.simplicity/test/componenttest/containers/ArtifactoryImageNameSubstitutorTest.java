@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -157,7 +157,7 @@ public class ArtifactoryImageNameSubstitutorTest {
         setDockerClientStrategy(new EnvironmentAndSystemPropertyClientProviderStrategy());
 
         input = DockerImageName.parse("kyleaure/oracle-xe:1.0.0");
-        expected = DockerImageName.parse("example.com/wasliberty-docker-remote/kyleaure/oracle-xe:1.0.0");
+        expected = DockerImageName.parse("example.com/wasliberty-infrastructure-docker/kyleaure/oracle-xe:1.0.0");
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(input));
 
         //Using local docker host
@@ -205,13 +205,13 @@ public class ArtifactoryImageNameSubstitutorTest {
         expected = DockerImageName.parse("openliberty:1.0.0");
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
 
-        //No force, with Artifactory, use artifactory
+        //No force, with Artifactory, use Artifactory
         setDockerClientStrategy(new UnixSocketClientProviderStrategy());
         System.setProperty(FORCE_EXTERNAL, "false");
         setArtifactoryRegistryAvailable(true);
 
         input = DockerImageName.parse("openliberty:1.0.0");
-        expected = DockerImageName.parse("example.com/wasliberty-docker-remote/openliberty:1.0.0");
+        expected = DockerImageName.parse("example.com/wasliberty-infrastructure-docker/openliberty:1.0.0");
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(input));
 
         //No force, no Artifactory, default behavior

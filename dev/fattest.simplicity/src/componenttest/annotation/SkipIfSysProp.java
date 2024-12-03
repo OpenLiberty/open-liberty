@@ -82,6 +82,9 @@ public @interface SkipIfSysProp {
     public static final String OS_ZOS = "os.name=z/OS";
     public static final String OS_IBMI = "os.name=OS/400";
 
+    // Network system properties
+    public static final String NETWORK_AWS = "global.network.location=AWS";
+
     String[] value();
 
 }

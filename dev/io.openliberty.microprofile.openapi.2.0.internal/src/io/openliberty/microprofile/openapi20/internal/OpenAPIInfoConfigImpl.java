@@ -26,7 +26,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIInfoConfig;
 import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
@@ -56,11 +55,6 @@ public class OpenAPIInfoConfigImpl implements OpenAPIInfoConfig {
     @Activate
     @Modified
     protected void activate(Map<?, ?> properties) {
-        if (!ProductInfo.getBetaEdition()) {
-            info = Optional.empty();
-            return;
-        }
-
         // Retrieve the info sub-element
         // Following example from https://www.ibm.com/docs/en/was-liberty/nd?topic=service-nesting-configuration-elements
         String infoPid = (String) properties.get(INFO_KEY);

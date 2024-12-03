@@ -63,7 +63,7 @@ public class FATSuite extends TestContainerSuite {
     private static final String POSTGRES_PASS = "productionpw";
 
     @ClassRule
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:16.0-alpine")
+    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:17.0-alpine")
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)

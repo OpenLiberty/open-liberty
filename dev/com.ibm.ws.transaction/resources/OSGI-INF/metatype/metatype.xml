@@ -20,6 +20,9 @@
     </Designate>
           
     <OCD description="%transaction.config.desc" name="%transaction.config" id="com.ibm.ws.transaction" ibm:alias="transaction">
+        <AD name="%throw.checked.exceptions" description="%throw.checked.exceptions.desc"
+            id="throwCheckedExceptions" required="false" type="Boolean" default="false" />
+
         <AD name="%propagate.timeout" description="%propagate.timeout.desc"
             id="propagateXAResourceTransactionTimeout" required="false" type="Boolean" default="false" />
 

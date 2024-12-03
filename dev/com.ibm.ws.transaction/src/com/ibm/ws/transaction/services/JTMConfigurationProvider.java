@@ -1139,4 +1139,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             }
         }
     }
+
+    @Override
+    @Trivial
+    public boolean isThrowCheckedExceptions() {
+        final boolean b = _throwCheckedExceptionsProperty || (Boolean) _props.get("throwCheckedExceptions");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isThrowCheckedExceptions {0}", b);
+        return b;
+    }
 }

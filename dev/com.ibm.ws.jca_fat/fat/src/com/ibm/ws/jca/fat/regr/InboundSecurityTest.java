@@ -28,6 +28,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.CheckpointRule;
+import componenttest.rules.repeater.CheckpointRule.ServerMode;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -44,28 +46,29 @@ public class InboundSecurityTest extends JCAFATTest implements RarTests {
 
     @ClassRule
     public static CheckpointRule checkpointRule = new CheckpointRule()
-                    .setServerSupplier(InboundSecurityTest::server)
-                    .setBeta(true)
-                    .setInitialSetup(InboundSecurityTest::setUp)
-                    .setFinalTearDown(InboundSecurityTest::tearDown);
+                    .setConsoleLogName(InboundSecurityTest.class.getSimpleName() + ".log")
+                    .addUnsupportedRepeatIDs(EmptyAction.ID)
+                    .setServerSetup(InboundSecurityTest::serverSetUp)
+                    .setServerStart(InboundSecurityTest::serverStart)
+                    .setServerTearDown(InboundSecurityTest::serverTearDown)
+                    .setBeta(true);
 
-    private static LibertyServer server() {
+    public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.regr", null, true);
+        buildFvtAppEar();
         return server;
     }
 
-    public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.regr", null, true);
-        buildFvtAppEar();
-
+    public static void serverStart(ServerMode mode, LibertyServer server) throws Exception {
         originalServerConfig = server.getServerConfiguration().clone();
-        server.startServer("InboundSecurityTest.log");
+        server.startServer();
         server.waitForStringInLog("CWWKE0002I");
         server.waitForStringInLog("CWWKZ0001I:.*fvtapp"); // Wait for application start.
         server.waitForStringInLog("CWWKF0011I");
         server.waitForStringInLog("CWWKS4104A"); // Wait for Ltpa keys to be generated
     }
 
-    public static void tearDown() throws Exception {
+    public static void serverTearDown(ServerMode mode, LibertyServer server) throws Exception {
         try {
             server.stopServer("J2CA0677E", // EXPECTED
                               "J2CA0668E", // EXPECTED

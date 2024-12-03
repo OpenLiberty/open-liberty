@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011,2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -124,14 +124,14 @@ public class FATTest {
     }
 
     /**
-     * This test just validates that the server correctly processes AES encoded credentials.
+     * This test validates that the server correctly processes AES-128 (v0) encoded credentials.
      * This is really a test for password decoding making use of the fact basic registry FAT
      * will exercise the test code. We also check the dynamism here to ensure when changing
      * config to have a new encoding key we pick it up dynamically.
      */
     @Test
-    public void checkPasswordEncodedUsingAES() throws Exception {
-        Log.info(c, "checkPasswordEncodedUsingAES", "Checking aes encoded credentials");
+    public void checkPasswordEncodedUsingAES128() throws Exception {
+        Log.info(c, "checkPasswordEncodedUsingAES128", "Checking aes encoded credentials");
 
         setServerConfiguration(server, DEFAULT_AES_CONFIG_FILE);
 
@@ -145,6 +145,32 @@ public class FATTest {
 
         assertEquals("Authentication should succeed.",
                      "customUser", servlet.checkPassword("customUser", password));
+
+        passwordChecker.checkForPasswordInAnyFormat(password);
+    }
+
+    /**
+     * This test validates that the server correctly processes AES-256 (v1) encoded credentials. Currently only BETA.
+     * This is really a test for password decoding making use of the fact basic registry FAT
+     * will exercise the test code. We also check the dynamism here to ensure when changing
+     * config to have a new encoding key we pick it up dynamically.
+     */
+    @Test
+    public void checkPasswordEncodedUsingAES256() throws Exception {
+        Log.info(c, "checkPasswordEncodedUsingAES256", "Checking aes encoded credentials");
+
+        setServerConfiguration(server, DEFAULT_AES_CONFIG_FILE);
+
+        String password = "superAES256password";
+        assertEquals("Authentication should succeed.",
+                     "defaultUserAES256", servlet.checkPassword("defaultUserAES256", password));
+
+        passwordChecker.checkForPasswordInAnyFormat(password);
+
+        setServerConfiguration(server, CUSTOM_AES_CONFIG_FILE);
+
+        assertEquals("Authentication should succeed.",
+                     "customUserAES256", servlet.checkPassword("customUserAES256", password));
 
         passwordChecker.checkForPasswordInAnyFormat(password);
     }

@@ -88,13 +88,11 @@ public class MultiRecoveryTest {
 		ShrinkHelper.exportDropinAppToServer(server1, serverApp);
 		ShrinkHelper.exportDropinAppToServer(server2, serverApp);
 	}
-	
-	@Before
-	public void before() throws Exception {
-		Log.info(MultiRecoveryTest.class, "before", "");
-		FATUtils.startServers(runner, server1, server2);
 
-		WSATTest.callClearResourcesServlet(recoveryServer, server1, server2);
+    @Before
+	public void before() throws Exception {
+		WSATTest.deleteStateFiles(server1, server2);
+		FATUtils.startServers(runner, server1, server2);
 	}
 
 	@After

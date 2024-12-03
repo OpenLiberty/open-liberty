@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,7 +31,7 @@ public class DB2KerberosContainer extends Db2Container {
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
     private static final String IMAGE = "kyleaure/db2-krb5:2.0";
     private static final DockerImageName db2Image = DockerImageName.parse(IMAGE)
-                    .asCompatibleSubstituteFor("ibmcom/db2");
+                    .asCompatibleSubstituteFor("ibmcom/db2"); //TODO update .asCompatibleSubstituteFor("icr.io/db2_community/db2")
 
     public DB2KerberosContainer(Network network) {
         super(db2Image);

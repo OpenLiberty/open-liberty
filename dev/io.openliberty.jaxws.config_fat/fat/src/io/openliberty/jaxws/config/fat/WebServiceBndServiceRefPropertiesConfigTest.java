@@ -79,6 +79,9 @@ public class WebServiceBndServiceRefPropertiesConfigTest {
     public static LibertyServer server;
 
     private static final String APP_NAME = "simpleTestService";
+    
+    // Max timeout set to 5 minutes in milliseconds
+    private final static int REQUEST_TIMEOUT = 300000;
 
     private static final String SERVLET_PATH = "/" + APP_NAME + "/SimpleStubClientServlet";
 
@@ -163,7 +166,7 @@ public class WebServiceBndServiceRefPropertiesConfigTest {
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?").append("serviceRef=").append(serviceRef);
         String urlStr = sBuilder.toString();
 
-        HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), HttpURLConnection.HTTP_OK, 5);
+        HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
         BufferedReader br = HttpUtils.getConnectionStream(con);
         String line = br.readLine();
         return line;

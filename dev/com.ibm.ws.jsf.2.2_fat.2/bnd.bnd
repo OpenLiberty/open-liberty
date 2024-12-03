@@ -48,7 +48,8 @@ src: \
     test-applications/FunctionMapper.war/src,\
     test-applications/ViewScopeLeak.war/src,\
     test-applications/MYFACES-4512.war/src,\
-    test-applications/PH55398.war/src
+    test-applications/PH55398.war/src,\
+    test-applications/MYFACES-4695.war/src
 
 fat.project: true
 

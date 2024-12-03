@@ -27,7 +27,7 @@ Subsystem-Name: MicroProfile Rest Client 4.0
 
 -bundles=\
   io.openliberty.org.jboss.resteasy.mprestclient.4.0; apiJar=false; location:="lib/"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

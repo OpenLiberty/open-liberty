@@ -39,7 +39,7 @@ public interface Demographics {
 
     // Methods with conversion from BigInteger to other types:
 
-    @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")
+    @Query("SELECT this.numFullTimeWorkers WHERE this.collectedOn=:when")
     Optional<BigDecimal> numFullTimeWorkersAsBigDecimal(Instant when);
 
     @Query("SELECT numFullTimeWorkers WHERE collectedOn=:when")

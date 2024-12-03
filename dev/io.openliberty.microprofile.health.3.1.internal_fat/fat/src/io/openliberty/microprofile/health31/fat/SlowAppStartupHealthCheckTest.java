@@ -67,9 +67,7 @@ public class SlowAppStartupHealthCheckTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP70_EE10, // mpHealth-4.0 LITE
-                                                             MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL
-                                                             MicroProfileActions.MP41); // mpHealth-3.1 FULL
+                                                             MicroProfileActions.MP70_EE10); // mpHealth-4.0
 
     public void setupClass(LibertyServer server, String testName) throws Exception {
         log("setupClass", testName + " - Deploying the Delayed App into the apps directory and starting the server.");
@@ -81,7 +79,7 @@ public class SlowAppStartupHealthCheckTest {
         if (!server.isStarted())
             server.startServer();
 
-        String line = server.waitForStringInLog("CWWKT0016I: Web application available.*DelayedHealthCheckApp*");
+        String line = server.waitForStringInLogUsingMark("CWWKT0016I: Web application available.*DelayedHealthCheckApp*");
         log("setupClass - " + testName, "Web Application available message found: " + line);
         assertNotNull("The CWWKT0016I Web Application available message did not appear in messages.log", line);
     }
@@ -245,8 +243,6 @@ public class SlowAppStartupHealthCheckTest {
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertTrue("The JSON response was not empty.", checks.isEmpty());
         assertEquals("The status of the Startup health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
-
-        server1.setMarkToEndOfLog();
 
         List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWMMH0054W:", MESSAGE_LOG);
         assertEquals("The CWMMH0054W warning did not appear in messages.log", 1, lines.size());

@@ -346,4 +346,55 @@ public class FeatureUtilities {
 
         return shortName;
     }
+
+    private static boolean isTestAutoFeature(File featureFile) throws IOException {
+
+        String fileName = featureFile.getName();
+        if (featureFile.isDirectory()) {
+            // info(methodName, "Skipping directory: " + fileName);
+            return false;
+        } else if (!fileName.endsWith(".mf")) {
+            // info(methodName, "Skipping non-manifest: " + fileName);
+            return false;
+        }
+
+        boolean isAutoFeature = false;
+        boolean isTestFeature = false;
+
+        try (Scanner scanner = new Scanner(featureFile)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+
+                if (line.contains("IBM-Provision-Capability:")) {
+                    isAutoFeature = true;
+                } else if (line.contains("IBM-Test-Feature:") && line.contains("true")) {
+                    isTestFeature = true;
+                }
+            }
+        }
+
+        return isAutoFeature && isTestFeature;
+    }
+
+    public static void removeTestAutoFeatures(File installRoot) {
+
+        // If there was a problem building projects before this test runs,
+        // "lib/features" may not exist.
+
+        File featureDir = new File(installRoot, "lib/features");
+        if (!featureDir.exists()) {
+            return;
+        }
+
+        try {
+            for (File featureFile : featureDir.listFiles()) {
+                if (isTestAutoFeature(featureFile)) {
+                    featureFile.delete();
+                    continue;
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

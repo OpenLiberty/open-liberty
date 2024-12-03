@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: UpdateAutoFeatureTool-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.updateautofeaturetool-1.0; visibility:=private
 Subsystem-Name: Original AutoFeatureTool Display Name

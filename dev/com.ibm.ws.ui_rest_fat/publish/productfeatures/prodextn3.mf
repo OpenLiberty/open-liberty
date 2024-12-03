@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: prodextn3tool-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.prodextn3-1.0; visibility:=private
 Subsystem-Name: Prod Extn 3 Tool Display Name

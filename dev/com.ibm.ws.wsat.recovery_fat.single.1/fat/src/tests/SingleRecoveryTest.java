@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,11 +58,6 @@ public class SingleRecoveryTest {
 
 		FATUtils.startServers(server1);
 	}
-	
-	@Before
-	public void before() throws Exception {
-		WSATTest.callClearResourcesServlet("recoveryServer", server1);
-	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
@@ -70,9 +65,6 @@ public class SingleRecoveryTest {
 	}
 
 	protected void recoveryTest(String id) throws Exception {
-//		Log.info(this.getClass(), "recoveryTest", "We are in "+new File(".").getCanonicalPath());
-//		Log.info(this.getClass(), "recoveryTest", "Printing "+new File("../../").getCanonicalPath());
-//		Log.info(this.getClass(), "recoveryTest", printDirectoryTree(new File("../../")));
 		final String method = "recoveryTest";
 		String result = null;
 		String logKeyword = "Jordan said in test: ";

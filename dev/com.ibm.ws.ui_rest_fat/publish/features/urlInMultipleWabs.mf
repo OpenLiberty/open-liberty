@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: urlinmultiplewab-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.urlinmultiplewab-1.0; visibility:=private
 Subsystem-Name: URL in Multiple Wab Tool Display Name

@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -51,4 +51,5 @@ tested.features:
 	com.ibm.websphere.javaee.ejb.3.2, \
 	fattest.simplicity, \
 	com.ibm.ws.componenttest,\
-	com.ibm.websphere.javaee.connector.1.7
+	com.ibm.websphere.javaee.connector.1.7,\
+	com.ibm.websphere.javaee.annotation.1.3

@@ -107,7 +107,9 @@ public class VersionlessTest {
                            String[] expectedResolved,
                            FailableConsumer<LibertyServer, Exception> action) throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-        server.addEnvVar("PREFERRED_PLATFORM_VERSIONS", preferredVersions);
+        if(!preferredVersions.isEmpty()){
+            server.addEnvVar("PREFERRED_PLATFORM_VERSIONS", preferredVersions);
+        }
 
         server.startServer();
         try {

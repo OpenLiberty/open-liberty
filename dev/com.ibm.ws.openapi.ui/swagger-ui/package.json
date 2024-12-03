@@ -19,29 +19,28 @@
     "cssnano": "^7.0.6",
     "dry-uninstall": "0.3.0",
     "html-webpack-plugin": "^5.6.3",
-    "mini-css-extract-plugin": "^2.9.1",
+    "mini-css-extract-plugin": "^2.9.2",
     "postcss-loader": "^8.1.1",
-    "postcss-preset-env": "^10.0.8",
-    "sass": "^1.80.5",
-    "sass-loader": "^16.0.2",
+    "postcss-preset-env": "^10.0.9",
+    "sass": "^1.80.6",
+    "sass-loader": "^16.0.3",
     "source-map-loader": "^5.0.0",
     "style-loader": "^4.0.0",
     "tachyons-sass": "^4.9.5",
-    "webpack": "^5.95.0",
+    "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
     "buffer": "^6.0.3",
-    "core-js": "^3.38.1",
+    "core-js": "^3.39.0",
     "process": "^0.11.10",
     "regenerator-runtime": "^0.14.1",
     "stream-browserify": "^3.0.0",
-    "swagger-ui": "^5.17.14"
+    "swagger-ui": "^5.18.1"
   },
   "overrides": {
     "axios": "npm:dry-uninstall",
-    "cookie": "0.7.2",
     "prismjs": "npm:dry-uninstall"
   },
   "browserslist": [

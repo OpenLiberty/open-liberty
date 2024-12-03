@@ -22,6 +22,7 @@ dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.transaction.hadb_fat.derby.1"),
                project(":com.ibm.ws.transaction.hadb_fat.oracle.1"),
+               project(":com.ibm.ws.transaction.test.util"),
                project(":com.ibm.ws.transaction.fat.util")
 }
 

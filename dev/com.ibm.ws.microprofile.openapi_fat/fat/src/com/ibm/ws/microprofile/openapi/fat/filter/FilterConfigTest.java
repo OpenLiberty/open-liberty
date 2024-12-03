@@ -61,7 +61,7 @@ public class FilterConfigTest {
             .addProperty("filter.description", DESC_VALUE)
             .addProperty("mp.openapi.filter", MyTestFilter.class.getName());
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "filter-test.war")
             .addClasses(FilterTestApp.class, FilterTestResource.class, MyTestFilter.class)
             .addAsResource(config, "META-INF/microprofile-config.properties");
 

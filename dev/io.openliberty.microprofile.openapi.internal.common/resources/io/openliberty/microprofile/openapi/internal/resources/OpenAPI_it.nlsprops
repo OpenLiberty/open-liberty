@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -130,3 +130,30 @@ OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Assicurarsi che il percorso Open
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Il segmento percorso "/." o "/.." non \u00e8 valido per gli endpoint OpenAPI.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Il segmento percorso OpenAPI "/." o "/.." non \u00e8 valido.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Rimuovere qualsiasi segmento percorso "/." o "/.." dal percorso.
+
+# {1} - the server.xml element name, either includeApplication or excludeApplication
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W=CWWKO1678W: Il nome dell''applicazione {0} configurato nell''elemento {1} non \u00e8 valido perch\u00e9 contiene il carattere "/" o \u00e8 vuoto.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.explanation=Il nome di un'applicazione non pu\u00f2 includere una "/", poich\u00e9 la "/" viene utilizzata per separare l'applicazione dai suoi moduli componenti.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.useraction=Rimuovere "/" dall'elemento includeApplication o excludeApplication nel file server.xml, oppure convertire tale elemento in includeModule o excludeModule per fare riferimento a un singolo modulo.
+
+# {1} - the server.xml element name, either includeModule or excludeModule
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W=CWWKO1679W: Il nome del modulo configurato {0} nell''elemento {1} non \u00e8 valido perch\u00e9 non \u00e8 nel formato "<nome applicazione>/<nome modulo>".
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.explanation=Un modulo deve avere il formato "<nome applicazione>/<nome modulo>"; pertanto, un nome di modulo senza una barra in avanti ("/"), o un nome di applicazione o di modulo vuoto, non \u00e8 valido.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.useraction=Correggere l'elemento includeModule o excludeModule nel file server.xml, oppure convertire tale elemento in includeApplication o excludeApplication per fare riferimento a un'intera applicazione.
+
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W=CWWKO1680W: Il nome dell''applicazione {1} nell''elemento di configurazione {0} non corrisponde al nome di nessuna applicazione distribuita, ma corrisponde al nome del descrittore di distribuzione o al nome dell''archivio dell''applicazione {2}. Il nome dell''applicazione utilizzato deve essere quello specificato nel file server.xml o, se non \u00e8 specificato alcun nome, il nome del file di archivio senza estensione.
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.explanation=Il riferimento al nome dell'applicazione nell'elemento di configurazione mpOpenAPI corrisponde al nome di un descrittore di distribuzione dell'applicazione, ma non corrisponde a nessun nome di applicazione definito nel file server.xml 
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.useraction=Verificare che tutte le applicazioni siano state avviate correttamente e che i nomi nell'elemento di configurazione siano specificati correttamente.
+
+OPENAPI_VERSION_INVALID_CWWK06181W=CWWKO1681W: La versione di OpenAPI {0} configurata non \u00e8 in un formato valido, deve essere composta da due o tre numeri separati da un punto (.). I valori supportati sono {1}. Viene invece utilizzata la versione predefinita di {2}.
+OPENAPI_VERSION_INVALID_CWWK06181W.explanation=L'attributo openAPIVersion dell'elemento di configurazione mpOpenAPI \u00e8 impostato su un valore che non \u00e8 una versione OpenAPI valida.
+OPENAPI_VERSION_INVALID_CWWK06181W.useraction=Aggiornare l'attributo openAPIVersion con uno dei valori supportati dal messaggio di errore.
+
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W=CWWKO1682W: Questa versione di mpOpenAPI non supporta la versione di OpenAPI configurata {0}. I valori supportati sono {1}. Viene invece utilizzata la versione predefinita di {2}.
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.explanation=L'attributo openAPIVersion dell'elemento di configurazione mpOpenAPI \u00e8 impostato su una versione OpenAPI non supportata dalla versione in esecuzione della funzione mpOpenAPI.
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Aggiornare l'attributo openAPIVersion con uno dei valori supportati dal messaggio di errore, oppure utilizzare una versione della funzione mpOpenAPI che supporti la versione OpenAPI configurata.
+
+# "mpOpenAPI", "info", "title" and "version" are names in server.xml and should not be translated
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: L'elemento di configurazione mpOpenAPI info nel file server.xml non \u00e8 valido. Devono essere impostati entrambi gli attributi title e version. L'elemento info viene ignorato.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=I campi title e version sono propriet\u00e0 obbligatorie nell'oggetto info di un documento OpenAPI. Quando si configura l'oggetto info, \u00e8 necessario fornire un valore per gli attributi title e version.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Assicurarsi che gli attributi title e version siano impostati su valori validi nell'elemento info mpOpenAPI.

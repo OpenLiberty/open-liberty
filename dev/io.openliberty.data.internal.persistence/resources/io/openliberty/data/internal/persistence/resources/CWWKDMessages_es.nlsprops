@@ -102,7 +102,8 @@ CWWKD1018.confl.special.param=CWWKD1018E: El m\u00e9todo {0} del repositorio {1}
 CWWKD1018.confl.special.param.explanation=Algunos de los par\u00e1metros especiales de Jakarta Data, como Limit y PageRequest, no se pueden combinar en una misma firma de m\u00e9todo de repositorio.
 CWWKD1018.confl.special.param.useraction=Actualiza el repositorio para no utilizar los dos tipos de par\u00e1metros especiales de Jakarta Data en la misma firma de m\u00e9todo.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: El m\u00e9todo {0} de la interfaz de repositorio {1} no puede tener una consulta con una mezcla de par\u00e1metros posicionales y par\u00e1metros con nombre.
+CWWKD1019.mixed.positional.named=CWWKD1019E: El m\u00e9todo {0} de la interfaz de repositorio {1} no puede tener una consulta que mezcle par\u00e1metros posicionales y con nombre. La interfaz define una mezcla de {2} par\u00e1metros posicionales y
+ {3} par\u00e1metros con nombre {4} para el valor de anotaci\u00f3n Query: {5}. Una consulta con par\u00e1metros posicionales debe hacer referencia a cada par\u00e1metro por su valor ordinal, empezando por ?1, y los par\u00e1metros del m\u00e9todo no deben tener la anotaci\u00f3n Param. En una consulta con par\u00e1metros con nombre, cada par\u00e1metro debe ser referenciado por su nombre, como {6}, y los par\u00e1metros del m\u00e9todo deben tener la anotaci\u00f3n Param, como {7}. Alternativamente, activar la opci\u00f3n de compilaci\u00f3n -parameters permite que los par\u00e1metros del m\u00e9todo indiquen el par\u00e1metro nombrado coincidiendo con su nombre, por ejemplo, {8}.
 CWWKD1019.mixed.positional.named.explanation=Las consultas con par\u00e1metros deben utilizar todos los par\u00e1metros con nombre o todos los par\u00e1metros posicionales, no una combinaci\u00f3n.
 CWWKD1019.mixed.positional.named.useraction=Actualice el m\u00e9todo de repositorio para utilizar s\u00f3lo par\u00e1metros con nombre o s\u00f3lo par\u00e1metros posicionales.
 
@@ -270,7 +271,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: La interfaz {0} del repositorio en la ap
 CWWKD1060.name.out.of.scope.explanation=El espacio de nombres especificado no es accesible desde el artefacto donde est\u00e1 definida la interfaz del repositorio.
 CWWKD1060.name.out.of.scope.useraction=Actualice la anotaci\u00f3n Repositorio para especificar un nombre de almac\u00e9n de datos que sea visible para el m\u00f3dulo o biblioteca que proporciona la interfaz del repositorio.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: La interfaz {0} del repositorio que se define en el m\u00f3dulo {1} enterprise bean de la aplicaci\u00f3n {2} configura un valor {2} para el atributo {3}. Sin embargo, los nombres {4} no son accesibles para los m\u00f3dulos enterprise bean. Utilice un nombre de uno de los siguientes espacios de nombres: {5}.
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Una o m\u00e1s interfaces de repositorio{0}) que se definen en el m\u00f3dulo enterprise bean {1} de la aplicaci\u00f3n {2} configuran un valor {2} para el atributo {3}. Sin embargo, los nombres {4} no son accesibles para los m\u00f3dulos enterprise bean. Utilice un nombre de uno de los siguientes espacios de nombres: {5}.
 CWWKD1061.comp.name.in.ejb.explanation=El espacio de nombres especificado no es accesible para el m\u00f3dulo enterprise bean donde est\u00e1 definida la interfaz del repositorio.
 CWWKD1061.comp.name.in.ejb.useraction=Actualiza la anotaci\u00f3n Repositorio para especificar un nombre de almac\u00e9n de datos que sea visible para el m\u00f3dulo enterprise bean que proporciona la interfaz de repositorio.
 
@@ -286,15 +287,15 @@ CWWKD1064.datastore.error=CWWKD1064E: El m\u00e9todo {0} de la interfaz del repo
 CWWKD1064.datastore.error.explanation=Se ha producido un error al intentar obtener el almac\u00e9n de datos.
 CWWKD1064.datastore.error.useraction=Aseg\u00farese de que el almac\u00e9n de datos especificado y todos los dem\u00e1s recursos de los que depende existen y est\u00e1n correctamente configurados.
 
-CWWKD1065.ddlgen.timeout=CWWKD1065E: La generaci\u00f3n DDL para la interfaz de repositorio {0} fall\u00f3 porque el almac\u00e9n de datos {1} no complet\u00f3 la generaci\u00f3n DDL en {2} segundos para las siguientes entidades: {3}.
+CWWKD1065.ddlgen.timeout=CWWKD1065E: La generaci\u00f3n DDL para una o m\u00e1s interfaces de repositorio{0}) fall\u00f3 porque el almac\u00e9n de datos {1} no complet\u00f3 la generaci\u00f3n DDL en {2} segundos para las siguientes entidades: {3}.
 CWWKD1065.ddlgen.timeout.explanation=El intento de generaci\u00f3n de DDL ha caducado y no se ha completado.
 CWWKD1065.ddlgen.timeout.useraction=Reintentar la generaci\u00f3n DDL cuando el sistema y la base de datos no est\u00e9n bajo carga.
 
-CWWKD1066.ddlgen.failed=CWWKD1066E: La generaci\u00f3n DDL para la interfaz de repositorio {0} que utiliza el almac\u00e9n de datos {1} encontr\u00f3 un error al intentar la generaci\u00f3n DDL para las siguientes entidades: {2}. El error es: {3}.
+CWWKD1066.ddlgen.failed=CWWKD1066E: La generaci\u00f3n DDL para una o m\u00e1s interfaces de repositorio{0}) que utilizan el almac\u00e9n de datos {1} encontr\u00f3 un error durante la generaci\u00f3n DDL para las siguientes entidades: {2}. El error es: {3}.
 CWWKD1066.ddlgen.failed.explanation=El intento de generaci\u00f3n DDL fall\u00f3 y no se complet\u00f3.
 CWWKD1066.ddlgen.failed.useraction=Investigue el error y realice correcciones en la interfaz del repositorio, las entidades, la configuraci\u00f3n del almac\u00e9n de datos o la base de datos.
 
-CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: La generaci\u00f3n DDL para la interfaz de repositorio {0} fall\u00f3 porque el almac\u00e9n de datos {1} no estaba disponible o no pudo poner a disposici\u00f3n las siguientes entidades en {2} segundos: {3}.
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: La generaci\u00f3n DDL para una o m\u00e1s interfaces de repositorio{0}) fall\u00f3 porque el almac\u00e9n de datos {1} no estaba disponible o no pudo poner a disposici\u00f3n las siguientes entidades en {2} segundos: {3}.
 CWWKD1067.ddlgen.emf.timeout.explanation=La adquisici\u00f3n de los recursos necesarios para la generaci\u00f3n DDL se ha interrumpido y no se ha completado.
 CWWKD1067.ddlgen.emf.timeout.useraction=Reintentar la generaci\u00f3n DDL cuando el sistema y la base de datos no est\u00e9n bajo carga.
 
@@ -310,11 +311,11 @@ CWWKD1070.record.convert.err=CWWKD1070E: El registro {0} que se suministra al m\
 CWWKD1070.record.convert.err.explanation=No es posible utilizar el registro Java como entidad.
 CWWKD1070.record.convert.err.useraction=Defina la entidad como una entidad Jakarta Persistence en lugar de utilizar una entidad Java record.
 
-CWWKD1071.record.with.type.var=CWWKD1071E: El registro {0} no puede utilizarse como entidad porque tiene una o m\u00e1s variables de tipo: {1}.
+CWWKD1071.record.with.type.var=CWWKD1071E: El registro {0} es utilizado como una entidad por una o m\u00e1s de las interfaces del repositorio{1}) en el artefacto de aplicaci\u00f3n {2}, pero el registro no puede ser una entidad porque tiene una o m\u00e1s variables de tipo: {3}.
 CWWKD1071.record.with.type.var.explanation=Las clases de entidad no pueden tener variables de tipo gen\u00e9rico.
 CWWKD1071.record.with.type.var.useraction=Elimina las variables de tipo del registro.
 
-CWWKD1072.record.comp.conflict=CWWKD1072E: El registro {0} no se puede utilizar como entidad porque sus componentes {1} y {2} resuelven al mismo nombre de propiedad de entidad.
+CWWKD1072.record.comp.conflict=CWWKD1072E: El registro {0} es utilizado como una entidad por una o m\u00e1s de las interfaces de repositorio{1}) en el artefacto de aplicaci\u00f3n {2}, pero el registro no puede ser una entidad porque sus componentes {3} y {4} resuelven al mismo nombre de propiedad de entidad.
 CWWKD1072.record.comp.conflict.explanation=Los nombres de las propiedades de las entidades deben ser \u00fanicos ignorando may\u00fasculas y min\u00fasculas.
 CWWKD1072.record.comp.conflict.useraction=Cambie el nombre de uno de los componentes del registro para evitar el conflicto.
 
@@ -334,8 +335,8 @@ CWWKD1076.repo.disposed=CWWKD1076E: El m\u00e9todo {0} de la interfaz del reposi
 CWWKD1076.repo.disposed.explanation=Los m\u00e9todos del repositorio no deben utilizarse fuera del ciclo de vida de la aplicaci\u00f3n que define el repositorio.
 CWWKD1076.repo.disposed.useraction=Aseg\u00farese de que el m\u00e9todo de repositorio no se utiliza fuera del \u00e1mbito de la aplicaci\u00f3n que define el repositorio.
 
-CWWKD1077.defaultds.not.found=CWWKD1077E: El artefacto de aplicaci\u00f3n {0} tiene una interfaz de repositorio {1} que utiliza o utiliza por defecto el almac\u00e9n de datos {2}, que debe ser configurado en la configuraci\u00f3n del servidor definiendo un elemento dataSource que tenga el identificador DefaultDataSource. Por ejemplo, {3} Alternativamente, asigne el valor dataStore de la anotaci\u00f3n Repository para que sea el identificador de un elemento databaseStore o el nombre JNDI de una referencia de recurso de fuente de datos o referencia de unidad de persistencia que sea accesible al artefacto de aplicaci\u00f3n. Se puede definir un elemento databaseStore en la configuraci\u00f3n del servidor. Por ejemplo, {4} Un componente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n Resource para definir una referencia a un recurso de fuente de datos. Por ejemplo, {5}, que requiere que la configuraci\u00f3n del servidor tenga un elemento de configuraci\u00f3n dataSource con un atributo {6}. Un c\
-    omponente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n PersistenceUnit para definir una referencia de unidad de persistencia. Por ejemplo, {7}, que requiere que el archivo persistence.xml tenga un elemento persistence-unit con un atributo name coincidente. Por ejemplo, {8}
+CWWKD1077.defaultds.not.found=CWWKD1077E: El artefacto de aplicaci\u00f3n {0} tiene una o m\u00e1s interfaces de repositorio{1}) que utilizan o utilizan por defecto el almac\u00e9n de datos {2}. Este almac\u00e9n de datos debe configurarse en la configuraci\u00f3n del servidor definiendo un elemento dataSource que tenga el identificador DefaultDataSource. Por ejemplo, {3} Alternativamente, asigne el valor dataStore de la anotaci\u00f3n Repository para que sea el identificador de un elemento databaseStore o el nombre JNDI de una referencia de recurso de fuente de datos o referencia de unidad de persistencia que sea accesible al artefacto de aplicaci\u00f3n. Se puede definir un elemento databaseStore en la configuraci\u00f3n del servidor. Por ejemplo, {4} Un componente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n Resource para definir una referencia a un recurso de fuente de datos. Por ejemplo, {5}, que requiere que la configuraci\u00f3n del servidor tenga un elemento de configuraci\u00f3n d\
+    ataSource con un atributo {6}. Un componente de aplicaci\u00f3n puede utilizar la anotaci\u00f3n PersistenceUnit para definir una referencia de unidad de persistencia. Por ejemplo, {7}, que requiere que el archivo persistence.xml tenga un elemento persistence-unit con un atributo name coincidente. Por ejemplo, {8}
 CWWKD1077.defaultds.not.found.explanation=Los repositorios de Jakarta Data tienen por defecto el origen de datos por defecto de Jakarta EE, que debe ser configurado en la configuraci\u00f3n del servidor.
 CWWKD1077.defaultds.not.found.useraction=Configure la fuente de datos por defecto de Jakarta EE o especifique un almac\u00e9n de datos diferente para el repositorio.
 
@@ -360,3 +361,34 @@ CWWKD1081.entity.general.err.useraction=Localice la entidad y haga las correccio
 CWWKD1082.entity.classes.missing=CWWKD1082E: La unidad de persistencia para el almac\u00e9n de datos {0} no define una o m\u00e1s clases de entidad{1}) que requieran una o m\u00e1s interfaces de repositorio{2}) que utilicen el almac\u00e9n de datos.
 CWWKD1082.entity.classes.missing.explanation=Los repositorios utilizan clases de entidad que deben definirse en la unidad de persistencia.
 CWWKD1082.entity.classes.missing.useraction=Incluir todas las clases de entidad en la unidad de persistencia.
+
+CWWKD1083.dup.method.param=CWWKD1083E: M\u00faltiples par\u00e1metros en el m\u00e9todo {0} de la interfaz del repositorio {1} corresponden al par\u00e1metro con nombre: {2}. Puede anotar un par\u00e1metro de m\u00e9todo con {3} para especificar el par\u00e1metro denominado lenguaje de consulta. Alternativamente, puede activar la opci\u00f3n de compilaci\u00f3n -parameters y definir un par\u00e1metro de m\u00e9todo de la forma, {4}, que no requiere la anotaci\u00f3n Param.
+CWWKD1083.dup.method.param.explanation=Cada par\u00e1metro del m\u00e9todo debe corresponder exactamente a un par\u00e1metro de consulta.
+CWWKD1083.dup.method.param.useraction=Comprueba si cada uno de los par\u00e1metros del m\u00e9todo especifica el par\u00e1metro con nombre correcto. Eliminar par\u00e1metros de m\u00e9todo duplicados. 
+CWWKD1084.missing.named.params=CWWKD1084E: Los par\u00e1metros del m\u00e9todo {0} de la interfaz del repositorio {1} no definen los par\u00e1metros con nombre{2}) que requiere el valor de anotaci\u00f3n Query: {3}. Puede definir un par\u00e1metro con nombre para la consulta colocando la anotaci\u00f3n Param en un par\u00e1metro de m\u00e9todo correspondiente. Por ejemplo, {4}. Alternativamente, si activas la opci\u00f3n de compilaci\u00f3n -parameters, puedes omitir la anotaci\u00f3n Param si nombras el par\u00e1metro del m\u00e9todo para que tenga el mismo nombre que el par\u00e1metro nombrado. Por ejemplo, si String es el tipo de par\u00e1metro con nombre, el par\u00e1metro del m\u00e9todo puede ser {5}, que no requiere la anotaci\u00f3n Param.
+CWWKD1084.missing.named.params.explanation=El valor de la anotaci\u00f3n Query requiere uno o m\u00e1s par\u00e1metros con nombre que no son suministrados por el m\u00e9todo del repositorio.
+CWWKD1084.missing.named.params.useraction=A\u00f1ade par\u00e1metros al m\u00e9todo de repositorio para especificar los par\u00e1metros con nombre que faltan.
+
+CWWKD1085.extra.method.params=CWWKD1085E: Los par\u00e1metros del m\u00e9todo {0} de la interfaz del repositorio {1} definen par\u00e1metros de consulta{2}), que no coinciden con ninguno de los par\u00e1metros con nombre{3}) que utiliza el valor de anotaci\u00f3n Query: {4}.
+CWWKD1085.extra.method.params.explanation=Todos los par\u00e1metros del m\u00e9todo deben ser utilizados por la consulta o ser tipos de par\u00e1metros definidos por Jakarta Data.
+CWWKD1085.extra.method.params.useraction=Elimina los par\u00e1metros adicionales del m\u00e9todo.
+
+CWWKD1086.named.params.unused=CWWKD1086E: Los par\u00e1metros del m\u00e9todo {0} de la interfaz del repositorio {1} definen par\u00e1metros con nombre{2}), que no se utilizan en el valor de anotaci\u00f3n Query: {3}. Puede hacer referencia a par\u00e1metros con nombre en una consulta utilizando el car\u00e1cter : seguido del nombre del par\u00e1metro. Por ejemplo, {4}. Los par\u00e1metros de posici\u00f3n de una consulta pueden referenciarse utilizando el s\u00edmbolo ? seguido de un valor ordinal, empezando por ?1. Evite anotar par\u00e1metros de m\u00e9todo con la anotaci\u00f3n Param cuando la consulta utilice par\u00e1metros posicionales o no tenga par\u00e1metros.
+CWWKD1086.named.params.unused.explanation=La anotaci\u00f3n Param s\u00f3lo puede utilizarse cuando la consulta tiene par\u00e1metros con nombre.
+CWWKD1086.named.params.unused.useraction=Elimine la anotaci\u00f3n Param o cambie la consulta para utilizar par\u00e1metros con nombre.
+
+CWWKD1087.null.param=CWWKD1087E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz del repositorio {2} es un valor nulo. Especifique un valor no nulo.
+CWWKD1087.null.param.explanation=El valor del par\u00e1metro no debe ser nulo.
+CWWKD1087.null.param.useraction=Especifique un valor no nulo para el par\u00e1metro.
+
+CWWKD1088.empty.sorts=CWWKD1088E: Los criterios de ordenaci\u00f3n especificados por el par\u00e1metro {0} del m\u00e9todo {1} de la interfaz de repositorio {2} est\u00e1n vac\u00edos.
+CWWKD1088.empty.sorts.explanation=Los criterios de ordenaci\u00f3n no deben estar vac\u00edos.
+CWWKD1088.empty.sorts.useraction=Especifique un valor para los criterios de ordenaci\u00f3n.
+
+CWWKD1089.unordered.pagination=CWWKD1089E: El m\u00e9todo {0} de la interfaz del repositorio {1} debe especificar los criterios de ordenaci\u00f3n porque el m\u00e9todo devuelve un valor {2}. Los datos desordenados no pueden dividirse en p\u00e1ginas.
+CWWKD1089.unordered.pagination.explanation=La paginaci\u00f3n requiere datos ordenados.
+CWWKD1089.unordered.pagination.useraction=Utilice la anotaci\u00f3n OrderBy para definir los criterios de ordenaci\u00f3n del m\u00e9todo de repositorio.
+
+CWWKD1090.orderby.conflict=CWWKD1090E: El m\u00e9todo {0} de la interfaz de repositorio {1} no puede combinar la anotaci\u00f3n OrderBy y la palabra clave OrderBy.
+CWWKD1090.orderby.conflict.explanation=La anotaci\u00f3n OrderBy no es compatible con la palabra clave OrderBy.
+CWWKD1090.orderby.conflict.useraction=Utilice \u00fanicamente la anotaci\u00f3n OrderBy o la palabra clave OrderBy.

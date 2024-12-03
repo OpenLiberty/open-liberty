@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -30,10 +31,10 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.wsspi.security.crypto.CustomPasswordEncryption;
 import com.ibm.wsspi.security.crypto.EncryptedInfo;
+
+import test.common.SharedOutputManager;
 
 /**
  * Tests for the password utility class.
@@ -73,7 +74,7 @@ public class PasswordCipherUtilTest {
 
     /**
      * Test initializeCustomEncryption via setCustomPasswordEncryption
-     * 
+     *
      * @throws
      */
     @Test
@@ -109,12 +110,12 @@ public class PasswordCipherUtilTest {
      * @throws IllegalAccessException
      * @throws ClassNotFoundException
      * @throws UnsupportedConfigurationException
-     *             Test ListCustom method
-     * 
+     *                                               Test ListCustom method
+     *
      * @throws
      */
     @Test
-    public void testListCustom() throws UnsupportedConfigurationException, ClassNotFoundException, IllegalAccessException, InstantiationException, IOException {
+    public void testListCustom() throws UnsupportedConfigurationException, ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, NoSuchMethodException, InvocationTargetException {
         final String expected = "[{\"name\":\"custom\",\"featurename\":\"usr:simpleCustomEncryption-1.0\",\"description\":\"simpleCustomEncryption default resource\"}]";
 
         String currentDir = System.clearProperty(KEY_PROP_INSTALL_DIR);

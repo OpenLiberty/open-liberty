@@ -100,7 +100,7 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
             if (bvalManagedObjectBuilderSR.getReference() != null) {
                 BvalManagedObjectBuilder bvalManagedObjectBuilder = bvalManagedObjectBuilderSR.getServiceWithException();
-                return bvalManagedObjectBuilder.injectValidatorFactoryResources(config, appClassLoader);
+                return bvalManagedObjectBuilder.injectValidatorFactoryResources(config, appClassLoader, runtimeVersion);
             } else {
                 return config.buildValidatorFactory();
             }

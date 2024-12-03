@@ -26,6 +26,7 @@ import com.ibm.websphere.simplicity.config.HttpSessionCache;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -33,6 +34,9 @@ import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
+//TODO Currently Infinispan does not support Java 23 with the versions of Infinispan we support
+//The @MaximumJavaLevel annotation should be removed once the this issue is fixed in a version of Infinispan we support
+@MaximumJavaLevel(javaLevel = 22)
 @RunWith(FATRunner.class)
 @CheckpointTest
 public class CheckpointSessionCacheConfigUpdateTest extends FATServletClient {

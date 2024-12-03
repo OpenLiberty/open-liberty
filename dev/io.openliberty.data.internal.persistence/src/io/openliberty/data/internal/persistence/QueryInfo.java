@@ -12,38 +12,38 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.persistence.Util.SORT_PARAM_TYPES;
+import static io.openliberty.data.internal.persistence.Util.SPECIAL_PARAM_TYPES;
+import static io.openliberty.data.internal.persistence.Util.lifeCycleReturnTypes;
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.RecordComponent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.BaseStream;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.ibm.websphere.ras.Tr;
@@ -57,6 +57,8 @@ import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
+import jakarta.data.exceptions.NonUniqueResultException;
+import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
@@ -69,6 +71,9 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.TypedQuery;
 
 /**
  * Query information.
@@ -77,14 +82,15 @@ public class QueryInfo {
     private static final TraceComponent tc = Tr.register(QueryInfo.class);
 
     public static enum Type {
-        COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, INSERT, SAVE, RESOURCE_ACCESS,
+        COUNT,
+        DELETE, DELETE_WITH_ENTITY_PARAM,
+        EXISTS,
+        FIND, FIND_AND_DELETE,
+        INSERT,
+        SAVE,
+        RESOURCE_ACCESS,
         UPDATE, UPDATE_WITH_ENTITY_PARAM, UPDATE_WITH_ENTITY_PARAM_AND_RESULT
     }
-
-    /**
-     * Commonly used result types that are not entities.
-     */
-    private static final Set<Class<?>> NON_ENTITY_RESULT_TYPES = new HashSet<>();
 
     /**
      * Indicates the repository method has no Sort, Sort[], or Order parameters
@@ -105,82 +111,6 @@ public class QueryInfo {
      * OrderBy annotation or keyword.
      */
     private static final int[] NONE_STATIC_SORT_ONLY = new int[0];
-
-    /**
-     * Primitive types for numeric values.
-     */
-    static final Set<Class<?>> PRIMITIVE_NUMERIC_TYPES = //
-                    Set.of(long.class, int.class, short.class, byte.class,
-                           double.class, float.class);
-
-    /**
-     * Return types for deleteBy that distinguish delete-only from find-and-delete.
-     */
-    private static final Set<Class<?>> RETURN_TYPES_FOR_DELETE_ONLY = //
-                    Set.of(void.class, Void.class,
-                           boolean.class, Boolean.class,
-                           int.class, Integer.class,
-                           long.class, Long.class,
-                           Number.class);
-
-    /**
-     * Valid types for repository method parameters that specify sort criteria.
-     */
-    static final Set<Class<?>> SORT_PARAM_TYPES = //
-                    Set.of(Order.class, Sort.class, Sort[].class);
-
-    /**
-     * Valid types for repository method parameters after the query parameters.
-     */
-    static final Set<Class<?>> SPECIAL_PARAM_TYPES = //
-                    Set.of(Limit.class, Order.class, PageRequest.class,
-                           Sort.class, Sort[].class);
-
-    /**
-     * Valid types for when a repository method computes an update count
-     */
-    private static final Set<Class<?>> UPDATE_COUNT_TYPES = //
-                    Set.of(boolean.class, Boolean.class,
-                           int.class, Integer.class,
-                           long.class, Long.class,
-                           void.class, Void.class,
-                           Number.class);
-
-    /**
-     * Valid types for jakarta.persistence.Version, except for
-     * java.sql.Timestamp, which is not a valid type in Jakarta Data.
-     */
-    public static final Set<Class<?>> VERSION_TYPES = //
-                    Set.of(Instant.class,
-                           int.class, Integer.class,
-                           LocalDateTime.class,
-                           long.class, Long.class,
-                           short.class, Short.class);
-
-    /**
-     * Mapping of Java primitive class to wrapper class.
-     */
-    private static final Map<Class<?>, Class<?>> WRAPPER_CLASSES = //
-                    Map.of(boolean.class, Boolean.class,
-                           byte.class, Byte.class,
-                           char.class, Character.class,
-                           double.class, Double.class,
-                           float.class, Float.class,
-                           int.class, Integer.class,
-                           long.class, Long.class,
-                           short.class, Short.class,
-                           void.class, Void.class);
-
-    static {
-        for (Entry<Class<?>, Class<?>> e : WRAPPER_CLASSES.entrySet()) {
-            NON_ENTITY_RESULT_TYPES.add(e.getKey()); // primitive classes
-            NON_ENTITY_RESULT_TYPES.add(e.getValue()); // wrapper classes
-        }
-        NON_ENTITY_RESULT_TYPES.add(BigDecimal.class);
-        NON_ENTITY_RESULT_TYPES.add(BigInteger.class);
-        NON_ENTITY_RESULT_TYPES.add(Object.class);
-        NON_ENTITY_RESULT_TYPES.add(String.class);
-    }
 
     /**
      * Information about the type of entity to which the query pertains.
@@ -245,6 +175,23 @@ public class QueryInfo {
     String jpqlDelete;
 
     /**
+     * Number of parameters to the JPQL query.
+     */
+    int jpqlParamCount;
+
+    /**
+     * Names of named parameters in query language, ordered according to the
+     * position in which each appears as a repository method parameter.
+     * Repository method parameters identify the name with the
+     * <code>Param</code> annotation if present, or otherwise by the
+     * name of the parameter (if the -parameters compiler option is enabled).
+     * The empty set value is used when the field has not been initialized yet
+     * or the query has no parameters or has positional parameters (?1, ?2, ...)
+     * rather than named parameters.
+     */
+    private Set<String> jpqlParamNames = Collections.emptySet();
+
+    /**
      * Value from findFirst#By, or 1 for findFirstBy, otherwise 0.
      */
     int maxResults;
@@ -259,23 +206,6 @@ public class QueryInfo {
      * Null if the query return type limits to single results.
      */
     final Class<?> multiType;
-
-    /**
-     * Number of parameters to the JPQL query.
-     */
-    int paramCount;
-
-    /**
-     * Names of named parameters in query language, ordered according to the
-     * position in which each appears as a repository method parameter.
-     * Repository method parameters identify the name with the
-     * <code>Param</code> annotation if present, or otherwise by the
-     * name of the parameter (if the -parameters compiler option is enabled).
-     * The empty set value is used when the field has not been initialized yet
-     * or the query has no parameters or has positional parameters (?1, ?2, ...)
-     * rather than named parameters.
-     */
-    private Set<String> paramNames = Collections.emptySet();
 
     /**
      * The interface that is annotated with @Repository.
@@ -465,7 +395,7 @@ public class QueryInfo {
 
     /**
      * Adds Sort criteria to the end of the tracked list of sort criteria.
-     * For IdClass, adds all Id properties separately. TODO use id(this) instead once #28925 is fixed
+     * For IdClass, adds all Id properties separately. TODO use id(this) instead once #30093 is fixed
      *
      * @param ignoreCase if ordering is to be independent of case.
      * @param attribute  name of attribute (@OrderBy value or Sort property or parsed from OrderBy query-by-method).
@@ -568,24 +498,6 @@ public class QueryInfo {
     }
 
     /**
-     * Returns true if it is certain the class cannot be an entity
-     * because it is one of the common non-entity result types
-     * or it is an enumeration, interface, or abstract class.
-     * Otherwise, returns false.
-     *
-     * @param c class of result.
-     * @return true if a result of the type might be an entity, otherwise false.
-     */
-    @Trivial
-    public static boolean cannotBeEntity(Class<?> c) {
-        int modifiers;
-        return NON_ENTITY_RESULT_TYPES.contains(c) ||
-               c.isEnum() ||
-               Modifier.isInterface(modifiers = c.getModifiers()) ||
-               Modifier.isAbstract(modifiers);
-    }
-
-    /**
      * Compute the zero-based offset to use as a starting point for a Limit range.
      *
      * @param limit limit that was specified by the application.
@@ -677,7 +589,7 @@ public class QueryInfo {
                                + " to " + toType.getSimpleName());
 
         if (value instanceof Number &&
-            (PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
+            (Util.PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
              Number.class.isAssignableFrom(toType))) {
             // Conversion from one numeric type to another
             try {
@@ -778,7 +690,7 @@ public class QueryInfo {
                 cause = x;
             }
         } else if (value instanceof CharSequence &&
-                   (PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
+                   (Util.PRIMITIVE_NUMERIC_TYPES.contains(toType) ||
                     Number.class.isAssignableFrom(toType))) {
             // Conversion from text to numeric value
             if (int.class.equals(toType) || Integer.class.equals(toType))
@@ -926,6 +838,98 @@ public class QueryInfo {
     }
 
     /**
+     * Execute a repository count query.
+     *
+     * @param em   entity manager.
+     * @param args method parameters.
+     * @return the count, converted to a type that is compatible with the
+     *         method signature.
+     * @throws Exception        if an error occurs.
+     * @throws MappingException if the count cannot be converted to the
+     *                              requested type.
+     */
+    @Trivial
+    Object count(EntityManager em, Object... args) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "count", em,
+                     // method args have already been logged if loggable
+                     "to be returned as " + singleType.getName());
+
+        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+        setParameters(query, args);
+
+        Long count = query.getSingleResult();
+
+        Object returnValue;
+        if (long.class.equals(singleType) ||
+            Long.class.equals(singleType) ||
+            singleType.isAssignableFrom(Long.class)) {
+            returnValue = count;
+        } else {
+            if (int.class.equals(singleType) || Integer.class.equals(singleType))
+                if (count > Integer.MAX_VALUE)
+                    throw exc(MappingException.class,
+                              "CWWKD1048.result.exceeds.max",
+                              count,
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              method.getGenericReturnType().getTypeName(),
+                              "Integer.MAX_VALUE (" + Integer.MAX_VALUE + ')');
+                else
+                    returnValue = count.intValue();
+            else if (short.class.equals(singleType) || Short.class.equals(singleType))
+                if (count > Short.MAX_VALUE)
+                    throw exc(MappingException.class,
+                              "CWWKD1048.result.exceeds.max",
+                              count,
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              method.getGenericReturnType().getTypeName(),
+                              "Short.MAX_VALUE (" + Short.MAX_VALUE + ')');
+                else
+                    returnValue = count.shortValue();
+            else if (byte.class.equals(singleType) || Byte.class.equals(singleType))
+                if (count > Byte.MAX_VALUE)
+                    throw exc(MappingException.class,
+                              "CWWKD1048.result.exceeds.max",
+                              count,
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              method.getGenericReturnType().getTypeName(),
+                              "Byte.MAX_VALUE (" + Byte.MAX_VALUE + ')');
+                else
+                    returnValue = count.byteValue();
+            else if (BigInteger.class.equals(singleType))
+                returnValue = BigInteger.valueOf(count);
+            else if (BigDecimal.class.equals(singleType))
+                returnValue = BigDecimal.valueOf(count);
+            else
+                throw exc(MappingException.class,
+                          "CWWKD1049.count.convert.err",
+                          count,
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          method.getGenericReturnType().getTypeName());
+        }
+
+        Class<?> returnType = method.getReturnType();
+        if (Optional.class.equals(returnType)) {
+            returnValue = Optional.of(returnValue);
+        } else if (CompletableFuture.class.equals(returnType) ||
+                   CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue);
+        }
+
+        if (trace && tc.isEntryEnabled())
+            if (count == returnValue)
+                Tr.exit(this, tc, "count", returnValue);
+            else
+                Tr.exit(this, tc, "count", count + " converted to " + returnValue);
+        return returnValue;
+    }
+
+    /**
      * Raises an error because the number of cursor elements does not match the
      * number of sort parameters.
      *
@@ -1051,7 +1055,7 @@ public class QueryInfo {
     private UnsupportedOperationException excMixedQLParamTypes(int methodNPCount) {
         String firstNamedParam = null;
         StringBuilder allNamedParams = new StringBuilder().append('(');
-        for (String name : paramNames) {
+        for (String name : jpqlParamNames) {
             if (firstNamedParam == null)
                 firstNamedParam = name;
             else
@@ -1074,13 +1078,32 @@ public class QueryInfo {
                    "CWWKD1019.mixed.positional.named",
                    method.getName(),
                    repositoryInterface.getName(),
-                   paramCount - methodNPCount,
+                   jpqlParamCount - methodNPCount,
                    methodNPCount,
                    allNamedParams,
                    method.getAnnotation(Query.class).value(),
                    ':' + firstNamedParam,
                    "@Param(\"" + firstNamedParam + "\")",
                    firstNamedParamType.getSimpleName() + ' ' + firstNamedParam);
+    }
+
+    /**
+     * Create a new NonUniqueResultException.
+     *
+     * @param numResults number of results.
+     * @return the NonUniqueResultException.
+     */
+    @Trivial
+    NonUniqueResultException excNonUniqueResult(int numResults) {
+        throw exc(NonUniqueResultException.class,
+                  "CWWKD1054.non.unique.result",
+                  method.getName(),
+                  repositoryInterface.getName(),
+                  method.getGenericReturnType().getTypeName(),
+                  numResults,
+                  List.of(// In a future release: @Find @First findByX(...)
+                          "findFirstByX(...)",
+                          "findByX(..., Limit.of(1))"));
     }
 
     /**
@@ -1100,6 +1123,208 @@ public class QueryInfo {
                    List.of("Connection", "DataSource", "EntityManager"),
                    List.of("count", "delete", "exists", "find"),
                    entityInfo.getExampleMethodNames());
+    }
+
+    /**
+     * Finds and updates entities (or records) in the database.
+     *
+     * @param arg the entity or record, or array/Iterable/Stream of entity or record
+     * @param em  the entity manager.
+     * @return the updated entities, using the return type that is required by the
+     *         repository Update method signature.
+     * @throws OptimisticLockingFailureException if an entity is not found in the database.
+     * @throws Exception                         if an error occurs.
+     */
+    Object findAndUpdate(Object arg, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findAndUpdate", loggable(arg), em);
+
+        List<Object> results;
+
+        boolean hasSingularEntityParam = false;
+        if (entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            results = new ArrayList<>(length);
+            for (int i = 0; i < length; i++)
+                results.add(findAndUpdateOne(Array.get(arg, i), em));
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            results = new ArrayList<>();
+            if (arg instanceof Iterable) {
+                for (Object e : ((Iterable<?>) arg))
+                    results.add(findAndUpdateOne(e, em));
+            } else {
+                hasSingularEntityParam = true;
+                results = new ArrayList<>(1);
+                results.add(findAndUpdateOne(arg, em));
+            }
+        }
+
+        if (results.isEmpty())
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1092.lifecycle.arg.empty",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericParameterTypes()[0].getTypeName());
+
+        em.flush();
+
+        Class<?> returnType = method.getReturnType();
+        if (void.class.equals(returnType) || Void.class.equals(returnType))
+            return null;
+
+        if (entityInfo.recordClass != null)
+            for (int i = 0; i < results.size(); i++)
+                results.set(i, entityInfo.toRecord(results.get(i)));
+
+        Object returnValue;
+        if (returnArrayType != null) {
+            Object[] newArray = (Object[]) Array.newInstance(returnArrayType, results.size());
+            returnValue = results.toArray(newArray);
+        } else {
+            if (multiType == null)
+                if (results.size() == 1)
+                    returnValue = results.get(0);
+                else if (results.isEmpty())
+                    returnValue = null;
+                else
+                    throw excNonUniqueResult(results.size());
+            else if (multiType.isInstance(results))
+                returnValue = results;
+            else if (Stream.class.equals(multiType))
+                returnValue = results.stream();
+            else if (Iterable.class.isAssignableFrom(multiType))
+                returnValue = convertToIterable(results, null, multiType);
+            else if (Iterator.class.equals(multiType))
+                returnValue = results.iterator();
+            else
+                throw exc(MappingException.class,
+                          "CWWKD1003.lifecycle.rtrn.err",
+                          method.getGenericReturnType().getTypeName(),
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          "Update",
+                          lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
+                                               hasSingularEntityParam,
+                                               false));
+        }
+
+        if (Optional.class.equals(returnType)) {
+            returnValue = returnValue == null ? Optional.empty() : Optional.of(returnValue);
+        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+        } else if (returnValue != null && !returnType.isInstance(returnValue)) {
+            throw exc(MappingException.class,
+                      "CWWKD1003.lifecycle.rtrn.err",
+                      method.getGenericReturnType().getTypeName(),
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      "Update",
+                      lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
+                                           hasSingularEntityParam,
+                                           false));
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "findAndUpdate", loggable(returnValue));
+        return returnValue;
+    }
+
+    /**
+     * Finds an entity (or record) in the database, locks it for subsequent update,
+     * and updates the entity found in the database to match the desired state
+     * of the supplied entity.
+     *
+     * @param e  the entity or record.
+     * @param em the entity manager.
+     * @return the entity that is written to the database. Never null.
+     * @throws OptimisticLockingException if the entity is not found.
+     * @throws Exception                  if an error occurs.
+     */
+    private Object findAndUpdateOne(Object e, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findAndUpdateOne", loggable(e), em);
+
+        String jpql = this.jpql;
+
+        int versionParamIndex = entityInfo.idClassAttributeAccessors == null //
+                        ? 2 //
+                        : (entityInfo.idClassAttributeAccessors.size() + 1);
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = null;
+        String idAttributeName = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            idAttributeName = entityInfo.attributeNames.get(ID);
+            id = getAttribute(e, idAttributeName);
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1),
+                                    " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex,
+                                        "=?" + (versionParamIndex - 1));
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != this.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        Class<?> entityClass = singleType.equals(entityInfo.recordClass) //
+                        ? entityInfo.entityClass //
+                        : singleType;
+
+        TypedQuery<?> query = em.createQuery(jpql, entityClass);
+        query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+
+        if (entityInfo.idClassAttributeAccessors == null) {
+            int p = 1;
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + loggable(id));
+                query.setParameter(p++, id);
+            }
+            if (version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + loggable(version));
+                query.setParameter(p, version);
+            }
+        } else {
+            setParametersFromIdClassAndVersion(1, query, e, version);
+        }
+
+        List<?> results = query.getResultList();
+
+        if (results.isEmpty()) {
+            List<String> entityProps = new ArrayList<>(2);
+            if (id != null)
+                entityProps.add(loggableAppend(idAttributeName, "=", id));
+            if (entityInfo.versionAttributeName != null && version != null)
+                entityProps.add(loggableAppend(entityInfo.versionAttributeName,
+                                               "=", version));
+            throw exc(OptimisticLockingFailureException.class,
+                      "CWWKD1050.opt.lock.exc",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      e.getClass().getName(),
+                      entityProps,
+                      RepositoryImpl.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
+        }
+
+        Object returnValue = em.merge(toEntity(e));
+
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findAndUpdateOne", loggable(returnValue));
+        return returnValue;
     }
 
     /**
@@ -1352,27 +1577,27 @@ public class QueryInfo {
         switch (condition) {
             case STARTS_WITH:
                 q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(");
-                generateParam(q, ignoreCase, ++paramCount).append(", '%')");
+                generateParam(q, ignoreCase, ++jpqlParamCount).append(", '%')");
                 break;
             case ENDS_WITH:
                 q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
-                generateParam(q, ignoreCase, ++paramCount).append(")");
+                generateParam(q, ignoreCase, ++jpqlParamCount).append(")");
                 break;
             case LIKE:
                 q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ");
-                generateParam(q, ignoreCase, ++paramCount);
+                generateParam(q, ignoreCase, ++jpqlParamCount);
                 break;
             case BETWEEN:
                 q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ");
-                generateParam(q, ignoreCase, ++paramCount).append(" AND ");
-                generateParam(q, ignoreCase, ++paramCount);
+                generateParam(q, ignoreCase, ++jpqlParamCount).append(" AND ");
+                generateParam(q, ignoreCase, ++jpqlParamCount);
                 break;
             case CONTAINS:
                 if (isCollection) {
-                    q.append(" ?").append(++paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
+                    q.append(" ?").append(++jpqlParamCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
                 } else {
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
-                    generateParam(q, ignoreCase, ++paramCount).append(", '%')");
+                    generateParam(q, ignoreCase, ++jpqlParamCount).append(", '%')");
                 }
                 break;
             case NULL:
@@ -1397,7 +1622,7 @@ public class QueryInfo {
                               "In");
             default:
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator);
-                generateParam(q, ignoreCase, ++paramCount);
+                generateParam(q, ignoreCase, ++jpqlParamCount);
         }
     }
 
@@ -1436,7 +1661,7 @@ public class QueryInfo {
      */
     void generateCursorQueries(StringBuilder q, StringBuilder fwd, StringBuilder prev) {
         int numSorts = sorts.size();
-        String paramPrefix = paramNames.isEmpty() ? "?" : ":cursor";
+        String paramPrefix = jpqlParamNames.isEmpty() ? "?" : ":cursor";
         StringBuilder a = fwd == null ? null : new StringBuilder(200).append(hasWhere ? " AND (" : " WHERE (");
         StringBuilder b = prev == null ? null : new StringBuilder(200).append(hasWhere ? " AND (" : " WHERE (");
         String o_ = entityVar_;
@@ -1454,21 +1679,21 @@ public class QueryInfo {
                     if (lower) {
                         a.append(s == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
                         a.append(s < i ? '=' : (asc ? '>' : '<'));
-                        a.append("LOWER(").append(paramPrefix).append(paramCount + 1 + s).append(')');
+                        a.append("LOWER(").append(paramPrefix).append(jpqlParamCount + 1 + s).append(')');
                     } else {
                         a.append(s == 0 ? "" : " AND ").append(o_).append(name);
                         a.append(s < i ? '=' : (asc ? '>' : '<'));
-                        a.append(paramPrefix).append(paramCount + 1 + s);
+                        a.append(paramPrefix).append(jpqlParamCount + 1 + s);
                     }
                 if (b != null)
                     if (lower) {
                         b.append(s == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
                         b.append(s < i ? '=' : (asc ? '<' : '>'));
-                        b.append("LOWER(").append(paramPrefix).append(paramCount + 1 + s).append(')');
+                        b.append("LOWER(").append(paramPrefix).append(jpqlParamCount + 1 + s).append(')');
                     } else {
                         b.append(s == 0 ? "" : " AND ").append(o_).append(name);
                         b.append(s < i ? '=' : (asc ? '<' : '>'));
-                        b.append(paramPrefix).append(paramCount + 1 + s);
+                        b.append(paramPrefix).append(jpqlParamCount + 1 + s);
                     }
             }
             if (a != null)
@@ -1541,14 +1766,14 @@ public class QueryInfo {
                         q.append(" AND ");
 
                     name = entityInfo.attributeNames.get(name);
-                    q.append(o_).append(name).append("=?").append(++paramCount);
+                    q.append(o_).append(name).append("=?").append(++jpqlParamCount);
                 }
             } else {
-                q.append(o_).append(idName).append("=?").append(++paramCount);
+                q.append(o_).append(idName).append("=?").append(++jpqlParamCount);
             }
 
             if (entityInfo.versionAttributeName != null)
-                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++paramCount);
+                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++jpqlParamCount);
 
             q.append(')');
         }
@@ -1715,7 +1940,7 @@ public class QueryInfo {
                                     q.append(o_).append(name).append(op);
                             }
 
-                            paramCount++;
+                            jpqlParamCount++;
                             q.append('?').append(qp);
 
                             if (withFunction)
@@ -1791,7 +2016,7 @@ public class QueryInfo {
 
                 boolean isCollection = entityInfo.collectionElementTypes.containsKey(name);
 
-                paramCount++;
+                jpqlParamCount++;
 
                 compat.appendCondition(q, qp, method, p, o_, name, isCollection, annosForAllParams[p]);
             }
@@ -1845,10 +2070,10 @@ public class QueryInfo {
         Class<?> singleType = this.singleType;
 
         if (singleType.isPrimitive())
-            singleType = wrapperClassIfPrimitive(singleType);
+            singleType = Util.wrapperClassIfPrimitive(singleType);
 
         if (type == Type.FIND_AND_DELETE &&
-            !(singleType.isAssignableFrom(wrapperClassIfPrimitive(entityInfo.idType)) ||
+            !(singleType.isAssignableFrom(Util.wrapperClassIfPrimitive(entityInfo.idType)) ||
               singleType.isAssignableFrom(entityInfo.getType()))) {
             throw exc(MappingException.class,
                       "CWWKD1006.delete.rtrn.err",
@@ -1871,7 +2096,7 @@ public class QueryInfo {
                 for (Map.Entry<String, Class<?>> entry : entityInfo.attributeTypes.entrySet()) {
                     Class<?> attributeType = entry.getValue();
                     if (attributeType.isPrimitive())
-                        attributeType = wrapperClassIfPrimitive(attributeType);
+                        attributeType = Util.wrapperClassIfPrimitive(attributeType);
                     if (singleType.isAssignableFrom(attributeType))
                         if (singleAttributeName == null)
                             singleAttributeName = entry.getKey();
@@ -2070,7 +2295,7 @@ public class QueryInfo {
                 case '+':
                     if (CharSequence.class.isAssignableFrom(entityInfo.attributeTypes.get(name))) {
                         q.append("CONCAT(").append(o_).append(name).append(',') //
-                                        .append('?').append(++paramCount).append(')');
+                                        .append('?').append(++jpqlParamCount).append(')');
                         break;
                     }
                     // else fall through
@@ -2079,7 +2304,7 @@ public class QueryInfo {
                     q.append(o_).append(name).append(op);
                     // fall through
                 case '=':
-                    q.append('?').append(++paramCount);
+                    q.append('?').append(++jpqlParamCount);
             }
 
             u = next == Integer.MAX_VALUE ? -1 : next;
@@ -2097,7 +2322,7 @@ public class QueryInfo {
         StringBuilder q;
 
         if (entityInfo.attributeNamesForEntityUpdate != null &&
-            UPDATE_COUNT_TYPES.contains(singleType)) {
+            Util.UPDATE_COUNT_TYPES.contains(singleType)) {
             setType(Update.class, Type.UPDATE_WITH_ENTITY_PARAM);
 
             q = new StringBuilder(100) //
@@ -2112,7 +2337,7 @@ public class QueryInfo {
                 else
                     q.append(", ");
 
-                q.append(o_).append(name).append("=?").append(++paramCount);
+                q.append(o_).append(name).append("=?").append(++jpqlParamCount);
             }
         } else {
             // Update that returns an entity. And also used when an entity
@@ -2142,15 +2367,15 @@ public class QueryInfo {
                     q.append(" AND ");
 
                 name = entityInfo.attributeNames.get(name);
-                q.append(o_).append(name).append("=?").append(++paramCount);
+                q.append(o_).append(name).append("=?").append(++jpqlParamCount);
             }
         } else {
-            q.append(o_).append(idName).append("=?").append(++paramCount);
+            q.append(o_).append(idName).append("=?").append(++jpqlParamCount);
         }
 
         if (entityInfo.versionAttributeName != null)
             q.append(" AND ").append(o_).append(entityInfo.versionAttributeName) //
-                            .append("=?").append(++paramCount);
+                            .append("=?").append(++jpqlParamCount);
 
         q.append(')');
 
@@ -2188,7 +2413,12 @@ public class QueryInfo {
      * @param attributeName name of the entity attribute.
      * @return the value of the attribute.
      */
+    @Trivial
     Object getAttribute(Object entity, String attributeName) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getAttribute", loggable(entity), attributeName);
+
         List<Member> accessors = entityInfo.attributeAccessors.get(attributeName);
         if (accessors == null)
             throw new IllegalArgumentException(attributeName); // should never occur
@@ -2216,6 +2446,8 @@ public class QueryInfo {
             }
         }
 
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getAttribute", loggable(value));
         return value;
     }
 
@@ -2232,15 +2464,23 @@ public class QueryInfo {
                     // id(this)
                     attributeName = entityInfo.attributeNames.get(By.ID);
                     if (attributeName == null && failIfNotFound)
-                        throw new MappingException("Entity class " + entityInfo.getType().getName() +
-                                                   " does not have a property named " + name +
-                                                   " or which is designated as the @Id."); // TODO NLS
+                        throw exc(UnsupportedOperationException.class,
+                                  "CWWKD1093.fn.not.applicable",
+                                  name,
+                                  entityInfo.getType().getName(),
+                                  method.getName(),
+                                  repositoryInterface.getName(),
+                                  "@Id");
                 } else if (len == 13 && name.regionMatches(true, 0, "version", 0, 7)) {
                     // version(this)
                     if (entityInfo.versionAttributeName == null && failIfNotFound)
-                        throw new MappingException("Entity class " + entityInfo.getType().getName() +
-                                                   " does not have a property named " + name +
-                                                   " or which is designated as the @Version."); // TODO NLS
+                        throw exc(UnsupportedOperationException.class,
+                                  "CWWKD1093.fn.not.applicable",
+                                  name,
+                                  entityInfo.getType().getName(),
+                                  method.getName(),
+                                  repositoryInterface.getName(),
+                                  "@Version");
                     else
                         attributeName = entityInfo.versionAttributeName;
                 } else {
@@ -2255,10 +2495,10 @@ public class QueryInfo {
             else
                 throw exc(MappingException.class,
                           "CWWKD1010.unknown.entity.prop",
-                          method.getName(),
-                          repositoryInterface.getName(),
                           name,
                           entityInfo.getType().getName(),
+                          method.getName(),
+                          repositoryInterface.getName(),
                           entityInfo.attributeTypes.keySet());
         } else {
             String lowerName = name.toLowerCase();
@@ -2280,15 +2520,23 @@ public class QueryInfo {
                         lowerName = lowerName.replace("_", "");
                         attributeName = entityInfo.attributeNames.get(lowerName);
                         if (attributeName == null && failIfNotFound) {
-                            // TODO If attempting to parse Query by Method Name without a By keyword, then the message
-                            // should also include the possibility that repository method is missing an annotation.
-                            throw exc(MappingException.class,
-                                      "CWWKD1010.unknown.entity.prop",
-                                      method.getName(),
-                                      repositoryInterface.getName(),
-                                      name,
-                                      entityInfo.getType().getName(),
-                                      entityInfo.attributeTypes.keySet());
+                            if (Util.hasOperationAnno(method))
+                                throw exc(MappingException.class,
+                                          "CWWKD1010.unknown.entity.prop",
+                                          name,
+                                          entityInfo.getType().getName(),
+                                          method.getName(),
+                                          repositoryInterface.getName(),
+                                          entityInfo.attributeTypes.keySet());
+                            else
+                                throw exc(MappingException.class,
+                                          "CWWKD1091.method.name.parse.err",
+                                          name,
+                                          entityInfo.getType().getName(),
+                                          method.getName(),
+                                          repositoryInterface.getName(),
+                                          Util.OP_ANNOS,
+                                          entityInfo.attributeTypes.keySet());
                         }
                     }
                 }
@@ -2320,7 +2568,8 @@ public class QueryInfo {
             try {
                 List<Member> accessors = entityInfo.attributeAccessors.get(sort.property());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "getCursorValues for " + entity, accessors);
+                    Tr.debug(this, tc, "getCursorValues for " + loggable(entity),
+                             accessors);
                 Object value = entity;
                 for (Member accessor : accessors)
                     if (accessor instanceof Method)
@@ -2361,11 +2610,64 @@ public class QueryInfo {
      * @param startAt starting position in the query language string.
      * @return position of the text ignoring case if it is the next non-whitespace characters. Otherwise -1;
      */
+    @Trivial
     private static int indexOfAfterWhitespace(String text, String ql, int startAt) {
         int length = ql.length();
         while (startAt < length && Character.isWhitespace(ql.charAt(startAt)))
             startAt++;
         return ql.regionMatches(true, startAt, text, 0, 2) ? startAt : -1;
+    }
+
+    /**
+     * Infer the selection value to use for a COUNT query.
+     * Typically, the best we can do is to use the entity identifier variable,
+     * For example, COUNT(o). This works for:
+     *
+     * <pre>
+     * SELECT o ...
+     * SELECT o.col1 ...
+     * SELECT o.col1, o.col2 ...
+     * SELECT NEW org.example.ClassName(o.col1, o.col2) ...
+     * </pre>
+     *
+     * It should be noted we cannot use COUNT(o.col1) because it does not count
+     * null values, making it inconsistent with the number of values returned by
+     * SELECT o.col1.
+     *
+     * One place where COUNT(o) does not work is when selecting DISTINCT values.
+     *
+     * <pre>
+     * SELECT DISTINCT o.col1 ...
+     * </pre>
+     *
+     * In this case, the total number of matching entities would be incorrect.
+     * Instead, we want the number of distinct values. This will work well if there
+     * are no NULL values. But when there are NULL values, COUNT will omit then,
+     * but the SELECT DISTINCT query will includes one NULL value in its results,
+     * making the COUNT one less than it should be. It is unclear what to do
+     * about this, except to point out that Jakarta Data is only required to
+     * support JDQL and can choose to support as much of JPQL as it wishes, so here
+     * we have the limitation that we are only supporting JPQL DISTINCT for
+     * Page.totalElements and Page.totalPages when the results have no NULL values.
+     *
+     * @param ql        the query.
+     * @param select0   position after SELECT, if present.
+     * @param selectLen length of the text in the SELECT clause after SELECT,
+     *                      if present, otherwise -1.
+     * @return selection to use for a SELECT COUNT( {selection} ) query.
+     */
+    private String inferCountFromSelect(String ql, int select0, int selectLen) {
+        // Look for DISTINCT in the selections
+        for (int i = select0; i < select0 + selectLen - 9; i++) {
+            char ch = ql.charAt(i);
+            if ((ch == 'D' || ch == 'd') &&
+                (i == select0 || !Character.isJavaIdentifierPart(ql.charAt(i - 1))) &&
+                !Character.isJavaIdentifierPart(ql.charAt(i - 1)) &&
+                ql.regionMatches(true, i + 1, "ISTINCT", 0, 7))
+                return ql.substring(select0, select0 + selectLen);
+        }
+
+        return entityVar;
     }
 
     /**
@@ -2566,7 +2868,7 @@ public class QueryInfo {
      */
     @Trivial
     private void initDynamicSortPositions(Class<?>[] paramTypes) {
-        for (int i = paramCount; i < paramTypes.length; i++)
+        for (int i = jpqlParamCount; i < paramTypes.length; i++)
             if (SORT_PARAM_TYPES.contains(paramTypes[i]))
                 initDynamicSortPosition(i);
     }
@@ -2926,13 +3228,7 @@ public class QueryInfo {
             if (countPages) {
                 // TODO count query cannot always be accurately inferred if Query value is JPQL
                 StringBuilder c = new StringBuilder("SELECT COUNT(");
-                if (selectLen <= 0
-                    || ql.substring(select0, select0 + selectLen).indexOf(',') >= 0) // comma delimited multiple return values
-                    c.append(entityVar);
-                else // allows for COUNT(DISTINCT o.name)
-                    appendWithIdentifierName(ql, select0, select0 + selectLen,
-                                             entityVar_.length() == 0 ? "this." : entityVar_,
-                                             c);
+                c.append(inferCountFromSelect(ql, select0, selectLen));
 
                 c.append(") FROM");
                 if (from0 >= 0) {
@@ -3053,7 +3349,7 @@ public class QueryInfo {
         Parameter[] params = method.getParameters();
         for (int i = 0; i < params.length &&
                         !SPECIAL_PARAM_TYPES.contains(params[i].getType()); //
-                        paramCount = ++i) {
+                        jpqlParamCount = ++i) {
             Param param = params[i].getAnnotation(Param.class);
             String paramName = null;
             if (param != null) {
@@ -3064,9 +3360,9 @@ public class QueryInfo {
                 paramName = params[i].getName();
             }
             if (paramName != null) {
-                if (paramNames.isEmpty())
-                    paramNames = new LinkedHashSet<>();
-                boolean isDuplicate = !paramNames.add(paramName);
+                if (jpqlParamNames.isEmpty())
+                    jpqlParamNames = new LinkedHashSet<>();
+                boolean isDuplicate = !jpqlParamNames.add(paramName);
                 if (qlParamNames.contains(paramName)) {
                     if (isDuplicate) // duplicate of a valid name
                         throw exc(MappingException.class,
@@ -3083,27 +3379,27 @@ public class QueryInfo {
         }
 
         sortPositions = NONE_QUERY_LANGUAGE_ONLY;
-        for (int i = paramCount; i < params.length; i++)
+        for (int i = jpqlParamCount; i < params.length; i++)
             if (SORT_PARAM_TYPES.contains(params[i].getType()))
                 initDynamicSortPosition(i);
 
-        int paramNamesCount = paramNames.size();
+        int paramNamesCount = jpqlParamNames.size();
         if (hasExtraParam || qlParamNameCount != paramNamesCount) {
             // Does the method supply all named parameters that the query needs?
             LinkedHashSet<String> lacking = new LinkedHashSet<>(qlParamNames);
-            lacking.removeAll(paramNames);
+            lacking.removeAll(jpqlParamNames);
             if (!lacking.isEmpty())
                 throw excLackingMethodArgNamedParams(lacking);
 
             // Does the method supply any named parameters not needed by the query?
-            Set<String> extras = new LinkedHashSet<>(paramNames);
+            Set<String> extras = new LinkedHashSet<>(jpqlParamNames);
             extras.removeAll(qlParamNames);
             if (!extras.isEmpty())
                 throw excExtraMethodArgNamedParams(extras, qlParamNames);
         }
 
         // Does the method supply a mixture of named and positional parameters?
-        if (paramNamesCount > 0 && paramNamesCount < paramCount)
+        if (paramNamesCount > 0 && paramNamesCount < jpqlParamCount)
             throw excMixedQLParamTypes(paramNamesCount);
     }
 
@@ -3180,13 +3476,8 @@ public class QueryInfo {
                 generateWhereClause(methodName, by + 2, methodName.length(), q);
             type = Type.COUNT;
         } else if (methodName.startsWith("exists")) {
-            String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
-            String attrName = getAttributeName(name, true);
-            // TODO SELECT id(o) once #28925 is fixed
-            q = new StringBuilder(200).append("SELECT ");
-            if (attrName.charAt(attrName.length() - 1) != ')')
-                q.append(entityVar_);
-            q.append(attrName).append(" FROM ") //
+            q = new StringBuilder(200) //
+                            .append("SELECT ID(").append(o).append(") FROM ") //
                             .append(entityInfo.name).append(' ').append(o);
             if (by > 0 && methodName.length() > by + 2)
                 generateWhereClause(methodName, by + 2, methodName.length(), q);
@@ -3243,13 +3534,8 @@ public class QueryInfo {
                 generateQueryByParameters(q, methodTypeAnno, countPages);
         } else if ("Exists".equals(methodTypeAnno.annotationType().getSimpleName())) {
             type = Type.EXISTS;
-            String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
-            String attrName = getAttributeName(name, true);
-            // TODO SELECT id(o) once #28925 is fixed
-            q = new StringBuilder(200).append("SELECT ");
-            if (attrName.charAt(attrName.length() - 1) != ')')
-                q.append(entityVar_);
-            q.append(attrName).append(" FROM ") //
+            q = new StringBuilder(200) //
+                            .append("SELECT ID(").append(o).append(") FROM ") //
                             .append(entityInfo.name).append(' ').append(o);
             if (method.getParameterCount() > 0)
                 generateQueryByParameters(q, methodTypeAnno, countPages);
@@ -3262,6 +3548,145 @@ public class QueryInfo {
             Tr.exit(this, tc, "initQueryByParameters", new Object[] { q, type });
 
         return q;
+    }
+
+    /**
+     * Inserts entities (or records) into the database.
+     * An error is raised if any of the entities (or records) already exist
+     * in the database.
+     *
+     * @param arg the entity or record, or array/Iterable/Stream of entity or record
+     * @param em  the entity manager
+     * @return the updated entities, using the return type that is required by the
+     *         Insert method signature.
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    Object insert(Object arg, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "insert", loggable(arg), em);
+
+        boolean resultVoid = void.class.equals(singleType) ||
+                             Void.class.equals(singleType);
+        ArrayList<Object> results;
+
+        boolean hasSingularEntityParam = false;
+        int entityCount = 0;
+        if (entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            results = resultVoid ? null : new ArrayList<>(length);
+            for (; entityCount < length; entityCount++) {
+                Object entity = toEntity(Array.get(arg, entityCount));
+                em.persist(entity);
+                if (results != null)
+                    results.add(entity);
+            }
+            em.flush();
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            if (arg instanceof Iterable) {
+                results = resultVoid ? null : new ArrayList<>();
+                for (Object e : ((Iterable<?>) arg)) {
+                    entityCount++;
+                    Object entity = toEntity(e);
+                    em.persist(entity);
+                    if (results != null)
+                        results.add(entity);
+                }
+                em.flush();
+            } else {
+                entityCount = 1;
+                hasSingularEntityParam = true;
+                results = resultVoid ? null : new ArrayList<>(1);
+                Object entity = toEntity(arg);
+                em.persist(entity);
+                em.flush();
+                if (results != null)
+                    results.add(entity);
+            }
+        }
+
+        if (entityCount == 0)
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1092.lifecycle.arg.empty",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericParameterTypes()[0].getTypeName());
+
+        Class<?> returnType = method.getReturnType();
+        Object returnValue;
+        if (resultVoid) {
+            returnValue = null;
+        } else {
+            if (entityInfo.recordClass != null)
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, entityInfo.toRecord(results.get(i)));
+
+            if (returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(returnArrayType,
+                                                                 results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                if (multiType == null)
+                    if (results.size() == 1)
+                        returnValue = results.get(0);
+                    else if (results.isEmpty())
+                        returnValue = null;
+                    else
+                        throw exc(ClassCastException.class,
+                                  "CWWKD1094.return.mismatch",
+                                  method.getName(),
+                                  repositoryInterface.getName(),
+                                  method.getGenericReturnType().getTypeName(),
+                                  results.size(),
+                                  "@Insert",
+                                  lifeCycleReturnTypes(entityInfo.getType().getName(),
+                                                       hasSingularEntityParam,
+                                                       false));
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = convertToIterable(results, null, multiType);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw exc(MappingException.class,
+                              "CWWKD1003.lifecycle.rtrn.err",
+                              method.getGenericReturnType().getTypeName(),
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              "Insert",
+                              lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
+                                                   hasSingularEntityParam,
+                                                   false));
+            }
+        }
+
+        if (CompletableFuture.class.equals(returnType) ||
+            CompletionStage.class.equals(returnType)) {
+            // useful for @Asynchronous
+            returnValue = CompletableFuture.completedFuture(returnValue);
+        } else if (!resultVoid && !returnType.isInstance(returnValue)) {
+            throw exc(MappingException.class,
+                      "CWWKD1003.lifecycle.rtrn.err",
+                      method.getGenericReturnType().getTypeName(),
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      "Insert",
+                      lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
+                                           hasSingularEntityParam,
+                                           false));
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "insert", loggable(returnValue));
+        return returnValue;
     }
 
     /**
@@ -3282,7 +3707,7 @@ public class QueryInfo {
 
         boolean isFindAndDelete = isOptional
                                   || multiType != null
-                                  || !RETURN_TYPES_FOR_DELETE_ONLY.contains(singleType);
+                                  || !Util.RETURN_TYPES_FOR_DELETE_ONLY.contains(singleType);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "isFindAndDelete? " + isFindAndDelete +
@@ -3295,8 +3720,8 @@ public class QueryInfo {
                 && !type.equals(entityInfo.entityClass)
                 && !type.equals(entityInfo.recordClass)
                 && !type.equals(Object.class)
-                && !wrapperClassIfPrimitive(singleType) //
-                                .equals(wrapperClassIfPrimitive(entityInfo.idType))) {
+                && !Util.wrapperClassIfPrimitive(singleType) //
+                                .equals(Util.wrapperClassIfPrimitive(entityInfo.idType))) {
                 throw exc(MappingException.class,
                           "CWWKD1006.delete.rtrn.err",
                           method.getGenericReturnType().getTypeName(),
@@ -3354,7 +3779,7 @@ public class QueryInfo {
 
         // Check parameter positions after those used for query parameters
         boolean signatureHasPageReq = false;
-        for (int i = paramCount; i < paramTypes.length; i++)
+        for (int i = jpqlParamCount; i < paramTypes.length; i++)
             signatureHasPageReq |= PageRequest.class.equals(paramTypes[i]);
 
         if (signatureHasPageReq)
@@ -3480,6 +3905,113 @@ public class QueryInfo {
     }
 
     /**
+     * Removes the entity (or record) from the database if its attributes
+     * match the database.
+     *
+     * @param e  the entity or record.
+     * @param em the entity manager.
+     * @return the number of entities deleted (1 or 0).
+     * @throws Exception if an error occurs or the repository method return type is
+     *                       void and the entity (or correct version of the entity)
+     *                       was not found.
+     */
+    int remove(Object e, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "remove", loggable(e), em);
+
+        Class<?> entityClass = entityInfo.getType();
+
+        if (e == null)
+            throw exc(NullPointerException.class,
+                      "CWWKD1015.null.entity.param",
+                      method.getName(),
+                      repositoryInterface.getName());
+
+        if (!entityClass.isInstance(e))
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1016.incompat.entity.param",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      entityClass.getName(),
+                      e.getClass().getName());
+
+        String jpql = this.jpql;
+
+        int versionParamIndex = (entityInfo.idClassAttributeAccessors == null ? 1 : entityInfo.idClassAttributeAccessors.size()) + 1;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = null;
+        String idAttributeName = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            idAttributeName = getAttributeName(ID, true);
+            id = getAttribute(e, idAttributeName);
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()
+            && jpql != this.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> delete = em.createQuery(jpql, entityInfo.entityClass);
+
+        if (entityInfo.idClassAttributeAccessors == null) {
+            int p = 1;
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + loggable(id));
+                delete.setParameter(p++, id);
+            }
+            if (version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + loggable(version));
+                delete.setParameter(p, version);
+            }
+        } else {
+            setParametersFromIdClassAndVersion(1, delete, e, version);
+        }
+
+        int numDeleted = delete.executeUpdate();
+
+        if (numDeleted == 0) {
+            Class<?> returnType = method.getReturnType();
+            if (void.class.equals(returnType) || Void.class.equals(returnType)) {
+                if (idAttributeName == null)
+                    idAttributeName = ID;
+                List<String> entityProps = new ArrayList<>(2);
+                if (id != null)
+                    entityProps.add(loggableAppend(idAttributeName,
+                                                   "=", id));
+                if (entityInfo.versionAttributeName != null && version != null)
+                    entityProps.add(loggableAppend(entityInfo.versionAttributeName,
+                                                   "=", version));
+                throw exc(OptimisticLockingFailureException.class,
+                          "CWWKD1050.opt.lock.exc",
+                          method.getName(),
+                          repositoryInterface.getName(),
+                          e.getClass().getName(),
+                          entityProps,
+                          RepositoryImpl.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES);
+            }
+        } else if (numDeleted > 1) {
+            throw new DataException("Found " + numDeleted + " matching entities."); // ought to be unreachable
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "remove", numDeleted);
+        return numDeleted;
+    }
+
+    /**
      * Pagination is only possible if results are ordered.
      *
      * If the repository method has parameters to supply an order and these are
@@ -3526,6 +4058,134 @@ public class QueryInfo {
                       method.getName(),
                       repositoryInterface.getName(),
                       method.getGenericReturnType().getTypeName());
+    }
+
+    /**
+     * Saves entities (or records) to the database, which can involve an update
+     * or an insert, depending on whether the entity already exists.
+     *
+     * @param arg the entity or record, or array/Iterable/Stream of entity or record
+     * @param em  the entity manager.
+     * @return the updated entities, using the return type that is required by the
+     *         repository Save method signature.
+     * @throws Exception if an error occurs.
+     */
+    Object save(Object arg, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "save", loggable(arg), em);
+
+        boolean resultVoid = void.class.equals(singleType) ||
+                             Void.class.equals(singleType);
+        List<Object> results;
+
+        boolean hasSingularEntityParam = false;
+        int entityCount = 0;
+        if (entityParamType.isArray()) {
+            results = new ArrayList<>();
+            int length = Array.getLength(arg);
+            for (; entityCount < length; entityCount++)
+                results.add(em.merge(toEntity(Array.get(arg, entityCount))));
+            em.flush();
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            if (Iterable.class.isAssignableFrom(entityParamType)) {
+                results = new ArrayList<>();
+                for (Object e : ((Iterable<?>) arg)) {
+                    entityCount++;
+                    results.add(em.merge(toEntity(e)));
+                }
+                em.flush();
+            } else {
+                entityCount = 1;
+                hasSingularEntityParam = true;
+                results = resultVoid ? null : new ArrayList<>(1);
+                Object entity = em.merge(toEntity(arg));
+                if (results != null)
+                    results.add(entity);
+                em.flush();
+            }
+        }
+
+        if (entityCount == 0)
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1092.lifecycle.arg.empty",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      method.getGenericParameterTypes()[0].getTypeName());
+
+        Class<?> returnType = method.getReturnType();
+        Object returnValue;
+        if (resultVoid) {
+            returnValue = null;
+        } else {
+            if (entityInfo.recordClass != null)
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, entityInfo.toRecord(results.get(i)));
+
+            if (returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(returnArrayType, results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                if (multiType == null)
+                    if (results.size() == 1)
+                        returnValue = results.get(0);
+                    else if (results.isEmpty())
+                        returnValue = null;
+                    else
+                        throw exc(ClassCastException.class,
+                                  "CWWKD1094.return.mismatch",
+                                  method.getName(),
+                                  repositoryInterface.getName(),
+                                  method.getGenericReturnType().getTypeName(),
+                                  results.size(),
+                                  "@Save",
+                                  lifeCycleReturnTypes(entityInfo.getType().getName(),
+                                                       hasSingularEntityParam,
+                                                       false));
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = convertToIterable(results, null, multiType);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw exc(MappingException.class,
+                              "CWWKD1003.lifecycle.rtrn.err",
+                              method.getGenericReturnType().getTypeName(),
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              "Save",
+                              lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
+                                                   hasSingularEntityParam,
+                                                   false));
+            }
+        }
+
+        if (CompletableFuture.class.equals(returnType) ||
+            CompletionStage.class.equals(returnType)) {
+            // useful for @Asynchronous
+            returnValue = CompletableFuture.completedFuture(returnValue);
+        } else if (!resultVoid && !returnType.isInstance(returnValue)) {
+            throw exc(MappingException.class,
+                      "CWWKD1003.lifecycle.rtrn.err",
+                      method.getGenericReturnType().getTypeName(),
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      "Save",
+                      lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
+                                           hasSingularEntityParam,
+                                           false));
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "save", loggable(returnValue));
+        return returnValue;
     }
 
     /**
@@ -3653,20 +4313,21 @@ public class QueryInfo {
      * @param args  repository method arguments
      * @throws Exception if an error occurs
      */
+    @Trivial // avoid logging customer data
     void setParameters(jakarta.persistence.Query query, Object... args) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        if (args != null && args.length < paramCount)
+        if (args != null && args.length < jpqlParamCount)
             throw exc(DataException.class,
                       "CWWKD1021.insufficient.params",
                       method.getName(),
                       repositoryInterface.getName(),
                       args.length,
-                      paramCount,
+                      jpqlParamCount,
                       jpql);
 
-        Iterator<String> namedParams = paramNames.iterator();
-        for (int i = 0, p = 0; i < paramCount; i++) {
+        Iterator<String> namedParams = jpqlParamNames.iterator();
+        for (int i = 0, p = 0; i < jpqlParamCount; i++) {
             Object arg = args[i];
 
             if (namedParams.hasNext()) {
@@ -3681,15 +4342,16 @@ public class QueryInfo {
                 query.setParameter(++p, arg);
             }
         }
+
         if (args != null &&
-            paramCount < args.length &&
+            jpqlParamCount < args.length &&
             type != Type.FIND &&
             type != Type.FIND_AND_DELETE) {
             throw exc(DataException.class,
                       "CWWKD1022.too.many.params",
                       method.getName(),
                       repositoryInterface.getName(),
-                      paramCount,
+                      jpqlParamCount,
                       args.length,
                       jpql);
         }
@@ -3703,14 +4365,14 @@ public class QueryInfo {
      * @throws Exception if an error occurs
      */
     void setParametersFromCursor(jakarta.persistence.Query query, PageRequest.Cursor cursor) throws Exception {
-        int paramNum = paramCount; // position before that of first cursor element
-        if (paramNames.isEmpty()) // positional parameters
+        int paramNum = jpqlParamCount; // position before that of first cursor element
+        if (jpqlParamNames.isEmpty()) // positional parameters
             for (int i = 0; i < cursor.size(); i++) {
                 Object value = cursor.get(i);
                 if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
-                        if (++paramNum - paramCount > sorts.size())
+                        if (++paramNum - jpqlParamCount > sorts.size())
                             cursorSizeMismatchError(cursor);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(this, tc, "set [cursor] ?" + paramNum + ' ' +
@@ -3719,7 +4381,7 @@ public class QueryInfo {
                         query.setParameter(paramNum, v);
                     }
                 } else {
-                    if (++paramNum - paramCount > sorts.size())
+                    if (++paramNum - jpqlParamCount > sorts.size())
                         cursorSizeMismatchError(cursor);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "set [cursor] ?" + paramNum + ' ' +
@@ -3733,7 +4395,7 @@ public class QueryInfo {
                 if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
-                        if (++paramNum - paramCount > sorts.size())
+                        if (++paramNum - jpqlParamCount > sorts.size())
                             cursorSizeMismatchError(cursor);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(this, tc, "set [cursor] :cursor" + paramNum + ' ' + value.getClass().getName() + "-->" +
@@ -3741,7 +4403,7 @@ public class QueryInfo {
                         query.setParameter("cursor" + paramNum, v);
                     }
                 } else {
-                    if (++paramNum - paramCount > sorts.size())
+                    if (++paramNum - jpqlParamCount > sorts.size())
                         cursorSizeMismatchError(cursor);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "set [cursor] :cursor" + paramNum + ' ' +
@@ -3750,7 +4412,7 @@ public class QueryInfo {
                 }
             }
 
-        if (sorts.size() > paramNum - paramCount) // not enough cursor elements
+        if (sorts.size() > paramNum - jpqlParamCount) // not enough cursor elements
             cursorSizeMismatchError(cursor);
     }
 
@@ -3763,6 +4425,7 @@ public class QueryInfo {
      * @param version            the version if versioned, otherwise null.
      * @throws Exception if an error occurs
      */
+    @Trivial // avoid tracing customer data
     void setParametersFromIdClassAndVersion(int startingParamIndex,
                                             jakarta.persistence.Query query,
                                             Object entity,
@@ -3818,7 +4481,7 @@ public class QueryInfo {
             Sort<Object> sort = addIt.next();
             if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            // TODO special IdClass handling should be unnecessary once 28925 is fixed
+            // TODO special IdClass handling should be unnecessary once 30093 is fixed
             else if (hasIdClass && ID.equalsIgnoreCase(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(getWithAttributeName(getAttributeName(name, true), sort));
@@ -3845,7 +4508,7 @@ public class QueryInfo {
         for (Sort<Object> sort : additional) {
             if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            // TODO special IdClass handling should be unnecessary once 28925 is fixed
+            // TODO special IdClass handling should be unnecessary once 30093 is fixed
             else if (hasIdClass && ID.equalsIgnoreCase(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(getWithAttributeName(getAttributeName(name, true), sort));
@@ -3966,11 +4629,104 @@ public class QueryInfo {
         b.append(first ? "() " : ") ");
         if (jpql != null)
             b.append(jpql);
-        if (paramCount > 0)
-            b.append(" [").append(paramCount).append(paramNames.isEmpty() ? //
+        if (jpqlParamCount > 0)
+            b.append(" [").append(jpqlParamCount).append(jpqlParamNames.isEmpty() ? //
                             " positional params]" : //
                             " named params]");
         return b.toString();
+    }
+
+    /**
+     * Updates the entity (or record) from the database if its attributes match the database.
+     *
+     * @param e  the entity or record.
+     * @param em the entity manager.
+     * @return the number of entities updated (1 or 0).
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    int update(Object e, EntityManager em) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "update", loggable(e), em);
+
+        Class<?> entityClass = entityInfo.getType();
+
+        if (e == null)
+            throw exc(NullPointerException.class,
+                      "CWWKD1015.null.entity.param",
+                      method.getName(),
+                      repositoryInterface.getName());
+
+        if (!entityClass.isInstance(e))
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1016.incompat.entity.param",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      entityClass.getName(),
+                      e.getClass().getName());
+
+        String jpql = this.jpql;
+        Set<String> attrsToUpdate = entityInfo.attributeNamesForEntityUpdate;
+
+        int versionParamIndex = entityInfo.idClassAttributeAccessors == null //
+                        ? (attrsToUpdate.size() + 2) //
+                        : (attrsToUpdate.size() +
+                           entityInfo.idClassAttributeAccessors.size() + 1);
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = null;
+        String idAttributeName = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            idAttributeName = entityInfo.attributeNames.get(ID);
+            id = getAttribute(e, idAttributeName);
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != this.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> update = em.createQuery(jpql, entityInfo.entityClass);
+
+        // parameters for entity attributes to update:
+        int p = 1;
+        for (String attrName : attrsToUpdate)
+            setParameter(p++, update, e, attrName);
+
+        // id and version parameters
+        if (entityInfo.idClassAttributeAccessors == null) {
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + loggable(id));
+                update.setParameter(p++, id);
+            }
+
+            if (entityInfo.versionAttributeName != null && version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + loggable(version));
+                update.setParameter(p++, version);
+            }
+        } else { // has IdClass
+            setParametersFromIdClassAndVersion(p, update, e, version);
+        }
+
+        int numUpdated = update.executeUpdate();
+
+        if (numUpdated > 1) // ought to be unreachable
+            throw new DataException("Found " + numUpdated + " matching entities.");
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "update", numUpdated);
+        return numUpdated;
     }
 
     /**
@@ -4087,24 +4843,12 @@ public class QueryInfo {
         q.jpqlCount = jpqlCount;
         q.jpqlDelete = jpqlDelete;
         q.maxResults = maxResults;
-        q.paramCount = paramCount;
-        q.paramNames = paramNames;
+        q.jpqlParamCount = jpqlParamCount;
+        q.jpqlParamNames = jpqlParamNames;
         q.sorts = sorts;
         q.type = type;
         q.validateParams = validateParams;
         q.validateParams = validateResult;
         return q;
-    }
-
-    /**
-     * Returns the wrapper class if a primitive class, otherwise the same class.
-     *
-     * @param c class that is possibly a primitive class.
-     * @return wrapper class for a primitive, otherwise the same class that was supplied as a parameter.
-     */
-    @Trivial
-    private static final Class<?> wrapperClassIfPrimitive(Class<?> c) {
-        Class<?> w = WRAPPER_CLASSES.get(c);
-        return w == null ? c : w;
     }
 }

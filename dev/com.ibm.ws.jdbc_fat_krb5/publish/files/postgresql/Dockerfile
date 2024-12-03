@@ -1,3 +1,5 @@
+# TODO update to 17.0-alpine
+
 FROM postgres:12.4
 
 RUN set -ex; \

@@ -18,7 +18,6 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,6 +36,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.recoverylog.custom.jdbc.impl.DBUtils.DBProduct;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.LeaseInfo;
@@ -68,19 +68,11 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     private final CustomLogProperties _customLogProperties;
 
     /**
-     * Flag whether the database type has ever been determined
-     */
-    boolean _determineDBType;
-    /**
      * Which RDBMS are we working against?
      */
-    volatile private boolean _isOracle;
-    volatile private boolean _isPostgreSQL;
-    volatile private boolean _isSQLServer;
-    volatile private boolean _isDB2;
-    volatile private boolean _isNonStandard;
+    private volatile DBProduct dbProduct;
 
-    volatile private boolean _leaseTableExists;
+    private volatile boolean _leaseTableExists;
     private boolean _sqlTransientErrorHandlingEnabled = true;
     private boolean _logRetriesEnabled;
     private int _leaseTimeout;
@@ -320,10 +312,10 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 if (!_noLockOnLeaseScans) {
                     queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
                                   " FROM " + _leaseTableName +
-                                  (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                  (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                   " WHERE RECOVERY_GROUP = '" + recoveryGroup + "' AND SERVER_IDENTITY != '" + _localRecoveryIdentity + "'" +
-                                  ((_isSQLServer) ? "" : " FOR UPDATE") +
-                                  ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");
+                                  ((DBProduct.Sqlserver == dbProduct) ? "" : " FOR UPDATE") +
+                                  ((DBProduct.Postgresql == dbProduct || DBProduct.Sqlserver == dbProduct) ? "" : " OF LEASE_TIME");
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Attempt to select the row for UPDATE using - " + queryString);
                 } else {
@@ -583,10 +575,10 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         try {
             String queryString = "SELECT LEASE_TIME, LEASE_OWNER" +
                                  " FROM " + _leaseTableName +
-                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                 (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'" +
-                                 ((_isSQLServer) ? "" : " FOR UPDATE") +
-                                 ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");
+                                 ((DBProduct.Sqlserver == dbProduct) ? "" : " FOR UPDATE") +
+                                 ((DBProduct.Postgresql == dbProduct || DBProduct.Sqlserver == dbProduct) ? "" : " OF LEASE_TIME");
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the row for UPDATE using - " + queryString);
             _updatelockingRS = _lockingStmt.executeQuery(queryString);
@@ -858,7 +850,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 Tr.debug(tc, "Set the logRetriesEnabled flag to false");
             // If _logRetriesEnabled has been reset (config change) and if the database is non-standard, then we will
             // no longer retry SQLExceptions
-            if (_logRetriesEnabled && _isNonStandard)
+            if (_logRetriesEnabled && (dbProduct == null || DBProduct.Unknown == dbProduct))
                 _sqlTransientErrorHandlingEnabled = false;
             _logRetriesEnabled = false;
             SQLRetry.setLogRetriesEnabled(false);
@@ -915,48 +907,15 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             }
         }
 
-        if (conn != null && !_determineDBType) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Got connection: " + conn);
-            DatabaseMetaData mdata = conn.getMetaData();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Got metadata: " + mdata);
-            String dbName = mdata.getDatabaseProductName();
-            if (dbName.toLowerCase().contains("oracle")) {
-                _isOracle = true;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is an Oracle Database");
-            } else if (dbName.toLowerCase().contains("postgresql")) {
-                // we are PostgreSQL
-                _isPostgreSQL = true;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is a PostgreSQL Database");
-            } else if (dbName.toLowerCase().contains("db2")) {
-                _isDB2 = true;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is a DB2 Database");
-            } else if (dbName.toLowerCase().contains("microsoft sql")) {
-                // we are MS SQL Server
-                _isSQLServer = true;
-                int tranIsolation = mdata.getDefaultTransactionIsolation();
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is a Microsoft SQL Server Database with default isolation - " + tranIsolation);
-            } else if (dbName.toLowerCase().contains("derby")) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is a Derby Database");
-            } else {
-                _isNonStandard = true;
+        if (conn != null && null == dbProduct) {
+            dbProduct = DBUtils.identifyDB(conn);
+
+            if (dbProduct == DBProduct.Unknown && !_logRetriesEnabled) {
                 // We're not working with a member of the standard set of databases. The "default" behaviour is not to retry for such non-standard, untested databases,
                 // even if the exception is a SQLTransientException. But if the logRetriesEnabled flag has been explicitly set, then we will retry SQL
                 // operations on all databases.
-                if (!_logRetriesEnabled)
-                    _sqlTransientErrorHandlingEnabled = false;
+                _sqlTransientErrorHandlingEnabled = false;
             }
-
-            String dbVersion = mdata.getDatabaseProductVersion();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "You are now connected to " + dbName + ", version " + dbVersion);
-            _determineDBType = true;
         }
 
         if (tc.isEntryEnabled())
@@ -979,19 +938,15 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         if (tc.isEntryEnabled())
             Tr.entry(tc, "createLeaseTable", conn, this);
 
-        Statement createTableStmt = null;
-
-        try {
-            createTableStmt = conn.createStatement();
-
-            if (_isOracle) {
+        try (Statement createTableStmt = conn.createStatement()) {
+            if (DBProduct.Oracle == dbProduct) {
                 String oracleTableString = oracleTablePreString + _leaseTableName + oracleTablePostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create Oracle Table using: " + oracleTableString);
                 createTableStmt.executeUpdate(oracleTableString);
                 // Do not manually create an index as ORACLE automatically sets up an index because of the "UNIQUE" constraint on
                 // the SERVER_IDENTITY column
-            } else if (_isPostgreSQL) {
+            } else if (DBProduct.Postgresql == dbProduct) {
                 String postgreSQLTableString = postgreSQLTablePreString + _leaseTableName + postgreSQLTablePostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create PostgreSQL Table using: " + postgreSQLTableString);
@@ -1007,7 +962,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             } else {
                 String genericTableString = genericTablePreString + _leaseTableName + genericTablePostString;
 
-                if (_isDB2) {
+                if (DBProduct.DB2 == dbProduct) {
                     String dbName = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDBName();
                     if (!dbName.isEmpty()) {
                         genericTableString = genericTableString + " IN DATABASE " + dbName;
@@ -1024,11 +979,6 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
                 // Create index on the new table
                 createTableStmt.execute(genericIndexString);
-            }
-
-        } finally {
-            if (createTableStmt != null && !createTableStmt.isClosed()) {
-                createTableStmt.close();
             }
         }
 
@@ -1302,9 +1252,9 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         _deleteStmt = conn.createStatement();
 
         final String queryString = "SELECT LEASE_OWNER FROM " + _leaseTableName
-                                   + (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "")
+                                   + (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "")
                                    + " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'"
-                                   + ((_isSQLServer) ? "" : " FOR UPDATE");
+                                   + ((DBProduct.Sqlserver == dbProduct) ? "" : " FOR UPDATE");
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Locking lease for delete: {0}", queryString);
@@ -1319,7 +1269,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 // Check we're still the lease owner
                 if (leaseOwner.startsWith(_localRecoveryIdentity + ",")) {
                     final String deleteString = "DELETE FROM " + _leaseTableName +
-                                                (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "")
+                                                (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "")
                                                 + " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'";
 
                     if (tc.isDebugEnabled())
@@ -1525,10 +1475,10 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         try {
             String queryString = "SELECT LEASE_TIME" +
                                  " FROM " + _leaseTableName +
-                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                 (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE SERVER_IDENTITY='" + recoveryIdentityToRecover + "'" +
-                                 ((_isSQLServer) ? "" : " FOR UPDATE") +
-                                 ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");
+                                 ((DBProduct.Sqlserver == dbProduct) ? "" : " FOR UPDATE") +
+                                 ((DBProduct.Postgresql == dbProduct || DBProduct.Sqlserver == dbProduct) ? "" : " OF LEASE_TIME");
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to select the row for UPDATE using - " + queryString);
@@ -1861,7 +1811,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             Tr.entry(tc, "prepareConnectionForBatch", conn);
         conn.setAutoCommit(false);
         int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
-        if (_isDB2) {
+        if (DBProduct.DB2 == dbProduct) {
             try {
                 initialIsolation = conn.getTransactionIsolation();
                 if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation) {
@@ -1880,7 +1830,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 // returning RR will prevent closeConnectionAfterBatch resetting isolation level
                 initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
             }
-        } else if (_isSQLServer) {
+        } else if (DBProduct.Sqlserver == dbProduct) {
             // SQL Server is predisposed to deadlock on lower isolation levels. The SERIALIZABLE isolation level should mean that deadlocks are
             // considerably less likely but could lead to poorer performance. Poorer performance wrt lease access is hopefully a price worth paying
             // to avoid (unexpected) deadlocks.
@@ -1919,7 +1869,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         if (tc.isEntryEnabled())
             Tr.entry(tc, "closeConnectionAfterBatch", conn, initialIsolation);
         if (conn != null && !conn.isClosed()) {
-            if (_isDB2) {
+            if (DBProduct.DB2 == dbProduct) {
                 if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation)
                     try {
                         conn.setTransactionIsolation(initialIsolation);

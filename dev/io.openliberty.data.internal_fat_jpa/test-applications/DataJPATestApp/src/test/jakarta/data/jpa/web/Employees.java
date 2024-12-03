@@ -30,6 +30,12 @@ public interface Employees {
 
     void deleteByLastName(String lastName);
 
+    @OrderBy(value = "badge.accessLevel", ignoreCase = true)
+    @OrderBy("empNum")
+    // The parameter would more naturally be char because the entity property
+    // has type char, but JPA only allows String for LOWER(string_expression)
+    Stream<Employee> findByBadgeAccessLevelIgnoreCaseGreaterThan(String exclusiveMin);
+
     Employee findByBadgeNumber(long badgeNumber);
 
     Employee findByEmpNum(long employeeNumber);

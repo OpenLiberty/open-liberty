@@ -158,7 +158,7 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
 
         WebClient webClient = getAndSaveWebClient();
 
-        String lastStep = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String lastStep = invoke_social_login_actions[invoke_social_login_actions.length - 1];
 
         List<validationData> expectations = setGoodSocialExpectations(socialSettings, doNotAddJWTTokenValidation);
         // Ensure that the subject principals do NOT include a JWT
@@ -167,7 +167,7 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
                                             SocialConstants.STRING_DOES_NOT_CONTAIN, "Found an unexpected JWT principal in the app response.", null,
                                             jwtUserPrincipal);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, socialSettings, expectations);
 
         if (isTestingOidc) {
             testUserInfo(webClient);
@@ -215,7 +215,7 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
     public void testSocialBasicMainPathWithUpdatedConfig() throws Exception {
         WebClient webClient = getAndSaveWebClient();
 
-        String lastStep = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String lastStep = invoke_social_login_actions[invoke_social_login_actions.length - 1];
 
         List<validationData> expectations = setGoodSocialExpectations(socialSettings, doNotAddJWTTokenValidation);
         String jwtUserPrincipal = "Principal: {";
@@ -223,7 +223,7 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
                                             SocialConstants.STRING_DOES_NOT_CONTAIN, "Found an unexpected JWT principal in the app response.", null,
                                             jwtUserPrincipal);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, socialSettings, expectations);
     }
 
     /**
@@ -241,7 +241,7 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
 
         WebClient webClient = getAndSaveWebClient();
 
-        String lastStep = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String lastStep = invoke_social_login_actions[invoke_social_login_actions.length - 1];
 
         List<validationData> expectations = setGoodSocialExpectations(socialSettings, doNotAddJWTTokenValidation);
         // Ensure that the subject principals include a JWT
@@ -251,7 +251,7 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
                                             SocialConstants.STRING_MATCHES,
                                             "Did not find the expected JWT principal in the app response but should have.", null, jwtUserPrincipal);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, socialSettings, expectations);
     }
 
     @After

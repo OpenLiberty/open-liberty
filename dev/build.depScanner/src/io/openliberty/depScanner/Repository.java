@@ -65,6 +65,7 @@ public class Repository {
                                                          "org.apache.cxf:cxf-rt-transports-http:3.1.16",
                                                          "org.apache.cxf:cxf-tools-common:3.1.16",
                                                          "org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.16",
+                                                         "commons-io:commons-io:2.13.0",
                                                          "org.eclipse.parsson:parsson:1.1.0");
 
     private final Map<String, List<Module>> moduleMap = new HashMap<>();

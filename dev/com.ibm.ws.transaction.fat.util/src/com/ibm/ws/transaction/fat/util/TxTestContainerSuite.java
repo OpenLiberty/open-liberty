@@ -13,6 +13,7 @@
 package com.ibm.ws.transaction.fat.util;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -45,9 +46,17 @@ public class TxTestContainerSuite extends TestContainerSuite {
 
     private static DatabaseContainerType databaseContainerType;
     public static JdbcDatabaseContainer<?> testContainer;
+    
+    private static boolean isHealthy() {
+    	return isDerby() || testContainer == null || testContainer.isRunning();
+    }
 
     public static void assertHealthy() {
-    	assertTrue(databaseContainerType + " is not healthy", isDerby() || testContainer == null || testContainer.isRunning());
+    	assertTrue(databaseContainerType + " is not healthy", isHealthy());
+    }
+
+    public static void assumeHealthy() {
+    	assumeTrue(isHealthy());
     }
 
     public static void beforeSuite(DatabaseContainerType type) {

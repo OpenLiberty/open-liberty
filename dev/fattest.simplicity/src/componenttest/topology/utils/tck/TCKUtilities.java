@@ -14,6 +14,7 @@ package componenttest.topology.utils.tck;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 
@@ -52,6 +53,7 @@ import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.TCKJarInfo;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import junit.framework.AssertionFailedError;
@@ -848,5 +850,19 @@ public class TCKUtilities {
         if (!file.exists()) {
             throw new IOException(file + " does not exist");
         }
+    }
+
+    /**
+     * Assert that the server has started successfully and hasn't hit any known problems.
+     *
+     * @param  server    the server to check
+     * @throws Exception
+     */
+    static void assertServerHappy(LibertyServer server) throws Exception {
+        // LibertyServer.start will already have checked for the server started successfully message
+        // Look for errors that indicate a failure to start correctly but don't prevent liberty reporting a successful start
+        assertThat("Server log has errors after starting", server.findStringsInLogs("CWWKF0001E"), empty()); // A feature definition could not be found for ...
+        assertThat("Server log has errors after starting", server.findStringsInLogs("CWWKF0002E"), empty()); // A bundle could not be found for ...
+        assertThat("Server log has errors after starting", server.findStringsInLogs("CWWKE0702E"), empty()); // Could not resolve module ...
     }
 }

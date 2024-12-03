@@ -10,6 +10,9 @@
 package com.ibm.ws.jsf22.fat.tests;
 
 import static org.junit.Assert.assertEquals;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -36,6 +39,7 @@ import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
 import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -66,6 +70,8 @@ public class JSF22APARSeleniumTests {
     public static void setup() throws Exception {
 
         ShrinkHelper.defaultDropinApp(jsf22APARSeleniumServer, "PH55398.war", "com.ibm.ws.jsf22.fat.PH55398.bean");
+
+        ShrinkHelper.defaultDropinApp(jsf22APARSeleniumServer, "MYFACES-4695.war", "com.ibm.ws.jsf22.fat.myfaces4695");
 
         jsf22APARSeleniumServer.startServer(c.getSimpleName() + ".log");
 
@@ -162,5 +168,23 @@ public class JSF22APARSeleniumTests {
             assertEquals("false", page.findElement(By.id("form1:output")).getText());
 
     }
-    
+
+    // This problem was found by SVT where a nested element in another naming container
+    // is not updated at all.  Our test expects the "cartForm:result" to be updated.
+    @SkipForRepeat({ EE10_FEATURES, EE9_FEATURES, EE8_FEATURES }) // skipped until new releases are pulled in. 
+    @Test
+    public void testMyFaces4695() throws Exception {
+        String url = JSFUtils.createSeleniumURLString(jsf22APARSeleniumServer, "MYFACES-4695", "index.xhtml");
+        WebPage page = new WebPage(driver);
+
+        page.get(url);
+        page.waitForPageToLoad();
+
+        WebElement submitButton = page.findElement(By.id("shoppingCartForm:submit"));
+        submitButton.click(); //invoke ajax to re-render the cartForm:result element
+        page.waitReqJs();
+
+        assertEquals("success", page.findElement(By.id("cartForm:result")).getText());
+    }
+        
 }

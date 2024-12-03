@@ -14,14 +14,14 @@ package componenttest.topology.database.container;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.function.Consumer;
 
+import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.containers.MSSQLServerContainer;
+import org.testcontainers.oracle.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -132,24 +132,27 @@ public class DatabaseContainerFactory {
 
             switch (dbContainerType) {
                 case DB2:
+                    Db2Container db2 = dbContainerType.cast(cont);
+
                     //Accept License agreement
-                    Method acceptDB2License = cont.getClass().getMethod("acceptLicense");
-                    acceptDB2License.invoke(cont);
+                    db2.acceptLicense();
                     //Add startup timeout since DB2 tends to take longer than the default 3 minutes on build machines.
-                    Method withStartupTimeoutDB2 = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeoutDB2.invoke(cont, getContainerTimeout(5, 15));
+                    // TODO figure out if there is a way to create a 'fast-start' image that has the database already created.
+                    db2.withStartupTimeout(getContainerTimeout(5, 25));
+
                     break;
                 case Derby:
                     break;
                 case DerbyClient:
                     break;
                 case Oracle:
+                    OracleContainer oracle = dbContainerType.cast(cont);
+
                     //Keep behavior the same as we did before by using a SID instead of pluggable db
-                    Method usingSid = cont.getClass().getMethod("usingSid");
-                    usingSid.invoke(cont);
+                    oracle.usingSid();
                     //Add startup timeout since Oracle tends to take longer than the default 3 minutes on build machines.
-                    Method withStartupTimeoutOracle = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeoutOracle.invoke(cont, getContainerTimeout(3, 25));
+                    oracle.withStartupTimeout(getContainerTimeout(3, 25));
+
                     break;
                 case Postgres:
                     //This allows postgres by default to participate in XA transactions (2PC).
@@ -158,24 +161,27 @@ public class DatabaseContainerFactory {
                     //If a test is failing that is using XA connections check to see if postgres is failing due to:
                     // ERROR: prepared transaction with identifier "???" does not exist STATEMENT: ROLLBACK PREPARED '???'
                     // then this value may need to be increased.
-                    Method withCommand = cont.getClass().getMethod("withCommand", String.class);
-                    withCommand.invoke(cont, "postgres -c max_prepared_transactions=5");
+                    PostgreSQLContainer postgre = dbContainerType.cast(cont);
+
+                    postgre.withCommand("postgres -c max_prepared_transactions=5");
+
                     break;
                 case SQLServer:
+                    MSSQLServerContainer<?> sqlserver = dbContainerType.cast(cont);
+
                     //Accept license agreement
-                    Method acceptSQLServerLicense = cont.getClass().getMethod("acceptLicense");
-                    acceptSQLServerLicense.invoke(cont);
+                    sqlserver.acceptLicense();
+
                     //Init Script
-                    Method initScript = cont.getClass().getMethod("withInitScript", String.class);
-                    initScript.invoke(cont, "init-sqlserver.sql");
+                    sqlserver.withInitScript("init-sqlserver.sql");
+
                     break;
                 default:
                     break;
             }
 
             //Allow each container to log to output.txt
-            Method withLogConsumer = cont.getClass().getMethod("withLogConsumer", Consumer.class);
-            withLogConsumer.invoke(cont, (Consumer<OutputFrame>) dbContainerType::log);
+            cont.withLogConsumer(dbContainerType::log);
 
         } catch (Exception e) {
             throw new RuntimeException("Unable to create a " + dbContainerType.name() + " TestContainer instance.", e);

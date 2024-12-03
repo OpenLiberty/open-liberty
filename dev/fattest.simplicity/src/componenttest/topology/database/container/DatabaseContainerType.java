@@ -39,7 +39,7 @@ import com.ibm.websphere.simplicity.log.Log;
 @SuppressWarnings("rawtypes")
 public enum DatabaseContainerType {
     DB2("jcc.jar", Db2Container.class.getCanonicalName(), Properties_db2_jcc.class, //
-        DockerImageName.parse("kyleaure/db2:1.0").asCompatibleSubstituteFor("ibmcom/db2")),
+        DockerImageName.parse("icr.io/db2_community/db2:11.5.9.0")),
     Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse(""), //
           "DerbyEmbedded"),
     DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, //
@@ -47,9 +47,9 @@ public enum DatabaseContainerType {
     Oracle("ojdbc8.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
            DockerImageName.parse("gvenzl/oracle-free:23.3-full-faststart"), "OracleDB"),
     Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
-             DockerImageName.parse("postgres:14.1-alpine"), "Postgre", "PostgreSQL"),
+             DockerImageName.parse("postgres:17.0-alpine"), "Postgre", "PostgreSQL"),
     SQLServer("mssql-jdbc.jar", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //
-              DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04"), "MSSQLServer");
+              DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU28-ubuntu-20.04"), "MSSQLServer");
 
     private final String driverName;
     private final Class<DataSourceProperties> dsPropsClass;
@@ -165,6 +165,10 @@ public enum DatabaseContainerType {
         throw caught;
     }
 
+    public <T> T cast(Object instance) {
+        return (T) this.getContainerClass().cast(instance);
+    }
+
     /**
      * Given a JDBC testcontainer return the corresponding Database Container Type.
      *
@@ -173,7 +177,7 @@ public enum DatabaseContainerType {
      */
     public static DatabaseContainerType valueOf(JdbcDatabaseContainer cont) {
         for (DatabaseContainerType elem : values())
-            if (elem.getContainerClass() == cont.getClass())
+            if (elem.getContainerClass().isInstance(cont))
                 return elem;
         throw new IllegalArgumentException("Unrecognized JdbcDatabaseContainer class: " + cont.getClass().getCanonicalName());
     }

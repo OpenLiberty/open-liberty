@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ src: \
 
 fat.project: true
 
-fat.test.container.images: kyleaure/db2-ssl:3.0,postgres:16.0-alpine
+fat.test.container.images: kyleaure/db2-ssl:3.0,postgres:17.0-alpine
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

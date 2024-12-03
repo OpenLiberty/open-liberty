@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: Schema a fost creat\u0103 \u00een
 schemagen.info.schema.file.created.explanation=Comanda s-a finalizat cu succes.
 schemagen.info.schema.file.created.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
+error.config.root.deleted=CWWKG0110E: A fost detectat\u0103 o actualizare de configurare, dar server.xml nu exist\u0103. Nu s-au f\u0103cut actualiz\u0103ri de configurare.
+error.config.root.deleted.explanation=Fi\u0219ierul server.xml a fost \u0219ters. Pentru a nu provoca \u00eentreruperi \u00een rularea aplica\u021biilor, nu se fac modific\u0103ri de configurare.
+error.config.root.deleted.useraction=Ad\u0103uga\u021bi fi\u0219ierul server.xml \u00eenapoi pe server.
+
 # Non-TR message
 error.invalidOCDRef=EROARE: PID-ul metatipului [{0}] specific\u0103 un ID al defini\u0163iei de clas\u0103 de obiecte inexistent [{1}]

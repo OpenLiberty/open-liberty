@@ -24,4 +24,4 @@ IBM-API-Package: org.jboss.weld;type="internal",\
 -jars=com.ibm.ws.jsfContainer; location:=lib/
 kind=ga
 edition=core
-WLP-Platform: javaee-8.0
+WLP-Platform: javaee-8.0,jakartaee-8.0

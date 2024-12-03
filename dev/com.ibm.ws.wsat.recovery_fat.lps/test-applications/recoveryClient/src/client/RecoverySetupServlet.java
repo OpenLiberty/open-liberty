@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import javax.transaction.UserTransaction;
 import javax.xml.ws.BindingProvider;
 
 import com.ibm.tx.jta.ut.util.TxTestUtils;
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 
 @WebServlet({ "/RecoverySetupServlet" })
 public class RecoverySetupServlet extends HttpServlet {
@@ -37,10 +38,13 @@ public class RecoverySetupServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		TxTestUtils.setTestResourcesFile();
 			int number = Integer.parseInt(request.getParameter("number").trim());
 			System.out.println("==============RecoverySetupServlet Test Number: " + number
 					+ "================");
+
+			TxTestUtils.setTestResourcesFile();
+			XAResourceImpl.clear();
+
 			String BASE_URL = request.getParameter("baseurl");
 			if (BASE_URL == null || BASE_URL.equals("")){
 				BASE_URL = "http://localhost:"+Integer.parseInt(System.getProperty("HTTP_secondary"));

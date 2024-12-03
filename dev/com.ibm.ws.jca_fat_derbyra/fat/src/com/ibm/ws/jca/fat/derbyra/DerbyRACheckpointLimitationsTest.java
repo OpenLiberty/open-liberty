@@ -131,6 +131,9 @@ public class DerbyRACheckpointLimitationsTest extends FATServletClient {
                 // Server should fail checkpoint and stop
                 if (server.isStarted()) {
                     server.stopServer("SRVE9967W");
+                } else {
+                    // save the logs from the failed checkpoint
+                    server.postStopServerArchive();
                 }
                 break;
             default:
@@ -224,7 +227,9 @@ public class DerbyRACheckpointLimitationsTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "io.openliberty.checkpoint.internal.criu.CheckpointFailedException",
                     "java.security.PrivilegedActionException" }) // Wraps J2CA8512E javax.resource.spi.UnavailableException
-    @AllowedFFDC("java.lang.RuntimeException") // JMX local connector unavailable during shutdown of failed checkpoint
+    @AllowedFFDC({ "java.lang.RuntimeException", // JMX local connector unavailable during shutdown of failed checkpoint
+                   "javax.transaction.SystemException", "jakarta.transaction.SystemException", "com.ibm.ws.uow.embeddable.SystemException", //
+                   "java.lang.IllegalStateException" })
     public void testCreateTimerAAS() throws Exception {
         Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
         jvmOptions.put("-Dunsupported.action", "servlet.init.create.timer");
@@ -248,7 +253,9 @@ public class DerbyRACheckpointLimitationsTest extends FATServletClient {
     @Test
     @ExpectedFFDC({ "io.openliberty.checkpoint.internal.criu.CheckpointFailedException",
                     "javax.resource.spi.work.WorkRejectedException" })
-    @AllowedFFDC("java.lang.RuntimeException")
+    @AllowedFFDC({ "java.lang.RuntimeException", // JMX local connector unavailable during shutdown of failed checkpoint
+                   "javax.transaction.SystemException", "jakarta.transaction.SystemException", "com.ibm.ws.uow.embeddable.SystemException", //
+                   "java.lang.IllegalStateException" })
     public void testSubmitWorkAAS() throws Exception {
         Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
         jvmOptions.put("-Dunsupported.action", "servlet.init.submit.work");

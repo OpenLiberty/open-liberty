@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2023 IBM Corporation and others.
+# Copyright (c) 2021, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -47,7 +47,7 @@ tested.features: \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.jws.1.0;version=latest,\
-	com.sun.xml.messaging.saaj:saaj-impl;version=1.4.0,\
+	com.sun.xml.messaging.saaj:saaj-impl;version=1.5.3,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest

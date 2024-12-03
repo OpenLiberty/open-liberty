@@ -1,6 +1,5 @@
 <feature>microProfile-7.0</feature>
 <feature>localConnector-1.0</feature>
-<feature>mpMetrics-5.1</feature>
 <feature>cdi</feature>
 <feature>jsonb</feature>
 <feature>jsonp</feature>
@@ -8,7 +7,6 @@
 <feature>mpFaultTolerance</feature>
 <feature>mpHealth</feature>
 <feature>mpJwt</feature>
-<feature>mpMetrics</feature>
 <feature>mpOpenAPI</feature>
 <feature>mpRestClient</feature>
 <feature>mpTelemetry</feature>

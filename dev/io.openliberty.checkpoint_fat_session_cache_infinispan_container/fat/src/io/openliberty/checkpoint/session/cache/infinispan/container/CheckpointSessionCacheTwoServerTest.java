@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
@@ -48,6 +49,9 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * Test suite:
  * Two liberty servers acting as a cache clients, and one infinispan server acting as cache server.
  */
+//TODO Currently Infinispan does not support Java 23 with the versions of Infinispan we support
+//The @MaximumJavaLevel annotation should be removed once the this issue is fixed in a version of Infinispan we support
+@MaximumJavaLevel(javaLevel = 22)
 @RunWith(FATRunner.class)
 @CheckpointTest
 public class CheckpointSessionCacheTwoServerTest extends FATServletClient {

@@ -106,7 +106,7 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
         // we created and saved a jwt for our test tooling token endpoint to return to the Social client - let's invoke
         // the protected resource.  The Social client will get the auth token, but, instead of getting a jwt from the OP, it will use a
         // token endpoint pointing to the test tooling app that will return the jwt previously obtained using a builder
-        genericSocial(_testName, wc, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, wc, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -131,11 +131,11 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
         } else {
             // validate that we get the correct error message(s) for tests that use the same sig alg, but have mis-matched keys
             if (sigAlgForBuilder.contains(sigAlgForRP)) {
-                expectations = vData.addSuccessStatusCodesForActions(test_finalAction, inovke_social_login_actions);
+                expectations = vData.addSuccessStatusCodesForActions(test_finalAction, invoke_social_login_actions);
                 expectations = validationTools.addMessageExpectation(genericTestServer, expectations, test_finalAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR + ".*client01.*" + sigAlgForRP + ".*");
             } else {
                 // create negative expectations when signature algorithms don't match
-                expectations = vData.addSuccessStatusCodesForActions(test_finalAction, inovke_social_login_actions);
+                expectations = vData.addSuccessStatusCodesForActions(test_finalAction, invoke_social_login_actions);
                 expectations = validationTools.addMessageExpectation(genericTestServer, expectations, test_finalAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1761E_SIG_ALG_MISMATCH + ".*client01.*" + sigAlgForRP + ".*" + sigAlgForBuilder + ".*");
                 expectations = validationTools.addMessageExpectation(genericTestServer, expectations, test_finalAction, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
             }

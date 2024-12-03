@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -130,3 +130,30 @@ OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Asigura\u021bi-v\u0103 c\u0103 c
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Segmentul de cale "/." sau "/.." nu este valid pentru puncte finale OpenAPI.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Segmentul de cale OpenAPI "/." sau "/.." nu este valid.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Elimina\u021bi orice segment de cale "/." sau "/.." din cale.
+
+# {1} - the server.xml element name, either includeApplication or excludeApplication
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W=CWWKO1678W: Numele aplica\u021biei {0} configurat \u00een elementul {1} nu este valid deoarece con\u021bine caracterul \u201e/\u201d sau este gol.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.explanation=O aplica\u021bie nu poate denumi nu poate include un \u201e/\u201d deoarece \u201e/\u201d este folosit pentru a separa aplica\u021bia de modulele sale componente.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.useraction=Elimina\u021bi \u201e/\u201d din elementul includeApplication sau excludeApplication din fi\u0219ierul server.xml sau converti\u021bi acel element \u00een includeModule sau excludeModule pentru a face referire la un singur modul.
+
+# {1} - the server.xml element name, either includeModule or excludeModule
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W=CWWKO1679W: Numele modulului {0} configurat \u00een elementul {1} nu este valid, deoarece nu este \u00een formatul \u201e<nume-aplica\u021bie>/<nume-modul>\u201d.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.explanation=Un modul trebuie s\u0103 aib\u0103 formatul \u201e<nume-aplica\u021bie>/<nume-modul>\u201d; prin urmare, un nume de modul f\u0103r\u0103 bar\u0103 oblic\u0103 ("/") sau un nume de aplica\u021bie sau un nume de modul gol nu este valid.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.useraction=Corecta\u021bi elementul includeModule sau excludeModule din fi\u0219ierul server.xml sau converti\u021bi acel element \u00een includeApplication sau excludeApplication pentru a face referire la o \u00eentreag\u0103 aplica\u021bie.
+
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W=CWWKO1680W: Numele aplica\u021biei {1} din elementul de configurare {0} nu se potrive\u0219te cu numele niciunei aplica\u021bii implementate, dar se potrive\u0219te fie cu numele din descriptorul de implementare, fie cu numele de arhiv\u0103 al aplica\u021biei {2} . Numele aplica\u021biei care este folosit aici trebuie s\u0103 fie cel specificat \u00een fi\u0219ierul server.xml sau, dac\u0103 nu este specificat niciun nume, numele fi\u0219ierului arhiv\u0103 f\u0103r\u0103 extensie.
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.explanation=Referin\u021ba numelui aplica\u021biei din elementul de configurare mpOpenAPI se potrive\u0219te cu numele dintr-un descriptor de implementare a aplica\u021biei, dar nu se potrive\u0219te cu niciun nume de aplica\u021bie care este definit \u00een fi\u0219ierul server.xml .
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.useraction=Verifica\u021bi dac\u0103 toate aplica\u021biile au pornit corect \u0219i dac\u0103 numele din elementul de configurare sunt specificate corect.
+
+OPENAPI_VERSION_INVALID_CWWK06181W=CWWKO1681W: Versiunea configurat\u0103 {0} OpenAPI nu este \u00eentr-un format valid, trebuie s\u0103 fie dou\u0103 sau trei numere separate printr-un punct (.). Valorile acceptate sunt {1} . \u00cen schimb, se utilizeaz\u0103 versiunea implicit\u0103 a {2} .
+OPENAPI_VERSION_INVALID_CWWK06181W.explanation=Atributul openAPIVersion al elementului de configurare mpOpenAPI este setat la o valoare care nu este o versiune valid\u0103 OpenAPI .
+OPENAPI_VERSION_INVALID_CWWK06181W.useraction=Actualiza\u021bi atributul openAPIVersion la una dintre valorile acceptate din mesajul de eroare.
+
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W=CWWKO1682W: Aceast\u0103 versiune de mpOpenAPI nu accept\u0103 versiunea configurat\u0103 {0} OpenAPI . Valorile acceptate sunt {1} . \u00cen schimb, se utilizeaz\u0103 versiunea implicit\u0103 a {2} .
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.explanation=Atributul openAPIVersion al elementului de configurare mpOpenAPI este setat la o versiune OpenAPI care nu este acceptat\u0103 de versiunea de rulare a caracteristicii mpOpenAPI .
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Actualiza\u021bi atributul openAPIVersion la una dintre valorile acceptate din mesajul de eroare sau utiliza\u021bi o versiune a caracteristicii mpOpenAPI care accept\u0103 versiunea OpenAPI configurat\u0103.
+
+# "mpOpenAPI", "info", "title" and "version" are names in server.xml and should not be translated
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: Elementul de configurare a informa\u021biilor mpOpenAPI din fi\u0219ierul server.xml este nevalid. Trebuie setate at\u00e2t atributele titlu, c\u00e2t \u0219i versiunea. Elementul info va fi ignorat.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=C\u00e2mpurile titlu \u0219i versiune sunt propriet\u0103\u021bi obligatorii \u00een obiectul de informa\u021bii al unui document OpenAPI . La configurarea obiectului info, trebuie furnizat\u0103 o valoare pentru atributele titlu \u0219i versiune.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Asigura\u021bi-v\u0103 c\u0103 atributele titlu \u0219i versiune sunt setate la valori valide \u00een elementul de informa\u021bii mpOpenAPI .

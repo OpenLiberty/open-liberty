@@ -2,4 +2,4 @@
 -Dotel.traces.exporter=none
 -Dotel.logs.exporter=none
 -Dotel.sdk.disabled=false
--Dotel.metric.export.interval=500
+-Dotel.metric.export.interval=1000

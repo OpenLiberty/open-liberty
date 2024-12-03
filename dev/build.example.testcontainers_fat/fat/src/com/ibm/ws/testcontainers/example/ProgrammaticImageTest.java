@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,18 +64,18 @@ public class ProgrammaticImageTest {
      *
      * NOTE: building from a Dockerfile should be avoided at all costs.
      *
-     * Here we are pulling from a base image postgres:14.1-alpine
+     * Here we are pulling from a base image postgres:17.0-alpine
      *
      * However, we use special processing for the image name to ensure that when testing locally we pull
      * from DockerHub, and when testing against a remote docker image we use a subsituted image name to pull
      * from artifactory.
      *
      * Example:
-     * ImageNameSubstitutor.instance().apply(DockerImageName.parse("postgres:14.1-alpine")).asCanonicalNameString()
+     * ImageNameSubstitutor.instance().apply(DockerImageName.parse("postgres:17.0-alpine")).asCanonicalNameString()
      *
-     * When testing locally a DefaultImageNameSubstitutor will be used and postgres:14.1-alpine will be returned as normal.
+     * When testing locally a DefaultImageNameSubstitutor will be used and postgres:17.0-alpine will be returned as normal.
      * When testing on a remote docker host, our internal ArtifactoryImageNameSubstitutor will be used and
-     *   [ARTIFACTORY_REGISTRY]/wasliberty-docker-remote/postgres:14.1-alpine will be returned
+     *   [ARTIFACTORY_REGISTRY]/wasliberty-docker-remote/postgres:17.0-alpine will be returned
      *
      * </pre>
      *
@@ -86,20 +86,20 @@ public class ProgrammaticImageTest {
     public static GenericContainer<?> container = new GenericContainer<>(//
                     new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(//
                                                                                                 ImageNameSubstitutor.instance()
-                                                                                                                .apply(DockerImageName.parse("postgres:14.1-alpine"))
+                                                                                                                .apply(DockerImageName.parse("postgres:17.0-alpine"))
                                                                                                                 .asCanonicalNameString()) //
                                     .copy("/docker-entrypoint-initdb.d/initDB.sql", "/docker-entrypoint-initdb.d/initDB.sql")
                                     .build())
                                     .withFileFromFile("/docker-entrypoint-initdb.d/initDB.sql", new File("lib/LibertyFATTestFiles/postgres/scripts/initDB.sql"), 644))
-                                                    .withExposedPorts(POSTGRE_PORT)
-                                                    .withEnv("POSTGRES_DB", POSTGRES_DB)
-                                                    .withEnv("POSTGRES_USER", POSTGRES_USER)
-                                                    .withEnv("POSTGRES_PASSWORD", POSTGRES_PASSWORD)
-                                                    .withLogConsumer(new SimpleLogConsumer(ContainersTest.class, "postgres"))
-                                                    .waitingFor(new LogMessageWaitStrategy()
-                                                                    .withRegEx(".*database system is ready to accept connections.*\\s")
-                                                                    .withTimes(2)
-                                                                    .withStartupTimeout(Duration.ofSeconds(60)));
+                    .withExposedPorts(POSTGRE_PORT)
+                    .withEnv("POSTGRES_DB", POSTGRES_DB)
+                    .withEnv("POSTGRES_USER", POSTGRES_USER)
+                    .withEnv("POSTGRES_PASSWORD", POSTGRES_PASSWORD)
+                    .withLogConsumer(new SimpleLogConsumer(ContainersTest.class, "postgres"))
+                    .waitingFor(new LogMessageWaitStrategy()
+                                    .withRegEx(".*database system is ready to accept connections.*\\s")
+                                    .withTimes(2)
+                                    .withStartupTimeout(Duration.ofSeconds(60)));
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: urlInSingleWab-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.urlinsinglewab-1.0; visibility:=private
 Subsystem-Name: URL in Single Wab Tool Display Name

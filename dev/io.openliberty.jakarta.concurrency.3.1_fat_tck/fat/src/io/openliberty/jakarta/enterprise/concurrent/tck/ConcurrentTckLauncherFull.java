@@ -91,7 +91,9 @@ public class ConcurrentTckLauncherFull {
                         .withPlatfromVersion("11")
                         .withQualifiers("full")
                         .withAdditionalMvnProps(additionalProps)
-                        .withLogging(Map.of("ee.jakarta.tck.concurrent", Level.ALL))
+                        .withLogging(Map.of("ee.jakarta.tck.concurrent", Level.ALL,
+                                            "org.jboss.arquillian", Level.ALL, //TODO reduce logging after debugging defect 300064 is finished
+                                            "io.openliberty.arquillian", Level.ALL)) //TODO reduce logging after debugging defect 300064 is finished
                         .runTCK();
     }
 }

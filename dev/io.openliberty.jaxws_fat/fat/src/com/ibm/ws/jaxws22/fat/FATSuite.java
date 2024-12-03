@@ -25,11 +25,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-				AlwaysPassesTest.class,
+    AlwaysPassesTest.class,
                 SimpleDispatchTest.class,
                 BindingTypeDefaultsTest.class,
                 DefaultPackageTest.class,
-                MtomAnnotationsTest.class
+                MtomAnnotationsTest.class,
+                SAAJBasicTest.class
 })
 
 public class FATSuite {

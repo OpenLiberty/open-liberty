@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,9 +32,8 @@ public class IfxConnectionPoolDataSource implements javax.sql.ConnectionPoolData
     private String _serverName = " ";
     private String _databaseName = " ";
     private String _driverType = " ";
-    private String _createDatabase = " ";
-
     private ConnectionManager connManager;
+
     // The HATABLE is configured by a servlet at runtime. When testing startup
     // we want to be able
     // to configure the table for the next restart but don't want our change to
@@ -74,26 +73,20 @@ public class IfxConnectionPoolDataSource implements javax.sql.ConnectionPoolData
 
     @Override
     public int getLoginTimeout() throws SQLException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public PrintWriter getLogWriter() throws SQLException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setLoginTimeout(int seconds) throws SQLException {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
-        // TODO Auto-generated method stub
-
     }
 
     public String getPassword() {
@@ -183,7 +176,6 @@ public class IfxConnectionPoolDataSource implements javax.sql.ConnectionPoolData
 
     public void setCreateDatabase(String createDatabase) {
         System.out.println("SIMHADB: IfxConnectionPoolDataSource.setCreateDatabase: " + createDatabase);
-        _createDatabase = createDatabase;
     }
 
     /**
@@ -208,7 +200,6 @@ public class IfxConnectionPoolDataSource implements javax.sql.ConnectionPoolData
      */
     @Override
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        // TODO Auto-generated method stub
         return null;
     }
 }

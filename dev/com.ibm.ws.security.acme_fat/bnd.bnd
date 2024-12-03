@@ -27,8 +27,8 @@ tested.features: servlet-3.1, appsecurity-4.0, expressionlanguage-4.0, cdi-3.0, 
 #fat.test.use.remote.docker: true
 
 fat.test.container.images: mariadb:10.3, \
-                           letsencrypt/pebble:latest, \
-                           letsencrypt/pebble-challtestsrv:latest, \
+                           letsencrypt/pebble:v2.3.1, \
+                           letsencrypt/pebble-challtestsrv:v2.3.1, \
                            ryanesch/acme-boulder:1.2
 
 -buildpath: \

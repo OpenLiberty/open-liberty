@@ -44,6 +44,7 @@ public class MultiRecoveryTest1 extends MultiRecoveryTest {
 	}
 	
 	@Test
+	@AllowedFFDC(value = { "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.resource.spi.ResourceAllocationException"})
 	public void WSTXMPR002AFVT() throws Exception {
 		recoveryTest(server1, server2, "201","server1");
 	}

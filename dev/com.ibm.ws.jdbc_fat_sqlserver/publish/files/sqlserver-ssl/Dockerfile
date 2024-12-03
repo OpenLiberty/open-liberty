@@ -1,3 +1,5 @@
+# TODO update to mcr.microsoft.com/mssql/server:2019-CU28-ubuntu-20.04
+
 FROM mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
 
 COPY --chown=mssql:0 container-files/mssql.conf /var/opt/mssql/mssql.conf

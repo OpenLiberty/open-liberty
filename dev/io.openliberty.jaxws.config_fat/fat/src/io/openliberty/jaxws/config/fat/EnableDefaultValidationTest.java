@@ -56,7 +56,8 @@ public class EnableDefaultValidationTest {
 
     Logger LOG = Logger.getLogger("EnableDefaultValidationTest.class");
 
-    private final static int REQUEST_TIMEOUT = 10;
+    // Max timeout set to 5 minutes in milliseconds
+    private final static int REQUEST_TIMEOUT = 300000;
 
     @Server("EnableDefaultValidationTestServer")
     public static LibertyServer server;

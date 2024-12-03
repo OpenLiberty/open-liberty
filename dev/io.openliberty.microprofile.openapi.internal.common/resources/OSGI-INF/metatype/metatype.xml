@@ -17,30 +17,30 @@
     <OCD id="io.openliberty.microprofile.openapi" name="%mpOpenAPI" description="%mpOpenAPI.desc" ibm:alias="mpOpenAPI">
         <AD id="docPath" name="%docPath" description="%docPath.desc" default="/openapi" required="false" type="String" />
         <AD id="uiPath" name="%uiPath" description="%uiPath.desc" required="false" type="String" />
-        <AD id="includeApplication" name="%includeApplication" description="%includeApplication.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
-        <AD id="excludeApplication" name="%excludeApplication" description="%excludeApplication.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
-        <AD id="includeModule" name="%includeModule" description="%includeModule.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
-        <AD id="excludeModule" name="%excludeModule" description="%excludeModule.desc" required="false" type="String" cardinality="40000" ibm:beta="true"/>
-        <AD id="openAPIVersion" name="%openAPIVersion" description="%openAPIVersion.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="info" name="%info" description="%info.desc" ibm:type="pid" ibm:reference="io.openliberty.microprofile.openapi.info" required="false" type="String" ibm:beta="true"/>
+        <AD id="includeApplication" name="%includeApplication" description="%includeApplication.desc" required="false" type="String" cardinality="40000"/>
+        <AD id="excludeApplication" name="%excludeApplication" description="%excludeApplication.desc" required="false" type="String" cardinality="40000"/>
+        <AD id="includeModule" name="%includeModule" description="%includeModule.desc" required="false" type="String" cardinality="40000"/>
+        <AD id="excludeModule" name="%excludeModule" description="%excludeModule.desc" required="false" type="String" cardinality="40000"/>
+        <AD id="openAPIVersion" name="%openAPIVersion" description="%openAPIVersion.desc" required="false" type="String"/>
+        <AD id="info" name="%info" description="%info.desc" ibm:type="pid" ibm:reference="io.openliberty.microprofile.openapi.info" required="false" type="String"/>
     </OCD>
 
     <Designate pid="io.openliberty.microprofile.openapi">
         <Object ocdref="io.openliberty.microprofile.openapi"></Object>
     </Designate>
     
-    <OCD id="io.openliberty.microprofile.openapi.info" name="%info" description="%info.desc" ibm:beta="true"> <!-- No alias, only used as subelement of mpOpenAPI -->
-        <AD id="title" name="%title" description="%title.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="description" name="%description" description="%description.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="termsOfService" name="%termsOfService" description="%termsOfService.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="contactName" name="%contactName" description="%contactName.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="contactUrl" name="%contactUrl" description="%contactUrl.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="contactEmail" name="%contactEmail" description="%contactEmail.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="licenseName" name="%licenseName" description="%licenseName.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="licenseUrl" name="%licenseUrl" description="%licenseUrl.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="licenseIdentifier" name="%licenseIdentifier" description="%licenseIdentifier.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="summary" name="%summary" description="%summary.desc" required="false" type="String" ibm:beta="true"/>
-        <AD id="version" name="%version" description="%version.desc" required="false" type="String" ibm:beta="true"/>
+    <OCD id="io.openliberty.microprofile.openapi.info" name="%info" description="%info.desc"> <!-- No alias, only used as subelement of mpOpenAPI -->
+        <AD id="title" name="%title" description="%title.desc" required="false" type="String"/>
+        <AD id="description" name="%description" description="%description.desc" required="false" type="String"/>
+        <AD id="termsOfService" name="%termsOfService" description="%termsOfService.desc" required="false" type="String"/>
+        <AD id="contactName" name="%contactName" description="%contactName.desc" required="false" type="String"/>
+        <AD id="contactUrl" name="%contactUrl" description="%contactUrl.desc" required="false" type="String"/>
+        <AD id="contactEmail" name="%contactEmail" description="%contactEmail.desc" required="false" type="String"/>
+        <AD id="licenseName" name="%licenseName" description="%licenseName.desc" required="false" type="String"/>
+        <AD id="licenseUrl" name="%licenseUrl" description="%licenseUrl.desc" required="false" type="String"/>
+        <AD id="licenseIdentifier" name="%licenseIdentifier" description="%licenseIdentifier.desc" required="false" type="String"/>
+        <AD id="summary" name="%summary" description="%summary.desc" required="false" type="String"/>
+        <AD id="version" name="%version" description="%version.desc" required="false" type="String"/>
     </OCD>
     
     <Designate pid="io.openliberty.microprofile.openapi.info">

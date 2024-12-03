@@ -49,7 +49,7 @@ public class DatabaseContainerFactoryTest {
         Duration startupTimeout = getField(LogMessageWaitStrategy.class, _waitStrategy, "startupTimeout", Duration.class);
         if (startupTimeout.toMinutes() == 5) {
             assertTrue(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE);
-        } else if (startupTimeout.toMinutes() == 15) {
+        } else if (startupTimeout.toMinutes() == 25) {
             assertFalse(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE);
         } else {
             fail("Unexpected startupTimeout " + startupTimeout.toMinutes() + " should have been either 5 or 15 minutes");

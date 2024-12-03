@@ -10,4 +10,4 @@ Subsystem-Name: JavaScript Object Notation Processing 1.1 via Bells
 -features=com.ibm.websphere.appserver.jsonpImpl-1.1.0
 kind=ga
 edition=core
-WLP-Platform: javaee-8.0
+WLP-Platform: javaee-8.0,jakartaee-8.0

@@ -52,7 +52,9 @@ public class IgnoreUnexpectedElementConfigTest {
 
     Logger LOG = Logger.getLogger("IgnoreUnexpectedElementConfigTest.class");
 
-    private final static int REQUEST_TIMEOUT = 10;
+
+    // Max timeout set to 5 minutes in milliseconds
+    private final static int REQUEST_TIMEOUT = 300000;
 
     @Server("IgnoreUnexpectedElementConfigTestServer")
     public static LibertyServer addedElementServer;

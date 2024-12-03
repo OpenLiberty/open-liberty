@@ -257,9 +257,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         for (String plat : rootPlatforms) {
             //needs check for duplicate platforms with different versions, ex. can't have javaee7.0 and javaee8.0
-            plat = plat.trim();
-
-            ProvisioningFeatureDefinition platformFeature = allCompatibilityFeatures.get(plat.toLowerCase());
+            ProvisioningFeatureDefinition platformFeature = allCompatibilityFeatures.get(plat);
 
             if (platformFeature == null) {
                 selectionContext.getResult().addMissingPlatform(plat);
@@ -414,6 +412,19 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
         }
         return false;
+    }
+
+    /**
+     * Trim and lowercase the platform list
+     * @param rootPlatforms
+     * @return
+     */
+    private List<String> normalizeRootPlatforms(Collection<String> rootPlatforms){
+        List<String> normalizedPlatforms = new ArrayList<String>();
+        for(String plat : rootPlatforms){
+            normalizedPlatforms.add(plat.trim().toLowerCase());
+        }
+        return normalizedPlatforms;
     }
 
     //////// BEGIN - deprecated resolveFeatures() methods without platforms
@@ -571,15 +582,17 @@ public class FeatureResolverImpl implements FeatureResolver {
                             Collection<String> rootPlatforms) {
 
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
+        Collection<String> rootPlatformFeatures = new ArrayList<String>();
 
         if (hasRootVersionlessFeatures(repository, rootFeatures)) {
             selectionContext.setHasVersionlessFeatures();
             processCompatibilityFeatures(repository.getFeatures());
 
-            rootPlatforms = collectConfiguredPlatforms(repository, rootPlatforms, selectionContext);
-            rootPlatforms.addAll(collectEnvironmentPlatforms(repository, rootPlatforms, selectionContext));
-            rootPlatforms.addAll(collectFeaturePlatforms(repository, rootPlatforms, rootFeatures, selectionContext));
-            for (String platform : rootPlatforms) {
+            rootPlatforms = normalizeRootPlatforms(rootPlatforms);
+            rootPlatformFeatures = collectConfiguredPlatforms(repository, rootPlatforms, selectionContext);
+            rootPlatformFeatures.addAll(collectEnvironmentPlatforms(repository, rootPlatformFeatures, selectionContext));
+            rootPlatformFeatures.addAll(collectFeaturePlatforms(repository, rootPlatformFeatures, rootFeatures, selectionContext));
+            for (String platform : rootPlatformFeatures) {
                 selectionContext.getResult().addResolvedPlatform(repository.getFeature(platform).getPlatformName());
             }
         }
@@ -595,8 +608,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         // This will ensure that the root and pre-resolved features do not conflict
         Collection<String> rootFeaturesList = new ArrayList<String>(rootFeatures);
         //Implementation for platform element
-        if (rootPlatforms != null && selectionContext.getHasVersionlessFeatures()) {
-            rootFeaturesList.addAll(rootPlatforms);
+        if (rootPlatformFeatures != null && selectionContext.getHasVersionlessFeatures()) {
+            rootFeaturesList.addAll(rootPlatformFeatures);
         }
 
         //add versionless after normal resolution for packaging
@@ -606,7 +619,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
         //preresolve versionless features for regular resolution
         else if (selectionContext.getHasVersionlessFeatures()) {
-            preresolveVersionless(rootFeaturesList, selectionContext, rootPlatforms, filteredVersionless);
+            preresolveVersionless(rootFeaturesList, selectionContext, rootPlatformFeatures, filteredVersionless);
         }
 
         selectionContext.primeSelected(preResolved);
@@ -639,7 +652,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (!filteredVersionless.isEmpty() && allowedMultipleVersions != null) {
             addBackVersionless(filteredVersionless, selectionContext);
         } else if (selectionContext.getHasVersionlessFeatures()) {
-            finalizeVersionlessResults(selectionContext, filteredVersionless);
+            finalizeVersionlessResults(selectionContext, filteredVersionless, rootPlatforms);
         }
 
         // Finally return the selected result
@@ -964,7 +977,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @param selectionContext
      * @param filteredVersionless
      */
-    private void finalizeVersionlessResults(SelectionContext selectionContext, List<String> filteredVersionless) {
+    private void finalizeVersionlessResults(SelectionContext selectionContext, List<String> filteredVersionless, Collection<String> rootPlatforms) {
         FeatureResolverResultImpl result = selectionContext.getResult();
         result._resolved.addAll(filteredVersionless);
 
@@ -976,8 +989,18 @@ public class FeatureResolverImpl implements FeatureResolver {
         for (String feature : result.getResolvedFeatures()) {
             ProvisioningFeatureDefinition featureDef = selectionContext.getRepository().getFeature(feature);
             if (featureDef.isCompatibility()) {
-                if (existingPlatforms.contains(featureDef.getPlatformName())) {
-                    result.addResolvedPlatform(featureDef.getPlatformName());
+                boolean addedPlatform = false;
+                if(!rootPlatforms.isEmpty()){
+                    for(String platName : featureDef.getPlatformNames()){
+                        if(rootPlatforms.contains(platName)){
+                            result.addResolvedPlatform(platName);
+                            addedPlatform = true;
+                        }
+                    }
+                }
+                if (existingPlatforms.contains(featureDef.getPlatformName()) && !addedPlatform) {
+                    String platforms = featureDef.getPlatformName();
+                    result.addResolvedPlatform(platforms);
                 }
             }
         }
@@ -1037,7 +1060,9 @@ public class FeatureResolverImpl implements FeatureResolver {
         allCompatibilityFeatures = new HashMap<>();
         for (ProvisioningFeatureDefinition feature : features) {
             if (feature.isCompatibility()) {
-                allCompatibilityFeatures.put(feature.getPlatformName().toLowerCase(), feature);
+                for(String platformName : feature.getPlatformNames()){
+                    allCompatibilityFeatures.put(platformName.toLowerCase(), feature);
+                }
             }
         }
     }

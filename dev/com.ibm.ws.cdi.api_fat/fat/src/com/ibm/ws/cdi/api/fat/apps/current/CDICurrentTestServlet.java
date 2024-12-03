@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.time.Duration;
 import java.util.logging.Logger;
@@ -92,7 +93,7 @@ public class CDICurrentTestServlet extends FATServlet {
             LOGGER.info("About to throw exception");
             assertTrue("The thread with CDI.current never completed", false);
         } finally {
-            wasCDICurrentFound = false;
+            wasCDICurrentFound = null;
         }
     }
 
@@ -119,9 +120,9 @@ public class CDICurrentTestServlet extends FATServlet {
             }
 
             LOGGER.info("About to throw exception");
-            assertTrue("The thread with CDI.current never completed", false);
+            fail("The thread with CDI.current never completed");
         } finally {
-            wasCDICurrentFound = false;
+            wasCDICurrentFound = null;
         }
     }
 
@@ -146,6 +147,7 @@ public class CDICurrentTestServlet extends FATServlet {
                 LOGGER.info("Calling setter for test variable with true");
             } else {
                 LOGGER.info("Calling setter for test variable with false");
+                CDICurrentTestServlet.setWasCDICurrentFound(false);
             }
         }
     }

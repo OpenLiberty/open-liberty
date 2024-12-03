@@ -12,7 +12,6 @@ package io.openliberty.http.monitor.fat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.HttpMethod;
 
@@ -107,8 +106,7 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 
@@ -122,8 +120,7 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 
@@ -138,8 +135,7 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 
@@ -154,8 +150,7 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 
@@ -170,8 +165,7 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 
@@ -186,8 +180,7 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
     }
 
     @Test
@@ -203,9 +196,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod,
-                                           errorType));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod,
+                                                                 errorType));
 
     }
 
@@ -221,9 +213,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), resolvedRoute, responseStatus,
-                                           requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), resolvedRoute, responseStatus,
+                                                                 requestMethod));
 
     }
 
@@ -240,9 +231,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod,
-                                           errorType));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod,
+                                                                 errorType));
 
     }
 
@@ -259,9 +249,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod,
-                                           errorType));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), route, responseStatus, requestMethod,
+                                                                 errorType));
 
     }
 
@@ -278,9 +267,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
-                                           requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                                                 requestMethod));
 
     }
 
@@ -297,9 +285,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
-                                           requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                                                 requestMethod));
 
     }
 
@@ -316,9 +303,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
-                                           requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                                                 requestMethod));
 
     }
 
@@ -341,9 +327,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         Log.info(c, " cr1_params_query", "the response is " + res);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
-                                           requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                                                 requestMethod));
 
     }
 
@@ -364,9 +349,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
-                                           requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                                                 requestMethod));
 
     }
 

@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: BasicProtectedAutoFeatureTool-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.basicprotectedautofeaturetool-1.0; visibility:=protected
 Subsystem-Name: BasicProtectedAutoFeatureTool Display Name

@@ -46,6 +46,8 @@ public class TelemetryMessagesTest extends FATServletClient {
     public static final String APP_NAME = "MpTelemetryLogApp";
     public static final String SERVER_NAME = "TelemetryMessage";
 
+    //This test will run on all mp 2.0 repeats to ensure we have some test coverage on all versions.
+    //I chose this one because TelemetryMessages is core to this bucket
     @ClassRule
     public static RepeatTests rt = TelemetryActions.telemetry20Repeats();
 

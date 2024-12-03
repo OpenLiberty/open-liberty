@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: Schemat zosta\u0142 utworzony w p
 schemagen.info.schema.file.created.explanation=Komenda zosta\u0142a pomy\u015blnie zako\u0144czona.
 schemagen.info.schema.file.created.useraction=Nie jest wymagana \u017cadna\nczynno\u015b\u0107.
 
+error.config.root.deleted=CWWKG0110E: Wykryto aktualizacj\u0119 konfiguracji, ale plik server.xml nie istnieje. Nie dokonano \u017cadnych aktualizacji konfiguracji.
+error.config.root.deleted.explanation=Plik server.xml zosta\u0142 usuni\u0119ty. Aby nie powodowa\u0107 zak\u0142\u00f3ce\u0144 w dzia\u0142aniu aplikacji, nie wprowadza si\u0119 \u017cadnych zmian w konfiguracji.
+error.config.root.deleted.useraction=Dodaj plik server.xml z powrotem na serwer.
+
 # Non-TR message
 error.invalidOCDRef=B\u0141\u0104D: to\u017csamo\u015b\u0107 PID metatypu [{0}] okre\u015bla nieistniej\u0105cy identyfikator definicji klasy obiektu [{1}]

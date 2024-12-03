@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -130,3 +130,30 @@ OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Upewnij si\u0119, \u017ce \u015b
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Segment \u015bcie\u017cki "/." oraz "/.." jest niedozwolony dla punkt\u00f3w ko\u0144cowych OpenAPI .
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Segment \u015bcie\u017cki OpenAPI "/." oraz "/.." jest niedozwolony.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Usu\u0144 wszystkie segmenty "/." oraz "/.." ze \u015bcie\u017cki.
+
+# {1} - the server.xml element name, either includeApplication or excludeApplication
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W=CWWKO1678W: Skonfigurowana nazwa aplikacji {0} w elemencie {1} jest nieprawid\u0142owa, poniewa\u017c zawiera znak \u201e/\u201d lub jest pusta.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.explanation=Nazwa aplikacji nie mo\u017ce zawiera\u0107 znaku \u201e/\u201d, poniewa\u017c znak \u201e/\u201d s\u0142u\u017cy do oddzielania aplikacji od jej modu\u0142\u00f3w sk\u0142adowych.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.useraction=Usu\u0144 znak \u201e/\u201d z elementu includeApplication lub excludeApplication w pliku server.xml albo przekonwertuj ten element na includeModule lub excludeModule , aby odwo\u0142ywa\u0142 si\u0119 do pojedynczego modu\u0142u.
+
+# {1} - the server.xml element name, either includeModule or excludeModule
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W=CWWKO1679W: Skonfigurowana nazwa modu\u0142u {0} w elemencie {1} jest nieprawid\u0142owa, poniewa\u017c nie ma formatu \u201e<nazwa-aplikacji>/<nazwa-modu\u0142u>\u201d.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.explanation=Modu\u0142 musi mie\u0107 format \u201e<nazwa-aplikacji>/<nazwa-modu\u0142u>\u201d. W zwi\u0105zku z tym nazwa modu\u0142u bez uko\u015bnika (\u201e/\u201d) lub pusta nazwa aplikacji lub modu\u0142u jest nieprawid\u0142owa.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.useraction=Popraw element includeModule lub excludeModule w pliku server.xml lub przekonwertuj ten element na includeApplication lub excludeApplication , aby odwo\u0142ywa\u0142 si\u0119 do ca\u0142ej aplikacji.
+
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W=CWWKO1680W: Nazwa aplikacji {1} w elemencie konfiguracji {0} nie pasuje do nazwy \u017cadnej wdro\u017conej aplikacji, ale pasuje albo do nazwy z deskryptora wdro\u017cenia, albo do nazwy archiwum aplikacji {2} . Nazwa aplikacji u\u017cywana w tym miejscu musi by\u0107 taka sama, jak nazwa podana w pliku server.xml , a je\u015bli nie podano \u017cadnej nazwy, musi to by\u0107 nazwa pliku archiwum bez rozszerzenia.
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.explanation=Odwo\u0142anie do nazwy aplikacji w elemencie konfiguracji mpOpenAPI odpowiada nazwie z deskryptora wdro\u017cenia aplikacji, ale nie odpowiada \u017cadnej nazwie aplikacji zdefiniowanej w pliku server.xml .
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.useraction=Sprawd\u017a, czy wszystkie aplikacje zosta\u0142y uruchomione prawid\u0142owo i czy nazwy w elemencie konfiguracji s\u0105 okre\u015blone poprawnie.
+
+OPENAPI_VERSION_INVALID_CWWK06181W=CWWKO1681W: Skonfigurowana wersja OpenAPI {0} nie ma prawid\u0142owego formatu. Musi sk\u0142ada\u0107 si\u0119 z dw\u00f3ch lub trzech liczb rozdzielonych kropk\u0105 (.). Obs\u0142ugiwane warto\u015bci to {1} . Zamiast tego u\u017cywana jest domy\u015blna wersja {2} .
+OPENAPI_VERSION_INVALID_CWWK06181W.explanation=Atrybut openAPIVersion elementu konfiguracji mpOpenAPI jest ustawiony na warto\u015b\u0107, kt\u00f3ra nie jest prawid\u0142ow\u0105 wersj\u0105 OpenAPI .
+OPENAPI_VERSION_INVALID_CWWK06181W.useraction=Zaktualizuj atrybut openAPIVersion do jednej z obs\u0142ugiwanych warto\u015bci z komunikatu o b\u0142\u0119dzie.
+
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W=CWWKO1682W: Ta wersja mpOpenAPI nie obs\u0142uguje skonfigurowanej wersji OpenAPI {0} . Obs\u0142ugiwane warto\u015bci to {1} . Zamiast tego u\u017cywana jest domy\u015blna wersja {2} .
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.explanation=Atrybut openAPIVersion elementu konfiguracji mpOpenAPI jest ustawiony na wersj\u0119 OpenAPI , kt\u00f3ra nie jest obs\u0142ugiwana przez bie\u017c\u0105c\u0105 wersj\u0119 funkcji mpOpenAPI .
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Zaktualizuj atrybut openAPIVersion do jednej z obs\u0142ugiwanych warto\u015bci z komunikatu o b\u0142\u0119dzie lub u\u017cyj wersji funkcji mpOpenAPI , kt\u00f3ra obs\u0142uguje skonfigurowan\u0105 wersj\u0119 OpenAPI .
+
+# "mpOpenAPI", "info", "title" and "version" are names in server.xml and should not be translated
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: Element konfiguracji informacji mpOpenAPI w pliku server.xml jest nieprawid\u0142owy. Nale\u017cy ustawi\u0107 atrybuty title i version. Element info zostanie zignorowany.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=Pola tytu\u0142u i wersji to wymagane w\u0142a\u015bciwo\u015bci w obiekcie info dokumentu OpenAPI . Podczas konfigurowania obiektu info nale\u017cy poda\u0107 warto\u015bci atrybut\u00f3w title i version.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Upewnij si\u0119, \u017ce atrybuty title i version s\u0105 ustawione na prawid\u0142owe warto\u015bci w elemencie info mpOpenAPI .

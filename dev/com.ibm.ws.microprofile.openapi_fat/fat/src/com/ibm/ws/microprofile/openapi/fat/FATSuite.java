@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.microprofile.openapi.fat.annotations.AnnotationProcessingTest;
+import com.ibm.ws.microprofile.openapi.fat.config.OpenAPIConfigQuickTest;
 import com.ibm.ws.microprofile.openapi.fat.config.OpenAPIConfigTest;
 import com.ibm.ws.microprofile.openapi.fat.filter.FilterConfigTest;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFive;
@@ -35,6 +36,7 @@ import componenttest.rules.repeater.RepeatTests;
     ApplicationProcessorServletTest.class,
     ApplicationProcessorTest.class,
     ContentTypeTest.class,
+    OpenAPIConfigQuickTest.class,
     OpenAPIConfigTest.class,
     OpenAPIValidationTestOne.class,
     OpenAPIValidationTestTwo.class,
@@ -68,6 +70,16 @@ public class FATSuite {
             MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
             MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
             MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+    }
+
+    /**
+     * A limited set of repeats for slow tests where the code is common
+     * @param serverName the liberty server name
+     * @return a repeat rule
+     */
+    public static RepeatTests repeatLimited(String serverName) {
+        return MicroProfileActions.repeat(serverName, MicroProfileActions.MP70_EE10,
+            MicroProfileActions.MP33);
     }
 
     static {

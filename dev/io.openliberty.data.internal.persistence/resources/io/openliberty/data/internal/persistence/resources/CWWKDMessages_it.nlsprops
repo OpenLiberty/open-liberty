@@ -102,7 +102,8 @@ CWWKD1018.confl.special.param=CWWKD1018E: Il metodo {0} del deposito {1} non pu\
 CWWKD1018.confl.special.param.explanation=Alcuni dei parametri speciali di Jakarta Data, come Limit e PageRequest, non possono essere combinati in una firma di metodo di un singolo repository.
 CWWKD1018.confl.special.param.useraction=Aggiornare il repository per non usare entrambi i tipi di parametri speciali di Jakarta Data nella stessa firma del metodo.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 avere una query con un misto di parametri posizionali e parametri denominati.
+CWWKD1019.mixed.positional.named=CWWKD1019E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 avere una query che mescola parametri posizionali e parametri denominati. L''interfaccia definisce una combinazione di {2} parametri posizionali e di
+ {3} parametri denominati {4} per il valore dell''annotazione Query: {5}. Una query con parametri posizionali deve fare riferimento a ciascun parametro con il suo valore ordinale, a partire da ?1, e i parametri del metodo non devono avere l''annotazione Param. In una query con parametri denominati, ogni parametro deve essere referenziato dal suo nome, come {6}, e i parametri del metodo devono avere l''annotazione Param, come {7}. In alternativa, abilitando l''opzione di compilazione -parametri, i parametri del metodo possono indicare il parametro chiamato corrispondendo al suo nome, ad esempio {8}.
 CWWKD1019.mixed.positional.named.explanation=Le query con parametri devono utilizzare tutti i parametri denominati o tutti i parametri posizionali, non una combinazione.
 CWWKD1019.mixed.positional.named.useraction=Aggiornare il metodo del repository per utilizzare solo parametri denominati o solo parametri posizionali.
 
@@ -270,7 +271,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: L''interfaccia del repository {0} nell''
 CWWKD1060.name.out.of.scope.explanation=Lo spazio dei nomi specificato non \u00e8 accessibile dall'artefatto in cui \u00e8 definita l'interfaccia del repository.
 CWWKD1060.name.out.of.scope.useraction=Aggiornare l'annotazione Repository per specificare un nome di archivio dati visibile al modulo o alla libreria che fornisce l'interfaccia del repository.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: L''interfaccia del repository {0}, definita nel modulo enterprise bean {1} dell''applicazione {2}, configura un valore {2} per l''attributo {3}. Tuttavia, i nomi {4} non sono accessibili ai moduli enterprise bean. Utilizzare un nome appartenente a uno dei seguenti spazi dei nomi: {5}.
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Una o pi\u00f9 interfacce di repository{0}) definite nel modulo enterprise bean {1} dell''applicazione {2} configurano un valore {2} per l''attributo {3}. Tuttavia, i nomi {4} non sono accessibili ai moduli enterprise bean. Utilizzare un nome appartenente a uno dei seguenti spazi dei nomi: {5}.
 CWWKD1061.comp.name.in.ejb.explanation=Lo spazio dei nomi specificato non \u00e8 accessibile al modulo enterprise bean in cui \u00e8 definita l'interfaccia del repository.
 CWWKD1061.comp.name.in.ejb.useraction=Aggiornare l'annotazione Repository per specificare un nome di archivio dati visibile al modulo enterprise bean che fornisce l'interfaccia del repository.
 
@@ -286,15 +287,15 @@ CWWKD1064.datastore.error=CWWKD1064E: Il metodo {0} dell''interfaccia del reposi
 CWWKD1064.datastore.error.explanation=Si \u00e8 verificato un errore durante il tentativo di ottenere l'archivio dati.
 CWWKD1064.datastore.error.useraction=Assicurarsi che l'archivio dati specificato e tutte le altre risorse da cui dipende esistano e siano configurate correttamente.
 
-CWWKD1065.ddlgen.timeout=CWWKD1065E: La generazione DDL per l''interfaccia del repository {0} non \u00e8 riuscita perch\u00e9 il data store {1} non ha completato la generazione DDL entro {2} secondi per le seguenti entit\u00e0: {3}.
+CWWKD1065.ddlgen.timeout=CWWKD1065E: La generazione DDL per una o pi\u00f9 interfacce del repository{0}) non \u00e8 riuscita perch\u00e9 il data store {1} non ha completato la generazione DDL entro {2} secondi per le seguenti entit\u00e0: {3}.
 CWWKD1065.ddlgen.timeout.explanation=Il tentativo di generazione del DDL \u00e8 scaduto e non \u00e8 stato completato.
 CWWKD1065.ddlgen.timeout.useraction=Tentare nuovamente la generazione del DDL quando il sistema e il database non sono sotto carico.
 
-CWWKD1066.ddlgen.failed=CWWKD1066E: La generazione DDL per l''interfaccia del repository {0} che utilizza il data store {1} ha riscontrato un errore durante il tentativo di generazione DDL per le seguenti entit\u00e0: {2}. L''errore \u00e8: {3}.
+CWWKD1066.ddlgen.failed=CWWKD1066E: La generazione del DDL per una o pi\u00f9 interfacce del repository{0}) che utilizzano il data store {1} ha riscontrato un errore durante la generazione del DDL per le seguenti entit\u00e0: {2}. L''errore \u00e8: {3}.
 CWWKD1066.ddlgen.failed.explanation=Il tentativo di generazione del DDL non \u00e8 riuscito e non \u00e8 stato completato.
 CWWKD1066.ddlgen.failed.useraction=Indagare l'errore e apportare correzioni all'interfaccia del repository, alle entit\u00e0, alla configurazione dell'archivio dati o al database.
 
-CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: La generazione del DDL per l''interfaccia del repository {0} \u00e8 fallita perch\u00e9 il data store {1} non era disponibile o non era in grado di rendere disponibili le seguenti entit\u00e0 entro {2} secondi: {3}.
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: La generazione del DDL per una o pi\u00f9 interfacce del repository{0}) non \u00e8 riuscita perch\u00e9 il data store {1} non era disponibile o non era in grado di rendere disponibili le seguenti entit\u00e0 entro {2} secondi: {3}.
 CWWKD1067.ddlgen.emf.timeout.explanation=L'acquisizione delle risorse necessarie per la generazione del DDL \u00e8 scaduta e non \u00e8 stata completata.
 CWWKD1067.ddlgen.emf.timeout.useraction=Tentare nuovamente la generazione del DDL quando il sistema e il database non sono sotto carico.
 
@@ -310,11 +311,11 @@ CWWKD1070.record.convert.err=CWWKD1070E: Il record {0} fornito al metodo {1} del
 CWWKD1070.record.convert.err.explanation=Non \u00e8 possibile utilizzare il record Java come entit\u00e0.
 CWWKD1070.record.convert.err.useraction=Definire l'entit\u00e0 come entit\u00e0 Jakarta Persistence invece di usare un'entit\u00e0 record Java.
 
-CWWKD1071.record.with.type.var=CWWKD1071E: Il record {0} non pu\u00f2 essere usato come entit\u00e0 perch\u00e9 ha una o pi\u00f9 variabili di tipo: {1}.
+CWWKD1071.record.with.type.var=CWWKD1071E: Il record {0} \u00e8 usato come entit\u00e0 da una o pi\u00f9 interfacce del repository{1}) nell''artefatto applicativo {2}, ma il record non pu\u00f2 essere un''entit\u00e0 perch\u00e9 ha una o pi\u00f9 variabili di tipo: {3}.
 CWWKD1071.record.with.type.var.explanation=Le classi di entit\u00e0 non possono avere variabili di tipo generico.
 CWWKD1071.record.with.type.var.useraction=Rimuove le variabili di tipo dal record.
 
-CWWKD1072.record.comp.conflict=CWWKD1072E: Il record {0} non pu\u00f2 essere usato come entit\u00e0 perch\u00e9 i suoi componenti {1} e {2} si risolvono entrambi nello stesso nome di propriet\u00e0 dell''entit\u00e0.
+CWWKD1072.record.comp.conflict=CWWKD1072E: Il record {0} \u00e8 usato come entit\u00e0 da una o pi\u00f9 interfacce del repository{1}) nell''artefatto applicativo {2}, ma il record non pu\u00f2 essere un''entit\u00e0 perch\u00e9 il suo componente {3} e il componente {4} si risolvono entrambi allo stesso nome di propriet\u00e0 dell''entit\u00e0.
 CWWKD1072.record.comp.conflict.explanation=I nomi delle propriet\u00e0 delle entit\u00e0 devono essere univoci, ignorando le maiuscole e le minuscole.
 CWWKD1072.record.comp.conflict.useraction=Rinominare uno dei componenti del record per evitare il conflitto.
 
@@ -334,8 +335,8 @@ CWWKD1076.repo.disposed=CWWKD1076E: Il metodo {0} dell''interfaccia del reposito
 CWWKD1076.repo.disposed.explanation=I metodi del repository non devono essere utilizzati al di fuori del ciclo di vita dell'applicazione che lo definisce.
 CWWKD1076.repo.disposed.useraction=Assicurarsi che il metodo del repository non venga utilizzato al di fuori dell'ambito dell'applicazione che lo definisce.
 
-CWWKD1077.defaultds.not.found=CWWKD1077E: L''artefatto applicativo {0} ha un''interfaccia di repository {1} che usa o si affida all''archivio dati {2}, che deve essere configurato nella configurazione del server definendo un elemento dataSource con un identificatore DefaultDataSource. Per esempio, {3} In alternativa, assegnare al valore dataStore dell''annotazione Repository l''identificatore di un elemento databaseStore o il nome JNDI di un riferimento di risorsa di origine dati o di unit\u00e0 di persistenza accessibile all''artefatto applicativo. Un elemento databaseStore pu\u00f2 essere definito nella configurazione del server. Ad esempio, {4} Un componente applicativo pu\u00f2 usare l''annotazione Resource per definire un riferimento a una risorsa dell''origine dati. Ad esempio, {5}, che richiede che la configurazione del server abbia un elemento di configurazione dataSource con un attributo {6}. Un componente applicativo pu\u00f2 usare l''annotazione PersistenceUnit per definire un riferime\
-    nto a un''unit\u00e0 di persistenza. Ad esempio, {7}, che richiede che il file persistence.xml abbia un elemento persistence-unit con un attributo name corrispondente. Ad esempio, {8}
+CWWKD1077.defaultds.not.found=CWWKD1077E: L''artefatto applicativo {0} ha una o pi\u00f9 interfacce di repository{1}) che utilizzano o sono predefinite per il data store {2}. Questo archivio dati deve essere configurato nella configurazione del server, definendo un elemento dataSource con l''identificatore DefaultDataSource. Per esempio, {3} In alternativa, assegnare al valore dataStore dell''annotazione Repository l''identificatore di un elemento databaseStore o il nome JNDI di un riferimento di risorsa di origine dati o di unit\u00e0 di persistenza accessibile all''artefatto applicativo. Un elemento databaseStore pu\u00f2 essere definito nella configurazione del server. Ad esempio, {4} Un componente applicativo pu\u00f2 usare l''annotazione Resource per definire un riferimento a una risorsa dell''origine dati. Ad esempio, {5}, che richiede che la configurazione del server abbia un elemento di configurazione dataSource con un attributo {6}. Un componente applicativo pu\u00f2 usare l''annotazione\
+    \ PersistenceUnit per definire un riferimento a un''unit\u00e0 di persistenza. Ad esempio, {7}, che richiede che il file persistence.xml abbia un elemento persistence-unit con un attributo name corrispondente. Ad esempio, {8}
 CWWKD1077.defaultds.not.found.explanation=I repository di Jakarta Data sono predefiniti all'origine dati predefinita di Jakarta EE, che deve essere configurata nella configurazione del server.
 CWWKD1077.defaultds.not.found.useraction=Configurare l'origine dati predefinita di Jakarta EE o specificare un archivio dati diverso per il repository.
 
@@ -360,3 +361,34 @@ CWWKD1081.entity.general.err.useraction=Individuare l'entit\u00e0 e apportare le
 CWWKD1082.entity.classes.missing=CWWKD1082E: L''unit\u00e0 di persistenza per l''archivio dati {0} non definisce una o pi\u00f9 classi di entit\u00e0{1}) che una o pi\u00f9 interfacce di repository{2}), che utilizzano l''archivio dati, richiedono.
 CWWKD1082.entity.classes.missing.explanation=I repository utilizzano classi di entit\u00e0 che devono essere definite nell'unit\u00e0 di persistenza.
 CWWKD1082.entity.classes.missing.useraction=Includere tutte le classi di entit\u00e0 nell'unit\u00e0 di persistenza.
+
+CWWKD1083.dup.method.param=CWWKD1083E: Pi\u00f9 parametri nel metodo {0} dell''interfaccia del repository {1} corrispondono al parametro denominato: {2}. \u00c8 possibile annotare un parametro del metodo con {3} per specificare il linguaggio di interrogazione del parametro. In alternativa, si pu\u00f2 attivare l''opzione di compilazione -parameters e definire un parametro del metodo nella forma {4}, che non richiede l''annotazione Param.
+CWWKD1083.dup.method.param.explanation=Ogni parametro del metodo deve corrispondere esattamente a un parametro della query.
+CWWKD1083.dup.method.param.useraction=Verificare se ciascuno dei parametri del metodo specifica il parametro con nome corretto. Rimuovere i parametri del metodo duplicati. 
+CWWKD1084.missing.named.params=CWWKD1084E: I parametri del metodo {0} dell''interfaccia del repository {1} non definiscono i parametri denominati{2}) richiesti dal valore di annotazione Query: {3}. \u00c8 possibile definire un parametro con nome per la query, inserendo l''annotazione Param su un parametro del metodo corrispondente. Ad esempio, {4}. In alternativa, se si abilita l''opzione di compilazione -parameters, si pu\u00f2 omettere l''annotazione Param se il parametro del metodo ha lo stesso nome del parametro nominato. Per esempio, se String \u00e8 il tipo di parametro nominato, il parametro del metodo pu\u00f2 essere {5}, che non richiede l''annotazione Param.
+CWWKD1084.missing.named.params.explanation=Il valore dell'annotazione Query richiede uno o pi\u00f9 parametri denominati che non sono forniti dal metodo del repository.
+CWWKD1084.missing.named.params.useraction=Aggiungere parametri al metodo del repository per specificare i parametri denominati mancanti.
+
+CWWKD1085.extra.method.params=CWWKD1085E: I parametri del metodo {0} dell''interfaccia del repository {1} definiscono parametri di query{2}) che non corrispondono a nessuno dei parametri denominati{3}) utilizzati dal valore di annotazione Query: {4}.
+CWWKD1085.extra.method.params.explanation=Tutti i parametri del metodo devono essere utilizzati dalla query o essere tipi di parametri definiti da Jakarta Data.
+CWWKD1085.extra.method.params.useraction=Rimuovere i parametri extra del metodo.
+
+CWWKD1086.named.params.unused=CWWKD1086E: I parametri del metodo {0} dell''interfaccia del repository {1} definiscono parametri denominati{2}), che non sono utilizzati nel valore di annotazione Query: {3}. \u00c8 possibile fare riferimento a parametri denominati in una query utilizzando il carattere : seguito dal nome del parametro. Ad esempio, {4}. I parametri posizionali di una query possono essere referenziati utilizzando il simbolo ? seguito da un valore ordinale, a partire da "1". Evitare di annotare i parametri del metodo con l''annotazione Param quando la query usa parametri posizionali o non ha parametri.
+CWWKD1086.named.params.unused.explanation=L'annotazione Param pu\u00f2 essere usata solo quando la query ha dei parametri denominati.
+CWWKD1086.named.params.unused.useraction=Rimuovere l'annotazione Param o modificare la query in modo che utilizzi parametri denominati.
+
+CWWKD1087.null.param=CWWKD1087E: Il parametro {0} del metodo {1} dell''interfaccia del deposito {2} \u00e8 un valore nullo. Specificare un valore non nullo.
+CWWKD1087.null.param.explanation=Il valore del parametro non deve essere nullo.
+CWWKD1087.null.param.useraction=Specificare un valore non nullo per il parametro.
+
+CWWKD1088.empty.sorts=CWWKD1088E: I criteri di ordinamento specificati dal parametro {0} del metodo {1} dell''interfaccia del repository {2} sono vuoti.
+CWWKD1088.empty.sorts.explanation=I criteri di ordinamento non devono essere vuoti.
+CWWKD1088.empty.sorts.useraction=Specificare un valore per i criteri di ordinamento.
+
+CWWKD1089.unordered.pagination=CWWKD1089E: Il metodo {0} dell''interfaccia del repository {1} deve specificare i criteri di ordinamento perch\u00e9 il metodo restituisce un valore {2}. I dati non ordinati non possono essere suddivisi in pagine.
+CWWKD1089.unordered.pagination.explanation=La paginazione richiede dati ordinati.
+CWWKD1089.unordered.pagination.useraction=Utilizzare l'annotazione OrderBy per definire i criteri di ordinamento del metodo di repository.
+
+CWWKD1090.orderby.conflict=CWWKD1090E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 combinare l''annotazione OrderBy e la parola chiave OrderBy.
+CWWKD1090.orderby.conflict.explanation=L'annotazione OrderBy non \u00e8 compatibile con la parola chiave OrderBy.
+CWWKD1090.orderby.conflict.useraction=Utilizzare solo l'annotazione OrderBy o la parola chiave OrderBy.

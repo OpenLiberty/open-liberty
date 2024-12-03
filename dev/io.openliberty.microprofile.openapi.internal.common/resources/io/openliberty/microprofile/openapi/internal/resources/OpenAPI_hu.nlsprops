@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -130,3 +130,30 @@ OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: A "/." vagy a "/.." \u00e9rv\u00e9nytelen \u00fatvonal szegmens az OpenAPI v\u00e9gpontokhoz.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Az OpenAPI \u00fatvonal szegmens "/." vagy a "/.." \u00e9rv\u00e9nytelen.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=T\u00e1vol\u00edtsa el a "/." vagy a "/.." szegmenst az \u00fatvonalb\u00f3l.
+
+# {1} - the server.xml element name, either includeApplication or excludeApplication
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W=CWWKO1678W: A konfigur\u00e1lt {0} alkalmaz\u00e1sn\u00e9v a {1} elemben nem \u00e9rv\u00e9nyes, mert a "/" karaktert tartalmazza, vagy \u00fcres.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.explanation=Egy alkalmaz\u00e1s neve nem tartalmazhat "/" jelet, mivel a "/" jellel v\u00e1lasztj\u00e1k el az alkalmaz\u00e1st az \u00f6sszetev\u0151 moduljait\u00f3l.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.useraction=T\u00e1vol\u00edtsa el a "/" jelet a server.xml f\u00e1jl includeApplication vagy excludeApplication elem\u00e9b\u0151l, vagy alak\u00edtsa \u00e1t az elemet includeModule vagy excludeModule -ra, hogy egyetlen modulra hivatkozzon.
+
+# {1} - the server.xml element name, either includeModule or excludeModule
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W=CWWKO1679W: A konfigur\u00e1lt {0} moduln\u00e9v a {1} elemben nem \u00e9rv\u00e9nyes, mivel nem "<alkalmaz\u00e1sn\u00e9v>/<moduln\u00e9v>" form\u00e1tum\u00fa.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.explanation=A modulnak a k\u00f6vetkez\u0151 form\u00e1tumban kell lennie: "<alkalmaz\u00e1sn\u00e9v>/<moduln\u00e9v>"; ez\u00e9rt a perjel ("/") n\u00e9lk\u00fcli moduln\u00e9v vagy \u00fcres alkalmaz\u00e1sn\u00e9v vagy moduln\u00e9v nem \u00e9rv\u00e9nyes.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.useraction=Jav\u00edtsa ki az includeModule vagy excludeModule elemet server.xml f\u00e1jlban, vagy alak\u00edtsa \u00e1t az elemet includeApplication -re vagy excludeApplication -re, hogy egy teljes alkalmaz\u00e1sra hivatkozzon.
+
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W=CWWKO1680W: A {0} konfigur\u00e1ci\u00f3s elemben tal\u00e1lhat\u00f3 {1} alkalmaz\u00e1sn\u00e9v nem egyezik egyetlen telep\u00edtett alkalmaz\u00e1s nev\u00e9vel sem, de megegyezik a telep\u00edt\u00e9sle\u00edr\u00f3 nev\u00e9vel vagy a {2} alkalmaz\u00e1s arch\u00edv nev\u00e9vel. Az itt haszn\u00e1lt alkalmaz\u00e1sn\u00e9vnek a server.xml f\u00e1jlban megadottnak kell lennie, vagy ha nincs megadva n\u00e9v, akkor az arch\u00edv f\u00e1jln\u00e9vnek a kiterjeszt\u00e9se n\u00e9lk\u00fcl.
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.explanation=Az mpOpenAPI konfigur\u00e1ci\u00f3s elemben tal\u00e1lhat\u00f3 alkalmaz\u00e1sn\u00e9v-hivatkoz\u00e1s megegyezik az alkalmaz\u00e1s-telep\u00edt\u00e9si le\u00edr\u00f3 nev\u00e9vel, de nem egyezik a server.xml f\u00e1jlban meghat\u00e1rozott alkalmaz\u00e1sn\u00e9vvel.
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.useraction=Ellen\u0151rizze, hogy minden alkalmaz\u00e1s megfelel\u0151en indult-e el, \u00e9s hogy a konfigur\u00e1ci\u00f3s elem nevei helyesen vannak-e megadva.
+
+OPENAPI_VERSION_INVALID_CWWK06181W=CWWKO1681W: A konfigur\u00e1lt {0} OpenAPI verzi\u00f3 nem \u00e9rv\u00e9nyes form\u00e1tum\u00fa, k\u00e9t vagy h\u00e1rom sz\u00e1mnak kell lennie, amelyeket pont (.) karakter v\u00e1laszt el. A t\u00e1mogatott \u00e9rt\u00e9kek: {1} . Ehelyett a {2} alap\u00e9rtelmezett verzi\u00f3ja ker\u00fcl felhaszn\u00e1l\u00e1sra.
+OPENAPI_VERSION_INVALID_CWWK06181W.explanation=Az mpOpenAPI konfigur\u00e1ci\u00f3s elem openAPIVersion attrib\u00fatuma olyan \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, amely nem \u00e9rv\u00e9nyes OpenAPI verzi\u00f3.
+OPENAPI_VERSION_INVALID_CWWK06181W.useraction=Friss\u00edtse az openAPIVersion attrib\u00fatumot a hiba\u00fczenet egyik t\u00e1mogatott \u00e9rt\u00e9k\u00e9re.
+
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W=CWWKO1682W: mpOpenAPI ezen verzi\u00f3ja nem t\u00e1mogatja a konfigur\u00e1lt {0} OpenAPI verzi\u00f3t. A t\u00e1mogatott \u00e9rt\u00e9kek: {1} . Ehelyett a {2} alap\u00e9rtelmezett verzi\u00f3ja ker\u00fcl felhaszn\u00e1l\u00e1sra.
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.explanation=Az mpOpenAPI konfigur\u00e1ci\u00f3s elem openAPIVersion attrib\u00fatuma olyan OpenAPI verzi\u00f3ra van be\u00e1ll\u00edtva, amelyet az mpOpenAPI szolg\u00e1ltat\u00e1s fut\u00f3 verzi\u00f3ja nem t\u00e1mogat.
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Friss\u00edtse az openAPIVersion attrib\u00fatumot a hiba\u00fczenet egyik t\u00e1mogatott \u00e9rt\u00e9k\u00e9re, vagy haszn\u00e1lja az mpOpenAPI szolg\u00e1ltat\u00e1s egy olyan verzi\u00f3j\u00e1t, amely t\u00e1mogatja a konfigur\u00e1lt OpenAPI verzi\u00f3t.
+
+# "mpOpenAPI", "info", "title" and "version" are names in server.xml and should not be translated
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: Az mpOpenAPI info konfigur\u00e1ci\u00f3s eleme a server.xml f\u00e1jlban \u00e9rv\u00e9nytelen. A c\u00edm \u00e9s a verzi\u00f3 attrib\u00fatumait is be kell \u00e1ll\u00edtani. A rendszer figyelmen k\u00edv\u00fcl hagyja az info elemet.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=A c\u00edm \u00e9s a verzi\u00f3 mez\u0151k k\u00f6telez\u0151 tulajdons\u00e1gok egy OpenAPI dokumentum inform\u00e1ci\u00f3s objektum\u00e1ban. Az infoobjektum konfigur\u00e1l\u00e1sakor meg kell adni egy \u00e9rt\u00e9ket a title \u00e9s a version attrib\u00fatumokhoz.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a c\u00edm \u00e9s a verzi\u00f3 attrib\u00fatumok \u00e9rv\u00e9nyes \u00e9rt\u00e9kekre vannak \u00e1ll\u00edtva az mpOpenAPI inform\u00e1ci\u00f3s elemben.

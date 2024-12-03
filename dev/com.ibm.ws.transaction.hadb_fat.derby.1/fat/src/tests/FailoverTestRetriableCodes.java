@@ -19,6 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.HADBTestConstants.HADBTestType;
+import com.ibm.tx.jta.ut.util.HADBTestControl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
@@ -26,11 +28,9 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import suite.FATSuite;
-import web.FailoverServlet;
 
 /**
  * These tests are designed to exercise the ability of the SQLMultiScopeRecoveryLog (transaction logs stored
@@ -116,11 +116,9 @@ import web.FailoverServlet;
 public class FailoverTestRetriableCodes extends FailoverTest {
 
     @Server("com.ibm.ws.transaction_retriable")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer retriableServer;
 
     @Server("com.ibm.ws.transaction_nonretriable")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer nonRetriableServer;
 
     public static String[] serverNames = new String[] {
@@ -130,7 +128,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
 
     @AfterClass
     public static void afterSuite() {
-        FATSuite.afterSuite("HATABLE", "WAS_TRAN_LOG", "WAS_PARTNER_LOG");
+        FATSuite.afterSuite("WAS_TRAN_LOG", "WAS_PARTNER_LOG");
     }
 
     @BeforeClass
@@ -148,14 +146,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
 
         server = retriableServer;
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.RUNTIME, -3, 12, 1);
 
         FATUtils.startServers(runner, server);
 
@@ -178,16 +169,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
 
         server = retriableServer;
 
-        FATUtils.startServers(runner, server);
-
-        Log.info(this.getClass(), method, "call setupForNonRecoverableBatchFailover");
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableBatchFailover");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.RUNTIME, -33, 12, 1);
 
         FATUtils.startServers(runner, server);
 
@@ -215,14 +197,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
 
         server = nonRetriableServer;
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.RUNTIME, -3, 12, 1);
 
         FATUtils.startServers(runner, server);
 
@@ -261,11 +236,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
         server = nonRetriableServer;
         serverMsgs = new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" };
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableBatchFailover");
-
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server);
+        HADBTestControl.write(HADBTestType.RUNTIME, -33, 12, 1);
 
         Log.info(this.getClass(), method, "set timeout");
         server.setServerStartTimeout(START_TIMEOUT);

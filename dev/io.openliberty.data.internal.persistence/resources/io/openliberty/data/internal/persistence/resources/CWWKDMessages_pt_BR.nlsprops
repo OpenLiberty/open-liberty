@@ -102,7 +102,8 @@ CWWKD1018.confl.special.param=CWWKD1018E: O m\u00e9todo {0} do reposit\u00f3rio 
 CWWKD1018.confl.special.param.explanation=Alguns dos par\u00e2metros especiais do Jakarta Data, como Limit e PageRequest, n\u00e3o podem ser combinados em uma \u00fanica assinatura de m\u00e9todo de reposit\u00f3rio.
 CWWKD1018.confl.special.param.useraction=Atualize o reposit\u00f3rio para n\u00e3o usar os dois tipos de par\u00e2metros especiais do Jakarta Data na mesma assinatura de m\u00e9todo.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o pode ter uma consulta com uma mistura de par\u00e2metros posicionais e par\u00e2metros nomeados.
+CWWKD1019.mixed.positional.named=CWWKD1019E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o pode ter uma consulta que misture par\u00e2metros posicionais e nomeados. A interface define uma combina\u00e7\u00e3o de par\u00e2metros posicionais {2} e
+ {3} par\u00e2metros nomeados {4} para o valor da anota\u00e7\u00e3o Query: {5}. Uma consulta com par\u00e2metros posicionais deve fazer refer\u00eancia a cada par\u00e2metro por seu valor ordinal, come\u00e7ando com ?1, e os par\u00e2metros do m\u00e9todo n\u00e3o devem ter a anota\u00e7\u00e3o Param. Em uma consulta com par\u00e2metros nomeados, cada par\u00e2metro deve ser referenciado por seu nome, como {6}, e os par\u00e2metros do m\u00e9todo devem ter a anota\u00e7\u00e3o Param, como {7}. Como alternativa, a ativa\u00e7\u00e3o da op\u00e7\u00e3o de compila\u00e7\u00e3o -parameters permite que os par\u00e2metros do m\u00e9todo indiquem o par\u00e2metro nomeado por meio da correspond\u00eancia com seu nome, por exemplo, {8}.
 CWWKD1019.mixed.positional.named.explanation=As consultas com par\u00e2metros devem usar todos os par\u00e2metros nomeados ou todos os par\u00e2metros posicionais, n\u00e3o uma combina\u00e7\u00e3o.
 CWWKD1019.mixed.positional.named.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para usar somente par\u00e2metros nomeados ou somente par\u00e2metros posicionais.
 
@@ -270,7 +271,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: A interface do reposit\u00f3rio {0} no a
 CWWKD1060.name.out.of.scope.explanation=O namespace especificado n\u00e3o \u00e9 acess\u00edvel a partir do artefato em que a interface do reposit\u00f3rio est\u00e1 definida.
 CWWKD1060.name.out.of.scope.useraction=Atualize a anota\u00e7\u00e3o Repository para especificar um nome de armazenamento de dados que seja vis\u00edvel para o m\u00f3dulo ou biblioteca que fornece a interface do reposit\u00f3rio.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: A interface do reposit\u00f3rio {0}, definida no m\u00f3dulo do enterprise bean {1} do aplicativo {2}, configura um valor {2} para o atributo {3}. Entretanto, os nomes {4} n\u00e3o s\u00e3o acess\u00edveis aos m\u00f3dulos de bean corporativos. Use um nome de um dos seguintes namespaces: {5}.
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Uma ou mais interfaces de reposit\u00f3rio{0}) definidas no m\u00f3dulo do enterprise bean {1} do aplicativo {2} configuram um valor {2} para o atributo {3}. Entretanto, os nomes {4} n\u00e3o s\u00e3o acess\u00edveis aos m\u00f3dulos de bean corporativo. Use um nome de um dos seguintes namespaces: {5}.
 CWWKD1061.comp.name.in.ejb.explanation=O namespace especificado n\u00e3o \u00e9 acess\u00edvel ao m\u00f3dulo do enterprise bean em que a interface do reposit\u00f3rio est\u00e1 definida.
 CWWKD1061.comp.name.in.ejb.useraction=Atualize a anota\u00e7\u00e3o Repository para especificar um nome de armazenamento de dados que seja vis\u00edvel para o m\u00f3dulo enterprise bean que fornece a interface do reposit\u00f3rio.
 
@@ -286,15 +287,15 @@ CWWKD1064.datastore.error=CWWKD1064E: O m\u00e9todo {0} da interface {1} do repo
 CWWKD1064.datastore.error.explanation=Ocorreu um erro ao tentar obter o armazenamento de dados.
 CWWKD1064.datastore.error.useraction=Certifique-se de que o armazenamento de dados especificado e todos os outros recursos dos quais ele depende existam e estejam configurados corretamente.
 
-CWWKD1065.ddlgen.timeout=CWWKD1065E: A gera\u00e7\u00e3o de DDL para a interface do reposit\u00f3rio {0} falhou porque o armazenamento de dados {1} n\u00e3o concluiu a gera\u00e7\u00e3o de DDL em {2} segundos para as seguintes entidades: {3}.
+CWWKD1065.ddlgen.timeout=CWWKD1065E: A gera\u00e7\u00e3o de DDL para uma ou mais interfaces de reposit\u00f3rio{0}) falhou porque o armazenamento de dados {1} n\u00e3o concluiu a gera\u00e7\u00e3o de DDL em {2} segundos para as seguintes entidades: {3}.
 CWWKD1065.ddlgen.timeout.explanation=A tentativa de gera\u00e7\u00e3o de DDL atingiu o tempo limite e n\u00e3o foi conclu\u00edda.
 CWWKD1065.ddlgen.timeout.useraction=Tente novamente a gera\u00e7\u00e3o de DDL quando o sistema e o banco de dados n\u00e3o estiverem sob carga.
 
-CWWKD1066.ddlgen.failed=CWWKD1066E: A gera\u00e7\u00e3o de DDL para a interface do reposit\u00f3rio {0} que usa o armazenamento de dados {1} encontrou um erro ao tentar gerar DDL para as seguintes entidades: {2}. O erro \u00e9: {3}.
+CWWKD1066.ddlgen.failed=CWWKD1066E: A gera\u00e7\u00e3o de DDL para uma ou mais interfaces de reposit\u00f3rio{0}) que usam o armazenamento de dados {1} encontrou um erro durante a gera\u00e7\u00e3o de DDL para as seguintes entidades: {2}. O erro \u00e9: {3}.
 CWWKD1066.ddlgen.failed.explanation=A tentativa de gera\u00e7\u00e3o de DDL falhou e n\u00e3o foi conclu\u00edda.
 CWWKD1066.ddlgen.failed.useraction=Investigue o erro e fa\u00e7a as corre\u00e7\u00f5es na interface do reposit\u00f3rio, nas entidades, na configura\u00e7\u00e3o do armazenamento de dados ou no banco de dados.
 
-CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: A gera\u00e7\u00e3o de DDL para a interface do reposit\u00f3rio {0} falhou porque o armazenamento de dados {1} n\u00e3o estava dispon\u00edvel ou n\u00e3o conseguiu disponibilizar as seguintes entidades em {2} segundos: {3}.
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: A gera\u00e7\u00e3o de DDL para uma ou mais interfaces de reposit\u00f3rio{0}) falhou porque o armazenamento de dados {1} n\u00e3o estava dispon\u00edvel ou n\u00e3o conseguiu disponibilizar as seguintes entidades em {2} segundos: {3}.
 CWWKD1067.ddlgen.emf.timeout.explanation=A aquisi\u00e7\u00e3o dos recursos necess\u00e1rios para a gera\u00e7\u00e3o de DDL atingiu o tempo limite e n\u00e3o foi conclu\u00edda.
 CWWKD1067.ddlgen.emf.timeout.useraction=Tente novamente a gera\u00e7\u00e3o de DDL quando o sistema e o banco de dados n\u00e3o estiverem sob carga.
 
@@ -310,11 +311,11 @@ CWWKD1070.record.convert.err=CWWKD1070E: O registro {0} fornecido ao m\u00e9todo
 CWWKD1070.record.convert.err.explanation=N\u00e3o \u00e9 poss\u00edvel usar o registro Java como uma entidade.
 CWWKD1070.record.convert.err.useraction=Defina a entidade como uma entidade Jakarta Persistence em vez de usar uma entidade de registro Java.
 
-CWWKD1071.record.with.type.var=CWWKD1071E: O registro {0} n\u00e3o pode ser usado como uma entidade porque tem uma ou mais vari\u00e1veis de tipo: {1}.
+CWWKD1071.record.with.type.var=CWWKD1071E: O registro {0} \u00e9 usado como uma entidade por uma ou mais interfaces do reposit\u00f3rio{1}) no artefato do aplicativo {2}, mas o registro n\u00e3o pode ser uma entidade porque tem uma ou mais vari\u00e1veis de tipo: {3}.
 CWWKD1071.record.with.type.var.explanation=As classes de entidade n\u00e3o podem ter vari\u00e1veis de tipo gen\u00e9rico.
 CWWKD1071.record.with.type.var.useraction=Remova as vari\u00e1veis de tipo do registro.
 
-CWWKD1072.record.comp.conflict=CWWKD1072E: O registro {0} n\u00e3o pode ser usado como uma entidade porque o componente {1} e o componente {2} resolvem o mesmo nome de propriedade de entidade.
+CWWKD1072.record.comp.conflict=CWWKD1072E: O registro {0} \u00e9 usado como uma entidade por uma ou mais interfaces do reposit\u00f3rio{1}) no artefato do aplicativo {2}, mas o registro n\u00e3o pode ser uma entidade porque o componente {3} e o componente {4} resolvem para o mesmo nome de propriedade de entidade.
 CWWKD1072.record.comp.conflict.explanation=Os nomes das propriedades da entidade devem ser exclusivos, ignorando as mai\u00fasculas e min\u00fasculas.
 CWWKD1072.record.comp.conflict.useraction=Renomeie um dos componentes de registro para evitar o conflito.
 
@@ -334,8 +335,8 @@ CWWKD1076.repo.disposed=CWWKD1076E: O m\u00e9todo {0} da interface do reposit\u0
 CWWKD1076.repo.disposed.explanation=Os m\u00e9todos do reposit\u00f3rio n\u00e3o devem ser usados fora do ciclo de vida do aplicativo que define o reposit\u00f3rio.
 CWWKD1076.repo.disposed.useraction=Certifique-se de que o m\u00e9todo do reposit\u00f3rio n\u00e3o seja usado fora do escopo do aplicativo que define o reposit\u00f3rio.
 
-CWWKD1077.defaultds.not.found=CWWKD1077E: O artefato do aplicativo {0} tem uma interface de reposit\u00f3rio {1} que usa ou tem como padr\u00e3o o armazenamento de dados {2}, que deve ser configurado na configura\u00e7\u00e3o do servidor definindo um elemento dataSource que tenha um identificador DefaultDataSource. Por exemplo, {3} Como alternativa, atribua o valor dataStore da anota\u00e7\u00e3o Repository como sendo o identificador de um elemento databaseStore ou o nome JNDI de uma refer\u00eancia de recurso de fonte de dados ou refer\u00eancia de unidade de persist\u00eancia que seja acess\u00edvel ao artefato do aplicativo. Um elemento databaseStore pode ser definido na configura\u00e7\u00e3o do servidor. Por exemplo, {4} Um componente de aplicativo pode usar a anota\u00e7\u00e3o Resource para definir uma refer\u00eancia de recurso de fonte de dados. Por exemplo, {5}, que exige que a configura\u00e7\u00e3o do servidor tenha um elemento de configura\u00e7\u00e3o dataSource com um atributo {6}.\
-    \ Um componente de aplicativo pode usar a anota\u00e7\u00e3o PersistenceUnit para definir uma refer\u00eancia de unidade de persist\u00eancia. Por exemplo, {7}, que exige que o arquivo persistence.xml tenha um elemento persistence-unit com um atributo name correspondente. Por exemplo, {8}
+CWWKD1077.defaultds.not.found=CWWKD1077E: O artefato de aplicativo {0} tem uma ou mais interfaces de reposit\u00f3rio{1}) que usam ou t\u00eam como padr\u00e3o o armazenamento de dados {2}. Esse armazenamento de dados deve ser configurado na configura\u00e7\u00e3o do servidor, definindo um elemento dataSource que tenha um identificador de DefaultDataSource. Por exemplo, {3} Como alternativa, atribua o valor dataStore da anota\u00e7\u00e3o Repository como sendo o identificador de um elemento databaseStore ou o nome JNDI de uma refer\u00eancia de recurso de fonte de dados ou refer\u00eancia de unidade de persist\u00eancia que seja acess\u00edvel ao artefato do aplicativo. Um elemento databaseStore pode ser definido na configura\u00e7\u00e3o do servidor. Por exemplo, {4} Um componente de aplicativo pode usar a anota\u00e7\u00e3o Resource para definir uma refer\u00eancia de recurso de fonte de dados. Por exemplo, {5}, que exige que a configura\u00e7\u00e3o do servidor tenha um elemento de configura\u00e7\
+    \u00e3o dataSource com um atributo {6}. Um componente de aplicativo pode usar a anota\u00e7\u00e3o PersistenceUnit para definir uma refer\u00eancia de unidade de persist\u00eancia. Por exemplo, {7}, que exige que o arquivo persistence.xml tenha um elemento persistence-unit com um atributo name correspondente. Por exemplo, {8}
 CWWKD1077.defaultds.not.found.explanation=Os reposit\u00f3rios do Jakarta Data t\u00eam como padr\u00e3o a fonte de dados padr\u00e3o do Jakarta EE, que deve ser configurada na configura\u00e7\u00e3o do servidor.
 CWWKD1077.defaultds.not.found.useraction=Configure a fonte de dados padr\u00e3o do Jakarta EE ou especifique um armazenamento de dados diferente para o reposit\u00f3rio.
 
@@ -360,3 +361,34 @@ CWWKD1081.entity.general.err.useraction=Localize a entidade e fa\u00e7a as corre
 CWWKD1082.entity.classes.missing=CWWKD1082E: A unidade de persist\u00eancia para o armazenamento de dados {0} n\u00e3o define uma ou mais classes de entidade{1}) que uma ou mais interfaces de reposit\u00f3rio{2}), que usam o armazenamento de dados, exigem.
 CWWKD1082.entity.classes.missing.explanation=Os reposit\u00f3rios usam classes de entidades que devem ser definidas na unidade de persist\u00eancia.
 CWWKD1082.entity.classes.missing.useraction=Incluir todas as classes de entidade na unidade de persist\u00eancia.
+
+CWWKD1083.dup.method.param=CWWKD1083E: V\u00e1rios par\u00e2metros no m\u00e9todo {0} da interface do reposit\u00f3rio {1} correspondem ao par\u00e2metro nomeado: {2}. Voc\u00ea pode anotar um par\u00e2metro de m\u00e9todo com {3} para especificar o par\u00e2metro nomeado da linguagem de consulta. Como alternativa, voc\u00ea pode ativar a op\u00e7\u00e3o de compila\u00e7\u00e3o -parameters e definir um par\u00e2metro de m\u00e9todo no formato {4}, que n\u00e3o requer a anota\u00e7\u00e3o Param.
+CWWKD1083.dup.method.param.explanation=Cada par\u00e2metro de m\u00e9todo deve corresponder exatamente a um par\u00e2metro de consulta.
+CWWKD1083.dup.method.param.useraction=Verifique se cada um dos par\u00e2metros do m\u00e9todo especifica o par\u00e2metro nomeado correto. Remover par\u00e2metros de m\u00e9todo duplicados. 
+CWWKD1084.missing.named.params=CWWKD1084E: Os par\u00e2metros do m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o definem os par\u00e2metros nomeados{2}) que s\u00e3o exigidos pelo valor da anota\u00e7\u00e3o Query: {3}. Voc\u00ea pode definir um par\u00e2metro nomeado para a consulta colocando a anota\u00e7\u00e3o Param em um par\u00e2metro de m\u00e9todo correspondente. Por exemplo, {4}. Como alternativa, se voc\u00ea ativar a op\u00e7\u00e3o de compila\u00e7\u00e3o -parameters, poder\u00e1 omitir a anota\u00e7\u00e3o Param se nomear o par\u00e2metro do m\u00e9todo com o mesmo nome do par\u00e2metro nomeado. Por exemplo, se String for o tipo de par\u00e2metro nomeado, o par\u00e2metro do m\u00e9todo poder\u00e1 ser {5}, o que n\u00e3o exige a anota\u00e7\u00e3o Param.
+CWWKD1084.missing.named.params.explanation=O valor da anota\u00e7\u00e3o Query requer um ou mais par\u00e2metros nomeados que n\u00e3o s\u00e3o fornecidos pelo m\u00e9todo do reposit\u00f3rio.
+CWWKD1084.missing.named.params.useraction=Adicione par\u00e2metros ao m\u00e9todo do reposit\u00f3rio para especificar os par\u00e2metros nomeados ausentes.
+
+CWWKD1085.extra.method.params=CWWKD1085E: Os par\u00e2metros do m\u00e9todo {0} da interface do reposit\u00f3rio {1} definem par\u00e2metros de consulta{2}), que n\u00e3o correspondem a nenhum dos par\u00e2metros nomeados{3}) usados pelo valor de anota\u00e7\u00e3o Query: {4}.
+CWWKD1085.extra.method.params.explanation=Todos os par\u00e2metros do m\u00e9todo devem ser usados pela consulta ou ser tipos de par\u00e2metros definidos pelo Jakarta Data.
+CWWKD1085.extra.method.params.useraction=Remova os par\u00e2metros extras do m\u00e9todo.
+
+CWWKD1086.named.params.unused=CWWKD1086E: Os par\u00e2metros do m\u00e9todo {0} da interface do reposit\u00f3rio {1} definem par\u00e2metros nomeados{2}), que n\u00e3o s\u00e3o usados no valor da anota\u00e7\u00e3o Query: {3}. Voc\u00ea pode fazer refer\u00eancia a par\u00e2metros nomeados em uma consulta usando o caractere : seguido do nome do par\u00e2metro. Por exemplo, {4}. Os par\u00e2metros posicionais em uma consulta podem ser referenciados com o uso do par\u00e2metro ? seguido de um valor ordinal, come\u00e7ando com ?1. Evite anotar par\u00e2metros de m\u00e9todo com a anota\u00e7\u00e3o Param quando a consulta usar par\u00e2metros posicionais ou n\u00e3o tiver par\u00e2metros.
+CWWKD1086.named.params.unused.explanation=A anota\u00e7\u00e3o Param s\u00f3 pode ser usada quando a consulta tiver par\u00e2metros nomeados.
+CWWKD1086.named.params.unused.useraction=Remova a anota\u00e7\u00e3o Param ou altere a consulta para usar par\u00e2metros nomeados.
+
+CWWKD1087.null.param=CWWKD1087E: O par\u00e2metro {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} \u00e9 um valor nulo. Especifique um valor n\u00e3o nulo.
+CWWKD1087.null.param.explanation=O valor do par\u00e2metro n\u00e3o deve ser nulo.
+CWWKD1087.null.param.useraction=Especifique um valor n\u00e3o nulo para o par\u00e2metro.
+
+CWWKD1088.empty.sorts=CWWKD1088E: Os crit\u00e9rios de classifica\u00e7\u00e3o especificados pelo par\u00e2metro {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} est\u00e3o vazios.
+CWWKD1088.empty.sorts.explanation=Os crit\u00e9rios de classifica\u00e7\u00e3o n\u00e3o podem estar vazios.
+CWWKD1088.empty.sorts.useraction=Especifique um valor para os crit\u00e9rios de classifica\u00e7\u00e3o.
+
+CWWKD1089.unordered.pagination=CWWKD1089E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} deve especificar os crit\u00e9rios de classifica\u00e7\u00e3o, pois o m\u00e9todo retorna um valor {2}. Os dados n\u00e3o ordenados n\u00e3o podem ser divididos em p\u00e1ginas.
+CWWKD1089.unordered.pagination.explanation=A pagina\u00e7\u00e3o requer dados ordenados.
+CWWKD1089.unordered.pagination.useraction=Use a anota\u00e7\u00e3o OrderBy para definir os crit\u00e9rios de classifica\u00e7\u00e3o do m\u00e9todo do reposit\u00f3rio.
+
+CWWKD1090.orderby.conflict=CWWKD1090E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o pode combinar a anota\u00e7\u00e3o OrderBy e a palavra-chave OrderBy.
+CWWKD1090.orderby.conflict.explanation=A anota\u00e7\u00e3o OrderBy n\u00e3o \u00e9 compat\u00edvel com a palavra-chave OrderBy.
+CWWKD1090.orderby.conflict.useraction=Use somente a anota\u00e7\u00e3o OrderBy ou a palavra-chave OrderBy.

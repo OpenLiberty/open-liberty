@@ -2,6 +2,7 @@
   <featureManager>
     <feature>componenttest-1.0</feature>
     <feature>mpRestClient-1.4</feature>
+    <feature>mpConfig-1.4</feature>
     <feature>mpGraphQL-1.0</feature>
     <feature>jaxrsClient-2.1</feature>
     <feature>jsonp-1.1</feature>

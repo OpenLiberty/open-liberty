@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 Subsystem-SymbolicName: com.ibm.websphere.appserver.subsystemsymbolicname-1.0; visibility:=private
 Subsystem-Version: 1.0.0
 Subsystem-Type: osgi.subsystem.feature

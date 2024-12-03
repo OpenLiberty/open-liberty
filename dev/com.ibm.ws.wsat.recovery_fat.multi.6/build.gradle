@@ -10,17 +10,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 configurations {
   requiredLibs {
     transitive = false
   }
 }
 
-// Define G:A:V coordinates of each dependency
 dependencies {
   requiredLibs project(":com.ibm.ws.wsat.recovery_fat.lps"),
                project(":com.ibm.ws.wsat.recovery_fat.multi.1"),
+               project(":com.ibm.ws.transaction.test.util"),
                project(":com.ibm.ws.transaction.fat.util")
 }
 

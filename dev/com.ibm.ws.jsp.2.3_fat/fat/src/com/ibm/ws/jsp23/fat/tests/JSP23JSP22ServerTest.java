@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat.tests;
@@ -12,8 +12,10 @@ package com.ibm.ws.jsp23.fat.tests;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -48,11 +50,14 @@ public class JSP23JSP22ServerTest {
 
     @Server("jsp23jsp22Server")
     public static LibertyServer server;
+    private static Set<String> originalFeatures;
 
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server,
                                       APP_NAME + ".war");
+
+        originalFeatures = server.getServerConfiguration().getFeatureManager().getFeatures();
 
         server.startServer(JSP23JSP22ServerTest.class.getSimpleName() + ".log");
     }
@@ -62,15 +67,17 @@ public class JSP23JSP22ServerTest {
         /**
          * Stopping the server before changing the server features
          * makes CWWKZ0014W to not happen.
+         *
+         * Calling the full version of the stopServer method in order to skip repeat feature set checking
          */
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer(LibertyServer.IGNORE_STOPPED, LibertyServer.POST_ARCHIVES, LibertyServer.FORCE_STOP, LibertyServer.SKIP_ARCHIVES, LibertyServer.SKIP_FEATURE_CHECK,
+                              Arrays.asList(LibertyServer.LIBERTY_ERROR_REGEX));
         }
 
-        //set it back to jsp-2.3
-        List<String> jsp23Feature = new ArrayList<String>();
-        jsp23Feature.add("jsp-2.3");
-        server.changeFeatures(jsp23Feature);
+        //set it back to the original version
+        List<String> features = new ArrayList<String>(originalFeatures);
+        server.changeFeatures(features);
     }
 
     /**
@@ -81,10 +88,9 @@ public class JSP23JSP22ServerTest {
      *
      * @throws Exception
      */
-
     @Test
-    @SkipForRepeat({SkipForRepeat.EE9_OR_LATER_FEATURES})
-    public void testJsp23to22FeatureChange() throws Exception {
+    @SkipForRepeat({ SkipForRepeat.EE9_OR_LATER_FEATURES })
+    public void testJsp23toJsp22FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
@@ -124,8 +130,8 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_OR_LATER_FEATURES})
-    public void testJsp30to23FeatureChange() throws Exception {
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_OR_LATER_FEATURES })
+    public void testPages30toJsp23FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
@@ -166,8 +172,8 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE11_OR_LATER_FEATURES})
-    public void testJsp31to23FeatureChange() throws Exception {
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE11_OR_LATER_FEATURES })
+    public void testPages31toJsp23FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
@@ -208,8 +214,8 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_OR_LATER_FEATURES})
-    public void testJsp40to31FeatureChange() throws Exception {
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
+    public void testPages40toJsp31FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 

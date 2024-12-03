@@ -11,7 +11,6 @@ package io.openliberty.microprofile.openapi20.fat.deployments;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,7 +89,6 @@ public class MergeConfigBothTest {
 
         ShrinkHelper.exportDropinAppToServer(server, ear, SERVER_ONLY);
 
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         server.startServer();
 
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();

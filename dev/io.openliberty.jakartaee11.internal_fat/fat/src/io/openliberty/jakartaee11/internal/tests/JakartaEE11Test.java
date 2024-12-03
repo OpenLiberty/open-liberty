@@ -115,7 +115,7 @@ public class JakartaEE11Test extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, earApp, DeployOptions.SERVER_ONLY);
 
         String consoleName = JakartaEE11Test.class.getSimpleName() + RepeatTestFilter.getRepeatActionsAsString();
-        if (RepeatTestFilter.isRepeatActionActive(COMPAT_WL_FEATURES)) {
+        if (RepeatTestFilter.isRepeatActionActive(COMPAT_WL_FEATURES) || RepeatTestFilter.isRepeatActionActive(COMPAT_OL_FEATURES)) {
             server.setServerStartTimeout(15 * 60 * 1000L); // 15 min
         }
         server.startServer(consoleName + ".log");

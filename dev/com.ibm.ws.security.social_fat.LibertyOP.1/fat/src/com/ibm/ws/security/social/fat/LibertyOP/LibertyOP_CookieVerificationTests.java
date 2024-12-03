@@ -116,7 +116,7 @@ public class LibertyOP_CookieVerificationTests extends SocialCommonTest {
                 "Should have found a Set-Cookie header to clear the WASOidcNonce cookie but didn't.", null,
                 "WASOidcNonce[pn][0-9]+=\"\"" + expirationCookieFormat);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, socialSettings, expectations);
 
         List<String> allowedCookies = new ArrayList<>();
         allowedCookies.add("JSESSIONID");

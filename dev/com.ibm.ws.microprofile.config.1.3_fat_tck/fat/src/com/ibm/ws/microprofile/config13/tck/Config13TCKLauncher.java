@@ -14,6 +14,7 @@ package com.ibm.ws.microprofile.config13.tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,6 +23,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
@@ -36,6 +39,9 @@ public class Config13TCKLauncher {
 
     @Server("Config13TCKServer")
     public static LibertyServer server;
+
+    @ClassRule //EE7 + EE8 repeats
+    public static RepeatTests r = MicroProfileActions.repeat("Config13TCKServer", MicroProfileActions.MP14, MicroProfileActions.MP32);
 
     @BeforeClass
     public static void setUp() throws Exception {

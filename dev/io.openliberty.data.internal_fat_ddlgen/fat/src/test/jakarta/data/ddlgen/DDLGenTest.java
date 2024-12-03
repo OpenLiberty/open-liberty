@@ -52,14 +52,13 @@ public class DDLGenTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         // Create an additional user and schema on database (matches authData id="dbuser")
-        createUserAndSchema(FATSuite.testContainer, "dbuser", "DBuserPassw0rd");
+        String preamble = createUserAndSchema(FATSuite.testContainer, "dbuser", "DBuserPassw0rd");
 
-        // Get driver type
-        DatabaseContainerType type = DatabaseContainerType.valueOf(FATSuite.testContainer);
-        server.addEnvVar("DB_DRIVER", type.getDriverName());
-
-        // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, FATSuite.testContainer);
+        DatabaseContainerUtil.build(server, FATSuite.testContainer)
+                        .withDriverVariable()
+                        .withAuthVariables("dbuser", "DBuserPassw0rd")
+                        .withDatabaseProperties()
+                        .modify();
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DDLGenTestApp", "test.jakarta.data.ddlgen.web");
         ShrinkHelper.exportAppToServer(server, war);
@@ -69,12 +68,19 @@ public class DDLGenTest extends FATServletClient {
         DDLGenScriptResult result = DDLGenScript.build(server)
                         .execute()
                         .assertSuccessful()
+                        .assertDDLFile("application[DDLGenTestApp].module[DDLGenTestApp.war].databaseStore[java.comp.DefaultDataSource]_JakartaData.ddl")
+                        .assertDDLFile("application[DDLGenTestApp].databaseStore[TestDataSource]_JakartaData.ddl")
+                        .assertDDLFile("application[DDLGenTestApp].databaseStore[jdbc.TestDataSourceJndi]_JakartaData.ddl")
+                        .assertDDLFile("application[DDLGenTestApp].databaseStore[java.app.env.jdbc.TestDataSourceResourceRef]_JakartaData.ddl")
+                        .assertNoDDLFileLike("java.app.env.persistence.MyPersistenceUnitRef")
                         .assertDDLFile("databaseStore[TestDataStore]_JakartaData.ddl");
 
+        String scripts = String.join(",", result.getFileLocations());
+
         runTest(server, "DDLGenTestApp/DDLGenTestServlet", "executeDDL" +
-                                                           "&scripts=" + String.join(",", result.getFileLocations()) +
-                                                           "&withDatabaseStore=TestDataStore" +
-                                                           "&usingDataSource=java:app/env/adminDataSourceRef");
+                                                           "&scripts=" + scripts +
+                                                           "&preamble=" + preamble.replace(" ", "]") +
+                                                           "&usingDataSource=jdbc/AdminDataSource");
 
     }
 
@@ -91,14 +97,17 @@ public class DDLGenTest extends FATServletClient {
      * @param user          the user/schema to create (the schema will be named after the user)
      * @param pass          the password for the user
      * @throws Exception if any database connection or query executions occur
+     * @return String preamble necessary for executing DDL statements as admin user in the database
      */
-    private static void createUserAndSchema(JdbcDatabaseContainer<?> testContainer, String user, String pass) throws Exception {
+    private static String createUserAndSchema(JdbcDatabaseContainer<?> testContainer, String user, String pass) throws Exception {
         final DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
+
+        String preamble = "";
 
         Log.entering(FATSuite.class, "createUserAndSchema", new Object[] { type, user, pass });
         try {
             switch (type) {
-                case DB2: //working
+                case DB2: // Working - admin user will set schema to user
                     final List<ExecResult> results = new ArrayList<>();
                     final String connectDBPrefix = "db2 connect to " + testContainer.getDatabaseName() + "; ";
 
@@ -115,51 +124,58 @@ public class DDLGenTest extends FATServletClient {
                     for (ExecResult result : results) {
                         assertEquals("Unexpected result from command on DB2 container, std.err: " + result.getStderr(), 0, result.getExitCode());
                     }
+
+                    preamble = "set schema " + user;
                     break;
-                case Derby:
-                    // Unnecessary
+                case Derby: // Working - uses user instead of admin when executing ddl statements
                     break;
-                case DerbyClient:
-                    // Unnecessary
+                case DerbyClient: // Unnecessary
                     break;
-                case Oracle: //working
+                case Oracle: // Working - admin user will set schema to user
                     // On oracle a user and a schema are one and the same, so just create a user
                     try (Connection con = testContainer.createConnection(""); Statement stmt = con.createStatement()) {
                         stmt.executeUpdate("alter session set \"_ORACLE_SCRIPT\"=true");
                         stmt.executeUpdate("alter user " + testContainer.getUsername() + " quota unlimited on users");
                         stmt.executeUpdate("create user " + user + " identified by " + pass);
-                        stmt.executeUpdate("grant connect, create session to " + user);
+                        stmt.executeUpdate("grant connect, create session, create table to " + user);
                         stmt.executeUpdate("grant unlimited tablespace to " + user);
                     }
+
+                    preamble = "alter session set current_schema=" + user;
                     break;
-                case Postgres: //working
+                case Postgres: // Working - admin and user share public schema when none is defined
                     try (Connection con = testContainer.createConnection(""); Statement stmt = con.createStatement()) {
                         stmt.executeUpdate("create user " + user + " with password '" + pass + "'");
                         stmt.executeUpdate("grant connect on database " + testContainer.getDatabaseName() + " to " + user + " with grant option");
                         stmt.executeUpdate("create schema " + user);
                         stmt.executeUpdate("alter default privileges in schema " + user +
                                            " grant all privileges on tables to " + user);
-                        stmt.executeUpdate("grant usage on schema " + user + " to " + user);
+                        stmt.executeUpdate("alter default privileges in schema public " +
+                                           " grant all privileges on tables to " + user);
+                        stmt.executeUpdate("grant all on schema " + user + " to " + user);
                     }
                     break;
-                case SQLServer: //working
+                case SQLServer: // Working - admin and user share dbo schema when none is defined
                     //TODO remove once bug is fixed: https://github.com/testcontainers/testcontainers-java/pull/9463
                     //replace with: testContainer.createConnection(";databaseName=TEST")
                     testContainer.withUrlParam("databaseName", "TEST");
 
                     try (Connection con = testContainer.createConnection(""); Statement stmt = con.createStatement()) {
                         stmt.executeUpdate("create login " + user + " with password = '" + pass + "'");
-                        stmt.executeUpdate("create user " + user + " from login " + user);
+                        stmt.executeUpdate("create user " + user + " from login " + user + " with default_schema=dbo");
                         stmt.executeUpdate("grant connect to " + user);
                         stmt.executeUpdate("create schema " + user);
                         stmt.executeUpdate("grant control on schema :: " + user + " to " + user);
+                        stmt.executeUpdate("grant control on schema :: dbo to " + user);
+                        stmt.executeUpdate("grant create table to " + user);
                     }
                     break;
                 default:
                     throw new RuntimeException("Unknown database container type");
             }
         } finally {
-            Log.exiting(FATSuite.class, "createUserAndSchema");
+            Log.exiting(FATSuite.class, "createUserAndSchema", preamble);
         }
+        return preamble;
     }
 }

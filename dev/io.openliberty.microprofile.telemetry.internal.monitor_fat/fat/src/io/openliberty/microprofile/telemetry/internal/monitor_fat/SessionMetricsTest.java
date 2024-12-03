@@ -97,9 +97,7 @@ public class SessionMetricsTest extends BaseTestClass {
         Log.info(c, testName, "------- session metrics should be available ------");
 
 		// Allow time for the collector to receive and expose metrics
-		TimeUnit.SECONDS.sleep(4);
-
-		matchStrings(getContainerCollectorMetrics(container),
+		matchStringsWithRetries(() -> getContainerCollectorMetrics(container),
                 new String[] { "io_openliberty_session_created_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
                         "io_openliberty_session_live\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
                         "io_openliberty_session_active\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",

@@ -69,7 +69,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
-import io.openliberty.data.internal.persistence.QueryInfo;
+import io.openliberty.data.internal.persistence.Util;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Convert;
@@ -546,13 +546,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
             if (vPrecedence > 1 &&
                 len == 7 &&
-                QueryInfo.VERSION_TYPES.contains(type) &&
+                Util.VERSION_TYPES.contains(type) &&
                 "version".equalsIgnoreCase(name)) {
                 versionAttrName = name;
                 vPrecedence = 1;
             } else if (vPrecedence > 2 &&
                        len == 8 &&
-                       QueryInfo.VERSION_TYPES.contains(type) &&
+                       Util.VERSION_TYPES.contains(type) &&
                        "_version".equalsIgnoreCase(name)) {
                 versionAttrName = name;
                 vPrecedence = 2;

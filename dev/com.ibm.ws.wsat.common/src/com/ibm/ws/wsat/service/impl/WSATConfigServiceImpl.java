@@ -37,6 +37,7 @@ import com.ibm.ws.wsat.service.Handler;
 import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 @Component(name = "com.ibm.ws.wsat.service.wsatconfigservice",
            immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -120,7 +121,13 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) throws SOAPException {
-        modified(cc, properties);
+        if (!FrameworkState.isStopping()) {
+            modified(cc, properties);
+        } else {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Not activating com.ibm.ws.wsat.service.wsatconfigservice because the framework is stopping");
+            }
+        }
     }
 
     @Deactivate

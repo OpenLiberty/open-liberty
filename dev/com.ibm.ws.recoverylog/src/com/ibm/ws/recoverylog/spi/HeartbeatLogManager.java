@@ -22,6 +22,7 @@ import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * Manage the HA DB Log Availability timer. Based on other timers in the codebase.
@@ -102,7 +103,7 @@ public class HeartbeatLogManager {
 
             // Respawn the alarm
             synchronized (this) {
-                if (_heartbeatLog != null && _isHeartbeating)
+                if (_heartbeatLog != null && _isHeartbeating && !FrameworkState.isStopping())
                     _alarm = _alarmManager.scheduleAlarm(_duration.toMillis(), this, null);
             }
 

@@ -42,7 +42,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 DisableAllFeaturesOnConflictTest.class,
                 EECompatibilityTest.class,
                 FeatureFragmentTest.class,
-                FixManagerTest.class
+                FixManagerTest.class,
+                ActiveConditionTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

@@ -103,7 +103,8 @@ CWWKD1018.confl.special.param=CWWKD1018E: Metoda {0} \u00falo\u017ei\u0161t\u011
 CWWKD1018.confl.special.param.explanation=N\u011bkter\u00e9 speci\u00e1ln\u00ed parametry Jakarta Data, jako je Limit a PageRequest, nelze kombinovat na podpisu metody jednoho \u00falo\u017ei\u0161t\u011b.
 CWWKD1018.confl.special.param.useraction=Aktualizujte \u00falo\u017ei\u0161t\u011b tak, aby nepou\u017e\u00edvalo oba typy speci\u00e1ln\u00edch parametr\u016f Jakarta Data ve stejn\u00e9m podpisu metody.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} nem\u016f\u017ee m\u00edt dotaz se sm\u011bs\u00ed pozi\u010dn\u00edch parametr\u016f a pojmenovan\u00fdch parametr\u016f.
+CWWKD1019.mixed.positional.named=CWWKD1019E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} nem\u016f\u017ee obsahovat dotaz, kter\u00fd kombinuje pozi\u010dn\u00ed a pojmenovan\u00e9 parametry. Rozhran\u00ed definuje kombinaci {2} pozi\u010dn\u00edch parametr\u016f a
+ {3} pojmenovan\u00e9 parametry {4} pro hodnotu anotace dotazu: {5} . Dotaz s pozi\u010dn\u00edmi parametry mus\u00ed odkazovat na ka\u017ed\u00fd parametr jeho ordin\u00e1ln\u00ed hodnotou po\u010d\u00ednaje ?1 a parametry metody nesm\u00ed m\u00edt anotaci Param. V dotazu s pojmenovan\u00fdmi parametry mus\u00ed b\u00fdt ka\u017ed\u00fd parametr odkazov\u00e1n sv\u00fdm n\u00e1zvem, nap\u0159\u00edklad {6} , a parametry metody mus\u00ed m\u00edt anotaci Param, nap\u0159\u00edklad {7} . Alternativn\u011b povolen\u00edm volby kompilace -parameters umo\u017en\u00edte parametr\u016fm metody ozna\u010dovat pojmenovan\u00fd parametr podle jeho n\u00e1zvu, nap\u0159\u00edklad {8} .
 CWWKD1019.mixed.positional.named.explanation=Dotazy s parametry mus\u00ed pou\u017e\u00edvat v\u0161echny pojmenovan\u00e9 parametry nebo v\u0161echny pozi\u010dn\u00ed parametry, nikoli jejich kombinaci.
 CWWKD1019.mixed.positional.named.useraction=Aktualizujte metodu \u00falo\u017ei\u0161t\u011b tak, aby pou\u017e\u00edvala pouze pojmenovan\u00e9 parametry nebo pouze pozi\u010dn\u00ed parametry.
 
@@ -271,7 +272,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: Rozhran\u00ed \u00falo\u017ei\u0161t\u01
 CWWKD1060.name.out.of.scope.explanation=Zadan\u00fd jmenn\u00fd prostor nen\u00ed p\u0159\u00edstupn\u00fd z artefaktu, kde je definov\u00e1no rozhran\u00ed \u00falo\u017ei\u0161t\u011b.
 CWWKD1060.name.out.of.scope.useraction=Aktualizujte anotaci \u00falo\u017ei\u0161t\u011b tak, aby ur\u010dovala n\u00e1zev \u00falo\u017ei\u0161t\u011b dat, kter\u00fd je viditeln\u00fd pro modul nebo knihovnu poskytuj\u00edc\u00ed rozhran\u00ed \u00falo\u017ei\u0161t\u011b.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: Rozhran\u00ed \u00falo\u017ei\u0161t\u011b {0} , kter\u00e9 je definov\u00e1no v modulu Enterprise bean {1} aplikace {2} konfiguruje hodnotu {2} pro atribut {3} . N\u00e1zvy {4} v\u0161ak nejsou p\u0159\u00edstupn\u00e9 modul\u016fm Enterprise bean. Pou\u017eijte jm\u00e9no z jednoho z n\u00e1sleduj\u00edc\u00edch jmenn\u00fdch prostor\u016f: {5} .
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Jedno nebo v\u00edce rozhran\u00ed \u00falo\u017ei\u0161t\u011b ( {0} ), kter\u00e1 jsou definov\u00e1na v modulu Enterprise bean {1} aplikace {2} konfiguruj\u00ed hodnotu {2} pro atribut {3} . N\u00e1zvy {4} v\u0161ak nejsou p\u0159\u00edstupn\u00e9 modul\u016fm Enterprise bean. Pou\u017eijte jm\u00e9no z jednoho z n\u00e1sleduj\u00edc\u00edch jmenn\u00fdch prostor\u016f: {5} .
 CWWKD1061.comp.name.in.ejb.explanation=Zadan\u00fd jmenn\u00fd prostor nen\u00ed p\u0159\u00edstupn\u00fd pro modul Enterprise bean, kde je definov\u00e1no rozhran\u00ed \u00falo\u017ei\u0161t\u011b.
 CWWKD1061.comp.name.in.ejb.useraction=Aktualizujte anotaci \u00falo\u017ei\u0161t\u011b tak, aby ur\u010dovala n\u00e1zev \u00falo\u017ei\u0161t\u011b dat, kter\u00fd je viditeln\u00fd pro modul Enterprise bean, kter\u00fd poskytuje rozhran\u00ed \u00falo\u017ei\u0161t\u011b.
 
@@ -287,15 +288,15 @@ CWWKD1064.datastore.error=CWWKD1064E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u
 CWWKD1064.datastore.error.explanation=P\u0159i pokusu o z\u00edsk\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b dat do\u0161lo k chyb\u011b.
 CWWKD1064.datastore.error.useraction=Ujist\u011bte se, \u017ee zadan\u00e9 \u00falo\u017ei\u0161t\u011b dat a v\u0161echny ostatn\u00ed zdroje, na kter\u00fdch z\u00e1vis\u00ed, existuj\u00ed a jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny.
 
-CWWKD1065.ddlgen.timeout=CWWKD1065E: Generov\u00e1n\u00ed DDL pro rozhran\u00ed \u00falo\u017ei\u0161t\u011b {0} se nezda\u0159ilo, proto\u017ee \u00falo\u017ei\u0161t\u011b dat {1} nedokon\u010dilo generov\u00e1n\u00ed DDL do {2} sekund pro n\u00e1sleduj\u00edc\u00ed entity: {3} .
+CWWKD1065.ddlgen.timeout=CWWKD1065E: Generov\u00e1n\u00ed DDL pro jedno nebo v\u00edce rozhran\u00ed \u00falo\u017ei\u0161t\u011b ( {0} ) se nezda\u0159ilo, proto\u017ee \u00falo\u017ei\u0161t\u011b dat {1} nedokon\u010dilo generov\u00e1n\u00ed DDL do {2} sekund pro n\u00e1sleduj\u00edc\u00ed entity: {3} .
 CWWKD1065.ddlgen.timeout.explanation=\u010casov\u00fd limit pokusu o generov\u00e1n\u00ed DDL vypr\u0161el a nebyl dokon\u010den.
 CWWKD1065.ddlgen.timeout.useraction=Pokud syst\u00e9m a datab\u00e1ze nejsou zat\u00ed\u017eeny, zkuste znovu generovat DDL.
 
-CWWKD1066.ddlgen.failed=CWWKD1066E: P\u0159i generov\u00e1n\u00ed DDL pro rozhran\u00ed \u00falo\u017ei\u0161t\u011b {0} , kter\u00e9 pou\u017e\u00edv\u00e1 \u00falo\u017ei\u0161t\u011b dat {1} do\u0161lo k chyb\u011b p\u0159i pokusu o generov\u00e1n\u00ed DDL pro n\u00e1sleduj\u00edc\u00ed entity: {2} . Chyba je: {3} .
+CWWKD1066.ddlgen.failed=CWWKD1066E: P\u0159i generov\u00e1n\u00ed DDL pro jedno nebo v\u00edce rozhran\u00ed \u00falo\u017ei\u0161t\u011b ( {0} ), kter\u00e1 pou\u017e\u00edvaj\u00ed \u00falo\u017ei\u0161t\u011b dat {1} do\u0161lo p\u0159i generov\u00e1n\u00ed DDL k chyb\u011b pro n\u00e1sleduj\u00edc\u00ed entity: {2} . Chyba je: {3} .
 CWWKD1066.ddlgen.failed.explanation=Pokus o generov\u00e1n\u00ed DDL se nezda\u0159il a nedokon\u010dil.
 CWWKD1066.ddlgen.failed.useraction=Prozkoumejte chybu a prove\u010fte opravy rozhran\u00ed \u00falo\u017ei\u0161t\u011b, entit, konfigurace \u00falo\u017ei\u0161t\u011b dat nebo datab\u00e1ze.
 
-CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: Generov\u00e1n\u00ed DDL pro rozhran\u00ed \u00falo\u017ei\u0161t\u011b {0} se nezda\u0159ilo, proto\u017ee \u00falo\u017ei\u0161t\u011b dat {1} nebylo dostupn\u00e9 nebo nebylo mo\u017en\u00e9 zp\u0159\u00edstupnit n\u00e1sleduj\u00edc\u00ed entity do {2} sekund: {3} .
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: Generov\u00e1n\u00ed DDL pro jedno nebo v\u00edce rozhran\u00ed \u00falo\u017ei\u0161t\u011b ( {0} ) se nezda\u0159ilo, proto\u017ee \u00falo\u017ei\u0161t\u011b dat {1} nebylo dostupn\u00e9 nebo nebylo mo\u017en\u00e9 zp\u0159\u00edstupnit n\u00e1sleduj\u00edc\u00ed entity b\u011bhem {2} sekund: {3} .
 CWWKD1067.ddlgen.emf.timeout.explanation=\u010casov\u00fd limit z\u00edsk\u00e1v\u00e1n\u00ed prost\u0159edk\u016f pot\u0159ebn\u00fdch pro generov\u00e1n\u00ed DDL vypr\u0161el a nebyl dokon\u010den.
 CWWKD1067.ddlgen.emf.timeout.useraction=Pokud syst\u00e9m a datab\u00e1ze nejsou zat\u00ed\u017eeny, zkuste znovu generovat DDL.
 
@@ -311,11 +312,11 @@ CWWKD1070.record.convert.err=CWWKD1070E: Z\u00e1znam {0} dod\u00e1van\u00fd do m
 CWWKD1070.record.convert.err.explanation=Java z\u00e1znam nen\u00ed mo\u017en\u00e9 pou\u017e\u00edt jako entitu.
 CWWKD1070.record.convert.err.useraction=Nam\u00edsto pou\u017eit\u00ed entity z\u00e1znamu Java definujte entitu jako entitu Jakarta Persistence.
 
-CWWKD1071.record.with.type.var=CWWKD1071E: Z\u00e1znam {0} nelze pou\u017e\u00edt jako entitu, proto\u017ee m\u00e1 jednu nebo v\u00edce prom\u011bnn\u00fdch typu: {1} .
+CWWKD1071.record.with.type.var=CWWKD1071E: Z\u00e1znam {0} je pou\u017e\u00edv\u00e1n jako entita jedn\u00edm nebo v\u00edce rozhran\u00edmi \u00falo\u017ei\u0161t\u011b ( {1} ) v artefaktu aplikace {2} , ale z\u00e1znam nem\u016f\u017ee b\u00fdt entitou, proto\u017ee m\u00e1 jednu nebo v\u00edce typov\u00fdch prom\u011bnn\u00fdch: {3} .
 CWWKD1071.record.with.type.var.explanation=T\u0159\u00eddy entit nemohou m\u00edt prom\u011bnn\u00e9 obecn\u00e9ho typu.
 CWWKD1071.record.with.type.var.useraction=Odeberte prom\u011bnn\u00e9 typu ze z\u00e1znamu.
 
-CWWKD1072.record.comp.conflict=CWWKD1072E: Z\u00e1znam {0} nelze pou\u017e\u00edt jako entitu, proto\u017ee jeho komponenta {1} a komponenta {2} se p\u0159ekl\u00e1daj\u00ed na stejn\u00fd n\u00e1zev vlastnosti entity.
+CWWKD1072.record.comp.conflict=CWWKD1072E: Z\u00e1znam {0} je pou\u017e\u00edv\u00e1n jako entita jedn\u00edm nebo v\u00edce rozhran\u00edmi \u00falo\u017ei\u0161t\u011b ( {1} ) v artefaktu aplikace {2} , ale z\u00e1znam nem\u016f\u017ee b\u00fdt entitou, proto\u017ee jeho komponenta {3} i komponenta {4} vy\u0159e\u0161it na stejn\u00fd n\u00e1zev vlastnosti entity.
 CWWKD1072.record.comp.conflict.explanation=N\u00e1zvy vlastnost\u00ed entit mus\u00ed b\u00fdt jedine\u010dn\u00e9, bez ohledu na velikost p\u00edsmen.
 CWWKD1072.record.comp.conflict.useraction=P\u0159ejmenujte jednu z komponent z\u00e1znamu, abyste p\u0159ede\u0161li konfliktu.
 
@@ -335,8 +336,8 @@ CWWKD1076.repo.disposed=CWWKD1076E: Metodu {0} rozhran\u00ed \u00falo\u017ei\u01
 CWWKD1076.repo.disposed.explanation=Metody \u00falo\u017ei\u0161t\u011b nesm\u00ed b\u00fdt pou\u017e\u00edv\u00e1ny mimo \u017eivotn\u00ed cyklus aplikace, kter\u00e1 definuje \u00falo\u017ei\u0161t\u011b.
 CWWKD1076.repo.disposed.useraction=Ujist\u011bte se, \u017ee metoda \u00falo\u017ei\u0161t\u011b nen\u00ed pou\u017e\u00edv\u00e1na mimo rozsah aplikace, kter\u00e1 \u00falo\u017ei\u0161t\u011b definuje.
 
-CWWKD1077.defaultds.not.found=CWWKD1077E: Artefakt aplikace {0} m\u00e1 rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} , kter\u00e9 pou\u017e\u00edv\u00e1 \u00falo\u017ei\u0161t\u011b dat {2} nebo je pro n\u011bj v\u00fdchoz\u00ed, kter\u00e9 je nutn\u00e9 nakonfigurovat v konfiguraci serveru definov\u00e1n\u00edm prvku dataSource , kter\u00fd m\u00e1 identifik\u00e1tor DefaultDataSource . Nap\u0159\u00edklad {3} Alternativn\u011b p\u0159i\u0159a\u010fte hodnotu dataStore v anotaci \u00dalo\u017ei\u0161t\u011b jako identifik\u00e1tor prvku databaseStore nebo n\u00e1zev JNDI odkazu na zdroj dat nebo odkaz na jednotku perzistence, kter\u00fd je p\u0159\u00edstupn\u00fd artefaktu aplikace. Element databaseStore lze definovat v konfiguraci serveru. Nap\u0159\u00edklad {4} Komponenta aplikace m\u016f\u017ee pou\u017e\u00edt anotaci prost\u0159edku k definov\u00e1n\u00ed odkazu na zdroj dat. Nap\u0159\u00edklad {5} , kter\u00fd vy\u017eaduje, aby konfigurace serveru m\u011bla prvek konfigurace dataSour\
-    ce s atributem {6} . Komponenta aplikace m\u016f\u017ee pou\u017e\u00edt anotaci PersistenceUnit k definov\u00e1n\u00ed odkazu na jednotku perzistence. Nap\u0159\u00edklad {7} , kter\u00fd vy\u017eaduje, aby soubor persistence.xml m\u011bl prvek persistence-unit s odpov\u00eddaj\u00edc\u00edm atributem n\u00e1zvu. Nap\u0159\u00edklad {8}
+CWWKD1077.defaultds.not.found=CWWKD1077E: Artefakt aplikace {0} m\u00e1 jedno nebo v\u00edce rozhran\u00ed \u00falo\u017ei\u0161t\u011b ( {1} ), kter\u00e1 pou\u017e\u00edvaj\u00ed \u00falo\u017ei\u0161t\u011b dat {2} nebo jako v\u00fdchoz\u00ed. Toto \u00falo\u017ei\u0161t\u011b dat je nutn\u00e9 nakonfigurovat v konfiguraci serveru definov\u00e1n\u00edm prvku dataSource , kter\u00fd m\u00e1 identifik\u00e1tor DefaultDataSource . Nap\u0159\u00edklad {3} Alternativn\u011b p\u0159i\u0159a\u010fte hodnotu dataStore v anotaci \u00dalo\u017ei\u0161t\u011b jako identifik\u00e1tor prvku databaseStore nebo n\u00e1zev JNDI odkazu na zdroj dat nebo odkaz na jednotku perzistence, kter\u00fd je p\u0159\u00edstupn\u00fd artefaktu aplikace. Element databaseStore lze definovat v konfiguraci serveru. Nap\u0159\u00edklad {4} Komponenta aplikace m\u016f\u017ee pou\u017e\u00edt anotaci prost\u0159edku k definov\u00e1n\u00ed odkazu na zdroj dat. Nap\u0159\u00edklad {5} , kter\u00fd vy\u017eaduje, aby konfigurace se\
+    rveru m\u011bla prvek konfigurace dataSource s atributem {6} . Komponenta aplikace m\u016f\u017ee pou\u017e\u00edt anotaci PersistenceUnit k definov\u00e1n\u00ed odkazu na jednotku perzistence. Nap\u0159\u00edklad {7} , kter\u00fd vy\u017eaduje, aby soubor persistence.xml m\u011bl prvek persistence-unit s odpov\u00eddaj\u00edc\u00edm atributem n\u00e1zvu. Nap\u0159\u00edklad {8}
 CWWKD1077.defaultds.not.found.explanation=\u00dalo\u017ei\u0161t\u011b dat Jakarta je v\u00fdchoz\u00edm zdrojem dat Jakarta EE, kter\u00fd je nutn\u00e9 nakonfigurovat v konfiguraci serveru.
 CWWKD1077.defaultds.not.found.useraction=Nakonfigurujte v\u00fdchoz\u00ed zdroj dat Jakarta EE nebo zadejte jin\u00e9 \u00falo\u017ei\u0161t\u011b dat pro \u00falo\u017ei\u0161t\u011b.
 
@@ -361,3 +362,34 @@ CWWKD1081.entity.general.err.useraction=Vyhledejte entitu a v p\u0159\u00edpad\u
 CWWKD1082.entity.classes.missing=CWWKD1082E: Jednotka perzistence pro \u00falo\u017ei\u0161t\u011b dat {0} nedefinuje jednu nebo v\u00edce t\u0159\u00edd entit ( {1} ), kter\u00e9 vy\u017eaduje jedno nebo v\u00edce rozhran\u00ed \u00falo\u017ei\u0161t\u011b ( {2} ), kter\u00e1 \u00falo\u017ei\u0161t\u011b dat pou\u017e\u00edvaj\u00ed.
 CWWKD1082.entity.classes.missing.explanation=\u00dalo\u017ei\u0161t\u011b pou\u017e\u00edvaj\u00ed t\u0159\u00eddy entit, kter\u00e9 mus\u00ed b\u00fdt definov\u00e1ny v jednotce perzistence.
 CWWKD1082.entity.classes.missing.useraction=Zahr\u0148te v\u0161echny t\u0159\u00eddy entit do jednotky perzistence.
+
+CWWKD1083.dup.method.param=CWWKD1083E: V\u00edce parametr\u016f v metod\u011b {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} odpov\u00edd\u00e1 pojmenovan\u00e9mu parametru: {2} . M\u016f\u017eete anotovat jeden parametr metody pomoc\u00ed {3} a ur\u010dit tak pojmenovan\u00fd parametr jazyka dotazu. P\u0159\u00edpadn\u011b m\u016f\u017eete povolit mo\u017enost kompilace -parameters a definovat jeden parametr metody ve formul\u00e1\u0159i, {4} , kter\u00fd nevy\u017eaduje anotaci Param.
+CWWKD1083.dup.method.param.explanation=Ka\u017ed\u00fd parametr metody mus\u00ed odpov\u00eddat p\u0159esn\u011b jednomu parametru dotazu.
+CWWKD1083.dup.method.param.useraction=Zkontrolujte, zda ka\u017ed\u00fd z parametr\u016f metody ur\u010duje spr\u00e1vn\u011b pojmenovan\u00fd parametr. Odstra\u0148te duplicitn\u00ed parametry metody. 
+CWWKD1084.missing.named.params=CWWKD1084E: Parametry metody {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} nedefinuj\u00ed pojmenovan\u00e9 parametry ( {2} ), kter\u00e9 jsou vy\u017eadov\u00e1ny hodnotou anotace Query: {3} . M\u016f\u017eete definovat pojmenovan\u00fd parametr pro dotaz um\u00edst\u011bn\u00edm anotace Param na odpov\u00eddaj\u00edc\u00ed parametr metody. Nap\u0159\u00edklad {4} . Alternativn\u011b, pokud povol\u00edte volbu kompilace -parameters, m\u016f\u017eete vynechat anotaci Param, pokud pojmenujete parametr metody tak, aby m\u011bl stejn\u00fd n\u00e1zev jako pojmenovan\u00fd parametr. Pokud je nap\u0159\u00edklad pojmenovan\u00fd typ parametru String, m\u016f\u017ee b\u00fdt parametr metody {5} , co\u017e nevy\u017eaduje anotaci Param.
+CWWKD1084.missing.named.params.explanation=Hodnota anotace Query vy\u017eaduje jeden nebo v\u00edce pojmenovan\u00fdch parametr\u016f, kter\u00e9 nejsou dod\u00e1ny metodou \u00falo\u017ei\u0161t\u011b.
+CWWKD1084.missing.named.params.useraction=P\u0159id\u00e1n\u00edm parametr\u016f do metody \u00falo\u017ei\u0161t\u011b specifikujte chyb\u011bj\u00edc\u00ed pojmenovan\u00e9 parametry.
+
+CWWKD1085.extra.method.params=CWWKD1085E: Parametry metody {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} definuj\u00ed parametry dotazu ( {2} ), kter\u00e9 neodpov\u00eddaj\u00ed \u017e\u00e1dn\u00e9mu z pojmenovan\u00fdch parametr\u016f ( {3} ), kter\u00e9 pou\u017e\u00edv\u00e1 hodnota anotace dotazu: {4} .
+CWWKD1085.extra.method.params.explanation=V\u0161echny parametry metody mus\u00ed b\u00fdt pou\u017eity dotazem nebo b\u00fdt typy parametr\u016f definovan\u00e9 Jakarta Data.
+CWWKD1085.extra.method.params.useraction=Odstra\u0148te nadbyte\u010dn\u00e9 parametry metody.
+
+CWWKD1086.named.params.unused=CWWKD1086E: Parametry metody {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} definuj\u00ed pojmenovan\u00e9 parametry ( {2} ), kter\u00e9 se nepou\u017e\u00edvaj\u00ed v hodnot\u011b anotace Query: {3} . Na pojmenovan\u00e9 parametry v dotazu m\u016f\u017eete odkazovat pomoc\u00ed znaku : n\u00e1sledovan\u00e9ho n\u00e1zvem parametru. Nap\u0159\u00edklad {4} . Na pozi\u010dn\u00ed parametry v dotazu lze odkazovat pomoc\u00ed ? znak n\u00e1sledovan\u00fd po\u0159adovou hodnotou za\u010d\u00ednaj\u00edc\u00ed ?1. Vyhn\u011bte se anotaci parametr\u016f metody anotac\u00ed Param, kdy\u017e dotaz pou\u017e\u00edv\u00e1 pozi\u010dn\u00ed parametry nebo nem\u00e1 \u017e\u00e1dn\u00e9 parametry.
+CWWKD1086.named.params.unused.explanation=Anotaci Param lze pou\u017e\u00edt pouze v p\u0159\u00edpad\u011b, \u017ee dotaz m\u00e1 pojmenovan\u00e9 parametry.
+CWWKD1086.named.params.unused.useraction=Odeberte anotaci Param nebo p\u0159epn\u011bte dotaz tak, aby pou\u017e\u00edval pojmenovan\u00e9 parametry.
+
+CWWKD1087.null.param=CWWKD1087E: Parametr {0} metody {1} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {2} m\u00e1 hodnotu null. Zadejte nenulovou hodnotu.
+CWWKD1087.null.param.explanation=Hodnota parametru nesm\u00ed b\u00fdt nulov\u00e1.
+CWWKD1087.null.param.useraction=Zadejte do parametru nenulovou hodnotu.
+
+CWWKD1088.empty.sorts=CWWKD1088E: Krit\u00e9ria \u0159azen\u00ed zadan\u00e1 parametrem {0} metody {1} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {2} jsou pr\u00e1zdn\u00e1.
+CWWKD1088.empty.sorts.explanation=Krit\u00e9ria \u0159azen\u00ed nesm\u00ed b\u00fdt pr\u00e1zdn\u00e1.
+CWWKD1088.empty.sorts.useraction=Zadejte hodnotu pro krit\u00e9ria \u0159azen\u00ed.
+
+CWWKD1089.unordered.pagination=CWWKD1089E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} mus\u00ed specifikovat krit\u00e9ria \u0159azen\u00ed, proto\u017ee metoda vrac\u00ed hodnotu {2} . Neuspo\u0159\u00e1dan\u00e1 data nelze rozd\u011blit na str\u00e1nky.
+CWWKD1089.unordered.pagination.explanation=Str\u00e1nkov\u00e1n\u00ed vy\u017eaduje uspo\u0159\u00e1dan\u00e1 data.
+CWWKD1089.unordered.pagination.useraction=Pomoc\u00ed anotace OrderBy definujte krit\u00e9ria \u0159azen\u00ed pro metodu \u00falo\u017ei\u0161t\u011b.
+
+CWWKD1090.orderby.conflict=CWWKD1090E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} nem\u016f\u017ee kombinovat anotaci OrderBy a kl\u00ed\u010dov\u00e9 slovo OrderBy .
+CWWKD1090.orderby.conflict.explanation=Anotace OrderBy nen\u00ed kompatibiln\u00ed s kl\u00ed\u010dov\u00fdm slovem OrderBy .
+CWWKD1090.orderby.conflict.useraction=Pou\u017eijte pouze anotaci OrderBy nebo kl\u00ed\u010dov\u00e9 slovo OrderBy .

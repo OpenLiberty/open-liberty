@@ -12,7 +12,6 @@ package io.openliberty.http.monitor.fat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -86,8 +85,7 @@ public class ContainerNoAppTest extends BaseTestClass {
 
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
-        TimeUnit.SECONDS.sleep(5);
-        assertTrue(validateMpTelemetryHttp(Constants.OTEL_SERVICE_NOT_SET, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(Constants.OTEL_SERVICE_NOT_SET, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
 
     }
 

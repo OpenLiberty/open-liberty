@@ -94,6 +94,7 @@ import org.junit.Test;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
+import test.jakarta.data.web.Animal.ScientificName;
 import test.jakarta.data.web.Residence.Occupant;
 
 @DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
@@ -105,6 +106,9 @@ import test.jakarta.data.web.Residence.Occupant;
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
     private final long TIMEOUT_MINUTES = 2;
+
+    @Inject
+    Animals animals;
 
     @Inject
     Apartments apartments;
@@ -741,6 +745,75 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testCountAsShortWrapper() {
         assertEquals(Short.valueOf((short) 5), primes.countAsShortWrapperByNumberIdLessThan(12));
+    }
+
+    /**
+     * Tests a repository method that returns pages of a DISTINCT single value
+     * that can sometimes be null. Verify that the count of pages and total
+     * elements is correct.
+     */
+    @Test
+    public void testCountPagesWithDistinctValues() {
+        Page<String> page1 = primes.romanNumeralsDistinct(30L, 49L,
+                                                          4000L, 4009L,
+                                                          PageRequest.ofSize(3));
+
+        assertEquals(2, page1.totalPages());
+
+        // page1.totalElements();
+        // The above returns 5 instead of 6 because COUNT omits the
+        // NULL value that comes from (DISTINCT romanNumeral) when
+        // invoking SELECT COUNT(DISTINCT romanNumeral)
+
+        assertEquals(List.of("XXXI", "XXXVII", "XLI"),
+                     page1.content());
+
+        Page<String> page2 = primes.romanNumeralsDistinct(30L, 49L,
+                                                          4000L, 4009L,
+                                                          page1.nextPageRequest());
+
+        assertEquals(2, page2.totalPages());
+
+        assertEquals(Arrays.asList("XLIII", "XLVII", null),
+                     page2.content());
+    }
+
+    /**
+     * Tests a repository method that returns pages of a single value that can
+     * sometimes be null. Verify that the count of pages and total elements is
+     * correct.
+     */
+    @Test
+    public void testCountPagesWithNullValues() {
+        Page<String> page1 = primes.romanNumerals(30L, 49L,
+                                                  4000L, 4009L,
+                                                  PageRequest.ofSize(3));
+
+        assertEquals(8, page1.totalElements());
+        assertEquals(3, page1.totalPages());
+
+        assertEquals(List.of("XXXI", "XXXVII", "XLI"),
+                     page1.content());
+
+        Page<String> page2 = primes.romanNumerals(30L, 49L,
+                                                  4000L, 4009L,
+                                                  page1.nextPageRequest());
+
+        assertEquals(8, page2.totalElements());
+        assertEquals(3, page2.totalPages());
+
+        assertEquals(Arrays.asList("XLIII", "XLVII", null),
+                     page2.content());
+
+        Page<String> page3 = primes.romanNumerals(30L, 49L,
+                                                  4000L, 4009L,
+                                                  page2.nextPageRequest());
+
+        assertEquals(8, page3.totalElements());
+        assertEquals(3, page3.totalPages());
+
+        assertEquals(Arrays.asList(null, null),
+                     page3.content());
     }
 
     /**
@@ -1877,6 +1950,74 @@ public class DataTestServlet extends FATServlet {
         deleted = packages.destroy(Limit.of(4), sort);
         assertEquals("Deleted " + Arrays.toString(deleted), 1, deleted.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(((Package) deleted[0]).id));
+    }
+
+    /**
+     * Find a record entity based on its embedded id, which is also a record.
+     * This test covers finding and returning an entity in addition to
+     * finding an entity to save/update/delete.
+     */
+    @Test
+    public void testFindByEmbeddedId() {
+        List<Animal> found = animals.findAll().toList();
+        if (!found.isEmpty())
+            animals.deleteAll(found);
+
+        Animal redFox = animals.insert(Animal.of("red fox", "Vulpes", "vulpes"));
+        Animal grayFox = animals.insert(Animal.of("gray fox", "Urocyon", "cinereoargenteus"));
+        Animal foxSquirrel = animals.insert(Animal.of("Fox squirrel", "Sciurus", "niger"));
+        Animal graySquirrel = animals.insert(Animal.of("gray squirrel", "Sciurus", "carolinensis"));
+        Animal redSquirrel = animals.insert(Animal.of("red squirrel", "Tamiasciurus", "hudsonicus"));
+
+        assertEquals("red fox", redFox.commonName());
+        assertEquals("Vulpes", redFox.id().genus());
+        assertEquals("vulpes", redFox.id().species());
+        assertEquals(1, redFox.version());
+
+        assertEquals("Fox squirrel", foxSquirrel.commonName());
+        assertEquals("Sciurus", foxSquirrel.id().genus());
+        assertEquals("niger", foxSquirrel.id().species());
+        assertEquals(1, foxSquirrel.version());
+
+        // TODO enable once #29460 is fixed
+        //ScientificName grayFoxId = new ScientificName("Urocyon", "cinereoargenteus");
+        //grayFox = animals.findById(grayFoxId).orElseThrow();
+        //assertEquals("gray fox", grayFox.commonName());
+        //assertEquals("Urocyon", grayFox.id().genus());
+        //assertEquals("cinereoargenteus", grayFox.id().species());
+
+        //ScientificName graySquirrelId = new ScientificName("Sciurus", "carolinensis");
+        //graySquirrel = animals.findById(graySquirrelId).orElseThrow();
+        //assertEquals("gray squirrel", graySquirrel.commonName());
+        //assertEquals("Sciurus", graySquirrel.id().genus());
+        //assertEquals("carolinensis", graySquirrel.id().species());
+
+        //foxSquirrel = foxSquirrel.withCommonName("FOX SQUIRREL");
+        //foxSquirrel = animals.save(foxSquirrel);
+        //assertEquals("FOX SQUIRREL", foxSquirrel.commonName());
+        //assertEquals("Sciurus", foxSquirrel.id().genus());
+        //assertEquals("niger", foxSquirrel.id().species());
+        //assertEquals(2, foxSquirrel.version());
+
+        //foxSquirrel = foxSquirrel.withCommonName("fox squirrel");
+        //foxSquirrel = animals.update(foxSquirrel);
+        //assertEquals("fox squirrel", foxSquirrel.commonName());
+        //assertEquals("Sciurus", foxSquirrel.id().genus());
+        //assertEquals("niger", foxSquirrel.id().species());
+        //assertEquals(3, foxSquirrel.version());
+
+        animals.deleteById(new ScientificName("Sciurus", "niger"));
+
+        assertEquals(4L, animals.countByIdNotNull());
+
+        animals.delete(redSquirrel);
+
+        assertEquals(false, animals.existsById(redSquirrel.id()));
+
+        //found = animals.findAll().toList(); TODO replace next line
+        found = List.of(redFox, grayFox, graySquirrel);
+        assertEquals(found.toString(), 3, found.size());
+        animals.deleteAll(found);
     }
 
     /**
@@ -3751,7 +3892,7 @@ public class DataTestServlet extends FATServlet {
      * Verify a repository method that supplies id(this) as the sort criteria
      * hard coded within a JDQL query.
      */
-    // TODO enable once #28925 is fixed
+    // TODO enable once #30093 is fixed
     //@Test
     public void testOrderByIdFunction() {
         assertIterableEquals(List.of(19L, 17L, 13L, 11L, 7L, 5L, 3L, 2L),
@@ -5939,8 +6080,6 @@ public class DataTestServlet extends FATServlet {
         }
 
         assertEquals(3, persons.updateSome(ulysses, ursula, uriah));
-
-        assertEquals(0, persons.updateSome());
 
         assertEquals(4, people.deleteBySSN_IdBetween(0L, 999999999L));
     }

@@ -23,6 +23,7 @@ import java.time.Duration;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
@@ -77,25 +78,11 @@ public abstract class WSATTest extends FATServletClient {
         return newUri;
     }
 
-	public static void callClearResourcesServlet(String app, LibertyServer... servers) throws Exception{
-		final String method = "callClearResourcesServlet";
-		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
-		String servletName = "ClearResourcesServlet";
-
+    public static void deleteStateFiles(LibertyServer... servers) throws Exception {
+    	final String stateFile = XAResourceImpl.getStateFile().getName();
+		Log.info(WSATTest.class, "deleteStateFiles", stateFile);
 		for (LibertyServer server : servers) {
-			String urlStr = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + app + "/" + servletName;
-	
-			Log.info(WSATTest.class, method, "callClearResourcesServlet URL: " + urlStr);
-			HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
-				expectedConnectionCode, REQUEST_TIMEOUT);
-			try {
-				HttpUtils.getConnectionStream(con).readLine();
-			} finally {
-				con.disconnect();
-			}
-			
-			server.setMarkToEndOfLog();
-			server.setTraceMarkToEndOfDefaultTrace();
-		}
-	}
+			server.deleteFileFromLibertyServerRoot(stateFile);
+		}    	
+    }
 }

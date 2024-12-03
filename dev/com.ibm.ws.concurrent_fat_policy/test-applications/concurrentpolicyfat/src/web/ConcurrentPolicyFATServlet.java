@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -344,7 +344,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         assertTrue(blockerTask1.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         // Use up maxQueueSize of 1
-        CountingTask queuedTask1 = new CountingTask(null, null, null, null); // TODO add a listener and test taskAborted on cancel from queue
+        CountingTask queuedTask1 = new CountingTask(null, new TaskListener().doLookup("java:module/env/concurrent/executor2ref", ABORTED).doGet(true, ABORTED), null, null);
         Future<Integer> queuedTaskFuture1 = executor1.submit(queuedTask1);
         cancelAfterTest.add(queuedTaskFuture1);
 
@@ -381,6 +381,8 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         // Allow the normal policy tasks to complete:
         cancelAfterTest.remove(queuedTaskFuture1);
         assertTrue(queuedTaskFuture1.cancel(false));
+        //Test taskAborted on task that is canceled while waiting in queue
+        assertCanceled(executor1, queuedTaskFuture1, queuedTask1, (TaskListener) queuedTask1.listener, NOT_STARTED);
 
         cancelAfterTest.remove(blockerTaskFuture1);
         assertTrue(blockerTaskFuture1.cancel(true));

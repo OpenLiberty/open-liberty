@@ -9,31 +9,25 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.fat.config;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.microprofile.openapi.fat.FATSuite;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
-import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -46,27 +40,40 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Tests for the mpOpenAPI config element
  */
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class OpenAPIConfigTest {
 
     private static final String SERVER_NAME = "OpenAPIConfigServer";
 
-    private static String DEFAULT_DOC_PATH = "/openapi";
-    private static String DEFAULT_UI_PATH = DEFAULT_DOC_PATH + "/ui";
+    private static final String DEFAULT_DOC_PATH = "/openapi";
+    private static final String DEFAULT_UI_PATH = DEFAULT_DOC_PATH + "/ui";
 
     private static String APP_NAME = "mpOpenAPIConfigTest";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    public static ConfigServerTestHelper helper;
+
+    /**
+     * Limited repeats because this test is slow because it involves lots of server restarts.
+     * <p>
+     * This should be safe because the code is common across all versions of mpOpenAPI.
+     */
     @ClassRule
-    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
+    public static RepeatTests r = FATSuite.repeatLimited(SERVER_NAME);
+
+    @BeforeClass
+    public static void init() {
+        helper = new ConfigServerTestHelper(server);
+    }
 
     @Before
     public void setup() throws Exception {
         // Test application startup is only checked in one case where is expected to
         // fail to start
-        server.setValidateApps(false);
+        LibertyServer.setValidateApps(false);
         // Deploy test app
         WebArchive war = ShrinkWrap.create(WebArchive.class, "mpOpenAPIConfigTest.war")
             .addClass(OpenAPIConfigTestResource.class);
@@ -75,6 +82,7 @@ public class OpenAPIConfigTest {
 
     @After
     public void teardown() throws Exception {
+        LibertyServer.setValidateApps(true);
         server.stopServer(
             "CWWKO1670E", // Expected
             "CWWKO1671E", // Expected
@@ -88,7 +96,6 @@ public class OpenAPIConfigTest {
         );
     }
 
-    @Mode(TestMode.FULL)
     @Test
     public void testConfigureDocumentEndpoint() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
@@ -98,16 +105,15 @@ public class OpenAPIConfigTest {
 
         server.startServer(false);
 
-        assertWebAppStarts("/foo");
-        assertWebAppStarts("/foo/ui");
+        helper.assertWebAppStarts("/foo");
+        helper.assertWebAppStarts("/foo/ui");
 
-        assertDocumentPath("/foo");
-        assertUiPath("/foo/ui");
-        assertMissing(DEFAULT_DOC_PATH);
-        assertMissing(DEFAULT_UI_PATH);
+        helper.assertDocumentPath("/foo");
+        helper.assertUiPath("/foo/ui");
+        helper.assertMissing(DEFAULT_DOC_PATH);
+        helper.assertMissing(DEFAULT_UI_PATH);
     }
 
-    @Mode(TestMode.FULL)
     @Test
     public void testConfigureUiEndpoint() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
@@ -117,15 +123,14 @@ public class OpenAPIConfigTest {
 
         server.startServer(false);
 
-        assertWebAppStarts(DEFAULT_DOC_PATH);
-        assertWebAppStarts("/bar");
+        helper.assertWebAppStarts(DEFAULT_DOC_PATH);
+        helper.assertWebAppStarts("/bar");
 
-        assertDocumentPath(DEFAULT_DOC_PATH);
-        assertUiPath("/bar");
-        assertMissing(DEFAULT_UI_PATH);
+        helper.assertDocumentPath(DEFAULT_DOC_PATH);
+        helper.assertUiPath("/bar");
+        helper.assertMissing(DEFAULT_UI_PATH);
     }
 
-    @Mode(TestMode.FULL)
     @Test
     public void testConflictingPaths() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
@@ -136,14 +141,14 @@ public class OpenAPIConfigTest {
         server.startServer(false);
 
         // check conflict with default Doc Path
-        assertWebAppStarts(DEFAULT_DOC_PATH);
+        helper.assertWebAppStarts(DEFAULT_DOC_PATH);
         assertNotNull("UI Web Appplication is not available at /openapi/",
             server.waitForStringInLog("CWWKO1672E")); // check that error indicating that Doc endpoint conflict is
                                                       // thrown
-        assertWebAppStarts(DEFAULT_UI_PATH);
+        helper.assertWebAppStarts(DEFAULT_UI_PATH);
 
-        assertDocumentPath(DEFAULT_DOC_PATH);
-        assertUiPath(DEFAULT_UI_PATH);
+        helper.assertDocumentPath(DEFAULT_DOC_PATH);
+        helper.assertUiPath(DEFAULT_UI_PATH);
 
         server.setMarkToEndOfLog();
 
@@ -155,14 +160,13 @@ public class OpenAPIConfigTest {
         assertNotNull("UI Web Appplication is not available at /foo/",
             server.waitForStringInLogUsingMark("CWWKO1672E")); // check that error indicating that conflict is thrown
 
-        assertWebAppStarts("/foo/");
-        assertWebAppStarts("/foo/ui/");
+        helper.assertWebAppStarts("/foo/");
+        helper.assertWebAppStarts("/foo/ui/");
 
-        assertDocumentPath("/foo");
-        assertUiPath("/foo/ui");
+        helper.assertDocumentPath("/foo");
+        helper.assertUiPath("/foo/ui");
     }
 
-    @Mode(TestMode.FULL)
     @Test
     public void testInvalidPaths() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
@@ -182,11 +186,11 @@ public class OpenAPIConfigTest {
             server.waitForStringInLog("CWWKO1670E")); // check that error indicating that a failure has occurred
 
         // Check paths revert to defaults
-        assertWebAppStarts(DEFAULT_DOC_PATH);
-        assertWebAppStarts(DEFAULT_UI_PATH);
+        helper.assertWebAppStarts(DEFAULT_DOC_PATH);
+        helper.assertWebAppStarts(DEFAULT_UI_PATH);
 
-        assertDocumentPath(DEFAULT_DOC_PATH);
-        assertUiPath(DEFAULT_UI_PATH);
+        helper.assertDocumentPath(DEFAULT_DOC_PATH);
+        helper.assertUiPath(DEFAULT_UI_PATH);
 
         server.setMarkToEndOfLog();
 
@@ -207,11 +211,10 @@ public class OpenAPIConfigTest {
         assertNull("Web apps not restarted when config set to invalid values ",
             server.waitForStringInLogUsingMark("CWWKT0016I", 1000));
 
-        assertDocumentPath(DEFAULT_DOC_PATH);
-        assertUiPath(DEFAULT_UI_PATH);
+        helper.assertDocumentPath(DEFAULT_DOC_PATH);
+        helper.assertUiPath(DEFAULT_UI_PATH);
     }
 
-    @Mode(TestMode.FULL)
     @Test
     @AllowedFFDC
     public void testApplicationPathConfict() throws Exception {
@@ -229,10 +232,10 @@ public class OpenAPIConfigTest {
         assertNotNull("Web Application fails to start due to context path conflict with OPENAPIUI bundle",
             server.waitForStringInLog("SRVE0164E.*OpenAPIUI"));
 
-        assertWebAppStarts(DEFAULT_DOC_PATH);
-        assertWebAppStarts("/mpOpenAPIConfigTest");
+        helper.assertWebAppStarts(DEFAULT_DOC_PATH);
+        helper.assertWebAppStarts("/mpOpenAPIConfigTest");
 
-        assertDocumentPath(DEFAULT_DOC_PATH);
+        helper.assertDocumentPath(DEFAULT_DOC_PATH);
 
         server.stopServer("SRVE0164E", "CWWKZ0002E");
 
@@ -243,10 +246,10 @@ public class OpenAPIConfigTest {
 
         server.startServer(false);
 
-        assertWebAppStarts(DEFAULT_DOC_PATH);
-        assertWebAppStarts(DEFAULT_UI_PATH);
-        assertDocumentPath(DEFAULT_DOC_PATH);
-        assertUiPath(DEFAULT_UI_PATH);
+        helper.assertWebAppStarts(DEFAULT_DOC_PATH);
+        helper.assertWebAppStarts(DEFAULT_UI_PATH);
+        helper.assertDocumentPath(DEFAULT_DOC_PATH);
+        helper.assertUiPath(DEFAULT_UI_PATH);
 
         // modify UI path to conflict with the running test application
         config.getMpOpenAPIElement().setDocPath(null);
@@ -258,11 +261,10 @@ public class OpenAPIConfigTest {
         assertNotNull("OpenAPI UI bundle fails to start due to context root conflict",
             server.waitForStringInLog("CWWKZ0202E.*openapi.ui"));
 
-        assertMissing("/mpOpenAPIConfigTest");
+        helper.assertMissing("/mpOpenAPIConfigTest");
     }
 
     @Test
-    @Mode(TestMode.FULL)
     public void testCustomizedEndpointProxyRefererHeader() throws Exception {
         // Defaults are tested in the ProxySupportTest.class
         ServerConfiguration config = server.getServerConfiguration();
@@ -273,28 +275,28 @@ public class OpenAPIConfigTest {
         server.startServer(false);
 
         // Esnure that OpenAPI endpoints ara available where they say they are.
-        assertWebAppStarts("/foo");
-        assertWebAppStarts("/bar");
-        assertDocumentPath("/foo");
-        assertUiPath("/bar");
+        helper.assertWebAppStarts("/foo");
+        helper.assertWebAppStarts("/bar");
+        helper.assertDocumentPath("/foo");
+        helper.assertUiPath("/bar");
 
         // Test changed path with various referer headers
 
         // Default HTTP protocol port with different host and matching docPath returns
         // single server entry
         String model = new OpenAPIConnection(server, "/foo").header("Referer", "http://testurl1/foo").download();
-        assertThat(getServerUrls(model), Matchers.hasSize(1));
+        assertThat(helper.getServerUrls(model), Matchers.hasSize(1));
         // check that the server hostname has changed to supplied value
         assertThat("Check that the servers entry use the host from the referer header",
-            getServerUrls(model).get(0), Matchers.containsString("http://testurl1/" + APP_NAME));
+            helper.getServerUrls(model).get(0), Matchers.containsString("http://testurl1/" + APP_NAME));
 
         // Default HTTPS protocol port with matching uiPath returns single server entry
         model = new OpenAPIConnection(server, "/foo").header("Referer", "https://testurl2/bar").download();
-        assertThat(getServerUrls(model), Matchers.hasSize(1));
+        assertThat(helper.getServerUrls(model), Matchers.hasSize(1));
         ;
         // check that the host name has changed and has maintained HTTPS protocol
         assertThat("Check that the servers entry use the host from the referer header",
-            getServerUrls(model).get(0),
+            helper.getServerUrls(model).get(0),
             Matchers.containsString("https://testurl2/" + APP_NAME));
 
         // If the referer path does not match either UI or Doc endpoints that the
@@ -304,10 +306,10 @@ public class OpenAPIConfigTest {
         System.out.println(model.toString());
         // Path mismatch, should revert to server host and server http port
         // Only a single server should be returned as HTTPS is disabled
-        assertThat(getServerUrls(model), Matchers.hasSize(1));
+        assertThat(helper.getServerUrls(model), Matchers.hasSize(1));
         ;
         // Server in String should correspond to the Request URL
-        assertThat("Check host reverts to the requestUrl host", getServerUrls(model).get(0),
+        assertThat("Check host reverts to the requestUrl host", helper.getServerUrls(model).get(0),
             Matchers
                 .containsString("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME));
 
@@ -316,192 +318,11 @@ public class OpenAPIConfigTest {
         model = new OpenAPIConnection(server, "/foo").header("Referer", "http://testurl4/random/ui").download();
         System.out.println(model.toString());
         // Only a single server should be returned as HTTPS is disabled
-        assertThat(getServerUrls(model), Matchers.hasSize(1));
+        assertThat(helper.getServerUrls(model), Matchers.hasSize(1));
         // Server in should correspond to the Request URL
-        assertThat("Check host reverts to the requestUrl host", getServerUrls(model).get(0),
+        assertThat("Check host reverts to the requestUrl host", helper.getServerUrls(model).get(0),
             Matchers
                 .containsString("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME));
-    }
-
-    @Test
-    public void testConfigureDynamicUpdate() throws Exception {
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getMpOpenAPIElement().setDocPath(null);
-        config.getMpOpenAPIElement().setUiPath(null);
-        server.updateServerConfiguration(config);
-
-        server.startServer(false);
-
-        assertWebAppStarts(DEFAULT_DOC_PATH);
-        assertWebAppStarts(DEFAULT_UI_PATH);
-
-        assertDocumentPath(DEFAULT_DOC_PATH);
-        assertUiPath(DEFAULT_UI_PATH);
-
-        server.setMarkToEndOfLog();
-        config = server.getServerConfiguration();
-        config.getMpOpenAPIElement().setDocPath("/foo");
-        config.getMpOpenAPIElement().setUiPath("/bar");
-        server.updateServerConfiguration(config);
-
-        assertWebAppStarts("/foo");
-        assertWebAppStarts("/bar");
-
-        assertDocumentPath("/foo");
-        assertUiPath("/bar");
-        assertMissing(DEFAULT_DOC_PATH);
-        assertMissing(DEFAULT_UI_PATH);
-
-        server.setMarkToEndOfLog();
-        config = server.getServerConfiguration();
-        config.getMpOpenAPIElement().setDocPath("/foo");
-        config.getMpOpenAPIElement().setUiPath(null);
-        server.updateServerConfiguration(config);
-
-        assertWebAppStarts("/foo/ui");
-        assertNoWebAppStart("/foo");
-
-        assertDocumentPath("/foo");
-        assertUiPath("/foo/ui");
-        assertMissing(DEFAULT_DOC_PATH);
-        assertMissing(DEFAULT_UI_PATH);
-
-        server.setMarkToEndOfLog();
-        config = server.getServerConfiguration();
-        config.getMpOpenAPIElement().setDocPath(null);
-        config.getMpOpenAPIElement().setUiPath("/foo/ui");
-        server.updateServerConfiguration(config);
-
-        assertWebAppStarts(DEFAULT_DOC_PATH);
-        assertNoWebAppStart("/foo/ui");
-
-        assertDocumentPath(DEFAULT_DOC_PATH);
-        assertUiPath("/foo/ui");
-        assertMissing(DEFAULT_UI_PATH);
-
-        server.setMarkToEndOfLog();
-        config = server.getServerConfiguration();
-        config.getMpOpenAPIElement().setDocPath(null);
-        config.getMpOpenAPIElement().setUiPath("/baz");
-        server.updateServerConfiguration(config);
-
-        assertWebAppStarts("/baz");
-        assertNoWebAppStart(DEFAULT_DOC_PATH);
-
-        assertDocumentPath(DEFAULT_DOC_PATH);
-        assertUiPath("/baz");
-        assertMissing(DEFAULT_UI_PATH);
-
-        server.setMarkToEndOfLog();
-        config = server.getServerConfiguration();
-        config.getMpOpenAPIElement().setDocPath(null);
-        config.getMpOpenAPIElement().setUiPath("/baz");
-        server.updateServerConfiguration(config);
-
-        // Check there's no web app start message when the config does not change
-        assertNull("Web app restarted when config was not changed",
-            server.waitForStringInLogUsingMark("CWWKT0016I", 3000));
-
-        assertDocumentPath(DEFAULT_DOC_PATH);
-        assertUiPath("/baz");
-        assertMissing(DEFAULT_UI_PATH);
-    }
-
-    /**
-     * Assert that a CWWKT0016I: Web application available message is seen for a web app with the given path
-     *
-     * @param path the path to expect
-     */
-    private void assertWebAppStarts(String path) {
-        if (!path.startsWith("/")) {
-            path = "/" + path;
-        }
-
-        if (!path.endsWith("/")) {
-            path = path + "/";
-        }
-
-        // E.g. CWWKT0016I: Web application available (default_host):
-        // http://1.2.3.4:8010/bar/
-        assertNotNull("Web application available message not found for " + path,
-            server.waitForStringInLog("CWWKT0016I:.*:\\d+" + path + "$"));
-    }
-
-    /**
-     * Assert that a CWWKT0016I: Web application available message is not seen for a web app with the given path
-     *
-     * @param path the path to check for
-     */
-    private void assertNoWebAppStart(String path) {
-        if (!path.startsWith("/")) {
-            path = "/" + path;
-        }
-
-        if (!path.endsWith("/")) {
-            path = path + "/";
-        }
-
-        // E.g. CWWKT0016I: Web application available (default_host):
-        // http://1.2.3.4:8010/bar/
-        assertNull("Unexpected web application available message found for " + path,
-            server.waitForStringInLog("CWWKT0016I:.*:\\d+" + path + "$", 1000));
-    }
-
-    /**
-     * Assert that the OpenAPI UI is being served from the given path
-     *
-     * @param path the path
-     * @throws Exception
-     */
-    private void assertUiPath(String path) throws Exception {
-        // Check that we get something back
-        String uiHTML = new OpenAPIConnection(server, path).download();
-        // Check that it appears to be the UI HTML
-        assertThat(uiHTML, containsString("oauth2RedirectUrl: SwaggerUI.getMpOAuth2Url()"));
-    }
-
-    /**
-     * Assert that the OpenAPI document is being served from the given path
-     *
-     * @param path the path
-     * @throws Exception
-     */
-    private void assertDocumentPath(String path) throws Exception {
-        // Check that it parses as a model and contains the expected path from the test
-        // app
-        String doc = new OpenAPIConnection(server, path).download();
-        JsonNode model = OpenAPITestUtil.readYamlTree(doc);
-        OpenAPITestUtil.checkPaths(model, 1, "/configTestPath");
-    }
-
-    /**
-     * Assert that nothing is found at the given path (request returns 404)
-     *
-     * @param path the path
-     * @throws Exception
-     */
-    private void assertMissing(String path) throws Exception {
-        OpenAPIConnection connection = new OpenAPIConnection(server, path);
-        connection.expectedResponseCode(404);
-        connection.download();
-    }
-
-    private List<String> getServerUrls(String openapiYaml) {
-        JsonNode node = OpenAPITestUtil.readYamlTree(openapiYaml);
-        JsonNode servers = node.get("servers");
-        if (!servers.isArray()) {
-            return Collections.emptyList();
-        }
-
-        ArrayList<String> result = new ArrayList<>();
-        for (JsonNode server : servers) {
-            String url = server.get("url").asText(null);
-            if (url != null) {
-                result.add(url);
-            }
-        }
-
-        return result;
     }
 
 }

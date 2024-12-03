@@ -13,10 +13,15 @@
 package test.jakarta.data.ddlgen.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +29,8 @@ import java.util.Objects;
 
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,12 +46,33 @@ import componenttest.app.FATServlet;
 @WebServlet("/*")
 public class DDLGenTestServlet extends FATServlet {
 
-    @Resource(name = "java:app/env/adminDataSourceRef",
-              lookup = "jdbc/TestDataSource")
-    DataSource adminDataSource;
-
     @Inject
     Parts parts;
+
+    @Inject
+    Cars cars;
+
+    @Inject
+    Trucks trucks;
+
+    @Inject
+    Vans vans;
+
+    @Inject
+    SUVs suvs;
+
+    @Inject
+    Sedans sedans;
+
+    @Resource(name = "java:app/env/jdbc/TestDataSourceResourceRef", lookup = "jdbc/TestDataSourceResource")
+    DataSource TestDataSourceResourceRef;
+
+    @Resource(name = "java:app/env/jdbc/TestDataSourcePersistenceRef", lookup = "jdbc/TestDataSourcePersistence")
+    DataSource TestDataSourcePersistenceRef;
+
+    @PersistenceUnit(name = "java:app/env/persistence/MyPersistenceUnitRef",
+                     unitName = "MyPersistenceUnit")
+    EntityManagerFactory emf;
 
     /**
      * Executes the DDL in the database as a database admin.
@@ -54,15 +82,12 @@ public class DDLGenTestServlet extends FATServlet {
      */
     public void executeDDL(HttpServletRequest request, HttpServletResponse response) throws Exception {
         List<String> files = Arrays.asList(Objects.requireNonNull(request.getParameter("scripts")).split(","));
-        String withDatabaseStore = Objects.requireNonNull(request.getParameter("withDatabaseStore"));
         String usingDataSource = Objects.requireNonNull(request.getParameter("usingDataSource"));
+        String preamble = Objects.requireNonNull(request.getParameter("preamble")).replace("]", " ");
 
-        DataSource ds = InitialContext.doLookup(usingDataSource);
+        DataSource admin = InitialContext.doLookup(usingDataSource);
 
         for (String file : files) {
-            if (!file.contains(withDatabaseStore))
-                continue;
-
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 System.out.println("Execute DDL file: " + file);
                 String line;
@@ -70,13 +95,158 @@ public class DDLGenTestServlet extends FATServlet {
                     if (line.isBlank() || line.equals("EXIT;"))
                         continue;
 
-                    System.out.println("  Execute SQL Statement: " + line);
-                    try (Connection con = ds.getConnection(); Statement stmt = con.createStatement()) {
+                    try (Connection con = admin.getConnection(); Statement stmt = con.createStatement()) {
+                        if (!preamble.isBlank()) {
+                            System.out.println("  Execute Preamble: " + preamble);
+                            stmt.executeUpdate(preamble);
+                        }
+                        System.out.println("  Execute SQL Statement: " + line);
                         stmt.execute(line);
                     }
                 }
             }
         }
+
+    }
+
+    /**
+     * Attempt to insert, find, and delete a row in the Cars table
+     * which was created via execution of generated ddl files
+     */
+    @Test
+    public void testSaveToDefaultDatabase() {
+        assertEquals("Table car should not have any starting values", 0, cars.findAll().count());
+
+        String id = cars.save(Car.of("1234", "Honda", "Civic", 2014, 89452, 7500)).vin;
+
+        Car result = cars.findById(id).orElseThrow();
+        assertEquals("Honda", result.make);
+        assertEquals("Civic", result.model);
+        assertEquals(2014, result.modelYear);
+        assertEquals(89452, result.odometer);
+        assertEquals(7500, result.price, 0.1);
+
+        cars.delete(result);
+    }
+
+    /**
+     * Attempt to insert, find, and delete a row in the Trucks table
+     * which was created via execution of generated ddl files
+     */
+    @Test
+    public void testSaveToDatasourceId() throws Exception {
+        assertEquals("Table truck should not have any starting values", 0, trucks.findAll().count());
+
+        String id = trucks.save(Truck.of("1234", "Honda", "Ridgeline", 2025, 10, 40150, 63.6)).vin;
+
+        //Ensure no data was not put into the automobile table
+        DataSource testDataSource = InitialContext.doLookup("jdbc/TestDataSource");
+        try (Connection con = testDataSource.getConnection(); Statement stmt = con.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Automobile")) {
+                assertFalse("Truck element should have been saved to Truck table, not Automobile", rs.next()); //No data in table
+            }
+        }
+
+        Truck result = trucks.findById(id).orElseThrow();
+        assertEquals("Honda", result.make);
+        assertEquals("Ridgeline", result.model);
+        assertEquals(2025, result.modelYear);
+        assertEquals(10, result.odometer);
+        assertEquals(40150, result.price, 0.1);
+        assertEquals(63.6, result.bedLength, 0.01);
+
+        trucks.delete(result);
+    }
+
+    /**
+     * Attempt to insert, find, and delete a row in the van table
+     * which was created via execution of generated ddl files
+     */
+    @Test
+    public void testSaveToDatasourceJndiName() throws Exception {
+        assertEquals("Table van should not have any starting values", 0, vans.findAll().count());
+
+        String id = vans.save(Van.of("1234", "Honda", "Odyssey", 2015, 120500, 10926, 8)).vin;
+
+        //Ensure a table named auto was never created
+        DataSource testDataSource = InitialContext.doLookup("jdbc/TestDataSourceJndi");
+        try (Connection con = testDataSource.getConnection(); Statement stmt = con.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Auto")) {
+                fail("The table Auto should not have been created");
+            } catch (SQLException e) {
+                //expected
+            }
+        }
+
+        Van result = vans.findById(id).orElseThrow();
+        assertEquals("Honda", result.make);
+        assertEquals("Odyssey", result.model);
+        assertEquals(2015, result.modelYear);
+        assertEquals(120500, result.odometer);
+        assertEquals(10926, result.price, 0.1);
+        assertEquals(8, result.seats);
+
+        vans.delete(result);
+    }
+
+    /**
+     * Attempt to insert, find, and delete a row in the SUV table
+     * which was created via execution of generated ddl files
+     */
+    @Test
+    public void testSaveToDatasourceResourceRef() throws Exception {
+        assertEquals("Table SUV should not have any starting values", 0, suvs.findAll().count());
+
+        String id = suvs.save(SUV.of("1234", "Honda", "CR-V", 2007, 200400, 5509, true)).vin;
+
+        SUV result = suvs.findById(id).orElseThrow();
+        assertEquals("Honda", result.make);
+        assertEquals("CR-V", result.model);
+        assertEquals(2007, result.modelYear);
+        assertEquals(200400, result.odometer);
+        assertEquals(5509, result.price, 0.1);
+        assertEquals(true, result.hatchback);
+
+        suvs.delete(result);
+    }
+
+    /**
+     * Attempt to insert, find, and delete a row in the Mobile table
+     */
+    @Test
+    public void testSaveToPersistenceUnitRef() throws Exception {
+        assertEquals("Table Mobile should not have any starting values", 0, sedans.findAll().count());
+
+        String id = sedans.save(Sedan.of("1234", "Honda", "Accord", 2022, 20000, 21227, 4)).vin;
+
+        //Ensure the Sedan entity was put into the table Mobile
+        DataSource testDataSource = InitialContext.doLookup("java:app/env/jdbc/TestDataSourcePersistenceRef");
+        try (Connection con = testDataSource.getConnection(); Statement stmt = con.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Mobile")) {
+                assertTrue(rs.next());
+                assertEquals("sedan", rs.getString("type"));
+                assertFalse(rs.next());
+            }
+        }
+
+        //Ensure the no table Sedan was created
+        try (Connection con = testDataSource.getConnection(); Statement stmt = con.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM Sedan")) {
+                fail("Table sedan should not have been created");
+            } catch (SQLException e) {
+                //expected
+            }
+        }
+
+        Sedan result = sedans.findById(id).orElseThrow();
+        assertEquals("Honda", result.make);
+        assertEquals("Accord", result.model);
+        assertEquals(2022, result.modelYear);
+        assertEquals(20000, result.odometer);
+        assertEquals(21227, result.price, 0.1);
+        assertEquals(4, result.doors);
+
+        sedans.delete(result);
     }
 
     /**
@@ -118,4 +288,5 @@ public class DDLGenTestServlet extends FATServlet {
 
         parts.deleteAll(List.of(part2, part3));
     }
+
 }

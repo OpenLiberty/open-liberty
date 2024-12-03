@@ -24,4 +24,4 @@ edition=core
 -jars=com.ibm.websphere.appserver.spi.jaspic; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jaspic_1.1-javadoc.zip
 WLP-InstantOn-Enabled: true
-WLP-Platform: javaee-7.0,javaee-8.0
+WLP-Platform: javaee-7.0,javaee-8.0,jakartaee-8.0
