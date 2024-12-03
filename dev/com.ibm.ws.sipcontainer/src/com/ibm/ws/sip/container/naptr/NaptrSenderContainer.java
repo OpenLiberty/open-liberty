@@ -79,7 +79,7 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 		super.cleanItself();
 		if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "cleanItself", 
-					"EYECATCHER:  Clean NaptrSender = " + toString());
+					"Clean NaptrSenderContainer = " + toString());
 		}
 	}
 
@@ -97,10 +97,11 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 		if (! ((MessageImpl)request.getRequest()).isLoopback()){
 			_naptrHandler.sendToNextDestination(messageContext, _client.getTarget());
 		}else{
-			//no need to do nptr lookup if this is a loop back request, only applications that sends the request outside of the container
-			//needs to do real resolving 
+			//no need to do naptr lookup if this is a loop back request
+			//applications that send the request outside of the container
+			//need to do the resolving 
 			if (c_logger.isTraceDebugEnabled()) {
-				c_logger.traceDebug(this, "sendRequest", "no need to do NPTR resole, this is a loopback request");
+				c_logger.traceDebug(this, "sendRequest", "no need to do NAPTR resolve, this is a loopback request");
 			}
 			_naptrHandler.sendWithoutLookup(messageContext, _client.getTarget());
 		}
@@ -115,8 +116,8 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 		MessageImpl messageImpl  = (MessageImpl) response.getMessage();
 		
 		//if the response is loopback that means that the request was also a loopback, 
-		//there is no need to go thru the NPTR process since no NPTR result was 
-		//done in the first place
+		//there is no need to go thru the NAPTR process since there was no NAPTR lookup   
+		//in the first place
 		if((response.getStatus() == SipServletResponse.SC_SERVICE_UNAVAILABLE) && ! messageImpl.isLoopback()){
 			// Save this response and try to send to different destination.
 			_503Response = response;
@@ -168,9 +169,9 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 		try {
 			request.updateParamAccordingToDestination();
 			
-			// Sending the request to sipProvider. If IOException will be 
-			// received - the request will be sent to next hop if present.
-			// If not - _response (if exist )will be forwarded to the application.
+			// Sending the request to sipProvider. In case of IOException 
+			// the request will be sent to next hop if present.
+			// If not,  _response (if exists) will be forwarded to the application.
 			if (c_logger.isTraceDebugEnabled()) {
 				StringBuffer buff = new StringBuffer();
 				buff.append("Sending request to the next destination = ");

@@ -55,7 +55,7 @@ public class NaptrSenderStack extends BackupMessageSenderBase implements INaptrS
 	 */
 	public NaptrSenderStack() {
 		if (c_logger.isTraceDebugEnabled()) {
-			c_logger.traceDebug(this, "NaptrSender", "New NaptrSender created  = " + toString());
+			c_logger.traceDebug(this, "NaptrSenderStack", "New NaptrHandlerStack created  = " + toString());
 		}
 		_naptrHandler = new NaptrHandler(this);
 		_messageContext = null;
@@ -70,7 +70,7 @@ public class NaptrSenderStack extends BackupMessageSenderBase implements INaptrS
 		_naptrHandler.cleanSelf();
 		_messageContext = null;
 		if (c_logger.isTraceDebugEnabled()) {
-			c_logger.traceDebug(this, "cleanItself", " Clean NaptrSender = " + toString());
+			c_logger.traceDebug(this, "NaptrSenderStack",  "cleanItself - clean NaptrSenderStack = " + toString());
 		}
 	}
 
@@ -130,7 +130,7 @@ public class NaptrSenderStack extends BackupMessageSenderBase implements INaptrS
 				StringBuffer buff = new StringBuffer();
 				buff.append("Sending message to the next destination = ");
 				buff.append(_naptrHandler.getLastUsedDestination());
-				c_logger.traceDebug(this, "sendRequestDownstream", buff.toString());
+				c_logger.traceDebug(this, "NaptrSenderStack - sendRequestDownstream", buff.toString());
 			}
 
 			SipProvider provider = StackProperties.getInstance().getProvider(transport);
@@ -141,7 +141,7 @@ public class NaptrSenderStack extends BackupMessageSenderBase implements INaptrS
 				StringBuffer buff = new StringBuffer();
 				buff.append("Exception when sending message. try next destination for message: ");
 				buff.append(messageContext);
-				c_logger.traceDebug(this, "sendToNextDestination", buff.toString());
+				c_logger.traceDebug(this, "NaptrSenderStack sendToNextDestination", buff.toString());
 			}
 			try {
 				sendToNextDestination();
@@ -153,7 +153,7 @@ public class NaptrSenderStack extends BackupMessageSenderBase implements INaptrS
 					StringBuffer buff = new StringBuffer();
 					buff.append("IOException when trying to send message to next destination for message: ");
 					buff.append(messageContext);
-					c_logger.traceDebug(this, "sendMessage", buff.toString());
+					c_logger.traceDebug(this, "NaptrSenderStack sendMessage", buff.toString());
 				}
 			}
 		}

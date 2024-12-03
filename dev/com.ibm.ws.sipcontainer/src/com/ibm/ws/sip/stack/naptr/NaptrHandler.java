@@ -72,7 +72,7 @@ public class NaptrHandler implements NaptrRequestListener {
 	 */
 	public NaptrHandler(INaptrSender sender) {
 		if (c_logger.isTraceDebugEnabled()) {
-			c_logger.traceDebug(this, "NaptrHandler", "New NaptrSender created  = " + toString());
+			c_logger.traceDebug(this, "NaptrHandler", "New NaptrHandler created  = " + toString());
 		}
 		_sender = sender;
 	}
@@ -87,7 +87,7 @@ public class NaptrHandler implements NaptrRequestListener {
 		_target = null;
 		_messageContext = null;
 		if (c_logger.isTraceDebugEnabled()) {
-			c_logger.traceDebug(this, "cleanItself", " Clean NaptrHandler = " + toString());
+			c_logger.traceDebug(this, "cleanSelf", "Clean NaptrHandler = " + toString());
 		}
 	}
 

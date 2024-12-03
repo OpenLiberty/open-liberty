@@ -23,7 +23,9 @@ import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
 import com.ibm.sip.util.log.Situation;
 import com.ibm.ws.sip.container.failover.repository.SessionRepository;
-import com.ibm.ws.sip.container.naptr.*;
+import com.ibm.ws.sip.container.naptr.ISenderListener;
+import com.ibm.ws.sip.container.naptr.SendProcessor;
+import com.ibm.ws.sip.container.naptr.SenderFactory;
 import com.ibm.ws.sip.container.parser.SipServletDesc;
 import com.ibm.ws.sip.container.proxy.SubsequentRequestListener;
 import com.ibm.ws.sip.container.servlets.OutgoingSipServletRequest;
@@ -209,6 +211,13 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
 						c_logger.traceDebug(this, "sendRequest","Got new Sender = " + _sender);
 					}
 					_sender.sendRequest(request, this);
+					
+					if (request.getMethod().equals(Request.ACK)){
+						c_logger.traceDebug(this, "sendRequest", "EYE: ACK request sent, clean up");
+						
+						finishToUseSender();
+					}
+							
 				}	        
 			}
 			else{
@@ -442,8 +451,7 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
      * remove the transaction from the transaction table
      * 
      */
-		
-		public void clearTransaction(){
+    public void clearTransaction(){
     	markAsTerminated();  
 		removeFromTransactionTable(null); 
 		finishToUseSender();
@@ -454,8 +462,7 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
      * TransactionClient finished to use the sender received from 
      * SenderFactory.
      */
-    private void finishToUseSender() {
-        c_logger.traceDebug(this, "finishToUseSender", "EYECATCHER: calling finishToUseSender, which should trigger clean method");	
+    public void finishToUseSender() {
     	SenderFactory.finishToUseSender(_sender);
 	}
 
