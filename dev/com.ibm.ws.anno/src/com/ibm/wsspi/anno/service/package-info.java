@@ -14,7 +14,7 @@
 /**
  * @version 1.0
  */
-@org.osgi.annotation.versioning.Version("1.0")
+@org.osgi.annotation.versioning.Version("1.1")
 @TraceOptions(traceGroup = "com.ibm.ws.anno", messageBundle = "com.ibm.ws.anno.resources.internal.AnnoMessages")
 package com.ibm.wsspi.anno.service;
 
