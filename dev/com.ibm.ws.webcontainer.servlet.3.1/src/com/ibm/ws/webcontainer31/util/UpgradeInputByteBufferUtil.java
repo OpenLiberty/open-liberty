@@ -172,6 +172,11 @@ public class UpgradeInputByteBufferUtil {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                     Tr.debug(tc, "immediateRead, read from saved buffer [" + _buffer + "] , amount [" + _buffer.remaining() +"]");  
                 } 
+                
+                //check see if the remaining > amountToRead
+                if (_buffer.remaining() > amountToRead)
+                    Tr.debug(tc, "immediateRead, WARNING saved buffer has more data than specified read ");  
+
 
                 _upConn.getVirtualConnection().getStateMap().remove(TransportConstants.NOT_UPGRADED_UNREAD_DATA); 
             }
