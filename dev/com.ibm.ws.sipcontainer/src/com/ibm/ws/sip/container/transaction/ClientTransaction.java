@@ -212,9 +212,9 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
 					}
 					_sender.sendRequest(request, this);
 					
+					//if request is ACK, there will be no response coming back
+					//call finish ToUseSender() method now
 					if (request.getMethod().equals(Request.ACK)){
-						c_logger.traceDebug(this, "sendRequest", "EYE: ACK request sent, clean up");
-						
 						finishToUseSender();
 					}
 							
