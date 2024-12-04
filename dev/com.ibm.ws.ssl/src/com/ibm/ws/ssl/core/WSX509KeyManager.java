@@ -349,16 +349,18 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
                 Tr.debug(tc, "chooseEngineClientAlias, using customKM -> " + customKM.getClass().getName());
             alias = ((X509ExtendedKeyManager) customKM).chooseEngineClientAlias(keyType, issuers, engine);
         } 
-        //Despite the Javadoc indicating support for passing an array of keyTypes, 
-        //there is a historical requirement to pass the key individually each time. 
-        //To maintain the zero-migration policy approach, iteration will continue 
-        //unless a performance issue arises. 
-        for (String type : keyType) {
-            alias = chooseClientAlias(type, issuers);
-            if (alias != null) {
-                break;
+        else {
+           //Despite the Javadoc indicating support for passing an array of keyTypes, 
+           //there is a historical requirement to pass the key individually each time. 
+           //To maintain the zero-migration policy approach, iteration will continue 
+           //unless a performance issue arises. 
+           for (String type : keyType) {
+               alias = chooseClientAlias(type, issuers);
+               if (alias != null) {
+                   break;
+               }
             }
-        }        
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "chooseEngineClientAlias");
