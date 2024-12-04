@@ -107,6 +107,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -122,6 +123,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http2.DefaultHttp2Headers;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Headers;
@@ -130,6 +132,7 @@ import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
 import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.openliberty.http.constants.HttpGenerics;
+import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
@@ -2294,6 +2297,17 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         if (isSwitching && "websocket".equalsIgnoreCase(response.headers().get(HttpHeaderNames.UPGRADE))) {
             nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
+
+            QuiesceHandler quiesceHandler = this.nettyContext.pipeline().get(QuiesceHandler.class);
+            if(quiesceHandler != null){
+                final Channel channel = nettyContext.channel();
+                quiesceHandler.setQuiesceTask(() -> {
+                    channel.writeAndFlush(new CloseWebSocketFrame(1001, "Server shutting down"))
+                        .addListener(ChannelFutureListener.CLOSE);
+                    return null;
+                });
+            }
+
         }
         this.nettyContext.channel().writeAndFlush(response);
 

@@ -239,9 +239,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     					// Fire custom user event to let know that the endpoint is being stopped
     					channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
     				}
-                    for (Channel channel : outboundConnections){
-                        channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
-                    }
+     
     				// Schedule quiesce tasks
     				quiesce.startTasks();
     			} catch (Exception e) {
@@ -341,8 +339,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 	        try {
 	        	latch.await();
 			} catch (InterruptedException e) {
-				// TODO: handle exception
-				System.out.println("Got interrupted exception");
 				throw new RuntimeException(e);
 			}
         
@@ -509,9 +505,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     	synchronized (activeChannelMap) {
     		ChannelFuture closeFuture = channel.close();
 	    	ChannelGroup group = activeChannelMap.get(channel);
-	    	if(group != null) {
-	    		activeChannelMap.remove(channel);
-	    	}
 	    	return closeFuture;
     	}
     }

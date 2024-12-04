@@ -19,7 +19,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.SimpleUserEventChannelHandler;
 import io.netty.channel.ChannelDuplexHandler;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.util.AttributeKey;
 import io.netty.channel.ChannelPromise;
 
@@ -34,7 +33,6 @@ public class QuiesceHandler extends ChannelDuplexHandler{
 	
 	
 	public static final QuiesceEvent QUIESCE_EVENT = new QuiesceEvent();
-	public static final AttributeKey<Boolean> WEBSOCKET_ATTR_KEY = AttributeKey.valueOf("websocket");
 
 	private boolean completed = false;
 
@@ -44,6 +42,11 @@ public class QuiesceHandler extends ChannelDuplexHandler{
 
 	private Callable quiesceTask = null;
 
+
+
+	public QuiesceHandler(){
+		this.quiesceTask = () -> null;
+	 }
 
 	public QuiesceHandler(Callable quiesceTask) {
 		this.quiesceTask = quiesceTask;
@@ -66,10 +69,6 @@ public class QuiesceHandler extends ChannelDuplexHandler{
         if (evt instanceof QuiesceEvent) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Received Quiesce Event for " + ctx.channel() + " with callable: " + quiesceTask);
-            }
-
-            if (quiesceTask != null) {
-                quiesceTask.call();
             }
 
             handleQuiesce(ctx);
@@ -96,18 +95,15 @@ public class QuiesceHandler extends ChannelDuplexHandler{
         super.write(ctx, msg, promise);
     }
 
-    private boolean handleQuiesce(ChannelHandlerContext ctx) {
+    private boolean handleQuiesce(ChannelHandlerContext ctx) throws Exception {
         if (completed) {
             return false; // Already handled
 			
         }
-        Boolean isWebSocket = ctx.channel().attr(WEBSOCKET_ATTR_KEY).get();
-
-        if (Boolean.TRUE.equals(isWebSocket)) {
+        if (quiesceTask != null){
 			completed = true;
-             ctx.writeAndFlush(new CloseWebSocketFrame(1001, "Server shutting down"))
-                 .addListener(ChannelFutureListener.CLOSE);
-        } 
+			quiesceTask.call();
+		}
         return completed;
     }
 
