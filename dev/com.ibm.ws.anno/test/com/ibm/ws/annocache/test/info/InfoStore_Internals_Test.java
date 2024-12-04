@@ -15,6 +15,7 @@ package com.ibm.ws.annocache.test.info;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -70,6 +71,9 @@ public class InfoStore_Internals_Test {
     public static void setup() throws ClassSource_Exception, InfoStoreException {
         UtilImpl_Factory utilImplFactory = new UtilImpl_Factory();
         ClassSourceImpl_Factory factory = new ClassSourceImpl_Factory(utilImplFactory);
+        
+        Properties props = System.getProperties();
+        props.setProperty("running.unit.test", "true");
 
         ClassSourceImpl_Aggregate useRootClassSource =
             factory.createAggregateClassSource("TestEar", "TestMod", ClassSource_Factory.UNSET_CATEGORY_NAME, factory.createOptions() );

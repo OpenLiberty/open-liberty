@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -99,6 +100,9 @@ public abstract class InfoStore_TestBase {
 
     protected static ClassSourceImpl_Aggregate createClassSource() throws Exception {
         ClassSourceImpl_Factory factory = getClassSourceFactory();
+        
+        Properties props = System.getProperties();
+        props.setProperty("running.unit.test", "true");
 
         ClassSourceImpl_Aggregate useRootClassSource =
             factory.createAggregateClassSource(

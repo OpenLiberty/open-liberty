@@ -16,6 +16,8 @@ package com.ibm.ws.annocache.classsource.internal;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -111,7 +113,9 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
         Properties props = System.getProperties();
         String inUnitTest = props.getProperty("running.unit.test");
         
-        if (applicationName != ClassSource_Factory.UNNAMED_APP) {
+        if (inUnitTest != null && inUnitTest.equals("true")) {
+            this.applicationKey = new SoftReference<AppKey>(new AppKey(applicationName));
+        } else if (applicationName != ClassSource_Factory.UNNAMED_APP) {
             AppKey appKey =  keyServiceServiceCaller.run((AnnotationService_KeyService ks) -> ks.getKeyForApp(applicationName)).get();
             this.applicationKey = new  WeakReference<AppKey>(appKey);
         } else {
@@ -198,7 +202,7 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
     protected final String applicationName;
     protected final String moduleName;
     protected final String moduleCategoryName;
-    protected final WeakReference<AppKey> applicationKey;
+    protected final Reference<AppKey> applicationKey;
 
     /**
      * <p>Answer the name of the application of this class source.</p>
