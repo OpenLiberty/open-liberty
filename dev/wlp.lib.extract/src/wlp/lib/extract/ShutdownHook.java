@@ -112,7 +112,8 @@ public class ShutdownHook implements Runnable {
 
         Process stopProcess = Runtime.getRuntime().exec(cmd, SelfExtractUtils.runEnv(dir), null); // stop server
         try {
-            waitAndCloseStreams(stopProcess);
+            stopProcess.waitFor();
+//            waitAndCloseStreams(stopProcess);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
