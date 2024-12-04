@@ -462,7 +462,7 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
      * TransactionClient finished to use the sender received from 
      * SenderFactory.
      */
-    public void finishToUseSender() {
+    private void finishToUseSender() {
     	SenderFactory.finishToUseSender(_sender);
 	}
 
