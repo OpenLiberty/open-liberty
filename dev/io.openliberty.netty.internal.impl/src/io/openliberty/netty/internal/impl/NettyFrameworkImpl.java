@@ -505,6 +505,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     	synchronized (activeChannelMap) {
     		ChannelFuture closeFuture = channel.close();
 	    	ChannelGroup group = activeChannelMap.get(channel);
+            if(group != null) {
+	    		activeChannelMap.remove(channel);
+	    	}
 	    	return closeFuture;
     	}
     }
