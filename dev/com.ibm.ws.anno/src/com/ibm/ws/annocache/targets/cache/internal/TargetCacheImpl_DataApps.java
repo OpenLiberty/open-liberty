@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.WeakHashMap;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.wsspi.anno.service.AnnotationService_KeyService.AppKey;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;

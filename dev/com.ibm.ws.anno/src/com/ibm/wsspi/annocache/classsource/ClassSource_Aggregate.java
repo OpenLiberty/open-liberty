@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.ibm.wsspi.anno.service.AnnotationService_KeyService.AppKey;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 
 /**

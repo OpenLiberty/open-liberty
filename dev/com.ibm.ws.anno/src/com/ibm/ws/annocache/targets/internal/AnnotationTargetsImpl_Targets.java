@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.annocache.targets.internal;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,7 +40,7 @@ import com.ibm.ws.annocache.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.annocache.util.internal.UtilImpl_NonInternSet;
 import com.ibm.ws.annocache.util.internal.UtilImpl_Utils;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
-import com.ibm.wsspi.anno.service.AnnotationService_KeyService.AppKey;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.targets.AnnotationTargets_Exception;
@@ -463,7 +464,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     protected ClassSource_Aggregate rootClassSource;
 
     protected String appName;
-    protected AppKey appKey;
+    protected WeakReference<AppKey> appKey;
     protected String modName;
     protected String modCatName;
     protected String modFullName;
@@ -476,7 +477,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     protected void setNames(ClassSource_Aggregate useRootClassSource) {
         this.appName = useRootClassSource.getApplicationName();
-        this.appKey = useRootClassSource.getApplicationKey();
+        this.appKey = new WeakReference<AppKey>(useRootClassSource.getApplicationKey());
         this.modName = useRootClassSource.getModuleName();
         this.modCatName = useRootClassSource.getModuleCategoryName();
 
@@ -501,7 +502,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     
     @Trivial
     public AppKey getAppKey() {
-        return appKey;
+        return appKey.get();
     }
     
     @Trivial

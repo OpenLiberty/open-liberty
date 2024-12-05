@@ -43,6 +43,7 @@ import com.ibm.ws.annocache.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts.ResultField;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Streamer;
@@ -66,17 +67,18 @@ public class InfoStore_Internals_Test {
 
     protected static ClassSourceImpl_Aggregate rootClassSource;
     protected static InfoStoreImpl infoStore;
+    
+    private static String APP_NAME = "TestEar";
+    //Store a reference so WeakReferences won't be garbage collected during a test
+    private static AppKey appKey = new AppKey(APP_NAME);
 
     @BeforeClass
     public static void setup() throws ClassSource_Exception, InfoStoreException {
         UtilImpl_Factory utilImplFactory = new UtilImpl_Factory();
         ClassSourceImpl_Factory factory = new ClassSourceImpl_Factory(utilImplFactory);
-        
-        Properties props = System.getProperties();
-        props.setProperty("running.unit.test", "true");
 
         ClassSourceImpl_Aggregate useRootClassSource =
-            factory.createAggregateClassSource("TestEar", "TestMod", ClassSource_Factory.UNSET_CATEGORY_NAME, factory.createOptions() );
+            factory.createAggregateClassSource(APP_NAME, appKey, "TestMod", ClassSource_Factory.UNSET_CATEGORY_NAME, factory.createOptions() );
 
         ClassSourceImpl_MappedDirectory dirClassSource =
             factory.createDirectoryClassSource(

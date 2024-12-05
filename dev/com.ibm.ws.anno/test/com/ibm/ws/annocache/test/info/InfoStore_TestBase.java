@@ -31,6 +31,7 @@ import com.ibm.ws.annocache.info.internal.InfoStoreFactoryImpl;
 import com.ibm.ws.annocache.info.internal.InfoStoreImpl;
 import com.ibm.ws.annocache.test.utils.TestLocalization;
 import com.ibm.ws.annocache.util.internal.UtilImpl_Factory;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.classsource.ClassSource_ClassLoader;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
@@ -46,6 +47,10 @@ import test.common.SharedOutputManager;
 // The subclass API is to implement test methods.
 
 public abstract class InfoStore_TestBase {
+    
+    //store a reference here so the weak reference isn't garbage collected during the test's lifetime.
+    private static final String APP_NAME = "AppName";
+    private static AppKey appKey = null;
 
     protected SharedOutputManager outputMgr =
         SharedOutputManager.getInstance().trace("*=all").logTo(TestLocalization.LOGS_RELATIVE_PATH + getClass().getSimpleName());
@@ -103,10 +108,12 @@ public abstract class InfoStore_TestBase {
         
         Properties props = System.getProperties();
         props.setProperty("running.unit.test", "true");
+        
+        appKey = new AppKey(APP_NAME);
 
         ClassSourceImpl_Aggregate useRootClassSource =
             factory.createAggregateClassSource(
-                "AppName", "ModName", ClassSource_Factory.UNSET_CATEGORY_NAME,
+                APP_NAME, appKey, "ModName", ClassSource_Factory.UNSET_CATEGORY_NAME,
                 factory.createOptions() );
 
         addComponentClassSources(useRootClassSource);

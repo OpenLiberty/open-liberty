@@ -24,9 +24,11 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.container.service.annocache.Annotations;
 import com.ibm.ws.container.service.annocache.SpecificAnnotations;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.annocache.classsource.ClassSource_ClassLoader;
@@ -52,6 +54,8 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public abstract class AnnotationsImpl implements Annotations {
     public static final TraceComponent tc = Tr.register(AnnotationsImpl.class);
     // private static final String CLASS_NAME = AnnotationsImpl.class.getSimpleName();
+
+    private static final ServiceCaller<AnnotationService_KeyService> keyServiceServiceCaller = new ServiceCaller<AnnotationService_KeyService>(AnnotationsImpl.class, AnnotationService_KeyService.class);
 
     private static final String JAVAX_RESOURCE = "javax.annotation.Resource";
     private static final String JAVAX_RESOURCES = "javax.annotation.Resources";
@@ -84,8 +88,8 @@ public abstract class AnnotationsImpl implements Annotations {
         }
 
         public PathData(
-            String path, int spans,
-            int spansBelowParent, int spansAboveParent) {
+                        String path, int spans,
+                        int spansBelowParent, int spansAboveParent) {
 
             this.path = path;
             this.spans = spans;
@@ -96,7 +100,7 @@ public abstract class AnnotationsImpl implements Annotations {
 
     public static ArtifactContainer getRootOfRoots(ArtifactContainer container) {
         ArtifactEntry entry;
-        while ( (entry = container.getRoot().getEntryInEnclosingContainer()) != null ) {
+        while ((entry = container.getRoot().getEntryInEnclosingContainer()) != null) {
             container = entry.getEnclosingContainer();
         }
         return container;
@@ -109,39 +113,38 @@ public abstract class AnnotationsImpl implements Annotations {
      * a specified parent container.
      *
      * @param parentContainer A parent container.
-     * @param container The container for which to obtain the full path.
+     * @param container       The container for which to obtain the full path.
      *
      * @return Path data for the container.
      *
      * @throws UnableToAdaptException Thrown if traversal from the container
-     *     to its parents fails.
+     *                                    to its parents fails.
      */
     public static PathData getPathData(
-        Container parentContainer, Container container)
-        throws UnableToAdaptException {
+                                       Container parentContainer, Container container) throws UnableToAdaptException {
 
         StringBuilder pathBuilder = new StringBuilder();
 
         int spans = 0;
-        boolean foundParent = ( container == parentContainer );
+        boolean foundParent = (container == parentContainer);
 
         int spansBelow = 0;
         int spansAbove = 0;
 
         Entry entry;
-        while ( (entry = container.adapt(Entry.class)) != null ) { // throws UnableToAdaptException
+        while ((entry = container.adapt(Entry.class)) != null) { // throws UnableToAdaptException
             // Each step upwards adds to the count of spans.
             spans++;
 
             // Acquire the next path-to-root.
-            pathBuilder.insert(0,  entry.getPath() );
+            pathBuilder.insert(0, entry.getPath());
             container = entry.getRoot();
 
             // Each step upwards adds to one of the span counts.
             // If the parent hasn't been found, the span is below the
             // parent.  Otherwise, the span is above the parent.
 
-            if ( !foundParent ) {
+            if (!foundParent) {
                 spansBelow++;
             } else {
                 spansAbove++;
@@ -152,14 +155,14 @@ public abstract class AnnotationsImpl implements Annotations {
             // span counts, since the current traversal was used
             // to reach upwards towards the next parent.
 
-            if ( !foundParent ) {
-                foundParent = ( container == parentContainer );
+            if (!foundParent) {
+                foundParent = (container == parentContainer);
             }
         }
 
         String path = pathBuilder.toString();
 
-        if ( foundParent ) {
+        if (foundParent) {
             return new PathData(path, spans, spansBelow, spansAbove);
         } else {
             return new PathData(path, spans);
@@ -167,16 +170,16 @@ public abstract class AnnotationsImpl implements Annotations {
     }
 
     public static String getPath(Container container) throws UnableToAdaptException {
-        if ( tc.isDebugEnabled() ) {
+        if (tc.isDebugEnabled()) {
             Tr.debug(tc, "getPath Initial [ " + container + " ]");
         }
         StringBuilder pathBuilder = new StringBuilder();
 
         Entry entry;
-        while ( (entry = container.adapt(Entry.class)) != null ) { // throws UnableToAdaptException
-            pathBuilder.insert(0,  entry.getPath() );
+        while ((entry = container.adapt(Entry.class)) != null) { // throws UnableToAdaptException
+            pathBuilder.insert(0, entry.getPath());
             container = entry.getRoot();
-            if ( tc.isDebugEnabled() ) {
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "getPath Next [ " + container + " ]");
             }
         }
@@ -189,7 +192,7 @@ public abstract class AnnotationsImpl implements Annotations {
         String useModName = getModName();
         Container modContainer = rootAdaptableContainer;
 
-        if ( tc.isDebugEnabled() ) {
+        if (tc.isDebugEnabled()) {
             Tr.debug(tc, "AppName [ " + useAppName + " ]");
             Tr.debug(tc, "Mod Name [ " + useModName + " ]");
             Tr.debug(tc, "Module Container [ " + modContainer + " ]");
@@ -199,54 +202,54 @@ public abstract class AnnotationsImpl implements Annotations {
         String targetPath;
         try {
             targetPath = getPath(targetContainer);
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             return null; // FFDC
         }
-        if ( tc.isDebugEnabled() ) {
+        if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Target Path [ " + targetPath + " ]");
         }
 
         ArtifactContainer modDelegate;
         try {
             modDelegate = modContainer.adapt(ArtifactContainer.class);
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             return null; // FFDC
         }
-        if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, "Module Delegate [ " + modDelegate + " ]");
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Module Delegate [ " + modDelegate + " ]");
         }
 
         ArtifactContainer targetDelegate;
         try {
             targetDelegate = targetContainer.adapt(ArtifactContainer.class);
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             return null;
         }
-        if ( tc.isDebugEnabled() ) {
+        if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Target Delegate [ " + targetDelegate + " ]");
         }
 
         ArtifactContainer rootOfRootsModDelegate = getRootOfRoots(modDelegate);
         ArtifactContainer rootOfRootsTargetDelegate = getRootOfRoots(targetDelegate);
-        if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, "Module Delegate Root-of-roots [ " + rootOfRootsModDelegate + " ]");
-                Tr.debug(tc, "Target Delegate Root-of-roots[ " + rootOfRootsTargetDelegate + " ]");
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Module Delegate Root-of-roots [ " + rootOfRootsModDelegate + " ]");
+            Tr.debug(tc, "Target Delegate Root-of-roots[ " + rootOfRootsTargetDelegate + " ]");
         }
 
         String targetPathCase;
 
-        if ( targetPath.isEmpty() ||
-             (modDelegate == rootOfRootsModDelegate) ||
-             (rootOfRootsModDelegate == null) || (rootOfRootsTargetDelegate == null) ||
-             (rootOfRootsModDelegate != rootOfRootsTargetDelegate) ) {
+        if (targetPath.isEmpty() ||
+            (modDelegate == rootOfRootsModDelegate) ||
+            (rootOfRootsModDelegate == null) || (rootOfRootsTargetDelegate == null) ||
+            (rootOfRootsModDelegate != rootOfRootsTargetDelegate)) {
 
-            if ( (useModName == null) || useModName.isEmpty() ) {
-                if ( (useAppName == null) || useAppName.isEmpty() ) {
+            if ((useModName == null) || useModName.isEmpty()) {
+                if ((useAppName == null) || useAppName.isEmpty()) {
                     Tr.warning(tc, "Unable to obtain path for container [ " + targetContainer + " ] relative to [ " + modContainer + " ]");
                     return null;
 
                 } else {
-                    if ( targetPath.isEmpty() ) {
+                    if (targetPath.isEmpty()) {
                         targetPath = useAppName;
                         targetPathCase = "App name replaces empty target path";
                     } else {
@@ -256,7 +259,7 @@ public abstract class AnnotationsImpl implements Annotations {
                 }
 
             } else {
-                if ( targetPath.isEmpty() ) {
+                if (targetPath.isEmpty()) {
                     targetPath = useModName;
                     targetPathCase = "Mod name replaces empty target path";
                 } else {
@@ -266,14 +269,14 @@ public abstract class AnnotationsImpl implements Annotations {
                 }
             }
 
-        } else { 
+        } else {
             targetPathCase = "Full local path";
         }
 
         if (tc.isDebugEnabled()) {
             String message = getClass().getSimpleName() + ".getContainerPath:" +
-                " Container [ " + targetContainer + " ]" +
-                " Path [ " + targetPath + " ]: " + targetPathCase;
+                             " Container [ " + targetContainer + " ]" +
+                             " Path [ " + targetPath + " ]: " + targetPathCase;
             Tr.debug(tc, message);
         }
 
@@ -284,24 +287,24 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @SuppressWarnings("unchecked")
     protected static <T> T cacheGet(
-        OverlayContainer container,
-        String targetPath, Class<T> targetClass) {
+                                    OverlayContainer container,
+                                    String targetPath, Class<T> targetClass) {
 
         Object retrievedInfo = container.getFromNonPersistentCache(targetPath, targetClass);
         return (T) retrievedInfo;
     }
 
     protected static <T> void cachePut(
-        OverlayContainer container,
-        String targetPath, Class<T> targetClass,
-        T targetObject) {
+                                       OverlayContainer container,
+                                       String targetPath, Class<T> targetClass,
+                                       T targetObject) {
 
         container.addToNonPersistentCache(targetPath, targetClass, targetObject);
     }
 
     protected static <T> void cacheRemove(
-        OverlayContainer container,
-        String targetPath, Class<T> targetClass) {
+                                          OverlayContainer container,
+                                          String targetPath, Class<T> targetClass) {
 
         container.removeFromNonPersistentCache(targetPath, targetClass);
     }
@@ -314,26 +317,26 @@ public abstract class AnnotationsImpl implements Annotations {
      * The adapter provides access to service entities, most importantly, the
      * annotation factories.
      *
-     * @param annotationsAdapter The adapter which is creating the annotations data.
-     * @param rootContainer The root adaptable container.  Currently always the same
-     *     as 'rootAdaptableContainer'.
-     * @param rootOverlayContainer The root overlay container.
-     * @param rootDelegateContainer The delegate of the root adaptable container.
-     * @param rootAdaptableContainer The root adaptable container.  Currently, always
-     *     the same as 'rootContainer'.
-     * @param appName The name of the enclosing application.  Null if there is no enclosing
-     *     application.
-     * @param isUnnamedMod Set that the module is unnamed.  This prevents default module
-     *     naming from occurring. 
-     * @param modName The name of the enclosing module.  Null if there is no enclosing module.
-     * @param modCatName A category name for the module.  Used to enable multiple results for
-     *     the same module.
+     * @param annotationsAdapter     The adapter which is creating the annotations data.
+     * @param rootContainer          The root adaptable container. Currently always the same
+     *                                   as 'rootAdaptableContainer'.
+     * @param rootOverlayContainer   The root overlay container.
+     * @param rootDelegateContainer  The delegate of the root adaptable container.
+     * @param rootAdaptableContainer The root adaptable container. Currently, always
+     *                                   the same as 'rootContainer'.
+     * @param appName                The name of the enclosing application. Null if there is no enclosing
+     *                                   application.
+     * @param isUnnamedMod           Set that the module is unnamed. This prevents default module
+     *                                   naming from occurring.
+     * @param modName                The name of the enclosing module. Null if there is no enclosing module.
+     * @param modCatName             A category name for the module. Used to enable multiple results for
+     *                                   the same module.
      */
     public AnnotationsImpl(
-        AnnotationsAdapterImpl annotationsAdapter,
-        Container rootContainer, OverlayContainer rootOverlayContainer,
-        ArtifactContainer rootDelegateContainer, Container rootAdaptableContainer,
-        String appName, boolean isUnnamedMod, String modName, String modCatName) {
+                           AnnotationsAdapterImpl annotationsAdapter,
+                           Container rootContainer, OverlayContainer rootOverlayContainer,
+                           ArtifactContainer rootDelegateContainer, Container rootAdaptableContainer,
+                           String appName, boolean isUnnamedMod, String modName, String modCatName) {
 
         // (new Throwable("Annotations (cache)")).printStackTrace(System.out);
 
@@ -361,10 +364,10 @@ public abstract class AnnotationsImpl implements Annotations {
 
         //
 
-        if ( tc.isDebugEnabled() ) {
+        if (tc.isDebugEnabled()) {
             String prefix = getClass().getSimpleName() + ".<init>: ";
             Tr.debug(tc, prefix + "Root container [ " + rootContainer + " ]");
-            for ( URL url : rootContainer.getURLs() ) {
+            for (URL url : rootContainer.getURLs()) {
                 Tr.debug(tc, prefix + "  URL [ " + url + " ]");
             }
             Tr.debug(tc, prefix + "Application [ " + appName + " ]");
@@ -381,24 +384,24 @@ public abstract class AnnotationsImpl implements Annotations {
         try {
             return annotationsAdapter.getAnnoCacheService();
             // throws UnableToAdaptException
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             return null; // FFDC
         }
     }
 
     public ClassSource_Factory getClassSourceFactory() {
         AnnotationCacheService_Service useService = getAnnoCacheService();
-        return ( (useService == null) ? null : useService.getClassSourceFactory() );
+        return ((useService == null) ? null : useService.getClassSourceFactory());
     }
 
     public AnnotationTargets_Factory getTargetsFactory() {
         AnnotationCacheService_Service useService = getAnnoCacheService();
-        return ( (useService == null) ? null : useService.getAnnotationTargetsFactory() );
+        return ((useService == null) ? null : useService.getAnnotationTargetsFactory());
     }
 
     public InfoStoreFactory getInfoStoreFactory() {
         AnnotationCacheService_Service useService = getAnnoCacheService();
-        return ( (useService == null) ? null : useService.getInfoStoreFactory() );
+        return ((useService == null) ? null : useService.getInfoStoreFactory());
     }
 
     //
@@ -427,11 +430,11 @@ public abstract class AnnotationsImpl implements Annotations {
     }
 
     protected <T> void cachePut(Class<T> targetClass, T targetObject) {
-        cachePut( getRootOverlayContainer(), getContainerPath(), targetClass, targetObject);
+        cachePut(getRootOverlayContainer(), getContainerPath(), targetClass, targetObject);
     }
 
     protected <T> void cacheRemove(Class<T> targetClass) {
-        cacheRemove( getRootOverlayContainer(), getContainerPath(), targetClass);
+        cacheRemove(getRootOverlayContainer(), getContainerPath(), targetClass);
     }
 
     //
@@ -448,7 +451,7 @@ public abstract class AnnotationsImpl implements Annotations {
         return getContainer().getName();
     }
 
-    @Override 
+    @Override
     public String getContainerPath() {
         return getContainer().getPath();
     }
@@ -469,13 +472,13 @@ public abstract class AnnotationsImpl implements Annotations {
 
     protected ClassSource_Options createOptions() {
         ClassSource_Factory classSourceFactory = getClassSourceFactory();
-        if ( classSourceFactory == null ) {
+        if (classSourceFactory == null) {
             return null;
         }
 
         ClassSource_Options options = classSourceFactory.createOptions();
-        if ( !options.getIsSetUseJandex() ) {
-            options.setUseJandex( getUseJandex() );
+        if (!options.getIsSetUseJandex()) {
+            options.setUseJandex(getUseJandex());
         } else {
             // TODO: *Maybe*, NLS enable this.
             //       The override is an unpublished system property.  This message should
@@ -510,22 +513,22 @@ public abstract class AnnotationsImpl implements Annotations {
         this.isUnnamedMod = isUnnamedMod;
     }
 
-    @Override 
-    public boolean getIsUnnamedMod() { 
+    @Override
+    public boolean getIsUnnamedMod() {
         return isUnnamedMod;
     }
 
     protected void forceModName() throws UnableToAdaptException {
-        if ( getIsUnnamedMod() ) {
+        if (getIsUnnamedMod()) {
             return;
         }
 
-        if ( (modName == null) || modName.isEmpty() ) {
+        if ((modName == null) || modName.isEmpty()) {
             String modNameCase;
-            String useModName = getPath( getContainer() ); // 'getPath' throws UnableToAdaptException
-            if ( (useModName == null) || useModName.isEmpty() ) {
+            String useModName = getPath(getContainer()); // 'getPath' throws UnableToAdaptException
+            if ((useModName == null) || useModName.isEmpty()) {
                 useModName = getAppName();
-                if ( (useModName == null) || useModName.isEmpty() ) {
+                if ((useModName == null) || useModName.isEmpty()) {
                     useModName = null;
                     modNameCase = "unavailable";
                     return;
@@ -537,11 +540,11 @@ public abstract class AnnotationsImpl implements Annotations {
             }
             modName = useModName;
 
-            if ( tc.isDebugEnabled() ) {
+            if (tc.isDebugEnabled()) {
                 String message = getClass().getSimpleName() + ".forceModName:" +
-                    " App [ " + getAppName() + " ]" +
-                    " Container [ " + getContainer() + " ]" +
-                    " Mod [ " + modName + " ] (" + modNameCase + ")";
+                                 " App [ " + getAppName() + " ]" +
+                                 " Container [ " + getContainer() + " ]" +
+                                 " Mod [ " + modName + " ] (" + modNameCase + ")";
                 Tr.debug(tc, message);
             }
         }
@@ -578,6 +581,7 @@ public abstract class AnnotationsImpl implements Annotations {
     public class ClassSourceLock {
         // EMPTY
     }
+
     private final ClassSourceLock classSourceLock = new ClassSourceLock();
 
     protected ClassLoader classLoader;
@@ -592,8 +596,8 @@ public abstract class AnnotationsImpl implements Annotations {
         ClassSource_MappedContainer containerClassSource;
         try {
             containerClassSource = getClassSourceFactory().createContainerClassSource(
-                rootClassSource, path, container, entryPrefix); // throws ClassSource_Exception
-        } catch ( ClassSource_Exception e ) {
+                                                                                      rootClassSource, path, container, entryPrefix); // throws ClassSource_Exception
+        } catch (ClassSource_Exception e) {
             return false; // FFDC
         }
         rootClassSource.addClassSource(containerClassSource);
@@ -608,8 +612,8 @@ public abstract class AnnotationsImpl implements Annotations {
         ClassSource_MappedContainer containerClassSource;
         try {
             containerClassSource = getClassSourceFactory().createContainerClassSource(
-                rootClassSource, path, container, entryPrefix); // throws ClassSource_Exception
-        } catch ( ClassSource_Exception e ) {
+                                                                                      rootClassSource, path, container, entryPrefix); // throws ClassSource_Exception
+        } catch (ClassSource_Exception e) {
             return false; // FFDC
         }
         rootClassSource.addClassSource(containerClassSource, scanPolicy);
@@ -618,16 +622,16 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @Override
     public ClassLoader getClassLoader() {
-        synchronized ( classSourceLock ) {
+        synchronized (classSourceLock) {
             return classLoader;
         }
     }
 
     @Override
     public void setClassLoader(ClassLoader classLoader) {
-        synchronized ( classSourceLock ) { 
-            if ( this.classLoader != null ) {
-                if ( this.classLoader != classLoader ) {
+        synchronized (classSourceLock) {
+            if (this.classLoader != null) {
+                if (this.classLoader != classLoader) {
                     throw new IllegalArgumentException("Duplicate class loader [ " + classLoader + " ]; previous [ " + this.classLoader + " ]");
                 } else {
                     return; // Nothing to do.
@@ -643,8 +647,8 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @Override
     public ClassSource_Aggregate releaseClassSource() {
-        synchronized ( classSourceLock ) { 
-            if ( rootClassSource == null ) {
+        synchronized (classSourceLock) {
+            if (rootClassSource == null) {
                 return null;
             }
 
@@ -657,15 +661,14 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @Override
     public ClassSource_Aggregate getClassSource() {
-        synchronized( classSourceLock ) {
-            if ( rootClassSource == null ) {
+        synchronized (classSourceLock) {
+            if (rootClassSource == null) {
                 rootClassSource = createRootClassSource();
-                if ( rootClassSource == null ) {
-                    String message =
-                        "Null class source created for " +
-                        " app [ " + appName + " ]" +
-                        " module [ " + modName + " ]" +
-                        " module category [ " + modCatName + " ]";
+                if (rootClassSource == null) {
+                    String message = "Null class source created for " +
+                                     " app [ " + appName + " ]" +
+                                     " module [ " + modName + " ]" +
+                                     " module category [ " + modCatName + " ]";
                     Tr.warning(tc, getClass().getName() + ": " + message);
                 }
                 addInternalToClassSource();
@@ -677,13 +680,13 @@ public abstract class AnnotationsImpl implements Annotations {
 
     protected ClassSource_Aggregate createRootClassSource() {
         ClassSource_Factory classSourceFactory = getClassSourceFactory();
-        if ( classSourceFactory == null ) {
+        if (classSourceFactory == null) {
             return null;
         }
 
         try {
             forceModName(); // throws UnableToAdaptException
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             // FFDC
             return null;
         }
@@ -694,24 +697,25 @@ public abstract class AnnotationsImpl implements Annotations {
 
         ClassSource_Options options = createOptions();
 
-        if ( tc.isDebugEnabled() ) {
+        if (tc.isDebugEnabled()) {
             String prefix = getClass().getSimpleName() + ".createRootClassSource:";
             String message1 = prefix +
-                " Class source " +
-                " app [ " + useAppName + " ]" +
-                " module [ " + useModName + " ]" +
-                " module category [ " + useModCatName + " ]";
+                              " Class source " +
+                              " app [ " + useAppName + " ]" +
+                              " module [ " + useModName + " ]" +
+                              " module category [ " + useModCatName + " ]";
             String message2 = prefix +
-                " Scan threads [ " + options.getScanThreads() + " ]";
+                              " Scan threads [ " + options.getScanThreads() + " ]";
             Tr.debug(tc, message1);
             Tr.debug(tc, message2);
         }
 
         try {
+            AppKey appKey = keyServiceServiceCaller.run((AnnotationService_KeyService ks) -> ks.getKeyForApp(useAppName)).get();
             return classSourceFactory.createAggregateClassSource(
-                useAppName, useModName, useModCatName,
-                options); // throws ClassSource_Exception
-        } catch ( ClassSource_Exception e ) {
+                                                                 useAppName, appKey, useModName, useModCatName,
+                                                                 options); // throws ClassSource_Exception
+        } catch (ClassSource_Exception e) {
             return null; // FFDC
         }
     }
@@ -719,22 +723,22 @@ public abstract class AnnotationsImpl implements Annotations {
     protected abstract void addInternalToClassSource();
 
     protected void addExternalToClassSource() {
-        if ( rootClassSource == null ) {
+        if (rootClassSource == null) {
             return; // Nothing yet to do.
-        } else if ( classLoader == null ) {
+        } else if (classLoader == null) {
             return; // Nothing yet to do.
         }
 
         ClassSource_Factory classSourceFactory = getClassSourceFactory();
-        if ( classSourceFactory == null ) {
+        if (classSourceFactory == null) {
             return;
         }
 
         ClassSource_ClassLoader classLoaderClassSource;
         try {
             classLoaderClassSource = classSourceFactory.createClassLoaderClassSource(
-                rootClassSource, "classloader", classLoader); // throws ClassSource_Exception
-        } catch ( ClassSource_Exception e ) {
+                                                                                     rootClassSource, "classloader", classLoader); // throws ClassSource_Exception
+        } catch (ClassSource_Exception e) {
             return; // FFDC
         }
         rootClassSource.addClassLoaderClassSource(classLoaderClassSource);
@@ -796,6 +800,7 @@ public abstract class AnnotationsImpl implements Annotations {
     public class TargetsLock {
         // EMPTY
     }
+
     private final TargetsLock targetsLock = new TargetsLock();
 
     private boolean isSetTargets;
@@ -804,8 +809,8 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     public AnnotationTargets_Targets getTargets() {
         boolean checkWrongPackage = false;
-        synchronized( targetsLock ) {
-            if ( !isSetTargets ) {
+        synchronized (targetsLock) {
+            if (!isSetTargets) {
                 isSetTargets = true;
                 checkWrongPackage = true;
                 annotationTargets = createTargets();
@@ -830,8 +835,8 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @Override
     public AnnotationTargets_Targets releaseTargets() {
-        synchronized ( targetsLock ) {
-            if ( !isSetTargets ) {
+        synchronized (targetsLock) {
+            if (!isSetTargets) {
                 return null;
             }
 
@@ -848,40 +853,37 @@ public abstract class AnnotationsImpl implements Annotations {
 
     protected AnnotationTargets_Targets createTargets() {
         ClassSource_Aggregate useClassSource = getClassSource();
-        if ( useClassSource == null ) {
-            String message =
-                "Null class source creating targets for " +
-                " app [ " + appName + " ]" +
-                " module [ " + modName + " ]" +
-                " module category [ " + modCatName + " ]";
+        if (useClassSource == null) {
+            String message = "Null class source creating targets for " +
+                             " app [ " + appName + " ]" +
+                             " module [ " + modName + " ]" +
+                             " module category [ " + modCatName + " ]";
             Tr.warning(tc, getClass().getName() + ": " + message);
             return null;
         }
 
         AnnotationTargets_Factory targetsFactory = getTargetsFactory();
-        if ( targetsFactory == null ) {
-            String message =
-                "Null factory creating targets for " +
-                " app [ " + appName + " ]" +
-                " module [ " + modName + " ]" +
-                " module category [ " + modCatName + " ]";
+        if (targetsFactory == null) {
+            String message = "Null factory creating targets for " +
+                             " app [ " + appName + " ]" +
+                             " module [ " + modName + " ]" +
+                             " module category [ " + modCatName + " ]";
             Tr.warning(tc, getClass().getName() + ": " + message);
             return null;
         }
 
-        if ( classLoader == null ) {
-            String message =
-                "Null class loader creating targets for " +
-                " app [ " + appName + " ]" +
-                " module [ " + modName + " ]" +
-                " module category [ " + modCatName + " ]";
+        if (classLoader == null) {
+            String message = "Null class loader creating targets for " +
+                             " app [ " + appName + " ]" +
+                             " module [ " + modName + " ]" +
+                             " module category [ " + modCatName + " ]";
             Tr.debug(tc, getClass().getName() + ": " + message);
         }
 
         AnnotationTargets_Targets useTargets;
         try {
-            useTargets = targetsFactory.createTargets( getIsLightweight() ); // throws AnnotationTargets_Exception
-        } catch ( AnnotationTargets_Exception e ) {
+            useTargets = targetsFactory.createTargets(getIsLightweight()); // throws AnnotationTargets_Exception
+        } catch (AnnotationTargets_Exception e) {
             return null; // FFDC
         }
 
@@ -900,6 +902,7 @@ public abstract class AnnotationsImpl implements Annotations {
     public class InfoStoreLock {
         // EMPTY
     }
+
     private final InfoStoreLock infoStoreLock = new InfoStoreLock();
 
     private boolean isSetInfoStore;
@@ -907,8 +910,8 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @Override
     public InfoStore releaseInfoStore() {
-        synchronized ( infoStoreLock ) {
-            if ( !isSetInfoStore ) {
+        synchronized (infoStoreLock) {
+            if (!isSetInfoStore) {
                 return null;
             }
 
@@ -923,9 +926,10 @@ public abstract class AnnotationsImpl implements Annotations {
         }
     }
 
+    @Override
     public InfoStore getInfoStore() {
-        synchronized( infoStoreLock ) {
-            if ( !isSetInfoStore ) {
+        synchronized (infoStoreLock) {
+            if (!isSetInfoStore) {
                 isSetInfoStore = true;
                 infoStore = createInfoStore();
             }
@@ -936,18 +940,18 @@ public abstract class AnnotationsImpl implements Annotations {
 
     protected InfoStore createInfoStore() {
         ClassSource_Aggregate useClassSource = getClassSource();
-        if ( useClassSource == null ) {
+        if (useClassSource == null) {
             return null;
         }
 
         InfoStoreFactory infoStoreFactory = getInfoStoreFactory();
-        if ( infoStoreFactory == null ) {
+        if (infoStoreFactory == null) {
             return null;
         }
 
         try {
             return infoStoreFactory.createInfoStore(useClassSource);
-        } catch ( InfoStoreException e ) {
+        } catch (InfoStoreException e) {
             return null; // FFDC
         }
     }
@@ -957,7 +961,7 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     public boolean isIncludedClass(String className) {
         AnnotationTargets_Targets useTargets = getTargets();
-        if ( useTargets == null ) {
+        if (useTargets == null) {
             return false;
         } else {
             return useTargets.isSeedClassName(className);
@@ -967,7 +971,7 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     public boolean isPartialClass(String className) {
         AnnotationTargets_Targets useTargets = getTargets();
-        if ( useTargets == null ) {
+        if (useTargets == null) {
             return false;
         } else {
             return useTargets.isPartialClassName(className);
@@ -977,7 +981,7 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     public boolean isExcludedClass(String className) {
         AnnotationTargets_Targets useTargets = getTargets();
-        if ( useTargets == null ) {
+        if (useTargets == null) {
             return false;
         } else {
             return useTargets.isExcludedClassName(className);
@@ -987,7 +991,7 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     public boolean isExternalClass(String className) {
         AnnotationTargets_Targets useTargets = getTargets();
-        if ( useTargets == null ) {
+        if (useTargets == null) {
             return false;
         } else {
             return useTargets.isExternalClassName(className);
@@ -1005,7 +1009,7 @@ public abstract class AnnotationsImpl implements Annotations {
     public void openInfoStore() {
         try {
             getInfoStore().open();
-        } catch ( InfoStoreException e ) {
+        } catch (InfoStoreException e) {
             // FFDC
         }
     }
@@ -1014,7 +1018,7 @@ public abstract class AnnotationsImpl implements Annotations {
     public void closeInfoStore() {
         try {
             getInfoStore().close();
-        } catch ( InfoStoreException e ) {
+        } catch (InfoStoreException e) {
             // FFDC
         }
     }
@@ -1024,12 +1028,12 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     public SpecificAnnotations getSpecificAnnotations(Set<String> specificClassNames) throws UnableToAdaptException {
         ClassSource_Aggregate useClassSource = getClassSource();
-        if ( useClassSource == null ) {
+        if (useClassSource == null) {
             return null;
         }
 
         AnnotationTargets_Factory useTargetsFactory = getTargetsFactory();
-        if ( useTargetsFactory == null ) {
+        if (useTargetsFactory == null) {
             return null;
         }
 
@@ -1038,15 +1042,15 @@ public abstract class AnnotationsImpl implements Annotations {
             specificTargets = useTargetsFactory.createTargets();
         } catch (AnnotationTargets_Exception e) {
             String msg = Tr.formatMessage(tc, "failed.to.obtain.module.annotation.targets.CWWKM0473E",
-                "Failed to obtain annotation targets", e);
+                                          "Failed to obtain annotation targets", e);
             throw new UnableToAdaptException(msg);
         }
 
         try {
             specificTargets.scan(useClassSource, specificClassNames);
-        } catch ( AnnotationTargets_Exception e ) {
+        } catch (AnnotationTargets_Exception e) {
             String msg = Tr.formatMessage(tc, "failed.to.obtain.module.annotation.targets.CWWKM0474E",
-                "Failed to obtain annotation targets", specificClassNames, e);
+                                          "Failed to obtain annotation targets", specificClassNames, e);
             throw new UnableToAdaptException(msg);
         }
 
@@ -1058,16 +1062,16 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     public boolean hasSpecifiedAnnotations(Collection<String> annotationClassNames) {
         AnnotationTargets_Targets useTargets = getTargets();
-        if ( useTargets == null ) {
+        if (useTargets == null) {
             return false;
         }
 
         // d95160: The prior implementation obtained classes from the SEED location.
         //         That implementation is not changed by d95160.
 
-        for ( String annotationClassName : annotationClassNames ) {
+        for (String annotationClassName : annotationClassNames) {
             Set<String> annotatedClassNames = useTargets.getAnnotatedClasses(annotationClassName);
-            if ( !annotatedClassNames.isEmpty() ) {
+            if (!annotatedClassNames.isEmpty()) {
                 return true;
             }
         }
@@ -1077,22 +1081,22 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     @Trivial
     public Set<String> getClassesWithAnnotation(String annotationClassName) {
-        return getClassesWithAnnotations( Collections.singletonList(annotationClassName) );
+        return getClassesWithAnnotations(Collections.singletonList(annotationClassName));
     }
 
     @Override
     public Set<String> getClassesWithAnnotations(Collection<String> annotationClassNames) {
         AnnotationTargets_Targets useTargets = getTargets();
-        if ( useTargets == null ) {
+        if (useTargets == null) {
             return Collections.emptySet();
         }
 
         Set<String> annotatedClassNames = null;
 
-        for ( String annotationClassName : annotationClassNames ) {
+        for (String annotationClassName : annotationClassNames) {
             Set<String> nextClassNames = useTargets.getAnnotatedClasses(annotationClassName);
-            if ( !nextClassNames.isEmpty() ) {
-                if ( annotatedClassNames == null ) {
+            if (!nextClassNames.isEmpty()) {
+                if (annotatedClassNames == null) {
                     annotatedClassNames = new HashSet<String>(nextClassNames);
                 } else {
                     annotatedClassNames.addAll(nextClassNames);
@@ -1100,7 +1104,7 @@ public abstract class AnnotationsImpl implements Annotations {
             }
         }
 
-        if ( annotatedClassNames == null ) {
+        if (annotatedClassNames == null) {
             return Collections.emptySet();
         } else {
             return annotatedClassNames;
@@ -1114,16 +1118,15 @@ public abstract class AnnotationsImpl implements Annotations {
         // Tr.info(tc, prefix + " ENTER Annotations [ " + annotationClassNames + " ]");
 
         AnnotationTargets_Targets useTargets = getTargets();
-        if ( useTargets == null ) {
+        if (useTargets == null) {
             // Tr.info(tc, prefix + "RETURN [ ]: Null targets");
             return Collections.emptySet();
         }
 
         Set<String> allAnnotatedClassNames = new HashSet<String>();
 
-        for ( String annotationClassName : annotationClassNames ) {
-            Set<String> annotatedClassNames =
-                useTargets.getAllInheritedAnnotatedClasses(annotationClassName);
+        for (String annotationClassName : annotationClassNames) {
+            Set<String> annotatedClassNames = useTargets.getAllInheritedAnnotatedClasses(annotationClassName);
             // Tr.info(tc, prefix + "Annotation [ " + annotationClassName + " ] [ " + annotatedClassNames + " ]");
             allAnnotatedClassNames.addAll(annotatedClassNames);
         }

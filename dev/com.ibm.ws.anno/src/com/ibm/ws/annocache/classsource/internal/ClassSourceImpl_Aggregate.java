@@ -16,8 +16,6 @@ package com.ibm.ws.annocache.classsource.internal;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -26,7 +24,6 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,17 +32,14 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Logging;
-import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts.ResultField;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
-import com.ibm.wsspi.anno.service.AnnotationService_KeyService;
-import com.ibm.wsspi.anno.service.AnnotationService_KeyService.AppKey;
 import com.ibm.wsspi.annocache.classsource.ClassSource;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.classsource.ClassSource_ClassLoader;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
-import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Options;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 
@@ -70,9 +64,6 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
     public static final String CLASS_NAME = ClassSourceImpl_Aggregate.class.getSimpleName();
 
     // Logging ...
-    
-    private static final ServiceCaller<AnnotationService_KeyService> keyServiceServiceCaller = new ServiceCaller<AnnotationService_KeyService>(ClassSourceImpl_Aggregate.class,
-                    AnnotationService_KeyService.class);
 
     protected final String hashText;
 
@@ -91,11 +82,11 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
     //
     
     // Top O' the world
-
+    
     public ClassSourceImpl_Aggregate(
         ClassSourceImpl_Factory factory,
         Util_InternMap internMap,
-        String applicationName, String moduleName, String moduleCategoryName,
+        String applicationName, AppKey appKey, String moduleName, String moduleCategoryName,
         ClassSource_Options options) {
 
         String methodName = "<init>";
@@ -109,18 +100,7 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
         this.applicationName = applicationName;
         this.moduleName = moduleName;
         this.moduleCategoryName = moduleCategoryName;
-
-        Properties props = System.getProperties();
-        String inUnitTest = props.getProperty("running.unit.test");
-        
-        if (inUnitTest != null && inUnitTest.equals("true")) {
-            this.applicationKey = new SoftReference<AppKey>(new AppKey(applicationName));
-        } else if (applicationName != ClassSource_Factory.UNNAMED_APP) {
-            AppKey appKey =  keyServiceServiceCaller.run((AnnotationService_KeyService ks) -> ks.getKeyForApp(applicationName)).get();
-            this.applicationKey = new  WeakReference<AppKey>(appKey);
-        } else {
-            this.applicationKey = new  WeakReference<AppKey>(null);
-        }
+        this.applicationKey = new WeakReference<AppKey>(appKey);
 
         //
 
@@ -202,7 +182,7 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
     protected final String applicationName;
     protected final String moduleName;
     protected final String moduleCategoryName;
-    protected final Reference<AppKey> applicationKey;
+    protected final WeakReference<AppKey> applicationKey;
 
     /**
      * <p>Answer the name of the application of this class source.</p>

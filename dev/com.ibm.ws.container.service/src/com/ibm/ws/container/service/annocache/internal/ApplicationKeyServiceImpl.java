@@ -12,7 +12,7 @@ import com.ibm.ws.container.service.metadata.ApplicationMetaDataListener;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
-import com.ibm.wsspi.anno.service.AnnotationService_KeyService;
+import com.ibm.wsspi.anno.service.AppKey;
 
 @Component
 public class ApplicationKeyServiceImpl implements AnnotationService_KeyService, ApplicationMetaDataListener {
@@ -20,13 +20,14 @@ public class ApplicationKeyServiceImpl implements AnnotationService_KeyService, 
     static final TraceComponent tc = Tr.register(ApplicationKeyServiceImpl.class);
     private final boolean isDebug = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
 
+    private final AppKey nullKey = new AppKey(null);
     private final Map<String, AppKey> keys = new ConcurrentHashMap<String, AppKey>();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public AnnotationService_KeyService.AppKey getKeyForApp(String appName) {
+    public com.ibm.wsspi.anno.service.AppKey getKeyForApp(String appName) {
 
         // appName will come from the input to
         // com.ibm.ws.container.service.annocache.internal.ClassSourceImpl_Aggregate.<init>
@@ -55,7 +56,10 @@ public class ApplicationKeyServiceImpl implements AnnotationService_KeyService, 
             Tr.debug(tc, "A key for for {0}, was not found. It will be created.");
         }
 
-        return keys.computeIfAbsent(appName, AnnotationService_KeyService.AppKey::new);
+        if (appName == null) {
+            return nullKey;
+        }
+        return keys.computeIfAbsent(appName, AppKey::new);
     }
 
     @Override

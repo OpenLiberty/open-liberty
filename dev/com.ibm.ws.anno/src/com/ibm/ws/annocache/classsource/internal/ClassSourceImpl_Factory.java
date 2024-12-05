@@ -13,6 +13,8 @@
 
 package com.ibm.ws.annocache.classsource.internal;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +41,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource_MappedContainer;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedDirectory;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedJar;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedSimple.SimpleClassProvider;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.annocache.classsource.ClassSource_ClassLoader;
@@ -46,7 +49,6 @@ import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.classsource.ClassSource_MappedSimple;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Options;
-import com.ibm.wsspi.annocache.service.AnnotationCacheService_Service;
 import com.ibm.wsspi.annocache.util.Util_Factory;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 import com.ibm.wsspi.annocache.util.Util_RelativePath;
@@ -166,13 +168,13 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     @Override
     @Trivial
     public ClassSourceImpl_Aggregate createAggregateClassSource(
-        String appName, String modName, String modCategoryName,
+        String appName, AppKey appKey, String modName, String modCategoryName,
         ClassSource_Options options) throws ClassSource_Exception {
 
         Util_InternMap classInternMap =
             getUtilFactory().createInternMap(Util_InternMap.ValueType.VT_CLASS_NAME, "classes and packages");
 
-        return createAggregateClassSource(classInternMap, appName, modName, modCategoryName, options);
+        return createAggregateClassSource(classInternMap, appName, appKey, modName, modCategoryName, options);
         // throws ClassSource_Exception
     }
 
@@ -283,10 +285,10 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     @Override
     public ClassSourceImpl_Aggregate createAggregateClassSource(
         Util_InternMap internMap,
-        String appName, String modName, String modCategoryName,
+        String appName, AppKey appKey, String modName, String modCategoryName,
         ClassSource_Options options) throws ClassSource_Exception {
 
-        return new ClassSourceImpl_Aggregate(this, internMap, appName, modName, modCategoryName, options);
+        return new ClassSourceImpl_Aggregate(this, internMap, appName, appKey, modName, modCategoryName, options);
     }
 
     @Override
@@ -523,5 +525,28 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     @Override
     public ClassSource_Specification_Container_WAR newWARContainerSpecification() {
         return null;
+    }
+    
+    //Leaky keys will only be used if someone calls the old deprecated interface that does not take an AppKey as an argument.
+    //No IBM code does so. And if an external SPI user does so, I think it is better to avoid the risk that their code depended 
+    //on the WeakHashMap we uses these app keys for never being cleaned out. Then avoid a memory leak that is relatively minor. 
+    @Deprecated
+    private static final Map<String, AppKey> MEMORY_LEAKY_KEYS = new HashMap<String,AppKey>();
+
+    @Override
+    @Deprecated
+    public ClassSource_Aggregate createAggregateClassSource(String appName, String modName, String modNameCategory, ClassSource_Options options) throws ClassSource_Exception {
+        MEMORY_LEAKY_KEYS.computeIfAbsent(appName, AppKey::new);
+        return createAggregateClassSource(appName, MEMORY_LEAKY_KEYS.get(appName), modName, 
+                                                         modNameCategory, options);
+    }
+
+    @Override
+    @Deprecated
+    public ClassSource_Aggregate createAggregateClassSource(Util_InternMap internMap, String appName, String modName, String modNameCategory,
+                                                            ClassSource_Options options) throws ClassSource_Exception {
+        MEMORY_LEAKY_KEYS.computeIfAbsent(appName, AppKey::new);
+        return  createAggregateClassSource(internMap, appName, MEMORY_LEAKY_KEYS.get(appName), modName,
+                                           modNameCategory, options);
     }
 }

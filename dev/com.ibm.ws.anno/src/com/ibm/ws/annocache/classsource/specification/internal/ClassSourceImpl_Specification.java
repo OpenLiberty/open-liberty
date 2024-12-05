@@ -12,16 +12,12 @@
  *******************************************************************************/
 package com.ibm.ws.annocache.classsource.specification.internal;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-
-import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
-import com.ibm.wsspi.annocache.classsource.ClassSource_Options;
-import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
-import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
-
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Aggregate;
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_ClassLoader;
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Factory;
@@ -29,6 +25,11 @@ import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_MappedDirectory
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_MappedJar;
 import com.ibm.ws.annocache.classsource.specification.ClassSource_Specification;
 import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Logging;
+import com.ibm.wsspi.anno.service.AppKey;
+import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
+import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
+import com.ibm.wsspi.annocache.classsource.ClassSource_Options;
 
 
 public abstract class ClassSourceImpl_Specification implements ClassSource_Specification {
@@ -128,13 +129,17 @@ public abstract class ClassSourceImpl_Specification implements ClassSource_Speci
     }
 
     //
-
+    
+    //This is only called from a unit test where a memory leak is no issue but an early GC could cause a test fail
+    private static final Map<String, AppKey> UNIT_TEST_MEMORY_LEAKY_KEYS = new HashMap<String,AppKey>();
+    
     @Override
     public ClassSourceImpl_Aggregate createEmptyRootClassSource(ClassSource_Options classSourceOptions)
         throws ClassSource_Exception {
 
-        return getFactory().createAggregateClassSource(
-        	getAppName(), getModName(), getModCategoryName(),
+        UNIT_TEST_MEMORY_LEAKY_KEYS.computeIfAbsent(appName, AppKey::new);
+        return getFactory().createAggregateClassSource(                
+        	getAppName(), UNIT_TEST_MEMORY_LEAKY_KEYS.get(appName), getModName(), getModCategoryName(),
         	classSourceOptions );
     }
 

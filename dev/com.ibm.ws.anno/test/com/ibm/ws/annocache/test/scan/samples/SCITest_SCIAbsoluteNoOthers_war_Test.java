@@ -16,6 +16,7 @@ package com.ibm.ws.annocache.test.scan.samples;
 import org.junit.Test;
 
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Aggregate;
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Factory;
@@ -31,6 +32,9 @@ public class SCITest_SCIAbsoluteNoOthers_war_Test extends Test_Base {
     public static final String WAR_NAME = SCITest_Data.WAR_NAME_ABSOLUTE_NO_OTHERS;
     public static final String WAR_SIMPLE_NAME = SCITest_Data.WAR_SIMPLE_NAME_ABSOLUTE_NO_OTHERS;    
 
+    //Store a reference so WeakReferences won't be garbage collected during a test
+    private static AppKey appKey = new AppKey(EAR_SIMPLE_NAME);
+    
     @Override
     public ClassSourceImpl_Aggregate createClassSource(
     	ClassSourceImpl_Factory factory,
@@ -39,7 +43,7 @@ public class SCITest_SCIAbsoluteNoOthers_war_Test extends Test_Base {
         String warPath = TestLocalization.putIntoData(EAR_NAME + '/', WAR_NAME) + '/';
 
         ClassSourceImpl_Aggregate rootClassSource =
-            factory.createAggregateClassSource(EAR_SIMPLE_NAME, WAR_SIMPLE_NAME, JAVAEE_MOD_CATEGORY_NAME, options);
+            factory.createAggregateClassSource(EAR_SIMPLE_NAME, appKey, WAR_SIMPLE_NAME, JAVAEE_MOD_CATEGORY_NAME, options);
 
         addClassesDirectoryClassSource(rootClassSource, warPath);
 

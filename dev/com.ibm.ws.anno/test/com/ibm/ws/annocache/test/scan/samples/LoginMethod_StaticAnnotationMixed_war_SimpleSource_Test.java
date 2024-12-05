@@ -22,22 +22,25 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
-
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Aggregate;
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_MappedSimple;
+import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Options;
 import com.ibm.ws.annocache.test.scan.TestOptions_SuiteCase;
 import com.ibm.ws.annocache.test.scan.Test_Base;
 import com.ibm.ws.annocache.test.utils.TestLocalization;
-import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Options;
+import com.ibm.wsspi.anno.service.AppKey;
+import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
 
 public class LoginMethod_StaticAnnotationMixed_war_SimpleSource_Test extends Test_Base {
     public static final String EAR_NAME = LoginMethod_ear_Data.EAR_NAME;
     public static final String EAR_SIMPLE_NAME = LoginMethod_ear_Data.EAR_SIMPLE_NAME;
 
     public static final String WAR_NAME = LoginMethod_ear_Data.WAR_NAME_STATIC_ANNOTATION_MIXED;
-    public static final String WAR_SIMPLE_NAME = LoginMethod_ear_Data.WAR_SIMPLE_NAME_STATIC_ANNOTATION_MIXED;    
+    public static final String WAR_SIMPLE_NAME = LoginMethod_ear_Data.WAR_SIMPLE_NAME_STATIC_ANNOTATION_MIXED;
+    
+    //Store a reference so WeakReferences won't be garbage collected during a test
+    private static AppKey appKey = new AppKey(EAR_SIMPLE_NAME);
 
     @Override
     public ClassSourceImpl_Aggregate createClassSource(
@@ -47,7 +50,7 @@ public class LoginMethod_StaticAnnotationMixed_war_SimpleSource_Test extends Tes
         String warPath = TestLocalization.putIntoData(EAR_NAME + '/', WAR_NAME + '/');
 
         ClassSourceImpl_Aggregate rootClassSource =
-        	factory.createAggregateClassSource(EAR_SIMPLE_NAME, WAR_SIMPLE_NAME, JAVAEE_MOD_CATEGORY_NAME, options);
+        	factory.createAggregateClassSource(EAR_SIMPLE_NAME, appKey, WAR_SIMPLE_NAME, JAVAEE_MOD_CATEGORY_NAME, options);
 
         final String warClassesPath = TestLocalization.putInto(warPath, "WEB-INF/classes");
 

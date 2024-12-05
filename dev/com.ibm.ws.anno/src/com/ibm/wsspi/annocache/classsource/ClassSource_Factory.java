@@ -18,6 +18,7 @@ import com.ibm.ws.annocache.classsource.specification.ClassSource_Specification_
 import com.ibm.ws.annocache.classsource.specification.ClassSource_Specification_Element;
 import com.ibm.ws.annocache.classsource.specification.ClassSource_Specification_Elements;
 import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.anno.service.AppKey;
 import com.ibm.wsspi.annocache.util.Util_Factory;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 import com.ibm.wsspi.annocache.util.Util_RelativePath;
@@ -96,7 +97,14 @@ public interface ClassSource_Factory extends com.ibm.wsspi.anno.classsource.Clas
      * Create a new empty aggregate class source. Assign options to the new
      * class source.
      * 
+     * appKey will only be stored in weak references, and the cache to annotation targets will
+     * be lost when it is deleted. It is the responsibility of the caller to store a reference
+     * to appKey and delete it when the application is uninstalled.
+     * 
+     * appKey can be created with new AppKey("string that is unique to app"); 
+     * 
      * @param appName The name of the application of the class source.
+     * @param appKey A key for the cache that will store annotation targets.
      * @param modName The name of the module of the class source.
      * @param modNameCategory A name used to enable multiple results for
      *     the same module name.
@@ -107,8 +115,13 @@ public interface ClassSource_Factory extends com.ibm.wsspi.anno.classsource.Clas
      * @throws ClassSource_Exception Thrown if there was a problem creating the class source.
      */
     ClassSource_Aggregate createAggregateClassSource(
-        String appName, String modName, String modNameCategory,
+        String appName, AppKey appKey, String modName, String modNameCategory,
         ClassSource_Options options) throws ClassSource_Exception;
+    
+    @Deprecated
+    ClassSource_Aggregate createAggregateClassSource(
+                                                     String appName, String modName, String modNameCategory,
+                                                     ClassSource_Options options) throws ClassSource_Exception;
 
     ClassSource_MappedSimple createSimpleClassSource(
         ClassSource_Aggregate aggregate,
@@ -162,8 +175,15 @@ public interface ClassSource_Factory extends com.ibm.wsspi.anno.classsource.Clas
 
     ClassSource_Aggregate createAggregateClassSource(
         Util_InternMap internMap,
-        String appName, String modName, String modNameCategory,
+        String appName, AppKey appKey, String modName, String modNameCategory,
         ClassSource_Options options) throws ClassSource_Exception;
+    
+    @Deprecated
+    ClassSource_Aggregate createAggregateClassSource(
+                                                     Util_InternMap internMap,
+                                                     String appName, String modName, String modNameCategory,
+                                                     ClassSource_Options options) throws ClassSource_Exception;
+
 
     //
 
