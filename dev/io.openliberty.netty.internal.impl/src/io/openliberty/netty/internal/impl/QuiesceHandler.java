@@ -40,12 +40,13 @@ public class QuiesceHandler extends ChannelDuplexHandler{
 	private static final TraceComponent tc = Tr.register(QuiesceHandler.class, NettyConstants.NETTY_TRACE_NAME,
 			NettyConstants.BASE_BUNDLE);
 
-	private Callable quiesceTask = null;
+	private static final Callable<Void> NO_OP_TASK = () -> null;
+	private Callable quiesceTask;
 
 
 
 	public QuiesceHandler(){
-		this.quiesceTask = () -> null;
+		this.quiesceTask = NO_OP_TASK;
 	 }
 
 	public QuiesceHandler(Callable quiesceTask) {
@@ -80,7 +81,6 @@ public class QuiesceHandler extends ChannelDuplexHandler{
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (QuiesceState.isQuiesceInProgress() && handleQuiesce(ctx)) {
-            // Quiesce handled, do not pass the message further
             return;
         }
         super.channelRead(ctx, msg);
@@ -89,7 +89,7 @@ public class QuiesceHandler extends ChannelDuplexHandler{
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 		if (QuiesceState.isQuiesceInProgress() && handleQuiesce(ctx)) {
-            // Quiesce handled, do not write the message
+			
             return;
         }
         super.write(ctx, msg, promise);
@@ -97,14 +97,19 @@ public class QuiesceHandler extends ChannelDuplexHandler{
 
     private boolean handleQuiesce(ChannelHandlerContext ctx) throws Exception {
         if (completed) {
-            return false; // Already handled
-			
-        }
-        if (quiesceTask != null){
+			return false; // Already handled this channel
+		}
+	
+		if (quiesceTask != NO_OP_TASK) {
+			// A custom task is set; likely a WebSocket connection
 			completed = true;
 			quiesceTask.call();
+			return true;
+		} else {
+			// Default no-op task: do not close immediately
+			// Let non-WebSocket connections finish gracefully
+			return false;
 		}
-        return completed;
     }
 
 	
