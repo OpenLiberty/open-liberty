@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ *******************************************************************************/
 package com.ibm.ws.container.service.annocache.internal;
 
 import java.util.Map;
@@ -52,7 +62,7 @@ public class ApplicationKeyServiceImpl implements AnnotationService_KeyService, 
         // However we know that the every path into this method uses the application deployment name for appName
         // this is the same string as we'll get from event.getMetaData().getJ2EEName().getApplication().
         // So we can create it now and it will be destroyed when the metadata is destroyed.
-        if (isDebug && keys.containsKey(appName)) {
+        if (isDebug && appName != null && !keys.containsKey(appName)) {
             Tr.debug(tc, "A key for for {0}, was not found. It will be created.");
         }
 
