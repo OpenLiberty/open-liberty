@@ -251,8 +251,9 @@ public class TCPUtils {
 						try {
 							listener.operationComplete(future);
 						} catch (Exception e) {
-							System.out.println("Exception caught running open listener!! Closing channel just in case");
-							e.printStackTrace();
+							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+								Tr.debug(tc, "Exception caught running open listener!! Closing channel just in case");
+							}
 							future.channel().close();
 						}
 					}

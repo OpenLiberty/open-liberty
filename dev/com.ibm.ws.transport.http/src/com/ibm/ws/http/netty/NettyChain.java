@@ -21,13 +21,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
+import com.ibm.ws.http.internal.HttpChain.ActiveConfiguration;
 import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
-import com.ibm.ws.tcpchannel.internal.TCPChannelMessageConstants;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -254,8 +254,10 @@ public class NettyChain extends HttpChain {
     }
 
     private void channelFutureHandler(ChannelFuture future) {
-        if(state.get() == ChainState.STOPPING) {
-            System.out.println("Chain: "+ endpointName + ", Current state: " + state.get() + ", is stopping so will not notify any virtual hosts and will just return");
+        if (state.get() == ChainState.STOPPING) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get() + ", is stopping so will not notify any virtual hosts and will just return");
+            }
             return;
         }
         synchronized (this) {
@@ -271,7 +273,7 @@ public class NettyChain extends HttpChain {
                     Tr.debug(this, tc, "Channel failed to bind to port:  " + future.cause());
                 }
                 handleStartupError(new NettyException(future.cause()), currentConfig);
-                
+
                 if (currentConfig != null) {
                     VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                     currentConfig.clearActivePort();
