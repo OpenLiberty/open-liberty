@@ -21,7 +21,7 @@ import io.netty.channel.SimpleUserEventChannelHandler;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.util.AttributeKey;
 import io.netty.channel.ChannelPromise;
-
+import io.openliberty.netty.internal.impl.QuiesceHandler.QuiesceEvent;
 import io.openliberty.netty.internal.impl.QuiesceState;
 
 /**
@@ -50,11 +50,20 @@ public class QuiesceHandler extends ChannelDuplexHandler{
 	 }
 
 	public QuiesceHandler(Callable quiesceTask) {
-		this.quiesceTask = quiesceTask;
+		if(quiesceTask == null){
+			this.quiesceTask = NO_OP_TASK;
+		}else{
+			this.quiesceTask = quiesceTask;
+		}
 	}
 
 	public void setQuiesceTask(Callable task){
-		this.quiesceTask= task;
+		if(task == null){
+			this.quiesceTask = NO_OP_TASK;
+		}else{
+			this.quiesceTask= task;
+		}
+		
 	}
 
 	@Override
@@ -78,41 +87,11 @@ public class QuiesceHandler extends ChannelDuplexHandler{
         }
     }
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (QuiesceState.isQuiesceInProgress() && handleQuiesce(ctx)) {
-            return;
-        }
-        super.channelRead(ctx, msg);
-    }
-
-    @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-		if (QuiesceState.isQuiesceInProgress() && handleQuiesce(ctx)) {
-			
-            return;
-        }
-        super.write(ctx, msg, promise);
-    }
-
-    private boolean handleQuiesce(ChannelHandlerContext ctx) throws Exception {
-        if (completed) {
-			return false; // Already handled this channel
-		}
-	
+    private void handleQuiesce(ChannelHandlerContext ctx) throws Exception {
 		if (quiesceTask != NO_OP_TASK) {
-			// A custom task is set; likely a WebSocket connection
-			completed = true;
-			quiesceTask.call();
-			return true;
-		} else {
-			// Default no-op task: do not close immediately
-			// Let non-WebSocket connections finish gracefully
-			return false;
+        	quiesceTask.call();
 		}
     }
-
-	
 
     static class QuiesceEvent {
     }

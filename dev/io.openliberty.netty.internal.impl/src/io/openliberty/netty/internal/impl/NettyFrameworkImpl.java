@@ -296,6 +296,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Event loops finished clean up!");
         }
+        QuiesceState.stopQuiesce();
     }
 
     
@@ -506,6 +507,13 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     		ChannelFuture closeFuture = channel.close();
 	    	ChannelGroup group = activeChannelMap.get(channel);
             if(group != null) {
+                if(!QuiesceState.isQuiesceInProgress()){
+                    group.close().addListener(innerFuture -> {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "channel group" + group + " has closed...");
+                        }
+                    });
+                }
 	    		activeChannelMap.remove(channel);
 	    	}
 	    	return closeFuture;

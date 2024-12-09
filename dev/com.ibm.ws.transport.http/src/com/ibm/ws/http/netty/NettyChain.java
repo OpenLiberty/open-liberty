@@ -109,6 +109,8 @@ public class NettyChain extends HttpChain {
                         Tr.debug(this, tc, "Server Channel is open, attempting to close");
                     }
 
+                    
+
                     nettyFramework.stop(serverChannel, -1);
                     serverChannel.closeFuture().syncUninterruptibly();
                     serverChannel = null;
@@ -282,7 +284,7 @@ public class NettyChain extends HttpChain {
             }
             //Register chain for quiesce, null is passed as the task as there is no special 
             //quiesce action required at this time
-            nettyFramework.registerEndpointQuiesce(future.channel(), () -> null);
+            nettyFramework.registerEndpointQuiesce(future.channel(), null);
             notifyAll();
         }
     }
