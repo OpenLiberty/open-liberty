@@ -66,6 +66,7 @@ import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
+import io.openliberty.http.pipeline.configurators.PipelineHandlerUtility;
 
 /**
  *
@@ -883,7 +884,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
                 @Override
                 public void run() {
                     try {
-                        ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpPipelineInitializer.HTTP_DISPATCHER_HANDLER_NAME)).channelRead(nettyContext,
+                        ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(PipelineHandlerUtility.HTTP_DISPATCHER_HANDLER_NAME)).channelRead(nettyContext,
                                                                                                                                                           newRequest);
                     } catch (Exception e) {
                
