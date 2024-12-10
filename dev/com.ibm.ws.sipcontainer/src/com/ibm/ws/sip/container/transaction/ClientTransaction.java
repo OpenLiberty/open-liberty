@@ -216,8 +216,7 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
 					//call finish ToUseSender() method now
 					if (request.getMethod().equals(Request.ACK)){
 						finishToUseSender();
-					}
-							
+					}		
 				}	        
 			}
 			else{
