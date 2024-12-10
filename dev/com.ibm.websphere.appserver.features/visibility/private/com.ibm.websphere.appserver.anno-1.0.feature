@@ -19,7 +19,7 @@ IBM-Process-Types: server, \
   com.ibm.websphere.appserver.artifact-1.0
 -bundles=com.ibm.ws.anno
 -jars=com.ibm.websphere.appserver.spi.anno; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.1-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.2-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
