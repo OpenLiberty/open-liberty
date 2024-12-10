@@ -30,6 +30,7 @@ public class QuiesceHandler extends SimpleUserEventChannelHandler<QuiesceHandler
 	
 	public static final QuiesceEvent QUIESCE_EVENT = new QuiesceEvent();
 
+
 	private static final TraceComponent tc = Tr.register(QuiesceHandler.class, NettyConstants.NETTY_TRACE_NAME,
 			NettyConstants.BASE_BUNDLE);
 
@@ -38,11 +39,12 @@ public class QuiesceHandler extends SimpleUserEventChannelHandler<QuiesceHandler
 
 	public QuiesceHandler(Callable quiesceTask) {
 		this.quiesceTask = quiesceTask;
+
 	}
 
 	@Override
 	public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-		if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "Added quiesce handler for channel " + ctx.channel() + " with callable: " + quiesceTask);
 		}
 		super.handlerAdded(ctx);
@@ -59,3 +61,4 @@ public class QuiesceHandler extends SimpleUserEventChannelHandler<QuiesceHandler
 	}
 
 }
+

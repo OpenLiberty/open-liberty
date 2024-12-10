@@ -22,6 +22,7 @@ import io.openliberty.http.utils.HttpConfigUtils;
  */
 public enum HttpOption implements EndpointOption {
 
+    // HTTP/1.1 Options
     KEEP_ALIVE_ENABLED("keepAliveEnabled", false, Boolean.class, ConfigType.HTTP),
     MAX_KEEP_ALIVE_REQUESTS("maxKeepAliveRequests", -1, Integer.class, ConfigType.HTTP),
     PERSIST_TIMEOUT("persistTimeout", "30s", String.class, ConfigType.HTTP),
@@ -38,6 +39,8 @@ public enum HttpOption implements EndpointOption {
     THROW_IOE_FOR_INBOUND_CONNECTIONS("ThrowIOEForInboundConnections", null, Boolean.class, ConfigType.HTTP),
     DECOMPRESSION_RATIO_LIMIT("decompressionRatioLimit", 200, Integer.class, ConfigType.HTTP),
     DECOMPRESSION_TOLERANCE("decompressionTolerance", 3, Integer.class, ConfigType.HTTP),
+
+    // HTTP/2.0 Options
     HTTP2_CONNECTION_IDLE_TIMEOUT("http2ConnectionIdleTimeout", "0", String.class, ConfigType.HTTP2),
     MAX_CONCURRENT_STREAMS("maxConcurrentStreams", 100, Integer.class, ConfigType.HTTP2),
     MAX_FRAME_SIZE("maxFrameSize", 57344, Integer.class, ConfigType.HTTP2),
