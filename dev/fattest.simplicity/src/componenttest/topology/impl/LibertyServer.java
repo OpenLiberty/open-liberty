@@ -1666,6 +1666,7 @@ public class LibertyServer implements LogMonitorClient {
         // Debug for a highly intermittent problems on j9/semeru JVMs.
         if (info.VENDOR == Vendor.IBM || info.VENDOR == Vendor.OPENJ9) {
             JVM_ARGS += " -Xdump:system+java+snap:events=systhrow,filter=\"java/lang/NoSuchMethodError#com/ibm/ws/classloading/internal/AppClassLoader.<init>*\",msg_filter=\"*getPrivateLibraries*\",request=exclusive+prepwalk";
+            JVM_ARGS += " -Xtrace:iprint=mt,methods=\"java/lang/NoClassDefFoundError.<init>()\",resumecount=1,trigger=\"method{java/lang/NoClassDefFoundError.<init>,resumethis,suspendthis}\"";
         }
 
         // Add JaCoCo java agent to generate code coverage for FAT test run
