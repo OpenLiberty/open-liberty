@@ -31,4 +31,6 @@ public class TransportConstants {
     public static final String UPGRADED_LISTENER = "UpgradedListener";
     public static final String CLOSE_UPGRADED_WEBCONNECTION = "CloseUpgradedWebConnection";
 
+  //Initial upgrade request data may be read together with the headers before the upgrade.
+    public static final String NOT_UPGRADED_UNREAD_DATA = "NotUpgradedUnreadData";
 }
