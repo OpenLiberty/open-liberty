@@ -46,6 +46,8 @@ import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandlerBuilder;
 import io.netty.handler.codec.http2.InboundHttp2ToHttpAdapterBuilder;
 import io.netty.util.AsciiString;
 import io.netty.util.ReferenceCountUtil;
+import io.openliberty.http.netty.quiesce.QuiesceStrategy;
+import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 /**
  *
@@ -139,9 +141,12 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             return new UpgradeCodec() {
                 @Override
                 public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
-                    
-                    
+                             
                     ctx.fireChannelRead(ReferenceCountUtil.retain(request));
+                    QuiesceHandler quiesceHandler = ctx.pipeline().get(QuiesceHandler.class);
+                    if (quiesceHandler != null) {
+                        quiesceHandler.setQuiesceTask(QuiesceStrategy.WEBSOCKET_CLOSE.getTask());
+                    }
                 }
 
                 @Override
