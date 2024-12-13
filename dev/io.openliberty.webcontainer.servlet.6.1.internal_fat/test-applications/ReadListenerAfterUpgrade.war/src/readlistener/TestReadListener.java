@@ -32,7 +32,8 @@ public class TestReadListener implements ReadListener {
         this.input = in;
         this.output = out;
 
-        //Expecting client to send data in chunk, begin with "BEGIN" then ,Data_0,... up to ,Data_30 with comma as delimiter for parsing
+        //client sending data in chunk, begin with "BEGIN" then ,Data_0,... up to ,Data_30 with comma as delimiter for parsing
+        //dataList tracks the received Data_ and remove from the list. Its size should be 0 when END string is received; otherwise data has missed.
         for(int i = 0; i <= sizeList ; i++) {
             dataList.add("Data_" + i);
         }
@@ -63,7 +64,6 @@ public class TestReadListener implements ReadListener {
             }
 
             LOG("onDataAvailable, after remove, dataList size [" + dataList.size() + "]");
-
             if (totalData.toString().contains("END")) {
                 if (dataList.size() == 0) {
                     LOG("onDataAvailable, END string found. All data received.");
@@ -76,7 +76,6 @@ public class TestReadListener implements ReadListener {
                     }
                     output.println("NOT all data has received [" + totalData.toString() + "] . FAIL");
                 }
-
                 output.flush();
             }
         } catch (Exception ex) {
