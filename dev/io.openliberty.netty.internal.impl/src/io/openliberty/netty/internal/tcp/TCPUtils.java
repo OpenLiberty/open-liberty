@@ -105,9 +105,7 @@ public class TCPUtils {
 			oFuture = channel.connect(new InetSocketAddress(inetHost, inetPort));
 		}
 		final ChannelFuture openFuture = oFuture;
-		if (openListener != null) {
-			openFuture.addListener(generateOpenListenerWrapper(framework, openListener));
-		}
+		
 		final String newHost = inetHost;
 
 		openFuture.addListener(future -> {
@@ -237,12 +235,9 @@ public class TCPUtils {
 			}
 		});
 
-
 		if (openListener != null) {
-			openFuture.addListener(openListener);
-		}
-
-		
+			openFuture.addListener(generateOpenListenerWrapper(framework, openListener));
+		}		
 		return openFuture;
 	}
 	

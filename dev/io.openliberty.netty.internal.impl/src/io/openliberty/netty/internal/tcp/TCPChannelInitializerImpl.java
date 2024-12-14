@@ -66,7 +66,9 @@ public class TCPChannelInitializerImpl extends ChannelInitializerWrapper {
             channel.pipeline().addLast(NettyConstants.ACCESSLIST_HANDLER_NAME, includeHandler);
         }
         channel.pipeline().addLast(NettyConstants.MAX_OPEN_CONNECTIONS_HANDLER_NAME, maxHandler);
-        channel.pipeline().addFirst(new QuiesceHandler());
+        if(config.isInbound()){
+            channel.pipeline().addFirst(new QuiesceHandler());
+        }
         Channel parent = channel.parent();
         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
         	Tr.debug(tc, "Initializing channel: " + channel + " found parent to be: " + parent);
