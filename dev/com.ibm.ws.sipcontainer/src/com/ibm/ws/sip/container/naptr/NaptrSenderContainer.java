@@ -97,7 +97,7 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 		if (! ((MessageImpl)request.getRequest()).isLoopback()){
 			_naptrHandler.sendToNextDestination(messageContext, _client.getTarget());
 		}else{
-			//no need to do naptr lookup if this is a loop back request
+			//no need to do a NAPTR lookup if this is a loopback request
 			//applications that send the request outside of the container
 			//need to do the resolving 
 			if (c_logger.isTraceDebugEnabled()) {
@@ -116,13 +116,13 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 		MessageImpl messageImpl  = (MessageImpl) response.getMessage();
 		
 		//if the response is loopback that means that the request was also a loopback, 
-		//there is no need to go thru the NAPTR process since there was no NAPTR lookup   
+		//no need to go through the NAPTR process since there was no NAPTR lookup   
 		//in the first place
 		if((response.getStatus() == SipServletResponse.SC_SERVICE_UNAVAILABLE) && ! messageImpl.isLoopback()){
 			// Save this response and try to send to different destination.
 			_503Response = response;
 			if (c_logger.isTraceDebugEnabled()) {
-				c_logger.traceDebug(this, "responseReceived", "503 response received - try next destination");
+				c_logger.traceDebug(this, "responseReceived", "503 response received - trying next destination if available");
 			}
 			Request request = client.getOutgoingRequest().getRequest(); 
 			MessageContext messageContext = MessageContextFactory.instance().getMessageContext(request);
@@ -131,7 +131,7 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 		else{
 			if (c_logger.isTraceDebugEnabled()) {
 				c_logger.traceDebug(this, "responseReceived", 
-						"Final response received - forward to the client Transaction");
+						"Final response received - forward response to the client listener");
 			}
 			_client.responseReceived(response);
 		}
