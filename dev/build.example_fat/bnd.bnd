@@ -10,6 +10,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
+
+# Just a test commit not for merging.
+
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
