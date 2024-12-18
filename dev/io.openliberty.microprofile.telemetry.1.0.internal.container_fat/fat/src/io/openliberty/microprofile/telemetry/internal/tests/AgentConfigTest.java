@@ -283,6 +283,8 @@ public class AgentConfigTest {
         server.addEnvVar("OTEL_INSTRUMENTATION_APACHE_HTTPCLIENT_ENABLED", "false");
         server.addEnvVar("OTEL_INSTRUMENTATION_HTTP_URL_CONNECTION_ENABLED", "false"); //For JaxRs 2.0 and 2.1
         server.addEnvVar("OTEL_INSTRUMENTATION_SERVLET_ENABLED", "false");
+        server.addEnvVar("OTEL_INSTRUMENTATION_NETTY_ENABLED", "false");
+
 
         server.startServer();
 
