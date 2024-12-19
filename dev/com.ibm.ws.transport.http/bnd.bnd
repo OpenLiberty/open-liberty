@@ -168,4 +168,5 @@ instrument.classesExcludes: \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.wsbytebuffer;version=latest, \
-	com.ibm.ws.kernel.boot;version=latest
+	com.ibm.ws.kernel.boot;version=latest, \
+	org.mockito.mockito-all;version=1.9.5
