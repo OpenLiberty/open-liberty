@@ -28,7 +28,6 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.cookie.CookieEncoder;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
@@ -56,6 +55,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.openliberty.http.netty.cookie.CookieEncoder;
 
 /**
  *
@@ -727,7 +727,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     protected void processCookie(HttpCookie cookie, HeaderKeys header) {
         String result = null;
         if (Objects.nonNull(cookie) && Objects.nonNull(header)) {
-            result = CookieEncoder.INSTANCE.encode(cookie, header, config);
+            result = CookieEncoder.encode(cookie, header, config);
 
             if (Objects.nonNull(result)) {
                 if (config.doNotAllowDuplicateSetCookies() && header.equals(HttpHeaderKeys.HDR_SET_COOKIE)) {

@@ -32,7 +32,6 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.cookie.CookieDecoder;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http2.GrpcServletServices;
@@ -66,6 +65,7 @@ import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
+import io.openliberty.http.netty.cookie.CookieDecoder;
 
 /**
  *
@@ -997,7 +997,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         for(String cookie: cookieHeaders){
             list.addAll(CookieDecoder.decode(cookie));
         }
-
         return list;
 
     }
