@@ -46,7 +46,6 @@ Export-Package: \
   com.ibm.ws.http.dispatcher.internal.channel, \
   com.ibm.ws.http.internal, \
   com.ibm.ws.http.netty, \
-  com.ibm.ws.http.netty.cookie, \
   com.ibm.ws.http.netty.message, \
   com.ibm.ws.http.netty.pipeline, \
   com.ibm.ws.http.netty.pipeline.inbound, \
@@ -54,7 +53,8 @@ Export-Package: \
   com.ibm.ws.http.netty.pipeline.http2, \
   com.ibm.ws.http.logging.internal, \
   io.openliberty.http.options, \
-  io.openliberty.http.utils
+  io.openliberty.http.utils, \
+  io.openliberty.http.netty*
   
 Import-Package: \
   !com.ibm.ws.http.channel.h2internal, \
