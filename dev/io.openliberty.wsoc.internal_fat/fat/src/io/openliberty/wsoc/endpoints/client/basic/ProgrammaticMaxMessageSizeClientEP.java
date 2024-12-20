@@ -50,6 +50,8 @@ public class ProgrammaticMaxMessageSizeClientEP implements TestHelper {
     @OnMessage
     public void echoText(String data) {
 
+        new Exception().printStackTrace();
+
         messageCounter++;
         _wtr.addMessage(data);
 

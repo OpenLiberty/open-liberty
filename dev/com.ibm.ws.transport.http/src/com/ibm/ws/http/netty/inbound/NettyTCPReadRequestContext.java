@@ -19,6 +19,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -33,6 +36,8 @@ import io.netty.channel.Channel;
  *
  */
 public class NettyTCPReadRequestContext implements TCPReadRequestContext {
+    
+    private static final TraceComponent tc = Tr.register(NettyTCPReadRequestContext.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private final NettyTCPConnectionContext connectionContext;
     private final Channel nettyChannel;
@@ -157,6 +162,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         // minBytes = (numBytes<=0) ? 1: numBytes;
 
         if (!nettyChannel.isActive()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Skipping read because channel became inactive!");
+            }
             // Channel is not active, do not proceed with the callback
             return vc; // Return
         }
@@ -185,6 +193,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             boolean dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, timeout, TimeUnit.MILLISECONDS);
 
             if (!nettyChannel.isActive()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Skipping executor because channel became inactive!");
+                }
                 // Channel became inactive while waiting for data, skip callback execution
                 return; // Exit the task execution
             }
@@ -202,6 +213,16 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                         //TODO change to liberty executor, dont use netty for this.
 
                         blockingTaskExecutor.submit(() -> {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "Running async callback!");
+                            }
+                            if (!nettyChannel.isActive()) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(this, tc, "Skipping async callback because channel became inactive!");
+                                }
+                                // Channel became inactive while waiting for data, skip callback execution
+                                return; // Exit the task execution
+                            }
                             try {
                                 callback.complete(vc, this);
                             } catch (Exception e) {
@@ -211,6 +232,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                         });
                     }
                 } else {
+                    
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Skipping null callback!");
+                    }
 
                     //TODO: !isActive shoudl have its own clause/return
                     //throw new IOException ("BETA - unexpected null callback provided");

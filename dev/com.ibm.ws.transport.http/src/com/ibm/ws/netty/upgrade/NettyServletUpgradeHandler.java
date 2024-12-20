@@ -102,6 +102,7 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
             readCondition.signalAll();
 
         } finally {
+            System.out.println("Unlocking signalReadReady!");
             readLock.unlock();
         }
     }
@@ -116,14 +117,17 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         } finally {
+            System.out.println("Unlocking waitForDataRead!");
             readLock.unlock();
         }
     }
 
     public boolean awaitReadReady(long numBytes, int timeout, TimeUnit unit) {
+        System.out.println("Await read ready called");
         minBytesToRead = numBytes; // Set the minimum number of bytes to read
 
         readLock.lock();
+        System.out.println("After lock");
         boolean dataReady = false;
         try {
 
@@ -142,12 +146,14 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
                     if (timeout == -1) {
                         waitTime = TimeUnit.SECONDS.toNanos(1);
                         try{
+                            System.out.println("Waiting1: " + waitTime);
                         readCondition.awaitNanos(waitTime);
                         }catch(InterruptedException e){
                             Thread.currentThread().interrupt();
                             continue; // loop back again
                         }
                     } else {
+                        System.out.println("Waiting2: " + waitTime);
                         readCondition.awaitNanos(waitTime);
                     }
                 }
@@ -157,6 +163,7 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // Restore the interrupt status
         } finally {
+            System.out.println("Unlocking awaitReadReady!");
             readLock.unlock();
         }
 
