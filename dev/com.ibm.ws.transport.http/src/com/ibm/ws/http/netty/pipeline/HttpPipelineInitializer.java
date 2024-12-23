@@ -32,9 +32,7 @@ import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
 
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.RecvByteBufAllocator;
@@ -47,6 +45,8 @@ import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnow
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.ReferenceCountUtil;
+import io.openliberty.http.netty.channel.AllocatorContextSetter;
+import io.openliberty.http.netty.channel.LoggingRecvByteBufAllocator;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.impl.NettyConstants;
@@ -111,7 +111,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         LoggingRecvByteBufAllocator loggingAllocator = new LoggingRecvByteBufAllocator(channelAllocator);
         channel.config().setRecvByteBufAllocator(loggingAllocator);
 
-        pipeline.addLast("AllocatorContextSetter", new AllocatorContextSetter(loggingAllocator));
+        pipeline.addLast("AllocatorContextSetter", new AllocatorContextSetter());
 
         if (chain.isHttps()) {
             setupSecurePipeline(pipeline);
@@ -363,24 +363,4 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         this.httpConfig.clear();
 
     }
-
-    @Sharable
-    private static class AllocatorContextSetter extends ChannelInboundHandlerAdapter {
-        private final LoggingRecvByteBufAllocator loggingAllocator;
-
-        AllocatorContextSetter(LoggingRecvByteBufAllocator loggingAllocator) {
-            this.loggingAllocator = loggingAllocator;
-        }
-
-        @Override
-        public void handlerAdded(ChannelHandlerContext context) throws Exception {
-            super.handlerAdded(context);
-
-            RecvByteBufAllocator.Handle handle = context.channel().unsafe().recvBufAllocHandle();
-            if (handle instanceof LoggingRecvByteBufAllocator.LoggingHandle) {
-                ((LoggingRecvByteBufAllocator.LoggingHandle) handle).setChannelHandlerContext(context);
-            }
-        }
-    }
-
 }
