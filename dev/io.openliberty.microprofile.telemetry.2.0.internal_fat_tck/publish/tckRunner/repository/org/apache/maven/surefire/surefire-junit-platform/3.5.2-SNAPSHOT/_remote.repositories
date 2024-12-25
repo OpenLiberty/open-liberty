@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Wed Dec 25 11:42:44 GMT 2024
+surefire-junit-platform-3.5.2-SNAPSHOT.pom>=
+surefire-junit-platform-3.5.2-SNAPSHOT.jar>=

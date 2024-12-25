@@ -1,0 +1,6 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Wed Dec 25 11:51:18 GMT 2024
+@default-apache.releases.https-https\://repository.apache.org/service/local/staging/deploy/maven2/.lastUpdated=1735127478539
+https\://repo.maven.apache.org/maven2/.error=
+https\://repo.maven.apache.org/maven2/.lastUpdated=1735127457642
+https\://repository.apache.org/service/local/staging/deploy/maven2/.error=Could not transfer artifact org.apache.maven.surefire\:surefire-logger-api\:jar\:3.5.2-BEN from/to apache.releases.https (https\://repository.apache.org/service/local/staging/deploy/maven2)\: status code\: 401, reason phrase\: Unauthorized (401)

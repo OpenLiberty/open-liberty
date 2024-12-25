@@ -19,6 +19,8 @@
     <version>1.0</version>
     <packaging>pom</packaging>
     <name>MicroProfile Telemetry 2.0 TCK Runner</name>
+    
+
 
     <properties>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>

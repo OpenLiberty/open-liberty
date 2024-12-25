@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>org.apache.maven.surefire</groupId>
+  <artifactId>surefire-testng-utils</artifactId>
+  <versioning>
+    <lastUpdated>20241225114150</lastUpdated>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>3.5.2-SNAPSHOT</value>
+        <updated>20241225114150</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>3.5.2-SNAPSHOT</value>
+        <updated>20241225114150</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+  <version>3.5.2-SNAPSHOT</version>
+</metadata>

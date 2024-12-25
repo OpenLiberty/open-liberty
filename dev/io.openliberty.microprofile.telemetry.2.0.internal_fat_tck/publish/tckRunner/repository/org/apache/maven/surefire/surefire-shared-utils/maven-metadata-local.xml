@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.apache.maven.surefire</groupId>
+  <artifactId>surefire-shared-utils</artifactId>
+  <versioning>
+    <release>3.5.2-BEN</release>
+    <versions>
+      <version>3.5.2-SNAPSHOT</version>
+      <version>3.5.2-BEN</version>
+    </versions>
+    <lastUpdated>20241225115625</lastUpdated>
+  </versioning>
+</metadata>

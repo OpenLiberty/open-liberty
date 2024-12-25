@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <plugins>
+    <plugin>
+      <name>Maven Surefire Plugin</name>
+      <prefix>surefire</prefix>
+      <artifactId>maven-surefire-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Maven Failsafe Plugin</name>
+      <prefix>failsafe</prefix>
+      <artifactId>maven-failsafe-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Maven Surefire Report Plugin</name>
+      <prefix>surefire-report</prefix>
+      <artifactId>maven-surefire-report-plugin</artifactId>
+    </plugin>
+  </plugins>
+</metadata>

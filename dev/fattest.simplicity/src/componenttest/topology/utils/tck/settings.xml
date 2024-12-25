@@ -50,7 +50,7 @@
                 <pluginRepository>
                     <id>bentest</id>
                     <name>bentest</name>
-                    <url>https://${env.ARTIFACTORY_SERVER}:443/artifactory/wasliberty-open-liberty</url>
+                    <url>file://${project.basedir}/repository</url>
                 </pluginRepository>
             </pluginRepositories>
         </profile>

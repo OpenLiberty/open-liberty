@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>surefire</artifactId>
+    <groupId>org.apache.maven.surefire</groupId>
+    <version>3.5.2-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>surefire-shadefire</artifactId>
+  <name>ShadeFire JUnit3 Provider</name>
+  <description>A super-shaded junit3 provider that is used by surefire to build itself,
+    that basically has ALL classes relocated to facilitate no API-conflict whatsoever with ourself.
+    The only remaining point of conflict is around the booter properties file format.</description>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>org.apache.maven.surefire:surefire-shared-utils</include>
+                  <include>org.apache.maven.surefire:surefire-logger-api</include>
+                  <include>org.apache.maven.surefire:surefire-api</include>
+                  <include>org.apache.maven.surefire:surefire-extensions-spi</include>
+                  <include>org.apache.maven.surefire:surefire-booter</include>
+                  <include>org.apache.maven.surefire:common-java5</include>
+                  <include>org.apache.maven.surefire:surefire-junit-platform</include>
+                </includes>
+                <excludes>
+                  <exclude>${project.groupId}:${project.artifactId}</exclude>
+                </excludes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>org.apache.maven</pattern>
+                  <shadedPattern>org.apache.maven.shadefire</shadedPattern>
+                </relocation>
+              </relocations>
+              <filters>
+                <filter>
+                  <artifact>org.apache.maven.surefire:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/services/**</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <transformers>
+                <transformer>
+                  <resource>META-INF/services/org.apache.maven.shadefire.surefire.spi.MasterProcessChannelProcessorFactory</resource>
+                  <file>src/main/resources/META-INF/services/org.apache.maven.shadefire.surefire.spi.MasterProcessChannelProcessorFactory</file>
+                </transformer>
+                <transformer>
+                  <resource>META-INF/services/org.apache.maven.surefire.api.provider.SurefireProvider</resource>
+                  <file>src/main/resources/META-INF/services/org.apache.maven.surefire.api.provider.SurefireProvider</file>
+                </transformer>
+                <transformer />
+                <transformer />
+                <transformer>
+                  <resource>META-INF/DEPENDENCIES</resource>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.26.3</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>byte-buddy</artifactId>
+          <groupId>net.bytebuddy</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+</project>

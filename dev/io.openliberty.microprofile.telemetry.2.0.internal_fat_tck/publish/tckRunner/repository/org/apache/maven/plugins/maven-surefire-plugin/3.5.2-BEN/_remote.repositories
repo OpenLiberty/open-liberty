@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Wed Dec 25 11:57:35 GMT 2024
+maven-surefire-plugin-3.5.2-BEN.pom>=
+maven-surefire-plugin-3.5.2-BEN.jar>=
+maven-surefire-plugin-3.5.2-BEN-site-source.zip>=
