@@ -57,7 +57,7 @@ import io.netty.channel.RecvByteBufAllocator;
      * A handle that {@link #allocate(ByteBufAllocator)} call in order to log read operations.
      * Delegates all other operations to the wrapped {@link ExtendedHandle}.
      * 
-     * Netty has not provided a non-depracated alternative to some calls. In the
+     * Netty has not provided a non-deprecated alternative to some calls. In the
      * meantime, the deprecation warnings are supressed.
      */
     @SuppressWarnings("deprecation")
