@@ -207,7 +207,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     void addOptionalParameters(AuthorizationRequestParameters authzParameters, OidcClientRequest oidcClientRequest, String state, String acr_values, boolean isImplicit) throws UnsupportedEncodingException {
         if (clientConfig.isNonceEnabled() || isImplicit) {
-            String nonceValue = OidcUtil.generateRandom(Constants.STATE_LENGTH);
+            String nonceValue = OidcUtil.generateRandom(Constants.NONCE_LENGTH);
             storeNonceValue(nonceValue, state);
             authzParameters.addParameter("nonce", nonceValue);
         }

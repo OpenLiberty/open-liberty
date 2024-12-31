@@ -44,6 +44,7 @@ public class Constants {
     public static final String ACCESS_TOKEN_INFO = "access_token_info";
 
     public static final int STATE_LENGTH = 20;
+    public static final int NONCE_LENGTH = 25;
 
     public static final String TOKEN_TYPE_ID_TOKEN = "IDToken";
     public static final String TOKEN_TYPE_ACCESS_TOKEN = "AccessToken";
