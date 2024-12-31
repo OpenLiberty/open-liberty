@@ -24,6 +24,7 @@ import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
 import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.netty.handler.stream.ChunkedInput;
+import io.openliberty.http.netty.stream.WsByteBufferChunkedInput;
 
 /**
  * A Netty message encoder for encoding message data into HTTP responses.

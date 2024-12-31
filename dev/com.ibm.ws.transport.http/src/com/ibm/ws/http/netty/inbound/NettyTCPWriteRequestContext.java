@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.pipeline.WsByteBufferChunkedInput;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -35,6 +34,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.stream.ChunkedInput;
+import io.openliberty.http.netty.stream.WsByteBufferChunkedInput;
 
 /**
  *
