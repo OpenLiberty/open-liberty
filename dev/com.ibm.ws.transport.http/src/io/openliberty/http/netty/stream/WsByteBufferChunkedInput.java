@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public class WsByteBufferChunkedInput implements ChunkedInput<ByteBuf> {
      * @throws Exception if an error occurs while reading data
      */
     @Override
-    public ByteBuf readChunk(ByteBufAllocator arg0) throws Exception {
+    public ByteBuf readChunk(ByteBufAllocator allocator) throws Exception {
         if (endOfInput || !buffer.hasRemaining()) {
             endOfInput = true;
             return null;
