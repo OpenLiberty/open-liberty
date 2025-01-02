@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2013, 2024 IBM Corporation and others.
+    Copyright (c) 2013, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
          <AD id="redirectJunctionPath" name="%redirectJunctionPath" description="%redirectJunctionPath.desc" required="false" type="String" />
          <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc" required="false" type="Boolean" default="true" />
          <AD id="issuerIdentifier" name="%issuerIdentifier" description="%issuerIdentifier.desc" required="false" type="String" />
-         <AD id="userIdentityToCreateSubject" name="%userIdentityToCreateSubject" description="%userIdentityToCreateSubject.desc"  required="true" type="String" />
+         <AD id="userIdentityToCreateSubject" name="%userIdentityToCreateSubject" description="%userIdentityToCreateSubject.desc"  required="true" type="String"  default="sub" />
          <AD id="mapIdentityToRegistryUser" name="%mapIdentityToRegistryUser" description="%mapIdentityToRegistryUser.desc" required="false" type="Boolean" default="false"/>
          <AD id="oidcclientRequestParameterSupported" name="internal" description="internal use only" required="false" type="Boolean" default="true"/>
          <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
