@@ -161,3 +161,15 @@ OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Stellen Sie sicher, dass di
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: Das Konfigurationselement {0} enth\u00e4lt{1}", das jedoch mit keiner bereitgestellten Anwendung oder keinem Webmodul \u00fcbereinstimmt.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=Der Server ist so konfiguriert, dass die OpenAPI-Dokumentation f\u00fcr den Anwendungs-oder Modulnamen erstellt wird, aber es wurde keine Anwendung oder kein Webmodul mit diesem Namen implementiert.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=\u00dcberpr\u00fcfen Sie, ob alle Anwendungen korrekt gestartet wurden und ob die Namen in der Konfiguration korrekt angegeben sind.
+
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I=CWWKO1685I: {0} MicroProfile wird ignoriert, da eine entsprechende Konfiguration in server.xml bereitgestellt wird.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.explanation=Wenn diese Eigenschaft festgelegt ist und dieselbe Funktion mithilfe server.xml konfiguriert wird, wird die Konfiguration in server.xml verwendet und MicroProfile wird ignoriert.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.useraction=Entfernen Sie die Eigenschaft MicroProfile ".
+
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W=CWWKO1686W: {0} MicroProfile wird ignoriert, da in server.xml eine widerspr\u00fcchliche Konfiguration angegeben ist.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.explanation=Wenn diese Eigenschaft festgelegt ist und dieselbe Funktion mithilfe server.xml konfiguriert wird, wird die Konfiguration in server.xml verwendet und MicroProfile wird ignoriert.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Entfernen Sie die Eigenschaft MicroProfile und stellen Sie sicher, dass die Konfiguration in server.xml korrekt ist.
+
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: Das Anmerkungselement {0} in der Klasse {1} wird ignoriert, da es die OpenAPI -Version {2} erfordert, die aktuelle OpenAPI -Version jedoch {3} ist.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=Das Anmerkungselement bezieht sich auf ein Merkmal, das einer neueren Version OpenAPI hinzugef\u00fcgt wurde als der konfigurierten. Die verwendete Version von OpenAPI kann diese Informationen nicht darstellen, weshalb sie aus der erstellten OpenAPI -Dokumentation ausgeschlossen wird.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Entfernen Sie das Anmerkungselement oder setzen Sie openAPIVersion auf eine Version, die es in server.xml unterst\u00fctzt.

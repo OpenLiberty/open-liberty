@@ -38,15 +38,15 @@ CWWKD1002.method.annos.err=CWWKD1002E: Die {0}-Methode der {1}-Repository-Schnit
 CWWKD1002.method.annos.err.explanation=Diese Kombination von Anmerkungen ist f\u00fcr eine einzelne Repository-Methode nicht g\u00fcltig.
 CWWKD1002.method.annos.err.useraction=Suchen Sie die Repository-Schnittstelle und -Methode und bestimmen Sie die richtige Kombination von Methodenkommentaren.
 
-CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: Der {0} R\u00fcckgabetyp der {1} Methode der {2} Repository-Schnittstelle ist kein g\u00fcltiger R\u00fcckgabetyp f\u00fcr eine Repository {3} Methode. G\u00fcltige R\u00fcckgabetypen sind: {4}.
-CWWKD1003.lifecycle.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr Insert-, Update- und Save-Methoden.
-CWWKD1003.lifecycle.rtrn.err.useraction=G\u00fcltige R\u00fcckgabetypen finden Sie in den Javadoc-Informationen zu Jakarta Data f\u00fcr die Annotationen Insert, Update und Save.
+CWWKD1003.rtrn.err=CWWKD1003E: {0} {1} {2} ist kein g\u00fcltiger R\u00fcckgabetyp f\u00fcr {3}  Zu den g\u00fcltigen R\u00fcckgabetypen geh\u00f6ren: {4} }.
+CWWKD1003.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr den angegebenen Typ der Repository-Methode.
+CWWKD1003.rtrn.err.useraction=Die Insert-, Update- und Save-Annotationen finden Sie in den Jakarta Data Javadoc-Informationen und die Dokumentation zu den Query by Method-Namen enth\u00e4lt g\u00fcltige R\u00fcckgabetypen.
 
 CWWKD1004.general.rtrn.err=CWWKD1004E: Der {0} R\u00fcckgabetyp der {1} Methode der {2} Repository Schnittstelle ist kein g\u00fcltiger R\u00fcckgabetyp f\u00fcr eine Repository Methode.
 CWWKD1004.general.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr den Typ der Repository-Methode.
 CWWKD1004.general.rtrn.err.useraction=Eine Liste der g\u00fcltigen R\u00fcckgabetypen f\u00fcr den Typ der Repository-Methode finden Sie in der Javadoc-Information zu Jakarta Data.
 
-CWWKD1005.find.rtrn.err=CWWKD1005E: Die {0} Methode der {1} Repository-Schnittstelle ist nicht g\u00fcltig. Die Methode gibt einen {2} R\u00fcckgabetyp an, der nicht aus dem {3} Entit\u00e4tstyp konvertierbar ist. Der Ergebnistyp einer Suchoperation muss der Entit\u00e4tstyp, ein Typ einer Entit\u00e4tseigenschaft, ein aus Entit\u00e4tseigenschaften zusammengesetzter Java-Datensatz oder ein von JPQL oder JDQL konstruierter Typ sein, der der Abfrage-Annotation \u00fcbergeben wird. Der R\u00fcckgabetyp der Repository Find-Methode kann der Ergebnistyp, ein Array des Ergebnistyps oder einer der folgenden Typen sein, die mit dem Ergebnistyp parametrisiert sind: {4}.
+CWWKD1005.find.rtrn.err=CWWKD1005E: {0} {1} ist ung\u00fcltig. Die Methode gibt {2} R\u00fcckgabetyp an, der nicht vom {3} konvertierbar ist. Der Ergebnistyp einer Suchoperation muss der Entit\u00e4tstyp, ein Typ einer Entit\u00e4tseigenschaft, ein Java-Datensatz, der aus Entit\u00e4tseigenschaften besteht, oder ein Typ sein, der durch die Abfrage erstellt wurde, die der Abfrageanmerkung bereitgestellt wird. Der R\u00fcckgabetyp der Repository-Suchmethode kann der Ergebnistyp, ein Array des Ergebnistyps oder einer der folgenden Typen sein, die mit dem Ergebnistyp parametrisiert sind: {4}
 CWWKD1005.find.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr Repository-Findmethoden.
 CWWKD1005.find.rtrn.err.useraction=Eine Liste der g\u00fcltigen R\u00fcckgabetypen f\u00fcr Repository-Suchmethoden finden Sie in der Javadoc-Information zu Jakarta Data.
 
@@ -58,7 +58,7 @@ CWWKD1007.updel.rtrn.err=CWWKD1007E: Der {0} R\u00fcckgabetyp der {1} Methode de
 CWWKD1007.updel.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr einen Aktualisierungs- oder L\u00f6schvorgang.
 CWWKD1007.updel.rtrn.err.useraction=Aktualisieren Sie die Repository-Methode, um einen der unterst\u00fctzten R\u00fcckgabetypen zu verwenden.
 
-CWWKD1008.ambig.rtrn.err=CWWKD1008E: Der {0} R\u00fcckgabetyp der {1}-Methode der {2}-Repository-Schnittstelle ist als R\u00fcckgabetyp mehrdeutig, da er mehreren Entit\u00e4tseigenschaften entspricht: {3}. Die Repository-Methode muss zur Annotation Query wechseln und eine JDQL- oder JPQL-Abfrage mit einer SELECT-Klausel verwenden, die angibt, welche Entit\u00e4tseigenschaft zur\u00fcckgegeben werden soll.
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: {0} {1} {2} ist als R\u00fcckgabetyp nicht eindeutig, da er mehreren Entit\u00e4tseigenschaften entspricht: {3} Die Repository-Methode muss zur Anmerkung "Query" wechseln und eine Abfrage mit einer SELECT-Klausel verwenden, die angibt, welche Entit\u00e4tseigenschaft zur\u00fcckgegeben werden soll.
 CWWKD1008.ambig.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr eine L\u00f6schmethode.
 CWWKD1008.ambig.rtrn.err.useraction=Aktualisieren Sie die Repository-Methode, um die Abfrage-Anmerkung zur Auswahl der Entit\u00e4tseigenschaft zu verwenden.
 
@@ -111,15 +111,15 @@ CWWKD1020.invalid.param.type=CWWKD1020E: Parameter der {0}-Methode der {1}-Repos
 CWWKD1020.invalid.param.type.explanation=Der Parametertyp ist bei dieser Art von Methode nicht zul\u00e4ssig.
 CWWKD1020.invalid.param.type.useraction=Aktualisieren Sie die Repository-Methode, um einen Methodenparameter f\u00fcr jeden Wert zu definieren, der f\u00fcr einen Vergleich erforderlich ist.
 
-CWWKD1021.insufficient.params=CWWKD1021E: Die {0}-Methode der {1}-Repository-Schnittstelle hat {2}-Parameter, aber die Abfragebedingungen, die durch die Methode definiert werden, erfordern {3}-Parameter. Die JPQL-Abfrage f\u00fcr die Methode lautet: {4}.
+CWWKD1021.insufficient.params=CWWKD1021E: {0} {1} hat {2} Parameter, aber die Abfragebedingungen, die durch die Methode definiert werden, erfordern {3} Parameter. Die Abfrage f\u00fcr die Methode lautet: {4} }.
 CWWKD1021.insufficient.params.explanation=Abfragebedingungen, die Vergleiche von Werten definieren, erfordern eine entsprechende Anzahl von Repository-Methodenparametern, um die Werte zu liefern.
 CWWKD1021.insufficient.params.useraction=Aktualisieren Sie die Repository-Methode, um einen Methodenparameter f\u00fcr jeden Wert zu definieren, der f\u00fcr einen Vergleich erforderlich ist.
 
-CWWKD1022.too.many.params=CWWKD1022E: Die Abfragebedingungen der {0}-Methode der {1}-Repository-Schnittstelle erfordern {2}-Parameter, aber die Signatur der Repository-Methode hat {3}-Parameter. Die JPQL-Abfrage f\u00fcr die Methode lautet: {4}.
+CWWKD1022.too.many.params=CWWKD1022E: Die Abfragebedingungen {0} {1} erfordern {2}, aber die Repository-Methodensignatur hat {3} Parameter. Die Abfrage f\u00fcr die Methode lautet: {4} }.
 CWWKD1022.too.many.params.explanation=Abfragebedingungen, die Vergleiche von Werten definieren, erfordern eine entsprechende Anzahl von Repository-Methodenparametern, um die Werte zu liefern. Zus\u00e4tzliche Parameter sind nicht erlaubt.
 CWWKD1022.too.many.params.useraction=Aktualisieren Sie die Signatur der Repository-Methode, um zus\u00e4tzliche Parameter zu entfernen, die nicht den angegebenen Bedingungen entsprechen.
 
-CWWKD1023.extra.param=CWWKD1023E: Die Abfragebedingungen der {0}-Methode der {1}-Repository-Schnittstelle erfordern {2}-Parameter, aber die Repository-Methode hat einen zus\u00e4tzlichen {3}-Parameter. Die JPQL-Abfrage f\u00fcr die Methode lautet: {4}.
+CWWKD1023.extra.param=CWWKD1023E: Die Abfragebedingungen der {0} -Methode der {1} -Repository-Schnittstelle erfordern {2} -Parameter, aber die Repository-Methode hat einen zus\u00e4tzlichen {3} -Parameter. Die Abfrage f\u00fcr die Methode lautet: {4} }.
 CWWKD1023.extra.param.explanation=Abfragebedingungen, die Vergleiche von Werten definieren, erfordern eine entsprechende Anzahl von Repository-Methodenparametern, um die Werte zu liefern. Zus\u00e4tzliche Parameter sind nicht erlaubt.
 CWWKD1023.extra.param.useraction=Aktualisieren Sie die Signatur der Repository-Methode, um zus\u00e4tzliche Parameter zu entfernen, die nicht den angegebenen Bedingungen entsprechen.
 
@@ -413,3 +413,23 @@ CWWKD1094.return.mismatch.useraction=Aktualisieren Sie die Repository-Methode, u
 CWWKD1095.repo.err=CWWKD1095E: Eine Implementierung der {0} Repository-Schnittstelle kann aufgrund eines Fehlers nicht bereitgestellt werden. Die Repository-Anmerkung lautet {1}. Die prim\u00e4re Entit\u00e4tsklasse ist {2}. Der Fehler ist: {3}
 CWWKD1095.repo.err.explanation=Der integrierte Jakarta Data Provider kann aufgrund eines Fehlers keine Instanz des Repositorys bereitstellen.
 CWWKD1095.repo.err.useraction=Untersuchen Sie den Fehler und korrigieren Sie die Repository-Schnittstelle, die Entit\u00e4ten, die Datenspeicherkonfiguration oder die Datenbank.
+
+CWWKD1096.orderby.incompat=CWWKD1096E: {0} {1} hat OrderBy, aber {0} ist keine Such- oder L\u00f6schoperation, die Entit\u00e4ten zur\u00fcckgibt.
+CWWKD1096.orderby.incompat.explanation=OrderBy ist nicht mit dem Typ des Repository-Vorgangs kompatibel.
+CWWKD1096.orderby.incompat.useraction=Entfernen Sie die Anmerkung OrderBy ".
+
+CWWKD1097.param.incompat=CWWKD1097E: {0} {1} hat {2}, aber {0} ist keine Such- oder L\u00f6schoperation, die Entit\u00e4ten zur\u00fcckgibt.
+CWWKD1097.param.incompat.explanation=Die Parameter "Order", "Sort" und "Limit" sind mit dem Typ des Repository-Vorgangs nicht kompatibel.
+CWWKD1097.param.incompat.useraction=Entfernen Sie den Parameter "Order, Sort, or Limit".
+
+CWWKD1098.spec.param.position.err=CWWKD1098E: {0} {1} hat {2}, der vor den Abfrageparametern steht. Parametertypen, die in {3} eine besondere Bedeutung haben, m\u00fcssen in der Signatur der Repository-Methode nach den anderen Parametern positioniert werden.
+CWWKD1098.spec.param.position.err.explanation=Wenn spezielle, von Jakarta Data definierte Parametertypen in einer Repository-Methodensignatur enthalten sind, m\u00fcssen sie nach allen Abfrageparametern positioniert werden.
+CWWKD1098.spec.param.position.err.useraction=Verschieben Sie die speziellen, von Jakarta Data definierten Parametertypen an das Ende der Signatur der Repository-Methode.
+
+CWWKD1099.first.keyword.incompat=CWWKD1099E: {0} {1} hat einen Namen, der das Schl\u00fcsselwort "First" enth\u00e4lt, das mit {2} der Methode inkompatibel ist.
+CWWKD1099.first.keyword.incompat.explanation=Eine Abfrage nach Methodenname, die einen Limit- oder PageRequest -Parameter enth\u00e4lt, kann das Schl\u00fcsselwort "First" nicht verwenden.
+CWWKD1099.first.keyword.incompat.useraction=Entfernen Sie das erste Schl\u00fcsselwort aus dem Methodennamen.
+
+CWWKD1100.cursor.requires.sort=CWWKD1100E: {0} {1} gibt {2} zur\u00fcck, verf\u00fcgt jedoch nicht \u00fcber OrderBy oder einen der folgenden Parameter zur Angabe von Sortierkriterien: {3} Sortierkriterien sind f\u00fcr die cursorbasierte Seitennummerierung erforderlich und k\u00f6nnen nicht innerhalb einer ORDER BY-Klausel eines Anmerkungswerts f\u00fcr eine Abfrage angegeben werden.
+CWWKD1100.cursor.requires.sort.explanation=Die seitenbasierte Paginierung erfordert Sortierkriterien.
+CWWKD1100.cursor.requires.sort.useraction=Entfernen Sie die "ORDER BY"-Klausel aus dem Wert der Anmerkungsabfrage, falls eine vorhanden ist. F\u00fcgen Sie OrderBy oder einen Repository-Methodenparameter hinzu, um die Sortierkriterien anzugeben.

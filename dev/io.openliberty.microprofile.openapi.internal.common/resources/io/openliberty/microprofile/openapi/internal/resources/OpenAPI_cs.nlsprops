@@ -161,3 +161,15 @@ OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Ujist\u011bte se, \u017ee a
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: Konfigura\u010dn\u00ed prvek {0} obsahuje \u201e {1} \u201c, ale neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 nasazen\u00e9 aplikaci nebo webov\u00e9mu modulu.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=Server je nakonfigurov\u00e1n tak, aby vytvo\u0159il dokumentaci OpenAPI pro n\u00e1zev aplikace nebo modulu, ale nebyla naimplementov\u00e1na \u017e\u00e1dn\u00e1 aplikace nebo webov\u00fd modul s t\u00edmto n\u00e1zvem.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=Zkontrolujte, zda se v\u0161echny aplikace spustily spr\u00e1vn\u011b a zda jsou spr\u00e1vn\u011b zad\u00e1na jm\u00e9na v konfiguraci.
+
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I=CWWKO1685I: Vlastnost {0} MicroProfile Config je ignorov\u00e1na, proto\u017ee ekvivalentn\u00ed konfigurace je uvedena v souboru server.xml.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.explanation=Pokud je tato vlastnost nastavena a stejn\u00e1 funkce je konfigurov\u00e1na pomoc\u00ed souboru server.xml, pou\u017eije se konfigurace v souboru server.xml a vlastnost MicroProfile Config se ignoruje.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.useraction=Odebr\u00e1n\u00ed vlastnosti MicroProfile Config.
+
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W=CWWKO1686W: Vlastnost {0} MicroProfile Config je ignorov\u00e1na, proto\u017ee v souboru server.xml je uvedena konfliktn\u00ed konfigurace.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.explanation=Pokud je tato vlastnost nastavena a stejn\u00e1 funkce je konfigurov\u00e1na pomoc\u00ed souboru server.xml, pou\u017eije se konfigurace v souboru server.xml a vlastnost MicroProfile Config se ignoruje.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Odeberte vlastnost MicroProfile Config a zkontrolujte, zda je konfigurace v souboru server.xml spr\u00e1vn\u00e1.
+
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: Anota\u010dn\u00ed prvek {0} ve t\u0159\u00edd\u011b {1} je ignorov\u00e1n, proto\u017ee vy\u017eaduje verzi OpenAPI {2}, ale aktu\u00e1ln\u00ed verze OpenAPI je {3}.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=Prvek anotace se vztahuje k funkci p\u0159idan\u00e9 do nov\u011bj\u0161\u00ed verze specifikace OpenAPI, ne\u017e je ta, kter\u00e1 je nakonfigurov\u00e1na. Pou\u017e\u00edvan\u00e1 verze OpenAPI nem\u016f\u017ee tyto informace reprezentovat, proto jsou z vytvo\u0159en\u00e9 dokumentace OpenAPI vylou\u010deny.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Zva\u017ete odstran\u011bn\u00ed prvku anotace nebo nastaven\u00ed konfigura\u010dn\u00edho prvku openAPIVersion na verzi, kter\u00e1 jej podporuje v souboru server.xml.

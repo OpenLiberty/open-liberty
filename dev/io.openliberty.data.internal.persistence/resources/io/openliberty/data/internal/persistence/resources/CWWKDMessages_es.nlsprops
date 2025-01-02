@@ -38,15 +38,15 @@ CWWKD1002.method.annos.err=CWWKD1002E: El m\u00e9todo {0} de la interfaz de repo
 CWWKD1002.method.annos.err.explanation=Esta combinaci\u00f3n de anotaciones no es v\u00e1lida en un \u00fanico m\u00e9todo de repositorio.
 CWWKD1002.method.annos.err.useraction=Localice la interfaz y el m\u00e9todo del repositorio y determine la combinaci\u00f3n correcta de anotaciones del m\u00e9todo.
 
-CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz de repositorio {2} no es un tipo de retorno v\u00e1lido para un m\u00e9todo {3} de repositorio. Los tipos de retorno v\u00e1lidos incluyen: {4}.
-CWWKD1003.lifecycle.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno admitidos para los m\u00e9todos Insertar, Actualizar y Guardar.
-CWWKD1003.lifecycle.rtrn.err.useraction=Consulte la informaci\u00f3n de Jakarta Data Javadoc para las anotaciones Insert, Update y Save para conocer los tipos de retorno v\u00e1lidos.
+CWWKD1003.rtrn.err=CWWKD1003E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz {2} del repositorio no es un tipo de retorno v\u00e1lido para un m\u00e9todo {3} del repositorio. Los tipos de retorno v\u00e1lidos son: {4}.
+CWWKD1003.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno admitidos para el tipo declarado de m\u00e9todo de repositorio.
+CWWKD1003.rtrn.err.useraction=Consulte la informaci\u00f3n de Jakarta Data Javadoc para las anotaciones Insert, Update y Save y la documentaci\u00f3n Query by Method name para conocer los tipos de retorno v\u00e1lidos.
 
 CWWKD1004.general.rtrn.err=CWWKD1004E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz de repositorio {2} no es un tipo de retorno v\u00e1lido para un m\u00e9todo de repositorio.
 CWWKD1004.general.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno admitidos para el tipo de m\u00e9todo del repositorio.
 CWWKD1004.general.rtrn.err.useraction=Consulte la informaci\u00f3n de Jakarta Data Javadoc para obtener una lista de tipos de retorno v\u00e1lidos para el tipo de m\u00e9todo de repositorio.
 
-CWWKD1005.find.rtrn.err=CWWKD1005E: El m\u00e9todo {0} de la interfaz de repositorio {1} no es v\u00e1lido. El m\u00e9todo especifica un tipo de retorno {2} que no es convertible desde el tipo de entidad {3}. El tipo de resultado de una operaci\u00f3n de b\u00fasqueda debe ser el tipo de entidad, un tipo de una propiedad de entidad, un registro Java compuesto de propiedades de entidad o un tipo construido por el JPQL o JDQL que se suministra a la anotaci\u00f3n Query. El tipo de retorno del m\u00e9todo find del repositorio puede ser el tipo de resultado, un array del tipo de resultado, o cualquiera de los siguientes tipos parametrizados con el tipo de resultado: {4}.
+CWWKD1005.find.rtrn.err=CWWKD1005E: El m\u00e9todo {0} de la interfaz del repositorio {1} no es v\u00e1lido. El m\u00e9todo especifica un tipo de retorno {2} que no es convertible desde el tipo de entidad {3}. El tipo de resultado de una operaci\u00f3n de b\u00fasqueda debe ser el tipo de entidad, un tipo de una propiedad de entidad, un registro Java compuesto de propiedades de entidad o un tipo construido por la consulta que se proporciona a la anotaci\u00f3n Consulta. El tipo de retorno del m\u00e9todo find del repositorio puede ser el tipo de resultado, un array del tipo de resultado, o cualquiera de los siguientes tipos parametrizados con el tipo de resultado: {4}.
 CWWKD1005.find.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno soportados para los m\u00e9todos de b\u00fasqueda de repositorios.
 CWWKD1005.find.rtrn.err.useraction=Consulte la informaci\u00f3n de Jakarta Data Javadoc para obtener una lista de tipos de retorno v\u00e1lidos para los m\u00e9todos de b\u00fasqueda de repositorios.
 
@@ -58,7 +58,7 @@ CWWKD1007.updel.rtrn.err=CWWKD1007E: El tipo de retorno {0} del m\u00e9todo {1} 
 CWWKD1007.updel.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno admitidos para una operaci\u00f3n de actualizaci\u00f3n o eliminaci\u00f3n.
 CWWKD1007.updel.rtrn.err.useraction=Actualiza el m\u00e9todo del repositorio para utilizar uno de los tipos de retorno soportados.
 
-CWWKD1008.ambig.rtrn.err=CWWKD1008E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz de repositorio {2} es ambiguo como tipo de retorno porque corresponde a m\u00faltiples propiedades de entidad: {3}. El m\u00e9todo de repositorio debe cambiar a la anotaci\u00f3n Query y utilizar una consulta JDQL o JPQL con una cl\u00e1usula SELECT que especifique qu\u00e9 propiedad de entidad devolver.
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz del repositorio {2} es ambiguo como tipo de retorno porque corresponde a m\u00faltiples propiedades de la entidad: {3}. El m\u00e9todo de repositorio debe cambiar a la anotaci\u00f3n Query y utilizar una consulta con una cl\u00e1usula SELECT que especifique qu\u00e9 propiedad de entidad devolver.
 CWWKD1008.ambig.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno admitidos para un m\u00e9todo de eliminaci\u00f3n.
 CWWKD1008.ambig.rtrn.err.useraction=Actualice el m\u00e9todo del repositorio para utilizar la anotaci\u00f3n Query para seleccionar la propiedad de la entidad.
 
@@ -111,15 +111,15 @@ CWWKD1020.invalid.param.type=CWWKD1020E: Los par\u00e1metros del m\u00e9todo {0}
 CWWKD1020.invalid.param.type.explanation=El tipo de par\u00e1metro no est\u00e1 permitido en este tipo de m\u00e9todo.
 CWWKD1020.invalid.param.type.useraction=Actualice el m\u00e9todo de repositorio para definir un par\u00e1metro de m\u00e9todo para cada valor requerido por una comparaci\u00f3n.
 
-CWWKD1021.insufficient.params=CWWKD1021E: El m\u00e9todo {0} de la interfaz del repositorio {1} tiene par\u00e1metros {2}, pero las condiciones de consulta que define el m\u00e9todo requieren par\u00e1metros {3}. La consulta JPQL para el m\u00e9todo es: {4}.
+CWWKD1021.insufficient.params=CWWKD1021E: El m\u00e9todo {0} de la interfaz del repositorio {1} tiene {2} par\u00e1metros, pero las condiciones de consulta que define el m\u00e9todo requieren {3} par\u00e1metros. La consulta del m\u00e9todo es: {4}.
 CWWKD1021.insufficient.params.explanation=Las condiciones de consulta que definen comparaciones de valores requieren un n\u00famero correspondiente de par\u00e1metros de m\u00e9todo de repositorio para suministrar los valores.
 CWWKD1021.insufficient.params.useraction=Actualice el m\u00e9todo de repositorio para definir un par\u00e1metro de m\u00e9todo para cada valor requerido por una comparaci\u00f3n.
 
-CWWKD1022.too.many.params=CWWKD1022E: Las condiciones de consulta del m\u00e9todo {0} de la interfaz del repositorio {1} requieren par\u00e1metros {2}, pero la firma del m\u00e9todo del repositorio tiene par\u00e1metros {3}. La consulta JPQL para el m\u00e9todo es: {4}.
+CWWKD1022.too.many.params=CWWKD1022E: Las condiciones de consulta del m\u00e9todo {0} de la interfaz del repositorio {1} requieren {2} par\u00e1metros, pero la firma del m\u00e9todo del repositorio tiene {3} par\u00e1metros. La consulta del m\u00e9todo es: {4}.
 CWWKD1022.too.many.params.explanation=Las condiciones de consulta que definen comparaciones de valores requieren un n\u00famero correspondiente de par\u00e1metros de m\u00e9todo de repositorio para suministrar los valores. No se permiten par\u00e1metros adicionales.
 CWWKD1022.too.many.params.useraction=Actualice la firma del m\u00e9todo del repositorio para eliminar los par\u00e1metros adicionales que no corresponden a las condiciones declaradas.
 
-CWWKD1023.extra.param=CWWKD1023E: Las condiciones de consulta del m\u00e9todo {0} de la interfaz de repositorio {1} requieren par\u00e1metros {2}, pero el m\u00e9todo de repositorio tiene un par\u00e1metro adicional {3}. La consulta JPQL para el m\u00e9todo es: {4}.
+CWWKD1023.extra.param=CWWKD1023E: Las condiciones de consulta del m\u00e9todo {0} de la interfaz del repositorio {1} requieren {2} par\u00e1metros, pero el m\u00e9todo del repositorio tiene un par\u00e1metro adicional {3}. La consulta del m\u00e9todo es: {4}.
 CWWKD1023.extra.param.explanation=Las condiciones de consulta que definen comparaciones de valores requieren un n\u00famero correspondiente de par\u00e1metros de m\u00e9todo de repositorio para suministrar los valores. No se permiten par\u00e1metros adicionales.
 CWWKD1023.extra.param.useraction=Actualice la firma del m\u00e9todo del repositorio para eliminar los par\u00e1metros adicionales que no corresponden a las condiciones declaradas.
 
@@ -413,3 +413,23 @@ CWWKD1094.return.mismatch.useraction=Actualice el m\u00e9todo de repositorio par
 CWWKD1095.repo.err=CWWKD1095E: No se puede proporcionar una implementaci\u00f3n de la interfaz de repositorio {0} debido a un error. La anotaci\u00f3n del repositorio es {1}. La clase de entidad primaria es {2}. El error es: {3}
 CWWKD1095.repo.err.explanation=El proveedor incorporado de Jakarta Data no puede proporcionar una instancia del repositorio debido a un error.
 CWWKD1095.repo.err.useraction=Investigue el error y corrija la interfaz del repositorio, las entidades, la configuraci\u00f3n del almac\u00e9n de datos o la base de datos.
+
+CWWKD1096.orderby.incompat=CWWKD1096E: El m\u00e9todo {0} del repositorio {1} tiene una anotaci\u00f3n OrderBy, pero el m\u00e9todo {0} no es una operaci\u00f3n de b\u00fasqueda o de borrado que devuelva entidades.
+CWWKD1096.orderby.incompat.explanation=La anotaci\u00f3n OrderBy no es compatible con el tipo de operaci\u00f3n del repositorio.
+CWWKD1096.orderby.incompat.useraction=Elimina la anotaci\u00f3n OrderBy.
+
+CWWKD1097.param.incompat=CWWKD1097E: El m\u00e9todo {0} del repositorio {1} tiene un par\u00e1metro {2}, pero el m\u00e9todo {0} no es una operaci\u00f3n de b\u00fasqueda ni de borrado que devuelva entidades.
+CWWKD1097.param.incompat.explanation=Los par\u00e1metros Orden, Ordenar y L\u00edmite no son compatibles con el tipo de operaci\u00f3n del repositorio.
+CWWKD1097.param.incompat.useraction=Elimine el par\u00e1metro Orden, Clasificaci\u00f3n o L\u00edmite.
+
+CWWKD1098.spec.param.position.err=CWWKD1098E: El m\u00e9todo {0} del repositorio {1} tiene un par\u00e1metro {2} que se sit\u00faa antes de los par\u00e1metros de consulta. Los tipos de par\u00e1metros que tienen un significado especial en Jakarta Data {3} ) deben colocarse despu\u00e9s de los otros par\u00e1metros en la firma del m\u00e9todo del repositorio.
+CWWKD1098.spec.param.position.err.explanation=Cuando se incluyen tipos de par\u00e1metros especiales definidos por Jakarta Data en la firma de un m\u00e9todo de repositorio, deben colocarse despu\u00e9s de todos los par\u00e1metros de consulta.
+CWWKD1098.spec.param.position.err.useraction=Mueve los tipos de par\u00e1metros especiales definidos por Jakarta Data a posiciones al final de la firma del m\u00e9todo del repositorio.
+
+CWWKD1099.first.keyword.incompat=CWWKD1099E: El m\u00e9todo {0} del repositorio {1} tiene un nombre que incluye la palabra clave First, que es incompatible con el par\u00e1metro {2} del m\u00e9todo.
+CWWKD1099.first.keyword.incompat.explanation=Un m\u00e9todo Query by Method Name que incluya un par\u00e1metro Limit o PageRequest no puede utilizar la palabra clave First.
+CWWKD1099.first.keyword.incompat.useraction=Elimina la palabra clave First del nombre del m\u00e9todo.
+
+CWWKD1100.cursor.requires.sort=CWWKD1100E: El m\u00e9todo {0} del repositorio {1} devuelve {2} pero no tiene una anotaci\u00f3n OrderBy ni ninguno de los siguientes par\u00e1metros para especificar criterios de ordenaci\u00f3n: {3}. Los criterios de ordenaci\u00f3n son necesarios para la paginaci\u00f3n basada en cursor y no pueden especificarse dentro de una cl\u00e1usula ORDER BY de un valor de anotaci\u00f3n de consulta.
+CWWKD1100.cursor.requires.sort.explanation=La paginaci\u00f3n basada en cursores requiere criterios de ordenaci\u00f3n.
+CWWKD1100.cursor.requires.sort.useraction=Elimina la cl\u00e1usula ORDER BY del valor de la anotaci\u00f3n Query si se encuentra una all\u00ed. A\u00f1ada una anotaci\u00f3n OrderBy o un par\u00e1metro de m\u00e9todo de repositorio para especificar los criterios de ordenaci\u00f3n.
