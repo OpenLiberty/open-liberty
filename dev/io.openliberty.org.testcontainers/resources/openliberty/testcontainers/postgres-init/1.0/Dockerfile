@@ -1,7 +1,7 @@
 # Base image used by external users is overwritten at runtime
-# by a mirrored version from artifactory for internal users.
+# by a mirrored version from Artifactory for internal users.
 
-ARG BASE_IMAGE=public.ecr.aws/docker/library/postgres:17.0-alpine
+ARG BASE_IMAGE="public.ecr.aws/docker/library/postgres:17.0-alpine"
 
 FROM ${BASE_IMAGE}
 

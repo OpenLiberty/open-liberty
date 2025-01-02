@@ -34,14 +34,14 @@ public class ImageBuilder {
     private static final Class<?> c = ImageBuilder.class;
 
     // Ensures when we look for cached images Docker doesn't attempt to reach out to docker.io
-    private static final String LOCAL_REGISTRY = "localhost";
+    public static final String LOCAL_REGISTRY = "localhost";
+
+    // The repository where all Open Liberty images will be cached
+    public static final String REPOSITORY = "openliberty/testcontainers/";
 
     // The --build-arg necessary to overwrite the default BASE_IMAGE in the Dockerfile
     // with the mirrored image in artifactory
-    private static final String BASE_IMAGE = "BASE_IMAGE";
-
-    // The repository where all Open Liberty images will be cached
-    static final String REPOSITORY = "openliberty/testcontainers/";
+    public static final String BASE_IMAGE = "BASE_IMAGE";
 
     // Image to build
     private final DockerImageName image;
