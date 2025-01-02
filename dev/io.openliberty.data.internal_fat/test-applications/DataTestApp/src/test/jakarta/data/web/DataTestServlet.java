@@ -1982,6 +1982,7 @@ public class DataTestServlet extends FATServlet {
      * OrderBy annotation.
      */
     @Test
+    @SkipIfSysProp(DB_Oracle) //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/30444
     public void testFindAndDeleteWithOrderBy() {
         String testName = "TestFindAndDeleteWithOrderByKeyword";
         //                        id   length   width   height  description
