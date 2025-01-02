@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package com.ibm.ws.testcontainers.example;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
-import java.io.File;
 import java.time.Duration;
 
 import org.junit.AfterClass;
@@ -23,14 +22,12 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
-import org.testcontainers.images.builder.ImageFromDockerfile;
-import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -57,46 +54,43 @@ public class ProgrammaticImageTest {
 
     /**
      * <pre>
-     * There are times where we might want to extend a base docker image for our
-     * own testing needs. For example, using a docker image that already uses a startup script.
-     * It is possible with testcontainers to programmatically build a docker image instead of using
-     * a prebuilt custom image or building from a dockerfile.
+     * There are times where we might need to extend a base docker image for our own testing needs.
+     * For example, using a docker image that already has a startup script, or custom libraries.
      *
-     * NOTE: building from a Dockerfile should be avoided at all costs.
+     * It is possible with testcontainers to programmatically build a docker image at runtime instead of using
+     * a pre-built community image which are consider unsafe.
      *
-     * Here we are pulling from a base image postgres:17.0-alpine
+     * To accomplish this goal the recommended way is to create a Dockerfile in the io.openliberty.org.testcontainers project.
+     * These Dockerfiles are stored using the following directory structure:
      *
-     * However, we use special processing for the image name to ensure that when testing locally we pull
-     * from DockerHub, and when testing against a remote docker image we use a subsituted image name to pull
-     * from artifactory.
+     * - io.openliberty.org.testcontainers/resources/openliberty/testcontainers/[image-name]/[image-version]/
+     *   - Dockerfile
+     *   - [supporting-files]
+     *   - [supporting-directories]
      *
-     * Example:
-     * ImageNameSubstitutor.instance().apply(DockerImageName.parse("public.ecr.aws/docker/library/postgres:17.0-alpine")).asCanonicalNameString()
+     * A custom builder class is available in fattest.simplicity {@link componenttest.containers.ImageBuilder}
+     * which is required to build am image from a Dockerfile in io.openliberty.org.testcontainers using the syntax:
      *
-     * When testing locally a DefaultImageNameSubstitutor will be used and postgres:17.0-alpine will be returned as normal.
-     * When testing on a remote docker host, our internal ArtifactoryImageNameSubstitutor will be used and
-     *   [ARTIFACTORY_REGISTRY]/wasliberty-docker-remote/postgres:17.0-alpine will be returned
+     * ImageBuilder.build("[image-name]/[image-version]").with("[BASE_IMAGE]").get()
      *
+     * Where "BASE_IMAGE" is the name of the base image for the FROM line of the Dockerfile.
+     * This is necessary to provide since we will substitute the image name at runtime on our build systems
+     * to avoid pulling from registries outside of our internal mirrors.
+     *
+     * NOTE: If the image name is available on a docker host, we will not attempt to re-build the image.
+     * Therefore, any updates to a Dockerfile MUST result in a new version of the image.
      * </pre>
-     *
-     * @see DockerfileTest
      */
-
-    private static final DockerImageName postgresql = ImageNameSubstitutor
-                    .instance() //
-                    .apply(DockerImageName.parse("public.ecr.aws/docker/library/postgres:17.0-alpine"));
-
     @ClassRule
-    public static GenericContainer<?> container = new GenericContainer<>(//
-                    new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(postgresql.asCanonicalNameString())//
-                                    .copy("/docker-entrypoint-initdb.d/initDB.sql", "/docker-entrypoint-initdb.d/initDB.sql")
-                                    .build())
-                                    .withFileFromFile("/docker-entrypoint-initdb.d/initDB.sql", new File("lib/LibertyFATTestFiles/postgres/scripts/initDB.sql"), 644))
+    public static GenericContainer<?> container = new GenericContainer<>(ImageBuilder //
+                    .build("postgres-init:1.0")
+                    .with("public.ecr.aws/docker/library/postgres:17.0-alpine")
+                    .get())
                     .withExposedPorts(POSTGRE_PORT)
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)
                     .withEnv("POSTGRES_PASSWORD", POSTGRES_PASSWORD)
-                    .withLogConsumer(new SimpleLogConsumer(ContainersTest.class, "postgres"))
+                    .withLogConsumer(new SimpleLogConsumer(ProgrammaticImageTest.class, "postgres-init"))
                     .waitingFor(new LogMessageWaitStrategy()
                                     .withRegEx(".*database system is ready to accept connections.*\\s")
                                     .withTimes(2)
