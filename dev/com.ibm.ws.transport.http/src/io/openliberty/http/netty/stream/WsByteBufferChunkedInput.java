@@ -80,13 +80,11 @@ public class WsByteBufferChunkedInput implements ChunkedInput<ByteBuf> {
     }
 
     /**
-     * Closes this chunked input and performs any necessary cleanup. No additional action is taken by default.
-     *
-     * @throws Exception if closing fails
+     * No additional action is taken by default.
      */
     @Override
     public void close() throws Exception {
-
+        //NoOp
     }
 
     @Override
