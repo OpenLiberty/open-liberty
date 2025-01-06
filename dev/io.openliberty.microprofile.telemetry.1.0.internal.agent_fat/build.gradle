@@ -12,8 +12,10 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 def grpcVersion='1.57.2'
 
 configurations {
+  telemetryAgent
+  telemetryAgent129
+  telemetryAgent210
   jaegerClient
-  zipkinTracer
 }
 
 dependencies {
@@ -37,9 +39,12 @@ dependencies {
   requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
   requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common')
   
-  //Needed for opentracingZipkin-0.33 user feature
-  zipkinTracer 'net.wasdev.wlp.tracer:liberty-opentracing-zipkintracer:3.0:sample@zip'
+  telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.19.0'
   
+  telemetryAgent129 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.29.0'
+  
+  telemetryAgent210 'io.opentelemetry.javaagent:opentelemetry-javaagent:2.0.0'
+
   // Jaeger Client is needed for testing with mpOpenTracing-3.0
   jaegerClient 'io.opentracing:opentracing-util:0.33.0'
   jaegerClient 'io.opentracing:opentracing-noop:0.33.0'
@@ -57,27 +62,27 @@ dependencies {
   jaegerClient 'org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20'
 }
 
-task addJaegerClientLibs (type: Copy) {
-    into new File(autoFvtDir, 'publish/servers/crossFeatureOpenTracingServer/jaegerLib')
-    from configurations.jaegerClient
+task addAgent(type: Copy) {
+  from configurations.telemetryAgent
+  into new File(autoFvtDir, 'publish/files/agent-119')
+  rename { 'opentelemetry-javaagent.jar' }
 }
 
-task extractZipkinTracer(type:Sync) {
-    configurations.zipkinTracer.each {
-        from(zipTree(it))
-    }
-    into('build/liberty-opentracing-zipkintracer')
+task addAgent129(type: Copy) {
+  from configurations.telemetryAgent129
+  into new File(autoFvtDir, 'publish/files/agent-129')
+  rename { 'opentelemetry-javaagent.jar' }
 }
 
-task copyZipkinTracer(type: Copy){
-  dependsOn extractZipkinTracer
-  from('build/liberty-opentracing-zipkintracer/extension/lib')
 
-  into new File(autoFvtDir, 'publish/bundles')
+task addAgent210(type: Copy) {
+  from configurations.telemetryAgent210
+  into new File(autoFvtDir, 'publish/files/agent-210')
+  rename { 'opentelemetry-javaagent.jar' }
 }
 
-jar.dependsOn extractZipkinTracer
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn addJakartaTransformer
-addRequiredLibraries.dependsOn addJaegerClientLibs
-addRequiredLibraries.dependsOn copyZipkinTracer
+addRequiredLibraries.dependsOn addAgent
+addRequiredLibraries.dependsOn addAgent129
+addRequiredLibraries.dependsOn addAgent210

@@ -1,0 +1,5 @@
+-javaagent:opentelemetry-javaagent.jar
+#-Dotel.javaagent.debug=true
+
+# This file is used by AgentConfigTest.testConfigFromJvmOptions
+-Dotel.service.name=jvm-options-test-service
