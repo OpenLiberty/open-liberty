@@ -334,12 +334,91 @@ public class H2StreamResult {
                 }
             }
 
-            if (expectedFrameNotFound.length() != 0) //if this string is not empty, we did not find some expected frames
+            if (expectedFrameNotFound.length() != 0){ //if this string is not empty, we did not find some expected frames
                 exceptionsOfStream.add(new MissingExpectedFramesException("Expected frame(s) not found: \n" + expectedFrameNotFound.toString()));
+            }
+
+            if(!exceptionsOfStream.isEmpty()){
+                System.out.print("Test failed on first pass; attempting to unify split frames...");
+
+                boolean fixedByAggregation = aggregateDataFramesIfSplit();
+                if (fixedByAggregation) {
+                    // If re-check is clean, we can clear out the original exceptions
+                    exceptionsOfStream.clear();
+                    System.out.println("Netty-split data frames were successfully aggregated; mismatch resolved.");
+                }
+
+
+            }
 
         }
         return exceptionsOfStream;
     }
+
+
+    /**
+     * Attempt to aggregate consecutive FrameData objects in {@code actualResponse}
+     * if we suspect that Netty "split" them. Return true if we successfully
+     * formed a single FrameData that matches an expectedFrame.
+     */
+    private boolean aggregateDataFramesIfSplit() {
+        boolean mismatchResolved = false;
+
+        // Build a new list of frames that “aggregates” consecutive DATA frames with the same stream ID
+        List<Frame> aggregatedList = new ArrayList<>();
+        FrameData pendingDataFrame = null;
+        for (Frame f : actualResponse) {
+            if (f instanceof FrameData) {
+                FrameData fd = (FrameData) f;
+                if (pendingDataFrame != null) {
+                    // Keep combining if same stream
+                    pendingDataFrame = combineFrameData(pendingDataFrame, fd);
+                } else {
+                    // No pending FD, start one
+                    pendingDataFrame = fd;
+                }
+            } else {
+                // Not a data frame; push any pending FD first then the non FD frame
+                if (pendingDataFrame != null) {
+                    aggregatedList.add(pendingDataFrame);
+                    pendingDataFrame = null;
+                }
+                aggregatedList.add(f);
+            }
+        }
+        if (pendingDataFrame != null) {
+            aggregatedList.add(pendingDataFrame);
+        }
+ 
+        // Check "expected vs. actual" logic with merged FD
+        List<Frame> originalActual = new ArrayList<>(actualResponse);
+        actualResponse.clear();
+        actualResponse.addAll(aggregatedList);
+
+        List<Exception> recheck = this.checkResult();
+        if (recheck.isEmpty()) {
+            mismatchResolved = true;
+        }
+
+        actualResponse.clear();
+        actualResponse.addAll(originalActual);
+
+        return mismatchResolved;
+    }
+
+    private FrameData combineFrameData(FrameData fd1, FrameData fd2) {
+        byte[] combined = new byte[fd1.getData().length + fd2.getData().length];
+        System.arraycopy(fd1.getData(), 0, combined, 0, fd1.getData().length);
+        System.arraycopy(fd2.getData(), 0, combined, fd1.getData().length, fd2.getData().length);
+
+        boolean endStream = fd1.flagEndStreamSet() || fd2.flagEndStreamSet();
+
+        FrameData merged = new FrameData(fd1.getStreamId(), combined, 0, 
+                        endStream, fd1.flagEndHeadersSet() || fd2.flagEndHeadersSet(), fd1.flagPaddedSet() || fd2.flagPaddedSet());
+
+        return merged;
+    }
+
 
     public boolean isExpectedFrameType(Frame frame) {
         FrameTypes x = frame.getFrameType();

@@ -355,6 +355,7 @@ public class H2FATDriverServlet extends FATServlet {
             secondFrameHeaders.setStreamID(5);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
             h2Client.addExpectedFrame(new FrameData(5, dataString.getBytes(), 0, false, false, false));
+            
 
             //Headers frame to send for "second" request
             List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -2792,7 +2793,7 @@ public class H2FATDriverServlet extends FATServlet {
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
         //length: 4, which is invalid
-        String priorityString = "0000040200000000037fffffffff";
+        String priorityString = "00000402000000000300000000";
         byte[] b = parseHexBinary(priorityString);
         h2Client.sendBytes(b);
 
