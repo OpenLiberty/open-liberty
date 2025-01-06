@@ -22,7 +22,7 @@
          <AD id="redirectJunctionPath" name="%redirectJunctionPath" description="%redirectJunctionPath.desc" required="false" type="String" />
          <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc" required="false" type="Boolean" default="true" />
          <AD id="issuerIdentifier" name="%issuerIdentifier" description="%issuerIdentifier.desc" required="false" type="String" />
-         <AD id="userIdentityToCreateSubject" name="%userIdentityToCreateSubject" description="%userIdentityToCreateSubject.desc"  required="true" type="String"  default="sub" />
+         <AD id="userIdentityToCreateSubject" name="%userIdentityToCreateSubject" description="%userIdentityToCreateSubject.desc" type="String"  />
          <AD id="mapIdentityToRegistryUser" name="%mapIdentityToRegistryUser" description="%mapIdentityToRegistryUser.desc" required="false" type="Boolean" default="false"/>
          <AD id="oidcclientRequestParameterSupported" name="internal" description="internal use only" required="false" type="Boolean" default="true"/>
          <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
@@ -82,8 +82,7 @@
              <Option label="%responseType.idTokenToken" value="id_token token" />
              <Option label="%responseType.Token" value="token" />
          </AD>
-         <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc"
-            required="false" type="String"/>
+         <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc" required="false" type="String" required="true" default="sub"/>
          <AD id="groupIdentifier" name="%groupIdentifier" description="%groupIdentifier.desc" required="false" type="String" default="groupIds" />
          <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc" required="false" type="String" default="realmName" />
          <AD id="uniqueUserIdentifier" name="%userUniqueIdentifier" description="%userUniqueIdentifier.desc" required="false" type="String" default="uniqueSecurityName" />
