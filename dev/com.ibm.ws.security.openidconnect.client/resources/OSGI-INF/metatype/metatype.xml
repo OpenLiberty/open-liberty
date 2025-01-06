@@ -82,7 +82,7 @@
              <Option label="%responseType.idTokenToken" value="id_token token" />
              <Option label="%responseType.Token" value="token" />
          </AD>
-         <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc" required="false" type="String" required="true" default="sub"/>
+         <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc" required="true" type="String" default="sub"/>
          <AD id="groupIdentifier" name="%groupIdentifier" description="%groupIdentifier.desc" required="false" type="String" default="groupIds" />
          <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc" required="false" type="String" default="realmName" />
          <AD id="uniqueUserIdentifier" name="%userUniqueIdentifier" description="%userUniqueIdentifier.desc" required="false" type="String" default="uniqueSecurityName" />
