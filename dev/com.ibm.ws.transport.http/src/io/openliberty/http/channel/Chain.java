@@ -28,10 +28,12 @@ public interface Chain {
      * and the new configuration differs in a way that requires a rebind
      * (port, host, etc.), it should stop and then attempt to start with
      * the new configuration.
+     * 
+     * Configuration will be pulled from the associated {@link HttpEndpointImpl}
      *
-     * @param config the new chain configuration
+     * @param hostname the new resolved hostname
      */
-    void update(ChainConfiguration config);
+    void update(String hostname);
 
     /**
      * Fully stops the chain, releasing resources. Does not necessarily
@@ -52,6 +54,11 @@ public interface Chain {
     default int activePort() {
         return -1;
     }
+
+    /**
+     * @return Returns the active host the chain resolved to.
+     */
+    String activeHost();
 
     /**
      * Returns the currently stored chain config if available, or null

@@ -44,7 +44,7 @@ import io.openliberty.netty.internal.exception.NettyException;
 /**
  *
  */
-public class NettyChain extends HttpChain {
+public class NettyChain {
 
     private static final TraceComponent tc = Tr.register(NettyChain.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 

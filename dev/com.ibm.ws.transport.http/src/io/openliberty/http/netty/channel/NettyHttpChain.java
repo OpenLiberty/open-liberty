@@ -29,7 +29,7 @@ import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
 
 
-public class NettyHttpChain  extends AbstractHttpChain {
+public class NettyHttpChain extends AbstractHttpChain {
 
     private static final TraceComponent tc = Tr.register(NettyChain.class);
 
@@ -103,7 +103,7 @@ public class NettyHttpChain  extends AbstractHttpChain {
     }
 
     @Override
-    public void update(ChainConfiguration config) {
+    public void update(String host) {
        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "Updating Netty Chain  " + endpointName + " Current state: " + state().get());
         }
@@ -115,7 +115,7 @@ public class NettyHttpChain  extends AbstractHttpChain {
             return;
         }
 
-        ChainConfiguration newConfig = config;
+        ChainConfiguration newConfig = new ChainConfiguration(isHttps(), host, port, null, null, null, null, null, null, null, null);
 
         if (config().requiresRestart(newConfig)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

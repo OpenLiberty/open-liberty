@@ -32,6 +32,7 @@ public class ChainConfiguration {
     private final Map<String, Object> compressionOptions;
     private final Map<String, Object> samesiteOptions;
     private final Map<String, Object> headersOptions;
+    private boolean valid = false;
 
     /**
      * @param https              true if this config is for HTTPS
@@ -183,6 +184,14 @@ public class ChainConfiguration {
         if (!Objects.equals(this.headersOptions, other.headersOptions)) return true;
 
         return false;
+    }
+
+    public boolean isValid(){
+        return valid;
+    }
+
+    public void setValidity(boolean isValid){
+        this.valid = isValid;
     }
 
     @Override
