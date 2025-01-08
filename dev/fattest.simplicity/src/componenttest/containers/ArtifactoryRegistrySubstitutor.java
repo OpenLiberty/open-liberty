@@ -23,7 +23,7 @@ public class ArtifactoryRegistrySubstitutor extends ImageNameSubstitutor {
     private static final Class<?> c = ArtifactoryRegistrySubstitutor.class;
 
     @Override
-    public DockerImageName apply(DockerImageName original) {
+    public DockerImageName apply(final DockerImageName original) {
         if (!ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
             throw new RuntimeException("Needed to append Artifactory registry to the docker image name: " + original.asCanonicalNameString()
                                        + System.lineSeparator() + "No Artfiactory registry was available because "

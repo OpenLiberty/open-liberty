@@ -23,14 +23,17 @@ import com.ibm.websphere.simplicity.log.Log;
  * An image name substituter is configured in testcontainers.properties and will transform docker image names.
  * Here we use it to apply a private mirror registry and repository prefix so that in remote builds we use an internal
  * Artifactory mirror for a number of supported Docker image registries.
+ *
+ * TODO consider renaming to LibertyImageNameSubstitutor
  */
 @SuppressWarnings("deprecation")
 public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     private static final Class<?> c = ArtifactoryImageNameSubstitutor.class;
 
-    private static final ArtifactoryMirrorSubstitutor MIRROR = new ArtifactoryMirrorSubstitutor();
-    private static final ArtifactoryRegistrySubstitutor REGISTRY = new ArtifactoryRegistrySubstitutor();
+    private static final ImageNameSubstitutor MIRROR = new ArtifactoryMirrorSubstitutor();
+    private static final ImageNameSubstitutor REGISTRY = new ArtifactoryRegistrySubstitutor();
+    private static final ImageNameSubstitutor INTERNAL_REGISTRY = new InternalRegistrySubstitutor();
 
     /**
      * Manual override that will allow builds or users to pull from the default registry instead of Artifactory.
@@ -61,12 +64,18 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
             // Priority 3: If a public registry was explicitly set on an image, do not substitute
             // This is now handled directly by the MIRROR substitutor
 
-            // Priority 4: Always use Artifactory if using remote docker host.
+            // Priority 4: Always use an alternative registry if using remote docker host.
             if (DockerClientFactory.instance().isUsing(EnvironmentAndSystemPropertyClientProviderStrategy.class)) {
-                ImageVerifier.collectImage(original);
-                result = REGISTRY.apply(MIRROR.apply(original));
-                reason = "Using a remote docker host, must use Artifactory registry";
-                break;
+                if (ImageBuilder.isBuiltImage(original)) {
+                    result = INTERNAL_REGISTRY.apply(original);
+                    reason = "Using a remote docker host, must use an alternative registry";
+                    break;
+                } else {
+                    ImageVerifier.collectImage(original);
+                    result = REGISTRY.apply(MIRROR.apply(original));
+                    reason = "Using a remote docker host, must use Artifactory registry";
+                    break;
+                }
             }
 
             // Priority 5: System property artifactory.force.external.repo
@@ -79,7 +88,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
             }
 
             // Priority 6: If Artifactory registry is available use it to avoid rate limits on other registries
-            if (ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
+            if (ArtifactoryRegistry.instance().isArtifactoryAvailable() && !ImageBuilder.isBuiltImage(original)) {
                 ImageVerifier.collectImage(original);
                 result = REGISTRY.apply(MIRROR.apply(original));
                 reason = "Artifactory was available.";
@@ -100,7 +109,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     @Override
     protected String getDescription() {
-        return "ArtifactoryImageNameSubstitutor: Chained subsitutor of ArtifactoryMirrorSubstitutor and ArtifactoryRegistrySubstitutor";
+        return "ArtifactoryImageNameSubstitutor (ArtifactoryMirrorSubstitutor + ArtifactoryRegistrySubstitutor + InternalRegistrySubstitutor)";
     }
 
     /**
@@ -116,12 +125,10 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
                               dockerImage.getRepository().split("/")[0].equals("testcontainers") && //
                               dockerImage.getVersionPart().equals("latest");
         boolean isCommittedImage = dockerImage.getRepository().equals("sha256");
-        boolean isBuiltImage = dockerImage.getRegistry().equals("localhost") && //
-                               dockerImage.getRepository().startsWith(ImageBuilder.REPOSITORY);
         if (isSynthetic || isCommittedImage) {
             Log.warning(c, "WARNING: Cannot use private registry for programmatically built or committed image " + name +
                            ". Consider using a pre-built image instead.");
         }
-        return isSynthetic || isCommittedImage || isBuiltImage;
+        return isSynthetic || isCommittedImage;
     }
 }

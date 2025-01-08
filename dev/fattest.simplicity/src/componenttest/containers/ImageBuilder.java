@@ -24,8 +24,9 @@ import com.ibm.websphere.simplicity.log.Log;
  * This builder class is an extension of {@link org.testcontainers.images.builder.ImageFromDockerfile}
  * and is intended to allow developers of Open Liberty the ability to create custom images from a Dockerfile.
  *
- * For internal contributors and our CI builds, this class will first attempt find a cached version of the image on the docker host
- * For external contributors, this class will build the image at test runtime.
+ * This class will first attempt find a cached version of the image on the docker host.
+ * If not found, then we will try to pull the image from a non-local registry.
+ * If not found, this class will build the image at test runtime.
  *
  * TODO write unit tests
  */
@@ -33,14 +34,14 @@ public class ImageBuilder {
 
     private static final Class<?> c = ImageBuilder.class;
 
-    // Ensures when we look for cached images Docker doesn't attempt to reach out to docker.io
+    // Ensures when external users look for cached images Docker doesn't attempt to reach out to docker.io
     public static final String LOCAL_REGISTRY = "localhost";
 
     // The repository where all Open Liberty images will be cached
-    public static final String REPOSITORY = "openliberty/testcontainers/";
+    public static final String REPOSITORY_PREFIX = "openliberty/testcontainers/";
 
     // The --build-arg necessary to overwrite the default BASE_IMAGE in the Dockerfile
-    // with the mirrored image in artifactory
+    // with the mirrored image in Artifactory
     public static final String BASE_IMAGE = "BASE_IMAGE";
 
     // Image to build
@@ -60,7 +61,9 @@ public class ImageBuilder {
      * The Dockerfile with instructions on how to build this image must be saved in source control in directory
      * io.openliberty.org.testcontainers/resources/openliberty/testcontainers/<image-name>/<image-version>/Dockerfile
      *
-     * Note: The resulting image will be cached with name "localhost/openliberty/testcontainers/<image-name>:<image-version>"
+     * Note: The resulting image will be cached with name:
+     * - "localhost/openliberty/testcontainers/<image-name>:<image-version>" for external contributors
+     * - "[custom-registry]/openliberty/testcontainers/<image-name>:<image-version>" for internal contributors or builds
      * therefore, you must update the image version whenever a change is made to the corresponding Dockerfile.
      *
      * @param  img the image to build in format "<image-name>:<image-version>" or "openliberty/testcontainers/<image-name>:<image-version>"
@@ -70,17 +73,21 @@ public class ImageBuilder {
     public static ImageBuilder build(String img) {
         Objects.requireNonNull(img);
 
-        DockerImageName image = DockerImageName.parse(img);
+        final DockerImageName image = DockerImageName.parse(img);
 
         if (!image.getRegistry().isEmpty()) {
-            throw new RuntimeException("DockerImageName with a registry for ImageBuilder is unsupported: " + image.getRegistry());
+            throw new RuntimeException("A docker image cannot be built when initialized with a registry: " + image.getRegistry());
         }
 
-        if (image.getUnversionedPart().startsWith(REPOSITORY)) {
-            return new ImageBuilder(image.withRegistry(LOCAL_REGISTRY));
+        final DockerImageName result;
+
+        if (image.getUnversionedPart().startsWith(REPOSITORY_PREFIX)) {
+            result = image.withRegistry(LOCAL_REGISTRY);
         } else {
-            return new ImageBuilder(DockerImageName.parse(REPOSITORY + img).withRegistry(LOCAL_REGISTRY));
+            result = image.withRepository(REPOSITORY_PREFIX + image.getRepository()).withRegistry(LOCAL_REGISTRY);
         }
+
+        return new ImageBuilder(result);
     }
 
     /**
@@ -116,7 +123,9 @@ public class ImageBuilder {
      * @return RemoteDockerImage that points to a cached or built image.
      */
     public RemoteDockerImage get() {
-        return getCached().orElse(buildFromDockerfile());
+        return getCached()
+                        .orElse(pullImage()
+                                        .orElse(buildFromDockerfile()));
     }
 
     /*
@@ -133,6 +142,25 @@ public class ImageBuilder {
         } else {
             Log.info(c, m, "Found cached image " + image.asCanonicalNameString());
             return Optional.of(cachedImage);
+        }
+    }
+
+    private Optional<RemoteDockerImage> pullImage() {
+        final String m = "pullImage";
+
+        if (image.getRegistry().equalsIgnoreCase(LOCAL_REGISTRY)) {
+            return Optional.empty();
+        }
+
+        try {
+            RemoteDockerImage pullableImage = new RemoteDockerImage(image);
+            pullableImage.get();
+
+            Log.info(c, m, "Found pullable image " + image.asCanonicalNameString());
+            return Optional.of(pullableImage);
+        } catch (Exception e) {
+            Log.info(c, m, "Unable to pull image " + image.asCanonicalNameString() + " because " + e.getMessage());
+            return Optional.empty();
         }
     }
 
@@ -160,4 +188,8 @@ public class ImageBuilder {
         return buffer.toString();
     }
 
+    public static boolean isBuiltImage(DockerImageName image) {
+        return image.getRegistry().equals(LOCAL_REGISTRY) && //
+               image.getRepository().startsWith(REPOSITORY_PREFIX);
+    }
 }
