@@ -334,7 +334,6 @@ public class NettyChain extends HttpChain {
         }
 
         return info;
-        //   return endpointMgr.getEndPoint(endpointName);
     }
 
     public String getEndpointPID() {

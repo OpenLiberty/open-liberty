@@ -1,5 +1,7 @@
 package io.openliberty.http.channel;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Represents a common interface for managing HTTP or HTTPS chain lifecycles
  * in a predictable and controlled manner.
@@ -27,9 +29,9 @@ public interface Chain {
      * (port, host, etc.), it should stop and then attempt to start with
      * the new configuration.
      *
-     * @param newConfig the new chain configuration
+     * @param config the new chain configuration
      */
-    void update(ChainConfiguration newConfig);
+    void update(ChainConfiguration config);
 
     /**
      * Fully stops the chain, releasing resources. Does not necessarily
@@ -42,12 +44,12 @@ public interface Chain {
      *
      * @return integer representing the chain’s state
      */
-    int getChainState();
+    AtomicReference<ChainState> state();
 
     /**
      * Returns the active port the chain is bound to, or -1 if not bound.
      */
-    default int getActivePort() {
+    default int activePort() {
         return -1;
     }
 
@@ -55,7 +57,7 @@ public interface Chain {
      * Returns the currently stored chain config if available, or null
      * if uninitialized.
      */
-    default ChainConfiguration getCurrentConfig() {
+    default ChainConfiguration config() {
         return null;
     }
 }
