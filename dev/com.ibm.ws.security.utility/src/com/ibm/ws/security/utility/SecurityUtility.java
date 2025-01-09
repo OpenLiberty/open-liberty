@@ -136,11 +136,13 @@ public class SecurityUtility extends UtilityTemplate {
                 stderr.println("");
                 stderr.println(CommandUtils.getMessage("error", e.getMessage()));
                 stderr.println(help.getTaskUsage(task));
+		e.printStackTrace(stderr);		
                 return SecurityUtilityReturnCodes.ERR_GENERIC;
             } catch (Exception e) {
                 stderr.println("");
                 stderr.println(CommandUtils.getMessage("error", e.toString()));
                 stderr.println(help.getTaskUsage(task));
+		e.printStackTrace(stderr);
                 return SecurityUtilityReturnCodes.ERR_GENERIC;
             }
         }
