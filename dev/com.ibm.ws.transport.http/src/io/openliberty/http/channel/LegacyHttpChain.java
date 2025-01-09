@@ -1,20 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+
 package io.openliberty.http.channel;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChannelData;
+import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherConfig;
-import com.ibm.ws.http.internal.HttpChain;
-import com.ibm.ws.http.internal.HttpChain.ActiveConfiguration;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
@@ -23,6 +32,7 @@ import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.channelfw.exception.InvalidRuntimeStateException;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * A legacy chain implementation that uses the older ChannelFramework APIs.
@@ -165,7 +175,17 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
         Map<String, Object> samesiteOptions = endpoint().getSamesiteConfig();
         Map<String, Object> headersOptions = endpoint().getHeadersConfig();
 
-        final ChainConfiguration newConfig = new ChainConfiguration(isHttps(), resolvedHostName, determinePort(), tcpOptions, sslOptions, httpOptions, remoteIpOptions, compressionOptions, samesiteOptions, headersOptions, endpointOptions);
+        final ChainConfiguration newConfig = new ChainConfiguration(isHttps(), 
+                                                    resolvedHostName, 
+                                                    activatePort(), 
+                                                    tcpOptions, 
+                                                    sslOptions, 
+                                                    httpOptions, 
+                                                    remoteIpOptions, 
+                                                    compressionOptions, 
+                                                    samesiteOptions, 
+                                                    headersOptions, 
+                                                    endpointOptions);
 
         if (newConfig.port() < 0 || !newConfig.isComplete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -492,7 +512,7 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
             // HOORAY! we have a bound listener.
             // Notify listeners that the chain was started.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "New configuration started " + cfg);
+                Tr.debug(this, tc, "New configuration started " + config());
             }
 
             VirtualHostMap.notifyStarted(endpoint(), () -> host, port, isHttps());

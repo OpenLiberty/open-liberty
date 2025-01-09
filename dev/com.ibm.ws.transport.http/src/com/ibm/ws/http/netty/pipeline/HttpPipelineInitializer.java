@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,49 +12,42 @@ package com.ibm.ws.http.netty.pipeline;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLSessionContext;
 
 import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.pipeline.LibertySslHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
-import com.ibm.ws.http.netty.pipeline.TransportOutboundHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.channel.AllocatorContextSetter;
 import io.openliberty.http.netty.channel.LoggingRecvByteBufAllocator;
+import io.openliberty.http.netty.channel.NettyHttpChain;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.impl.NettyConstants;
@@ -78,7 +71,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         ACCESS_LOG
     }
 
-    private final NettyChain chain;
+    private final NettyHttpChain chain;
     private final NettyHttpChannelConfig httpConfig;
     private final Map<ConfigElement, Map<String, Object>> configOptions;
 
@@ -95,12 +88,12 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
     public static final long maxContentLength = Long.MAX_VALUE;
 
-    private HttpPipelineInitializer(NettyChain chain, NettyHttpChannelConfig httpConfig, Map<ConfigElement, Map<String, Object>> configOptions) {
+    private HttpPipelineInitializer(NettyHttpChain chain, NettyHttpChannelConfig httpConfig, Map<ConfigElement, Map<String, Object>> configOptions) {
         this.chain = chain;
         this.httpConfig = httpConfig;
         this.configOptions = configOptions;
 
-        httpConfig.registerAccessLog(chain.getOwner().getName());
+        httpConfig.registerAccessLog(chain.endpoint().getName());
     }
 
     @Override
@@ -173,7 +166,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     }
 
     private SslContext getSslContext() throws NettyException {
-        NettyTlsProvider tlsProvider = chain.getOwner().getNettyTlsProvider();
+        NettyTlsProvider tlsProvider = chain.endpoint().getNettyTlsProvider();
         if(tlsProvider == null){
             throw new NettyException("TLS Provider is not loaded");
         }
@@ -309,12 +302,12 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
     public static class HttpPipelineBuilder {
 
-        private final NettyChain chain;
+        private final NettyHttpChain chain;
         private final EnumMap<ConfigElement, Map<String, Object>> configOptions = new EnumMap<>(ConfigElement.class);
         private final Set<ConfigElement> activeConfigs = EnumSet.noneOf(ConfigElement.class);
 
 
-        public HttpPipelineBuilder(NettyChain chain) {
+        public HttpPipelineBuilder(NettyHttpChain chain) {
             this.chain = Objects.requireNonNull(chain, "Netty chain cannot be null");
         }
 
