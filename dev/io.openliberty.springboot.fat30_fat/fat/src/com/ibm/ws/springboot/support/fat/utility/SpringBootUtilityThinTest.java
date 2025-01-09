@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -359,7 +360,6 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
         //Run libertyUberJar using java -jar command
         Process proc = Runtime.getRuntime().exec("java -jar " + libertyUberJar.getAbsolutePath());
-
         String line = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
             line = readTimeout(reader);
@@ -372,6 +372,17 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
                 line = readTimeout(reader);
             }
         }
+
+        //Debug the failure within the JAR
+        Log.info(getClass(), "testRunLibertyUberJarWithSSL", "The following is the content of the uber Jar: " + libertyUberJar.getAbsolutePath());
+        try (JarFile jarFile = new JarFile(libertyUberJar.getAbsolutePath())) {
+            for (java.util.jar.JarEntry jarEntry : Collections.list(jarFile.entries())) {
+                Log.info(getClass(), "Jar Entry:", jarEntry.getName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         assertNotNull("The endpoint is not available", line);
         assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
 
