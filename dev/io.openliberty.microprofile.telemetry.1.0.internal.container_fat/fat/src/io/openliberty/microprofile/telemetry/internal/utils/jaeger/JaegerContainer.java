@@ -12,16 +12,15 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
-import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
-
 import java.io.File;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
-import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
+
+import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 
 /**
  * A container for the Jaeger trace server
@@ -47,25 +46,6 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
     public static final int HTTP_QUERY_PORT = 16686;
     public static final int GRPC_QUERY_PORT = 16685;
 
-    public JaegerContainer() {
-        this(TestConstants.DOCKER_IMAGE_ALL_IN_ONE);
-        Log.info(c, "JaegerContainer", "creating JaegerContainer");
-    }
-
-    public JaegerContainer(DockerImageName imageName) {
-        super(imageName);
-        Log.info(c, "JaegerContainer", "creating JaegerContainer with imageName");
-
-        withExposedPorts(OTLP_GRPC_PORT,
-                         OTLP_HTTP_PORT,
-                         JAEGER_LEGACY_PORT,
-                         JAEGER_THRIFT_PORT,
-                         GRPC_QUERY_PORT,
-                         HTTP_QUERY_PORT);
-
-        withEnv("COLLECTOR_OTLP_ENABLED", "true");
-    }
-
     public JaegerContainer(File tlsCert, File tlsKey) {
         super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
                                                                                           ImageNameSubstitutor.instance()
@@ -76,6 +56,35 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
                                                                                     .build())
                                        .withFileFromFile("/etc/certificate.crt", tlsCert, 0644)
                                        .withFileFromFile("/etc/private.key", tlsKey, 0644));
+        Log.info(c, "JaegerContainer", "creating JaegerContainer with grpc client cert and key");
+
+        withExposedPorts(OTLP_GRPC_PORT,
+                         OTLP_HTTP_PORT,
+                         JAEGER_LEGACY_PORT,
+                         JAEGER_THRIFT_PORT,
+                         GRPC_QUERY_PORT,
+                         HTTP_QUERY_PORT);
+
+        withEnv("COLLECTOR_OTLP_ENABLED", "true");
+        withEnv("QUERY_GRPC_TLS_ENABLED", "true");
+        withEnv("QUERY_GRPC_TLS_CERT", "/etc/certificate.crt");
+        withEnv("QUERY_GRPC_TLS_KEY", "/etc/private.key");
+    }
+
+    public JaegerContainer(File otelCollectorTlsCert, File otelCollectorTlsKey, File jaegerQueryTlsCert, File jaegerQueryTlsKey) {
+        super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
+                                                                                          ImageNameSubstitutor.instance()
+                                                                                                              .apply(TestConstants.DOCKER_IMAGE_ALL_IN_ONE)
+                                                                                                              .asCanonicalNameString())
+                                                                                    .copy("/etc/jaegerQueryCertificate.crt", "/etc/jaegerQueryCertificate.crt")
+                                                                                    .copy("/etc/jaegerQueryPrivateKey.key", "/etc/jaegerQueryPrivateKey.key")
+                                                                                    .copy("/etc/otelCollectorCertificate.crt", "/etc/otelCollectorCertificate.crt")
+                                                                                    .copy("/etc/otelCollectorPrivateKey.key", "/etc/otelCollectorPrivateKey.key")
+                                                                                    .build())
+                                       .withFileFromFile("/etc/jaegerQueryCertificate.crt", jaegerQueryTlsCert, 0644)
+                                       .withFileFromFile("/etc/jaegerQueryPrivateKey.key", jaegerQueryTlsKey, 0644)
+                                       .withFileFromFile("/etc/otelCollectorCertificate.crt", otelCollectorTlsCert, 0644)
+                                       .withFileFromFile("/etc/otelCollectorPrivateKey.key", otelCollectorTlsKey, 0644));
 
         Log.info(c, "JaegerContainer", "creating JaegerContainer with tls certificate and keys");
 
@@ -88,8 +97,11 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
         withEnv("COLLECTOR_OTLP_ENABLED", "true");
         withEnv("COLLECTOR_OTLP_GRPC_TLS_ENABLED", "true");
-        withEnv("COLLECTOR_OTLP_GRPC_TLS_CERT", "/etc/certificate.crt");
-        withEnv("COLLECTOR_OTLP_GRPC_TLS_KEY", "/etc/private.key");
+        withEnv("COLLECTOR_OTLP_GRPC_TLS_CERT", "/etc/otelCollectorCertificate.crt");
+        withEnv("COLLECTOR_OTLP_GRPC_TLS_KEY", "/etc/otelCollectorPrivateKey.key");
+        withEnv("QUERY_GRPC_TLS_ENABLED", "true");
+        withEnv("QUERY_GRPC_TLS_CERT", "/etc/jaegerQueryCertificate.crt");
+        withEnv("QUERY_GRPC_TLS_KEY", "/etc/jaegerQueryPrivateKey.key");
 
     }
 

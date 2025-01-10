@@ -44,6 +44,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -58,6 +59,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource;
+import io.openliberty.microprofile.telemetry.internal.utils.KeyPairs;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -79,11 +81,14 @@ public class Agent210Test {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    private static KeyPairs keyPairs = new KeyPairs(server);
+
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(), keyPairs.getKey())
+                                                                                                                     .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
+                                                                                                                                                            "jaeger"));
+
     public static RepeatTests repeat = TelemetryActions.telemetry20Repeats(SERVER_NAME);
 
-    // In contrast to most tests, this test needs a new jaeger instance for each repeat
-    // so that it can check for any trace IDs not accounted for
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(repeat).around(jaegerContainer);
 
@@ -92,8 +97,7 @@ public class Agent210Test {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        client = new JaegerQueryClient(jaegerContainer);
+        client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
         server.copyFileToLibertyServerRoot("agent-210/opentelemetry-javaagent.jar");
 
@@ -102,9 +106,9 @@ public class Agent210Test {
         //The default OTLP protocol has been changed from grpc to http/protobuf in the Java Agent v2.1.0
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_PROTOCOL, "grpc");
 
-        server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_EXPERIMENTAL_CONTROLLER_TELEMETRY_ENABLED","true"); //otel.instrumentation.common.experimental.controller-telemetry.enabled=true)
+        server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_EXPERIMENTAL_CONTROLLER_TELEMETRY_ENABLED", "true"); //otel.instrumentation.common.experimental.controller-telemetry.enabled=true)
 
-        server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_EXPERIMENTAL_VIEW_TELEMETRY_ENABLED","true"); //otel.instrumentation.common.experimental.controller-telemetry.enabled=true)
+        server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_EXPERIMENTAL_VIEW_TELEMETRY_ENABLED", "true"); //otel.instrumentation.common.experimental.controller-telemetry.enabled=true)
 
         server.addEnvVar("OTEL_METRICS_EXPORTER", "none"); //TO DO: TEST METRICS
         server.addEnvVar("OTEL_LOGS_EXPORTER", "none");

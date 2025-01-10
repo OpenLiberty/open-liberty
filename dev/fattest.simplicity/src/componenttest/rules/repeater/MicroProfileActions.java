@@ -9,16 +9,23 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
 
 public class MicroProfileActions {
+
+    private static final Class<MicroProfileActions> c = MicroProfileActions.class;
 
     private static final String[] MP10_FEATURES_ARRAY = { "microProfile-1.0",
                                                           "cdi-1.2",
@@ -535,5 +542,59 @@ public class MicroProfileActions {
      */
     public static RepeatTests repeat(String[] servers, TestMode otherFeatureSetsTestMode, boolean skipTransformation, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
         return RepeatActions.repeat(servers, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets), skipTransformation);
+    }
+
+    /**
+     * Get a repeat test for the following FeatureSets, with a predicate that will be used to filter out the FeatureSets.
+     * The first FeatureSet to pass the predicate will be run in LITE mode. The others will be run in FULL.
+     *
+     * @param  serverName  the server to repeat on
+     * @param  predicate   a predicate that will filter feature sets. If the predicate returns true, the feature set will be run
+     * @param  featureSet  the first feature set
+     * @param  featureSets the feature sets
+     * @return             a RepeatTests instance
+     */
+    public static RepeatTests repeatIf(String serverName, Predicate<FeatureSet> predicate, FeatureSet featureSet, FeatureSet... featureSets) {
+        return repeatIf(serverName, predicate, TestMode.FULL, false, featureSet, featureSets);
+    }
+
+    /**
+     * Get a repeat test for the following FeatureSets, with a predicate that will be used to filter out the FeatureSets.
+     * The first FeatureSet to pass the predicate will be run in LITE mode. The others will be run in {@code otherFeatureSetsTestMode}.
+     *
+     * @param  serverName               the server to repeat on
+     * @param  predicate                a predicate that will filter feature sets. If the predicate returns true, the feature set will be run
+     * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  skipTransformation       Skip transformation for actions
+     * @param  featureSet               the first feature set
+     * @param  featureSets              the feature sets
+     * @return                          a RepeatTests instance
+     */
+    public static RepeatTests repeatIf(String serverName, Predicate<FeatureSet> predicate, TestMode otherFeatureSetsTestMode,
+                                       boolean skipTransformation, FeatureSet featureSet, FeatureSet... featureSets) {
+
+        final String m = "repeatIf";
+
+        List<FeatureSet> featureSetsMerged = new ArrayList<FeatureSet>();
+        featureSetsMerged.add(featureSet);
+        featureSetsMerged.addAll(Arrays.asList(featureSets));
+
+        Log.info(c, m, "enter. Testing " +
+                       featureSetsMerged.stream().map(FeatureSet::getID).collect(Collectors.joining(", ")));
+
+        featureSetsMerged.removeIf((FeatureSet fs) -> (!predicate.test(fs)));
+
+        if (featureSetsMerged.isEmpty()) {
+            Log.info(c, m, "found no acceptable FeatureSets");
+            return RepeatTests.with(new DisabledAction());
+        }
+
+        Log.info(c, m, "found the following aceptable FeatureSets " +
+                       featureSetsMerged.stream().map(FeatureSet::getID).collect(Collectors.joining(", ")));
+
+        FeatureSet firstAction = featureSetsMerged.remove(0);
+        FeatureSet[] otherActions = featureSetsMerged.toArray(new FeatureSet[0]);
+
+        return repeat(serverName, otherFeatureSetsTestMode, skipTransformation, firstAction, otherActions);
     }
 }

@@ -1,12 +1,11 @@
 Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
-Copyright 2022-2024 IBM Corporation and others
+Copyright 2022-2025 IBM Corporation and others
 This product includes software developed at
 The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 TABLE OF CONTENTS
 
 THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
-
 
 Apache License, Version 2.0 (APACHE V2)
 BSD 2 Clause license (BSD-2-CLAUSE)
@@ -27,7 +26,7 @@ Apache License, Version 2.0
 The Program includes some or all of the following that IBM obtained
 under the Apache License, Version 2.0:
 
-@carbon/telemetry [telemetry-0.1.0.tgz],
+@carbon/telemetry [telemetry-0.1.0.tgz], @scarf/scarf [scarf-1.3.0.tgz],
 @swagger-api/apidom-ast [apidom-ast-1.0.0-alpha.10.tgz],
 @swagger-api/apidom-core [apidom-core-1.0.0-alpha.10.tgz],
 @swagger-api/apidom-error [apidom-error-1.0.0-alpha.10.tgz],
@@ -143,6 +142,7 @@ Hibernate Validator Engine [hibernate-validator],
 Hibernate Validator Portable Extension [hibernate-validator-cdi],
 IntelliJ IDEA Annotations [annotations], J2ObjC Annotations [j2objc-annotations],
 JASYPT: Java Simplified Encryption [jasypt], JBoss Logging 3 [jboss-logging],
+JBoss Logging I18n Annotation Processor [jboss-logging-processor],
 JBoss Logging I18n Annotations [jboss-logging-annotations],
 JCL 1.2 implemented over SLF4J [jcl-over-slf4j], JSON.simple [json-simple],
 JSR107 API and SPI [cache-api], JTA 1.1 [geronimo-jta_1.1_spec],
@@ -378,8 +378,8 @@ org.osgi:osgi.annotation [osgi.annotation], org.osgi:osgi.core [osgi.core],
 perfmark:perfmark-api [perfmark-api], proto-google-common-protos, resolver,
 short-unique-id [short-unique-id-5.2.0.tgz], smallrye-reactive-converter-api,
 smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
-snappy-java, swagger-client [swagger-client-3.29.4.tgz],
-swagger-ui [swagger-ui-5.17.14.tgz], tomcat-el-api, tomcat-jasper-el,
+snappy-java, swagger-client [swagger-client-3.30.1.tgz],
+swagger-ui [swagger-ui-5.18.1.tgz], tomcat-el-api, tomcat-jasper-el,
 ts-toolbelt [ts-toolbelt-9.6.0.tgz], tunnel-agent [tunnel-agent-0.6.0.tgz],
 vertx-codegen
 
@@ -801,6 +801,7 @@ servlet.jsp.resources (https://github.com/javaee/servlet-spec)
 servlet.resources (https://github.com/javaee/servlet-spec)
 
 
+
 END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1 NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -921,7 +922,6 @@ Jakarta Standard Tag Library Implementation [jakarta.servlet.jsp.jstl] https://w
 Jakarta WebSocket - Client API [jakarta.websocket-client-api] https://www.eclipse.org
 Jakarta WebSocket - Server API [jakarta.websocket-api] https://www.eclipse.org
 Meta Type [org.eclipse.equinox.metatype] http://www.eclipse.org/
-OSGi System Bundle [org.eclipse.osgi] https://www.eclipse.org/
 OSGi resource locator [osgi-resource-locator] https://www.eclipse.org
 RESTEasy Tracing API [resteasy-tracing-api] http://www.jboss.org
 Region Digraph [org.eclipse.equinox.region] http://www.eclipse.org/
@@ -983,7 +983,7 @@ under the MIT license:
 
 @babel/runtime [runtime-7.26.0.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
 @babel/runtime-corejs3 [runtime-corejs3-7.26.0.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@braintree/sanitize-url [sanitize-url-7.0.2.tgz] (Copyright 2017 Braintree)
+@braintree/sanitize-url [sanitize-url-7.0.4.tgz] (Copyright 2017 Braintree)
 @types/hast [hast-2.3.10.tgz] (Copyright Microsoft Corporation)
 @types/ramda [ramda-0.30.2.tgz] (Copyright Microsoft Corporation)
 @types/unist [unist-2.0.11.tgz] (Copyright Microsoft Corporation)
@@ -1011,8 +1011,8 @@ classnames [classnames-2.5.1.tgz] (Copyright 2018 Jed Watson)
 comma-separated-tokens [comma-separated-tokens-1.0.8.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 cookie [cookie-0.7.2.tgz] (Copyright 2012-2014 Roman Shtylman <shtylman@gmail.com>) (Copyright 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
 copy-to-clipboard [copy-to-clipboard-3.3.3.tgz] (Copyright 2017 sudodoki <smd.deluzion@gmail.com>)
-core-js [core-js-3.38.1.tgz] (Copyright 2014-2024 Denis Pushkarev)
-core-js-pure [core-js-pure-3.38.1.tgz] (Copyright 2014-2024 Denis Pushkarev)
+core-js [core-js-3.39.0.tgz] (Copyright 2014-2024 Denis Pushkarev)
+core-js-pure [core-js-pure-3.39.0.tgz] (Copyright 2014-2024 Denis Pushkarev)
 crypto-js [enc-base64-min-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 crypto-js [sha256-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 css.escape [css.escape-1.5.1.tgz] (Copyright Mathias Bynens <https://mathiasbynens.be/>)

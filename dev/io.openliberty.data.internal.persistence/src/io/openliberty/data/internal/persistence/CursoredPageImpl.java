@@ -241,16 +241,17 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
         s.append(isForward ? ", CURSOR_NEXT(" : " CURSOR_PREVIOUS(");
 
         boolean firstSort = true;
-        for (Sort<?> sort : queryInfo.sorts) {
-            if (firstSort)
-                firstSort = false;
-            else
-                s.append(", ");
-            s.append(sort.property()); //
-            s.append(sort.isAscending() //
-                            ? sort.ignoreCase() ? " ASC IgnoreCase" : " ASC" //
-                            : sort.ignoreCase() ? " DESC IgnoreCase" : " DESC");
-        }
+        if (queryInfo.sorts != null)
+            for (Sort<?> sort : queryInfo.sorts) {
+                if (firstSort)
+                    firstSort = false;
+                else
+                    s.append(", ");
+                s.append(sort.property()); //
+                s.append(sort.isAscending() //
+                                ? sort.ignoreCase() ? " ASC IgnoreCase" : " ASC" //
+                                : sort.ignoreCase() ? " DESC IgnoreCase" : " DESC");
+            }
 
         s.append(") @").append(Integer.toHexString(hashCode()));
         return s.toString();

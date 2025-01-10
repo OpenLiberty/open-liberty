@@ -233,7 +233,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>com.ibm.websphere.jsonsupport</symbolic-name>
+            <symbolic-name>io.openliberty.jsonsupport.internal</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.bundle</type>
@@ -50985,7 +50985,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>com.ibm.websphere.jsonsupport</symbolic-name>
+            <symbolic-name>io.openliberty.jsonsupport.internal</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.bundle</type>

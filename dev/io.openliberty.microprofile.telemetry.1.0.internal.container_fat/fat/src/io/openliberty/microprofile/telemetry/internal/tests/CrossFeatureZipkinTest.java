@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,7 +65,7 @@ public class CrossFeatureZipkinTest {
     private static final Class<?> c = CrossFeatureZipkinTest.class;
 
     public static ZipkinContainer zipkinContainer = new ZipkinContainer().withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"));
-    public static RepeatTests repeat = TelemetryActions.allMPRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(zipkinContainer).around(repeat);

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package servlets;
 
 import static org.junit.Assert.assertEquals;
@@ -142,7 +142,7 @@ public class SimpleServlet extends FATServlet {
         t.join();
         final Object ut = utHolder[0];
 
-        if (ut instanceof javax.transaction.UserTransaction) {
+        if (ut instanceof UserTransaction) {
             ((UserTransaction) ut).begin();
             ((UserTransaction) ut).commit();
         } else {
@@ -183,6 +183,22 @@ public class SimpleServlet extends FATServlet {
         status = tsr.getTransactionStatus();
         if (status != Status.STATUS_NO_TRANSACTION) {
             throw new IllegalStateException("Expected second STATUS_NO_TRANSACTION, got " + printStatus(status));
+        }
+    }
+
+    @Test
+    public void testTransactionManagerLookup() throws Exception {
+        Object tm = new InitialContext().lookup("java:comp/TransactionManager");
+
+        if (tm instanceof TransactionManager) {
+            ((TransactionManager) tm).begin();
+            ((TransactionManager) tm).commit();
+        } else {
+            if (tm == null) {
+                throw new Exception("TransactionManager instance was null");
+            } else {
+                throw new Exception("TransactionManager lookup did not work: " + tm.getClass().getCanonicalName());
+            }
         }
     }
 
@@ -750,3 +766,4 @@ public class SimpleServlet extends FATServlet {
         }
     }
 }
+

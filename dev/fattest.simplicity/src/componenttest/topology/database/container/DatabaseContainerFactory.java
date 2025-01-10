@@ -41,8 +41,8 @@ import componenttest.custom.junit.runner.FATRunner;
  * Derby: Uses a derby no-op test container <br>
  * DerbyClient: Uses a derby no-op test container <br>
  * DB2: Uses <a href="https://hub.docker.com/repository/docker/kyleaure/db2">Custom DB2 container</a> <br>
- * Oracle: Uses <a href="https://hub.docker.com/r/gvenzl/oracle-free">Offical Oracle container</a> <br>
- * Postgres: Uses <a href="https://hub.docker.com/_/postgres">Offical Postgres Container</a> <br>
+ * Oracle: Uses <a href="https://github.com/gvenzl/oci-oracle-free/pkgs/container/oracle-free">Offical Oracle container</a> <br>
+ * Postgres: Uses <a href="https://gallery.ecr.aws/docker/library/postgres">Offical Postgres Container</a> <br>
  * MS SQL Server: Uses <a href="https://hub.docker.com/_/microsoft-mssql-server">Offical Microsoft SQL Container</a> <br>
  *
  * @see DatabaseContainerType

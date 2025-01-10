@@ -12,10 +12,15 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import jakarta.data.page.CursoredPage;
+import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
@@ -27,10 +32,38 @@ import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 
 /**
- *
+ * Repository for an entity with multiple levels of embeddables.
  */
 @Repository
 public interface Businesses extends BasicRepository<Business, Integer> {
+
+    @Query("WHERE name >= :beginAtName AND name <= :endAtName")
+    @OrderBy("name")
+    @OrderBy(ID)
+    CursoredPage<?> findAsCursoredPage(String beginAtName,
+                                       String endAtName,
+                                       PageRequest pageReq);
+
+    @OrderBy("name")
+    List<?> findAsListByNameBetween(String beginAtName, String endAtName);
+
+    @OrderBy("location.address.houseNum")
+    Object[] findAsObjectArrayByNameBetween(String beginAtName, String endAtName);
+
+    @Find
+    Optional<?> findAsOptional(String name);
+
+    @OrderBy(value = "location.address.houseNum", descending = true)
+    @OrderBy(value = ID)
+    Page<Object> findAsPageByNameBetween(String beginAtName,
+                                         String endAtName,
+                                         PageRequest pageReq);
+
+    @Find
+    @OrderBy("name")
+    @OrderBy(ID)
+    CompletableFuture<Stream<?>> findAsStreamByCity(String locationAddressCity,
+                                                    String locationAddressState);
 
     // embeddable 1 level deep
     List<Business> findByLocationLatitudeBetweenOrderByLocationLongitudeDesc(float min, float max);
@@ -65,6 +98,16 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     Stream<Business> in(@By("location_address.city") String city,
                         @By("location.address_state") String state);
 
+    @Query("SELECT CASE WHEN COUNT(THIS) > 0 THEN TRUE ELSE FALSE END" +
+           " WHERE location.address.houseNum = :houseNum" +
+           "   AND location.address.street.name = :streetName" +
+           "   AND location.address.street.direction = :streetDir" +
+           "   AND name = :businessName")
+    boolean isLocatedAt(int houseNum,
+                        String streetName,
+                        String streetDir,
+                        String businessName);
+
     @Find
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name
     List<Business> onSouthSideOf(@By("locationAddressCity") String city,
@@ -75,6 +118,16 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @Save
     Stream<Employee> save(Employee... e);
 
+    @Query("FROM Business" +
+           " ORDER BY location.address.state ASC," +
+           "          location.address.zip ASC," +
+           "          location.address.street.name || ' ' || " +
+           "              location.address.street.direction ASC," +
+           "          location.address.houseNum ASC," +
+           "          name ASC, " +
+           "          id ASC")
+    Page<Business> sorted(PageRequest pageReq);
+
     @Update
     boolean update(Business b);
 
@@ -83,4 +136,9 @@ public interface Businesses extends BasicRepository<Business, Integer> {
 
     @Query("WHERE ABS(location.longitude) >= :min AND ABS(location.longitude) <= :max")
     List<Business> withLongitudeIgnoringSignWithin(float min, float max);
+
+    @Query("FROM Business" +
+           " WHERE location.address.street.direction = :dir" +
+           " ORDER BY location.address.houseNum DESC, id ASC")
+    Page<Business> withStreetDirection(String dir, PageRequest pageReq);
 }

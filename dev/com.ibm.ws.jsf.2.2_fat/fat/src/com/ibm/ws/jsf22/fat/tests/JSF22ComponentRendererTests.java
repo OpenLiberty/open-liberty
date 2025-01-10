@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,7 +62,8 @@ public class JSF22ComponentRendererTests {
                                       "com.ibm.ws.jsf22.fat.componentrenderer.jsf599",
                                       "com.ibm.ws.jsf22.fat.componentrenderer.jsf703",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.componentrenderer.jsf943.bean.faces40" : "com.ibm.ws.jsf22.fat.componentrenderer.jsf943.bean.jsf22",
-                                      "com.ibm.ws.jsf22.fat.componentrenderer.jsf997");
+                                      "com.ibm.ws.jsf22.fat.componentrenderer.jsf997",
+                                      "com.ibm.ws.jsf22.fat.componentrenderer.myfaces4117");
 
         jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
@@ -288,4 +289,28 @@ public class JSF22ComponentRendererTests {
             assertTrue(page.asText().contains("I'm a place!"));
         }
     }
+
+    /*
+     *  Two items are tested. 
+     *  1) Default tag name is assigned when one is not specified on the @FacesComonent annotation.
+     *  2) Verifies a custom renderer is used when specified. This was added because we don't have any 
+     *  exisiting tests for the @FacesRenderer annotation.   The component class doesn't render the element, but
+     *  the renderer class does. 
+     * 
+     */
+    @Test
+    public void testMyFaces4117AndRenderer() throws Exception {
+        try (WebClient webClient =  new WebClient()) {
+
+            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "myfaces4117.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            if (page == null) {
+                Assert.fail("myfaces4117.xhtml did not render properly.");
+            }
+
+            assertTrue(page.getWebResponse().getContentAsString().contains("Renderer Works!"));
+        }
+    }
+
 }

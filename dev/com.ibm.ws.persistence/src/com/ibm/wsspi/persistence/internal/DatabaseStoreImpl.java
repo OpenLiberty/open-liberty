@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -354,7 +354,8 @@ public class DatabaseStoreImpl implements DatabaseStore {
             if (deactivated) {
                 if (trace && tc.isEntryEnabled())
                     Tr.exit(this, tc, "createPersistenceServiceUnit", "deactivated");
-                throw new IllegalStateException();
+                String errMsg = Tr.formatMessage(tc, "DEACTIVATED_CWWKD0202E");
+                throw new IllegalStateException(errMsg);
             }
 
             // ignore table creation for extra PersistenceServiceUnit that persistent executor creates to allow TRANSACTION_READ_UNCOMMITTED
@@ -370,7 +371,8 @@ public class DatabaseStoreImpl implements DatabaseStore {
             if (deactivated) {
                 if (trace && tc.isEntryEnabled())
                     Tr.exit(this, tc, "createPersistenceServiceUnit", "deactivated");
-                throw new IllegalStateException();
+                String errMsg = Tr.formatMessage(tc, "DEACTIVATED_CWWKD0202E");
+                throw new IllegalStateException(errMsg);
             }
 
             successful = true;

@@ -989,3 +989,14 @@ CWWKD1099.first.keyword.incompat.explanation=A Query by Method Name method \
  that includes a Limit or PageRequest parameter cannot use the First keyword.
 CWWKD1099.first.keyword.incompat.useraction=Remove the First keyword from the \
  method name.
+
+CWWKD1100.cursor.requires.sort=CWWKD1100E: The {0} method of the {1} repository \
+ returns {2} but does not have an OrderBy annotation or any of the following \
+ parameters to specify sort criteria: {3}. Sort criteria is required for \
+ cursor-based pagination and cannot be specified within an ORDER BY clause of \
+ a Query annotation value.
+CWWKD1100.cursor.requires.sort.explanation=Cursor-based pagination requires \
+ sort criteria.
+CWWKD1100.cursor.requires.sort.useraction=Remove the ORDER BY clause from the \
+ Query annotation value if one is found there. Add an OrderBy annotation or a \
+ repository method parameter to specify the sort criteria.

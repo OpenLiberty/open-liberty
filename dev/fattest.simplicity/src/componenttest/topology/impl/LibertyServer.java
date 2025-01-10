@@ -5733,11 +5733,21 @@ public class LibertyServer implements LogMonitorClient {
     public RemoteFile getDefaultLogFile() throws Exception {
         //Set path to server log assuming the default setting.
         // ALWAYS RETURN messages.log -- tests assume they can look for INFO+ messages.
-        RemoteFile file = LibertyFileManager.getLibertyFile(machine, messageAbsPath);
-        if (file == null) {
-            throw new IllegalStateException("Unable to find default log file, path=" + messageAbsPath);
+        try {
+            RemoteFile file = LibertyFileManager.getLibertyFile(machine, messageAbsPath);
+            if (file == null) {
+                throw new IllegalStateException("Unable to find default log file, path=" + messageAbsPath);
+            }
+            return file;
+        } catch (FileNotFoundException e) {
+            if (isStarted) {
+                String msg = e.getMessage() + " and the server was started. Has it been left running from a previous repeat?";
+                Exception e2 = new FileNotFoundException(msg);
+                e2.initCause(e);
+                throw e2;
+            }
+            throw e;
         }
-        return file;
     }
 
     public boolean defaultTraceFileExists() throws Exception {

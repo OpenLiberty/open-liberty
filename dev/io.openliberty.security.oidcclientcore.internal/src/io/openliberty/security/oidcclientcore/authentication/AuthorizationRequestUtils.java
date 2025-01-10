@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
@@ -29,7 +26,7 @@ public class AuthorizationRequestUtils {
     public static final TraceComponent tc = Tr.register(AuthorizationRequestUtils.class);
 
     public static final int STATE_LENGTH = 9;
-    public static final int NONCE_LENGTH = 20;
+    public static final int NONCE_LENGTH = 30;
 
     public String generateStateValue(HttpServletRequest request) {
         String strRandom = RandomUtils.getRandomAlphaNumeric(STATE_LENGTH);

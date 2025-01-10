@@ -25,6 +25,7 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.AsyncWriteListenerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.FormLoginReadListenerTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.NBMultiReadTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadListenerHttpUnit;
+import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadListenerSendImmediateData;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadWriteTimeoutHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeWriteListenerHttpUnit;
 
@@ -42,6 +43,7 @@ import componenttest.topology.impl.LibertyServer;
                 AsyncWriteListenerHttpUnit.class,
                 UpgradeWriteListenerHttpUnit.class,
                 UpgradeReadListenerHttpUnit.class,
+                UpgradeReadListenerSendImmediateData.class,
                 UpgradeReadWriteTimeoutHttpUnit.class,
                 FormLoginReadListenerTest.class,
                 NBMultiReadTest.class

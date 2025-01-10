@@ -393,6 +393,14 @@ public interface Primes {
     @Query("SELECT numberId WHERE ID(THIS)=:num")
     Optional<Short> numberAsShortWrapper(long num);
 
+    // discouraged usage, but testing what happens
+    @Query("SELECT COUNT(THIS) WHERE ID(THIS) < :max")
+    Page<Long> pageOfCountUpTo(long max, PageRequest pageReq);
+
+    // discouraged usage, but testing what happens
+    @Query("SELECT CASE WHEN COUNT(THIS) > 0 THEN TRUE ELSE FALSE END")
+    Page<Boolean> pageOfExists(PageRequest pageReq);
+
     @Insert
     void persist(Prime... primes);
 

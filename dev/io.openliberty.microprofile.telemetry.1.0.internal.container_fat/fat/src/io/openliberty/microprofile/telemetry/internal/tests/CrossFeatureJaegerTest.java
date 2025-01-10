@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
+import io.openliberty.microprofile.telemetry.internal.utils.KeyPairs;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -64,12 +65,7 @@ public class CrossFeatureJaegerTest {
     private static final String APP_NAME = "crossFeature";
     private static final Class<?> c = CrossFeatureJaegerTest.class;
     private static final AttributeKey<String> JAEGER_VERSION = AttributeKey.stringKey("jaeger.version");
-
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    public static RepeatTests repeat = TelemetryActions.allMPRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
-
-    @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
 
     public static JaegerQueryClient client;
 
@@ -79,10 +75,18 @@ public class CrossFeatureJaegerTest {
     @Server(CROSS_FEATURE_TELEMETRY_SERVER)
     public static LibertyServer telemetryServer;
 
+    private static KeyPairs keyPairs = new KeyPairs(telemetryServer);
+
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(),keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
+                                                                                                                                                            "jaeger"));
+
+    @ClassRule
+    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
+
     @BeforeClass
     public static void setUp() throws Exception {
 
-        client = new JaegerQueryClient(jaegerContainer);
+        client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
         // Inform the test framework that opentracingServer is configured to use the secondary HTTP ports
         opentracingServer.useSecondaryHTTPPort();
@@ -154,7 +158,8 @@ public class CrossFeatureJaegerTest {
         }
         //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
         if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-            || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)
+            || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID)
+            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)
             || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)) {
             Span server1 = findOneFrom(spans, hasAttribute(HTTP_ROUTE, "/crossFeature/1"));
             Span client2 = findOneFrom(spans, isSpan().withKind(SpanKind.CLIENT)
@@ -206,7 +211,8 @@ public class CrossFeatureJaegerTest {
         }
         //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
         if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-            || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)
+            || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID)
+            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)
             || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)) {
 
             Span server1 = findOneFrom(spans, isSpan().withAttribute(HTTP_URL, getUrl(opentracingServer) + "/1"));

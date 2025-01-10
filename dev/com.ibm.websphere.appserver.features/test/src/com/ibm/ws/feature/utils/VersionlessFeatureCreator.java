@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.feature.utils;
 
 import java.io.BufferedWriter;
@@ -326,7 +335,7 @@ public class VersionlessFeatureCreator {
         }
 
         File featureFile = feature.getFeatureFile();
-        boolean checkForMpVersion = (mpVersionBase != null && mpVersionTolerates != null);
+        boolean checkForMpVersion = (mpVersionBase != null);
         boolean containsVersionedFeature = false;
         boolean containsMpVersion = false;
         try {
@@ -334,7 +343,7 @@ public class VersionlessFeatureCreator {
             while (myReader.hasNextLine()) {
                 String s = myReader.nextLine();
     
-                if(checkForMpVersion && s.trim().equals(mpVersionBase + "-" + mpVersionTolerates + ", \\")){
+                if(checkForMpVersion && s.trim().equals(mpVersionTolerates == null ? mpVersionBase : (mpVersionBase + "-" + mpVersionTolerates) + ", \\")){
                     containsMpVersion = true;
                 }
                 else if(s.trim().equals(versionedFeatureName)){

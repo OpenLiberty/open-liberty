@@ -14,12 +14,6 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-import java.io.File;
-import java.security.KeyPair;
-import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -27,15 +21,14 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import org.testcontainers.DockerClientFactory;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.security.utils.SSLUtils;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
+import io.openliberty.microprofile.telemetry.internal.utils.KeyPairs;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -47,7 +40,12 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @RunWith(FATRunner.class)
 public class JaegerSecureOtlpTest extends JaegerBaseTest {
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer(getCertificate(), getKey()).withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    private static KeyPairs otelCollectorKeyPairs = new KeyPairs(server);
+
+    private static KeyPairs jaegerClientKeyPairs = new KeyPairs(server);
+
+    public static JaegerContainer jaegerContainer = new JaegerContainer(otelCollectorKeyPairs.getCertificate(),otelCollectorKeyPairs.getKey(), jaegerClientKeyPairs.getCertificate(), jaegerClientKeyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(JaegerSecureOtlpTest.class,
+                                                                                                                                 "jaeger"));
     public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
@@ -55,15 +53,9 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
 
     public static JaegerQueryClient client;
 
-    private static File privateKeyFile;
-    private static File certificateFile;
-
-    private static boolean createdSSLStuff = false;
-
     @BeforeClass
     public static void setUp() throws Exception {
-
-        client = new JaegerQueryClient(jaegerContainer);
+        client = new JaegerQueryClient(jaegerContainer, jaegerClientKeyPairs.getCertificate());
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getSecureOtlpGrpcUrl());
@@ -72,7 +64,7 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
 
-        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_CERTIFICATE, certificateFile.getAbsolutePath());
+        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_CERTIFICATE, otelCollectorKeyPairs.certificateFilePath());
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
                                           .addPackage(TestResource.class.getPackage());
@@ -95,44 +87,6 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
     @Override
     protected JaegerQueryClient getJaegerClient() {
         return client;
-    }
-
-    private static File getKey() {
-        generateSSLStuff();
-        return privateKeyFile;
-    }
-
-    private static File getCertificate() {
-        generateSSLStuff();
-        return certificateFile;
-    }
-
-    private synchronized static void generateSSLStuff() {
-        if (createdSSLStuff) {
-            return;
-        }
-
-        try {
-            KeyPair generatedKeyPair = SSLUtils.generateKeyPair();
-
-            String dockerIP = DockerClientFactory.instance().dockerHostIpAddress();
-            String dnName = "O=Evil Inc Test Certificate, CN=" + dockerIP + ", L=Toronto,C=CA";
-            List<String> genericNameList = new ArrayList<String>();
-            genericNameList.add(dockerIP);
-
-            Certificate certificateObject = SSLUtils.selfSign(generatedKeyPair, dnName, genericNameList);
-
-            String pathToPrivateKey = server.getServerSharedPath() + "/private.key";
-            privateKeyFile = new File(pathToPrivateKey);
-            SSLUtils.exportPrivateKeyToFile(privateKeyFile, generatedKeyPair);
-
-            String pathToCertificate = server.getServerSharedPath() + "/certificate.crt";
-            certificateFile = new File(pathToCertificate);
-            SSLUtils.exportCertificateToFile(certificateFile, certificateObject);
-            createdSSLStuff = true;
-        } catch (Exception e) { //If we get an exception let the test fail and show the developer what went wrong
-            throw new RuntimeException("Exception doing SSLStuff", e);
-        }
     }
 
 }

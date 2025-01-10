@@ -504,7 +504,16 @@ public class LegacyMetricRegistryAdapter implements MetricRegistry {
 
         CounterAdapter result = checkCast(CounterAdapter.class, metadata,
                                           constructedMeters.computeIfAbsent(id, k -> new CounterAdapter()));
-        addNameToApplicationMap(id);
+
+        //LIBERTY CHANGE START
+        /*
+         * Check if metric is an Openliberty connection pool metric.
+         * Do not associate with application if true.
+         */
+        if (!isLibertyVendorConnectionPoolMetricCounter(id.name())) {
+            addNameToApplicationMap(id);
+        }
+        //LIBERTY CHANGE END
 
         return result.register(metadata, id, registry, scope, resolveMPConfigGlobalTagsByServer());
     }
@@ -539,7 +548,15 @@ public class LegacyMetricRegistryAdapter implements MetricRegistry {
 
         FunctionCounterAdapter<T> result = checkCast(FunctionCounterAdapter.class, metadata,
                                                      constructedMeters.computeIfAbsent(id, k -> new FunctionCounterAdapter(obj, func)));
-        addNameToApplicationMap(id);
+        //LIBERTY CHANGE START
+        /*
+         * Check if metric is an Openliberty connection pool metric.
+         * Do not associate with application if true.
+         */
+        if (!isLibertyVendorConnectionPoolMetricCounter(id.name())) {
+            addNameToApplicationMap(id);
+        }
+        //LIBERTY CHANGE END
         return result.register(metadata, id, registry, scope, resolveMPConfigGlobalTagsByServer());
     }
 
@@ -599,16 +616,61 @@ public class LegacyMetricRegistryAdapter implements MetricRegistry {
         validateTagNamesMatch(id);
         GaugeAdapter.DoubleFunctionGauge<T> result = checkCast(GaugeAdapter.DoubleFunctionGauge.class, metadata,
                                                                constructedMeters.computeIfAbsent(id, k -> new GaugeAdapter.DoubleFunctionGauge<>(obj, f)));
-        addNameToApplicationMap(id);
+        //LIBERTY CHANGE START
+        /*
+         * Check if metric is an Openliberty connection pool metric.
+         * Do not associate with application if true.
+         */
+        if (!isLibertyVendorConnectionPoolMetricGauge(id.name())) {
+            addNameToApplicationMap(id);
+        }
+        //LIBERTY CHANGE END
         return result.register(metadata, id, registry, scope, resolveMPConfigGlobalTagsByServer());
     }
+
+    //LIBERTY CHANGE START
+    /*
+     * Checks if the metric being registered matches one of the connection pool vendor metrics provided by Liberty.
+     */
+    private boolean isLibertyVendorConnectionPoolMetricCounter(String metricName) {
+        if (metricName.equalsIgnoreCase("connectionpool.create.total") ||
+            metricName.equalsIgnoreCase("connectionpool.destroy.total") ||
+            metricName.equalsIgnoreCase("connectionpool.queuedRequests.total") ||
+            metricName.equalsIgnoreCase("connectionpool.usedConnections.total")) {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * Checks if the metric being registered matches one of the connection pool vendor metrics provided by Liberty.
+     */
+    private boolean isLibertyVendorConnectionPoolMetricGauge(String metricName) {
+        if (metricName.equalsIgnoreCase("connectionpool.managedConnections") ||
+            metricName.equalsIgnoreCase("connectionpool.connectionHandles") ||
+            metricName.equalsIgnoreCase("connectionpool.freeConnections") ||
+            metricName.equalsIgnoreCase("connectionpool.waitTime.total") ||
+            metricName.equalsIgnoreCase("connectionpool.inUseTime.total")) {
+            return true;
+        }
+        return false;
+    }
+    //LIBERTY CHANGE END
 
     @SuppressWarnings("unchecked")
     <T, R extends Number> GaugeAdapter<R> internalGauge(MpMetadata metadata, MetricDescriptor id, T obj, Function<T, R> f) {
         validateTagNamesMatch(id);
         GaugeAdapter.FunctionGauge<T, R> result = checkCast(GaugeAdapter.FunctionGauge.class, metadata,
                                                             constructedMeters.computeIfAbsent(id, k -> new GaugeAdapter.FunctionGauge<>(obj, f)));
-        addNameToApplicationMap(id);
+        //LIBERTY CHANGE START
+        /*
+         * Check if metric is an Openliberty connection pool metric.
+         * Do not associate with application if true.
+         */
+        if (!isLibertyVendorConnectionPoolMetricGauge(id.name())) {
+            addNameToApplicationMap(id);
+        }
+        //LIBERTY CHANGE END
         return result.register(metadata, id, registry, scope, resolveMPConfigGlobalTagsByServer());
     }
 
@@ -656,7 +718,15 @@ public class LegacyMetricRegistryAdapter implements MetricRegistry {
         validateTagNamesMatch(id);
         GaugeAdapter<T> result = checkCast(GaugeAdapter.NumberSupplierGauge.class, metadata,
                                            constructedMeters.computeIfAbsent(id, k -> new GaugeAdapter.NumberSupplierGauge<T>(f)));
-        addNameToApplicationMap(id);
+        //LIBERTY CHANGE START
+        /*
+         * Check if metric is an Openliberty connection pool metric.
+         * Do not associate with application if true.
+         */
+        if (!isLibertyVendorConnectionPoolMetricGauge(id.name())) {
+            addNameToApplicationMap(id);
+        }
+        //LIBERTY CHANGE END
         return result.register(metadata, id, registry, scope, resolveMPConfigGlobalTagsByServer());
     }
 

@@ -45,9 +45,9 @@ public enum DatabaseContainerType {
     DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, //
                 DockerImageName.parse("")),
     Oracle("ojdbc8.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
-           DockerImageName.parse("gvenzl/oracle-free:23.3-full-faststart"), "OracleDB"),
+           DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23.5-full-faststart").asCompatibleSubstituteFor("gvenzl/oracle-free"), "OracleDB"),
     Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
-             DockerImageName.parse("postgres:17.0-alpine"), "Postgre", "PostgreSQL"),
+             DockerImageName.parse("public.ecr.aws/docker/library/postgres:17.0-alpine").asCompatibleSubstituteFor("postgres"), "Postgre", "PostgreSQL"),
     SQLServer("mssql-jdbc.jar", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //
               DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU28-ubuntu-20.04"), "MSSQLServer");
 

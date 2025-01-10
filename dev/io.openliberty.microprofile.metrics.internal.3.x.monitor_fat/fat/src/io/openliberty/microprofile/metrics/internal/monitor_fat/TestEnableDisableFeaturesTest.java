@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -225,6 +225,35 @@ public class TestEnableDisableFeaturesTest {
         checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF4),
                 new String[] { "sql: create table cities" }, new String[] {});
         Log.info(c, testName, "------- connectionpool metrics should be available ------");
+        checkStrings(getHttpsServlet("/metrics/vendor", serverEDF4),
+                new String[] { "vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\"}", },
+                new String[] {});
+
+        currentServ.setMarkToEndOfLog();
+        // FAT updated to check that connectionpool metric remains after unloading
+        // application.
+        boolean res = currentServ.removeDropinsApplications("testJDBCApp.war");
+        Assert.assertTrue("TestJDBCApp.war was not removed", res);
+
+        currentServ.waitForStringInLog(".*CWWKZ0009I: The application testJDBCApp has stopped successfully.*");
+        Log.info(c, testName, "------- Removed JDBC application ------");
         checkStrings(getHttpsServlet("/metrics/vendor", serverEDF4),
                 new String[] { "vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS1\"}",
                         "vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS1\"}",

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -286,12 +286,6 @@ public class VersionlessTest {
                 List<String> cohort = cohorts.get(featureBaseName);
                 //loops through each version of a platform
                 for (String version : cohort) {
-                    // We are only doing javaee-8.0 platform and not doing jakartaee-8.0 platform
-                    // If that changes this condition should be removed.
-                    if (baseName.equals("jakartaee") && version.equals("8.0")) {
-                        continue;
-                    }
-
                     boolean isMP = baseName.equals("microProfile");
                     String featureName = featureBaseName + "-" + version;
                     String featureShortName = baseName + "-" + version;
@@ -336,6 +330,8 @@ public class VersionlessTest {
         // jdbc is special
         featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.1").remove("javaee-8.0");
         featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.2").add("javaee-8.0");
+        featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.1").remove("jakartaee-8.0");
+        featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.2").add("jakartaee-8.0");
         featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.2").remove("jakartaee-11.0");
         Set<String> jdbc43Platform = new HashSet<>();
         jdbc43Platform.add("jakartaee-11.0");
@@ -356,9 +352,6 @@ public class VersionlessTest {
                 if (featurePlatform.equals("javaee-6.0")) {
                     continue;
                 }
-                if(featurePlatform.equals("jakartaee-8.0") && platforms.contains("javaee-8.0")){
-                    continue;
-                }
                 if (platforms.contains(featurePlatform)) {
                     matches++;
                 } else {
@@ -372,9 +365,6 @@ public class VersionlessTest {
                         errorMessage.append(featureName).append(" is missing platform ").append(platform).append("\n");
                     }
                 }
-            }
-            if(platforms.contains("javaee-8.0") && !featurePlatforms.contains("jakartaee-8.0")){
-                errorMessage.append(featureName).append(" is missing platform jakartaee-8.0\n");
             }
         }
 
@@ -548,7 +538,7 @@ public class VersionlessTest {
 
         String errorOutput = "There are versionless features that need to be created. " +
                              "Templates for the needed features have been created in the 'build/versionless' directory.\n" +
-                             "Keep in mind the templates are not guarenteed to be correct and are solely meant to " +
+                             "Keep in mind the templates are not guaranteed to be correct and are solely meant to " +
                              "act as a helpful starting point for creating a versionless feature.\n" +
                              "Verify the data inside the feature files are correct, then copy the features from 'build/versionless' into 'visibility'.\n" + createdFeatures;
 
@@ -587,10 +577,6 @@ public class VersionlessTest {
         return selectorCohorts;
     }
 
-    /**
-     * Presently the Jakarta Container features (jsonbContainer, jsonpContainer, [jsf|faces]Container and [jpa|persistence]Container
-     * are not created as versionless features. To be determined if they should.
-     */
     public static List<String> skipFeatures = new ArrayList<String>(Arrays.asList("webProfile",
                                                                                   "noShip",
                                                                                   "monitor",

@@ -43,6 +43,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
+import io.openliberty.microprofile.telemetry.internal.utils.KeyPairs;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -62,21 +63,25 @@ public class TracingNotEnabledTest {
 
     private static final Class<TracingNotEnabledTest> c = TracingNotEnabledTest.class;
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(TracingNotEnabledTest.class, "jaeger"));
     public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
-
-    @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
 
     public static JaegerQueryClient client;
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    private static KeyPairs keyPairs = new KeyPairs(server);
+
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(),
+                                                                        keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(TracingNotEnabledTest.class, "jaeger"));
+
+    @ClassRule
+    public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
+
     @BeforeClass
     public static void setUp() throws Exception {
 
-        client = new JaegerQueryClient(jaegerContainer);
+        client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());

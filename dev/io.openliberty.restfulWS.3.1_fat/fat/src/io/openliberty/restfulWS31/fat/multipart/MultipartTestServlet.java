@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -76,7 +76,7 @@ public class MultipartTestServlet extends FATServlet {
 
         List<EntityPart> parts = response.readEntity(new GenericType<List<EntityPart>>() {});
         System.out.println("testMultipartResponse - got list of parts: " + parts);
-        assertEquals(4, parts.size());
+        assertEquals(6, parts.size());
 
         EntityPart part = parts.get(0);
         assertEquals("file1", Util.getPartName(part));
@@ -124,6 +124,17 @@ public class MultipartTestServlet extends FATServlet {
         assertFalse("Content-Disposition header contains filename attr, but should not: " + contentDisposition,
                     contentDisposition.contains("filename="));
         assertEquals("text/plain", part.getMediaType().getType() + "/" + part.getMediaType().getSubtype()); // not specified ; should default to text/plain
+        
+        part = parts.get(4);
+        assertEquals("empty-entity-part", Util.getPartName(part));
+        assertEquals("empty-entity-part", part.getName());
+        assertEquals("", part.getContent(String.class)); 
+
+        part = parts.get(5);
+        assertEquals("empty-input-stream-part", Util.getPartName(part));
+        assertEquals("empty-input-stream-part", part.getName());
+        assertEquals("", part.getContent(String.class));
+
     }
 
     @Test
@@ -243,6 +254,14 @@ public class MultipartTestServlet extends FATServlet {
                                     .build(),
                             EntityPart.withName("noSpecifiedContentType")
                                     .content(new ByteArrayInputStream("No content type specified".getBytes()))
+                                    .build(),
+                            EntityPart.withName("empty-entity-part")
+                                    .content("empty.txt", new ByteArrayInputStream(new byte[0]))
+                                    .mediaType(MediaType.TEXT_PLAIN_TYPE)
+                                    .build(),
+                            EntityPart.withName("empty-input-stream-part")
+                                    .content("test.csv", new ByteArrayInputStream(new byte[0]))
+                                    .mediaType(MediaType.APPLICATION_OCTET_STREAM_TYPE)
                                     .build()
                         );
          } catch (IOException e) {

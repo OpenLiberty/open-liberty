@@ -166,6 +166,7 @@ public class CheckpointRule implements TestRule {
     private CheckpointPhase checkpointPhase = CheckpointPhase.AFTER_APP_START;
     private Consumer<LibertyServer> postCheckpointLambda;
     private final Set<String> unsupportedRepeatIDs = new HashSet<>(Arrays.asList(EE6FeatureReplacementAction.ID, EE7FeatureReplacementAction.ID));
+    private String[] checkpointIgnoreMessages;
 
     /**
      * Sets the optional function to do class setup before running the normal and checkpoint mode for the test
@@ -288,6 +289,11 @@ public class CheckpointRule implements TestRule {
         return this;
     }
 
+    public CheckpointRule addCheckpointRegexIgnoreMessages(String... regExs) {
+        this.checkpointIgnoreMessages = regExs;
+        return this;
+    }
+
     @Override
     public Statement apply(Statement base, Description desc) {
         assertNotNull("Must set ServerSetup", serverSetup);
@@ -402,6 +408,9 @@ public class CheckpointRule implements TestRule {
             CheckpointInfo checkpointInfo = new CheckpointInfo(checkpointPhase, true, postCheckpointLambda);
             server.setConsoleLogName(logName);
             server.setCheckpoint(checkpointInfo);
+            if (checkpointIgnoreMessages != null) {
+                server.addCheckpointRegexIgnoreMessages(checkpointIgnoreMessages);
+            }
         }
 
         private void checkpointTearDown() throws Exception {

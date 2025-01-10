@@ -71,7 +71,7 @@ public class ProgrammaticImageTest {
      * from artifactory.
      *
      * Example:
-     * ImageNameSubstitutor.instance().apply(DockerImageName.parse("postgres:17.0-alpine")).asCanonicalNameString()
+     * ImageNameSubstitutor.instance().apply(DockerImageName.parse("public.ecr.aws/docker/library/postgres:17.0-alpine")).asCanonicalNameString()
      *
      * When testing locally a DefaultImageNameSubstitutor will be used and postgres:17.0-alpine will be returned as normal.
      * When testing on a remote docker host, our internal ArtifactoryImageNameSubstitutor will be used and

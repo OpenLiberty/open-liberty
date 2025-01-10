@@ -33,6 +33,7 @@ import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKUtilities;
 
 /**
  * This is a test class that runs the whole Fault Tolerance TCK. The TCK results
@@ -49,7 +50,7 @@ public class FaultToleranceTck41Launcher {
     private static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11);
+    public static RepeatTests r = MicroProfileActions.repeatIf(SERVER_NAME, TCKUtilities::areAllFeaturesPresent, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

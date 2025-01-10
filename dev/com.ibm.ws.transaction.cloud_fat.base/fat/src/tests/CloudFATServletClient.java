@@ -182,16 +182,21 @@ public abstract class CloudFATServletClient extends CloudTestBase {
             // Now start server1
             FATUtils.startServers(_runner, longLeaseCompeteServer1);
 
+            // Check it recovered successfully
+            longLeaseCompeteServer1.resetLogMarks();
+            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not recover its own logs",
+                          longLeaseCompeteServer1.waitForStringInLog("WTRN0133I: Transaction recovery processing for this server is complete"));
+
             // Wake up server2 which will be sleeping in recover
             Log.info(getClass(), "testAggressiveTakeover1", "Wake up " + server2fastcheck.getServerName());
             XAResourceImpl.wakeUp();
 
-            assertNotNull("Peer recovery was not interrupted",
+            assertNotNull(server2fastcheck.getServerName() + " did not fail to recover for " + longLeaseCompeteServer1.getServerName(),
                           server2fastcheck.waitForStringInTrace("WTRN0107W: Server with identity cloud0021 attempted but failed to recover the logs of peer server cloud0011",
                                                                 FATUtils.LOG_SEARCH_TIMEOUT));
 
-            // Server appears to have started ok. Check for key string to see whether recovery has succeeded, irrespective of what server2fastcheck has done
-            assertNotNull("Local recovery failed", longLeaseCompeteServer1.waitForStringInLog("CWRLS0012I:", FATUtils.LOG_SEARCH_TIMEOUT));
+            // Prevent server2 from trying again during server1 shutdown
+            FATUtils.stopServers(server2fastcheck);
 
             FATUtils.runWithRetries(() -> runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "checkRecAggressiveTakeover").toString());
         }

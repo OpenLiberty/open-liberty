@@ -923,12 +923,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                         }
                                     } else {
                                         throw exc(MappingException.class,
-                                                  "CWWKD1055.incompat.result",
+                                                  "CWWKD1046.result.convert.err",
                                                   queryInfo.loggableAppend(firstNonNullResult.getClass().getName(),
                                                                            " (", firstNonNullResult, ")"),
-                                                  method.getGenericReturnType().getTypeName(),
                                                   method.getName(),
-                                                  repositoryInterface.getName());
+                                                  repositoryInterface.getName(),
+                                                  method.getGenericReturnType().getTypeName());
                                     }
                                 } else if (results.isEmpty()) {
                                     throw excEmptyResult(method);

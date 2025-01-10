@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,23 +36,31 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.common.apiservices.Bootstrap;
+import componenttest.rules.repeater.FeatureSet;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.TCKJarInfo;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
@@ -74,6 +82,9 @@ public class TCKUtilities {
     /** The public repo containing the maven wrapper artifacts. Must match maven-wrapper.properties. */
     static final String MVN_WRAPPER_REPO = "https://repo.maven.apache.org/maven2/";
     static final String BUILD_CACHE_DIR_PROPERTY = "fat.test.build.cache.dir";
+
+    // Convert from EBCDIC on z/OS
+    static final Charset zosSafeCharset = TCKUtilities.isZos() ? Charset.forName("IBM1047") : Charset.defaultCharset();
 
     static String generateSHA256(File file) {
         String sha256 = null;
@@ -298,9 +309,7 @@ public class TCKUtilities {
 
         Process process = pb.start();
 
-        // Convert from EBCDIC on z/OS
-        Charset charset = TCKUtilities.isZos() ? Charset.forName("IBM1047") : Charset.defaultCharset();
-        Reader processReader = new InputStreamReader(process.getInputStream(), charset);
+        Reader processReader = new InputStreamReader(process.getInputStream(), zosSafeCharset);
 
         StreamMonitor monitor = new StreamMonitor(processReader);
         monitor.logToFile(logFile);
@@ -864,5 +873,83 @@ public class TCKUtilities {
         assertThat("Server log has errors after starting", server.findStringsInLogs("CWWKF0001E"), empty()); // A feature definition could not be found for ...
         assertThat("Server log has errors after starting", server.findStringsInLogs("CWWKF0002E"), empty()); // A bundle could not be found for ...
         assertThat("Server log has errors after starting", server.findStringsInLogs("CWWKE0702E"), empty()); // Could not resolve module ...
+    }
+
+    private static Set<String> detectedShortNames = null;
+
+    private static Set<String> getDetectedShortNames() {
+        if (detectedShortNames != null) {
+            return detectedShortNames;
+        }
+
+        detectedShortNames = new HashSet<String>();
+        Bootstrap b;
+        try {
+            b = Bootstrap.getInstance();
+        } catch (Exception e) {
+            Log.info(c, "getDetectedShortNames", "Bootstrap.getInstance() failed. This will likely cause the current repeat to skip " + e.toString());
+            detectedShortNames = null; //if bootstrap is broken we've got bigger problems, but we can avoid caching an exception
+            throw new RuntimeException(e);
+        }
+
+        String installRoot = b.getValue("libertyInstallPath");
+        String libPath = installRoot + "/lib/features/";
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(libPath), "*.mf")) {
+            for (Path path : stream) {
+                if (!Files.isDirectory(path)) {
+
+                    try (Stream<String> lineStream = Files.lines(path, zosSafeCharset)) {
+                        lineStream
+                                        .filter(line -> line.startsWith("IBM-ShortName: "))
+                                        .map(line -> line.replaceAll("IBM-ShortName: ", ""))
+                                        .forEach(detectedShortNames::add);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Log.info(c, "getDetectedShortNames", "IO exception while reading .mf Files. This will likely cause the current repeat to skip " + e.toString());
+            detectedShortNames = null; //avoid caching an exception
+            throw new RuntimeException(e);
+        }
+
+        return detectedShortNames;
+
+    }
+
+    /**
+     * Checks if a feature or features are present in wlp/lib/features by reading the mf files
+     * and checking if all the provided IBM-ShortName are present.
+     *
+     * @param  featureSet A FeatureSet, all the names returned by getFeatures() will be checked for a matching IBM-ShortName in a mf file
+     * @return            true if all provided IBM-ShortName can be found in a .mf file in wlp/lib/features.
+     */
+    public static boolean areAllFeaturesPresent(FeatureSet featureSet) {
+        return areAllFeaturesPresent(featureSet.getFeatures());
+    }
+
+    /**
+     * Checks if a feature or features are present in wlp/lib/features by reading the mf files
+     * and checking if all the provided IBM-ShortName are present.
+     *
+     * @param  featuresToCheck IBM-ShortNames that are required to be available on the server
+     * @return                 true if all provided IBM-ShortName can be found in a .mf file in wlp/lib/features.
+     */
+    public static boolean areAllFeaturesPresent(Set<String> featuresToCheck) {
+
+        final String m = "areAllFeaturesPresent";
+        Log.info(c, m, "checking for " + String.join(", ", featuresToCheck));
+        Set<String> shortNames = getDetectedShortNames();
+
+        for (String s : featuresToCheck) {
+            boolean result = shortNames.contains(s);
+            if (!result) {
+                Log.info(c, m, "checked for " + s + " found " + result);
+                return false;
+            }
+        }
+
+        Log.info(c, m, "found all features");
+        return true;
     }
 }

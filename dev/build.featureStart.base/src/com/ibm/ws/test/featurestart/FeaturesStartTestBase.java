@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
+import java.lang.Thread;
 
 import org.junit.Assert;
 
@@ -305,6 +306,14 @@ public class FeaturesStartTestBase {
 
         try {
             if (server.isStarted()) {
+                if (shortName.equals("logstashCollector-1.0")) {
+                    try {
+                        Thread.sleep(10000); //wait 10 seconds for logstashCollector
+                    }
+                    catch (Exception e) {
+                        //ignore and continue;
+                    }
+                }
                 logInfo(m, "Stopping: " + description);
                 if (allowedErrors != null) {
                     logInfo(m, "Allowed errors [ " + Arrays.toString(allowedErrors) + " ]");

@@ -51,12 +51,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
             }
 
             // Priority 2a: If the image is known to only exist in an Artifactory organization
-            if (original.getRepository().contains("wasliberty-")) {
-                ImageVerifier.collectImage(original);
-                result = REGISTRY.apply(original);
-                reason = "This image only exists in Artifactory, must use Artifactory registry.";
-                break;
-            }
+            // This is now handled directly by the MIRROR substitutor
 
             // Priority 2b: If the image is known to only exist in an Artifactory registry
             if (original.getRegistry() != null && original.getRegistry().contains("artifactory.swg-devops.com")) {

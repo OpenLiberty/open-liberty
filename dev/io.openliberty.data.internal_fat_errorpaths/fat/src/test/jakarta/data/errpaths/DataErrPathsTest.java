@@ -56,6 +56,9 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1019E.*livingAt", // mix of named/positional parameters
                                    "CWWKD1019E.*residingAt", // unused parameters
                                    "CWWKD1022E.*discardPage", // Delete operation with a PageRequest
+                                   "CWWKD1033E.*selectByFirstName", // CursoredPage with ORDER BY in Query
+                                   "CWWKD1037E.*findByBirthdayOrderBySSN", // CursoredPage of non-entity
+                                   "CWWKD1037E.*registrations", // CursoredPage of non-entity
                                    "CWWKD1077E.*test.jakarta.data.errpaths.web.RepoWithoutDataStore",
                                    "CWWKD1078E.*test.jakarta.data.errpaths.web.InvalidNonJNDIRepo",
                                    "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo",
@@ -79,7 +82,8 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1098E.*withNameLongerThan", // Limit ahead of query params
                                    "CWWKD1098E.*withNameShorterThan", // Sort ahead of query params
                                    "CWWKD1099E.*findFirst2", // Limit incompatible with First
-                                   "CWWKD1099E.*findFirst3" // PageRequest incompatible with First
+                                   "CWWKD1099E.*findFirst3", // PageRequest incompatible with First
+                                   "CWWKD1100E.*selectByLastName" // CursoredPage with ORDER BY clause
                     };
 
     @Server("io.openliberty.data.internal.fat.errpaths")

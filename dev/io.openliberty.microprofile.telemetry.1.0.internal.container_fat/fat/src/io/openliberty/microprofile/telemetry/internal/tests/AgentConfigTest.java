@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agentconfig.AgentConfigTestResource;
+import io.openliberty.microprofile.telemetry.internal.utils.KeyPairs;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.TestUtils;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
@@ -80,8 +81,11 @@ public class AgentConfigTest {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    public static RepeatTests repeat = TelemetryActions.allMPRepeats(SERVER_NAME);
+    private static KeyPairs keyPairs = new KeyPairs(server);
+
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(),
+                                                                        keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(AgentConfigTest.class, "jaeger"));
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
@@ -90,12 +94,16 @@ public class AgentConfigTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        client = new JaegerQueryClient(jaegerContainer);
+        client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             server.copyFileToLibertyServerRoot("agent-119/opentelemetry-javaagent.jar");
-        } else {
+        } 
+        else if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)){
             server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
+        }
+        else {
+            server.copyFileToLibertyServerRoot("agent-210/opentelemetry-javaagent.jar");
         }
 
         // Construct the test application
@@ -120,6 +128,8 @@ public class AgentConfigTest {
         // Env vars are cleared when the server starts, so we need to set the core ones up again
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
+        //The default OTLP protocol has been changed from grpc to http/protobuf in the Java Agent v2.1.0
+        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_PROTOCOL, "grpc");
         server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
         server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server

@@ -37,10 +37,14 @@ app-resources= \
   META-INF/services/javax.xml.soap.MessageFactory | \
   META-INF/services/javax.xml.soap.SAAJMetaFactory
 
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   !com.sun.xml.fastinfoset.dom, \
   !javax.xml.messaging, \
   !org.jvnet.fastinfoset, \
+  javax.xml.soap;version=!, \
   *
 
 Service-Component: \

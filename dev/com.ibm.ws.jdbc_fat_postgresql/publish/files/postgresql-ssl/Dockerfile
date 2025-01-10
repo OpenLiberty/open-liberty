@@ -1,4 +1,4 @@
-# TODO update to 17.0-alpine
+# TODO update to public.ecr.aws/docker/library/postgres:17.0-alpine
 
 FROM postgres:14.1-alpine
 

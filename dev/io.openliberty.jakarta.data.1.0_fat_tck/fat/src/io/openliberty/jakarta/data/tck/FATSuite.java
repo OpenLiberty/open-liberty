@@ -44,11 +44,15 @@ import componenttest.topology.impl.JavaInfo;
                 DataStandaloneTckLauncher.class
 })
 public class FATSuite extends TestContainerSuite {
+
+    private static final DockerImageName mongoDBImage = DockerImageName.parse("public.ecr.aws/docker/library/mongo:6.0.6")
+                    .asCompatibleSubstituteFor("mongo:6.0.6");
+
     @ClassRule
     public static JdbcDatabaseContainer<?> relationalDatabase = DatabaseContainerFactory.create();
 
     @ClassRule
-    public static MongoDBContainer noSQLDatabase = new MongoDBContainer(DockerImageName.parse("mongo:6.0.6"));
+    public static MongoDBContainer noSQLDatabase = new MongoDBContainer(mongoDBImage);
 
     public static boolean shouldRunSignatureTests() {
         boolean result = false;

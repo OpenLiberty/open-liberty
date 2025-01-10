@@ -33,6 +33,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.Application;
@@ -45,7 +46,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.topology.database.container.PostgreSQLContainer;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -63,7 +65,7 @@ public class FATSuite extends TestContainerSuite {
     private static final String POSTGRES_PASS = "productionpw";
 
     @ClassRule
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:17.0-alpine")
+    public static JdbcDatabaseContainer<?> postgre = DatabaseContainerFactory.createType(DatabaseContainerType.Postgres)
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)

@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -34,7 +35,8 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.PostgreSQLContainer;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -51,7 +53,7 @@ public class JakartaDataTest extends FATServletClient {
     private static final String DATA_APP = "jakartaDataApp";
 
     @ClassRule
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:17.0-alpine")
+    public static JdbcDatabaseContainer<?> postgre = DatabaseContainerFactory.createType(DatabaseContainerType.Postgres)
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)
