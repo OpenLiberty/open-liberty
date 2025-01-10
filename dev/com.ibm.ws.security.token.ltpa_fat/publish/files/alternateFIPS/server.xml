@@ -8,7 +8,9 @@
 		<feature>servlet-3.1</feature>
     </featureManager>
     
+    <!-- 
     <ltpa keysFileName="${server.config.dir}/resources/security/alternateFIPS/testLtpa.keys"/>
+    -->
 
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
@@ -24,7 +26,7 @@
 
 	<include optional="true" location="../fatTestPorts.xml"/>
 
-    <ltpa monitorInterval = "10" monitorValidationKeysDir="true" expiration="10m" updateTrigger="polled" keysFileName="${server.config.dir}/resources/security/ltpa.keys" keysPassword="{xor}CDo9Hgw=">
+    <ltpa monitorInterval = "10" monitorValidationKeysDir="true" expiration="10m" updateTrigger="polled" keysFileName="${server.config.dir}/resources/security/alternateFIPS/testLtpa.keys" keysPassword="{xor}CDo9Hgw=">
         <validationKeys fileName="configuredValidation1.keys" password="{xor}CDo9Hgw=" validUntilDate="2099-01-01T00:00:00Z"/>
     </ltpa>
     
