@@ -350,7 +350,18 @@ public class H2FATDriverServlet extends FATServlet {
 
             secondFrameHeaders.setHeaderFields(secondHeadersReceived);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
-            h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
+
+            FrameData first5Bytes = new FrameData(3,"ABC12".getBytes(), 0, false, false, false);
+            // Second 1-byte DATA frame (this one ends the stream)
+            FrameData last1Byte = new FrameData(3, "3".getBytes(), 0, true, false, false);
+
+            if(USING_NETTY){
+                h2Client.addExpectedFrame(first5Bytes);
+                h2Client.addExpectedFrame(last1Byte);
+            }else{
+                h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
+            }
+            
 
             secondFrameHeaders.setStreamID(5);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
@@ -368,9 +379,13 @@ public class H2FATDriverServlet extends FATServlet {
             // start sending out frames
             FrameSettings settings = new FrameSettings(0, -1, -1, -1, 5, -1, -1, false);
             setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI, settings);
+            
 
             frameHeadersToSend.setStreamID(3);
             h2Client.sendFrame(frameHeadersToSend.clone());
+            if(USING_NETTY){
+                h2Client.waitFor(first5Bytes);
+            }
 
             frameHeadersToSend.setStreamID(5);
             h2Client.sendFrame(frameHeadersToSend.clone());
