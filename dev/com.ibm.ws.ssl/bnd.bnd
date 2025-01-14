@@ -70,15 +70,16 @@ instrument.disabled: true
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
 	com.ibm.ws.kernel.filemonitor;version=latest,\
-	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.crypto.certificateutil;version=latest,\
-	com.ibm.ws.crypto.common;version=latest,\
-	com.ibm.ws.crypto.passwordutil;version=latest,\
-	com.ibm.ws.config;version=latest, \
-	com.ibm.ws.org.apache.felix.scr;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.kernel.boot.common;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest, \
-	com.ibm.ws.kernel.boot.common;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
+	com.ibm.ws.crypto.certificateutil;version=latest,\
+	com.ibm.ws.crypto.passwordutil;version=latest,\
+	com.ibm.ws.config;version=latest,\
+	com.ibm.ws.org.apache.felix.scr;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
@@ -90,4 +91,6 @@ instrument.disabled: true
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	cglib:cglib;version=3.3.0, \
 	com.ibm.ws.org.objectweb.asm;version=latest, \
-	com.ibm.ws.kernel.boot;version=latest
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest

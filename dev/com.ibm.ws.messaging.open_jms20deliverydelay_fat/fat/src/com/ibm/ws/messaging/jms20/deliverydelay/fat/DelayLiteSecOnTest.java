@@ -58,6 +58,8 @@ public class DelayLiteSecOnTest {
         engineServer.copyFileToLibertyServerRoot(
             "resources/security", "engineLTPAKeys/ltpa.keys");
         engineServer.copyFileToLibertyServerRoot(
+            "resources/security", "engineLTPAKeys/ltpaFIPS.keys");
+        engineServer.copyFileToLibertyServerRoot(
             "resources/security", "engineLTPAKeys/mykey.jks");
 
         engineServer.setServerConfigurationFile(

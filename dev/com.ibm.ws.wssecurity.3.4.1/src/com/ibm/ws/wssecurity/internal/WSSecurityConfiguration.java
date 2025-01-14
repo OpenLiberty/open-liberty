@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,8 +37,7 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.crypto.common.CryptoMessageUtils;
-import com.ibm.ws.crypto.common.CryptoUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.ws.wssecurity.cxf.interceptor.WSSecurityLibertyPluginInterceptor;
@@ -301,7 +300,6 @@ public class WSSecurityConfiguration implements ConfigurationListener {
         return samlTokenConfigMap;
     }
 
-
     /**
      */
 
@@ -331,28 +329,23 @@ public class WSSecurityConfiguration implements ConfigurationListener {
                             signaturePropertyMap.remove(key);
                         }
                         if (newConfigSpecified(signaturePropertyMap)) {
-                            signaturePropertyMap.remove(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER); 
+                            signaturePropertyMap.remove(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
                             signaturePropertyMap.putIfAbsent(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER, WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER_NAME);
-                            defaultConfigMap.put(WSSecurityConstants.SEC_SIG_PROPS, signaturePropertyMap);  //v3
+                            defaultConfigMap.put(WSSecurityConstants.SEC_SIG_PROPS, signaturePropertyMap); //v3
                         } else {
-                            defaultConfigMap.put(WSSecurityConstants.CXF_SIG_PROPS, signaturePropertyMap);  //v3 - backward compatibility
+                            defaultConfigMap.put(WSSecurityConstants.CXF_SIG_PROPS, signaturePropertyMap); //v3 - backward compatibility
                         }
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Object sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) != null ? 
-                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE);
-                            Tr.debug(tc, "signature configuration type = ", sigProp );
-                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) != null ? 
-                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_ALIAS);
+                            Object sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) != null ? signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE);
+                            Tr.debug(tc, "signature configuration type = ", sigProp);
+                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) != null ? signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_ALIAS);
                             Tr.debug(tc, "signature configuration alias = ", sigProp);
-                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) != null ?
-                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_FILE);
+                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) != null ? signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_FILE);
                             Tr.debug(tc, "signature configuration ks file = ", sigProp);
-                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) != null ? 
-                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD);
+                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) != null ? signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD);
                             Tr.debug(tc, "signature configuration password = ", sigProp);
-                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) != null ? 
-                                            signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
+                            sigProp = signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) != null ? signaturePropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) : signaturePropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
                             Tr.debug(tc, "signature configuration provider = ", sigProp);
                         }
 
@@ -362,7 +355,7 @@ public class WSSecurityConfiguration implements ConfigurationListener {
                             algorithm = WSSecurityConstants.WSSEC_DEFAULT_SIGNATURE_ALGORITHM;
                         }
                         if (CryptoUtils.isAlgorithmInsecure(algorithm)) {
-                            CryptoMessageUtils.logInsecureAlgorithm("wsSecurityProvider.signatureProperties.signatureAlgorithm", algorithm);
+                            CryptoUtils.logInsecureAlgorithm("wsSecurityProvider.signatureProperties.signatureAlgorithm", algorithm);
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -387,28 +380,23 @@ public class WSSecurityConfiguration implements ConfigurationListener {
                             encryptionPropertyMap.remove(key);
                         }
                         if (newConfigSpecified(encryptionPropertyMap)) {
-                            encryptionPropertyMap.remove(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER); 
+                            encryptionPropertyMap.remove(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
                             encryptionPropertyMap.putIfAbsent(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER, WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER_NAME);
-                            defaultConfigMap.put(WSSecurityConstants.SEC_ENC_PROPS, encryptionPropertyMap);  //v3
+                            defaultConfigMap.put(WSSecurityConstants.SEC_ENC_PROPS, encryptionPropertyMap); //v3
                         } else {
-                            defaultConfigMap.put(WSSecurityConstants.CXF_ENC_PROPS, encryptionPropertyMap);  //v3 - backward compatibility
+                            defaultConfigMap.put(WSSecurityConstants.CXF_ENC_PROPS, encryptionPropertyMap); //v3 - backward compatibility
                         }
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Object encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) != null ? 
-                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE): encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE);
+                            Object encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) != null ? encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_TYPE) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE);
                             Tr.debug(tc, "encryption configuration type = ", encProp);
-                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) != null ?
-                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_ALIAS);
+                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) != null ? encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_ALIAS) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_ALIAS);
                             Tr.debug(tc, "encryption configuration alias = ", encProp);
-                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) != null ? 
-                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_FILE);
+                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) != null ? encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_FILE) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_FILE);
                             Tr.debug(tc, "encryption configuration ks file = ", encProp);
-                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) != null ?
-                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD);
+                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) != null ? encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_KS_PASSWORD) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD);
                             Tr.debug(tc, "encryption configuration password = ", encProp);
-                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) != null ?
-                                            encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
+                            encProp = encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) != null ? encryptionPropertyMap.get(WSSecurityConstants.WSS4J_2_CRYPTO_PROVIDER) : encryptionPropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER);
                             Tr.debug(tc, "encryption configuration provider = ", encProp);
                         }
                     } else {
@@ -517,21 +505,21 @@ public class WSSecurityConfiguration implements ConfigurationListener {
         if (defaultConfigMap.isEmpty()) {
             Tr.info(tc, "WSSECURITY_NO_CONFIG_DEFINED_PROV");
         } /*
-            else if (!(defaultConfigMap.containsKey(SecurityConstants.RETURN_SECURITY_ERROR))) {
-            defaultConfigMap.put(SecurityConstants.RETURN_SECURITY_ERROR, true); //v3
-            }*/
-           
+           * else if (!(defaultConfigMap.containsKey(SecurityConstants.RETURN_SECURITY_ERROR))) {
+           * defaultConfigMap.put(SecurityConstants.RETURN_SECURITY_ERROR, true); //v3
+           * }
+           */
 
     }
 
     //}
-    
+
     /**
      * @param signature or encryption propertyMap
      * @return
      */
     private boolean newConfigSpecified(Map<String, Object> propertyMap) {
-        Set <String> keys = propertyMap.keySet();
+        Set<String> keys = propertyMap.keySet();
         for (String key : keys) {
             if (key.contains(WSSecurityConstants.WSS4J_2)) {
                 return true;
@@ -539,7 +527,6 @@ public class WSSecurityConfiguration implements ConfigurationListener {
         }
         return false;
     }
-
 
     /**
      * @return callback class name for this configuration.

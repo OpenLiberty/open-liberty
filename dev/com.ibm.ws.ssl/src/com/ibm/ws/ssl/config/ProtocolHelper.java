@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * CertificateEnvHelper
@@ -67,18 +68,38 @@ public class ProtocolHelper {
         String[] protocols = sslProtocol.split(",");
 
         if (protocols.length > 1) {
-            // multi list we only allow TLSv1, TLSv1.1, TLSv1.2, and TLSv1.3 as possible values
-            for (String protocol : protocols) {
-                if (Constants.MULTI_PROTOCOL_LIST.contains(protocol)) {
-                    if (goodProtocols.contains(protocol))
-                        continue;
-                    else {
-                        checkProtocol(protocol);
-                        goodProtocols.add(protocol);
+            // If FIPS is enabled then we only allow TLSv1.2 and TLSv1.3
+            if (CryptoUtils.isFips140_3Enabled()) {
+                Tr.debug(tc, "FIPS is enabled, only allowing TLSv1.2 and TLSv1.3");
+                for (String protocol : protocols) {
+                    if (Constants.FIPS_140_3_PROTOCOLS.contains(protocol)) {
+                        if (goodProtocols.contains(protocol))
+                            continue;
+                        else {
+                            checkProtocol(protocol);
+                            goodProtocols.add(protocol);
+                        }
+                    } else {
+                        Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
+                        throw new SSLException("Protocol provided is not appropriate for a protocol list.");
                     }
-                } else {
-                    Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
-                    throw new SSLException("Protocol provided is not appropriate for a protocol list.");
+                }
+            }
+
+            // Else, multi list we only allow TLSv1, TLSv1.1, TLSv1.2, and TLSv1.3 as possible values
+            else {
+                for (String protocol : protocols) {
+                    if (Constants.MULTI_PROTOCOL_LIST.contains(protocol)) {
+                        if (goodProtocols.contains(protocol))
+                            continue;
+                        else {
+                            checkProtocol(protocol);
+                            goodProtocols.add(protocol);
+                        }
+                    } else {
+                        Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
+                        throw new SSLException("Protocol provided is not appropriate for a protocol list.");
+                    }
                 }
             }
         } else {

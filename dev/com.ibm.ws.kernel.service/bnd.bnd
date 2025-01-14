@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ Export-Package: \
  com.ibm.wsspi.kernel.service.location, \
  com.ibm.wsspi.kernel.service.utils;provide:=true, \
  com.ibm.ws.kernel.service.util;provide:=true, \
+ com.ibm.ws.common.crypto;provide:=true, \
  com.ibm.ws.common.encoder;provide:=true
  
 Private-Package: \
@@ -49,6 +50,7 @@ Import-Package: !com.sun.management, !com.ibm.lang.management, *
 
 instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class, \
   com/ibm/ws/kernel/**/internal/resources/*.class, \
+  com/ibm/ws/common/crypto/*.class, \
   com/ibm/ws/common/encoder/*.class, \
   com/ibm/ws/common/internal/encoder/*.class
 
@@ -79,4 +81,5 @@ instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class, \
 	com.ibm.websphere.org.osgi.core;version=latest, \
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.logging;version=latest
