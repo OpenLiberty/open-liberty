@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.audit.encryption.AuditEncryptionImpl;
 import com.ibm.ws.security.audit.encryption.AuditSigningImpl;
@@ -443,11 +444,17 @@ public class AuditLogReader {
         boolean startOfRecord = false;
         int num_captured_records = 0;
         String rec = null;
-
+        if (debugEnabled) {
+            theLogger.fine("processRecord: decryptedSharedKey: " + decryptedSharedKey);
+            theLogger.fine("processRecord: file_reader: " + file_reader.toString());
+        }
         try {
             do {
                 inByte = file_reader.read();
                 if (inByte != -1) {
+                    if (debugEnabled)
+                        theLogger.fine("processRecord: inByte: " + inByte);
+
                     auditRecord = auditRecord.concat(Character.toString((char) inByte));
 
                     if (startOfRecord) {
@@ -506,8 +513,12 @@ public class AuditLogReader {
                         } else if (!signedLog && encryptedLog) {
 
                             // Recreate the shared key
-                            javax.crypto.spec.SecretKeySpec recreatedSharedKey = new javax.crypto.spec.SecretKeySpec(decryptedSharedKey, "DESede");
-                            // Decrypt the record
+                            String algorithm = CryptoUtils.getEncryptionAlgorithm();
+
+                            if (debugEnabled) {
+                                theLogger.fine("processRecord: recreate shared key with algoritm: " + algorithm);
+                            }
+                            javax.crypto.spec.SecretKeySpec recreatedSharedKey = new javax.crypto.spec.SecretKeySpec(decryptedSharedKey, algorithm);
 
                             byte[] decryptedRecord = ae.decrypt(decodedRecord, recreatedSharedKey);
                             if (decryptedRecord != null) {
@@ -525,13 +536,15 @@ public class AuditLogReader {
                                     break;
                                 }
                             }
+                            String algorithm = CryptoUtils.getEncryptionAlgorithm();
+
+                            if (debugEnabled)
+                                theLogger.fine("processRecord: recreate shared key with algorithm: " + algorithm);
 
                             // Recreate the shared key
-
-                            javax.crypto.spec.SecretKeySpec recreatedSharedKey = new javax.crypto.spec.SecretKeySpec(decryptedSharedKey, "DESede");
+                            javax.crypto.spec.SecretKeySpec recreatedSharedKey = new javax.crypto.spec.SecretKeySpec(decryptedSharedKey, algorithm);
 
                             // Decrypt the record
-
                             if (tc.isDebugEnabled()) {
                                 byte[] rkey = ((java.security.Key) recreatedSharedKey).getEncoded();
                             }

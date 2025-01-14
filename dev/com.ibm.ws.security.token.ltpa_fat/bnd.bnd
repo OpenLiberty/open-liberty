@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ tested.features: appsecurity-4.0, servlet-5.0, appsecurity-5.0, servlet-6.0
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.ws.security.token;version=latest,\
+    com.ibm.ws.crypto.ltpakeyutil;version=latest,\
     com.ibm.ws.security.token.ltpa;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.commons.logging;version=latest,\
@@ -36,5 +37,7 @@ tested.features: appsecurity-4.0, servlet-5.0, appsecurity-5.0, servlet-6.0
     org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
     com.ibm.ws.jmx.connector.client.rest;version=latest,\
 	com.ibm.ws.jmx.connector.client.restConnector;version=latest,\
+    com.ibm.ws.kernel.boot.core;version=latest, \
     com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.kernel.security.thread;version=latest,\
     com.ibm.ws.jmx

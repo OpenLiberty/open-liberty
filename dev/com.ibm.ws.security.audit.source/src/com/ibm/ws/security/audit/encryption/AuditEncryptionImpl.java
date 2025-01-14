@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import javax.management.ObjectName;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -170,7 +171,10 @@ public class AuditEncryptionImpl implements AuditEncrypting {
         try {
             if (crypto != null) {
                 try {
-                    sharedKey = new javax.crypto.spec.SecretKeySpec(AuditCrypto.generate3DESKey(), 0, 24, "DESede");
+                    if (CryptoUtils.isFips140_3Enabled())
+                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, 32, CryptoUtils.CRYPTO_ALGORITHM_RSA);
+                    else
+                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, 24, CryptoUtils.ENCRYPT_ALGORITHM_DESEDE);
                 } catch (Exception me) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "me.getMessage: " + me.getMessage());

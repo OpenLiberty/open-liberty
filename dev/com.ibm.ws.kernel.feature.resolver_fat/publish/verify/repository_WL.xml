@@ -47455,13 +47455,6 @@
             <type>type=osgi.bundle</type>
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.ws.crypto.common</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
     </feature>
     <feature>
         <file>com.ibm.websphere.appserver.sampleHandler-1.0.mf</file>
@@ -52656,13 +52649,6 @@
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.bundle</type>
             <version-range>[1.2.0,1.3.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.ws.crypto.common</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
     </feature>
     <feature>

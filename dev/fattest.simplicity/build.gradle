@@ -121,6 +121,11 @@ task extractArquillianSupportJakartaFeature21(type:Sync) {
     }
 }
 
+task extractResources(type: Copy) {
+    from project.file('resources/security/ltpaFIPS.keys')
+    into new File(buildDir, 'resources/security')
+}
+
 jar { // NOTE: this is called by fat.gradle:autoFVT
     dependsOn assembleBootstrap
     dependsOn extractArquillianSupportFeature
@@ -143,4 +148,5 @@ task publishArquillianSupportFeature(type:Copy) {
 
 assemble {
     dependsOn publishArquillianSupportFeature
+    dependsOn extractResources
 }

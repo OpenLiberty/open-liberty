@@ -32,7 +32,7 @@ Private-Package: \
    com.ibm.ws.security.audit.source.internal.resources
    
 DynamicImport-Package: \
-  com.ibm.wsspi.request.probe.*, \
+  com.ibm.wsspi.request.probe.*,\
   com.ibm.webcontainer.security.*
 
 Include-Resource: \

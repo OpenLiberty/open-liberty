@@ -60,6 +60,8 @@ public class DelayFullSecOnTest {
         engineServer.copyFileToLibertyServerRoot(
             "resources/security", "engineLTPAKeys/ltpa.keys");
         engineServer.copyFileToLibertyServerRoot(
+            "resources/security", "engineLTPAKeys/ltpaFIPS.keys");
+        engineServer.copyFileToLibertyServerRoot(
             "resources/security", "engineLTPAKeys/mykey.jks");
         engineServer.setServerConfigurationFile("DelayEngine_SSL.xml");
 
