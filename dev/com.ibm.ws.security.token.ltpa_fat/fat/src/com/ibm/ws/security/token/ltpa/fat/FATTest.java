@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,7 @@ public class FATTest {
     private static String REPLACEMENT_LTPA_KEYS_PATH = "alternate/ltpa.keys";
     private static String REPLACEMENT_FIPS_LTPA_KEYS_PATH = "alternateFIPS/ltpa.keys";
     private static final String CORRUPTED_LTPA_KEYS_PATH = "corrupted/ltpa.keys";
+    private static final String ALT_CONFIGVALIDATION_KEY1_PATH = "alternate/configuredValidation1.keys";
     private static final String DEFAULT_SERVER_XML = "server.xml";
     private static String ALTERNATE_SERVER_XML = "alternate/server.xml";
     private static String ALTERNATE_SERVER_XML_FIPS = "alternateFIPS/server.xml";
@@ -127,6 +128,9 @@ public class FATTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        if (fipsEnabled) {
+            copyFileToServerResourcesSecurityDir(ALT_CONFIGVALIDATION_KEY1_PATH);
+        }
         server.addInstalledAppForValidation(APP_NAME);
     }
 
@@ -601,6 +605,22 @@ public class FATTest {
 
         // if we make it here assume it does not exists
         return false;
+    }
+
+    /**
+     * Copies a file to the "server/resources/security/" directory
+     *
+     * @param sourceFile
+     *
+     * @throws Exception
+     */
+    private static void copyFileToServerResourcesSecurityDir(String sourceFile) throws Exception {
+        Log.info(thisClass, "copyFileToServerResourcesSecurityDir", "sourceFile: " + sourceFile);
+        String serverRoot = server.getServerRoot();
+        String securityResources = serverRoot + "/resources/security";
+        server.setServerRoot(securityResources);
+        server.copyFileToLibertyServerRoot(sourceFile);
+        server.setServerRoot(serverRoot);
     }
 
 }
