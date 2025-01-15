@@ -110,8 +110,8 @@ public abstract class AbstractHttpChain implements Chain {
         Map<String, Object> eventProps = new HashMap<String, Object>(4);
 
         eventProps.put(HttpServiceConstants.ENDPOINT_NAME, endpointName);
-        eventProps.put(HttpServiceConstants.ENDPOINT_ACTIVE_PORT, port);
-        eventProps.put(HttpServiceConstants.ENDPOINT_CONFIG_HOST, config.getHost());
+        eventProps.put(HttpServiceConstants.ENDPOINT_ACTIVE_PORT, activePort());
+        eventProps.put(HttpServiceConstants.ENDPOINT_CONFIG_HOST, config.host());
         eventProps.put(HttpServiceConstants.ENDPOINT_CONFIG_PORT, config.port());
         eventProps.put(HttpServiceConstants.ENDPOINT_IS_HTTPS, isHttps());
 

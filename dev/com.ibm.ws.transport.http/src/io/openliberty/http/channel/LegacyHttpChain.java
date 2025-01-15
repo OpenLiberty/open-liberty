@@ -27,6 +27,7 @@ import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherConfig;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.channelfw.ChainEventListener;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.exception.ChainException;
@@ -152,7 +153,7 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
      * Update/start the chain configuration.
      */
     @FFDCIgnore({ ChannelException.class, ChainException.class })
-    public synchronized void update(String resolvedHostName) {
+    public synchronized void update(String host) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "update chain " + this);
         }
@@ -176,24 +177,24 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
         Map<String, Object> headersOptions = endpoint().getHeadersConfig();
 
         final ChainConfiguration newConfig = new ChainConfiguration(isHttps(), 
-                                                    resolvedHostName, 
-                                                    activatePort(), 
                                                     tcpOptions, 
                                                     sslOptions, 
-                                                    httpOptions, 
+                                                    httpOptions,
+                                                    endpointOptions,
                                                     remoteIpOptions, 
                                                     compressionOptions, 
                                                     samesiteOptions, 
-                                                    headersOptions, 
-                                                    endpointOptions);
+                                                    headersOptions
+                                                    );
 
-        if (newConfig.port() < 0 || !newConfig.isComplete()) {
+        if (!newConfig.isComplete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Stopping chain due to configuration " + newConfig);
             }
 
             // save the new/changed configuration before we start setting up the new chain
             this.config = newConfig;
+            this.host = host;
 
             stop();
         } else {
@@ -234,6 +235,7 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
                     }
                 }
 
+                
                 if (!sameConfig) {
                     // Note that one path in the above block can change the value of sameConfig:
                     // if the started chain is actually running on a different port than we expect,
@@ -254,25 +256,18 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
                         framework.destroyChain(cd);
                         framework.removeChain(cd);
                     }
-                    // Remove any channels that have to be rebuilt..
-                    if (!Objects.equals(newConfig.tcpOptions(), oldConfig.tcpOptions()))
                         removeChannel(tcpName);
-
-                    if (!Objects.equals(newConfig.sslOptions(), oldConfig.sslOptions()))
                         removeChannel(sslName);
-
-                    if (!Objects.equals(newConfig.httpOptions(), oldConfig.httpOptions()))
                         removeChannel(httpName);
-
-                    if (!Objects.equals(newConfig.endpointOptions(), oldConfig.endpointOptions()))
                         removeChannel(dispatcherName);
                 }
 
                 // save the new/changed configuration before we start setting up the new chain
                 config = newConfig;
+                this.host = host;
 
                 // Define and register an EndPoint to represent this chain
-                EndPointInfo ep = endpointManager.defineEndPoint(endpointName, newConfig.getHost(), newConfig.port());
+                EndPointInfo ep = endpointManager.defineEndPoint(endpointName, newConfig.host(), newConfig.port());
 
                 // TCP Channel
                 ChannelData tcpChannel = framework.getChannel(tcpName);
@@ -406,7 +401,6 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
                         }
                         chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS, enableHeadersFeature);
                     }
-
                     httpChannel = framework.addChannel(httpName, framework.lookupFactory("HTTPInboundChannel"), chanProps);
                 }
 
@@ -506,7 +500,7 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
     @Override
     public synchronized void chainStarted(ChainData chainData) {
         state().set(ChainState.STARTED);
-        activatePort();
+        port = activatePort();
 
         if (port > 0) {
             // HOORAY! we have a bound listener.
@@ -603,7 +597,7 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
      */
     @FFDCIgnore(ChainException.class)
     public int activatePort() {
-        if (config().port() < 0)
+        if (config== null || config.port() < 0)
             return -1;
 
         if (port == -1) {

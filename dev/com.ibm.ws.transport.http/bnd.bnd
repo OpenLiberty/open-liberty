@@ -48,7 +48,8 @@ Export-Package: \
 	com.ibm.ws.http.netty.inbound,\
 	com.ibm.ws.http.netty,\
 	io.openliberty.http.netty*,\
-	io.openliberty.http.ext
+	io.openliberty.http.ext,\
+	io.openliberty.http.channel
 
 Import-Package: \
 	!com.ibm.ws.http.logging.source,\

@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.ibm.ws.channelfw.internal.chains.Chain;
+import com.ibm.ws.http.internal.HttpServiceConstants;
+import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 /**
  * Represents a common configuration for any implementation of {@link Chain},
@@ -37,7 +39,6 @@ public class ChainConfiguration {
     /**
      * @param https              true if this config is for HTTPS
      * @param host               the configured hostname (e.g. '*' or 'localhost')
-     * @param port               the endpoint configured port
      * @param tcpOptions         map of TCP channel configuration
      * @param sslOptions         map of SSL channel configuration
      * @param httpOptions        map of HTTP channel configuration
@@ -49,8 +50,6 @@ public class ChainConfiguration {
      */
     public ChainConfiguration(
                               boolean https,
-                              String host,
-                              int port,
                               Map<String, Object> tcpOptions,
                               Map<String, Object> sslOptions,
                               Map<String, Object> httpOptions,
@@ -61,8 +60,6 @@ public class ChainConfiguration {
                               Map<String, Object> headersOptions) {
 
         this.https = https;
-        this.host = host;
-        this.port = port;
         this.tcpOptions = tcpOptions;
         this.sslOptions = sslOptions;
         this.httpOptions = httpOptions;
@@ -71,6 +68,14 @@ public class ChainConfiguration {
         this.compressionOptions = compressionOptions;
         this.samesiteOptions = samesiteOptions;
         this.headersOptions = headersOptions;
+
+        
+        String attribute = https ? "httpsPort" : "httpPort";
+        this.port = MetatypeUtils.parseInteger(HttpServiceConstants.ENPOINT_FPID_ALIAS, attribute,
+                                                    this.endpointOptions.get(attribute),
+                                                    -1);
+        this.host = (String) endpointOptions.get("host");
+        
     }
 
     /**
@@ -84,7 +89,7 @@ public class ChainConfiguration {
     /**
      * @return The configured hostname, such as '*' or 'localhost'.
      */
-    public String getHost() {
+    public String host(){
         return host;
     }
 

@@ -23,7 +23,6 @@ import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
-import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -43,7 +42,7 @@ import io.openliberty.netty.internal.exception.NettyException;
 
 public class NettyHttpChain extends AbstractHttpChain {
 
-    private static final TraceComponent tc = Tr.register(NettyChain.class);
+    private static final TraceComponent tc = Tr.register(NettyHttpChain.class);
 
     private NettyFramework framework;
     private ServerBootstrapExtended bootstrap;
@@ -53,7 +52,7 @@ public class NettyHttpChain extends AbstractHttpChain {
         super(endpoint, isHttps);
     }
 
-    public void init(String endpointId, NettyFramework framework) {
+    public synchronized void init(String endpointId, NettyFramework framework) {
         Objects.requireNonNull(framework, "NettyFramework cannot be null");
         this.framework = framework;
         this.endpointManager = framework.getEndpointManager();
@@ -73,7 +72,8 @@ public class NettyHttpChain extends AbstractHttpChain {
     }
 
     @Override
-    public void stop() {
+    public  void stop() {
+        synchronized(this){
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "Stopping Netty Chain: " + endpointName + ", Current state: " + state().get());
         }
@@ -83,7 +83,7 @@ public class NettyHttpChain extends AbstractHttpChain {
             state().set(ChainState.STOPPING);
 
             try {
-                if (Objects.nonNull(channel) && channel.isOpen()) {
+                if (channel != null && channel.isOpen()) {
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "Server Channel is open, attempting to close");
@@ -96,13 +96,13 @@ public class NettyHttpChain extends AbstractHttpChain {
 
             } finally {
 
-                VirtualHostMap.notifyStopped(endpoint(), this.config().getHost(), config().port(), isHttps());
+                VirtualHostMap.notifyStopped(endpoint(), activeHost(), config().port(), isHttps());
                 this.port = -1;
                 String topic = endpoint().getEventTopic() + HttpServiceConstants.ENDPOINT_STOPPED;
                 postEvent(topic, config(), null);
 
                 state().set(ChainState.STOPPED);
-                notifyAll();
+                
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -114,6 +114,7 @@ public class NettyHttpChain extends AbstractHttpChain {
             Tr.exit(this, tc, "stop chain " + this);
         }
     }
+    }
 
     private void stopAndWait() {
         if (state().get() != ChainState.STOPPED && state().get() != ChainState.UNINITIALIZED) {
@@ -122,7 +123,7 @@ public class NettyHttpChain extends AbstractHttpChain {
     }
 
     @Override
-    public void update(String host) {
+    public synchronized void update(String host) {
        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "Updating Netty Chain  " + endpointName + " Current state: " + state().get());
         }
@@ -134,25 +135,35 @@ public class NettyHttpChain extends AbstractHttpChain {
             return;
         }
 
-        ChainConfiguration newConfig = new ChainConfiguration(isHttps(), host, port, null, null, null, null, null, null, null, null);
+        ChainConfiguration newConfig = new ChainConfiguration(isHttps(),
+                                        endpoint().getTcpOptions(), 
+                                        endpoint().getSslOptions(),
+                                        endpoint().getHttpOptions(), 
+                                        endpoint().getEndpointOptions(), 
+                                        endpoint().getRemoteIpConfig(), 
+                                        endpoint().getCompressionConfig(), 
+                                        endpoint().getSamesiteConfig(), 
+                                        endpoint().getHeadersConfig());
 
-        if (config().requiresRestart(newConfig)) {
+        if (!newConfig.isComplete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Stopping chain due to configuration " + newConfig);
             }
             // save the new/changed configuration before we start setting up the new chain
             this.config = newConfig;
+            this.host = host;
             stopAndWait();
             state().set(ChainState.UNINITIALIZED);
         }
 
         else {
 
-            if (config().requiresRestart(config)) {
+            if (newConfig.requiresRestart(config)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "This configuration differs and should cause an update ");
                 }
                 config = newConfig;
+                this.host = host;
                 if (state().get() != ChainState.UNINITIALIZED) {
                     stopAndWait();
                 }
@@ -180,7 +191,7 @@ public class NettyHttpChain extends AbstractHttpChain {
                     httpOptions.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, endpoint().getProtocolVersion());
                 }
 
-                EndPointInfo info = endpointManager.defineEndPoint(this.endpointName, config().getHost(), config().port());
+                EndPointInfo info = endpointManager.defineEndPoint(this.endpointName, config().host(), config().port());
 
                 Map<String, Object> tcpOptions = new HashMap<>(endpoint().getTcpOptions());
                 tcpOptions.put(ConfigConstants.EXTERNAL_NAME, endpointName);
@@ -206,7 +217,7 @@ public class NettyHttpChain extends AbstractHttpChain {
 
                 channel = framework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
-                VirtualHostMap.notifyStarted(endpoint(), () -> config().getHost(), config().port(), isHttps());
+                VirtualHostMap.notifyStarted(endpoint(), () -> activeHost(), config().port(), isHttps());
                 String topic = endpoint().getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
                 postEvent(topic, config(), null);
 
@@ -233,7 +244,7 @@ public class NettyHttpChain extends AbstractHttpChain {
             if (future.isSuccess()) {
                 state().set(ChainState.STARTED);
                 EndPointInfo info = endpointManager.getEndPoint(this.endpointName);
-                info = endpointManager.defineEndPoint(this.endpointName, config().getHost(), config().port());
+                info = endpointManager.defineEndPoint(this.endpointName, config().host(), config().port());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel is now active and listening on port " + activePort());
                 }
@@ -244,8 +255,8 @@ public class NettyHttpChain extends AbstractHttpChain {
                 handleStartupError(new NettyException(future.cause()), config());
 
                 if (config() != null) {
-                    VirtualHostMap.notifyStopped(endpoint(), config().getHost(), config().port(), isHttps());
-                    //currentConfig.clearActivePort();
+                    VirtualHostMap.notifyStopped(endpoint(), activeHost(), activePort(), isHttps());
+                    port = -1;
                 }
                 state().set(ChainState.STOPPED);
             }

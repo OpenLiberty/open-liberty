@@ -9,5 +9,5 @@
  *******************************************************************************/
 
 @org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.http.constants;
+package io.openliberty.http.channel;
 

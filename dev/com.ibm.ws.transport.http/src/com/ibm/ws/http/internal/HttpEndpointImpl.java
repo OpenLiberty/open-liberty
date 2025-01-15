@@ -210,7 +210,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             synchronized (actionLock) {
                 // Always allow stops.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "EndpointAction: stopping chains " + HttpEndpointImpl.this, httpChain, httpSecureChain);
+                    Tr.debug(this, tc, "EndpointAction: stopping chains " + HttpEndpointImpl.this, getCurrentHttpChain(), getCurrentHttpsChain());
 
                 getCurrentHttpChain().stop();
                 getCurrentHttpsChain().stop();
@@ -225,7 +225,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             synchronized (actionLock) {
                 // Always allow stops.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "EndpointAction: stopping https chain " + HttpEndpointImpl.this, httpSecureChain);
+                    Tr.debug(this, tc, "EndpointAction: stopping https chain " + HttpEndpointImpl.this, getCurrentHttpsChain());
 
                 getCurrentHttpsChain().stop();
             }
@@ -655,7 +655,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      *         or not yet listening
      */
     public int getListeningSecureHttpPort() {
-        return useNetty ? nettySecureChain.activePort(): httpSecureChain.activePort();
+        return useNetty ? nettySecureChain.activePort(): httpSecureChain.activatePort();
     }
 
     public String getProtocolVersion() {
