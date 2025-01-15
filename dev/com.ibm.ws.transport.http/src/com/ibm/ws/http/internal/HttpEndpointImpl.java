@@ -309,6 +309,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
                    MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
     
 
+        useNetty = false; //FORCE for testing legacy chains
 
         initializeChains();
         modified(config);
@@ -655,7 +656,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      *         or not yet listening
      */
     public int getListeningSecureHttpPort() {
-        return useNetty ? nettySecureChain.activePort(): httpSecureChain.activatePort();
+        return useNetty ? nettySecureChain.activePort(): httpSecureChain.activePort();
     }
 
     public String getProtocolVersion() {
