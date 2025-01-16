@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -325,6 +325,13 @@ public class H2FATDriverServlet extends FATServlet {
 
     /**
      * Set the window size to be very small; make sure server waits to send over new frames until a window_update is sent
+     * 
+     * This test is meant to send two 6 byte data frames on streams 3 and 5 with a windows size 
+     * set to 6 bytes. The server is expected to respond with two frames, one of 5 bytes, followed
+     * by another of 1 byte (sent when the window size is updated).
+     * 
+     * TODO: This test should be improved for the legacy implementation of the transport, as it does not 
+     * currently send the two frames separately. 
      */
     public void testSmallWindowSize(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
@@ -351,13 +358,19 @@ public class H2FATDriverServlet extends FATServlet {
             secondFrameHeaders.setHeaderFields(secondHeadersReceived);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
 
-            FrameData first5Bytes = new FrameData(3,"ABC12".getBytes(), 0, false, false, false);
+            //Stream 3 DATA Frames
+            FrameData first5BytesStream3 = new FrameData(3,"ABC12".getBytes(), 0, false, false, false);
             // Second 1-byte DATA frame (this one ends the stream)
-            FrameData last1Byte = new FrameData(3, "3".getBytes(), 0, true, false, false);
+            FrameData last1ByteStream3 = new FrameData(3, "3".getBytes(), 0, true, false, false);
+
+            //Stream 5 DATA Frames
+            FrameData first5BytesStream5 = new FrameData(5, "ABC12".getBytes(), 0, false, false, false);
+            // Second 1-byte DATA frame (this one ends the stream)
+            FrameData last1ByteStream5 = new FrameData(5, "3".getBytes(), 0, true, false, false);
 
             if(USING_NETTY){
-                h2Client.addExpectedFrame(first5Bytes);
-                h2Client.addExpectedFrame(last1Byte);
+                h2Client.addExpectedFrame(first5BytesStream3);
+                h2Client.addExpectedFrame(last1ByteStream3);
             }else{
                 h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
             }
@@ -365,7 +378,13 @@ public class H2FATDriverServlet extends FATServlet {
 
             secondFrameHeaders.setStreamID(5);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
-            h2Client.addExpectedFrame(new FrameData(5, dataString.getBytes(), 0, false, false, false));
+            if(USING_NETTY){
+                h2Client.addExpectedFrame(first5BytesStream5);
+                h2Client.addExpectedFrame(last1ByteStream5);
+            }else{
+                h2Client.addExpectedFrame(new FrameData(5, dataString.getBytes(), 0, false, false, false));
+            }
+            
 
             //Headers frame to send for "second" request
             List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -384,11 +403,14 @@ public class H2FATDriverServlet extends FATServlet {
             frameHeadersToSend.setStreamID(3);
             h2Client.sendFrame(frameHeadersToSend.clone());
             if(USING_NETTY){
-                h2Client.waitFor(first5Bytes);
+                h2Client.waitFor(first5BytesStream3);
             }
 
             frameHeadersToSend.setStreamID(5);
             h2Client.sendFrame(frameHeadersToSend.clone());
+            if(USING_NETTY){
+                h2Client.waitFor(first5BytesStream5);
+            }
 
             // TODO: figure out how to check that stream 5 actually closes before stream 3
             FrameWindowUpdate window = new FrameWindowUpdate(5, 50, false);
