@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1812,7 +1812,7 @@ public class WSKeyStore extends Properties {
             if (hostname != null && !hostname.isEmpty()) {
                 if (hostname.equalsIgnoreCase("localhost")) {
                     String host = InetAddress.getLocalHost().getCanonicalHostName();
-                    san.add("dns:" + host);
+                    san.add("dns:" + removeDots(host));
                 }
                 InetAddress addr;
                 // get the InetAddress if there is one
@@ -1820,11 +1820,11 @@ public class WSKeyStore extends Properties {
                 if (addr != null && addr.toString().startsWith("/"))
                     san.add("ip:" + hostname);
                 else {
-                    san.add("dns:" + hostname);
+                    san.add("dns:" + removeDots(hostname));
                 }
             } else {
                 String host = InetAddress.getLocalHost().getCanonicalHostName();
-                san.add("dns:" + host);
+                san.add("dns:" + removeDots(host));
             }
             String ipAddresses = DefaultSubjectDN.buildSanIpStringFromNetworkInterface();
             if (ipAddresses != null)
@@ -1851,6 +1851,15 @@ public class WSKeyStore extends Properties {
 
     }
 
+    /**
+    * Removes leading and trailing dots from a DNS string.
+    * @param dnsString the DNS string to be processed
+    * @return the DNS string with leading and trailing dots removed
+    */
+    String removeDots(String dnsString) {
+        return dnsString.replaceAll("^\\.", "").replaceAll("\\.$", "");
+    }
+    
     /**
      * @param hostname
      * @return
