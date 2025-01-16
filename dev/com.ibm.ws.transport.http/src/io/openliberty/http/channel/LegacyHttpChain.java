@@ -27,7 +27,6 @@ import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherConfig;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
-import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.channelfw.ChainEventListener;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.exception.ChainException;
@@ -556,7 +555,7 @@ public class LegacyHttpChain extends AbstractHttpChain implements ChainEventList
     private void quiesceChain() {
         // Notify the owner (which notifies the virtual hosts) that
         // we have stopped (or are in the process of stopping) listening..
-        VirtualHostMap.notifyStopped(endpoint(), host, port, isHttps());
+        VirtualHostMap.notifyStopped(endpoint(), host, config.port(), isHttps());
     }
 
     /**

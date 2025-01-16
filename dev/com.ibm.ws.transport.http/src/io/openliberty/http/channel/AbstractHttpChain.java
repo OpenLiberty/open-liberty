@@ -108,9 +108,9 @@ public abstract class AbstractHttpChain implements Chain {
 
     protected final void postEvent(String topic, ChainConfiguration configuration, Exception exception){
         Map<String, Object> eventProps = new HashMap<String, Object>(4);
-
+        
         eventProps.put(HttpServiceConstants.ENDPOINT_NAME, endpointName);
-        eventProps.put(HttpServiceConstants.ENDPOINT_ACTIVE_PORT, activePort());
+        eventProps.put(HttpServiceConstants.ENDPOINT_ACTIVE_PORT, port);
         eventProps.put(HttpServiceConstants.ENDPOINT_CONFIG_HOST, config.host());
         eventProps.put(HttpServiceConstants.ENDPOINT_CONFIG_PORT, config.port());
         eventProps.put(HttpServiceConstants.ENDPOINT_IS_HTTPS, isHttps());
@@ -137,6 +137,8 @@ public abstract class AbstractHttpChain implements Chain {
                + ",enabled=" + enabled
                + ",state=" + (state != null ? state.get() : "null")
                + ",chainName=" + chainName
+               + ", host=" + host
+               + ", port=" + port
                + ",config=" + config + "]";
 
     }

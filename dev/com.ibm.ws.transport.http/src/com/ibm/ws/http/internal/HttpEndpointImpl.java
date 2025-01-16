@@ -655,7 +655,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      *         or not yet listening
      */
     public int getListeningSecureHttpPort() {
-        return useNetty ? nettySecureChain.activePort(): httpSecureChain.activatePort();
+        return useNetty ? nettySecureChain.activePort(): httpSecureChain.activePort();
     }
 
     public String getProtocolVersion() {

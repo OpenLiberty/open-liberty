@@ -95,14 +95,13 @@ public class NettyHttpChain extends AbstractHttpChain {
                 }
 
             } finally {
-
-                VirtualHostMap.notifyStopped(endpoint(), activeHost(), config().port(), isHttps());
+                VirtualHostMap.notifyStopped(endpoint(), host, config.port(), isHttps());
                 this.port = -1;
                 String topic = endpoint().getEventTopic() + HttpServiceConstants.ENDPOINT_STOPPED;
-                postEvent(topic, config(), null);
+                postEvent(topic, config, null);
 
                 state().set(ChainState.STOPPED);
-                
+                notifyAll();
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -217,10 +216,7 @@ public class NettyHttpChain extends AbstractHttpChain {
 
                 channel = framework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
-                VirtualHostMap.notifyStarted(endpoint(), () -> activeHost(), config().port(), isHttps());
-                String topic = endpoint().getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
-                postEvent(topic, config(), null);
-
+                
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.exit(this, tc, "Failed to start Netty Channel: " + e.getMessage());
@@ -243,19 +239,26 @@ public class NettyHttpChain extends AbstractHttpChain {
         synchronized (this) {
             if (future.isSuccess()) {
                 state().set(ChainState.STARTED);
-                EndPointInfo info = endpointManager.getEndPoint(this.endpointName);
-                info = endpointManager.defineEndPoint(this.endpointName, config().host(), config().port());
+                port = config.port();
+                EndPointInfo info = endpointManager.getEndPoint(endpointName);
+                info = endpointManager.defineEndPoint(endpointName, config.host(), config.port());
+
+                VirtualHostMap.notifyStarted(endpoint(), () -> host, config.port(), isHttps());
+
+                String topic = endpoint().getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
+                postEvent(topic, config, null);
+
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Channel is now active and listening on port " + activePort());
+                    Tr.debug(this, tc, "Channel is now active and listening on port " + port);
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel failed to bind to port:  " + future.cause());
                 }
-                handleStartupError(new NettyException(future.cause()), config());
+                handleStartupError(new NettyException(future.cause()), config);
 
-                if (config() != null) {
-                    VirtualHostMap.notifyStopped(endpoint(), activeHost(), activePort(), isHttps());
+                if (config != null) {
+                    VirtualHostMap.notifyStopped(endpoint(), host, config.port(), isHttps());
                     port = -1;
                 }
                 state().set(ChainState.STOPPED);
@@ -293,7 +296,7 @@ public class NettyHttpChain extends AbstractHttpChain {
         EndPointInfo info = endpointManager.getEndPoint(endpointName);
 
         if (info == null && state().get() == ChainState.STARTED) {
-            info = endpointManager.defineEndPoint(this.endpointName, host, port);
+            info = endpointManager.defineEndPoint(this.endpointName, config.host(), config.port());
         }
 
         return info;
