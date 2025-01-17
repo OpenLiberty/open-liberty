@@ -2829,7 +2829,7 @@ public class H2FATDriverServlet extends FATServlet {
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
 
         //length: 4, which is invalid
-        String priorityString = "0000040200000000037fffffffff";
+        String priorityString = "0000040200000000037fffffff";
         byte[] b = parseHexBinary(priorityString);
         h2Client.sendBytes(b);
 
