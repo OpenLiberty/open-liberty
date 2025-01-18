@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.9
+ * @version 1.8
  */
-@org.osgi.annotation.versioning.Version("1.9")
+@org.osgi.annotation.versioning.Version("1.8")
 package com.ibm.websphere.ssl;
