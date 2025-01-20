@@ -34,9 +34,7 @@ public class H2PushPromise extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         PrintWriter pw = response.getWriter();
-
-        String test = null;
-        test = request.getParameter("test");
+        String test = request.getParameter("test");
 
         if ((test == null) || (test == (new String("")))) {
             // No special parm, this is the pushed request
@@ -45,24 +43,26 @@ public class H2PushPromise extends HttpServlet {
             response.setDateHeader("Date", time);
 
             pw.println("Response to push");
+            pw.flush();
             pw.close();
+            response.flushBuffer();
 
-        } else if (test.toLowerCase().equals(new String("preload"))) {
+        } else if ("preload".equalsIgnoreCase(test)) {
 
             // Test the header link rel=preload path
             pw.println("push_promise link header rel=preload");
 
-            long time = System.currentTimeMillis();
-            try {
-                Thread.sleep(250);
-            } catch (Exception x) {
-            }
-            response.setDateHeader("Date", time);
+            
+            try {Thread.sleep(250);} catch (Exception x) {/*Ignore Interrupt*/}
+   
+            response.setDateHeader("Date", System.currentTimeMillis());
             response.addHeader("Link", "</H2TestModule/H2PushPromise>; rel=preload;");
             response.addHeader("Link", "</H2TestModule/H2PushPromise>; rel=preload;");
+            pw.flush();
             pw.close();
+            response.flushBuffer();
 
-        } else if ((test.toLowerCase().equals(new String("pushbuilder")))) {
+        } else if ("pushbulder".equalsIgnoreCase(test)) {
 
             // Test the pushbuilder path
             pw.println("push_promise PushBuilder");
@@ -72,10 +72,7 @@ public class H2PushPromise extends HttpServlet {
                 String name = reqHeaderNames.nextElement();
                 pw.println("Req Header : " + name + ":" + request.getHeader(name));
             }
-            try {
-                Thread.sleep(250);
-            } catch (Exception x) {
-            }
+            try {Thread.sleep(250);} catch (Exception x) {}
             PushBuilder pb = request.newPushBuilder();
             if (pb != null) {
                 pb.path("/H2TestModule/H2PushPromise");
@@ -87,21 +84,25 @@ public class H2PushPromise extends HttpServlet {
                     pw.println("FAIL : pb.push() threw an ISE : " + exc.getMessage());
                 }
             }
+            pw.flush();
             pw.close();
-        } else if ((test.toLowerCase().equals(new String("delay")))) {
+            response.flushBuffer();
+        } else if ("delay".equalsIgnoreCase(test)) {
 
-            try {
-                Thread.sleep(5000);
-            } catch (Exception x) {
-            }
+            try {Thread.sleep(5000);} catch (Exception x) {}
+            response.setDateHeader("Date", System.currentTimeMillis());
+            pw.println("Delayed response complete");
+            pw.flush();
+            pw.close();
+            response.flushBuffer();
 
+        }else{
+            response.setDateHeader("Date", System.currentTimeMillis());
+            pw.println("Unknown test param: " + test);
+            pw.flush();
+            pw.close();
+            response.flushBuffer();
         }
-
-        try {
-            Thread.yield();
-        } catch (Exception x) {
-        }
-
     }
 
     /*

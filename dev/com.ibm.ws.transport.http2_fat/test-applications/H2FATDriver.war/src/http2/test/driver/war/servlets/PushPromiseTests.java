@@ -156,7 +156,7 @@ public class PushPromiseTests extends H2FATDriverServlet {
             }
         };
 
-        byte[] testBytes = new byte[] { 'l', 'i', 'b', 'e', 'r', 't', 'y' };
+        byte[] testBytes = new byte[] { 'l', 'i', 'b', 'e', 'r', 't', 'y','!' };
         FramePing expectedPing = new FramePing(0, testBytes, false);
         expectedPing.setAckFlag();
         h2Client.addExpectedFrame(expectedPing);
