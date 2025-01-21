@@ -45,8 +45,7 @@ public class DataStandaloneTckLauncher {
     /**
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
      */
-    @Test
-    @Ignore("jnosql does not support static metamodel yet")
+    @Test   
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchDataTckStandaloneNoSQL() throws Exception {
         // Test groups to run
