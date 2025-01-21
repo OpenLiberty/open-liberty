@@ -3021,17 +3021,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                          + headers);
         }
 
-        ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
-                                                                   new VoidChannelPromise(this.nettyContext.channel(), true));
 
-        promise.addListener(future -> {
-            if (future.isSuccess()){
-
-            }
-            else {
-                future.cause().printStackTrace();
-            }
+        nettyContext.channel().eventLoop().execute(()-> {
+            handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
+                                       new VoidChannelPromise(this.nettyContext.channel(), true));
         });
+
+        
 
         try {
             DefaultFullHttpRequest newRequest = new DefaultFullHttpRequest(nettyRequest.protocolVersion(), HttpMethod.GET, uri);
