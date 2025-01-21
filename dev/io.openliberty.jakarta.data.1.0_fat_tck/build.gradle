@@ -30,11 +30,12 @@ dependencies {
   jnosql "org.eclipse.jnosql.databases:jnosql-mongodb:${jnosqlVersion}", withoutJakartaAPI
   
   arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1'
+
+  implementation 'org.jnosql:jnosql-artemis:0.45.0'
   
   //TODO Configure WLP dependency if doing verification testing, Examples below:
   //wlp 'io.openliberty.beta:openliberty-runtime:24.0.0.5-beta@zip'
 }
-
 
 task addJNoSQL(type: Copy) {
   mustRunAfter jar
