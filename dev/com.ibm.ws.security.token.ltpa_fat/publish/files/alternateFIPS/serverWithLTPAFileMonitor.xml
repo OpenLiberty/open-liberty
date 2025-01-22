@@ -23,10 +23,6 @@
 	<application type="war" id="ltpaTest" name="ltpaTest" location="${server.config.dir}/apps/ltpaTest.war"/>
 
 	<include optional="true" location="../fatTestPorts.xml"/>
-
-    <ltpa monitorInterval = "10" monitorValidationKeysDir="true" expiration="10m" updateTrigger="polled" keysFileName="${server.config.dir}/resources/security/ltpa.keys" keysPassword="{xor}CDo9Hgw=">
-        <validationKeys fileName="configuredValidation1.keys" password="{xor}CDo9Hgw=" validUntilDate="2099-01-01T00:00:00Z"/>
-    </ltpa>
     
     <authentication id="Basic" cacheEnabled="false" />
     <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
