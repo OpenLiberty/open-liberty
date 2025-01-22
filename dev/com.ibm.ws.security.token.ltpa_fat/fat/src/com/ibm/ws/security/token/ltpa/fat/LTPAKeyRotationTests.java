@@ -196,11 +196,7 @@ public class LTPAKeyRotationTests {
     @BeforeClass
     public static void setUp() throws Exception {
         // Copy validation key file (validation1.keys) to the server
-        if (fipsEnabled) {
-            copyFileToServerResourcesSecurityDir(ALT_CONFIGVALIDATION_KEY1_PATH);
-        } else {
-            copyFileToServerResourcesSecurityDir(ALT_VALIDATION_KEY1_PATH);
-        }
+        copyFileToServerResourcesSecurityDir(ALT_VALIDATION_KEY1_PATH);
 
         server.setupForRestConnectorAccess();
         if (fipsEnabled) {
