@@ -45,11 +45,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import  com.meterware.httpunit.WebResponse;
 import com.ibm.ws.fat.wc.utils.WebUtil;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -467,7 +467,11 @@ public class NettyTests {
         }
     }
 
+<<<<<<< HEAD
     @Test
+=======
+    //@Test
+>>>>>>> 6feccf0f1bd (Netty CTS test debugging)
     public void TestNettyReadListener_nioInputTest_TCK() throws Exception {
         //int sleepInSeconds = Integer
         //                .parseInt(_props.getProperty("servlet_async_wait").trim());
@@ -560,7 +564,7 @@ public class NettyTests {
         assertTrue(passed);
     }
 
-    @Test
+    //@Test
     public void TestNettyReadListener_nioInputTest_NETTY() throws Exception {
         //int sleepInSeconds = Integer
         //                .parseInt(_props.getProperty("servlet_async_wait").trim());
@@ -761,7 +765,7 @@ public class NettyTests {
         }
     }
 
-    //@Test
+    @Test
     public void testNettyServerPush_serverPushSessionTest_tck() throws Exception {
         try {
             WebUtil.Response response = null;

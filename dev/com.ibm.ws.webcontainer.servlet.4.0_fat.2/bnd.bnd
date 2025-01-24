@@ -19,9 +19,16 @@ src: \
     test-applications/PartitionedTest.war/src,\
     test-applications/IncompatibleClientTest.war/src,\
     test-applications/WebSphereServletEvent.war/src,\
-    test-applications/WebSphereSpiHttpRequestURL.war/src
+    test-applications/WebSphereSpiHttpRequestURL.war/src,\
+    test-applications/NettyCookieTest.war/src,\
+    test-applications/NettyReadListenerTest.war/src,\
+    test-applications/NettyServerPushTest.war/src,\
+    test-applications/NettyServletRequestTest.war/src
 
 fat.project: true
+
+javac.source: 11
+javac.target: 11
 
 tested.features:\
     expressionlanguage-4.0,\
@@ -53,4 +60,10 @@ tested.features:\
     com.ibm.ws.webcontainer.servlet.4.0;version=latest, \
 	org.apache.httpcomponents.client5:httpclient5;version='5.0.2',\
 	org.apache.httpcomponents.core5:httpcore5;version='5.0.2',\
-	com.ibm.websphere.appserver.api.servlet
+	com.ibm.websphere.appserver.api.servlet,\
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
+    io.openliberty.jakarta.pages.3.0;version=latest,\
+    com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+    httpunit:httpunit;version=1.5.4,\
+    net.sf.jtidy:jtidy;version=9.3.8,\
+    com.ibm.websphere.javaee.cdi.2.0;version=latest
