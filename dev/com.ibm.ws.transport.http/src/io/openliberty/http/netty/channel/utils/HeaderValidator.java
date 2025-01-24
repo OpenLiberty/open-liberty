@@ -25,7 +25,7 @@ public class HeaderValidator {
      * Defines a pattern for valid header names (token characters or "tchars") as specified in 
      * RFC 7230, Section 3.2.6, "Field Value Components".
      */
-    private static final Pattern TCHAR_PATTERN = Pattern.compile("^[!#$%&'*+\\\\-.^_`|~0-9a-zA-Z]+$");
+    private static final Pattern TCHAR_PATTERN = Pattern.compile("^[!#$%&'*+\\-\\.\\^_`|~0-9a-zA-Z]+$");
 
     public enum FieldType{NAME, VALUE}
 
@@ -35,8 +35,8 @@ public class HeaderValidator {
 
     public static String process(String token, FieldType type, HttpChannelConfig config){
 
-        if(type == FieldType.NAME){
-            Objects.requireNonNull(token, "Header name must not be null");
+        if(type == FieldType.NAME && token == null){
+            throw new IllegalArgumentException("Header name must not be null");
         }
         String normalized = (token == null) ? "": token.trim();
 
@@ -50,7 +50,7 @@ public class HeaderValidator {
 
     }
 
-    public static void validate(String token, FieldType type, HttpChannelConfig config){
+    private static void validate(String token, FieldType type, HttpChannelConfig config){
 
         final int MAX_FIELD_SIZE = config.getLimitOfFieldSize();
 
