@@ -9,7 +9,9 @@
  *******************************************************************************/
 package io.openliberty.http.netty.cookie;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -81,12 +83,12 @@ public class CookieDecoder {
         boolean isServlet6Cookie = HttpDispatcher.useEE10Cookies();
         boolean foundDollarSign = false;
         String skipDollarSignName = null;
-        String name = null;
-        String value = null;
         String trimmedRawValue = null;
+        String cleanCookieString = cookieString;
 
         if (isServlet6Cookie) {
             String[] rawCookies = cookieString.split(";");
+            StringBuilder processedCookieString = new StringBuilder();
             for (String rawCookie : rawCookies) {
                 trimmedRawValue = rawCookie.trim();
                 if(trimmedRawValue.isEmpty()){
@@ -95,35 +97,24 @@ public class CookieDecoder {
 
                 foundDollarSign = ('$' == trimmedRawValue.charAt(0));
 
-                String[] splitCookie = rawCookie.split("=", 2);
-                if (splitCookie.length == 2) {
-                    name = splitCookie[0].trim();
-                    value = splitCookie[1].trim();
-
-                } else {
-                    name = trimmedRawValue;
-                }
-
                 if (foundDollarSign) {
-                    skipDollarSignName = name.substring(1);
+                    skipDollarSignName = trimmedRawValue.substring(1).split("=")[0];
                     //$version skipped per Servlet specification
                     if ("version".equalsIgnoreCase(skipDollarSignName)) {
                         continue;
                     }
+                } else {
+                    if(processedCookieString.length()>0){
+                        processedCookieString.append("; ");
+                    }
                 }
+                processedCookieString.append(trimmedRawValue);
+            } 
+            cleanCookieString = processedCookieString.toString();
 
-                list.add(new HttpCookie(name, value));
-                name = null;
-                value = null;
-            }
+        } 
 
-        } else {
-            Set<Cookie> cookies = decodeNetty(cookieString);
-            for (Cookie c : cookies) {
-                list.add(new HttpCookie(c.name(), c.value()));
-            }
-        }
-
+        list.addAll(decodeNetty(cleanCookieString));
         return list;
     }
 
@@ -135,10 +126,51 @@ public class CookieDecoder {
      * @return a set of decoded Netty {@link Cookie} instances, or an empty set
      *         if the input is null or empty
      */
-    public static Set<Cookie> decodeNetty(String cookieString) {
+    public static Set<HttpCookie> decodeNetty(String cookieString) {
         if (cookieString == null || cookieString.isEmpty()) {
             return Collections.emptySet();
         }
-        return ServerCookieDecoder.LAX.decode(cookieString);
+        Set<HttpCookie> cookies = new HashSet<HttpCookie>();
+
+        try{
+            for(Cookie c: ServerCookieDecoder.STRICT.decode(cookieString)){
+                HttpCookie cookie = mapToCookie(c);
+                cookie.setVersion(1);
+                cookies.add(cookie);
+            }
+        } catch(Exception e){
+            // Fallback to LAX decoder for Version 0
+            for(Cookie c: ServerCookieDecoder.LAX.decode(cookieString)){
+                HttpCookie cookie = mapToCookie(c);
+                cookie.setVersion(0);
+                cookies.add(cookie);
+            }
+        }
+        return cookies;
+    }
+
+    private static HttpCookie mapToCookie(Cookie nettyCookie){
+        HttpCookie cookie = new HttpCookie(nettyCookie.name(), nettyCookie.value());
+
+        if(nettyCookie.domain() != null){
+            cookie.setDomain(nettyCookie.domain());
+        }
+        if(nettyCookie.path() != null){
+            cookie.setPath(nettyCookie.path());
+        }
+        if(nettyCookie.maxAge() != Long.MIN_VALUE){
+            long maxAgeLong = nettyCookie.maxAge();
+            if (maxAgeLong > Integer.MAX_VALUE){
+                cookie.setMaxAge(Integer.MAX_VALUE);
+            } else if (maxAgeLong < Integer.MIN_VALUE){
+                cookie.setMaxAge(Integer.MIN_VALUE);
+            } else {
+                cookie.setMaxAge((int)maxAgeLong);
+            }
+        }
+        cookie.setHttpOnly(nettyCookie.isHttpOnly());
+        cookie.setSecure(nettyCookie.isSecure());
+
+        return cookie;
     }
 }

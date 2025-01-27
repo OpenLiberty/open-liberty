@@ -18,12 +18,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -169,4 +171,60 @@ public class CookieTests{
         assertThat("Encoded cookie should include samesite=Lax for pattern match", encoded, containsString("samesite=lax"));
     }
 
+    @Test
+    public void testDecode_NettyStrict() {
+        String cookieString = "name=value; Path=/; Domain=example.com; Max-Age=3600; HttpOnly";
+
+        List<HttpCookie> cookies = CookieDecoder.decode(cookieString);
+
+        assertThat(cookies, hasSize(1));
+        HttpCookie cookie = cookies.get(0);
+        assertThat(cookie.getName(), is("name"));
+        assertThat(cookie.getValue(), is("value"));
+        assertThat(cookie.getDomain(), is("example.com"));
+        assertThat(cookie.getPath(), is("/"));
+        assertThat(cookie.getMaxAge(), is(3600));
+        assertThat(cookie.isHttpOnly(), is(true));
+        assertThat(cookie.getVersion(), is(1));
+    }
+
+    @Test
+    public void testDecode_NettyLax() {
+        String cookieString = "name=value; Expires=Wed, 09 Jun 2025 10:18:14 GMT; Path=/; Domain=example.com";
+        List<HttpCookie> cookies = CookieDecoder.decode(cookieString);
+
+        assertThat(cookies, hasSize(1));
+        HttpCookie cookie = cookies.get(0);
+        assertThat(cookie.getName(), is("name"));
+        assertThat(cookie.getValue(), is("value"));
+        assertThat(cookie.getDomain(), is("example.com"));
+        assertThat(cookie.getPath(), is("/"));
+        assertThat(cookie.getMaxAge(), is(greaterThan(0)));
+        assertThat(cookie.getVersion(), is(0));
+    }
+
+    @Test
+    public void testDecode_MaxAgeOverflow() {
+        String cookieString = "name=value; Max-Age=9223372036854775807; Path=/";
+
+        List<HttpCookie> cookies = CookieDecoder.decodeNetty(cookieString);
+        for(HttpCookie c: cookies){
+            System.out.println("Decoded cookies-> " + c.getName() + ": " + c.getValue());
+        }
+
+        assertThat(cookies, hasSize(1));
+        HttpCookie cookie = cookies.get(0);
+        assertThat(cookie.getMaxAge(), is(Integer.MAX_VALUE)); // Long changed to Integer.MAX_VALUE
+    }
+
+    @Test
+    public void testDecode_NegativeMaxAge() {
+        String cookieString = "name=value; Max-Age=-1; Path=/";
+
+        List<HttpCookie> cookies = CookieDecoder.decode(cookieString);
+
+        assertThat(cookies, hasSize(1));
+        HttpCookie cookie = cookies.get(0);
+        assertThat(cookie.getMaxAge(), is(-1)); // Negative max age means expired
+    }
 }
