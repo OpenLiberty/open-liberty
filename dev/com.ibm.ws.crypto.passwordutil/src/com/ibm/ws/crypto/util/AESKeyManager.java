@@ -89,10 +89,8 @@ public class AESKeyManager {
 
     // Used exclusively for debugging securityUtility
     private static void securityUtilDebug(String message, Throwable throwable) {
-        if (DEBUG) {
-            System.out.println("[DEBUG] " + message);
-            throwable.printStackTrace(System.out);  // Prints the exception stack trace
-        }
+        System.out.println("[DEBUG] " + message);
+        throwable.printStackTrace(System.out);  // Prints the exception stack trace
     }    
 
     private static class KeyHolder {
