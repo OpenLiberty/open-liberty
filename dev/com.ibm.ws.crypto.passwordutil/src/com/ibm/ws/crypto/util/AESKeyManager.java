@@ -70,12 +70,12 @@ public class AESKeyManager {
                     // Still use this holder for returns even if I do not end up caching it.
                     holder = holder2;
                 } catch (InvalidKeySpecException e) {
-		    if (Boolean.getBoolean("enableDebug")) {
+		    if (DEBUG) {
 			securityUtilDebug("InvalidKeySpecException received. Returning null", e); 
 		    }
                     return null;
                 } catch (NoSuchAlgorithmException e) {
-		    if (Boolean.getBoolean("enableDebug")) {
+		    if (DEBUG) {
 			securityUtilDebug("InvalidKeySpecException received. Returning null", e); 			
 		    }		    
                     return null;
