@@ -1076,6 +1076,8 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         // colon separation (if cookies were to go into one single header instead
         // of multiple)
         for (HttpCookie cookie : list) {
+            //Default version
+            cookie.setVersion(0);
             //Add Samesite default config
             if (config.useSameSiteConfig() && cookie.getAttribute("samesite") == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

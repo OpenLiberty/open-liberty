@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.http.HttpCookie;
@@ -54,6 +56,8 @@ import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
  */
 public class CookieDecoder {
 
+
+    private static final Pattern MAX_AGE_PATTERN = Pattern.compile("(?i)Max-Age\\s*=\\s*([-]?\\d+)");
     private CookieDecoder(){} 
 
     /**
@@ -130,20 +134,31 @@ public class CookieDecoder {
         if (cookieString == null || cookieString.isEmpty()) {
             return Collections.emptySet();
         }
+
+        int version = determineCookieVersion(cookieString);
+
+        String sanitizedCookieString = sanitizeMaxAge(cookieString);
+        sanitizedCookieString = ensureCorrectVersion(sanitizedCookieString, version);
         Set<HttpCookie> cookies = new HashSet<HttpCookie>();
 
         try{
-            for(Cookie c: ServerCookieDecoder.STRICT.decode(cookieString)){
+            ServerCookieDecoder decoder = (version == 1) ? ServerCookieDecoder.STRICT : ServerCookieDecoder.LAX;
+            System.out.println("version is set to: " + version);
+            for(Cookie c: decoder.decode(sanitizedCookieString)){
                 HttpCookie cookie = mapToCookie(c);
-                cookie.setVersion(1);
+                cookie.setVersion(version);
                 cookies.add(cookie);
             }
         } catch(Exception e){
             // Fallback to LAX decoder for Version 0
-            for(Cookie c: ServerCookieDecoder.LAX.decode(cookieString)){
-                HttpCookie cookie = mapToCookie(c);
-                cookie.setVersion(0);
-                cookies.add(cookie);
+            cookies.clear();
+            System.out.println("Exception caught: " + e.getMessage());
+            if (version == 1){
+                for(Cookie c: ServerCookieDecoder.LAX.decode(sanitizedCookieString)){
+                    HttpCookie cookie = mapToCookie(c);
+                    cookie.setVersion(0);
+                    cookies.add(cookie);
+                }
             }
         }
         return cookies;
@@ -172,5 +187,68 @@ public class CookieDecoder {
         cookie.setSecure(nettyCookie.isSecure());
 
         return cookie;
+    }
+
+    /**
+     * Sanitizes the Max-Age attribute in a cookie string to 
+     * prevent overflow.
+     * 
+     * @param cookie the original cookie string
+     * @return the sanitized cookie string with adjusted Max-Age 
+     *      if overflow was detected
+     */
+    private static String sanitizeMaxAge(String cookie){
+        Matcher matcher = MAX_AGE_PATTERN.matcher(cookie);
+        StringBuffer sb = new StringBuffer();
+
+        while(matcher.find()){
+            String maxAgeString = matcher.group(1);
+            long maxAgeLong;
+            try{
+                maxAgeLong = Long.parseLong(maxAgeString);
+
+            }catch(NumberFormatException e){
+                matcher.appendReplacement(sb, "");
+                continue;
+            }
+
+            long cappedMaxAge = Math.max(Math.min(maxAgeLong, Integer.MAX_VALUE), Integer.MIN_VALUE);
+            matcher.appendReplacement(sb, "Max-Age="+cappedMaxAge);
+        
+        }
+        matcher.appendTail(sb);
+
+        return sb.toString();
+    }
+
+    private static String ensureCorrectVersion(String sanitizedCookie, int version) {
+        String lowerCaseCookie = sanitizedCookie.toLowerCase();
+        if (version == 1) {
+            if (!lowerCaseCookie.contains("version=1")) {
+                sanitizedCookie += "; Version=1";
+            }
+        } else {
+            sanitizedCookie = sanitizedCookie.replaceAll("(?i);\\s*Version=\\d+", "");
+        }
+        return sanitizedCookie;
+    }
+
+    private static int determineCookieVersion(String cookie) {
+        Pattern versionPattern = Pattern.compile("(?i)Version\\s*=\\s*(\\d+)");
+        Matcher versionMatcher = versionPattern.matcher(cookie);
+        if (versionMatcher.find()) {
+            try {
+                return Integer.parseInt(versionMatcher.group(1));
+            } catch (NumberFormatException e) {
+                // Handle invalid version format
+            }
+        }
+
+        // If Version is not explicitly set, infer based on attributes
+        if (cookie.toLowerCase().contains("max-age")) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
