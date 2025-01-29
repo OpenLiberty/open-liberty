@@ -387,7 +387,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @CheckForLeakedPasswords({ validPassword })
-    @AllowedFFDC({ "javax.crypto.BadPaddingException", "javax.crypto.AEADBadTagException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
+    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
     public void testLTPAFileReplacement_invalidSharedKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
         configureServer("true", "10", true);
@@ -485,7 +485,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @CheckForLeakedPasswords({ validPassword })
-    @AllowedFFDC({ "javax.crypto.BadPaddingException", "javax.crypto.AEADBadTagException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
+    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
     public void testLTPAFileReplacement_invalidPrivateKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
         configureServer("true", "10", true);
@@ -583,7 +583,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @CheckForLeakedPasswords({ validPassword })
-    @AllowedFFDC({ "javax.crypto.BadPaddingException", "javax.crypto.AEADBadTagException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
+    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
     public void testLTPAFileReplacement_invalidPublicKey_monitorValidationKeysDir_true_monitorInterval_10() throws Exception {
         // Configure the server
         configureServer("true", "10", true);
@@ -1010,7 +1010,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @CheckForLeakedPasswords({ validPassword })
-    @AllowedFFDC({ "javax.crypto.AEADBadTagException", "java.lang.IllegalArgumentException" })
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testValidationKeys_fileNameAttribute() throws Exception {
         // Configure the server
         configureServer("true", "10", true);
@@ -1122,7 +1122,7 @@ public class LTPAKeyRotationTests {
      */
     @Test
     @CheckForLeakedPasswords({ validPassword })
-    @AllowedFFDC({ "javax.crypto.BadPaddingException", "javax.crypto.AEADBadTagException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
+    @AllowedFFDC({ "javax.crypto.BadPaddingException", "java.lang.IllegalArgumentException", "java.lang.NullPointerException" })
     public void testValidationKeys_passwordAttribute() throws Exception {
         // Configure the server
         configureServer("true", "10", true);

@@ -78,7 +78,6 @@ public class FATTest {
     private static final Class<?> thisClass = FATTest.class;
 
     private static final String EXPECTED_EXCEPTION_BAD_PADDING = "javax.crypto.BadPaddingException";
-    private static final String EXPECTED_EXCEPTION_AEAD_BAD_TAG = "javax.crypto.AEADBadTagException";
     private static final boolean fipsEnabled;
 
     static {
@@ -225,11 +224,11 @@ public class FATTest {
     /**
      * Validate that the LTPA keys are not reloaded after modifying the LTPA keys file
      * if the server.xml has the wrong password.
-     * The FFDCs for javax.crypto.BadPaddingException or javax.crypto.AEADBadTagException exception are expected since
+     * The FFDC for javax.crypto.BadPaddingException exception is expected since
      * the code will fail to properly decrypt the LTPA keys with the wrong password.
      */
     @CheckForLeakedPasswords({ PWD_WRONG, PWD_ANY_ENCODED })
-    @AllowedFFDC({ EXPECTED_EXCEPTION_AEAD_BAD_TAG, EXPECTED_EXCEPTION_BAD_PADDING })
+    @AllowedFFDC({ EXPECTED_EXCEPTION_BAD_PADDING })
     @Test
     public void validateKeysNotReloadedAfterModificationWithWrongPassword() throws Exception {
         try {
@@ -242,15 +241,10 @@ public class FATTest {
             assertNotNull("The LTPA configuration must not be reloaded.",
                         server.waitForStringInLog("CWWKS4106E:.*"));
 
-            if (!fipsEnabled){
-                // Verify EXPECTED_EXCEPTION_BAD_PADDING is thrown
-                assertNotNull("The expected exception " + EXPECTED_EXCEPTION_BAD_PADDING + " was not thrown.",
-                            server.waitForStringInTrace(EXPECTED_EXCEPTION_BAD_PADDING));
-            } else {
-                // Verify EXPECTED_EXCEPTION_AEAD_BAD_TAG is thrown
-                assertNotNull("The expected exception " + EXPECTED_EXCEPTION_AEAD_BAD_TAG + " was not thrown.",
-                            server.waitForStringInTrace(EXPECTED_EXCEPTION_AEAD_BAD_TAG));
-            }
+
+            // Verify EXPECTED_EXCEPTION_BAD_PADDING is thrown
+            assertNotNull("The expected exception " + EXPECTED_EXCEPTION_BAD_PADDING + " was not thrown.",
+                        server.waitForStringInTrace(EXPECTED_EXCEPTION_BAD_PADDING));
 
             // Assert token can be created with old keys
             assertTokenCanBeCreated();
