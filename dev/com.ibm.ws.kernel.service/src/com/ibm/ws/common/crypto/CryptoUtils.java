@@ -146,14 +146,16 @@ public class CryptoUtils {
 
     public static void logInsecureAlgorithmReplaced(String configProperty, String insecureAlgorithm, String secureAlgorithm) {
         // TODO remove beta check
-        if (isRunningBetaMode()) {
+        // TODO disabling CRYPTO_INSECURE warnings until full FIPS 140-3 support on Semeru is complete
+        if (false && isRunningBetaMode()) {
             Tr.warning(tc, "CRYPTO_INSECURE_REPLACED", configProperty, insecureAlgorithm, secureAlgorithm);
         }
     }
 
     public static void logInsecureProvider(String provider, String insecureAlgorithm) {
         // TODO remove beta check
-        if (isRunningBetaMode()) {
+        // TODO disabling CRYPTO_INSECURE warnings until full FIPS 140-3 support on Semeru is complete
+        if (false && isRunningBetaMode()) {
             Tr.warning(tc, "CRYPTO_INSECURE_PROVIDER", provider, insecureAlgorithm);
         }
     }
