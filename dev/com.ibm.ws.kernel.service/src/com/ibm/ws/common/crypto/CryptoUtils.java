@@ -138,7 +138,8 @@ public class CryptoUtils {
 
     public static void logInsecureAlgorithm(String configProperty, String insecureAlgorithm) {
         // TODO remove beta check
-        if (isRunningBetaMode()) {
+        // TODO disabling CRYPTO_INSECURE warnings until full FIPS 140-3 support on Semeru is complete
+        if (false && isRunningBetaMode()) {
             Tr.warning(tc, "CRYPTO_INSECURE", configProperty, insecureAlgorithm);
         }
     }
