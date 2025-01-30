@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017, 2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -69,25 +69,25 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(AppTrackerImpl.class);
-    private static final MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+    protected static final MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
     protected ConfigurationAdmin configAdmin;
 
-    private final HashMap<String, Set<String>> appModules = new HashMap<String, Set<String>>();
+    protected final HashMap<String, Set<String>> appModules = new HashMap<String, Set<String>>();
 
     /**
      * Lock for accessing application/deferred task information.
      */
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    protected final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
      * Tracks the state of starting/started applications.
      */
-    private final Map<String, ApplicationState> appStateMap = new HashMap<String, ApplicationState>();
+    protected final Map<String, ApplicationState> appStateMap = new HashMap<String, ApplicationState>();
 
-    private final Map<String, ApplicationState> configAdminMap = new HashMap<String, ApplicationState>();
+    protected final Map<String, ApplicationState> configAdminMap = new HashMap<String, ApplicationState>();
 
-    private HealthCheckService healthCheckService;
+    protected HealthCheckService healthCheckService;
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
@@ -231,7 +231,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
      *
      * @param webModuleMetaData
      */
-    private String getAppModuleNameFromMetaData(WebModuleMetaData webModuleMetaData) {
+    protected String getAppModuleNameFromMetaData(WebModuleMetaData webModuleMetaData) {
         String appModuleName = null;
         appModuleName = webModuleMetaData.getJ2EEName().toString();
         if (tc.isDebugEnabled())
@@ -241,7 +241,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     }
 
     @FFDCIgnore(UnableToAdaptException.class)
-    private WebModuleMetaData getWebModuleMetaData(Container container) {
+    protected WebModuleMetaData getWebModuleMetaData(Container container) {
         WebModuleMetaData wmmd = null;
         NonPersistentCache overlayCache = null;
 
@@ -266,7 +266,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
      * @param appName
      * @param moduleAndAppName
      */
-    private synchronized void addAppModuleNames(String appName, String moduleAndAppName) {
+    protected synchronized void addAppModuleNames(String appName, String moduleAndAppName) {
         HashSet<String> moduleNames = null;
         if (moduleAndAppName == null) {
             if (tc.isDebugEnabled())
@@ -366,7 +366,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
      *
      * @return the MBeanInfo of appName if the ApplicationMBean exists, otherwise null.
      */
-    private String getApplicationMBean(String appName) {
+    protected String getApplicationMBean(String appName) {
         MBeanInfo bean = null;
         String state = "";
         try {
@@ -428,7 +428,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
      * @param appName
      * @param isAppStopped
      */
-    private void processApplication(Container appContainer, ApplicationInfo appInfo, String appName, boolean isAppStopped) {
+    protected void processApplication(Container appContainer, ApplicationInfo appInfo, String appName, boolean isAppStopped) {
         //Check if the deployed application is an EAR or WAR file
         if (appInfo instanceof EARApplicationInfo) {
             if (tc.isDebugEnabled())
@@ -459,7 +459,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
      * @param isAppStopped
      */
     @FFDCIgnore(UnableToAdaptException.class)
-    private void processEARApplication(Container appContainer, EARApplicationInfo earAppInfo, boolean isAppStopped) {
+    protected void processEARApplication(Container appContainer, EARApplicationInfo earAppInfo, boolean isAppStopped) {
         for (Entry entry : appContainer) {
             try {
                 Container c = entry.adapt(Container.class);

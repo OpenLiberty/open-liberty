@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2025 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="WebApp_ID"  xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <display-name>health</display-name>
+  <description>The IBM Health Check APIs for the Liberty server</description>
+
+  <servlet>
+    <display-name>HealthCheckServlet</display-name>
+    <servlet-name>HealthCheckServlet</servlet-name>
+    <servlet-class>io.openliberty.microprofile.health40.internal.servlet.HealthCheckServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <display-name>HealthCheckLivenessServlet</display-name>
+    <servlet-name>HealthCheckLivenessServlet</servlet-name>
+    <servlet-class>io.openliberty.microprofile.health40.internal.servlet.HealthCheckLivenessServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <display-name>HealthCheckReadinessServlet</display-name>
+    <servlet-name>HealthCheckReadinessServlet</servlet-name>
+    <servlet-class>io.openliberty.microprofile.health40.internal.servlet.HealthCheckReadinessServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <display-name>HealthCheckStartupServlet</display-name>
+    <servlet-name>HealthCheckStartupServlet</servlet-name>
+    <servlet-class>io.openliberty.microprofile.health40.internal.servlet.HealthCheckStartupServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>HealthCheckServlet</servlet-name>
+    <url-pattern></url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>HealthCheckLivenessServlet</servlet-name>
+    <url-pattern>/live</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>HealthCheckReadinessServlet</servlet-name>
+    <url-pattern>/ready</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>HealthCheckStartupServlet</servlet-name>
+    <url-pattern>/started</url-pattern>
+  </servlet-mapping>
+
+</web-app>
