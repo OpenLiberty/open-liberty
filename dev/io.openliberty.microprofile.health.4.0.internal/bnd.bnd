@@ -23,6 +23,7 @@ WS-TraceGroup: HEALTH
 
 -dsannotations-inherit: true
 -dsannotations: \
+  io.openliberty.microprofile.health40.internal.AppTracker40Impl, \
   com.ibm.ws.microprofile.health.services.impl.AppModuleContextService, \
   io.openliberty.microprofile.health40.spi.impl.HealthCheck40ResponseProviderImpl, \
   io.openliberty.microprofile.health40.internal.HealthCheck40ServiceImpl, \
