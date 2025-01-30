@@ -995,7 +995,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         List<HttpCookie> list = new LinkedList<HttpCookie>();
         List<String> cookieHeaders = headers.getAll(HttpHeaderNames.COOKIE);
         for(String cookie: cookieHeaders){
-            list.addAll(CookieDecoder.decode(cookie));
+            list.addAll(CookieDecoder.decodeServerCookies(cookie));
         }
         return list;
 

@@ -56,6 +56,8 @@ import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.openliberty.http.constants.HttpGenerics;
+import io.openliberty.http.netty.cookie.CookieDecoder;
+import io.openliberty.http.netty.cookie.CookieEncoder;
 
 /**
  *
@@ -491,10 +493,31 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public byte[] getCookieValue(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        if (name == null) { return null;}
+
+        HttpCookie cookie = getCookie(name);
+        if(cookie == null){ return null;}
+
+        String value = cookie.getValue();
+        if(value == null || value.isEmpty()){
+            return null;
+        }
+        return value.getBytes(StandardCharsets.UTF_8);
     }
 
+    /**
+     * Populates the provided {@code list} with all values associated to the 
+     * given cookie {@code name} for the specific {@code header}.
+     * 
+     * This method checks the local cache for the specified header. If the header 
+     * has not been parsed yet, the {@link #parseAllCookies(CookieCacheData, HttpHeaderKeys)}
+     * is used to decode cookie values for that header. All matching cookie values
+     * are returned and added to the provided list. 
+     * 
+     * @param name the name of the cookie whose value should be retrieved
+     * @param header the {@link HttpHeaderKeys} indicating desired header name
+     * @param list a modifiable {@link List} where matching cookie values will be added
+     */
     protected void getAllCookieValues(String name, HttpHeaderKeys header, List<String> list) {
         if (!cookieCacheExists(header) && !containsHeader(header)) {
             return;
@@ -504,13 +527,63 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         cache.getAllCookieValues(name, list);
     }
 
+    /**
+     * This method is not supported in the base class. It is expected that 
+     * children of this class should override it to handle specific
+     * cookie headers. For instance, requests typically will use "Cookie";
+     * responses typically "Set-Cookie". Calling this default will result 
+     * in a {@link UnsupportedOperationException}
+     * 
+     * If needing to use the base class, use {@code #getCookie(String, HttpHeaderKeys)}
+     * instead.
+     * 
+     * @param name the cookie name
+     * @throws UnsupportedOperationException always if called from the 
+     * base class.
+     */
     @Override
     public HttpCookie getCookie(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        if (name == null) {
+            return null;
+        }
+
+        HttpCookie cookie = null;
+        if (isIncoming()) {
+            cookie = getCookie(name, HttpHeaderKeys.HDR_COOKIE);
+            if (cookie == null) {
+                cookie = getCookie(name, HttpHeaderKeys.HDR_COOKIE2);
+            }
+        } else {
+            cookie = getCookie(name, HttpHeaderKeys.HDR_SET_COOKIE);
+            if (cookie == null) {
+                cookie = getCookie(name, HttpHeaderKeys.HDR_SET_COOKIE2);
+            }
+        }
+
+        return cookie;
     }
 
+    /**
+     * Retrieves a cookie with the specified {@code name} from the specified cookie header
+     * type. This method checks whether the cookie has already been cached. If not cached,
+     * it parses an unprocessed header field using the {@link CookieDecoder} and updates the local
+     * cache. If a matching cookie is found, however, it returns it immediately.
+     * 
+     * If no cookie by the given name is found, if parsing results in no matches, or a {@code null} is
+     * provided for the name, null is returned. 
+     * 
+     * Note: Cookies are cached depending on the header type. For instance, request cookies are 
+     * typically associated to "Cookie"; response cookies with "Set-Cookie". Ensure the appropriate 
+     * {@link HttpHeaderKeys} is utilized.
+     * 
+     * @param name the cookie name to look up
+     * @param header the header key indicating which cookie header to parse
+     * @return a matching {@link HttpCookie} if found, or {@code null} otherwise
+     */
     protected HttpCookie getCookie(String name, HttpHeaderKeys header) {
+        
+        if(name == null) { return null;}
+
         if (cookieCacheExists(header) || containsHeader(header)) {
             CookieCacheData cache = getCookieCache(header);
             HttpCookie cookie = cache.getCookie(name);
@@ -523,23 +596,21 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
             // Now search the cookie header instances in storage and add them
             // to the parsed list
-            List<HeaderField> vals = getHeaders(header);
-            int size = vals.size();
+            List<HeaderField> headerFields = getHeaders(header);
+            int size = headerFields.size();
             if (size != 0) {
                 for (int i = cache.getHeaderIndex(); i < size; i++) {
-                    List<HttpCookie> list = getCookieParser().parse(vals.get(i).asBytes(), header);
-                    cache.addParsedCookies(list);
+                    String headerValue = headerFields.get(i).asString();
+                    List<HttpCookie> decodedCookies = CookieDecoder.decode(headerValue, header);
+                    cache.addParsedCookies(decodedCookies);
                     cache.incrementHeaderIndex();
                     // search the list of new cookies from this header instance
-                    Iterator<HttpCookie> it = list.iterator();
-                    while (it.hasNext()) {
-                        cookie = it.next();
-                        // cookie names are case-sensitive
-                        if (cookie.getName().equals(name)) {
+                    for(HttpCookie c: decodedCookies){
+                        if (c.getName().equals(name)) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Found parsed Cookie-->" + name);
                             }
-                            return cookie;
+                            return c;
                         }
                     }
                 }
@@ -555,24 +626,37 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     @Override
     public List<HttpCookie> getAllCookies() {
         List<HttpCookie> list = new LinkedList<HttpCookie>();
-        getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE, list);
-        getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE2, list);
+
+        if(isIncoming()){
+            getAllCookies(HttpHeaderKeys.HDR_COOKIE, list);
+            getAllCookies(HttpHeaderKeys.HDR_COOKIE2, list);
+        }else{
+            getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE, list);
+            getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE2, list);
+        }
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getAllCookies: Found " + list.size() + " instances");
+            Tr.debug(tc, "getAllCookies: Found " + list.size() + " cookie(s). Is incoming: "+isIncoming());
         }
         return list;
     }
 
     @Override
     public List<HttpCookie> getAllCookies(String name) {
-
         List<HttpCookie> list = new LinkedList<HttpCookie>();
-        if (null != name) {
+        if(name == null){ return list;}
+
+        
+        if (isIncoming()) {
+            getAllCookies(name, HttpHeaderKeys.HDR_COOKIE, list);
+            getAllCookies(name, HttpHeaderKeys.HDR_COOKIE2, list);
+        } else {
             getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE, list);
             getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE2, list);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getAllCookies: Found " + list.size() + " instances of " + name);
+            Tr.debug(tc, "getAllCookies: Found " + list.size() + 
+                " cookie(s) matching [" + name + "]. Is incoming: "+ isIncoming());
         }
         return list;
     }
@@ -736,27 +820,20 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
         // Iterate through the unparsed cookie header instances
         // in storage and add them to the list to be returned
-        List<HeaderField> vals = getHeaders(header);
-        int size = vals.size();
-        if (size != 0) {
-            for (int i = cache.getHeaderIndex(); i < size; i++) {
-                cache.addParsedCookies(getCookieParser().parse(vals.get(i).asBytes(), header));
+        List<HeaderField> headerList = getHeaders(header);
+        int size = headerList.size();
+
+        if(size == 0) {return;}
+
+        for (int i = cache.getHeaderIndex(); i < size; i++) {
+            String headerValue = headerList.get(i).asString();
+
+                cache.addParsedCookies(CookieDecoder.decode(headerValue, header));
                 cache.incrementHeaderIndex();
-            }
         }
     }
 
-    /**
-     * Get access to the cookie parser for this message.
-     *
-     * @return An instance of the Cookie header parser
-     */
-    private CookieHeaderByteParser getCookieParser() {
-        if (null == this.cookieParser) {
-            this.cookieParser = new CookieHeaderByteParser();
-        }
-        return this.cookieParser;
-    }
+    
 
     @Override
     public boolean isIncoming() {

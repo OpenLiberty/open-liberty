@@ -111,12 +111,15 @@ public class CookieEncoder {
                     }
                 }
             }
-
-            if("None".equalsIgnoreCase(sameSite)){
-                if(!cookie.isSecure()){
+            try{
+                SameSite value = SameSite.from(sameSite);
+                if(value.requiresSecure() && !cookie.isSecure()){
                     cookie.setSecure(true);
                 }
+            } catch(IllegalArgumentException e){
+                //User set an invalid SameSite cookie, leave as is.
             }
+            
             if(config.getPartitioned() && cookie.getAttribute(PARTITIONED_ATTRIBUTE) == null) {
                 cookie.setAttribute(PARTITIONED_ATTRIBUTE, "");
             }
@@ -143,8 +146,9 @@ public class CookieEncoder {
                         maxAgeSeconds = 0;
                     }
                     
+                    System.out.println("Setting max age to: " + maxAgeSeconds);
                     cookie.setMaxAge((int)maxAgeSeconds);
-                    //Should we remove attribute?
+                    cookie.setAttribute(EXPIRES_ATTRIBUTE, null);
                 }else {
                     cookie.setMaxAge(0);
                 }

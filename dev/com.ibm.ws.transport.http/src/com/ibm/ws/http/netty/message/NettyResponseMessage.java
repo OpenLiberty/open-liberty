@@ -580,8 +580,8 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
         List<String> list = new LinkedList<String>();
         if (null != name) {
-            getAllCookieValues(name, HttpHeaderKeys.HDR_SET_COOKIE, list);
-            getAllCookieValues(name, HttpHeaderKeys.HDR_SET_COOKIE2, list);
+            list.addAll(getAllCookieValues(name, HttpHeaderKeys.HDR_SET_COOKIE));
+            list.addAll(getAllCookieValues(name, HttpHeaderKeys.HDR_SET_COOKIE2));
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getAllCookieValues: Found " + list.size() + " instances of " + name);
