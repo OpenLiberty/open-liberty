@@ -27,16 +27,22 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.HttpCookie;
+import com.ibm.wsspi.http.channel.HttpServiceContext;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 
+import com.ibm.ws.http.netty.message.NettyBaseMessage;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
 
+import com.ibm.wsspi.http.channel.HttpServiceContext;
 
 
 public class CookieTests{
@@ -91,21 +97,13 @@ public class CookieTests{
 
     @Test
     public void testInboundCookieWithDomainAndPathAttributes() {
-        // 1) Mark this scenario as inbound
         doReturn(true).when(spyInboundCtx).isInboundConnection();
 
-        // 2) Create a FullHttpRequest with the 'Cookie' header containing domain/path attributes
-        //    e.g. "Cookie: name1=value1; Domain=myhost; Path=/servlet_jsh_cookie_web"
         FullHttpRequest req = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/test");
         req.headers().add("Cookie", "name1=value1; $Version=1; $Domain=myhost; $Path=/servlet_jsh_cookie_web");
-
-        // 3) Construct the NettyRequestMessage (which calls the base cookie logic)
         NettyRequestMessage message = new NettyRequestMessage(req, spyInboundCtx, context);
 
-        // 4) Retrieve all cookies (or call getCookie if you prefer)
         List<HttpCookie> cookies = message.getAllCookies();
-        // We expect only one cookie: "name1=value1". Domain and Path shouldn't spawn extra cookies.
-        System.out.println(cookies);
 
         assertThat(cookies, hasSize(1));
 
@@ -115,6 +113,43 @@ public class CookieTests{
         assertThat(cookie.getDomain(), is("myhost"));
         assertThat(cookie.getPath(), is("/servlet_jsh_cookie_web"));
 
+    }
+
+    @Test
+    public void testNettyMessage(){
+        TestableNettyMessage message = new TestableNettyMessage();
+        message.incoming(true);
+
+        DefaultHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/test");
+        request.headers().add("Cookie", "session=abc; foo=bar");
+        HttpChannelConfig mockConfig = mock(HttpChannelConfig.class);
+        when(mockConfig.getLimitOnNumberOfHeaders()).thenReturn(100);
+        when(mockConfig.getLimitOfFieldSize()).thenReturn(1024);
+
+        HttpServiceContext serviceContext = mock(HttpServiceContext.class);
+        message.testInit(request, serviceContext, mockConfig);
+
+        HttpCookie session = message.getCookie("session");
+        assertThat(session, notNullValue());
+        assertThat(session.getValue(), is("abc"));
+
+        HttpCookie foo = message.getCookie("foo");
+        assertThat(foo, notNullValue());
+        assertThat(foo.getValue(), is("bar"));
+        
+    }
+
+    private class TestableNettyMessage extends NettyBaseMessage {
+
+        public TestableNettyMessage(){}
+
+        public void testInit(HttpMessage message, HttpServiceContext context, HttpChannelConfig config){
+            super.init(message, context, config);
+        }
+
+        public HttpHeaders getNettyHeaders(){
+            return this.headers;
+        }
     }
 
 }
