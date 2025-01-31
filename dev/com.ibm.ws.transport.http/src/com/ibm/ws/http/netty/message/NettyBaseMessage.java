@@ -662,11 +662,13 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     }
 
     /**
-     * Add all cookies from this message under the input header into the input
-     * list.
+     * Retrieves all cookies from the given {@code header}. This will parse any
+     * header lines that have not been processed, and appends them to the provided
+     * {@code list}.
+     * 
      *
-     * @param header
-     * @param list
+     * @param header the cookie header type to process
+     * @param list a mutable list to which all cookies will be added to
      */
     protected void getAllCookies(HttpHeaderKeys header, List<HttpCookie> list) {
         if (!cookieCacheExists(header) && !containsHeader(header)) {
@@ -754,18 +756,18 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
      * Return the set of objects for effectively caching Cookies as they
      * are processed.
      *
-     * @param header
+     * For incoming requests, parsing is derred until other methods explicitly 
+     * call {@link #parseAllCookies(CookieCacheData, HttpHeaderKeys)}. For 
+     * outgoing responses, it calls {@link #parseAllCookies(CookieCacheData, HttpHeaderKeys)}
+     * immediately to avoid partial header storage changes in the middle of
+     * parsing.
+     *
+     * @param header the header type associated to the cookie cache
      * @return the caching data for the particular set of Cookies.
-     * @throws IllegalArgumentException
-     *                                      if the header is not a cookie header
+     * @throws IllegalArgumentException if the header is not a recognized 
+     * cookie header
      */
     private CookieCacheData getCookieCache(HttpHeaderKeys header) {
-        // 347066 - removed sync because we only allow 1 thread to be working
-        // on a message a time anyways
-
-        // For outgoing messages, parse the cookies out immediately so that we
-        // don't have to worry about people changing header storage in the
-        // middle (which throws off the parse cookie logic)
         if (header.equals(HttpHeaderKeys.HDR_COOKIE)) {
             if (null == this.cookieCache) {
 
@@ -809,9 +811,16 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     /**
      * Method to parse all of the unparsed header instances for the given input
      * type into Cookie objects to store in the cache.
+     * 
+     * This method uses {@link CookieCacheData#getHeaderIndex()} to determine
+     * which header lines have already been processed. This avoid parsing lines 
+     * that fall below that index, making multiple calls only parse new lines.
+     * 
+     * Parsing is delegated to the {@link CookieDecoder} which applies the 
+     * appropiate logic for each Cookie header type.
      *
-     * @param cache
-     * @param header
+     * @param cache the {@link CookieCacheData} to populate with unparsed cookies
+     * @param header the type of cookie header
      */
     private void parseAllCookies(CookieCacheData cache, HttpHeaderKeys header) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

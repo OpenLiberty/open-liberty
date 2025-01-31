@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.netty;
+package com.ibm.ws.netty.cookie;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -61,7 +61,7 @@ public class CookieDecoderTests {
     public void testDecodeCookie() {
         // Using a simple cookie pair without Path and HttpOnly attributes
         String cookieString = "myCookie=myValue";
-        List<HttpCookie> cookies = CookieDecoder.decode(cookieString);
+        List<HttpCookie> cookies = CookieDecoder.decodeServerCookies(cookieString);
 
         assertThat("Expected one cookie to be decoded", cookies, hasSize(1));
         HttpCookie c = cookies.get(0);
@@ -75,7 +75,7 @@ public class CookieDecoderTests {
      */
     @Test
     public void testDecodeEmptyString() {
-        List<HttpCookie> cookies = CookieDecoder.decode("");
+        List<HttpCookie> cookies = CookieDecoder.decodeServerCookies("");
         assertThat("Expected no cookies to be decoded from empty string", cookies, is(empty()));
     }
 
@@ -87,7 +87,7 @@ public class CookieDecoderTests {
     @Test
     public void testDecodeServlet6WithDollarSign() {
         String cookieString = "$version=1; cookieFlavor=vanilla";
-        List<HttpCookie> cookies = CookieDecoder.decode(cookieString);
+        List<HttpCookie> cookies = CookieDecoder.decodeServerCookies(cookieString);
 
         assertThat("Expected one cookie after ignoring $version attribute", cookies, hasSize(1));
         HttpCookie c = cookies.get(0);

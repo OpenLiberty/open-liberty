@@ -154,8 +154,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setConnection(ConnectionValues value) {
-        //TODO Netty already sets this, no op?
-        // Wrong need to set this on occasions like 404s
         if (value.getName().equalsIgnoreCase(HttpHeaderValues.CLOSE.toString()))
             nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         else if (value.getName().equalsIgnoreCase(HttpHeaderValues.KEEP_ALIVE.toString()))
@@ -568,110 +566,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public int getLimitOfTokenSize() {
         return 0;
-    }
-
-    @Override
-    public byte[] getCookieValue(String name) {
-        return null;
-    }
-
-    @Override
-    public List<String> getAllCookieValues(String name) {
-
-        List<String> list = new LinkedList<String>();
-        if (null != name) {
-            list.addAll(getAllCookieValues(name, HttpHeaderKeys.HDR_SET_COOKIE));
-            list.addAll(getAllCookieValues(name, HttpHeaderKeys.HDR_SET_COOKIE2));
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getAllCookieValues: Found " + list.size() + " instances of " + name);
-        }
-        return list;
-    }
-
-    @Override
-    public HttpCookie getCookie(String name) {
-        if (null == name) {
-            return null;
-        }
-        HttpCookie cookie = getCookie(name, HttpHeaderKeys.HDR_SET_COOKIE);
-        if (null == cookie) {
-            cookie = getCookie(name, HttpHeaderKeys.HDR_SET_COOKIE2);
-        }
-        // Note: return a clone to avoid corruption by the caller
-        return (null == cookie) ? null : cookie.clone();
-    }
-
-    /**
-     * @see com.ibm.wsspi.http.channel.cookies.CookieHandler#getAllCookies()
-     */
-    @Override
-    public List<HttpCookie> getAllCookies() {
-        List<HttpCookie> list = new LinkedList<HttpCookie>();
-        getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE, list);
-        getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE2, list);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getAllCookies: Found " + list.size() + " instances");
-        }
-        return list;
-    }
-
-    /**
-     * @see com.ibm.wsspi.http.channel.cookies.CookieHandler#getAllCookies(java.lang.String)
-     */
-    @Override
-    public List<HttpCookie> getAllCookies(String name) {
-        List<HttpCookie> list = new LinkedList<HttpCookie>();
-        if (null != name) {
-            getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE, list);
-            getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE2, list);
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getAllCookies: Found " + list.size() + " instances of " + name);
-        }
-        return list;
-    }
-
-    @Override
-    public boolean setCookie(HttpCookie cookie, HttpHeaderKeys cookieHeader) {
-
-        boolean result = Boolean.FALSE;
-
-        if (Objects.nonNull(cookie) && Objects.nonNull(cookieHeader)) {
-            if (1 < cookie.getVersion()) {
-                throw new IllegalArgumentException("Cookie version is invalid: " + cookie.getVersion());
-            }
-
-            if (isCommitted()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Not adding cookie to committed message: " + cookie.getName() + " " + cookieHeader.getName());
-                }
-            } else if (cookieHeader.equals(HttpHeaderKeys.HDR_SET_COOKIE) || cookieHeader.equals(HttpHeaderKeys.HDR_SET_COOKIE2)) {
-                // this.processCookie(cookie, cookieHeader);
-                // result = Boolean.TRUE;
-                result = super.setCookie(cookie, cookieHeader);
-
-            }
-        }
-
-        return result;
-    }
-
-    @Override
-    public boolean setCookie(String name, String value, HttpHeaderKeys cookieHeader) {
-        return setCookie(new HttpCookie(name, value), cookieHeader);
-
-    }
-
-    @Override
-    public boolean removeCookie(String name, HttpHeaderKeys cookieHeader) {
-        return super.removeCookie(name, cookieHeader);
-    }
-
-    @Override
-    public boolean containsCookie(String name, HttpHeaderKeys cookieHeader) {
-
-        throw new UnsupportedOperationException("containsCookie leveraged to Netty codec");
     }
 
     @Override

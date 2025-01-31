@@ -990,27 +990,4 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         }
     }
 
-    @Override
-    public List<HttpCookie> getAllCookies() {
-        List<HttpCookie> list = new LinkedList<HttpCookie>();
-        List<String> cookieHeaders = headers.getAll(HttpHeaderNames.COOKIE);
-        for(String cookie: cookieHeaders){
-            list.addAll(CookieDecoder.decodeServerCookies(cookie));
-        }
-        return list;
-
-    }
-
-    @Override
-    public HttpCookie getCookie(String name) {
-        if (null == name) {
-            return null;
-        }
-        HttpCookie cookie = getCookie(name, HttpHeaderKeys.HDR_COOKIE);
-        if (null == cookie) {
-            cookie = getCookie(name, HttpHeaderKeys.HDR_COOKIE2);
-        }
-        return (null == cookie) ? null : cookie.clone();
-    }
-
 }
