@@ -84,10 +84,7 @@ public class ProtocolHelper {
                         throw new SSLException("Protocol provided is not appropriate for a protocol list.");
                     }
                 }
-            }
-
-            // Else, multi list we only allow TLSv1, TLSv1.1, TLSv1.2, and TLSv1.3 as possible values
-            else {
+            } else { // Else, multi list we only allow TLSv1, TLSv1.1, TLSv1.2, and TLSv1.3 as possible values
                 for (String protocol : protocols) {
                     if (Constants.MULTI_PROTOCOL_LIST.contains(protocol)) {
                         if (goodProtocols.contains(protocol))
@@ -103,10 +100,18 @@ public class ProtocolHelper {
                 }
             }
         } else {
-            if (!goodProtocols.contains(protocols[0])) {
-                checkProtocol(protocols[0]);
+            if (CryptoUtils.isFips140_3Enabled()) {
+                if (!Constants.FIPS_140_3_PROTOCOLS.contains(protocols[0])) {
+                    Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocols[0]);
+                    throw new SSLException("Protocol provided is not appropriate for a protocol.");
+                }
+            } else {
+                if (!goodProtocols.contains(protocols[0])) {
+                    checkProtocol(protocols[0]);
+                }
             }
         }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "checkProtocolValueGood");
         return;
