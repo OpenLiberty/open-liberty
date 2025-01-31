@@ -121,7 +121,12 @@ public class ProtocolHelper {
             Tr.entry(tc, "checkProtocol", protocol);
 
         try {
-            SSLContext.getInstance(protocol);
+            if (CryptoUtils.isFips140_3Enabled()) {
+                SSLContext.getInstance(protocol, CryptoUtils.getProvider());
+            } else {
+                SSLContext.getInstance(protocol);
+            }
+
         } catch (Throwable t) {
             // Just continue
             String tMsg = t.getMessage();
