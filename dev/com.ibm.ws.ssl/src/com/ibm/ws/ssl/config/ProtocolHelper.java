@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -126,7 +126,12 @@ public class ProtocolHelper {
             Tr.entry(tc, "checkProtocol", protocol);
 
         try {
-            SSLContext.getInstance(protocol);
+            if (CryptoUtils.isFips140_3Enabled()) {
+                SSLContext.getInstance(protocol, CryptoUtils.getProvider());
+            } else {
+                SSLContext.getInstance(protocol);
+            }
+
         } catch (Throwable t) {
             // Just continue
             String tMsg = t.getMessage();
