@@ -48,6 +48,8 @@
         <AD id="expirationDifferenceAllowed" name="internal" description="internal use only"
             required="false" type="String" ibm:type="duration(ms)" 
             default="3000ms" /> 
+        <AD id="useJdkProvider" name="%useJdkProvider" description="%useJdkProvider.desc"
+            required="false" type="String" default="" />
         <AD id="validationKeys" ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" 
            	required="false" type="String" 
             ibm:flat="true" cardinality="2147483647"/>        

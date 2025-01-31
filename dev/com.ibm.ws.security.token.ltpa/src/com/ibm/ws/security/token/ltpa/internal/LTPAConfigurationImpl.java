@@ -73,6 +73,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
     static final String KEY_AUTH_FILTER_REF = "authFilterRef";
     static final String KEY_EXP_DIFF_ALLOWED = "expirationDifferenceAllowed";
+    static final String USE_JDK_PROVIDER ="useJdkProvider";
     static protected final String KEY_SERVICE_PID = "service.pid";
     private final AtomicServiceReference<WsLocationAdmin> locationService = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_SERVICE);
     private final AtomicServiceReference<ExecutorService> executorService = new AtomicServiceReference<ExecutorService>(KEY_EXECUTOR_SERVICE);
@@ -96,6 +97,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private String authFilterRef;
     private long expirationDifferenceAllowed;
     private boolean monitorValidationKeysDir;
+    private boolean useJDKProvider;
     private String updateTrigger;
     private final List<Properties> validationKeys = new ArrayList<Properties>();
     // configValidationKeys are specified in the server xml configuration
@@ -196,6 +198,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         // expirationDifferenceAllowed is set to 3 seconds (3000ms) by default.
         // If expirationDifferenceAllowed is set to less than 0, then the two expiration values will not be compared in the LTPAToken2.decrypt() method.
         expirationDifferenceAllowed = (Long) props.get(KEY_EXP_DIFF_ALLOWED);
+        useJDKProvider = (Boolean) props.get(USE_JDK_PROVIDER);
         monitorValidationKeysDir = (Boolean) props.get(CFG_KEY_MONITOR_VALIDATION_KEYS_DIR);
         updateTrigger = (String) props.get(CFG_KEY_UPDATE_TRIGGER);
 
@@ -747,6 +750,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Override
     public long getExpirationDifferenceAllowed() {
         return expirationDifferenceAllowed;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean getUseJDKProvider() {
+        return useJDKProvider;
     }
 
     /**
