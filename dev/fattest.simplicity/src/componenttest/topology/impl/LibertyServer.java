@@ -1725,14 +1725,13 @@ public class LibertyServer implements LogMonitorClient {
                 }
             }
         }
+        // There seems to be a case where tests that add jvm options with setJvmOptions(options) right before serverStart
+        // are not actually included in JVM_ARGS already (the list from the jvm.options file is not retrieved in time).
+        JVM_ARGS += getJvmArgString(this.getJvmOptionsAsMap());
 
         //FIPS 140-3
         // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM Arg
         if (isFIPS140_3EnabledAndSupported(info)) {
-            // TODO: `getJvmOptionsAsMap()` should be added to JVM_ARGS outside of this if-block so that we always run it.
-            // During FIPS 140-3 development, we found test scenarios where jvm.options is set before server start and the file is ignored.
-            // So that we can test FIPS 140-3 without causing issues unrelated to FIPS, we have put it inside this if-block, for now.
-            JVM_ARGS += getJvmArgString(this.getJvmOptionsAsMap());
             JVM_ARGS += getJvmArgString(this.getFipsJvmOptions(info, false));
         }
 
