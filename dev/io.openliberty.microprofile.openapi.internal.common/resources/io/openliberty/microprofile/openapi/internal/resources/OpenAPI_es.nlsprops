@@ -161,3 +161,15 @@ OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Aseg\u00farese de que los a
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: El elemento de configuraci\u00f3n {0} incluye{1}" pero no coincide con ninguna aplicaci\u00f3n o m\u00f3dulo web desplegado.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=El servidor est\u00e1 configurado para crear la documentaci\u00f3n de OpenAPI para el nombre de aplicaci\u00f3n o de m\u00f3dulo, pero no se ha desplegado ninguna aplicaci\u00f3n o m\u00f3dulo web con ese nombre.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=Compruebe que todas las aplicaciones se han iniciado correctamente y que los nombres de la configuraci\u00f3n se han especificado correctamente.
+
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I=CWWKO1685I: La propiedad {0} MicroProfile Config se ignora porque se proporciona una configuraci\u00f3n equivalente en el archivo server.xml.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.explanation=Cuando se establece esta propiedad y se configura la misma funci\u00f3n utilizando el archivo server.xml ml, se utiliza la configuraci\u00f3n del archivo server.xml y se ignora la propiedad MicroProfile Config.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.useraction=Elimina la propiedad MicroProfile Config.
+
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W=CWWKO1686W: La propiedad {0} MicroProfile Config se ignora porque se proporciona una configuraci\u00f3n conflictiva en el archivo server.xml.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.explanation=Cuando se establece esta propiedad y se configura la misma funci\u00f3n utilizando el archivo server.xml ml, se utiliza la configuraci\u00f3n del archivo server.xml y se ignora la propiedad MicroProfile Config.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Elimine la propiedad MicroProfile Config y aseg\u00farese de que la configuraci\u00f3n en el archivo server.xml es correcta.
+
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: El elemento de anotaci\u00f3n {0} de la clase {1} se ignora porque requiere OpenAPI versi\u00f3n {2} pero la versi\u00f3n actual OpenAPI es {3}.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=El elemento de anotaci\u00f3n se refiere a una caracter\u00edstica a\u00f1adida a una versi\u00f3n de la especificaci\u00f3n OpenAPI m\u00e1s reciente que la configurada. La versi\u00f3n OpenAPI en uso no puede representar esta informaci\u00f3n, por lo que se excluye de la documentaci\u00f3n producida OpenAPI.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Considere la posibilidad de eliminar el elemento de anotaci\u00f3n o de establecer el elemento de configuraci\u00f3n openAPIVersion en una versi\u00f3n que lo admita en el archivo server.xml.

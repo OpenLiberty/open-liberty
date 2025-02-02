@@ -22,8 +22,8 @@ Subsystem-Name: gRPC Client 1.0
   com.ibm.websphere.appserver.internal.slf4j-1.7, \
   io.openliberty.internal.grpc-1.0
 -jars=\
-  io.openliberty.io.grpc.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.57.2", \
-  io.openliberty.io.grpc.1.0.jakarta; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.57.2", \
+  io.openliberty.io.grpc.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.69.0", \
+  io.openliberty.io.grpc.1.0.jakarta; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.69.0", \
   io.openliberty.grpc.client.1.0.thirdparty; location:="dev/api/third-party/,lib/", \
   io.openliberty.grpc.client.1.0.jakarta.thirdparty; location:="dev/api/third-party/,lib/"
 -bundles=\

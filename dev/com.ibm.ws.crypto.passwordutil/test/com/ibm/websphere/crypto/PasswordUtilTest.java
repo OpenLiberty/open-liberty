@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2024 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -146,7 +146,7 @@ public class PasswordUtilTest {
             assertEquals("Did not decode password encoded with AES_V0 (AES-128) encoded password", "alternatepwd",
                          PasswordUtil.decode("{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ=="));
             assertEquals("Did not decode password encoded with AES_V1 (AES-256) encoded password", "alternatepwd",
-                         PasswordUtil.decode("{aes}ARCejBipVe2pCLpoNe9iRREPNbQmPVSfXOe5kHZneiYVR+nSXJ8UmFzlNtwrQgKwnrkaDJmNnr+GpDWCOk1MPY7VbvR0/FBUrIENeU5+L9e8a1K4YvWeQ2UUbLv97SHa3P9Iky7rIbeQ9l4Xi0q0"));
+                         PasswordUtil.decode("{aes}ARABGAM7S4HrIRtZWJ229TnxuKZrrPN3dsKrrQzCQE/3U5F4zp3UrDQ+Czmnvz1kaQyN7JktDzieJxelwu077ZYET2V+7/1Gi37iztr7lY0i+j4dlHOFIi5PESnZ7V8XOmdSbH9DSgkuJaXNoEqb"));
         } finally {
             System.setProperty("com.ibm.ws.beta.edition", "false");
         }
@@ -172,7 +172,7 @@ public class PasswordUtilTest {
 
             // decode("{aes}<valid AES256 encoded password>); should fail with InvalidPasswordDecodingException when beta is disabled.
             try {
-                PasswordUtil.decode("{aes}ARCejBipVe2pCLpoNe9iRREPNbQmPVSfXOe5kHZneiYVR+nSXJ8UmFzlNtwrQgKwnrkaDJmNnr+GpDWCOk1MPY7VbvR0/FBUrIENeU5+L9e8a1K4YvWeQ2UUbLv97SHa3P9Iky7rIbeQ9l4Xi0q0");
+                PasswordUtil.decode("{aes}ARABGAM7S4HrIRtZWJ229TnxuKZrrPN3dsKrrQzCQE/3U5F4zp3UrDQ+Czmnvz1kaQyN7JktDzieJxelwu077ZYET2V+7/1Gi37iztr7lY0i+j4dlHOFIi5PESnZ7V8XOmdSbH9DSgkuJaXNoEqb");
                 fail("decode AES256 encoded password should have failed with InvalidPasswordDecodingException when beta is disabled.");
             } catch (InvalidPasswordDecodingException e) {
                 // expected exception

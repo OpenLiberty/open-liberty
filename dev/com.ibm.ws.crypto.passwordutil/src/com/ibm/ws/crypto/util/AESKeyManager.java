@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,11 +31,11 @@ import com.ibm.wsspi.security.crypto.KeyStringResolver;
  */
 public class AESKeyManager {
     private static final AtomicReference<KeyStringResolver> _resolver = new AtomicReference<KeyStringResolver>();
-    private static final boolean DEBUG = Boolean.getBoolean("enableDebug");  // Used exclusively for debugging securityUtility
-    
+    private static final boolean DEBUG = Boolean.getBoolean("enableDebug"); // Used exclusively for debugging securityUtility
+
     public static enum KeyVersion {
         AES_V0("PBKDF2WithHmacSHA1", 84756, 128, new byte[] { -89, -94, -125, 57, 76, 90, -77, 79, 50, 21, 10, -98, 47, 23, 17, 56, -61, 46, 125, -128 }),
-        AES_V1("PBKDF2WithHmacSHA512", 300000, 256, new byte[] { -89, -63, 22, 15, -121, 11, 102, 75, -91, 68, -94, -89, 96, 83, -21, -69, -45, 29, 26, 106, -18, 69, 60, -6,
+        AES_V1("PBKDF2WithHmacSHA512", 210000, 256, new byte[] { -89, -63, 22, 15, -121, 11, 102, 75, -91, 68, -94, -89, 96, 83, -21, -69, -45, 29, 26, 106, -18, 69, 60, -6,
                                                                  108, 73, 111, 122, 41, -19, -78, -79, -28, 102, 57, -10, 66, 48, 54, 111, 35, 92, 59, -121, 36, 15, 14, -63,
                                                                  -43, 107, 63, -18, 87, 43, -57, 74, 0, 107, -119, -2, -7, -7, -46, -95, -44, 36, -10, 86, -119, -80, -114,
                                                                  10, 85, 24, 24, -121, -30, 63, 59, 49, 52, -76, -122, 108, -84, 16, 4, -39, 58, 75, 9, -25, 126, 127, -96,
@@ -48,9 +48,7 @@ public class AESKeyManager {
         private final int iterations;
         private final int keyLength;
         private final byte[] salt;
-	
 
-	
         private KeyVersion(String alg, int iterations, int keyLength, byte[] salt) {
             this.alg = alg;
             this.iterations = iterations;
@@ -70,14 +68,14 @@ public class AESKeyManager {
                     // Still use this holder for returns even if I do not end up caching it.
                     holder = holder2;
                 } catch (InvalidKeySpecException e) {
-		    if (DEBUG) {
-			securityUtilDebug("InvalidKeySpecException received. Returning null", e); 
-		    }
+                    if (DEBUG) {
+                        securityUtilDebug("InvalidKeySpecException received. Returning null", e);
+                    }
                     return null;
                 } catch (NoSuchAlgorithmException e) {
-		    if (DEBUG) {
-			securityUtilDebug("InvalidKeySpecException received. Returning null", e); 			
-		    }		    
+                    if (DEBUG) {
+                        securityUtilDebug("InvalidKeySpecException received. Returning null", e);
+                    }
                     return null;
                 }
 
@@ -90,8 +88,8 @@ public class AESKeyManager {
     // Used exclusively for debugging securityUtility
     private static void securityUtilDebug(String message, Throwable throwable) {
         System.out.println("[DEBUG] " + message);
-        throwable.printStackTrace(System.out);  // Prints the exception stack trace
-    }    
+        throwable.printStackTrace(System.out); // Prints the exception stack trace
+    }
 
     private static class KeyHolder {
         private final char[] keyChars;

@@ -976,7 +976,7 @@
         </input>
         <output>
             <resolved-platform>javaee-6.0</resolved-platform>
-            <resolved-versionless>j2eeManagement=j2eeManagement-1.1</resolved-versionless>
+            <resolved-versionless>j2eeManagement=null</resolved-versionless>
             <resolved-feature>com.ibm.websphere.appserver.eeCompatible-6.0</resolved-feature>
             <resolved-feature>io.openliberty.servlet.api-3.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved-feature>
@@ -995,21 +995,8 @@
             <resolved-feature>com.ibm.websphere.appserver.appmanager-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved-feature>
             <resolved-feature>servlet-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javax.el-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javax.interceptor-1.2</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javax.cdi-1.2</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.jta-1.2</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javax.connector.internal-1.7</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.transaction-1.2</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javax.ejb-3.2</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.iiopcommon-1.0</resolved-feature>
-            <resolved-feature>j2eeManagement-1.1</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.appJ2eeManagement-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.webJ2eeManagement-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.j2eeManagement1.1-transaction1.2</resolved-feature>
             <resolved-feature>j2eeManagement</resolved-feature>
-            <resolved-feature>io.openliberty.internal.versionless.j2eeManagement-1.1</resolved-feature>
         </output>
     </case>
 <case>

@@ -9,12 +9,15 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.RecordComponent;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -261,6 +264,97 @@ public class Util {
     }
 
     /**
+     * Print the string, adding indentation after end-of-line characters that are
+     * within the string. Indentation is not added before the first line.
+     *
+     * @param s      string to print, which might have end-of-line characters.
+     * @param writer writer for output.
+     * @param indent indentation for lines.
+     */
+    @Trivial
+    public static void printlnIndented(String s, PrintWriter writer, String indent) {
+        if (s == null) {
+            writer.println("null");
+            return;
+        }
+        int start = 0, eoln;
+        while ((eoln = s.indexOf(EOLN, start)) >= 0) {
+            writer.print(s.substring(start, eoln));
+            writer.println();
+            writer.print(indent);
+            start = eoln + EOLN.length();
+        }
+        writer.println(s.substring(start, s.length()));
+    }
+
+    /**
+     * Print the exception, its stack, and causes to the specified writer.
+     *
+     * @param x                 the exception or error.
+     * @param writer            writer for output.
+     * @param indent            indentation for lines.
+     * @param suppressedIgnores exceptions/errors already printed that should be
+     *                              ignored when printing a suppressed Throwable.
+     *                              Null if not printing a suppressed Throwable.
+     *                              This method adds to the set.
+     */
+    @Trivial
+    public static void printStackTrace(Throwable x,
+                                       PrintWriter writer,
+                                       String indent,
+                                       Set<Throwable> suppressedIgnores) {
+        Set<Throwable> alreadyPrinted = suppressedIgnores == null //
+                        ? new HashSet<>() //
+                        : suppressedIgnores;
+
+        for (Throwable cause = x; cause != null; cause = cause.getCause()) {
+            if (alreadyPrinted.add(cause)) {
+                writer.print(indent);
+                if (cause != x)
+                    writer.print("Caused by: ");
+                else if (suppressedIgnores != null)
+                    writer.print("Suppressed: ");
+
+                printlnIndented(cause.toString(), writer, indent + "  ");
+
+                for (StackTraceElement e : cause.getStackTrace())
+                    writer.println(indent + "  at " + e.toString());
+
+                for (Throwable suppressed : x.getSuppressed())
+                    printStackTrace(suppressed, writer, indent + "  ", alreadyPrinted);
+            } else {
+                writer.println(indent + "[CIRCULAR REFERENCE: " +
+                               cause.getClass().getName() + ']');
+            }
+        }
+    }
+
+    /**
+     * Returns a textual representation of the annotation, omitting parts
+     * that can be assumed. This helps make the introspector output more
+     * concise and less cluttered.
+     *
+     * @param anno annotation.
+     * @return a shortened textual representation of the annotation.
+     */
+    @Trivial
+    private static String toString(Annotation anno) {
+        String s = anno.toString();
+
+        int openParen = s.indexOf('(');
+        int dot = openParen > 0 ? s.lastIndexOf('.', openParen) : -1;
+        int end = s.length() - (s.endsWith("()") ? 2 : 0);
+
+        // omit jakarta data package names and any ending ()
+        if (dot > 0 && s.startsWith("@jakarta.data."))
+            s = '@' + s.substring(dot + 1, end);
+        else
+            s = s.substring(0, end);
+
+        return s;
+    }
+
+    /**
      * String representation of a class, for logging to trace or introspector output.
      *
      * @param c      generated entity class.
@@ -279,8 +373,39 @@ public class Util {
 
         StringBuilder s = new StringBuilder(1000);
         for (Annotation anno : c.getDeclaredAnnotations())
-            s.append(indent).append(anno).append(EOLN);
-        s.append(indent).append(c.toGenericString()).append(" {").append(EOLN);
+            s.append(indent).append(toString(anno)).append(EOLN);
+        s.append(indent).append(c.toGenericString());
+
+        RecordComponent[] components = c.getRecordComponents();
+        if (components != null) {
+            s.append('(');
+            for (int rc = 0; rc < components.length; rc++) {
+                if (rc > 0)
+                    s.append(", ");
+                s.append(shorten.apply(components[rc].getGenericType().getTypeName())) //
+                                .append(' ') //
+                                .append(components[rc].getName());
+            }
+            s.append(')');
+        }
+
+        Type supertype = c.getGenericSuperclass();
+        if (supertype != null)
+            s.append(" extends ").append(shorten.apply(supertype.getTypeName()));
+
+        Type[] interfaces = c.getGenericInterfaces();
+        if (interfaces != null && interfaces.length > 0) {
+            s.append(c.isInterface() ? " extends" : " implements");
+            for (int i = 0; i < interfaces.length; i++)
+                s.append(i == 0 ? " " : ", ") //
+                                .append(shorten.apply(interfaces[i].getTypeName()));
+        }
+
+        s.append(" {").append(EOLN);
+
+        // inner classes
+        for (Class<?> inner : c.getDeclaredClasses())
+            s.append(EOLN).append(toString(inner, indent + "  ")).append(EOLN);
 
         // fields
         TreeMap<String, Field> fields = new TreeMap<>();
@@ -289,7 +414,7 @@ public class Util {
         for (Field f : fields.values()) {
             s.append(EOLN);
             for (Annotation anno : f.getDeclaredAnnotations())
-                s.append(indent).append("  ").append(anno).append(EOLN);
+                s.append(indent).append("  ").append(toString(anno)).append(EOLN);
             s.append(indent).append("  ") //
                             .append(shorten.apply(f.toGenericString())) //
                             .append(';').append(EOLN);
@@ -335,7 +460,7 @@ public class Util {
                                        StringBuilder b) {
         // method or constructor annotations first:
         for (Annotation anno : m.getDeclaredAnnotations())
-            b.append(indent).append(anno).append(EOLN);
+            b.append(indent).append(toString(anno)).append(EOLN);
         String s = shorten.apply(m.toGenericString());
         // insert parameter annotations because they are absent from the above
         Annotation[][] paramAnnos = m.getParameterAnnotations();
@@ -346,7 +471,7 @@ public class Util {
             b.append(indent).append(s.substring(0, paramStart));
             for (int a = 0; a < paramAnnos.length; a++) {
                 for (Annotation anno : paramAnnos[a])
-                    b.append(anno).append(' ');
+                    b.append(toString(anno)).append(' ');
                 int paramNext = s.indexOf(',', paramStart);
                 paramNext = paramNext == -1 ? s.length() : paramNext + 1;
                 b.append(s.substring(paramStart, paramNext)).append(' ');

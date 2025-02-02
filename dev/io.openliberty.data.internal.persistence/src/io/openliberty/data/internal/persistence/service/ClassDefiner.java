@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,20 +12,17 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.service;
 
-import static io.openliberty.data.internal.persistence.Util.EOLN;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AllPermission;
 import java.security.Permissions;
 import java.security.ProtectionDomain;
-import java.util.TreeMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+
+import io.openliberty.data.internal.persistence.Util;
 
 /**
  * Initially copied from @nmittles pull #25248
@@ -135,7 +132,7 @@ class ClassDefiner {
                                                              svAllPermissionProtectionDomain);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.exit(tc, "defineClass", c);
+                Tr.exit(tc, "defineClass", Util.toString(c, ""));
 
             return c;
         } catch (IllegalAccessException ex) {
@@ -185,46 +182,5 @@ class ClassDefiner {
             Tr.exit(tc, "findLoadedOrDefineClass", klass);
 
         return klass;
-    }
-
-    /**
-     * String representation of a generated entity class, for logging to trace.
-     *
-     * @param c generated entity class.
-     * @return textual representation.
-     */
-    @Trivial
-    private static String toString(Class<?> c) {
-        StringBuilder s = new StringBuilder(500).append(EOLN);
-        s.append(c.toGenericString()).append(" {").append(EOLN);
-
-        // fields
-        TreeMap<String, Field> fields = new TreeMap<>();
-        for (Field f : c.getFields())
-            fields.put(f.getName(), f);
-        for (Field f : fields.values())
-            s.append("  ").append(f.toGenericString()).append(';').append(EOLN);
-
-        s.append(EOLN);
-
-        // constructors
-        TreeMap<String, Constructor<?>> ctors = new TreeMap<>();
-        for (Constructor<?> ctor : c.getConstructors())
-            ctors.put(ctor.getName(), ctor);
-        for (Constructor<?> ctor : ctors.values())
-            s.append("  ").append(ctor.toGenericString()).append(EOLN);
-
-        s.append(EOLN);
-
-        // methods
-        TreeMap<String, Method> methods = new TreeMap<>();
-        for (Method m : c.getMethods())
-            if (!Object.class.equals(m.getDeclaringClass()))
-                methods.put(m.getName(), m);
-        for (Method m : methods.values())
-            s.append("  ").append(m.toGenericString()).append(EOLN);
-
-        s.append('}');
-        return s.toString();
     }
 }

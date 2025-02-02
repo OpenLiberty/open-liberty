@@ -161,3 +161,15 @@ OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Upewnij si\u0119, \u017ce a
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: Element konfiguracji {0} zawiera \u201e {1} \u201d, ale nie pasuje on do \u017cadnej wdro\u017conej aplikacji ani modu\u0142u internetowego.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=Serwer jest skonfigurowany tak, aby utworzy\u0107 dokumentacj\u0119 OpenAPI dla nazwy aplikacji lub modu\u0142u, ale nie wdro\u017cono \u017cadnej aplikacji ani modu\u0142u internetowego o tej nazwie.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=Sprawd\u017a, czy wszystkie aplikacje zosta\u0142y uruchomione prawid\u0142owo i czy nazwy w konfiguracji s\u0105 okre\u015blone poprawnie.
+
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I=CWWKO1685I: W\u0142a\u015bciwo\u015b\u0107 {0} MicroProfile Config jest ignorowana, poniewa\u017c r\u00f3wnowa\u017cna konfiguracja znajduje si\u0119 w pliku server.xml.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.explanation=Gdy ta w\u0142a\u015bciwo\u015b\u0107 jest ustawiona i ta sama funkcja jest skonfigurowana przy u\u017cyciu pliku server.xml xml, u\u017cywana jest konfiguracja w pliku server.xml, a w\u0142a\u015bciwo\u015b\u0107 MicroProfile Config jest ignorowana.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.useraction=Usuni\u0119cie w\u0142a\u015bciwo\u015bci MicroProfile Config.
+
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W=CWWKO1686W: W\u0142a\u015bciwo\u015b\u0107 {0} MicroProfile Config jest ignorowana, poniewa\u017c w pliku server.xml znajduje si\u0119 konfiguracja powoduj\u0105ca konflikt.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.explanation=Gdy ta w\u0142a\u015bciwo\u015b\u0107 jest ustawiona i ta sama funkcja jest skonfigurowana przy u\u017cyciu pliku server.xml xml, u\u017cywana jest konfiguracja w pliku server.xml, a w\u0142a\u015bciwo\u015b\u0107 MicroProfile Config jest ignorowana.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 MicroProfile Config i upewnij si\u0119, \u017ce konfiguracja w pliku server.xml jest poprawna.
+
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: Element adnotacji {0} w klasie {1} jest ignorowany, poniewa\u017c wymaga OpenAPI w wersji {2}, ale aktualna wersja OpenAPI to {3}.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=Element adnotacji odnosi si\u0119 do funkcji dodanej do nowszej wersji specyfikacji OpenAPI ni\u017c ta skonfigurowana. U\u017cywana wersja OpenAPI nie mo\u017ce reprezentowa\u0107 tych informacji, wi\u0119c jest wy\u0142\u0105czona z tworzonej dokumentacji OpenAPI.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Rozwa\u017c usuni\u0119cie elementu adnotacji lub ustawienie elementu konfiguracji openAPIVersion na wersj\u0119, kt\u00f3ra go obs\u0142uguje w pliku server.xml.

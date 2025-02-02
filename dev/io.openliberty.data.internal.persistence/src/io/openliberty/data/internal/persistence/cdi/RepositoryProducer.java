@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -140,11 +141,12 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
      *
      * @param writer writes to the introspection file.
      * @param indent indentation for lines.
-     * @return Map of entity class to list of QueryInfo for the caller to log
-     *         after eliminating duplicates.
+     * @return list of QueryInfo for the caller to log.
      */
     @Trivial
-    public Map<Class<?>, List<QueryInfo>> introspect(PrintWriter writer, String indent) {
+    public List<QueryInfo> introspect(PrintWriter writer, String indent) {
+        List<QueryInfo> queryInfos = new ArrayList<>();
+
         writer.println(indent + "RepositoryProducer@" + Integer.toHexString(hashCode()));
         writer.println(indent + "  repository: " + repositoryInterface.getName());
         writer.println(indent + "  primary entity: " +
@@ -157,7 +159,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         queriesPerEntityClass.forEach((entityClass, queries) -> {
             writer.println();
             if (QueryInfo.ENTITY_TBD.equals(entityClass))
-                writer.println(indent + "  Queries for entity determined from Query value:");
+                writer.println(indent + "  Queries for entity to be determined:");
             else
                 writer.println(indent + "  Queries for entity " + entityClass.getName() + ':');
 
@@ -169,12 +171,14 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                 writer.println(indent + "    " + qi.toString() //
                                 .replace('\r', ' ') // print on single line
                                 .replace('\n', ' '));
+
+            queryInfos.addAll(queries);
         });
 
         writer.println();
         futureEMBuilder.introspect(writer, "  " + indent);
 
-        return queriesPerEntityClass;
+        return queryInfos;
     }
 
     @Override

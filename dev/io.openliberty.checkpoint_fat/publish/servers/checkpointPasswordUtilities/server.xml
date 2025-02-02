@@ -22,8 +22,8 @@
 
     <application type="war" id="DefaultPrincipalMappingApp" name="DefaultPrincipalMappingApp" location="${server.config.dir}/apps/DefaultPrincipalMappingApp.war"/>
     
-    <variable name="auth.user.password" defaultValue="{aes}ARA6E+YeyO1II3V5/j78ZPSryIQKz5Hu4OMs6qhFw+rn6IjvU8aHX+fy4hX1ZtAU4HPbRZ5DaHmGb7CpjlXfX1Bm9leNqxgd+q8nvzTNBGs6wW8RHj/n0GaiuT4n7m2pYy0pDDh5amoZ" /> <!-- APPPWD -->
-    <variable name="default.user.password" defaultValue="{aes}ARA6E+YeyO1II3V5/j78ZPSryIQKz5Hu4OMs6qhFw+rn6IjvU8aHX+fy4hX1ZtAU4HPbRZ5DaHmGb7CpjlXfX1Bm9leNqxgd+q8nvzTNBGs6wW8RHj/n0GaiuT4n7m2pYy0pDDh5amoZ" /> <!-- APPPWD -->
+    <variable name="auth.user.password" defaultValue="{aes}ARCNbeh86vQqe13T28Hwf/w9w4z3mKP+o0rtNMrgrgf0LRJ29XEwt3QZ1Dkb8buSQez31bD3QJRTfQcEVeK8h1q9qmeQxYtZgLyjmRfiF9wzcuc0s6t/B/t1dkm0CFC0oP+IKrrPYYOu" /> <!-- APPPWD -->
+    <variable name="default.user.password" defaultValue="{aes}ARCNbeh86vQqe13T28Hwf/w9w4z3mKP+o0rtNMrgrgf0LRJ29XEwt3QZ1Dkb8buSQez31bD3QJRTfQcEVeK8h1q9qmeQxYtZgLyjmRfiF9wzcuc0s6t/B/t1dkm0CFC0oP+IKrrPYYOu" /> <!-- APPPWD -->
     
 
     <!-- This authData will be overridden at restore by environment vars -->

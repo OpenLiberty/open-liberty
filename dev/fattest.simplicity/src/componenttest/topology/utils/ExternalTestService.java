@@ -100,9 +100,9 @@ public class ExternalTestService {
         Exception firstEx = null;
         for (String consulServer : getConsulServers()) {
             try {
-                JsonArray propertiesJson = new HttpsRequest(consulServer + "/v1/kv/service/" + propertyName + "?recurse=true")
+                JsonArray propertiesJson = new HttpsRequest(consulServer + "/v1/kv/service/" + propertyName + "?recurse=true&stale")
                                 .allowInsecure()
-                                .timeout(10_000)
+                                .timeout(30000)
                                 .expectCode(HttpsURLConnection.HTTP_OK)
                                 .expectCode(HttpsURLConnection.HTTP_NOT_FOUND)
                                 .run(JsonArray.class);
@@ -205,8 +205,8 @@ public class ExternalTestService {
                                 + "this message can be ignored.");
         }
 
-        List<String> servers = Arrays.asList(consulServerList.split(","));
-        Collections.shuffle(servers);
+	// Add all the servers to the list twice, effectively giving us a retry so double the chance of working if consul is slow
+        List<String> servers = Arrays.asList((consulServerList+","+consulServerList).split(","));
         return consulServers = servers;
     }
 
@@ -248,8 +248,8 @@ public class ExternalTestService {
         for (String consulServer : getConsulServers()) {
             JsonArray instances;
             try {
-                HttpsRequest instancesRequest = new HttpsRequest(consulServer + "/v1/health/service/" + serviceName + "?passing=true");
-                instancesRequest.timeout(10000);
+                HttpsRequest instancesRequest = new HttpsRequest(consulServer + "/v1/health/service/" + serviceName + "?passing=true&stale");
+                instancesRequest.timeout(30000);
                 instancesRequest.allowInsecure();
                 instances = instancesRequest.run(JsonArray.class);
             } catch (Exception e) {
@@ -263,7 +263,7 @@ public class ExternalTestService {
 
             JsonArray propertiesJson;
             try {
-                HttpsRequest propsRequest = new HttpsRequest(consulServer + "/v1/kv/service/" + serviceName + "/?recurse=true");
+                HttpsRequest propsRequest = new HttpsRequest(consulServer + "/v1/kv/service/" + serviceName + "/?recurse=true&stale");
                 propsRequest.allowInsecure();
                 propsRequest.timeout(10000);
                 propsRequest.expectCode(HttpsURLConnection.HTTP_OK).expectCode(HttpsURLConnection.HTTP_NOT_FOUND);

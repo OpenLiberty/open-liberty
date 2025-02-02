@@ -161,3 +161,15 @@ OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Asigura\u021bi-v\u0103 c\u0
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: Elementul de configurare {0} include \u201e {1} \u201d, dar care nu se potrive\u0219te cu nicio aplica\u021bie sau modul web implementat.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=Serverul este configurat s\u0103 creeze documenta\u0163ia OpenAPI pentru numele de aplica\u0163ie sau de modul web, dar nu este implementat\u0103 nicio aplica\u0163ie sau modul web cu acel nume.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=Verifica\u021bi dac\u0103 toate aplica\u021biile au pornit corect \u0219i dac\u0103 numele din configura\u021bie sunt specificate corect.
+
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I=CWWKO1685I: Proprietatea {0} MicroProfile Config este ignorat\u0103 deoarece configura\u021bia echivalent\u0103 este furnizat\u0103 \u00een fi\u0219ierul server.xml.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.explanation=Atunci c\u00e2nd aceast\u0103 proprietate este setat\u0103 \u0219i aceea\u0219i func\u021bie este configurat\u0103 utiliz\u00e2nd fi\u0219ierul server.xml, se utilizeaz\u0103 configura\u021bia din fi\u0219ierul server.xml \u0219i proprietatea MicroProfile Config este ignorat\u0103.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.useraction=Elimina\u021bi proprietatea MicroProfile Config.
+
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W=CWWKO1686W: Proprietatea {0} MicroProfile Config este ignorat\u0103 deoarece \u00een fi\u0219ierul server.xml este furnizat\u0103 o configura\u021bie conflictual\u0103.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.explanation=Atunci c\u00e2nd aceast\u0103 proprietate este setat\u0103 \u0219i aceea\u0219i func\u021bie este configurat\u0103 utiliz\u00e2nd fi\u0219ierul server.xml, se utilizeaz\u0103 configura\u021bia din fi\u0219ierul server.xml \u0219i proprietatea MicroProfile Config este ignorat\u0103.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Elimina\u021bi proprietatea MicroProfile Config \u0219i asigura\u021bi-v\u0103 c\u0103 configura\u021bia din fi\u0219ierul server.xml este corect\u0103.
+
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: Elementul de adnotare {0} din clasa {1} este ignorat deoarece necesit\u0103 versiunea OpenAPI {2}, dar versiunea curent\u0103 OpenAPI este {3}.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=Elementul de adnotare se refer\u0103 la o caracteristic\u0103 ad\u0103ugat\u0103 la o versiune mai nou\u0103 a specifica\u021biei OpenAPI dec\u00e2t cea configurat\u0103. Versiunea OpenAPI \u00een uz nu poate reprezenta aceste informa\u021bii, astfel \u00eenc\u00e2t acestea sunt excluse din documenta\u021bia OpenAPI produs\u0103.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Lua\u021bi \u00een considerare eliminarea elementului de adnotare sau setarea elementului de configurare openAPIVersion la o versiune care \u00eel accept\u0103 \u00een fi\u0219ierul server.xml.

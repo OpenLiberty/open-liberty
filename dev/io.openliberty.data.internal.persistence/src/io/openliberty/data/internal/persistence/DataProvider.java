@@ -16,10 +16,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
@@ -514,6 +518,8 @@ public class DataProvider implements //
      */
     @Override
     public void introspect(PrintWriter writer) {
+        Set<QueryInfo> queryInfos = new LinkedHashSet<QueryInfo>();
+
         writer.println("compatibility: " + compat.getClass().getSimpleName());
         writer.println("createTables? " + createTables);
         writer.println("dropTables? " + dropTables);
@@ -546,7 +552,31 @@ public class DataProvider implements //
         repositoryProducers.forEach((appName, producers) -> {
             writer.println("  for application " + appName);
             for (RepositoryProducer<?> producer : producers) {
-                producer.introspect(writer, "    ");
+                queryInfos.addAll(producer.introspect(writer, "    "));
+                writer.println();
+            }
+        });
+
+        // The null key in this map indicates unknown EntityInfo
+        HashMap<EntityInfo, List<QueryInfo>> queryInfoPerEntity = new HashMap<>();
+        for (QueryInfo queryInfo : queryInfos) {
+            EntityInfo entityInfo = queryInfo.getEntityInfo();
+            List<QueryInfo> list = queryInfoPerEntity.get(entityInfo);
+            if (list == null)
+                queryInfoPerEntity.put(entityInfo, list = new ArrayList<>());
+            list.add(queryInfo);
+        }
+
+        // TODO log EntityInfo.introspect
+        // EntityInfo is available from queryInfoPerEntity.keySet,
+        // but obtaining from the EntityManagerBuilder might be more complete.
+
+        writer.println();
+        writer.println("Query Information:");
+        queryInfoPerEntity.forEach((entityInfo, queryInfoList) -> {
+            writer.println("  for entity " + entityInfo);
+            for (QueryInfo queryInfo : queryInfoList) {
+                queryInfo.introspect(writer, "    ");
                 writer.println();
             }
         });

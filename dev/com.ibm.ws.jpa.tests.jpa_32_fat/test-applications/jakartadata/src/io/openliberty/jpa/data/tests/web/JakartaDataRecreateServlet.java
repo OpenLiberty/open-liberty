@@ -785,6 +785,39 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     }
 
+    @Test
+    @Ignore
+    //Reference issue : https://github.com/OpenLiberty/open-liberty/issues/30444
+    public void testOLGH30444() throws Exception {
+        deleteAllEntities(Package.class); 
+
+        Package p1 = Package.of(1, 1.0f, 1.0f, 1.0f, "testOLGH28545-1");
+        Package p2 = Package.of(2, 1.0f, 2.0f, 1.0f, "testOLGH28545-2");
+
+        List<Integer> results;
+
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        tx.commit();
+
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT ID FROM Package ORDER BY WIDTH DESC", Integer.class)
+                            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                            .setMaxResults(1)
+                            .getResultList();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        assertEquals(1, results.size());
+        assertEquals(2, results.get(0).intValue());
+
+    }
+
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
     @SkipIfSysProp({ DB_Postgres, DB_Oracle })
     public void testOLGH28545_3() throws Exception {

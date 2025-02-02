@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public class ProtocolHelper {
     }
 
     // collect the good protocols as we run across them
-    private static final List<String> goodProtocols = new ArrayList<>();
+    private static final List<String> validatedProtocols = new ArrayList<>();
 
     // get disabled protocols
     private static final List<String> disabledList = new ArrayList<>();
@@ -67,46 +67,40 @@ public class ProtocolHelper {
 
         String[] protocols = sslProtocol.split(",");
 
-        if (protocols.length > 1) {
-            // If FIPS is enabled then we only allow TLSv1.2 and TLSv1.3
-            if (CryptoUtils.isFips140_3Enabled()) {
-                Tr.debug(tc, "FIPS is enabled, only allowing TLSv1.2 and TLSv1.3");
-                for (String protocol : protocols) {
-                    if (Constants.FIPS_140_3_PROTOCOLS.contains(protocol)) {
-                        if (goodProtocols.contains(protocol))
-                            continue;
-                        else {
-                            checkProtocol(protocol);
-                            goodProtocols.add(protocol);
-                        }
-                    } else {
-                        Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
-                        throw new SSLException("Protocol provided is not appropriate for a protocol list.");
-                    }
-                }
-            }
+        List<String> allowedProtocols;
+        boolean fips140_3Enabled = CryptoUtils.isFips140_3Enabled();
+        if (fips140_3Enabled) {
+            Tr.debug(tc, "FIPS is enabled, only allowing TLSv1.2 and TLSv1.3");
+            allowedProtocols = Constants.FIPS_140_3_PROTOCOLS;
+        } else {
+            allowedProtocols = Constants.MULTI_PROTOCOL_LIST;
+        }
 
-            // Else, multi list we only allow TLSv1, TLSv1.1, TLSv1.2, and TLSv1.3 as possible values
-            else {
-                for (String protocol : protocols) {
-                    if (Constants.MULTI_PROTOCOL_LIST.contains(protocol)) {
-                        if (goodProtocols.contains(protocol))
-                            continue;
-                        else {
-                            checkProtocol(protocol);
-                            goodProtocols.add(protocol);
-                        }
-                    } else {
-                        Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
-                        throw new SSLException("Protocol provided is not appropriate for a protocol list.");
+        if (protocols.length > 1) {
+            for (String protocol : protocols) {
+                if (allowedProtocols.contains(protocol)) {
+                    if (validatedProtocols.contains(protocol))
+                        continue;
+                    else {
+                        checkProtocol(protocol);
+                        validatedProtocols.add(protocol);
                     }
+                } else {
+                    Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
+                    throw new SSLException("Protocol provided is not appropriate for a protocol list.");
                 }
             }
         } else {
-            if (!goodProtocols.contains(protocols[0])) {
-                checkProtocol(protocols[0]);
+            String protocol = protocols[0];
+            if (!validatedProtocols.contains(protocol)) {
+                if (fips140_3Enabled && !allowedProtocols.contains(protocol)) {
+                    Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
+                    throw new SSLException("Protocol provided is not appropriate for a protocol list.");
+                }
+                checkProtocol(protocol);
             }
         }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "checkProtocolValueGood");
         return;

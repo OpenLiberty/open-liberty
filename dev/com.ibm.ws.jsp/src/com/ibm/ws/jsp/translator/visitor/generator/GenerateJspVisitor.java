@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -318,9 +318,9 @@ public class GenerateJspVisitor extends GenerateVisitor {
             // the imports below are required for all pages 
             writer.println("static {");
             // Pages 1.10 Directive Packages java.lang.*, jakarta.servlet.*, jakarta.servlet.jsp.*, and jakarta.servlet.http.* are imported implicitly by the JSP container.
-            writer.println("importPackageList.add(\"jakarta.servlet\");");
-            writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");
-            writer.println("importPackageList.add(\"jakarta.servlet.http\");");
+            for(String jakartaPackage : Constants.JAKARTA_STANDARD_IMPORTS) {
+                writer.println("importPackageList.add(\""+ jakartaPackage + "\");");
+            }
             writer.println("}");
         }
 

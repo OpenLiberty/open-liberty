@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2024 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution,  and is available at
@@ -1971,7 +1971,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // if all expected body bytes will be written out, set the end of stream flag
                 addBytesWritten(length);
                 boolean addEndOfStream = false;
-                if (msg.getContentLength() == getNumBytesWritten()) {
+                if (!link.setAndGetIsGrpc() && msg.getContentLength() == getNumBytesWritten()) {
                     addEndOfStream = true;
                 }
 

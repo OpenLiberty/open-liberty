@@ -22,7 +22,7 @@
     
     <basicRegistry id="alternate" realm="AlternateRealm">
     	<user name="defaultUser" password="{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ==" />
-    	<user name="defaultUserAES256" password="{aes}ARAhVrO9mxIJtkgRM4B38sXTMl1/VFlKfA1QwH1VOi5n0T3MeCovoaban3jas1Ny0SFvd7LtIdXvEJJAwALSo++MXkWxlto/JqA0QBHmza2Jz8h2dd1ubQ/4OpgdPfRS7Lt6Kvy8xfVfb4flexClJFH8eGVIHQ==" />
+    	<user name="defaultUserAES256" password="{aes}ARBH5XbDp8VSsR+zUM2xDZ93QBtQuPvfS4QrZ4vV+sCnm+q9XIXeagiU6TfvOMw3cxo56KM03OcV80min+wlqhnFUyIkKaR14GmHB5aBmhCWimG39jhNCcBZl8vJknq+G9xA+kUzs3jIUJGrJnJtRIz3JAj3Dw==" />
     	
     	<!-- decoded values 
     	defaultUser : alternatepwd

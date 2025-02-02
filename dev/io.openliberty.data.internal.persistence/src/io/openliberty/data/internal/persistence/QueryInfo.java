@@ -17,6 +17,7 @@ import static io.openliberty.data.internal.persistence.Util.lifeCycleReturnTypes
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -2608,8 +2609,8 @@ public class QueryInfo {
         hasWhere = true;
         q.append(" WHERE (");
         for (int and = start, or = start, iNext = start, i = start; //
-             hasWhere && i >= start && iNext < endBefore; //
-             i = iNext) {
+                        hasWhere && i >= start && iNext < endBefore; //
+                        i = iNext) {
             // The extra character (+1) below allows for entity attribute names
             // that begin with Or or And. For example,
             // findByOrg and findByPriceBetweenAndOrderNumber
@@ -2796,6 +2797,17 @@ public class QueryInfo {
                 throw new DataException(x instanceof InvocationTargetException ? x.getCause() : x);
             }
         return cursorValues.toArray();
+    }
+
+    /**
+     * Returns the entity information for this query,
+     * if known at the point when this method is invoked.
+     *
+     * @return the entity information, if known.
+     */
+    @Trivial
+    public final EntityInfo getEntityInfo() {
+        return entityInfo;
     }
 
     /**
@@ -3901,6 +3913,87 @@ public class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "insert", loggable(returnValue));
         return returnValue;
+    }
+
+    /**
+     * Write information about this instance to the introspection file for
+     * Jakarta Data.
+     *
+     * @param writer writes to the introspection file.
+     * @param indent indentation for lines.
+     * @return list of QueryInfo for the caller to log.
+     */
+    @Trivial
+    public void introspect(PrintWriter writer, String indent) {
+        writer.println(indent + "QueryInfo@" + Integer.toHexString(hashCode()));
+        writer.println(indent + "repository: " + repositoryInterface.getName());
+
+        // method signature information
+        java.lang.reflect.Type[] paramTypes = method.getGenericParameterTypes();
+        Annotation[][] paramAnnos = method.getParameterAnnotations();
+        Parameter[] params = method.getParameters();
+        for (Annotation anno : method.getAnnotations())
+            writer.println(indent + anno);
+        writer.println(indent + method.getGenericReturnType().getTypeName() + ' ' +
+                       method.getName() + (paramTypes.length == 0 ? "()" : "("));
+        for (int i = 0; i < paramTypes.length; i++) {
+            for (Annotation paramAnno : paramAnnos[i])
+                writer.println(indent + "  " + paramAnno);
+            writer.println(indent + "  " + paramTypes[i].getTypeName() + ' ' +
+                           params[i].getName() +
+                           (i == paramTypes.length - 1 ? ')' : ','));
+        }
+
+        writer.println(indent + "return array type: " +
+                       (returnArrayType == null ? null : returnArrayType.getName()));
+        writer.println(indent + "multiple result type: " +
+                       (multiType == null ? null : multiType.getName()));
+        writer.println(indent + "single result type: " +
+                       (singleType == null ? null : singleType.getName()));
+        writer.println(indent + "collection or array element type of single result type: " +
+                       (singleTypeElementType == null ? null : singleTypeElementType.getName()));
+        writer.println(indent + "result is Optional? " + isOptional);
+
+        writer.println(indent + "entity identifier variable: " + entityVar +
+                       " [" + entityVar_ + "]");
+
+        writer.println(indent + "hasWhere? " + hasWhere);
+        writer.println(indent + "type: " + type);
+        writer.println(indent + "life cycle method entity parameter type: " +
+                       (entityParamType == null ? null : entityParamType.getName()));
+
+        final String jpqlIndent = indent + "      ";
+        writer.print(indent + "JPQL: ");
+        Util.printlnIndented(jpql, writer, jpqlIndent);
+        writer.print(indent + "JPQL for afterCursor: ");
+        Util.printlnIndented(jpqlAfterCursor, writer, jpqlIndent);
+        writer.print(indent + "JPQL for jpqlBeforeCursor: ");
+        Util.printlnIndented(jpqlBeforeCursor, writer, jpqlIndent);
+        writer.print(indent + "JPQL count query: ");
+        Util.printlnIndented(jpqlCount, writer, jpqlIndent);
+        writer.print(indent + "JPQL delete query: ");
+        Util.printlnIndented(jpqlDelete, writer, jpqlIndent);
+
+        writer.println(indent + "JPQL parameter count: " + jpqlParamCount);
+        writer.println(indent + "JPQL parameter names: " + jpqlParamNames);
+
+        writer.println(indent + "maximum results: " + maxResults);
+        writer.println(indent + "sorts: " + sorts);
+        writer.print(indent + "positions of sort-related method parameters: ");
+        if (sortPositions.length == 0)
+            if (sortPositions == NONE)
+                writer.println("no sort parameters and no static sort");
+            else if (sortPositions == NONE_QUERY_LANGUAGE_ONLY)
+                writer.println("no sort parameters, but has @Query");
+            else if (sortPositions == NONE_STATIC_SORT_ONLY)
+                writer.println("no sort parameters, but has OrderBy");
+            else
+                writer.println();
+        else
+            writer.println(Arrays.toString(sortPositions));
+
+        writer.println(indent + "validate method parameters? " + validateParams);
+        writer.println(indent + "validate method result? " + validateResult);
     }
 
     /**

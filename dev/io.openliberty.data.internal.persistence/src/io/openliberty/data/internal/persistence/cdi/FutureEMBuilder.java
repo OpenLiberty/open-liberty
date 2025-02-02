@@ -50,6 +50,7 @@ import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
+import io.openliberty.data.internal.persistence.Util;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
 import jakarta.data.exceptions.DataException;
@@ -699,7 +700,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                 writer.println("completed");
             } catch (Throwable x) {
                 writer.println("failed");
-                x.printStackTrace(writer);
+                Util.printStackTrace(x, writer, indent + "  ", null);
             }
         else
             writer.println("not completed");
