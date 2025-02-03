@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ class LTPAKeyCreateTask implements Runnable {
 
     private LTPAKeyInfoManager getPreparedLtpaKeyInfoManager() throws Exception {
         LTPAKeyInfoManager keyInfoManager = new LTPAKeyInfoManager();
-        if (config.getuserJdkProvider().isEmpty()){
+        if (config.getUserJdkProvider().isEmpty()){
         keyInfoManager.prepareLTPAKeyInfo(locService,
                                           config.getPrimaryKeyFile(),
                                           getKeyPasswordBytes(), config.getValidationKeys());
@@ -62,7 +62,7 @@ class LTPAKeyCreateTask implements Runnable {
         else{
             keyInfoManager.prepareLTPAKeyInfo(locService,
             config.getPrimaryKeyFile(),
-            getKeyPasswordBytes(), config.getValidationKeys(), config.getuserJdkProvider());
+            getKeyPasswordBytes(), config.getValidationKeys(), config.getUserJdkProvider());
         }
         return keyInfoManager;
     }
