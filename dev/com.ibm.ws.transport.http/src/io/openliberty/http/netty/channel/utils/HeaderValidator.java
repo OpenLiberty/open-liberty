@@ -26,58 +26,62 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
  *          must be followed by a whitespace.
  *      Trailing CR of LF is disallowed. 
  * 
- * The class also normalizes header names (converting them to lowercase) and
- * trims leading/trailing whitespaces from both names and values.
+ * The class also normalizes header names by trimming leading/trailing
+ * whitespaces from both names and values.
  */
 public class HeaderValidator {
 
-    /**
-     * Defines a pattern for valid header names (token characters or "tchars") as specified in 
-     * RFC 7230, Section 3.2.6, "Field Value Components".
-     */
-    private static final Pattern TCHAR_PATTERN = Pattern.compile("^[!#$%&'*+\\-\\.\\^_`|~0-9a-zA-Z]+$");
-    private static final char CR = '\r';
-    private static final char LF = '\n';
-    private static final char TAB = '\t';
-    private static final char SPACE = ' ';
-
-    /** 
-     * Enumerates if the field token being processed is a header name or header value.
-    */
-    public enum FieldType{NAME, VALUE}
-
-    private HeaderValidator() {
-        //Utility Singleton
-    }
-
-
-    /**
-     * Peforms processing of a header field (name or value).
-     * 
-     * This method normalizes a header field:
-     *      Ensures a non-null input if field type is {@link FieldType#NAME}.
-     *      Trims the input if it is non-null.
-     *      Substitutes a null input with an empty string if the field type is
-     *          {@link FieldType#VALUE}.
-     *      Lowercases the token if the field type is {@link FieldType#NAME}
-     * 
-     * @param token a raw header field token; may be {@code null} for values, 
-     *      but not for names.
-     * @param type whether this token is a header name or value
-     * @param config the HTTP configuration object
-     * @return processed and possibly normalized header field, ensuring to 
-     *      comply with the configured validation requirements
-     * @throws IllegalArgumentException if the field is invalid (too long, 
-     *      contains illegal characters, or null name)
-     */
-    public static String process(String token, FieldType type, HttpChannelConfig config){
-
-        if(type == FieldType.NAME && token == null){
-            throw new IllegalArgumentException("Header name must not be null");
+    private static boolean disabledUntilRFE = true;
+    
+        /**
+         * Defines a pattern for valid header names (token characters or "tchars") as specified in 
+         * RFC 7230, Section 3.2.6, "Field Value Components".
+         */
+        private static final Pattern TCHAR_PATTERN = Pattern.compile("^[!#$%&'*+\\-\\.\\^_`|~0-9a-zA-Z]+$");
+        private static final char CR = '\r';
+        private static final char LF = '\n';
+        private static final char TAB = '\t';
+        private static final char SPACE = ' ';
+    
+        /** 
+         * Enumerates if the field token being processed is a header name or header value.
+        */
+        public enum FieldType{NAME, VALUE}
+    
+        private HeaderValidator() {
+            //Utility Singleton
         }
-        String normalized = (token == null) ? "": token.trim();
-
-        if(type == FieldType.NAME){
+    
+    
+        /**
+         * Peforms processing of a header field (name or value).
+         * 
+         * This method normalizes a header field:
+         *      Ensures a non-null input if field type is {@link FieldType#NAME}.
+         *      Trims the input if it is non-null.
+         *      Substitutes a null input with an empty string if the field type is
+         *          {@link FieldType#VALUE}.
+         *      
+         * NOTE -> Should seek approval for:
+         *  Lowercases the token if the field type is {@link FieldType#NAME}
+         * 
+         * @param token a raw header field token; may be {@code null} for values, 
+         *      but not for names.
+         * @param type whether this token is a header name or value
+         * @param config the HTTP configuration object
+         * @return processed and possibly normalized header field, ensuring to 
+         *      comply with the configured validation requirements
+         * @throws IllegalArgumentException if the field is invalid (too long, 
+         *      contains illegal characters, or null name)
+         */
+        public static String process(String token, FieldType type, HttpChannelConfig config){
+    
+            if(type == FieldType.NAME && token == null){
+                throw new IllegalArgumentException("Header name must not be null");
+            }
+            String normalized = (token == null) ? "": token.trim();
+    
+            if(!disabledUntilRFE && type == FieldType.NAME){
             normalized = normalized.toLowerCase();
         }
         
