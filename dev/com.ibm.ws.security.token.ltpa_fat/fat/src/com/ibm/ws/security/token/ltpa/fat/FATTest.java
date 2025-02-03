@@ -63,6 +63,7 @@ public class FATTest {
     private static final String CORRUPTED_LTPA_KEYS_PATH = "corrupted/ltpa.keys";
     private static final String DEFAULT_SERVER_XML = "server.xml";
     private static String ALTERNATE_SERVER_XML = "alternate/server.xml";
+    private static final String ALTERNATE_SERVER_XML_BAD_PROVIDER = "alternate/serverWithBadProvider.xml";
     private static String ALTERNATE_SERVER_XML_FIPS = "alternateFIPS/server.xml";
     private static String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR = "alternate/serverWithLTPAFileMonitor.xml";
     private static String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_FIPS = "alternateFIPS/serverWithLTPAFileMonitor.xml";
@@ -162,6 +163,17 @@ public class FATTest {
         assertFeatureCompleteWithKeysGeneratedAndTestApp(DEFAULT_KEY_PATH);
         assertTokenCanBeCreated();
         assertFileWasCreated(DEFAULT_KEY_PATH);
+    }
+
+    /**
+     * Validate that the LTPA service will generate a default LTPA key file
+     * if the LTPA key file does not exist.
+     */
+    @CheckForLeakedPasswords({ PWD_DEFAULT, PWD_DEFAULT_ENCODED })
+    @ExpectedFFDC("java.security.NoSuchProviderException")
+    @Test
+    public void genDefaultLTPAKeyFileBadProvider() throws Exception {
+        startServerWithConfigFileAndLogBadProvider(ALTERNATE_SERVER_XML_BAD_PROVIDER, "genDefaultLTPAKeyFileBadProvider.log");
     }
 
     /**
@@ -432,6 +444,20 @@ public class FATTest {
         // Wait for the LTPA configuration to be ready
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
                       server.waitForStringInLog("CWWKS4105I"));
+    }
+
+    private void startServerWithConfigFileAndLogBadProvider(String configFile, String logFileName) throws Exception {
+        server.setServerConfigurationFile(configFile);
+
+        server.startServer(logFileName);
+
+        assertNotNull("Featurevalid did not report update was complete",
+                      server.waitForStringInLog("CWWKF0008I"));
+        assertNotNull("The application did not report is was started",
+                      server.waitForStringInLog("CWWKZ0001I"));
+        // Wait for the LTPA configuration to be ready
+        assertNotNull("The LTPA configuration must not be reloaded.",
+        server.waitForStringInLog("CWWKS4106E:.*"));
     }
 
     /**
