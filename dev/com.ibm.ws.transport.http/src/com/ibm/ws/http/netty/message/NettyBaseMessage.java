@@ -101,6 +101,9 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     private Map<String, String> headersMap = new HashMap<>();
 
+    public enum MessageType {REQUEST, RESPONSE;}
+    private MessageType messageType;
+
     public NettyBaseMessage() {
     }
 
@@ -117,6 +120,14 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
             this.limitOfTokenSize = config.getLimitOfFieldSize();
 
         }
+    }
+
+    public MessageType messageType(){
+        return this.messageType;
+    }
+
+    public MessageType setMessageType(MessageType messageType){
+        return this.messageType = messageType;
     }
 
     @Override
@@ -374,6 +385,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void removeHeader(HeaderKeys header) {
+        System.out.println("Remove header is being called for: " + header);
         removeHeader(header.getName());
 
     }
@@ -548,12 +560,12 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         }
 
         HttpCookie cookie = null;
-        if (isIncoming()) {
+        if (messageType == MessageType.REQUEST) {
             cookie = getCookie(name, HttpHeaderKeys.HDR_COOKIE);
             if (cookie == null) {
                 cookie = getCookie(name, HttpHeaderKeys.HDR_COOKIE2);
             }
-        } else {
+        } else if (messageType == MessageType.RESPONSE){
             cookie = getCookie(name, HttpHeaderKeys.HDR_SET_COOKIE);
             if (cookie == null) {
                 cookie = getCookie(name, HttpHeaderKeys.HDR_SET_COOKIE2);
@@ -627,10 +639,10 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     public List<HttpCookie> getAllCookies() {
         List<HttpCookie> list = new LinkedList<HttpCookie>();
 
-        if(isIncoming()){
+        if(messageType == MessageType.REQUEST){
             getAllCookies(HttpHeaderKeys.HDR_COOKIE, list);
             getAllCookies(HttpHeaderKeys.HDR_COOKIE2, list);
-        }else{
+        }else if(messageType == MessageType.RESPONSE){
             getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE, list);
             getAllCookies(HttpHeaderKeys.HDR_SET_COOKIE2, list);
         }
@@ -647,10 +659,10 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         if(name == null){ return list;}
 
         
-        if (isIncoming()) {
+        if (messageType == MessageType.REQUEST) {
             getAllCookies(name, HttpHeaderKeys.HDR_COOKIE, list);
             getAllCookies(name, HttpHeaderKeys.HDR_COOKIE2, list);
-        } else {
+        } else if(messageType == MessageType.RESPONSE){
             getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE, list);
             getAllCookies(name, HttpHeaderKeys.HDR_SET_COOKIE2, list);
         }
@@ -1139,6 +1151,13 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     }
 
     private void marshallCookieCache(CookieCacheData cache) {
+
+        try{
+            System.out.println("MarshallCookieCache called for: " + cache.getHeaderType());
+        }catch(NullPointerException e){
+            System.out.println("cache was null");
+        }
+        
 
         if (null != cache && cache.isDirty()) {
             HttpHeaderKeys type = cache.getHeaderType();

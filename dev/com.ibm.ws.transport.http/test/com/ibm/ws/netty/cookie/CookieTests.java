@@ -16,9 +16,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.spy;
 
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -26,18 +30,25 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpServiceContext;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.ws.http.netty.message.NettyBaseMessage;
+import com.ibm.ws.http.netty.message.NettyBaseMessage.MessageType;
+import static com.ibm.ws.http.netty.message.NettyBaseMessage.MessageType.*;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultHttpRequest;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMessage;
@@ -56,32 +67,34 @@ import com.ibm.wsspi.http.channel.HttpServiceContext;
 @RunWith(Enclosed.class)
 public class CookieTests {
 
-    /**
-     * Indicates whether the message should treate cookies as inbound
-     * (parse "Cookie") or outbound (write "Set-Cookie").
-     */
-    private enum Mode{
-        INBOUND, OUTBOUND
-    }
     private static HttpChannelConfig channelConfig;
     private static HttpServiceContext serviceContext;
 
     /**
-     * Builds a testable message configured to be either inbound or outbound. 
-     * The direction flow allows testing the functionality of cookie parsing
+     * Builds a testable message configured to be a request or response. It
+     * is defaulted to being considered an inbound message. Tests that require
+     * outbound are required to specifically configure the outbound flag.
+     * This allows testing the functionality of cookie parsing
      * for {@link NettyBaseMessage}.
      * 
-     * @param inbound {@link Mode} indicating if message is inbound or outbound
+     * @param mode {@link MessageType} indicating if message is a request or response.
      * @return an initialized testable message object
      */
-    private static TestableNettyMessage createMessage(Mode mode){
-        DefaultHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/test");
+    private static TestableNettyMessage createMessage(MessageType type){
+        HttpMessage message = null;
+        if(type == REQUEST){
+            message = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/test");
+        }else if(type == RESPONSE){
+            message = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+        }
 
-        TestableNettyMessage message = new TestableNettyMessage();
-        message.incoming(Mode.INBOUND.equals(mode)? true:false);
-        message.testInit(request, serviceContext, channelConfig);
+        Objects.requireNonNull(message);
 
-        return message;
+        TestableNettyMessage testMessage = new TestableNettyMessage();
+        testMessage.testInit(message, serviceContext, channelConfig);
+        testMessage.setMessageType(type);
+
+        return testMessage;
     }
 
     /**
@@ -100,8 +113,13 @@ public class CookieTests {
         serviceContext = mock(HttpServiceContext.class);
     }
 
+    private static void setEE11Mode(boolean ee11) throws Exception{
+        Field ee11Field = HttpDispatcher.class.getDeclaredField("isEE11");
+        ee11Field.setAccessible(true);
+        ee11Field.set(null, ee11);
+    }
+
     public static class InboundTests{
-        Mode mode = Mode.INBOUND;
         @Before
         public void setup(){
             CookieTests.commonSetup();
@@ -110,7 +128,7 @@ public class CookieTests {
         @Test
         public void testRequestCookiesInbound() {
 
-            TestableNettyMessage message = createMessage(mode);
+            TestableNettyMessage message = createMessage(REQUEST);
             message.getNettyHeaders().add("Cookie", "session=abc123; foo=bar");
 
             HttpCookie session = message.getCookie("session"); 
@@ -124,7 +142,7 @@ public class CookieTests {
 
         @Test
         public void testInboundCookieWithDomainAndPath() {
-            TestableNettyMessage message = createMessage(mode);
+            TestableNettyMessage message = createMessage(REQUEST);
             message.getNettyHeaders().add("Cookie", "name1=value1; $Version=1; $Domain=myhost; $Path=/servlet_jsh_cookie_web");
             List<HttpCookie> cookies = message.getAllCookies();
 
@@ -140,8 +158,7 @@ public class CookieTests {
 
     }
 
-    public static class OutboundTests{
-        Mode mode = Mode.OUTBOUND;
+    public static class ResponseTests{
         @Before
         public void setup(){
             CookieTests.commonSetup();
@@ -150,7 +167,7 @@ public class CookieTests {
         @Test
         public void testOutboundCookieMarshalling() {
 
-            TestableNettyMessage message = createMessage(mode);
+            TestableNettyMessage message = createMessage(RESPONSE);
 
             HttpCookie cookie = new HttpCookie("testCookie", "val123");
             message.setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
@@ -162,7 +179,50 @@ public class CookieTests {
             assertThat(setCookies.get(0), containsString("testCookie=val123"));
         }
 
+        @Test
+        public void testRemoveCookieFromResponse(){
+            TestableNettyMessage message = createMessage(RESPONSE);
+            HttpCookie cookie = new HttpCookie("testCookie","testValue");
+            message.setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
+            boolean removed = message.removeCookie("testCookie", HttpHeaderKeys.HDR_SET_COOKIE);
+            assertThat(removed, is(true));
+            message.processCookies();
+            List<String> setCookies = message.getNettyHeaders().getAll("Set-Cookie");
+            assertThat(setCookies, is(empty()));
+        }
+
+        @Test
+        public void testSetCookieAfterCommitedResponse(){
+            TestableNettyMessage message = createMessage(RESPONSE);
+            message.setCommitted();
+            HttpCookie cookie = new HttpCookie("testCookie", "testValue");
+            boolean result = message.setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
+            assertThat(result, is(false));
+        }
+
+        @Test
+        public void testSetCookieHeaderAndCookieObject(){
+            TestableNettyMessage message = createMessage(RESPONSE);
+            HttpCookie cookie = new HttpCookie("cookieObject", "cookieValue");
+            boolean setResult = message.setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
+            assertThat(setResult, is(true));
+
+            message.appendHeader("Set-Cookie", "cookieHeader=cookieHeaderValue");
+            message.processCookies();
+
+            List<HttpCookie> cookies = message.getAllCookies();
+            for(HttpCookie c :cookies){
+                System.out.println(c.getName()+":"+c.getValue());
+            }
+            assertThat(cookies, hasSize(2));
+
+            HeaderField header = message.getHeader("Set-Cookie");
+            String value = Objects.nonNull(header)? header.asString():"";
+            System.out.println(value);
+        }
     }
+
+        
 
     public static class EdgeCaseTests{
 
@@ -173,19 +233,160 @@ public class CookieTests {
 
         @Test 
         public void testsMalformedCookieNoName(){
-            TestableNettyMessage message = createMessage(Mode.INBOUND);
+            TestableNettyMessage message = createMessage(REQUEST);
             message.getNettyHeaders().add("Cookie", "=badNameWithValue");
             List<HttpCookie> cookies = message.getAllCookies();
             assertThat(cookies, is(empty()));
         }
 
-        //Backward compatibility
-        //utf-8 values
-        //case sensitivity
-        //trailing comma-semicolon
-        //removing cookie
-        //duplicate cookie
-        //quoted values
+        @Test 
+        public void testEmptyCookieValue(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "emptyCookie=");
+            HttpCookie cookie = message.getCookie("emptyCookie");
+            assertThat(cookie, notNullValue());
+            assertThat(cookie.getValue(), is(""));
+
+            byte[] valueBytes = message.getCookieValue("emptyCookie");
+            assertNull(valueBytes);
+
+        }
+
+        @Test 
+        public void testQuotedCookieValues(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "quotedCookie=\"quotedValue\"");
+            HttpCookie cookie = message.getCookie("quotedCookie");
+            assertThat(cookie, notNullValue());
+            assertThat(cookie.getValue(), is("quotedValue"));
+        }
+
+        @Test 
+        public void testQuotedCookieValuesNonEE11() throws Exception{
+            
+            setEE11Mode(false);
+
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "quotedCookie=\"quotedValue\"");
+            HttpCookie cookie = message.getCookie("quotedCookie");
+            assertThat("Non-EE11: Cookie should be parsed", cookie, notNullValue());
+            assertThat("Non-EE11: Cookie value should have quotes removed", cookie.getValue(), is("quotedValue"));
+            
+       }
+
+       @Test
+        public void testQuotedCookieValuesEE11() throws Exception{
+            setEE11Mode(true);
+
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "quotedCookie=\"quotedValue\"");
+            HttpCookie cookie = message.getCookie("quotedCookie");
+            assertThat(cookie, notNullValue());
+            assertThat(cookie.getValue(), is("\"quotedValue\""));
+        }
+
+        @Test 
+        public void testNonAsciiCookieName(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "Mayagüez:IsInvalidName");
+            HttpCookie cookie = message.getCookie("Mayagüez");
+            assertThat(cookie, is(nullValue()));
+        }
+
+        @Test
+        public void testNonAsciiCookieValue(){
+            // This test verifies that cookie values are decoded using the legacy
+            // conversion (which effectively treats the bytes as ISO-8859-1) rather than using UTF-8.
+            // As a result, a value that should be "Mayagüez" when properly decoded in UTF-8 is instead
+            // decoded as "MayagÃ¼ez".
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "ISO88591=Mayagüez");
+            HttpCookie cookie = message.getCookie("ISO88591");
+            assertThat(cookie, notNullValue());
+            assertThat(cookie.getValue(), is("MayagÃ¼ez"));
+        }
+
+        @Test
+        public void testTrailingDelimiterCookieHeader(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "trailing=value;");
+            List<HttpCookie> cookies = message.getAllCookies();
+            assertThat(cookies, hasSize(1));
+            HttpCookie cookie = cookies.get(0);
+            assertThat(cookie.getName(), is("trailing"));
+            assertThat(cookie.getValue(), is("value"));
+        }
+
+        @Test
+        public void testDuplicateCookieNameSingleHeader(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "duplicate=cookie1; duplicate=cookie2");
+            List<HttpCookie> cookies = message.getAllCookies("duplicate");
+            assertThat(cookies, hasSize(2));
+            assertThat(cookies.get(0).getValue(), is("cookie1"));
+            assertThat(cookies.get(1).getValue(), is("cookie2"));
+        }
+
+        @Test 
+        public void testCookieWithInternalExtraWhitespace() {
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "cookie  =  valid   value");
+            HttpCookie cookie = message.getCookie("cookie");
+            assertThat(cookie, notNullValue());
+            assertThat(cookie.getValue(), is("valid   value"));
+        }
+
+        @Test
+        public void testCookieWithMultipleEquals(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "twoEquals=first=second");
+            HttpCookie cookie = message.getCookie("twoEquals");
+            assertThat(cookie, notNullValue());
+            assertThat(cookie.getValue(), is("first=second"));
+        }
+
+        @Test(expected = IllegalArgumentException.class)
+        public void testEmptyCookieHeader(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "   ");
+            //TODO: Check Legacy parsing to see if we accept empty cookie headers
+
+        }
+
+        @Test 
+        public void testCookieHeaderStartsWithVersion(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "$Version=1; cookie=value; $Path=/");
+            List<HttpCookie> cookies = message.getAllCookies();
+            assertThat(cookies, hasSize(1));
+            HttpCookie cookie = cookies.get(0);
+            assertThat(cookie.getValue(), is("value"));
+            assertThat(cookie.getVersion(), is(1));
+            assertThat(cookie.getPath(), is("/"));
+        }
+
+        @Test 
+        public void testCookieWithoutEquals(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "noEquals");
+            HttpCookie cookie = message.getCookie("noEquals");
+            assertThat(cookie.getName(), is("noEquals"));
+
+            //NOTE: RFC 6265, a cookie header is expected to consist of one or more cookie-pairs, 
+            //      and each cookie-pair is defined as a cookie-name followed by an "=" and then 
+            //      a cookie-value. In legacy we are more lenient and will still create the cookie.
+        }
+  
+        @Test
+        public void testTrailingCommaCookieHeader(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "comma=value,");
+            List<HttpCookie> cookies = message.getAllCookies();
+            assertThat(cookies, hasSize(1));
+            HttpCookie cookie = cookies.get(0);
+            assertThat(cookie.getName(), is("comma"));
+            assertThat(cookie.getValue(), is("value"));
+        }
 
     }
 

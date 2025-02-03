@@ -139,6 +139,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
         super.init(request, isc, config);
         setAndGetIsGrpc();
+        setMessageType(MessageType.REQUEST);
         
     }
 
