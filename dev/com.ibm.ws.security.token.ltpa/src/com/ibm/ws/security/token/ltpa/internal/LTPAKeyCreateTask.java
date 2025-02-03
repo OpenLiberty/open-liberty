@@ -54,9 +54,16 @@ class LTPAKeyCreateTask implements Runnable {
 
     private LTPAKeyInfoManager getPreparedLtpaKeyInfoManager() throws Exception {
         LTPAKeyInfoManager keyInfoManager = new LTPAKeyInfoManager();
+        if (config.getuserJdkProvider().isEmpty()){
         keyInfoManager.prepareLTPAKeyInfo(locService,
                                           config.getPrimaryKeyFile(),
                                           getKeyPasswordBytes(), config.getValidationKeys());
+        }
+        else{
+            keyInfoManager.prepareLTPAKeyInfo(locService,
+            config.getPrimaryKeyFile(),
+            getKeyPasswordBytes(), config.getValidationKeys(), config.getuserJdkProvider());
+        }
         return keyInfoManager;
     }
 

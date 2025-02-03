@@ -593,6 +593,20 @@ final class LTPACrypto {
     @Trivial
     private static SecretKey constructSecretKey(byte[] key, String cipher)
             throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+                return constructSecretKey(key, cipher, null);
+    }
+    /**
+     * @param key
+     * @param cipher
+     * @param userJdkProvider
+     * @return
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
+    @Trivial
+    private static SecretKey constructSecretKey(byte[] key, String cipher, String userJdkProvider)
+            throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         SecretKey sKey = null;
         if (cipher.indexOf("AES") != -1) {
             // 16 bytes = 128 bit key
@@ -600,16 +614,20 @@ final class LTPACrypto {
         } else {
             DESedeKeySpec kSpec = new DESedeKeySpec(key);
             SecretKeyFactory kFact = null;
-
-            kFact = (provider == null) ? SecretKeyFactory.getInstance(encryptAlgorithm)
-                    : SecretKeyFactory.getInstance(encryptAlgorithm, provider);
+            if (userJdkProvider == null){
+                kFact = (provider == null) ? SecretKeyFactory.getInstance(encryptAlgorithm)
+                : SecretKeyFactory.getInstance(encryptAlgorithm, provider);
+            }
+            else{
+                kFact = SecretKeyFactory.getInstance(encryptAlgorithm, userJdkProvider);
+            }
 
             sKey = kFact.generateSecret(kSpec);
         }
         return sKey;
     }
 
-    /**
+        /**
      * @param key
      * @param cipher
      * @param sKey
@@ -623,9 +641,31 @@ final class LTPACrypto {
     private static Cipher createCipher(int cipherMode, byte[] key, String cipher, SecretKey sKey)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException, NoSuchProviderException {
+                return createCipher(cipherMode,  key, cipher,sKey, null);
+    }
+
+    /**
+     * @param key
+     * @param cipher
+     * @param sKey
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     */
+    @Trivial
+    private static Cipher createCipher(int cipherMode, byte[] key, String cipher, SecretKey sKey, String userJdkProvider)
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            InvalidAlgorithmParameterException, NoSuchProviderException {
 
         Cipher ci = null;
-        ci = (provider == null) ? Cipher.getInstance(cipher) : Cipher.getInstance(cipher, provider);
+
+        if (userJdkProvider == null){
+            ci = (provider == null) ? Cipher.getInstance(cipher) : Cipher.getInstance(cipher, provider);
+        }else{
+            ci = Cipher.getInstance(cipher, userJdkProvider);
+        }
 
         if (cipher.indexOf("ECB") == -1) {
             if (cipher.indexOf("AES") != -1) {
@@ -660,18 +700,34 @@ final class LTPACrypto {
         return ci.doFinal(data);
     }
 
-    /**
+
+      /**
      * Decrypt the specified msg.
      *
-     * @param msg    The byte representation of the data
-     * @param key    The key used to decrypt the data
-     * @param cipher The cipher algorithm
+     * @param msg              The byte representation of the data
+     * @param key              The key used to decrypt the data
+     * @param cipher            The cipher algorithm
+     * @param userJdkProvider    The JDK provider to be used to decrypt the LTPA key
      * @return The decrypted data (plaintext)
      */
     @Trivial
     protected static final byte[] decrypt(byte[] msg, byte[] key, String cipher) throws Exception {
-        SecretKey sKey = constructSecretKey(key, cipher);
-        Cipher ci = createCipher(Cipher.DECRYPT_MODE, key, cipher, sKey);
+        return decrypt(msg, key, cipher, null);
+    }
+
+    /**
+     * Decrypt the specified msg.
+     *
+     * @param msg              The byte representation of the data
+     * @param key              The key used to decrypt the data
+     * @param cipher            The cipher algorithm
+     * @param userJdkProvider    The JDK provider to be used to decrypt the LTPA key
+     * @return The decrypted data (plaintext)
+     */
+    @Trivial
+    protected static final byte[] decrypt(byte[] msg, byte[] key, String cipher, String userJdkProvider) throws Exception {
+        SecretKey sKey = constructSecretKey(key, cipher, userJdkProvider);
+        Cipher ci = createCipher(Cipher.DECRYPT_MODE, key, cipher, sKey, userJdkProvider);
         return ci.doFinal(msg);
     }
 

@@ -45,14 +45,26 @@ public class KeyEncryptor {
 		}
 	}
 
-	/**
+    /**
 	 * Decrypt the key.
 	 *
 	 * @param encryptedKey The encrypted key
 	 * @return The decrypted key
 	 */
 	public byte[] decrypt(byte[] encryptedKey) throws Exception {
-		return LTPACrypto.decrypt(encryptedKey, key, CIPHER);
+        return decrypt(encryptedKey, null);
+    }
+
+    /**
+	 * Decrypt the key.
+	 *
+	 * @param encryptedKey   The encrypted key
+     * @param userJdkProvider The JDK Provider to use to decrypt the LTPA key
+	 * @return The decrypted key
+	 */
+
+	public byte[] decrypt(byte[] encryptedKey, String userJdkProvider) throws Exception {
+		return LTPACrypto.decrypt(encryptedKey, key, CIPHER, userJdkProvider);
 	}
 
 	/**
