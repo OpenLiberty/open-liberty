@@ -63,8 +63,9 @@ public class FATTest {
     private static final String CORRUPTED_LTPA_KEYS_PATH = "corrupted/ltpa.keys";
     private static final String DEFAULT_SERVER_XML = "server.xml";
     private static String ALTERNATE_SERVER_XML = "alternate/server.xml";
-    private static final String ALTERNATE_SERVER_XML_BAD_PROVIDER = "alternate/serverWithBadProvider.xml";
+    private static String ALTERNATE_SERVER_XML_BAD_PROVIDER = "alternate/serverWithBadProvider.xml";
     private static String ALTERNATE_SERVER_XML_FIPS = "alternateFIPS/server.xml";
+    private static String ALTERNATE_SERVER_XML_FIPS_BAD_PROVIDER = "alternateFIPS/serverWithBadProvider.xml";
     private static String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR = "alternate/serverWithLTPAFileMonitor.xml";
     private static String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_FIPS = "alternateFIPS/serverWithLTPAFileMonitor.xml";
     private static String ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_AND_WRONG_PASSWORD = "alternate/serverWithLTPAFileMonitorAndWrongPassword.xml";
@@ -104,6 +105,7 @@ public class FATTest {
             ALTERNATE_KEY_PATH = ALTERNATE_KEY_PATH_FIPS;
             REPLACEMENT_LTPA_KEYS_PATH = REPLACEMENT_FIPS_LTPA_KEYS_PATH;
             ALTERNATE_SERVER_XML = ALTERNATE_SERVER_XML_FIPS;
+            ALTERNATE_SERVER_XML_BAD_PROVIDER = ALTERNATE_SERVER_XML_FIPS_BAD_PROVIDER;
             ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR = ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_FIPS;
             ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_AND_WRONG_PASSWORD = ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_AND_WRONG_PASSWORD_FIPS;
         }
