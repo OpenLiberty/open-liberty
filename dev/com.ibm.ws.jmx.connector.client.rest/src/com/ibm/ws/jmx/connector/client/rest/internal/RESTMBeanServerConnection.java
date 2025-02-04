@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.channels.ClosedByInterruptException;
@@ -2179,8 +2180,9 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
         }
 
         //Try to connect to the simple URL
+        HttpsURLConnection connection = null;
         try {
-            HttpsURLConnection connection = getBasicConnection(testURL, HttpMethod.GET);
+            connection = getBasicConnection(testURL, HttpMethod.GET);
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 if (logger.isLoggable(Level.FINER)) {
@@ -2197,6 +2199,9 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
         } catch (IOException e) {
             if (logger.isLoggable(Level.FINER)) {
                 logger.logp(Level.FINER, logger.getName(), "testConnection", "Failed connection attempt with exception:" + e.getMessage());
+            }
+            if (connection != null) {
+                connection.disconnect();
             }
             return false;
         }
@@ -2324,7 +2329,7 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
                             logger.logp(Level.FINER, logger.getName(), sourceMethod, "Response code: " + responseCode);
                         }
 
-                    } catch (ConnectException ce) {
+                    } catch (ConnectException|UnknownHostException ce) {
                         logger.logp(Level.FINE, logger.getName(), sourceMethod, ce.getMessage(), ce);
                         recoverConnection(ce);
                         continue mainLoop;
