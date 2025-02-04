@@ -129,11 +129,12 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         ExecutorService blockingTaskExecutor = HttpDispatcher.getExecutorService();
         Future<Long> readFuture = blockingTaskExecutor.submit(() -> {
+            System.out.println("Starting read in thread sync!!");
             boolean dataAvailable = upgradeHandler.containsQueuedData() || upgradeHandler.awaitReadReady(numBytes, timeout, TimeUnit.MILLISECONDS);
             if (!dataAvailable || !nettyChannel.isActive()) {
                 throw new SocketTimeoutException("Failed to read data within the specified timeout.");
             }
-
+            System.out.println("Finished read in thread sync!!");
             return upgradeHandler.setToBuffer();
         });
 
@@ -157,16 +158,18 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     @Override
     public VirtualConnection read(long numBytes, TCPReadCompletedCallback callback, boolean forceQueue, int timeout) {
         
+        // new Exception("Reading Async Netty!").printStackTrace();
+        
         //TODO: fix forceQueue
         
         // minBytes = (numBytes<=0) ? 1: numBytes;
 
         if (!nettyChannel.isActive()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Skipping read because channel became inactive!");
+                Tr.debug(this, tc, "Channel became inactive but still queueing up read! " + nettyChannel);
             }
             // Channel is not active, do not proceed with the callback
-            return vc; // Return
+            // return vc; // Return
         }
 
         //Start a new thread that waits to be notified by the handler when enough data is accumulated. On completion, use the callback complete and return null
@@ -190,14 +193,15 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         ExecutorService blockingTaskExecutor = HttpDispatcher.getExecutorService();
 
         blockingTaskExecutor.submit(() -> {
+            System.out.println("Starting read in thread async!!" + numBytes + ", " + forceQueue + ", " + timeout + " " + nettyChannel);
             boolean dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, timeout, TimeUnit.MILLISECONDS);
 
             if (!nettyChannel.isActive()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Skipping executor because channel became inactive!");
+                    Tr.debug(this, tc, "Channel became inactive before executor and callback is called!" + nettyChannel);
                 }
                 // Channel became inactive while waiting for data, skip callback execution
-                return; // Exit the task execution
+                // return; // Exit the task execution
             }
 
             if (dataAvailable) {
@@ -214,18 +218,19 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
                         blockingTaskExecutor.submit(() -> {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(this, tc, "Running async callback!");
+                                Tr.debug(this, tc, "Running async callback!" + nettyChannel);
                             }
                             if (!nettyChannel.isActive()) {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(this, tc, "Skipping async callback because channel became inactive!");
+                                    Tr.debug(this, tc, "Channel became inactive before async callback is called! Still calling it " + nettyChannel);
                                 }
                                 // Channel became inactive while waiting for data, skip callback execution
-                                return; // Exit the task execution
+                                // return; // Exit the task execution
                             }
                             try {
                                 callback.complete(vc, this);
                             } catch (Exception e) {
+                                System.out.println("Oh shit here we are with an exception!!");
                                 // Log or handle the exception
                                 e.printStackTrace();
                             }
@@ -261,6 +266,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                     }
                 });
             }
+            System.out.println("Finished read in thread async!! " + nettyChannel);
 
         });
    //     }

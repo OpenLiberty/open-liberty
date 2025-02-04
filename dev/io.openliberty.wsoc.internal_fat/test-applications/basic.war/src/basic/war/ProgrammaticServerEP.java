@@ -643,6 +643,8 @@ public abstract class ProgrammaticServerEP extends Endpoint {
                 public void onMessage(ByteBuffer buffer) {
                     messageNumber++;
 
+                    LOG.info("MaxMessageSizeInSession: onMessage entered: " + messageNumber);
+
                     if (messageNumber == 1) {
                         int maxTextSize = ses.getMaxTextMessageBufferSize();
                         int maxBinarySize = ses.getMaxBinaryMessageBufferSize();

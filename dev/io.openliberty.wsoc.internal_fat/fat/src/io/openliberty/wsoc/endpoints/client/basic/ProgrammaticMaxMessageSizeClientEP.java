@@ -14,6 +14,7 @@ package io.openliberty.wsoc.endpoints.client.basic;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.websocket.ClientEndpoint;
@@ -56,6 +57,7 @@ public class ProgrammaticMaxMessageSizeClientEP implements TestHelper {
         _wtr.addMessage(data);
 
         if (messageCounter == 1 || messageCounter == 2) {
+            System.out.println("Message received: " + messageCounter);
 
             // if messageCounter is 2, then the send of TEST_MAX_MSG_SIZE should fail with a close code of TOO_BIG (1009)
 
@@ -115,6 +117,8 @@ public class ProgrammaticMaxMessageSizeClientEP implements TestHelper {
 
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
+        Exception ex = new Exception("onClosed called!");
+        LOG.log(Level.INFO, ex.getMessage(), ex);
         if (!closeCalledAlready) {
             closeCalledAlready = true;
 

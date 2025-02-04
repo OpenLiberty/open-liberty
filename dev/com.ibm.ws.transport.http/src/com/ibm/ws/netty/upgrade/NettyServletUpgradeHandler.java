@@ -9,13 +9,10 @@
  *******************************************************************************/
 package com.ibm.ws.netty.upgrade;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.ibm.wsspi.bytebuffer.WsByteBuffer;
-import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
@@ -27,9 +24,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import io.netty.channel.CoalescingBufferQueue;
 import io.netty.channel.VoidChannelPromise;
 import io.openliberty.netty.internal.impl.QuiesceState;
-import io.netty.channel.CoalescingBufferQueue;
 
 /**
  *
@@ -72,9 +69,11 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
                 buf.retain();
                 queue.add(buf);
                 long bytesRead = buf.readableBytes();
+                System.out.println("Channel read! Addin bytes read: " + bytesRead);
                 totalBytesRead += bytesRead;
 
                 if (totalBytesRead >= minBytesToRead) {
+                    System.out.println("Signaling read ready!!");
                     signalReadReady(); // Signal only if minimum bytes are read
                 }
 
@@ -93,31 +92,32 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         signalReadReady();
         super.channelInactive(ctx);
-        
+
     }
 
     private void signalReadReady() {
+        System.out.println("Locking readLock signalReadReady!");
         readLock.lock();
         try {
             readCondition.signalAll();
 
         } finally {
-            System.out.println("Unlocking signalReadReady!");
+            System.out.println("Unlocking readLock signalReadReady!");
             readLock.unlock();
         }
     }
 
     public void waitForDataRead(long waitTime) throws InterruptedException {
-
+        System.out.println("Locking readLock waitForDataRead!");
         readLock.lock();
         try {
             while (!containsQueuedData() && channel.isActive()) {
-                if(!readCondition.await(waitTime, TimeUnit.MILLISECONDS)) {
+                if (!readCondition.await(waitTime, TimeUnit.MILLISECONDS)) {
                     break;
                 }
             }
         } finally {
-            System.out.println("Unlocking waitForDataRead!");
+            System.out.println("Unlocking readLock waitForDataRead!");
             readLock.unlock();
         }
     }
@@ -125,30 +125,32 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     public boolean awaitReadReady(long numBytes, int timeout, TimeUnit unit) {
         System.out.println("Await read ready called");
         minBytesToRead = numBytes; // Set the minimum number of bytes to read
-
+        System.out.println("Locking readLock awaitReadReady!");
         readLock.lock();
         System.out.println("After lock");
         boolean dataReady = false;
         try {
 
-            if(queuedDataSize()>=numBytes) {
+            if (queuedDataSize() >= numBytes) {
                 dataReady = true;
 
-            }else {
+            } else {
                 long waitTime = timeout == -1 ? Long.MAX_VALUE : unit.toNanos(timeout);
                 long endTime = System.nanoTime() + waitTime;
                 while (totalBytesRead < minBytesToRead && channel.isActive() && !QuiesceState.isQuiesceInProgress()) {
                     if (timeout != -1) { // If timeout is not -1, calculate the remaining wait time
                         waitTime = endTime - System.nanoTime();
-                        if (waitTime <= 0) break; // Exit if the wait time has expired
+                        if (waitTime <= 0)
+                            break; // Exit if the wait time has expired
                     }
                     // If timeout is -1, this will wait indefinitely until signalled
                     if (timeout == -1) {
                         waitTime = TimeUnit.SECONDS.toNanos(1);
-                        try{
+                        try {
                             System.out.println("Waiting1: " + waitTime);
-                        readCondition.awaitNanos(waitTime);
-                        }catch(InterruptedException e){
+                            System.out.println("Total bytes read: " + totalBytesRead + " min bytes to read: " + minBytesToRead);
+                            readCondition.awaitNanos(waitTime);
+                        } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             continue; // loop back again
                         }
@@ -163,38 +165,39 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // Restore the interrupt status
         } finally {
-            System.out.println("Unlocking awaitReadReady!");
+            System.out.println("Unlocking readLock awaitReadReady!");
             readLock.unlock();
         }
 
         return dataReady;
     }
 
-
     public synchronized long setToBuffer() {
-        
+        System.out.println("Set to buffer called");
+
         if (!containsQueuedData()) {
             return 0;
         }
-        
-        
+        int currentQueuedDataSize = queuedDataSize();
+        int remainingBufferSize = readContext.getBuffer().remaining();
+        System.out.println("CurrentQueuedSize: " + currentQueuedDataSize + ", remainingBufferSize: " + remainingBufferSize);
+        if (currentQueuedDataSize >= minBytesToRead) {
 
-        if (queuedDataSize()>=minBytesToRead) { 
-            
-            int readTotal = queuedDataSize()>=readContext.getBuffer().remaining() ? readContext.getBuffer().remaining(): queuedDataSize();
+            System.out.println("Queue bigger than min bytes!");
 
+            int readTotal = currentQueuedDataSize >= remainingBufferSize ? remainingBufferSize : currentQueuedDataSize;
+            System.out.println("Reading total: " + readTotal);
             byte[] bytes = ByteBufUtil.getBytes(read(readTotal, null));
+            System.out.println("Putting bytes: " + bytes);
             readContext.getBuffer().put(bytes);
 
             // Reset totalBytesRead after fulfilling the read
             totalBytesRead -= bytes.length; // Adjust totalBytesRead
+            System.out.println("Total bytes read decreased!! " + bytes.length + " -> " + totalBytesRead);
             return bytes.length;
         }
         return 0;
     }
-
-
-
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
@@ -227,7 +230,6 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
             return queue.remove(size, new VoidChannelPromise(channel, true));
         return queue.remove(size, promise);
     }
-
 
     /**
      * Helper method to set read listener
