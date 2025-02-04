@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
@@ -69,6 +70,8 @@ public class CookieTests {
 
     private static HttpChannelConfig channelConfig;
     private static HttpServiceContext serviceContext;
+    private static HttpHeaderKeys SET_COOKIE = HttpHeaderKeys.HDR_SET_COOKIE;
+    private static HttpHeaderKeys COOKIE = HttpHeaderKeys.HDR_COOKIE;
 
     /**
      * Builds a testable message configured to be a request or response. It
@@ -82,17 +85,22 @@ public class CookieTests {
      */
     private static TestableNettyMessage createMessage(MessageType type){
         HttpMessage message = null;
+        TestableNettyMessage testMessage = new TestableNettyMessage();
+
         if(type == REQUEST){
             message = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/test");
+            testMessage.incoming(true);
         }else if(type == RESPONSE){
             message = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+            testMessage.incoming(false);
         }
 
         Objects.requireNonNull(message);
 
-        TestableNettyMessage testMessage = new TestableNettyMessage();
+        
         testMessage.testInit(message, serviceContext, channelConfig);
         testMessage.setMessageType(type);
+
 
         return testMessage;
     }
@@ -170,12 +178,12 @@ public class CookieTests {
             TestableNettyMessage message = createMessage(RESPONSE);
 
             HttpCookie cookie = new HttpCookie("testCookie", "val123");
-            message.setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
+            message.setCookie(cookie, SET_COOKIE);
             message.processCookies();
-
             HttpHeaders headers  = message.getNettyHeaders();
             List<String> setCookies = headers.getAll("Set-Cookie");
             assertThat(setCookies, hasSize(1));
+            
             assertThat(setCookies.get(0), containsString("testCookie=val123"));
         }
 
@@ -183,8 +191,8 @@ public class CookieTests {
         public void testRemoveCookieFromResponse(){
             TestableNettyMessage message = createMessage(RESPONSE);
             HttpCookie cookie = new HttpCookie("testCookie","testValue");
-            message.setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
-            boolean removed = message.removeCookie("testCookie", HttpHeaderKeys.HDR_SET_COOKIE);
+            message.setCookie(cookie, SET_COOKIE);
+            boolean removed = message.removeCookie("testCookie", SET_COOKIE);
             assertThat(removed, is(true));
             message.processCookies();
             List<String> setCookies = message.getNettyHeaders().getAll("Set-Cookie");
@@ -196,32 +204,193 @@ public class CookieTests {
             TestableNettyMessage message = createMessage(RESPONSE);
             message.setCommitted();
             HttpCookie cookie = new HttpCookie("testCookie", "testValue");
-            boolean result = message.setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
+            boolean result = message.setCookie(cookie, SET_COOKIE);
             assertThat(result, is(false));
         }
 
-        @Test
-        public void testSetCookieHeaderAndCookieObject(){
-            TestableNettyMessage message = createMessage(RESPONSE);
-            HttpCookie cookie = new HttpCookie("cookieObject", "cookieValue");
-            boolean setResult = message.setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
-            assertThat(setResult, is(true));
-
-            message.appendHeader("Set-Cookie", "cookieHeader=cookieHeaderValue");
-            message.processCookies();
-
-            List<HttpCookie> cookies = message.getAllCookies();
-            for(HttpCookie c :cookies){
-                System.out.println(c.getName()+":"+c.getValue());
-            }
-            assertThat(cookies, hasSize(2));
-
-            HeaderField header = message.getHeader("Set-Cookie");
-            String value = Objects.nonNull(header)? header.asString():"";
-            System.out.println(value);
-        }
+        
     }
 
+    public static class CookieCacheTests{
+        @Before
+        public void setup(){
+            CookieTests.commonSetup();
+        }
+
+        @Test 
+        public void testIncrementalParsingRequest(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.incoming(true);
+
+            message.getNettyHeaders().add("Cookie", "foo=bar");
+            message.getNettyHeaders().add("Cookie", "hello=world");
+
+            List<HttpCookie> allCookies = message.getAllCookies();
+            assertThat(allCookies, hasSize(2));
+
+            assertThat(message.getCookie("foo").getValue(), is("bar"));
+            assertThat(message.getCookie("hello").getValue(), is("world"));
+
+            int originalCacheIndex = message.getCookieHeaderIndex(COOKIE);
+
+            List<HttpCookie> cookies2 = message.getAllCookies();
+            assertThat(cookies2, hasSize(2));
+
+            int newCacheIndex = message.getCookieHeaderIndex(COOKIE);
+            assertThat(newCacheIndex, is(originalCacheIndex));
+        }
+
+        @Test
+        public void testMultipleHeaderLinesAdded(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.incoming(true);
+
+            message.getNettyHeaders().add("Cookie", "a=1; b=2");
+            List<HttpCookie> first = message.getAllCookies();
+            assertThat(first, hasSize(2));
+
+            int firstCacheIndex = message.getCookieHeaderIndex(COOKIE);
+
+            message.getNettyHeaders().add("Cookie", "c=3; d=4");
+            List<HttpCookie> second = message.getAllCookies();
+            assertThat(second, hasSize(4));
+
+            int secondCacheIndex = message.getCookieHeaderIndex(COOKIE);
+            assertThat(secondCacheIndex, is(firstCacheIndex + 1));
+
+            assertThat(message.getCookie("a").getValue(), is("1"));
+            assertThat(message.getCookie("b").getValue(), is("2"));
+            assertThat(message.getCookie("c").getValue(), is("3"));
+            assertThat(message.getCookie("d").getValue(), is("4"));
+        }
+
+        @Test 
+        public void testOutboundRequestDoesNotParseCookieHeader(){
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.incoming(false);
+
+            message.getNettyHeaders().add("Cookie", "shouldnt=happen");
+
+            List<HttpCookie> cookies = message.getAllCookies();
+            assertThat(cookies, hasSize(0));
+            CookieCacheData cache = message.cache(COOKIE);
+            assertThat(cache.getParsedList(), hasSize(0));
+        }
+
+        @Test
+        public void testInboundResponseParsesSetCookie() {
+            TestableNettyMessage message = createMessage(RESPONSE);
+            message.incoming(true);
+
+            message.getNettyHeaders().add("Set-Cookie", "one=1");
+            message.getNettyHeaders().add("Set-Cookie", "two=2");
+
+            List<HttpCookie> cookies = message.getAllCookies();
+            assertThat(cookies, hasSize(2));
+
+            HttpCookie one = message.getCookie("one");
+            assertThat(one, notNullValue());
+            assertThat(one.getValue(), is("1"));
+
+            HttpCookie two = message.getCookie("two");
+            assertThat(two, notNullValue());
+            assertThat(two.getValue(), is("2"));
+
+            // index check
+            CookieCacheData cache = message.cache(SET_COOKIE);
+            assertThat(cache.getHeaderIndex(), is(2));
+        }
+
+        @Test
+        public void testOutboundResponseDoesNotParseOwnSetCookieLines() {
+            TestableNettyMessage message = createMessage(RESPONSE);
+            message.incoming(false);
+            HttpHeaders nettyHeaders = message.getNettyHeaders();
+
+            nettyHeaders.add("Set-Cookie", "foo=bar");
+
+            List<HttpCookie> allCookies = message.getAllCookies();
+            assertThat(allCookies, hasSize(0));
+
+            HttpCookie cookie = new HttpCookie("extraCookie", "extraValue");
+            message.setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
+
+            assertThat(nettyHeaders.getAll("Set-Cookie"), hasSize(1));
+            message.processCookies();
+
+            List<String> setCookies = nettyHeaders.getAll("Set-Cookie");
+            assertThat(setCookies, hasSize(1));
+
+            assertThat(setCookies.get(0), containsString("extraCookie=extraValue"));
+        }
+
+        @Test
+        public void testDirtyFlagAddRemoveCookies() {
+            TestableNettyMessage message = createMessage(RESPONSE);
+            message.incoming(false); 
+            CookieCacheData cache = message.cache(SET_COOKIE);
+            assertThat(cache.isDirty(), is(false));
+
+            HttpCookie cookie = new HttpCookie("testCookie", "123");
+            message.setCookie(cookie, SET_COOKIE);
+            assertThat(cache.isDirty(), is(true));
+
+            message.removeCookie("testCookie", SET_COOKIE);
+            assertThat(cache.isDirty(), is(true));
+
+            message.processCookies();
+            assertThat(cache.isDirty(), is(false));
+        }
+
+        @Test
+        public void testRemoveCookieReflectsInMarshalledHeaders() {
+            TestableNettyMessage message = createMessage(RESPONSE);
+            message.incoming(false);
+
+            HttpCookie c1 = new HttpCookie("a", "1");
+            HttpCookie c2 = new HttpCookie("b", "2");
+            message.setCookie(c1, SET_COOKIE);
+            message.setCookie(c2, SET_COOKIE);
+
+            message.removeCookie("b", SET_COOKIE);
+            message.processCookies();
+
+            List<String> lines = message.getNettyHeaders().getAll("Set-Cookie");
+            assertThat(lines, hasSize(1));
+            assertThat(lines.get(0), containsString("a=1"));
+            assertThat(lines.get(0), not(containsString("b=2")));
+        }
+
+        @Test
+        public void testDuplicateSetCookieNameOutbound() {
+            TestableNettyMessage message = createMessage(MessageType.RESPONSE);
+            message.incoming(false);
+
+            HttpCookie c1 = new HttpCookie("dup", "first");
+            HttpCookie c2 = new HttpCookie("dup", "second");
+            message.setCookie(c1, HttpHeaderKeys.HDR_SET_COOKIE);
+            message.setCookie(c2, HttpHeaderKeys.HDR_SET_COOKIE);
+
+            message.processCookies();
+            List<String> lines = message.getNettyHeaders().getAll("Set-Cookie");
+
+            assertThat(lines.size(), is(2));
+        }
+
+        @Test
+        public void testClearResetsCache() {
+            TestableNettyMessage message = createMessage(MessageType.RESPONSE);
+            message.incoming(false);
+
+            HttpCookie c = new HttpCookie("test", "val");
+            message.setCookie(c, HttpHeaderKeys.HDR_SET_COOKIE);
+
+            assertThat(message.getAllCookies(), hasSize(1));
+            message.clear();
+
+            assertThat(message.getAllCookies(), hasSize(0));
+        }     
+    }
         
 
     public static class EdgeCaseTests{
@@ -408,6 +577,15 @@ public class CookieTests {
 
         public HttpHeaders getNettyHeaders() {
             return this.headers;
+        }
+
+        public int getCookieHeaderIndex(HttpHeaderKeys header){
+            CookieCacheData cache = getCookieCache(header);
+            return cache.getHeaderIndex();
+        }
+
+        public CookieCacheData cache(HttpHeaderKeys header){
+            return getCookieCache(header);
         }
     }
 
