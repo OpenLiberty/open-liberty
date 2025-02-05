@@ -472,7 +472,8 @@ public class CookieTests {
             message.getNettyHeaders().add("Cookie", "ISO88591=Mayagüez");
             HttpCookie cookie = message.getCookie("ISO88591");
             assertThat(cookie, notNullValue());
-            assertThat(cookie.getValue(), is("MayagÃ¼ez"));
+            assertThat(cookie.getValue(), is("Mayagüez"));
+            //assertThat(cookie.getValue(), is("MayagÃ¼ez"));
         }
 
         @Test

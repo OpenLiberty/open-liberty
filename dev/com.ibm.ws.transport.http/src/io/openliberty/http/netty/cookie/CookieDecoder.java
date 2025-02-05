@@ -12,6 +12,8 @@ package io.openliberty.http.netty.cookie;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.internal.cookies.CookieHeaderByteParser;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -32,6 +34,38 @@ public class CookieDecoder {
     private CookieDecoder(){
         //Private singleton
     } 
+
+    /**
+     * Decodes a cookie header string into a list of {@link HttpCookie} objects.
+     * The header key parameter determines the type of cookie header being parsed.
+     * 
+     * @param cookieString the cookie header value
+     * @param header       the cookie header type used to determine parsing logic
+     * @return a list of {@link HttpCookie} instances, or an empty list if the
+     *         input is {@code null} or empty.
+     */
+    public static List<HttpCookie> decode(String cookieString, HttpHeaderKeys header) {
+        if (cookieString == null || cookieString.isEmpty()) {
+            return Collections.emptyList();
+        }
+        byte[] bytes = GenericUtils.getEnglishBytes(cookieString);
+        return decode(bytes, header);
+    }
+
+    /**
+     * Decodes the given header bytes using the specified cookie header key. 
+     * 
+     * @param cookieBytes the cookie header value in bytes
+     * @param header header the type of cookie header
+     * @return list of parsed {@link HttpCookie} objects, never null
+     */
+    public static List<HttpCookie> decode(byte[] cookieBytes, HttpHeaderKeys header){
+        if(cookieBytes == null || cookieBytes.length == 0){
+            return Collections.emptyList();
+        }
+        CookieHeaderByteParser parser = new CookieHeaderByteParser();
+        return parser.parse(cookieBytes, header);
+    }
     
     /**
      * Decodes a "Cookie" header string into a list of {@link HttpCookie} objects.
@@ -94,20 +128,5 @@ public class CookieDecoder {
     }
 
 
-    /**
-     * Decodes a cookie header string into a list of {@link HttpCookie} objetcts. 
-     * The header key parameter determines the type of cookie header being parsed. 
-     * 
-     * @param cookieString the cookie header value
-     * @param header the cookie header type used to determine parsing logic
-     * @return a list of {@link HttpCookie} instances, or an empty list if the 
-     * input is {@code null} or empty.
-     */
-    public static List<HttpCookie> decode(String cookieString, HttpHeaderKeys header){
-        if (cookieString == null || cookieString.isEmpty()) {
-            return Collections.emptyList();
-        }
-        CookieHeaderByteParser parser = new CookieHeaderByteParser();
-        return parser.parse(cookieString.getBytes(), header);
-    }
+   
 }
