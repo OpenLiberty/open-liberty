@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
@@ -36,6 +38,8 @@ import io.openliberty.netty.internal.impl.QuiesceState;
  *
  */
 public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
+    
+    private static final TraceComponent tc = Tr.register(NettyServletUpgradeHandler.class);
 
     private final CoalescingBufferQueue queue;
     private final Channel channel;
@@ -73,11 +77,15 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 buf.retain();
                 queue.add(buf);
                 long bytesRead = buf.readableBytes();
-                System.out.println("Channel read! Addin bytes read: " + bytesRead);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "NettyServletUpgradeHandler channelRead called for channel " + nettyChannel + " Adding bytes read: " + bytesRead);
+                }
                 totalBytesRead += bytesRead;
 
                 if (totalBytesRead >= minBytesToRead) {
-                    System.out.println("Signaling read ready!!");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "NettyServletUpgradeHandler channelRead totalBytesRead greater than minimum bytes requested for channel " + nettyChannel);
+                    }
                     signalReadReady(); // Signal only if minimum bytes are read
                 }
 
@@ -100,19 +108,25 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     private void signalReadReady() {
-        System.out.println("Locking readLock signalReadReady!");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "NettyServletUpgradeHandler signalReadReady locking readLock for channel " + nettyChannel);
+        }
         readLock.lock();
         try {
             readCondition.signalAll();
 
         } finally {
-            System.out.println("Unlocking readLock signalReadReady!");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "NettyServletUpgradeHandler signalReadReady unlocking readLock for channel " + nettyChannel);
+            }
             readLock.unlock();
         }
     }
 
     public void waitForDataRead(long waitTime) throws InterruptedException {
-        System.out.println("Locking readLock waitForDataRead!");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "NettyServletUpgradeHandler waitForDataRead locking readLock for channel " + nettyChannel);
+        }
         readLock.lock();
         try {
             while (!containsQueuedData() && channel.isActive()) {
@@ -121,23 +135,26 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 }
             }
         } finally {
-            System.out.println("Unlocking readLock waitForDataRead!");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "NettyServletUpgradeHandler waitForDataRead unlocking readLock for channel " + nettyChannel);
+            }
             readLock.unlock();
         }
     }
 
     public boolean awaitReadReady(long numBytes, int timeout, TimeUnit unit) {
-        System.out.println("Await read ready called");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady called for channel " + nettyChannel);
+        }
         minBytesToRead = numBytes; // Set the minimum number of bytes to read
-        System.out.println("Locking readLock awaitReadReady!");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady locking readLock for channel " + nettyChannel);
+        }
         readLock.lock();
-        System.out.println("After lock");
         boolean dataReady = false;
         try {
-
             if (queuedDataSize() >= numBytes) {
                 dataReady = true;
-
             } else {
                 long waitTime = timeout == -1 ? Long.MAX_VALUE : unit.toNanos(timeout);
                 long endTime = System.nanoTime() + waitTime;
@@ -151,15 +168,18 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                     if (timeout == -1) {
                         waitTime = TimeUnit.SECONDS.toNanos(1);
                         try {
-                            System.out.println("Waiting1: " + waitTime);
-                            System.out.println("Total bytes read: " + totalBytesRead + " min bytes to read: " + minBytesToRead);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady waiting " + waitTime + "ns for min bytes to read: " + minBytesToRead + " with total bytes read: " + totalBytesRead + " on channel: " + nettyChannel);
+                            }
                             readCondition.awaitNanos(waitTime);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             continue; // loop back again
                         }
                     } else {
-                        System.out.println("Waiting2: " + waitTime);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady waiting " + waitTime + " for min bytes to read: " + minBytesToRead + " with total bytes read: " + totalBytesRead + " on channel: " + nettyChannel);
+                        }
                         readCondition.awaitNanos(waitTime);
                     }
                 }
@@ -169,7 +189,9 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // Restore the interrupt status
         } finally {
-            System.out.println("Unlocking readLock awaitReadReady!");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady unlocking readLock for channel: " + nettyChannel);
+            }
             readLock.unlock();
         }
 
@@ -178,35 +200,39 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     @FFDCIgnore(RuntimeException.class)
     public synchronized long setToBuffer() {
-        System.out.println("Set to buffer called");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "NettyServletUpgradeHandler setToBuffer called for channel: " + nettyChannel);
+        }
 
         if (!containsQueuedData()) {
             return 0;
         }
         int currentQueuedDataSize = queuedDataSize();
         int remainingBufferSize = readContext.getBuffer().remaining();
-        System.out.println("CurrentQueuedSize: " + currentQueuedDataSize + ", remainingBufferSize: " + remainingBufferSize);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "NettyServletUpgradeHandler setToBuffer currentQueuedSize:" + currentQueuedDataSize + ", remainingBufferSize" + remainingBufferSize);
+        }
         if (currentQueuedDataSize >= minBytesToRead) {
-
-            System.out.println("Queue bigger than min bytes!");
-
             int readTotal = currentQueuedDataSize >= remainingBufferSize ? remainingBufferSize : currentQueuedDataSize;
-            System.out.println("Reading total: " + readTotal);
             byte[] bytes = ByteBufUtil.getBytes(read(readTotal, null));
-            System.out.println("Putting bytes: " + bytes);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "NettyServletUpgradeHandler setToBuffer queue bigger than min bytes. Reading total of: " + readTotal);
+            }
             try {
                 readContext.getBuffer().put(bytes);
             } catch (RuntimeException e) {
-                // TODO: handle exception
+                // TODO: See how best to handle this exception
                 // Assume this is async and if we get a runtime exception we can
                 // assume the buffer was already release therefore no need to continue here
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "NettyServletUpgradeHandler setToBuffer hit RuntimeException when adding bytes. We assume the buffer was already released so stop thread run.");
+                }
                 Thread.currentThread().interrupt();
             }
             
 
             // Reset totalBytesRead after fulfilling the read
             totalBytesRead -= bytes.length; // Adjust totalBytesRead
-            System.out.println("Total bytes read decreased!! " + bytes.length + " -> " + totalBytesRead);
             return bytes.length;
         }
         return 0;
@@ -216,31 +242,32 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
         // If we close the channel ourselves we need to destroy the connlink used because
         // in legacy, the upgrade handler calls destroy on it while closing the connection
-        System.out.println("In close, upgrade handler " + ctx.channel());
         if (vc != null) {
-            System.out.println("Upgrade handler vc not null");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "NettyServletUpgradeHandler close verifying Virtual Connection maps.");
+            }
             String upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
             if ("true".equalsIgnoreCase(upgraded)) {
-                System.out.println("Upgrade handler is upgraded");
                 Object webConnectionObject = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
                 if (webConnectionObject != null) {
-                    System.out.println("Upgrade handler in webconnection object");
                     if (webConnectionObject instanceof TransportConnectionAccess) {
-                        System.out.println("Upgrade handler in instance of");
                         TransportConnectionAccess tWebConn = (TransportConnectionAccess) webConnectionObject;
                         try {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "NettyServletUpgradeHandler close attempting to close TransportConnectionAccess.");
+                            }
                             tWebConn.close();
                         } catch (Exception webConnectionCloseException) {
                             //continue closing other resources
                             //I don't believe the close operation should fail - but record trace if it does
-//                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                                Tr.debug(tc, "Failed to close WebConnection {0}", webConnectionCloseException);
-//                            }
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Failed to close WebConnection {0}", webConnectionCloseException);
+                            }
                         }
                     } else {
-//                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                            Tr.debug(tc, "call application destroy if not done yet");
-//                        }
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "call application destroy if not done yet");
+                        }
                     }
                 }
             }
