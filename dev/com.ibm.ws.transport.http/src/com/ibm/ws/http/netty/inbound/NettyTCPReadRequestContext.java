@@ -166,10 +166,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         if (!nettyChannel.isActive()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Channel became inactive but still queueing up read! " + nettyChannel);
+                Tr.debug(this, tc, "Channel became inactive, not queueing read! " + nettyChannel);
             }
             // Channel is not active, do not proceed with the callback
-            // return vc; // Return
+             return vc; // Return
         }
 
         //Start a new thread that waits to be notified by the handler when enough data is accumulated. On completion, use the callback complete and return null

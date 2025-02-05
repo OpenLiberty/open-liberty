@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.ConnectionReadyCallback;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -19,6 +21,8 @@ import io.netty.channel.Channel;
  *
  */
 public class NettyConnectionLink implements ConnectionLink {
+    
+    private static final TraceComponent tc = Tr.register(NettyConnectionLink.class);
 
     Channel nettyChannel;
 
@@ -63,7 +67,13 @@ public class NettyConnectionLink implements ConnectionLink {
 
     @Override
     public void close(VirtualConnection vc, Exception e) {
-        nettyChannel.close();
+        try {
+            nettyChannel.close().sync();
+        } catch (Exception e2) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Exception was hit when closing the netty channel! Skipping exception " + nettyChannel, e2);
+            }
+        }
     }
 
     @Override

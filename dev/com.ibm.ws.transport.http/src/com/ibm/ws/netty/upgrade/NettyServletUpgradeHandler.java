@@ -13,6 +13,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.transport.access.TransportConnectionAccess;
+import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
@@ -21,6 +24,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -31,7 +35,7 @@ import io.openliberty.netty.internal.impl.QuiesceState;
 /**
  *
  */
-public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
+public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     private final CoalescingBufferQueue queue;
     private final Channel channel;
@@ -172,6 +176,7 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
         return dataReady;
     }
 
+    @FFDCIgnore(RuntimeException.class)
     public synchronized long setToBuffer() {
         System.out.println("Set to buffer called");
 
@@ -189,7 +194,15 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
             System.out.println("Reading total: " + readTotal);
             byte[] bytes = ByteBufUtil.getBytes(read(readTotal, null));
             System.out.println("Putting bytes: " + bytes);
-            readContext.getBuffer().put(bytes);
+            try {
+                readContext.getBuffer().put(bytes);
+            } catch (RuntimeException e) {
+                // TODO: handle exception
+                // Assume this is async and if we get a runtime exception we can
+                // assume the buffer was already release therefore no need to continue here
+                Thread.currentThread().interrupt();
+            }
+            
 
             // Reset totalBytesRead after fulfilling the read
             totalBytesRead -= bytes.length; // Adjust totalBytesRead
@@ -197,6 +210,42 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
             return bytes.length;
         }
         return 0;
+    }
+
+    @Override
+    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+        // If we close the channel ourselves we need to destroy the connlink used because
+        // in legacy, the upgrade handler calls destroy on it while closing the connection
+        System.out.println("In close, upgrade handler " + ctx.channel());
+        if (vc != null) {
+            System.out.println("Upgrade handler vc not null");
+            String upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
+            if ("true".equalsIgnoreCase(upgraded)) {
+                System.out.println("Upgrade handler is upgraded");
+                Object webConnectionObject = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
+                if (webConnectionObject != null) {
+                    System.out.println("Upgrade handler in webconnection object");
+                    if (webConnectionObject instanceof TransportConnectionAccess) {
+                        System.out.println("Upgrade handler in instance of");
+                        TransportConnectionAccess tWebConn = (TransportConnectionAccess) webConnectionObject;
+                        try {
+                            tWebConn.close();
+                        } catch (Exception webConnectionCloseException) {
+                            //continue closing other resources
+                            //I don't believe the close operation should fail - but record trace if it does
+//                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                                Tr.debug(tc, "Failed to close WebConnection {0}", webConnectionCloseException);
+//                            }
+                        }
+                    } else {
+//                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                            Tr.debug(tc, "call application destroy if not done yet");
+//                        }
+                    }
+                }
+            }
+        }
+        super.close(ctx, promise);
     }
 
     @Override
