@@ -40,10 +40,17 @@ public class CryptoUtils {
     public static boolean ibmJCEPlusFIPSAvailable = false;
     public static boolean openJCEPlusAvailable = false;
     public static boolean openJCEPlusFIPSAvailable = false;
+    //Alternative
+    public static boolean ibmJCECCAAvailable = false;
+    public static boolean ibmJCEHYBRIDAvailable = false;
+    
     public static boolean ibmJCEProviderChecked = false;
     public static boolean ibmJCEPlusFIPSProviderChecked = false;
     public static boolean openJCEPlusProviderChecked = false;
     public static boolean openJCEPlusFIPSProviderChecked = false;
+    //Alternative
+    public static boolean ibmJCECCAProviderChecked = false;
+    public static boolean ibmJCEHYBRIDProviderChecked = false;
 
     public static boolean unitTest = false;
     public static boolean fipsChecked = false;
@@ -62,11 +69,18 @@ public class CryptoUtils {
     public static String IBMJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.IBMJCEPlusFIPS";
     public static String OPENJCE_PLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
     public static String OPENJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlusFIPS";
+    //Alternative
+    //jdk 8 and semeru 17
+    public static String IBMJCEHYBRID_PROVIDER = "com.ibm.crypto.ibmjcehybrid.provider";
+    public static String IBMJCECCA_PROVIDER = "com.ibm.crypto.hdwrCCA.provider";
 
     public static final String IBMJCE_NAME = "IBMJCE";
     public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
     public static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
     public static final String OPENJCE_PLUS_FIPS_NAME = "OpenJCEPlusFIPS";
+    //Alternative
+    private static final String HW_PROVIDER = "IBMJCECCA";
+    private static final String HW_HYBRID_PROVIDER = "IBMJCEHYBRID";
 
     public static final String USE_FIPS_PROVIDER = "com.ibm.jsse2.usefipsprovider";
     public static final String USE_FIPS_PROVIDER_NAME = "com.ibm.jsse2.usefipsProviderName";
@@ -203,6 +217,27 @@ public class CryptoUtils {
         }
     }
 
+    //Alternative
+    public static boolean isIBMJCECCAAvailable() {
+        if (ibmJCECCAProviderChecked) {
+            return ibmJCECCAAvailable;
+        } else {
+            ibmJCECCAAvailable = JavaInfo.isSystemClassAvailable(IBMJCECCA_PROVIDER);
+            ibmJCECCAProviderChecked = true;
+            return ibmJCECCAAvailable;
+        }
+    }
+
+    public static boolean isIBMJCEHybridAvailable() {
+        if (ibmJCEHYBRIDProviderChecked) {
+            return ibmJCEHYBRIDAvailable;
+        } else {
+            ibmJCEHYBRIDAvailable = JavaInfo.isSystemClassAvailable(IBMJCEHYBRID_PROVIDER);
+            ibmJCEHYBRIDProviderChecked = true;
+            return ibmJCEHYBRIDAvailable;
+        }
+    }
+
     public static boolean isOpenJCEPlusFIPSAvailable() {
         if (openJCEPlusFIPSProviderChecked) {
             return openJCEPlusFIPSAvailable;
@@ -273,6 +308,25 @@ public class CryptoUtils {
             provider = OPENJCE_PLUS_NAME;
         } else if (isIBMJCEAvailable()) {
             provider = IBMJCE_NAME;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (provider != null) {
+                Tr.debug(tc, "Provider configured is " + provider);
+            } else {
+                Tr.debug(tc, "Provider configured by JDK is " + (Security.getProviders() != null ? Security.getProviders()[0].getName() : "NULL"));
+            }
+        }
+        return provider;
+    }
+
+    //Alternative
+    public static String getHyridHardwareProvider() {
+        String provider = null;
+         if (isIBMJCECCAAvailable()) {
+            provider = HW_PROVIDER;
+        } else if (isIBMJCEHybridAvailable()) {
+            provider = HW_HYBRID_PROVIDER;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

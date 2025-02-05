@@ -619,6 +619,7 @@ final class LTPACrypto {
                 : SecretKeyFactory.getInstance(encryptAlgorithm, provider);
             }
             else{
+                System.out.println("UserJDK Provider specified"+ userJdkProvider);
                 kFact = SecretKeyFactory.getInstance(encryptAlgorithm, userJdkProvider);
             }
 
@@ -664,6 +665,7 @@ final class LTPACrypto {
         if (userJdkProvider == null){
             ci = (provider == null) ? Cipher.getInstance(cipher) : Cipher.getInstance(cipher, provider);
         }else{
+            System.out.println("UserJDK Provider specified"+ userJdkProvider);
             ci = Cipher.getInstance(cipher, userJdkProvider);
         }
 
