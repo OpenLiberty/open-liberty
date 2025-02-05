@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -64,6 +65,7 @@ public class LibertyJAXBSpecTest {
      * This property doesn't work for them.
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 9)
     @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     public void testBackupWithParentNamespaceTrue_Servlet() throws Exception {
         Map<String, String> map = server.getJvmOptionsAsMap();

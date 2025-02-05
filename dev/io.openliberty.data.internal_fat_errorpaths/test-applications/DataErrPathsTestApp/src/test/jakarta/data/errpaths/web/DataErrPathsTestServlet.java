@@ -16,6 +16,7 @@ import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
@@ -644,6 +645,23 @@ public class DataErrPathsTestServlet extends FATServlet {
                 !x.getMessage().startsWith("CWWKD1094E:") ||
                 !x.getMessage().contains("register") ||
                 !x.getMessage().contains("Voter[]"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised when attempting to insert a null
+     * record entity.
+     */
+    @Test
+    public void testInsertNullRecordEntity() {
+        try {
+            voters.addPollingLocation(null);
+            fail("Should not be able to insert a null entity.");
+        } catch (NullPointerException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1015E") ||
+                !x.getMessage().contains("addPollingLocation"))
                 throw x;
         }
     }
@@ -1359,6 +1377,26 @@ public class DataErrPathsTestServlet extends FATServlet {
                 x.getMessage().contains("Voters$NameAndZipCode"))
                 ; // expected
             else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised when attempting to save a list of
+     * record entities in which one is null.
+     */
+    @Test
+    public void testSaveListWithNullRecordEntity() {
+        PollingLocation loc1 = PollingLocation
+                        .of(42, "201 4th St SE, Rochester, MN 55904", 4, 2, //
+                            LocalTime.of(7, 0), LocalTime.of(20, 0));
+        try {
+            voters.addOrUpdate(Arrays.asList(loc1, null));
+            fail("Should not be able to save a list containing a null entity.");
+        } catch (NullPointerException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1015E") ||
+                !x.getMessage().contains("addOrUpdate"))
                 throw x;
         }
     }

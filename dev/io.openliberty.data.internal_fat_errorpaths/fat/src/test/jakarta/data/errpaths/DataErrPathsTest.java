@@ -58,6 +58,8 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1009E.*storeNothing", // Save method without parameters
                                    "CWWKD1009E.*storeInDatabase", // Save method with multiple parameters
                                    "CWWKD1010E.*nameAndZipCode", // Record return type with invalid attribute name
+                                   "CWWKD1015E.*addPollingLocation", // insert null entity
+                                   "CWWKD1015E.*addOrUpdatePollingLocation", // save null entity
                                    "CWWKD1017E.*livesAt", // multiple Limit parameters
                                    "CWWKD1017E.*residesAt", // multiple PageRequest parameters
                                    "CWWKD1018E.*inhabiting", // intermixed Limit and PageRequest

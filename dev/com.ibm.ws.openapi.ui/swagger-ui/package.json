@@ -42,6 +42,7 @@
   "overrides": {
     "axios": "npm:dry-uninstall",
     "prismjs": "npm:dry-uninstall",
+    "@scarf/scarf": "npm:dry-uninstall",
     "dompurify": "^3.2.3"
   },
   "browserslist": [

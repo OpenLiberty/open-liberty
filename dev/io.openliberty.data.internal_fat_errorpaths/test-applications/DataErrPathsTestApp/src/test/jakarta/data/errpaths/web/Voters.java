@@ -54,6 +54,12 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     @Insert
     Voter[] addNothing();
 
+    @Save
+    void addOrUpdate(List<PollingLocation> list);
+
+    @Insert
+    void addPollingLocation(PollingLocation loc);
+
     /**
      * Invalid method. A method with a life cycle annotation must have exactly
      * 1 parameter, not multiple.
