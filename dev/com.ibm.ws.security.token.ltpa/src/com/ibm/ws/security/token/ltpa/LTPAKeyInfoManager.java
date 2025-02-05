@@ -237,6 +237,9 @@ public class LTPAKeyInfoManager {
             Tr.info(tc, "LTPA_CREATE_KEYS_START");
 
             LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
+            if(userJdkProvider!=null){
+                props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword, userJdkProvider);
+            }
             props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
 
             Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);

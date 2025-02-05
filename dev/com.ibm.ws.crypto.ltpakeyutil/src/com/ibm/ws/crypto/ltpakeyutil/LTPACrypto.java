@@ -695,8 +695,22 @@ final class LTPACrypto {
      */
     @Trivial
     protected static final byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
-        SecretKey sKey = constructSecretKey(key, cipher);
-        Cipher ci = createCipher(Cipher.ENCRYPT_MODE, key, cipher, sKey);
+        return encrypt(data, key, cipher, null);
+    }
+
+    /**
+     * Encrypt the data.
+     *
+     * @param data   The byte representation of the data
+     * @param key    The key used to encrypt the data
+     * @param cipher The cipher algorithm
+     * @param userJdkProvider    The JDK provider to be used to decrypt the LTPA key
+     * @return The encrypted data (ciphertext)
+     */
+    @Trivial
+    protected static final byte[] encrypt(byte[] data, byte[] key, String cipher, String userJdkProvider) throws Exception {
+        SecretKey sKey = constructSecretKey(key,cipher, userJdkProvider);
+        Cipher ci = createCipher(Cipher.ENCRYPT_MODE, key, cipher, sKey, userJdkProvider);
         return ci.doFinal(data);
     }
 
@@ -707,7 +721,6 @@ final class LTPACrypto {
      * @param msg              The byte representation of the data
      * @param key              The key used to decrypt the data
      * @param cipher            The cipher algorithm
-     * @param userJdkProvider    The JDK provider to be used to decrypt the LTPA key
      * @return The decrypted data (plaintext)
      */
     @Trivial

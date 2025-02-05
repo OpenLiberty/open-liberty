@@ -74,6 +74,16 @@ public class KeyEncryptor {
 	 * @return The encrypted key
 	 */
 	public byte[] encrypt(byte[] key) throws Exception {
-		return LTPACrypto.encrypt(key, this.key, CIPHER);
+		return encrypt(key, null);
+	}
+
+    	/**
+	 * Encrypt the key
+	 *
+	 * @param key The key
+	 * @return The encrypted key
+	 */
+	public byte[] encrypt(byte[] key, String userJdkProvider) throws Exception {
+		return LTPACrypto.encrypt(key, this.key, CIPHER, userJdkProvider);
 	}
 }
