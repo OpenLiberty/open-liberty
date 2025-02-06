@@ -357,7 +357,7 @@ public class CryptoUtils {
 
     public static boolean isFips140_3Enabled() {
 
-        boolean result = ("140-3".equals(FIPSLevel) || "true".equals(getPropertyLowerCase("global.fips_140-3", "false")) || isSemeruFips())
+        boolean result = ("140-3".equals(FIPSLevel) || isSemeruFips())
                          && isRunningBetaMode();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "isFips140_3Enabled: " + result);
