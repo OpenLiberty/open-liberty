@@ -62,7 +62,7 @@ public class H2PushPromise extends HttpServlet {
             pw.close();
             response.flushBuffer();
 
-        } else if ("pushbulder".equalsIgnoreCase(test)) {
+        } else if ("pushbuilder".equalsIgnoreCase(test)) {
 
             // Test the pushbuilder path
             pw.println("push_promise PushBuilder");
