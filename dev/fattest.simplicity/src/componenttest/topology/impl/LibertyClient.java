@@ -672,22 +672,20 @@ public class LibertyClient {
         if (isFIPS140_3EnabledAndSupported()) {
             Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
 
-            if (javaInfo.majorVersion() == 17){
+            if (javaInfo.majorVersion() == 17) {
                 Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
                                                    + " with IBM Java 17, adding required JVM arguments to run with FIPS 140-3 enabled");
-                                                   
+
                 JVM_ARGS += " -Dsemeru.fips=true";
                 JVM_ARGS += " -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-withPKCS12";
-                JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
                 // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
             } else if (javaInfo.majorVersion() == 8) {
                 Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
-                                               + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
+                                                   + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
 
                 JVM_ARGS += " -Xenablefips140-3";
                 JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
                 JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-                JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
                 // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
             }
         }
@@ -764,16 +762,16 @@ public class LibertyClient {
             String clientSecurityDir = clientRoot + File.separator + "resources" + File.separator + "security";
             File ltpaFIPSKeys = new File(clientSecurityDir, "ltpaFIPS.keys");
             File ltpaKeys = new File(clientSecurityDir, "ltpa.keys");
-        
+
             if (!ltpaKeys.exists() && !ltpaFIPSKeys.exists()) {
-                Log.info(this.getClass(), "startClientWithArgs", 
-                        "FIPS 140-3 global build properties are set for client " + getClientName() 
-                        + ", but neither ltpa.keys nor ltpaFIPS.keys is found in " + clientSecurityDir);
+                Log.info(this.getClass(), "startClientWithArgs",
+                         "FIPS 140-3 global build properties are set for client " + getClientName()
+                                                                 + ", but neither ltpa.keys nor ltpaFIPS.keys is found in " + clientSecurityDir);
             } else {
-                Log.info(this.getClass(), "startClientWithArgs", 
-                        "FIPS 140-3 global build properties are set for client " + getClientName() 
-                        + ", swapping ltpaFIPS.keys into ltpa.keys");
-        
+                Log.info(this.getClass(), "startClientWithArgs",
+                         "FIPS 140-3 global build properties are set for client " + getClientName()
+                                                                 + ", swapping ltpaFIPS.keys into ltpa.keys");
+
                 try {
                     // Delete ltpa.keys if it exists
                     if (ltpaKeys.exists()) {
@@ -784,7 +782,7 @@ public class LibertyClient {
                             Thread.sleep(1000);
                         }
                     }
-        
+
                     // Rename ltpaFIPS.keys to ltpa.keys if ltpaFIPS.keys exists
                     if (ltpaFIPSKeys.exists()) {
                         if (!ltpaFIPSKeys.renameTo(ltpaKeys)) {
@@ -793,17 +791,17 @@ public class LibertyClient {
                             Log.info(this.getClass(), "startClientWithArgs", "Waiting for 1 second after rename.");
                             Thread.sleep(1000);
                         }
-                    
+
                         // Log the content of ltpa.keys
                         String content = FileUtils.readFile(ltpaKeys.getAbsolutePath());
                         Log.info(this.getClass(), "printLtpaKeys", "Content of ltpa.keys: " + content);
                     }
-        
+
                 } catch (Exception e) {
                     Log.info(this.getClass(), "startClientWithArgs", "Error during ltpa.keys handling: " + e.getMessage());
                 }
             }
-        }        
+        }
 
         ProgramOutput output;
         if (executeAsync) {
