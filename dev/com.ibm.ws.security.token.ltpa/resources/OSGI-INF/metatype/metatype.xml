@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2023 IBM Corporation and others.
+    Copyright (c) 2011, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -48,6 +48,8 @@
         <AD id="expirationDifferenceAllowed" name="internal" description="internal use only"
             required="false" type="String" ibm:type="duration(ms)" 
             default="3000ms" /> 
+        <AD id="provider" name="%provider" description="%provider.desc"
+            required="false" type="String" default="" />
         <AD id="validationKeys" ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" 
            	required="false" type="String" 
             ibm:flat="true" cardinality="2147483647"/>        

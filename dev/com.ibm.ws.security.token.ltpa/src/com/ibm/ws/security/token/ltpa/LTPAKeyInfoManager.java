@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -121,8 +121,24 @@ public class LTPAKeyInfoManager {
     @SuppressWarnings("deprecation")
     public synchronized final void prepareLTPAKeyInfo(WsLocationAdmin locService, String primaryKeyImportFile, @Sensitive byte[] primaryKeyPassword,
                                                       @Sensitive List<Properties> validationKeys) throws Exception {
+        prepareLTPAKeyInfo(locService, primaryKeyImportFile, primaryKeyPassword, validationKeys, null);
+    }
+
+        /**
+     * Loads the contents of the primary/validation LTPA key import file if necessary.
+     *
+     * @param primaryKeyImportFile The URL of the key import file. If it's not the URL, it is assumed as a relative path from
+     *                                 ${app.root}/config
+     * @param primaryKeyPassword   The password of the LTPA keys
+     * @param validationKeys       The validationKeys
+     * @param userJdkProvider       The JDK provider to be used to decrypt the LTPA key
+     * @throws IOException
+     */
+    @SuppressWarnings("deprecation")
+    public synchronized final void prepareLTPAKeyInfo(WsLocationAdmin locService, String primaryKeyImportFile, @Sensitive byte[] primaryKeyPassword,
+                                                      @Sensitive List<Properties> validationKeys, String userJdkProvider) throws Exception {
         if (!this.importFileCache.contains(primaryKeyImportFile)) {
-            loadLtpaKeysFile(locService, primaryKeyImportFile, primaryKeyPassword, false, null);
+            loadLtpaKeysFile(locService, primaryKeyImportFile, primaryKeyPassword, false, null, userJdkProvider);
         }
         if (validationKeys != null && !validationKeys.isEmpty()) {
             ltpaValidationKeysInfos.clear();
@@ -147,7 +163,7 @@ public class LTPAKeyInfoManager {
                     }
 
                     byte[] password = getKeyPasswordBytes(vKeys);
-                    loadLtpaKeysFile(locService, filename, password, true, validUntilDateOdt);
+                    loadLtpaKeysFile(locService, filename, password, true, validUntilDateOdt, userJdkProvider);
                 }
             }
         }
@@ -202,7 +218,7 @@ public class LTPAKeyInfoManager {
      * @throws Exception
      */
     private void loadLtpaKeysFile(WsLocationAdmin locService, String keyImportFile, byte[] keyPassword, boolean validationKey,
-                                  OffsetDateTime validUntilDateOdt) throws IOException, Exception {
+                                  OffsetDateTime validUntilDateOdt, String userJdkProvider) throws IOException, Exception {
         // Need to load the key import file
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Loading LTPA " + (validationKey == true ? "validation" : "primary") + "Keys file: " + keyImportFile);
@@ -221,6 +237,9 @@ public class LTPAKeyInfoManager {
             Tr.info(tc, "LTPA_CREATE_KEYS_START");
 
             LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
+            if(userJdkProvider!=null){
+                props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword, userJdkProvider);
+            }
             props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
 
             Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);
@@ -244,7 +263,12 @@ public class LTPAKeyInfoManager {
                 throw new IllegalArgumentException(formattedMessage);
             } else {
                 byte[] keyEncoded = Base64Coder.base64DecodeString(secretKeyStr);
-                secretKey = encryptor.decrypt(keyEncoded);
+                if (userJdkProvider != null){
+                    secretKey = encryptor.decrypt(keyEncoded, userJdkProvider);
+                }
+                else{
+                    secretKey = encryptor.decrypt(keyEncoded);
+                }
             }
             // Private key
             if ((privateKeyStr == null) || (privateKeyStr.length() == 0)) {
@@ -253,7 +277,12 @@ public class LTPAKeyInfoManager {
                 throw new IllegalArgumentException(formattedMessage);
             } else {
                 byte[] keyEncoded = Base64Coder.base64DecodeString(privateKeyStr);
+                if (userJdkProvider != null){
+                    privateKey = encryptor.decrypt(keyEncoded, userJdkProvider);
+                }
+                else{
                 privateKey = encryptor.decrypt(keyEncoded);
+                }
             }
             // Public key
             if ((publicKeyStr == null) || (publicKeyStr.length() == 0)) {

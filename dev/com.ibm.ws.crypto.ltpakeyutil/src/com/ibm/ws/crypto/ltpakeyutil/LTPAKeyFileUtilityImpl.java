@@ -36,7 +36,7 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
         return ltpaProps;
     }
 
-    /**
+       /**
      * Generates the LTPA keys and stores them into a Properties object.
      *
      * @param keyPasswordBytes
@@ -45,6 +45,18 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
      * @throws Exception
      */
     protected final Properties generateLTPAKeys(byte[] keyPasswordBytes, final String realm) throws Exception {
+        return generateLTPAKeys(keyPasswordBytes, realm, null);
+    }
+
+    /**
+     * Generates the LTPA keys and stores them into a Properties object.
+     *
+     * @param keyPasswordBytes
+     * @param realm
+     * @return
+     * @throws Exception
+     */
+    protected final Properties generateLTPAKeys(byte[] keyPasswordBytes, final String realm, String userJdkProvider) throws Exception {
         Properties expProps = null;
 
         try {

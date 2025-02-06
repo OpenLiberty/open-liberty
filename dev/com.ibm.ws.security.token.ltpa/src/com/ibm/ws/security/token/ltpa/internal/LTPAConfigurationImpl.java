@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -73,6 +73,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
     static final String KEY_AUTH_FILTER_REF = "authFilterRef";
     static final String KEY_EXP_DIFF_ALLOWED = "expirationDifferenceAllowed";
+    static final String USER_JDK_PROVIDER ="provider";
     static protected final String KEY_SERVICE_PID = "service.pid";
     private final AtomicServiceReference<WsLocationAdmin> locationService = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_SERVICE);
     private final AtomicServiceReference<ExecutorService> executorService = new AtomicServiceReference<ExecutorService>(KEY_EXECUTOR_SERVICE);
@@ -96,6 +97,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private String authFilterRef;
     private long expirationDifferenceAllowed;
     private boolean monitorValidationKeysDir;
+    private String userJdkProvider;
     private String updateTrigger;
     private final List<Properties> validationKeys = new ArrayList<Properties>();
     // configValidationKeys are specified in the server xml configuration
@@ -196,6 +198,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         // expirationDifferenceAllowed is set to 3 seconds (3000ms) by default.
         // If expirationDifferenceAllowed is set to less than 0, then the two expiration values will not be compared in the LTPAToken2.decrypt() method.
         expirationDifferenceAllowed = (Long) props.get(KEY_EXP_DIFF_ALLOWED);
+        userJdkProvider = (String) props.get(USER_JDK_PROVIDER);
         monitorValidationKeysDir = (Boolean) props.get(CFG_KEY_MONITOR_VALIDATION_KEYS_DIR);
         updateTrigger = (String) props.get(CFG_KEY_UPDATE_TRIGGER);
 
@@ -747,6 +750,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Override
     public long getExpirationDifferenceAllowed() {
         return expirationDifferenceAllowed;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getUserJdkProvider() {
+        return userJdkProvider;
     }
 
     /**

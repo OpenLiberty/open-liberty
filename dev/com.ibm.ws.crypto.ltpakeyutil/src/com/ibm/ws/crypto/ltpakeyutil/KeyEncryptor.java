@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,14 +45,26 @@ public class KeyEncryptor {
 		}
 	}
 
-	/**
+    /**
 	 * Decrypt the key.
 	 *
 	 * @param encryptedKey The encrypted key
 	 * @return The decrypted key
 	 */
 	public byte[] decrypt(byte[] encryptedKey) throws Exception {
-		return LTPACrypto.decrypt(encryptedKey, key, CIPHER);
+        return decrypt(encryptedKey, null);
+    }
+
+    /**
+	 * Decrypt the key.
+	 *
+	 * @param encryptedKey   The encrypted key
+     * @param userJdkProvider The JDK Provider to use to decrypt the LTPA key
+	 * @return The decrypted key
+	 */
+
+	public byte[] decrypt(byte[] encryptedKey, String userJdkProvider) throws Exception {
+		return LTPACrypto.decrypt(encryptedKey, key, CIPHER, userJdkProvider);
 	}
 
 	/**
@@ -62,6 +74,16 @@ public class KeyEncryptor {
 	 * @return The encrypted key
 	 */
 	public byte[] encrypt(byte[] key) throws Exception {
-		return LTPACrypto.encrypt(key, this.key, CIPHER);
+		return encrypt(key, null);
+	}
+
+    	/**
+	 * Encrypt the key
+	 *
+	 * @param key The key
+	 * @return The encrypted key
+	 */
+	public byte[] encrypt(byte[] key, String userJdkProvider) throws Exception {
+		return LTPACrypto.encrypt(key, this.key, CIPHER, userJdkProvider);
 	}
 }
