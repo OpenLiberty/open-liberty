@@ -227,8 +227,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(this, tc, "Channel became inactive before async callback is called! Still calling it " + nettyChannel);
                                 }
-                                // Channel became inactive while waiting for data, skip callback execution
-                                // return; // Exit the task execution
+                                // Channel became inactive while waiting for data, still do the callback for the leftover data left in the channel
                             }
                             try {
                                 callback.complete(vc, this);
