@@ -1128,8 +1128,10 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
             if(cookie.getAttribute("samesite") != null && cookie.getAttribute("samesite").equals(HttpConfigConstants.SameSite.NONE.getName())){
                 String userAgent = getServiceContext().getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString();
                 if(userAgent != null && SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent)){
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && setCookieNames.containsKey(cookie.getName())) {
-                        Tr.debug(tc, "Incompatible client for SameSite=None found with the following User-Agent: " + userAgent);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                        if(filterDuplicates && setCookieNames != null && setCookieNames.containsKey(cookie.getName())){
+                            Tr.debug(tc, "Incompatible client for SameSite=None found with the following User-Agent: " + userAgent);
+                        }
                     }
                     cookie.setAttribute("samesite", null);
                     if(partitionedValue != null){
