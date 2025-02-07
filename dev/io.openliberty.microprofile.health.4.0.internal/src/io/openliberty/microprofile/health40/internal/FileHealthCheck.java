@@ -11,8 +11,12 @@ package io.openliberty.microprofile.health40.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
+import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.HealthCheckResponse.Status;
 
 import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
 
@@ -67,13 +71,13 @@ public class FileHealthCheck {
 
         //Health Dir does not exist -> create and test write
         if (!healthDir.exists()) {
-            if (!createDirectory(healthDir)) {
+            if (!FileUtils.createDirectory(healthDir)) {
                 isValidSystem = false;
                 return;
             }
 
             //Testing write.
-            if (!canWrite(healthDir)) {
+            if (!FileUtils.canWrite(healthDir)) {
                 isValidSystem = false;
                 return;
             }
@@ -96,7 +100,7 @@ public class FileHealthCheck {
                         isValidSystem = false;
                         return;
                     } else {
-                        if (!deleteFiles(f)) {
+                        if (!FileUtils.deleteFiles(f)) {
                             isValidSystem = false;
                             return;
                         }
@@ -105,7 +109,7 @@ public class FileHealthCheck {
             } //end for
 
             //Testing write.
-            if (!canWrite(healthDir)) {
+            if (!FileUtils.canWrite(healthDir)) {
                 isValidSystem = false;
                 return;
             }
@@ -115,86 +119,68 @@ public class FileHealthCheck {
     //Called by AppTracker (After a appliation is started)
     public void startProcesses() {
 
-        File startFile = new File(healthDir, "started");
+        File startFile = new File(healthDir, HealthCheckFileName.STARTED_FILE.getFileName());
+        File readyFile = new File(healthDir, HealthCheckFileName.READY_FILE.getFileName());
+        File liveFile = new File(healthDir, HealthCheckFileName.LIVE_FILE.getFileName());
+
+        //TODO: if no instance found, will need to fail.
 
         //Initial Check
         HealthCheck40ServiceImpl inst;
         //refactor make these classes extend parent class
         if ((inst = HealthCheck40ServiceImpl.getInstance()) != null) {
-            inst.performFileHealthCheck(startFile, HealthCheckConstants.HEALTH_CHECK_START);
-            inst.performFileHealthCheck(startFile, HealthCheckConstants.HEALTH_CHECK_READY);
-            inst.performFileHealthCheck(startFile, HealthCheckConstants.HEALTH_CHECK_LIVE);
-        }
 
-        //Timer tasks.
-    }
+            if (inst.performFileHealthCheck(startFile, HealthCheckConstants.HEALTH_CHECK_START).equals(Status.DOWN)) {
+                Timer startedTimer = new Timer(false);
+                startedTimer.schedule(new FileUpdateProcess(startFile, inst, HealthCheckConstants.HEALTH_CHECK_START, true), 0, 1000);
+            }
 
-    ///////////////////////////////////
-    //Utility
-    ///////////////////////////////////
+            //TODO: Read Config. Substitute values.
 
-    private boolean xkccheckWrite(File parentDir) {
-        try {
-            File tempHealthFile = File.createTempFile("health", null, parentDir);
-            tempHealthFile.delete();
-            return true;
-        } catch (IOException | SecurityException e) {
-            //failed -> return;
-            //TODO warning
-            return false;
-        }
-    }
+            /*
+             * Below are the perpertual tasks.
+             */
 
-    private boolean canWrite(File parentDir) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            File isCanWrite = new File(parentDir, "file");
-            return isCanWrite.canWrite();
-        } catch (SecurityException ioe) {
-            //TODO: Warning about creation.
-            return false;
-        } finally {
-            ThreadIdentityManager.reset(token);
+            inst.performFileHealthCheck(readyFile, HealthCheckConstants.HEALTH_CHECK_READY).equals(Status.DOWN);
+            Timer readyTimer = new Timer(false);
+            readyTimer.schedule(new FileUpdateProcess(readyFile, inst, HealthCheckConstants.HEALTH_CHECK_READY), 0, 1000);
+
+            inst.performFileHealthCheck(liveFile, HealthCheckConstants.HEALTH_CHECK_LIVE).equals(Status.DOWN);
+            Timer liveTimer = new Timer(false);
+            liveTimer.schedule(new FileUpdateProcess(liveFile, inst, HealthCheckConstants.HEALTH_CHECK_LIVE), 0, 1000);
+
         }
     }
 
-    public boolean createFile(File file) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            file.deleteOnExit();
-            return file.createNewFile();
-        } catch (IOException ioe) {
-            //TODO: Warning about creation.
-            return false;
-        } finally {
-            ThreadIdentityManager.reset(token);
+    public class FileUpdateProcess extends TimerTask {
+
+        HealthCheck40ServiceImpl inst;
+        File file;
+        String healthCheckProcedure;
+        boolean isStopOnCreate = false;
+
+        public FileUpdateProcess(File file, HealthCheck40ServiceImpl inst, String healthCheckProcedure) {
+            this(file, inst, healthCheckProcedure, false);
+        }
+
+        public FileUpdateProcess(File file, HealthCheck40ServiceImpl inst, String healthCheckProcedure, boolean isStopOnCreate) {
+            this.inst = inst;
+            this.file = file;
+            this.isStopOnCreate = isStopOnCreate;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("hi running for file " + file.getName());
+            inst.performFileHealthCheck(file, HealthCheckConstants.HEALTH_CHECK_START);
+            if (isStopOnCreate && file.exists()) {
+                System.out.println("Misson accomplished, canceleling for file " + file.getName());
+                cancel();
+            }
+
         }
     }
 
-    public boolean createDirectory(File file) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            file.deleteOnExit();
-            return file.mkdir();
-        } catch (SecurityException se) {
-            //TODO: Warning about creation.
-            return false;
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
-    }
-
-    public boolean deleteFiles(File file) {
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            return file.delete();
-        } catch (SecurityException e) {
-            //TODO: issue waring
-            return false;
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
-    }
     //Timer tasks?
 
     enum HealthCheckFileName {
@@ -211,6 +197,71 @@ public class FileHealthCheck {
         String getFileName() {
             return fileName;
         }
+    }
+
+    public static class FileHealthCheckBuilder {
+
+        private Status overallStatus = Status.UP;
+
+        private final File file;
+
+        /*
+         * Never used
+         */
+        private FileHealthCheckBuilder() {
+            file = null;
+        }
+
+        public FileHealthCheckBuilder(File file) {
+            this.file = file;
+        }
+
+        /**
+         * Ultimately checks if there is a DOWN and sets overallStatus as down.
+         *
+         * @param hcResponseSet Set of queried health checks.
+         */
+        public void addResponses(Set<HealthCheckResponse> hcResponseSet) {
+            for (HealthCheckResponse hcr : hcResponseSet) {
+                if (hcr.getStatus().equals(Status.DOWN)) {
+                    overallStatus = Status.DOWN;
+                    return;
+                }
+            }
+        }
+
+        /*
+         * No information, means down.
+         */
+        public void handleUndeterminedResponse() {
+            overallStatus = Status.DOWN;
+        }
+
+        public void setOverallStatus(Status status) {
+            overallStatus = status;
+        }
+
+        public void updateFile() {
+
+            if (overallStatus.equals(Status.DOWN)) {
+                return;
+            }
+
+            if (!file.exists()) {
+                //Any failures during runtime? Count failures and at some point. stop?
+                if (!FileUtils.createFile(file)) {
+                    return;
+                }
+            }
+
+            FileUtils.setLastModified(file);
+
+        }
+
+        public Status getOverallStatus() {
+            return overallStatus;
+        }
+
     }
 
 }

@@ -53,8 +53,9 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
             Tr.debug(tc, "AppTrackerImpl is activated");
 
         /*
-         * check read/write
-         * create Dir as necessary, test write
+         * DEV:
+         * Ensuring we can write to /health and write files.
+         *
          */
         try {
             FileHealthCheck.getInstance().initHealthFileValidation();
@@ -126,8 +127,12 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
                     Tr.debug(tc, "applicationStarted(): started app updated in appStateMap = " + appStateMap.toString() + " for app: " + appName);
             }
 
+            /*
+             * DEV: done once
+             * Start processes.
+             */
             if (!isFirstStarted.getAndSet(true)) {
-                //FileClass.do();
+                FileHealthCheck.getInstance().startProcesses();
 
             }
         } finally {

@@ -35,12 +35,12 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 
 import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
 import io.openliberty.microprofile.health30.internal.HealthCheck30HttpResponseBuilder;
+import io.openliberty.microprofile.health40.internal.FileHealthCheck.FileHealthCheckBuilder;
 import io.openliberty.microprofile.health40.services.HealthCheck40Executor;
 
 /**
@@ -173,56 +173,34 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         Set<String> appSet = validateApplicationSet();
         Set<String> unstartedAppSet = new HashSet<String>();
 
-        runHealthChecks(appSet, healthCheckProcedure, unstartedAppSet, x -> hcHttpResponseBuilder.setOverallStatus(x),
+        runHealthChecks(appSet, healthCheckProcedure, unstartedAppSet, status -> hcHttpResponseBuilder.setOverallStatus(status),
                         x -> hcHttpResponseBuilder.handleUndeterminedResponse(httpResponse),
-                        x -> hcHttpResponseBuilder.addResponses(x));
+                        responses -> hcHttpResponseBuilder.addResponses(responses));
 
         unstartedShenanigans(unstartedAppSet, healthCheckProcedure);
 
         hcHttpResponseBuilder.setHttpResponse(httpResponse);
     }
 
-    public void performFileHealthCheck(File file, String healthCheckProcedure) {
+    public Status performFileHealthCheck(File file, String healthCheckProcedure) {
 
         Set<String> appSet = validateApplicationSet();
         Set<String> unstartedAppSet = new HashSet<String>();
 
         //run health checks
 
-        Consumer<File> touchFx = incFile -> {
-            Object token = ThreadIdentityManager.runAsServer();
-            try {
-                if (!incFile.setLastModified(System.currentTimeMillis())) {
-                    //TODO: failed to touch.
-                }
-            } catch (Exception e) {
-                //warning
-            } finally {
-                ThreadIdentityManager.reset(token);
-            }
-        };
+        FileHealthCheckBuilder fhc = new FileHealthCheckBuilder(file);
 
         runHealthChecks(appSet, healthCheckProcedure, unstartedAppSet,
-                        status -> {
-                            if (status.equals(Status.UP))
-                                touchFx.accept(file);
-                        },
-                        t -> {
-                        },
-                        set -> {
-                            boolean isUp = true;
-                            for (HealthCheckResponse hcr : set) {
-                                if (hcr.getStatus().equals(Status.DOWN)) {
-                                    isUp = false;
-                                    return;
-                                }
-                            }
+                        status -> fhc.setOverallStatus(status),
+                        x -> fhc.handleUndeterminedResponse(),
+                        responses -> fhc.addResponses(responses));
 
-                            if (isUp)
-                                touchFx.accept(file);
-                        });
+        fhc.updateFile();
 
         unstartedShenanigans(unstartedAppSet, healthCheckProcedure);
+
+        return fhc.getOverallStatus();
 
     }
 
