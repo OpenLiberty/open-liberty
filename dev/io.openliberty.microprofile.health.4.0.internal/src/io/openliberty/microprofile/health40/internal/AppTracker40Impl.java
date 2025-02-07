@@ -9,6 +9,12 @@
  *******************************************************************************/
 package io.openliberty.microprofile.health40.internal;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -34,6 +40,32 @@ import com.ibm.wsspi.application.ApplicationState;
 public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(AppTracker40Impl.class);
+
+    /*
+     * Flag to indicate first started
+     */
+    private static AtomicBoolean isFirstStarted = new AtomicBoolean(false);
+
+    @Override
+    @Activate
+    protected void activate(ComponentContext cc, Map<String, Object> properties) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "AppTrackerImpl is activated");
+
+        /*
+         * check read/write
+         * create Dir as necessary, test write
+         */
+        try {
+            FileHealthCheck.getInstance().initHealthFileValidation();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            // https://websphere.pok.ibm.com/~alpine/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
+            e.printStackTrace();
+        }
+
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -92,6 +124,11 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
                 appStateMap.replace(appName, ApplicationState.STARTING, ApplicationState.STARTED);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "applicationStarted(): started app updated in appStateMap = " + appStateMap.toString() + " for app: " + appName);
+            }
+
+            if (!isFirstStarted.getAndSet(true)) {
+                //FileClass.do();
+
             }
         } finally {
             lock.writeLock().unlock();
