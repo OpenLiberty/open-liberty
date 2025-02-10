@@ -11,11 +11,9 @@ package io.openliberty.microprofile.health40.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponse.Status;
 
 import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
@@ -197,71 +195,6 @@ public class FileHealthCheck {
         String getFileName() {
             return fileName;
         }
-    }
-
-    public static class FileHealthCheckBuilder {
-
-        private Status overallStatus = Status.UP;
-
-        private final File file;
-
-        /*
-         * Never used
-         */
-        private FileHealthCheckBuilder() {
-            file = null;
-        }
-
-        public FileHealthCheckBuilder(File file) {
-            this.file = file;
-        }
-
-        /**
-         * Ultimately checks if there is a DOWN and sets overallStatus as down.
-         *
-         * @param hcResponseSet Set of queried health checks.
-         */
-        public void addResponses(Set<HealthCheckResponse> hcResponseSet) {
-            for (HealthCheckResponse hcr : hcResponseSet) {
-                if (hcr.getStatus().equals(Status.DOWN)) {
-                    overallStatus = Status.DOWN;
-                    return;
-                }
-            }
-        }
-
-        /*
-         * No information, means down.
-         */
-        public void handleUndeterminedResponse() {
-            overallStatus = Status.DOWN;
-        }
-
-        public void setOverallStatus(Status status) {
-            overallStatus = status;
-        }
-
-        public void updateFile() {
-
-            if (overallStatus.equals(Status.DOWN)) {
-                return;
-            }
-
-            if (!file.exists()) {
-                //Any failures during runtime? Count failures and at some point. stop?
-                if (!FileUtils.createFile(file)) {
-                    return;
-                }
-            }
-
-            FileUtils.setLastModified(file);
-
-        }
-
-        public Status getOverallStatus() {
-            return overallStatus;
-        }
-
     }
 
 }

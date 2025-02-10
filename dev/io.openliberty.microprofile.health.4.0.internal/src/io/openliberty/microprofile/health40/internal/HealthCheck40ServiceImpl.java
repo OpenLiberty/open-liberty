@@ -40,7 +40,6 @@ import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 
 import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
 import io.openliberty.microprofile.health30.internal.HealthCheck30HttpResponseBuilder;
-import io.openliberty.microprofile.health40.internal.FileHealthCheck.FileHealthCheckBuilder;
 import io.openliberty.microprofile.health40.services.HealthCheck40Executor;
 
 /**
