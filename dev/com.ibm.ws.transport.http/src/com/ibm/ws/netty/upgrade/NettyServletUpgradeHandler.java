@@ -120,6 +120,8 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 Tr.debug(this, tc, "NettyServletUpgradeHandler immediateTimeout waiting to finish immediate timeout on channel: " + channel);
             }
             System.out.println("NettyServletUpgradeHandler immediateTimeout waiting to finish immediate timeout on channel: " + channel);
+            // TODO If this is kept and not removed when disabling auto read, switch this logic to provide assertion of not running
+            // in the event loop and run a repeatable task with ScheduledExecutorService
             try {
                 Thread.sleep(1000);
             } catch (Exception e) {
