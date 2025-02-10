@@ -43,7 +43,7 @@ public class FileHealthCheck {
     }
 
     //Called by activation of AppTracker
-    public void initHealthFileValidation() throws IOException {
+    public boolean initHealthFileValidation() throws IOException {
 
         // Check we have I/O for directory
         // Check if /health directory exists
@@ -70,14 +70,12 @@ public class FileHealthCheck {
         //Health Dir does not exist -> create and test write
         if (!healthDir.exists()) {
             if (!FileUtils.createDirectory(healthDir)) {
-                isValidSystem = false;
-                return;
+                return isValidSystem = false;
             }
 
             //Testing write.
-            if (!FileUtils.canWrite(healthDir)) {
-                isValidSystem = false;
-                return;
+            if (!FileUtils.canWriteToDirectory(healthDir)) {
+                return isValidSystem = false;
             }
 
         } else { // /health dir exists
@@ -95,27 +93,31 @@ public class FileHealthCheck {
 
                     if (f.isDirectory()) {
                         //TODO: Issue warning
-                        isValidSystem = false;
-                        return;
+                        return isValidSystem = false;
                     } else {
                         if (!FileUtils.deleteFiles(f)) {
-                            isValidSystem = false;
-                            return;
+                            return isValidSystem = false;
                         }
                     }
                 }
             } //end for
 
             //Testing write.
-            if (!FileUtils.canWrite(healthDir)) {
-                isValidSystem = false;
-                return;
+            if (!FileUtils.canWriteToDirectory(healthDir)) {
+                return isValidSystem = false;
             }
         }
+
+        return true;
     }
 
     //Called by AppTracker (After a appliation is started)
-    public void startProcesses() {
+    public void startFileHealthCheckProcesses() {
+
+        //Redundant check, should be handled through AppTracker40Impl.
+        if (!isValidSystem) {
+            return;
+        }
 
         File startFile = new File(healthDir, HealthCheckFileName.STARTED_FILE.getFileName());
         File readyFile = new File(healthDir, HealthCheckFileName.READY_FILE.getFileName());

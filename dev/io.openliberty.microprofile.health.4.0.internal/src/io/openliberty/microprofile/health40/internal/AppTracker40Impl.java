@@ -41,6 +41,8 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
 
     private static final TraceComponent tc = Tr.register(AppTracker40Impl.class);
 
+    protected boolean isValidSystemForFileHealthCheck = false;
+
     /*
      * Flag to indicate first started
      */
@@ -58,7 +60,7 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
          *
          */
         try {
-            FileHealthCheck.getInstance().initHealthFileValidation();
+            isValidSystemForFileHealthCheck = FileHealthCheck.getInstance().initHealthFileValidation();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
@@ -128,11 +130,11 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
             }
 
             /*
-             * DEV: done once
-             * Start processes.
+             * Only kick of File Health Check code if this system is valid.
+             * i.e., If we can do I/O to the ${server.config.dir}/health directory.
              */
-            if (!isFirstStarted.getAndSet(true)) {
-                FileHealthCheck.getInstance().startProcesses();
+            if (isValidSystemForFileHealthCheck && !isFirstStarted.getAndSet(true)) {
+                FileHealthCheck.getInstance().startFileHealthCheckProcesses();
 
             }
         } finally {

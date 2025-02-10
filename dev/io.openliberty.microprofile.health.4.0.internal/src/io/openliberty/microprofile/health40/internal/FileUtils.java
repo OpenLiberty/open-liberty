@@ -19,13 +19,22 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
  */
 public class FileUtils {
 
-    static boolean canWrite(File parentDir) {
+    static boolean canWriteToDirectory(File parentDir) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
-            File isCanWrite = new File(parentDir, "file");
-            return isCanWrite.canWrite();
-        } catch (SecurityException ioe) {
-            //TODO: Warning about creation.
+
+            File tempFile = File.createTempFile("test", null);
+            if (!tempFile.canWrite()) {
+                return false;
+            }
+
+            if (!tempFile.delete()) {
+                //TODO: debug warning, couldn't delete testFile
+            }
+
+            return true;
+        } catch (SecurityException | IOException exception) {
+            //TODO: Warning about creation? or let caller handle that
             return false;
         } finally {
             ThreadIdentityManager.reset(token);
