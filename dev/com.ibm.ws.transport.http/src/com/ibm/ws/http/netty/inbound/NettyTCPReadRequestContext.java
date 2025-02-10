@@ -57,7 +57,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private int jitAllocateSize = 0;
 
     private VirtualConnection vc = null;
-
+    
     public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
 
         this.connectionContext = connectionContext;
@@ -185,6 +185,11 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         NettyServletUpgradeHandler upgrade = this.nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
         
+        if(timeout == -2) {
+            // Immediate timeout hit, need to cancel all previous reads
+            upgrade.immediateTimeout();
+        }
+        
 
         if (Objects.nonNull(callback)) {
             upgrade.setReadListener(callback);
@@ -193,13 +198,18 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         upgrade.setVC(vc);
         
         ExecutorService blockingTaskExecutor = HttpDispatcher.getExecutorService();
-
+        
         blockingTaskExecutor.submit(() -> {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Starting read in thread async! NumBytes: " + numBytes + ", forceQueue: " + forceQueue + ", timeout: " + timeout + ", channel: " + nettyChannel);
             }
             boolean dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, timeout, TimeUnit.MILLISECONDS);
 
+            if(upgrade.isImmediateTimeout()) {
+                System.out.println("Skipping callback logic because immediate timeout was set");
+                return;
+            }
+            
             if (!nettyChannel.isActive()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel became inactive before executor and callback is called!" + nettyChannel);
@@ -223,11 +233,16 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(this, tc, "Running async callback! " + nettyChannel);
                             }
+                            
                             if (!nettyChannel.isActive()) {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(this, tc, "Channel became inactive before async callback is called! Still calling it " + nettyChannel);
                                 }
                                 // Channel became inactive while waiting for data, still do the callback for the leftover data left in the channel
+                            }
+                            if(upgrade.isImmediateTimeout()) {
+                                System.out.println("Skipping callback execution because immediate timeout was set");
+                                return;
                             }
                             try {
                                 callback.complete(vc, this);
@@ -276,6 +291,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         
         return null;
     }
+
 
     @Override
     public void setJITAllocateSize(int numBytes) {

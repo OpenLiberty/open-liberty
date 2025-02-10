@@ -10,6 +10,7 @@
 package com.ibm.ws.netty.upgrade;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -52,6 +53,8 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     private VirtualConnection vc;
     private TCPReadRequestContext readContext;
     private long minBytesToRead = 0;
+    
+    private AtomicBoolean immediateTimeout = new AtomicBoolean(false);
 
     /**
      * Initialize the queue that will store the data
@@ -78,13 +81,13 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 queue.add(buf);
                 long bytesRead = buf.readableBytes();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "NettyServletUpgradeHandler channelRead called for channel " + nettyChannel + " Adding bytes read: " + bytesRead);
+                    Tr.debug(this, tc, "NettyServletUpgradeHandler channelRead called for channel " + channel + " Adding bytes read: " + bytesRead);
                 }
                 totalBytesRead += bytesRead;
 
                 if (totalBytesRead >= minBytesToRead) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "NettyServletUpgradeHandler channelRead totalBytesRead greater than minimum bytes requested for channel " + nettyChannel);
+                        Tr.debug(this, tc, "NettyServletUpgradeHandler channelRead totalBytesRead greater than minimum bytes requested for channel " + channel);
                     }
                     signalReadReady(); // Signal only if minimum bytes are read
                 }
@@ -106,10 +109,30 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         super.channelInactive(ctx);
 
     }
+    
+    public void immediateTimeout() {
+        System.out.println("In immediate timeout");
+        immediateTimeout.getAndSet(true);
+        signalReadReady();
+        // TODO Loop to make sure no others reads are taking place
+        while(readLock.hasQueuedThreads()) { // Queue here until no queued threads are available
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "NettyServletUpgradeHandler immediateTimeout waiting to finish immediate timeout on channel: " + channel);
+            }
+            System.out.println("NettyServletUpgradeHandler immediateTimeout waiting to finish immediate timeout on channel: " + channel);
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
+        immediateTimeout.getAndSet(false);
+        System.out.println("End immediate timeout");
+    }
 
     private void signalReadReady() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "NettyServletUpgradeHandler signalReadReady locking readLock for channel " + nettyChannel);
+            Tr.debug(this, tc, "NettyServletUpgradeHandler signalReadReady locking readLock for channel " + channel);
         }
         readLock.lock();
         try {
@@ -117,7 +140,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
         } finally {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "NettyServletUpgradeHandler signalReadReady unlocking readLock for channel " + nettyChannel);
+                Tr.debug(this, tc, "NettyServletUpgradeHandler signalReadReady unlocking readLock for channel " + channel);
             }
             readLock.unlock();
         }
@@ -125,18 +148,18 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     public void waitForDataRead(long waitTime) throws InterruptedException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "NettyServletUpgradeHandler waitForDataRead locking readLock for channel " + nettyChannel);
+            Tr.debug(this, tc, "NettyServletUpgradeHandler waitForDataRead locking readLock for channel " + channel);
         }
         readLock.lock();
         try {
-            while (!containsQueuedData() && channel.isActive()) {
+            while (!immediateTimeout.get() && !containsQueuedData() && channel.isActive()) {
                 if (!readCondition.await(waitTime, TimeUnit.MILLISECONDS)) {
                     break;
                 }
             }
         } finally {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "NettyServletUpgradeHandler waitForDataRead unlocking readLock for channel " + nettyChannel);
+                Tr.debug(this, tc, "NettyServletUpgradeHandler waitForDataRead unlocking readLock for channel " + channel);
             }
             readLock.unlock();
         }
@@ -144,11 +167,11 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     public boolean awaitReadReady(long numBytes, int timeout, TimeUnit unit) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady called for channel " + nettyChannel);
+            Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady called for channel " + channel);
         }
         minBytesToRead = numBytes; // Set the minimum number of bytes to read
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady locking readLock for channel " + nettyChannel);
+            Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady locking readLock for channel " + channel);
         }
         readLock.lock();
         boolean dataReady = false;
@@ -158,7 +181,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             } else {
                 long waitTime = timeout == -1 ? Long.MAX_VALUE : unit.toNanos(timeout);
                 long endTime = System.nanoTime() + waitTime;
-                while (totalBytesRead < minBytesToRead && channel.isActive() && !QuiesceState.isQuiesceInProgress()) {
+                while (!immediateTimeout.get() && totalBytesRead < minBytesToRead && channel.isActive() && !QuiesceState.isQuiesceInProgress()) {
                     if (timeout != -1) { // If timeout is not -1, calculate the remaining wait time
                         waitTime = endTime - System.nanoTime();
                         if (waitTime <= 0)
@@ -169,7 +192,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                         waitTime = TimeUnit.SECONDS.toNanos(1);
                         try {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady waiting " + waitTime + "ns for min bytes to read: " + minBytesToRead + " with total bytes read: " + totalBytesRead + " on channel: " + nettyChannel);
+                                Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady waiting " + waitTime + "ns for min bytes to read: " + minBytesToRead + " with total bytes read: " + totalBytesRead + " on channel: " + channel);
                             }
                             readCondition.awaitNanos(waitTime);
                         } catch (InterruptedException e) {
@@ -178,7 +201,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady waiting " + waitTime + " for min bytes to read: " + minBytesToRead + " with total bytes read: " + totalBytesRead + " on channel: " + nettyChannel);
+                            Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady waiting " + waitTime + " for min bytes to read: " + minBytesToRead + " with total bytes read: " + totalBytesRead + " on channel: " + channel);
                         }
                         readCondition.awaitNanos(waitTime);
                     }
@@ -190,7 +213,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             Thread.currentThread().interrupt(); // Restore the interrupt status
         } finally {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady unlocking readLock for channel: " + nettyChannel);
+                Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady unlocking readLock for channel: " + channel);
             }
             readLock.unlock();
         }
@@ -201,7 +224,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     @FFDCIgnore(RuntimeException.class)
     public synchronized long setToBuffer() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "NettyServletUpgradeHandler setToBuffer called for channel: " + nettyChannel);
+            Tr.debug(this, tc, "NettyServletUpgradeHandler setToBuffer called for channel: " + channel);
         }
 
         if (!containsQueuedData()) {
@@ -292,6 +315,10 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
      */
     public int queuedDataSize() {
         return queue.readableBytes();
+    }
+    
+    public boolean isImmediateTimeout() {
+        return immediateTimeout.get();
     }
 
     /**
