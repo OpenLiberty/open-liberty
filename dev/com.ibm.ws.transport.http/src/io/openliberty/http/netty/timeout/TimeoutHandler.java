@@ -8,11 +8,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.util.Timeout;
 import io.netty.util.Timer;
 
-@ChannelHandler.Sharable
 public class TimeoutHandler extends ChannelDuplexHandler{
 
     private final Timer timer;
@@ -77,19 +77,27 @@ public class TimeoutHandler extends ChannelDuplexHandler{
     @Override
     public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
         System.out.println("[TimeoutHandler] channelRead() => cancel READ & PERSIST timeouts");
-        
-        cancelTimeout(TimeoutType.READ);
-        reading.set(false);
 
+        boolean hasData = isNonEmptyData(message);
+        
+        if(hasData){
+
+            cancelTimeout(TimeoutType.READ);
+            reading.set(false);
+            System.out.println("[TimeoutHandler] => Non-empty data arrived, read-timeout canceled");
+            
+        } else {
+            System.out.println("[TimeoutHandler] => Inbound read was empty or irrelevant, read-timeout NOT canceled");
+        }
+        
         cancelTimeout(TimeoutType.PERSIST);
         waitingForNextRequest.set(false);
-
         super.channelRead(context, message);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext context) throws Exception {
-        System.out.println("[TimeoutHandler] channelRead() => cancel ALL timeouts");
+        System.out.println("[TimeoutHandler] channelInactive() => cancel ALL timeouts");
         for(TimeoutType type : TimeoutType.values()){
             cancelTimeout(type);
         }
@@ -113,9 +121,8 @@ public class TimeoutHandler extends ChannelDuplexHandler{
 
     public void beginPersistRead(ChannelHandlerContext context) {
         System.out.println("[TimeoutHandler] beginPersistRead() => keepAlive=" + useKeepAlive);
-        if (useKeepAlive) {
-            System.out.println("[TimeoutHandler] => keepAlive is true => closing context now!");
-            context.close();
+        if (!useKeepAlive) {
+            System.out.println("[TimeoutHandler] => keepAlive is " + useKeepAlive + " => not setting persist read, just return!");
             return;
         }
 
@@ -158,6 +165,7 @@ public class TimeoutHandler extends ChannelDuplexHandler{
     }
 
     private Throwable createTimeoutException(TimeoutType type, int seconds){
+        System.out.println("[TimeoutHandler] => creating timeoutException");
         switch(type){
             case READ: return new ReadTimeoutException("No read data in " + seconds + " seconds.");
             case WRITE: return new WriteTimeoutException("Write did not complete within configured " + seconds + " seconds.");
@@ -165,6 +173,13 @@ public class TimeoutHandler extends ChannelDuplexHandler{
 
             default: return new RuntimeException("Unsupported timeout type caught " + type);
         }
+    }
+
+    private boolean isNonEmptyData(Object message){
+        if(message instanceof ByteBuf){
+            return  ((ByteBuf) message).isReadable();
+        }
+        return false;
     }
 
     public static class ReadTimeoutException extends IOException {
