@@ -1244,7 +1244,7 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-core</artifactId>
-      <version>4.0.6</version>
+      <version>4.0.8</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
@@ -1254,12 +1254,12 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-jaxrs</artifactId>
-      <version>4.0.6</version>
+      <version>4.0.8</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-model</artifactId>
-      <version>4.0.6</version>
+      <version>4.0.8</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
