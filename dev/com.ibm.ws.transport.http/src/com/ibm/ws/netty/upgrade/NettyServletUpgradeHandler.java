@@ -166,7 +166,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             readLock.unlock();
         }
     }
-
+    
     public boolean awaitReadReady(long numBytes, int timeout, TimeUnit unit) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "NettyServletUpgradeHandler awaitReadReady called for channel " + channel);
@@ -210,6 +210,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 }
 
                 dataReady = totalBytesRead >= minBytesToRead; // Check if the minimum number of bytes was read
+                if(immediateTimeout.get()) throw new IllegalStateException("Read interrupted by immediate timeout");
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // Restore the interrupt status

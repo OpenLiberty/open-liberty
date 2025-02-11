@@ -203,8 +203,16 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Starting read in thread async! NumBytes: " + numBytes + ", forceQueue: " + forceQueue + ", timeout: " + timeout + ", channel: " + nettyChannel);
             }
-            boolean dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, timeout, TimeUnit.MILLISECONDS);
 
+            boolean dataAvailable = false;
+            try {
+                dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, timeout, TimeUnit.MILLISECONDS);
+            } catch (IllegalStateException e2) {
+                // Do nothing if the read was interrupted
+                System.out.println("Skipping callback logic because read was interrupted");
+                return;
+            }
+            
             if(upgrade.isImmediateTimeout()) {
                 System.out.println("Skipping callback logic because immediate timeout was set");
                 return;
@@ -262,6 +270,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                     //throw new IOException ("BETA - unexpected null callback provided");
                 }
             } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Timeout hit for channel " + nettyChannel);
+                }
                 StringBuilder error = new StringBuilder();
                 error.append("Socket operation timed out before it could be completed local=");
                 error.append(connectionContext.getLocalAddress().getHostName()).append("/");
