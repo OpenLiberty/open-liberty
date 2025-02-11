@@ -879,6 +879,10 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
                     Tr.debug(tc, "pushNewRequest() PushBuilder header: " + hf.getName() + " " + hf.asString());
                 }
 
+                /*
+                 * toLowerCase() must be used here otherwise Netty throws an Exception such as the following:
+                 * io.netty.handler.codec.http2.Http2Exception: invalid header name [Referer]
+                 */
                 headers.add(hf.getName().toLowerCase(), hf.asString());
             }
         } else {
