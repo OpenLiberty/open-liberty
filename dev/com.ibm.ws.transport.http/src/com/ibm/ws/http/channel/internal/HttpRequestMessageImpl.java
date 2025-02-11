@@ -1943,7 +1943,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
         if (!(link instanceof H2HttpInboundLinkWrap)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): Error: This is not an HTTP2 connection, push() was ignored.");
+                Tr.debug(tc, "isPushSupported(): Error: This is not an HTTP2 connection, push() was ignored.");
             }
             return false;
         }
@@ -1951,7 +1951,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         if ((((H2HttpInboundLinkWrap) link).muxLink == null) ||
             (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings() == null)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): The H2HttpInboundLinkWrap muxlink is null, push() was ignored.");
+                Tr.debug(tc, "isPushSupported(): The H2HttpInboundLinkWrap muxlink is null, push() was ignored.");
             }
             return false;
         }
@@ -1967,7 +1967,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         // Don't send the push_promise frame if the client doesn't want it
         if (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings().getEnablePush() != 1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): The client does not accept push_promise frames, push() was ignored.");
+                Tr.debug(tc, "isPushSupported(): The client does not accept push_promise frames, push() was ignored.");
             }
             return false;
         }
@@ -1987,13 +1987,13 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     public void pushNewRequest(Http2PushBuilder pushBuilder) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "HTTPRequestMessageImpl.pushNewRequest(): pushNewRequest() started " + this);
+            Tr.entry(tc, "pushNewRequest(): pushNewRequest() started " + this);
         }
 
         //Test to see if this is an HTTP/2 link, and that the client endpoint wants to accept push_promise frames
         if (!isPushSupported()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): Push_promise is not client supported, this is not an HTTP/2 connection, or the connection is closing.");
+                Tr.exit(tc, "pushNewRequest(): Push_promise is not client supported, this is not an HTTP/2 connection, or the connection is closing.");
             }
             return;
         }
@@ -2018,7 +2018,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "HTTPRequestMessageImpl pbPath = " + pbPath);
+            Tr.debug(tc, "pushNewRequest() pbPath = " + pbPath);
         }
 
         try {
@@ -2045,7 +2045,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                     }
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.exit(tc, "HTTPRequestMessageImpl: Cannot find hostname for required :authority pseudo header");
+                        Tr.exit(tc, "pushNewRequest(): Cannot find hostname for required :authority pseudo header");
                     }
                     return;
                 }
@@ -2056,25 +2056,26 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pbPath, LiteralIndexType.NOINDEXING));
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl: Method is GET,  scheme is " + scheme + ", auth is " + auth);
+                Tr.debug(tc, "pushNewRequest: Method is GET,  scheme is " + scheme + ", auth is " + auth);
             }
 
             // Encode headers, if any are present
-            Set<HeaderField> headerSet = pushBuilder.getHeaders();
-            if (headerSet != null) {
-                Iterator<HeaderField> hsit = headerSet.iterator();
+            Set<HeaderField> pushBuilderHeaders = pushBuilder.getHeaders();
+            if (pushBuilderHeaders != null) {
+                Iterator<HeaderField> hsit = pushBuilderHeaders.iterator();
                 HeaderField hf = null;
+
                 while (hsit.hasNext()) {
                     hf = hsit.next();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "HTTPRequestMessageImpl.getHeaders() " + hf.getName() + " " + hf.asString());
+                        Tr.debug(tc, "pushNewRequest() PushBuilder header: " + hf.getName() + " " + hf.asString());
                     }
-                    ppStream.write(H2Headers.encodeHeader(h2WriteTable, hf.getName(), hf.asString(), LiteralIndexType.NOINDEXING));
 
+                    ppStream.write(H2Headers.encodeHeader(h2WriteTable, hf.getName(), hf.asString(), LiteralIndexType.NOINDEXING));
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HTTPRequestMessageImpl.getHeaders() no headers");
+                    Tr.debug(tc, "pushNewRequest() no PushBuilder headers");
                 }
             }
 
@@ -2082,12 +2083,12 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         // Either IOException from write, or CompressionException from encodeHeader
         catch (IOException ioe) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The attempt to write an HTTP/2 Push Promise frame resulted in an IOException. Exception {0}" + ioe);
+                Tr.exit(tc, "pushNewRequest(): The attempt to write an HTTP/2 Push Promise frame resulted in an IOException. Exception {0}" + ioe);
             }
             return;
         } catch (CompressionException ce) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The attempt to encode an HTTP/2 Push Promise frame resulted in a CompressionException. Exception {0}" + ce);
+                Tr.exit(tc, "pushNewRequest(): The attempt to encode an HTTP/2 Push Promise frame resulted in a CompressionException. Exception {0}" + ce);
             }
             return;
         }
@@ -2118,7 +2119,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         promisedSP.initializePromisedStream();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): push_promise stream-id is " + promisedStreamId);
+            Tr.debug(tc, "pushNewRequest(): push_promise stream-id is " + promisedStreamId);
         }
 
         // Get the existing stream id
@@ -2137,26 +2138,26 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                 existingSP.processNextFrame(pushPromiseFrame, Constants.Direction.WRITING_OUT);
             } catch (Http2Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): processNextFrame threw a ProtocolException " + e);
+                    Tr.exit(tc, "pushNewRequest(): processNextFrame threw a ProtocolException " + e);
                 }
                 return;
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The client connection using stream-id " + streamId + " has been closed, push() was ignored..");
+                Tr.exit(tc, "pushNewRequest(): The client connection using stream-id " + streamId + " has been closed, push() was ignored..");
             }
             return;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Push promise frame sent on stream-id " + streamId);
+            Tr.debug(tc, "pushNewRequest(): Push promise frame sent on stream-id " + streamId);
         }
 
         // Send the headers frame to wc
         promisedSP.sendRequestToWc(headersFrame);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): pushNewRequest() exit " + this);
+            Tr.exit(tc, "pushNewRequest(): pushNewRequest() exit " + this);
         }
 
     }
