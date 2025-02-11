@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import io.netty.handler.codec.http.cookie.Cookie;
-
 /**
  * HTTP cookie object, similar to the J2EE servlet cookie object.
  */
@@ -43,31 +41,6 @@ public class HttpCookie {
     public HttpCookie(String name, String value) {
         this.myName = name;
         this.myValue = value;
-    }
-
-    public HttpCookie from(Cookie nettyCookie){
-        HttpCookie cookie = new HttpCookie(nettyCookie.name(), nettyCookie.value());
-        
-        if (nettyCookie.domain() != null) {
-            cookie.setDomain(nettyCookie.domain());
-        }
-        if (nettyCookie.path() != null) {
-            cookie.setPath(nettyCookie.path());
-        }
-        if (nettyCookie.maxAge() != Long.MIN_VALUE) {
-            long maxAgeLong = nettyCookie.maxAge();
-            if (maxAgeLong > Integer.MAX_VALUE) {
-                cookie.setMaxAge(Integer.MAX_VALUE);
-            } else if (maxAgeLong < Integer.MIN_VALUE) {
-                cookie.setMaxAge(Integer.MIN_VALUE);
-            } else {
-                cookie.setMaxAge((int) maxAgeLong);
-            }
-        }
-        cookie.setHttpOnly(nettyCookie.isHttpOnly());
-        cookie.setSecure(nettyCookie.isSecure());
-
-        return cookie;
     }
 
     /**
