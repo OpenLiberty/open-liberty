@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.health40.internal;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -41,8 +40,6 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
 
     private static final TraceComponent tc = Tr.register(AppTracker40Impl.class);
 
-    protected boolean isValidSystemForFileHealthCheck = false;
-
     /*
      * Flag to indicate first started
      */
@@ -53,20 +50,6 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "AppTrackerImpl is activated");
-
-        /*
-         * DEV:
-         * Ensuring we can write to /health and write files.
-         *
-         */
-        try {
-            isValidSystemForFileHealthCheck = FileHealthCheck.getInstance().initHealthFileValidation();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // https://websphere.pok.ibm.com/~alpine/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
-            e.printStackTrace();
-        }
 
     }
 
@@ -120,6 +103,7 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
     /** {@inheritDoc} */
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+
         String appName = appInfo.getDeploymentName();
         lock.writeLock().lock();
         try {
@@ -133,9 +117,12 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
              * Only kick of File Health Check code if this system is valid.
              * i.e., If we can do I/O to the ${server.config.dir}/health directory.
              */
-            if (isValidSystemForFileHealthCheck && !isFirstStarted.getAndSet(true)) {
-                FileHealthCheck.getInstance().startFileHealthCheckProcesses();
+            if (!isFirstStarted.getAndSet(true)) {
 
+                //FileHealthCheck.getInstance().startFileHealthCheckProcesses();
+                if (healthCheckService != null && healthCheckService instanceof HealthCheck40Service) {
+                    ((HealthCheck40Service) healthCheckService).startFileHealthCheckProcesses();
+                }
             }
         } finally {
             lock.writeLock().unlock();

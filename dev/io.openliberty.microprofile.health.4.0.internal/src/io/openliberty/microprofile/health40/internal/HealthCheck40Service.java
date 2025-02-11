@@ -12,11 +12,19 @@
  *******************************************************************************/
 package io.openliberty.microprofile.health40.internal;
 
+import java.io.File;
+
+import org.eclipse.microprofile.health.HealthCheckResponse.Status;
+
 import io.openliberty.microprofile.health31.internal.HealthCheck31Service;
 
 /**
  * Microprofile Health Check Service
  */
 public interface HealthCheck40Service extends HealthCheck31Service {
+
+    public void startFileHealthCheckProcesses();
+
+    public Status performFileHealthCheck(File file, String healthCheckProcedure);
 
 }

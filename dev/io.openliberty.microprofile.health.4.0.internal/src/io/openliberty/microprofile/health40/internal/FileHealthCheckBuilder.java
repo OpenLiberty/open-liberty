@@ -67,12 +67,12 @@ public class FileHealthCheckBuilder {
 
         if (!file.exists()) {
             //Any failures during runtime? Count failures and at some point. stop?
-            if (!FileUtils.createFile(file)) {
+            if (!HealthFileUtils.createFile(file)) {
                 return;
             }
         }
 
-        FileUtils.setLastModified(file);
+        HealthFileUtils.setLastModified(file);
 
     }
 
