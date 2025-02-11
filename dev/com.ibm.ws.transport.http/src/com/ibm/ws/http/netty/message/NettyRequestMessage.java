@@ -18,10 +18,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -36,6 +38,7 @@ import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.genericbnf.BNFHeaders;
+import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
@@ -863,6 +866,27 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.debug(tc, "handleH2LinkPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
         }
+
+        // Get all the headers from the PushBuilder and add them to the Http2Headers for Netty.
+        Set<HeaderField> pushBuilderHeaders = pushBuilder.getHeaders();
+        if (pushBuilderHeaders != null) {
+            Iterator<HeaderField> iterator = pushBuilderHeaders.iterator();
+            HeaderField hf = null;
+
+            while (iterator.hasNext()) {
+                hf = iterator.next();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "NettyRequestMessage.pushNewRequest() PushBuilder header: " + hf.getName() + " " + hf.asString());
+                }
+
+                headers.add(hf.getName().toLowerCase(), hf.asString());
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "NettyRequestMessage.pushNewRequest() no PushBuilder headers");
+            }
+        }
+
         ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
                                                                    new VoidChannelPromise(this.nettyContext.channel(), true));
 
