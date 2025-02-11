@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     /** Request method for the message */
     private transient MethodValues myMethod = MethodValues.UNDEF;
     /** Scheme (protocol) for the message */
-    protected transient SchemeValues myScheme = null;
+    private transient SchemeValues myScheme = null;
     /** Request-Resource as a byte[] */
     private byte[] myURIBytes = SLASH;
     /** URI as a string */
@@ -2205,7 +2205,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         }
         return true;
     }
-    
+
     @Override
-    public long getEndTime() { return 0; }
+    public long getEndTime() {
+        return 0;
+    }
 }
