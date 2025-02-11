@@ -140,7 +140,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         super.init(request, isc, config);
         setAndGetIsGrpc();
         setMessageType(MessageType.REQUEST);
-        
+
     }
 
     /**
@@ -867,10 +867,9 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
                                                                    new VoidChannelPromise(this.nettyContext.channel(), true));
 
         promise.addListener(future -> {
-            if (future.isSuccess()){
+            if (future.isSuccess()) {
 
-            }
-            else {
+            } else {
                 future.cause().printStackTrace();
             }
         });
@@ -887,7 +886,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
                         ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpPipelineInitializer.HTTP_DISPATCHER_HANDLER_NAME)).channelRead(nettyContext,
                                                                                                                                                           newRequest);
                     } catch (Exception e) {
-               
+
                         e.printStackTrace();
                     }
                 }
@@ -940,10 +939,10 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     @Override
     public long getStartTime() {
 
-        if(nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)){
+        if (nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
             return nettyContext.channel().attr(NettyHttpConstants.REQUEST_START_TIME).get();
         }
-        
+
         return 0;
     }
 
