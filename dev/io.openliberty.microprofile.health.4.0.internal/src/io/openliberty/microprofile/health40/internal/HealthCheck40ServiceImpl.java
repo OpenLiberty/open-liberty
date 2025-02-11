@@ -33,7 +33,9 @@ import org.eclipse.microprofile.health.HealthCheckResponse.Status;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
@@ -48,7 +50,7 @@ import io.openliberty.microprofile.health40.services.HealthCheck40Executor;
 /**
  * Microprofile Health Check Service Implementation
  */
-@Component(service = HealthCheck40Service.class, property = { "service.vendor=IBM" })
+@Component(service = HealthCheck40Service.class, property = { "service.vendor=IBM" }, configurationPid = "io.openliberty.microprofile.health", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 
 public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
@@ -60,6 +62,10 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     private Timer startedTimer;
     private Timer liveTimer;
     private Timer readyTimer;
+
+    private volatile int fileUpdateIntevalMilliseconds = 0;
+
+//    private final String
 
     protected boolean isValidSystemForFileHealthCheck = false;
     final AtomicBoolean readinessWarningAlreadyShown = new AtomicBoolean(false);
@@ -119,20 +125,73 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "HealthCheckServiceImpl is activated");
 
-        //Validate system for File Health Checks (i.e., File I/O)
-        try {
-            isValidSystemForFileHealthCheck = HealthFileUtils.initHealthFileValidation();
-            System.out.println("isValid? " + isValidSystemForFileHealthCheck);
-        } catch (IOException e) {
-            //TODO: something
-            e.printStackTrace();
+        System.out.println("The properties are: " + properties);
+
+        /*
+         * During activation.
+         * If no server.xml config, check server env.
+         */
+        String serverFileUpdateIntervalConfig;
+        if ((serverFileUpdateIntervalConfig = (String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_FILE_UPDATE_INTERVAL)) != null) {
+            processUpdateIntervalConfig(serverFileUpdateIntervalConfig);
+        } else {
+            processUpdateIntervalConfig(System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_FILE_UPDATE_INTERVAL));
         }
+
+        if (fileUpdateIntevalMilliseconds > 0) {
+            //Validate system for File Health Checks (i.e., File I/O)
+            try {
+                isValidSystemForFileHealthCheck = HealthFileUtils.initHealthFileValidation();
+                System.out.println("isValid? " + isValidSystemForFileHealthCheck);
+            } catch (IOException e) {
+                //TODO: something
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
+     * Dissects the value read from server.xml or serveer.env sets the fileUpdateIntervalMilliseconds
+     *
+     * @param configValue The (possibly null) value read from server.xml or env var.
+     */
+    protected void processUpdateIntervalConfig(String configValue) {
+        if (configValue != null && !configValue.isEmpty()) {
+
+            configValue = configValue.trim();
+            if (configValue.matches("^\\d+(ms|s)?$")) {
+                if (configValue.endsWith("ms")) {
+                    fileUpdateIntevalMilliseconds = Integer.parseInt(configValue.substring(0, configValue.length() - 2));
+                } else if (configValue.endsWith("s")) {
+                    fileUpdateIntevalMilliseconds = Integer.parseInt(configValue.substring(0, configValue.length() - 1)) * 1000;
+                } else {
+                    fileUpdateIntevalMilliseconds = Integer.parseInt(configValue) * 1000;
+                }
+
+                //validate
+            } else {
+                //TODO: log warning
+                System.out.println("The value provided does not adhere to <number>[ms/s], defaulting to 10s");
+                fileUpdateIntevalMilliseconds = 10000;
+            }
+            System.out.println("The value is " + fileUpdateIntevalMilliseconds);
+        }
+
+    }
+
+    @Modified
+    protected void modified(ComponentContext context, Map<String, Object> properties) {
+        /*
+         * During server.xml update, never check for server env.
+         */
+        processUpdateIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_FILE_UPDATE_INTERVAL));
     }
 
     /** {@inheritDoc} */
     @Override
     public void startFileHealthCheckProcesses() {
-        if (isValidSystemForFileHealthCheck) {
+        if (isValidSystemForFileHealthCheck && fileUpdateIntevalMilliseconds > 0) {
 
             File startFile = HealthFileUtils.getStartFile();
             File readyFile = HealthFileUtils.getReadyFile();
@@ -154,11 +213,11 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
             performFileHealthCheck(readyFile, HealthCheckConstants.HEALTH_CHECK_READY).equals(Status.DOWN);
             readyTimer = new Timer(false);
-            readyTimer.schedule(new FileUpdateProcess(readyFile, HealthCheckConstants.HEALTH_CHECK_READY), 0, 1000);
+            readyTimer.schedule(new FileUpdateProcess(readyFile, HealthCheckConstants.HEALTH_CHECK_READY), 0, fileUpdateIntevalMilliseconds);
 
             performFileHealthCheck(liveFile, HealthCheckConstants.HEALTH_CHECK_LIVE).equals(Status.DOWN);
             liveTimer = new Timer(false);
-            liveTimer.schedule(new FileUpdateProcess(liveFile, HealthCheckConstants.HEALTH_CHECK_LIVE), 0, 1000);
+            liveTimer.schedule(new FileUpdateProcess(liveFile, HealthCheckConstants.HEALTH_CHECK_LIVE), 0, fileUpdateIntevalMilliseconds);
 
         }
 
