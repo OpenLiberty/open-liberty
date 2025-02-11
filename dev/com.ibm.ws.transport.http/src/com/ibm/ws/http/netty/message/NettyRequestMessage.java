@@ -829,7 +829,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "HTTPRequestMessageImpl pbPath = " + pbPath);
+            Tr.debug(tc, "pushNewRequest() pbPath = " + pbPath);
         }
         HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
         Http2Connection connection = handler.connection();
@@ -857,14 +857,14 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl: Cannot find hostname for required :authority pseudo header");
+                Tr.exit(tc, "pushNewRequest(): Cannot find hostname for required :authority pseudo header");
             }
             return;
         }
         headers.authority(auth);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.debug(tc, "handleH2LinkPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
+            Tr.debug(tc, "pushNewRequest(): Method is GET, authority is " + auth + ", scheme is " + scheme);
         }
 
         // Get all the headers from the PushBuilder and add them to the Http2Headers for Netty.
@@ -876,14 +876,14 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             while (iterator.hasNext()) {
                 hf = iterator.next();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "NettyRequestMessage.pushNewRequest() PushBuilder header: " + hf.getName() + " " + hf.asString());
+                    Tr.debug(tc, "pushNewRequest() PushBuilder header: " + hf.getName() + " " + hf.asString());
                 }
 
                 headers.add(hf.getName().toLowerCase(), hf.asString());
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "NettyRequestMessage.pushNewRequest() no PushBuilder headers");
+                Tr.debug(tc, "pushNewRequest() no PushBuilder headers");
             }
         }
 
