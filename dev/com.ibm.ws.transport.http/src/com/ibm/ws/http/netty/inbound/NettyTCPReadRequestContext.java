@@ -209,12 +209,16 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, timeout, TimeUnit.MILLISECONDS);
             } catch (IllegalStateException e2) {
                 // Do nothing if the read was interrupted
-                System.out.println("Skipping callback logic because read was interrupted");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Skipping callback logic because read was interrupted! " + nettyChannel);
+                }
                 return;
             }
             
             if(upgrade.isImmediateTimeout()) {
-                System.out.println("Skipping callback logic because immediate timeout was set");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Skipping callback logic because immediate timeout was set! " + nettyChannel);
+                }
                 return;
             }
             
@@ -249,7 +253,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                                 // Channel became inactive while waiting for data, still do the callback for the leftover data left in the channel
                             }
                             if(upgrade.isImmediateTimeout()) {
-                                System.out.println("Skipping callback execution because immediate timeout was set");
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(this, tc, "Skipping callback execution because immediate timeout was set! " + nettyChannel);
+                                }
                                 return;
                             }
                             try {

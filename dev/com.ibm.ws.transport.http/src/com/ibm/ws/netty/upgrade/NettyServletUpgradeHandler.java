@@ -111,7 +111,9 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
     
     public void immediateTimeout() {
-        System.out.println("In immediate timeout");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Inside immediate timeout! " + channel);
+        }
         immediateTimeout.getAndSet(true);
         signalReadReady();
         // TODO Loop to make sure no others reads are taking place
@@ -119,7 +121,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "NettyServletUpgradeHandler immediateTimeout waiting to finish immediate timeout on channel: " + channel);
             }
-            System.out.println("NettyServletUpgradeHandler immediateTimeout waiting to finish immediate timeout on channel: " + channel);
             // TODO If this is kept and not removed when disabling auto read, switch this logic to provide assertion of not running
             // in the event loop and run a repeatable task with ScheduledExecutorService
             try {
@@ -129,7 +130,9 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             }
         }
         immediateTimeout.getAndSet(false);
-        System.out.println("End immediate timeout");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "End immediate timeout! " + channel);
+        }
     }
 
     private void signalReadReady() {
