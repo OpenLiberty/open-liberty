@@ -14,4 +14,4 @@
 
 Bundle-Name: Health 4.0
 Bundle-SymbolicName: io.openliberty.microprofile.health.4.0.internal.jakarta
-Bundle-Description: MicroProfile Health 4.0 Implementation; version ${bVersion}
+Bundle-Description: MicroProfile Health 4.0 Implementation; version ${bVersion}; Jakarta enabled
