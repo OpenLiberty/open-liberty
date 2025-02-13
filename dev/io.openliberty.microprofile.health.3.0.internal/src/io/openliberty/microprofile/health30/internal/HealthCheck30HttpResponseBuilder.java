@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020, 2025 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,15 +22,17 @@
 package io.openliberty.microprofile.health30.internal;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.health.HealthCheckResponse;
@@ -47,7 +49,7 @@ public class HealthCheck30HttpResponseBuilder {
     private static final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(null);
 
     protected Status overallStatus = Status.UP;
-    protected final ArrayList<Map<String, Object>> checks = new ArrayList<Map<String, Object>>();
+    protected final JsonArrayBuilder checks = jsonBuilderFactory.createArrayBuilder();
 
     public HealthCheck30HttpResponseBuilder() {
     }
@@ -64,17 +66,18 @@ public class HealthCheck30HttpResponseBuilder {
 
     public void setHttpResponse(HttpServletResponse httpResponse) {
         httpResponse.setHeader(HealthCheckConstants.HTTP_HEADER_CONTENT_TYPE, HealthCheckConstants.MEDIA_TYPE_APPLICATION_JSON);
-        HashMap<String, Object> payload = new HashMap<String, Object>();
+
+        JsonObjectBuilder payload = jsonBuilderFactory.createObjectBuilder();
 
         // Set the HTTP Response code
         httpResponse.setStatus(overallStatus == Status.UP ? 200 : 503);
 
         // Populate the payload with the overall status and checks array
-        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallStatus.name());
-        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_CHECKS, checks);
+        payload.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallStatus.name());
+        payload.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_CHECKS, checks);
 
         // Convert it into a JSON payload
-        setJSONPayload(payload, httpResponse);
+        setJSONPayload(payload.build(), httpResponse);
     }
 
     /**
@@ -88,11 +91,11 @@ public class HealthCheck30HttpResponseBuilder {
 
     protected void setChecks(HealthCheckResponse response) {
 
-        HashMap<String, Object> check = new HashMap<String, Object>();
-        check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_NAME, response.getName());
+        JsonObjectBuilder check = jsonBuilderFactory.createObjectBuilder();
+        check.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_NAME, response.getName());
 
         Status checkStatus = response.getStatus();
-        check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, checkStatus == null ? checkStatus : checkStatus.name());
+        check.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, checkStatus == null ? null : checkStatus.name());
 
         if (checkStatus != null) {
             if (checkStatus.equals(Status.DOWN))
@@ -103,9 +106,22 @@ public class HealthCheck30HttpResponseBuilder {
             overallStatus = Status.DOWN; // treat as fail case
         }
 
-        Optional<Map<String, Object>> data = response.getData();
-        if ((data != null) && data.isPresent()) {
-            check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_DATA, data.get());
+        Optional<Map<String, Object>> dataMap = response.getData();
+        if ((dataMap != null) && dataMap.isPresent()) {
+            JsonObjectBuilder data = jsonBuilderFactory.createObjectBuilder();
+            for (Map.Entry<String, Object> entry : dataMap.get().entrySet()) {
+                Object value = entry.getValue();
+                if (value == null) {
+                    data.add(entry.getKey(), JsonValue.NULL);
+                } else if (value instanceof String) {
+                    data.add(entry.getKey(), (String) value);
+                } else if (value instanceof Boolean) {
+                    data.add(entry.getKey(), (Boolean) value);
+                } else {
+                    data.add(entry.getKey(), (Long) value);
+                }
+            }
+            check.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_DATA, data.build());
         }
 
         checks.add(check);
@@ -113,9 +129,9 @@ public class HealthCheck30HttpResponseBuilder {
             Tr.debug(tc, "setChecks(): checks = " + checks);
     }
 
-    protected void setJSONPayload(Map<String, Object> payload, HttpServletResponse httpResponse) {
+    protected void setJSONPayload(JsonObject payload, HttpServletResponse httpResponse) {
         try {
-            httpResponse.getOutputStream().write(jsonBuilderFactory.createObjectBuilder(payload).build().toString().getBytes());
+            httpResponse.getOutputStream().write(payload.toString().getBytes());
         } catch (IOException e) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Unexpected IOException while writing out POJO response", e);
