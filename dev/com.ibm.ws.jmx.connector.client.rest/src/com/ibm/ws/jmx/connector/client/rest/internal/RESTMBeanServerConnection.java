@@ -2379,12 +2379,12 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
                                 } else {
                                     //no-op for failover polling, just break into the sleep segment
                                     // Server sends a string back that needs to be consumed to close the connection
-                                    InputStream is = connection.getInputStream();
-                                    int data = is.read();
-                                    while (data != -1) {
-                                        data = is.read();
+                                    try (InputStream is = connection.getInputStream()) {
+                                        int data = is.read();
+                                        while (data != -1) {
+                                            data = is.read();
+                                        }
                                     }
-                                    is.close();
                                 }
                                 break;
                             } catch (ClassNotFoundException cnf) {
