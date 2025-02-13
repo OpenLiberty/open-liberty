@@ -9,26 +9,18 @@
  *******************************************************************************/
 package io.openliberty.microprofile.health40.internal;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.app.deploy.ApplicationClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
 import com.ibm.ws.microprofile.health.internal.AppTrackerImpl;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.NonPersistentCache;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.ApplicationState;
 
 /**
@@ -41,64 +33,9 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
     private static final TraceComponent tc = Tr.register(AppTracker40Impl.class);
 
     /*
-     * Flag to indicate first started
+     * Flag to indicate that the first application has started
      */
-    private static AtomicBoolean isFirstStarted = new AtomicBoolean(false);
-
-    @Override
-    @Activate
-    protected void activate(ComponentContext cc, Map<String, Object> properties) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "AppTrackerImpl is activated");
-
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    @FFDCIgnore(UnableToAdaptException.class)
-    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-        String appName = appInfo.getDeploymentName();
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "applicationStarting() : appName = " + appName);
-
-        Container appContainer = appInfo.getContainer();
-        if (appContainer == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "applicationStarting() : appContainer=null for " + appInfo);
-            }
-            return;
-        }
-
-        try {
-            NonPersistentCache cache = appContainer.adapt(NonPersistentCache.class);
-            ApplicationClassesContainerInfo acci = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
-            if (acci == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "applicationStarting() : applicationClassesContainerInfo=null for " + appInfo);
-                }
-                return;
-            }
-        } catch (UnableToAdaptException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "applicationStarting() : Failed to adapt NonPersistentCache: container=" + appContainer + " : \n" + e.getMessage());
-            }
-            return;
-        }
-
-        // Process the application to check if it is a WAR or an EAR file and register it.
-        processApplication(appContainer, appInfo, appName, false);
-
-        // Add starting application to the starting app map, to keep track of all the application states.
-        lock.writeLock().lock();
-        try {
-            appStateMap.put(appName, ApplicationState.STARTING);
-
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "applicationStarting(): starting app added in appStateMap = " + appStateMap.toString() + " for app: " + appName);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
+    private static AtomicBoolean isOneAppStarted = new AtomicBoolean(false);
 
     /** {@inheritDoc} */
     @Override
@@ -109,59 +46,26 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
         try {
             if (appStateMap.containsKey(appName)) {
                 appStateMap.replace(appName, ApplicationState.STARTING, ApplicationState.STARTED);
-                if (tc.isDebugEnabled())
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "applicationStarted(): started app updated in appStateMap = " + appStateMap.toString() + " for app: " + appName);
+                }
             }
 
             /*
-             * Only kick of File Health Check code if this system is valid.
-             * i.e., If we can do I/O to the ${server.config.dir}/health directory.
+             * Start the File Health checking.
+             * We don't know if it's enabled or not, logic
+             * will be handled by the HealthCheck40Service (or higher levels).
              */
-            if (!isFirstStarted.getAndSet(true)) {
+            if (!isOneAppStarted.getAndSet(true)) {
 
-                //FileHealthCheck.getInstance().startFileHealthCheckProcesses();
+                /*
+                 * This is built off of AppTrackerImpl, which sets an "healthCheckService" as the original
+                 * interface. Ensure we are dealing with a HealthCheck40Service and above.
+                 */
                 if (healthCheckService != null && healthCheckService instanceof HealthCheck40Service) {
                     ((HealthCheck40Service) healthCheckService).startFileHealthCheckProcesses();
                 }
             }
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void applicationStopping(ApplicationInfo appInfo) {
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void applicationStopped(ApplicationInfo appInfo) {
-        String appName = appInfo.getDeploymentName();
-
-        // Remove the registered application modules
-        Container appContainer = appInfo.getContainer();
-        if (appContainer == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "applicationStopped() : appContainer=null for " + appInfo);
-            }
-            return;
-        }
-
-        // Process the application to check if it is a WAR or an EAR file and unregister it.
-        processApplication(appContainer, appInfo, appName, true);
-
-        // Remove the stopped application from the appState map
-        lock.writeLock().lock();
-        try {
-            String state = getApplicationMBean(appName);
-            if (state.equals("STARTING")) {
-                appStateMap.replace(appName, ApplicationState.INSTALLED);
-            } else {
-                appStateMap.remove(appName);
-            }
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "applicationStopped(): stopped app removed from appStateMap = " + appStateMap.toString() + " for app: " + appName);
         } finally {
             lock.writeLock().unlock();
         }

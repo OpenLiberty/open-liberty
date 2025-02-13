@@ -63,9 +63,23 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     private Timer liveTimer;
     private Timer readyTimer;
 
+    /**
+     * The value (in ms) defined for the file update interval.
+     * Value of 0 means functionality is disabled.
+     *
+     */
     private volatile int fileUpdateIntevalMilliseconds = 0;
 
-//    private final String
+    /**
+     *
+     * Instead of relying on checking if fileUpdateIntevalMilliseconds is > 0,
+     * we'll use this method for readability.
+     *
+     * @return If the server is configured to use file health check
+     */
+    private boolean isFileHealthCheckingEnabled() {
+        return fileUpdateIntevalMilliseconds > 0;
+    }
 
     protected boolean isValidSystemForFileHealthCheck = false;
     final AtomicBoolean readinessWarningAlreadyShown = new AtomicBoolean(false);
@@ -89,10 +103,9 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         }
     }
 
-    /*
-     * Stop all timers.
-     * Server shut down.
-     * Invoked if References are being deregistered
+    /**
+     * Stop all the timers.
+     * Potential use: Server is shutting down and references are being deregistered
      */
     private void stopTimers() {
         if (startedTimer != null) {
@@ -122,14 +135,11 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
         resolveDefaultStatues();
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "HealthCheckServiceImpl is activated");
-
-        System.out.println("The properties are: " + properties);
 
         /*
-         * During activation.
-         * If no server.xml config, check server env.
+         * Activation time is only time when check env var
+         * for the MP_HEALTH_FILE_UPDATE_INTERVAL only if server.xml
+         * does not exist (server.xml overrides everything once server starts).
          */
         String serverFileUpdateIntervalConfig;
         if ((serverFileUpdateIntervalConfig = (String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_FILE_UPDATE_INTERVAL)) != null) {
@@ -138,21 +148,27 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
             processUpdateIntervalConfig(System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_FILE_UPDATE_INTERVAL));
         }
 
-        if (fileUpdateIntevalMilliseconds > 0) {
+        if (isFileHealthCheckingEnabled()) {
             //Validate system for File Health Checks (i.e., File I/O)
             try {
-                isValidSystemForFileHealthCheck = HealthFileUtils.initHealthFileValidation();
-                System.out.println("isValid? " + isValidSystemForFileHealthCheck);
+                isValidSystemForFileHealthCheck = HealthFileUtils.isValidSystem();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Is system valid for File health check: " + isValidSystemForFileHealthCheck);
+                }
             } catch (IOException e) {
-                //TODO: something
-                e.printStackTrace();
+                //Let FFDC handle this.
             }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "HealthCheckServiceImpl is activated");
         }
 
     }
 
     /**
-     * Dissects the value read from server.xml or serveer.env sets the fileUpdateIntervalMilliseconds
+     * Processes the configuration value for the file update interval.
+     * Either from server.xml or read through an environment variable.
      *
      * @param configValue The (possibly null) value read from server.xml or env var.
      */
@@ -168,14 +184,19 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
                 } else {
                     fileUpdateIntevalMilliseconds = Integer.parseInt(configValue) * 1000;
                 }
-
-                //validate
             } else {
-                //TODO: log warning
-                System.out.println("The value provided does not adhere to <number>[ms/s], defaulting to 10s");
+                //TODO: Create real message
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.warning(tc, "Invalid value provided for the file update interval"
+                                   + "The value provided must consist of a number followed by an optional time unit of 'ms' or 's'."
+                                   + "Defaulting to 10 seconds.");
+                }
+                //Default of 10 seconds.
                 fileUpdateIntevalMilliseconds = 10000;
             }
-            System.out.println("The value is " + fileUpdateIntevalMilliseconds);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "The fileUpdateInterval has been resolved to " + fileUpdateIntevalMilliseconds + " milliseconds");
+            }
         }
 
     }
@@ -191,31 +212,29 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     /** {@inheritDoc} */
     @Override
     public void startFileHealthCheckProcesses() {
-        if (isValidSystemForFileHealthCheck && fileUpdateIntevalMilliseconds > 0) {
+        if (isValidSystemForFileHealthCheck && isFileHealthCheckingEnabled()) {
 
             File startFile = HealthFileUtils.getStartFile();
             File readyFile = HealthFileUtils.getReadyFile();
             File liveFile = HealthFileUtils.getLiveFile();
 
-            System.out.println("startinggg");
-            //TODO: if no instance found, will need to fail.
-
+            /*
+             * Start health check process.
+             * First, perform a check immediately. Otherwise start process.
+             */
             if (performFileHealthCheck(startFile, HealthCheckConstants.HEALTH_CHECK_START).equals(Status.DOWN)) {
                 startedTimer = new Timer(false);
                 startedTimer.schedule(new FileUpdateProcess(startFile, HealthCheckConstants.HEALTH_CHECK_START, true), 0, 1000);
             }
 
-            //TODO: Read Config. Substitute values.
-
             /*
-             * Below are the perpertual tasks.
+             * Start processes for checking ready and live status.
              */
-
-            performFileHealthCheck(readyFile, HealthCheckConstants.HEALTH_CHECK_READY).equals(Status.DOWN);
+            performFileHealthCheck(readyFile, HealthCheckConstants.HEALTH_CHECK_READY);
             readyTimer = new Timer(false);
             readyTimer.schedule(new FileUpdateProcess(readyFile, HealthCheckConstants.HEALTH_CHECK_READY), 0, fileUpdateIntevalMilliseconds);
 
-            performFileHealthCheck(liveFile, HealthCheckConstants.HEALTH_CHECK_LIVE).equals(Status.DOWN);
+            performFileHealthCheck(liveFile, HealthCheckConstants.HEALTH_CHECK_LIVE);
             liveTimer = new Timer(false);
             liveTimer.schedule(new FileUpdateProcess(liveFile, HealthCheckConstants.HEALTH_CHECK_LIVE), 0, fileUpdateIntevalMilliseconds);
 
@@ -225,19 +244,20 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
     @Deactivate
     protected void deactivate(ComponentContext cc, int reason) {
-        if (tc.isDebugEnabled())
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "HealthCheckServiceImpl is deactivated");
+        }
+
     }
 
     /**
-     * RF
      * Resolve MP Config properties at startup and set default status.
      */
     private void resolveDefaultStatues() {
         String mpConfig_defaultReadiness = ConfigProvider.getConfig().getOptionalValue(HealthCheckConstants.DEFAULT_OVERALL_READINESS_STATUS, String.class).orElse("");
         String mpConfig_defaultStartup = ConfigProvider.getConfig().getOptionalValue(HealthCheckConstants.DEFAULT_OVERALL_STARTUP_STATUS, String.class).orElse("");
 
-        if (tc.isDebugEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "In performHealthCheck(): The default overall Readiness status was configured to be overriden: mp.health.default.readiness.empty.response="
                          + mpConfig_defaultReadiness);
             Tr.debug(tc, "In performHealthCheck(): The default overall Startup status was configured to be overriden: mp.health.default.startup.empty.response="
@@ -250,7 +270,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     }
 
     /**
-     * RF: Get the current set of visible apps
+     * Retrieve the current set of visible apps.
      */
     private Set<String> validateApplicationSet() throws NullPointerException {
         Set<String> apps = appTracker.getAllAppNames();
@@ -261,10 +281,10 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         while (configAppsIt.hasNext()) {
             String nextAppName = configAppsIt.next();
             if (apps.contains(nextAppName)) {
-                if (tc.isDebugEnabled())
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "In performHealthCheck(): configAdmin found an application that the applicationStateListener already found. configAdminAppName = " + nextAppName);
             } else {
-                if (tc.isDebugEnabled())
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "In performHealthCheck(): applicationStateListener couldn't find application. configAdmin added appName = " + nextAppName);
                 appTracker.addAppName(nextAppName);
             }
@@ -292,7 +312,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
                         x -> hcHttpResponseBuilder.handleUndeterminedResponse(httpResponse),
                         responses -> hcHttpResponseBuilder.addResponses(responses));
 
-        unstartedShenanigans(unstartedAppSet, healthCheckProcedure);
+        issueMessagesForUnstartedApps(unstartedAppSet, healthCheckProcedure);
 
         hcHttpResponseBuilder.setHttpResponse(httpResponse);
     }
@@ -300,13 +320,9 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     @Override
     public Status performFileHealthCheck(File file, String healthCheckProcedure) {
 
-        //TODO catch shut down timing npes
+        FileHealthCheckBuilder fhc = new FileHealthCheckBuilder(file);
         Set<String> appSet = validateApplicationSet();
         Set<String> unstartedAppSet = new HashSet<String>();
-
-        //run health checks
-
-        FileHealthCheckBuilder fhc = new FileHealthCheckBuilder(file);
 
         runHealthChecks(appSet, healthCheckProcedure, unstartedAppSet,
                         status -> fhc.setOverallStatus(status),
@@ -315,21 +331,22 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
         fhc.updateFile();
 
-        unstartedShenanigans(unstartedAppSet, healthCheckProcedure);
+        issueMessagesForUnstartedApps(unstartedAppSet, healthCheckProcedure);
 
         return fhc.getOverallStatus();
 
     }
 
-    public void unstartedShenanigans(Set<String> unstartedAppsSet, String healthCheckProcedure) {
+    public void issueMessagesForUnstartedApps(Set<String> unstartedAppsSet, String healthCheckProcedure) {
         if (unstartedAppsSet.isEmpty()) {
             // If all applications are started, reset counter
             unstartedAppsCounter.set(0);
         } else if (!unstartedAppsSet.isEmpty() && unstartedAppsCounter.get() != unstartedAppsSet.size()) {
             // Update the new number of unstarted applications, since some applications may have already started.
             unstartedAppsCounter.set(unstartedAppsSet.size());
-            if (tc.isDebugEnabled())
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "In performHealthCheck(): numOfUnstartedApps after unstarted app set was updated. = " + unstartedAppsCounter.get());
+            }
 
             // If there are other applications that have not started yet, show the message again, with the updated set.
             if (!unstartedAppsSet.isEmpty()) {
@@ -343,8 +360,9 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         }
 
         if (!unstartedAppsSet.isEmpty()) {
-            if (tc.isDebugEnabled())
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "In performHealthCheck(): numOfUnstartedApps = " + unstartedAppsCounter.get());
+            }
 
             if (healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_START) && startupWarningAlreadyShown.compareAndSet(false, true)
                 && !DEFAULT_STARTUP_STATUS.equals(Status.UP)) {
@@ -356,8 +374,16 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         }
     }
 
-    /*
-     * RF: returns any unstarted Apps
+    /**
+     * Method to run the specified health check
+     *
+     * @param <T>
+     * @param appSet               Current set of visible/known applications
+     * @param healthCheckProcedure The health check procedure
+     * @param unstartedAppsSet     Reference to a set of unstartedApps (used by caller for further processing)
+     * @param setOverallStatusFx   Consumer function to handle setting "overall status"
+     * @param handleUndeterminedFx Consumer function to handle undetermined responses.
+     * @param evaluatedStatusFx    Consumer function to process a set of health check statuses.
      */
     private <T> void runHealthChecks(Set<String> appSet, String healthCheckProcedure, Set<String> unstartedAppsSet, Consumer<Status> setOverallStatusFx,
                                      Consumer<T> handleUndeterminedFx,
@@ -376,20 +402,17 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
                     unstartedAppsSet.add(appName);
                 }
             } else if (!appTracker.isUninstalled(appName) && !appTracker.isStarted(appName)) {
-                if (tc.isDebugEnabled())
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "In performHealthCheck(): Application : " + appName + " has not started yet.");
+                }
                 if (!(healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_LIVE))) {
                     if (healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_START)) {
 
                         setOverallStatusFx.accept(DEFAULT_STARTUP_STATUS);
-                        //hcHttpResponseBuilder.setOverallStatus(DEFAULT_STARTUP_STATUS);
                     } else if (healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_READY)) {
                         setOverallStatusFx.accept(DEFAULT_READINESS_STATUS);
-                        //hcHttpResponseBuilder.setOverallStatus(DEFAULT_READINESS_STATUS);
                     } else {
                         // If the /health is hit, it should have the aggregated status of the individual health check procedures
-//                        hcHttpResponseBuilder.setOverallStatus((DEFAULT_STARTUP_STATUS.equals(Status.UP)
-//                                                                && DEFAULT_READINESS_STATUS.equals(Status.UP)) ? Status.UP : Status.DOWN);
                         setOverallStatusFx.accept((DEFAULT_STARTUP_STATUS.equals(Status.UP)
                                                    && DEFAULT_READINESS_STATUS.equals(Status.UP)) ? Status.UP : Status.DOWN);
                     }
@@ -398,11 +421,11 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
                     if (!unstartedAppsSet.contains(appName)) {
                         unstartedAppsSet.add(appName);
                     }
-                    if (tc.isDebugEnabled())
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "In performHealthCheck(): unstartedAppsSet after adding the unstarted app : " + unstartedAppsSet);
+                    }
                 } else {
                     // for liveness check
-                    //hcHttpResponseBuilder.setOverallStatus(Status.UP);
                     setOverallStatusFx.accept(Status.UP);
                 }
             } else {
@@ -412,26 +435,27 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
                     while (moduleIt.hasNext()) {
                         String moduleName = moduleIt.next();
-                        if (tc.isDebugEnabled())
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "In performHealthCheck(): appName = " + appName + ", moduleName = " + moduleName);
-
+                        }
                         try {
 
                             hcResponses = hcExecutor.runHealthChecks(appName, moduleName, healthCheckProcedure);
 
                         } catch (HealthCheckBeanCallException e) {
-                            if (tc.isDebugEnabled())
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "In performHealthCheck(): Caught the exception " + e + " for appName = " + appName + ", moduleName = " + moduleName);
+                            }
+
                             handleUndeterminedFx.accept(null);
-                            //hcHttpResponseBuilder.handleUndeterminedResponse(httpResponse);
                             return;
                         }
 
-                        if (tc.isDebugEnabled())
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "In performHealthCheck(): hcResponses = " + hcResponses);
+                        }
 
                         if (!hcResponses.isEmpty()) {
-                            //hcHttpResponseBuilder.addResponses(hcResponses);
                             evaluatedStatusFx.accept(hcResponses);
                         }
                     }
@@ -439,10 +463,8 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
             }
         }
 
-        //RF originally last w/ unstarted shenanigans
         if (anyAppsInstalled && !(healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_LIVE))) {
             setOverallStatusFx.accept(Status.DOWN);
-            //hcHttpResponseBuilder.setOverallStatus(Status.DOWN);
         }
     }
 
@@ -466,8 +488,14 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
             this(file, healthCheckProcedure, false);
         }
 
+        /**
+         * Timer task that will execute a performHealthCheck() call on the supplied file.
+         *
+         * @param file                 The file that this TimerTask will perform file updates on (i.e., update last modified access time).
+         * @param healthCheckProcedure The health check procedure.
+         * @param isStopOnCreate       Stop this timer if the file exists.
+         */
         public FileUpdateProcess(File file, String healthCheckProcedure, boolean isStopOnCreate) {
-            //this.healthCheckService = inst;
             this.file = file;
             this.isStopOnCreate = isStopOnCreate;
         }
@@ -475,11 +503,8 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         @Override
         public void run() {
 
-            //TODO delete sysout
-            System.out.println("hi running for file " + file.getName());
             performFileHealthCheck(file, HealthCheckConstants.HEALTH_CHECK_START);
             if (isStopOnCreate && file.exists()) {
-                System.out.println("Misson accomplished, canceleling for file " + file.getName());
                 cancel();
             }
 

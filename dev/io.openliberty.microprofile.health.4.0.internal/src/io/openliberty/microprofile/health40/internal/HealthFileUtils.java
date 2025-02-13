@@ -12,6 +12,8 @@ package io.openliberty.microprofile.health40.internal;
 import java.io.File;
 import java.io.IOException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 /**
@@ -19,12 +21,14 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
  */
 public class HealthFileUtils {
 
+    private static final TraceComponent tc = Tr.register(HealthFileUtils.class);
+
     private static volatile File healthDirFile;
     private static volatile File startedFile;
     private static volatile File readyFile;
     private static volatile File liveFile;
 
-    public synchronized static File getHealthDirFile() {
+    public static File getHealthDirFile() {
 
         if (healthDirFile == null) {
             File serverConfigDirFile = new File(System.getProperty("server.config.dir"));
@@ -34,7 +38,7 @@ public class HealthFileUtils {
         return healthDirFile;
     }
 
-    public synchronized static File getStartFile() {
+    public static File getStartFile() {
 
         if (startedFile == null) {
             File healthDirFile = getHealthDirFile();
@@ -44,7 +48,7 @@ public class HealthFileUtils {
         return startedFile;
     }
 
-    public synchronized static File getReadyFile() {
+    public static File getReadyFile() {
 
         if (readyFile == null) {
             File healthDirFile = getHealthDirFile();
@@ -54,7 +58,7 @@ public class HealthFileUtils {
         return readyFile;
     }
 
-    public synchronized static File getLiveFile() {
+    public static File getLiveFile() {
 
         if (liveFile == null) {
             File healthDirFile = getHealthDirFile();
@@ -68,35 +72,45 @@ public class HealthFileUtils {
      * Determine if this is a valid system.
      * Utility class will not keep state, up to the caller to remember.
      */
-    public static boolean initHealthFileValidation() throws IOException {
-        // Check we have I/O for directory
-        // Check if /health directory exists
-        //      YES
-        //              See if we can write
-        //                      YES good
-        //                      NO warning return
-        //              If files exists, delete
-        //                      YES good
-        //                      NO warning return
-        //      NO
-        //              create /health
-        //                      YES
-        //                      Test file creation
-        //                              YES good
-        //                              NO warning, return
-        //                      NO
-        //                      warning return
-
+    /**
+     * This is called upon activation of HealthCheckService (i.e. HealthCheck40ServiceImpl and up).
+     * This determines if a system is valid for File Health check by checking write permissions and "sanitizing"
+     * the existing location of any previous files caused by a server crash.
+     *
+     *
+     * - Check if the /health directory exists (at server.config.dir)
+     * -NO
+     * -- Check if we can create the /health directory
+     * --- YES
+     * ---- Check if we can write to directory
+     * -----YES == all good
+     * -----NO == issue warning that we cannot write to /health directory
+     * --- NO Issue warning that we cannot create /health directory
+     * -YES
+     * --Check if existing 'started', 'live', 'ready' files exist.
+     * --YES
+     * ---Attempt to delete
+     * ----If the file is a Directory => issue warning about directory with matching name. Can not delete as this may contain user data (created by user).
+     * ---Issue warning if we can not delete.
+     *
+     * @return boolean if this is a valid system for file health check functionality
+     * @throws IOException
+     */
+    public static boolean isValidSystem() throws IOException {
         healthDirFile = getHealthDirFile();
 
         //Health Dir does not exist -> create and test write
         if (!healthDirFile.exists()) {
             if (!HealthFileUtils.createDirectory(healthDirFile)) {
+                //TODO: Create the real message ID
+                Tr.warning(tc, "Unable to create the /health directory. The mpHealth file-based health check reporting will be disabled.");
                 return false;
             }
 
             //Testing write.
             if (!HealthFileUtils.canWriteToDirectory(healthDirFile)) {
+                //TODO: Create the real message ID
+                Tr.warning(tc, "Unable to write to the /health directory. The mpHealth file-based health check reporting will be disabled.");
                 return false;
             }
 
@@ -111,15 +125,20 @@ public class HealthFileUtils {
                     f.getName().equals(HealthCheckFileName.READY_FILE.getFileName())) {
                     //failure on delete, return
 
-                    System.out.println("Detected Existing File: " + f.getAbsolutePath());
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Detected existing file [" + f.getAbsolutePath() + "]");
+                    }
 
                     if (f.isDirectory()) {
-                        //TODO: Issue warning
-                        System.out.println("Warning: existing directory. Will not delete");
+                        //TODO: Create the real message ID
+                        Tr.warning(tc,
+                                   "The MP Health runtime needs to create files with the name \"started\", \"live\" and \"ready\" in the /health directory for file-based health check reporting.\r\n"
+                                       + "However, the runtime has detected that a directory with a matching name is present in the /health directory which prevents the necessary files to be crated.The mpHealth file-based health check reporting will be disabled.");
+
                         return false;
                     } else {
                         if (!HealthFileUtils.deleteFiles(f)) {
-                            System.out.println("Could not delete existing file");
+                            Tr.warning(tc, "Unable to delete existing file " + f.getAbsolutePath() + ". The mpHealth file-based health check reporting will be disabled.");
                             return false;
                         }
                     }
@@ -128,6 +147,8 @@ public class HealthFileUtils {
 
             //Testing write.
             if (!HealthFileUtils.canWriteToDirectory(healthDirFile)) {
+                //TODO: Create the real message ID
+                Tr.warning(tc, "Unable to write to the /health directory. The mpHealth file-based health check reporting will be disabled.");
                 return false;
             }
         }
@@ -145,12 +166,15 @@ public class HealthFileUtils {
             }
 
             if (!tempFile.delete()) {
-                //TODO: debug warning, couldn't delete testFile
+                //Not important enough to issue warning, and not important enough to stop functionality.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Unable to delete temp file that was crated. Temp file: " + tempFile.getAbsolutePath());
+                }
             }
 
             return true;
         } catch (SecurityException | IOException exception) {
-            //TODO: Warning about creation? or let caller handle that
+            //Let FFDC happen.
             return false;
         } finally {
             ThreadIdentityManager.reset(token);
@@ -163,7 +187,7 @@ public class HealthFileUtils {
             file.deleteOnExit();
             return file.createNewFile();
         } catch (IOException ioe) {
-            //TODO: Warning about creation.
+            //Let FFDC happen
             return false;
         } finally {
             ThreadIdentityManager.reset(token);
@@ -176,7 +200,7 @@ public class HealthFileUtils {
             file.deleteOnExit();
             return file.mkdir();
         } catch (SecurityException se) {
-            //TODO: Warning about creation.
+            //Let FFDC happen.
             return false;
         } finally {
             ThreadIdentityManager.reset(token);
@@ -188,7 +212,7 @@ public class HealthFileUtils {
         try {
             return file.delete();
         } catch (SecurityException e) {
-            //TODO: issue waring
+            //Let FFDC happen.
             return false;
         } finally {
             ThreadIdentityManager.reset(token);
@@ -200,12 +224,9 @@ public class HealthFileUtils {
         try {
 
             boolean ret = file.setLastModified(System.currentTimeMillis());
-            if (!ret) {
-                //TODO: failed to touch. Warning.
-            }
             return ret;
         } catch (Exception e) {
-            //TODO: failed, warning.
+            //Let FFDC happen.
             return false;
         } finally {
             ThreadIdentityManager.reset(token);

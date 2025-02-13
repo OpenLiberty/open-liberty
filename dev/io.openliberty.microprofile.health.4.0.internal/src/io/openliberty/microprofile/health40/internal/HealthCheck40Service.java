@@ -23,8 +23,18 @@ import io.openliberty.microprofile.health31.internal.HealthCheck31Service;
  */
 public interface HealthCheck40Service extends HealthCheck31Service {
 
+    /**
+     * Start the file-based health check processes
+     */
     public void startFileHealthCheckProcesses();
 
+    /**
+     * Performs a query on the statuses of the given health check procedure and updates the last modified time of the file if the status is UP.
+     *
+     * @param file                 The file for reporting the health status.
+     * @param healthCheckProcedure the health check procedure
+     * @return The final status of this health check.
+     */
     public Status performFileHealthCheck(File file, String healthCheckProcedure);
 
 }
