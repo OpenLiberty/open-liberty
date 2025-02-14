@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -196,6 +196,8 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         //check if wsoc
         final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
 
+        final boolean isHttp10 = "HTTP10".equals(protocol);
+
         final boolean isWsoc = "WebSocket".equals(protocol);
 
         final boolean isH2 = "HTTP2".equals(protocol);
@@ -218,7 +220,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                         this.nettyChannel.write(entry);
                     }
 
-                    else if (hasContentLength || isWsoc) {
+                    else if (hasContentLength || isWsoc || isHttp10) {
                         ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
                         this.nettyChannel.write(nettyBuf); // Write data to the channel
                         writtenBytes.addAndGet(nettyBuf.readableBytes());
@@ -278,6 +280,8 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         //check if wsoc
         final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
 
+        final boolean isHttp10 = "HTTP10".equals(protocol);
+
         final boolean isWsoc = "WebSocket".equals(protocol);
 
         final boolean isH2 = "HTTP2".equals(protocol);
@@ -299,7 +303,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
                         }
 
-                        else if (hasContentLength || isWsoc) {
+                        else if (hasContentLength || isWsoc || isHttp10) {
                             ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
                             lastWriteFuture = this.nettyChannel.writeAndFlush(nettyBuf); // Write data to the channel
                             totalWrittenBytes += nettyBuf.readableBytes();

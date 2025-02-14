@@ -26,6 +26,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.openliberty.http.netty.channel.utils.HeaderValidator;
 import io.openliberty.http.netty.channel.utils.HeaderValidator.FieldType;
@@ -66,7 +67,12 @@ public class HeaderHandler {
                         new String(HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange()), StandardCharsets.UTF_8));
         }
 
-        if (!HttpUtil.isContentLengthSet(response) && !headers.contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        // If HTTP 1.0 remove the Transfer-Encoding header if it exists.
+        if (response.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
+            if (headers.contains(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName())) {
+                response.headers().remove(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName());
+            }
+        } else if (!HttpUtil.isContentLengthSet(response) && !headers.contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             if (response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
 
                 HttpUtil.setContentLength(response, 0);

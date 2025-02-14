@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -208,7 +208,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
         } else {
-            context.channel().attr(NettyHttpConstants.PROTOCOL).set("http");
+            if (request.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
+                context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP10");
+            } else
+                context.channel().attr(NettyHttpConstants.PROTOCOL).set("http");
         }
         HttpDispatcherLink link = new HttpDispatcherLink();
         if (context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
