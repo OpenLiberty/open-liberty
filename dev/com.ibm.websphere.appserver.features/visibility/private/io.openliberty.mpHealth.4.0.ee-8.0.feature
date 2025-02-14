@@ -9,7 +9,7 @@ singleton=true
  io.openliberty.mpCompatible-4.0,\
  com.ibm.websphere.appserver.eeCompatible-8.0
 -bundles=\
-  io.openliberty.microprofile.health.4.0.internal.jakarta; apiJar=false; location:="lib/"
+  io.openliberty.microprofile.health.4.0.internal; apiJar=false; location:="lib/"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel 
