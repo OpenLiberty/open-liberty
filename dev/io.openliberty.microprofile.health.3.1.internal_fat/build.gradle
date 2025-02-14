@@ -32,6 +32,7 @@ dependencies {
   requiredLibs project(':com.ibm.ws.io.smallrye.reactive.streams-operators')
   requiredLibs project(':com.ibm.ws.crypto.passwordutil');
   requiredLibs 'org.apache.johnzon:johnzon-core:1.1.0'
+  requiredLibs project(':io.openliberty.microprofile.health.internal_fat.common')
   
   addRequiredLibraries.dependsOn addJakartaTransformer
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 /**
  *
@@ -96,9 +97,11 @@ public class ConfigAdminHealthCheckTest {
     public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
                                                              MicroProfileActions.MP70_EE10, // mpHealth-4.0 LITE
                                                              MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL
+                                                             HealthActions.MP41_MPHEALTH40, //  mpHealth-4.0 FULL w/ MP41 EE8
+                                                             HealthActions.MP14_MPHEALTH40, // mpHealth-4.0 FULL w/ MP14 EE7
                                                              MicroProfileActions.MP41, // mpHealth-3.1 FULL
                                                              MicroProfileActions.MP40, // mpHealth-3.0 FULL
-                                                             MicroProfileActions.MP30); // mpHealth-2.0 FULL
+                                                             MicroProfileActions.MP30); //mpHealth-2.0 FULL
 
     @Server(SERVER_NAME)
     public static LibertyServer server1;

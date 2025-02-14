@@ -40,6 +40,7 @@ public class HealthActions {
                                                                   MicroProfileActions.MP60,
                                                                   MicroProfileActions.MP50,
                                                                   MP41_MPHEALTH40,
+                                                                  MicroProfileActions.MP41,
                                                                   MP14_MPHEALTH40 };
 
     private static final List<FeatureSet> ALL_MPTEL_SETS_LIST = Arrays.asList(ALL_MPHEALTH_SETS_ARRAY);
