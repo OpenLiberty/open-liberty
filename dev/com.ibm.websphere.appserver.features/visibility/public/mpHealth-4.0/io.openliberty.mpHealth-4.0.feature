@@ -11,7 +11,7 @@ IBM-ShortName: mpHealth-4.0
 Subsystem-Name: MicroProfile Health 4.0
 # io.openliberty.mpCompatible-x.x comes from io.openliberty.mpConfig features
 -features=  \
- io.openliberty.mpHealth.4.0.ee-9.0; ibm.tolerates:= "11.0, 10.0, 8.0, 7.0",\
+ io.openliberty.mpHealth.4.0.ee-9.0; ibm.tolerates:= "10.0, 11.0, 8.0, 7.0",\
  com.ibm.websphere.appserver.jndi-1.0,\
  com.ibm.websphere.appserver.json-1.0,\
  io.openliberty.webBundle.internal-1.0

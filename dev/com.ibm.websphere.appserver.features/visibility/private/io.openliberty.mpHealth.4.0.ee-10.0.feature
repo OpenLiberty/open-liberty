@@ -10,6 +10,6 @@ singleton=true
  com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=\
   io.openliberty.microprofile.health.4.0.internal.jakarta; apiJar=false; location:="lib/"
-kind=noship
-edition=full
+kind=ga
+edition=core
 WLP-Activation-Type: parallel 

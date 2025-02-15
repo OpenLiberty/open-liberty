@@ -40,6 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 
@@ -108,16 +109,24 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
      * Potential use: Server is shutting down and references are being deregistered
      */
     private void stopTimers() {
-        if (startedTimer != null) {
-            startedTimer.cancel();
+
+        /*
+         * Beta-guard
+         * Not really needed, but just in case.
+         */
+        if (ProductInfo.getBetaEdition()) {
+            if (startedTimer != null) {
+                startedTimer.cancel();
+            }
+
+            if (liveTimer != null) {
+                liveTimer.cancel();
+            }
+            if (readyTimer != null) {
+                readyTimer.cancel();
+            }
         }
 
-        if (liveTimer != null) {
-            liveTimer.cancel();
-        }
-        if (readyTimer != null) {
-            readyTimer.cancel();
-        }
     }
 
     @Reference(service = HealthCheck40Executor.class)
@@ -137,29 +146,33 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         resolveDefaultStatues();
 
         /*
-         * Activation time is only time when check env var
-         * for the MP_HEALTH_FILE_UPDATE_INTERVAL only if server.xml
-         * does not exist (server.xml overrides everything once server starts).
+         * Beta guard
          */
-        String serverFileUpdateIntervalConfig;
-        if ((serverFileUpdateIntervalConfig = (String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_FILE_UPDATE_INTERVAL)) != null) {
-            processUpdateIntervalConfig(serverFileUpdateIntervalConfig);
-        } else {
-            processUpdateIntervalConfig(System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_FILE_UPDATE_INTERVAL));
-        }
+        if (ProductInfo.getBetaEdition()) {
+            /*
+             * Activation time is only time when check env var
+             * for the MP_HEALTH_FILE_UPDATE_INTERVAL only if server.xml
+             * does not exist (server.xml overrides everything once server starts).
+             */
+            String serverFileUpdateIntervalConfig;
+            if ((serverFileUpdateIntervalConfig = (String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_FILE_UPDATE_INTERVAL)) != null) {
+                processUpdateIntervalConfig(serverFileUpdateIntervalConfig);
+            } else {
+                processUpdateIntervalConfig(System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_FILE_UPDATE_INTERVAL));
+            }
 
-        if (isFileHealthCheckingEnabled()) {
-            //Validate system for File Health Checks (i.e., File I/O)
-            try {
-                isValidSystemForFileHealthCheck = HealthFileUtils.isValidSystem();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Is system valid for File health check: " + isValidSystemForFileHealthCheck);
+            if (isFileHealthCheckingEnabled()) {
+                //Validate system for File Health Checks (i.e., File I/O)
+                try {
+                    isValidSystemForFileHealthCheck = HealthFileUtils.isValidSystem();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Is system valid for File health check: " + isValidSystemForFileHealthCheck);
+                    }
+                } catch (IOException e) {
+                    //Let FFDC handle this.
                 }
-            } catch (IOException e) {
-                //Let FFDC handle this.
             }
         }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "HealthCheckServiceImpl is activated");
         }
@@ -212,7 +225,11 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     /** {@inheritDoc} */
     @Override
     public void startFileHealthCheckProcesses() {
-        if (isValidSystemForFileHealthCheck && isFileHealthCheckingEnabled()) {
+
+        /*
+         * Last flag- beta guard
+         */
+        if (isValidSystemForFileHealthCheck && isFileHealthCheckingEnabled() && ProductInfo.getBetaEdition()) {
 
             File startFile = HealthFileUtils.getStartFile();
             File readyFile = HealthFileUtils.getReadyFile();

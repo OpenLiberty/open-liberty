@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
 import com.ibm.ws.microprofile.health.internal.AppTrackerImpl;
 import com.ibm.wsspi.application.ApplicationState;
@@ -52,20 +53,26 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
             }
 
             /*
-             * Start the File Health checking.
-             * We don't know if it's enabled or not, logic
-             * will be handled by the HealthCheck40Service (or higher levels).
+             * Beta-guard
              */
-            if (!isOneAppStarted.getAndSet(true)) {
-
+            if (ProductInfo.getBetaEdition()) {
                 /*
-                 * This is built off of AppTrackerImpl, which sets an "healthCheckService" as the original
-                 * interface. Ensure we are dealing with a HealthCheck40Service and above.
+                 * Start the File Health checking.
+                 * We don't know if it's enabled or not, logic
+                 * will be handled by the HealthCheck40Service (or higher levels).
                  */
-                if (healthCheckService != null && healthCheckService instanceof HealthCheck40Service) {
-                    ((HealthCheck40Service) healthCheckService).startFileHealthCheckProcesses();
+                if (!isOneAppStarted.getAndSet(true)) {
+
+                    /*
+                     * This is built off of AppTrackerImpl, which sets an "healthCheckService" as the original
+                     * interface. Ensure we are dealing with a HealthCheck40Service and above.
+                     */
+                    if (healthCheckService != null && healthCheckService instanceof HealthCheck40Service) {
+                        ((HealthCheck40Service) healthCheckService).startFileHealthCheckProcesses();
+                    }
                 }
             }
+
         } finally {
             lock.writeLock().unlock();
         }

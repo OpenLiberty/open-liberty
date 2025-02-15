@@ -67,6 +67,7 @@ testsrc: test/src
 
 -buildpath: \
         com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+        com.ibm.ws.kernel.boot.core;version=latest,\
         com.ibm.ws.app.manager;version=latest,\
         com.ibm.websphere.javaee.servlet.3.1; version=latest,\
         com.ibm.websphere.javaee.cdi.1.2;version=latest,\
