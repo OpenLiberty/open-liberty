@@ -68,8 +68,10 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
      * The value (in ms) defined for the file update interval.
      * Value of 0 means functionality is disabled.
      *
+     * INITIAL STARTING VALUE is -1.
+     * Cheapo way of indicating that this config was never configured before to avoid using another variable.
      */
-    private volatile int fileUpdateIntevalMilliseconds = 0;
+    private volatile int fileUpdateIntevalMilliseconds = -1;
 
     /**
      *
@@ -108,8 +110,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
      * Stop all the timers.
      * Potential use: Server is shutting down and references are being deregistered
      */
-    private void stopTimers() {
-
+    private synchronized void stopTimers() {
         /*
          * Beta-guard
          * Not really needed, but just in case.
@@ -117,13 +118,16 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         if (ProductInfo.getBetaEdition()) {
             if (startedTimer != null) {
                 startedTimer.cancel();
+                startedTimer = null;
             }
 
             if (liveTimer != null) {
                 liveTimer.cancel();
+                liveTimer = null;
             }
             if (readyTimer != null) {
                 readyTimer.cancel();
+                readyTimer = null;
             }
         }
 
@@ -188,6 +192,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     protected void processUpdateIntervalConfig(String configValue) {
         if (configValue != null && !configValue.isEmpty()) {
 
+            int prevConfigIntervalMilliseconds = fileUpdateIntevalMilliseconds;
             configValue = configValue.trim();
             if (configValue.matches("^\\d+(ms|s)?$")) {
                 if (configValue.endsWith("ms")) {
@@ -207,8 +212,31 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
                 //Default of 10 seconds.
                 fileUpdateIntevalMilliseconds = 10000;
             }
+
+            String updateValueMessage = String.format("The fileUpdateInterval is read in as [%s] and is resolved to be [%d] milliseconds", configValue,
+                                                      fileUpdateIntevalMilliseconds);
+            /*
+             * Check if value has been updated
+             * If so, we must stop the existing Timers and start new ones based on the new config (as long as the config isn't 0).
+             *
+             * If prevConfigIntervalMilliseconds is < 0 that means this is the first read in of the config and we don't need to run the below logic.
+             * (We can either be starting the server (with the config) or updating the server.xml during runtime with the fileUpdateInterval config for the first time)
+             * Updating during runtime isn't really something you should do, but we must support dynamic server updates.
+             *
+             */
+            if ((!(prevConfigIntervalMilliseconds < 0) && (prevConfigIntervalMilliseconds != fileUpdateIntevalMilliseconds))) {
+
+                updateValueMessage = "The configuration has been updated. " + updateValueMessage;
+                stopTimers();
+
+                //Only start new timer processes if config value is not 0.
+                if (isFileHealthCheckingEnabled()) {
+                    startFileHealthCheckProcesses();
+                }
+            }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "The fileUpdateInterval has been resolved to " + fileUpdateIntevalMilliseconds + " milliseconds");
+                Tr.debug(tc, updateValueMessage);
             }
         }
 
@@ -219,7 +247,20 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         /*
          * During server.xml update, never check for server env.
          */
-        processUpdateIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_FILE_UPDATE_INTERVAL));
+        /*
+         * Beta guard
+         */
+        if (ProductInfo.getBetaEdition()) {
+            /*
+             * If system was not valid for health check, skip on checking configuration update. We've already indicated that this system is
+             * not fit for file-based health checks.
+             */
+            if (isValidSystemForFileHealthCheck) {
+                processUpdateIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_FILE_UPDATE_INTERVAL));
+            }
+
+        }
+
     }
 
     /** {@inheritDoc} */
@@ -227,7 +268,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     public void startFileHealthCheckProcesses() {
 
         /*
-         * Last flag- beta guard
+         * Last flag in the if is the beta guard
          */
         if (isValidSystemForFileHealthCheck && isFileHealthCheckingEnabled() && ProductInfo.getBetaEdition()) {
 
@@ -237,15 +278,20 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
             /*
              * Start health check process.
-             * First, perform a check immediately. Otherwise start process.
+             * First check if start file exists, if it does then we must be updating the fileUpdateInterval during runtime after a started file
+             * has been created. In no way should this exist from a previous run of this server (i.e. crash) as validation of the system would have
+             * failed and this we would never get here if that was the case.
+             *
+             *
+             * Perform a check immediately and if status is DOWN, start the process.
              */
-            if (performFileHealthCheck(startFile, HealthCheckConstants.HEALTH_CHECK_START).equals(Status.DOWN)) {
+            if (!startFile.exists() && performFileHealthCheck(startFile, HealthCheckConstants.HEALTH_CHECK_START).equals(Status.DOWN)) {
                 startedTimer = new Timer(false);
                 startedTimer.schedule(new FileUpdateProcess(startFile, HealthCheckConstants.HEALTH_CHECK_START, true), 0, 1000);
             }
 
             /*
-             * Start processes for checking ready and live status.
+             * Perform an immediate check and then start the processes for checking ready and live status.
              */
             performFileHealthCheck(readyFile, HealthCheckConstants.HEALTH_CHECK_READY);
             readyTimer = new Timer(false);
@@ -519,7 +565,6 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
         @Override
         public void run() {
-
             performFileHealthCheck(file, HealthCheckConstants.HEALTH_CHECK_START);
             if (isStopOnCreate && file.exists()) {
                 cancel();
