@@ -7,7 +7,6 @@ singleton=true
  com.ibm.websphere.appserver.jsonp-1.0,\
  com.ibm.websphere.appserver.cdi-1.2,\
  io.openliberty.mpCompatible-0.0,\
- com.ibm.websphere.appserver.classloading-1.0,\
  com.ibm.websphere.appserver.contextService-1.0,\
  com.ibm.websphere.appserver.eeCompatible-7.0
 -bundles=\
