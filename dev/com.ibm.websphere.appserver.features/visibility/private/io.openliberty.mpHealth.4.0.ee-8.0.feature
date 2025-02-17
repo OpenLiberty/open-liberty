@@ -5,7 +5,7 @@ singleton=true
  io.openliberty.javax.org.eclipse.microprofile.health-4.0,\
  com.ibm.websphere.appserver.mpConfig-2.0,\
  com.ibm.websphere.appserver.jsonp-1.1,\
- com.ibm.websphere.appserver.cdi-2.0,,\
+ com.ibm.websphere.appserver.cdi-2.0,\
  io.openliberty.mpCompatible-4.0,\
  com.ibm.websphere.appserver.eeCompatible-8.0
 -bundles=\
