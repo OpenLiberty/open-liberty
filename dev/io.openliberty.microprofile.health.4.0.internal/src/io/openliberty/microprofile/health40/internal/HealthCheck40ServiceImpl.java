@@ -147,7 +147,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
-        resolveDefaultStatues();
+        //resolveDefaultStatues();
 
         /*
          * Beta guard
@@ -367,6 +367,9 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     @Override
     public void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse, String healthCheckProcedure) {
 
+        //Need to do here for checkpoint, can't do it at activation because mpConfig could be diff upon checkpoint restore
+        resolveDefaultStatues();
+
         HealthCheck30HttpResponseBuilder hcHttpResponseBuilder = new HealthCheck30HttpResponseBuilder();
         Set<String> appSet = validateApplicationSet();
         Set<String> unstartedAppSet = new HashSet<String>();
@@ -382,6 +385,9 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
     @Override
     public Status performFileHealthCheck(File file, String healthCheckProcedure) {
+
+        //Need to do here for checkpoint, can't do it at activation because mpConfig could be diff upon checkpoint restore
+        resolveDefaultStatues();
 
         FileHealthCheckBuilder fhc = new FileHealthCheckBuilder(file);
         Set<String> appSet = validateApplicationSet();
