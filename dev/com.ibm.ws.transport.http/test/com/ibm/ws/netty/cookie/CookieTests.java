@@ -205,7 +205,25 @@ public class CookieTests {
             message.setCommitted();
             HttpCookie cookie = new HttpCookie("testCookie", "testValue");
             boolean result = message.setCookie(cookie, SET_COOKIE);
+            
             assertThat(result, is(false));
+        }
+
+        @Test 
+        public void testPathVersion1(){
+            TestableNettyMessage message = createMessage(RESPONSE);
+            HttpCookie cookie = new HttpCookie("name1", "value1");
+            cookie.setVersion(1);
+            String path = "\"/servlet_jsh_cookie_web\"";
+            cookie.setPath(path);
+
+            message.setCookie(cookie, SET_COOKIE);
+            message.processCookies();
+
+            HttpHeaders headers = message.getNettyHeaders();
+            List<String> setCookies = headers.getAll("Set-Cookie");
+            assertThat(setCookies, hasSize(1));
+            assertThat(setCookies.get(0), containsString("name1=value1; Version=1; Path=\"/servlet_jsh_cookie_web\""));
         }
 
         

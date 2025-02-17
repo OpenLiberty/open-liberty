@@ -1039,109 +1039,14 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
             setCookieNames = new HashMap<String, String>();
         }
 
+        String userAgent = null;
+        if(getServiceContext() != null && getServiceContext().getRequest() != null){
+            userAgent = getServiceContext().getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString();
+        }
+
         for (HttpCookie cookie : list) {
-            cookie.setVersion(0);
-            //Add Samesite default config
-            if (config.useSameSiteConfig() && cookie.getAttribute("samesite") == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "No SameSite value has been added for [" + cookie.getName() + "], checking configuration for a match");
-                }
-                String sameSiteAttributeValue = null;
-                Matcher m = null;
-
-                //First attempt to match the name explicitly.
-                if (config.getSameSiteCookies().containsKey(cookie.getName())) {
-                    sameSiteAttributeValue = config.getSameSiteCookies().get(cookie.getName());
-                }
-                //If the only pattern is a standalone '*' avoid regex cost
-                else if (config.onlySameSiteStar()) {
-                    sameSiteAttributeValue = config.getSameSiteCookies().get(HttpConfigConstants.WILDCARD_CHAR);
-                }
-
-                else {
-                    //Attempt to find a match amongst the configured SameSite patterns
-                    for (Pattern p : config.getSameSitePatterns().keySet()) {
-                        m = p.matcher(cookie.getName());
-                        if (m.matches()) {
-                            sameSiteAttributeValue = config.getSameSitePatterns().get(p);
-                            break;
-                        }
-                    }
-
-                }
-
-                if (sameSiteAttributeValue != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "SameSite configuration found, value set to: " + sameSiteAttributeValue);
-                    }
-                    cookie.setAttribute("samesite", sameSiteAttributeValue);
-                    //If SameSite has been defined, and it's value is set to 'none', ensure the cookie is set to secure
-                    if (!cookie.isSecure() && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Setting the Secure attribute for SameSite=None");
-                        }
-                        cookie.setSecure(true);
-                    }
-
-                    // Set Partitioned Flag for SameSite=None Cookie
-                    if (config.getPartitioned()
-                        && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
-                        if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "[1] Setting the Partitioned attribute for SameSite=None");
-                            }
-                            cookie.setAttribute("partitioned", "");
-                        }
-                    }
-
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "No SameSite configuration found");
-                    }
-                }
-            }
-
-            // If SameSite=None is set programmatically, but partitioned is set via server.xml, then add the partitioned attribute
-            if (config.useSameSiteConfig() && cookie.getAttribute("samesite") != null) {
-                boolean sameSiteNoneUsed = cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
-                if (config.getPartitioned() && sameSiteNoneUsed) {
-                    if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "[2] Setting the Partitioned attribute for SameSite=None");
-                        }
-                        cookie.setAttribute("partitioned", "");
-                    }
-                }
-            }
-
-            String partitionedValue = cookie.getAttribute("partitioned");
-            if(partitionedValue != null && !partitionedValue.equalsIgnoreCase("false")){
-                boolean sameSiteIsNotNone = true;
-                if(cookie.getAttribute("samesite") != null){
-                    sameSiteIsNotNone = !cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
-                }
-                if(sameSiteIsNotNone){
-                    cookie.setAttribute("partitioned", "false");
-                }
-            }
-
-            if(cookie.getAttribute("samesite") != null && cookie.getAttribute("samesite").equals(HttpConfigConstants.SameSite.NONE.getName())){
-                String userAgent = getServiceContext().getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString();
-                if(userAgent != null && SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent)){
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                        if(filterDuplicates && setCookieNames != null && setCookieNames.containsKey(cookie.getName())){
-                            Tr.debug(tc, "Incompatible client for SameSite=None found with the following User-Agent: " + userAgent);
-                        }
-                    }
-                    cookie.setAttribute("samesite", null);
-                    if(partitionedValue != null){
-                        cookie.setAttribute("partitioned", null);
-                    }
-                }
-            }
-
-            String value = CookieUtils.toString(cookie, header, config.isv0CookieDateRFC1123compat(),
-                                                config.shouldSkipCookiePathQuotes());
+            String value = CookieEncoder.encode(cookie, header, config, userAgent);
+            
             if (null != value) {
                 if(filterDuplicates){
                     setCookieNames.put(cookie.getName(), value);

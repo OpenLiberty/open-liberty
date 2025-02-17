@@ -134,7 +134,6 @@ public class CookieEncoder {
         if(config.getPartitioned()){
             applyPartioned(cookie);
         }
-        handleExpiresToMaxAge(cookie);
     }
 
     private static void determineCookieVersion(HttpCookie cookie, HttpChannelConfig config){
@@ -210,7 +209,13 @@ public class CookieEncoder {
         }
     }
 
-    
+    /**
+     * Utility method, would to calculate Max Age attribute based on the 
+     * Expires attribute. Unused at the moment as it would change default
+     * behavior. 
+     * @param cookie
+     */
+    @SuppressWarnings("unused")
     private static void handleExpiresToMaxAge(HttpCookie cookie){
             boolean hasExpires = cookie.getAttribute(EXPIRES_ATTRIBUTE) != null;
             boolean hasMaxAge = cookie.getMaxAge() > -1;
