@@ -31,7 +31,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
@@ -47,7 +47,7 @@ import io.netty.util.ReferenceCountUtil;
 /**
  *
  */
-public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
     private static final TraceComponent tc = Tr.register(HttpDispatcherHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
@@ -69,18 +69,26 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         context = ctx;
     }
 
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+        // Trigger the first read explicitly
+        ctx.read();
+    }
+
     // Method to allow direct invocation
     // TODO check if this can be cleaned up and removed
-    public void processMessageDirectly(FullHttpRequest request) throws Exception {
+    public void processMessageDirectly(HttpRequest request) throws Exception {
         channelRead0(context, request);
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
+    protected void channelRead0(ChannelHandlerContext context, HttpRequest request) throws Exception {
         // TODO Need to see if we need to check decoder result from request to ensure data is properly parsed as expected
         if (request.decoderResult().isFinished() && request.decoderResult().isSuccess()) {
+            //context.channel().config().setAutoRead(false);
 
-            FullHttpRequest msg = request;
+            HttpRequest msg = request;
             HttpDispatcher.getExecutorService().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -205,7 +213,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         return;
     }
 
-    public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
+    public void newRequest(ChannelHandlerContext context, HttpRequest request) {
 
         if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");

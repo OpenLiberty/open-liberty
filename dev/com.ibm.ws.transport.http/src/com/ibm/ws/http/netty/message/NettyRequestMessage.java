@@ -54,7 +54,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.VoidChannelPromise;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
@@ -74,7 +74,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     private static final TraceComponent tc = Tr.register(NettyRequestMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    private FullHttpRequest request;
+    private HttpRequest request;
     private HttpHeaders headers;
     private HttpInboundServiceContext context;
 
@@ -114,12 +114,12 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     /** Host string parsed from Host header */
     private transient String sHdrHost = null;
 
-    public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
+    public NettyRequestMessage(HttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
         init(request, isc, nettyContext);
 
     }
 
-    public void init(FullHttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
+    public void init(HttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
 
         Objects.requireNonNull(request);
         Objects.requireNonNull(isc);
@@ -795,7 +795,9 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     public HttpTrailers getTrailers() {
 //        if (request.trailingHeaders().isEmpty())
 //            return null;
-        return new NettyTrailers(this.request.trailingHeaders());
+//TODO last http content will update this from dispatcher handler
+     //   return new NettyTrailers(this.request.trailingHeaders());
+     return null;
     }
 
     @Override

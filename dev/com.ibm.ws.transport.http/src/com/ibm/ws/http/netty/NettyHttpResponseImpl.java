@@ -30,7 +30,7 @@ import com.ibm.wsspi.http.ee7.HttpOutputStreamEE7;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
@@ -57,7 +57,7 @@ public class NettyHttpResponseImpl extends HttpResponseImpl implements HttpRespo
 
     private ChannelHandlerContext nettyContext;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
-    private FullHttpRequest nettyRequest;
+    private HttpRequest nettyRequest;
 
     private final boolean committed = false;
     private final long contentLength = 0;

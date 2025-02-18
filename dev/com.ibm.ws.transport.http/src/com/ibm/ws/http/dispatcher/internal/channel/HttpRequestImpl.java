@@ -76,7 +76,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      *
      * @param context
      */
-    public void init(FullHttpRequest request, HttpInboundServiceContext context) {
+    public void init(io.netty.handler.codec.http.HttpRequest request, HttpInboundServiceContext context) {
 
         this.message = context.getRequest();
 

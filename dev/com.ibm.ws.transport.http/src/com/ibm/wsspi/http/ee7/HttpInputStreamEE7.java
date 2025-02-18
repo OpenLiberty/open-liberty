@@ -27,7 +27,7 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.channel.exception.BodyCompleteException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 
 /**
  *
@@ -43,7 +43,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         super(context);
     }
 
-    public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
+    public HttpInputStreamEE7(HttpInboundServiceContext context, io.netty.handler.codec.http.HttpRequest request) {
         super(context, request);
     }
 

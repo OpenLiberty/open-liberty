@@ -15,12 +15,12 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 
 /**
  *
  */
-public class TransportInboundHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class TransportInboundHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
     private final HttpChannelConfig config;
 
@@ -32,12 +32,12 @@ public class TransportInboundHandler extends SimpleChannelInboundHandler<FullHtt
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
+    protected void channelRead0(ChannelHandlerContext context, HttpRequest request) throws Exception {
 
         if (request.headers().contains(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName())) {
             context.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).set(request.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName()));
         }
-        context.fireChannelRead(request.retain());
+        //context.fireChannelRead(request.retain());
 
     }
 
