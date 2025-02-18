@@ -26,10 +26,8 @@ import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.CoalescingBufferQueue;
 import io.netty.channel.VoidChannelPromise;
@@ -246,28 +244,30 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         }
         if (currentQueuedDataSize >= minBytesToRead) {
             int readTotal = currentQueuedDataSize >= remainingBufferSize ? remainingBufferSize : currentQueuedDataSize;
-            byte[] bytes = ByteBufUtil.getBytes(read(readTotal, null));
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "NettyServletUpgradeHandler setToBuffer queue bigger than min bytes. Reading total of: " + readTotal);
-            }
+            ByteBuf buffer = read(readTotal, null);
             try {
+                byte[] bytes = ByteBufUtil.getBytes(buffer);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "NettyServletUpgradeHandler setToBuffer queue bigger than min bytes. Reading total of: " + readTotal);
+                }
                 readContext.getBuffer().put(bytes);
+                // Reset totalBytesRead after fulfilling the read
+                totalBytesRead -= bytes.length; // Adjust totalBytesRead
+                return bytes.length;
             } catch (RuntimeException e) {
                 // TODO: See how best to handle this exception
                 // Assume this is async and if we get a runtime exception we can
                 // assume the buffer was already release therefore no need to continue here
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "NettyServletUpgradeHandler setToBuffer hit RuntimeException when adding bytes. We assume the buffer was already released so stop thread run.");
+                    Tr.debug(this, tc,
+                             "NettyServletUpgradeHandler setToBuffer hit RuntimeException when adding bytes. We assume the buffer was already released so stop thread run.");
                 }
                 Thread.currentThread().interrupt();
-            }
-
-
             } finally {
                 buffer.release();
             }
-        }return 0;
-
+        }
+        return 0;
     }
 
     @Override
