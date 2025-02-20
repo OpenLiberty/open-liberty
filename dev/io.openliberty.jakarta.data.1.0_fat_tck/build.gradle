@@ -31,7 +31,7 @@ dependencies {
   
   arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1'
 
-  implementation 'org.jnosql:jnosql-artemis:0.45.0'
+  implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
   
   //TODO Configure WLP dependency if doing verification testing, Examples below:
   //wlp 'io.openliberty.beta:openliberty-runtime:24.0.0.5-beta@zip'
