@@ -331,16 +331,6 @@ task autoFVT {
       into publishDir
     }
 
-    // Copy LTPA FIPS keys if enabled
-    if (bnd.get('ltpa.fips.enabled', 'false').toBoolean()) {
-      def publishBaseDir = new File(autoFvtDir, 'publish') 
-      def libBaseDir = new File(autoFvtDir, 'lib')
-      def filesBaseDir = new File(autoFvtDir, 'files')
-      defaultCopyLTPAFIPSKeys(publishBaseDir)
-      defaultCopyLTPAFIPSKeys(libBaseDir)
-      defaultCopyLTPAFIPSKeys(filesBaseDir)
-    }
-
     // Copy the logging libraries over for use while running FATs
     /*copy {
       from project(':com.ibm.ws.logging.core').buildDir
@@ -480,7 +470,6 @@ task runfat(type: Exec) {
   mustRunAfter cleanBeforeRun
   environment System.getProperties()
   
-  
   //Make sure to check if we have a property, otherwise we will end up setting "null" as the value
     
   // Artifactory Registry Properties
@@ -518,6 +507,18 @@ task runfat(type: Exec) {
   } else {
     executable "ant"
     args "-f", new File(autoFvtDir, 'TestBuild.xml')
+  }
+
+  doFirst {
+    // Copy LTPA FIPS keys if enabled
+    if (bnd.get('ltpa.fips.enabled', 'false').toBoolean()) {
+      def publishBaseDir = new File(autoFvtDir, 'publish') 
+      def libBaseDir = new File(autoFvtDir, 'lib')
+      def filesBaseDir = new File(autoFvtDir, 'files')
+      defaultCopyLTPAFIPSKeys(publishBaseDir)
+      defaultCopyLTPAFIPSKeys(libBaseDir)
+      defaultCopyLTPAFIPSKeys(filesBaseDir)
+    }
   }
 
   doLast {
