@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2022 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -452,6 +454,24 @@ public class LoggerOffThread implements LogFile {
                     this.extensioninfo = "";
                 }
                 this.backups = new LinkedList<File>();
+            }
+            
+            /** 
+             * Manage existing backups: sort by oldest, enforce limit, and delete excess. 
+             * */ 
+             File directory = new File(getFilePathName()).getParentFile();
+             if (directory != null && directory.isDirectory()) {
+                File[] backupFiles = directory.listFiles((dir, name) -> name.startsWith(new File(getFilePathName()).getName()));
+                if (backupFiles != null) {
+                    Arrays.sort(backupFiles, Comparator.comparingLong(File::lastModified));
+                    this.backups.addAll(Arrays.asList(backupFiles));
+                    while (this.backups.size() > getMaximumBackupFiles()) {
+                        File oldestFile = this.backups.poll(); 
+                            if (oldestFile != null && oldestFile.exists()) {
+                                oldestFile.delete(); 
+                            }
+                    }
+                }
             }
 
             //Set bytesWritten from the already existing file
