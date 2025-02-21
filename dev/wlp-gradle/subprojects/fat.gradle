@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ configurations {
 dependencies {
   derby 'org.apache.derby:derby:10.11.1.1'
 
-  jdbcDrivers 'com.ibm.db2:jcc:11.1.4.4',
+  jdbcDrivers 'com.ibm.db2:jcc:12.1.0.0',
 		'org.postgresql:postgresql:42.7.2',
 		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
 		'org.apache.derby:derbyclient:10.11.1.1',
@@ -253,7 +253,7 @@ task autoFVT {
     def bndProps = new Properties()
 
     // By default, load up all properties with certain prefixes from bndWorkspace
-    bndWorkspace.getProject(project.getProjectDir()).getProperties().each { k, v ->
+    bndWorkspace.getProject(project.name).getProperties().each { k, v ->
       if(k.startsWith("test.") || k.startsWith("fat."))
         bndProps.setProperty(k, v);
     }
@@ -329,6 +329,16 @@ task autoFVT {
       include '**/*'
       exclude 'files'
       into publishDir
+    }
+
+    // Copy LTPA FIPS keys if enabled
+    if (bnd.get('ltpa.fips.enabled', 'false').toBoolean()) {
+      def publishBaseDir = new File(autoFvtDir, 'publish') 
+      def libBaseDir = new File(autoFvtDir, 'lib')
+      def filesBaseDir = new File(autoFvtDir, 'files')
+      defaultCopyLTPAFIPSKeys(publishBaseDir)
+      defaultCopyLTPAFIPSKeys(libBaseDir)
+      defaultCopyLTPAFIPSKeys(filesBaseDir)
     }
 
     // Copy the logging libraries over for use while running FATs
@@ -472,6 +482,8 @@ task runfat(type: Exec) {
   
   
   //Make sure to check if we have a property, otherwise we will end up setting "null" as the value
+    
+  // Artifactory Registry Properties
   if ( gradle.userProps.containsKey("artifactory.download.server") )
 	environment "ARTIFACTORY_DOWNLOAD_SERVER", gradle.userProps.getProperty("artifactory.download.server")
 
@@ -486,6 +498,16 @@ task runfat(type: Exec) {
 
   if ( gradle.userProps.containsKey("artifactory.force.external.repo") )
 	environment "ARTIFACTORY_FORCE_EXTERNAL_REPO", gradle.userProps.getProperty("artifactory.force.external.repo")
+  	
+  // Internal Registry Properties
+  if ( gradle.userProps.containsKey("docker_registry.server") )
+	environment "DOCKER_REGISTRY_SERVER", gradle.userProps.getProperty("docker_registry.server")
+	
+  if ( gradle.userProps.containsKey("docker_registry.user") )
+	environment "DOCKER_REGISTRY_USER", gradle.userProps.getProperty("docker_registry.user")
+	
+  if ( gradle.userProps.containsKey("docker_registry.password") )
+	environment "DOCKER_REGISTRY_PASSWORD", gradle.userProps.getProperty("docker_registry.password")
   
   //Add fat.test.localrun to JVM environment.
   //Not accessible during builds since tests are run on child systems with a different JVM
@@ -672,4 +694,94 @@ task buildandrun {
 task buildFatAndRelease {
   dependsOn buildfat
   dependsOn release
+}
+
+/* Macros for LTPA Keys */
+
+// Helper function to process entities in a directory
+def processEntities(baseDir, keysFile, action) {
+    if (baseDir.exists() && baseDir.isDirectory()) {
+        // Process nested directories
+        baseDir.listFiles()
+            .findAll { it.isDirectory() } // Only process directories
+            .each { entityDir ->
+                ["resources/security", "serverLTPAKeys", "engineLTPAKeys", ""].each { subPath ->
+                    def targetDir = new File(entityDir, subPath)
+                    def ltpaFile = new File(targetDir, "ltpa.keys")
+
+                    if (action == "copy" && keysFile != null && ltpaFile.exists()) {
+                        copy {
+                            from keysFile
+                            into targetDir
+                        }
+                    } else if (action == "delete") {
+                        def delFile = new File(targetDir, keysFile)
+                        if (delFile != null) {
+                            delFile.delete()
+                        }
+                    }
+                }
+            }
+
+        // Directly check for subpaths under the base directory itself
+        ["resources/security", "serverLTPAKeys", "engineLTPAKeys", ""].each { subPath ->
+            def targetDir = new File(baseDir, subPath)
+            def ltpaFile = new File(targetDir, "ltpa.keys")
+
+            if (action == "copy" && keysFile != null && ltpaFile.exists()) {
+                copy {
+                    from keysFile
+                    into targetDir
+                }
+            } else if (action == "delete") {
+                def delFile = new File(targetDir, keysFile)
+                if (delFile != null) {
+                    delFile.delete()
+                }
+            }
+        }
+    }
+}
+
+// Macro to copy LTPA keys
+ext.copyLTPAKeys = { publishBaseDir, destinationDir, keysFileName ->
+    def sourceDir = new File(rootProject.projectDir, 'build.sharedResources/usrShared/resources/security')
+    def keysFile = new File(sourceDir, keysFileName)
+
+    if (!keysFile.exists()) {
+        return
+    }
+
+    // Check if publishBaseDir is a valid directory
+    if (publishBaseDir?.exists() && publishBaseDir.isDirectory()) {
+        ["servers", "clients", "files", "serverLTPAKeys", "LibertyFATTestFiles"].each { subDir ->
+            def baseDir = new File(publishBaseDir, subDir)
+            processEntities(baseDir, keysFile, "copy")
+        }
+    }
+
+    if (destinationDir?.trim()) {
+        copy {
+            from keysFile
+            into destinationDir
+        }
+    }
+}
+
+// Define a default macro with hardcoded paths and no parameters for the  default LTPA FIPS key
+ext.defaultCopyLTPAFIPSKeys = { publishBaseDir ->
+    def defaultDestinationDir = ""
+    def defaultKeysFileName = "ltpaFIPS.keys"
+
+    // Call the main macro with default values
+    copyLTPAKeys(publishBaseDir, defaultDestinationDir, defaultKeysFileName)
+}
+
+// Define a default macro with hardcoded paths and no parameters for the default LTPA key
+ext.defaultCopyLTPAKeys = { publishBaseDir ->
+    def defaultDestinationDir = ""
+    def defaultKeysFileName = "ltpa.keys"
+
+    // Call the main macro with default values
+    copyLTPAKeys(publishBaseDir, defaultDestinationDir, defaultKeysFileName)
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,10 @@ import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
+import jakarta.data.repository.Select;
 import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.Is;
-import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.update.Assign;
 import test.jakarta.data.experimental.web.Shipment.Instructions;
 

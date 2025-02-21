@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 
 Name: test/
-Specification-Title: Classloading Test Resources 
+Specification-Title: Classloading Test Resources
 Specification-Version: 1.0
 Specification-Vendor: IBM
-Implementation-Title: test 
+Implementation-Title: test
 Implementation-Version: foo1
 Implementation-Vendor: IBM
 Sealed: true

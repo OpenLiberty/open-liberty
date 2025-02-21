@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -91,7 +91,7 @@ public class ProgrammaticImageTest {
                     new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(postgresql.asCanonicalNameString())//
                                     .copy("/docker-entrypoint-initdb.d/initDB.sql", "/docker-entrypoint-initdb.d/initDB.sql")
                                     .build())
-                                    .withFileFromFile("/docker-entrypoint-initdb.d/initDB.sql", new File("lib/LibertyFATTestFiles/postgres/scripts/initDB.sql"), 644))
+                                    .withFileFromFile("/docker-entrypoint-initdb.d/initDB.sql", new File("lib/LibertyFATTestFiles/postgres/initDB.sql"), 644))
                     .withExposedPorts(POSTGRE_PORT)
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)

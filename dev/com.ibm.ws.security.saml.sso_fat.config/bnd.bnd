@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2022 IBM Corporation and others.
+# Copyright (c) 2021, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -37,5 +37,8 @@ tested.features: jsp-2.3, jdbc-4.1, el-3.0, servlet-4.0, samlweb-2.0, jdbc-4.0, 
     com.ibm.ws.webcontainer.security;version=latest, \
     com.ibm.ws.security.saml.websso.2.0;version=latest, \
     net.sourceforge.htmlunit:htmlunit;version=2.44.0, \
+    com.ibm.ws.kernel.boot.core;version=latest, \
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.kernel.security.thread;version=latest,\
     com.ibm.ws.org.apache.directory.server;version=latest
     

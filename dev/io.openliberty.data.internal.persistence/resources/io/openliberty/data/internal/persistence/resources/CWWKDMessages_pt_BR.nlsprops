@@ -38,15 +38,15 @@ CWWKD1002.method.annos.err=CWWKD1002E: O m\u00e9todo {0} da interface do reposit
 CWWKD1002.method.annos.err.explanation=Essa combina\u00e7\u00e3o de anota\u00e7\u00f5es n\u00e3o \u00e9 v\u00e1lida em um \u00fanico m\u00e9todo de reposit\u00f3rio.
 CWWKD1002.method.annos.err.useraction=Localize a interface e o m\u00e9todo do reposit\u00f3rio e determine a combina\u00e7\u00e3o correta de anota\u00e7\u00f5es de m\u00e9todo.
 
-CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: O tipo de retorno {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} n\u00e3o \u00e9 um tipo de retorno v\u00e1lido para um m\u00e9todo {3} do reposit\u00f3rio. Os tipos de retorno v\u00e1lidos incluem: {4}.
-CWWKD1003.lifecycle.rtrn.err.explanation=O tipo de retorno do m\u00e9todo n\u00e3o \u00e9 um dos tipos de retorno compat\u00edveis com os m\u00e9todos Insert, Update e Save.
-CWWKD1003.lifecycle.rtrn.err.useraction=Consulte as informa\u00e7\u00f5es do Javadoc do Jakarta Data para as anota\u00e7\u00f5es Insert, Update e Save para obter os tipos de retorno v\u00e1lidos.
+CWWKD1003.rtrn.err=CWWKD1003E: O tipo de retorno {0} do m\u00e9todo {1} da interface {2} do reposit\u00f3rio n\u00e3o \u00e9 um tipo de retorno v\u00e1lido para um m\u00e9todo {3} do reposit\u00f3rio. Os tipos de retorno v\u00e1lidos incluem: {4}.
+CWWKD1003.rtrn.err.explanation=O tipo de retorno do m\u00e9todo n\u00e3o \u00e9 um dos tipos de retorno compat\u00edveis com o tipo declarado do m\u00e9todo do reposit\u00f3rio.
+CWWKD1003.rtrn.err.useraction=Consulte as informa\u00e7\u00f5es do Javadoc do Jakarta Data para obter as anota\u00e7\u00f5es Insert, Update e Save e a documenta\u00e7\u00e3o Query by Method name para obter os tipos de retorno v\u00e1lidos.
 
 CWWKD1004.general.rtrn.err=CWWKD1004E: O tipo de retorno {0} do m\u00e9todo {1} da interface de reposit\u00f3rio {2} n\u00e3o \u00e9 um tipo de retorno v\u00e1lido para um m\u00e9todo de reposit\u00f3rio.
 CWWKD1004.general.rtrn.err.explanation=O tipo de retorno do m\u00e9todo n\u00e3o \u00e9 um dos tipos de retorno compat\u00edveis com o tipo de m\u00e9todo do reposit\u00f3rio.
 CWWKD1004.general.rtrn.err.useraction=Consulte as informa\u00e7\u00f5es do Javadoc do Jakarta Data para obter uma lista de tipos de retorno v\u00e1lidos para o tipo de m\u00e9todo de reposit\u00f3rio.
 
-CWWKD1005.find.rtrn.err=CWWKD1005E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o \u00e9 v\u00e1lido. O m\u00e9todo especifica um tipo de retorno {2} que n\u00e3o \u00e9 convers\u00edvel a partir do tipo de entidade {3}. O tipo de resultado de uma opera\u00e7\u00e3o find deve ser o tipo de entidade, um tipo de propriedade de entidade, um registro Java composto de propriedades de entidade ou um tipo constru\u00eddo pelo JPQL ou JDQL que \u00e9 fornecido \u00e0 anota\u00e7\u00e3o Query. O tipo de retorno do m\u00e9todo find do reposit\u00f3rio pode ser o tipo de resultado, uma matriz do tipo de resultado ou qualquer um dos seguintes tipos parametrizados com o tipo de resultado: {4}.
+CWWKD1005.find.rtrn.err=CWWKD1005E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o \u00e9 v\u00e1lido. O m\u00e9todo especifica um tipo de retorno {2} que n\u00e3o \u00e9 convers\u00edvel a partir do tipo de entidade {3}. O tipo de resultado de uma opera\u00e7\u00e3o de localiza\u00e7\u00e3o deve ser o tipo de entidade, um tipo de propriedade de entidade, um registro Java composto de propriedades de entidade ou um tipo constru\u00eddo pela consulta fornecida \u00e0 anota\u00e7\u00e3o Query. O tipo de retorno do m\u00e9todo find do reposit\u00f3rio pode ser o tipo de resultado, uma matriz do tipo de resultado ou qualquer um dos seguintes tipos parametrizados com o tipo de resultado: {4}.
 CWWKD1005.find.rtrn.err.explanation=O tipo de retorno do m\u00e9todo n\u00e3o \u00e9 um dos tipos de retorno compat\u00edveis com os m\u00e9todos find do reposit\u00f3rio.
 CWWKD1005.find.rtrn.err.useraction=Consulte as informa\u00e7\u00f5es do Javadoc do Jakarta Data para obter uma lista de tipos de retorno v\u00e1lidos para os m\u00e9todos find do reposit\u00f3rio.
 
@@ -58,7 +58,7 @@ CWWKD1007.updel.rtrn.err=CWWKD1007E: O tipo de retorno {0} do m\u00e9todo {1} da
 CWWKD1007.updel.rtrn.err.explanation=O tipo de retorno do m\u00e9todo n\u00e3o \u00e9 um dos tipos de retorno suportados para uma opera\u00e7\u00e3o de atualiza\u00e7\u00e3o ou exclus\u00e3o.
 CWWKD1007.updel.rtrn.err.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para usar um dos tipos de retorno compat\u00edveis.
 
-CWWKD1008.ambig.rtrn.err=CWWKD1008E: O tipo de retorno {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} \u00e9 amb\u00edguo como um tipo de retorno porque corresponde a v\u00e1rias propriedades da entidade: {3}. O m\u00e9todo do reposit\u00f3rio deve mudar para a anota\u00e7\u00e3o Query e usar uma consulta JDQL ou JPQL com uma cl\u00e1usula SELECT que especifique qual propriedade da entidade deve ser retornada.
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: O tipo de retorno {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} \u00e9 amb\u00edguo como um tipo de retorno porque corresponde a v\u00e1rias propriedades da entidade: {3}. O m\u00e9todo do reposit\u00f3rio deve mudar para a anota\u00e7\u00e3o Query e usar uma consulta com uma cl\u00e1usula SELECT que especifique qual propriedade da entidade deve ser retornada.
 CWWKD1008.ambig.rtrn.err.explanation=O tipo de retorno do m\u00e9todo n\u00e3o \u00e9 um dos tipos de retorno suportados para um m\u00e9todo de exclus\u00e3o.
 CWWKD1008.ambig.rtrn.err.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para usar a anota\u00e7\u00e3o Query para selecionar a propriedade da entidade.
 
@@ -111,15 +111,15 @@ CWWKD1020.invalid.param.type=CWWKD1020E: Os par\u00e2metros do m\u00e9todo {0} d
 CWWKD1020.invalid.param.type.explanation=O tipo de par\u00e2metro n\u00e3o \u00e9 permitido nesse tipo de m\u00e9todo.
 CWWKD1020.invalid.param.type.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para definir um par\u00e2metro de m\u00e9todo para cada valor exigido por uma compara\u00e7\u00e3o.
 
-CWWKD1021.insufficient.params=CWWKD1021E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} tem par\u00e2metros {2}, mas as condi\u00e7\u00f5es de consulta definidas pelo m\u00e9todo exigem par\u00e2metros {3}. A consulta JPQL para o m\u00e9todo \u00e9: {4}.
+CWWKD1021.insufficient.params=CWWKD1021E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} tem par\u00e2metros {2}, mas as condi\u00e7\u00f5es de consulta definidas pelo m\u00e9todo exigem par\u00e2metros {3}. A consulta para o m\u00e9todo \u00e9: {4}.
 CWWKD1021.insufficient.params.explanation=As condi\u00e7\u00f5es de consulta que definem compara\u00e7\u00f5es de valores exigem um n\u00famero correspondente de par\u00e2metros do m\u00e9todo de reposit\u00f3rio para fornecer os valores.
 CWWKD1021.insufficient.params.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para definir um par\u00e2metro de m\u00e9todo para cada valor exigido por uma compara\u00e7\u00e3o.
 
-CWWKD1022.too.many.params=CWWKD1022E: As condi\u00e7\u00f5es de consulta do m\u00e9todo {0} da interface do reposit\u00f3rio {1} exigem par\u00e2metros {2}, mas a assinatura do m\u00e9todo do reposit\u00f3rio tem par\u00e2metros {3}. A consulta JPQL para o m\u00e9todo \u00e9: {4}.
+CWWKD1022.too.many.params=CWWKD1022E: As condi\u00e7\u00f5es de consulta do m\u00e9todo {0} da interface do reposit\u00f3rio {1} exigem {2} par\u00e2metros, mas a assinatura do m\u00e9todo do reposit\u00f3rio tem {3} par\u00e2metros. A consulta para o m\u00e9todo \u00e9: {4}.
 CWWKD1022.too.many.params.explanation=As condi\u00e7\u00f5es de consulta que definem compara\u00e7\u00f5es de valores exigem um n\u00famero correspondente de par\u00e2metros do m\u00e9todo de reposit\u00f3rio para fornecer os valores. N\u00e3o s\u00e3o permitidos par\u00e2metros extras.
 CWWKD1022.too.many.params.useraction=Atualize a assinatura do m\u00e9todo do reposit\u00f3rio para remover par\u00e2metros extras que n\u00e3o correspondem \u00e0s condi\u00e7\u00f5es declaradas.
 
-CWWKD1023.extra.param=CWWKD1023E: As condi\u00e7\u00f5es de consulta do m\u00e9todo {0} da interface do reposit\u00f3rio {1} exigem par\u00e2metros {2}, mas o m\u00e9todo do reposit\u00f3rio tem um par\u00e2metro {3} adicional. A consulta JPQL para o m\u00e9todo \u00e9: {4}.
+CWWKD1023.extra.param=CWWKD1023E: As condi\u00e7\u00f5es de consulta do m\u00e9todo {0} da interface do reposit\u00f3rio {1} exigem par\u00e2metros {2}, mas o m\u00e9todo do reposit\u00f3rio tem um par\u00e2metro {3} adicional. A consulta para o m\u00e9todo \u00e9: {4}.
 CWWKD1023.extra.param.explanation=As condi\u00e7\u00f5es de consulta que definem compara\u00e7\u00f5es de valores exigem um n\u00famero correspondente de par\u00e2metros do m\u00e9todo de reposit\u00f3rio para fornecer os valores. N\u00e3o s\u00e3o permitidos par\u00e2metros extras.
 CWWKD1023.extra.param.useraction=Atualize a assinatura do m\u00e9todo do reposit\u00f3rio para remover par\u00e2metros extras que n\u00e3o correspondem \u00e0s condi\u00e7\u00f5es declaradas.
 
@@ -413,3 +413,23 @@ CWWKD1094.return.mismatch.useraction=Atualize o m\u00e9todo do reposit\u00f3rio 
 CWWKD1095.repo.err=CWWKD1095E: Uma implementa\u00e7\u00e3o da interface do reposit\u00f3rio {0} n\u00e3o pode ser fornecida devido a um erro. A anota\u00e7\u00e3o do reposit\u00f3rio \u00e9 {1}. A classe de entidade prim\u00e1ria \u00e9 {2}. O erro \u00e9: {3}
 CWWKD1095.repo.err.explanation=O provedor integrado Jakarta Data n\u00e3o pode fornecer uma inst\u00e2ncia do reposit\u00f3rio devido a um erro.
 CWWKD1095.repo.err.useraction=Investigue o erro e corrija a interface do reposit\u00f3rio, as entidades, a configura\u00e7\u00e3o do armazenamento de dados ou o banco de dados.
+
+CWWKD1096.orderby.incompat=CWWKD1096E: O m\u00e9todo {0} do reposit\u00f3rio {1} tem uma anota\u00e7\u00e3o OrderBy, mas o m\u00e9todo {0} n\u00e3o \u00e9 uma opera\u00e7\u00e3o de busca nem uma opera\u00e7\u00e3o de exclus\u00e3o que retorna entidades.
+CWWKD1096.orderby.incompat.explanation=A anota\u00e7\u00e3o OrderBy n\u00e3o \u00e9 compat\u00edvel com o tipo de opera\u00e7\u00e3o do reposit\u00f3rio.
+CWWKD1096.orderby.incompat.useraction=Remova a anota\u00e7\u00e3o OrderBy.
+
+CWWKD1097.param.incompat=CWWKD1097E: O m\u00e9todo {0} do reposit\u00f3rio {1} tem um par\u00e2metro {2}, mas o m\u00e9todo {0} n\u00e3o \u00e9 uma opera\u00e7\u00e3o de localiza\u00e7\u00e3o nem uma opera\u00e7\u00e3o de exclus\u00e3o que retorna entidades.
+CWWKD1097.param.incompat.explanation=Os par\u00e2metros Order, Sort e Limit n\u00e3o s\u00e3o compat\u00edveis com o tipo de opera\u00e7\u00e3o do reposit\u00f3rio.
+CWWKD1097.param.incompat.useraction=Remova o par\u00e2metro Order, Sort ou Limit.
+
+CWWKD1098.spec.param.position.err=CWWKD1098E: O m\u00e9todo {0} do reposit\u00f3rio {1} tem um par\u00e2metro {2} que est\u00e1 posicionado antes dos par\u00e2metros de consulta. Os tipos de par\u00e2metros que t\u00eam significado especial no Jakarta Data {3} ) devem ser posicionados ap\u00f3s os outros par\u00e2metros na assinatura do m\u00e9todo do reposit\u00f3rio.
+CWWKD1098.spec.param.position.err.explanation=Quando tipos especiais de par\u00e2metros definidos pelo Jakarta Data s\u00e3o inclu\u00eddos em uma assinatura de m\u00e9todo de reposit\u00f3rio, eles devem ser posicionados ap\u00f3s todos os par\u00e2metros de consulta.
+CWWKD1098.spec.param.position.err.useraction=Mova os tipos de par\u00e2metros especiais definidos pelo Jakarta Data para posi\u00e7\u00f5es no final da assinatura do m\u00e9todo do reposit\u00f3rio.
+
+CWWKD1099.first.keyword.incompat=CWWKD1099E: O m\u00e9todo {0} do reposit\u00f3rio {1} tem um nome que inclui a palavra-chave First, que \u00e9 incompat\u00edvel com o par\u00e2metro {2} do m\u00e9todo.
+CWWKD1099.first.keyword.incompat.explanation=Um m\u00e9todo Query by Method Name que inclua um par\u00e2metro Limit ou PageRequest n\u00e3o pode usar a palavra-chave First.
+CWWKD1099.first.keyword.incompat.useraction=Remova a palavra-chave First do nome do m\u00e9todo.
+
+CWWKD1100.cursor.requires.sort=CWWKD1100E: O m\u00e9todo {0} do reposit\u00f3rio {1} retorna {2}, mas n\u00e3o tem uma anota\u00e7\u00e3o OrderBy ou qualquer um dos seguintes par\u00e2metros para especificar os crit\u00e9rios de classifica\u00e7\u00e3o: {3}. Os crit\u00e9rios de classifica\u00e7\u00e3o s\u00e3o necess\u00e1rios para a pagina\u00e7\u00e3o baseada em cursor e n\u00e3o podem ser especificados em uma cl\u00e1usula ORDER BY de um valor de anota\u00e7\u00e3o de consulta.
+CWWKD1100.cursor.requires.sort.explanation=A pagina\u00e7\u00e3o baseada em cursor requer crit\u00e9rios de classifica\u00e7\u00e3o.
+CWWKD1100.cursor.requires.sort.useraction=Remova a cl\u00e1usula ORDER BY do valor de anota\u00e7\u00e3o da consulta se houver uma. Adicione uma anota\u00e7\u00e3o OrderBy ou um par\u00e2metro de m\u00e9todo de reposit\u00f3rio para especificar os crit\u00e9rios de classifica\u00e7\u00e3o.

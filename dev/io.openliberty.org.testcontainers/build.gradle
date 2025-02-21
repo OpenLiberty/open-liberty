@@ -21,26 +21,56 @@ dependencies {
 }
 
 task assembleTestContainerData(type: JavaExec) {
-    onlyIf { // Do not execute this task during our builds
+    // Do not execute this task during our builds
+    onlyIf {
         !isAutomatedBuild
     }
     
-    // Use ArtifactoryMirrorSubstitutor to generate images file
+    // Use ArtifactoryMirrorSubstitutor to generate image names for cache/images
     environment "TESTCONTAINERS_IMAGE_SUBSTITUTOR", "componenttest.containers.ArtifactoryMirrorSubstitutor"
     
+    // Run main method of CacheFiles class
     classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
     main = "io.openliberty.org.testcontainers.generate.CacheFiles"
     args project.getProjectDir()
+    
+    // Debugging properties for testcontainers
+    systemProperties = [
+      'org.slf4j.simpleLogger.logFile': new File(project.getProjectDir(), 'build/cache.log'),
+      'org.slf4j.simpleLogger.showDateTime': 'true',
+      'org.slf4j.simpleLogger.dateTimeFormat': '[MM/dd/yyyy HH:mm:ss:SSS z]',
+      'org.slf4j.simpleLogger.log.org.testcontainers': 'debug',
+      'org.slf4j.simpleLogger.log.tc': 'debug',
+      'org.slf4j.simpleLogger.log.com.github.dockerjava': 'warn',
+      'org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire': 'off'
+    ]
 }
 
 task generateCustomImages(type: JavaExec) {
-    // TODO If artifactory is available then use it for substitution
-//    if ( gradle.userProps.containsKey("artifactory.docker.server") ) {
-//        environment "TESTCONTAINERS_IMAGE_SUBSTITUTOR", "componenttest.containers.ArtifactoryMirrorSubstitutor"
-//        environment "IMAGE_NAME_PREFIX", gradle.userProps.getProperty("artifactory.docker.server")
-//    }
+    // If artifactory is available then use it for BASE_NAME substitution
+    if ( gradle.userProps.containsKey("artifactory.docker.server") ) {
+        environment "TESTCONTAINERS_IMAGE_SUBSTITUTOR", "componenttest.containers.substitution.LibertyImageNameSubstitutor"
+        environment "ARTIFACTORY_DOCKER_SERVER", gradle.userProps.getProperty("artifactory.docker.server")
+    }
     
+    // If internal registry is available then use it for caching image
+    if ( gradle.userProps.containsKey("docker_registry.server") ) {
+        environment "DOCKER_REGISTRY_SERVER", gradle.userProps.getProperty("docker_registry.server")
+    }
+    
+    // Run main method of CustomImages class
     classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
     main = "io.openliberty.org.testcontainers.generate.CustomImages"
     args project.getProjectDir()
+    
+    // Debugging properties for testcontainers
+    systemProperties = [
+      'org.slf4j.simpleLogger.logFile': new File(project.getProjectDir(), 'build/build.log'),
+      'org.slf4j.simpleLogger.showDateTime': 'true',
+      'org.slf4j.simpleLogger.dateTimeFormat': '[MM/dd/yyyy HH:mm:ss:SSS z]',
+      'org.slf4j.simpleLogger.log.org.testcontainers': 'debug',
+      'org.slf4j.simpleLogger.log.tc': 'debug',
+      'org.slf4j.simpleLogger.log.com.github.dockerjava': 'warn',
+      'org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire': 'off'
+    ]
 }

@@ -32,7 +32,6 @@ import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Is;
 import io.openliberty.data.repository.Or;
-import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.function.AbsoluteValue;
 import io.openliberty.data.repository.function.CharCount;
 import io.openliberty.data.repository.function.ElementCount;
@@ -49,6 +48,7 @@ import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.Select;
 
 /**
  * Capability that is specific to the version of Jakarta Data.

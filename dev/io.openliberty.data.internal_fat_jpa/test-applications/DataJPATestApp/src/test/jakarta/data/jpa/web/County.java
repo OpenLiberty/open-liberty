@@ -26,9 +26,7 @@ public class County {
     public Set<CityId> cities;
 
     @Version
-    public Long lastUpdated;
-    // TODO switch to the following once EclipseLink bug #30534 is fixed
-    //public LocalDateTime lastUpdated;
+    public LocalDateTime lastUpdated;
 
     @Id
     public String name;

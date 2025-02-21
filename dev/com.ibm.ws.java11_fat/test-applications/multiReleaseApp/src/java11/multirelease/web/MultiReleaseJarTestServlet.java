@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,13 @@
 package java11.multirelease.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +42,10 @@ public class MultiReleaseJarTestServlet extends FATServlet {
     public void testOverriddenClass(HttpServletRequest request, HttpServletResponse response) throws Exception {
         int expectedJavaLevel = Integer.parseInt(request.getParameter(EXPECTED_JAVA_LEVEL));
         assertEquals(expectedJavaLevel, MRClass_Overridden.getJavaVersion());
+        if (expectedJavaLevel > 8) {
+            String classPath = MRClass_Overridden.class.getName().replace('.', '/') + ".class";
+            checkMRresourceAvailable(classPath, expectedJavaLevel);
+        }
     }
 
     @Test
@@ -146,6 +156,60 @@ public class MultiReleaseJarTestServlet extends FATServlet {
         checkMRClassNOTAvailable("MRClass_RequireJava17");
     }
 
+    @Test
+    @MinimumJavaLevel(javaLevel = 9)
+    public void testResourceJava9URL() throws Exception {
+        checkMRresourceAvailable(9);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 10)
+    public void testResourceJava10URL() throws Exception {
+        checkMRresourceAvailable(10);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 11)
+    public void testResourceJava11URL() throws Exception {
+        checkMRresourceAvailable(11);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 12)
+    public void testResourceJava12URL() throws Exception {
+        checkMRresourceAvailable(12);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 13)
+    public void testResourceJava13URL() throws Exception {
+        checkMRresourceAvailable(13);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 14)
+    public void testResourceJava14URL() throws Exception {
+        checkMRresourceAvailable(14);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 15)
+    public void testResourceJava15URL() throws Exception {
+        checkMRresourceAvailable(15);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 16)
+    public void testResourceJava16URL() throws Exception {
+        checkMRresourceAvailable(16);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 17)
+    public void testResourceJava17URL() throws Exception {
+        checkMRresourceAvailable(17);
+    }
+
     private void checkMRClassNOTAvailable(String className) throws Exception {
         System.out.println("Attempting to load " + JAR_PKG + className);
         try {
@@ -197,5 +261,29 @@ public class MultiReleaseJarTestServlet extends FATServlet {
 //            }
 //        }
 //    }
+
+    private void checkMRresourceAvailable(int resourceJavaVersion) throws NumberFormatException, IOException {
+        String stringJavaVersion = Integer.toString(resourceJavaVersion);
+        if (resourceJavaVersion < 10) {
+            stringJavaVersion = "0" + stringJavaVersion;
+        }
+        String resourcePath = "java11/multirelease/jar/MRClass_RequireJava" + stringJavaVersion + ".class";
+        checkMRresourceAvailable(resourcePath, resourceJavaVersion);
+    }
+
+    private void checkMRresourceAvailable(String resourcePath, int resourceJavaVersion) throws IOException {
+        System.out.println("Attempting to getResource " + resourcePath);
+        ClassLoader loader = getClass().getClassLoader();
+        URL resource = loader.getResource(resourcePath);
+        assertNotNull("No resource found: " + resourcePath, resource);
+        System.out.println("Found resource: " + resource.toExternalForm());
+        try (InputStream in = resource.openStream()) {
+            // do nothing
+        }
+        String urlPath = resource.getPath();
+        int bangSlash = urlPath.indexOf("!/");
+        urlPath = urlPath.substring(bangSlash + 2);
+        assertTrue("Wrong path for " + urlPath, urlPath.startsWith("META-INF/versions/" + resourceJavaVersion));
+    }
 
 }

@@ -110,7 +110,7 @@ Service-Component: \
     dynamic:='ssoService'; \
     multiple:="ssoService"; \
     properties:="service.vendor=IBM,type=saml20", \
-  com.ibm.ws.security.saml.sso20.rs.SamlInboundService; \
+    com.ibm.ws.security.saml.sso20.rs.SamlInboundService; \
     implementation:=com.ibm.ws.security.saml.sso20.rs.SamlInboundService;\
     provide:='com.ibm.ws.security.saml.sso20.rs.SamlInboundService'; \
     configuration-policy:=ignore; \
@@ -119,7 +119,7 @@ Service-Component: \
     deactivate:='deactivate'; \
     immediate:=true; \
     properties:="service.vendor=IBM", \
-  com.ibm.ws.security.saml.websso20.classProvider; \
+    com.ibm.ws.security.saml.websso20.classProvider; \
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider; \
     provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
     properties:=" \
@@ -144,7 +144,9 @@ Service-Component: \
 	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
 	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.kernel.service;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest, \
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.security.authentication.tai;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
@@ -156,11 +158,11 @@ Service-Component: \
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.websphere.appserver.api.saml20;version=latest,\
 	com.ibm.ws.security.sso.common;version=latest,\
-	com.ibm.websphere.appserver.spi.saml20;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	io.openliberty.org.apache.commons.codec;version=latest, \
-	com.ibm.ws.com.google.guava;version=latest, \
-	com.ibm.ws.crypto.common;version=latest
+	com.ibm.websphere.appserver.spi.saml20;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	com.ibm.ws.com.google.guava;version=latest
+	
 
 instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages*.class
 
@@ -178,7 +180,7 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
 	com.ibm.ws.security.test.common;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
-	com.ibm.ws.kernel.boot;version=latest,\
+  com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
 	com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1;version=latest,\
 	com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest,\

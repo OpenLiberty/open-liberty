@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ import org.postgresql.jdbc.AutoSave;
 import org.postgresql.largeobject.LargeObjectManager;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
@@ -528,6 +529,11 @@ public class PostgreSQLTestServlet extends FATServlet {
     // When a connection is involved in a transaction which times out, the transaction will call abort()
     // on any XAResource(s). Verify that upon transaction timeout, the connection is aborted.
     @AllowedFFDC("org.postgresql.xa.PGXAException")
+    // TODO this test fails because the PostgreSQL Driver attempts to call java.security.Permission.checkGuard during con.abort()
+    // Security manager calls on Java 24 are not supported.
+    // Remove this once a version of the PostgreSQL driver exists that supports Java 24
+    // https://jdbc.postgresql.org/changelogs/
+    @MaximumJavaLevel(javaLevel = 23)
     @Test
     public void testTransactionTimeoutAbort() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");

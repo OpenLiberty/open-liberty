@@ -84,3 +84,6 @@ tested.features: \
 	org.mock-server:mockserver-netty;version='5.11.2',\
 	com.ibm.json4j;version=latest,\
 	io.openliberty.com.fasterxml.jackson;verison=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

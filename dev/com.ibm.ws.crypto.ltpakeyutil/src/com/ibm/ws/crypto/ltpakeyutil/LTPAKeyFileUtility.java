@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,14 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.util.Properties;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 public interface LTPAKeyFileUtility {
 
 	/**
 	 * Properties used in the LTPA keys file.
 	 */
-	public static final String KEYIMPORT_SECRETKEY = "com.ibm.websphere.ltpa.3DESKey";
+	public static final String KEYIMPORT_SECRETKEY = CryptoUtils.isFips140_3Enabled() ? "com.ibm.websphere.ltpa.SharedKey" : "com.ibm.websphere.ltpa.3DESKey";
 	public static final String KEYIMPORT_PRIVATEKEY = "com.ibm.websphere.ltpa.PrivateKey";
 	public static final String KEYIMPORT_PUBLICKEY = "com.ibm.websphere.ltpa.PublicKey";
 	public static final String KEYIMPORT_REALM = "com.ibm.websphere.ltpa.Realm";

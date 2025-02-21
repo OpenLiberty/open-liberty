@@ -77,7 +77,7 @@ public class Telemetry10 extends FATServletClient {
                                     ConfigServlet.class)
                         .addAsServiceProvider(Extension.class, WithSpanExtension.class);
 
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
+        if (TelemetryActions.mpTelemetryEE7IsActive()) {
             // On EE7 / CDI 1.2 only, use of AnnotationLiteral requires app permissions
             app.addAsManifestResource(WithSpanExtension.class.getResource("permissions-ee7.xml"), "permissions.xml");
         }

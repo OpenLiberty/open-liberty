@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,30 @@ jndi.not.installed=CWWKE0800W: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a kezdeti [{
 jndi.not.installed.explanation=A JNDI szolg\u00e1ltat\u00e1s JNDI nyilv\u00e1ntart\u00e1st \u00e9s hozz\u00e1 tartoz\u00f3 seg\u00e9dprogramokat biztos\u00edt.  Ez norm\u00e1l k\u00f6r\u00fclm\u00e9nyek k\u00f6z\u00f6tt akkor sz\u00fcks\u00e9ges, amikor egy alkalmaz\u00e1snak vagy szolg\u00e1ltat\u00e1snak bejegyz\u00e9seket kell kikeresnie egy JNDI kontextusban.
 jndi.not.installed.useraction=Gondoskodj\u00e9k r\u00f3la, hogy rendelkez\u00e9sre \u00e1lljon JNDI megval\u00f3s\u00edt\u00e1s (pl. a JNDI szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1val a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban).
 
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.common.crypto
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
+# -------------------------------------------------------------------------------------------------
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_INSECURE=CWWKS5900W: A {0} konfigur\u00e1ci\u00f3s elem hat\u00e1rozza meg a {1} nem biztons\u00e1gos kriptogr\u00e1fiai algoritmus.  Fontolja meg a {2} biztons\u00e1gos algoritmus helyett.
+CRYPTO_INSECURE.explanation=A be\u00e1ll\u00edtott algoritmus m\u00e1r nem tekinthet\u0151 kriptogr\u00e1fiailag biztons\u00e1gosnak.
+CRYPTO_INSECURE.useraction=Haszn\u00e1lja a javasolt biztons\u00e1gos algoritmust.
+
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: A {0} konfigur\u00e1ci\u00f3s elem hat\u00e1rozza meg a {1} nem biztons\u00e1gos kriptogr\u00e1fiai algoritmus.  A {2} helyett biztons\u00e1gos algoritmust haszn\u00e1lnak.
+CRYPTO_INSECURE_REPLACED.explanation=A nem biztons\u00e1gos kriptogr\u00e1fiai algoritmust a biztons\u00e1gos algoritmus v\u00e1ltotta fel.
+CRYPTO_INSECURE_REPLACED.useraction=Nincs teend\u0151.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: A {0} konfigur\u00e1ci\u00f3s elem a {1} nem biztons\u00e1gos kriptogr\u00e1fiai algoritmust haszn\u00e1lja. Fontolja meg a konfigur\u00e1ci\u00f3 lecser\u00e9l\u00e9s\u00e9t egy m\u00e1sik szolg\u00e1ltat\u00f3ra, ha a biztons\u00e1g agg\u00e1lyos.
+CRYPTO_INSECURE_PROVIDER.explanation=Az algoritmus m\u00e1r nem tekinthet\u0151 kriptogr\u00e1fiailag biztons\u00e1gosnak.
+CRYPTO_INSECURE_PROVIDER.useraction=Fontolja meg a konfigur\u00e1ci\u00f3 lecser\u00e9l\u00e9s\u00e9t egy m\u00e1sik szolg\u00e1ltat\u00f3ra, ha a biztons\u00e1g agg\u00e1lyos.

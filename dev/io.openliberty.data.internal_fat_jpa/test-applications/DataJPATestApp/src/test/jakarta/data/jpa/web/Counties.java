@@ -36,9 +36,7 @@ import javax.naming.InitialContext;
 @Repository
 public interface Counties {
 
-    boolean deleteByNameAndLastUpdated(String name, Long version);
-    // TODO switch to the following once EclipseLink bug #30534 is fixed
-    // boolean deleteByNameAndLastUpdated(String name, LocalDateTime version);
+    boolean deleteByNameAndLastUpdated(String name, LocalDateTime version);
 
     int deleteByNameIn(List<String> names);
 
@@ -53,9 +51,7 @@ public interface Counties {
     @OrderBy("name")
     List<Set<CityId>> findCitiesByNameStartsWith(String beginning);
 
-    Long findLastUpdatedByName(String name);
-    // TODO switch to the following once EclipseLink bug #30534 is fixed
-    //LocalDateTime findLastUpdatedByName(String name);
+    LocalDateTime findLastUpdatedByName(String name);
 
     @Query("SELECT zipcodes WHERE name = ?1")
     Optional<int[]> findZipCodesByName(String name);

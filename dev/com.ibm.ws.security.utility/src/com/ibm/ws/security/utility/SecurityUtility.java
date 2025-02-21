@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -141,6 +141,7 @@ public class SecurityUtility extends UtilityTemplate {
                 stderr.println("");
                 stderr.println(CommandUtils.getMessage("error", e.toString()));
                 stderr.println(help.getTaskUsage(task));
+		e.printStackTrace(stderr);
                 return SecurityUtilityReturnCodes.ERR_GENERIC;
             }
         }

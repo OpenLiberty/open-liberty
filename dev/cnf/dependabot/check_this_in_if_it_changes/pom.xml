@@ -474,47 +474,47 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.57.2</version>
+      <version>1.69.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-census</artifactId>
-      <version>1.57.2</version>
+      <version>1.69.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-context</artifactId>
-      <version>1.57.2</version>
+      <version>1.69.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.57.2</version>
+      <version>1.69.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
-      <version>1.57.2</version>
+      <version>1.69.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-okhttp</artifactId>
-      <version>1.57.2</version>
+      <version>1.69.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf-lite</artifactId>
-      <version>1.57.2</version>
+      <version>1.69.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>1.57.2</version>
+      <version>1.69.0</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.57.2</version>
+      <version>1.69.0</version>
     </dependency>
     <dependency>
       <groupId>io.jaegertracing</groupId>
@@ -564,57 +564,57 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-socks</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler-proxy</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-unix-common</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>4.1.109.Final</version>
+      <version>4.1.116.Final</version>
     </dependency>
     <dependency>
       <groupId>io.openliberty.arquillian</groupId>
@@ -1383,6 +1383,11 @@
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
+      <artifactId>cdi-tck-api</artifactId>
+      <version>4.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <version>3.0.1</version>
     </dependency>
@@ -1579,7 +1584,7 @@
     <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
-      <version>3.1.0</version>
+      <version>3.1.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.websocket</groupId>
@@ -1770,6 +1775,16 @@
       <groupId>jtidy</groupId>
       <artifactId>jtidy</artifactId>
       <version>4aug2000r7-dev</version>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy-agent</artifactId>
+      <version>1.16.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>1.16.1</version>
     </dependency>
     <dependency>
       <groupId>net.java.dev.jna</groupId>
@@ -2602,26 +2617,6 @@
       <version>2.5.2</version>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <version>1.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-jaxrs</artifactId>
-      <version>1.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-xc</artifactId>
-      <version>1.6.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>3.2.1</version>
@@ -3214,7 +3209,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>5.0.0-B05</version>
+      <version>5.0.0-B06</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3234,7 +3229,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>5.0.0-B05</version>
+      <version>5.0.0-B06</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3254,7 +3249,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>5.0.0-B05</version>
+      <version>5.0.0-B06</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3274,7 +3269,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>5.0.0-B05</version>
+      <version>5.0.0-B06</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3284,12 +3279,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
-      <version>5.0.0-B05</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.platform</groupId>
-      <artifactId>org.eclipse.osgi</artifactId>
-      <version>3.21.0</version>
+      <version>5.0.0-B06</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.transformer</groupId>
@@ -3949,7 +3939,7 @@
     <dependency>
       <groupId>org.jboss.weld.environment</groupId>
       <artifactId>weld-environment-common</artifactId>
-      <version>6.0.0.CR1</version>
+      <version>6.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -3969,7 +3959,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>6.0.0.CR1</version>
+      <version>6.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -3994,7 +3984,12 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>6.0.0.CR1</version>
+      <version>6.0.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-porting-package-tck</artifactId>
+      <version>6.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -4102,6 +4097,16 @@
       <version>1.9.5</version>
     </dependency>
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>4.11.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <version>4.11.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>bson</artifactId>
       <version>4.8.2</version>
@@ -4140,6 +4145,11 @@
       <groupId>org.objenesis</groupId>
       <artifactId>objenesis</artifactId>
       <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <version>3.4</version>
     </dependency>
     <dependency>
       <groupId>org.opensaml</groupId>

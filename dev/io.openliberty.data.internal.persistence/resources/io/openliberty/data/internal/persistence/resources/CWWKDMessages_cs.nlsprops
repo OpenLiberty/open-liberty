@@ -38,15 +38,15 @@ CWWKD1002.method.annos.err=CWWKD1002E: Metoda {0} rozhran\u00ed \u00falo\u017ei\
 CWWKD1002.method.annos.err.explanation=Tato kombinace anotac\u00ed nen\u00ed platn\u00e1 pro jednu metodu \u00falo\u017ei\u0161t\u011b.
 CWWKD1002.method.annos.err.useraction=Vyhledejte rozhran\u00ed \u00falo\u017ei\u0161t\u011b a metodu a ur\u010dete spr\u00e1vnou kombinaci anotac\u00ed metod.
 
-CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: N\u00e1vratov\u00fd typ {0} metody {1} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {2} nen\u00ed platn\u00fdm n\u00e1vratov\u00fdm typem pro metodu \u00falo\u017ei\u0161t\u011b {3} . Mezi platn\u00e9 typy n\u00e1vrat\u016f pat\u0159\u00ed: {4} .
-CWWKD1003.lifecycle.rtrn.err.explanation=N\u00e1vratov\u00fd typ metody nen\u00ed jedn\u00edm z podporovan\u00fdch n\u00e1vratov\u00fdch typ\u016f pro metody Insert, Update a Save.
-CWWKD1003.lifecycle.rtrn.err.useraction=Informace o anotac\u00edch Vlo\u017eit, Aktualizovat a Ulo\u017eit naleznete v informac\u00edch Javadoc Jakarta Data pro platn\u00e9 typy n\u00e1vratu.
+CWWKD1003.rtrn.err=CWWKD1003E: N\u00e1vratov\u00fd typ {0} metody {1} rozhran\u00ed {2} \u00falo\u017ei\u0161t\u011b nen\u00ed platn\u00fdm n\u00e1vratov\u00fdm typem metody {3} \u00falo\u017ei\u0161t\u011b. Platn\u00e9 typy n\u00e1vrat\u016f zahrnuj\u00ed: {4}.
+CWWKD1003.rtrn.err.explanation=N\u00e1vratov\u00fd typ metody nen\u00ed jedn\u00edm z podporovan\u00fdch n\u00e1vratov\u00fdch typ\u016f pro uveden\u00fd typ metody \u00falo\u017ei\u0161t\u011b.
+CWWKD1003.rtrn.err.useraction=Informace o anotac\u00edch Insert, Update a Save naleznete v Javadocu Jakarta Data a platn\u00e9 n\u00e1vratov\u00e9 typy v dokumentaci Query by Method name.
 
 CWWKD1004.general.rtrn.err=CWWKD1004E: N\u00e1vratov\u00fd typ {0} metody {1} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {2} nen\u00ed platn\u00fdm n\u00e1vratov\u00fdm typem pro metodu \u00falo\u017ei\u0161t\u011b.
 CWWKD1004.general.rtrn.err.explanation=N\u00e1vratov\u00fd typ metody nen\u00ed jedn\u00edm z podporovan\u00fdch n\u00e1vratov\u00fdch typ\u016f pro typ metody \u00falo\u017ei\u0161t\u011b.
 CWWKD1004.general.rtrn.err.useraction=Seznam platn\u00fdch n\u00e1vratov\u00fdch typ\u016f pro typ metody \u00falo\u017ei\u0161t\u011b najdete v informac\u00edch Javadoc Jakarta Data.
 
-CWWKD1005.find.rtrn.err=CWWKD1005E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} nen\u00ed platn\u00e1. Metoda ur\u010duje n\u00e1vratov\u00fd typ {2} , kter\u00fd nelze p\u0159ev\u00e9st z typu entity {3} . Typ v\u00fdsledku operace hled\u00e1n\u00ed mus\u00ed b\u00fdt typ entity, typ vlastnosti entity, z\u00e1znam Java slo\u017een\u00fd z vlastnost\u00ed entity nebo typ vytvo\u0159en\u00fd pomoc\u00ed JPQL nebo JDQL, kter\u00fd je dod\u00e1n do anotace Query. N\u00e1vratov\u00fd typ metody hled\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b m\u016f\u017ee b\u00fdt typ v\u00fdsledku, pole typu v\u00fdsledku nebo jak\u00fdkoli z n\u00e1sleduj\u00edc\u00edch typ\u016f parametrizovan\u00fdch s typem v\u00fdsledku: {4} .
+CWWKD1005.find.rtrn.err=CWWKD1005E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} nen\u00ed platn\u00e1. Metoda ur\u010duje n\u00e1vratov\u00fd typ {2}, kter\u00fd nen\u00ed p\u0159evoditeln\u00fd z typu {3} entity. Typem v\u00fdsledku operace vyhled\u00e1v\u00e1n\u00ed mus\u00ed b\u00fdt typ entity, typ vlastnosti entity, z\u00e1znam v jazyce Java slo\u017een\u00fd z vlastnost\u00ed entity nebo typ vytvo\u0159en\u00fd dotazem, kter\u00fd je uveden v anotaci Query. N\u00e1vratov\u00fdm typem metody hled\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b m\u016f\u017ee b\u00fdt typ v\u00fdsledku, pole typu v\u00fdsledku nebo n\u011bkter\u00fd z n\u00e1sleduj\u00edc\u00edch typ\u016f parametrizovan\u00fdch typem v\u00fdsledku: {4}.
 CWWKD1005.find.rtrn.err.explanation=N\u00e1vratov\u00fd typ metody nen\u00ed jedn\u00edm z podporovan\u00fdch n\u00e1vratov\u00fdch typ\u016f pro metody hled\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b.
 CWWKD1005.find.rtrn.err.useraction=Seznam platn\u00fdch typ\u016f n\u00e1vratu pro metody hled\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b naleznete v informac\u00edch Javadoc Jakarta Data.
 
@@ -58,7 +58,7 @@ CWWKD1007.updel.rtrn.err=CWWKD1007E: N\u00e1vratov\u00fd typ {0} metody {1} rozh
 CWWKD1007.updel.rtrn.err.explanation=N\u00e1vratov\u00fd typ metody nen\u00ed jedn\u00edm z podporovan\u00fdch n\u00e1vratov\u00fdch typ\u016f pro operaci aktualizace nebo odstran\u011bn\u00ed.
 CWWKD1007.updel.rtrn.err.useraction=Aktualizujte metodu \u00falo\u017ei\u0161t\u011b tak, aby pou\u017e\u00edvala jeden z podporovan\u00fdch typ\u016f n\u00e1vratu.
 
-CWWKD1008.ambig.rtrn.err=CWWKD1008E: N\u00e1vratov\u00fd typ {0} metody {1} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {2} je jako n\u00e1vratov\u00fd typ nejednozna\u010dn\u00fd, proto\u017ee odpov\u00edd\u00e1 v\u00edce vlastnostem entity: {3} . Metoda \u00falo\u017ei\u0161t\u011b se mus\u00ed p\u0159epnout na anotaci Query a pou\u017e\u00edt dotaz JDQL nebo JPQL s klauzul\u00ed SELECT, kter\u00e1 ur\u010duje, kter\u00e1 vlastnost entity se m\u00e1 vr\u00e1tit.
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: N\u00e1vratov\u00fd typ {0} metody {1} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {2} je jako n\u00e1vratov\u00fd typ nejednozna\u010dn\u00fd, proto\u017ee odpov\u00edd\u00e1 v\u00edce vlastnostem entity: {3}. Metoda \u00falo\u017ei\u0161t\u011b mus\u00ed p\u0159ej\u00edt na anotaci Query a pou\u017e\u00edt dotaz s klauzul\u00ed SELECT, kter\u00e1 ur\u010duje, kter\u00e1 vlastnost entity se m\u00e1 vr\u00e1tit.
 CWWKD1008.ambig.rtrn.err.explanation=N\u00e1vratov\u00fd typ metody nen\u00ed jedn\u00edm z podporovan\u00fdch n\u00e1vratov\u00fdch typ\u016f pro metodu odstran\u011bn\u00ed.
 CWWKD1008.ambig.rtrn.err.useraction=Aktualizujte metodu \u00falo\u017ei\u0161t\u011b tak, aby k v\u00fdb\u011bru vlastnosti entity pou\u017e\u00edvala anotaci Query.
 
@@ -112,15 +112,15 @@ CWWKD1020.invalid.param.type=CWWKD1020E: Parametry metody {0} rozhran\u00ed \u00
 CWWKD1020.invalid.param.type.explanation=Typ parametru nen\u00ed u tohoto typu metody povolen.
 CWWKD1020.invalid.param.type.useraction=Aktualizujte metodu \u00falo\u017ei\u0161t\u011b, abyste definovali parametr metody pro ka\u017edou hodnotu, kter\u00e1 je vy\u017eadov\u00e1na porovn\u00e1n\u00edm.
 
-CWWKD1021.insufficient.params=CWWKD1021E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} m\u00e1 parametry {2} , ale podm\u00ednky dotazu, kter\u00e9 jsou touto metodou definov\u00e1ny, vy\u017eaduj\u00ed parametry {3} . Dotaz JPQL pro metodu je: {4} .
+CWWKD1021.insufficient.params=CWWKD1021E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} m\u00e1 {2} parametr\u016f, ale podm\u00ednky dotazu definovan\u00e9 touto metodou vy\u017eaduj\u00ed {3} parametr\u016f. Dotaz na metodu je: {4}.
 CWWKD1021.insufficient.params.explanation=Podm\u00ednky dotazu, kter\u00e9 definuj\u00ed porovn\u00e1n\u00ed hodnot, vy\u017eaduj\u00ed odpov\u00eddaj\u00edc\u00ed po\u010det parametr\u016f metody \u00falo\u017ei\u0161t\u011b pro dod\u00e1n\u00ed hodnot.
 CWWKD1021.insufficient.params.useraction=Aktualizujte metodu \u00falo\u017ei\u0161t\u011b, abyste definovali parametr metody pro ka\u017edou hodnotu, kter\u00e1 je vy\u017eadov\u00e1na porovn\u00e1n\u00edm.
 
-CWWKD1022.too.many.params=CWWKD1022E: Podm\u00ednky dotazu metody {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} vy\u017eaduj\u00ed parametry {2} , ale podpis metody \u00falo\u017ei\u0161t\u011b m\u00e1 parametry {3} . Dotaz JPQL pro metodu je: {4} .
+CWWKD1022.too.many.params=CWWKD1022E: Podm\u00ednky dotazu metody {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} vy\u017eaduj\u00ed {2} parametr\u016f, ale signatura metody \u00falo\u017ei\u0161t\u011b m\u00e1 {3} parametr\u016f. Dotaz na metodu je: {4}.
 CWWKD1022.too.many.params.explanation=Podm\u00ednky dotazu, kter\u00e9 definuj\u00ed porovn\u00e1n\u00ed hodnot, vy\u017eaduj\u00ed odpov\u00eddaj\u00edc\u00ed po\u010det parametr\u016f metody \u00falo\u017ei\u0161t\u011b pro dod\u00e1n\u00ed hodnot. Dal\u0161\u00ed parametry nejsou povoleny.
 CWWKD1022.too.many.params.useraction=Aktualizujte podpis metody \u00falo\u017ei\u0161t\u011b, abyste odstranili dal\u0161\u00ed parametry, kter\u00e9 neodpov\u00eddaj\u00ed deklarovan\u00fdm podm\u00ednk\u00e1m.
 
-CWWKD1023.extra.param=CWWKD1023E: Podm\u00ednky dotazu metody {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} vy\u017eaduj\u00ed parametry {2} , ale metoda \u00falo\u017ei\u0161t\u011b m\u00e1 dal\u0161\u00ed parametr {3} . Dotaz JPQL pro metodu je: {4} .
+CWWKD1023.extra.param=CWWKD1023E: Podm\u00ednky dotazu metody {0} rozhran\u00ed {1} \u00falo\u017ei\u0161t\u011b vy\u017eaduj\u00ed {2} parametry, ale metoda \u00falo\u017ei\u0161t\u011b m\u00e1 dal\u0161\u00ed {3} parametr. Dotaz na metodu je: {4}.
 CWWKD1023.extra.param.explanation=Podm\u00ednky dotazu, kter\u00e9 definuj\u00ed porovn\u00e1n\u00ed hodnot, vy\u017eaduj\u00ed odpov\u00eddaj\u00edc\u00ed po\u010det parametr\u016f metody \u00falo\u017ei\u0161t\u011b pro dod\u00e1n\u00ed hodnot. Dal\u0161\u00ed parametry nejsou povoleny.
 CWWKD1023.extra.param.useraction=Aktualizujte podpis metody \u00falo\u017ei\u0161t\u011b, abyste odstranili dal\u0161\u00ed parametry, kter\u00e9 neodpov\u00eddaj\u00ed deklarovan\u00fdm podm\u00ednk\u00e1m.
 
@@ -414,3 +414,23 @@ CWWKD1094.return.mismatch.useraction=Aktualizujte metodu \u00falo\u017ei\u0161t\
 CWWKD1095.repo.err=CWWKD1095E: Implementaci rozhran\u00ed \u00falo\u017ei\u0161t\u011b {0} nelze poskytnout kv\u016fli chyb\u011b. Anotace \u00falo\u017ei\u0161t\u011b je {1} . Prim\u00e1rn\u00ed t\u0159\u00edda entity je {2} . Chyba je: {3}
 CWWKD1095.repo.err.explanation=Vestav\u011bn\u00fd poskytovatel dat v Jakart\u011b nen\u00ed schopen poskytnout instanci \u00falo\u017ei\u0161t\u011b kv\u016fli chyb\u011b.
 CWWKD1095.repo.err.useraction=Prozkoumejte chybu a opravte rozhran\u00ed \u00falo\u017ei\u0161t\u011b, entity, konfiguraci \u00falo\u017ei\u0161t\u011b dat nebo datab\u00e1zi.
+
+CWWKD1096.orderby.incompat=CWWKD1096E: Metoda {0} \u00falo\u017ei\u0161t\u011b {1} m\u00e1 anotaci OrderBy, ale metoda {0} nen\u00ed operac\u00ed vyhled\u00e1v\u00e1n\u00ed ani operac\u00ed maz\u00e1n\u00ed, kter\u00e1 vrac\u00ed entity.
+CWWKD1096.orderby.incompat.explanation=Anotace OrderBy nen\u00ed kompatibiln\u00ed s typem operace \u00falo\u017ei\u0161t\u011b.
+CWWKD1096.orderby.incompat.useraction=Odstran\u011bn\u00ed anotace OrderBy.
+
+CWWKD1097.param.incompat=CWWKD1097E: Metoda {0} \u00falo\u017ei\u0161t\u011b {1} m\u00e1 parametr {2}, ale metoda {0} nen\u00ed operac\u00ed vyhled\u00e1v\u00e1n\u00ed ani operac\u00ed maz\u00e1n\u00ed, kter\u00e1 vrac\u00ed entity.
+CWWKD1097.param.incompat.explanation=Parametry Order, Sort a Limit nejsou kompatibiln\u00ed s typem operace \u00falo\u017ei\u0161t\u011b.
+CWWKD1097.param.incompat.useraction=Odeberte parametr Po\u0159ad\u00ed, Se\u0159adit nebo Omezit.
+
+CWWKD1098.spec.param.position.err=CWWKD1098E: Metoda {0} \u00falo\u017ei\u0161t\u011b {1} m\u00e1 parametr {2}, kter\u00fd je um\u00edst\u011bn p\u0159ed parametry dotazu. Typy parametr\u016f, kter\u00e9 maj\u00ed v Jakarta Data zvl\u00e1\u0161tn\u00ed v\u00fdznam {3} ), mus\u00ed b\u00fdt v signatu\u0159e metody \u00falo\u017ei\u0161t\u011b um\u00edst\u011bny za ostatn\u00edmi parametry.
+CWWKD1098.spec.param.position.err.explanation=Pokud jsou do signatury metody \u00falo\u017ei\u0161t\u011b zahrnuty speci\u00e1ln\u00ed typy parametr\u016f definovan\u00e9 v syst\u00e9mu Jakarta Data, mus\u00ed b\u00fdt um\u00edst\u011bny za v\u0161emi parametry dotazu.
+CWWKD1098.spec.param.position.err.useraction=P\u0159esunut\u00ed speci\u00e1ln\u00edch typ\u016f parametr\u016f definovan\u00fdch v Jakarta Data na pozice na konci signatury metody \u00falo\u017ei\u0161t\u011b.
+
+CWWKD1099.first.keyword.incompat=CWWKD1099E: Metoda {0} \u00falo\u017ei\u0161t\u011b {1} m\u00e1 n\u00e1zev, kter\u00fd obsahuje kl\u00ed\u010dov\u00e9 slovo First, co\u017e nen\u00ed kompatibiln\u00ed s parametrem {2} metody.
+CWWKD1099.first.keyword.incompat.explanation=Metoda Query by Method Name, kter\u00e1 obsahuje parametr Limit nebo PageRequest, nem\u016f\u017ee pou\u017e\u00edt kl\u00ed\u010dov\u00e9 slovo First.
+CWWKD1099.first.keyword.incompat.useraction=Odstran\u011bn\u00ed kl\u00ed\u010dov\u00e9ho slova First z n\u00e1zvu metody.
+
+CWWKD1100.cursor.requires.sort=CWWKD1100E: Metoda {0} \u00falo\u017ei\u0161t\u011b {1} vrac\u00ed {2}, ale nem\u00e1 anotaci OrderBy ani \u017e\u00e1dn\u00fd z n\u00e1sleduj\u00edc\u00edch parametr\u016f pro zad\u00e1n\u00ed krit\u00e9ri\u00ed t\u0159\u00edd\u011bn\u00ed: {3}. Krit\u00e9ria \u0159azen\u00ed jsou vy\u017eadov\u00e1na pro str\u00e1nkov\u00e1n\u00ed pomoc\u00ed kurzoru a nelze je zadat v r\u00e1mci klauzule ORDER BY hodnoty anotace dotazu.
+CWWKD1100.cursor.requires.sort.explanation=Str\u00e1nkov\u00e1n\u00ed pomoc\u00ed kurzoru vy\u017eaduje krit\u00e9ria \u0159azen\u00ed.
+CWWKD1100.cursor.requires.sort.useraction=Odstran\u011bn\u00ed klauzule ORDER BY z hodnoty anotace dotazu, pokud se v n\u00ed nach\u00e1z\u00ed. P\u0159idejte anotaci OrderBy nebo parametr metody \u00falo\u017ei\u0161t\u011b pro zad\u00e1n\u00ed krit\u00e9ri\u00ed t\u0159\u00edd\u011bn\u00ed.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -157,7 +157,7 @@ public class DataExtension implements Extension {
                 }
 
                 for (Class<?> entityClass : queriesPerEntityClass.keySet())
-                    if (!Query.class.equals(entityClass))
+                    if (!QueryInfo.ENTITY_TBD.equals(entityClass))
                         futureEMBuilder.addEntity(entityClass);
 
                 RepositoryProducer<Object> producer = new RepositoryProducer<>( //

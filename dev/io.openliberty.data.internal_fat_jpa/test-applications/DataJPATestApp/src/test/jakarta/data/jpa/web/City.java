@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,8 @@ import jakarta.persistence.Version;
 @Entity
 @IdClass(CityId.class)
 public class City {
-    // TODO uncomment to reproduce EclipseLink bug with selecting an attribute that is a collection type.
+    // TODO uncomment to reproduce EclipseLink bugs #28589, #29475
+    // that select an attribute that is a collection type.
     //@ElementCollection(fetch = FetchType.EAGER)
     public Set<Integer> areaCodes;
 

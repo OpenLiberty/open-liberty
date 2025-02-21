@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60CookieSetAttributeTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetMappingAsyncDispatchTest;
+import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetRealPathDirectoryBrowsingTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetRealPathTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60PartitionedAttributeTests;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60RequestConnectionTest;
@@ -40,6 +41,7 @@ import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeader
 @SuiteClasses({
                 Servlet60XPoweredByHeaderTest.class,
                 Servlet60GetMappingAsyncDispatchTest.class,
+                Servlet60GetRealPathDirectoryBrowsingTest.class,
                 Servlet60GetRealPathTest.class,
                 Servlet60CookieSetAttributeTest.class,
                 Servlet60RequestConnectionTest.class,

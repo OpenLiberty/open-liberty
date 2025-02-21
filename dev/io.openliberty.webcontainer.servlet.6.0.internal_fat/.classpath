@@ -3,6 +3,7 @@
     <classpathentry kind="src" path="fat/src"/>
     <classpathentry kind="src" path="test-applications/CookieSetAttributeTest.war/src"/>
     <classpathentry kind="src" path="test-applications/GetMappingAsyncDispatchTest.war/src"/>
+    <classpathentry kind="src" path="test-applications/GetRealPathDirectoryBrowsing.war/src"/>
     <classpathentry kind="src" path="test-applications/GetRealPathTest.war/src"/>
     <classpathentry kind="src" path="test-applications/RequestConnectionTest.war/src"/>
     <classpathentry kind="src" path="test-applications/RequestCookieHeaderTest.war/src"/>

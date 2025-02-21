@@ -1,6 +1,6 @@
 -include= ~../cnf/resources/bnd/rejar.props
-bVersion=3.21.0
-bFullVersion=3.21.0
+bVersion=3.23.0
+bFullVersion=3.23.0
 
 Bundle-SymbolicName: org.eclipse.osgi; singleton:=true
 

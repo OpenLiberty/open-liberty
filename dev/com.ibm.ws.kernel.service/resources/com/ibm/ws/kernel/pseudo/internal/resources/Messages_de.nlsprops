@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,30 @@ jndi.not.installed=CWWKE0800W: Es wurde versucht, einen Anfangskontext f\u00fcr 
 jndi.not.installed.explanation=Das JNDI-Feature stellt eine JNDI-Registry und zugeh\u00f6rige Dienstprogramme bereit. Dies ist gew\u00f6hnlich erforderlich, wenn eine Anwendung oder ein Feature Eintr\u00e4ge in einem JNDI-Kontext suchen muss.
 jndi.not.installed.useraction=Stellen Sie sicher, dass eine JNDI-Implementierung bereitgestellt wird (z. B. durch Konfiguration des JNDI-Features in der Konfiguration f\u00fcr diesen Server).
 
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.common.crypto
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
+# -------------------------------------------------------------------------------------------------
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_INSECURE=CWWKS5900W: Der {0} Konfigurationselement gibt an, {1} unsicherer kryptographischer Algorithmus.  Erw\u00e4gen Sie die Verwendung von {2} sicherer Algorithmus stattdessen.
+CRYPTO_INSECURE.explanation=Der konfigurierte Algorithmus gilt nicht mehr als kryptografisch sicher.
+CRYPTO_INSECURE.useraction=Verwenden Sie den vorgeschlagenen sicheren Algorithmus.
+
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: Der {0} Konfigurationselement gibt an, {1} unsicherer kryptographischer Algorithmus.  Der {2} Stattdessen wird ein sicherer Algorithmus verwendet.
+CRYPTO_INSECURE_REPLACED.explanation=Der unsichere kryptographische Algorithmus wurde durch den sicheren Algorithmus ersetzt.
+CRYPTO_INSECURE_REPLACED.useraction=Es ist keine Aktion erforderlich.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Das {0} Konfigurationselement verwendet den {1} unsicheren kryptographischen Algorithmus. Ziehen Sie in Erw\u00e4gung, die Konfiguration durch einen anderen Anbieter zu ersetzen, wenn die Sicherheit ein Thema ist.
+CRYPTO_INSECURE_PROVIDER.explanation=Der Algorithmus gilt nicht mehr als kryptographisch sicher.
+CRYPTO_INSECURE_PROVIDER.useraction=Ziehen Sie in Erw\u00e4gung, die Konfiguration durch einen anderen Anbieter zu ersetzen, wenn die Sicherheit ein Thema ist.

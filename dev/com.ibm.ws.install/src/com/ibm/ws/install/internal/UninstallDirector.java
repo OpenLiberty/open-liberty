@@ -75,12 +75,14 @@ class UninstallDirector extends AbstractDirector {
     }
 
     void retrieveUninstallFileList(UninstallAsset uninstallAsset, boolean checkDependency) throws InstallException {
-        if (uninstallAsset.getType().equals(UninstallAssetType.feature) &&
-            uninstallAsset.getFeatureFileList().isEmpty()) {
-            uninstallAsset.setFeaturePath(ESAAdaptor.getFeaturePath(uninstallAsset.getProvisioningFeatureDefinition(),
-                                                                    engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition())));
-            uninstallAsset.setFeatureFileList(ESAAdaptor.determineFilesToBeDeleted(uninstallAsset.getProvisioningFeatureDefinition(), product.getFeatureDefinitions(),
-                                                                                   engine.getBaseDir(uninstallAsset.getProvisioningFeatureDefinition()),
+        if (uninstallAsset.getType().equals(UninstallAssetType.feature) && uninstallAsset.getFeatureFileList().isEmpty()) {
+
+            ProvisioningFeatureDefinition featureDef = uninstallAsset.getProvisioningFeatureDefinition();
+            File baseDir = engine.getBaseDir(featureDef);
+            uninstallAsset.setFeaturePath(ESAAdaptor.getFeaturePath(featureDef, baseDir));
+            uninstallAsset.setFeatureFileList(ESAAdaptor.determineFilesToBeDeleted(featureDef,
+                                                                                   product.getFeatureDefinitions(),
+                                                                                   baseDir,
                                                                                    uninstallAsset.getFeaturePath(), checkDependency,
                                                                                    uninstallAsset.getFixUpdatesFeature()));
         }
@@ -123,7 +125,9 @@ class UninstallDirector extends AbstractDirector {
             fireProgressEvent(InstallProgressEvent.UNINSTALL, progress, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_UNINSTALLING", uninstallAsset.getName()));
             progress += interval;
             try {
-                retrieveUninstallFileList(uninstallAsset, checkDependency);
+                if (!InstallUtils.isWindows) {
+                    retrieveUninstallFileList(uninstallAsset, checkDependency);
+                }
                 engine.uninstall(uninstallAsset, checkDependency, filesRestored);
                 log(Level.FINE, uninstallAsset.uninstalledLogMsg());
             } catch (IOException e) {

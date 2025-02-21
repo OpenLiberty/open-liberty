@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -119,8 +119,8 @@ public class MergeConfigServerXMLTest {
             // check that documentation includes only app 1
             OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
 
-            // Test that merging disabled message was output (at some point)
-            assertThat(server.findStringsInLogsUsingMark(" I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled.", server.getDefaultLogFile()),
+            // Test that merging disabled message was output (at some point, can't guarantee it was during this test as the message is only emitted once)
+            assertThat(server.findStringsInLogs(" I CWWKO1663I:.*Combining OpenAPI documentation from multiple modules is disabled.", server.getDefaultLogFile()),
                        hasSize(1));
 
             // remove app 1
@@ -136,6 +136,7 @@ public class MergeConfigServerXMLTest {
             OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
 
             // Check there's no "first module only" message
+            // There are other tests that provoke this message, so we can only check it wasn't emitted during this test
             assertThat(server.findStringsInLogsUsingMark("CWWKO1663I", server.getDefaultLogFile()),
                        hasSize(0));
         }

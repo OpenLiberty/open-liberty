@@ -105,3 +105,6 @@ tested.features=appSecurity-3.0, \
 	org.apache.wink:wink-client;version='1.4',\
 	org.apache.wink:wink-common;version='1.4',\
 	com.ibm.ws.componenttest;version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

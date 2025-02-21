@@ -1,7 +1,9 @@
 # Base image used by external users is overwritten at runtime
 # by a mirrored version from Artifactory for internal users.
 
-ARG BASE_IMAGE="ibmcom/cloudant-developer:2.0.1"
+# TODO cloudant is EOL consider removing or modifying the test that uses this image
+
+ARG BASE_IMAGE="docker.io/ibmcom/cloudant-developer:2.0.1"
 
 FROM ${BASE_IMAGE}
 

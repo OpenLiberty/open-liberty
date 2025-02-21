@@ -55,7 +55,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
-@Component(service = WebJaccService.class, immediate = true, name = "com.ibm.ws.security.authorization.jacc.web.service", configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = WebJaccService.class, name = "com.ibm.ws.security.authorization.jacc.web.service", configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class WebJaccServiceImpl implements WebJaccService {
 
     private static final TraceComponent tc = Tr.register(WebJaccServiceImpl.class);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -90,7 +90,9 @@ public class BasicAuthAuditAUTHZTest {
      * Need the first repeat to make sure that audit-2.0 from a previous repeat gets put back to audit-1.0
      */
     @ClassRule
-    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServers("com.ibm.ws.webcontainer.security.fat.basicauth.audit").fullFATOnly()).andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServers("com.ibm.ws.webcontainer.security.fat.basicauth.audit"));
+    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServerConfigPaths("publish/files/"
+                                                                                                                                         + DEFAULT_CONFIG_FILE).fullFATOnly()).andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServerConfigPaths("publish/files/"
+                                                                                                                                                                                                                                                                   + DEFAULT_CONFIG_FILE));
 
     @Rule
     public TestName name = _name;

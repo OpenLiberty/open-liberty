@@ -33,7 +33,8 @@ Export-Package: \
 	com.ibm.wsspi.annocache.targets.cache;provide:=true, \
 	com.ibm.wsspi.annocache.classsource;provide:=true, \
 	com.ibm.wsspi.annocache.util;provide:=true, \
-	com.ibm.ws.annocache.classsource.specification;provide:=true
+	com.ibm.ws.annocache.classsource.specification;provide:=true, \
+	com.ibm.ws.annocache.targets.cache.interfaces
 
 -dsannotations: \
  com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service, \

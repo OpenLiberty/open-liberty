@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: The system could not retrieve fileset [{0}] fo
 cls.fileset.not.ready.explanation=A shared library is in use but one of the associated filesets could not be retrieved in time.
 cls.fileset.not.ready.useraction=Check for and redress any errors or warnings associated with the fileset.
 
-cls.library.file.invalid=CWWKL0012W: The library [{0}] specifies a file with name [{1}]. This file either does not exist or is incorrectly specified.
-cls.library.file.invalid.explanation=To add a file to a library in the server configuration, you must specify the fully qualified name of an existing file.
+cls.library.file.invalid=CWWKL0012W: The [{0}] library specifies a file with the [{1}] name. This file either does not exist or is incorrectly specified.
+cls.library.file.invalid.explanation=To add a file to a library in the server configuration, you must specify a file that exists.
 cls.library.file.invalid.useraction=Edit the server configuration and modify the file attribute of the library element.
 
-cls.library.folder.invalid=CWWKL0013W: The library [{0}] specifies a folder with name [{1}]. This folder either does not exist or is not a valid folder .
-cls.library.folder.invalid.explanation=To add a file to a library in the server configuration, you must specify the fully qualified path to an existing folder.
+cls.library.folder.invalid=CWWKL0013W: The [{0}] library specifies a folder with the [{1}] name. This folder either does not exist or is not a valid folder .
+cls.library.folder.invalid.explanation=To add a file to a library in the server configuration, you must specify folder that exists.
 cls.library.folder.invalid.useraction=Edit the server configuration and modify the folder attribute of the library element.
 
 cls.library.file.forbidden=CWWKL0014I: The file [{0}] can not be added to a classpath.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Edit the server configuration and ensure any file
 cls.library.destroyed=CWWKL0018I: The library [{0}] is unavailable.
 cls.library.destroyed.explanation=A library has become unavailable, for example because it was removed from the server configuration.
 cls.library.destroyed.useraction=If the library is still required, ensure that it is still configured correctly.
+
+cls.library.path.invalid=CWWKL0019W: The [{0}] library specifies a path with the [{1}] name. This path either does not exist or is incorrectly specified.
+cls.library.path.invalid.explanation=To add a path to a library in the server configuration, you must specify a path that exists.
+cls.library.path.invalid.useraction=Edit the server configuration and modify the path attribute of the library element.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

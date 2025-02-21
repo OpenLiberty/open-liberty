@@ -43,3 +43,5 @@ tested.features: \
   com.ibm.websphere.javaee.transaction.1.1;version=latest,\
   com.ibm.websphere.javaee.cdi.1.0;version=latest
 
+# Copy in FIPS keys
+ltpa.fips.enabled: true

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,10 +67,10 @@ public class JPATest {
                     .withPassword("password") // set in Dockerfile
                     .withDatabaseName("testdb") // set in Dockerfile
                     .withExposedPorts(50000, 50001) // 50k is regular 50001 is secure
-                    // Use 5m timeout for local runs, 25m timeout for remote runs (extra time since the DB2 container can be slow to start)
+                    // Use 5m timeout for local runs, 35m timeout for remote runs (extra time since the DB2 container can be slow to start)
                     .waitingFor(new LogMessageWaitStrategy()
                                     .withRegEx(".*DB2 SSH SETUP DONE.*")
-                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25)))
+                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 35)))
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "db2-ssl"))
                     .withReuse(true);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityPropagator;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-@Component(service = EJBJaccService.class, immediate = true, name = "com.ibm.ws.security.authorization.jacc.ejb.service", configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+@Component(service = EJBJaccService.class, name = "com.ibm.ws.security.authorization.jacc.ejb.service", configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class EJBJaccServiceImpl implements EJBJaccService {
 
     private static final String JACC_EJB_METHOD_ARGUMENT = "RequestMethodArgumentsRequired";

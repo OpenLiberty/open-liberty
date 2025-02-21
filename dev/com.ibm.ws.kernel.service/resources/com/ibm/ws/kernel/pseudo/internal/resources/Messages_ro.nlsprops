@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,30 @@ jndi.not.installed=CWWKE0800W: S-a f\u0103cut o \u00eencercare de a extrage cont
 jndi.not.installed.explanation=Caracteristica JNDI furnizeaz\u0103 un registru JNDI \u015fi utilitare asociate.  Aceasta este cerut\u0103 \u00een mod normal dac\u0103 o aplica\u0163ie sau o caracteristic\u0103 trebuie s\u0103 caute intr\u0103ri \u00eentr-un context JNDI.
 jndi.not.installed.useraction=Asigura\u0163i-v\u0103 c\u0103 este furnizat\u0103 o implementare JNDI (de ex. configur\u00e2nd caracteristica JNDI \u00een configura\u0163ia pentru acest server).
 
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.common.crypto
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
+# -------------------------------------------------------------------------------------------------
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_INSECURE=CWWKS5900W: The {0} elementul de configurare specific\u0103 {1} algoritm criptografic nesigur.  Lua\u021bi \u00een considerare utilizarea {2} algoritm securizat \u00een schimb.
+CRYPTO_INSECURE.explanation=Algoritmul configurat nu mai este considerat sigur din punct de vedere criptografic.
+CRYPTO_INSECURE.useraction=Utiliza\u021bi algoritmul securizat sugerat.
+
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} elementul de configurare specific\u0103 {1} algoritm criptografic nesigur.  The {2} se folose\u0219te \u00een schimb algoritmul securizat.
+CRYPTO_INSECURE_REPLACED.explanation=Algoritmul criptografic nesigur a fost \u00eenlocuit cu algoritmul securizat.
+CRYPTO_INSECURE_REPLACED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Elementul de configurare {0} utilizeaz\u0103 algoritmul criptografic nesigur {1} . Lua\u021bi \u00een considerare \u00eenlocuirea configura\u021biei cu un alt furnizor dac\u0103 securitatea este o problem\u0103.
+CRYPTO_INSECURE_PROVIDER.explanation=Algoritmul nu mai este considerat sigur din punct de vedere criptografic.
+CRYPTO_INSECURE_PROVIDER.useraction=Lua\u021bi \u00een considerare \u00eenlocuirea configura\u021biei cu un alt furnizor dac\u0103 securitatea este o problem\u0103.

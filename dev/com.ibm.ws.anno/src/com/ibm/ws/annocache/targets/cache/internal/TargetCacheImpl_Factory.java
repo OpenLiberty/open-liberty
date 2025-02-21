@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Logging;
 import com.ibm.ws.annocache.targets.cache.TargetCache_ParseError;
+import com.ibm.ws.annocache.targets.cache.interfaces.TargetCache_FactoryLiberty;
 import com.ibm.ws.annocache.targets.internal.TargetsTableAnnotationsImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableClassesImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableContainersImpl;
@@ -42,7 +43,7 @@ import com.ibm.wsspi.annocache.targets.cache.TargetCache_InternalConstants;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
-public class TargetCacheImpl_Factory implements TargetCache_Factory {
+public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache_FactoryLiberty {
     private static final String CLASS_NAME = TargetCacheImpl_Factory.class.getSimpleName();
 
     protected static final Logger logger = AnnotationCacheServiceImpl_Logging.ANNO_LOGGER;
@@ -233,6 +234,15 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
             }
         }
         return cache;
+    }
+    
+    /**
+     * Release cache data for an application.
+     * 
+     * @param appName The name of the application. This should be the application's deployment name.
+     */
+    public boolean release(String appName) {
+        return getCache().release(appName);
     }
 
     protected TargetCacheImpl_DataApps createCache() {

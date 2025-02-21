@@ -113,5 +113,9 @@ autoFVT.doLast {
       from new File(projectDir, 'publish/files/alternate/server.xml')
       into new File(autoFvtDir, 'lib/LibertyFATTestFiles/alternate')
     }
+    copy { 
+      from new File(projectDir, 'publish/files/alternateFIPS/server.xml')
+      into new File(autoFvtDir, 'lib/LibertyFATTestFiles/alternateFIPS')
+    }
   }
 }

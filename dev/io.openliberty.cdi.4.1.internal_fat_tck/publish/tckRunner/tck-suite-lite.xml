@@ -1,0 +1,35 @@
+<!-- Adapted from https://github.com/jakartaee/cdi-tck/blob/4.1.0/impl/src/main/resources/tck-tests.xml -->
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="CDI TCK" verbose="2" configfailurepolicy="continue">
+
+    <listeners>
+        <!-- Required - avoid randomly mixed test method execution -->
+        <listener class-name="org.jboss.cdi.tck.impl.testng.SingleTestClassMethodInterceptor" />
+    </listeners>
+
+    <test name="CDI TCK">
+        <packages>
+            <!-- In LITE mode, teat new function in CDI 4.1 -->
+            <!-- Method invokers -->
+            <package name="org.jboss.cdi.tck.tests.full.invokers.*" />
+            <package name="org.jboss.cdi.tck.tests.invokers.*" />
+            <!-- InvocationContext.getInterceptorBindings -->
+            <package name="org.jboss.cdi.tck.interceptors.tests.contract.invocationContext.*" />
+            <!-- Use of @Priority on producer fields and methods -->
+            <package name="org.jboss.cdi.tck.tests.alternative.selection.priority.*" />
+            <!-- BeanContainer.isMatchingBean and isMatchingEvent -->
+            <package name="org.jboss.cdi.tck.tests.beanContainer.assignability.*" />
+        </packages>
+
+        <classes>
+            <!-- https://github.com/jakartaee/cdi-tck/issues/440 -->
+            <class name="org.jboss.cdi.tck.tests.full.extensions.lifecycle.processBeanAttributes.specialization.VetoTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+        </classes>
+
+    </test>
+</suite>

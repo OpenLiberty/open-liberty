@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2024 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -130,57 +130,19 @@ public class PasswordUtilTest {
 
     @Test
     public void testAESEncoding() throws Exception {
-        try {
-            //TODO remove beta setting once AES-256 is GA
-            System.setProperty("com.ibm.ws.beta.edition", "true");
+        String encoding = PasswordUtil.encode("WebAS", "aes");
+        assertTrue("The encoded password should start with {aes} " + encoding, encoding.startsWith("{aes}"));
+        String encoding2 = PasswordUtil.encode("WebAS", "aes");
+        assertFalse("Encoding the same password twice should result in different encodings: " + encoding + " and " + encoding2, encoding.equals(encoding2));
 
-            String encoding = PasswordUtil.encode("WebAS", "aes");
-            assertTrue("The encoded password should start with {aes} " + encoding, encoding.startsWith("{aes}"));
-            String encoding2 = PasswordUtil.encode("WebAS", "aes");
-            assertFalse("Encoding the same password twice should result in different encodings: " + encoding + " and " + encoding2, encoding.equals(encoding2));
+        assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding));
+        assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding2));
+        assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode("{aes}AGTpzRDW//VE3Jshg1fd89rxw/JMjHfFM9UdYdVNIUt2"));
 
-            assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding));
-            assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding2));
-            assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode("{aes}AGTpzRDW//VE3Jshg1fd89rxw/JMjHfFM9UdYdVNIUt2"));
-
-            assertEquals("Did not decode password encoded with AES_V0 (AES-128) encoded password", "alternatepwd",
-                         PasswordUtil.decode("{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ=="));
-            assertEquals("Did not decode password encoded with AES_V1 (AES-256) encoded password", "alternatepwd",
-                         PasswordUtil.decode("{aes}ARCejBipVe2pCLpoNe9iRREPNbQmPVSfXOe5kHZneiYVR+nSXJ8UmFzlNtwrQgKwnrkaDJmNnr+GpDWCOk1MPY7VbvR0/FBUrIENeU5+L9e8a1K4YvWeQ2UUbLv97SHa3P9Iky7rIbeQ9l4Xi0q0"));
-        } finally {
-            System.setProperty("com.ibm.ws.beta.edition", "false");
-        }
-    }
-
-    @Test
-    public void testAES256EncodingFailsWithoutBeta() throws Exception {
-        //TODO remove beta setting once AES-256 is GA
-        try {
-            System.setProperty("com.ibm.ws.beta.edition", "false");
-
-            String encoding = PasswordUtil.encode("WebAS", "aes");
-            assertTrue("The encoded password should start with {aes} " + encoding, encoding.startsWith("{aes}"));
-            String encoding2 = PasswordUtil.encode("WebAS", "aes");
-            assertFalse("Encoding the same password twice should result in different encodings: " + encoding + " and " + encoding2, encoding.equals(encoding2));
-
-            assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding));
-            assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding2));
-            assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode("{aes}AGTpzRDW//VE3Jshg1fd89rxw/JMjHfFM9UdYdVNIUt2"));
-
-            assertEquals("Did not decode password encoded with AES_V0 (AES-128) encoded password", "alternatepwd",
-                         PasswordUtil.decode("{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ=="));
-
-            // decode("{aes}<valid AES256 encoded password>); should fail with InvalidPasswordDecodingException when beta is disabled.
-            try {
-                PasswordUtil.decode("{aes}ARCejBipVe2pCLpoNe9iRREPNbQmPVSfXOe5kHZneiYVR+nSXJ8UmFzlNtwrQgKwnrkaDJmNnr+GpDWCOk1MPY7VbvR0/FBUrIENeU5+L9e8a1K4YvWeQ2UUbLv97SHa3P9Iky7rIbeQ9l4Xi0q0");
-                fail("decode AES256 encoded password should have failed with InvalidPasswordDecodingException when beta is disabled.");
-            } catch (InvalidPasswordDecodingException e) {
-                // expected exception
-            }
-        } finally {
-            System.setProperty("com.ibm.ws.beta.edition", "false");
-        }
-
+        assertEquals("Did not decode password encoded with AES_V0 (AES-128) encoded password", "alternatepwd",
+                     PasswordUtil.decode("{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ=="));
+        assertEquals("Did not decode password encoded with AES_V1 (AES-256) encoded password", "alternatepwd",
+                     PasswordUtil.decode("{aes}ARABGAM7S4HrIRtZWJ229TnxuKZrrPN3dsKrrQzCQE/3U5F4zp3UrDQ+Czmnvz1kaQyN7JktDzieJxelwu077ZYET2V+7/1Gi37iztr7lY0i+j4dlHOFIi5PESnZ7V8XOmdSbH9DSgkuJaXNoEqb"));
     }
 
     @Test

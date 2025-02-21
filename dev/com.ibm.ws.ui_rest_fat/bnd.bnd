@@ -49,3 +49,6 @@ tested.features:\
     com.ibm.ws.ui;version=latest,\
     io.openliberty.jsonsupport.internal;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

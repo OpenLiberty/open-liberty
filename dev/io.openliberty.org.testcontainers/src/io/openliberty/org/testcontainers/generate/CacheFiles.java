@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +29,12 @@ import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
 
 public class CacheFiles {
+	
+	/**
+	 * Always maintain generated files with a new line separator to avoid git 
+	 * from complaining about carriage returns on windows. 
+	 */
+	private static final String LINE_SEPERATOR = "\n";
     
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
@@ -109,8 +117,16 @@ public class CacheFiles {
             }
         }
         
-        String header = "# NOTICE: This file was automatically updated to reflect changes made to test projects." + System.lineSeparator() +  
-                        "# Please check these changes into GitHub" + System.lineSeparator();
+        // Investigate all Dockerfiles and add the BASE_NAME to externals list
+        Path commonPath = Paths.get(projectPath, "resources", "openliberty", "testcontainers");
+        Dockerfile.findDockerfiles(commonPath).stream()
+            .map(location -> new Dockerfile(location))
+            .forEach(dockerfile -> {
+                externals.add(dockerfile.baseImageName.asCanonicalNameString());
+            });
+        
+        String header = "# NOTICE: This file was automatically updated to reflect changes made to test projects." + LINE_SEPERATOR +  
+                        "# Please check these changes into GitHub" + LINE_SEPERATOR;
         
         externals.remove(""); //Remove any blank lines that made it into the list.
         
@@ -129,17 +145,17 @@ public class CacheFiles {
             
             projectWriter.append(header);
             for(String project : new TreeSet<String>(projects)) {
-                projectWriter.append(project + System.lineSeparator());
+                projectWriter.append(project + LINE_SEPERATOR);
             }
             
             imageWriter.append(header);
             for(String image : new TreeSet<String>(images)) {
-                imageWriter.append(image + System.lineSeparator());
+                imageWriter.append(image + LINE_SEPERATOR);
             }
             
             externalsWriter.append(header);
             for(String external : new TreeSet<String>(externals)) {
-                externalsWriter.append(external + System.lineSeparator());
+                externalsWriter.append(external + LINE_SEPERATOR);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

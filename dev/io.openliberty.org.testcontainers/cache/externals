@@ -1,11 +1,13 @@
 # NOTICE: This file was automatically updated to reflect changes made to test projects.
 # Please check these changes into GitHub
 confluentinc/cp-kafka:7.1.1
+docker.io/ibmcom/cloudant-developer:2.0.1
 elastic/logstash:7.16.3
 fbicodex/spnego-kdc-server:1.0
 ghcr.io/gvenzl/oracle-free:23.5-full-faststart
 ghcr.io/gvenzl/oracle-free:23.5-slim-faststart
 icr.io/db2_community/db2:11.5.9.0
+icr.io/db2_community/db2:12.1.0.0
 infinispan/server:10.0.1.Final
 infinispan/server:13.0.10.Final
 jaegertracing/all-in-one:1.54
@@ -33,8 +35,11 @@ openzipkin/zipkin-slim:2.23
 otel/opentelemetry-collector-contrib:0.103.0
 otel/opentelemetry-collector:0.74.0
 public.ecr.aws/docker/library/alpine:3.17
+public.ecr.aws/docker/library/couchdb:3.2.0
 public.ecr.aws/docker/library/mongo:6.0.6
+public.ecr.aws/docker/library/postgres:17.0
 public.ecr.aws/docker/library/postgres:17.0-alpine
+public.ecr.aws/docker/library/python:3.11.6
 ryanesch/acme-boulder:1.2
 seleniarm/standalone-chromium:4.8.3
 selenium/standalone-chrome:4.8.3

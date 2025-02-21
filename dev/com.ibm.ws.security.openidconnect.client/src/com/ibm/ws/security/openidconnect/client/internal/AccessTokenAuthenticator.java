@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,7 @@ public class AccessTokenAuthenticator {
     private static final String JWT_SEGMENTS = "-segments";
     private static final String JWT_SEGMENT_INDEX = "-";
     private static final String BEARER_SCHEME = "Bearer ";
+    public static ThreadLocal<String> threadClientID = new ThreadLocal<String>();
 
     OidcClientUtil oidcClientUtil = new OidcClientUtil();
     SSLSupport sslSupport = null;
@@ -105,6 +106,9 @@ public class AccessTokenAuthenticator {
         oidcClientRequest.setTokenType(OidcClientRequest.TYPE_ACCESS_TOKEN);
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
         String accessToken = null;
+
+        setThreadClientId(clientConfig.getClientId());
+
         if (clientConfig.getAccessTokenInLtpaCookie()) {
             accessToken = getAccessTokenFromReqAsAttribute(req, true);
         }
@@ -1103,5 +1107,12 @@ public class AccessTokenAuthenticator {
                 Tr.debug(tc, "Not setting new RS fail message since one was already found: " + existingFailMsg);
             }
         }
+    }
+    private void setThreadClientId(String clientID) {
+        threadClientID.set(clientID);
+    }
+
+    public static String getThreadClientId() {
+        return threadClientID.get();
     }
 }

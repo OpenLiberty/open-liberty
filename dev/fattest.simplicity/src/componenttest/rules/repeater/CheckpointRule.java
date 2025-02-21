@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -167,6 +167,8 @@ public class CheckpointRule implements TestRule {
     private Consumer<LibertyServer> postCheckpointLambda;
     private final Set<String> unsupportedRepeatIDs = new HashSet<>(Arrays.asList(EE6FeatureReplacementAction.ID, EE7FeatureReplacementAction.ID));
     private String[] checkpointIgnoreMessages;
+    private boolean runNormalTests = true;
+    private boolean checkrestart;
 
     /**
      * Sets the optional function to do class setup before running the normal and checkpoint mode for the test
@@ -275,6 +277,11 @@ public class CheckpointRule implements TestRule {
         return this;
     }
 
+    public CheckpointRule setAssertNoAppRestartOnRestore(boolean checkrestart) {
+        this.checkrestart = checkrestart;
+        return this;
+    }
+
     /**
      * Sets the console log name. When the test is run in checkpoint mode then CHECKPOINT_RULE will be prepended to the name.
      * The default name is console.log
@@ -287,8 +294,25 @@ public class CheckpointRule implements TestRule {
         return this;
     }
 
+    /**
+     * Adds regular expressions to match messages to ignore from the server
+     *
+     * @param  regExs regular expression to match server messages
+     * @return
+     */
     public CheckpointRule addCheckpointRegexIgnoreMessages(String... regExs) {
         this.checkpointIgnoreMessages = regExs;
+        return this;
+    }
+
+    /**
+     * Sets if the tests should be run on a normal server which has no checkpoint done.
+     *
+     * @param  runNormalTests
+     * @return
+     */
+    public CheckpointRule setRunNormalTests(boolean runNormalTests) {
+        this.runNormalTests = runNormalTests;
         return this;
     }
 
@@ -333,7 +357,9 @@ public class CheckpointRule implements TestRule {
                 classSetup.call();
             }
             try {
-                evaluate(ServerMode.NORMAL);
+                if (runNormalTests) {
+                    evaluate(ServerMode.NORMAL);
+                }
                 evaluate(ServerMode.CHECKPOINT);
             } finally {
                 if (classTearDown != null) {
@@ -401,6 +427,7 @@ public class CheckpointRule implements TestRule {
             String logName = ID + "_" + consoleLogName;
             log("checkpointSetup", "Configuring checkpoint phase '" + checkpointPhase + "' with log name: " + logName);
             CheckpointInfo checkpointInfo = new CheckpointInfo(checkpointPhase, true, postCheckpointLambda);
+            checkpointInfo.setAssertNoAppRestartOnRestore(checkrestart);
             server.setConsoleLogName(logName);
             server.setCheckpoint(checkpointInfo);
             if (checkpointIgnoreMessages != null) {

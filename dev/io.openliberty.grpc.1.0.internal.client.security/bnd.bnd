@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,14 +10,14 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-grpcVersion=1.57.2
+grpcVersion=1.69.0
 
 Bundle-Name: gRPC Client security
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client.security
 Bundle-Description: Liberty gRPC Client security, version ${bVersion}
 
 Import-Package: \
-  io.grpc.netty; version="[1.43.0, 11)",\
+  io.grpc.netty; version="[1.69.0, 11)",\
   *
  
 Export-Package: \

@@ -55,9 +55,6 @@ public final class ImageVerifier {
             _expectedImages.add(DockerImageName.parse(image));
         }
 
-        //TODO remove once WebSphere Liberty is updated
-        _expectedImages.add(DockerImageName.parse("alpine:3.17"));
-
         //Add images from the testcontainers project (tracked in fattest.simplicity/bnd.bnd)
         for (String image : Arrays.asList("testcontainers/ryuk:0.9.0", "testcontainers/sshd:1.2.0", "testcontainers/vnc-recorder:1.3.0",
                                           "public.ecr.aws/docker/library/alpine:3.17")) {

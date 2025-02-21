@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,20 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sample;
 
-import static componenttest.annotation.SkipForRepeat.CHECKPOINT_RULE;
+import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.junit.ClassRule;
@@ -39,7 +46,6 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.CheckpointRule;
 import componenttest.rules.repeater.CheckpointRule.ServerMode;
@@ -71,12 +77,20 @@ public class CxfSampleTests {
 
     @ClassRule
     public static CheckpointRule checkpointRule = new CheckpointRule()
-                                                      .setConsoleLogName(CxfSampleTests.class.getSimpleName()+ ".log")
-                                                      .setServerSetup(CxfSampleTests::serverSetUp)
-                                                      .setServerStart(CxfSampleTests::serverStart)
-                                                      .setServerTearDown(CxfSampleTests::serverTearDown)
-                                                      .addUnsupportedRepeatIDs(EmptyAction.ID, RepeatWithEE7cbh20.ID)
-                                                      .addCheckpointRegexIgnoreMessages("CWWKG0101W", "SRVE0274W");
+                                                        .setConsoleLogName(CxfSampleTests.class.getSimpleName()+ ".log")
+                                                        .setServerSetup(CxfSampleTests::serverSetUp)
+                                                        .setServerStart(CxfSampleTests::serverStart)
+                                                        .setServerTearDown(CxfSampleTests::serverTearDown)
+                                                        .addUnsupportedRepeatIDs(EmptyAction.ID, RepeatWithEE7cbh20.ID)
+                                                        .addCheckpointRegexIgnoreMessages("CWWKG0101W", "SRVE0274W")
+                                                        .setPostCheckpointLambda(server -> {
+                                                            try {
+                                                                configureBeforeRestore();
+                                                            } catch (Exception e) {
+                                                                // TODO Auto-generated catch block
+                                                                e.printStackTrace();
+                                                            }
+                                                        });
 
     public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
         //issue 23060
@@ -109,7 +123,30 @@ public class CxfSampleTests {
             JakartaEEAction.transformApp(WSSampleSei_archive);
         }
 
+        //Environment variable values are not set before checkpoint.
+        if (CheckpointRule.isActive()) {
+            configureEnvVariable(server, emptyMap());
+        }
         return server;
+    }
+
+    private static void configureBeforeRestore() throws Exception {
+        Map<String, String> config = new HashMap<>();
+        config.put("WS_SECURITY_PWD", "security");
+        config.put("CLIENT_SIGNATURE_PWD", "LibertyX509Client");
+        config.put("CLIENT_SIGNATURE_KEYSTORE", "x509ClientDefault.jks");
+        config.put("PROVIDER_ENCRYPTION_KEYSTORE", "x509ServerDefault.jks");
+        config.put("PROVIDER_ENCRYPTION_PWD", "LibertyX509Server");
+        configureEnvVariable(server, config);
+    }
+
+    private static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        Properties serverEnvProperties = new Properties();
+        serverEnvProperties.putAll(newEnv);
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            serverEnvProperties.store(out, "");
+        }
     }
 
     public static void serverStart(ServerMode mode, LibertyServer server) throws Exception {
@@ -126,6 +163,8 @@ public class CxfSampleTests {
             server.addInstalledAppForValidation("WSSampleSeiClient");
             server.addInstalledAppForValidation("webcontent");
         }
+
+        //LibertyX509Client
 
         server.startServer(); // check CWWKS0008I: The security service is ready.
         SharedTools.waitForMessageInLog(server, "CWWKS0008I");
@@ -244,7 +283,6 @@ public class CxfSampleTests {
     }
 
     @Test
-    @SkipForRepeat({ CHECKPOINT_RULE })
     public void testEcho4Service() throws Exception {
         String thisMethod = "testEcho4Service";
 

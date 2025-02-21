@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,11 @@ package com.ibm.ws.security.registry.basic.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,6 +40,7 @@ import componenttest.vulnerability.LeakedPasswordChecker;
  */
 @RunWith(FATRunner.class)
 public class FATTestFederated {
+    private static final String CWWKS1860E_FIPS_128BIT_AES_SECRET_NOT_ALLOWED = "CWWKS1860E";
     private static final String DEFAULT_CONFIG_FILE = "basic.server.xml.orig";
     private static final String ALTERNATE_BASIC_REGISTRY_CONFIG = "alternateBasicRegistry.xml";
     private static final String DEFAULT_AES_CONFIG_FILE = "defaultAESBasicRegistry.xml";
@@ -45,6 +51,7 @@ public class FATTestFederated {
     private static final Class<?> c = FATTestFederated.class;
     private static UserRegistryServletConnection servlet;
     private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
+    private static final List<String> expectedErrors = new ArrayList(Arrays.asList("CWIML4537E.*admin"));
 
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
@@ -68,7 +75,7 @@ public class FATTestFederated {
     @AfterClass
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
-        server.stopServer("CWIML4537E.*admin");
+        stopServer();
     }
 
     /**
@@ -129,17 +136,24 @@ public class FATTestFederated {
         setServerConfiguration(server, DEFAULT_AES_CONFIG_FILE);
 
         String password = "alternatepwd";
-        assertEquals("Authentication should succeed.",
-                     "defaultUser", servlet.checkPassword("defaultUser", password));
 
-        passwordChecker.checkForPasswordInAnyFormat(password);
+        if (server.isFIPS140_3EnabledAndSupported()) {
+            assertNotNull("FIPS 140-3 should not tolerate AES-128bit secrets",
+                          server.waitForStringInLog(CWWKS1860E_FIPS_128BIT_AES_SECRET_NOT_ALLOWED));
+            expectedErrors.add(CWWKS1860E_FIPS_128BIT_AES_SECRET_NOT_ALLOWED);
+        } else {
+            assertEquals("Authentication should succeed.",
+                         "defaultUser", servlet.checkPassword("defaultUser", password));
 
-        setServerConfiguration(server, CUSTOM_AES_CONFIG_FILE);
+            passwordChecker.checkForPasswordInAnyFormat(password);
 
-        assertEquals("Authentication should succeed.",
-                     "customUser", servlet.checkPassword("customUser", password));
+            setServerConfiguration(server, CUSTOM_AES_CONFIG_FILE);
 
-        passwordChecker.checkForPasswordInAnyFormat(password);
+            assertEquals("Authentication should succeed.",
+                         "customUser", servlet.checkPassword("customUser", password));
+
+            passwordChecker.checkForPasswordInAnyFormat(password);
+        }
     }
 
     /**
@@ -232,5 +246,12 @@ public class FATTestFederated {
             server.waitForStringInLog("CWWKZ0003I"); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
             serverConfigurationFile = serverXML;
         }
+    }
+
+    /**
+     * Stops the server providing the expectedErrors list as input
+     */
+    private static void stopServer() throws IOException, Exception {
+        server.stopServer(expectedErrors.toArray(new String[0]));
     }
 }

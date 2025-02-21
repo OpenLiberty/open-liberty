@@ -35,3 +35,6 @@ tested.features: \
     fattest.simplicity;version=latest,\
     io.openliberty.org.apache.commons.logging;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

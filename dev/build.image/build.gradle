@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -374,7 +374,6 @@ def javaee8Features() { project.file("profiles/javaee8/features.xml").readLines(
 def jakartaee10Features() { project.file("profiles/jakartaee10/features.xml").readLines() }
 def jakartaee11Features() { project.file("profiles/jakartaee11/features.xml").readLines() }
 def microProfile4Features() { project.file("profiles/microProfile4/features.xml").readLines() }
-def microProfile6Features() { project.file("profiles/microProfile6/features.xml").readLines() }
 def microProfile7Features() { project.file("profiles/microProfile7/features.xml").readLines() }
 
 def getFeaturePath(feature) {
@@ -622,22 +621,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
             }
         }
     }
-    
-    //GA
-    task packageOpenLibertyMicroProfile6(type: PackageLibertyWithFeatures) {
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&microProfile6Features
-        packageServerConflict = "io.openliberty.microProfile,io.openliberty.mpConfig,io.openliberty.mpMetrics,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.config,io.openliberty.org.eclipse.microprofile.metrics,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion"
-        outputTo new File(packageDir, "microProfile6")
-        doLast {
-            copy {
-                from "$packageDir/microProfile6/wlp/templates/servers/microProfile6/server.xml"
-                into "$packageDir/microProfile6/wlp/templates/servers/defaultServer"
-            }
-        }
-    }
-    
+
     //GA
     task packageOpenLibertyMicroProfile7(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
@@ -880,26 +864,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn cleanupOpenLibertyMicroProfile4Package
 
-    // GA: Includes only features listed in profiles/microProfile6/features.xml
-    task zipOpenLibertyMicroProfile6(type: Zip) {
-        dependsOn packageOpenLibertyMicroProfile6
-        dependsOn genChecksums
-        archiveBaseName = 'openliberty-microProfile6'
-        from(packageOpenLibertyMicroProfile6)
-        destinationDirectory = distsDirectory
-        archiveVersion = releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.microprofile6.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-
-    task cleanupOpenLibertyMicroProfile6Package(type: Delete) {
-        dependsOn zipOpenLibertyMicroProfile6
-        delete(packageOpenLibertyMicroProfile6)
-    }
-    publish.dependsOn cleanupOpenLibertyMicroProfile6Package
-    
     // GA: Includes only features listed in profiles/microProfile7/features.xml
     task zipOpenLibertyMicroProfile7(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile7
@@ -953,7 +917,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn cleanupOpenLibertyJakartaee11Package
         dependsOn cleanupOpenLibertyWebProfile11Package
         dependsOn cleanupOpenLibertyMicroProfile4Package
-        dependsOn cleanupOpenLibertyMicroProfile6Package
         dependsOn cleanupOpenLibertyMicroProfile7Package
         dependsOn cleanupOpenLibertyBetaPackage
         doLast {

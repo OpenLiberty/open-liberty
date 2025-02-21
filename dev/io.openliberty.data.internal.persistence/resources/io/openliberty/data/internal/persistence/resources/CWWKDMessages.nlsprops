@@ -1016,3 +1016,37 @@ CWWKD1101.attr.subset.mismatch.explanation=When Java records are used to \
 CWWKD1101.attr.subset.mismatch.useraction=Rename the record components to \
  match valid entity attribute names, or use the Select annotation to explicitly \
  request entity attributes by their name.
+
+CWWKD1102.incompat.query.result=CWWKD1102E: The {0} method of the {1} repository \
+ has the {2} return type, but the Jakarta Persistence provider performed a \
+ query with results of the {3} type. Check whether the Jakarta Persistence \
+ provider allows querying for the types of entity attributes that the {0} method \
+ selects. Check for other causes of incompatibility if the Jakarta provider does \
+ allow querying for the types of entity attributes that the {0} method selects.
+CWWKD1102.incompat.query.result.explanation=Jakarta Persistence providers do not \
+ allow returning all types of entity attributes. If the Jakarta provider does \
+ return the type of entity attributes that the method selected, another cause \
+ of incompatibility exists. For example, the Jakarta Persistence provider might \
+ have a bug or the repository method signature might have an error.
+CWWKD1102.incompat.query.result.useraction=If the type of entity attributes that \
+ the method selects is not allowed, modify the query to retrieve the whole entity \
+ or a different set of entity attributes that the Jakarta Persistence provider \
+ allows. If the type of entity attributes that the method selects is allowed, \
+ check for other causes of incompatibility.
+
+CWWKD1103.incompat.query.result=CWWKD1103E: The {0} method of the {1} repository \
+ has the {2} return type, but the Jakarta Persistence provider performed a \
+ {3} query with results of the {4} type. Check whether the Jakarta Persistence \
+ provider allows querying for the types of entity attributes that the {0} method \
+ selects. Check for other causes of incompatibility if the Jakarta provider does \
+ allow querying for the types of entity attributes that the {0} method selects.
+CWWKD1103.incompat.query.result.explanation=Jakarta Persistence providers do not \
+ allow returning all types of entity attributes. If the Jakarta provider does \
+ return the type of entity attributes that the method selected, another cause \
+ of incompatibility exists. For example, the Jakarta Persistence provider might \
+ have a bug or the repository method signature might have an error.
+CWWKD1103.incompat.query.result.useraction=If the type of entity attributes that \
+ the method selects is not allowed, modify the query to retrieve the whole entity \
+ or a different set of entity attributes that the Jakarta Persistence provider \
+ allows. If the type of entity attributes that the method selects is allowed, \
+ check for other causes of incompatibility.

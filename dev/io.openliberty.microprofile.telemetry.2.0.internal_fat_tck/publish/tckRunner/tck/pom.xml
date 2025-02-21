@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2023, 2024 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2023, 2025 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which accompanies this distribution, 
     and is available at 
@@ -223,7 +223,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>11</source>
                     <target>11</target>
@@ -232,9 +232,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
+                <version>3.5.2</version>
                 <configuration>
                     <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/> <!-- Default forkNode has encoding issues on ZOS -->
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>

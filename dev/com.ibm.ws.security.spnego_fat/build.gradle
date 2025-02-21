@@ -38,6 +38,7 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.spnego.fat.common:SPNEGOTokenHelperFVT_EAR'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+
 autoFVT.doLast {
   
   /******************************************************************

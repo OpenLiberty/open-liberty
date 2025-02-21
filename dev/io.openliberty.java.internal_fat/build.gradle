@@ -19,6 +19,7 @@ configurations {
     app21
     app22
     app23
+    app24
  }
  
  dependencies {
@@ -29,6 +30,7 @@ configurations {
     app21 'io.openliberty:java-apps:21.0.0'
     app22 'io.openliberty:java-apps:22.1.0'
     app23 'io.openliberty:java-apps:23.1.0'
+    app24 'io.openliberty:java-apps:24.0.0'
  }
 
 task copyKernelService(type: Copy) {
@@ -91,6 +93,12 @@ task copyApp23(type: Copy) {
   rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_23.war'
 }
 
+task copyApp24(type: Copy) {
+  from configurations.app24
+  into new File(autoFvtDir, 'publish/servers/java24-server/apps/')
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_24.war'
+}
+
 addRequiredLibraries.dependsOn copyKernelService
 addRequiredLibraries.dependsOn copyApp17A
 addRequiredLibraries.dependsOn copyApp17B
@@ -101,3 +109,4 @@ addRequiredLibraries.dependsOn copyApp20
 addRequiredLibraries.dependsOn copyApp21
 addRequiredLibraries.dependsOn copyApp22
 addRequiredLibraries.dependsOn copyApp23
+addRequiredLibraries.dependsOn copyApp24

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -138,7 +138,7 @@ public class DatabaseContainerFactory {
                     db2.acceptLicense();
                     //Add startup timeout since DB2 tends to take longer than the default 3 minutes on build machines.
                     // TODO figure out if there is a way to create a 'fast-start' image that has the database already created.
-                    db2.withStartupTimeout(getContainerTimeout(5, 25));
+                    db2.withStartupTimeout(getContainerTimeout(5, 35));
 
                     break;
                 case Derby:

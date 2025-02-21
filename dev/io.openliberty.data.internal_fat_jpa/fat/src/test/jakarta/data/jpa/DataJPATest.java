@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,10 @@ public class DataJPATest extends FATServletClient {
                                    "CWWKD1054E.*findByIsControlTrueAndNumericValueBetween",
                                    "CWWKD1075E.*Apartment2",
                                    "CWWKD1075E.*Apartment3",
-                                   "CWWKD1091E.*countBySurgePriceGreaterThanEqual"
+                                   "CWWKD1091E.*countBySurgePriceGreaterThanEqual",
+                                   // work around to prevent bad behavior from EclipseLink (see #30575)
+                                   "CWWKD1103E.*findBankAccountsByFilingStatus"
+
                     };
 
     @ClassRule

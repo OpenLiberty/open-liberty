@@ -258,6 +258,7 @@ assemble.dependsOn JASPIWrappingServlet_WAR
 autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
 autoFVT.dependsOn ':io.openliberty.security.authorization.jacc.testprovider:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.jaspic.test:assemble'
+
 autoFVT.doLast {
 
   /*
@@ -411,4 +412,3 @@ autoFVT.doLast {
     }
   }
 }
-

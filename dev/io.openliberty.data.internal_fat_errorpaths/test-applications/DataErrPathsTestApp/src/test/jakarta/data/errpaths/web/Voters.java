@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,12 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     @Insert
     Voter[] addNothing();
 
+    @Save
+    void addOrUpdate(List<PollingLocation> list);
+
+    @Insert
+    void addPollingLocation(PollingLocation loc);
+
     /**
      * Invalid method. A method with a life cycle annotation must have exactly
      * 1 parameter, not multiple.
@@ -106,6 +112,11 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     List<Voter> changeBoth(Voter v1, Voter v2);
 
     /**
+     * This invalid method attempts to return a long count result as Page of Long.
+     */
+    Page<Long> countByBirthday(LocalDate birthday);
+
+    /**
      * Invalid method. A method with a life cycle annotation must have exactly
      * 1 parameter.
      */
@@ -140,12 +151,18 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     int discardSorted(@By("address") String mailingAddress, Sort<Voter> sort);
 
     /**
-     * This invalid method attempts to return a true/false exists results as int.
+     * This invalid method attempts to return a true/false exist result as int.
      */
     int existsByAddress(String homeAddress);
 
     /**
-     * This invalid method attempts to return a true/false exists results as a
+     * This invalid method attempts to return a true/false exists result as Page
+     * of Boolean.
+     */
+    Page<Boolean> existsByBirthday(LocalDate birthday, PageRequest pageReq);
+
+    /**
+     * This invalid method attempts to return a true/false exist result as a
      * Long value within a CompletableFuture. The CompletableFuture is fine, but
      * Long does not match the true/false result type.
      */
@@ -334,6 +351,10 @@ public interface Voters extends BasicRepository<Voter, Integer> {
                            String stateCode); // extra, unused parameter
 
     @Find
+    Page<Voter> selectAll(PageRequest req,
+                          Sort<?>... sorts);
+
+    @Find
     CursoredPage<Voter> selectByAddress(@By("address") String homeAddress,
                                         PageRequest pageReq,
                                         Sort<?>... sorts);
@@ -362,6 +383,22 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     CursoredPage<Voter> selectByName(@By("name") String name,
                                      PageRequest pageReq,
                                      Sort<Voter> sort);
+
+    /**
+     * Invalid method. A function that does not exist cannot be used within the
+     * sort criteria.
+     */
+    @Find
+    @OrderBy("last5DigitsOf(address)")
+    List<Voter> sortedByEndOfAddress();
+
+    /**
+     * Invalid method. The entity has no zipcode attribute upon which to sort.
+     */
+    @Find
+    @OrderBy("birthday")
+    @OrderBy("zipcode")
+    List<Voter> sortedByZipCode();
 
     /**
      * Invalid method. A method with a life cycle annotation must have exactly

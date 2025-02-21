@@ -129,7 +129,6 @@ assemble {
     
 }
 
-
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 
 autoFVT.doLast {

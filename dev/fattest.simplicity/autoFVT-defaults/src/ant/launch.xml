@@ -366,6 +366,8 @@
 		<!-- Load all env vars into env.* properties -->
 		<property environment="env" />
 		
+        <!-- Artifactory Registry Properties -->
+		
         <condition property="fat.test.artifactory.download.server"
                    value="${artifactory.download.server}"
                    else="${env.ARTIFACTORY_DOWNLOAD_SERVER}">
@@ -394,6 +396,26 @@
                    value="${artifactory.force.external.repo}"
                    else="${env.ARTIFACTORY_FORCE_EXTERNAL_REPO}">
           <isset property="artifactory.force.external.repo" />
+        </condition>
+		
+        <!-- Internal Registry Properties -->
+		
+        <condition property="fat.test.docker.registry.server"
+                   value="${docker_registry.server}"
+                   else="${env.DOCKER_REGISTRY_SERVER}">
+          <isset property="docker_registry.server" />
+        </condition>
+		
+        <condition property="fat.test.docker.registry.user"
+                   value="${docker_registry.user}"
+                   else="${env.DOCKER_REGISTRY_USER}">
+          <isset property="docker_registry.user" />
+        </condition>
+        	
+        <condition property="fat.test.docker.registry.password"
+                   value="${docker_registry.password}"
+                   else="${env.DOCKER_REGISTRY_PASSWORD}">
+          <isset property="docker_registry.password" />
         </condition>
 
 		<tstamp>

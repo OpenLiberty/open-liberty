@@ -13,6 +13,7 @@
 package com.ibm.ws.concurrent.cdi.fat;
 
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -56,8 +57,18 @@ public class ConcurrentCDITest extends FATServletClient {
                                               "concurrent.cdi.context.location.LocationContextProvider");
         ShrinkHelper.exportToServer(server, "lib", locationContextProviderJar);
 
-        WebArchive concurrentCDIWeb = ShrinkHelper.buildDefaultApp("concurrentCDIWeb", "concurrent.cdi.web");
-        ShrinkHelper.addDirectory(concurrentCDIWeb, "test-applications/concurrentCDIWeb/resources");
+        JavaArchive cdiExtensionJar = ShrinkWrap
+                        .create(JavaArchive.class, "cdi-extension.jar")
+                        .addPackage("concurrent.cdi.ext")
+                        .addAsServiceProvider(Extension.class.getName(),
+                                              "concurrent.cdi.ext.ConcurrentCDIExtension");
+
+        WebArchive concurrentCDIWeb = ShrinkHelper
+                        .buildDefaultApp("concurrentCDIWeb",
+                                         "concurrent.cdi.web")
+                        .addAsLibrary(cdiExtensionJar);
+        ShrinkHelper.addDirectory(concurrentCDIWeb,
+                                  "test-applications/concurrentCDIWeb/resources");
 
         JavaArchive concurrentCDIEJB = ShrinkHelper.buildJavaArchive("concurrentCDIEJB", "concurrent.cdi.ejb");
         ShrinkHelper.addDirectory(concurrentCDIEJB, "test-applications/concurrentCDIEJB/resources");
@@ -90,6 +101,16 @@ public class ConcurrentCDITest extends FATServletClient {
 
     @Test
     public void testEJBSelectContextServiceQualifiedFromAppDD() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testExtensionAddsAsynchronous() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInheritAsynchronous() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 

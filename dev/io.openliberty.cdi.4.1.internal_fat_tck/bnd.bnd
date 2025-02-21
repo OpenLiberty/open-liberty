@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+-sub: *.bnd
+
+src: \
+    fat/src,\
+    test-bundles/io.openliberty.cdi.tck.porting.package/src
+
+javac.source: 17
+javac.target: 17
+
+fat.project: true
+
+-buildpath: \
+	org.jboss.weld:weld-porting-package-tck,\
+	jakarta.enterprise:cdi-tck-api,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	io.openliberty.org.jboss.weld6;version=latest,\
+	io.openliberty.jakarta.cdi.4.1;version=latest,\
+	io.openliberty.jakarta.expressionLanguage.6.0;version=latest,\
+	io.openliberty.jakarta.servlet.6.1;version=latest,\
+	com.ibm.wsspi.org.osgi.core;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.appserver.spi.containerServices;version=latest,\
+	com.ibm.ws.kernel.service;version=latest

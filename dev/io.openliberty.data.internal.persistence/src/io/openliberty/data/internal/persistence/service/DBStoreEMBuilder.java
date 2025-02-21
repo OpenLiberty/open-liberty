@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,13 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.service;
 
+import static io.openliberty.data.internal.persistence.Util.EOLN;
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -83,7 +85,6 @@ import jakarta.persistence.Table;
  * It creates entity managers from a PersistenceServiceUnit from the persistence service.
  */
 public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerationParticipant {
-    static final String EOLN = String.format("%n");
     private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
     private static final Entry<String, String> ID_AND_VERSION_NOT_SPECIFIED = //
                     new SimpleImmutableEntry<>(null, null);
@@ -457,8 +458,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
     }
 
     @Override
+    @Trivial
     public EntityManager createEntityManager() {
-        return persistenceServiceUnit.createEntityManager();
+        EntityManager em = persistenceServiceUnit.createEntityManager();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "createEntityManager: " + em);
+        return em;
     }
 
     /**
@@ -679,6 +685,34 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
     @Trivial
     protected Class<?> getRecordClass(Class<?> generatedEntityClass) {
         return generatedToRecordClass.get(generatedEntityClass);
+    }
+
+    /**
+     * Write information about this instance to the introspection file for
+     * Jakarta Data.
+     *
+     * @param writer writes to the introspection file.
+     * @param indent indentation for lines.
+     */
+    @Override
+    @Trivial
+    public void introspect(PrintWriter writer, String indent) {
+        super.introspect(writer, indent);
+        writer.println(indent + "  databaseStore config.displayId: " +
+                       configDisplayId);
+        writer.println(indent + "  databaseStore id: " +
+                       databaseStoreId);
+        writer.println(indent + "  databaseStore DataSourceFactory.target: " +
+                       dataSourceFactoryFilter);
+        writer.println(indent + "  PersistenceServiceUnit: " +
+                       persistenceServiceUnit);
+
+        generatedToRecordClass.forEach((entityClass, recordClass) -> {
+            writer.println(indent + "  Record entity:");
+            writer.println(Util.toString(recordClass, indent + "    "));
+            writer.println(indent + "    converted to entity class:");
+            writer.println(Util.toString(entityClass, indent + "    "));
+        });
     }
 
     @Override

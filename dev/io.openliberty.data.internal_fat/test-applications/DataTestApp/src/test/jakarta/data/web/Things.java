@@ -63,7 +63,7 @@ public interface Things {
      * "Desc" within OrderByDescription would be treated as a keyword,
      * but @OrderBy can be used instead.
      */
-    @OrderBy("description")
+    @OrderBy("Description")
     Stream<Thing> findByThingIdGreaterThan(long exclusiveMin);
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ import io.openliberty.classloading.classpath.test.war1.ClassPathDefaultLoaderSer
 import io.openliberty.classloading.classpath.test.war2.ClassPathDefaultLoaderServletTest2;
 import io.openliberty.classloading.classpath.test.war3.ClassPathDefaultLoaderServletTest3;
 import io.openliberty.classloading.classpath.util.TestUtils;
+import io.openliberty.classloading.lib.path.test.app.LibPathTestServlet;
 import junit.framework.AssertionFailedError;
 
 @RunWith(Suite.class)
@@ -59,7 +60,8 @@ import junit.framework.AssertionFailedError;
     ClassPathDefaultLoaderTests.class,
     ClassPathEarLoaderTests.class,
     ClassPathDefaultLoaderLibraryTests.class,
-    ClassPathInvalidLoaderTests.class
+    ClassPathInvalidLoaderTests.class,
+    LibraryPathTest.class
 })
 public class FATSuite {
     static final String CLASSPATH_TEST_WAR_LOADER_SERVER = "classpathTestWarLoader";
@@ -68,12 +70,14 @@ public class FATSuite {
     static final String CLASSPATH_TEST_INVALID_LOADER_SERVER = "classpathTestInvalidLoader";
     static final String CLASSPATH_TEST_EAR_LOADER_SERVER = "classpathTestEarLoader";
     static final String PRIVATE_LIBRARY_TEST_SERVER = "privateLibraryTest";
+    static final String LIB_FILESET_TEST_SERVER = "libPathTest";
 
     // ##### ARCHIVE NAMES #####
     // WAR archive names
     public static final String TEST_CLASS_PATH1_APP = "testClassPath1";
     public static final String TEST_CLASS_PATH2_APP = "testClassPath2";
     public static final String TEST_CLASS_PATH3_APP = "testClassPath3";
+    public static final String TEST_LIB_FILESET_APP = "testLibFileSet";
 
     // EJB archive names
     public static final String TEST_EJB1 = "testEjb1";
@@ -147,6 +151,7 @@ public class FATSuite {
     static final WebArchive TEST_CLASS_PATH1_WAR;
     static final WebArchive TEST_CLASS_PATH2_WAR;
     static final WebArchive TEST_CLASS_PATH3_WAR;
+    static final WebArchive TEST_LIB_FILESET_WAR;
 
     // EJB archives
     static final JavaArchive TEST_EJB1_JAR;
@@ -220,6 +225,10 @@ public class FATSuite {
                                                                        TestUtils.class.getPackage().getName())
                             .addAsLibrary(TEST_LIB5_JAR)
                             .add(TEST_LIB11_JAR, "WEB-INF/", ZipExporter.class);
+
+            TEST_LIB_FILESET_WAR = ShrinkHelper.buildDefaultApp(TEST_LIB_FILESET_APP + ".war",
+                                                                        LibPathTestServlet.class.getPackage().getName(),
+                                                                        TestUtils.class.getPackage().getName());
 
             TEST_RESOURCE_ADAPTOR_JAR = ShrinkHelper.buildJavaArchive(TEST_RESOURCE_ADAPTOR + ".jar",
                                                                       TestResourceAdapter.class.getPackage().getName()).

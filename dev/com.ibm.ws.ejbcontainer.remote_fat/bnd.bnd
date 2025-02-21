@@ -81,3 +81,6 @@ tested.features: \
 	com.ibm.ws.ejbcontainer.fat_tools; version=latest, \
 	com.ibm.tx.jta;version=latest, \
 	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

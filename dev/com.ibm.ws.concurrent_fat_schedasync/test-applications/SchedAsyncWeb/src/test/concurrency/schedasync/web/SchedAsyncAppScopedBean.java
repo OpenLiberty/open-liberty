@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,20 +12,153 @@
  *******************************************************************************/
 package test.concurrency.schedasync.web;
 
+import static org.junit.Assert.fail;
+
 import java.time.Month;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.DataFormatException;
 
 import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.Schedule;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
+import jakarta.inject.Inject;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 @ApplicationScoped
 public class SchedAsyncAppScopedBean {
+    /**
+     * A countdown for executions of autoSchedule.
+     */
+    private final CountDownLatch autoScheduleCountdown = new CountDownLatch(3);
+
+    /**
+     * A future for the future that represents completion of all executions
+     * of the autoSchedule method.
+     */
+    private final CompletableFuture<CompletableFuture<?>> autoScheduleFutureFuture = //
+                    new CompletableFuture<>();
+
+    /**
+     * A countdown for executions of delayedSchedule.
+     */
+    private final CountDownLatch delayedScheduleCountdown = new CountDownLatch(3);
+
+    /**
+     * A future for the future that represents completion of all executions
+     * of the delayedSchedule method.
+     */
+    private final CompletableFuture<CompletableFuture<?>> delayedScheduleFutureFuture = //
+                    new CompletableFuture<>();
+
+    @Inject
+    ManagedScheduledExecutorService executor;
+
+    /**
+     * Runs at startup to invoke a scheduled asynchronous method after a delay.
+     *
+     * @param event startup event.
+     */
+    public void afterDelay(@Observes Startup event) {
+        executor.schedule(this::delayedSchedule, 2, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Starts automatically and runs every 8 seconds until autoScheduleCountdown
+     * reaches 0.
+     *
+     * CDI invokes this method on startup. Do not invoke it elsewhere.
+     *
+     * @param event startup event.
+     */
+    @Asynchronous(executor = "java:module/concurrent/max-2-executor",
+                  runAt = @Schedule(cron = "0/8 * * * * *"))
+    public void autoSchedule(@Observes Startup event) {
+        autoScheduleFutureFuture.complete(Asynchronous.Result.getFuture());
+
+        try {
+            InitialContext.doLookup("java:module/concurrent/max-2-executor");
+        } catch (NamingException x) {
+            throw new CompletionException(x);
+        }
+
+        autoScheduleCountdown.countDown();
+
+        if (autoScheduleCountdown.getCount() == 0L)
+            Asynchronous.Result.complete(null);
+    }
+
+    /**
+     * Run every 10 seconds on seconds that have a remainder of 3 when divided by 10
+     * until delayedScheduleCountdown reaches 0.
+     *
+     * The afterDelay method schedules a task to invoke this method.
+     * Do not invoke it elsewhere.
+     */
+    @Asynchronous(executor = "java:module/concurrent/max-2-executor",
+                  runAt = @Schedule(cron = "3/10 * * * * *"))
+    public void delayedSchedule() {
+        delayedScheduleFutureFuture.complete(Asynchronous.Result.getFuture());
+
+        try {
+            InitialContext.doLookup("java:module/concurrent/max-2-executor");
+        } catch (NamingException x) {
+            throw new CompletionException(x);
+        }
+
+        delayedScheduleCountdown.countDown();
+
+        if (delayedScheduleCountdown.getCount() == 0L)
+            Asynchronous.Result.complete(null);
+    }
+
+    /**
+     * Bean method to determine if all executions of the autoSchedule method
+     * completed successfully.
+     *
+     * @param timeout maximum amount of time to wait
+     * @param unit    time unit
+     * @throws ExecutionException   if an execution of the autoSchedule method fails
+     * @throws InterruptedException if interrupted
+     * @throws TimeoutException     if it times out while waiting
+     */
+    public void awaitAutoScheduleCompletion(long timeout, TimeUnit unit) //
+                    throws ExecutionException, InterruptedException, TimeoutException {
+        CompletableFuture<?> future = autoScheduleFutureFuture.get(timeout, unit);
+        if (future == null)
+            fail("The first execution of the autoSchedule method did not occur.");
+        future.get(timeout, unit);
+    }
+
+    /**
+     * Bean method to determine if all executions of the delayedSchedule method
+     * completed successfully.
+     *
+     * @param timeout maximum amount of time to wait
+     * @param unit    time unit
+     * @throws ExecutionException   if an execution of the delayedSchedule method fails
+     * @throws InterruptedException if interrupted
+     * @throws TimeoutException     if it times out while waiting
+     */
+    public void awaitDelayedScheduleCompletion(long timeout, TimeUnit unit) //
+                    throws ExecutionException, InterruptedException, TimeoutException {
+        CompletableFuture<?> future = delayedScheduleFutureFuture.get(timeout, unit);
+        if (future == null)
+            fail("The first execution of the delayedSchedule method did not occur.");
+        future.get(timeout, unit);
+    }
 
     /**
      * Runs every 5 seconds.
@@ -72,6 +205,79 @@ public class SchedAsyncAppScopedBean {
             Asynchronous.Result.complete(null);
 
         System.out.println("< everyFourSecondsVirtual executed on " + Thread.currentThread());
+    }
+
+    /**
+     * Run every 7 seconds on seconds that have a remainder of 4 when divided by 7:
+     * 4 11 18 25 32 39 46 53
+     * Complete the future exceptionally upon the countdown reaching 0.
+     *
+     * @param countdown executions remaining
+     */
+    @Asynchronous(executor = "java:module/concurrent/max-2-executor",
+                  runAt = @Schedule(cron = "4/7 * * * * *"))
+    CompletableFuture<String> everySevenSecondsUntilExceptionalCompletion(AtomicInteger countdown) {
+        System.out.println("> everySevenSecondsUntilExceptionalCompletion " + countdown);
+
+        if (countdown.decrementAndGet() == 0) {
+            Exception x = new DataFormatException("Cannot find anything else to do.");
+            Asynchronous.Result.getFuture().completeExceptionally(x);
+        }
+
+        System.out.println("< everySevenSecondsUntilExceptionalCompletion executed on " +
+                           Thread.currentThread());
+        return null;
+    }
+
+    /**
+     * Run every 7 seconds on seconds that have a remainder of 6 when divided by 7:
+     * 6 13 27 34 41 48 55
+     * Raise an exception upon the countdown reaching 0.
+     *
+     * @param countdown executions remaining
+     */
+    @Asynchronous(executor = "java:module/concurrent/max-2-executor",
+                  runAt = @Schedule(cron = "6/7 * * * * *"))
+    CompletableFuture<String> everySevenSecondsUntilThrowsError(AtomicInteger countdown) {
+        System.out.println("> everySevenSecondsUntilThrowsError " + countdown);
+
+        if (countdown.decrementAndGet() == 0) {
+            Error e = new Error("Countdown reached 0, so this won't run again.");
+            System.out.println("< everySevenSecondsUntilThrowsError intentionally" +
+                               " raised error on " + Thread.currentThread() + ": " +
+                               e);
+            throw e;
+        } else {
+            System.out.println("< everySevenSecondsUntilThrowsError executed on " +
+                               Thread.currentThread());
+            return null;
+        }
+    }
+
+    /**
+     * Run every 7 seconds on seconds that are divisible by 7:
+     * 0 7 14 28 35 42 49 56
+     * Raise an exception upon the countdown reaching 0.
+     *
+     * @param countdown executions remaining
+     */
+    @Asynchronous(executor = "java:module/concurrent/max-2-executor",
+                  runAt = @Schedule(cron = "0/7 * * * * *"))
+    CompletableFuture<String> everySevenSecondsUntilThrowsException(AtomicInteger countdown) {
+        System.out.println("> everySevenSecondsUntilThrowsException " + countdown);
+
+        if (countdown.decrementAndGet() == 0) {
+            ArrayIndexOutOfBoundsException x;
+            x = new ArrayIndexOutOfBoundsException("Countdown has reached 0.");
+            System.out.println("< everySevenSecondsUntilThrowsException intentionally" +
+                               " raised exception on " + Thread.currentThread() + ": " +
+                               x);
+            throw x;
+        } else {
+            System.out.println("< everySevenSecondsUntilThrowsException executed on " +
+                               Thread.currentThread());
+            return null;
+        }
     }
 
     /**

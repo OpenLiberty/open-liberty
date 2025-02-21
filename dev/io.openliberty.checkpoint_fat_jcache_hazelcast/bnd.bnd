@@ -44,3 +44,5 @@ tested.features: appsecurity-4.0, expressionlanguage-4.0, servlet-5.0, cdi-3.0, 
 	com.ibm.ws.kernel.service;version=latest,\
 	com.hazelcast:hazelcast;version=5.1.3
     
+# Copy in FIPS keys
+ltpa.fips.enabled: true

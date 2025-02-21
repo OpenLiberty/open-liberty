@@ -22,6 +22,7 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 
 public class TelemetryActions {
     public static final String MP14_MPTEL11_ID = MicroProfileActions.MP14_ID + "_MPTEL11";
@@ -194,4 +195,71 @@ public class TelemetryActions {
                       MicroProfileActions.MP70_EE10);
     }
 
+    public static boolean mpTelemetry20IsActive(){
+        if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP41_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP50_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP50_MPTEL20_JAVA8_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP61_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+            return true;
+       }
+       return false;
+    }
+
+    public static boolean mpTelemetry20BelowEE10IsActive(){
+        if (RepeatTestFilter.isRepeatActionActive(MP50_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP50_MPTEL20_JAVA8_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP61_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+            return true;
+       }
+       return false;
+    }
+
+    public static boolean EE7orEE8IsActive(){
+        if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP41_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP14_MPTEL11_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP41_MPTEL11_ID)) {
+            return true;
+       }
+       return false;
+    }
+
+    public static boolean EE7orEE8Mp20IsActive(){
+        if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP41_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP14_MPTEL11_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP41_MPTEL11_ID)) {
+            return true;
+       }
+       return false;
+    }
+
+    public static boolean mpTelemetry20EE7orEE8IsActive(){
+        if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP41_MPTEL20_ID)) {
+            return true;
+       }
+       return false;
+    }
+
+    public static boolean mpTelemetryEE7IsActive(){
+        if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL20_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP14_MPTEL11_ID)) {
+            return true;
+       }
+       return false;
+    }
+
+    public static boolean mpTelemetry11EE7orEE8IsActive(){
+        if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL11_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MP41_MPTEL11_ID)) {
+            return true;
+       }
+       return false;
+    }
 }

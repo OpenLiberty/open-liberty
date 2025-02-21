@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,6 @@ package io.openliberty.concurrent.internal.cdi;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,11 +73,11 @@ public class ConcurrencyExtension implements Extension {
     private ConcurrencyExtensionMetadata extSvc;
 
     /**
-     * List of the qualifier sets for each ManagedThreadFactory bean with qualifiers that is
-     * created during afterBeanDiscovery. Instances of these beans are obtained during
-     * afterDeploymentValidation to force context capture to occur.
+     * Indicates if we were able to create a default ManagedThreadFactory bean.
+     * If so, an instance of the bean is obtained during afterDeploymentValidation
+     * to force context capture to occur.
      */
-    private List<Set<Annotation>> qualifierSetsPerMTF;
+    private boolean producedDefaultMTF;
 
     /**
      * Register interceptors before bean discovery.
@@ -128,8 +126,7 @@ public class ConcurrencyExtension implements Extension {
 
         if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
             event.addBean(new ManagedThreadFactoryBean(cmd, extSvc, DEFAULT_QUALIFIER_SET));
-            qualifierSetsPerMTF = new ArrayList<>();
-            qualifierSetsPerMTF.add(Collections.emptySet());
+            producedDefaultMTF = true;
         }
 
         // Look for beans from the module and the application.
@@ -230,23 +227,22 @@ public class ConcurrencyExtension implements Extension {
     }
 
     /**
-     * Force context to be initialized for each ManagedThreadFactory that we registered a bean for.
+     * Force context to be initialized for the default ManagedThreadFactory instance
+     * if we were able to produce one.
      *
      * @param event
      * @param beanManager
      */
-    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
-        // TODO remove this once we handle the default instances similar to the qualified instances
-        if (qualifierSetsPerMTF != null) {
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event,
+                                          BeanManager beanManager) {
+        if (producedDefaultMTF) {
             CDI<Object> cdi = CDI.current();
+            Instance<ManagedThreadFactory> instance = //
+                            cdi.select(ManagedThreadFactory.class, new Annotation[0]);
+            ManagedThreadFactory mtf = instance.get();
 
-            for (Set<Annotation> qualifierSet : qualifierSetsPerMTF) {
-                Instance<ManagedThreadFactory> instance = cdi.select(ManagedThreadFactory.class, qualifierSet.toArray(new Annotation[qualifierSet.size()]));
-                ManagedThreadFactory mtf = instance.get();
-                // Force instantiation of the bean in order to cause context to be captured
-                mtf.toString();
-            }
-            qualifierSetsPerMTF = null;
+            // Force instantiation of the bean in order to cause context to be captured
+            mtf.toString();
         }
     }
 

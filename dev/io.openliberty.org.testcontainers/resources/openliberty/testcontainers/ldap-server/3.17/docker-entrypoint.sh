@@ -39,7 +39,7 @@ sed -i~ -e "s/LDAP_HOSTNAME_NOT_SET_IN_LDAP_CONF/${EXTERNAL_HOSTNAME}/" /etc/ope
 echo "Importing slapd configuration..."
 slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/slapd.ldif
  
-#todo: remove if able
+#TODO: remove if able
 echo "Importing kerberos schema"
 slapadd -n 0 -l /etc/kerberos.openldap.ldif
  

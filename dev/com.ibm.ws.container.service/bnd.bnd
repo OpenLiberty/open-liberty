@@ -71,7 +71,8 @@ Private-Package: \
 	com.ibm.ws.container.service.annocache.internal.CDIContainerAnnotationsAdapterImpl, \
 	com.ibm.ws.container.service.annocache.internal.ContainerAnnotationsAdapterImpl, \
 	com.ibm.ws.container.service.annocache.internal.ModuleAnnotationsAdapterImpl, \
-	com.ibm.ws.container.service.annocache.internal.WebAnnotationsAdapterImpl
+	com.ibm.ws.container.service.annocache.internal.WebAnnotationsAdapterImpl, \
+	com.ibm.ws.container.service.metadata.internal.AnnotationCacheReleaseService
 
 Service-Component: \
    com.ibm.ws.container.service.annotations.ContainerAnnotationsAdapter; \

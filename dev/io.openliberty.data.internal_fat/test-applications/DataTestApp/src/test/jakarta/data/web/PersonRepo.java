@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
-import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 
@@ -39,12 +38,6 @@ public interface PersonRepo {
     @Query("SELECT firstName WHERE lastName=:lastName")
     @OrderBy("firstName")
     List<String> findFirstNames(@Param("lastName") String surname);
-
-    @Insert
-    void insert(Person p);
-
-    @Insert
-    void insertAll(Person... p);
 
     @Insert
     void insertAll(Iterable<Person> p);
@@ -80,10 +73,4 @@ public interface PersonRepo {
     @Transactional(TxType.NOT_SUPPORTED)
     boolean setFirstNameWithCurrentTransactionSuspended(Long id,
                                                         String newFirstName);
-
-    @Update
-    boolean updateOne(Person person);
-
-    @Update
-    long updateSome(Person... people);
 }

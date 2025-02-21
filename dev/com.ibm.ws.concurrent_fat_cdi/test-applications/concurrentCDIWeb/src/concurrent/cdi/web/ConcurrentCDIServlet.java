@@ -17,6 +17,7 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -232,6 +233,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
     @WithoutLocationContext
     ContextService withoutLocationContext;
 
+    @Inject
+    TestBean testBean;
+
     @Resource
     UserTransaction tx;
 
@@ -346,6 +350,38 @@ public class ConcurrentCDIServlet extends HttpServlet {
             }
             return null;
         });
+    }
+
+    /**
+     * Test that a CDI extension can add Asynchronous to a bean method, and
+     * it will be recognized as an asynchronous method that is made to run on
+     * another thread.
+     */
+    public void testExtensionAddsAsynchronous() throws Exception {
+        // Use separate completable future to avoid causing the asynchronous
+        // method to complete inline on the requester thread.
+        CompletableFuture<Thread> cf = new CompletableFuture<>();
+
+        testBean.asyncByExtension().thenAccept(cf::complete);
+
+        Thread thread = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotSame(Thread.currentThread(), thread);
+    }
+
+    /**
+     * Test that an application-defined interceptor can be annotated with
+     * Asynchronous, causing the interceptor binding annotation to make
+     * methods into asynchronous methods.
+     */
+    public void testInheritAsynchronous() throws Exception {
+        // Use separate completable future to avoid causing the asynchronous
+        // method to complete inline on the requester thread.
+        CompletableFuture<Thread> cf = new CompletableFuture<>();
+
+        testBean.inheritAsync().thenAccept(cf::complete);
+
+        Thread thread = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotSame(Thread.currentThread(), thread);
     }
 
     /**

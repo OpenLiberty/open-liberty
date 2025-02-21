@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -100,7 +100,9 @@ public class TestUtils {
     public static void assertLoadClass(Class<?> fromClass, String className, ClassLoader expectedLoader) {
         try {
             Class<?> loaded = Class.forName(className, false, fromClass.getClassLoader());
-            assertEquals("Wrong classloader for class: " + loaded, expectedLoader, loaded.getClassLoader());
+            if (expectedLoader != null) {
+                assertEquals("Wrong classloader for class: " + loaded, expectedLoader, loaded.getClassLoader());
+            }
         } catch (ClassNotFoundException e) {
             throw createAssertionFailedError("Error Loading class: " + className, e);
         }
@@ -172,6 +174,9 @@ public class TestUtils {
                 case success_fromWARLoader:
                     assertLoadClass(fromClass, className, fromClass.getClassLoader());
                     break;
+                case success_fromLIBLoader:
+                    // TODO get the library loader?
+                    assertLoadClassNotLoadedWithLoaders(fromClass, className, fromClass.getClassLoader());
                 default:
                     break;
             }
@@ -181,6 +186,7 @@ public class TestUtils {
     public static enum TEST_LOAD_RESULT {
         success_fromEARLoader,
         success_fromWARLoader,
+        success_fromLIBLoader,
         failure
     }
 }

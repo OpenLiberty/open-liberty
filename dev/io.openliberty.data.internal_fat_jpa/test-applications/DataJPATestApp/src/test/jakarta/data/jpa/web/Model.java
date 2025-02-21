@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Version;
 
 /**
  * This entity has a ManyToOne relationship with Manufacturer.
@@ -34,6 +35,12 @@ public class Model {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "updated_at")
+    @Version
+    // TODO enable once EclipseLink bug #28813 is fixed
+    //Instant updatedAt;
+    Long updatedAt;
 
     @Column(name = "intro_year")
     private Integer yearIntroduced;

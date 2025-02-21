@@ -1,0 +1,40 @@
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+configurations {
+    kafkaClient {
+      transitive = false
+    }
+    requiredLibs.extendsFrom kafkaClient {
+      transitive = false
+    }
+}
+
+dependencies {
+    kafkaClient 'org.apache.kafka:kafka-clients:3.5.1'
+    kafkaClient 'org.lz4:lz4-java:1.8.0'
+    kafkaClient 'com.github.luben:zstd-jni:1.5.5-1'
+    kafkaClient 'org.xerial.snappy:snappy-java:1.1.10.1'
+    kafkaClient project(':com.ibm.ws.org.slf4j.api')
+    kafkaClient project(':com.ibm.ws.org.slf4j.jdk14')
+    requiredLibs 'org.testng:testng:7.5.1'
+    requiredLibs 'org.reactivestreams:reactive-streams-tck:1.0.3'
+    requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
+    requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka')
+    requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter')
+    requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl')
+    requiredLibs project(':com.ibm.ws.io.smallrye.reactive.streams-operators')
+    requiredLibs project(':com.ibm.ws.crypto.passwordutil');
+    requiredLibs project(':com.ibm.ws.kernel.service');
+    requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'reactivestreams10');
+    requiredLibs project(path: ':io.openliberty.microprofile.reactive.messaging.internal_fat.common', configuration: 'original');
+}
+
+task addKafkaClientLibs (type: Copy) {
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/libs')
+    from configurations.kafkaClient
+    shouldRunAfter autoFVT
+}
+
+zipAutoFVT.dependsOn addKafkaClientLibs
+addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn addJakartaTransformer

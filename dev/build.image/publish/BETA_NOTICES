@@ -1,13 +1,15 @@
 Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
-Copyright 2022-2025 IBM Corporation and others
+Copyright 1999-2025 IBM Corporation and others
 This product includes software developed at
-The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
+The Open Liberty Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 TABLE OF CONTENTS
 
 THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
 
 Apache License, Version 2.0 (APACHE V2)
+BSD Zero Clause license (BSD)
 BSD 2 Clause license (BSD-2-CLAUSE)
 BSD 3 Clause license (BSD-3-CLAUSE)
 Bouncy Castle License (Bouncy Castle)
@@ -16,6 +18,7 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1 (CDDL V1.1)
 COMMON PUBLIC LICENSE (CPL)
 ECLIPSE PUBLIC LICENSE, VERSION 1 (EPL)
 ECLIPSE PUBLIC LICENSE, VERSION 2 (EPL V2)
+GNU LESSER GENERAL PUBLIC LICENSE Version 2.1
 ISC License (ISC)
 MIT license (MIT)
 Python License, Version 2 (PYTHON LICENSE V2)
@@ -26,35 +29,35 @@ Apache License, Version 2.0
 The Program includes some or all of the following that IBM obtained
 under the Apache License, Version 2.0:
 
-@carbon/telemetry [telemetry-0.1.0.tgz], @scarf/scarf [scarf-1.3.0.tgz],
-@swagger-api/apidom-ast [apidom-ast-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-core [apidom-core-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-error [apidom-error-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-json-pointer [apidom-json-pointer-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft-4-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft-6-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft-7-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi-3-0-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi-3-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-workflows-1 [apidom-ns-workflows-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json-3-0-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json-3-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml-3-0-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml-3-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-workflows-json-1 [apidom-parser-adapter-workflows-json-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-workflows-yaml-1 [apidom-parser-adapter-workflows-yaml-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml-1-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-reference [apidom-reference-1.0.0-alpha.10.tgz],
+@carbon/telemetry [telemetry-0.1.0.tgz],
+@swagger-api/apidom-ast [apidom-ast-1.0.0-beta.3.tgz],
+@swagger-api/apidom-core [apidom-core-1.0.0-beta.3.tgz],
+@swagger-api/apidom-error [apidom-error-1.0.0-beta.3.tgz],
+@swagger-api/apidom-json-pointer [apidom-json-pointer-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft-4-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft-6-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft-7-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi-3-0-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi-3-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-workflows-1 [apidom-ns-workflows-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json-3-0-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json-3-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml-3-0-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml-3-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-workflows-json-1 [apidom-parser-adapter-workflows-json-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-workflows-yaml-1 [apidom-parser-adapter-workflows-yaml-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml-1-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-reference [apidom-reference-1.0.0-beta.3.tgz],
 Apache Ant Core [ant], Apache Ant Launcher [ant-launcher],
 Apache Aries JMX API [org.apache.aries.jmx.api],
 Apache Aries JMX Core [org.apache.aries.jmx.core],
@@ -108,9 +111,13 @@ Apache James :: Mime4j :: Storage [apache-mime4j-storage],
 Apache Kafka [kafka-clients],
 Apache MyFaces Buildtools Maven2 Builder Annotations [myfaces-builder-annotations],
 Apache MyFaces Core 4.0 - API [myfaces-api],
+Apache MyFaces Core 4.0 - Impl [myfaces-impl],
 Apache MyFaces Core 4.1 - API [myfaces-api],
+Apache MyFaces Core 4.1 - Impl [myfaces-impl],
 Apache MyFaces JSF-2.3 Core API [myfaces-api],
-Apache MyFaces JSF-3.0 Core API [myfaces-api], Apache Neethi [neethi],
+Apache MyFaces JSF-2.3 Core Impl [myfaces-impl],
+Apache MyFaces JSF-3.0 Core API [myfaces-api],
+Apache MyFaces JSF-3.0 Core Impl [myfaces-impl], Apache Neethi [neethi],
 Apache Velocity [velocity], Apache Velocity - Engine [velocity-engine-core],
 Apache WSS4J DOM WS-Security [wss4j-ws-security-dom],
 Apache WSS4J Streaming WS-Security [wss4j-ws-security-stax],
@@ -336,10 +343,10 @@ Woodstox [woodstox-core-asl], Woodstox [woodstox-core],
 XML Commons Resolver Component [xml-resolver], XmlSchema Core [xmlschema-core],
 Zipkin Core Library [zipkin], Zipkin Reporter: Core [zipkin-reporter],
 Zipkin Sender: OkHttp 3 [zipkin-sender-okhttp3], acme4j Client [acme4j-client],
-acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asm-util,
-asyncutil, carbon-components [carbon-components-10.42.0-rc.0.min.js],
+acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asyncutil,
+carbon-components [carbon-components-10.42.0-rc.0.min.js],
 carbon-components [carbon-components-10.58.3.tgz],
-classfilewriter [jboss-classfilewriter], detect-libc [detect-libc-2.0.3.tgz],
+classfilewriter [jboss-classfilewriter], dompurify [dompurify-3.2.3.tgz],
 error-prone annotations [error_prone_annotations], fastinfoset [FastInfoset],
 geronimo-annotation_1.1_spec, geronimo-ejb_3.1_spec-alt,
 geronimo-interceptor_1.1_spec, geronimo-validation, guice,
@@ -359,7 +366,6 @@ okio [okio-jvm], okio,
 openapi-path-templating [openapi-path-templating-1.6.0.tgz],
 openapi-server-url-templating [openapi-server-url-templating-1.1.0.tgz],
 org.apache.aries.blueprint, org.apache.aries.jndi.core, org.apache.bval.bundle,
-org.osgi.core,
 org.osgi:org.osgi.annotation.versioning [org.osgi.annotation.versioning],
 org.osgi:org.osgi.namespace.extender [org.osgi.namespace.extender],
 org.osgi:org.osgi.namespace.service [org.osgi.namespace.service],
@@ -378,10 +384,10 @@ org.osgi:osgi.annotation [osgi.annotation], org.osgi:osgi.core [osgi.core],
 perfmark:perfmark-api [perfmark-api], proto-google-common-protos, resolver,
 short-unique-id [short-unique-id-5.2.0.tgz], smallrye-reactive-converter-api,
 smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
-snappy-java, swagger-client [swagger-client-3.30.1.tgz],
-swagger-ui [swagger-ui-5.18.1.tgz], tomcat-el-api, tomcat-jasper-el,
-ts-toolbelt [ts-toolbelt-9.6.0.tgz], tunnel-agent [tunnel-agent-0.6.0.tgz],
-vertx-codegen
+snappy-java, swagger-client [swagger-client-3.32.2.tgz],
+swagger-ui [swagger-ui-5.18.2.tgz], tomcat-el-api, tomcat-jasper-el,
+ts-toolbelt [ts-toolbelt-9.6.0.tgz], vertx-codegen, yoko-core, yoko-osgi,
+yoko-rmi-impl, yoko-rmi-spec, yoko-spec-corba, yoko-util
 
 
 Apache License
@@ -564,6 +570,27 @@ END OF TERMS AND CONDITIONS
 END OF Apache License, Version 2.0 NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BSD Zero Clause license
+
+The Program includes some or all of the following that IBM obtained
+under the BSD Zero Clause license:
+
+tslib [tslib-2.8.1.tgz] (Copyright Microsoft Corporation)
+
+Permission to use, copy, modify, and/or distribute this software for any 
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES 
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR 
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES 
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN 
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF 
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+END OF BSD Zero Clause license NOTICES AND INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 BSD 2 Clause license
 
 The Program includes some or all of the following that IBM obtained
@@ -574,7 +601,6 @@ Stax2 API [stax2-api] (Copyright 2008 FasterXML LLC <info@fasterxml.com>)
 Stax2 API [stax2-api](Copyright Not Found)
 apg-lite [apg-lite-1.0.4.tgz] (Copyright 2023 Lowell D. Thomas<br>)
 crac(Copyright Not Found)
-rc [rc-1.2.8.tgz] (Copyright 2011 Dominic Tarr) (Copyright 2013 Dominic Tarr)
 zstd-jni(Copyright Not Found)
 
 Redistribution and use in source and binary forms, with or without
@@ -618,6 +644,7 @@ Codemodel Core [codemodel] (Copyright 2010-2023 Oracle and/or its affiliates) (C
 DTD Parser [dtd-parser] (Copyright 1998-2018 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017-2018 Oracle and/or its affiliates)
 DTD Parser [dtd-parser] (Copyright 1998-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates)
 DTD Parser [dtd-parser] (Copyright 1998-2022 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates)
+EclipseLink Core [org.eclipse.persistence.core] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2019-2024 Oracle and/or its affiliates) (Copyright Oracle and/or its affiliates) (Eclipse.org - EclipseLink Project)
 Extended StAX API [stax-ex] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates)
 Extended StAX API [stax-ex] (Copyright 1997-2021 Oracle and) (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
 Extended StAX API [stax-ex] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
@@ -650,6 +677,7 @@ Jakarta Activation [jakarta.activation] (Copyright 1997-2020 Oracle and/or its a
 Jakarta Activation [jakarta.activation] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2020 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates)
 Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2022 Oracle and/or its affiliates)
+Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2024 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta Persistence [jakarta.persistence] (Copyright 2007-2018 Oracle and/or its affiliates) (Eclipse.org - EclipseLink Project)
 Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2021 Oracle and) (Copyright 2011-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
@@ -699,6 +727,8 @@ XSOM [xsom] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 O
 XSOM [xsom] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2022 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+asm (Copyright 2000-2011 INRIA) (Copyright 2011-2012 Bull S.A.S) (OW2)
+asm-util (Copyright 2000-2011 INRIA) (Copyright 2011-2012 Bull S.A.S) (OW2)
 dojo [dojo-1.17.3.tgz] (Copyright 2003-2004 Lawrence E. Rosen) (Copyright 2005-2018 JS Foundation) (Copyright 2005-2018 The JS Foundation)
 highlight.js [highlight.js-10.7.3.tgz] (Copyright 2006 Ivan Sagalaev)
 ieee754 [ieee754-1.2.1.tgz] (Copyright 2008 Fair Oaks Labs, Inc)
@@ -752,7 +782,11 @@ Bouncy Castle License
 The Program includes some or all of the following that IBM obtained
 under the Bouncy Castle License:
 
-Bouncy Castle OpenPGP API [bcpg-jdk18on], Bouncy Castle Provider [bcprov-jdk15on]
+Bouncy Castle ASN.1 Extension and Utility APIs [bcutil-jdk18on],
+Bouncy Castle OpenPGP API [bcpg-jdk18on],
+Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk15on],
+Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk18on],
+Bouncy Castle Provider [bcprov-jdk15on], Bouncy Castle Provider [bcprov-jdk18on]
 
 
 Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc. 
@@ -791,6 +825,7 @@ el (https://github.com/javaee/uel-ri)
 jaxrpc (https://github.com/javaee/jax-rpc-ri)
 jaxws-api (https://github.com/javaee/jax-ws-spec)
 jcdi (https://repo1.maven.org/maven2/javax/enterprise/cdi-api/1.0/cdi-api-1.0-sources.jar)
+jboss-json-api_1.0_spec (github.com/jboss/jboss-json-api_spec)
 jstl (https://github.com/javaee/jstl-api)
 persistence (https://github.com/javaee/jpa-spec)
 prereq.wsdl4j (https://mvnrepository.com/artifact/wsdl4j/wsdl4j/1.0)
@@ -818,6 +853,7 @@ JMS API [javax.jms-api] http://java.net/projects/jms-spec/pages/Home
 JSR 353 (JSON Processing) API [javax.json-api] http://www.oracle.com
 JSR 353 (JSON Processing) Default Provider [javax.json] http://www.oracle.com
 JSR 374 (JSON Processing) API [javax.json-api] http://www.oracle.com
+JSR-181 Maintenance Release 1 [jsr181-api] http://jcp.org/en/jsr/summary?id=181
 Java Architecture for XML Binding [jaxb-api] http://www.oracle.com/
 Java Authentication Service Provider Interface for Containers API 1.1 [javax.security.auth.message-api] https://jaspic-spec.java.net
 Java Authorization Contract for Containers API 1.5 [javax.security.jacc-api] https://jacc-spec.java.net
@@ -847,7 +883,7 @@ javax.resource API [javax.resource-api] https://glassfish.java.net
 javax.ws.rs-api http://www.oracle.com/
 javax.xml.soap API [javax.xml.soap-api] http://www.oracle.com
 jdeparser http://www.jboss.org
-jsr181-api (https://github.com/javaee/javax.jws)
+jsr181-api https://github.com/javaee/javax.jws
 policy http://www.oracle.com/
 saaj-impl http://www.oracle.com/
 xmlstreambuffer [streambuffer] http://xmlstreambuffer.java.net/
@@ -892,8 +928,11 @@ Console plug-in [org.eclipse.equinox.console] http://www.eclipse.org/
 Coordinator [org.eclipse.equinox.coordinator] http://www.eclipse.org/
 Eclipse Compiler for Java(TM) [ecj] http://www.eclipse.org/
 Eclipse Compiler for Java(TM) [ecj] https://www.eclipse.org/
+Eclipse Parsson [parsson] https://github.com/eclipse-ee4j/parsson
+EclipseLink ANTLR [org.eclipse.persistence.antlr] http://www.eclipse.org/eclipselink
 EclipseLink ASM [org.eclipse.persistence.asm] http://www.eclipse.org/eclipselink
 EclipseLink Core [org.eclipse.persistence.core] http://www.eclipse.org/eclipselink
+EclipseLink Hermes JPQL Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink Hermes Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink JPA [org.eclipse.persistence.jpa] http://www.eclipse.org/eclipselink
 Expression Language 3.0 API [jboss-el-api_3.0_spec] http://www.jboss.org
@@ -903,8 +942,11 @@ JSON-B API [jakarta.json.bind-api] https://www.eclipse.org
 JSON-P Default Provider [jakarta.json] https://www.eclipse.org
 Jakarta Annotations API [jakarta.annotation-api] https://www.eclipse.org
 Jakarta Authentication [jakarta.authentication-api] https://github.com/eclipse-ee4j/authentication
+Jakarta Authentication [jakarta.authentication-api] https://github.com/jakartaee/authentication
 Jakarta Authorization [jakarta.authorization-api] http://www.oracle.com
+Jakarta Concurrency [jakarta.enterprise.concurrent-api] https://github.com/jakartaee/concurrency
 Jakarta Enterprise Beans API [jakarta.ejb-api] https://projects.eclipse.org/projects/ee4j.ejb
+Jakarta Expression Language API [jakarta.el-api] https://projects.eclipse.org/projects/ee4j.el
 Jakarta Expression Language API [jakarta.el-api] https://www.eclipse.org
 Jakarta Interceptors [jakarta.interceptor-api] https://github.com/jakartaee/interceptors
 Jakarta Interceptors [jakarta.interceptor-api] https://www.eclipse.org
@@ -914,17 +956,21 @@ Jakarta Mail API [jakarta.mail] http://www.oracle.com
 Jakarta Mail API jar [jakarta.mail-api] http://www.oracle.com
 Jakarta Messaging API [jakarta.jms-api] https://www.eclipse.org
 Jakarta RESTful WS API [jakarta.ws.rs-api] https://www.eclipse.org/org/foundation/
+Jakarta Security [jakarta.security.enterprise-api] https://projects.eclipse.org/projects/ee4j/
 Jakarta Security [jakarta.security.enterprise-api] https://www.eclipse.org
 Jakarta Server Pages API [jakarta.servlet.jsp-api] https://www.eclipse.org
 Jakarta Servlet [jakarta.servlet-api] https://www.eclipse.org
+Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://projects.eclipse.org/projects/ee4j.jstl
 Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://www.eclipse.org
 Jakarta Standard Tag Library Implementation [jakarta.servlet.jsp.jstl] https://www.eclipse.org
 Jakarta WebSocket - Client API [jakarta.websocket-client-api] https://www.eclipse.org
 Jakarta WebSocket - Server API [jakarta.websocket-api] https://www.eclipse.org
 Meta Type [org.eclipse.equinox.metatype] http://www.eclipse.org/
+OSGi System Bundle [org.eclipse.osgi] https://projects.eclipse.org/projects/eclipse.equinox
 OSGi resource locator [osgi-resource-locator] https://www.eclipse.org
 RESTEasy Tracing API [resteasy-tracing-api] http://www.jboss.org
 Region Digraph [org.eclipse.equinox.region] http://www.eclipse.org/
+Yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
 che-lib7.0.0-rc-4.0 [che-lib] https://github.com/eclipse-che/che-lib.git
 jakarta.enterprise.concurrent-api http://www.oracle.com/
 jakarta.json (https://github.com/jakartaee/jsonp-api)
@@ -936,6 +982,7 @@ javax.transaction API [jakarta.transaction-api] https://github.com/eclipse-ee4j
 javax.transaction API [jboss-transaction-api_1.3_spec] https://github.com/eclipse-ee4j
 javax.ws.rs-api [jakarta.ws.rs-api] https://www.eclipse.org/org/foundation/
 jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] http://www.jboss.org
+jboss-jakarta-jaxrs-api_spec [jboss-jaxrs-api_2.1_spec,2.0.1.Final] http://www.jboss.org 
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
 org.eclipse.yasson [yasson] http://www.oracle.com/
 
@@ -944,18 +991,477 @@ org.eclipse.yasson [yasson] http://www.oracle.com/
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+MODIFIABLE THIRD PARTY CODE
+
+This Program includes some or all of the following Modifiable Third 
+Party Code that IBM obtained under the GNU Lesser General Public 
+License. For copies of the source code for this software, send an email 
+to ayoho@us.ibm.com identifying the IBM Program and the Modifiable Third 
+Party Code for which you are requesting the source code. 
+
+
+JBoss Logging I18n Annotation Processor [jboss-logging-processor] (Copyright 2010 Red Hat Inc., and individual contributors)
+Narayana: ArjunaCore arjuna [arjuna] (Copyright 2008 Red Hat Middleware)
+Narayana: common [common] (Copyright 2008 Red Hat Middleware LLC, and others contributors as indicated by the @authors tag)
+lra-service-base(Copyright Not Found)
+org.jboss.jdeparser: jdeparser (Copyright 2014 Red Hat, Inc., and individual contributors)
+
+
+                  GNU LESSER GENERAL PUBLIC LICENSE
+                       Version 2.1, February 1999
+
+Copyright (C) 1991, 1999 Free Software Foundation, Inc.
+51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+Everyone is permitted to copy and distribute verbatim copies
+of this license document, but changing it is not allowed.
+
+[This is the first released version of the Lesser GPL.  It also counts
+ as the successor of the GNU Library Public License, version 2, hence
+ the version number 2.1.]
+
+Preamble
+
+The licenses for most software are designed to take away your freedom to 
+share and change it. By contrast, the GNU General Public Licenses are 
+intended to guarantee your freedom to share and change free software--to 
+make sure the software is free for all its users. 
+
+This license, the Lesser General Public License, applies to some 
+specially designated software packages--typically libraries--of the Free 
+Software Foundation and other authors who decide to use it. You can use 
+it too, but we suggest you first think carefully about whether this 
+license or the ordinary General Public License is the better strategy to 
+use in any particular case, based on the explanations below. 
+
+When we speak of free software, we are referring to freedom of use, not 
+price. Our General Public Licenses are designed to make sure that you 
+have the freedom to distribute copies of free software (and charge for 
+this service if you wish); that you receive source code or can get it if 
+you want it; that you can change the software and use pieces of it in 
+new free programs; and that you are informed that you can do these 
+things. 
+
+To protect your rights, we need to make restrictions that forbid 
+distributors to deny you these rights or to ask you to surrender these 
+rights. These restrictions translate to certain responsibilities for you 
+if you distribute copies of the library or if you modify it. 
+
+For example, if you distribute copies of the library, whether gratis or 
+for a fee, you must give the recipients all the rights that we gave you. 
+You must make sure that they, too, receive or can get the source code. 
+If you link other code with the library, you must provide complete 
+object files to the recipients, so that they can relink them with the 
+library after making changes to the library and recompiling it. And you 
+must show them these terms so they know their rights. 
+
+We protect your rights with a two-step method: (1) we copyright the 
+library, and (2) we offer you this license, which gives you legal 
+permission to copy, distribute and/or modify the library. 
+
+To protect each distributor, we want to make it very clear that there is 
+no warranty for the free library. Also, if the library is modified by 
+someone else and passed on, the recipients should know that what they 
+have is not the original version, so that the original author's 
+reputation will not be affected by problems that might be introduced by 
+others. 
+
+Finally, software patents pose a constant threat to the existence of any 
+free program. We wish to make sure that a company cannot effectively 
+restrict the users of a free program by obtaining a restrictive license 
+from a patent holder. Therefore, we insist that any patent license 
+obtained for a version of the library must be consistent with the full 
+freedom of use specified in this license. 
+
+Most GNU software, including some libraries, is covered by the ordinary 
+GNU General Public License. This license, the GNU Lesser General Public 
+License, applies to certain designated libraries, and is quite different 
+from the ordinary General Public License. We use this license for 
+certain libraries in order to permit linking those libraries into 
+non-free programs. 
+
+When a program is linked with a library, whether statically or using a 
+shared library, the combination of the two is legally speaking a 
+combined work, a derivative of the original library. The ordinary 
+General Public License therefore permits such linking only if the entire 
+combination fits its criteria of freedom. The Lesser General Public 
+License permits more lax criteria for linking other code with the 
+library. 
+
+We call this license the "Lesser" General Public License because it does 
+Less to protect the user's freedom than the ordinary General Public 
+License. It also provides other free software developers Less of an 
+advantage over competing non-free programs. These disadvantages are the 
+reason we use the ordinary General Public License for many libraries. 
+However, the Lesser license provides advantages in certain special 
+circumstances. 
+
+For example, on rare occasions, there may be a special need to 
+encourage the widest possible use of a certain library, so that it 
+becomes a de-facto standard. To achieve this, non-free programs must be 
+allowed to use the library. A more frequent case is that a free library 
+does the same job as widely used non-free libraries. In this case, there 
+is little to gain by limiting the free library to free software only, so 
+we use the Lesser General Public License. 
+
+In other cases, permission to use a particular library in non-free 
+programs enables a greater number of people to use a large body of free 
+software. For example, permission to use the GNU C Library in non-free 
+programs enables many more people to use the whole GNU operating system, 
+as well as its variant, the GNU/Linux operating system. 
+
+Although the Lesser General Public License is Less protective of the 
+users' freedom, it does ensure that the user of a program that is linked 
+with the Library has the freedom and the wherewithal to run that program 
+using a modified version of the Library. 
+
+The precise terms and conditions for copying, distribution and 
+modification follow. Pay close attention to the difference between a 
+"work based on the library" and a "work that uses the library". The 
+former contains code derived from the library, whereas the latter must 
+be combined with the library in order to run. TERMS AND CONDITIONS FOR 
+COPYING, DISTRIBUTION AND MODIFICATION 
+
+0. This License Agreement applies to any software library or other 
+program which contains a notice placed by the copyright holder or other 
+authorized party saying it may be distributed under the terms of this 
+Lesser General Public License (also called "this License"). Each 
+licensee is addressed as "you". 
+
+A "library" means a collection of software functions and/or data 
+prepared so as to be conveniently linked with application programs 
+(which use some of those functions and data) to form executables. 
+
+The "Library", below, refers to any such software library or work which 
+has been distributed under these terms. A "work based on the Library" 
+means either the Library or any derivative work under copyright law: 
+that is to say, a work containing the Library or a portion of it, either 
+verbatim or with modifications and/or translated straightforwardly into 
+another language. (Hereinafter, translation is included without 
+limitation in the term "modification".) 
+
+"Source code" for a work means the preferred form of the work for making 
+modifications to it. For a library, complete source code means all the 
+source code for all modules it contains, plus any associated interface 
+definition files, plus the scripts used to control compilation and 
+installation of the library. 
+
+Activities other than copying, distribution and modification are not 
+covered by this License; they are outside its scope. The act of running 
+a program using the Library is not restricted, and output from such a 
+program is covered only if its contents constitute a work based on the 
+Library (independent of the use of the Library in a tool for writing 
+it). Whether that is true depends on what the Library does and what the 
+program that uses the Library does. 
+
+1. You may copy and distribute verbatim copies of the Library's complete 
+source code as you receive it, in any medium, provided that you 
+conspicuously and appropriately publish on each copy an appropriate 
+copyright notice and disclaimer of warranty; keep intact all the notices 
+that refer to this License and to the absence of any warranty; and 
+distribute a copy of this License along with the Library. 
+
+You may charge a fee for the physical act of transferring a copy, and 
+you may at your option offer warranty protection in exchange for a fee. 
+
+
+2. You may modify your copy or copies of the Library or any portion of 
+it, thus forming a work based on the Library, and copy and distribute 
+such modifications or work under the terms of Section 1 above, provided 
+that you also meet all of these conditions: 
+
+    a) The modified work must itself be a software library.
+    b) You must cause the files modified to carry prominent notices 
+       stating that you changed the files and the date of any change.
+    c) You must cause the whole of the work to be licensed at no charge 
+       to all third parties under the terms of this License.
+    d) If a facility in the modified Library refers to a function or a 
+       table of data to be supplied by an application program that uses 
+       the facility, other than as an argument passed when the facility 
+       is invoked, then you must make a good faith effort to ensure 
+       that, in the event an application does not supply such function 
+       or table, the facility still operates, and performs whatever part 
+       of its purpose remains meaningful.
+
+      (For example, a function in a library to compute square roots has 
+      a purpose that is entirely well-defined independent of the 
+      application. Therefore, Subsection 2d requires that any 
+      application-supplied function or table used by this function must 
+      be optional: if the application does not supply it, the square 
+      root function must still compute square roots.)
+
+These requirements apply to the modified work as a whole. If 
+identifiable sections of that work are not derived from the Library, and 
+can be reasonably considered independent and separate works in 
+themselves, then this License, and its terms, do not apply to those 
+sections when you distribute them as separate works. But when you 
+distribute the same sections as part of a whole which is a work based on 
+the Library, the distribution of the whole must be on the terms of this 
+License, whose permissions for other licensees extend to the entire 
+whole, and thus to each and every part regardless of who wrote it. 
+
+Thus, it is not the intent of this section to claim rights or contest 
+your rights to work written entirely by you; rather, the intent is to 
+exercise the right to control the distribution of derivative or 
+collective works based on the Library. 
+
+In addition, mere aggregation of another work not based on the Library 
+with the Library (or with a work based on the Library) on a volume of a 
+storage or distribution medium does not bring the other work under the 
+scope of this License. 
+
+3. You may opt to apply the terms of the ordinary GNU General Public 
+License instead of this License to a given copy of the Library. To do 
+this, you must alter all the notices that refer to this License, so that 
+they refer to the ordinary GNU General Public License, version 2, 
+instead of to this License. (If a newer version than version 2 of the 
+ordinary GNU General Public License has appeared, then you can specify 
+that version instead if you wish.) Do not make any other change in these 
+notices. 
+
+Once this change is made in a given copy, it is irreversible for that 
+copy, so the ordinary GNU General Public License applies to all 
+subsequent copies and derivative works made from that copy. 
+
+This option is useful when you wish to copy part of the code of the 
+Library into a program that is not a library. 
+
+4. You may copy and distribute the Library (or a portion or derivative 
+of it, under Section 2) in object code or executable form under the 
+terms of Sections 1 and 2 above provided that you accompany it with the 
+complete corresponding machine-readable source code, which must be 
+distributed under the terms of Sections 1 and 2 above on a medium 
+customarily used for software interchange. 
+
+If distribution of object code is made by offering access to copy from a 
+designated place, then offering equivalent access to copy the source 
+code from the same place satisfies the requirement to distribute the 
+source code, even though third parties are not compelled to copy the 
+source along with the object code. 
+
+5. A program that contains no derivative of any portion of the Library, 
+but is designed to work with the Library by being compiled or linked 
+with it, is called a "work that uses the Library". Such a work, in 
+isolation, is not a derivative work of the Library, and therefore falls 
+outside the scope of this License. 
+
+However, linking a "work that uses the Library" with the Library creates 
+an executable that is a derivative of the Library (because it contains 
+portions of the Library), rather than a "work that uses the library". 
+The executable is therefore covered by this License. Section 6 states 
+terms for distribution of such executables. 
+
+When a "work that uses the Library" uses material from a header file 
+that is part of the Library, the object code for the work may be a 
+derivative work of the Library even though the source code is not. 
+Whether this is true is especially significant if the work can be linked 
+without the Library, or if the work is itself a library. The threshold 
+for this to be true is not precisely defined by law. 
+
+If such an object file uses only numerical parameters, data structure 
+layouts and accessors, and small macros and small inline functions (ten 
+lines or less in length), then the use of the object file is 
+unrestricted, regardless of whether it is legally a derivative work. 
+(Executables containing this object code plus portions of the Library 
+will still fall under Section 6.) 
+
+Otherwise, if the work is a derivative of the Library, you may 
+distribute the object code for the work under the terms of Section 6. 
+Any executables containing that work also fall under Section 6, whether 
+or not they are linked directly with the Library itself. 
+
+6. As an exception to the Sections above, you may also combine or link a 
+"work that uses the Library" with the Library to produce a work 
+containing portions of the Library, and distribute that work under terms 
+of your choice, provided that the terms permit modification of the work 
+for the customer's own use and reverse engineering for debugging such 
+modifications. 
+
+You must give prominent notice with each copy of the work that the 
+Library is used in it and that the Library and its use are covered by 
+this License. You must supply a copy of this License. If the work during 
+execution displays copyright notices, you must include the copyright 
+notice for the Library among them, as well as a reference directing the 
+user to the copy of this License. Also, you must do one of these things: 
+
+
+    a) Accompany the work with the complete corresponding 
+       machine-readable source code for the Library including whatever 
+       changes were used in the work (which must be distributed under 
+       Sections 1 and 2 above); and, if the work is an executable linked 
+       with the Library, with the complete machine-readable "work that 
+       uses the Library", as object code and/or source code, so that the 
+       user can modify the Library and then relink to produce a modified 
+       executable containing the modified Library. (It is understood 
+       that the user who changes the contents of definitions files in 
+       the Library will not necessarily be able to recompile the 
+       application to use the modified definitions.)
+    b) Use a suitable shared library mechanism for linking with the 
+       Library. A suitable mechanism is one that (1) uses at run time a 
+       copy of the library already present on the user's computer 
+       system, rather than copying library functions into the 
+       executable, and (2) will operate properly with a modified version 
+       of the library, if the user installs one, as long as the modified 
+       version is interface-compatible with the version that the work 
+       was made with.
+    c) Accompany the work with a written offer, valid for at least three 
+       years, to give the same user the materials specified in 
+       Subsection 6a, above, for a charge no more than the cost of 
+       performing this distribution.
+    d) If distribution of the work is made by offering access to copy 
+       from a designated place, offer equivalent access to copy the 
+       above specified materials from the same place.
+    e) Verify that the user has already received a copy of these 
+       materials or that you have already sent this user a copy.
+
+For an executable, the required form of the "work that uses the Library" 
+must include any data and utility programs needed for reproducing the 
+executable from it. However, as a special exception, the materials to be 
+distributed need not include anything that is normally distributed (in 
+either source or binary form) with the major components (compiler, 
+kernel, and so on) of the operating system on which the executable runs, 
+unless that component itself accompanies the executable. 
+
+It may happen that this requirement contradicts the license restrictions 
+of other proprietary libraries that do not normally accompany the 
+operating system. Such a contradiction means you cannot use both them 
+and the Library together in an executable that you distribute. 
+
+7. You may place library facilities that are a work based on the Library 
+side-by-side in a single library together with other library facilities 
+not covered by this License, and distribute such a combined library, 
+provided that the separate distribution of the work based on the Library 
+and of the other library facilities is otherwise permitted, and provided 
+that you do these two things: 
+
+    a) Accompany the combined library with a copy of the same work based 
+       on the Library, uncombined with any other library facilities. 
+       This must be distributed under the terms of the Sections above.
+    b) Give prominent notice with the combined library of the fact that 
+       part of it is a work based on the Library, and explaining where 
+       to find the accompanying uncombined form of the same work.
+
+8. You may not copy, modify, sublicense, link with, or distribute the 
+Library except as expressly provided under this License. Any attempt 
+otherwise to copy, modify, sublicense, link with, or distribute the 
+Library is void, and will automatically terminate your rights under this 
+License. However, parties who have received copies, or rights, from you 
+under this License will not have their licenses terminated so long as 
+such parties remain in full compliance. 
+
+9. You are not required to accept this License, since you have not 
+signed it. However, nothing else grants you permission to modify or 
+distribute the Library or its derivative works. These actions are 
+prohibited by law if you do not accept this License. Therefore, by 
+modifying or distributing the Library (or any work based on the 
+Library), you indicate your acceptance of this License to do so, and all 
+its terms and conditions for copying, distributing or modifying the 
+Library or works based on it. 
+
+10. Each time you redistribute the Library (or any work based on the 
+Library), the recipient automatically receives a license from the 
+original licensor to copy, distribute, link with or modify the Library 
+subject to these terms and conditions. You may not impose any further 
+restrictions on the recipients' exercise of the rights granted herein. 
+You are not responsible for enforcing compliance by third parties with 
+this License. 
+
+11. If, as a consequence of a court judgment or allegation of patent 
+infringement or for any other reason (not limited to patent issues), 
+conditions are imposed on you (whether by court order, agreement or 
+otherwise) that contradict the conditions of this License, they do not 
+excuse you from the conditions of this License. If you cannot distribute 
+so as to satisfy simultaneously your obligations under this License and 
+any other pertinent obligations, then as a consequence you may not 
+distribute the Library at all. For example, if a patent license would 
+not permit royalty-free redistribution of the Library by all those who 
+receive copies directly or indirectly through you, then the only way you 
+could satisfy both it and this License would be to refrain entirely from 
+distribution of the Library. 
+
+If any portion of this section is held invalid or unenforceable under 
+any particular circumstance, the balance of the section is intended to 
+apply, and the section as a whole is intended to apply in other 
+circumstances. 
+
+It is not the purpose of this section to induce you to infringe any 
+patents or other property right claims or to contest validity of any 
+such claims; this section has the sole purpose of protecting the 
+integrity of the free software distribution system which is implemented 
+by public license practices. Many people have made generous 
+contributions to the wide range of software distributed through that 
+system in reliance on consistent application of that system; it is up to 
+the author/donor to decide if he or she is willing to distribute 
+software through any other system and a licensee cannot impose that 
+choice. 
+
+This section is intended to make thoroughly clear what is believed to be 
+a consequence of the rest of this License. 
+
+12. If the distribution and/or use of the Library is restricted in 
+certain countries either by patents or by copyrighted interfaces, the 
+original copyright holder who places the Library under this License may 
+add an explicit geographical distribution limitation excluding those 
+countries, so that distribution is permitted only in or among countries 
+not thus excluded. In such case, this License incorporates the 
+limitation as if written in the body of this License. 
+
+13. The Free Software Foundation may publish revised and/or new versions 
+of the Lesser General Public License from time to time. Such new 
+versions will be similar in spirit to the present version, but may 
+differ in detail to address new problems or concerns. 
+
+Each version is given a distinguishing version number. If the Library 
+specifies a version number of this License which applies to it and "any 
+later version", you have the option of following the terms and 
+conditions either of that version or of any later version published by 
+the Free Software Foundation. If the Library does not specify a license 
+version number, you may choose any version ever published by the Free 
+Software Foundation. 
+
+14. If you wish to incorporate parts of the Library into other free 
+programs whose distribution conditions are incompatible with these, 
+write to the author to ask for permission. For software which is 
+copyrighted by the Free Software Foundation, write to the Free Software 
+Foundation; we sometimes make exceptions for this. Our decision will be 
+guided by the two goals of preserving the free status of all derivatives 
+of our free software and of promoting the sharing and reuse of software 
+generally. 
+
+NO WARRANTY
+
+15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO 
+WARRANTY FOR THE LIBRARY, TO THE EXTENT PERMITTED BY APPLICABLE LAW. 
+EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR 
+OTHER PARTIES PROVIDE THE LIBRARY "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE 
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE LIBRARY IS WITH 
+YOU. SHOULD THE LIBRARY PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL 
+NECESSARY SERVICING, REPAIR OR CORRECTION. 
+
+16. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN 
+WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY 
+AND/OR REDISTRIBUTE THE LIBRARY AS PERMITTED ABOVE, BE LIABLE TO YOU FOR 
+DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL 
+DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE LIBRARY 
+(INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED 
+INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF 
+THE LIBRARY TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF SUCH HOLDER OR 
+OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. 
+
+END OF TERMS AND CONDITIONS 
+
+END OF GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 NOTICES AND INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ISC License
 
 The Program includes some or all of the following that IBM obtained
 under the ISC License:
 
-chownr [chownr-1.1.4.tgz] (Copyright Isaac Z. Schlueter and Contributors)
 inherits [inherits-2.0.4.tgz] (Copyright Isaac Z. Schlueter and Contributors)
-ini [ini-1.3.8.tgz] (Copyright Isaac Z. Schlueter and Contributors)
 minimatch [minimatch-7.4.6.tgz] (Copyright 2011-2023 Isaac Z. Schlueter and Contributors)
-once [once-1.4.0.tgz] (Copyright Isaac Z. Schlueter and Contributors)
-semver [semver-7.6.3.tgz] (Copyright Isaac Z. Schlueter and Contributors) (Copyright Isaac Z. Schlueter and Contributors)
-wrappy [wrappy-1.0.2.tgz] (Copyright Isaac Z. Schlueter and Contributors)
 
 
 ISC License
@@ -984,8 +1490,10 @@ under the MIT license:
 @babel/runtime [runtime-7.26.0.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
 @babel/runtime-corejs3 [runtime-corejs3-7.26.0.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
 @braintree/sanitize-url [sanitize-url-7.0.4.tgz] (Copyright 2017 Braintree)
+@tree-sitter-grammars/tree-sitter-yaml [tree-sitter-yaml-0.6.1.tgz] (Copyright 2019-2021 Ika) (Copyright 2024 tree-sitter-grammars contributors)
 @types/hast [hast-2.3.10.tgz] (Copyright Microsoft Corporation)
 @types/ramda [ramda-0.30.2.tgz] (Copyright Microsoft Corporation)
+@types/trusted-types [trusted-types-2.0.7.tgz] (Copyright Microsoft Corporation)
 @types/unist [unist-2.0.11.tgz] (Copyright Microsoft Corporation)
 @types/use-sync-external-store [use-sync-external-store-0.0.3.tgz] (Copyright Microsoft Corporation)
 Animal Sniffer Annotations [animal-sniffer-annotations] (Codehaus) (Copyright 2009 codehaus.org)
@@ -995,14 +1503,12 @@ Checker Qual [checker-qual] (Copyright 2004 by the Checker Framework developers)
 SLF4J API Module [slf4j-api] (Copyright 2023 QOS.ch)
 SLF4J API Module [slf4j-api] (QOS.ch)
 SLF4J JDK14 Binding [slf4j-jdk14] (QOS.ch)
-argparse [argparse-1.0.10.tgz] (Copyright 2012 "Vitaly Puzrin" (https://github.com/puzrin)) (Copyright 2012 [Vitaly Puzrin](https://github.com/puzrin)) (Copyright 2012 by Vitaly Puzrin)
+argparse [argparse-1.0.10.tgz] (Copyright 2012 Vitaly Puzrin" (https://github.com/puzrin)) (Copyright 2012 [Vitaly Puzrin](https://github.com/puzrin)) (Copyright 2012 by Vitaly Puzrin)
 autolinker [autolinker-3.16.2.tgz] (Copyright 2014 Gregory Jacobs (http://greg-jacobs.com))
 balanced-match [balanced-match-1.0.2.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
 base64-js [base64-js-1.5.1.tgz] (Copyright 2014 Jameson Little)
-bl [bl-4.1.0.tgz] (Copyright 2013-2019 bl contributors)
 bootstrap [bootstrap-5.2.3.tgz] (Copyright 2011-2017 The Bootstrap Authors) (Copyright 2011-2017 Twitter, Inc) (Copyright 2011-2017 the [Bootstrap Authors](https://github.com/twbs/bootstrap/graphs/contributors) a) (Copyright 2011-2022 The Bootstrap Authors) (Copyright 2011-2022 Twitter, Inc) (Copyright 2011-2022 ode and documentation copyright) (Copyright and license" (#copyright-and-license))
 brace-expansion [brace-expansion-2.0.1.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
-buffer [buffer-5.7.1.tgz] (Copyright Feross Aboukhadijeh, and other contributors)
 buffer [buffer-6.0.3.tgz] (Copyright Feross Aboukhadijeh, and other contributors)
 character-entities [character-entities-1.2.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
 character-entities-legacy [character-entities-legacy-1.1.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
@@ -1016,18 +1522,13 @@ core-js-pure [core-js-pure-3.39.0.tgz] (Copyright 2014-2024 Denis Pushkarev)
 crypto-js [enc-base64-min-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 crypto-js [sha256-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 css.escape [css.escape-1.5.1.tgz] (Copyright Mathias Bynens <https://mathiasbynens.be/>)
-decompress-response [decompress-response-6.0.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
 deep-extend [deep-extend-0.6.0.tgz] (Copyright 2013-2018 Viacheslav Lotsmanov)
 deepmerge [deepmerge-4.3.1.tgz] (Copyright 2012 James Halliday, Josh Duff, and other contributors)
 drange [drange-1.1.1.tgz] (Copyright 2014 David Tudury)
-end-of-stream [end-of-stream-1.4.4.tgz] (Copyright 2014 Mathias Buus)
-expand-template [expand-template-2.0.3.tgz] (Copyright 2018 Lars-Magnus Skog)
 fast-json-patch [fast-json-patch-3.1.1.tgz] (Copyright 2013-2020 Joachim Wester)
 fault [fault-1.0.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
 flatpickr [flatpickr-4.6.1.tgz] (Copyright 2017 Gregory Petrosyan)
 format [format-0.2.2.tgz] (Copyright 2010-2014 Sami Samhuri sami@samhuri.net)
-fs-constants [fs-constants-1.0.0.tgz] (Copyright 2018 Mathias Buus)
-github-from-package [github-from-package-0.0.0.tgz](Copyright Not Found)
 graphql-java (Copyright 2015 Andreas Marek and Contributors Permission is hereby granted, free of charge, to any person obtaining)
 hast-util-parse-selector [hast-util-parse-selector-2.2.5.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 hastscript [hastscript-6.0.0.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
@@ -1040,30 +1541,24 @@ is-hexadecimal [is-hexadecimal-1.0.4.tgz] (Copyright 2016 Titus Wormer <tituswor
 jquery [jquery-3.5.1.min.js] (Copyright 2020 OpenJS Foundation and jQuery contributors)
 jquery [jquery-3.6.3.tgz] (Copyright OpenJS Foundation and other contributors, https://openjsf.org/) (Copyright jQuery Foundation and other contributors, https://jquery.org/)
 js-file-download [js-file-download-0.4.12.tgz] (Copyright 2017 Kenneth Jiang)
-js-tokens [js-tokens-4.0.0.tgz] (Copyright 2014-2015 2016, 2017, 2018 Simon Lydell)
+js-tokens [js-tokens-4.0.0.tgz] (Copyright 2014-2015 2016, 2017, 2018 Simon Lydell) (Copyright 2014-2018 Simon Lydell)
 js-yaml [js-yaml-4.1.0.tgz] (Copyright 2011-2015 by Vitaly Puzrin)
 lodash [lodash-4.17.21.tgz] (Copyright OpenJS Foundation and other contributors <https://openjsf.org/>)
 lodash.debounce [lodash.debounce-4.0.8.tgz] (Copyright jQuery Foundation and other contributors <https://jquery.org/>)
 loose-envify [loose-envify-1.4.0.tgz] (Copyright 2015 Andres Suarez <zertosh@gmail.com>)
 lowlight [lowlight-1.20.0.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-mimic-response [mimic-response-3.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
 minim [minim-0.23.8.tgz] (Copyright 2014 Stephen Mizell)
-minimist [minimist-1.2.8.tgz](Copyright Not Found)
-mkdirp-classic [mkdirp-classic-0.5.3.tgz] (Copyright 2020 James Halliday (mail@substack.net) and Mathias Buus)
-nan [nan-2.22.0.tgz] (Copyright 2018 NAN WG Members / Collaborators (listed above)) (Copyright 2018 NAN contributors" (https://github.com/nodejs/nan#wg-members--collaborators)) (Copyright The contribution was provided directly to me by some other) (Copyright and I have not modified)
-napi-build-utils [napi-build-utils-1.0.2.tgz] (Copyright 2018 inspiredware)
 neotraverse [neotraverse-0.6.18.tgz] (Copyright 2010 James Halliday and contributors)
-node-abi [node-abi-3.71.0.tgz] (Copyright 2016 Lukas Geiger)
 node-abort-controller [node-abort-controller-3.1.1.tgz] (Copyright 2019 Steve Faulkner)
-node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy WÃ¤rting)
+node-addon-api [node-addon-api-8.3.0.tgz] (Copyright 2017 Node.js API collaborators" (https://github.com/nodejs/node-addon-api#collaborators))
+node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy Wärting)
 node-fetch-commonjs [node-fetch-commonjs-3.3.2.tgz] (Copyright 2016-2020 Node Fetch Team)
-object-assign [object-assign-4.1.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+node-gyp-build [node-gyp-build-4.8.4.tgz] (Copyright 2017 Mathias Buus)
+object-assign [object-assign-4.1.1.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
 parse-entities [parse-entities-2.0.0.tgz] (Copyright 2015 Titus Wormer <mailto:tituswormer@gmail.com>)
-prebuild-install [prebuild-install-7.1.2.tgz] (Copyright 2015 Mathias Buus)
 process [process-0.11.10.tgz] (Copyright 2013 Roman Shtylman <shtylman@gmail.com>)
 prop-types [prop-types-15.8.1.tgz] (Copyright 2013 Facebook, Inc)
 property-information [property-information-5.6.0.tgz] (Copyright 2013-2015 Facebook, Inc) (Copyright 2015 Titus Wormer <mailto:tituswormer@gmail.com>)
-pump [pump-3.0.2.tgz] (Copyright 2014 Mathias Buus)
 querystringify [querystringify-2.2.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
 ramda [ramda-0.30.1.tgz] (Copyright 2013-2024 Scott Sauyet and Michael Hurley) (Copyright 2014 J. C. Phillipps)
 randexp [randexp-0.5.3.tgz] (Copyright 2011 by fent)
@@ -1083,7 +1578,7 @@ redux [redux-5.0.1.tgz] (Copyright 2015 Dan Abramov)
 refractor [refractor-3.6.0.tgz] (Copyright 2017 Titus Wormer <tituswormer@gmail.com>)
 regenerator-runtime [regenerator-runtime-0.14.1.tgz] (Copyright 2014 Facebook, Inc)
 remarkable [remarkable-2.0.1.tgz] (Copyright 2014 Jon Schlinkert, Vitaly Puzrin) (Copyright 2014-2016 Jon Schlinkert)
-repeat-string [repeat-string-1.6.1.tgz] (Copyright 2014-2015 Jon Schlinkert) (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 "Jon Schlinkert" (http://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](http://github.com/jonschlinkert))
+repeat-string [repeat-string-1.6.1.tgz] (Copyright 2014-2015 Jon Schlinkert) (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 Jon Schlinkert" (http://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](http://github.com/jonschlinkert))
 require.js [require-2.1.15.min.js](Copyright Not Found)
 requires-port [requires-port-1.0.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
 reselect [reselect-5.1.1.tgz] (Copyright 2015-2018 Reselect Contributors)
@@ -1091,28 +1586,22 @@ ret [ret-0.2.2.tgz] (Copyright 2011 by fent)
 safe-buffer [safe-buffer-5.2.1.tgz] (Copyright Feross Aboukhadijeh)
 scheduler [scheduler-0.23.2.tgz] (Copyright Facebook, Inc. and its affiliates)
 serialize-error [serialize-error-8.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-sha.js [sha.js-2.4.11.tgz] (Copyright 1998-2009 Paul Johnston & Contributors) (Copyright 2013-2018 sha.js contributors)
-simple-concat [simple-concat-1.0.1.tgz] (Copyright Feross Aboukhadijeh)
-simple-get [simple-get-4.0.1.tgz] (Copyright Feross Aboukhadijeh)
+sha.js [sha.js-2.4.11.tgz] (Copyright 1998-2009 Paul Johnston) (Copyright 1998-2009 Paul Johnston & Contributors) (Copyright 2013-2018 sha.js contributors)
 space-separated-tokens [space-separated-tokens-1.1.5.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 stream-browserify [stream-browserify-3.0.0.tgz] (Copyright James Halliday)
 string_decoder [string_decoder-1.3.0.tgz] (Copyright Node.js contributors)
-strip-json-comments [strip-json-comments-2.0.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-tar-fs [tar-fs-2.1.1.tgz] (Copyright 2014 Mathias Buus)
-tar-stream [tar-stream-2.2.0.tgz] (Copyright 2014 Mathias Buus)
 toggle-selection [toggle-selection-1.0.6.tgz] (Copyright 2017.0 sudodoki)
-tree-sitter [tree-sitter-0.20.4.tgz] (Copyright 2014 maxbrunsfeld)
-tree-sitter-json [tree-sitter-json-0.20.2.tgz] (Copyright 2014 Max Brunsfeld)
-tree-sitter-yaml [tree-sitter-yaml-0.5.0.tgz] (Copyright Ika <ikatyang@gmail.com> (https://github.com/ikatyang))
+tree-sitter [tree-sitter-0.21.1.tgz] (Copyright 2014 maxbrunsfeld)
+tree-sitter-json [tree-sitter-json-0.24.8.tgz] (Copyright 2014 Max Brunsfeld)
 ts-mixer [ts-mixer-6.0.4.tgz] (Copyright 2024 Tanner Nielsen)
 type-fest [type-fest-0.20.2.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https:/sindresorhus.com))
 types-ramda [types-ramda-0.30.1.tgz] (Copyright 2013-2023 Scott Sauyet and Michael Hurley)
 unraw [unraw-3.0.0.tgz] (Copyright 2019 Ian Sanders)
 url-parse [url-parse-1.5.10.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
-use-sync-external-store [use-sync-external-store-1.2.2.tgz] (Copyright Facebook, Inc. and its affiliates)
+use-sync-external-store [use-sync-external-store-1.4.0.tgz] (Copyright Meta Platforms, Inc. and affiliates)
 util-deprecate [util-deprecate-1.0.2.tgz] (Copyright 2014 Nathan Rajlich "nathan@tootallnate.net" (mailto:nathan@tootallnate.net)) (Copyright 2014 Nathan Rajlich <nathan@tootallnate.net>)
 web-streams-polyfill [web-streams-polyfill-3.3.3.tgz] (Copyright 2016 Diwank Singh Tomer) (Copyright 2024 Mattias Buelens)
-web-tree-sitter [web-tree-sitter-0.20.3.tgz] (Copyright 2018-2021 Max Brunsfeld)
+web-tree-sitter [web-tree-sitter-0.24.3.tgz] (Copyright 2018-2024 Max Brunsfeld)
 xml [xml-1.0.1.tgz] (Copyright 2011-2016 Dylan Greene <dylang@gmail.com>)
 xml-but-prettier [xml-but-prettier-1.0.1.tgz] (Copyright 2015 Jonathan Persson)
 xtend [xtend-4.0.2.tgz] (Copyright 2012-2014 Raynos)
@@ -1301,5 +1790,6 @@ END OF Python License, Version 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 END OF THE OPEN LIBERTY BETA PROJECT NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 END OF NOTICES AND INFORMATION FILE
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

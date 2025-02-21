@@ -45,7 +45,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
-import com.ibm.ws.crypto.common.MessageDigestUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStore;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStoreList;
@@ -142,7 +142,7 @@ public class KeyStoreManager {
             Tr.entry(tc, "checkIfSignerAlreadyExistsInTrustStore");
 
         try {
-            String signerDigest = generateDigest(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, signer);
+            String signerDigest = generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, signer);
             if (signerDigest == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     Tr.exit(tc, "checkIfSignerAlreadyExistsInTrustStore -> false (could not generate digest)");
@@ -157,7 +157,7 @@ public class KeyStoreManager {
                 if (trustStore.containsAlias(alias)) {
                     X509Certificate cert = (X509Certificate) trustStore.getCertificate(alias);
 
-                    String certDigest = generateDigest(MessageDigestUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, cert);
+                    String certDigest = generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, cert);
 
                     if (signerDigest.equals(certDigest)) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -566,7 +566,7 @@ public class KeyStoreManager {
         String rc = null;
         if (cert != null) {
             try {
-                MessageDigest md = MessageDigestUtils.getMessageDigest(algorithmName);
+                MessageDigest md = CryptoUtils.getMessageDigest(algorithmName);
                 md.update(cert.getEncoded());
                 byte data[] = md.digest();
                 StringBuilder buffer = new StringBuilder(3 * data.length);

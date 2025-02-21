@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2022 IBM Corporation and others.
+    Copyright (c) 2011, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -56,6 +56,15 @@
         ibm:reference="com.ibm.ws.classloading.sharedlibrary.file"
     />
 
+     <AD name="%library.path.ref" description="%library.path.ref.desc"
+        id="pathRef"
+        required="false"
+        type="String"
+        cardinality="2147483647"
+        ibm:type="pid"
+        ibm:reference="com.ibm.ws.classloading.sharedlibrary.path"
+    />
+
      <AD name="%library.apis" description="%library.apis.desc"
         id="apiTypeVisibility"
         required="false"
@@ -106,7 +115,7 @@
         id="name" 
         required="true" 
         type="String"  
-        ibm:type="location(file)"    
+        ibm:type="location(file)"
     />
     
   </OCD>
@@ -114,5 +123,19 @@
   <Designate factoryPid="com.ibm.ws.classloading.sharedlibrary.file">
       <Object ocdref="com.ibm.ws.classloading.sharedlibrary.file"/>
   </Designate>
+
+  <OCD name="%path" description="%path.desc"
+       id="com.ibm.ws.classloading.sharedlibrary.path">
+       
+     <AD name="%path.name" description="%path.name.desc"
+        id="name"
+        required="true"
+        type="String"
+        ibm:type="location"
+    />
+  </OCD>
   
+  <Designate factoryPid="com.ibm.ws.classloading.sharedlibrary.path">
+      <Object ocdref="com.ibm.ws.classloading.sharedlibrary.path"/>
+  </Designate>
 </metatype:MetaData>

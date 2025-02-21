@@ -12,39 +12,23 @@ package componenttest.containers;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
 
-import com.ibm.websphere.simplicity.log.Log;
+import componenttest.containers.substitution.LibertyRegistrySubstitutor;
 
 /**
- * Appends the Artifactory registry required for the mirror repositories.
- * Example: wasliberty-aws-docker-remote/docker/library/postgres:17.0-alpine -> [artifactory_registry_url]/wasliberty-aws-docker-remote/docker/library/postgres:17.0-alpine
+ * Moved to componenttest.containers.LibertyRegistrySubstitutor
+ * TODO remove this class once all references are updated
  */
+@Deprecated
 public class ArtifactoryRegistrySubstitutor extends ImageNameSubstitutor {
-
-    private static final Class<?> c = ArtifactoryRegistrySubstitutor.class;
 
     @Override
     public DockerImageName apply(DockerImageName original) {
-        if (!ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
-            throw new RuntimeException("Needed to append Artifactory registry to the docker image name: " + original.asCanonicalNameString()
-                                       + System.lineSeparator() + "No Artfiactory registry was available because "
-                                       + ArtifactoryRegistry.instance().getSetupException().getMessage());
-        }
-
-        if (!original.getRegistry().isEmpty()) {
-            throw new RuntimeException("A registry (" + original.getRegistry() + ") was already configured on the docker image name."
-                                       + System.lineSeparator() + "This substitutor cannot replace an existing registry.");
-        }
-
-        DockerImageName result = original;
-        result = result.withRegistry(ArtifactoryRegistry.instance().getRegistry());
-
-        Log.finer(c, "apply", original.asCanonicalNameString() + " --> " + result.asCanonicalNameString());
-        return result;
+        return new LibertyRegistrySubstitutor().apply(original);
     }
 
     @Override
     protected String getDescription() {
-        return "Appends the Artifactory registry required for the mirror repositories.";
+        return "ArtifactoryRegistrySubstitutor is deprecated";
     }
 
 }

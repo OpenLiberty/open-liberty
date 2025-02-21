@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,30 @@ jndi.not.installed=CWWKE0800W: \u5c1d\u8bd5\u68c0\u7d22 [{0}] \u7684\u521d\u59cb
 jndi.not.installed.explanation=JNDI \u529f\u80fd\u90e8\u4ef6\u63d0\u4f9b JNDI \u6ce8\u518c\u8868\u53ca\u5173\u8054\u5b9e\u7528\u7a0b\u5e8f\u3002\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u6216\u529f\u80fd\u90e8\u4ef6\u9700\u8981\u5728 JNDI \u4e0a\u4e0b\u6587\u4e2d\u67e5\u627e\u6761\u76ee\uff0c\u90a3\u4e48\u901a\u5e38\u9700\u8981\u6b64\u9879\u3002
 jndi.not.installed.useraction=\u8bf7\u786e\u4fdd\u5df2\u63d0\u4f9b JNDI \u5b9e\u73b0\uff08\u4f8b\u5982\uff0c\u901a\u8fc7\u5728\u6b64\u670d\u52a1\u5668\u7684\u914d\u7f6e\u4e2d\u914d\u7f6e JNDI \u529f\u80fd\u90e8\u4ef6\uff09\u3002
 
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.common.crypto
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
+# -------------------------------------------------------------------------------------------------
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_INSECURE=CWWKS5900W: {0} \u914d\u7f6e\u5143\u7d20\u6307\u5b9a\u4e86 {1} \u4e0d\u5b89\u5168\u52a0\u5bc6\u7b97\u6cd5\u3002  \u8bf7\u8003\u8651\u4f7f\u7528 {2} \u5b89\u5168\u7b97\u6cd5\u3002
+CRYPTO_INSECURE.explanation=\u6240\u914d\u7f6e\u7684\u7b97\u6cd5\u4e0d\u518d\u88ab\u8ba4\u4e3a\u662f\u52a0\u5bc6\u5b89\u5168\u7684\u3002
+CRYPTO_INSECURE.useraction=\u4f7f\u7528\u5efa\u8bae\u7684\u5b89\u5168\u7b97\u6cd5\u3002
+
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: {0} \u914d\u7f6e\u5143\u7d20\u6307\u5b9a\u4e86 {1} \u4e0d\u5b89\u5168\u52a0\u5bc6\u7b97\u6cd5\u3002  {2} \u5b89\u5168\u7b97\u6cd5\u5c06\u88ab\u66ff\u4ee3\u4f7f\u7528\u3002
+CRYPTO_INSECURE_REPLACED.explanation=\u7528\u5b89\u5168\u7b97\u6cd5\u53d6\u4ee3\u4e86\u4e0d\u5b89\u5168\u7684\u52a0\u5bc6\u7b97\u6cd5\u3002
+CRYPTO_INSECURE_REPLACED.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: {0} \u914d\u7f6e\u5143\u7d20\u4f7f\u7528 {1} \u4e0d\u5b89\u5168\u52a0\u5bc6\u7b97\u6cd5\u3002 \u5982\u679c\u62c5\u5fc3\u5b89\u5168\u95ee\u9898\uff0c\u53ef\u8003\u8651\u66f4\u6362\u4e0d\u540c\u7684\u63d0\u4f9b\u5546\u3002
+CRYPTO_INSECURE_PROVIDER.explanation=\u8fd9\u79cd\u7b97\u6cd5\u4e0d\u518d\u88ab\u8ba4\u4e3a\u662f\u52a0\u5bc6\u5b89\u5168\u7684\u3002
+CRYPTO_INSECURE_PROVIDER.useraction=\u5982\u679c\u62c5\u5fc3\u5b89\u5168\u95ee\u9898\uff0c\u53ef\u8003\u8651\u66f4\u6362\u4e0d\u540c\u7684\u63d0\u4f9b\u5546\u3002

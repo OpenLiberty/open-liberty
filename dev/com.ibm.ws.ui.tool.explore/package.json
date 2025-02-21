@@ -4,8 +4,8 @@
   "description": "OpenLiberty package refs for ui.explore ***USED FOR OSS SCANNING ONLY***",
   "author": "OpenLiberty",
   "dependencies": {
-    "dojo": "^1.12.11",
-    "d3": "^3.5.10",
+    "d3": "3.5.10",
+    "dojo": "1.12.11",
     "svg4everybody": "^2.1.9"
   }
 }

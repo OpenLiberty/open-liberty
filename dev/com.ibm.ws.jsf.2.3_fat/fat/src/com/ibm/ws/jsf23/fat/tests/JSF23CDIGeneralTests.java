@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,8 +47,6 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
 import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
 import io.openliberty.faces.fat.selenium.util.internal.WebPage;
-import componenttest.containers.SimpleLogConsumer;
-
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -79,7 +77,6 @@ public class JSF23CDIGeneralTests {
     @ClassRule
     public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
                     .withAccessToHost(true)
-                    .withLogConsumer(new SimpleLogConsumer(JSF23CDIGeneralTests.class, "selenium-driver"))
                     .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
 
     private static ExtendedWebDriver driver;

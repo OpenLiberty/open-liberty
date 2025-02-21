@@ -171,9 +171,10 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>3.5.2</version>
 				<configuration>
 					<argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBytes(). -->
+					<forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/> <!-- Default forkNode has encoding issues on ZOS -->
 					<trimStackTrace>false</trimStackTrace>
 					<failIfNoTests>true</failIfNoTests>
 					<dependenciesToScan>${jakarta.jsonb.tck.groupId}:jakarta.json.bind-tck</dependenciesToScan>

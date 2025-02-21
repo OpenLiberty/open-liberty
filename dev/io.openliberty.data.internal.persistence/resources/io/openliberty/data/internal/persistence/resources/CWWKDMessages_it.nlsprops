@@ -38,15 +38,15 @@ CWWKD1002.method.annos.err=CWWKD1002E: Il metodo {0} dell''interfaccia del repos
 CWWKD1002.method.annos.err.explanation=Questa combinazione di annotazioni non \u00e8 valida per un singolo metodo di deposito.
 CWWKD1002.method.annos.err.useraction=Individuare l'interfaccia e il metodo del repository e determinare la combinazione corretta di annotazioni del metodo.
 
-CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: Il tipo di ritorno del metodo {0} dell''interfaccia del repository {1} non \u00e8 un tipo di ritorno valido per un metodo del repository {3}. I tipi di ritorno validi includono: {4}.
-CWWKD1003.lifecycle.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per i metodi Insert, Update e Save.
-CWWKD1003.lifecycle.rtrn.err.useraction=Per i tipi di ritorno validi, consultare le informazioni del Javadoc di Jakarta Data per le annotazioni Insert, Update e Save.
+CWWKD1003.rtrn.err=CWWKD1003E: Il tipo di ritorno {0} del metodo {1} dell''interfaccia del repository {2} non \u00e8 un tipo di ritorno valido per un metodo del repository {3}. I tipi di ritorno validi sono: {4}.
+CWWKD1003.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per il tipo dichiarato di metodo del repository.
+CWWKD1003.rtrn.err.useraction=Fare riferimento alle informazioni del Jakarta Data Javadoc per le annotazioni Insert, Update e Save e alla documentazione Query by Method name per i tipi di ritorno validi.
 
 CWWKD1004.general.rtrn.err=CWWKD1004E: Il tipo di ritorno del metodo {0} dell''interfaccia del repository {2} non \u00e8 un tipo di ritorno valido per un metodo del repository.
 CWWKD1004.general.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per il tipo di metodo del repository.
 CWWKD1004.general.rtrn.err.useraction=Fare riferimento alle informazioni del Javadoc di Jakarta Data per un elenco dei tipi di ritorno validi per il tipo di metodo del repository.
 
-CWWKD1005.find.rtrn.err=CWWKD1005E: Il metodo {0} dell''interfaccia del repository {1} non \u00e8 valido. Il metodo specifica un tipo di ritorno {2} che non \u00e8 convertibile dal tipo di entit\u00e0 {3}. Il tipo di risultato di un''operazione di ricerca deve essere il tipo di entit\u00e0, un tipo di propriet\u00e0 dell''entit\u00e0, un record Java composto da propriet\u00e0 dell''entit\u00e0 o un tipo costruito dal JPQL o JDQL fornito all''annotazione Query. Il tipo di ritorno del metodo find del repository pu\u00f2 essere il tipo di risultato, un array del tipo di risultato o uno dei seguenti tipi parametrizzati con il tipo di risultato: {4}.
+CWWKD1005.find.rtrn.err=CWWKD1005E: Il metodo {0} dell''interfaccia del deposito {1} non \u00e8 valido. Il metodo specifica un tipo di ritorno {2} che non \u00e8 convertibile dal tipo di entit\u00e0 {3}. Il tipo di risultato di un''operazione di ricerca deve essere il tipo di entit\u00e0, un tipo di propriet\u00e0 dell''entit\u00e0, un record Java composto da propriet\u00e0 dell''entit\u00e0 o un tipo costruito dalla query fornita all''annotazione Query. Il tipo di ritorno del metodo find del repository pu\u00f2 essere il tipo di risultato, un array del tipo di risultato o uno dei seguenti tipi parametrizzati con il tipo di risultato: {4}.
 CWWKD1005.find.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per i metodi di repository find.
 CWWKD1005.find.rtrn.err.useraction=Per un elenco dei tipi di ritorno validi per i metodi di ricerca dei repository, consultare il Javadoc di Jakarta Data.
 
@@ -58,7 +58,7 @@ CWWKD1007.updel.rtrn.err=CWWKD1007E: Il tipo di ritorno del metodo {1} dell''int
 CWWKD1007.updel.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per un'operazione di aggiornamento o cancellazione.
 CWWKD1007.updel.rtrn.err.useraction=Aggiornare il metodo del repository per utilizzare uno dei tipi di ritorno supportati.
 
-CWWKD1008.ambig.rtrn.err=CWWKD1008E: Il tipo di ritorno del metodo {0} dell''interfaccia del repository {2} \u00e8 ambiguo come tipo di ritorno perch\u00e9 corrisponde a pi\u00f9 propriet\u00e0 dell''entit\u00e0: {3}. Il metodo del repository deve passare all''annotazione Query e utilizzare una query JDQL o JPQL con una clausola SELECT che specifichi quale propriet\u00e0 dell''entit\u00e0 restituire.
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: Il tipo di ritorno {0} del metodo {1} dell''interfaccia del deposito {2} \u00e8 ambiguo come tipo di ritorno perch\u00e9 corrisponde a pi\u00f9 propriet\u00e0 dell''entit\u00e0: {3}. Il metodo del repository deve passare all''annotazione Query e utilizzare una query con una clausola SELECT che specifichi quale propriet\u00e0 dell''entit\u00e0 restituire.
 CWWKD1008.ambig.rtrn.err.explanation=Il tipo di ritorno del metodo non \u00e8 uno dei tipi di ritorno supportati per un metodo di cancellazione.
 CWWKD1008.ambig.rtrn.err.useraction=Aggiornare il metodo del repository per utilizzare l'annotazione Query per selezionare la propriet\u00e0 dell'entit\u00e0.
 
@@ -111,15 +111,15 @@ CWWKD1020.invalid.param.type=CWWKD1020E: I parametri del metodo {0} dell''interf
 CWWKD1020.invalid.param.type.explanation=Il tipo di parametro non \u00e8 consentito in questo tipo di metodo.
 CWWKD1020.invalid.param.type.useraction=Aggiornare il metodo del repository per definire un parametro del metodo per ogni valore richiesto da un confronto.
 
-CWWKD1021.insufficient.params=CWWKD1021E: Il metodo {0} dell''interfaccia del repository {1} ha parametri {2}, ma le condizioni di interrogazione definite dal metodo richiedono parametri {3}. La query JPQL per il metodo \u00e8: {4}.
+CWWKD1021.insufficient.params=CWWKD1021E: Il metodo {0} dell''interfaccia del repository {1} ha {2} parametri, ma le condizioni di interrogazione definite dal metodo richiedono {3} parametri. La domanda per il metodo \u00e8: {4}.
 CWWKD1021.insufficient.params.explanation=Le condizioni di interrogazione che definiscono confronti di valori richiedono un numero corrispondente di parametri del metodo repository per fornire i valori.
 CWWKD1021.insufficient.params.useraction=Aggiornare il metodo del repository per definire un parametro del metodo per ogni valore richiesto da un confronto.
 
-CWWKD1022.too.many.params=CWWKD1022E: Le condizioni di interrogazione del metodo {0} dell''interfaccia del repository {1} richiedono {2} parametri, ma la firma del metodo del repository ha {3} parametri. La query JPQL per il metodo \u00e8: {4}.
+CWWKD1022.too.many.params=CWWKD1022E: Le condizioni di interrogazione del metodo {0} dell''interfaccia del repository {1} richiedono {2} parametri, ma la firma del metodo del repository ha {3} parametri. La domanda per il metodo \u00e8: {4}.
 CWWKD1022.too.many.params.explanation=Le condizioni di interrogazione che definiscono confronti di valori richiedono un numero corrispondente di parametri del metodo repository per fornire i valori. Non sono ammessi parametri aggiuntivi.
 CWWKD1022.too.many.params.useraction=Aggiornare la firma del metodo del repository per rimuovere i parametri extra che non corrispondono alle condizioni dichiarate.
 
-CWWKD1023.extra.param=CWWKD1023E: Le condizioni di interrogazione del metodo {0} dell''interfaccia del repository {1} richiedono {2} parametri, ma il metodo del repository ha un parametro aggiuntivo {3}. La query JPQL per il metodo \u00e8: {4}.
+CWWKD1023.extra.param=CWWKD1023E: Le condizioni di interrogazione del metodo {0} dell''interfaccia del repository {1} richiedono {2} parametri, ma il metodo del repository ha un parametro aggiuntivo {3}. La domanda per il metodo \u00e8: {4}.
 CWWKD1023.extra.param.explanation=Le condizioni di interrogazione che definiscono confronti di valori richiedono un numero corrispondente di parametri del metodo repository per fornire i valori. Non sono ammessi parametri aggiuntivi.
 CWWKD1023.extra.param.useraction=Aggiornare la firma del metodo del repository per rimuovere i parametri extra che non corrispondono alle condizioni dichiarate.
 
@@ -413,3 +413,23 @@ CWWKD1094.return.mismatch.useraction=Aggiornare il metodo del repository per uti
 CWWKD1095.repo.err=CWWKD1095E: Un''implementazione dell''interfaccia del repository {0} non pu\u00f2 essere fornita a causa di un errore. L''annotazione del repository \u00e8 {1}. La classe di entit\u00e0 primaria \u00e8 {2}. L''errore \u00e8: {3}
 CWWKD1095.repo.err.explanation=Il provider integrato di Jakarta Data non \u00e8 in grado di fornire un'istanza del repository a causa di un errore.
 CWWKD1095.repo.err.useraction=Indagare l'errore e correggere l'interfaccia del repository, le entit\u00e0, la configurazione dell'archivio dati o il database.
+
+CWWKD1096.orderby.incompat=CWWKD1096E: Il metodo {0} del repository {1} ha un''annotazione OrderBy, ma il metodo {0} non \u00e8 un''operazione di ricerca o di cancellazione che restituisce entit\u00e0.
+CWWKD1096.orderby.incompat.explanation=L'annotazione OrderBy non \u00e8 compatibile con il tipo di operazione del repository.
+CWWKD1096.orderby.incompat.useraction=Rimuovere l'annotazione OrderBy.
+
+CWWKD1097.param.incompat=CWWKD1097E: Il metodo {0} del repository {1} ha un parametro {2}, ma il metodo {0} non \u00e8 un''operazione di ricerca o di cancellazione che restituisce entit\u00e0.
+CWWKD1097.param.incompat.explanation=I parametri Order, Sort e Limit non sono compatibili con il tipo di operazione del deposito.
+CWWKD1097.param.incompat.useraction=Rimuovere il parametro Ordine, Ordinamento o Limite.
+
+CWWKD1098.spec.param.position.err=CWWKD1098E: Il metodo {0} del repository {1} ha un parametro {2} posizionato prima dei parametri della query. I tipi di parametri che hanno un significato speciale in Jakarta Data {3} ) devono essere posizionati dopo gli altri parametri nella firma del metodo del repository.
+CWWKD1098.spec.param.position.err.explanation=Quando i tipi di parametri speciali definiti da Jakarta Data sono inclusi nella firma di un metodo di repository, devono essere posizionati dopo tutti i parametri della query.
+CWWKD1098.spec.param.position.err.useraction=Spostare i tipi di parametri speciali definiti da Jakarta Data in posizioni alla fine della firma del metodo del repository.
+
+CWWKD1099.first.keyword.incompat=CWWKD1099E: Il metodo {0} del repository {1} ha un nome che include la parola chiave First, incompatibile con il parametro {2} del metodo.
+CWWKD1099.first.keyword.incompat.explanation=Un metodo Query by Method Name che include un parametro Limit o PageRequest non pu\u00f2 utilizzare la parola chiave First.
+CWWKD1099.first.keyword.incompat.useraction=Rimuovere la parola chiave First dal nome del metodo.
+
+CWWKD1100.cursor.requires.sort=CWWKD1100E: Il metodo {0} del repository {1} restituisce {2}, ma non ha un''annotazione OrderBy o uno dei seguenti parametri per specificare i criteri di ordinamento: {3}. I criteri di ordinamento sono necessari per la paginazione a cursore e non possono essere specificati all''interno di una clausola ORDER BY di un valore di annotazione Query.
+CWWKD1100.cursor.requires.sort.explanation=La paginazione basata sul cursore richiede criteri di ordinamento.
+CWWKD1100.cursor.requires.sort.useraction=Rimuove la clausola ORDER BY dal valore dell'annotazione Query, se \u00e8 presente. Aggiungere un'annotazione OrderBy o un parametro del metodo del repository per specificare i criteri di ordinamento.

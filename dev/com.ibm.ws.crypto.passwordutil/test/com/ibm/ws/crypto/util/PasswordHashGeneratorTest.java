@@ -39,7 +39,7 @@ public class PasswordHashGeneratorTest {
         } catch (Exception e) {
             //do nothing
         }
-        assertEquals(8, output.length);
+        assertEquals(32, output.length);
         byte[] output2 = PasswordHashGenerator.generateSalt(null);
         assertFalse("two auto generated salt should be different", Arrays.equals(output, output2));
     }

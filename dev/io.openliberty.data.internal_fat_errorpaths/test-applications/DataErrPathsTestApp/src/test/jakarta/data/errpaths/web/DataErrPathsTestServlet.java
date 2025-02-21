@@ -16,6 +16,7 @@ import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
@@ -163,6 +164,25 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1019E:") ||
                 !x.getMessage().contains("livingAt"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a count Query by Method Name method
+     * tries to return a long value as a Page of Long.
+     */
+    @Test
+    public void testCountAsPage() {
+        try {
+            LocalDate today = LocalDate.of(2025, Month.FEBRUARY, 18);
+            Page<Long> page = voters.countByBirthday(today);
+            fail("Should not be able to use a count query that returns a" +
+                 " Page rather than long. Page is: " + page);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1049E:") ||
+                !x.getMessage().contains("Page<java.lang.Long>"))
                 throw x;
         }
     }
@@ -566,6 +586,26 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an error is raised when an exists Query by Method Name method
+     * tries to return a true/false value as a Page.
+     */
+    @Test
+    public void testExistsAsPage() {
+        try {
+            LocalDate today = LocalDate.of(2025, Month.FEBRUARY, 18);
+            Page<Boolean> page = voters.existsByBirthday(today,
+                                                         PageRequest.ofSize(5));
+            fail("Should not be able to use an exists query that returns a" +
+                 " Page rather than boolean. Page is: " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1003E:") ||
+                !x.getMessage().contains("Page<java.lang.Boolean>"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify an error is raised for a repository method that has extra Param
      * annotations that do not correspond to any named parameters in the query.
      */
@@ -644,6 +684,23 @@ public class DataErrPathsTestServlet extends FATServlet {
                 !x.getMessage().startsWith("CWWKD1094E:") ||
                 !x.getMessage().contains("register") ||
                 !x.getMessage().contains("Voter[]"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised when attempting to insert a null
+     * record entity.
+     */
+    @Test
+    public void testInsertNullRecordEntity() {
+        try {
+            voters.addPollingLocation(null);
+            fail("Should not be able to insert a null entity.");
+        } catch (NullPointerException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1015E") ||
+                !x.getMessage().contains("addPollingLocation"))
                 throw x;
         }
     }
@@ -1004,6 +1061,80 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Attempt to supply a single NULL Sort to a repository method that retrieves
+     * results as CursoredPage.
+     */
+    @Test
+    public void testNullSortForCursoredPage() {
+        CursoredPage<Voter> page;
+        Cursor ssn0 = Cursor.forKey(0);
+        try {
+            page = voters.selectByAddress("4051 E River Rd NE, Rochester, MN 55906",
+                                          PageRequest.ofSize(5).afterCursor(ssn0),
+                                          new Sort<?>[] { null });
+            fail("Obtained a cursored page sorted by NULL: " + page);
+        } catch (IllegalArgumentException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Attempt to supply a single NULL Sort to a repository method that retrieves
+     * results as a Page.
+     */
+    @Test
+    public void testNullSortForPage() {
+        Page<Voter> page;
+        try {
+            page = voters.selectAll(PageRequest.ofSize(6),
+                                    new Sort<?>[] { null });
+            fail("Obtained a page sorted by NULL: " + page);
+        } catch (IllegalArgumentException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Attempt to supply multiple Sorts, with one of them NULL, to a
+     * repository method that retrieves results as CursoredPage.
+     */
+    @Test
+    public void testNullSortWithOtherSortsValidForCursoredPage() {
+        CursoredPage<Voter> page;
+        Cursor ssn0 = Cursor.forKey(0,
+                                    "Val",
+                                    "4051 E River Rd NE, Rochester, MN 55906");
+        try {
+            page = voters.selectByAddress("4051 E River Rd NE, Rochester, MN 55906",
+                                          PageRequest.ofSize(4).afterCursor(ssn0),
+                                          Sort.asc(ID),
+                                          null,
+                                          Sort.desc("address"));
+            fail("Obtained a cursored page sorted by NULL: " + page);
+        } catch (IllegalArgumentException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Attempt to supply multiple Sorts, with one of them NULL, to a
+     * repository method that retrieves results as a Page.
+     */
+    @Test
+    public void testNullSortWithOtherSortsValidForPage() {
+        Page<Voter> page;
+        try {
+            page = voters.selectAll(PageRequest.ofSize(7),
+                                    Sort.asc(ID),
+                                    null,
+                                    Sort.desc("name"));
+            fail("Obtained a page sorted by NULL: " + page);
+        } catch (IllegalArgumentException x) {
+            // expected
+        }
+    }
+
+    /**
      * Supply a PageRequest that has a Cursor to a repository method that returns
      * an offset-based Page rather than a CursoredPage. Expect an error.
      */
@@ -1042,6 +1173,46 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() != null &&
                 x.getMessage().startsWith("CWWKD1090E") &&
                 x.getMessage().contains("findByAddressOrderByName"))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a repository method has an OrderBy annotation
+     * that attempts to sort by an invalid, non-existent function.
+     */
+    @Test
+    public void testOrderByInvalidFunction() {
+        try {
+            List<Voter> found = voters.sortedByEndOfAddress();
+            fail("OrderBy annotation with invalid function must cause an error." +
+                 " Instead, the repository method returned: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1010E") &&
+                x.getMessage().contains("last5DigitsOf(address)"))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a repository method has an OrderBy annotation
+     * that attempts to sort by an invalid, non-existent function.
+     */
+    @Test
+    public void testOrderByUnkownEntityAttribute() {
+        try {
+            List<Voter> found = voters.sortedByZipCode();
+            fail("OrderBy annotation with invalid entity attribute must cause an" +
+                 " error. Instead, the repository method returned: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1010E") &&
+                x.getMessage().contains("sortedByZipCode"))
                 ; // expected
             else
                 throw x;
@@ -1285,6 +1456,26 @@ public class DataErrPathsTestServlet extends FATServlet {
                 x.getMessage().contains("Voters$NameAndZipCode"))
                 ; // expected
             else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised when attempting to save a list of
+     * record entities in which one is null.
+     */
+    @Test
+    public void testSaveListWithNullRecordEntity() {
+        PollingLocation loc1 = PollingLocation
+                        .of(42, "201 4th St SE, Rochester, MN 55904", 4, 2, //
+                            LocalTime.of(7, 0), LocalTime.of(20, 0));
+        try {
+            voters.addOrUpdate(Arrays.asList(loc1, null));
+            fail("Should not be able to save a list containing a null entity.");
+        } catch (NullPointerException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1015E") ||
+                !x.getMessage().contains("addOrUpdate"))
                 throw x;
         }
     }

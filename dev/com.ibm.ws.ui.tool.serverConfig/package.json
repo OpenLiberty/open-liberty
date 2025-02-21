@@ -4,9 +4,9 @@
   "description": "OpenLiberty package refs for ui.serverConfig ***USED FOR OSS SCANNING ONLY***",
   "author": "OpenLiberty",
   "dependencies": {
-    "carbon-components": "^10.44.0",
-    "google-closure-compiler": "^20160315",
-    "bootstrap": "^5.1.3",
-    "jquery": "^3.5.1"
+    "bootstrap": "5.1.3",
+    "carbon-components": "10.44.0",
+    "google-closure-compiler": "20160315.2.0",
+    "jquery": "3.5.1"
   }
 }

@@ -39,7 +39,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -157,10 +156,7 @@ public class CrossFeatureJaegerTest {
             Log.info(c, "testCrossFeatureFromTelemetry", span.toString());
         }
         //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-            || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID)
-            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)
-            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)) {
+        if (TelemetryActions.mpTelemetry20IsActive()) {
             Span server1 = findOneFrom(spans, hasAttribute(HTTP_ROUTE, "/crossFeature/1"));
             Span client2 = findOneFrom(spans, isSpan().withKind(SpanKind.CLIENT)
                                                       .withAttribute(URL_FULL, getUrl(opentracingServer) + "/2"));
@@ -210,10 +206,7 @@ public class CrossFeatureJaegerTest {
             Log.info(c, "testCrossFeatureFromOpenTracing", span.toString());
         }
         //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-            || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID)
-            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)
-            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)) {
+        if (TelemetryActions.mpTelemetry20IsActive()) {
 
             Span server1 = findOneFrom(spans, isSpan().withAttribute(HTTP_URL, getUrl(opentracingServer) + "/1"));
             Span client2 = findOneFrom(spans, isSpan().withAttribute(HTTP_URL, getUrl(telemetryServer) + "/2"));

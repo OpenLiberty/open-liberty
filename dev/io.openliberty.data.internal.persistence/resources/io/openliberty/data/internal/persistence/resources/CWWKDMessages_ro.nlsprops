@@ -38,15 +38,15 @@ CWWKD1002.method.annos.err=CWWKD1002E: Metoda {0} a interfe\u021bei de depozit {
 CWWKD1002.method.annos.err.explanation=Aceast\u0103 combina\u021bie de adnot\u0103ri nu este valid\u0103 pentru o singur\u0103 metod\u0103 de depozitare.
 CWWKD1002.method.annos.err.useraction=Localiza\u021bi interfa\u021ba \u0219i metoda de depozit \u0219i determina\u021bi combina\u021bia corect\u0103 de adnot\u0103ri de metod\u0103.
 
-CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} nu este un tip de returnare valid pentru o metod\u0103 de depozit {3} . Tipurile de returnare valide includ: {4} .
-CWWKD1003.lifecycle.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru metodele Inserare, Actualizare \u0219i Salvare.
-CWWKD1003.lifecycle.rtrn.err.useraction=Consulta\u021bi informa\u021biile Jakarta Data Javadoc pentru adnot\u0103rile Inserare, Actualizare \u0219i Salvare pentru tipurile de returnare valide.
+CWWKD1003.rtrn.err=CWWKD1003E: Tipul de retur {0} al metodei {1} din interfa\u021ba depozitului {2} nu este un tip de retur valid pentru o metod\u0103 {3} a depozitului. Tipurile de retur valide includ: {4}.
+CWWKD1003.rtrn.err.explanation=Tipul de retur al metodei nu este unul dintre tipurile de retur acceptate pentru tipul declarat al metodei depozitului.
+CWWKD1003.rtrn.err.useraction=Consulta\u021bi informa\u021biile Jakarta Data Javadoc pentru adnot\u0103rile Insert, Update \u0219i Save \u0219i documenta\u021bia Query by Method name pentru tipurile de retur valide.
 
 CWWKD1004.general.rtrn.err=CWWKD1004E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} nu este un tip de returnare valid pentru o metod\u0103 de depozit.
 CWWKD1004.general.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru tipul de metod\u0103 de depozit.
 CWWKD1004.general.rtrn.err.useraction=Consulta\u021bi informa\u021biile Jakarta Data Javadoc pentru o list\u0103 de tipuri de return\u0103ri valide pentru tipul de metod\u0103 de depozit.
 
-CWWKD1005.find.rtrn.err=CWWKD1005E: Metoda {0} a interfe\u021bei de depozit {1} nu este valid\u0103. Metoda specific\u0103 un tip de returnare {2} care nu este convertibil din tipul de entitate {3} . Tipul de rezultat al unei opera\u021bii de c\u0103utare trebuie s\u0103 fie tipul de entitate, un tip de proprietate de entitate, o \u00eenregistrare Java compus\u0103 din propriet\u0103\u021bi de entitate sau un tip construit de JPQL sau JDQL care este furnizat adnot\u0103rii Interogare. Tipul de returnare al metodei de g\u0103sire a depozitului poate fi tipul de rezultat, o matrice a tipului de rezultat sau oricare dintre urm\u0103toarele tipuri parametrizate cu tipul de rezultat: {4} .
+CWWKD1005.find.rtrn.err=CWWKD1005E: Metoda {0} a interfe\u021bei depozitului {1} nu este valabil\u0103. Metoda specific\u0103 un tip de retur {2} care nu este convertibil din tipul de entitate {3}. Tipul rezultat al unei opera\u021biuni de c\u0103utare trebuie s\u0103 fie tipul entit\u0103\u021bii, un tip de proprietate a entit\u0103\u021bii, o \u00eenregistrare Java compus\u0103 din propriet\u0103\u021bi ale entit\u0103\u021bii sau un tip construit de interogarea care este furnizat\u0103 adnot\u0103rii Query. Tipul de retur al metodei de c\u0103utare a depozitului poate fi tipul rezultatului, un array al tipului rezultat sau oricare dintre urm\u0103toarele tipuri parametrizate cu tipul rezultatului: {4}.
 CWWKD1005.find.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru metodele de g\u0103sire a depozitului.
 CWWKD1005.find.rtrn.err.useraction=Consulta\u021bi informa\u021biile Jakarta Data Javadoc pentru o list\u0103 de tipuri valide de returnare pentru metodele de g\u0103sire a depozitelor.
 
@@ -58,7 +58,7 @@ CWWKD1007.updel.rtrn.err=CWWKD1007E: Tipul de returnare {0} al metodei {1} a int
 CWWKD1007.updel.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru o opera\u021bie de actualizare sau \u0219tergere.
 CWWKD1007.updel.rtrn.err.useraction=Actualiza\u021bi metoda de depozit pentru a utiliza unul dintre tipurile de returnare acceptate.
 
-CWWKD1008.ambig.rtrn.err=CWWKD1008E: Tipul de returnare {0} al metodei {1} a interfe\u021bei de depozit {2} este ambiguu ca tip de returnare deoarece corespunde mai multor propriet\u0103\u021bi de entitate: {3} . Metoda de depozit trebuie s\u0103 comute la adnotarea Interogare \u0219i s\u0103 foloseasc\u0103 o interogare JDQL sau JPQL cu o clauz\u0103 SELECT care specific\u0103 ce proprietate de entitate s\u0103 returneze.
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: Tipul de retur {0} al metodei {1} din interfa\u021ba depozitului {2} este ambiguu ca tip de retur deoarece corespunde mai multor propriet\u0103\u021bi ale entit\u0103\u021bii: {3}. Metoda depozitului trebuie s\u0103 treac\u0103 la adnotarea Query \u0219i s\u0103 utilizeze o interogare cu o clauz\u0103 SELECT care specific\u0103 proprietatea entit\u0103\u021bii care trebuie returnat\u0103.
 CWWKD1008.ambig.rtrn.err.explanation=Tipul de returnare al metodei nu este unul dintre tipurile de returnare acceptate pentru o metod\u0103 de \u0219tergere.
 CWWKD1008.ambig.rtrn.err.useraction=Actualiza\u021bi metoda de depozit pentru a utiliza adnotarea Interogare pentru a selecta proprietatea entit\u0103\u021bii.
 
@@ -111,15 +111,15 @@ CWWKD1020.invalid.param.type=CWWKD1020E: Parametrii metodei {0} ai interfe\u021b
 CWWKD1020.invalid.param.type.explanation=Tipul de parametru nu este permis pe acest tip de metod\u0103.
 CWWKD1020.invalid.param.type.useraction=Actualiza\u021bi metoda depozitului pentru a defini un parametru de metod\u0103 pentru fiecare valoare cerut\u0103 de o compara\u021bie.
 
-CWWKD1021.insufficient.params=CWWKD1021E: Metoda {0} a interfe\u021bei de depozit {1} are {2} parametri, dar condi\u021biile de interogare care sunt definite de metod\u0103 necesit\u0103 {3} parametri. Interogarea JPQL pentru metod\u0103 este: {4} .
+CWWKD1021.insufficient.params=CWWKD1021E: Metoda {0} a interfe\u021bei depozitului {1} are {2} parametri, dar condi\u021biile de interogare definite de metod\u0103 necesit\u0103 {3} parametri. Interogarea pentru metod\u0103 este: {4}.
 CWWKD1021.insufficient.params.explanation=Condi\u021biile de interogare care definesc compara\u021biile de valori necesit\u0103 un num\u0103r corespunz\u0103tor de parametri ai metodei de depozit pentru a furniza valorile.
 CWWKD1021.insufficient.params.useraction=Actualiza\u021bi metoda depozitului pentru a defini un parametru de metod\u0103 pentru fiecare valoare cerut\u0103 de o compara\u021bie.
 
-CWWKD1022.too.many.params=CWWKD1022E: Condi\u021biile de interogare ale metodei {0} a interfe\u021bei de depozit {1} necesit\u0103 {2} parametri, dar semn\u0103tura metodei de depozit are {3} parametri. Interogarea JPQL pentru metod\u0103 este: {4} .
+CWWKD1022.too.many.params=CWWKD1022E: Condi\u021biile de interogare ale metodei {0} a interfe\u021bei depozitului {1} necesit\u0103 {2} parametri, dar semn\u0103tura metodei depozitului are {3} parametri. Interogarea pentru metod\u0103 este: {4}.
 CWWKD1022.too.many.params.explanation=Condi\u021biile de interogare care definesc compara\u021biile de valori necesit\u0103 un num\u0103r corespunz\u0103tor de parametri ai metodei de depozit pentru a furniza valorile. Parametrii suplimentari nu sunt permisi.
 CWWKD1022.too.many.params.useraction=Actualiza\u021bi semn\u0103tura metodei de depozit pentru a elimina parametrii suplimentari care nu corespund condi\u021biilor declarate.
 
-CWWKD1023.extra.param=CWWKD1023E: Condi\u021biile de interogare ale metodei {0} a interfe\u021bei de depozit {1} necesit\u0103 {2} parametri, dar metoda de depozit are un parametru suplimentar {3} . Interogarea JPQL pentru metod\u0103 este: {4} .
+CWWKD1023.extra.param=CWWKD1023E: Condi\u021biile de interogare ale metodei {0} a interfe\u021bei depozitului {1} necesit\u0103 {2} parametri, dar metoda depozitului are un parametru suplimentar {3}. Interogarea pentru metod\u0103 este: {4}.
 CWWKD1023.extra.param.explanation=Condi\u021biile de interogare care definesc compara\u021biile de valori necesit\u0103 un num\u0103r corespunz\u0103tor de parametri ai metodei de depozit pentru a furniza valorile. Parametrii suplimentari nu sunt permisi.
 CWWKD1023.extra.param.useraction=Actualiza\u021bi semn\u0103tura metodei de depozit pentru a elimina parametrii suplimentari care nu corespund condi\u021biilor declarate.
 
@@ -413,3 +413,23 @@ CWWKD1094.return.mismatch.useraction=Actualiza\u021bi metoda depozitului fie pen
 CWWKD1095.repo.err=CWWKD1095E: O implementare a interfe\u021bei de depozit {0} nu poate fi furnizat\u0103 din cauza unei erori. Adnotarea depozitului este {1} . Clasa de entitate primar\u0103 este {2} . Eroarea este: {3}
 CWWKD1095.repo.err.explanation=Furnizorul de date Jakarta \u00eencorporat nu poate furniza o instan\u021b\u0103 a depozitului din cauza unei erori.
 CWWKD1095.repo.err.useraction=Investiga\u021bi eroarea \u0219i corecta\u021bi interfa\u021ba depozitului, entit\u0103\u021bile, configura\u021bia depozitului de date sau baza de date.
+
+CWWKD1096.orderby.incompat=CWWKD1096E: Metoda {0} din depozitul {1} are o adnotare OrderBy, dar metoda {0} nu este o opera\u021bie de c\u0103utare sau de \u0219tergere care returneaz\u0103 entit\u0103\u021bi.
+CWWKD1096.orderby.incompat.explanation=Adnotarea OrderBy nu este compatibil\u0103 cu tipul de opera\u021biune a depozitului.
+CWWKD1096.orderby.incompat.useraction=Elimin\u0103 adnotarea OrderBy.
+
+CWWKD1097.param.incompat=CWWKD1097E: Metoda {0} a depozitului {1} are un parametru {2}, dar metoda {0} nu este o opera\u021bie de c\u0103utare sau o opera\u021bie de \u0219tergere care returneaz\u0103 entit\u0103\u021bi.
+CWWKD1097.param.incompat.explanation=Parametrii Ordine, Sortare \u0219i Limit\u0103 nu sunt compatibili cu tipul de opera\u021biune a depozitului.
+CWWKD1097.param.incompat.useraction=Elimina\u021bi parametrul Ordine, Sortare sau Limit\u0103.
+
+CWWKD1098.spec.param.position.err=CWWKD1098E: Metoda {0} a depozitului {1} are un parametru {2} care este pozi\u021bionat \u00eenaintea parametrilor de interogare. Tipurile de parametri care au o semnifica\u021bie special\u0103 \u00een Jakarta Data {3} ) trebuie s\u0103 fie pozi\u021bionate dup\u0103 ceilal\u021bi parametri \u00een semn\u0103tura metodei depozitului.
+CWWKD1098.spec.param.position.err.explanation=Atunci c\u00e2nd tipurile speciale de parametri definite de Jakarta Data sunt incluse \u00een semn\u0103tura unei metode de depozit, acestea trebuie pozi\u021bionate dup\u0103 to\u021bi parametrii de interogare.
+CWWKD1098.spec.param.position.err.useraction=Muta\u021bi tipurile speciale de parametri definite de Jakarta Data \u00een pozi\u021bii la sf\u00e2r\u0219itul semn\u0103turii metodei depozitului.
+
+CWWKD1099.first.keyword.incompat=CWWKD1099E: Metoda {0} din depozitul {1} are un nume care include cuv\u00e2ntul cheie First, care este incompatibil cu parametrul {2} al metodei.
+CWWKD1099.first.keyword.incompat.explanation=O metod\u0103 Query by Method Name care include un parametru Limit sau PageRequest nu poate utiliza cuv\u00e2ntul-cheie First.
+CWWKD1099.first.keyword.incompat.useraction=Elimina\u021bi cuv\u00e2ntul cheie First din numele metodei.
+
+CWWKD1100.cursor.requires.sort=CWWKD1100E: Metoda {0} a depozitului {1} returneaz\u0103 {2} dar nu are o adnotare OrderBy sau oricare dintre urm\u0103torii parametri pentru a specifica criteriile de sortare: {3}. Criteriile de sortare sunt necesare pentru paginarea bazat\u0103 pe cursor \u0219i nu pot fi specificate \u00een cadrul unei clauze ORDER BY a unei valori de adnotare Query.
+CWWKD1100.cursor.requires.sort.explanation=Paginarea bazat\u0103 pe cursor necesit\u0103 criterii de sortare.
+CWWKD1100.cursor.requires.sort.useraction=Elimin\u0103 clauza ORDER BY din valoarea de adnotare a interog\u0103rii, dac\u0103 se g\u0103se\u0219te una acolo. Ad\u0103uga\u021bi o adnotare OrderBy sau un parametru de metod\u0103 de depozit pentru a specifica criteriile de sortare.

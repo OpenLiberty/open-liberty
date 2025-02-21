@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -96,7 +96,7 @@ public class ArtifactDownloader implements AutoCloseable {
         Set<String> missingCoords = new HashSet<>();
 
         if (!testConnection(repository)) {
-            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
+            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN", repository.getRepositoryUrl());
         }
 
         updateProgress(progressBar.getMethodIncrement("establishConnection"));
@@ -221,7 +221,7 @@ public class ArtifactDownloader implements AutoCloseable {
         try {
             if (individualDownload) {
                 if (!testConnection(repository)) {
-                    throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
+                    throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN", repository.getRepositoryUrl());
                 }
 
                 if (ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap, repository)) {

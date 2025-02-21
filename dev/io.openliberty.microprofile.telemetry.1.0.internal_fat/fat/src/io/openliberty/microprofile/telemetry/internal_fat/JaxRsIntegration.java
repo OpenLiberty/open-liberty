@@ -224,10 +224,7 @@ public class JaxRsIntegration extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) ||
-                   RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
-                   || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
@@ -244,10 +241,7 @@ public class JaxRsIntegration extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) ||
-                   RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
-                   || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
@@ -264,10 +258,7 @@ public class JaxRsIntegration extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) ||
-                   RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
-                   || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
@@ -284,10 +275,7 @@ public class JaxRsIntegration extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) ||
-                   RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
-                   || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
@@ -300,10 +288,7 @@ public class JaxRsIntegration extends FATServletClient {
     public void testIntegrationWithJaxRsClientWithSpan() throws Exception {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclientwithspan");
         String traceId = readTraceId(pokeJax);
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-            || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) ||
-            RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
-            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspanswithspanmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
@@ -320,10 +305,7 @@ public class JaxRsIntegration extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) ||
-                   RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
-                   || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        }else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
@@ -343,10 +325,7 @@ public class JaxRsIntegration extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) ||
-                   RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
-                   || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
@@ -362,10 +341,7 @@ public class JaxRsIntegration extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL20_ID)
-                   || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP50_MPTEL20_ID) ||
-                   RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID) || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
-                   || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+        } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {

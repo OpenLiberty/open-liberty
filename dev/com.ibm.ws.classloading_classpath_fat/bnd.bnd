@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2024 IBM Corporation and others.
+# Copyright (c) 2024, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,8 @@ src: \
 	test-applications/testLib16.jar/src, \
 	test-applications/testLib17.jar/src, \
 	test-applications/testRar1.rar/src, \
-	test-applications/testResourceAdaptor.jar/src
+	test-applications/testResourceAdaptor.jar/src, \
+	test-applications/testLibFileSet/src
 
 fat.project: true
 

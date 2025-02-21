@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,30 @@ jndi.not.installed=CWWKE0800W: Byl proveden pokus o na\u010dten\u00ed po\u010d\u
 jndi.not.installed.explanation=Funkce JNDI poskytuje obslu\u017en\u00e9 programy registru JNDI a p\u0159idru\u017een\u00e9 obslu\u017en\u00e9 programy. To je b\u011b\u017en\u011b po\u017eadov\u00e1no v p\u0159\u00edpad\u011b, pokud aplikace nebo funkce pot\u0159ebuje vyhledat polo\u017eky v kontextu JNDI.
 jndi.not.installed.useraction=Zajist\u011bte, aby byla poskytnuta implementace JNDI (nap\u0159. konfigurac\u00ed funkce JNDI v konfiguraci pro tento server).
 
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.common.crypto
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
+# -------------------------------------------------------------------------------------------------
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_INSECURE=CWWKS5900W: The {0} konfigura\u010dn\u00ed prvek ur\u010duje {1} nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus.  Zva\u017ete pou\u017eit\u00ed {2} m\u00edsto toho bezpe\u010dn\u00fd algoritmus.
+CRYPTO_INSECURE.explanation=Nakonfigurovan\u00fd algoritmus ji\u017e nen\u00ed pova\u017eov\u00e1n za kryptograficky bezpe\u010dn\u00fd.
+CRYPTO_INSECURE.useraction=Pou\u017eijte navrhovan\u00fd bezpe\u010dn\u00fd algoritmus.
+
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} konfigura\u010dn\u00ed prvek ur\u010duje {1} nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus.  The {2} m\u00edsto toho se pou\u017e\u00edv\u00e1 bezpe\u010dn\u00fd algoritmus.
+CRYPTO_INSECURE_REPLACED.explanation=Nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus byl nahrazen zabezpe\u010den\u00fdm algoritmem.
+CRYPTO_INSECURE_REPLACED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Konfigura\u010dn\u00ed prvek {0} pou\u017e\u00edv\u00e1 nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus {1} . Pokud jde o zabezpe\u010den\u00ed, zva\u017ete nahrazen\u00ed konfigurace jin\u00fdm poskytovatelem.
+CRYPTO_INSECURE_PROVIDER.explanation=Algoritmus ji\u017e nen\u00ed pova\u017eov\u00e1n za kryptograficky bezpe\u010dn\u00fd.
+CRYPTO_INSECURE_PROVIDER.useraction=Pokud jde o zabezpe\u010den\u00ed, zva\u017ete nahrazen\u00ed konfigurace jin\u00fdm poskytovatelem.

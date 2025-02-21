@@ -270,6 +270,8 @@ public class DataJPATestServlet extends FATServlet {
 
         // TODO remove this workaround for intermittent issue triggered by test ordering once 28078 is fixed
         testLiteralDouble();
+        // To quickly try reproducing the issue, remove the above line and add the following line to tearDown,
+        // runTest(server, "DataJPATestApp", "testLiteralDouble");
     }
 
     /**
@@ -1340,21 +1342,34 @@ public class DataJPATestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        List<Set<AccountId>> list = taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold);
-        // TODO EclipseLink bug where
-        // SELECT o.bankAccounts FROM TaxPayer o WHERE (o.filingStatus=?1) ORDER BY o.numDependents, o.ssn
-        // combines the two Set<AccountId> values that ought to be the result into a single combined list of AccountId.
-        //assertEquals(list.toString(), 2, list.size());
-        //assertEquals(Set.of("AccountId:43014400:410224"),
-        //             list.get(0)
-        //                             .stream()
-        //                             .map(AccountId::toString)
-        //                             .collect(Collectors.toSet()));
-        //assertEquals(Set.of("AccountId:10105600:560237", "AccountId:15561600:391588"),
-        //             list.get(1)
-        //                             .stream()
-        //                             .map(AccountId::toString)
-        //                             .collect(Collectors.toSet()));
+        List<Set<AccountId>> list;
+        try {
+            list = taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold);
+            assertEquals(list.toString(), 2, list.size());
+            assertEquals(Set.of("AccountId:43014400:410224"),
+                         list.get(0)
+                                         .stream()
+                                         .map(AccountId::toString)
+                                         .collect(Collectors.toSet()));
+            assertEquals(Set.of("AccountId:10105600:560237",
+                                "AccountId:15561600:391588"),
+                         list.get(1)
+                                         .stream()
+                                         .map(AccountId::toString)
+                                         .collect(Collectors.toSet()));
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1103E:"))
+                // Works around bad behavior from EclipseLink (see #30575)
+                // for ElementCollection:
+                // SELECT o.bankAccounts FROM TaxPayer o WHERE (o.filingStatus=?1)
+                //  ORDER BY o.numDependents, o.ssn
+                // combines the two Set<AccountId> values that ought to be the result
+                // into a single combined list of AccountId.
+                ;
+            else
+                throw x;
+        }
 
         // TODO report EclipseLink bug that occurs on the following
         if (false)
@@ -2069,9 +2084,17 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(Integer.valueOf(1983), camry.getYearIntroduced());
         assertEquals("Toyota", camry.getManufacturer().getName());
 
-        corolla = models.findById(corollaId).orElseThrow();
-
-        assertEquals("Corolla", corolla.getName());
+        // TODO enable once EclipseLink bug #28813 is fixed
+        //Instant corollaLastMod;
+        Long corollaLastMod;
+        corollaLastMod = models.lastModified(corollaId).orElseThrow();
+        List<Model> found = models.modifiedAt(corollaLastMod);
+        assertEquals(false, found.isEmpty());
+        corolla = null;
+        for (Model model : found)
+            if ("Corolla".equals(model.getName()))
+                corolla = model;
+        assertNotNull(corolla);
         assertEquals(Integer.valueOf(1966), corolla.getYearIntroduced());
         assertEquals("Toyota", corolla.getManufacturer().getName());
 
@@ -4321,9 +4344,7 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         // Update the version/LocalDateTime and retry:
-        Long lastUpdate;
-        // TODO switch to the following once EclipseLink bug #30534 is fixed
-        //LocalDateTime lastUpdate;
+        LocalDateTime lastUpdate;
         lastUpdate = dodge.lastUpdated = counties.findLastUpdatedByName("Dodge");
         dodge.population = 20981;
 

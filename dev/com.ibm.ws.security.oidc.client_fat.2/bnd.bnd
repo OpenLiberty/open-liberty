@@ -53,3 +53,5 @@ Import-Package: \
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.json4j;version=latest
 	
+# Copy in FIPS keys
+ltpa.fips.enabled: true

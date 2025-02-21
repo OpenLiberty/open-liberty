@@ -65,3 +65,6 @@ tested.features: jaxrs-2.0, el-3.0, restfulwsclient-3.0, restfulws-3.0, appsecur
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
     org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

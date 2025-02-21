@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2024 IBM Corporation and others.
+ * Copyright (c) 2002, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -109,7 +109,7 @@ public class BinaryLogExec {
             invalidOption.append(alphabet.charAt(rnd.nextInt(alphabet.length())));
         }
 
-        StringBuffer expectedResponse = new StringBuffer();
+        // StringBuffer expectedResponse = new StringBuffer();
         // (WI 234118) We cannot check for message text that gets translated, because it causes the test to fail in non-English locales.
         // Updating this match to only use the non-translated words and argument in the message text.
         // expectedResponse.append("The specified action ");
@@ -117,8 +117,8 @@ public class BinaryLogExec {
         // expectedResponse.append(" is not valid.");
         // expectedResponse.append("\\s+"); //match as a regular expression
         // expectedResponse.append("For usage information use binaryLog help.");
-        expectedResponse.append(".*" + invalidOption + ".*\\s+");
-        expectedResponse.append(".*binaryLog help.*");
+        // expectedResponse.append(".*" + invalidOption + ".*\\s+");
+        // expectedResponse.append(".*binaryLog help.*");
         ProgramOutput lvPrgmOut = exeBinaryLog(new String[] { invalidOption.toString() });
         CommonTasks.writeLogMsg(Level.INFO, "Verifying binaryLog std out/err and status return code.");
         logMsg("    === BinaryLog's stdout: === ");
@@ -131,9 +131,11 @@ public class BinaryLogExec {
         }
 
         assertTrue("Failed assertion that logViewer exited with an error return code", (lvPrgmOut.getReturnCode() != 0));
-        assertTrue("Failed assertion that logViewer reported invalid option.  Where //s is any number of spaces, expected="
-                   + expectedResponse.toString().trim() + ".  result=" + lvPrgmOut.getStdout().trim(),
-                   Pattern.matches(expectedResponse.toString(), lvPrgmOut.getStdout().trim()));
+        assertTrue("logViewer did not report invalid option. Expected="
+                   + invalidOption + ".  result=" + lvPrgmOut.getStdout().trim(),
+                   lvPrgmOut.getStdout().contains(invalidOption));
+        assertTrue("logViewer message did not contain binaryLog help. Result=" + lvPrgmOut.getStdout().trim(),
+                   lvPrgmOut.getStdout().contains("binaryLog help"));
 
     }
 

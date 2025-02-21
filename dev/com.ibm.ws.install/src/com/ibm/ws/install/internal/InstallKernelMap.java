@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -151,6 +151,7 @@ public class InstallKernelMap implements Map {
     private static final String LICENSE_DIRECTORY = "lafiles" + File.separator;
     private static final String LIB_VERSIONS_DIRECTORY = "lib" + File.separator + "versions" + File.separator;
     private static final String FEATURE_UTILITY_PROPS_FILE = "featureUtility.env";
+    public static final String HIDDEN_PASSWORD = "********";
     private Map<String, Object> envMap = null;
     private final List<File> upgradeFiles = new ArrayList<File>();
     private final List<MavenRepository> workingRepos = new ArrayList<MavenRepository>();
@@ -1127,7 +1128,18 @@ public class InstallKernelMap implements Map {
         logger.fine(this.envMap.toString());
         envMap.putAll(overrideMap);
         logger.fine("printing envmap after");
-        logger.fine(envMap.toString());
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        for (Entry<String, Object> entry : envMap.entrySet()) {
+            sb.append(entry.getKey());
+            sb.append("=");
+            //Encrypt proxy password
+            sb.append(entry.getKey().contains(".proxyPassword") ? HIDDEN_PASSWORD : entry.getValue());
+            sb.append(", ");
+        }
+        sb.append("}");
+        logger.fine(sb.toString());
 
     }
 

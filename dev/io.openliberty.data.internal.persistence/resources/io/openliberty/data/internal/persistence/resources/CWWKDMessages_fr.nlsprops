@@ -38,15 +38,15 @@ CWWKD1002.method.annos.err=CWWKD1002E: La m\u00e9thode {0} de l''interface de d\
 CWWKD1002.method.annos.err.explanation=Cette combinaison d'annotations n'est pas valable pour une seule m\u00e9thode de d\u00e9p\u00f4t.
 CWWKD1002.method.annos.err.useraction=Localisez l'interface et la m\u00e9thode du r\u00e9f\u00e9rentiel et d\u00e9terminez la bonne combinaison d'annotations de m\u00e9thode.
 
-CWWKD1003.lifecycle.rtrn.err=CWWKD1003E: Le type de retour {0} de la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} n''est pas un type de retour valide pour une m\u00e9thode de r\u00e9f\u00e9rentiel {3}. Les types de retour valides sont les suivants : {4}.
-CWWKD1003.lifecycle.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour les m\u00e9thodes Insert, Update et Save.
-CWWKD1003.lifecycle.rtrn.err.useraction=Reportez-vous aux informations Javadoc de Jakarta Data pour les annotations Insert, Update et Save pour conna\u00eetre les types de retour valides.
+CWWKD1003.rtrn.err=CWWKD1003E: Le type de retour {0} de la m\u00e9thode {1} de l''interface {2} du r\u00e9f\u00e9rentiel n''est pas un type de retour valide pour une m\u00e9thode {3} du r\u00e9f\u00e9rentiel. Les types de retour valides sont les suivants : {4}.
+CWWKD1003.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour le type d\u00e9clar\u00e9 de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1003.rtrn.err.useraction=Reportez-vous aux informations de la Javadoc de Jakarta Data pour les annotations Insert, Update et Save et \u00e0 la documentation Query by Method name pour les types de retour valides.
 
 CWWKD1004.general.rtrn.err=CWWKD1004E: Le type de retour {0} de la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} n''est pas un type de retour valide pour une m\u00e9thode de r\u00e9f\u00e9rentiel.
 CWWKD1004.general.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour le type de m\u00e9thode du r\u00e9f\u00e9rentiel.
 CWWKD1004.general.rtrn.err.useraction=Reportez-vous aux informations Javadoc de Jakarta Data pour obtenir une liste des types de retour valides pour le type de m\u00e9thode de r\u00e9f\u00e9rentiel.
 
-CWWKD1005.find.rtrn.err=CWWKD1005E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} n''est pas valide. La m\u00e9thode sp\u00e9cifie un type de retour {2} qui n''est pas convertible \u00e0 partir du type d''entit\u00e9 {3}. Le type de r\u00e9sultat d''une op\u00e9ration de recherche doit \u00eatre le type d''entit\u00e9, un type de propri\u00e9t\u00e9 d''entit\u00e9, un enregistrement Java compos\u00e9 de propri\u00e9t\u00e9s d''entit\u00e9, ou un type construit par JPQL ou JDQL qui est fourni \u00e0 l''annotation Query. Le type de retour de la m\u00e9thode de recherche du r\u00e9f\u00e9rentiel peut \u00eatre le type de r\u00e9sultat, un tableau du type de r\u00e9sultat ou l''un des types suivants param\u00e9tr\u00e9s avec le type de r\u00e9sultat : {4}.
+CWWKD1005.find.rtrn.err=CWWKD1005E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} n''est pas valide. La m\u00e9thode sp\u00e9cifie un type de retour {2} qui n''est pas convertible \u00e0 partir du type d''entit\u00e9 {3}. Le type de r\u00e9sultat d''une op\u00e9ration de recherche doit \u00eatre le type d''entit\u00e9, un type de propri\u00e9t\u00e9 d''entit\u00e9, un enregistrement Java compos\u00e9 de propri\u00e9t\u00e9s d''entit\u00e9, ou un type construit par la requ\u00eate qui est fournie \u00e0 l''annotation Query. Le type de retour de la m\u00e9thode de recherche du r\u00e9f\u00e9rentiel peut \u00eatre le type de r\u00e9sultat, un tableau du type de r\u00e9sultat ou l''un des types suivants param\u00e9tr\u00e9s avec le type de r\u00e9sultat : {4}.
 CWWKD1005.find.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour les m\u00e9thodes de recherche de r\u00e9f\u00e9rentiel.
 CWWKD1005.find.rtrn.err.useraction=Reportez-vous aux informations Javadoc de Jakarta Data pour obtenir une liste des types de retour valides pour les m\u00e9thodes de recherche de r\u00e9f\u00e9rentiel.
 
@@ -58,7 +58,7 @@ CWWKD1007.updel.rtrn.err=CWWKD1007E: Le type de retour de la m\u00e9thode {1} de
 CWWKD1007.updel.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour une op\u00e9ration de mise \u00e0 jour ou de suppression.
 CWWKD1007.updel.rtrn.err.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour utiliser l'un des types de retour pris en charge.
 
-CWWKD1008.ambig.rtrn.err=CWWKD1008E: Le type de retour de la m\u00e9thode {1} de l''interface de r\u00e9f\u00e9rentiel {2} est ambigu en tant que type de retour car il correspond \u00e0 plusieurs propri\u00e9t\u00e9s d''entit\u00e9 : {3}. La m\u00e9thode de r\u00e9f\u00e9rentiel doit passer \u00e0 l''annotation Query et utiliser une requ\u00eate JDQL ou JPQL avec une clause SELECT qui sp\u00e9cifie quelle propri\u00e9t\u00e9 de l''entit\u00e9 doit \u00eatre retourn\u00e9e.
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: Le type de retour {0} de la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} est ambigu en tant que type de retour car il correspond \u00e0 plusieurs propri\u00e9t\u00e9s de l''entit\u00e9 : {3}. La m\u00e9thode du r\u00e9f\u00e9rentiel doit passer \u00e0 l''annotation Query et utiliser une requ\u00eate avec une clause SELECT qui sp\u00e9cifie quelle propri\u00e9t\u00e9 de l''entit\u00e9 doit \u00eatre retourn\u00e9e.
 CWWKD1008.ambig.rtrn.err.explanation=Le type de retour de la m\u00e9thode ne fait pas partie des types de retour pris en charge pour une m\u00e9thode de suppression.
 CWWKD1008.ambig.rtrn.err.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel afin d'utiliser l'annotation Query pour s\u00e9lectionner la propri\u00e9t\u00e9 de l'entit\u00e9.
 
@@ -111,15 +111,15 @@ CWWKD1020.invalid.param.type=CWWKD1020E: Les param\u00e8tres de la m\u00e9thode 
 CWWKD1020.invalid.param.type.explanation=Le type de param\u00e8tre n'est pas autoris\u00e9 pour ce type de m\u00e9thode.
 CWWKD1020.invalid.param.type.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour d\u00e9finir un param\u00e8tre de m\u00e9thode pour chaque valeur requise par une comparaison.
 
-CWWKD1021.insufficient.params=CWWKD1021E: La m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} a des param\u00e8tres {2}, mais les conditions d''interrogation d\u00e9finies par la m\u00e9thode requi\u00e8rent des param\u00e8tres {3}. La requ\u00eate JPQL pour la m\u00e9thode est : {4}.
+CWWKD1021.insufficient.params=CWWKD1021E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} a {2} param\u00e8tres, mais les conditions d''interrogation d\u00e9finies par la m\u00e9thode n\u00e9cessitent {3} param\u00e8tres. La requ\u00eate pour la m\u00e9thode est : {4}.
 CWWKD1021.insufficient.params.explanation=Les conditions d'interrogation qui d\u00e9finissent des comparaisons de valeurs requi\u00e8rent un nombre correspondant de param\u00e8tres de m\u00e9thode du r\u00e9f\u00e9rentiel pour fournir les valeurs.
 CWWKD1021.insufficient.params.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00e9f\u00e9rentiel pour d\u00e9finir un param\u00e8tre de m\u00e9thode pour chaque valeur requise par une comparaison.
 
-CWWKD1022.too.many.params=CWWKD1022E: Les conditions d''interrogation de la m\u00e9thode {0} de l''interface de r\u00e9f\u00e9rentiel {1} n\u00e9cessitent des param\u00e8tres {2}, mais la signature de la m\u00e9thode de r\u00e9f\u00e9rentiel a des param\u00e8tres {3}. La requ\u00eate JPQL pour la m\u00e9thode est : {4}.
+CWWKD1022.too.many.params=CWWKD1022E: Les conditions d''interrogation de la m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} n\u00e9cessitent {2} param\u00e8tres, mais la signature de la m\u00e9thode du r\u00e9f\u00e9rentiel a {3} param\u00e8tres. La requ\u00eate pour la m\u00e9thode est : {4}.
 CWWKD1022.too.many.params.explanation=Les conditions d'interrogation qui d\u00e9finissent des comparaisons de valeurs requi\u00e8rent un nombre correspondant de param\u00e8tres de m\u00e9thode du r\u00e9f\u00e9rentiel pour fournir les valeurs. Les param\u00e8tres suppl\u00e9mentaires ne sont pas autoris\u00e9s.
 CWWKD1022.too.many.params.useraction=Mettre \u00e0 jour la signature de la m\u00e9thode du r\u00e9f\u00e9rentiel pour supprimer les param\u00e8tres suppl\u00e9mentaires qui ne correspondent pas aux conditions d\u00e9clar\u00e9es.
 
-CWWKD1023.extra.param=CWWKD1023E: Les conditions d''interrogation de la m\u00e9thode {0} de l''interface de d\u00e9p\u00f4t {1} n\u00e9cessitent des param\u00e8tres {2}, mais la m\u00e9thode de d\u00e9p\u00f4t a un param\u00e8tre suppl\u00e9mentaire {3}. La requ\u00eate JPQL pour la m\u00e9thode est : {4}.
+CWWKD1023.extra.param=CWWKD1023E: Les conditions d''interrogation de la m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} requi\u00e8rent {2} param\u00e8tres, mais la m\u00e9thode du r\u00e9f\u00e9rentiel dispose d''un param\u00e8tre suppl\u00e9mentaire {3}. La requ\u00eate pour la m\u00e9thode est : {4}.
 CWWKD1023.extra.param.explanation=Les conditions d'interrogation qui d\u00e9finissent des comparaisons de valeurs requi\u00e8rent un nombre correspondant de param\u00e8tres de m\u00e9thode du r\u00e9f\u00e9rentiel pour fournir les valeurs. Les param\u00e8tres suppl\u00e9mentaires ne sont pas autoris\u00e9s.
 CWWKD1023.extra.param.useraction=Mettre \u00e0 jour la signature de la m\u00e9thode du r\u00e9f\u00e9rentiel pour supprimer les param\u00e8tres suppl\u00e9mentaires qui ne correspondent pas aux conditions d\u00e9clar\u00e9es.
 
@@ -413,3 +413,23 @@ CWWKD1094.return.mismatch.useraction=Mettre \u00e0 jour la m\u00e9thode du r\u00
 CWWKD1095.repo.err=CWWKD1095E: Une erreur a emp\u00each\u00e9 la mise en \u0153uvre de l''interface du r\u00e9f\u00e9rentiel {0}. L''annotation du r\u00e9f\u00e9rentiel est {1}. La classe d''entit\u00e9 primaire est {2}. L''erreur est la suivante : {3}
 CWWKD1095.repo.err.explanation=Le fournisseur int\u00e9gr\u00e9 de Jakarta Data n'est pas en mesure de fournir une instance du r\u00e9f\u00e9rentiel en raison d'une erreur.
 CWWKD1095.repo.err.useraction=Recherchez l'erreur et corrigez l'interface du r\u00e9f\u00e9rentiel, les entit\u00e9s, la configuration du magasin de donn\u00e9es ou la base de donn\u00e9es.
+
+CWWKD1096.orderby.incompat=CWWKD1096E: La m\u00e9thode {0} du r\u00e9f\u00e9rentiel {1} a une annotation OrderBy, mais la m\u00e9thode {0} n''est pas une op\u00e9ration de recherche ou de suppression qui renvoie des entit\u00e9s.
+CWWKD1096.orderby.incompat.explanation=L'annotation OrderBy n'est pas compatible avec le type d'op\u00e9ration du r\u00e9f\u00e9rentiel.
+CWWKD1096.orderby.incompat.useraction=Supprime l'annotation OrderBy.
+
+CWWKD1097.param.incompat=CWWKD1097E: La m\u00e9thode {0} du r\u00e9f\u00e9rentiel {1} a un param\u00e8tre {2}, mais la m\u00e9thode {0} n''est pas une op\u00e9ration de recherche ou de suppression qui renvoie des entit\u00e9s.
+CWWKD1097.param.incompat.explanation=Les param\u00e8tres Order, Sort et Limit ne sont pas compatibles avec le type d'op\u00e9ration du r\u00e9f\u00e9rentiel.
+CWWKD1097.param.incompat.useraction=Supprimer le param\u00e8tre Ordre, Tri ou Limite.
+
+CWWKD1098.spec.param.position.err=CWWKD1098E: La m\u00e9thode {0} du r\u00e9f\u00e9rentiel {1} comporte un param\u00e8tre {2} plac\u00e9 avant les param\u00e8tres de la requ\u00eate. Les types de param\u00e8tres qui ont une signification particuli\u00e8re dans Jakarta Data {3} ) doivent \u00eatre plac\u00e9s apr\u00e8s les autres param\u00e8tres dans la signature de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+CWWKD1098.spec.param.position.err.explanation=Lorsque des types de param\u00e8tres sp\u00e9ciaux d\u00e9finis par Jakarta Data sont inclus dans la signature d'une m\u00e9thode de r\u00e9f\u00e9rentiel, ils doivent \u00eatre plac\u00e9s apr\u00e8s tous les param\u00e8tres de la requ\u00eate.
+CWWKD1098.spec.param.position.err.useraction=D\u00e9placer les types de param\u00e8tres sp\u00e9ciaux d\u00e9finis par Jakarta Data \u00e0 la fin de la signature de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+
+CWWKD1099.first.keyword.incompat=CWWKD1099E: La m\u00e9thode {0} du r\u00e9f\u00e9rentiel {1} a un nom qui inclut le mot cl\u00e9 First, ce qui est incompatible avec le param\u00e8tre {2} de la m\u00e9thode.
+CWWKD1099.first.keyword.incompat.explanation=Une m\u00e9thode Query by Method Name qui inclut un param\u00e8tre Limit ou PageRequest ne peut pas utiliser le mot-cl\u00e9 First.
+CWWKD1099.first.keyword.incompat.useraction=Supprimer le mot-cl\u00e9 First du nom de la m\u00e9thode.
+
+CWWKD1100.cursor.requires.sort=CWWKD1100E: La m\u00e9thode {0} du r\u00e9f\u00e9rentiel {1} renvoie {2} mais n''a pas d''annotation OrderBy ni aucun des param\u00e8tres suivants pour sp\u00e9cifier les crit\u00e8res de tri : {3}. Les crit\u00e8res de tri sont n\u00e9cessaires pour la pagination bas\u00e9e sur le curseur et ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s dans une clause ORDER BY d''une valeur d''annotation de requ\u00eate.
+CWWKD1100.cursor.requires.sort.explanation=La pagination par curseur n\u00e9cessite des crit\u00e8res de tri.
+CWWKD1100.cursor.requires.sort.useraction=Supprime la clause ORDER BY de la valeur d'annotation de la requ\u00eate si elle existe. Ajoutez une annotation OrderBy ou un param\u00e8tre de m\u00e9thode du r\u00e9f\u00e9rentiel pour sp\u00e9cifier les crit\u00e8res de tri.

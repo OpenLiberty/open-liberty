@@ -413,6 +413,7 @@ assemble {
 autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
 autoFVT.dependsOn ':io.openliberty.security.authorization.jacc.testprovider:assemble'
 autoFVT.dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
 autoFVT.doLast {
 
   
@@ -717,5 +718,5 @@ autoFVT.doLast {
       from new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application/ejbjarinstandaloneM08.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
-  }  
+  }
 } 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class DatabaseContainerFactoryTest {
         Duration startupTimeout = getField(LogMessageWaitStrategy.class, _waitStrategy, "startupTimeout", Duration.class);
         if (startupTimeout.toMinutes() == 5) {
             assertTrue(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE);
-        } else if (startupTimeout.toMinutes() == 25) {
+        } else if (startupTimeout.toMinutes() == 35) {
             assertFalse(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE);
         } else {
             fail("Unexpected startupTimeout " + startupTimeout.toMinutes() + " should have been either 5 or 15 minutes");

@@ -980,6 +980,7 @@ assemble.dependsOn TechnologySamples_EAR
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+
 autoFVT.doLast {
 
 
@@ -1184,5 +1185,5 @@ autoFVT.doLast {
    copy { 
       from new File(project.buildDir, 'test-application/BasicCalculator.ear')
       into new File(autoFvtDir, 'publish/servers/SSLnonIBMCipherTest/apps')
-   }
+   }  
 }

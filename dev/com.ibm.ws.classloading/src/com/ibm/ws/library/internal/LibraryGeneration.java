@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package com.ibm.ws.library.internal;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.library.internal.SharedLibraryImpl.ClasspathType;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.config.Fileset;
@@ -60,6 +62,7 @@ final class LibraryGeneration {
         EnumSet<ApiType> apiTypeVisibility = EnumSet.noneOf(ApiType.class);
         String[] fileRef = null;
         String[] folderRef = null;
+        String[] pathRef = null;
         for (SharedLibraryConstants.SharedLibraryAttribute attr : SharedLibraryConstants.SharedLibraryAttribute.values()) {
             Object o = props.get(attr.toString());
             switch (attr) {
@@ -75,12 +78,23 @@ final class LibraryGeneration {
                 case folderRef:
                     folderRef = (String[]) o;
                     continue;
+                case pathRef:
+                    pathRef = (String[]) o;
+                    continue;
                 default:
                     continue;
             }
         }
-        Collection<File> files = library.retrieveFiles(fileRef, displayId);
-        Collection<File> folders = library.retrieveFolders(libraryId, folderRef, displayId);
+        Collection<File> files = library.retrieveClasspaths(ClasspathType.FILE, libraryId, fileRef, displayId);
+        Collection<File> folders = library.retrieveClasspaths(ClasspathType.FOLDER, libraryId, folderRef, displayId);
+        Collection<File> paths = library.retrieveClasspaths(ClasspathType.PATH, libraryId, pathRef, displayId);
+        for (File p : paths) {
+            if (p.isDirectory()) {
+                folders.add(p);
+            } else {
+                files.add(p);
+            }
+        }
         if (fsRefs == null) {
             this.filesetRefs = Collections.emptyList();
         } else {
@@ -147,6 +161,7 @@ final class LibraryGeneration {
         }
     }
 
+    @SuppressWarnings("unchecked")
     EnumSet<ApiType> getApiTypeVisibility() {
         return EnumSet.copyOf((EnumSet<ApiType>) apiTypeVisibility);
     }

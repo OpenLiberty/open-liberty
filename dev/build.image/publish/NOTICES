@@ -1,7 +1,7 @@
 Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
 Copyright 1999-2025 IBM Corporation and others
 This product includes software developed at
-The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
+The Open Liberty Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
@@ -9,6 +9,7 @@ TABLE OF CONTENTS
 THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
 
 Apache License, Version 2.0 (APACHE V2)
+BSD Zero Clause license (BSD)
 BSD 2 Clause license (BSD-2-CLAUSE)
 BSD 3 Clause license (BSD-3-CLAUSE)
 Bouncy Castle License (Bouncy Castle)
@@ -28,34 +29,34 @@ The Program includes some or all of the following that IBM obtained
 under the Apache License, Version 2.0:
 
 @carbon/telemetry [telemetry-0.1.0.tgz],
-@swagger-api/apidom-ast [apidom-ast-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-core [apidom-core-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-error [apidom-error-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-json-pointer [apidom-json-pointer-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft-4-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft-6-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft-7-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi-3-0-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi-3-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-ns-workflows-1 [apidom-ns-workflows-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json-3-0-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json-3-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml-3-0-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml-3-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-workflows-json-1 [apidom-parser-adapter-workflows-json-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-workflows-yaml-1 [apidom-parser-adapter-workflows-yaml-1-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml-1-2-1.0.0-alpha.10.tgz],
-@swagger-api/apidom-reference [apidom-reference-1.0.0-alpha.10.tgz],
+@swagger-api/apidom-ast [apidom-ast-1.0.0-beta.3.tgz],
+@swagger-api/apidom-core [apidom-core-1.0.0-beta.3.tgz],
+@swagger-api/apidom-error [apidom-error-1.0.0-beta.3.tgz],
+@swagger-api/apidom-json-pointer [apidom-json-pointer-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft-4-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft-6-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft-7-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi-3-0-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi-3-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-ns-workflows-1 [apidom-ns-workflows-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json-3-0-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json-3-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml-3-0-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml-3-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-workflows-json-1 [apidom-parser-adapter-workflows-json-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-workflows-yaml-1 [apidom-parser-adapter-workflows-yaml-1-1.0.0-beta.3.tgz],
+@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml-1-2-1.0.0-beta.3.tgz],
+@swagger-api/apidom-reference [apidom-reference-1.0.0-beta.3.tgz],
 Apache Ant Core [ant], Apache Ant Launcher [ant-launcher],
 Apache Aries JMX API [org.apache.aries.jmx.api],
 Apache Aries JMX Core [org.apache.aries.jmx.core],
@@ -109,8 +110,11 @@ Apache James :: Mime4j :: Storage [apache-mime4j-storage],
 Apache Kafka [kafka-clients],
 Apache MyFaces Buildtools Maven2 Builder Annotations [myfaces-builder-annotations],
 Apache MyFaces Core 4.0 - API [myfaces-api],
+Apache MyFaces Core 4.0 - Impl [myfaces-impl],
 Apache MyFaces JSF-2.3 Core API [myfaces-api],
-Apache MyFaces JSF-3.0 Core API [myfaces-api], Apache Neethi [neethi],
+Apache MyFaces JSF-2.3 Core Impl [myfaces-impl],
+Apache MyFaces JSF-3.0 Core API [myfaces-api],
+Apache MyFaces JSF-3.0 Core Impl [myfaces-impl], Apache Neethi [neethi],
 Apache Velocity [velocity], Apache Velocity - Engine [velocity-engine-core],
 Apache WSS4J DOM WS-Security [wss4j-ws-security-dom],
 Apache WSS4J Streaming WS-Security [wss4j-ws-security-stax],
@@ -155,6 +159,7 @@ Kotlin Stdlib Jdk7 [kotlin-stdlib-jdk7], Kotlin Stdlib Jdk8 [kotlin-stdlib-jdk8]
 LZ4 and xxHash [lz4-java], Metrics Core [metrics-core],
 MicroProfile Config API [microprofile-config-api],
 MicroProfile Context Propagation [microprofile-context-propagation-api],
+MicroProfile Fault Tolerance API [microprofile-fault-tolerance-api],
 MicroProfile GraphQL :: API [microprofile-graphql-api],
 MicroProfile Health API [microprofile-health-api],
 MicroProfile JWT Auth API [microprofile-jwt-auth-api],
@@ -279,6 +284,8 @@ RESTEasy JAX-RS Client Microprofile Base classes [resteasy-client-microprofile-b
 RESTEasy JAX-RS Core [resteasy-core],
 RESTEasy JAX-RS Core SPI [resteasy-core-spi],
 RESTEasy JAXB Provider [resteasy-jaxb-provider],
+RESTEasy MicroProfile: REST Client [microprofile-rest-client],
+RESTEasy MicroProfile: REST Client Base [microprofile-rest-client-base],
 RESTEasy Multipart Provider [resteasy-multipart-provider],
 RESTEasy Servlet Container Initializer [resteasy-servlet-initializer],
 RESTEasy Validator Provider [resteasy-validator-provider], RxJava [rxjava],
@@ -311,6 +318,7 @@ SmallRye: MicroProfile Config CDI Implementation [smallrye-config],
 SmallRye: MicroProfile Config Core Implementation [smallrye-config-core],
 SmallRye: MicroProfile Metrics Implementation [smallrye-metrics],
 SmallRye: OpenAPI Core [smallrye-open-api-core],
+SmallRye: OpenAPI Model [smallrye-open-api-model],
 SmallRye: OpenAPI extension - JAX-RS [smallrye-open-api-jaxrs],
 SnakeYAML [snakeyaml], Vert.x Core [vertx-core],
 Web Services Metadata 2.0 [geronimo-ws-metadata_2.0_spec], Weld APIs [weld-api],
@@ -326,10 +334,10 @@ Woodstox [woodstox-core-asl], Woodstox [woodstox-core],
 XML Commons Resolver Component [xml-resolver], XmlSchema Core [xmlschema-core],
 Zipkin Core Library [zipkin], Zipkin Reporter: Core [zipkin-reporter],
 Zipkin Sender: OkHttp 3 [zipkin-sender-okhttp3], acme4j Client [acme4j-client],
-acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asm-util,
-asyncutil, carbon-components [carbon-components-10.42.0-rc.0.min.js],
+acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asyncutil,
+carbon-components [carbon-components-10.42.0-rc.0.min.js],
 carbon-components [carbon-components-10.58.3.tgz],
-classfilewriter [jboss-classfilewriter], detect-libc [detect-libc-2.0.3.tgz],
+classfilewriter [jboss-classfilewriter], dompurify [dompurify-3.2.3.tgz],
 error-prone annotations [error_prone_annotations], fastinfoset [FastInfoset],
 geronimo-annotation_1.1_spec, geronimo-ejb_3.1_spec-alt,
 geronimo-interceptor_1.1_spec, geronimo-validation, guice,
@@ -349,7 +357,6 @@ okio [okio-jvm], okio,
 openapi-path-templating [openapi-path-templating-1.6.0.tgz],
 openapi-server-url-templating [openapi-server-url-templating-1.1.0.tgz],
 org.apache.aries.blueprint, org.apache.aries.jndi.core, org.apache.bval.bundle,
-org.osgi.core,
 org.osgi:org.osgi.annotation.versioning [org.osgi.annotation.versioning],
 org.osgi:org.osgi.namespace.extender [org.osgi.namespace.extender],
 org.osgi:org.osgi.namespace.service [org.osgi.namespace.service],
@@ -368,10 +375,10 @@ org.osgi:osgi.annotation [osgi.annotation], org.osgi:osgi.core [osgi.core],
 perfmark:perfmark-api [perfmark-api], proto-google-common-protos, resolver,
 short-unique-id [short-unique-id-5.2.0.tgz], smallrye-reactive-converter-api,
 smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
-snappy-java, swagger-client [swagger-client-3.29.4.tgz],
-swagger-ui [swagger-ui-5.17.14.tgz], tomcat-el-api, tomcat-jasper-el,
-ts-toolbelt [ts-toolbelt-9.6.0.tgz], tunnel-agent [tunnel-agent-0.6.0.tgz],
-vertx-codegen
+snappy-java, swagger-client [swagger-client-3.32.2.tgz],
+swagger-ui [swagger-ui-5.18.2.tgz], tomcat-el-api, tomcat-jasper-el,
+ts-toolbelt [ts-toolbelt-9.6.0.tgz], vertx-codegen, yoko-core, yoko-osgi,
+yoko-rmi-impl, yoko-rmi-spec, yoko-spec-corba, yoko-util
 
 
 Apache License
@@ -554,6 +561,27 @@ END OF TERMS AND CONDITIONS
 END OF Apache License, Version 2.0 NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BSD Zero Clause license
+
+The Program includes some or all of the following that IBM obtained
+under the BSD Zero Clause license:
+
+tslib [tslib-2.8.1.tgz] (Copyright Microsoft Corporation)
+
+Permission to use, copy, modify, and/or distribute this software for any 
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES 
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR 
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES 
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN 
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF 
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+END OF BSD Zero Clause license NOTICES AND INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 BSD 2 Clause license
 
 The Program includes some or all of the following that IBM obtained
@@ -564,7 +592,6 @@ Stax2 API [stax2-api] (Copyright 2008 FasterXML LLC <info@fasterxml.com>)
 Stax2 API [stax2-api](Copyright Not Found)
 apg-lite [apg-lite-1.0.4.tgz] (Copyright 2023 Lowell D. Thomas<br>)
 crac(Copyright Not Found)
-rc [rc-1.2.8.tgz] (Copyright 2011 Dominic Tarr) (Copyright 2013 Dominic Tarr)
 zstd-jni(Copyright Not Found)
 
 Redistribution and use in source and binary forms, with or without
@@ -688,6 +715,8 @@ XSOM [xsom] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 O
 XSOM [xsom] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2022 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+asm (Copyright 2000-2011 INRIA) (Copyright 2011-2012 Bull S.A.S) (OW2)
+asm-util (Copyright 2000-2011 INRIA) (Copyright 2011-2012 Bull S.A.S) (OW2)
 dojo [dojo-1.17.3.tgz] (Copyright 2003-2004 Lawrence E. Rosen) (Copyright 2005-2018 JS Foundation) (Copyright 2005-2018 The JS Foundation)
 highlight.js [highlight.js-10.7.3.tgz] (Copyright 2006 Ivan Sagalaev)
 ieee754 [ieee754-1.2.1.tgz] (Copyright 2008 Fair Oaks Labs, Inc)
@@ -741,7 +770,11 @@ Bouncy Castle License
 The Program includes some or all of the following that IBM obtained
 under the Bouncy Castle License:
 
-Bouncy Castle OpenPGP API [bcpg-jdk18on], Bouncy Castle Provider [bcprov-jdk15on]
+Bouncy Castle ASN.1 Extension and Utility APIs [bcutil-jdk18on],
+Bouncy Castle OpenPGP API [bcpg-jdk18on],
+Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk15on],
+Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk18on],
+Bouncy Castle Provider [bcprov-jdk15on], Bouncy Castle Provider [bcprov-jdk18on]
 
 
 Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc. 
@@ -807,6 +840,7 @@ JMS API [javax.jms-api] http://java.net/projects/jms-spec/pages/Home
 JSR 353 (JSON Processing) API [javax.json-api] http://www.oracle.com
 JSR 353 (JSON Processing) Default Provider [javax.json] http://www.oracle.com
 JSR 374 (JSON Processing) API [javax.json-api] http://www.oracle.com
+JSR-181 Maintenance Release 1 [jsr181-api] http://jcp.org/en/jsr/summary?id=181
 Java Architecture for XML Binding [jaxb-api] http://www.oracle.com/
 Java Authentication Service Provider Interface for Containers API 1.1 [javax.security.auth.message-api] https://jaspic-spec.java.net
 Java Authorization Contract for Containers API 1.5 [javax.security.jacc-api] https://jacc-spec.java.net
@@ -881,8 +915,11 @@ Console plug-in [org.eclipse.equinox.console] http://www.eclipse.org/
 Coordinator [org.eclipse.equinox.coordinator] http://www.eclipse.org/
 Eclipse Compiler for Java(TM) [ecj] http://www.eclipse.org/
 Eclipse Compiler for Java(TM) [ecj] https://www.eclipse.org/
+Eclipse Parsson [parsson] https://github.com/eclipse-ee4j/parsson
+EclipseLink ANTLR [org.eclipse.persistence.antlr] http://www.eclipse.org/eclipselink
 EclipseLink ASM [org.eclipse.persistence.asm] http://www.eclipse.org/eclipselink
 EclipseLink Core [org.eclipse.persistence.core] http://www.eclipse.org/eclipselink
+EclipseLink Hermes JPQL Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink Hermes Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink JPA [org.eclipse.persistence.jpa] http://www.eclipse.org/eclipselink
 Expression Language 3.0 API [jboss-el-api_3.0_spec] http://www.jboss.org
@@ -893,6 +930,7 @@ JSON-P Default Provider [jakarta.json] https://www.eclipse.org
 Jakarta Annotations API [jakarta.annotation-api] https://www.eclipse.org
 Jakarta Authentication [jakarta.authentication-api] https://github.com/eclipse-ee4j/authentication
 Jakarta Authorization [jakarta.authorization-api] http://www.oracle.com
+Jakarta Concurrency [jakarta.enterprise.concurrent-api] https://github.com/jakartaee/concurrency
 Jakarta Enterprise Beans API [jakarta.ejb-api] https://projects.eclipse.org/projects/ee4j.ejb
 Jakarta Expression Language API [jakarta.el-api] https://www.eclipse.org
 Jakarta Interceptors [jakarta.interceptor-api] https://github.com/jakartaee/interceptors
@@ -906,15 +944,17 @@ Jakarta RESTful WS API [jakarta.ws.rs-api] https://www.eclipse.org/org/foundatio
 Jakarta Security [jakarta.security.enterprise-api] https://www.eclipse.org
 Jakarta Server Pages API [jakarta.servlet.jsp-api] https://www.eclipse.org
 Jakarta Servlet [jakarta.servlet-api] https://www.eclipse.org
+Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://projects.eclipse.org/projects/ee4j.jstl
 Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://www.eclipse.org
 Jakarta Standard Tag Library Implementation [jakarta.servlet.jsp.jstl] https://www.eclipse.org
 Jakarta WebSocket - Client API [jakarta.websocket-client-api] https://www.eclipse.org
 Jakarta WebSocket - Server API [jakarta.websocket-api] https://www.eclipse.org
 Meta Type [org.eclipse.equinox.metatype] http://www.eclipse.org/
-OSGi System Bundle [org.eclipse.osgi] https://www.eclipse.org/
+OSGi System Bundle [org.eclipse.osgi] https://projects.eclipse.org/projects/eclipse.equinox
 OSGi resource locator [osgi-resource-locator] https://www.eclipse.org
 RESTEasy Tracing API [resteasy-tracing-api] http://www.jboss.org
 Region Digraph [org.eclipse.equinox.region] http://www.eclipse.org/
+Yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
 che-lib7.0.0-rc-4.0 [che-lib] https://github.com/eclipse-che/che-lib.git
 jakarta.enterprise.concurrent-api http://www.oracle.com/
 jakarta.json (https://github.com/jakartaee/jsonp-api)
@@ -939,13 +979,8 @@ ISC License
 The Program includes some or all of the following that IBM obtained
 under the ISC License:
 
-chownr [chownr-1.1.4.tgz] (Copyright Isaac Z. Schlueter and Contributors)
 inherits [inherits-2.0.4.tgz] (Copyright Isaac Z. Schlueter and Contributors)
-ini [ini-1.3.8.tgz] (Copyright Isaac Z. Schlueter and Contributors)
 minimatch [minimatch-7.4.6.tgz] (Copyright 2011-2023 Isaac Z. Schlueter and Contributors)
-once [once-1.4.0.tgz] (Copyright Isaac Z. Schlueter and Contributors)
-semver [semver-7.6.3.tgz] (Copyright Isaac Z. Schlueter and Contributors) (Copyright Isaac Z. Schlueter and Contributors)
-wrappy [wrappy-1.0.2.tgz] (Copyright Isaac Z. Schlueter and Contributors)
 
 
 ISC License
@@ -973,9 +1008,11 @@ under the MIT license:
 
 @babel/runtime [runtime-7.26.0.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
 @babel/runtime-corejs3 [runtime-corejs3-7.26.0.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@braintree/sanitize-url [sanitize-url-7.0.2.tgz] (Copyright 2017 Braintree)
+@braintree/sanitize-url [sanitize-url-7.0.4.tgz] (Copyright 2017 Braintree)
+@tree-sitter-grammars/tree-sitter-yaml [tree-sitter-yaml-0.6.1.tgz] (Copyright 2019-2021 Ika) (Copyright 2024 tree-sitter-grammars contributors)
 @types/hast [hast-2.3.10.tgz] (Copyright Microsoft Corporation)
 @types/ramda [ramda-0.30.2.tgz] (Copyright Microsoft Corporation)
+@types/trusted-types [trusted-types-2.0.7.tgz] (Copyright Microsoft Corporation)
 @types/unist [unist-2.0.11.tgz] (Copyright Microsoft Corporation)
 @types/use-sync-external-store [use-sync-external-store-0.0.3.tgz] (Copyright Microsoft Corporation)
 Animal Sniffer Annotations [animal-sniffer-annotations] (Codehaus) (Copyright 2009 codehaus.org)
@@ -985,14 +1022,12 @@ Checker Qual [checker-qual] (Copyright 2004 by the Checker Framework developers)
 SLF4J API Module [slf4j-api] (Copyright 2023 QOS.ch)
 SLF4J API Module [slf4j-api] (QOS.ch)
 SLF4J JDK14 Binding [slf4j-jdk14] (QOS.ch)
-argparse [argparse-1.0.10.tgz] (Copyright 2012 "Vitaly Puzrin" (https://github.com/puzrin)) (Copyright 2012 [Vitaly Puzrin](https://github.com/puzrin)) (Copyright 2012 by Vitaly Puzrin)
+argparse [argparse-1.0.10.tgz] (Copyright 2012 Vitaly Puzrin" (https://github.com/puzrin)) (Copyright 2012 [Vitaly Puzrin](https://github.com/puzrin)) (Copyright 2012 by Vitaly Puzrin)
 autolinker [autolinker-3.16.2.tgz] (Copyright 2014 Gregory Jacobs (http://greg-jacobs.com))
 balanced-match [balanced-match-1.0.2.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
 base64-js [base64-js-1.5.1.tgz] (Copyright 2014 Jameson Little)
-bl [bl-4.1.0.tgz] (Copyright 2013-2019 bl contributors)
 bootstrap [bootstrap-5.2.3.tgz] (Copyright 2011-2017 The Bootstrap Authors) (Copyright 2011-2017 Twitter, Inc) (Copyright 2011-2017 the [Bootstrap Authors](https://github.com/twbs/bootstrap/graphs/contributors) a) (Copyright 2011-2022 The Bootstrap Authors) (Copyright 2011-2022 Twitter, Inc) (Copyright 2011-2022 ode and documentation copyright) (Copyright and license" (#copyright-and-license))
 brace-expansion [brace-expansion-2.0.1.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
-buffer [buffer-5.7.1.tgz] (Copyright Feross Aboukhadijeh, and other contributors)
 buffer [buffer-6.0.3.tgz] (Copyright Feross Aboukhadijeh, and other contributors)
 character-entities [character-entities-1.2.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
 character-entities-legacy [character-entities-legacy-1.1.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
@@ -1001,23 +1036,18 @@ classnames [classnames-2.5.1.tgz] (Copyright 2018 Jed Watson)
 comma-separated-tokens [comma-separated-tokens-1.0.8.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 cookie [cookie-0.7.2.tgz] (Copyright 2012-2014 Roman Shtylman <shtylman@gmail.com>) (Copyright 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
 copy-to-clipboard [copy-to-clipboard-3.3.3.tgz] (Copyright 2017 sudodoki <smd.deluzion@gmail.com>)
-core-js [core-js-3.38.1.tgz] (Copyright 2014-2024 Denis Pushkarev)
-core-js-pure [core-js-pure-3.38.1.tgz] (Copyright 2014-2024 Denis Pushkarev)
+core-js [core-js-3.39.0.tgz] (Copyright 2014-2024 Denis Pushkarev)
+core-js-pure [core-js-pure-3.39.0.tgz] (Copyright 2014-2024 Denis Pushkarev)
 crypto-js [enc-base64-min-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 crypto-js [sha256-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 css.escape [css.escape-1.5.1.tgz] (Copyright Mathias Bynens <https://mathiasbynens.be/>)
-decompress-response [decompress-response-6.0.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
 deep-extend [deep-extend-0.6.0.tgz] (Copyright 2013-2018 Viacheslav Lotsmanov)
 deepmerge [deepmerge-4.3.1.tgz] (Copyright 2012 James Halliday, Josh Duff, and other contributors)
 drange [drange-1.1.1.tgz] (Copyright 2014 David Tudury)
-end-of-stream [end-of-stream-1.4.4.tgz] (Copyright 2014 Mathias Buus)
-expand-template [expand-template-2.0.3.tgz] (Copyright 2018 Lars-Magnus Skog)
 fast-json-patch [fast-json-patch-3.1.1.tgz] (Copyright 2013-2020 Joachim Wester)
 fault [fault-1.0.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
 flatpickr [flatpickr-4.6.1.tgz] (Copyright 2017 Gregory Petrosyan)
 format [format-0.2.2.tgz] (Copyright 2010-2014 Sami Samhuri sami@samhuri.net)
-fs-constants [fs-constants-1.0.0.tgz] (Copyright 2018 Mathias Buus)
-github-from-package [github-from-package-0.0.0.tgz](Copyright Not Found)
 graphql-java (Copyright 2015 Andreas Marek and Contributors Permission is hereby granted, free of charge, to any person obtaining)
 hast-util-parse-selector [hast-util-parse-selector-2.2.5.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 hastscript [hastscript-6.0.0.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
@@ -1030,30 +1060,24 @@ is-hexadecimal [is-hexadecimal-1.0.4.tgz] (Copyright 2016 Titus Wormer <tituswor
 jquery [jquery-3.5.1.min.js] (Copyright 2020 OpenJS Foundation and jQuery contributors)
 jquery [jquery-3.6.3.tgz] (Copyright OpenJS Foundation and other contributors, https://openjsf.org/) (Copyright jQuery Foundation and other contributors, https://jquery.org/)
 js-file-download [js-file-download-0.4.12.tgz] (Copyright 2017 Kenneth Jiang)
-js-tokens [js-tokens-4.0.0.tgz] (Copyright 2014-2015 2016, 2017, 2018 Simon Lydell)
+js-tokens [js-tokens-4.0.0.tgz] (Copyright 2014-2015 2016, 2017, 2018 Simon Lydell) (Copyright 2014-2018 Simon Lydell)
 js-yaml [js-yaml-4.1.0.tgz] (Copyright 2011-2015 by Vitaly Puzrin)
 lodash [lodash-4.17.21.tgz] (Copyright OpenJS Foundation and other contributors <https://openjsf.org/>)
 lodash.debounce [lodash.debounce-4.0.8.tgz] (Copyright jQuery Foundation and other contributors <https://jquery.org/>)
 loose-envify [loose-envify-1.4.0.tgz] (Copyright 2015 Andres Suarez <zertosh@gmail.com>)
 lowlight [lowlight-1.20.0.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-mimic-response [mimic-response-3.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
 minim [minim-0.23.8.tgz] (Copyright 2014 Stephen Mizell)
-minimist [minimist-1.2.8.tgz](Copyright Not Found)
-mkdirp-classic [mkdirp-classic-0.5.3.tgz] (Copyright 2020 James Halliday (mail@substack.net) and Mathias Buus)
-nan [nan-2.22.0.tgz] (Copyright 2018 NAN WG Members / Collaborators (listed above)) (Copyright 2018 NAN contributors" (https://github.com/nodejs/nan#wg-members--collaborators)) (Copyright The contribution was provided directly to me by some other) (Copyright and I have not modified)
-napi-build-utils [napi-build-utils-1.0.2.tgz] (Copyright 2018 inspiredware)
 neotraverse [neotraverse-0.6.18.tgz] (Copyright 2010 James Halliday and contributors)
-node-abi [node-abi-3.71.0.tgz] (Copyright 2016 Lukas Geiger)
 node-abort-controller [node-abort-controller-3.1.1.tgz] (Copyright 2019 Steve Faulkner)
-node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy WÃ¤rting)
+node-addon-api [node-addon-api-8.3.0.tgz] (Copyright 2017 Node.js API collaborators" (https://github.com/nodejs/node-addon-api#collaborators))
+node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy Wärting)
 node-fetch-commonjs [node-fetch-commonjs-3.3.2.tgz] (Copyright 2016-2020 Node Fetch Team)
-object-assign [object-assign-4.1.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+node-gyp-build [node-gyp-build-4.8.4.tgz] (Copyright 2017 Mathias Buus)
+object-assign [object-assign-4.1.1.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
 parse-entities [parse-entities-2.0.0.tgz] (Copyright 2015 Titus Wormer <mailto:tituswormer@gmail.com>)
-prebuild-install [prebuild-install-7.1.2.tgz] (Copyright 2015 Mathias Buus)
 process [process-0.11.10.tgz] (Copyright 2013 Roman Shtylman <shtylman@gmail.com>)
 prop-types [prop-types-15.8.1.tgz] (Copyright 2013 Facebook, Inc)
 property-information [property-information-5.6.0.tgz] (Copyright 2013-2015 Facebook, Inc) (Copyright 2015 Titus Wormer <mailto:tituswormer@gmail.com>)
-pump [pump-3.0.2.tgz] (Copyright 2014 Mathias Buus)
 querystringify [querystringify-2.2.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
 ramda [ramda-0.30.1.tgz] (Copyright 2013-2024 Scott Sauyet and Michael Hurley) (Copyright 2014 J. C. Phillipps)
 randexp [randexp-0.5.3.tgz] (Copyright 2011 by fent)
@@ -1073,7 +1097,7 @@ redux [redux-5.0.1.tgz] (Copyright 2015 Dan Abramov)
 refractor [refractor-3.6.0.tgz] (Copyright 2017 Titus Wormer <tituswormer@gmail.com>)
 regenerator-runtime [regenerator-runtime-0.14.1.tgz] (Copyright 2014 Facebook, Inc)
 remarkable [remarkable-2.0.1.tgz] (Copyright 2014 Jon Schlinkert, Vitaly Puzrin) (Copyright 2014-2016 Jon Schlinkert)
-repeat-string [repeat-string-1.6.1.tgz] (Copyright 2014-2015 Jon Schlinkert) (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 "Jon Schlinkert" (http://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](http://github.com/jonschlinkert))
+repeat-string [repeat-string-1.6.1.tgz] (Copyright 2014-2015 Jon Schlinkert) (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 Jon Schlinkert" (http://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](http://github.com/jonschlinkert))
 require.js [require-2.1.15.min.js](Copyright Not Found)
 requires-port [requires-port-1.0.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
 reselect [reselect-5.1.1.tgz] (Copyright 2015-2018 Reselect Contributors)
@@ -1081,28 +1105,22 @@ ret [ret-0.2.2.tgz] (Copyright 2011 by fent)
 safe-buffer [safe-buffer-5.2.1.tgz] (Copyright Feross Aboukhadijeh)
 scheduler [scheduler-0.23.2.tgz] (Copyright Facebook, Inc. and its affiliates)
 serialize-error [serialize-error-8.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-sha.js [sha.js-2.4.11.tgz] (Copyright 1998-2009 Paul Johnston & Contributors) (Copyright 2013-2018 sha.js contributors)
-simple-concat [simple-concat-1.0.1.tgz] (Copyright Feross Aboukhadijeh)
-simple-get [simple-get-4.0.1.tgz] (Copyright Feross Aboukhadijeh)
+sha.js [sha.js-2.4.11.tgz] (Copyright 1998-2009 Paul Johnston) (Copyright 1998-2009 Paul Johnston & Contributors) (Copyright 2013-2018 sha.js contributors)
 space-separated-tokens [space-separated-tokens-1.1.5.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 stream-browserify [stream-browserify-3.0.0.tgz] (Copyright James Halliday)
 string_decoder [string_decoder-1.3.0.tgz] (Copyright Node.js contributors)
-strip-json-comments [strip-json-comments-2.0.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-tar-fs [tar-fs-2.1.1.tgz] (Copyright 2014 Mathias Buus)
-tar-stream [tar-stream-2.2.0.tgz] (Copyright 2014 Mathias Buus)
 toggle-selection [toggle-selection-1.0.6.tgz] (Copyright 2017.0 sudodoki)
-tree-sitter [tree-sitter-0.20.4.tgz] (Copyright 2014 maxbrunsfeld)
-tree-sitter-json [tree-sitter-json-0.20.2.tgz] (Copyright 2014 Max Brunsfeld)
-tree-sitter-yaml [tree-sitter-yaml-0.5.0.tgz] (Copyright Ika <ikatyang@gmail.com> (https://github.com/ikatyang))
+tree-sitter [tree-sitter-0.21.1.tgz] (Copyright 2014 maxbrunsfeld)
+tree-sitter-json [tree-sitter-json-0.24.8.tgz] (Copyright 2014 Max Brunsfeld)
 ts-mixer [ts-mixer-6.0.4.tgz] (Copyright 2024 Tanner Nielsen)
 type-fest [type-fest-0.20.2.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https:/sindresorhus.com))
 types-ramda [types-ramda-0.30.1.tgz] (Copyright 2013-2023 Scott Sauyet and Michael Hurley)
 unraw [unraw-3.0.0.tgz] (Copyright 2019 Ian Sanders)
 url-parse [url-parse-1.5.10.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
-use-sync-external-store [use-sync-external-store-1.2.2.tgz] (Copyright Facebook, Inc. and its affiliates)
+use-sync-external-store [use-sync-external-store-1.4.0.tgz] (Copyright Meta Platforms, Inc. and affiliates)
 util-deprecate [util-deprecate-1.0.2.tgz] (Copyright 2014 Nathan Rajlich "nathan@tootallnate.net" (mailto:nathan@tootallnate.net)) (Copyright 2014 Nathan Rajlich <nathan@tootallnate.net>)
 web-streams-polyfill [web-streams-polyfill-3.3.3.tgz] (Copyright 2016 Diwank Singh Tomer) (Copyright 2024 Mattias Buelens)
-web-tree-sitter [web-tree-sitter-0.20.3.tgz] (Copyright 2018-2021 Max Brunsfeld)
+web-tree-sitter [web-tree-sitter-0.24.3.tgz] (Copyright 2018-2024 Max Brunsfeld)
 xml [xml-1.0.1.tgz] (Copyright 2011-2016 Dylan Greene <dylang@gmail.com>)
 xml-but-prettier [xml-but-prettier-1.0.1.tgz] (Copyright 2015 Jonathan Persson)
 xtend [xtend-4.0.2.tgz] (Copyright 2012-2014 Raynos)
@@ -1291,5 +1309,6 @@ END OF Python License, Version 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 END OF THE OPEN LIBERTY PROJECT NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 END OF NOTICES AND INFORMATION FILE
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

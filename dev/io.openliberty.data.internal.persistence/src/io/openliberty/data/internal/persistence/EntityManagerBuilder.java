@@ -18,6 +18,7 @@ import static jakarta.data.repository.By.ID;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.PrintWriter;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -488,5 +489,21 @@ public abstract class EntityManagerBuilder {
     @Trivial
     protected ClassLoader getRepositoryClassLoader() {
         return repositoryClassLoader;
+    }
+
+    /**
+     * Write information about this instance to the introspection file for
+     * Jakarta Data.
+     *
+     * @param writer writes to the introspection file.
+     * @param indent indentation for lines.
+     */
+    public void introspect(PrintWriter writer, String indent) {
+        writer.println(indent + toString());
+        writer.println(indent + "  dataStore: " + dataStore);
+        writer.println(indent + "  repository class loader: " + repositoryClassLoader);
+        writer.println(indent + "  repositories:");
+        for (Class<?> r : repositoryInterfaces)
+            writer.println(indent + "    " + r.getName());
     }
 }

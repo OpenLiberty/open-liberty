@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -109,6 +109,7 @@ public class TCKRunner {
 
     private String suiteFileName; // Optional
     private Map<String, String> additionalMvnProps = Collections.emptyMap(); // Optional
+    private List<String> additionalProfiles = Collections.emptyList(); // Optional
     private String platformVersion = ""; // Optional
     private String[] qualifiers = new String[] {}; //Optional
     private Properties loggingProperties; //Optional
@@ -165,6 +166,19 @@ public class TCKRunner {
         Objects.requireNonNull(additionalMvnProps);
 
         this.additionalMvnProps = additionalMvnProps;
+        return this;
+    }
+
+    /**
+     * Set additional maven profiles to enable. This is equivalent to the {@code -P} command line option.
+     *
+     * @param  profiles the profile names to enable
+     * @return          this TCKRunner
+     */
+    public TCKRunner withProfiles(String... profiles) {
+        Objects.requireNonNull(profiles);
+
+        this.additionalProfiles = Arrays.asList(profiles);
         return this;
     }
 
@@ -473,6 +487,11 @@ public class TCKRunner {
         // add any additional properties passed
         for (Entry<String, String> prop : this.additionalMvnProps.entrySet()) {
             stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());
+        }
+
+        if (!additionalProfiles.isEmpty()) {
+            stringArrayList.add("-P");
+            stringArrayList.add(String.join(",", additionalProfiles));
         }
 
         return stringArrayList;

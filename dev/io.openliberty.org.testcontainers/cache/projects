@@ -125,6 +125,7 @@ com.ibm.ws.jsf.2.3_fat
 com.ibm.ws.jsfContainer_fat_2.3
 com.ibm.ws.logstash.collector_fat
 com.ibm.ws.microprofile.health.2.0_fat
+com.ibm.ws.microprofile.reactive.messaging.kafka.secure_fat
 com.ibm.ws.microprofile.reactive.messaging_fat
 com.ibm.ws.openapi.ui_fat
 com.ibm.ws.rest.handler.validator.cloudant_fat

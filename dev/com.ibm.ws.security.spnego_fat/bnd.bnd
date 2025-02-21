@@ -44,3 +44,6 @@ tested.features: pages-3.0, appsecurity-4.0, cdi-3.0, spnego-1.0, expressionlang
 	com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1;version=latest, \
 	io.openliberty.org.testcontainers;version=latest,\
     org.apache.httpcomponents:httpcore;version=4.1.2
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

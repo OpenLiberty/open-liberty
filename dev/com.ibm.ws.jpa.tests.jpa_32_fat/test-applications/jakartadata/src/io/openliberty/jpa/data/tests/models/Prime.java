@@ -12,6 +12,8 @@ package io.openliberty.jpa.data.tests.models;
 import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 
 /**
@@ -32,8 +34,9 @@ public class Prime {
 
     public String romanNumeral;
 
+    @ElementCollection(fetch = FetchType.EAGER)
     public ArrayList<String> romanNumeralSymbols;
-
+    
     public int sumOfBits;
 
     public static Prime of(long number, String romanNumeral, String name) {
@@ -50,7 +53,6 @@ public class Prime {
             for (int i = 0; i < romanNumeral.length(); i++)
                 inst.romanNumeralSymbols.add(romanNumeral.substring(i, i + 1));
         }
-
         return inst;
     }
 }

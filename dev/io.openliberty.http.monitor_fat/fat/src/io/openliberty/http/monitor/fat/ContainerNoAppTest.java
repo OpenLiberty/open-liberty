@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -88,6 +88,32 @@ public class ContainerNoAppTest extends BaseTestClass {
         String res = requestHttpServlet(route, server, requestMethod);
         //Allow time for the collector to receive and expose metrics
         assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(Constants.OTEL_SERVICE_NOT_SET, getContainerCollectorMetrics(container), route, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void c_noApp_nonExistent() throws Exception {
+
+        assertTrue(server.isStarted());
+
+        String route = "/madeThisUp";
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "404";
+        String expectedRoute = "/";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        //Allow time for the collector to receive and expose metrics
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(Constants.OTEL_SERVICE_NOT_SET, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                                                 requestMethod));
+
+        String route2 = "/anotherMadeThisUp";
+        String res2 = requestHttpServlet(route, server, requestMethod);
+
+        //Allow time for the collector to receive and expose metrics
+        assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(Constants.OTEL_SERVICE_NOT_SET, getContainerCollectorMetrics(container), expectedRoute, responseStatus,
+                                                                 requestMethod, null,
+                                                                 ">1", null));
 
     }
 

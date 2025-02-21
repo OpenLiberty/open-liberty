@@ -107,6 +107,7 @@ assemble.dependsOn JASPIServerAuthRegistrationTestServlet_WAR
  ******************************************************************
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.jaspic.test:assemble'
+
 autoFVT.doLast {
 
   /*
@@ -136,4 +137,3 @@ autoFVT.doLast {
     }
   }
 }
-

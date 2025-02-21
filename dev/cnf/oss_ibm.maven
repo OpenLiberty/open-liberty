@@ -40,6 +40,7 @@ com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:2.6.10.WAS-f193a
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.6.10.WAS-f193aac
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.10.WAS-f193aac
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.10.WAS-f193aac
+com.ibm.ws.org.eclipse.platform:org.eclipse.osgi:3.23.0.v20250201-1235
 com.ibm.ws.org.objenesis:objenesis:1.0
 com.ibm.ws.repository.parsers.test:anno-esa:1.0.0
 com.ibm.ws.repository.parsers.test:anno-metadata:1.0.0
@@ -64,6 +65,7 @@ io.openliberty:java-apps:20.0.0
 io.openliberty:java-apps:21.0.0
 io.openliberty:java-apps:22.1.0
 io.openliberty:java-apps:23.1.0
+io.openliberty:java-apps:24.0.0
 net.sf.jtidy:jtidy:9.3.8
 org.apache.aries.blueprint:org.apache.aries.blueprint:1.3.0-ibm-s20170710-0926
 org.apache.geronimo.specs:geronimo-ejb_3.1_spec-alt:1.0.0

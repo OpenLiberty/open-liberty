@@ -110,6 +110,7 @@ autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 autoFVT.dependsOn ':io.openliberty.jcache.internal_fat.hazelcast:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.saml.sso_fat.common:samlclient_WAR'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:helloworld_war_ZIP'
+
 autoFVT.doLast {
   /*
    * Copy the basicauth.war into test servers.

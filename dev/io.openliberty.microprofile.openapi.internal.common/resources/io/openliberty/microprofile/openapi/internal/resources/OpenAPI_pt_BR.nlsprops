@@ -161,3 +161,15 @@ OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Certifique-se de que os atr
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: O elemento de configura\u00e7\u00e3o {0} inclui{1}", mas isso n\u00e3o corresponde a nenhum aplicativo ou m\u00f3dulo da Web implantado.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=O servidor est\u00e1 configurado para criar a documenta\u00e7\u00e3o do OpenAPI para o nome da aplica\u00e7\u00e3o ou do m\u00f3dulo, mas nenhuma aplica\u00e7\u00e3o ou m\u00f3dulo da web com esse nome foi implementado.
 OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=Verifique se todos os aplicativos foram iniciados corretamente e se os nomes na configura\u00e7\u00e3o foram especificados corretamente.
+
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I=CWWKO1685I: A propriedade {0} MicroProfile Config \u00e9 ignorada porque a configura\u00e7\u00e3o equivalente \u00e9 fornecida no arquivo server.xml.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.explanation=Quando essa propriedade \u00e9 definida e a mesma fun\u00e7\u00e3o \u00e9 configurada usando o arquivo server.xml, a configura\u00e7\u00e3o no arquivo server.xml \u00e9 usada e a propriedade MicroProfile Config \u00e9 ignorada.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.useraction=Remova a propriedade MicroProfile Config.
+
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W=CWWKO1686W: A propriedade {0} MicroProfile Config \u00e9 ignorada porque uma configura\u00e7\u00e3o conflitante \u00e9 fornecida no arquivo server.xml.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.explanation=Quando essa propriedade \u00e9 definida e a mesma fun\u00e7\u00e3o \u00e9 configurada usando o arquivo server.xml, a configura\u00e7\u00e3o no arquivo server.xml \u00e9 usada e a propriedade MicroProfile Config \u00e9 ignorada.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Remova a propriedade MicroProfile Config e certifique-se de que a configura\u00e7\u00e3o no arquivo server.xml esteja correta.
+
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: O elemento de anota\u00e7\u00e3o {0} na classe {1} \u00e9 ignorado porque requer a vers\u00e3o {2} OpenAPI, mas a vers\u00e3o atual OpenAPI \u00e9 {3}.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=O elemento de anota\u00e7\u00e3o est\u00e1 relacionado a um recurso adicionado a uma vers\u00e3o mais recente da especifica\u00e7\u00e3o OpenAPI do que a configurada. A vers\u00e3o OpenAPI em uso n\u00e3o pode representar essas informa\u00e7\u00f5es, portanto, elas s\u00e3o exclu\u00eddas da documenta\u00e7\u00e3o OpenAPI produzida.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Considere a possibilidade de remover o elemento de anota\u00e7\u00e3o ou definir o elemento de configura\u00e7\u00e3o openAPIVersion para uma vers\u00e3o compat\u00edvel com ele no arquivo server.xml.

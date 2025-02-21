@@ -5,8 +5,6 @@ ARG BASE_IMAGE="icr.io/db2_community/db2:12.1.0.0"
 
 FROM ${BASE_IMAGE}
 
-RUN yum -y update
-
 # TODO 'krb5-auth-dialog' is no longer available from package managers
 # that are configured on DB2 image. If needed download directly.
 RUN yum -y install krb5-workstation krb5-libs

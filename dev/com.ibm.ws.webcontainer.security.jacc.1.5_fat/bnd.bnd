@@ -35,3 +35,6 @@ tested.features: audit-2.0, jacc-1.5, expressionLanguage-4.0, appsecurity-4.0, s
     io.openliberty.security.authorization.jacc.testprovider;version=latest,\
     com.ibm.ws.security.registry_test.custom;version=latest,\
     com.ibm.ws.org.apache.directory.server;version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

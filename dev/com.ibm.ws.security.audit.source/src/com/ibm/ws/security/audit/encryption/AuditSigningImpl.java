@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import javax.management.ObjectName;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditDecryptionException;
@@ -50,11 +51,10 @@ public class AuditSigningImpl implements AuditSigning {
     private static String subjectDN = "CN=auditsigner, OU=SWG, O=IBM, C=US";
     private static String keyStoreName = "auditSignerKeyStore_";
     private static String certLabelPrefix = "auditcert";
-    private static String CRYPTO_ALGORITHM = "SHA256withRSA";
+
     private Signature signature = null;
     private final byte[] sigBytes = null;
     private final int signerKeyStoreIncrement = 1;
-    //private final CertReqInfo certInfo = null;
     private final ObjectName mgmScopeObjName = null;
 
     AuditKeyEncryptor encryptor = null;
@@ -95,17 +95,13 @@ public class AuditSigningImpl implements AuditSigning {
 
         crypto = new AuditCrypto();
 
-        String JCEProvider = null;
-
         try {
-            signature = Signature.getInstance(CRYPTO_ALGORITHM);
-
+            signature = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA512WITHRSA);
         } catch (Exception e) {
             Tr.error(tc, "security.audit.signing.init.error", new Object[] { e });
             throw new AuditSigningException(e.getMessage());
         }
 
-        long begin_time = 0;
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Initializing audit signer at " + new java.util.Date(System.currentTimeMillis()));
         }
@@ -123,7 +119,7 @@ public class AuditSigningImpl implements AuditSigning {
         javax.crypto.spec.SecretKeySpec sharedKey = null;
         try {
             if (crypto != null) {
-                sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generate3DESKey(), 0, 24, "3DES");
+                sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, CryptoUtils.AES_256_KEY_LENGTH_BYTES, CryptoUtils.ENCRYPT_ALGORITHM_AES);
             }
 
             if (sharedKey != null) {
@@ -436,7 +432,7 @@ public class AuditSigningImpl implements AuditSigning {
         byte[] signedData = null;
         MessageDigest md = null;
         try {
-            md = MessageDigest.getInstance("SHA-256");
+            md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512);
         } catch (java.security.NoSuchAlgorithmException e) {
             throw new AuditSigningException(e);
         }
