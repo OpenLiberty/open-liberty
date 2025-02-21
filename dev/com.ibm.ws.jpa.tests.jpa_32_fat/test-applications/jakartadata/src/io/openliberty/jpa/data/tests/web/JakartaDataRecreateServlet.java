@@ -30,7 +30,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
@@ -54,7 +53,6 @@ import io.openliberty.jpa.data.tests.models.City;
 import io.openliberty.jpa.data.tests.models.CityId;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.DemographicInfo;
-import io.openliberty.jpa.data.tests.models.DemographicInfoWithOffset;
 import io.openliberty.jpa.data.tests.models.DemographicInformation;
 import io.openliberty.jpa.data.tests.models.Item;
 import io.openliberty.jpa.data.tests.models.Line;
@@ -1571,14 +1569,15 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Original issue: https://github.com/OpenLiberty/open-liberty/issues/29443
-    public void testOLGH29443OffsetDateTime() throws Exception {
-        deleteAllEntities(DemographicInfoWithOffset.class);
+    public void testOLGH29443InstantAfterCasting() throws Exception {
+        deleteAllEntities(DemographicInfo.class);
 
         ZoneId ET = ZoneId.of("America/New_York");
-        OffsetDateTime when = ZonedDateTime.of(2022, 4, 29, 12, 0, 0, 0, ET).toOffsetDateTime();
+        Instant when = ZonedDateTime.of(2022, 4, 29, 12, 0, 0, 0, ET)
+                        .toInstant();
 
-        DemographicInfoWithOffset US2022 = DemographicInfoWithOffset.of(2022, 4, 29, 132250000, 6526909395140.41, 23847245116757.60);
-        DemographicInfoWithOffset US2007 = DemographicInfoWithOffset.of(2007, 4, 30, 121090000, 3833110332444.19, 5007058051986.64);
+        DemographicInfo US2022 = DemographicInfo.of(2022, 4, 29, 132250000, 6526909395140.41, 23847245116757.60);
+        DemographicInfo US2007 = DemographicInfo.of(2007, 4, 30, 121090000, 3833110332444.19, 5007058051986.64);
 
         List<BigInteger> results;
 
@@ -1596,7 +1595,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
             tx.begin();
             results = em
-                            .createQuery("SELECT this.numFullTimeWorkers FROM DemographicInfoWithOffset WHERE this.collectedOn=:when",
+                            .createQuery("SELECT this.numFullTimeWorkers FROM DemographicInfo WHERE cast(this.collectedOn as timestamp)=cast(:when as timestamp)",
                                          BigInteger.class)
                             .setParameter("when", when)
                             .getResultList();
