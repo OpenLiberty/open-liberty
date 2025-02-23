@@ -13,4 +13,9 @@
 	<AD name="%source" description="%source.desc" id="source" required="false" type="String" default="message" cardinality="1024"/>
 </OCD>	
 
+<AD name="%accessLogFields" description="%accessLogFields.desc" id="accessLogFields" required="false" type="String" default="default">
+	<Option label="%accessLogFields.default" value="default"/>
+	<Option label="%accessLogFields.logFormat" value="logFormat"/>
+</AD>
+
 </metatype:MetaData>
