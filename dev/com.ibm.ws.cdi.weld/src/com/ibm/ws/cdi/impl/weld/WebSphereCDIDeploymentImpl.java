@@ -30,8 +30,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -39,6 +42,7 @@ import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.spi.ProxyServices;
@@ -53,8 +57,10 @@ import com.ibm.ws.cdi.impl.CDIImpl;
 import com.ibm.ws.cdi.impl.weld.injection.WebSphereInjectionServicesImpl;
 import com.ibm.ws.cdi.internal.interfaces.Application;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
+import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
+import com.ibm.ws.cdi.internal.interfaces.ManagedBeanDescriptor;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
@@ -88,6 +94,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     private final Map<String, Boolean> cdiStatusMap = new HashMap<String, Boolean>();
 
     private final ConcurrentMap<Class<?>, WebSphereBeanDeploymentArchive> classBDAMap = new ConcurrentHashMap<Class<?>, WebSphereBeanDeploymentArchive>();
+    private final ConcurrentMap<Class<?>, WebSphereBeanDeploymentArchive> classBDAMapFavouringEjb = new ConcurrentHashMap<Class<?>, WebSphereBeanDeploymentArchive>();
 
     private Application application;
     private final SimpleServiceRegistry serviceRegistry;
@@ -565,11 +572,20 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
     @Override
     @Trivial
-    //This method is called a lot
     public WebSphereBeanDeploymentArchive getBeanDeploymentArchiveFromClass(Class<?> clazz) {
+        return getBeanDeploymentArchiveFromClassInternal(clazz, false);
+    }
+
+    @Trivial
+    //This method is called a lot
+    private WebSphereBeanDeploymentArchive getBeanDeploymentArchiveFromClassInternal(Class<?> clazz, boolean favourEJB) {
         // Note this method looks for a BDA which has the given class in it, **whether the class is a bean or not**
         // We needed this so that we can find the correct bean manager for non-beans like servlets
-        WebSphereBeanDeploymentArchive wbda = classBDAMap.get(clazz);
+        WebSphereBeanDeploymentArchive wbda = favourEJB ? classBDAMapFavouringEjb.get(clazz) : classBDAMap.get(clazz);
+
+        if (wbda instanceof MapNoValueMarker) {
+            wbda = classBDAMap.get(clazz);
+        }
 
         if (wbda == null) {
             for (WebSphereBeanDeploymentArchive bda : orderedBDAs) {
@@ -586,15 +602,54 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
                     }
                     if (bdaClazz == clazz) {
 
-                        wbda = bda;
-                        classBDAMap.put(clazz, bda);
-                        break;
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "mapping class: " + clazz.getName() + " " + System.identityHashCode(clazz) + " to bda: " + bda.toString());
+                        }
+
+                        //Always populate classBDAMap with the first BDA that contains this class
+                        classBDAMap.putIfAbsent(clazz, bda);
+
+                        //Do a quick check to see if this is also the first EJB_MODULE that contains the class and if so record it.
+                        if (bda.getType() == ArchiveType.EJB_MODULE) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "mapping class: " + clazz.getName() + " " + System.identityHashCode(clazz) + " to EJB_MODULE bda: " + bda.toString());
+                            }
+                            classBDAMapFavouringEjb.putIfAbsent(clazz, bda);
+                        }
+
+                        //If we are not in favour EJB mode, check the standard map, if we've put something there return that.
+                        //If we are in favour EJB mode
+                        if (!favourEJB && classBDAMap.containsKey(clazz)) {
+                            wbda = classBDAMap.get(clazz);
+                            break;
+                        } else if (classBDAMapFavouringEjb.containsKey(clazz)) {
+                            wbda = classBDAMapFavouringEjb.get(clazz);
+                            break;
+                        }
                     }
                 }
             }
         }
 
-        return wbda;
+        //If we've reached here in EJB mode, cache that we don't have a value
+        if (favourEJB) {
+            classBDAMapFavouringEjb.putIfAbsent(clazz, new MapNoValueMarker());
+        }
+
+        //Always return the standard map's value as a fallback
+        return classBDAMap.get(clazz);
+    }
+
+    @Trivial
+    @Override
+    public WebSphereBeanDeploymentArchive getBeanDeploymentArchiveFromClassFavouringEJB(Class<?> clazz) {
+
+        if (classBDAMapFavouringEjb.containsKey(clazz)) {
+            return classBDAMapFavouringEjb.get(clazz);
+        }
+
+        //If we haven't cached the value, call the internal. It will populate the map, and handle falling back to any BDA with the right class
+        return getBeanDeploymentArchiveFromClassInternal(clazz, true);
     }
 
     /**
@@ -814,5 +869,266 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         }
 
         return empty;
+    }
+
+    private static final class MapNoValueMarker implements WebSphereBeanDeploymentArchive {
+
+        @Override
+        public Collection<String> getBeanClasses() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getBeanClasses'");
+        }
+
+        @Override
+        public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getBeanDeploymentArchives'");
+        }
+
+        @Override
+        public BeansXml getBeansXml() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getBeansXml'");
+        }
+
+        @Override
+        public Collection<EjbDescriptor<?>> getEjbs() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getEjbs'");
+        }
+
+        @Override
+        public String getId() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getId'");
+        }
+
+        @Override
+        public ServiceRegistry getServices() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getServices'");
+        }
+
+        @Override
+        public void addBeanDeploymentArchive(WebSphereBeanDeploymentArchive accessibleBDA) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'addBeanDeploymentArchive'");
+        }
+
+        @Override
+        public void addDescendantBda(WebSphereBeanDeploymentArchive descendantBda) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'addDescendantBda'");
+        }
+
+        @Override
+        public void addEjbDescriptor(EjbDescriptor<?> ejbDescriptor) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'addEjbDescriptor'");
+        }
+
+        @Override
+        public void addEjbDescriptors(Collection<EjbDescriptor<?>> ejbDescriptors) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'addEjbDescriptors'");
+        }
+
+        @Override
+        public WebSphereCDIDeployment getCDIDeployment() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getCDIDeployment'");
+        }
+
+        @Override
+        public void addToBeanClazzes(Class<?> clazz) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'addToBeanClazzes'");
+        }
+
+        @Override
+        public Set<String> getAllClazzes() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getAllClazzes'");
+        }
+
+        @Override
+        public BeanManager getBeanManager() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getBeanManager'");
+        }
+
+        @Override
+        public Set<WebSphereBeanDeploymentArchive> getWebSphereBeanDeploymentArchives() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getWebSphereBeanDeploymentArchives'");
+        }
+
+        @Override
+        public Set<WebSphereBeanDeploymentArchive> getDescendantBdas() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getDescendantBdas'");
+        }
+
+        @Override
+        public CDIRuntime getCDIRuntime() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getCDIRuntime'");
+        }
+
+        @Override
+        public ArchiveType getType() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getType'");
+        }
+
+        @Override
+        public boolean hasBeans() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'hasBeans'");
+        }
+
+        @Override
+        public ReferenceContext initializeInjectionServices() throws CDIException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'initializeInjectionServices'");
+        }
+
+        @Override
+        public Set<Class<?>> getInjectionClasses() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getInjectionClasses'");
+        }
+
+        @Override
+        public Set<String> scanForBeanDefiningAnnotations(boolean scanChildren) throws CDIException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'scanForBeanDefiningAnnotations'");
+        }
+
+        @Override
+        public void scan() throws CDIException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'scan'");
+        }
+
+        @Override
+        public boolean extensionCanSeeApplicationBDAs() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'extensionCanSeeApplicationBDAs'");
+        }
+
+        @Override
+        public void createInjectionTargetsForJEEComponentClasses() throws CDIException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'createInjectionTargetsForJEEComponentClasses'");
+        }
+
+        @Override
+        public void createInjectionTargetsForJEEComponentClass(Class<?> clazz) throws CDIException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'createInjectionTargetsForJEEComponentClass'");
+        }
+
+        @Override
+        public <T> List<InjectionPoint> getJEEComponentInjectionPoints(Class<T> clazz) throws CDIException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getJEEComponentInjectionPoints'");
+        }
+
+        @Override
+        public <T> InjectionTarget<T> getJEEComponentInjectionTarget(Class<T> clazz) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getJEEComponentInjectionTarget'");
+        }
+
+        @Override
+        public <T> void addJEEComponentInjectionTarget(Class<T> clazz, InjectionTarget<T> injectionTarget) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'addJEEComponentInjectionTarget'");
+        }
+
+        @Override
+        public boolean containsBeanClass(Class<?> beanClass) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'containsBeanClass'");
+        }
+
+        @Override
+        public boolean hasBeenScanned() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'hasBeenScanned'");
+        }
+
+        @Override
+        public Set<Class<?>> getJEEComponentClasses() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getJEEComponentClasses'");
+        }
+
+        @Override
+        public void addManagedBeanDescriptor(ManagedBeanDescriptor<?> managedBeanDescriptor) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'addManagedBeanDescriptor'");
+        }
+
+        @Override
+        public void addManagedBeanDescriptors(Collection<ManagedBeanDescriptor<?>> managedBeanDescriptors) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'addManagedBeanDescriptors'");
+        }
+
+        @Override
+        public CDIArchive getArchive() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getArchive'");
+        }
+
+        @Override
+        public ClassLoader getClassLoader() throws CDIException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getClassLoader'");
+        }
+
+        @Override
+        public boolean isExtension() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'isExtension'");
+        }
+
+        @Override
+        public Set<EjbDescriptor<?>> getEjbDescriptor(Class<?> clazz) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getEjbDescriptor'");
+        }
+
+        @Override
+        public String getEEModuleDescriptorId() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getEEModuleDescriptorId'");
+        }
+
+        @Override
+        public Set<Supplier<Extension>> getSPIExtensionSuppliers() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getSPIExtensionSuppliers'");
+        }
+
+        @Override
+        public void setSPIExtensionSuppliers(Set<Supplier<Extension>> spiExtensionSuppliers) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'setSPIExtensionSuppliers'");
+        }
+
+        @Override
+        public Set<String> getBuildCompatibleExtensionClassNames() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getBuildCompatibleExtensionClassNames'");
+        }
+
+        @Override
+        public URL getBeansXmlResourceURL() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getBeansXmlResourceURL'");
+        }
     }
 }

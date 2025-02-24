@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectException;
@@ -118,7 +119,12 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
                 Tr.debug(tc, "Looking for EJB Bean: " + this.ejbName);
             }
 
-            WebSphereBeanDeploymentArchive bda = super.getCurrentBeanDeploymentArchive();
+            WebSphereBeanDeploymentArchive bda = null;
+            WebSphereCDIDeployment currentDeployment = cdiRuntime.getCurrentDeployment();
+            if (currentDeployment != null) {
+                bda = currentDeployment.getBeanDeploymentArchiveFromClassFavouringEJB(getManagedObjectClass());
+            }
+
             WeldManager beanManager = null;
             if (bda != null) {
                 beanManager = (WeldManager) bda.getBeanManager();
