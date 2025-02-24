@@ -242,7 +242,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 // If the server.xml has the configuration of enableImplicitBeanArchives sets to false, we will not scan the implicit bean archives
                 beanDiscoveryMode = BeanDiscoveryMode.NONE;
             } else if (archive.getType() == ArchiveType.RUNTIME_EXTENSION) {
-                // Runtime extensions default to none as they are extension archives (and this means that only classes explicitly returned by getBeans() will be a bean. 
+                // Runtime extensions default to none as they are extension archives (and this means that only classes explicitly returned by getBeans() will be a bean.
                 // But if another component has added a beans.xml we will honour their request.
                 beanDiscoveryMode = BeanDiscoveryMode.NONE;
             }
@@ -300,7 +300,8 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             String debugClassesString = this.beanClasses.entrySet().stream().filter(Objects::nonNull).map(entry -> entry.getKey() + " = "
-                                                                                                                   + entry.getValue().toString()).collect(Collectors.joining(", "));
+                                                                                                                   + entry.getValue().toString())
+                                                        .collect(Collectors.joining(", "));
             Tr.debug(tc, "scan [ " + getHumanReadableName() + " ] AFTER SCAN. Bean classes: { " + debugClassesString + "}");
         }
 
@@ -880,6 +881,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
         this.ejbDescriptors.add(ejbDescriptor);
         Class<?> beanClass = ejbDescriptor.getBeanClass();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "addBeanDeploymentArchive: EjbDescriptor's beanClass " + beanClass.getName() + " " + System.identityHashCode(beanClass));
+        }
+
         Set<EjbDescriptor<?>> ejbDescriptors = ejbDescriptorMap.get(beanClass);
         if (ejbDescriptors == null) {
             ejbDescriptors = new HashSet<EjbDescriptor<?>>();
