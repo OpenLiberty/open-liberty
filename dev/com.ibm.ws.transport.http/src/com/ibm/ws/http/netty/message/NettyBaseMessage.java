@@ -387,7 +387,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void removeHeader(HeaderKeys header) {
-        System.out.println("Remove header is being called for: " + header);
         removeHeader(header.getName());
 
     }
@@ -603,8 +602,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getAllCookies: Found " + list.size() + " cookie(s). Is incoming: "+isIncoming());
         }
-
-        System.out.println("getAllCookies: Found " + list.size() + " cookie(s). Is incoming: " + isIncoming());
         return list;
     }
 
@@ -711,7 +708,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         if(size == 0) {return;}
 
         for (int i = cache.getHeaderIndex(); i < size; i++) {
-            System.out.println("Cache index is: " + i);
             String headerValue = headerList.get(i).asString();
 
             cache.addParsedCookies(CookieDecoder.decode(headerValue, header));
