@@ -324,7 +324,7 @@ public class MpTelemetryLogMappingUtils {
         // Get Timestamp from LogData and set it in the LogRecordBuilder
         builder.setTimestamp(accessLogData.getDatetime(), TimeUnit.MILLISECONDS);
 
-        builder.setSeverity(Severity.INFO);
+        builder.setSeverity(Severity.INFO2);
 
         // Get Attributes builder to add additional Log fields
         AttributesBuilder attributes = Attributes.builder();
@@ -380,8 +380,6 @@ public class MpTelemetryLogMappingUtils {
         // Add additional log information from accessLogData to Attributes Builder
         attributes.put(MpTelemetryLogFieldConstants.LIBERTY_TYPE, eventType);
         attributes.put(LogFieldConstants.HOST, accessLogData.getRequestHost());
-
-        attributes.put(MpTelemetryLogFieldConstants.LIBERTY_SEQUENCE, accessLogData.getSequence());
 
         // Set the Attributes to the builder.
         builder.setAllAttributes(attributes.build());
