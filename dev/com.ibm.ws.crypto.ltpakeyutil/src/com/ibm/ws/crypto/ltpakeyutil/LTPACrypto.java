@@ -52,7 +52,7 @@ final class LTPACrypto {
 
     private static final String signatureAlgorithm = CryptoUtils.getSignatureAlgorithm();
 
-    private static int MAX_CACHE = 500;
+    private static int MAX_CACHE = 500; // has to be greater than 0 and a multiple of 5
     private static IvParameterSpec ivs8 = null;
     private static IvParameterSpec ivs16 = null;
 
@@ -202,25 +202,26 @@ final class LTPACrypto {
             result.reused = true;
             return result.result;
         } else {
-            if (cryptoKeysMap.size() > MAX_CACHE) {
+            if (cryptoKeysMap.size() >= MAX_CACHE) {
                 try {
-                    CachingKey[] keys = cryptoKeysMap.keySet().toArray(new CachingKey[cryptoKeysMap.size()]);
+                    int cryptoKeysMapSize = cryptoKeysMap.size();
+                    CachingKey[] keys = cryptoKeysMap.keySet().toArray(new CachingKey[cryptoKeysMapSize]);
                     Arrays.sort(keys, cachingKeyComparator);
                     if (cachingKeyComparator.compare(keys[0], keys[keys.length - 1]) < 0) {
-                        for (int i = 0; i < cryptoKeysMap.size() / 5; i++) {
+                        for (int i = 0; i < cryptoKeysMapSize / 5; i++) {
                             cryptoKeysMap.remove(keys[i]);
-                            keys[i + 1 * cryptoKeysMap.size() / 5].successfulUses--;
-                            keys[i + 2 * cryptoKeysMap.size() / 5].successfulUses--;
-                            keys[i + 3 * cryptoKeysMap.size() / 5].successfulUses--;
-                            keys[i + 4 * cryptoKeysMap.size() / 5].successfulUses--;
+                            keys[i + 1 * cryptoKeysMapSize / 5].successfulUses--;
+                            keys[i + 2 * cryptoKeysMapSize / 5].successfulUses--;
+                            keys[i + 3 * cryptoKeysMapSize / 5].successfulUses--;
+                            keys[i + 4 * cryptoKeysMapSize / 5].successfulUses--;
                         }
-                    } else {
-                        for (int i = 0; i < cryptoKeysMap.size() / 5; i++) {
+                    } else { // TODO: consider removing bc this likely isn't used since we sort the keys above (except when all keys have the same num of uses)
+                        for (int i = 0; i < cryptoKeysMapSize / 5; i++) {
                             cryptoKeysMap.remove(keys[keys.length - 1 - i]);
-                            keys[keys.length - 1 - i - 1 * cryptoKeysMap.size() / 5].successfulUses--;
-                            keys[keys.length - 1 - i - 2 * cryptoKeysMap.size() / 5].successfulUses--;
-                            keys[keys.length - 1 - i - 3 * cryptoKeysMap.size() / 5].successfulUses--;
-                            keys[keys.length - 1 - i - 4 * cryptoKeysMap.size() / 5].successfulUses--;
+                            keys[keys.length - 1 - i - 1 * cryptoKeysMapSize / 5].successfulUses--;
+                            keys[keys.length - 1 - i - 2 * cryptoKeysMapSize / 5].successfulUses--;
+                            keys[keys.length - 1 - i - 3 * cryptoKeysMapSize / 5].successfulUses--;
+                            keys[keys.length - 1 - i - 4 * cryptoKeysMapSize / 5].successfulUses--;
                         }
                     }
                 } catch (Exception e) {
@@ -484,24 +485,25 @@ final class LTPACrypto {
             result.successfulUses += 1;
             return result.result;
         } else {
-            if (verifyKeysMap.size() > MAX_CACHE) {
-                CachingVerifyKey[] keys = verifyKeysMap.keySet().toArray(new CachingVerifyKey[verifyKeysMap.size()]);
+            if (verifyKeysMap.size() >= MAX_CACHE) {
+                int verifyKeysMapSize = verifyKeysMap.size();
+                CachingVerifyKey[] keys = verifyKeysMap.keySet().toArray(new CachingVerifyKey[verifyKeysMapSize]);
                 Arrays.sort(keys, cachingVerifyKeyComparator);
                 if (cachingVerifyKeyComparator.compare(keys[0], keys[keys.length - 1]) < 0) {
-                    for (int i = 0; i < verifyKeysMap.size() / 5; i++) {
+                    for (int i = 0; i < verifyKeysMapSize / 5; i++) {
                         verifyKeysMap.remove(keys[i]);
-                        keys[i + 1 * verifyKeysMap.size() / 5].successfulUses--;
-                        keys[i + 2 * verifyKeysMap.size() / 5].successfulUses--;
-                        keys[i + 3 * verifyKeysMap.size() / 5].successfulUses--;
-                        keys[i + 4 * verifyKeysMap.size() / 5].successfulUses--;
+                        keys[i + 1 * verifyKeysMapSize / 5].successfulUses--;
+                        keys[i + 2 * verifyKeysMapSize / 5].successfulUses--;
+                        keys[i + 3 * verifyKeysMapSize / 5].successfulUses--;
+                        keys[i + 4 * verifyKeysMapSize / 5].successfulUses--;
                     }
-                } else {
-                    for (int i = 0; i < verifyKeysMap.size() / 5; i++) {
+                } else { // TODO: consider removing bc this likely isn't used since we sort the keys above (except when all keys have the same num of uses)
+                    for (int i = 0; i < verifyKeysMapSize / 5; i++) {
                         verifyKeysMap.remove(keys[keys.length - 1 - i]);
-                        keys[keys.length - 1 - i - 1 * verifyKeysMap.size() / 5].successfulUses--;
-                        keys[keys.length - 1 - i - 2 * verifyKeysMap.size() / 5].successfulUses--;
-                        keys[keys.length - 1 - i - 3 * verifyKeysMap.size() / 5].successfulUses--;
-                        keys[keys.length - 1 - i - 4 * verifyKeysMap.size() / 5].successfulUses--;
+                        keys[keys.length - 1 - i - 1 * verifyKeysMapSize / 5].successfulUses--;
+                        keys[keys.length - 1 - i - 2 * verifyKeysMapSize / 5].successfulUses--;
+                        keys[keys.length - 1 - i - 3 * verifyKeysMapSize / 5].successfulUses--;
+                        keys[keys.length - 1 - i - 4 * verifyKeysMapSize / 5].successfulUses--;
                     }
                 }
             }
@@ -627,14 +629,10 @@ final class LTPACrypto {
 
         if (cipher.indexOf(CryptoUtils.ENCRYPT_MODE_ECB) == -1) {
             if (cipher.indexOf(CryptoUtils.ENCRYPT_ALGORITHM_AES) != -1) {
-                if (ivs16 == null) {
-                    setIVS16(key);
-                }
+                setIVS16(key);
                 ci.init(cipherMode, sKey, ivs16);
             } else {
-                if (ivs8 == null) {
-                    setIVS8(key);
-                }
+                setIVS8(key);
                 ci.init(cipherMode, sKey, ivs8);
             }
         } else {
@@ -690,13 +688,11 @@ final class LTPACrypto {
      */
     @Trivial
     private static final synchronized void setIVS8(byte[] key) {
-        if (ivs8 == null) {
-            byte[] iv8 = new byte[8];
-            for (int i = 0; i < 8; i++) {
-                iv8[i] = key[i];
-            }
-            ivs8 = new IvParameterSpec(iv8);
+        byte[] iv8 = new byte[8];
+        for (int i = 0; i < 8; i++) {
+            iv8[i] = key[i];
         }
+        ivs8 = new IvParameterSpec(iv8);
     }
 
     /*
@@ -706,13 +702,11 @@ final class LTPACrypto {
      */
     @Trivial
     private static final synchronized void setIVS16(byte[] key) {
-        if (ivs16 == null) {
-            byte[] iv16 = new byte[16];
-            for (int i = 0; i < 16; i++) {
-                iv16[i] = key[i];
-            }
-            ivs16 = new IvParameterSpec(iv16);
+        byte[] iv16 = new byte[16];
+        for (int i = 0; i < 16; i++) {
+            iv16[i] = key[i];
         }
+        ivs16 = new IvParameterSpec(iv16);
     }
 
     @Trivial

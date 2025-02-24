@@ -45,7 +45,7 @@ public class AESKeyManager {
 
         private final String alg;
         private final int iterations;
-        private final int keyLength;
+        public final int keyLength;
         private final byte[] salt;
 
         private KeyVersion(String alg, int iterations, int keyLength, byte[] salt) {

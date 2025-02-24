@@ -105,7 +105,7 @@ public class SSLTest {
     @After
     public void tearDown() throws Exception {
         try {
-            server.stopServer();
+            server.stopServer("CWWKS1864W"); // warning for using {aes} AES-128 password
         } finally {
             server.restoreServerConfiguration();
             configureEnvVariable(server, emptyMap());

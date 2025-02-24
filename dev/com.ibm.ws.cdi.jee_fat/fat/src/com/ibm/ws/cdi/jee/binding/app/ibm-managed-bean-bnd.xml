@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<managed-bean-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    version="1.1">
+    <managed-bean class="com.ibm.ws.cdi.jee.binding.app.BindingTestCDIBean">
+        <env-entry name="testValue2" binding-name="testValue2Target" />
+    </managed-bean>
+</managed-bean-bnd>

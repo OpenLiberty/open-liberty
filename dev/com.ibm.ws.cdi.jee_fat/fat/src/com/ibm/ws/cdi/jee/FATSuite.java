@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.cdi.jee.binding.ManagedBeanBindingTest;
 import com.ibm.ws.cdi.jee.ejbWithJsp.JEEInjectionTargetTest;
 import com.ibm.ws.cdi.jee.faces40.Faces40CDISessionPersistence;
 import com.ibm.ws.cdi.jee.jaxrs.inject.InjectIntoPathTest;
@@ -40,6 +41,7 @@ import componenttest.rules.repeater.RepeatTests;
                 SimpleJSFWithSharedLibTest.class,
                 SimpleJSPTest.class,
                 Faces40CDISessionPersistence.class,
+                ManagedBeanBindingTest.class,
 })
 
 public class FATSuite {

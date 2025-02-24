@@ -3568,7 +3568,8 @@ public class DataTestServlet extends FATServlet {
     public void testFetchTypeDefault() {
         ratings.clear();
 
-        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestFetchTypeDefault", "rex@openliberty.io");
+        Rating.Reviewer.Name name1 = new Rating.Reviewer.Name("Rex", "TestFetchTypeDefault");
+        Rating.Reviewer user1 = new Rating.Reviewer(name1, "rex@openliberty.io");
         Rating.Item toaster = new Rating.Item("toaster", 28.98f);
         Set<String> comments = Set.of("Burns everything.", "Often gets stuck.", "Bagels don't fit.");
 
@@ -3753,7 +3754,7 @@ public class DataTestServlet extends FATServlet {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean databaseRounds = jdbcJarName.startsWith("ojdbc") || jdbcJarName.startsWith("postgre");
 
-        Object[] objects = primes.minMaxSumCountAverageObject(50);
+        Object[] objects = primes.minMaxSumCountAverageObjectArray(50);
         assertEquals(Long.valueOf(2L), objects[0]); // minimum
         assertEquals(Long.valueOf(47L), objects[1]); // maximum
         assertEquals(Long.valueOf(328L), objects[2]); // sum
@@ -3761,7 +3762,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, objects[4] instanceof Number); // average
         assertEquals(21.0, Math.floor(((Number) objects[4]).doubleValue()), 0.01);
 
-        Number[] numbers = primes.minMaxSumCountAverageNumber(45);
+        Number[] numbers = primes.minMaxSumCountAverageNumberArray(45);
         assertEquals(Long.valueOf(2L), numbers[0]); // minimum
         assertEquals(Long.valueOf(43L), numbers[1]); // maximum
         assertEquals(Long.valueOf(281L), numbers[2]); // sum
@@ -3828,6 +3829,21 @@ public class DataTestServlet extends FATServlet {
         assertEquals(58.0, deque.removeFirst(), 0.01); // sum
         assertEquals(7.0, deque.removeFirst(), 0.01); // count
         assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+
+        List<Number> numberList = primes.minMaxSumCountAverageNumberList(15);
+        assertEquals(Long.valueOf(2L), numberList.get(0)); // minimum
+        assertEquals(Long.valueOf(13L), numberList.get(1)); // maximum
+        assertEquals(Long.valueOf(41L), numberList.get(2)); // sum
+        assertEquals(Long.valueOf(6L), numberList.get(3)); // count
+        assertEquals(6.0, Math.floor(numberList.get(4).doubleValue()), 0.01);
+
+        List<Object> objectList = primes.minMaxSumCountAverageObjectList(10);
+        assertEquals(Long.valueOf(2L), objectList.get(0)); // minimum
+        assertEquals(Long.valueOf(7L), objectList.get(1)); // maximum
+        assertEquals(Long.valueOf(17L), objectList.get(2)); // sum
+        assertEquals(Long.valueOf(4L), objectList.get(3)); // count
+        assertEquals(true, objectList.get(4) instanceof Number); // average
+        assertEquals(4.0, Math.floor(((Number) objectList.get(4)).doubleValue()), 0.01);
     }
 
     /**
@@ -4846,10 +4862,15 @@ public class DataTestServlet extends FATServlet {
     public void testRecordWithEmbeddables() {
         ratings.clear();
 
-        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestRecordWithEmbeddables", "rex@openliberty.io");
-        Rating.Reviewer user2 = new Rating.Reviewer("Rhonda", "TestRecordWithEmbeddables", "rhonda@openliberty.io");
-        Rating.Reviewer user3 = new Rating.Reviewer("Rachel", "TestRecordWithEmbeddables", "rachel@openliberty.io");
-        Rating.Reviewer user4 = new Rating.Reviewer("Ryan", "TestRecordWithEmbeddables", "ryan@openliberty.io");
+        Rating.Reviewer.Name name1 = new Rating.Reviewer.Name("Rex", "TestRecordWithEmbeddables");
+        Rating.Reviewer.Name name2 = new Rating.Reviewer.Name("Rhonda", "TestRecordWithEmbeddables");
+        Rating.Reviewer.Name name3 = new Rating.Reviewer.Name("Rachel", "TestRecordWithEmbeddables");
+        Rating.Reviewer.Name name4 = new Rating.Reviewer.Name("Ryan", "TestRecordWithEmbeddables");
+
+        Rating.Reviewer user1 = new Rating.Reviewer(name1, "rex@openliberty.io");
+        Rating.Reviewer user2 = new Rating.Reviewer(name2, "rhonda@openliberty.io");
+        Rating.Reviewer user3 = new Rating.Reviewer(name3, "rachel@openliberty.io");
+        Rating.Reviewer user4 = new Rating.Reviewer(name4, "ryan@openliberty.io");
 
         Rating.Item blender = new Rating.Item("blender", 41.99f);
         Rating.Item toaster = new Rating.Item("toaster", 28.98f);
@@ -4870,15 +4891,16 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Set.of("Uneven cooking.", "Too noisy."),
                      ratings.getComments(1002));
 
-        // TODO enable once EclipseLink bug is fixed
+        // TODO enable once EclipseLink bug #28589 is fixed
         // java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
         // Exception Description: Problem compiling
         // [SELECT NEW test.jakarta.data.web.Rating(o.id, o.item, o.numStars, o.reviewer, o.comments)
         //  FROM RatingEntity o WHERE (o.item.price BETWEEN ?1 AND ?2) ORDER BY o.reviewer.email]. [78, 88]
         // The state field path 'o.comments' cannot be resolved to a collection type.
         //assertEquals(List.of("Rachel", "Rex", "Ryan"),
-        //             ratings.findByItemPriceBetween(40.00f, 50.00f, Sort.asc("reviewer.email"))
-        //                             .map(r -> r.reviewer().firstName)
+        //             ratings.findByItemPriceBetween(40.00f, 50.00f,
+        //                                            Sort.asc("reviewer.email"))
+        //                             .map(r -> r.reviewer().firstName())
         //                             .collect(Collectors.toList()));
 
         //assertEquals(List.of(1007, 1002),
@@ -5026,37 +5048,37 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Haralson", thing.brand);
 
         // "like" is allowed at end of entity attribute name because the capitalization differs.
-        assertIterableEquals(List.of("Fireside", "Haralson", "Honeycrisp", "Honeygold"),
-                             things.findByAlike(true)
-                                             .map(o -> o.brand)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Fireside", "Haralson", "Honeycrisp", "Honeygold"),
+                     things.findByAlike(true)
+                                     .map(o -> o.brand)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         // "Like" is used as a reserved keyword here.
-        assertIterableEquals(List.of("A101"),
-                             things.findByALike("A1%") // include second character so that databases that compare independent of case don't match "apple"
-                                             .map(o -> o.a)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("A101"),
+                     things.findByALike("A1%") // include second character so that databases that compare independent of case don't match "apple"
+                                     .map(o -> o.a)
+                                     .collect(Collectors.toList()));
 
         // "Or" in middle of entity attribute name is possible when using @Query.
-        assertIterableEquals(List.of("Honeycrisp"),
-                             things.forPurchaseOrder(20)
-                                             .map(o -> o.brand)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Honeycrisp"),
+                     things.forPurchaseOrder(20)
+                                     .map(o -> o.brand)
+                                     .collect(Collectors.toList()));
 
         // "Or" is allowed at the beginning of an entity attribute name
         // because "find...By" immediately precedes it.
-        assertIterableEquals(List.of("Honeygold"),
-                             things.findByOrderNumber(100201L)
-                                             .map(o -> o.brand)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Honeygold"),
+                     things.findByOrderNumber(100201L)
+                                     .map(o -> o.brand)
+                                     .collect(Collectors.toList()));
 
         // "And" is allowed at the beginning of an entity attribute name
         // because "find...By" immediately precedes it.
-        assertIterableEquals(List.of("android"),
-                             things.findByAndroid(true)
-                                             .map(o -> o.a)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("android"),
+                     things.findByAndroid(true)
+                                     .map(o -> o.a)
+                                     .collect(Collectors.toList()));
 
         // "and" is allowed at end of entity attribute name "brand"
         // because the capitalization differs.
@@ -5064,11 +5086,11 @@ public class DataTestServlet extends FATServlet {
         // because the reserved word "Not" never appears prior to the attribute name.
         // "And" is allowed at the beginning of an entity attribute name
         // because "And" or "Or" immediately precedes it.
-        assertIterableEquals(List.of(2L, 3L, 5L, 6L),
-                             things.findByBrandOrNotesContainsOrAndroid("IBM", "October", true)
-                                             .map(o -> o.thingId)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(2L, 3L, 5L, 6L),
+                     things.findByBrandOrNotesContainsOrAndroid("IBM", "October", true)
+                                     .map(o -> o.thingId)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         // "or" is allowed at end of entity attribute name "floor"
         // because the capitalization differs.
@@ -5076,18 +5098,17 @@ public class DataTestServlet extends FATServlet {
         // because the reserved word "In" never appears prior to the attribute name.
         // "Or" is allowed at the beginning of an entity attribute name
         // because "And" or "Or" immediately precedes it.
-        assertIterableEquals(List.of("2nd floor conference room", "Golden Delicious x Haralson"),
-                             things.findByFloorNotAndInfoLikeAndOrderNumberLessThan(3, "%o%", 300000L)
-                                             .map(o -> o.info)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("2nd floor conference room", "Golden Delicious x Haralson"),
+                     things.findByFloorNotAndInfoLikeAndOrderNumberLessThan(3, "%o%", 300000L)
+                                     .map(o -> o.info)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
-        // TODO is "Desc" allowed in an entity attribute name in the OrderBy clause?
-        assertIterableEquals(List.of("A101", "android", "apple"),
-                             things.findByThingIdGreaterThan(3L)
-                                             .map(o -> o.a)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        // The OrderBy annotation can include entity attributes with "Desc" in the name
+        assertEquals(List.of("A101", "android", "apple"),
+                     things.findByThingIdGreaterThan(3L)
+                                     .map(o -> o.a)
+                                     .collect(Collectors.toList()));
     }
 
     /**

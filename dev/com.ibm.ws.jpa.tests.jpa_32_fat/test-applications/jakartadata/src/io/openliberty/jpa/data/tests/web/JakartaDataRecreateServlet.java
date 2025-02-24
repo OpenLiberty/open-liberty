@@ -985,13 +985,13 @@ public class JakartaDataRecreateServlet extends FATServlet {
         em.persist(US2007);
         tx.commit();
 
-        List<DemographicInfo> results;
+        List<Instant> results;
 
         tx.begin();
         try {
             results = em.createQuery(
-                                     "SELECT o FROM DemographicInfo o WHERE (o.publicDebt BETWEEN ?1 AND ?2) ORDER BY o.publicDebt",
-                                     DemographicInfo.class)
+                                     "SELECT o.collectedOn FROM DemographicInfo o WHERE (o.publicDebt BETWEEN ?1 AND ?2) ORDER BY o.publicDebt",
+                                     Instant.class)
                             .setParameter(1, BigDecimal.valueOf(5000000000000.00))
                             .setParameter(2, BigDecimal.valueOf(10000000000000.00))
                             .getResultList();
@@ -1017,7 +1017,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
 
         assertEquals(1, results.size());
-        assertEquals(2007, results.get(0).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2007, results.get(0).atZone(EASTERN).get(ChronoField.YEAR));
 
         System.out.println(results.get(0).toString());
     }

@@ -23,9 +23,12 @@ public record Rating(
                 Set<String> comments) {
 
     public static record Reviewer(
-                    String firstName, // TODO nested record embeddable for Name(first, last) ?
-                    String lastName,
+                    Name name,
                     String email) {
+        public static record Name(
+                        String first,
+                        String last) {
+        }
     }
 
     public static class Item {

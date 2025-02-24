@@ -1,0 +1,26 @@
+<server description="Server for testing CDI">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>cdi-1.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>managedBeans-1.0</feature>
+        <feature>componentTest-1.0</feature>
+    </featureManager>
+
+    <jndiEntry jndiName="testValue1" value="testValue1" />
+    <jndiEntry jndiName="testValue2Target" value="testValue2" />
+    <jndiEntry jndiName="testValue3Target" value="testValue3" />
+
+    <application type="war" location="ManagedBeanBinding.war">
+        <managed-bean-bnd>
+            <managed-bean
+                class="com.ibm.ws.cdi.jee.binding.app.BindingTestCDIBean">
+                <env-entry name="testValue3" binding-name="testValue3Target" />
+            </managed-bean>
+        </managed-bean-bnd>
+    </application>
+
+</server>

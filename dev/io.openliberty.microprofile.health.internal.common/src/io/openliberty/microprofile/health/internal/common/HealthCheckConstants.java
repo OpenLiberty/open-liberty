@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -38,5 +38,9 @@ public class HealthCheckConstants {
 
     // Default Overall Startup Status MP Config property name
     public static final String DEFAULT_OVERALL_STARTUP_STATUS = "mp.health.default.startup.empty.response";
+
+    public static final String HEALTH_SERVER_CONFIG_FILE_UPDATE_INTERVAL = "fileUpdateInterval";
+
+    public static final String HEALTH_ENV_CONFIG_FILE_UPDATE_INTERVAL = "MP_HEALTH_FILE_UPDATE_INTERVAL";
 
 }

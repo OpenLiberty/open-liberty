@@ -49,6 +49,7 @@ public class DataErrPathsTest extends FATServletClient {
                     new String[] {
                                    "CWWJP9991W.*4002", // 2 persistence units attempt to autocreate same table
                                    "CWWKD1003E.*existsByAddress", // exists method returning int
+                                   "CWWKD1003E.*existsByBirthday", // exists method returning Page<Boolean>
                                    "CWWKD1003E.*existsByName", // exists method returning CompletableFuture<Long>
                                    "CWWKD1006E.*removeBySSN", // delete method attempts to return record
                                    "CWWKD1009E.*addNothing", // Insert method without parameters
@@ -58,6 +59,8 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1009E.*storeNothing", // Save method without parameters
                                    "CWWKD1009E.*storeInDatabase", // Save method with multiple parameters
                                    "CWWKD1010E.*nameAndZipCode", // Record return type with invalid attribute name
+                                   "CWWKD1010E.*sortedByEndOfAddress", // OrderBy with invalid function
+                                   "CWWKD1010E.*sortedByZipCode", // OrderBy with invalid attribute name
                                    "CWWKD1015E.*addPollingLocation", // insert null entity
                                    "CWWKD1015E.*addOrUpdatePollingLocation", // save null entity
                                    "CWWKD1017E.*livesAt", // multiple Limit parameters
@@ -70,6 +73,7 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1033E.*selectByFirstName", // CursoredPage with ORDER BY in Query
                                    "CWWKD1037E.*findByBirthdayOrderBySSN", // CursoredPage of non-entity
                                    "CWWKD1037E.*registrations", // CursoredPage of non-entity
+                                   "CWWKD1049E.*countByBirthday", // exists method returning Page<Long>
                                    "CWWKD1077E.*test.jakarta.data.errpaths.web.RepoWithoutDataStore",
                                    "CWWKD1078E.*test.jakarta.data.errpaths.web.InvalidNonJNDIRepo",
                                    "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo",

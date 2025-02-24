@@ -342,13 +342,39 @@ public interface Primes {
            "  FROM Prime o WHERE o.numberId < ?1")
     Long[] minMaxSumCountAverageLong(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
-    Number[] minMaxSumCountAverageNumber(long numBelow);
+    @Query("""
+                    SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId),
+                           COUNT(o.numberId), AVG(o.numberId)
+                    FROM Prime o WHERE o.numberId < ?1
+                    """)
+    Number[] minMaxSumCountAverageNumberArray(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
-    Object[] minMaxSumCountAverageObject(long numBelow); // TODO List<Number>?, List<Object>?
+    @Query("""
+                    SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId),
+                           COUNT(o.numberId), AVG(o.numberId)
+                    FROM Prime o WHERE o.numberId < ?1
+                    """)
+    List<Number> minMaxSumCountAverageNumberList(long numBelow);
 
-    @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
+    @Query("""
+                    SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId),
+                           COUNT(o.numberId), AVG(o.numberId)
+                    FROM Prime o WHERE o.numberId < ?1
+                    """)
+    Object[] minMaxSumCountAverageObjectArray(long numBelow);
+
+    @Query("""
+                    SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId),
+                           COUNT(o.numberId), AVG(o.numberId)
+                    FROM Prime o WHERE o.numberId < ?1
+                    """)
+    List<Object> minMaxSumCountAverageObjectList(long numBelow);
+
+    @Query("""
+                    SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId),
+                           COUNT(o.numberId), AVG(o.numberId)
+                    FROM Prime o WHERE o.numberId < ?1
+                    """)
     Stack<String> minMaxSumCountAverageStack(long numBelow);
 
     @Query("SELECT o.name FROM Prime o WHERE o.numberId < ?1")

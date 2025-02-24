@@ -23,6 +23,6 @@
        <path name="libs/DOES_NOT_EXIST"/>
     </library>
 
-    <javaPermission codeBase="${server.config.dir}/apps/testClassPath.ear" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}/apps/testLibFileSet.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
 </server>
 

@@ -169,6 +169,25 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an error is raised when a count Query by Method Name method
+     * tries to return a long value as a Page of Long.
+     */
+    @Test
+    public void testCountAsPage() {
+        try {
+            LocalDate today = LocalDate.of(2025, Month.FEBRUARY, 18);
+            Page<Long> page = voters.countByBirthday(today);
+            fail("Should not be able to use a count query that returns a" +
+                 " Page rather than long. Page is: " + page);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1049E:") ||
+                !x.getMessage().contains("Page<java.lang.Long>"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify an error is raised for a repository method that attempts to
      * return a CursoredPage of a record, rather than of the entity.
      */
@@ -562,6 +581,26 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1003E:") ||
                 !x.getMessage().contains("CompletableFuture<java.lang.Long>"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when an exists Query by Method Name method
+     * tries to return a true/false value as a Page.
+     */
+    @Test
+    public void testExistsAsPage() {
+        try {
+            LocalDate today = LocalDate.of(2025, Month.FEBRUARY, 18);
+            Page<Boolean> page = voters.existsByBirthday(today,
+                                                         PageRequest.ofSize(5));
+            fail("Should not be able to use an exists query that returns a" +
+                 " Page rather than boolean. Page is: " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1003E:") ||
+                !x.getMessage().contains("Page<java.lang.Boolean>"))
                 throw x;
         }
     }
@@ -1134,6 +1173,46 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() != null &&
                 x.getMessage().startsWith("CWWKD1090E") &&
                 x.getMessage().contains("findByAddressOrderByName"))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a repository method has an OrderBy annotation
+     * that attempts to sort by an invalid, non-existent function.
+     */
+    @Test
+    public void testOrderByInvalidFunction() {
+        try {
+            List<Voter> found = voters.sortedByEndOfAddress();
+            fail("OrderBy annotation with invalid function must cause an error." +
+                 " Instead, the repository method returned: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1010E") &&
+                x.getMessage().contains("last5DigitsOf(address)"))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a repository method has an OrderBy annotation
+     * that attempts to sort by an invalid, non-existent function.
+     */
+    @Test
+    public void testOrderByUnkownEntityAttribute() {
+        try {
+            List<Voter> found = voters.sortedByZipCode();
+            fail("OrderBy annotation with invalid entity attribute must cause an" +
+                 " error. Instead, the repository method returned: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1010E") &&
+                x.getMessage().contains("sortedByZipCode"))
                 ; // expected
             else
                 throw x;

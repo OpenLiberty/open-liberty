@@ -62,6 +62,9 @@ PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Make sure tha
 PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: You cannot use SHA1 hash-encoded passwords when FIPS 140-3 is enabled. Regenerate the password hash using the securityUtility command.
 PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 is enabled and does not support SHA1. Use the securityUtility encode command to generate a new SHA512 password hash.
 PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Make sure the password hash is generated with SHA512.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: One or more {0} password values stored in the server configuration were generated with an older algorithm{1}. Use the securityUtility encode command to re-generate the {0} passwords with the latest algorithm{2}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty now uses stronger algorithms for newly generated {aes} and {hash} passwords.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Make sure {aes} and {hash} password values are generated with the latest version of Liberty.
 
 
 # ---------------- This is an exception message ------------

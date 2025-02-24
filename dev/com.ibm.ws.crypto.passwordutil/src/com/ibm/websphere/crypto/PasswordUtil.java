@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.crypto.util.InvalidPasswordCipherException;
 import com.ibm.ws.crypto.util.MessageUtils;
@@ -722,18 +721,6 @@ public class PasswordUtil {
 
                             done = true;
                         } catch (InvalidPasswordCipherException e) {
-                            Throwable cause = e.getCause();
-                            if (cause.getCause() != null)
-                                cause = cause.getCause();
-                            if (cause instanceof NoSuchAlgorithmException) {
-                                if (CryptoUtils.isFips140_3Enabled()) {
-                                    logger.logp(Level.SEVERE, PasswordUtil.class.getName(), "encode_password", "PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM",
-                                                cause);
-                                    return null;
-                                } else {
-                                    e = new InvalidPasswordCipherException(cause.toString());
-                                }
-                            }
                             logger.logp(Level.SEVERE, PasswordUtil.class.getName(), "encode_password", "PASSWORDUTIL_CYPHER_EXCEPTION", e);
                             return null;
                         } catch (UnsupportedCryptoAlgorithmException e) {

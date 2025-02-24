@@ -1,0 +1,108 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
+bVersion=1.0
+
+Web-ContextPath: health
+OL-VirtualHost: ${admin.virtual.host}
+
+WS-TraceGroup: HEALTH
+
+-dsannotations-inherit: true
+-dsannotations: \
+  io.openliberty.microprofile.health40.internal.AppTracker40Impl, \
+  com.ibm.ws.microprofile.health.services.impl.AppModuleContextService, \
+  io.openliberty.microprofile.health40.spi.impl.HealthCheck40ResponseProviderImpl, \
+  io.openliberty.microprofile.health40.internal.HealthCheck40ServiceImpl, \
+  io.openliberty.microprofile.health40.services.impl.HealthCheck40CDIBeanInvokerImpl, \
+  io.openliberty.microprofile.health40.services.impl.HealthCheck40ExecutorImpl
+
+Import-Package: \
+  !com.ibm.ws.microprofile.health.spi.impl, \
+  !com.ibm.ws.microprofile.health.impl,\
+  javax.enterprise.context.spi; version="[1.1,3)",\
+  javax.enterprise.inject.*; version="[1.1,3)",\
+  javax.enterprise.util; version="[1.1,3)",\
+  org.eclipse.microprofile.health; version="[3.1,5)",\
+  org.eclipse.microprofile.health.spi; version="[3.1,5)",\
+  *
+
+Export-Package: \
+	io.openliberty.microprofile.health.internal.common,\
+	io.openliberty.microprofile.health30.impl,\
+	io.openliberty.microprofile.health30.internal,\
+	io.openliberty.microprofile.health31.internal,\
+	io.openliberty.microprofile.health31.services,\
+	io.openliberty.microprofile.health30.services,\
+	io.openliberty.microprofile.health40.spi.impl;version='1.0'
+
+Private-Package: \
+	io.openliberty.microprofile.health.resources,\
+	com.ibm.ws.microprofile.health.internal,\
+	com.ibm.ws.microprofile.health.services,\
+	com.ibm.ws.microprofile.health.services.impl,\
+	com.ibm.ws.microprofile.health.util,\
+	io.openliberty.microprofile.health40.*
+
+Include-Resource: \
+    META-INF/services=resources/META-INF/services, \
+    WEB-INF=resources/WEB-INF
+
+src: src,resources
+testsrc: test/src
+
+-buildpath: \
+        com.ibm.websphere.javaee.annotation.1.3;version=latest,\
+        com.ibm.ws.kernel.boot.core;version=latest,\
+        com.ibm.ws.app.manager;version=latest,\
+        com.ibm.websphere.javaee.servlet.4.0; version=latest,\
+        com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+        io.openliberty.org.eclipse.microprofile.health.3.1;version=latest,\
+        io.openliberty.microprofile.health.3.1.internal,\
+        io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
+        com.ibm.ws.adaptable.module;version=latest,\
+        com.ibm.websphere.org.osgi.core;version=latest,\
+        com.ibm.websphere.org.osgi.service.component;version=latest,\
+        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+        com.ibm.ws.cdi.interfaces;version=latest,\
+        com.ibm.ws.classloader.context;version=latest,\
+        com.ibm.ws.classloading;version=latest,\
+        com.ibm.ws.container.service.compat;version=latest,\
+        com.ibm.ws.container.service;version=latest,\
+        com.ibm.ws.context;version=latest,\
+        com.ibm.ws.javaee.metadata.context;version=latest,\
+        com.ibm.ws.javaee.version;version=latest,\
+        com.ibm.ws.kernel.service;version=latest,\
+        com.ibm.ws.kernel.security.thread;version=latest,\
+        com.ibm.ws.logging;version=latest,\
+        com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+        com.ibm.ws.threading;version=latest,\
+        com.ibm.ws.webcontainer;version=latest,\
+        com.ibm.ws.org.apache.commons.lang3;version=latest,\
+        org.eclipse.osgi;version=latest,\
+        io.openliberty.microprofile.health.3.0.internal;version=latest
+
+-testpath: \
+        ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+        com.ibm.ws.junit.extensions;version=latest, \
+        com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
+        org.hamcrest:hamcrest-all;version=1.3, \
+        org.jmock:jmock-junit4;version=2.5.1, \
+        org.jmock:jmock;version=2.5.1, \
+        org.glassfish:javax.json;version=1.0.4, \
+        com.ibm.ws.org.slf4j.api;version=latest, \
+        com.ibm.ws.org.slf4j.jdk14;version=latest, \
+        ./resources/;version=file
