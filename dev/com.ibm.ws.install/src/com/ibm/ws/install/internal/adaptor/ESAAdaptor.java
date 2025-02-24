@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,6 @@ import com.ibm.ws.install.internal.asset.ESAAsset;
 import com.ibm.ws.install.internal.asset.UninstallAsset;
 import com.ibm.ws.install.internal.platform.InstallPlatformUtils;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
-import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.HashUtils;
 import com.ibm.ws.kernel.feature.internal.generator.ManifestFileProcessor;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
@@ -544,9 +543,6 @@ public class ESAAdaptor extends ArchiveAdaptor {
                                                                  boolean checkDependency) {
         HashMap<String, File> resourceMap = new HashMap<String, File>();
 
-        // Need to update the bundle repository registry
-        BundleRepositoryRegistry.disposeAll();
-        BundleRepositoryRegistry.initializeDefaults(null, false);
         BundleRepositoryRegistry.addBundleRepository(baseDir.getAbsolutePath(), targetFd.getBundleRepositoryType());
         BundleRepositoryHolder brh = BundleRepositoryRegistry.getRepositoryHolder(targetFd.getBundleRepositoryType());
         ContentBasedLocalBundleRepository br = brh.getBundleRepository();

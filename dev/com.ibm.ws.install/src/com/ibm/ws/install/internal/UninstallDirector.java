@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -103,6 +103,10 @@ class UninstallDirector extends AbstractDirector {
 
         //get all installed features
         Map<String, ProvisioningFeatureDefinition> features = product.getFeatureDefinitions();
+        
+        //Need to update the bundle repository registry
+        BundleRepositoryRegistry.disposeAll();
+        BundleRepositoryRegistry.initializeDefaults(null, false);
 
         // Run file checking only on Windows
         if (InstallUtils.isWindows) {
