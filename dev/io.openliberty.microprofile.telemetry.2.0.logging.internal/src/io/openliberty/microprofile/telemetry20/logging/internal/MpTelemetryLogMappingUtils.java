@@ -379,7 +379,6 @@ public class MpTelemetryLogMappingUtils {
 
         // Add additional log information from accessLogData to Attributes Builder
         attributes.put(MpTelemetryLogFieldConstants.LIBERTY_TYPE, eventType);
-        attributes.put(LogFieldConstants.HOST, accessLogData.getRequestHost());
 
         // Set the Attributes to the builder.
         builder.setAllAttributes(attributes.build());

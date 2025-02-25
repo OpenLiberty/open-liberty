@@ -43,7 +43,7 @@ public class MpTelemetryAccessEventMappingUtils {
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
                                                                                                                            + "request_elapsed_time" },
                                                                { MpTelemetryLogFieldConstants.ACCESS_SEQUENCE,
-                                                                 MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX + "sequence" },
+                                                                 MpTelemetryLogFieldConstants.LIBERTY_SEQUENCE },
                                                                { MpTelemetryLogFieldConstants.ACCESS_BYTES_SENT,
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
                                                                                                                  + "bytes_sent" },
