@@ -63,6 +63,10 @@ public class TestContainerSuite {
      */
     static {
         Log.info(TestContainerSuite.class, "<init>", "Setting up testcontainers");
+
+        //TODO remove
+        System.setProperty("javax.net.debug", "all");
+
         setupTestcontainers();
     }
 
