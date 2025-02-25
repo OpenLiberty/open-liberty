@@ -742,7 +742,7 @@ public class AccessLogSource implements Source {
         });
     }
 
-    private static ListFieldAdder addCookiesFieldTelemetry(int format) { //Probably only need to add the name and method to call, and handle this on telemetry side.
+    private static ListFieldAdder addCookiesFieldTelemetry(int format) {
         return (keyValuePairList, ald) -> {
             if (ald.getCookies() != null)
                 ald.getCookies().getList().forEach(c -> keyValuePairList.add(new KeyValueStringPair(AccessLogData.getCookieKey(format, c), c.getStringValue())));

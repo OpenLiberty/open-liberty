@@ -354,7 +354,7 @@ public class MpTelemetryLogMappingUtils {
                     attributes.put(SemanticAttributes.NETWORK_PROTOCOL_NAME, requestProtocolSplit[0]);
                     attributes.put(SemanticAttributes.NETWORK_PROTOCOL_VERSION, requestProtocolSplit[1]);
                 } else if (key.equals("datetime")) {
-                    continue;
+                    builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
                     attributes.put(newKey, (String) value);
                 } else {
