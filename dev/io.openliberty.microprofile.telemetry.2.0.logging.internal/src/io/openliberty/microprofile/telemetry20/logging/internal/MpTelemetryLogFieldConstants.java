@@ -130,7 +130,27 @@ public class MpTelemetryLogFieldConstants {
     public static final String OPENLIBERTY_ACCESS_PREFIX = IO_OPENLIBERTY_TAG + ACCESS_TYPE_PREFIX_TAG;
 
     public static final String ACCESS_COOKIE_PREFIX = "cookie_";
-    public static final String ACCESS_RESPONSE_HEADER_PREFIX = "requestHeader_";
-    public static final String ACCESS_REQUEST_HEADER_PREFIX = "responseHeader_";
+    public static final String ACCESS_REQUEST_HEADER_PREFIX = "requestHeader_";
+    public static final String ACCESS_RESPONSE_HEADER_PREFIX = "responseHeader_";
+
+    /**
+     * Access logs attribute names
+     */
+    public static final String ACCESS_REMOTE_HOST = "remoteHost";
+    public static final String ACCESS_REQUEST_METHOD = "requestMethod";
+    public static final String ACCESS_REQUEST_PORT = "requestPort";
+    public static final String ACCESS_REQUEST_FIRST_LINE = "requestFirstLine";
+    public static final String ACCESS_RESPONSE_CODE = "responseCode";
+    public static final String ACCESS_REQUEST_START_TIME = "requestStartTime";
+    public static final String ACCESS_REMOTE_USER_ID = "remoteUserID";
+    public static final String ACCESS_URI_PATH = "uriPath";
+    public static final String ACCESS_ELAPSED_TIME = "elapsedTime";
+    public static final String ACCESS_REMOTE_IP = "remoteIP";
+    public static final String ACCESS_REQUEST_HOST = "requestHost";
+    public static final String ACCESS_REQUEST_ELAPSED_TIME = "requestElapsedTime";
+    public static final String ACCESS_SEQUENCE = "sequence";
+    public static final String ACCESS_BYTES_SENT = "bytesSent";
+    public static final String ACCESS_USER_AGENT = "userAgent";
+    public static final String ACCESS_BYTES_RECEIVED = "bytesReceived";
 
 }

@@ -18,52 +18,52 @@ import io.opentelemetry.semconv.SemanticAttributes;
 public class MpTelemetryAccessEventMappingUtils {
 
     private final static String[][] ACCESS_ATTRIBUTE_TABLE = {
-                                                               { "remoteHost", SemanticAttributes.CLIENT_ADDRESS.toString() },
-                                                               { "accessLogDatetime", "timestamp" },
-                                                               { "requestMethod", SemanticAttributes.HTTP_REQUEST_METHOD.toString() },
-                                                               { "requestPort", SemanticAttributes.NETWORK_LOCAL_PORT.toString() },
-                                                               { "requestFirstLine",
+                                                               { MpTelemetryLogFieldConstants.ACCESS_REMOTE_HOST, SemanticAttributes.CLIENT_ADDRESS.toString() },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_REQUEST_METHOD, SemanticAttributes.HTTP_REQUEST_METHOD.toString() },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_REQUEST_PORT, SemanticAttributes.NETWORK_LOCAL_PORT.toString() },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_REQUEST_FIRST_LINE,
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
-                                                                                     + "request_first_line" },
-                                                               { "responseCode", SemanticAttributes.HTTP_RESPONSE_STATUS_CODE.toString() },
-                                                               { "requestStartTime",
+                                                                                                                         + "request_first_line" },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_RESPONSE_CODE, SemanticAttributes.HTTP_RESPONSE_STATUS_CODE.toString() },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_REQUEST_START_TIME,
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
-                                                                                     + "request_start_time" },
-                                                               { "remoteUserID",
+                                                                                                                         + "request_start_time" },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_REMOTE_USER_ID,
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
-                                                                                 + "remote_user_id" },
-                                                               { "uriPath",
+                                                                                                                     + "remote_user_id" },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_URI_PATH,
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
-                                                                            + "url.path" },
-                                                               { "elapsedTime",
+                                                                                                               + "url.path" },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_ELAPSED_TIME,
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
-                                                                                + "elapsed_time" },
-                                                               { "remoteIP", SemanticAttributes.NETWORK_PEER_ADDRESS.toString() },
-                                                               { "requestHost", SemanticAttributes.SERVER_ADDRESS.toString() },
-                                                               { "requestElapsedTime",
+                                                                                                                   + "elapsed_time" },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_REMOTE_IP, SemanticAttributes.NETWORK_PEER_ADDRESS.toString() },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_REQUEST_HOST, SemanticAttributes.SERVER_ADDRESS.toString() },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_REQUEST_ELAPSED_TIME,
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
-                                                                                       + "request_elapsed_time" },
-                                                               { "sequence", MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX + "sequence" },
-                                                               { "bytesSent",
+                                                                                                                           + "request_elapsed_time" },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_SEQUENCE,
+                                                                 MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX + "sequence" },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_BYTES_SENT,
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
-                                                                              + "bytes_sent" },
-                                                               { "userAgent", SemanticAttributes.HTTP_USER_AGENT.toString() },
-                                                               { "bytesReceived",
+                                                                                                                 + "bytes_sent" },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_USER_AGENT, SemanticAttributes.USER_AGENT_ORIGINAL.toString() },
+                                                               { MpTelemetryLogFieldConstants.ACCESS_BYTES_RECEIVED,
                                                                  MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
-                                                                                  + "bytes_received" },
+                                                                                                                     + "bytes_received" },
 
     };
 
     private final static String[][] ACCESS_SPECIAL_KEY_ATTRIBUTE_TABLE = {
-                                                                           { "responseHeader_", "http.response.header." },
-                                                                           { "requestHeader_", "http.request.header." }
+                                                                           { MpTelemetryLogFieldConstants.ACCESS_RESPONSE_HEADER_PREFIX, "http.response.header." },
+                                                                           { MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX, "http.request.header." }
 
     };
 
     private final static String[][] ACCESS_COOKIE_KEY_ATTRIBUTE_TABLE = {
-                                                                          { "cookie_",
+                                                                          { MpTelemetryLogFieldConstants.ACCESS_COOKIE_PREFIX,
                                                                             MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
-                                                                                       + "cookie_" }
+                                                                                                                               + "cookie_" }
 
     };
 

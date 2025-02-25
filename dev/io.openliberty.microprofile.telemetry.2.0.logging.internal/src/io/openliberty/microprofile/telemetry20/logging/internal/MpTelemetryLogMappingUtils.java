@@ -321,8 +321,6 @@ public class MpTelemetryLogMappingUtils {
      */
     private static void mapAccessToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event) {
         AccessLogData accessLogData = (AccessLogData) event;
-        // Get Timestamp from LogData and set it in the LogRecordBuilder
-        builder.setTimestamp(accessLogData.getDatetime(), TimeUnit.MILLISECONDS);
 
         builder.setSeverity(Severity.INFO2);
 
@@ -346,24 +344,26 @@ public class MpTelemetryLogMappingUtils {
             key = next.getKey();
             value = getPairValue(next);
 
-            String newKey = MpTelemetryAccessEventMappingUtils.getOTelMappedAccessEventKeyName(key);
+            String formattedKey = MpTelemetryAccessEventMappingUtils.getOTelMappedAccessEventKeyName(key);
 
             if (value != null) {
                 if (key.equals("requestProtocol")) {
                     String[] requestProtocolSplit = value.toString().split("/");
                     attributes.put(SemanticAttributes.NETWORK_PROTOCOL_NAME, requestProtocolSplit[0]);
                     attributes.put(SemanticAttributes.NETWORK_PROTOCOL_VERSION, requestProtocolSplit[1]);
-                } else if (key.equals("datetime")) {
+                } else if (key.equals("datetime") || key.equals("accessLogDatetime")) {
                     builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
-                    attributes.put(newKey, (String) value);
+                    attributes.put(formattedKey, (String) value);
+                } else if (key.equals("requestPort")) {
+                    attributes.put(formattedKey, Integer.parseInt((String) value));
                 } else {
                     if (value instanceof String)
-                        attributes.put(newKey, (String) value);
+                        attributes.put(formattedKey, (String) value);
                     else if (value instanceof Long)
-                        attributes.put(newKey, (Long) value);
+                        attributes.put(formattedKey, (Long) value);
                     else if (value instanceof Integer)
-                        attributes.put(newKey, (Integer) value);
+                        attributes.put(formattedKey, (Integer) value);
                 }
             }
         }
