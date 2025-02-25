@@ -60,6 +60,7 @@ import com.ibm.ws.install.internal.asset.ESAAsset;
 import com.ibm.ws.install.internal.asset.UninstallAsset;
 import com.ibm.ws.install.internal.platform.InstallPlatformUtils;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.HashUtils;
 import com.ibm.ws.kernel.feature.internal.generator.ManifestFileProcessor;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
