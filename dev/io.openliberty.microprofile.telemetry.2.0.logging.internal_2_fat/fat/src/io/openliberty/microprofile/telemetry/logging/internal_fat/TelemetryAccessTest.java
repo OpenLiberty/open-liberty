@@ -98,7 +98,7 @@ public class TelemetryAccessTest extends FATServletClient {
         TestUtils.runApp(server, "access");
 
         // Wait for the access log message to be bridged over
-        String accessLine = server.waitForStringInLog(" INFO2 'Empty'", consoleLogFile);
+        String accessLine = server.waitForStringInLog("INFO2 'GET /MpTelemetryLogApp/AccessURL HTTP/1.1'", consoleLogFile);
 
         // Check if the expected key-value pair is correctly formatted and mapped to OTel.
         Map<String, String> expectedAccessFieldsMap = new HashMap<String, String>() {

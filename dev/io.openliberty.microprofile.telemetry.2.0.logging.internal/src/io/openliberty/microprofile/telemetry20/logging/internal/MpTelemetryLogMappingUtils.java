@@ -25,6 +25,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
+import com.ibm.ws.logging.data.AccessLogConfig;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AccessLogDataFormatter;
 import com.ibm.ws.logging.data.AuditData;
@@ -324,6 +325,10 @@ public class MpTelemetryLogMappingUtils {
 
         builder.setSeverity(Severity.INFO2);
 
+        // Set the body to "Empty" by default. The body will be overwritten by the requestFirstLine
+        // unless disabled in logFormat configruation
+        builder.setBody("Empty");
+
         // Get Attributes builder to add additional Log fields
         AttributesBuilder attributes = Attributes.builder();
 
@@ -339,6 +344,7 @@ public class MpTelemetryLogMappingUtils {
 
         String key = null;
         Object value = null;
+
         for (Iterator<KeyValuePair> element = kvpList.iterator(); element.hasNext();) {
             KeyValuePair next = element.next();
             key = next.getKey();
@@ -357,6 +363,16 @@ public class MpTelemetryLogMappingUtils {
                     attributes.put(formattedKey, (String) value);
                 } else if (key.equals("requestPort")) {
                     attributes.put(formattedKey, Integer.parseInt((String) value));
+                } else if (key.equals("requestFirstLine")) {
+                    if (!AccessLogConfig.accessLogFieldsTelemetryConfig.equals("default")) {
+                        attributes.put(formattedKey, (String) value);
+                    }
+
+                    String accessLogMsg = accessLogData.getRequestFirstLine();
+                    // Set the body to the request first line
+                    if (accessLogMsg != null) {
+                        builder.setBody(accessLogMsg);
+                    }
                 } else {
                     if (value instanceof String)
                         attributes.put(formattedKey, (String) value);
@@ -366,15 +382,6 @@ public class MpTelemetryLogMappingUtils {
                         attributes.put(formattedKey, (Integer) value);
                 }
             }
-        }
-
-        // Set the body to the request first line
-        String accessLogMsg = accessLogData.getRequestFirstLine();
-        if (accessLogMsg != null) {
-            builder.setBody(accessLogMsg);
-        } else {
-            // If the message field is null, set body to "Empty"
-            builder.setBody("Empty");
         }
 
         // Add additional log information from accessLogData to Attributes Builder

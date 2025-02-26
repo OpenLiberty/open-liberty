@@ -544,7 +544,8 @@ public class AccessLogSource implements Source {
         .add(addUriPathFieldTelemetry          (format))  // %U
         .add(addUserAgentFieldTelemetry        (format))  // User agent
         .add(addDatetimeFieldTelemetry         (format))  // Datetime, present in all access logs
-        .add(addSequenceFieldTelemetry         (format)); // Sequence, present in all access logs
+        .add(addSequenceFieldTelemetry         (format))  // Sequence, present in all access logs
+        .add(addRequestFirstLineFieldTelemetry (format)); // Adding requestFirstLine by default only to be used in the OTel logs body
 
         return builder.build();
         //@formatter:on
@@ -589,8 +590,14 @@ public class AccessLogSource implements Source {
         if (accessLogFieldsTelemetryConfig.equals("default")) {
             formatters[4] = populateDefaultTelemetryFormatters(CollectorConstants.KEYS_TELEMETRY_LOGGING);
 
+            //Include the requestFirstLine for Telemetry to be used as the body where applicable
+            fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null)));
+
         } else if (accessLogFieldsTelemetryConfig.equals("logFormat")) {
             formatters[5] = populateCustomTelemetryFormatters(fieldsToAddTelemetryLogging, CollectorConstants.KEYS_TELEMETRY_LOGGING);
+
+            //Include the requestFirstLine for Telemetry to be used as the body where applicable
+            fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null)));
         }
 
         newSF.setSettersAndFormatters(fieldSetters, formatters);
