@@ -24,14 +24,14 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.util.ReferenceCountUtil;
 
 /**
  * Pipeline handler to support Liberty's <remoteIp> end point configuration.
  */
-public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class RemoteIpHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(RemoteIpHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -78,7 +78,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
+    protected void channelRead0(ChannelHandlerContext context, HttpRequest request) throws Exception {
 
         String forwardedHeader = request.headers().get(FORWARDED_HEADER);
         forwardedFor = new ArrayList<String>();
@@ -133,7 +133,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         this.noErrors = Boolean.TRUE;
     }
 
-    private void parseForwarded(FullHttpRequest request) {
+    private void parseForwarded(HttpRequest request) {
 
         List<String> values = request.headers().getAll(FORWARDED_HEADER);
         if (Objects.nonNull(values) && !values.isEmpty()) {
@@ -268,7 +268,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         list.add(nodeName);
     }
 
-    private void parseXForwarded(FullHttpRequest request) {
+    private void parseXForwarded(HttpRequest request) {
         List<String> value;
         HttpHeaders headers = request.headers();
         value = headers.getAll(X_FORWARDED_FOR);

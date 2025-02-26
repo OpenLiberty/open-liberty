@@ -68,7 +68,7 @@ import com.ibm.wsspi.http.logging.DebugLog;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
 
@@ -104,7 +104,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private long bytesWritten;
 
     private ChannelHandlerContext nettyContext;
-    private FullHttpRequest nettyRequest;
+    private HttpRequest nettyRequest;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
     private NettyRequestMessage requestMessage;
     private HttpResponseMessage response;
@@ -172,7 +172,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     }
 
     @Override
-    public void setNettyRequest(FullHttpRequest request) {
+    public void setNettyRequest(HttpRequest request) {
         this.nettyRequest = request;
         super.setNettyRequest(request);
 
@@ -192,7 +192,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
     }
 
-    public FullHttpRequest getNettyRequest() {
+    public HttpRequest getNettyRequest() {
         return this.nettyRequest;
     }
 

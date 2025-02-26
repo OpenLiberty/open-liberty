@@ -78,7 +78,6 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -158,7 +157,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     private boolean usingNetty = false;
     private ChannelHandlerContext nettyContext;
-    private FullHttpRequest nettyRequest;
+    private io.netty.handler.codec.http.HttpRequest nettyRequest;
     private ConnectionLink nettyConnectionLink;
 
     /**
@@ -191,7 +190,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * Initialize this link for Netty Use.
      *
      */
-    public void init(ChannelHandlerContext context, FullHttpRequest request, HttpChannelConfig config) {
+    public void init(ChannelHandlerContext context, io.netty.handler.codec.http.HttpRequest request, HttpChannelConfig config) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "New conn: netty context=" + context);
         }
@@ -1358,7 +1357,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * @see com.ibm.websphere.http.HttpInboundConnection#getRequest()
      */
     @Override
-    public HttpRequest getRequest() {
+    public com.ibm.wsspi.http.HttpRequest getRequest() {
         return this.request;
     }
 
@@ -1366,7 +1365,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * @see com.ibm.websphere.http.HttpInboundConnection#getResponse()
      */
     @Override
-    public HttpResponse getResponse() {
+    public com.ibm.wsspi.http.HttpResponse getResponse() {
         return this.response;
     }
 

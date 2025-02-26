@@ -115,7 +115,7 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
@@ -314,7 +314,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     private final CopyOnWriteArrayList<Frame> framesToWrite = new CopyOnWriteArrayList<Frame>();
 
     private ChannelHandlerContext nettyContext;
-    private FullHttpRequest nettyRequest;
+    private HttpRequest nettyRequest;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
 
     /**
@@ -331,7 +331,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.nettyContext = ctx;
     }
 
-    public void setNettyRequest(FullHttpRequest request) {
+    public void setNettyRequest(HttpRequest request) {
         this.nettyRequest = request;
     }
 
