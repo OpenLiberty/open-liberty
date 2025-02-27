@@ -26,7 +26,6 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
-import com.ibm.ws.logging.data.AccessLogConfig;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AccessLogDataFormatter;
 import com.ibm.ws.logging.data.AuditData;
@@ -368,9 +367,7 @@ public class MpTelemetryLogMappingUtils {
                 } else if (key.equals("requestPort")) {
                     attributes.put(formattedKey, Integer.parseInt((String) value));
                 } else if (key.equals("requestFirstLine")) {
-                    if (!AccessLogConfig.accessLogFieldsTelemetryConfig.equals("default")) {
-                        attributes.put(formattedKey, (String) value);
-                    }
+                    attributes.put(formattedKey, (String) value);
 
                     String accessLogMsg = accessLogData.getRequestFirstLine();
                     // Set the body to the request first line

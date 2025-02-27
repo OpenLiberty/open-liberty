@@ -521,7 +521,8 @@ public class AccessLogSource implements Source {
         .add(addUriPathField          (format))  // %U
         .add(addUserAgentField        (format))  // User agent
         .add(addDatetimeField         (format))  // Datetime, present in all access logs
-        .add(addSequenceField         (format)); // Sequence, present in all access logs
+        .add(addSequenceField         (format))  // Sequence, present in all access logs
+        .add(addRequestFirstLineField (format)); // %r
 
         return builder.build();
         //@formatter:on
