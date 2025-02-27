@@ -106,7 +106,7 @@ public class TelemetryAccessTest extends FATServletClient {
                 put("http.request.method", "GET");
                 put("http.response.status_code", "200");
                 put("io.openliberty.access_log.url.path", "/MpTelemetryLogApp/AccessURL");
-                put("network.local.port", "8010");
+                put("network.local.port", Integer.toString(server.getHttpDefaultPort()));
                 put("io.openliberty.type", "liberty_accesslog");
                 put("network.protocol.name", "HTTP");
                 put("network.protocol.version", "1.1");
