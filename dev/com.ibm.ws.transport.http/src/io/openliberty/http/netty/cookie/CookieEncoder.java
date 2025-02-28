@@ -37,7 +37,7 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
  * settings, or pattern-based matches. For cookies that must use SameSite=None,
  * it ensures they are secure and sets a partitioned attribute if required.
  */
-public class CookieEncoder {
+public final class CookieEncoder {
 
     private CookieEncoder() {}
 
@@ -64,10 +64,10 @@ public class CookieEncoder {
      * @return  a list of fully encoded header lines, or empty if {@code cookies} is
      * null or empty
      */
-    public static List<String> encodeAllCookies(List<HttpCookie> cookies, 
-                                                HeaderKeys header, 
-                                                HttpChannelConfig config,
-                                                String userAgent){
+    public static List<String> encodeAllCookies(final List<HttpCookie> cookies, 
+                                                final HeaderKeys header, 
+                                                final HttpChannelConfig config,
+                                                final String userAgent){
         if(cookies == null || cookies.isEmpty()){
             return Collections.emptyList();
         }
@@ -78,7 +78,7 @@ public class CookieEncoder {
         List<String> results = new ArrayList<>();
 
         for(HttpCookie cookie: cookies){
-            String encoded = encode(cookie, header, config, userAgent);
+            String encoded = encodeCookie(cookie, header, config, userAgent);
             if(encoded == null || encoded.isEmpty()){
                 continue;
             }
@@ -114,70 +114,99 @@ public class CookieEncoder {
      * @param userAgent the user-agent string for checking SameSite compatibility
      * @return a serialized header line, or null if invalid
      */
-    public static String encode(HttpCookie cookie, HeaderKeys header, HttpChannelConfig config, String userAgent) {
+    public static String encodeCookie(final HttpCookie cookie, 
+                                final HeaderKeys header, 
+                                final HttpChannelConfig config, 
+                                final String userAgent) {
+
         if(cookie == null || header == null){
             return null;
         }
 
-        applyPolicy(cookie, config, userAgent);
-        determineCookieVersion(cookie, config);
+        applyCookiePolicy(cookie, config, userAgent);
+        ensureCookieVersion(cookie, config);
+        
 
-        return CookieUtils.toString(cookie, header, config.isv0CookieDateRFC1123compat(), config.shouldSkipCookiePathQuotes());
+        return CookieUtils.toString(cookie, header, 
+                                    config.isv0CookieDateRFC1123compat(), 
+                                    config.shouldSkipCookiePathQuotes());
     }
 
-    private static void applyPolicy(HttpCookie cookie, HttpChannelConfig config, String userAgent){
-        if(cookie==null){
-            return;
-        }
+    /**
+     * Applies the main cookie policy for SameSite and Partitioned attributes.
+     * @param cookie
+     * @param config
+     * @param userAgent
+     */
+    private static void applyCookiePolicy(final HttpCookie cookie, 
+                                          final HttpChannelConfig config, 
+                                          final String userAgent){
+        if(cookie==null) return;
 
-        parseAndNormalizeSameSite(cookie, config, userAgent);
-        if(config.getPartitioned()){
-            applyPartioned(cookie);
-        }
+        applySameSiteAttribute(cookie, config, userAgent);
+        applyPartitionedAttribute(cookie, config);    
     }
 
-    private static void determineCookieVersion(HttpCookie cookie, HttpChannelConfig config){
+    /**
+     * Ensures that the cookie version is valid.
+     */
+    private static void ensureCookieVersion(HttpCookie cookie, HttpChannelConfig config){
         if(cookie.getVersion() < 0){
             cookie.setVersion(0);
         }
-        if(config.useSameSiteConfig() && cookie.getVersion() == 0){
-            cookie.setVersion(1);
-        }
+        // Future enhancement: if using SameSite config and cookie is Version 0, consider upgrading to Version 1.
+        //if(config.useSameSiteConfig() && cookie.getVersion() == 0){
+        //    cookie.setVersion(1);
+        //}
     }
 
-    private static void parseAndNormalizeSameSite(HttpCookie cookie, HttpChannelConfig config, String userAgent){
-        String rawSameSite = cookie.getAttribute(SAMESITE_ATTRIBUTE);
+    /**
+     * If the cookie does not have a SameSite attribute, the {@link HttpChannelConfig} is used
+     * to determine if a value should be injected. If injected, the secure attribute will be
+     * verified if the SameSite attribute needs it. 
+     * 
+     * If the cookie already had a SameSite value, it will remain as-is.
+     */
+    private static void applySameSiteAttribute(final HttpCookie cookie, 
+                                                  final HttpChannelConfig config, 
+                                                  final String userAgent){
+
+        String originalSameSite = cookie.getAttribute(SAMESITE_ATTRIBUTE);
+        boolean serverInjectedSameSite = false;
         
-        if(rawSameSite == null){
-            applySameSiteIfConfigured(cookie, config);
-            rawSameSite = cookie.getAttribute(SAMESITE_ATTRIBUTE);
+        if(originalSameSite == null){
+            serverInjectedSameSite = applySameSiteConfiguration(cookie, config);
+            originalSameSite = cookie.getAttribute(SAMESITE_ATTRIBUTE);
         }
-        if(rawSameSite == null || rawSameSite.isEmpty()){
+        if(originalSameSite == null || originalSameSite.isEmpty()){
             return;
         }
+
         SameSite sameSite;
-        try{
-            sameSite = SameSite.from(rawSameSite);
-        } catch(IllegalArgumentException e){
+        try {
+            if(serverInjectedSameSite){
+                sameSite = SameSite.from(originalSameSite);
+                if(sameSite.requiresSecure() && !cookie.isSecure()){
+                    cookie.setSecure(true);
+                }
+            cookie.setAttribute(SAMESITE_ATTRIBUTE, sameSite.toString());           
+            }  
+        }catch(IllegalArgumentException e){
             cookie.setAttribute(SAMESITE_ATTRIBUTE, null);
-            return;
+        }finally{
+            if (originalSameSite.equalsIgnoreCase(SameSite.NONE.name()) && userAgent != null) {
+                boolean isIncompatible = SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent);
+                if (isIncompatible) {
+                    cookie.setAttribute(SAMESITE_ATTRIBUTE, null);
+                    cookie.setAttribute(PARTITIONED_ATTRIBUTE, null);
+                }
+            } 
         }
-        if(sameSite.requiresSecure() && !cookie.isSecure()){
-            cookie.setSecure(true);
-        }
-        if(sameSite == SameSite.NONE && userAgent != null){
-            boolean isIncompatible = SameSiteCookieUtils.isSameSiteNoneIncompatible(userAgent);
-            if(isIncompatible){
-                cookie.setAttribute(SAMESITE_ATTRIBUTE, null);
-                cookie.setAttribute(PARTITIONED_ATTRIBUTE, null);
-            }
-        }
-        cookie.setAttribute(SAMESITE_ATTRIBUTE, sameSite.toString());
     }
 
-    private static void applySameSiteIfConfigured(HttpCookie cookie, HttpChannelConfig config){
+    private static boolean applySameSiteConfiguration(final HttpCookie cookie, final HttpChannelConfig config){
         if(!config.useSameSiteConfig()){
-            return;
+            return false;
         }
         String name = cookie.getName();
         String defaultSameSite = config.getSameSiteCookies().get(name);
@@ -190,9 +219,10 @@ public class CookieEncoder {
         if(defaultSameSite != null && !defaultSameSite.isEmpty()){
             cookie.setAttribute(SAMESITE_ATTRIBUTE, defaultSameSite);
         }
+        return true;
     }
 
-    private static String matchSameSitePattern(String name, HttpChannelConfig config){
+    private static String matchSameSitePattern(final String name, final HttpChannelConfig config){
         for (Pattern pattern: config.getSameSitePatterns().keySet()){
             Matcher matcher = pattern.matcher(name);
             if(matcher.matches()){
@@ -202,10 +232,34 @@ public class CookieEncoder {
         return null;
     }
 
-    private static void applyPartioned(HttpCookie cookie){
-        String partitioned = cookie.getAttribute(PARTITIONED_ATTRIBUTE);
-        if(partitioned == null || partitioned.isEmpty()){
-            cookie.setAttribute(PARTITIONED_ATTRIBUTE, "");
+    /**
+     * Apply the Partitioned attribute if the cookie has SameSite  set to 'None'
+     * and the Partitioned attribute is not currently set.
+     */
+    private static void applyPartitionedAttribute(final HttpCookie cookie, final HttpChannelConfig config){
+        if(config.getPartitioned()){
+            String sameSiteValue = cookie.getAttribute(SAMESITE_ATTRIBUTE);
+            if (sameSiteValue != null && sameSiteValue.equalsIgnoreCase(SameSite.NONE.name())) {
+                String partitioned = cookie.getAttribute(PARTITIONED_ATTRIBUTE);
+                if (partitioned == null) {
+                    cookie.setAttribute(PARTITIONED_ATTRIBUTE, "");
+                }
+            }
+        }
+        enforcePartitionedPolicy(cookie);
+    }
+
+    /**
+     * Final pass to disable the Partitioned attribute if SameSite is 
+     * not 'None'.
+     */
+    private static void enforcePartitionedPolicy(final HttpCookie cookie) {
+        String sameSiteValue = cookie.getAttribute(SAMESITE_ATTRIBUTE);
+        boolean isNone = (sameSiteValue != null && sameSiteValue.equalsIgnoreCase("none"));
+
+        String partitionedValue = cookie.getAttribute(PARTITIONED_ATTRIBUTE);
+        if (!isNone && partitionedValue != null && !partitionedValue.equalsIgnoreCase("false")) {
+            cookie.setAttribute(PARTITIONED_ATTRIBUTE, "false");
         }
     }
 
@@ -214,9 +268,12 @@ public class CookieEncoder {
      * Expires attribute. Unused at the moment as it would change default
      * behavior. 
      * @param cookie
+     * 
+     * NOTE: This method is for future enhancement, seek approval to enable use 
+     * of this.
      */
     @SuppressWarnings("unused")
-    private static void handleExpiresToMaxAge(HttpCookie cookie){
+    private static void handleExpiresToMaxAge(final HttpCookie cookie){
             boolean hasExpires = cookie.getAttribute(EXPIRES_ATTRIBUTE) != null;
             boolean hasMaxAge = cookie.getMaxAge() > -1;
 
@@ -249,7 +306,7 @@ public class CookieEncoder {
      * @param expires the raw expires String
      * @return the parsed Date or null
      */
-    private static Date parseExpires(String expires){
+    private static Date parseExpires(final String expires){
         try {
             return RFC1123_DATE_FORMAT.parse(expires);
         } catch(ParseException e){

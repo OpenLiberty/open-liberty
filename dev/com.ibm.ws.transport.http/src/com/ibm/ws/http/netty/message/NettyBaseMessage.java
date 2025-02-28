@@ -1041,7 +1041,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         }
 
         for (HttpCookie cookie : list) {
-            String value = CookieEncoder.encode(cookie, header, config, userAgent);
+            String value = CookieEncoder.encodeCookie(cookie, header, config, userAgent);
             
             if (null != value) {
                 if(filterDuplicates){

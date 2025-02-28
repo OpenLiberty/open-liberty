@@ -629,7 +629,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         String result = null;
         if (Objects.nonNull(cookie) && Objects.nonNull(header)) {
             String userAgent = getServiceContext().getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString();
-            result = CookieEncoder.encode(cookie, header, config, userAgent);
+            result = CookieEncoder.encodeCookie(cookie, header, config, userAgent);
 
             if (Objects.nonNull(result)) {
                 if (config.doNotAllowDuplicateSetCookies() && header.equals(HttpHeaderKeys.HDR_SET_COOKIE)) {
