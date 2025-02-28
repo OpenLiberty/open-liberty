@@ -32,7 +32,6 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
     private final VirtualConnection vc;
     private final Channel nettyChannel;
     private SSLConnectionContext sslContext;
-    
 
     public NettyTCPConnectionContext(Channel channel, VirtualConnection vc) {
 
@@ -94,7 +93,6 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
 
     @Override
     public SSLConnectionContext getSSLContext() {
-        // TODO Auto-generated method stub
         return sslContext;
     }
 

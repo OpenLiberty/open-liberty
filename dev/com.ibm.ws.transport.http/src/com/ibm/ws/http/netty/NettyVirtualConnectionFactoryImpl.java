@@ -32,7 +32,6 @@ public class NettyVirtualConnectionFactoryImpl implements InboundVirtualConnecti
 
     @Override
     public FlowType getType() {
-        // TODO Auto-generated method stub
         return FlowType.INBOUND;
     }
 

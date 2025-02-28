@@ -59,7 +59,6 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
     protected static final Http2FrameLogger LOGGER = new Http2FrameLogger(io.netty.handler.logging.LogLevel.TRACE, HttpToHttp2ConnectionHandler.class) {
         @Override
         public void logGoAway(Direction direction, ChannelHandlerContext ctx, int lastStreamId, long errorCode, ByteBuf debugData) {
-            // TODO Auto-generated method stub
             new Exception().printStackTrace();
             super.logGoAway(direction, ctx, lastStreamId, errorCode, debugData);
         }

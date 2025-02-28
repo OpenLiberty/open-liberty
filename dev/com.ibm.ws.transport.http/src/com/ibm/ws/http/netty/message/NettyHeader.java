@@ -94,7 +94,6 @@ public class NettyHeader implements HeaderField {
 
     @Override
     public int asInteger() throws NumberFormatException {
-        // TODO Auto-generated method stub
         return nettyHeaders.getInt(name);
     }
 
