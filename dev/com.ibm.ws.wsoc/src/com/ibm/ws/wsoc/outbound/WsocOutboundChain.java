@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsoc.outbound;
 
@@ -32,8 +29,8 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.NettyFramework;
@@ -94,7 +91,7 @@ public class WsocOutboundChain {
     public static boolean isUsingNetty() {
         return useNettyTransport;
     }
-    
+
     public static Map<String, Object> getCurrentSslOptions() {
         return currentSSL;
     }
@@ -112,9 +109,11 @@ public class WsocOutboundChain {
 
         // TODO: Updated this to use constants
         useNettyTransport = ProductInfo.getBetaEdition() &&
-                           MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", properties.get("useNettyTransport"), true);
+                            MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", properties.get("useNettyTransport"), true);
 
-        System.out.println("Netty bundle: " + nettyBundle);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "activate, Netty bundle: " + nettyBundle);
+        }
 
         if (useNettyTransport) {
             wsocChain.init(WS_CHAIN_NAME, nettyBundle);
@@ -131,7 +130,7 @@ public class WsocOutboundChain {
     @Modified
     protected void modified(Map<String, Object> config) {
         boolean usingNetty = ProductInfo.getBetaEdition() &&
-                           MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", config.get("useNettyTransport"), true);
+                             MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", config.get("useNettyTransport"), true);
         boolean unchangedTransport = useNettyTransport && usingNetty;
         useNettyTransport = usingNetty;
         modified(unchangedTransport);
@@ -260,7 +259,7 @@ public class WsocOutboundChain {
         return chfw.getFramework();
 
     }
-    
+
     @Reference(name = "nettyTlsProvider")
     protected void setNettyTlsProvider(NettyTlsProvider bundle) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
