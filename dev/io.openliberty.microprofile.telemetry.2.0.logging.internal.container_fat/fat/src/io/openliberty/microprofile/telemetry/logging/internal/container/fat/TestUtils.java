@@ -151,9 +151,12 @@ public class TestUtils {
      */
     static boolean compareLogSizes(String methodName, String logs, long expected, long actual) {
         boolean logSizesMatch = (expected == actual);
+        Log.info(c, "Container logs complete", "");
 
-        if (!logSizesMatch)
+        if (!logSizesMatch) {
+            Log.info(c, methodName, "Log size mismatch: " + expected + " -- " + actual);
             Log.info(c, methodName, logs);
+        }
 
         return logSizesMatch;
     }
