@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,11 +25,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.jaxrs.client.fat.hostnameverification.servlet.HostnameVerificationClientTestServlet;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class HostnameVerificationTest extends FATServletClient {
 
     private static final String appName = "simpleSSL";
