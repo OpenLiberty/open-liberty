@@ -508,7 +508,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 	}
 
 	@Override
-    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+    public Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
         return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }

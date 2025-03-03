@@ -154,7 +154,8 @@ instrument.classesExcludes: \
 	io.openliberty.io.netty.ssl;version=latest,\
 	io.netty.transport,\
 	com.ibm.ws.wsbytebuffer,\
-	io.netty.codec-http
+	io.netty.codec-http,\
+	io.netty.handler
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
