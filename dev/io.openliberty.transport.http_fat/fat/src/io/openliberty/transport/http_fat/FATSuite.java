@@ -6,9 +6,11 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
  *******************************************************************************/
-package io.openliberty.transport.http_fat.accesslists;
 
+//The FATSuite.java file was inside the accesslists folder. Moving it outside to align with the project structure.
+package io.openliberty.transport.http_fat;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -17,10 +19,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AccessListsTests.class
+    AccessListsTests.class,
+    AccessLogRolloverTest.class
 })
 public class FATSuite {
 
