@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -102,7 +102,8 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
     //-----------------------------------------------------------------
     // Don't allow a 0-arg CTOR - Force javac error message
     //-----------------------------------------------------------------
-    private DistributedObjectCacheAdapter() {}
+    private DistributedObjectCacheAdapter() {
+    }
 
     protected DistributedObjectCacheAdapter(DCache cache, int mapType) {
 
@@ -323,7 +324,7 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * Returns <tt>true</tt> if this map contains no key-value mappings.
      *
      * @param includeDiskCache true to check the memory and disk maps; false to check
-     *            the memory map.
+     *                             the memory map.
      * @return <tt>true</tt> if this map contains no key-value mappings.
      */
     @Override
@@ -363,16 +364,16 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * Returns <tt>true</tt> if this map contains a mapping for the specified
      * key.
      *
-     * @param key key whose presence in this map is to be tested.
+     * @param key              key whose presence in this map is to be tested.
      * @param includeDiskCache true to check the specified key contained in the memory or disk
-     *            maps; false to check the specified key contained in the memory map.
+     *                             maps; false to check the specified key contained in the memory map.
      * @return <tt>true</tt> if this map contains a mapping for the specified
      *         key.
      *
-     * @throws ClassCastException if the key is of an inappropriate type for
-     *             this map.
+     * @throws ClassCastException   if the key is of an inappropriate type for
+     *                                  this map.
      * @throws NullPointerException if the key is <tt>null</tt> and this map
-     *             does not not permit <tt>null</tt> keys.
+     *                                  does not not permit <tt>null</tt> keys.
      */
     @Override
     final public boolean containsKey(Object key) {
@@ -388,16 +389,16 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * Returns <tt>true</tt> if this map contains a mapping for the specified
      * key.
      *
-     * @param key key whose presence in this map is to be tested.
+     * @param key              key whose presence in this map is to be tested.
      * @param includeDiskCache true to check the specified key contained in the memory or
-     *            disk maps; false to check the specified key contained in the memory map.
+     *                             disk maps; false to check the specified key contained in the memory map.
      * @return <tt>true</tt> if this map contains a mapping for the specified
      *         key.
      *
-     * @throws ClassCastException if the key is of an inappropriate type for
-     *             this map.
+     * @throws ClassCastException   if the key is of an inappropriate type for
+     *                                  this map.
      * @throws NullPointerException if the key is <tt>null</tt> and this map
-     *             does not not permit <tt>null</tt> keys.
+     *                                  does not not permit <tt>null</tt> keys.
      */
     @Override
     public boolean containsKey(Object key, boolean includeDiskCache) {
@@ -465,17 +466,17 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * @param map Mappings to be stored in this map.
      *
      * @throws UnsupportedOperationException if the <tt>putAll</tt> method is
-     *             not supported by this map.
+     *                                           not supported by this map.
      *
-     * @throws ClassCastException if the class of a key or value in the
-     *             specified map prevents it from being stored in this map.
+     * @throws ClassCastException            if the class of a key or value in the
+     *                                           specified map prevents it from being stored in this map.
      *
-     * @throws IllegalArgumentException some aspect of a key or value in the
-     *             specified map prevents it from being stored in this map.
+     * @throws IllegalArgumentException      some aspect of a key or value in the
+     *                                           specified map prevents it from being stored in this map.
      *
-     * @throws NullPointerException this map does not permit <tt>null</tt>
-     *             keys or values, and the specified key or value is
-     *             <tt>null</tt>.
+     * @throws NullPointerException          this map does not permit <tt>null</tt>
+     *                                           keys or values, and the specified key or value is
+     *                                           <tt>null</tt>.
      */
     @Override
     final public void putAll(Map map) {
@@ -536,7 +537,7 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * Removes all mappings from this map (optional operation).
      *
      * @throws UnsupportedOperationException clear is not supported by this
-     *             map.
+     *                                           map.
      */
     @Override
     final public void clear() {
@@ -553,7 +554,7 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * the disk cache.
      *
      * @throws UnsupportedOperationException clear is not supported by this
-     *             map.
+     *                                           map.
      */
     @Override
     public void clearMemory(boolean clearDisk) {
@@ -582,10 +583,10 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * @return the value to which this map maps the specified key, or
      *         <tt>null</tt> if the map contains no mapping for this key.
      *
-     * @throws ClassCastException if the key is not of an inappropriate type for
-     *             this map. (Currently supports only String)
+     * @throws ClassCastException   if the key is not of an inappropriate type for
+     *                                  this map. (Currently supports only String)
      * @throws NullPointerException key is <tt>null</tt> and this map does not
-     *             not permit <tt>null</tt> keys.
+     *                                  not permit <tt>null</tt> keys.
      *
      * @see #containsKey(Object)
      */
@@ -617,10 +618,10 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * @return the value to which this map maps the specified key, or
      *         <tt>null</tt> if the map contains no mapping for this key.
      *
-     * @throws ClassCastException if the key is not of an inappropriate type for
-     *             this map. (Currently supports only String)
+     * @throws ClassCastException   if the key is not of an inappropriate type for
+     *                                  this map. (Currently supports only String)
      * @throws NullPointerException key is <tt>null</tt> and this map does not
-     *             not permit <tt>null</tt> keys.
+     *                                  not permit <tt>null</tt> keys.
      *
      * @see #containsKey(Object)
      */
@@ -861,6 +862,8 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
             sharingPolicy = EntryInfo.NOT_SHARED;
         }
         ValidateUtility.sharingPolicy(sharingPolicy);
+        if (sharingPolicy == EntryInfo.SHARED_DEFAULT)
+            sharingPolicy = this.sharingPolicy;
         if (sharingPolicy == EntryInfo.SHARED_PUSH_PULL ||
             sharingPolicy == EntryInfo.SHARED_PULL) {
             invalidate(key, true);
@@ -959,7 +962,7 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * Adds one or more aliases for the given key in the cache's mapping table. If the alias is already
      * associated with another key, it will be changed to associate with the new key.
      *
-     * @param key the key assoicated with alias
+     * @param key        the key assoicated with alias
      * @param aliasArray the aliases to use for lookups
      * @throws IllegalArgumentException if the key is not in the cache's mapping table.
      */
@@ -1050,7 +1053,7 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * Metadata found in the cache configuration is looked up via class name
      * and includes priority, timeout, and dependency ids.
      *
-     * @param key key with which the specified value is to be associated.
+     * @param key   key with which the specified value is to be associated.
      * @param value value to be associated with the specified key.
      * @return previous value associated with specified key from the local map, or <tt>null</tt>
      *         if there was no mapping for key in the local map. A <tt>null</tt> return can
@@ -1059,14 +1062,14 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      *         <tt>null</tt> values.
      *
      * @throws UnsupportedOperationException if the <tt>put</tt> operation is
-     *             not supported by this map.
-     * @throws ClassCastException if the class of the specified key or value
-     *             prevents it from being stored in this map.
-     * @throws IllegalArgumentException if some aspect of this key or value
-     *             prevents it from being stored in this map.
-     * @throws NullPointerException this map does not permit <tt>null</tt>
-     *             keys or values, and the specified key or value is
-     *             <tt>null</tt>.
+     *                                           not supported by this map.
+     * @throws ClassCastException            if the class of the specified key or value
+     *                                           prevents it from being stored in this map.
+     * @throws IllegalArgumentException      if some aspect of this key or value
+     *                                           prevents it from being stored in this map.
+     * @throws NullPointerException          this map does not permit <tt>null</tt>
+     *                                           keys or values, and the specified key or value is
+     *                                           <tt>null</tt>.
      */
     @Override
     public Object put(Object key, Object value) {
@@ -1093,19 +1096,19 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * (optional operation). If the map previously contained a
      * mapping for this key, the old value is replaced.
      *
-     * @param key key with which the specified value is to be associated.
-     * @param value value to be associated with the specified key.
-     * @param priority the priority value for the cache entry. entries
-     *            with higher priority will remain in the cache longer
-     *            than those with a lower priority in the case of cache
-     *            overflow.
-     * @param timeToLive the time in seconds that the cache entry should remain
-     *            in the cache
+     * @param key           key with which the specified value is to be associated.
+     * @param value         value to be associated with the specified key.
+     * @param priority      the priority value for the cache entry. entries
+     *                          with higher priority will remain in the cache longer
+     *                          than those with a lower priority in the case of cache
+     *                          overflow.
+     * @param timeToLive    the time in seconds that the cache entry should remain
+     *                          in the cache
      * @param sharingPolicy how the cache entry should be shared in a cluster.
-     *            values are EntryInfo.NOT_SHARED, EntryInfo.SHARED_PUSH,
-     *            and EntryInfo.SHARED_PUSH_PULL.
+     *                          values are EntryInfo.NOT_SHARED, EntryInfo.SHARED_PUSH,
+     *                          and EntryInfo.SHARED_PUSH_PULL.
      * @param dependencyIds an optional set of dependency ids to associate with
-     *            the cache entry
+     *                          the cache entry
      * @return previous value associated with specified key from the local map, or <tt>null</tt>
      *         if there was no mapping for the key in the local map. A <tt>null</tt> return can
      *         also indicate that the map previously associated <tt>null</tt>
@@ -1113,14 +1116,14 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      *         <tt>null</tt> values.
      *
      * @throws UnsupportedOperationException if the <tt>put</tt> operation is
-     *             not supported by this map.
-     * @throws ClassCastException if the class of the specified key or value
-     *             prevents it from being stored in this map.
-     * @throws IllegalArgumentException if some aspect of this key or value
-     *             prevents it from being stored in this map.
-     * @throws NullPointerException this map does not permit <tt>null</tt>
-     *             keys or values, and the specified key or value is
-     *             <tt>null</tt>.
+     *                                           not supported by this map.
+     * @throws ClassCastException            if the class of the specified key or value
+     *                                           prevents it from being stored in this map.
+     * @throws IllegalArgumentException      if some aspect of this key or value
+     *                                           prevents it from being stored in this map.
+     * @throws NullPointerException          this map does not permit <tt>null</tt>
+     *                                           keys or values, and the specified key or value is
+     *                                           <tt>null</tt>.
      */
     @Override
     public Object put(Object key, Object value, int priority, int timeToLive, int sharingPolicy, Object dependencyIds[]) {
@@ -1147,6 +1150,8 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
         if (inactivityTime != -1) {
             ei.setInactivity(inactivityTime);
         }
+        if (sharingPolicy == EntryInfo.SHARED_DEFAULT)
+            sharingPolicy = this.sharingPolicy;
         ei.setSharingPolicy(sharingPolicy);
 
         Object retValue = cache.invalidateAndSet(ei, value, cache.getCacheConfig().isEnableCacheReplication());
@@ -1190,9 +1195,9 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * all objects that share that dependency id will be
      * invalidated.
      *
-     * @param key the key which will be invalidated
+     * @param key  the key which will be invalidated
      * @param wait if true, then the method will not complete until the invalidation
-     *            has occured. if false, then the invalidation will occur in batch mode
+     *                 has occured. if false, then the invalidation will occur in batch mode
      * @see remove
      */
     @Override
@@ -1217,9 +1222,9 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * all objects that share that dependency id will be
      * invalidated.
      *
-     * @param key the key which will be invalidated
+     * @param key  the key which will be invalidated
      * @param wait if true, then the method will not complete until the invalidation
-     *            has occured. if false, then the invalidation will occur in batch mode
+     *                 has occured. if false, then the invalidation will occur in batch mode
      * @see remove
      */
     @Override
@@ -1248,7 +1253,7 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      *         with the specified key, if the implementation supports
      *         <tt>null</tt> values.
      * @throws UnsupportedOperationException if the <tt>remove</tt> method is
-     *             not supported by this map.
+     *                                           not supported by this map.
      */
     @Override
     public Object remove(Object key) {
@@ -1424,7 +1429,7 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * You must call enableListener(true) before calling addInvalidationListner() or addChangeListener().
      *
      * @param enable - true to enable support for invalidation and change listeners
-     *            or false to disable support for invalidation and change listeners
+     *                   or false to disable support for invalidation and change listeners
      * @return boolean "true" means listener support was successfully enabled or disabled.
      *         "false" means this DistributedMap is configurated to use the listener's J2EE context for
      *         event notification and the callback registration failed. In this case, the caller's thread
@@ -1563,12 +1568,13 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * this map.
      *
      * @param listener
-     *            the pre-invalidation listener object
+     *                     the pre-invalidation listener object
      * @return boolean "true" means the pre-invalidation listener was
      *         successfully added. "false" means either the passed listener
      *         object is null or listener support is not enable.
      * @see #removePreInvalidationListener(com.ibm.websphere.cache.PreInvalidationListener)
      */
+    @Override
     public boolean addPreInvalidationListener(PreInvalidationListener listener) {
         final String methodName = "addPreInvalidationListener(listener)";
         functionNotAvailable(methodName);
@@ -1591,7 +1597,7 @@ public class DistributedObjectCacheAdapter extends DistributedObjectCache implem
      * this DistributedMap.
      *
      * @param listener
-     *            the pre-invalidation listener object
+     *                     the pre-invalidation listener object
      * @return boolean "true" means the pre-invalidation listener was
      *         successfully removed. "false" means either passed listener object
      *         is null or listener support is not enable.

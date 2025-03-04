@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,9 +25,10 @@ public class ValidateUtility {
             if (sharingPolicy != EntryInfo.SHARED_PULL &&
                 sharingPolicy != EntryInfo.SHARED_PUSH &&
                 sharingPolicy != EntryInfo.SHARED_PUSH_PULL &&
-                sharingPolicy != EntryInfo.NOT_SHARED) {
-                    throw new IllegalArgumentException("sharingPolicy:"+sharingPolicy);
-                }
+                sharingPolicy != EntryInfo.NOT_SHARED &&
+                sharingPolicy != EntryInfo.SHARED_DEFAULT) {
+                throw new IllegalArgumentException("sharingPolicy:" + sharingPolicy);
+            }
         }
     }
 
@@ -46,7 +47,7 @@ public class ValidateUtility {
     public static void objectNotNull(Object object, String name) {
         if (verify) {
             if (object == null) {
-                throw new IllegalArgumentException(name+":"+object);
+                throw new IllegalArgumentException(name + ":" + object);
             }
         }
     }
@@ -56,11 +57,9 @@ public class ValidateUtility {
     public static void objectNotNull(Object object1, String name1, Object object2, String name2) {
         if (verify) {
             if (object1 == null || object2 == null) {
-                throw new IllegalArgumentException(name1+":"+object1+"  "+name2+":"+object2);
+                throw new IllegalArgumentException(name1 + ":" + object1 + "  " + name2 + ":" + object2);
             }
         }
     }
 
 }
-
-
