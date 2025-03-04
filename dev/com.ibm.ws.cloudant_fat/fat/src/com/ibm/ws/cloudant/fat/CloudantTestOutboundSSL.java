@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,12 @@ public class CloudantTestOutboundSSL extends FATServletClient {
         server.addEnvVar("cloudant_databaseName", DB_NAME);
 
         cloudant.createDb(DB_NAME);
+
+        // TODO extract security files from container prior to server start
+        // TODO delete security files from git
+
+//        cloudant.copyFileFromContainer("/etc/couchdb/cert/server.crt", server.getServerRoot() + "/security/server.crt");
+//        FATSuite.createKeystore(server.getServerRoot() + "/security/keystore.jks", server.getServerRoot() + "/security/server.crt");
 
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, JEE_APP, "cloudant.web");

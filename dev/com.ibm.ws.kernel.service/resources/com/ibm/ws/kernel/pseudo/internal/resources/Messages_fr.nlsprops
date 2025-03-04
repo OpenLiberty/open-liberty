@@ -51,14 +51,22 @@ jndi.not.installed.useraction=V\u00e9rifiez qu'une impl\u00e9mentation JNDI est 
 # CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
 # -------------------------------------------------------------------------------------------------
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_INSECURE=CWWKS5900W: Le {0} L''\u00e9l\u00e9ment de configuration sp\u00e9cifie le {1} algorithme cryptographique non s\u00e9curis\u00e9.  Pensez \u00e0 utiliser le {2} algorithme s\u00e9curis\u00e9 \u00e0 la place.
-CRYPTO_INSECURE.explanation=L\u2019algorithme configur\u00e9 n\u2019est plus consid\u00e9r\u00e9 comme s\u00e9curis\u00e9 du point de vue cryptographique.
-CRYPTO_INSECURE.useraction=Utilisez l\u2019algorithme s\u00e9curis\u00e9 sugg\u00e9r\u00e9.
+CRYPTO_INSECURE=CWWKS5900W: L''\u00e9l\u00e9ment de configuration {0} sp\u00e9cifie l''algorithme cryptographique non s\u00e9curis\u00e9 {1}.  Envisagez plut\u00f4t d''utiliser l''algorithme s\u00e9curis\u00e9 {2}.
+CRYPTO_INSECURE.explanation=L'algorithme configur\u00e9 n'est plus consid\u00e9r\u00e9 comme s\u00fbr sur le plan cryptographique.
+CRYPTO_INSECURE.useraction=Utilisez l'algorithme s\u00e9curis\u00e9 propos\u00e9.
 
-CRYPTO_INSECURE_REPLACED=CWWKS5901W: Le {0} L''\u00e9l\u00e9ment de configuration sp\u00e9cifie le {1} algorithme cryptographique non s\u00e9curis\u00e9.  Le {2} un algorithme s\u00e9curis\u00e9 est utilis\u00e9 \u00e0 la place.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: L''\u00e9l\u00e9ment de configuration {0} sp\u00e9cifie l''algorithme cryptographique non s\u00e9curis\u00e9 {1}.  L''algorithme s\u00e9curis\u00e9 {2} est utilis\u00e9 \u00e0 la place.
 CRYPTO_INSECURE_REPLACED.explanation=L'algorithme cryptographique non s\u00e9curis\u00e9 a \u00e9t\u00e9 remplac\u00e9 par l'algorithme s\u00e9curis\u00e9.
 CRYPTO_INSECURE_REPLACED.useraction=Aucune action n'est requise.
 
 CRYPTO_INSECURE_PROVIDER=CWWKS5902W: L''\u00e9l\u00e9ment de configuration {0} utilise l''algorithme cryptographique non s\u00e9curis\u00e9 {1}. Envisagez de remplacer la configuration par un autre fournisseur si la s\u00e9curit\u00e9 est une pr\u00e9occupation.
 CRYPTO_INSECURE_PROVIDER.explanation=L'algorithme n'est plus consid\u00e9r\u00e9 comme s\u00fbr sur le plan cryptographique.
 CRYPTO_INSECURE_PROVIDER.useraction=Envisagez de remplacer la configuration par un autre fournisseur si la s\u00e9curit\u00e9 est une pr\u00e9occupation.
+
+FIPS_140_3ENABLED=CWWKS5903I: FIPS 140-3 est activ\u00e9 et utilise le fournisseur FIPS {0}
+FIPS_140_3ENABLED.explanation=La norme FIPS 140-3 est activ\u00e9e.
+FIPS_140_3ENABLED.useraction=Ce message est fourni \u00e0 titre d'information uniquement. Aucune action n'est requise.
+
+FIPS_140_3ENABLED_ERROR=CWWKS5904E: Les propri\u00e9t\u00e9s FIPS 140-3 sont configur\u00e9es, mais le fournisseur FIPS n'est pas disponible.
+FIPS_140_3ENABLED_ERROR.explanation=FIPS 140-3 ne peut pas \u00eatre activ\u00e9 car le fournisseur FIPS n'est pas disponible. S'assurer que le syst\u00e8me d'exploitation prend en charge FIPS, que la version de Java est compatible avec FIPS 140-3 et que le fournisseur FIPS est configur\u00e9 comme priorit\u00e9 la plus \u00e9lev\u00e9e dans le fichier java.security.
+FIPS_140_3ENABLED_ERROR.useraction=Utiliser une version Java et une plate-forme OS conformes \u00e0 la norme FIPS 140-3.

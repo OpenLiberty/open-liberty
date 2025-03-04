@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
     private transient WSATParticipantState state = WSATParticipantState.ACTIVE;
     private transient WSATCoordinator coordinator;
 
+    @Trivial
     public WSATParticipant(String tranId, String partId, EndpointReferenceType epr) {
         super(epr);
         if (TC.isDebugEnabled()) {
@@ -163,12 +164,11 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
      */
     @Override
     public boolean equals(Object other) {
-        boolean result = false;
-        if (other != null && other instanceof WSATParticipant) {
-            WSATParticipant otherPart = (WSATParticipant) other;
-            result = globalId.equals(otherPart.globalId) && participantId.equals(otherPart.participantId);
+        if (other instanceof WSATParticipant) {
+            final WSATParticipant otherPart = (WSATParticipant) other;
+            return globalId.equals(otherPart.globalId) && participantId.equals(otherPart.participantId);
         }
-        return result;
+        return false;
     }
 
     @Override
@@ -176,9 +176,12 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
         return (globalId.hashCode() * 31) + participantId.hashCode();
     }
 
-    // For debug
     @Override
     public String toString() {
-        return getClass().getSimpleName() + ": " + globalId + "/" + participantId + " (" + state + ") " + Integer.toHexString(this.hashCode());
+        final StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append(": ").append(globalId).append("/").append(participantId).append(" (").append(state).append(")");
+        if (globalId != null) {
+            sb.append(" ").append(Integer.toHexString(this.hashCode()));
+        }
+        return sb.toString();
     }
 }

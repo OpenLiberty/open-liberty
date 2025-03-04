@@ -57,7 +57,7 @@ public class ThreadLocalConnectionTest extends FATServletClient {
     //This also means that we can only run this test manually because if this test were to run more than once at the same time
     //on the same host, the ports would conflict and it would fail.
     //But it is still useful to have in case a similar incident happens in the future.
-    public static FixedHostPortGenericContainer<?> postgre = new FixedHostPortGenericContainer<>("public.ecr.aws/docker/library/postgres:17.0-alpine")
+    public static FixedHostPortGenericContainer<?> postgre = new FixedHostPortGenericContainer<>("public.ecr.aws/docker/library/postgres:17-alpine")
                     .withFixedExposedPort(POSTGRE_HOST_PORT, POSTGRE_CONTAINER_PORT)
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)

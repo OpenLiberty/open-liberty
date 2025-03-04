@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: Impossibile richiamare l''insieme di file [{0}
 cls.fileset.not.ready.explanation=Una libreria condivisa \u00e8 in uso ma, nel corso del tempo, non \u00e8 stato possibile richiamare uno dei fileset associati.
 cls.fileset.not.ready.useraction=Verificare se sono presenti errori o avvertenze associati all'insieme di file e correggerli.
 
-cls.library.file.invalid=CWWKL0012W: La libreria [{0}] specifica un file con il nome [{1}]. Questo file non esiste o non \u00e8 stato specificato correttamente.
-cls.library.file.invalid.explanation=Per aggiungere un file ad una libreria nella configurazione del server, \u00e8 necessario specificare il nome completo di un file esistente.
+cls.library.file.invalid=CWWKL0012W: La libreria [ {0} ] specifica un file con il nome [ {1} ]. Questo file non esiste o non \u00e8 stato specificato correttamente.
+cls.library.file.invalid.explanation=Per aggiungere un file a una libreria nella configurazione del server, \u00e8 necessario specificare un file esistente.
 cls.library.file.invalid.useraction=Modificare la configurazione del server e modificare l'attributo file dell'elemento libreria.
 
-cls.library.folder.invalid=CWWKL0013W: La libreria [{0}] specifica una cartella con il nome [{1}]. Questa cartella non esiste o non \u00e8 una cartella valida.
-cls.library.folder.invalid.explanation=Per aggiungere un file ad una libreria nella configurazione del server, \u00e8 necessario specificare il percorso completo a una cartella esistente.
+cls.library.folder.invalid=CWWKL0013W: La libreria [ {0} ] specifica una cartella con il nome [ {1} ]. Questa cartella non esiste o non \u00e8 una cartella valida.
+cls.library.folder.invalid.explanation=Per aggiungere un file a una libreria nella configurazione del server, \u00e8 necessario specificare una cartella esistente.
 cls.library.folder.invalid.useraction=Modificare la configurazione del server e modificare l'attributo cartella dell'elemento libreria.
 
 cls.library.file.forbidden=CWWKL0014I: Impossibile aggiungere il file [{0}] ad un percorso di classe.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Modificare la configurazione del server e verific
 cls.library.destroyed=CWWKL0018I: La libreria [{0}] non \u00e8 disponibile.
 cls.library.destroyed.explanation=Una libreria \u00e8 diventata non disponibile perch\u00e9, ad esempio, \u00e8 stata rimossa dalla configurazione del server.
 cls.library.destroyed.useraction=Se la libreria \u00e8 ancora richiesta, assicurarsi che sia ancora configurata correttamente.
+
+cls.library.path.invalid=CWWKL0019W: La libreria [ {0} ] specifica un percorso con il nome [ {1} ]. Questo percorso non esiste o \u00e8 specificato in modo errato.
+cls.library.path.invalid.explanation=Per aggiungere un percorso a una libreria nella configurazione del server, \u00e8 necessario specificare un percorso esistente.
+cls.library.path.invalid.useraction=Modificare la configurazione del server e modificare l'attributo del percorso dell'elemento libreria.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

@@ -1,16 +1,15 @@
 # NOTICE: This file was automatically updated to reflect changes made to test projects.
 # Please check these changes into GitHub
 wasliberty-aws-docker-remote/docker/library/alpine:3.17
-wasliberty-aws-docker-remote/docker/library/couchdb:3.2.0
+wasliberty-aws-docker-remote/docker/library/couchdb:3
 wasliberty-aws-docker-remote/docker/library/mongo:6.0.6
-wasliberty-aws-docker-remote/docker/library/postgres:17.0
-wasliberty-aws-docker-remote/docker/library/postgres:17.0-alpine
+wasliberty-aws-docker-remote/docker/library/postgres:17
+wasliberty-aws-docker-remote/docker/library/postgres:17-alpine
 wasliberty-aws-docker-remote/docker/library/python:3.11.6
 wasliberty-docker-remote/ibmcom/cloudant-developer:2.0.1
-wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23.5-full-faststart
-wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23.5-slim-faststart
-wasliberty-icr-docker-remote/db2_community/db2:11.5.9.0
-wasliberty-icr-docker-remote/db2_community/db2:12.1.0.0
+wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23-full-faststart
+wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23-slim-faststart
+wasliberty-icr-docker-remote/db2_community/db2:12.1.1.0
 wasliberty-infrastructure-docker/confluentinc/cp-kafka:7.1.1
 wasliberty-infrastructure-docker/elastic/logstash:7.16.3
 wasliberty-infrastructure-docker/fbicodex/spnego-kdc-server:1.0
@@ -47,4 +46,4 @@ wasliberty-infrastructure-docker/testcontainers/sshd:1.2.0
 wasliberty-infrastructure-docker/testcontainers/vnc-recorder:1.3.0
 wasliberty-infrastructure-docker/zachhein/krb5-server:0.2
 wasliberty-infrastructure-docker/zachhein/ldap-server:0.5
-wasliberty-mcr-docker-remote/mssql/server:2019-CU28-ubuntu-20.04
+wasliberty-mcr-docker-remote/mssql/server:2022-latest

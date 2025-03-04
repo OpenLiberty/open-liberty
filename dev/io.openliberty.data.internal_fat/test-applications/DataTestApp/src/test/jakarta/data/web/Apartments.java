@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,7 @@ public interface Apartments {
     // Write query using embeddable in a mapped superclass
     @Find
     @OrderBy("occupant.firstName")
+    @OrderBy("APTID")
     public List<Apartment> findByOccupantLastNameOrderByFirstName(@By("occupant_lastName") String lastName);
 
     //  Write query using entity that has colliding non-delimited attribute name (quartersWidth)

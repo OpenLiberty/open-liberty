@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,10 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.authorization.jacc.PolicyConfigurationManager;
 import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
 import com.ibm.ws.security.authorization.jacc.common.ProviderServiceProxy;
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.authorization.jacc.ProviderService;
 
@@ -33,12 +35,14 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
     private static final TraceComponent tc = Tr.register(ProviderServiceProxyImpl.class);
 
     static final String KEY_JACC_PROVIDER_SERVICE = "jaccProviderService";
+    private static final String KEY_LOCATION_ADMIN = "locationAdmin";
     private final AtomicServiceReference<ProviderService> jaccProviderService = new AtomicServiceReference<ProviderService>(KEY_JACC_PROVIDER_SERVICE);
+    private final AtomicServiceReference<WsLocationAdmin> locationAdminRef = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_ADMIN);
 
-    private String policyName = null;
+    private String policyFactoryName = null;
     private String factoryName = null;
 
-    private String originalSystemPolicyName = null;
+    private String originalSystemPolicyFactoryName = null;
     private String originalSystemFactoryName = null;
 
     @Reference(service = ProviderService.class, policy = ReferencePolicy.DYNAMIC, name = KEY_JACC_PROVIDER_SERVICE)
@@ -52,14 +56,37 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
         restoreSystemProperties();
     }
 
+    @Reference(service = WsLocationAdmin.class, name = KEY_LOCATION_ADMIN)
+    protected void setLocationAdmin(ServiceReference<WsLocationAdmin> reference) {
+        locationAdminRef.setReference(reference);
+    }
+
+    protected void unsetLocationAdmin(ServiceReference<WsLocationAdmin> reference) {
+        locationAdminRef.unsetReference(reference);
+    }
+
     @Override
-    public PolicyProxy getPolicyProxy() {
+    public PolicyProxy getPolicyProxy(PolicyConfigurationManager pcm) {
         ProviderService providerService = jaccProviderService.getService();
         if (providerService == null) {
             return null;
         }
-        PolicyFactory policyFactory = providerService.getPolicyFactory();
-        return policyFactory == null ? null : new JakartaPolicyFactoryProxyImpl(policyFactory);
+        WsLocationAdmin locationAdmin = locationAdminRef.getService();
+        PolicyFactory policyFactory;
+        if (policyFactoryName != null) {
+            policyFactory = PolicyFactory.getPolicyFactory();
+            if (!(policyFactory instanceof PolicyFactoryImpl)) {
+                policyFactory = new PolicyFactoryImpl(policyFactory, locationAdmin, providerService, pcm);
+                PolicyFactory.setPolicyFactory(policyFactory);
+            } else if (((PolicyFactoryImpl) policyFactory).providerService != providerService) {
+                policyFactory = new PolicyFactoryImpl(policyFactory.getWrapped(), locationAdmin, providerService, pcm);
+                PolicyFactory.setPolicyFactory(policyFactory);
+            }
+        } else {
+            policyFactory = new PolicyFactoryImpl(locationAdmin, providerService, pcm);
+            PolicyFactory.setPolicyFactory(policyFactory);
+        }
+        return new JakartaPolicyFactoryProxyImpl();
     }
 
     @Override
@@ -76,7 +103,7 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
 
     @Override
     public String getPolicyName() {
-        return policyName;
+        return policyFactoryName != null ? policyFactoryName : PolicyFactoryImpl.class.getName();
     }
 
     @Override
@@ -85,17 +112,23 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
     }
 
     protected void activate(ComponentContext cc) {
+        locationAdminRef.activate(cc);
         jaccProviderService.activate(cc);
     }
 
     protected void deactivate(ComponentContext cc) {
+        // unset PolicyFactory so we do not leak the user feature classloader for the ProviderService
+        PolicyFactory.setPolicyFactory(null);
+
         jaccProviderService.deactivate(cc);
+        locationAdminRef.deactivate(cc);
+
     }
 
     private void initializeSystemProperties(ServiceReference<ProviderService> reference) {
         Object obj = reference.getProperty(PolicyFactory.FACTORY_NAME);
         if (obj != null && obj instanceof String) {
-            policyName = (String) obj;
+            policyFactoryName = (String) obj;
         }
 
         obj = reference.getProperty(PolicyConfigurationFactory.FACTORY_NAME);
@@ -103,32 +136,29 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
             factoryName = (String) obj;
         }
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Meta data : policyName : " + policyName + " factoryName : " + factoryName);
+            Tr.debug(tc, "Meta data : policyFactoryName : " + policyFactoryName + " factoryName : " + factoryName);
 
-        originalSystemPolicyName = null;
+        originalSystemPolicyFactoryName = null;
         originalSystemFactoryName = null;
 
-        String systemPolicyName = System.getProperty(PolicyFactory.FACTORY_NAME);
+        String systemPolicyFactoryName = System.getProperty(PolicyFactory.FACTORY_NAME);
 
         String systemFactoryName = System.getProperty(PolicyConfigurationFactory.FACTORY_NAME);
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "System properties : policyName : " + systemPolicyName + " factoryName : " + systemFactoryName);
+            Tr.debug(tc, "System properties : policyFactoryName : " + systemPolicyFactoryName + " factoryName : " + systemFactoryName);
         }
-        if (systemPolicyName == null) {
-            if (policyName != null) {
-                System.setProperty(PolicyFactory.FACTORY_NAME, policyName);
-            } else if (policyName == null) {
-                Tr.error(tc, "JACC_POLICY_IS_NOT_SET");
-                return;
+        if (systemPolicyFactoryName == null) {
+            if (policyFactoryName != null) {
+                System.setProperty(PolicyFactory.FACTORY_NAME, policyFactoryName);
             }
         } else {
-            if (policyName == null) {
-                policyName = systemPolicyName;
-            } else if (!systemPolicyName.equals(policyName)) {
-                Tr.warning(tc, "JACC_INCONSISTENT_POLICY_CLASS", new Object[] { systemPolicyName, policyName });
-                System.setProperty(PolicyFactory.FACTORY_NAME, policyName);
-                originalSystemPolicyName = systemPolicyName;
+            if (policyFactoryName == null) {
+                policyFactoryName = systemPolicyFactoryName;
+            } else if (!systemPolicyFactoryName.equals(policyFactoryName)) {
+                Tr.warning(tc, "JACC_INCONSISTENT_POLICY_CLASS", new Object[] { systemPolicyFactoryName, policyFactoryName });
+                System.setProperty(PolicyFactory.FACTORY_NAME, policyFactoryName);
+                originalSystemPolicyFactoryName = systemPolicyFactoryName;
             }
         }
         if (systemFactoryName == null) {
@@ -150,16 +180,16 @@ public class ProviderServiceProxyImpl implements ProviderServiceProxy {
     }
 
     private void restoreSystemProperties() {
-        if (originalSystemPolicyName != null) {
-            System.setProperty(PolicyFactory.FACTORY_NAME, originalSystemPolicyName);
+        if (originalSystemPolicyFactoryName != null) {
+            System.setProperty(PolicyFactory.FACTORY_NAME, originalSystemPolicyFactoryName);
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "PolicyName system property is restored by : " + originalSystemPolicyName);
+                Tr.debug(tc, "PolicyFactoryName system property is restored by : " + originalSystemPolicyFactoryName);
             }
         }
         if (originalSystemFactoryName != null) {
             System.setProperty(PolicyConfigurationFactory.FACTORY_NAME, originalSystemFactoryName);
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "PolicyName system property is restored by : " + originalSystemFactoryName);
+                Tr.debug(tc, "PolicyConfigurationFactory system property is restored by : " + originalSystemFactoryName);
             }
         }
     }

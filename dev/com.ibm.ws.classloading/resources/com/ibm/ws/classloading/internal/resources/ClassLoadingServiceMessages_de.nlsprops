@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: Das System konnte die Dateigruppe [{0}] f\u00f
 cls.fileset.not.ready.explanation=Eine gemeinsam genutzte Bibliothek wird verwendet, aber eine der zugeordneten Dateigruppen konnte nicht rechtzeitig abgerufen werden.
 cls.fileset.not.ready.useraction=Suchen Sie nach Fehlern und Warnungen, die sich auf die Datengruppe beziehen, und beheben Sie sie.
 
-cls.library.file.invalid=CWWKL0012W: Die Bibliothek [{0}] gibt eine Datei mit dem Namen [{1}] an. Diese Datei ist nicht vorhanden oder falsch angegeben.
-cls.library.file.invalid.explanation=Wenn Sie einer Bibliothek in der Serverkonfiguration eine Datei hinzuf\u00fcgen m\u00f6chten, m\u00fcssen Sie den vollst\u00e4ndig qualifizierten Namen einer vorhandenen Datei angeben.
+cls.library.file.invalid=CWWKL0012W: Die [ {0} ] Bibliothek gibt eine Datei mit dem [ {1} ] Namen an. Diese Datei ist nicht vorhanden oder falsch angegeben.
+cls.library.file.invalid.explanation=Um einer Bibliothek in der Serverkonfiguration eine Datei hinzuzuf\u00fcgen, m\u00fcssen Sie eine vorhandene Datei angeben.
 cls.library.file.invalid.useraction=Bearbeiten Sie die Serverkonfiguration, und \u00e4ndern Sie das Attribut file des Elements library.
 
-cls.library.folder.invalid=CWWKL0013W: Die Bibliothek [{0}] gibt einen Ordner mit dem Namen [{1}] an. Dieser Ordner ist nicht vorhanden oder kein g\u00fcltiger Ordner.
-cls.library.folder.invalid.explanation=Wenn Sie einer Bibliothek in der Serverkonfiguration eine Datei hinzuf\u00fcgen m\u00f6chten, m\u00fcssen Sie den vollst\u00e4ndig qualifizierten Pfad zu einem vorhandenen Ordner angeben.
+cls.library.folder.invalid=CWWKL0013W: Die [ {0} ] Bibliothek gibt einen Ordner mit dem [ {1} ] Namen an. Dieser Ordner ist nicht vorhanden oder kein g\u00fcltiger Ordner.
+cls.library.folder.invalid.explanation=Um einer Bibliothek in der Serverkonfiguration eine Datei hinzuzuf\u00fcgen, m\u00fcssen Sie einen vorhandenen Ordner angeben.
 cls.library.folder.invalid.useraction=Bearbeiten Sie die Serverkonfiguration, und \u00e4ndern Sie das Attribut folder des Elements library.
 
 cls.library.file.forbidden=CWWKL0014I: Die Datei [{0}] kann dem Klassenpfad nicht hinzugef\u00fcgt werden.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Bearbeiten Sie die Serverkonfiguration, und stell
 cls.library.destroyed=CWWKL0018I: Die Bibliothek [{0}] ist nicht verf\u00fcgbar.
 cls.library.destroyed.explanation=Eine Bibliothek ist nicht verf\u00fcgbar, z. B., weil sie aus der Serverkonfiguration entfernt wurde.
 cls.library.destroyed.useraction=Wenn die Bibliothek weiterhin ben\u00f6tigt wird, stellen Sie sicher, dass sie weiterhin ordnungsgem\u00e4\u00df konfiguriert ist.
+
+cls.library.path.invalid=CWWKL0019W: Die [ {0} ] Bibliothek gibt einen Pfad mit dem [ {1} ] Namen an. Dieser Pfad existiert entweder nicht oder ist falsch angegeben.
+cls.library.path.invalid.explanation=Um einen Pfad zu einer Bibliothek in der Serverkonfiguration hinzuzuf\u00fcgen, m\u00fcssen Sie einen existierenden Pfad angeben.
+cls.library.path.invalid.useraction=Bearbeiten Sie die Serverkonfiguration und \u00e4ndern Sie das Pfadattribut des Bibliothekselements.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

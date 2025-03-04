@@ -48,6 +48,7 @@ import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Select;
 
 /**
@@ -277,6 +278,12 @@ public class Data_1_1 implements DataVersionCompatibility {
     @Trivial
     public Annotation getCountAnnotation(Method method) {
         return method.getAnnotation(Count.class);
+    }
+
+    @Override
+    @Trivial
+    public Class<?> getEntityClass(Find find) {
+        return find.value();
     }
 
     @Override

@@ -10,16 +10,14 @@ IBM-API-Package: \
 IBM-ShortName: mpHealth-4.0
 Subsystem-Name: MicroProfile Health 4.0
 # io.openliberty.mpCompatible-x.x comes from io.openliberty.mpConfig features
--features=io.openliberty.org.eclipse.microprofile.health-4.0,\
- io.openliberty.cdi-3.0; ibm.tolerates:="4.0,4.1",\
+-features=  \
+ io.openliberty.mpHealth.4.0.ee-9.0; ibm.tolerates:= "10.0, 11.0, 8.0, 7.0",\
  com.ibm.websphere.appserver.jndi-1.0,\
  com.ibm.websphere.appserver.json-1.0,\
- io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1",\
- io.openliberty.jsonp-2.0; ibm.tolerates:="2.1",\
  io.openliberty.webBundle.internal-1.0
--bundles=io.openliberty.microprofile.health.4.0.internal.jakarta; apiJar=false; location:="lib/", \
-io.openliberty.microprofile.health.internal.common, \
- com.ibm.ws.org.joda.time.1.6.2
+-bundles= \
+ com.ibm.ws.org.joda.time.1.6.2,\
+ io.openliberty.microprofile.health.internal.common
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

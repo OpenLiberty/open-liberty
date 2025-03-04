@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -135,7 +136,7 @@ public class DataProvider implements //
     /**
      * Abstraction for code that pertains to a specific version of Jakarta Data.
      */
-    final DataVersionCompatibility compat;
+    public final DataVersionCompatibility compat;
 
     /**
      * For dynamically creating configuration in response to values that are
@@ -519,6 +520,7 @@ public class DataProvider implements //
      */
     @Override
     public void introspect(PrintWriter writer) {
+        List<RepositoryImpl<?>> repositoryImpls = new ArrayList<>();
         Set<QueryInfo> queryInfos = new LinkedHashSet<>();
         Set<EntityManagerBuilder> builders = new LinkedHashSet<>();
 
@@ -555,7 +557,7 @@ public class DataProvider implements //
         repositoryProducers.forEach((appName, producers) -> {
             writer.println("  for application " + appName);
             for (RepositoryProducer<?> producer : producers) {
-                queryInfos.addAll(producer.introspect(writer, "    "));
+                queryInfos.addAll(producer.introspect(writer, "    ", repositoryImpls));
                 writer.println();
             }
         });
@@ -604,7 +606,12 @@ public class DataProvider implements //
         writer.println("Query Information:");
         for (List<QueryInfo> queryInfoList : queryInfoPerEntity.values())
             for (QueryInfo queryInfo : queryInfoList) {
-                queryInfo.introspect(writer, "  ");
+                CompletableFuture<QueryInfo> future = null;
+                for (RepositoryImpl<?> r : repositoryImpls)
+                    if ((future = r.getQueryFuture(queryInfo.method)) != null)
+                        break;
+
+                queryInfo.introspect(writer, "  ", future);
                 writer.println();
             }
     }

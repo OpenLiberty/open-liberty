@@ -45,7 +45,8 @@ Export-Package: \
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-rt-management;${cxfVersion};EXACT}!/!*-INF/*, \
-  META-INF/cxf=resources/META-INF/cxf
+  META-INF/cxf=resources/META-INF/cxf, \
+  org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
   org.apache.cxf:cxf-rt-management;strategy=exact;version=${cxfVersion}, \
@@ -58,4 +59,5 @@ Export-Package: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   javax.activation:activation;version=1.1, \
-  com.ibm.ws.logging.core
+  com.ibm.ws.logging.core, \
+  org.apache.cxf:cxf-core;strategy=exact;version=${cxfVersion}

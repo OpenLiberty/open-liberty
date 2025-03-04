@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -67,6 +68,8 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
     private final Class<?> primaryEntityClass;
     private final DataProvider provider;
     private final Map<Class<?>, List<QueryInfo>> queriesPerEntityClass;
+    private final AtomicReference<RepositoryImpl<?>> repositoryImplRef = //
+                    new AtomicReference<>(); // most recently created instance
     private final Class<?> repositoryInterface;
 
     RepositoryProducer(Class<?> repositoryInterface, BeanManager beanMgr, DataProvider provider, DataExtension extension,
@@ -96,6 +99,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
             repository = r;
 
         RepositoryImpl<?> handler = (RepositoryImpl<?>) Proxy.getInvocationHandler(repository);
+        repositoryImplRef.compareAndSet(handler, null);
         handler.beanDisposed();
     }
 
@@ -139,12 +143,20 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
      * Write information about this instance to the introspection file for
      * Jakarta Data.
      *
-     * @param writer writes to the introspection file.
-     * @param indent indentation for lines.
+     * @param writer          writes to the introspection file.
+     * @param indent          indentation for lines.
+     * @param repositoryImpls list to populate with a RepositoryImpl that is produced
+     *                            by this producer.
      * @return list of QueryInfo for the caller to log.
      */
     @Trivial
-    public List<QueryInfo> introspect(PrintWriter writer, String indent) {
+    public List<QueryInfo> introspect(PrintWriter writer,
+                                      String indent,
+                                      List<RepositoryImpl<?>> repositoryImpls) {
+        RepositoryImpl<?> repositoryImpl = repositoryImplRef.get();
+        if (repositoryImpl != null)
+            repositoryImpls.add(repositoryImpl);
+
         List<QueryInfo> queryInfos = new ArrayList<>();
 
         writer.println(indent + "RepositoryProducer@" + Integer.toHexString(hashCode()));
@@ -231,6 +243,8 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                 intercepted.put(r, instance);
                 instance = r;
             }
+
+            repositoryImplRef.set(handler);
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "produce", instance.toString());

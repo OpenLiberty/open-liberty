@@ -35,5 +35,5 @@ Require-Capability: osgi.contract;
 instrument.disabled: true
 
 -buildpath: \
-    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.2,\
+    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.3,\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest

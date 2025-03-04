@@ -44,11 +44,11 @@ public interface Ratings {
 
     Stream<Rating> findByItemPriceBetween(float min, float max, Sort<?>... sorts);
 
-    @Query("SELECT comments WHERE id=?1")
+    @Query("SELECT comments WHERE ID=?1")
     Set<String> getComments(int id);
 
     @Find
     @OrderBy("item.price")
-    @OrderBy("id")
+    @OrderBy("ID")
     Stream<Rating> search(int numStars);
 }

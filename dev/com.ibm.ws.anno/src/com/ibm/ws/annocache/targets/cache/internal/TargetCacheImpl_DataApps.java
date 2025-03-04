@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -194,13 +194,18 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
      * @param appName The name of the application.
      */
     public boolean release(String appName) {
-        synchronized( appsLock ) {
+        return false;
+        // by commenting out this code and just returning false,
+        // the code reverts back to its old behavior where the apps object keeps
+        // a reference onto the application specific data.  The cleaning up of the app data
+        // from the apps object caused a regression which need to be worked out before this can be re-enabled.
+        /*synchronized( appsLock ) {
             if (appNamesToKeys.containsKey(appName)) {
                 AppKey key = appNamesToKeys.remove(appName);
                 return apps.remove(key) != null;
             }
             return false;
-        }
+        }*/
     }
 
     //

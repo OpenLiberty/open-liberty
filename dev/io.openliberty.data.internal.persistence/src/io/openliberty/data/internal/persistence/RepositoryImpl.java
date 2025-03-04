@@ -351,6 +351,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Used during introspection to report errors that occurred when processing
+     * repository methods.
+     *
+     * @param method repository method.
+     * @return future for the QueryInfo.
+     */
+    @Trivial
+    public final CompletableFuture<QueryInfo> getQueryFuture(Method method) {
+        return queries.get(method);
+    }
+
+    /**
      * Request an instance of a resource of the specified type.
      *
      * @param method the repository method.

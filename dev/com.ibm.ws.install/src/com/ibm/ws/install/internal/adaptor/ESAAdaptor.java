@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,6 +31,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -103,6 +104,7 @@ public class ESAAdaptor extends ArchiveAdaptor {
 
     private static final String EBCDIC = "ebcdic";
     private static final String ASCII = "ascii";
+    private static ArrayList<ProvisioningFeatureDefinition> kernelFeatures = new ArrayList<>();
 
     public static void install(Product product, ESAAsset featureAsset, List<File> filesInstalled, Collection<String> featuresToBeInstalled, ExistsAction existsAction,
                                Set<String> executableFiles, Map<String, Set<String>> extattrFiles, ChecksumsManager checksumsManager) throws IOException, InstallException {
@@ -357,6 +359,8 @@ public class ESAAdaptor extends ArchiveAdaptor {
     public static List<File> determineFilesToBeDeleted(ProvisioningFeatureDefinition targetFd, Map<String, ProvisioningFeatureDefinition> features, File baseDir,
                                                        String featurePath,
                                                        boolean checkDependency, Set<IFixInfo> uninstallFixInfo) {
+        // Set kernel features
+        initKernelFeatures(baseDir, features);
         // Determine the feature contents
         Map<String, File> featureContents = getUninstallFeatureContents(targetFd, features, baseDir, checkDependency);
         // Determine the bundles to remove according to the symbolic names of the uninstalling feature resources
@@ -454,15 +458,34 @@ public class ESAAdaptor extends ArchiveAdaptor {
         return false;
     }
 
-    // Determine there is another platform feature requires this resource
-    private static boolean requiredByPlatformFeature(ContentBasedLocalBundleRepository br, File baseDir, File b) {
+    /**
+     * Set list of kernel features from all features map
+     *
+     * @param baseDir
+     * @param features
+     */
+    private static void initKernelFeatures(File baseDir, Map<String, ProvisioningFeatureDefinition> features) {
+        if (features == null) {
+            features = new Product(baseDir).getFeatureDefinitions();
+        }
+
+        if (kernelFeatures == null || kernelFeatures.isEmpty()) {
+            kernelFeatures = (ArrayList<ProvisioningFeatureDefinition>) features.values().stream().filter(ProvisioningFeatureDefinition::isKernel).collect(Collectors.toList());
+        }
+
+        return;
+
+    }
+
+    private static boolean requiredByPlatformFeature(ContentBasedLocalBundleRepository br, File baseDir, File b, Map<String, ProvisioningFeatureDefinition> features) {
         try {
-            Map<String, ProvisioningFeatureDefinition> features = new Product(baseDir).getFeatureDefinitions();
-            for (ProvisioningFeatureDefinition fd : features.values()) {
-                if (fd.isKernel()) {
-                    if (requiredByJar(br, fd, b))
-                        return true;
-                }
+            if (features == null) {
+                features = new Product(baseDir).getFeatureDefinitions();
+            }
+
+            for (ProvisioningFeatureDefinition fd : kernelFeatures) {
+                if (requiredByJar(br, fd, b))
+                    return true;
             }
         } catch (Exception e) {
         }
@@ -502,14 +525,15 @@ public class ESAAdaptor extends ArchiveAdaptor {
     }
 
     // Determine there is another platform feature requires this resource
-    private static boolean requiredByPlatformFeature(File baseDir, File testFile) {
+    private static boolean requiredByPlatformFeature(File baseDir, File testFile, Map<String, ProvisioningFeatureDefinition> features) {
         try {
-            Map<String, ProvisioningFeatureDefinition> features = new Product(baseDir).getFeatureDefinitions();
-            for (ProvisioningFeatureDefinition fd : features.values()) {
-                if (fd.isKernel()) {
-                    if (requiredByFile(fd, baseDir, testFile))
-                        return true;
-                }
+            if (features == null) {
+                features = new Product(baseDir).getFeatureDefinitions();
+            }
+
+            for (ProvisioningFeatureDefinition fd : kernelFeatures) {
+                if (requiredByFile(fd, baseDir, testFile))
+                    return true;
             }
         } catch (Exception e) {
         }
@@ -544,15 +568,12 @@ public class ESAAdaptor extends ArchiveAdaptor {
                     for (String loc : locs) {
                         File b = br.selectBundle(loc, fr.getSymbolicName(), fr.getVersionRange());
                         if (b != null && b.exists()) {
-//                            if (!checkDependency || !requiredByOtherFeature(br, features, b)) {
-//                                resourceMap.put(fr.getSymbolicName(), b);
-//                            }
                             if (checkDependency) {
                                 if (!requiredByOtherFeature(br, features, b)) {
                                     resourceMap.put(fr.getSymbolicName(), b);
                                 }
                             } else {
-                                if (targetFd.isKernel() || !requiredByPlatformFeature(br, baseDir, b)) {
+                                if (targetFd.isKernel() || !requiredByPlatformFeature(br, baseDir, b, features)) {
                                     resourceMap.put(fr.getSymbolicName(), b);
                                 }
                             }
@@ -571,15 +592,12 @@ public class ESAAdaptor extends ArchiveAdaptor {
                                 testFile = new File(baseDir, loc);
                             }
                             if (testFile.exists()) {
-//                                if (!checkDependency || !requiredByOtherFeature(features, baseDir, testFile)) {
-//                                    resourceMap.put(fr.getSymbolicName(), testFile);
-//                                }
                                 if (checkDependency) {
                                     if (!requiredByOtherFeature(features, baseDir, testFile)) {
                                         resourceMap.put(fr.getSymbolicName(), testFile);
                                     }
                                 } else {
-                                    if (targetFd.isKernel() || !requiredByPlatformFeature(baseDir, testFile)) {
+                                    if (targetFd.isKernel() || !requiredByPlatformFeature(baseDir, testFile, features)) {
                                         resourceMap.put(fr.getSymbolicName(), testFile);
                                     }
                                 }

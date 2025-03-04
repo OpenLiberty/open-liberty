@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,11 +22,13 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.images.RemoteDockerImage;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -54,39 +56,29 @@ public class DockerfileTest {
     /**
      * There are times where we might want to extend a base docker image for our
      * own testing needs. For example, using a docker image that already uses a startup script.
-     * It is possible to provide testcontainers with a DockerFile and build a new image at runtime.
+     * It is possible to provide testcontainers with a Dockerfile and build a new image at runtime.
      *
      * <pre>
-     * public static GenericContainer<?> container = new GenericContainer<>(
-     *          new ImageFromDockerfile()
-     *          .withDockerfile(Paths.get("lib/LibertyFATTestFiles/postgres/Dockerfile")))
+     * private static final RemoteDockerImage POSTGRES_INIT = ImageBuilder.build("postgres-init:17-alpine").get();
      * </pre>
      *
-     * Doing this will result in a warning being logged:
+     * The ImageBuilder will depend on a Dockerfile being located in:
+     * io.openliberty.org.testcontainers/resources/openliberty/testcontainers/postgres-init/17-alpine/Dockerfile
      *
-     * <pre>
-     * W WARNING: Cannot use private registry for programmatically built image testcontainers/[image-sha]:latest.
-     * Consider using a pre-built image instead.
-     * </pre>
-     *
-     * This warning is thrown to alert the developer that we CANNOT use our Artifactory image cache.
-     * This could result in hitting our docker pull limits and introduce intermittent failures.
-     * <br>
-     *
-     * Instead, it is best practice to build and push your docker image to docker hub, and reference that instead.
-     * You can still keep the Dockerfile and any related files in source control under publish/files.
-     * <br>
-     *
-     * In this case I pushed my custom image to my personal DockerHub repo under kyleaure/postgres-test-table:1.0
-     * You will notice that everything else is configured the same as in the regular ContainersTest test class.
+     * The ImageBuilder will get (in this order):
+     * - A cached instance of the image from the docker host (local or remote)
+     * - otherwise, pull a cached instance from an internal registry (if one is configured)
+     * - otherwise, build an instance at test runtime.
      */
+    private static final RemoteDockerImage POSTGRES_INIT = ImageBuilder.build("postgres-init:17-alpine").getFuture();
+
     @ClassRule
-    public static GenericContainer<?> container = new GenericContainer<>("kyleaure/postgres-test-table:3.0")
+    public static GenericContainer<?> container = new GenericContainer<>(POSTGRES_INIT)
                     .withExposedPorts(POSTGRE_PORT)
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)
                     .withEnv("POSTGRES_PASSWORD", POSTGRES_PASSWORD)
-                    .withLogConsumer(new SimpleLogConsumer(ContainersTest.class, "postgres"))
+                    .withLogConsumer(new SimpleLogConsumer(ContainersTest.class, "postgres-init"))
                     .waitingFor(new LogMessageWaitStrategy()
                                     .withRegEx(".*database system is ready to accept connections.*\\s")
                                     .withTimes(2)

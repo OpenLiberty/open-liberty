@@ -80,6 +80,7 @@ public class EJBJaccServiceImpl implements EJBJaccService {
 
             if (principalMapperSupported) {
                 PolicyContext.registerHandler("jakarta.security.jacc.PrincipalMapper", pch, true);
+                handlerObjects.put("jakarta.security.jacc.PrincipalMapper", policyProxy.getPrincipalMapper());
             } else {
                 PolicyContext.registerHandler("javax.ejb.arguments", pch, true);
                 handlerObjects.put("javax.ejb.arguments", methodParameters);
@@ -204,13 +205,13 @@ public class EJBJaccServiceImpl implements EJBJaccService {
 
     private boolean checkResourceConstraints(String contextId, List<Object> methodParameters, EnterpriseBean bean, Permission ejbPerm, Subject subject, PolicyProxy policyProxy) {
         boolean result = false;
-        final Object[] ma = null;
+        Object[] ma = null;
 
         /*
          * TODO Doesn't seem to handle EJB-3.0 annotated beans.
          */
         if (methodParameters != null && methodParameters.size() > 0) {
-            methodParameters.toArray(new Object[methodParameters.size()]);
+            ma = methodParameters.toArray(new Object[methodParameters.size()]);
         }
         try {
             result = checkMethodConstraints(contextId, ma, bean, ejbPerm, subject, policyProxy);

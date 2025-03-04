@@ -21,6 +21,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.FileSystemException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -266,10 +267,12 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     /*
      * (non-Javadoc)
      *
+     * Belts and braces here. Nio works differently on different platforms.
+     *
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#deleteServerLease(java.lang.String)
      */
     @Override
-    @FFDCIgnore({ FileNotFoundException.class, NoSuchFileException.class, Throwable.class })
+    @FFDCIgnore({ FileNotFoundException.class, FileSystemException.class, NoSuchFileException.class, Throwable.class })
     public void deleteServerLease(final String recoveryIdentity, boolean isPeerServer) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "deleteServerLease", this, recoveryIdentity, isPeerServer);
@@ -308,9 +311,12 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
         } catch (NoSuchFileException e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "{0} is already deleted", _serverInstallLeaseLogDir);
+        } catch (FileSystemException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception deleting lease file: ", e);
         } catch (IOException e) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception locking lease control file: ", e);
+                Tr.debug(tc, "Exception deleting lease file: ", e);
         } finally {
             try (Stream<Path> files = Files.list(_serverInstallLeaseLogDir)) {
                 final long fileCount = files.peek(p -> {
@@ -335,6 +341,9 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             } catch (NoSuchFileException e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "{0} is already deleted", _serverInstallLeaseLogDir);
+            } catch (FileSystemException e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Error deleting in {0}: {1}", _serverInstallLeaseLogDir, e);
             } catch (IOException e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Error deleting in {0}: {1}", _serverInstallLeaseLogDir, e);

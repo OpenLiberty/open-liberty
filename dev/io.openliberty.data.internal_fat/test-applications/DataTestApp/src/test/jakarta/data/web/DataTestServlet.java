@@ -4171,7 +4171,7 @@ public class DataTestServlet extends FATServlet {
         a101.occupant.firstName = "Kyle";
         a101.occupant.lastName = "Smith";
         a101.isOccupied = true;
-        a101.aptId = 101L;
+        a101.APTID = 101L;
         a101.quarters = new Bedroom();
         a101.quarters.length = 10;
         a101.quarters.width = 10;
@@ -4182,7 +4182,7 @@ public class DataTestServlet extends FATServlet {
         a102.occupant.firstName = "Brent";
         a102.occupant.lastName = "Smith";
         a102.isOccupied = false;
-        a102.aptId = 102L;
+        a102.APTID = 102L;
         a102.quarters = new Bedroom();
         a102.quarters.length = 11;
         a102.quarters.width = 11;
@@ -4193,7 +4193,7 @@ public class DataTestServlet extends FATServlet {
         a103.occupant.firstName = "Brian";
         a103.occupant.lastName = "Smith";
         a103.isOccupied = false;
-        a103.aptId = 103L;
+        a103.APTID = 103L;
         a103.quarters = new Bedroom();
         a103.quarters.length = 11;
         a103.quarters.width = 12;
@@ -4204,7 +4204,7 @@ public class DataTestServlet extends FATServlet {
         a104.occupant.firstName = "Scott";
         a104.occupant.lastName = "Smith";
         a104.isOccupied = false;
-        a104.aptId = 104L;
+        a104.APTID = 104L;
         a104.quarters = new Bedroom();
         a104.quarters.length = 12;
         a104.quarters.width = 11;

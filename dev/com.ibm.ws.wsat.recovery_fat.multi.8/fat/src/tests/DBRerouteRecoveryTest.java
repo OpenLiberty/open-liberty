@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.database.container.PostgreSQLContainer;
 import componenttest.topology.impl.LibertyServer;
 
-@AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException" })
+@AllowedFFDC(value = { "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException" })
 @RunWith(FATRunner.class)
 public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 

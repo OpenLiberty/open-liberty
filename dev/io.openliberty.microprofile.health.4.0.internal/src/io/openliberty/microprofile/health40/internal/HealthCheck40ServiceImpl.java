@@ -580,12 +580,13 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
          */
         public FileUpdateProcess(File file, String healthCheckProcedure, boolean isStopOnCreate) {
             this.file = file;
+            this.healthCheckProcedure = healthCheckProcedure;
             this.isStopOnCreate = isStopOnCreate;
         }
 
         @Override
         public void run() {
-            performFileHealthCheck(file, HealthCheckConstants.HEALTH_CHECK_START);
+            performFileHealthCheck(file, healthCheckProcedure);
             if (isStopOnCreate && file.exists()) {
                 cancel();
             }

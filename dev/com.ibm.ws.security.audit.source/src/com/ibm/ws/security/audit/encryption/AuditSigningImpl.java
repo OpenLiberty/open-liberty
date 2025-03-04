@@ -24,6 +24,7 @@ import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import javax.management.ObjectName;
 
@@ -485,6 +486,46 @@ public class AuditSigningImpl implements AuditSigning {
             String msg = "Signature is null.  Cannot verify data.";
             throw new AuditSigningException(msg);
         }
+    }
+
+    /**
+     * <p>
+     * The <code>verify</code> method verifies the data is signed with a key
+     * </p>
+     *
+     * @param a signed byte array of data
+     * @param the signature
+     * @param the key used to sign the byte array of data
+     * @returns a boolean value based the successful verification of the data
+     * @throws AuditSigningException
+     **/
+    @Override
+    public boolean verify(byte[] data, byte[] signature, Key key) throws AuditSigningException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "verify");
+
+        byte[] messageDigest = null;
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512);
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new AuditSigningException(e);
+        }
+        if (data != null) {
+            md.reset();
+            md.update(data);
+            messageDigest = md.digest();
+        } else {
+            throw new AuditSigningException("Invalid data passed into verifying algorithm");
+        }
+
+        if (messageDigest == null) {
+            throw new AuditSigningException("MessageDigest is invalid");
+        }
+
+        byte[] unsignedData = unsign(signature, key);
+
+        return Arrays.equals(messageDigest, unsignedData);
     }
 
     public String getSignerKeyFileLocation() {

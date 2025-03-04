@@ -18,3 +18,4 @@ Subsystem-Name: Web Service Security 1.1
   io.openliberty.org.apache.commons.logging
 kind=ga
 edition=base
+WLP-InstantOn-Enabled: true; type:=beta

@@ -51,14 +51,22 @@ jndi.not.installed.useraction=Asigura\u0163i-v\u0103 c\u0103 este furnizat\u0103
 # CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
 # -------------------------------------------------------------------------------------------------
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_INSECURE=CWWKS5900W: The {0} elementul de configurare specific\u0103 {1} algoritm criptografic nesigur.  Lua\u021bi \u00een considerare utilizarea {2} algoritm securizat \u00een schimb.
+CRYPTO_INSECURE=CWWKS5900W: Elementul de configurare {0} specific\u0103 algoritmul criptografic nesigur {1}.  Lua\u021bi \u00een considerare utilizarea \u00een schimb a algoritmului securizat {2}.
 CRYPTO_INSECURE.explanation=Algoritmul configurat nu mai este considerat sigur din punct de vedere criptografic.
 CRYPTO_INSECURE.useraction=Utiliza\u021bi algoritmul securizat sugerat.
 
-CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} elementul de configurare specific\u0103 {1} algoritm criptografic nesigur.  The {2} se folose\u0219te \u00een schimb algoritmul securizat.
-CRYPTO_INSECURE_REPLACED.explanation=Algoritmul criptografic nesigur a fost \u00eenlocuit cu algoritmul securizat.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: Elementul de configurare {0} specific\u0103 algoritmul criptografic nesigur {1}.  \u00cen schimb, este utilizat algoritmul securizat {2}.
+CRYPTO_INSECURE_REPLACED.explanation=Algoritmul criptografic nesigur a fost \u00eenlocuit cu algoritmul sigur.
 CRYPTO_INSECURE_REPLACED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
-CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Elementul de configurare {0} utilizeaz\u0103 algoritmul criptografic nesigur {1} . Lua\u021bi \u00een considerare \u00eenlocuirea configura\u021biei cu un alt furnizor dac\u0103 securitatea este o problem\u0103.
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Elementul de configurare {0} utilizeaz\u0103 algoritmul criptografic nesigur {1}. Lua\u021bi \u00een considerare \u00eenlocuirea configura\u021biei cu un alt furnizor dac\u0103 securitatea este o problem\u0103.
 CRYPTO_INSECURE_PROVIDER.explanation=Algoritmul nu mai este considerat sigur din punct de vedere criptografic.
 CRYPTO_INSECURE_PROVIDER.useraction=Lua\u021bi \u00een considerare \u00eenlocuirea configura\u021biei cu un alt furnizor dac\u0103 securitatea este o problem\u0103.
+
+FIPS_140_3ENABLED=CWWKS5903I: FIPS 140-3 este activat \u0219i utilizeaz\u0103 furnizorul FIPS {0}
+FIPS_140_3ENABLED.explanation=FIPS 140-3 este activat.
+FIPS_140_3ENABLED.useraction=Acest mesaj este doar \u00een scop informativ. Nu este necesar\u0103 nicio ac\u0163iune.
+
+FIPS_140_3ENABLED_ERROR=CWWKS5904E: Propriet\u0103\u021bile FIPS 140-3 sunt configurate, dar furnizorul FIPS nu este disponibil.
+FIPS_140_3ENABLED_ERROR.explanation=FIPS 140-3 nu poate fi activat deoarece furnizorul FIPS nu este disponibil. Asigura\u021bi-v\u0103 c\u0103 sistemul de operare accept\u0103 FIPS, versiunea Java este compatibil\u0103 cu FIPS 140-3, iar furnizorul FIPS este configurat cu cea mai mare prioritate \u00een fi\u0219ierul java.security.
+FIPS_140_3ENABLED_ERROR.useraction=Utiliza\u021bi o versiune Java \u0219i o platform\u0103 de sistem de operare conforme cu FIPS 140-3.

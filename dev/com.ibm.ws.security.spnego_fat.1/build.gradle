@@ -171,4 +171,7 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }
+  
+  def publishBaseDir = new File(autoFvtDir, 'publish') 
+  defaultCopyLTPAFIPSKeys(publishBaseDir)
 }

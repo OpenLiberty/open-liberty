@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -63,6 +63,9 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Conflicting configuration for the ote
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile Telemetry can be enabled for the whole server by using system properties or environment variables. If it isn't enabled for the whole server, it can be enabled for an application by setting MicroProfile Config properties; for example, by setting variables in the server.xml file. This warning is given if Telemetry is enabled for the whole server, but the MicroProfile Config properties disable Telemetry for an application. Because Telemetry is enabled for the whole server, the configuration for that application is ignored.
 CWMOT5007.tel.enabled.conflict.useraction: Specify the settings to enable or disable OpenTelemetry instances by using either environment variables and system properties or other MP Config sources but not both.
 
+CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: The MicroProfile Telemetry logging feature does not recognize the [ {0} ] telemetry access log format.
+CWMOT5008.mptelemetry.unknown.access.log.field.explanation=The Liberty runtime environment does not provide the specified log format.
+CWMOT5008.mptelemetry.unknown.access.log.field.useraction=Specify either default or logFormat for the mpTelemetry accessLogFields attribute.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages

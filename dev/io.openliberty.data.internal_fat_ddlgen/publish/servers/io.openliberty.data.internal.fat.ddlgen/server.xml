@@ -44,7 +44,7 @@
 	<dataSource id="AdminDataSource" jndiName="jdbc/AdminDataSource" fat.modify="true">
 		<jdbcDriver libraryRef="JDBCLibrary" />
 		<properties.derby.embedded createDatabase="create" databaseName="memory:testdb"
-			user="dbuser" password="DBuserPassw0rd" />
+			user="dbuser" password="DB!userPassw0rd" />
 	</dataSource>
 
 	<!-- Test 1: the default database -->

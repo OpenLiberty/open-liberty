@@ -51,14 +51,22 @@ jndi.not.installed.useraction=Stellen Sie sicher, dass eine JNDI-Implementierung
 # CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
 # -------------------------------------------------------------------------------------------------
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_INSECURE=CWWKS5900W: Der {0} Konfigurationselement gibt an, {1} unsicherer kryptographischer Algorithmus.  Erw\u00e4gen Sie die Verwendung von {2} sicherer Algorithmus stattdessen.
+CRYPTO_INSECURE=CWWKS5900W: Das Konfigurationselement {0} gibt den unsicheren kryptografischen Algorithmus {1} an.  Verwenden Sie stattdessen den sicheren Algorithmus {2}.
 CRYPTO_INSECURE.explanation=Der konfigurierte Algorithmus gilt nicht mehr als kryptografisch sicher.
 CRYPTO_INSECURE.useraction=Verwenden Sie den vorgeschlagenen sicheren Algorithmus.
 
-CRYPTO_INSECURE_REPLACED=CWWKS5901W: Der {0} Konfigurationselement gibt an, {1} unsicherer kryptographischer Algorithmus.  Der {2} Stattdessen wird ein sicherer Algorithmus verwendet.
-CRYPTO_INSECURE_REPLACED.explanation=Der unsichere kryptographische Algorithmus wurde durch den sicheren Algorithmus ersetzt.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: Das Konfigurationselement {0} gibt den unsicheren kryptografischen Algorithmus {1} an.  Stattdessen wird der sichere Algorithmus {2} verwendet.
+CRYPTO_INSECURE_REPLACED.explanation=Der unsichere kryptografische Algorithmus wurde durch den sicheren Algorithmus ersetzt.
 CRYPTO_INSECURE_REPLACED.useraction=Es ist keine Aktion erforderlich.
 
-CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Das {0} Konfigurationselement verwendet den {1} unsicheren kryptographischen Algorithmus. Ziehen Sie in Erw\u00e4gung, die Konfiguration durch einen anderen Anbieter zu ersetzen, wenn die Sicherheit ein Thema ist.
-CRYPTO_INSECURE_PROVIDER.explanation=Der Algorithmus gilt nicht mehr als kryptographisch sicher.
-CRYPTO_INSECURE_PROVIDER.useraction=Ziehen Sie in Erw\u00e4gung, die Konfiguration durch einen anderen Anbieter zu ersetzen, wenn die Sicherheit ein Thema ist.
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Das Konfigurationselement {0} verwendet den unsicheren kryptografischen Algorithmus {1}. Erw\u00e4gen Sie, die Konfiguration durch einen anderen Anbieter zu ersetzen, wenn die Sicherheit ein Problem darstellt.
+CRYPTO_INSECURE_PROVIDER.explanation=Der Algorithmus gilt nicht mehr als kryptografisch sicher.
+CRYPTO_INSECURE_PROVIDER.useraction=Erw\u00e4gen Sie, die Konfiguration durch einen anderen Anbieter zu ersetzen, wenn die Sicherheit ein Problem darstellt.
+
+FIPS_140_3ENABLED=CWWKS5903I: FIPS 140-3 ist aktiviert und verwendet den FIPS-Anbieter {0}
+FIPS_140_3ENABLED.explanation=FIPS 140-3 ist aktiviert.
+FIPS_140_3ENABLED.useraction=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt. Es ist keine Aktion erforderlich.
+
+FIPS_140_3ENABLED_ERROR=CWWKS5904E: Die FIPS 140-3-Eigenschaften sind konfiguriert, aber der FIPS-Anbieter ist nicht verf\u00fcgbar.
+FIPS_140_3ENABLED_ERROR.explanation=FIPS 140-3 kann nicht aktiviert werden, da der FIPS-Anbieter nicht verf\u00fcgbar ist. Stellen Sie sicher, dass das Betriebssystem FIPS unterst\u00fctzt, die Java-Version mit FIPS 140-3 kompatibel ist und der FIPS-Anbieter in der Datei java.security als h\u00f6chste Priorit\u00e4t konfiguriert ist.
+FIPS_140_3ENABLED_ERROR.useraction=Verwenden Sie eine FIPS 140-3-konforme Java-Version und Betriebssystemplattform.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.List;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.InternetProtocol;
@@ -49,13 +50,16 @@ public class LdapContainer extends GenericContainer<LdapContainer> {
 
     protected static String bindPrincipalName = LdapKerberosUtils.BIND_PRINCIPAL_NAME; // default, override in extending class
 
+    //TODO Start using ImageBuilder
+//    private static final DockerImageName LDAP_SERVER = ImageBuilder.build("ldap-server:3.17").getDockerImageName();
+
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "zachhein/ldap-server:0.5";
+    private static final DockerImageName LDAP_SERVER = DockerImageName.parse("zachhein/ldap-server:0.5");
 
     private int tcp_389;
 
     public LdapContainer(Network network) {
-        super(IMAGE);
+        super(LDAP_SERVER);
         withNetwork(network);
     }
 

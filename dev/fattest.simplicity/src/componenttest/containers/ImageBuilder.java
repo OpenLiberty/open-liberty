@@ -20,12 +20,12 @@ import org.testcontainers.images.PullPolicy;
 import org.testcontainers.images.RemoteDockerImage;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.ImageNameSubstitutor;
 import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.containers.substitution.ImageBuilderSubstitutor;
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * This builder class is an extension of {@link org.testcontainers.images.builder.ImageFromDockerfile}
@@ -35,10 +35,8 @@ import componenttest.containers.substitution.ImageBuilderSubstitutor;
  * - If the image is cached on the docker host, use it.
  * - Otherwise, if the image is cached in the registry, pull it, and use it.
  * - Otherwise, build the image and cache it on the docker host.
- *
- * TODO make builder public once build pipeline is finalized
  */
-class ImageBuilder {
+public class ImageBuilder {
 
     private static final Class<?> c = ImageBuilder.class;
 
@@ -48,6 +46,9 @@ class ImageBuilder {
 
     // Image to build
     private final DockerImageName image;
+
+    // Cache image on docker host
+    private boolean deleteOnExit = true;
 
     // Constructor - builder class
     private ImageBuilder(DockerImageName image) {
@@ -74,6 +75,24 @@ class ImageBuilder {
         return new ImageBuilder(ImageBuilderSubstitutor.instance().apply(DockerImageName.parse(customImage)));
     }
 
+    /**
+     * Set the deleteOnExit value to false to persist the image
+     * after the test has run. This should only be done during local development
+     * of images as we do not want our builds to clog the remote docker hosts with
+     * potentially buggy images.
+     *
+     * @throws IllegalStateException called during a non-local test run.
+     * @return                       this
+     */
+    public ImageBuilder withDevMode() {
+        if (!FATRunner.FAT_TEST_LOCALRUN) {
+            throw new IllegalStateException("Dev mode should not be used when running on our build systems");
+        }
+
+        deleteOnExit = false;
+        return this;
+    }
+
     // Add future configuration methods here
 
     /**
@@ -85,10 +104,48 @@ class ImageBuilder {
      *
      * @return RemoteDockerImage that points to a cached or built image.
      */
-    public RemoteDockerImage get() {
+    public RemoteDockerImage getFuture() {
+        String resourceDir = validateResourcePath();
         return getCached()
                         .orElseGet(() -> pullCached()
-                                        .orElseGet(() -> buildFromDockerfile()));
+                                        .orElseGet(() -> buildFromDockerfile(resourceDir)));
+    }
+
+    /**
+     * Realizes future immediately
+     *
+     * @see    #getFuture()
+     * @return
+     */
+    public String getName() {
+        return getFuture().get();
+    }
+
+    /**
+     * Realizes future immediately and parses image name into a DockerImageName object.
+     *
+     * @see    #getFuture()
+     * @return
+     */
+    public DockerImageName getDockerImageName() {
+        return DockerImageName.parse(getName());
+    }
+
+    /**
+     * Helper method, validates that we have source code (Dockerfile)
+     * for the image even if we end up using a cached version.
+     * Ensures developers do not make the mistake of updating a folder
+     * without updating their test.
+     *
+     * @return                       Resource directory
+     * @throws IllegalStateException f image does not exist
+     */
+    public String validateResourcePath() {
+        /*
+         * Finds the resource directory on the classpath and will extract the directory to a temporary location so we can read it.
+         * This will be done during the image build step anyway so this is just front-loading that work for our benefit.
+         */
+        return MountableFile.forClasspathResource(constructResourcePath(image)).getResolvedPath();
     }
 
     /*
@@ -132,11 +189,11 @@ class ImageBuilder {
     /*
      * Helper method, constructs an image from a Dockerfile
      */
-    private RemoteDockerImage buildFromDockerfile() {
+    private RemoteDockerImage buildFromDockerfile(String resourceDir) {
         String resourcePath = constructResourcePath(image);
-        String baseImage = findBaseImageFrom(resourcePath).asCanonicalNameString();
+        String baseImage = findBaseImageFrom(resourceDir);
 
-        ImageFromDockerfile builtImage = new ImageFromDockerfile(image.asCanonicalNameString(), false)
+        ImageFromDockerfile builtImage = new ImageFromDockerfile(image.asCanonicalNameString(), deleteOnExit)
                         .withFileFromClasspath(".", resourcePath)
                         .withBuildArg(BASE_IMAGE, baseImage);
 
@@ -169,17 +226,11 @@ class ImageBuilder {
      * Once found, run the BASE_IMAGE through the ImageNameSubstitutor
      * and return the DockerImageName result.
      *
-     * @param  resourcePath of the directory that contains a Dockerfile
-     * @return              The substituted docker image of the BASE_IMAGE argument
+     * @param  resourceDir of the directory that contains a Dockerfile
+     * @return             The substituted docker image name of the BASE_IMAGE argument
      */
-    private static DockerImageName findBaseImageFrom(String resourcePath) {
+    private static String findBaseImageFrom(String resourceDir) {
         final String BASE_IMAGE_PREFIX = "ARG BASE_IMAGE=\"";
-
-        /*
-         * Finds the resource directory on the classpath and will extract the directory to a temporary location so we can read it.
-         * This will be done during the image build step anyway so this is just front-loading that work for our benefit.
-         */
-        String resourceDir = MountableFile.forClasspathResource(resourcePath).getResolvedPath();
 
         Stream<String> dockerfileLines;
 
@@ -198,7 +249,11 @@ class ImageBuilder {
 
         String baseImageName = baseImageLine.substring(BASE_IMAGE_PREFIX.length(), baseImageLine.lastIndexOf('"'));
 
-        // NOTE: this is NOT the ImageBuilderSubstitutor
-        return ImageNameSubstitutor.instance().apply(DockerImageName.parse(baseImageName));
+        DockerImageName baseImageNameObject = DockerImageName.parse(baseImageName);
+
+        ImageVerifier.expectImage(baseImageNameObject);
+
+        // Will be substituted and then pulled if necessary
+        return new RemoteDockerImage(baseImageNameObject).get();
     }
 }

@@ -4648,9 +4648,13 @@ public class QueryInfo {
      *
      * @param writer writes to the introspection file.
      * @param indent indentation for lines.
+     * @param future future for this QueryInfo.
      */
+    @FFDCIgnore(Throwable.class)
     @Trivial
-    public void introspect(PrintWriter writer, String indent) {
+    public void introspect(PrintWriter writer,
+                           String indent,
+                           CompletableFuture<QueryInfo> future) {
         writer.println(indent + "QueryInfo@" + Integer.toHexString(hashCode()));
         indent = indent + "  ";
         writer.println(indent + "entity: " + entityInfo);
@@ -4722,6 +4726,22 @@ public class QueryInfo {
 
         writer.println(indent + "validate method parameters? " + validateParams);
         writer.println(indent + "validate method result? " + validateResult);
+
+        if (future != null) {
+            writer.print(indent + "state: ");
+            if (future.isCancelled())
+                writer.println("cancelled");
+            else if (future.isDone())
+                try {
+                    future.join();
+                    writer.println("completed");
+                } catch (Throwable x) {
+                    writer.println("failed");
+                    Util.printStackTrace(x, writer, indent + "  ", null);
+                }
+            else
+                writer.println("not completed");
+        }
     }
 
     /**

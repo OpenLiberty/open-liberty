@@ -191,7 +191,7 @@ public class WebJaccServiceImplTest {
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
-                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                allowing(jaccProviderServiceProxy).getPolicyProxy(pcm);
                 will(returnValue(policyProxy));
                 allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
                 will(returnValue(pcf));
@@ -274,7 +274,7 @@ public class WebJaccServiceImplTest {
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
-                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                allowing(jaccProviderServiceProxy).getPolicyProxy(pcm);
                 will(returnValue(policyProxy));
                 allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
                 will(returnValue(pcf));
@@ -356,7 +356,7 @@ public class WebJaccServiceImplTest {
                 will(returnValue(jaccProviderService));
                 allowing(cc).locateService("locationAdmin", wsLocationAdminRef);
                 will(returnValue(wsLocationAdmin));
-                allowing(jaccProviderServiceProxy).getPolicyProxy();
+                allowing(jaccProviderServiceProxy).getPolicyProxy(pcm);
                 will(returnValue(policyProxy));
                 allowing(jaccProviderServiceProxy).getPolicyConfigFactory();
                 will(returnValue(pcf));

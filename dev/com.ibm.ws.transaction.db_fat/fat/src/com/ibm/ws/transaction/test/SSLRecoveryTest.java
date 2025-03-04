@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ public class SSLRecoveryTest extends FATServletClient {
     @Server("ssl-recovery")
     public static LibertyServer serverLibertySSL;
 
-    public static PostgreSQLContainer testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_IMAGE)
+    public static PostgreSQLContainer testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_SSL)
                     .withDatabaseName(TxTestContainerSuite.POSTGRES_DB)
                     .withUsername(TxTestContainerSuite.POSTGRES_USER)
                     .withPassword(TxTestContainerSuite.POSTGRES_PASS)
@@ -62,7 +62,17 @@ public class SSLRecoveryTest extends FATServletClient {
     @BeforeClass
     public static void beforeClass() throws Exception {
         serverLibertySSL.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
-        testContainer.waitingFor(Wait.forLogMessage(".*database system is ready.*", 2).withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT)).start();
+        testContainer.waitingFor(Wait.forLogMessage(".*database system is ready.*", 2)
+                        .withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT))
+                        .start();
+
+        // TODO extract security files from container prior to server start
+        // TODO delete security files from git
+
+//        testContainer.copyFileFromContainer("/tmp/clientKeystore.p12", serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12");
+//        testContainer.copyFileFromContainer("/var/lib/postgresql/server.crt", serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
+//        TxTestContainerSuite.importServerCert(serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12",
+//                                              serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
 
         setUp();
 

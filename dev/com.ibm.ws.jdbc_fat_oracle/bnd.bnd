@@ -26,7 +26,7 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 # fat.test.use.remote.docker: true
 
-fat.test.container.images: ghcr.io/gvenzl/oracle-free:23.5-slim-faststart, kyleaure/oracle-21.3.0-faststart:1.0.full.ssl
+fat.test.container.images: ghcr.io/gvenzl/oracle-free:23-slim-faststart, kyleaure/oracle-21.3.0-faststart:1.0.full.ssl
 
 # NOTE: ojdbc8, ucp, and oraclepki do not have versions because bnd-tools
 # does not support 5 part versions (i.e. 23.4.0.24.05). Thus we left the version blank.

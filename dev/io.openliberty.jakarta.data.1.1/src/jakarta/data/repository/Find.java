@@ -25,5 +25,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Find {
-    Class<?> value = void.class;
+    Class<?> value() default void.class;
 }

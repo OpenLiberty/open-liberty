@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,18 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.postgresql;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -53,7 +58,14 @@ public class PostgreSQLSSLTest extends FATServletClient {
     @TestServlet(servlet = PostgreSQLNativeSSLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverNativeSSL;
 
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("kyleaure/postgres-ssl:1.0")
+    //TODO Start using ImageBuilder
+//    private static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17")
+//                    .getDockerImageName()
+//                    .asCompatibleSubstituteFor("postgres");
+
+    private static final DockerImageName POSTGRES_SSL = DockerImageName.parse("kyleaure/postgres-ssl:1.0").asCompatibleSubstituteFor("postgres");
+
+    public static PostgreSQLContainer postgre = new PostgreSQLContainer(POSTGRES_SSL)
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)
@@ -96,9 +108,66 @@ public class PostgreSQLSSLTest extends FATServletClient {
             stmt.execute("CREATE TABLE people( id integer UNIQUE NOT NULL, name VARCHAR (50) );");
             stmt.close();
         }
+
+        // TODO extract security files from container prior to server start
+        // TODO delete security files from git
+
+//        postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12");
+//        postgre.copyFileFromContainer("/var/lib/postgresql/server.crt", serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
+//        importServerCert(serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12",
+//                         serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
+//
+//        postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverNativeSSL.getServerRoot() + "/resources/security/outboundKeys.p12");
+//        postgre.copyFileFromContainer("/var/lib/postgresql/server.crt", serverNativeSSL.getServerRoot() + "/resources/security/server.crt");
+
         serverLibertySSL.startServer();
         serverNativeSSL.useSecondaryHTTPPort();
         serverNativeSSL.startServer();
+    }
+
+    private static void importServerCert(String source, String serverCert) {
+        final String m = "importServerCert";
+
+        String[] command = new String[] {
+                                          "keytool", "-import", //
+                                          "-alias", "server", //
+                                          "-file", serverCert, //
+                                          "-keystore", source, //
+                                          "-storetype", "pkcs12", //
+                                          "-storepass", "liberty", //
+                                          "-noprompt"
+        };
+
+        String errorPrelude = "Could not import server certificate into client keystore: " + source;
+        try {
+            Process p = Runtime.getRuntime().exec(command);
+            if (!p.waitFor(FATRunner.FAT_TEST_LOCALRUN ? 10 : 20, TimeUnit.SECONDS)) {
+                p.destroyForcibly();
+                dumpOutput(m, "Keytool process timed out", p);
+                throw new RuntimeException(errorPrelude + " timed out waiting for process to finish.");
+            }
+            if (p.exitValue() != 0) {
+                dumpOutput(m, "Non 0 exit code from keytool", p);
+                throw new RuntimeException(errorPrelude + " see logs for details");
+            }
+            dumpOutput(m, "Keytool command completed successfully", p);
+        } catch (InterruptedException | IOException e) {
+            throw new RuntimeException(errorPrelude, e);
+        }
+    }
+
+    private static void dumpOutput(String method, String message, Process p) {
+        String out = "stdOut:" + System.lineSeparator() + readInputStream(p.getInputStream());
+        String err = "stdErr:" + System.lineSeparator() + readInputStream(p.getErrorStream());
+        Log.info(c, method, message + //
+                            System.lineSeparator() + out + //
+                            System.lineSeparator() + err);
+    }
+
+    private static String readInputStream(InputStream is) {
+        @SuppressWarnings("resource")
+        Scanner s = new Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 
     @AfterClass

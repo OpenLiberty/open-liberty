@@ -96,6 +96,9 @@ public interface Counties {
         }
     }
 
+    @Query("SELECT o.population FROM County o WHERE LOWER(id(o)) = ?1")
+    Optional<Integer> populationOf(String lowerCaseName);
+
     @Delete
     void remove(County c);
 

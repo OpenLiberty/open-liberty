@@ -51,14 +51,22 @@ jndi.not.installed.useraction=Zajist\u011bte, aby byla poskytnuta implementace J
 # CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
 # -------------------------------------------------------------------------------------------------
 #Message prefix block: CWWKS5900 - CWWKS5910
-CRYPTO_INSECURE=CWWKS5900W: The {0} konfigura\u010dn\u00ed prvek ur\u010duje {1} nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus.  Zva\u017ete pou\u017eit\u00ed {2} m\u00edsto toho bezpe\u010dn\u00fd algoritmus.
+CRYPTO_INSECURE=CWWKS5900W: Konfigura\u010dn\u00ed prvek {0} ur\u010duje nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus {1}.  Zva\u017ete rad\u011bji pou\u017eit\u00ed bezpe\u010dn\u00e9ho algoritmu {2}.
 CRYPTO_INSECURE.explanation=Nakonfigurovan\u00fd algoritmus ji\u017e nen\u00ed pova\u017eov\u00e1n za kryptograficky bezpe\u010dn\u00fd.
 CRYPTO_INSECURE.useraction=Pou\u017eijte navrhovan\u00fd bezpe\u010dn\u00fd algoritmus.
 
-CRYPTO_INSECURE_REPLACED=CWWKS5901W: The {0} konfigura\u010dn\u00ed prvek ur\u010duje {1} nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus.  The {2} m\u00edsto toho se pou\u017e\u00edv\u00e1 bezpe\u010dn\u00fd algoritmus.
-CRYPTO_INSECURE_REPLACED.explanation=Nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus byl nahrazen zabezpe\u010den\u00fdm algoritmem.
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: Konfigura\u010dn\u00ed prvek {0} ur\u010duje nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus {1}.  M\u00edsto toho se pou\u017e\u00edv\u00e1 bezpe\u010dn\u00fd algoritmus {2}.
+CRYPTO_INSECURE_REPLACED.explanation=Nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus byl nahrazen bezpe\u010dn\u00fdm algoritmem.
 CRYPTO_INSECURE_REPLACED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Konfigura\u010dn\u00ed prvek {0} pou\u017e\u00edv\u00e1 nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus {1} . Pokud jde o zabezpe\u010den\u00ed, zva\u017ete nahrazen\u00ed konfigurace jin\u00fdm poskytovatelem.
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Konfigura\u010dn\u00ed prvek {0} pou\u017e\u00edv\u00e1 nezabezpe\u010den\u00fd kryptografick\u00fd algoritmus {1}. Pokud v\u00e1m na zabezpe\u010den\u00ed z\u00e1le\u017e\u00ed, zva\u017ete nahrazen\u00ed konfigurace jin\u00fdm poskytovatelem.
 CRYPTO_INSECURE_PROVIDER.explanation=Algoritmus ji\u017e nen\u00ed pova\u017eov\u00e1n za kryptograficky bezpe\u010dn\u00fd.
-CRYPTO_INSECURE_PROVIDER.useraction=Pokud jde o zabezpe\u010den\u00ed, zva\u017ete nahrazen\u00ed konfigurace jin\u00fdm poskytovatelem.
+CRYPTO_INSECURE_PROVIDER.useraction=Pokud v\u00e1m na zabezpe\u010den\u00ed z\u00e1le\u017e\u00ed, zva\u017ete nahrazen\u00ed konfigurace jin\u00fdm poskytovatelem.
+
+FIPS_140_3ENABLED=CWWKS5903I: FIPS 140-3 je povolen a pou\u017e\u00edv\u00e1 zprost\u0159edkovatele FIPS {0}
+FIPS_140_3ENABLED.explanation=FIPS 140-3 je povolen.
+FIPS_140_3ENABLED.useraction=Tato zpr\u00e1va je pouze informativn\u00ed. Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+FIPS_140_3ENABLED_ERROR=CWWKS5904E: Vlastnosti FIPS 140-3 jsou nakonfigurov\u00e1ny, ale zprost\u0159edkovatel FIPS nen\u00ed k dispozici.
+FIPS_140_3ENABLED_ERROR.explanation=FIPS 140-3 nelze povolit, proto\u017ee zprost\u0159edkovatel FIPS nen\u00ed k dispozici. Ujist\u011bte se, \u017ee opera\u010dn\u00ed syst\u00e9m podporuje FIPS, verze Javy je kompatibiln\u00ed s FIPS 140-3 a zprost\u0159edkovatel FIPS je v souboru java.security nakonfigurov\u00e1n s nejvy\u0161\u0161\u00ed prioritou.
+FIPS_140_3ENABLED_ERROR.useraction=Pou\u017eijte verzi a platformu opera\u010dn\u00edho syst\u00e9mu Java vyhovuj\u00edc\u00ed standardu FIPS 140-3.

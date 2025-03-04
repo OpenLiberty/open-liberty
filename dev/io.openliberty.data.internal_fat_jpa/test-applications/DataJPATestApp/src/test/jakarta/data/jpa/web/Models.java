@@ -27,12 +27,8 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface Models extends CrudRepository<Model, UUID> {
     @Find
-    // TODO enable once EclipseLink bug #28813 is fixed
-    //Optional<Instant> lastModified(UUID id);
-    Optional<Long> lastModified(UUID id);
+    Optional<Instant> lastModified(UUID id);
 
     @Find
-    // TODO enable once EclipseLink bug #28813 is fixed
-    //List<Model> modifiedAt(Instant updatedAt);
-    List<Model> modifiedAt(Long updatedAt);
+    List<Model> modifiedAt(Instant updatedAt);
 }

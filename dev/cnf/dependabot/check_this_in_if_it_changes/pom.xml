@@ -2499,7 +2499,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>11.0.2</version>
+      <version>11.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2514,7 +2514,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>11.0.2</version>
+      <version>11.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>

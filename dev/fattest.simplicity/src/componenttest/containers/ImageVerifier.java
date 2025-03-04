@@ -14,7 +14,6 @@ package componenttest.containers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +34,7 @@ public final class ImageVerifier {
     static final Class<?> c = ImageVerifier.class;
 
     static final Set<DockerImageName> forgottenImages = ConcurrentHashMap.newKeySet();
-    static final Set<DockerImageName> expectedImages;
+    static final Set<DockerImageName> expectedImages = ConcurrentHashMap.newKeySet();
 
     static final String imageProperty = "fat.test.container.images";
 
@@ -61,7 +60,7 @@ public final class ImageVerifier {
             _expectedImages.add(DockerImageName.parse(image));
         }
 
-        expectedImages = Collections.unmodifiableSet(_expectedImages);
+        expectedImages.addAll(_expectedImages);
     }
 
     public static void collectImage(DockerImageName image) {
@@ -69,6 +68,11 @@ public final class ImageVerifier {
             Log.info(c, "collectImage", "Found an unknown image: " + image);
             forgottenImages.add(image);
         }
+    }
+
+    protected static void expectImage(DockerImageName image) {
+        Log.info(c, "expectImage", "Expecting image from ImageBuilder: " + image);
+        expectedImages.add(image);
     }
 
     public static void assertImages() throws IllegalStateException {

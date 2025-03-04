@@ -11,6 +11,12 @@
 <OCD name="%mpTelemetryLogging" description="%mpTelemetryLogging.desc" 
 			id="io.openliberty.microprofile.telemetry20.logging.internal.config" ibm:alias="mpTelemetry">
 	<AD name="%source" description="%source.desc" id="source" required="false" type="String" default="message" cardinality="1024"/>
+	
+	<AD name="%accessLogFields" description="%accessLogFields.desc" id="accessLogFields" required="false" type="String" default="default" ibm:beta="true">
+		<Option label="%accessLogFields.default" value="default"/>
+		<Option label="%accessLogFields.logFormat" value="logFormat"/>
+	</AD>
+
 </OCD>	
 
 </metatype:MetaData>

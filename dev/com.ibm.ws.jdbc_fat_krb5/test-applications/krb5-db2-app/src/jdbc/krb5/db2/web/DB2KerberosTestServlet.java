@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.SQLInvalidAuthorizationSpecException;
+import java.sql.SQLNonTransientException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
@@ -86,7 +86,7 @@ public class DB2KerberosTestServlet extends FATServlet {
     public void testNonKerberosConnectionRejected() throws Exception {
         try (Connection con = noKrb5.getConnection()) {
             throw new Exception("Should not be able to obtain a non-kerberos connection from a kerberos-only database");
-        } catch (SQLInvalidAuthorizationSpecException e) {
+        } catch (SQLNonTransientException e) {
             System.out.println("Got expected error getting non-kerberos connection");
         }
     }

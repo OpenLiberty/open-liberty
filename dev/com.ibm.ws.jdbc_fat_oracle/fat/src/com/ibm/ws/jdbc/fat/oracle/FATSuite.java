@@ -42,7 +42,7 @@ import oracle.jdbc.pool.OracleDataSource;
 })
 public class FATSuite extends TestContainerSuite {
 
-    public static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23.5-slim-faststart")
+    public static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23-slim-faststart")
                     .asCompatibleSubstituteFor("gvenzl/oracle-free");
 
     private static OracleContainer sharedContainer = new OracleContainer(ORACLE_IMAGE_NAME)

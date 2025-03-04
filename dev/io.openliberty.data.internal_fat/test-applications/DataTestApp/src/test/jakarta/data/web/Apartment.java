@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,8 @@ package test.jakarta.data.web;
  */
 public class Apartment extends Residence {
 
-    public long aptId;
+    // All upper case is a bad practice, but the spec allows it
+    public long APTID;
 
     public int quartersWidth;
 

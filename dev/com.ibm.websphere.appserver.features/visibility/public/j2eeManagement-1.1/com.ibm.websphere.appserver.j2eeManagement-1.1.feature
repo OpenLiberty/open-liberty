@@ -74,3 +74,4 @@ Subsystem-Name: J2EE Management 1.1
 kind=ga
 edition=base
 WLP-Platform: javaee-7.0,javaee-8.0,jakartaee-8.0
+WLP-InstantOn-Enabled: true; type:=beta

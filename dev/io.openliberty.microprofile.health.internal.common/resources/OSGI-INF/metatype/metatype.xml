@@ -17,8 +17,6 @@
                    localization="OSGI-INF/l10n/metatype">
 
     <OCD id="io.openliberty.microprofile.health" name="%mpHealth" description="%mpHealth.desc" ibm:alias="mpHealth" ibm:beta="true">
-        <!--  filePeriodSecond defaults to 10 seconds, but we do not specify default here because we'll programmatically do it. 
-        So we can throw warning if they set this, but havn't enabled file checking -->
         <AD id="fileUpdateInterval" name="%fileUpdateInterval" description="%fileUpdateInterval.desc" required="false" type="String" ibm:beta="true"/>
     </OCD>
 

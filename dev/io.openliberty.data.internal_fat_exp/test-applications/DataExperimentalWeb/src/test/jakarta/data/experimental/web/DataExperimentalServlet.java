@@ -556,7 +556,6 @@ public class DataExperimentalServlet extends FATServlet {
                                      .map(c -> c.name + ' ' + c.stateName)
                                      .collect(Collectors.toList()));
 
-        // TODO enable once LOWER(id(o)) is working in EclipseLink
         assertEquals(List.of("Kansas City Missouri",
                              "Rochester Minnesota",
                              "Springfield Illinois"),

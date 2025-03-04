@@ -44,9 +44,9 @@ public class LibertyImageNameSubstitutor extends ImageNameSubstitutor {
 
         do {
             // Priority 1: If we are using a synthetic image do not substitute nor cache
-            if (ImageHelper.isSyntheticImage(original) || ImageHelper.isCommittedImage(original)) {
+            if (ImageHelper.isSyntheticImage(original) || ImageHelper.isCommittedImage(original) || ImageHelper.isBuiltImage(original)) {
                 result = original;
-                reason = "Image name is known to be synthetic or a commit hash, cannot use Artifactory registry.";
+                reason = "Image name is known to be synthetic, prebuilt, or a commit hash, cannot use an alternative registry.";
                 break;
             }
 

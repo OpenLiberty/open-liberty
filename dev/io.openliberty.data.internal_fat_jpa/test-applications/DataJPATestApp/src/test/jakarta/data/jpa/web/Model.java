@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -38,9 +39,7 @@ public class Model {
 
     @Column(name = "updated_at")
     @Version
-    // TODO enable once EclipseLink bug #28813 is fixed
-    //Instant updatedAt;
-    Long updatedAt;
+    Instant updatedAt;
 
     @Column(name = "intro_year")
     private Integer yearIntroduced;

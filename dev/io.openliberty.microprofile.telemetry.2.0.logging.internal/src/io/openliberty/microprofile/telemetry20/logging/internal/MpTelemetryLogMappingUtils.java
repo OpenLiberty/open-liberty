@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.logging.WsLevel;
@@ -23,10 +25,14 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
+import com.ibm.ws.logging.data.AccessLogConfig;
+import com.ibm.ws.logging.data.AccessLogData;
+import com.ibm.ws.logging.data.AccessLogDataFormatter;
 import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.KeyValuePair.ValueTypes;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 
@@ -49,6 +55,7 @@ public class MpTelemetryLogMappingUtils {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     private static boolean issuedBetaMessage = false;
+    private static boolean issuedBetaMessageAccess = false;
 
     /**
      * Get the event type from the Liberty log source.
@@ -64,6 +71,8 @@ public class MpTelemetryLogMappingUtils {
             return CollectorConstants.FFDC_EVENT_TYPE;
         } else if (isBetaModeCheck() && source.endsWith(CollectorConstants.AUDIT_LOG_SOURCE)) {
             return CollectorConstants.AUDIT_LOG_EVENT_TYPE;
+        } else if (isBetaModeCheckAccess() && source.endsWith(CollectorConstants.ACCESS_LOG_SOURCE)) {
+            return CollectorConstants.ACCESS_LOG_EVENT_TYPE;
         } else
             return "";
     }
@@ -83,6 +92,8 @@ public class MpTelemetryLogMappingUtils {
             mapFFDCToOpenTelemetry(builder, eventType, event);
         } else if (isBetaModeCheck() && eventType.equals(CollectorConstants.AUDIT_LOG_EVENT_TYPE)) {
             mapAuditLogsToOpenTelemetry(builder, eventType, event);
+        } else if (isBetaModeCheckAccess() && eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
+            mapAccessToOpenTelemetry(builder, eventType, event);
         }
     }
 
@@ -303,6 +314,88 @@ public class MpTelemetryLogMappingUtils {
     }
 
     /**
+     * Maps the Access log events to the OpenTelemetry Logs Data Model.
+     *
+     * @param builder   The OpenTelemetry LogRecordBuilder, which is used to construct the LogRecord.
+     * @param eventType The type of event
+     * @param event     The object originating from logging source which contains necessary fields.
+     */
+    private static void mapAccessToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event) {
+        AccessLogData accessLogData = (AccessLogData) event;
+
+        builder.setSeverity(Severity.INFO2);
+
+        // Set the body to "Empty" by default. The body will be overwritten by the requestFirstLine
+        // unless disabled in logFormat configruation
+        builder.setBody("Empty");
+
+        // Get Attributes builder to add additional Log fields
+        AttributesBuilder attributes = Attributes.builder();
+
+        List<KeyValuePair> kvpList = new ArrayList<>();
+
+        AccessLogDataFormatter[] formatters = accessLogData.getFormatters();
+
+        if (formatters[4] != null) {
+            formatters[4].populate(kvpList, accessLogData);
+        } else if (formatters[5] != null) {
+            formatters[5].populate(kvpList, accessLogData);
+        }
+
+        String key = null;
+        Object value = null;
+
+        for (Iterator<KeyValuePair> element = kvpList.iterator(); element.hasNext();) {
+            KeyValuePair next = element.next();
+            key = next.getKey();
+            value = getPairValue(next);
+
+            String formattedKey = MpTelemetryAccessEventMappingUtils.getOTelMappedAccessEventKeyName(key);
+
+            if (value != null) {
+                if (key.equals("requestProtocol")) {
+                    String[] requestProtocolSplit = value.toString().split("/");
+                    attributes.put(SemanticAttributes.NETWORK_PROTOCOL_NAME, requestProtocolSplit[0]);
+                    attributes.put(SemanticAttributes.NETWORK_PROTOCOL_VERSION, requestProtocolSplit[1]);
+                } else if (key.equals("datetime") || key.equals("accessLogDatetime")) {
+                    builder.setTimestamp(formatDateTime((String) value));
+                } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
+                    attributes.put(formattedKey, (String) value);
+                } else if (key.equals("requestPort")) {
+                    attributes.put(formattedKey, Integer.parseInt((String) value));
+                } else if (key.equals("requestFirstLine")) {
+                    if (!AccessLogConfig.accessLogFieldsTelemetryConfig.equals("default")) {
+                        attributes.put(formattedKey, (String) value);
+                    }
+
+                    String accessLogMsg = accessLogData.getRequestFirstLine();
+                    // Set the body to the request first line
+                    if (accessLogMsg != null) {
+                        builder.setBody(accessLogMsg);
+                    }
+                } else {
+                    if (value instanceof String)
+                        attributes.put(formattedKey, (String) value);
+                    else if (value instanceof Long)
+                        attributes.put(formattedKey, (Long) value);
+                    else if (value instanceof Integer)
+                        attributes.put(formattedKey, (Integer) value);
+                }
+            }
+        }
+
+        // Add additional log information from accessLogData to Attributes Builder
+        attributes.put(MpTelemetryLogFieldConstants.LIBERTY_TYPE, eventType);
+
+        // Set the Attributes to the builder.
+        builder.setAllAttributes(attributes.build());
+
+        // Set the Span and Trace IDs from the current context.
+        builder.setContext(Context.current());
+
+    }
+
+    /**
      * Maps the Liberty Log levels to the OpenTelemetry Severity.
      *
      * @param level
@@ -403,6 +496,38 @@ public class MpTelemetryLogMappingUtils {
                 issuedBetaMessage = !issuedBetaMessage;
             }
             return true;
+        }
+    }
+
+    public static boolean isBetaModeCheckAccess() {
+        if (!ProductInfo.getBetaEdition()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Not running Beta Edition, the access logs will NOT be routed to OpenTelemetry.");
+            }
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class.
+            if (!issuedBetaMessageAccess) {
+                Tr.info(tc,
+                        "BETA: A beta method has been invoked for routing access logs to OpenTelemetry in the class "
+                            + MpTelemetryLogMappingUtils.class.getName() + " for the first time.");
+                issuedBetaMessageAccess = !issuedBetaMessageAccess;
+            }
+            return true;
+        }
+    }
+
+    private static Object getPairValue(KeyValuePair value) {
+        ValueTypes pairValueType = value.getType();
+
+        if (pairValueType.equals(ValueTypes.STRING)) {
+            return value.getStringValue();
+        } else if (pairValueType.equals(ValueTypes.LONG)) {
+            return value.getLongValue();
+        } else if (pairValueType.equals(ValueTypes.INTEGER)) {
+            return value.getIntValue();
+        } else {
+            return value.getStringValue();
         }
     }
 

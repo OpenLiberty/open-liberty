@@ -31,7 +31,7 @@ public class HealthFileUtils {
     public static File getHealthDirFile() {
 
         if (healthDirFile == null) {
-            File serverConfigDirFile = new File(System.getProperty("server.config.dir"));
+            File serverConfigDirFile = new File(System.getProperty("server.output.dir"));
             healthDirFile = new File(serverConfigDirFile, "health");
         }
 

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,17 @@ src: \
 
 fat.project: true
 
-tested.features=cdi-3.0,cdi-4.0,mpConfig-3.0,servlet-5.0,jsonp-2.1,mpconfig-3.1, cdi-4.1
+tested.features= \
+    cdi-3.0,\
+    cdi-4.0,\
+    cdi-4.1,\
+    mpConfig-3.0,\
+    mpconfig-3.1,\
+    servlet-5.0,\
+    servlet-6.0,\
+    servlet-6.1,\
+    jsonp-2.0,\
+    jsonp-2.1
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
@@ -27,3 +37,4 @@ tested.features=cdi-3.0,cdi-4.0,mpConfig-3.0,servlet-5.0,jsonp-2.1,mpconfig-3.1,
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
+  io.openliberty.microprofile.health.internal_fat.common

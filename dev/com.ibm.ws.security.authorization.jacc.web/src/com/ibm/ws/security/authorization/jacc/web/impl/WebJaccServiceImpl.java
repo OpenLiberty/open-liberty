@@ -93,6 +93,7 @@ public class WebJaccServiceImpl implements WebJaccService {
 
             if (principalMapperSupported) {
                 PolicyContext.registerHandler("jakarta.security.jacc.PrincipalMapper", pch, true);
+                handlerObjects.put("jakarta.security.jacc.PrincipalMapper", policyProxy.getPrincipalMapper());
             }
 
             if (javaxSupported) {

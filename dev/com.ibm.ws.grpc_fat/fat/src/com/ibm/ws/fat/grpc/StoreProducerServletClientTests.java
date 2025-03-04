@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -96,8 +96,10 @@ public class StoreProducerServletClientTests extends FATServletClient {
             //SRVE9967W: The manifest class path xml-apis.jar can not be found in jar file
             //wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/
             //apps/StoreApp.war!/WEB-INF/lib/serializer-2.7.2.jar or its parent.
+            //SRVE8055E and SRVE8056E: Error when a reset stream comes in from the client to
+            //cancel a stream while data is being written from the HTTP2 connection on that stream
             if (storeServer != null)
-                storeServer.stopServer("SRVE9967W");
+                storeServer.stopServer("SRVE9967W", "SRVE8055E", "SRVE8056E");
         } catch (Exception e) {
             excep = e;
             Log.error(c, "store tearDown", e);

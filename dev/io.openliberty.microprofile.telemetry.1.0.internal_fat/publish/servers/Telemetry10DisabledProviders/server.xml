@@ -1,0 +1,15 @@
+<server description="Server for testing Telemetry10">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>mpTelemetry-2.0</feature>
+        <feature>componentTest-2.0</feature>
+    </featureManager>
+
+    <application id="TelemetryDisabledProvidersApp" name="TelemetryDisabledProvidersApp" type="war" location="TelemetryDisabledProvidersApp.war">
+        <classloader apiTypeVisibility="+third-party" />
+    </application>
+
+</server>

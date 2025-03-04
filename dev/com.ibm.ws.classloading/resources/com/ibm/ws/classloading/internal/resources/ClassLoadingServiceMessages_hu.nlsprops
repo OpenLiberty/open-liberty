@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: A rendszer nem tudta beolvasni a(z) [{0}] f\u0
 cls.fileset.not.ready.explanation=Haszn\u00e1latban van egy megosztott k\u00f6nyvt\u00e1r de az egyik t\u00e1rs\u00edtott f\u00e1jlk\u00e9szlet nem k\u00e9rhet\u0151 le id\u0151ben.
 cls.fileset.not.ready.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a f\u00e1jlk\u00e9szlettel kapcsolatos hib\u00e1kat vagy figyelmeztet\u00e9seket.
 
-cls.library.file.invalid=CWWKL0012W: A(z) [{0}] k\u00f6nyvt\u00e1r megad egy [{1}] nev\u0171 f\u00e1jlt. A f\u00e1jl vagy nem l\u00e9tezik, vagy helytelen\u00fcl van megadva.
-cls.library.file.invalid.explanation=Ha fel akar venni egy f\u00e1jlt egy k\u00f6nyvt\u00e1rba a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban, akkor egy megl\u00e9v\u0151 f\u00e1jl teljes k\u00e9pz\u00e9s\u0171 nev\u00e9t kell megadnia.
+cls.library.file.invalid=CWWKL0012W: A [ {0} ] k\u00f6nyvt\u00e1r egy [ {1} ] nev\u0171 f\u00e1jlt ad meg. A f\u00e1jl vagy nem l\u00e9tezik, vagy helytelen\u00fcl van megadva.
+cls.library.file.invalid.explanation=Ahhoz, hogy a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban egy f\u00e1jlt hozz\u00e1adjon egy k\u00f6nyvt\u00e1rhoz, meg kell adnia egy l\u00e9tez\u0151 f\u00e1jlt.
 cls.library.file.invalid.useraction=Szerkessze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t \u00e9s m\u00f3dos\u00edtsa a library elem file attrib\u00fatum\u00e1t.
 
-cls.library.folder.invalid=CWWKL0013W: A(z) [{0}] k\u00f6nyvt\u00e1r megad egy [{1}] nev\u0171 mapp\u00e1t. A mappa vagy nem l\u00e9tezik, vagy nem \u00e9rv\u00e9nyes mappa.
-cls.library.folder.invalid.explanation=Ha fel akar venni egy f\u00e1jlt egy k\u00f6nyvt\u00e1rba a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban, akkor egy megl\u00e9v\u0151 mappa teljes k\u00e9pz\u00e9s\u0171 el\u00e9r\u00e9si \u00fatj\u00e1t kell megadnia.
+cls.library.folder.invalid=CWWKL0013W: A [ {0} ] k\u00f6nyvt\u00e1r egy [ {1} ] nev\u0171 mapp\u00e1t ad meg. A mappa vagy nem l\u00e9tezik, vagy nem \u00e9rv\u00e9nyes mappa.
+cls.library.folder.invalid.explanation=Ahhoz, hogy a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban egy f\u00e1jlt hozz\u00e1adjon egy k\u00f6nyvt\u00e1rhoz, meg kell adnia egy l\u00e9tez\u0151 mapp\u00e1t.
 cls.library.folder.invalid.useraction=Szerkessze a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t \u00e9s m\u00f3dos\u00edtsa a library elem folder attrib\u00fatum\u00e1t.
 
 cls.library.file.forbidden=CWWKL0014I: A(z) [{0}] f\u00e1jl nem vehet\u0151 fel oszt\u00e1ly\u00fatvonalra.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Szerkessze a kiszolg\u00e1l\u00f3 be\u00e1ll\u00e
 cls.library.destroyed=CWWKL0018I: A f\u00fcggv\u00e9nyt\u00e1r [{0}] nem \u00e9rhet\u0151 el.
 cls.library.destroyed.explanation=A f\u00fcggv\u00e9nyt\u00e1r el\u00e9rhetetlenn\u00e9 v\u00e1lt, p\u00e9ld\u00e1ul mert elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3b\u00f3l.
 cls.library.destroyed.useraction=Ha a f\u00fcggv\u00e9nyt\u00e1rra m\u00e9g sz\u00fcks\u00e9g van, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy helyesen van be\u00e1ll\u00edtva.
+
+cls.library.path.invalid=CWWKL0019W: A [ {0} ] k\u00f6nyvt\u00e1r egy [ {1} ] nev\u0171 el\u00e9r\u00e9si utat ad meg. Ez az \u00fatvonal vagy nem l\u00e9tezik, vagy helytelen\u00fcl van megadva.
+cls.library.path.invalid.explanation=Ahhoz, hogy a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban hozz\u00e1adjon egy k\u00f6nyvt\u00e1r el\u00e9r\u00e9si \u00fatvonal\u00e1t, meg kell adnia egy l\u00e9tez\u0151 el\u00e9r\u00e9si utat.
+cls.library.path.invalid.useraction=Szerkessze a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s m\u00f3dos\u00edtsa a k\u00f6nyvt\u00e1r elem el\u00e9r\u00e9si \u00fatvonal attrib\u00fatum\u00e1t.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

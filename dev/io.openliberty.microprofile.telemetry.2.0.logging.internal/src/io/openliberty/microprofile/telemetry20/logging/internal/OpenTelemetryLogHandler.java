@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.osgi.service.condition.Condition;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.data.AccessLogConfig;
 import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.LogTraceData;
@@ -63,6 +64,8 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
 
     private List<String> sourcesList = new ArrayList<String>();
 
+    static String accessLogField = null;
+
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> configuration) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -75,6 +78,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
         // Validate the configured sources
         this.sourcesList = validateSources(configuration);
 
+        setAccessLogField(configuration);
     }
 
     @Deactivate
@@ -97,6 +101,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
 
         // Validate the configured sources
         List<String> newSources = validateSources(configuration);
+        setAccessLogField(configuration);
 
         if (collectorMgr == null || isInit == false) {
             this.sourcesList = newSources;
@@ -307,6 +312,8 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             return CollectorConstants.FFDC_SOURCE;
         else if (MpTelemetryLogMappingUtils.isBetaModeCheck() && source.equalsIgnoreCase(CollectorConstants.AUDIT_CONFIG_VAL))
             return CollectorConstants.AUDIT_LOG_SOURCE;
+        else if (MpTelemetryLogMappingUtils.isBetaModeCheckAccess() && source.equalsIgnoreCase(CollectorConstants.ACCESS_CONFIG_VAL))
+            return CollectorConstants.ACCESS_LOG_SOURCE;
 
         return "";
     }
@@ -326,8 +333,25 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             return CollectorConstants.FFDC_SOURCE;
         } else if (MpTelemetryLogMappingUtils.isBetaModeCheck() && sourceName.contains(CollectorConstants.AUDIT_LOG_SOURCE)) {
             return CollectorConstants.AUDIT_LOG_SOURCE;
+        } else if (MpTelemetryLogMappingUtils.isBetaModeCheckAccess() && sourceName.equals(CollectorConstants.ACCESS_LOG_SOURCE)) {
+            return CollectorConstants.ACCESS_LOG_SOURCE;
         } else {
             return "";
+        }
+    }
+
+    private void setAccessLogField(Map<String, Object> configuration) {
+        accessLogField = (String) configuration.get("accessLogFields");
+        if (accessLogField != null) {
+            if (accessLogField.toLowerCase().equals("default") || accessLogField.toLowerCase().equals("logformat"))
+                AccessLogConfig.accessLogFieldsTelemetryConfig = accessLogField;
+            else {
+                Tr.warning(tc, "CWMOT5008.mptelemetry.unknown.access.log.field",
+                           accessLogField);
+                AccessLogConfig.accessLogFieldsTelemetryConfig = "default";
+            }
+        } else {
+            AccessLogConfig.accessLogFieldsTelemetryConfig = "default";
         }
     }
 

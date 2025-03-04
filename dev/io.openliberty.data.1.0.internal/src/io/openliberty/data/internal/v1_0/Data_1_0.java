@@ -26,6 +26,7 @@ import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.Find;
 
 /**
  * Capability that is specific to the version of Jakarta Data.
@@ -75,6 +76,12 @@ public class Data_1_0 implements DataVersionCompatibility {
     @Trivial
     public Annotation getCountAnnotation(Method method) {
         return null;
+    }
+
+    @Override
+    @Trivial
+    public Class<?> getEntityClass(Find find) {
+        return void.class;
     }
 
     @Override

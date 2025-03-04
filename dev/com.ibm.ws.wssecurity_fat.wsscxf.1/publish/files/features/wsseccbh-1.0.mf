@@ -12,3 +12,4 @@ Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
 
 IBM-API-Package: com.ibm.ws.wssecurity.example.cbh; version="1.0"; type="internal"
+WLP-InstantOn-Enabled: true

@@ -38,6 +38,7 @@ Import-Package: \
   javax.enterprise.util; version="[1.1,3)",\
   org.eclipse.microprofile.health; version="[3.1,5)",\
   org.eclipse.microprofile.health.spi; version="[3.1,5)",\
+  org.eclipse.microprofile.config; version="[1.0.0,5.0.0)",\
   *
 
 Export-Package: \
@@ -65,14 +66,14 @@ src: src,resources
 testsrc: test/src
 
 -buildpath: \
-        com.ibm.websphere.javaee.annotation.1.3;version=latest,\
+        com.ibm.websphere.javaee.annotation.1.2;version=latest,\
         com.ibm.ws.kernel.boot.core;version=latest,\
         com.ibm.ws.app.manager;version=latest,\
-        com.ibm.websphere.javaee.servlet.4.0; version=latest,\
-        com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+        com.ibm.websphere.javaee.servlet.3.1; version=latest,\
+        com.ibm.websphere.javaee.cdi.1.2;version=latest,\
         io.openliberty.org.eclipse.microprofile.health.3.1;version=latest,\
         io.openliberty.microprofile.health.3.1.internal,\
-        io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
+        com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
         com.ibm.ws.adaptable.module;version=latest,\
         com.ibm.websphere.org.osgi.core;version=latest,\
         com.ibm.websphere.org.osgi.service.component;version=latest,\

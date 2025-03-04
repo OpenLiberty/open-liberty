@@ -19,10 +19,6 @@
         <feature>timedexit-1.0</feature>
     </featureManager>
 
-    <application location="transaction.war">
-        <classloader commonLibraryRef="AnonymousJDBCLib"/>
-    </application>
-    
     <!-- Anonymously named jar used to prevent JDBCDriver auto-detection -->
     <library id="AnonymousJDBCLib">
         <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
@@ -41,10 +37,7 @@
     </dataSource>
     
     <include location="../fatTestPorts.xml"/>
-    
-    <javaPermission codeBase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
-    <javaPermission codeBase="${server.config.dir}/apps/transaction.war" className="java.util.PropertyPermission" name="user.dir" actions="read"/>
-    
+
     <!-- JDBC driver -->
     <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
   

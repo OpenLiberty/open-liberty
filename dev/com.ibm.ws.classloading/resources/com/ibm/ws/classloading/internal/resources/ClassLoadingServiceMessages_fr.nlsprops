@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: Le syst\u00e8me n''a pas pu extraire l''ensemb
 cls.fileset.not.ready.explanation=Une biblioth\u00e8que partag\u00e9e est utilis\u00e9e, mais l'un des ensembles de fichiers associ\u00e9s n'a pas pu \u00eatre extrait \u00e0 temps.
 cls.fileset.not.ready.useraction=Recherchez et corrigez les erreurs ou avertissements associ\u00e9s \u00e0 l'ensemble de fichiers.
 
-cls.library.file.invalid=CWWKL0012W: La biblioth\u00e8que [{0}] indique un fichier ayant le nom [{1}]. Le fichier n''existe pas ou n''est pas correctement d\u00e9fini.
-cls.library.file.invalid.explanation=Pour ajouter un fichier \u00e0 une biblioth\u00e8que dans la configuration du serveur, vous devez indiquer le nom complet d'un fichier existant.
+cls.library.file.invalid=CWWKL0012W: La biblioth\u00e8que [ {0} ] sp\u00e9cifie un fichier portant le nom [ {1} ]. Le fichier n''existe pas ou n''est pas correctement d\u00e9fini.
+cls.library.file.invalid.explanation=Pour ajouter un fichier \u00e0 une biblioth\u00e8que dans la configuration du serveur, vous devez sp\u00e9cifier un fichier qui existe.
 cls.library.file.invalid.useraction=Editez la configuration du serveur et modifiez l'attribut file de l'\u00e9l\u00e9ment library.
 
-cls.library.folder.invalid=CWWKL0013W: La biblioth\u00e8que [{0}] indique un dossier ayant le nom [{1}]. Ce dossier n''existe pas ou n''est pas valide.
-cls.library.folder.invalid.explanation=Pour ajouter un fichier \u00e0 une biblioth\u00e8que dans la configuration du serveur, vous devez indiquer le chemin complet d'un dossier existant.
+cls.library.folder.invalid=CWWKL0013W: La biblioth\u00e8que [ {0} ] sp\u00e9cifie un dossier portant le nom [ {1} ]. Ce dossier n''existe pas ou n''est pas valide.
+cls.library.folder.invalid.explanation=Pour ajouter un fichier \u00e0 une biblioth\u00e8que dans la configuration du serveur, vous devez sp\u00e9cifier un dossier qui existe.
 cls.library.folder.invalid.useraction=Editez la configuration du serveur et modifiez l'attribut folder de l'\u00e9l\u00e9ment library.
 
 cls.library.file.forbidden=CWWKL0014I: Le fichier [{0}] ne peut pas \u00eatre ajout\u00e9 \u00e0 un chemin d''acc\u00e8s aux classes.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Editez la configuration du serveur et v\u00e9rifi
 cls.library.destroyed=CWWKL0018I: La biblioth\u00e8que [{0}] est indisponible.
 cls.library.destroyed.explanation=Une biblioth\u00e8que est devenue indisponible, par exemple, parce qu'elle a \u00e9t\u00e9 supprim\u00e9e de la configuration de serveur.
 cls.library.destroyed.useraction=Si la biblioth\u00e8que est toujours n\u00e9cessaire, v\u00e9rifiez qu'elle est correctement configur\u00e9e.
+
+cls.library.path.invalid=CWWKL0019W: La biblioth\u00e8que [ {0} ] sp\u00e9cifie un chemin avec le nom [ {1} ]. Ce chemin n''existe pas ou est mal sp\u00e9cifi\u00e9.
+cls.library.path.invalid.explanation=Pour ajouter un chemin d'acc\u00e8s \u00e0 une biblioth\u00e8que dans la configuration du serveur, vous devez sp\u00e9cifier un chemin d'acc\u00e8s qui existe.
+cls.library.path.invalid.useraction=Modifier la configuration du serveur et modifier l'attribut path de l'\u00e9l\u00e9ment library.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

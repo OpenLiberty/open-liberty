@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.List;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
@@ -44,13 +45,16 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public static final String KRB5_PWD = "pwd";
     public static String DOCKERHOST_DOMAIN = "fyre.ibm.com";
 
+    //TODO Start using ImageBuilder
+//    private static final DockerImageName KRB5_SERVER = ImageBuilder.build("kdc-security-server:3.17").getDockerImageName();
+
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "zachhein/krb5-server:0.2";
+    private static final DockerImageName KRB5_SERVER = DockerImageName.parse("zachhein/krb5-server:0.2");
 
     private int tcp_88;
 
     public KerberosContainer(Network network) {
-        super(IMAGE);
+        super(KRB5_SERVER);
         withNetwork(network);
     }
 

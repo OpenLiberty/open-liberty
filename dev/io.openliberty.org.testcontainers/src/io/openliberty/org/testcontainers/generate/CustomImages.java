@@ -55,14 +55,7 @@ public class CustomImages {
         Dockerfile.findDockerfiles(commonPath).stream()
                 .map(location -> new Dockerfile(location))
                 .sorted() //Sort in case images end up depending on each other
-                .forEach(dockerfile -> {
-                    // Find or build all images
-                    if(dockerfile.isCached()) {
-                        System.out.println("Skipping build: " + dockerfile.imageName.asCanonicalNameString());
-                        System.out.println("-----");
-                        return;
-                    }
-                    
+                .forEach(dockerfile -> {                    
                     ImageFromDockerfile img = new ImageFromDockerfile(dockerfile.imageName.asCanonicalNameString(), false)
                             .withDockerfile(dockerfile.location)
                             .withBuildArg(BASE_IMAGE, dockerfile.baseImageNameSubstituted.asCanonicalNameString());

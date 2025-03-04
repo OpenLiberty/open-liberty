@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: El sistema no ha podido recuperar el conjunto 
 cls.fileset.not.ready.explanation=Se est\u00e1 utilizando una biblioteca compartida, pero no se ha podido recuperar a tiempo uno de los conjuntos de archivos asociados.
 cls.fileset.not.ready.useraction=Busque y corrija los errores o avisos asociados con el conjunto de archivos.
 
-cls.library.file.invalid=CWWKL0012W: La biblioteca [{0}] especifica un archivo con el nombre [{1}]. Este archivo no existe o se ha especificado de forma incorrecta.
-cls.library.file.invalid.explanation=Para a\u00f1adir un archivo a una biblioteca en la configuraci\u00f3n de servidor, debe especificar el nombre plenamente cualificado de un archivo existente.
+cls.library.file.invalid=CWWKL0012W: La biblioteca [ {0} ] especifica un archivo con el nombre [ {1} ]. Este archivo no existe o se ha especificado de forma incorrecta.
+cls.library.file.invalid.explanation=Para agregar un archivo a una biblioteca en la configuraci\u00f3n del servidor, debe especificar un archivo que exista.
 cls.library.file.invalid.useraction=Edite la configuraci\u00f3n del servidor y modifique el atributo de archivo del elemento de la biblioteca.
 
-cls.library.folder.invalid=CWWKL0013W: La biblioteca [{0}] especifica una carpeta con el nombre [{1}]. Esta carpeta no existe o no es una carpeta v\u00e1lida.
-cls.library.folder.invalid.explanation=Para a\u00f1adir un archivo a una biblioteca en la configuraci\u00f3n de servidor, debe especificar la v\u00eda de acceso plenamente cualificada a una carpeta existente.
+cls.library.folder.invalid=CWWKL0013W: La biblioteca [ {0} ] especifica una carpeta con el nombre [ {1} ]. Esta carpeta no existe o no es una carpeta v\u00e1lida.
+cls.library.folder.invalid.explanation=Para a\u00f1adir un archivo a una biblioteca en la configuraci\u00f3n del servidor, debe especificar una carpeta que exista.
 cls.library.folder.invalid.useraction=Edite la configuraci\u00f3n del servidor y modifique el atributo de carpeta del elemento de la biblioteca.
 
 cls.library.file.forbidden=CWWKL0014I: El archivo [{0}] no se puede a\u00f1adir a una classpath.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Edite la configuraci\u00f3n del servidor y aseg\u
 cls.library.destroyed=CWWKL0018I: La biblioteca [{0}] no est\u00e1 disponible.
 cls.library.destroyed.explanation=Una biblioteca ya no est\u00e1 disponible, por ejemplo, porque se ha eliminado de la configuraci\u00f3n del servidor.
 cls.library.destroyed.useraction=Si la biblioteca todav\u00eda es necesaria, aseg\u00farese de que contin\u00fae configurada correctamente. 
+
+cls.library.path.invalid=CWWKL0019W: La biblioteca [ {0} ] especifica una ruta con el nombre [ {1} ]. Esta ruta no existe o est\u00e1 especificada incorrectamente.
+cls.library.path.invalid.explanation=Para agregar una ruta a una biblioteca en la configuraci\u00f3n del servidor, debe especificar una ruta que exista.
+cls.library.path.invalid.useraction=Edite la configuraci\u00f3n del servidor y modifique el atributo de ruta del elemento de biblioteca.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

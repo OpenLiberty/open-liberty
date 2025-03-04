@@ -17,11 +17,8 @@ src: \
   test-applications/BT11AddNumbersImplService/src,\
   test-applications/jaxws22mtom/src,\
   test-applications/defaultpackage/src,\
-  test-applications/saajclient/src
-  
-
-#  test-applications/cxfclient/src,\
-#  
+  test-applications/saajclient/src,\
+  test-applications/specialcharacters/src
   
 fat.project: true
 

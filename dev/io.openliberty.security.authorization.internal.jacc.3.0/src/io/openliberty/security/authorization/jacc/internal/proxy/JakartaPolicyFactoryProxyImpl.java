@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,19 +17,11 @@ import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
 
 import jakarta.security.jacc.Policy;
 import jakarta.security.jacc.PolicyFactory;
+import jakarta.security.jacc.PrincipalMapper;
 
 public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
 
-    JakartaPolicyFactoryProxyImpl(PolicyFactory policyFactory) {
-        PolicyFactory.setPolicyFactory(policyFactory);
-    }
-
-    @Override
-    public void refresh() {
-    }
-
-    @Override
-    public void setPolicy() {
+    JakartaPolicyFactoryProxyImpl() {
     }
 
     @Override
@@ -43,5 +35,10 @@ public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
             return false;
         }
         return policy.implies(permission, subject);
+    }
+
+    @Override
+    public PrincipalMapper getPrincipalMapper() {
+        return new PrincipalMapperImpl();
     }
 }

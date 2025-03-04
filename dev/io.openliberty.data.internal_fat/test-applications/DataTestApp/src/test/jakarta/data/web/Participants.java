@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,10 +38,10 @@ public interface Participants extends DataRepository<Participant, Integer> {
 
     // Using Query by Method Name would require @Select("name"),
     // which is not available in Data 1.0 // TODO move to 1.1 tests
-    @Query("SELECT name WHERE id = ?1")
+    @Query("SELECT name WHERE pID = ?1")
     Optional<Name> findNameById(int id);
 
-    @Query("SELECT name.first WHERE id = ?1")
+    @Query("SELECT name.first WHERE pID = ?1")
     Optional<String> getFirstName(int id);
 
     @Delete
@@ -49,6 +49,6 @@ public interface Participants extends DataRepository<Participant, Integer> {
 
     @Find
     @OrderBy("name.first")
-    @OrderBy("id")
+    @OrderBy("pID")
     Stream<Participant> withSurname(@By("name.last") String lastName);
 }
