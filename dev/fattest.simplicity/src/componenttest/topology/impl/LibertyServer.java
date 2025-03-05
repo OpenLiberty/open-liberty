@@ -1741,6 +1741,7 @@ public class LibertyServer implements LogMonitorClient {
             // TODO: `getJvmOptionsAsMap()` should be added to JVM_ARGS outside of this if-block so that we always run it.
             // During FIPS 140-3 development, we found test scenarios where jvm.options is set before server start and the file is ignored.
             // So that we can test FIPS 140-3 without causing issues unrelated to FIPS, we have put it inside this if-block, for now.
+            Log.info(c, "startServerWithArgs", "Taj Debug!!!!!");
             JVM_ARGS += getJvmArgString(this.getFipsJvmOptions(info, false));
         }
 
