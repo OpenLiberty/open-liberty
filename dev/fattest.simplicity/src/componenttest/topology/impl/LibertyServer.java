@@ -1741,9 +1741,7 @@ public class LibertyServer implements LogMonitorClient {
             // TODO: `getJvmOptionsAsMap()` should be added to JVM_ARGS outside of this if-block so that we always run it.
             // During FIPS 140-3 development, we found test scenarios where jvm.options is set before server start and the file is ignored.
             // So that we can test FIPS 140-3 without causing issues unrelated to FIPS, we have put it inside this if-block, for now.
-            Map<String, String> combined = this.getJvmOptionsAsMap();
-            combined.putAll(this.getFipsJvmOptions(info, false));
-            JVM_ARGS += getJvmArgString(combined);
+            JVM_ARGS += getJvmArgString(this.getFipsJvmOptions(info, false));
         }
 
         Properties bootstrapProperties = getBootstrapProperties();
@@ -2013,12 +2011,10 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     private String escapeCharacters(String input) {
-        String specialChars = isWindows() ? SPECIAL_CHARS_WIN : SPECIAL_CHARS;
-        String escapeCharacter = isWindows() ? "^" : "\\";
         StringBuilder builder = new StringBuilder();
         for (char c : input.toCharArray()) {
-            if (specialChars.indexOf(c) > -1) {
-                builder.append(escapeCharacter);
+            if (SPECIAL_CHARS.indexOf(c) > -1) {
+                builder.append("\\");
             }
             builder.append(c);
         }
