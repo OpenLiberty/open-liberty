@@ -8099,7 +8099,6 @@ public class LibertyServer implements LogMonitorClient {
 
     private Map<String, String> getFipsJvmOptions(JavaInfo info, boolean includeGlobalArgs) throws Exception, IOException {
         Map<String, String> opts = new HashMap<>();
-        opts.putAll(this.getJvmOptionsAsMap()); //Add all current JVM option so we don't unintentionally clear any set by tests.
         if (isFIPS140_3EnabledAndSupported(info, false)) {
             if (info.majorVersion() == 17) {
                 Log.info(c, "getFipsJvmOptions",
