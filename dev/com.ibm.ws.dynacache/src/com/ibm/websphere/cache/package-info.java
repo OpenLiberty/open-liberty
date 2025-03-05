@@ -14,7 +14,7 @@
 
 
 /**
- * @version 1.0.0
+ * @version 1.1.0
  */
 @org.osgi.annotation.versioning.Version("1.0.0")
 @TraceOptions (traceGroup = "WebSphere Dynamic Cache", messageBundle = "com.ibm.ws.cache.resources.dynacache")
