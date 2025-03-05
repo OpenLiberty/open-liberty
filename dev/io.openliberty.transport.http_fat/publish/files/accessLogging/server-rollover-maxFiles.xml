@@ -11,7 +11,7 @@
     <include location="common.xml"/>
       
     <httpEndpoint id="defaultHttpEndpoint">
-        <accessLogging rolloverStartTime="00:00" rolloverInterval="1m" maxFiles="2" />
+        <accessLogging rolloverStartTime="00:00" rolloverInterval="1m" maxFiles="3" />
     </httpEndpoint>
     
 </server>

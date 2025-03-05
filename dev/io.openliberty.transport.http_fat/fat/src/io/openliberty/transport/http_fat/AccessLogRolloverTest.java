@@ -12,6 +12,7 @@
 package io.openliberty.transport.http_fat;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
 import java.io.File;
@@ -20,12 +21,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -84,11 +88,11 @@ public class AccessLogRolloverTest {
      * The maxFiles value is not set in the XML.
      */
     @Test
-    // @Mode(FULL)
+    @Mode(FULL)
     public void testmaxFilesDefaultValue() throws Exception {
         setUp();
-        LOG.info("Applying test-specific server configuration for maxBackupFiles.");
-        serverXml.setServerConfigurationFile("accessLogging/server-rollover-max-backupfiles.xml");
+        LOG.info("Applying test-specific server configuration for maxFilesDefaultValue.");
+        serverXml.setServerConfigurationFile("accessLogging/server-rollover-default-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
     
         // Ensure test does not start near the top of a minute to avoid timing issues
@@ -97,58 +101,99 @@ public class AccessLogRolloverTest {
         // Wait for 3 rollovers to occur 
         LOG.info("Waiting for 3 log rollovers to complete...");
         Calendar cal = getNextRolloverTime(0, 1);
-        // checkForRolledLogsAtTime(cal);
-        cal.add(Calendar.MINUTE, 3);
-        checkForRolledLogsAtTime(cal);
+        for (int i = 0; i < 3; i++) {
+            checkForRolledLogsAtTime(cal);
+            cal.add(Calendar.MINUTE, 1);
+        }
 
         // Validate that only 2 log files exist default value of maxfiles is 2
         validateMaxBackupFiles(2);
-
     }
 
     /**
      * Tests the maxBackupFiles property, ensuring the correct number of log files are retained.
      * Also verifies behavior after a server restart.
-     * The maxFiles value is set to 2 in the XML.
+     * The maxFiles value is set to 3 in the XML.
      */
     @Test
-    // @Mode(FULL)
+    @Mode(FULL)
     public void testmaxFilesAfterRestart() throws Exception {
         setUp();
-        LOG.info("Applying test-specific server configuration for maxBackupFiles.");
-        serverXml.setServerConfigurationFile("accessLogging/server-rollover-max-backupfiles.xml");
+        LOG.info("Applying test-specific server configuration for maxFilesAfterRestart.");
+        serverXml.setServerConfigurationFile("accessLogging/server-rollover-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
     
         // Ensure test does not start near the top of a minute to avoid timing issues
         avoidTopOfMinute();
     
-        // Wait for 3 rollovers to occur (maxFiles = 2, interval = 1 min)
-        LOG.info("Waiting for 3 log rollovers to complete...");
+        // Wait for 4 rollovers to occur (maxFiles = 3, interval = 1 min)
+        LOG.info("Waiting for 4 log rollovers to complete...");
         Calendar cal = getNextRolloverTime(0, 1);
-        cal.add(Calendar.MINUTE, 3);
-        checkForRolledLogsAtTime(cal);
+        
+        for (int i = 0; i < 4; i++) {
+            checkForRolledLogsAtTime(cal);
+            cal.add(Calendar.MINUTE, 1);
+        }
 
-        // Validate that only 2 log files exist after restart
-        validateMaxBackupFiles(2);
+        // Validate that only 3 log files exist after restart
+        validateMaxBackupFiles(3);
 
         // Restart server and verify again
-        LOG.info("Restarting server to verify persistence of maxBackupFiles setting.");
+        LOG.info("Restarting server to verify persistence of maxFiles setting.");
         serverXml.stopServer();
         serverXml.startServer();
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
         avoidTopOfMinute();
 
-        // Wait for another 3 rollovers after restart
+        // Wait for another 4 rollovers after restart
         cal = getNextRolloverTime(0, 1);
-        cal.add(Calendar.MINUTE, 3);
-        checkForRolledLogsAtTime(cal);
-    
-        // Validate that only 2 log files exist after restart
-        validateMaxBackupFiles(2);
-    }
-    
 
-    
+        for (int i = 0; i < 4; i++) {
+            checkForRolledLogsAtTime(cal);
+            cal.add(Calendar.MINUTE, 1);
+        }
+        // Validate that only 3 log files exist after restart
+        validateMaxBackupFiles(3);
+    }
+
+    /*
+     * Tests maxFiles = "0", a value of 0 means no limit, just checks if the server started properly
+     *  maxFiles="0"
+     */
+   @Test
+   public void testZeroMaxFilesValue() throws Exception {
+        setUp();
+        LOG.info("Applying test-specific server configuration for ZeroMaxFilesValue.");
+        serverXml.setServerConfigurationFile("accessLogging/server-rollover-zero-maxFiles.xml");
+        serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
+
+        List<String> lines = serverInUse.findStringsInLogs("CWWKG0017I");
+        assertTrue("Maxfiles is not zero", lines.size() > 0);
+    }
+
+    /*
+     * Tests maxFiles = "i".Should output warning and set maxFiles to default 2
+     *  maxFiles="i"
+     */
+   @Test
+   public void testInvalidMaxFilesValue() throws Exception {
+        setUp();
+        LOG.info("Applying test-specific server configuration for InvalidMaxFilesValue");
+        serverXml.setServerConfigurationFile("accessLogging/server-rollover-invalid-maxFiles.xml");
+        serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
+
+        serverXml.waitForStringInTraceUsingMark("CWWKG0083W", 10000);
+        List<String> lines = serverInUse.findStringsInLogs("CWWKG0083W");
+        LOG.logp(Level.INFO, CLASS_NAME, "testInvalidMaxFilesValue", "Found warning: " + lines.toString());
+        assertTrue("No CWWKG0083W warning was found indicating that i is an invalid value", lines.size() > 0);
+
+        // Stop the server while ignoring the expected warning "CWWKG0083W". 
+        // This warning is expected due to an invalid maxFiles value in the test configuration.
+        // Without this, the test would fail during server shutdown because the framework 
+        // treats all warnings/errors as failures by default.
+        serverInUse.stopServer("CWWKG0083W");   
+    }
+
     private void validateMaxBackupFiles(int maxFiles) throws Exception {
     File logsDir = new File(getLogsDirPath());
     assertTrue("Log directory does not exist: " + logsDir.getAbsolutePath(), logsDir.exists());
@@ -200,7 +245,7 @@ public class AccessLogRolloverTest {
         }
         return sched;
     }
-    
+
     /**
      * This is a common 'avoid minute rollover timing issue' method so that all cases benefit from
      * common tuning. By default we avoid the 10 seconds prior to the minute rolling over and the
