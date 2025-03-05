@@ -134,6 +134,256 @@ public class TimeoutHandlerTests {
         TimeLog.log("===== END test Write Timeout =====");
     }
 
+    @Test
+    public void testPersistTimeoutTriggers() throws Exception {
+        TimeLog.log("===== BEGIN testPersistTimeoutTriggers =====");
+
+        // read=1, write=1, persist=2, keepAlive=true
+        configureChannel(1, 1, 2, true);
+        channel.pipeline().fireChannelActive();
+
+        // Send first inbound => skip read-timeout
+        channel.writeInbound(Unpooled.copiedBuffer("First Request", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+
+        // The SimpleHttpTimeoutTestHandler writes a response and calls beginPersistRead().
+        // Persist-timeout=2s is now ticking.
+
+        TimeLog.log("Sleeping 3 seconds => expecting persist timeout to fire (2s) if no second request arrives");
+        Thread.sleep(3000);
+
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        // The channel should close due to persist-timeout
+        assertFalse("Channel closed after persist-timeout", channel.isActive());
+
+        // Check exception
+        Throwable exception = testHandler.lastException();
+        TimeLog.log("persistTimeout exception=" + exception);
+        assertThat("Expected PersistTimeoutExeption", exception,
+                   instanceOf(TimeoutHandler.PersistTimeoutExeption.class));
+
+        TimeLog.log("===== END testPersistTimeoutTriggers =====");
+    }
+
+    @Test
+    public void testPersistTimeoutCancelledIfNextRequestArrives() throws Exception {
+        TimeLog.log("===== BEGIN testPersistTimeoutCancelledIfNextRequestArrives =====");
+
+        // read=1, write=1, persist=2, keepAlive=true
+        configureChannel(1, 1, 2, true);
+        channel.pipeline().fireChannelActive();
+
+        // Send first inbound => skip read-timeout
+        channel.writeInbound(Unpooled.copiedBuffer("First Request", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+
+        // The handler writes response & calls beginPersistRead => 2s persist-timeout
+
+        TimeLog.log("Sleeping 1 second (less than persist=2s) then sending second request");
+        Thread.sleep(1000);
+
+        // send second inbound request => cancels persist-timeout
+        channel.writeInbound(Unpooled.copiedBuffer("Second Request", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+
+        // Sleep longer than 2s total from first
+        // If persist-timeout was truly cancelled by second request, no exception
+        TimeLog.log("Sleeping another 2.5s => expecting NO persist-timeout since second request arrived");
+        Thread.sleep(2500);
+
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        // Should remain open
+        assertTrue("Channel should remain open, persist-timeout cancelled by second request", channel.isActive());
+        assertNull("No exception expected", testHandler.lastException());
+
+        // Confirm inbound data arrived
+        String inbound = testHandler.getInboundData();
+        assertThat(inbound, containsString("First Request"));
+        assertThat(inbound, containsString("Second Request"));
+
+        TimeLog.log("===== END testPersistTimeoutCancelledIfNextRequestArrives =====");
+    }
+
+    @Test
+    public void testMultipleSequentialRequests() throws Exception {
+        configureChannel(1, 1, 1, true); // read=1, write=1, persist=1
+        channel.pipeline().fireChannelActive();
+
+        channel.writeInbound(Unpooled.copiedBuffer("Req#1", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+        Thread.sleep(500);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        channel.writeInbound(Unpooled.copiedBuffer("Req#2", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+        Thread.sleep(500);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        channel.writeInbound(Unpooled.copiedBuffer("Req#3", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+        Thread.sleep(500);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        Thread.sleep(1200);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        assertFalse("Channel closed after no 4th request => persist-timeout", channel.isActive());
+        Throwable ex = testHandler.lastException();
+        assertThat(ex, instanceOf(TimeoutHandler.PersistTimeoutException.class));
+
+        String inbound = testHandler.getInboundData();
+        assertThat(inbound, containsString("Req#1"));
+        assertThat(inbound, containsString("Req#2"));
+        assertThat(inbound, containsString("Req#3"));
+    }
+
+    @Test
+    public void testPartialMultipleWrites() throws Exception {
+        configureChannel(5, 2, 5, true); 
+        channel.pipeline().addAfter("timeoutHandler", "stuckWrite", new StuckWriteHandler());
+
+        channel.pipeline().fireChannelActive();
+
+        channel.writeOutbound(Unpooled.copiedBuffer("FirstWriteCompletes", StandardCharsets.UTF_8));
+        channel.flushOutbound(); // ensures the promise completes
+        Thread.sleep(200);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        channel.writeOutbound(Unpooled.copiedBuffer("SecondWriteStuck", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+
+        Thread.sleep(2500);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        assertFalse("Channel closed by second write-timeout", channel.isActive());
+        Throwable ex = testHandler.lastException();
+        assertThat(ex, instanceOf(TimeoutHandler.WriteTimeoutException.class));
+    }
+
+    @Test
+    public void testMixedReadWriteTimeout() throws Exception {
+        configureChannel(1, 1, 5, true);
+        channel.pipeline().addAfter("timeoutHandler", "stuckWrite", new StuckWriteHandler());
+
+        channel.pipeline().fireChannelActive();
+
+        channel.writeInbound(Unpooled.copiedBuffer("Inbound Data", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+
+        Thread.sleep(1500);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        assertFalse("Channel closed by write-timeout", channel.isActive());
+        Throwable ex = testHandler.lastException();
+        assertThat(ex, instanceOf(TimeoutHandler.WriteTimeoutException.class));
+    }
+
+    @Test
+    public void testReadTimeoutInfinite() throws Exception {
+        configureChannel(-1, 1, 5, true);
+        channel.pipeline().fireChannelActive();
+
+        Thread.sleep(1200);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        assertTrue("Channel remains open => read=-1 => infinite", channel.isActive());
+        assertNull(testHandler.lastException());
+    }
+
+    @Test
+    public void testReadTimeoutZero() throws Exception {
+        configureChannel(0, 5, 5, true);
+        channel.pipeline().fireChannelActive();
+
+        Thread.sleep(1200);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        assertTrue("Channel remains open => read=0 => no read-timeout", channel.isActive());
+        assertNull(testHandler.lastException());
+    }
+
+    @Test
+    public void testOverlappingPersistAndRead() throws Exception {
+
+        configureChannel(1, 1, 1, true);
+        channel.pipeline().fireChannelActive();
+
+        channel.writeInbound(Unpooled.copiedBuffer("FirstRequest", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+
+        timeoutHandler.beginRead(channel.pipeline().firstContext());
+        Thread.sleep(500);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        channel.writeInbound(Unpooled.EMPTY_BUFFER);
+        channel.runPendingTasks();
+
+        Thread.sleep(1200);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        assertFalse("Channel closed by persist-timeout eventually", channel.isActive());
+        Throwable ex = testHandler.lastException();
+        assertThat(ex, instanceOf(TimeoutHandler.PersistTimeoutException.class));
+    }
+
+    @Test
+    public void testChannelCloseMidReadTimeout() throws Exception {
+        configureChannel(2, 2, 2, true);
+        channel.pipeline().fireChannelActive();
+
+        // Wait 1s => forcibly close => read-timeout is never triggered
+        Thread.sleep(1000);
+        channel.close();
+
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        assertFalse("Channel is closed by forced close", channel.isActive());
+        assertNull("No exception => we closed ourselves", testHandler.lastException());
+    }
+
+    @Test
+    public void testPartialReadChunks() throws Exception {
+        configureChannel(1, 5, 5, true);
+        channel.pipeline().fireChannelActive();
+
+        // chunk 1
+        channel.writeInbound(Unpooled.copiedBuffer("Part1", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+        Thread.sleep(500);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        // chunk 2
+        channel.writeInbound(Unpooled.copiedBuffer("Part2", StandardCharsets.UTF_8));
+        channel.runPendingTasks();
+        // Wait >1 => but we keep resetting read-timeout with each chunk
+        Thread.sleep(1200);
+        channel.runScheduledPendingTasks();
+        channel.runPendingTasks();
+
+        assertTrue("Channel open => partial read resets read-timeout", channel.isActive());
+        assertNull(testHandler.lastException());
+        String data = testHandler.getInboundData();
+        assertThat(data, containsString("Part1"));
+        assertThat(data, containsString("Part2"));
+    }
+
     private class SimpleHttpTimeoutTestHandler extends ChannelInboundHandlerAdapter {
 
         private Throwable lastException;

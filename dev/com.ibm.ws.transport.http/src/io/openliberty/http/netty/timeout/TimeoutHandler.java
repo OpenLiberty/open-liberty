@@ -6,7 +6,11 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
@@ -14,6 +18,8 @@ import io.netty.util.Timeout;
 import io.netty.util.Timer;
 
 public class TimeoutHandler extends ChannelDuplexHandler{
+
+    private static final TraceComponent tc = Tr.register(HttpChannelConfig.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private final Timer timer;
     private final int readTimeoutSeconds;
@@ -28,12 +34,20 @@ public class TimeoutHandler extends ChannelDuplexHandler{
     private AtomicBoolean writing = new AtomicBoolean(false);
     private AtomicBoolean waitingForNextRequest = new AtomicBoolean(false);
 
+    /**
+     * Types of timeouts this handler manages.
+     */
     public enum TimeoutType {
         READ,
         WRITE, 
         PERSIST
     }
 
+    /**
+     * Constructs a TimeoutHandler with the given {@code Timer} and {@code HttpChannelConfig}.
+     * @param timer
+     * @param config
+     */
     public TimeoutHandler(Timer timer, HttpChannelConfig config){
         
         this.timer = timer;
@@ -133,12 +147,17 @@ public class TimeoutHandler extends ChannelDuplexHandler{
     }
 
     private void startTimeoutTimer(ChannelHandlerContext context, int seconds, TimeoutType type){
+        cancelTimeout(type);
+        if (seconds == -1) {
+            System.out.println("[TimeoutHandler] " + type + "=-1 => infinite => no scheduling");
+            return;
+        }
         if(seconds <= 0){
             System.out.println("[TimeoutHandler] startTimeoutTimer => " + type + " <=0 => skipping");
             return;
 
         }
-        cancelTimeout(type);
+        
         System.out.println("[TimeoutHandler] => scheduling " + type + " in " + seconds + "s");
 
         Timeout timeout = timer.newTimeout(
