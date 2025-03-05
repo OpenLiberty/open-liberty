@@ -138,6 +138,7 @@ public class LibertyServer implements LogMonitorClient {
     /** How frequently we poll the logs when waiting for something to happen */
     protected static final int WAIT_INCREMENT = 300;
     private static final String SPECIAL_CHARS = "\\`$\"'!&|;()<>*?[]{} ";
+    private static final String SPECIAL_CHARS_WIN = "<>:\"';,/\\|?*&!%~";
 
     boolean runAsAWindowService = false;
 
@@ -908,7 +909,7 @@ public class LibertyServer implements LogMonitorClient {
         // Continues with setup, we now validate the Java used is a JDK by looking for java and jar files
         String jar = "jar";
         String java = "java";
-        if (machineOS == OperatingSystem.WINDOWS) {
+        if (isWindows()) {
             jar += ".exe";
             java += ".exe";
         }
@@ -938,6 +939,13 @@ public class LibertyServer implements LogMonitorClient {
         if (!newLogsOnStart) {
             initializeAnyExistingMarks();
         }
+    }
+
+    /**
+     * @return
+     */
+    private boolean isWindows() {
+        return machineOS == OperatingSystem.WINDOWS;
     }
 
     protected void preTestTidyup() {
@@ -2005,10 +2013,12 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     private String escapeCharacters(String input) {
+        String specialChars = isWindows() ? SPECIAL_CHARS_WIN : SPECIAL_CHARS;
+        String escapeCharacter = isWindows() ? "^" : "\\";
         StringBuilder builder = new StringBuilder();
         for (char c : input.toCharArray()) {
-            if (SPECIAL_CHARS.indexOf(c) > -1) {
-                builder.append("\\");
+            if (specialChars.indexOf(c) > -1) {
+                builder.append(escapeCharacter);
             }
             builder.append(c);
         }
