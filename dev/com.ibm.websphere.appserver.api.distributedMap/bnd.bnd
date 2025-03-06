@@ -11,7 +11,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 2.0
+bVersion: 2.1
 
 Bundle-Name: WebSphere Distributed Map API
 Bundle-Description: WebSphere Distributed Map API, version ${bVersion}
