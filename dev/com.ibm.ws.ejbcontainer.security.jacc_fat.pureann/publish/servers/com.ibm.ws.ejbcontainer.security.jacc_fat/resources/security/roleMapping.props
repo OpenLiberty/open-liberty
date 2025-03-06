@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# <application name>::<role name>::<type : USER, GROUP or SPECIAL>::<accessid of user, group, or special subject name (either EVERYONE or ALLAUTHENTICATEDUSERS)):
+
+securityejbstandalonewar::Employee::USER::user:BasicRealm/user99
+securityejbstandalonewar::Employee::GROUP::group:BasicRealm/group1
+securityejbstandalonewar::Manager::USER::user:BasicRealm/user2
+securityejbstandalonewar::Manager::GROUP::group:BasicRealm/group2
+securityejbstandalonewar::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+securityejbstandalonewar::DeclaredRole01::USER::user:BasicRealm/user5
+
+securityejbinwar::Employee::USER::user:BasicRealm/user99
+securityejbinwar::Employee::GROUP::group:BasicRealm/group1
+securityejbinwar::Manager::USER::user:BasicRealm/user2
+securityejbinwar::Manager::GROUP::group:BasicRealm/group2
+securityejbinwar::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+securityejbinwar::DeclaredRole01::USER::user:BasicRealm/user5
+
+securityejb::Employee::USER::user:BasicRealm/user99
+securityejb::Employee::GROUP::group:BasicRealm/group1
+securityejb::Manager::USER::user:BasicRealm/user2
+securityejb::Manager::GROUP::group:BasicRealm/group2
+securityejb::Manager::USER::user:BasicRealm/user98
+securityejb::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+securityejb::DeclaredRole01::USER::user:BasicRealm/user5

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import jakarta.data.repository.Repository;
 /**
  * The only purpose of this repository is to make the Jakarta Data provider aware
  * of the existence of the WorkAddress entity as a subtype of the ShippingAddress entity.
- * TODO is there a way to figure this out automatically?
+ * The Find(entityclass) annotation value in Data 1.1 should make this unnecessary.
  */
 @Repository
 public interface WorkAddresses extends DataRepository<WorkAddress, Long> {

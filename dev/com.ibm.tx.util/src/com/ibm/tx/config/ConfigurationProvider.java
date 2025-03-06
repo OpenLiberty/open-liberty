@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import com.ibm.tx.util.alarm.AlarmManager;
+import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 public interface ConfigurationProvider {
@@ -207,6 +208,13 @@ public interface ConfigurationProvider {
      * from the configuration.
      */
     public ResourceFactory getResourceFactory();
+
+    /**
+     * Allows the retrieval of the ResourceConfig specified for a Resource
+     *
+     * @return
+     */
+    public ResourceConfig getResourceConfig();
 
     /**
      * Returns whether we will propagate the transaction timeout to XAResources

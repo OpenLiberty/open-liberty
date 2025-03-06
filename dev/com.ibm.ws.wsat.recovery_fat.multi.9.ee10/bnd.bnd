@@ -1,0 +1,53 @@
+#*******************************************************************************
+# Copyright (c) 2019, 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src
+
+fat.project: true
+
+fat.test.container.images: jonhawkes/postgresql-ssl:1.0
+
+tested.features: \
+  cdi-3.0, cdi-4.0,\
+  expressionlanguage-4.0, expressionlanguage-5.0,\
+  jaxb-2.3,\
+  jaxws-2.3,\
+  pages-3.0, pages-3.1,\
+  servlet-4.0, servlet-5.0, servlet-6.0,\
+  xmlbinding-4.0,\
+  xmlws-3.0, xmlws-4.0
+
+-buildpath: \
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.jws.1.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.transaction.fat.util,\
+	com.ibm.ws.transaction.test.util;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.wsat.recovery_fat.lps,\
+	com.ibm.ws.wsat.recovery_fat.multi.1,\
+	com.ibm.ws.wsat.recovery_fat.multi.9,\
+	io.openliberty.org.testcontainers;version=latest
+
+-sub: *.bnd

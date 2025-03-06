@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2024 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ tested.features: \
 -buildpath: \
 	com.ibm.json4j;version=latest,\
 	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.ejbcontainer.security.jacc_fat;version=latest,\
+	com.ibm.ws.ejbcontainer.security.jacc_fat.common;version=latest,\
 	com.ibm.ws.ejbcontainer.security_test.servlets;version=latest,\
 	com.ibm.ws.security.audit_fat.common.tooling;version=latest,\
 	com.ibm.ws.security.authorization.jacc.testprovider.jakarta;version=latest,\

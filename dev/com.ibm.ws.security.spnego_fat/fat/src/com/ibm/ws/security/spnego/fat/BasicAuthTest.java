@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.annotation.SkipIfSysProp;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -113,6 +114,7 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
      */
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS) // Skip on z/OS due to configuration error
     public void testSpnegoSuccessful() throws Exception {
         refreshCommonSpnegoToken();
         setDefaultSpnegoServerConfig(ENABLE_INFO_LOGGING);
@@ -120,6 +122,7 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
     }
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS) // Skip on z/OS due to configuration error
     public void testSpnegoSuccessful_withJwtSsoFeature() throws Exception {
         refreshCommonSpnegoToken();
         setDefaultSpnegoServerConfig();
@@ -171,6 +174,7 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
      * @throws Exception
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS) // Skip on z/OS due to configuration error
     public void testSpnegoSuccessfulforSSLClient() throws Exception {
         spnegoTestSetupChecks();
         commonSuccessfulSpnegoServletCallSSLClient();

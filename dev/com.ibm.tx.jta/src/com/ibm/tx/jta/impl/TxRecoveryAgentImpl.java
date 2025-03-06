@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2024 IBM Corporation and others.
+ * Copyright (c) 2002, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,6 +62,7 @@ import com.ibm.ws.recoverylog.spi.RecoveryLogManager;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
 import com.ibm.ws.recoverylog.spi.TerminationFailedException;
 import com.ibm.wsspi.classloading.ClassLoadingService;
+import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 public class TxRecoveryAgentImpl implements RecoveryAgent {
@@ -299,11 +300,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                 Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
                             throw new RecoveryFailedException("ConfigurationProvider is null");
                         }
-                        ResourceFactory nontranDSResourceFactory = cp.getResourceFactory();
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Retrieved non tran DS Resource Factory, ", nontranDSResourceFactory);
+                        final ResourceFactory nontranDSResourceFactory = cp.getResourceFactory();
                         ((CustomLogProperties) transactionLogProps).setResourceFactory(nontranDSResourceFactory);
                         ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
+                        final ResourceConfig resConfig = cp.getResourceConfig();
+                        ((CustomLogProperties) transactionLogProps).setResourceConfig(resConfig);
+                        ((CustomLogProperties) partnerLogProps).setResourceConfig(resConfig);
                     } else {
                         // Set up FileLogProperties
                         String recLogDirStem = tlc.expandedLogDirectory().trim();
@@ -1033,6 +1035,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             Tr.debug(tc, "Retrieved non tran DS Resource Factory {0}", nontranDSResourceFactory);
 
                         ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
+                        ((CustomLogProperties) partnerLogProps).setResourceConfig(cp.getResourceConfig());
 
                         //
                         // Get the Partner (XAResources) log

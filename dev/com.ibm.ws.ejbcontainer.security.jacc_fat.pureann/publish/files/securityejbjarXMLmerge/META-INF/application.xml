@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<application id="Application_ID" version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+  <description>securityejbjarXMLmerge.ear</description>
+  <display-name>securityejbjarXMLmerge.ear</display-name>
+  <module id="WebModule_1">
+    <web>
+      <web-uri>securityejb.war</web-uri>
+      <context-root>/securityejbjarXMLmerge</context-root>
+    </web>
+  </module>
+  <module id="EjbModule_X1">
+    <ejb>SecurityEJBX01.jar</ejb>
+  </module>
+  <module id="EjbModule_X2">
+    <ejb>SecurityEJBX02.jar</ejb>
+  </module>
+  <module id="EjbModule_X3">
+    <ejb>SecurityEJBX03.jar</ejb>
+  </module>
+  <module id="EjbModule_M1">
+    <ejb>SecurityEJBM01.jar</ejb>
+  </module>
+  <module id="EjbModule_M2">
+    <ejb>SecurityEJBM02.jar</ejb>
+  </module>
+  <module id="EjbModule_M3">
+    <ejb>SecurityEJBM03.jar</ejb>
+  </module>
+  <module id="EjbModule_M4">
+    <ejb>SecurityEJBM04.jar</ejb>
+  </module>
+  <module id="EjbModule_M5">
+    <ejb>SecurityEJBM05.jar</ejb>
+  </module>
+  <module id="EjbModule_M7">
+    <ejb>SecurityEJBM07.jar</ejb>
+  </module>
+  <module id="EjbModule_M8">
+    <ejb>SecurityEJBM08.jar</ejb>
+  </module>
+  <module id="EjbModule_M9">
+    <ejb>SecurityEJBM09.jar</ejb>
+  </module>
+    <module id="EjbModule_M10">
+    <ejb>SecurityEJBM10.jar</ejb>
+  </module>
+</application>
+

@@ -202,6 +202,23 @@ if (javaVersion < 21) {
   }
 }
 
+// Require cnf:initialize on clean workspace.
+File bndPluginsClassesDir = file(bnd_cnf+'/bndplugins/classes')
+boolean initialize = false
+Set<String> projectNames = new LinkedHashSet<>()
+for (Iterator<String> iter = startParameter.taskNames.iterator(); iter.hasNext();) {
+  String taskName = iter.next()
+  if (taskName == 'cnf:initialize') {
+    initialize = true
+  }
+}
+if (!initialize && !bndPluginsClassesDir.exists()) {
+  print "ERROR: Building this repository requires bnd plugins to be compiled before building projects.  Please follow these steps:\n" +
+      "  1) Run the cnf project's initialize task with `./gradlew cnf:initialize`\n" +
+      "  2) Re-run the Gradle task you intend to build.\n";
+  throw new GradleException('cnf workspace needs to be initialized.')
+}
+
 //DirectoryScanner.removeDefaultExclude("**/.gitignore")
 //DirectoryScanner.removeDefaultExclude("**/.gitattributes")
 

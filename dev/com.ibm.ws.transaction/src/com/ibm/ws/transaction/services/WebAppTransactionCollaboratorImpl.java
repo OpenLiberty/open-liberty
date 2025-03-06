@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.tx.jta.impl.TransactionImpl;
+import com.ibm.tx.jta.util.TxTMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -211,7 +212,13 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
     @Override
     public TxCollaboratorConfig preInvoke(final HttpServletRequest request, final boolean isServlet23) throws ServletException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Calling preInvoke. Request=" + request + " | isServlet23=" + isServlet23);
+            Tr.debug(tc, "Calling preInvoke. Request=" + request + " | isServlet23=" + isServlet23 + " | TM state=" + TxTMHelper.getState());
+        }
+
+        switch (TxTMHelper.getState()) {
+            case STOPPED:
+            case STOPPING:
+                return null;
         }
 
         //First we check if there's a global transaction
@@ -305,7 +312,13 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
     public void postInvoke(HttpServletRequest request, Object txConfig,
                            boolean isServlet23) throws ServletException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Calling postInvoke. Request=" + request + " | isServlet23=" + isServlet23);
+            Tr.debug(tc, "Calling postInvoke. Request=" + request + " | isServlet23=" + isServlet23 + " | TM state=" + TxTMHelper.getState());
+        }
+
+        switch (TxTMHelper.getState()) {
+            case STOPPED:
+            case STOPPING:
+                return;
         }
 
         LocalTransactionCurrent ltCurrent = getLtCurrent();

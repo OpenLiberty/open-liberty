@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2024 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import javax.sql.DataSource;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
@@ -41,6 +43,7 @@ import com.ibm.tx.jta.embeddable.TransactionSettingsProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.security.auth.data.AuthData;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
@@ -48,6 +51,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
+import com.ibm.wsspi.resource.ResourceConfig;
+import com.ibm.wsspi.resource.ResourceConfigFactory;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -67,6 +72,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private boolean activateHasBeenCalled; // Used for eyecatcher in trace for startup ordering.
     private boolean _dataSourceFactorySet;
     private static boolean _frameworkShutting;
+    private boolean _authTypeConfigured;
 
     private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
@@ -75,6 +81,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private static final AtomicServiceReference<ResourceFactory> dataSourceFactoryRef = new AtomicServiceReference<ResourceFactory>("dataSourceFactory");
 
     private static final int HEURISTIC_RETRY_INTERVAL_DEFAULT = 60;
+
+    /**
+     * Reference to the default authentication data.
+     */
+    private List<ServiceReference<AuthData>> authDataRefList;
 
     /**
      * Flag whether we are using a Transaction Log stored in the filesystem or a Transaction Log
@@ -93,7 +104,9 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private boolean _setNonRetriableSqlcodes;
     List<Integer> retriableSqlCodeList;
     List<Integer> nonRetriableSqlCodeList;
-
+    private String _authAlias;
+    private ResourceConfigFactory _resourceConfigFactory;
+    private ResourceConfig _resourceConfig;
     private boolean _recoveryIDisSanitary;
 
     @Trivial
@@ -164,7 +177,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
             //  If we already have a dataSourceFactory then we can startup (and drive recovery) now.
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
+                Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef + " look for containerAuth property");
+
+            if (serviceRef != null && !_authTypeConfigured) {
+                configureAuthenticationType(serviceRef);
+                _authTypeConfigured = true;
+            }
+
             if (serviceRef != null) {
                 // The DataSource is available, which means that we are able to drive recovery
                 // processing. This is driven through the reference to the TransactionManagerService,
@@ -251,8 +270,10 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * Called by DS to inject DataSourceFactory reference from the com.ibm.ws.jdbc component
      */
     protected void setDataSourceFactory(ServiceReference<ResourceFactory> ref) {
-        if (tc.isDebugEnabled())
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "setDataSourceFactory serviceRef is " + ref);
             Tr.debug(tc, "pre-setReference  datasourceFactory ref " + dataSourceFactoryRef);
+        }
         dataSourceFactoryRef.setReference(ref);
         if (tc.isDebugEnabled())
             Tr.debug(tc, "post-setReference  datasourceFactory ref " + dataSourceFactoryRef);
@@ -262,6 +283,15 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (!activateHasBeenCalled)
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "setDataSourceFactory has been called before activate");
+
+        // If the JTMConfigurationProvider has been activated, and if the DataSourceFactory
+        // has been provided, we can attempt to configure authentication
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "look for containerAuth property");
+        if (ref != null && !_authTypeConfigured) {
+            configureAuthenticationType(ref);
+            _authTypeConfigured = true;
+        }
 
         // If the JTMConfigurationProvider has been activated, we can proceed to set
         // the DataSourceFactory and initiate recovery
@@ -575,6 +605,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    public ResourceConfig getResourceConfig() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "resourceConfig is " + _resourceConfig);
+        return _resourceConfig;
+    }
+
+    @Override
     @Trivial
     public RuntimeMetaDataProvider getRuntimeMetaDataProvider() {
         return _runtimeMetaDataProvider;
@@ -640,7 +677,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                 // has been provided, we can initiate recovery
                 ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
+                    Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef + " look for containerAuth property");
+
+                if (serviceRef != null && !_authTypeConfigured) {
+                    configureAuthenticationType(serviceRef);
+                    _authTypeConfigured = true;
+                }
+
                 if (isStartupEnabled() && serviceRef != null) {
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
                 }
@@ -1147,5 +1190,106 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isThrowCheckedExceptions {0}", b);
         return b;
+    }
+
+    /*
+     * Called by DS to inject ResourceConfigFactory reference from the com.ibm.ws.jdbc component
+     */
+    @Trivial
+    protected void setResourceConfigFactory(ResourceConfigFactory svc) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setResourceConfigFactory", svc);
+        _resourceConfigFactory = svc;
+    }
+
+    /*
+     * Called by DS to dereference ResourceConfigFactory
+     */
+    @Trivial
+    protected void unsetResourceConfigFactory(ServiceReference<ResourceFactory> ref) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "unsetResourceConfigFactory", ref);
+        _resourceConfigFactory = null;
+    }
+
+    private void configureAuthenticationType(ServiceReference<ResourceFactory> serviceRef) {
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "configureAuthenticationType", serviceRef);
+
+        final String[] containerAuthDataRefObj = (String[]) serviceRef.getProperty("containerAuthDataRef");
+        String containerAuthElement = null;
+        if (containerAuthDataRefObj != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "containerAuthDataRef length: {0}", containerAuthDataRefObj.length);
+                Tr.debug(tc, "first element " + containerAuthDataRefObj[0]);
+            }
+            containerAuthElement = containerAuthDataRefObj[0];
+        }
+
+        if (containerAuthDataRefObj != null && containerAuthElement != null && !containerAuthElement.isEmpty()) {
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "ContainerAuthData is configured, resourceConfigFactory is " + _resourceConfigFactory);
+
+            if (_resourceConfigFactory != null) {
+                _resourceConfig = _resourceConfigFactory.createResourceConfig(DataSource.class.getName());
+
+                // Set the data source to use container authentication
+                _resourceConfig.setResAuthType(ResourceConfig.AUTH_CONTAINER);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The datasource has been configured to use container authentication");
+                ServiceReference<AuthData> matchingItem = null;
+                if (authDataRefList != null && !authDataRefList.isEmpty()) {
+                    for (ServiceReference<AuthData> refItem : authDataRefList) {
+                        final String authServiceId = (String) refItem.getProperty("service.pid");
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Have retrieved refItem service pid property " + authServiceId);
+                        if (containerAuthElement.contains(authServiceId)) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Have matched with " + containerAuthElement);
+                            matchingItem = refItem;
+                        }
+                    }
+
+                    if (matchingItem != null) {
+                        final String authDataId = (String) matchingItem.getProperty("id");
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Add login property for " + authDataId);
+                        if (authDataId != null)
+                            _resourceConfig.addLoginProperty("DefaultPrincipalMapping", authDataId);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Declarative Services method for setting the service reference for the default auth data
+     *
+     * @param ref reference to the service
+     *
+     * @Reference(service = AuthData.class,
+     *                    cardinality = ReferenceCardinality.MULTIPLE,
+     *                    policy = ReferencePolicy.STATIC,
+     *                    policyOption = ReferencePolicyOption.GREEDY)
+     */
+    @Trivial
+    protected void setAuthData(ServiceReference<AuthData> ref) {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setAuthData", ref);
+        if (authDataRefList == null)
+            authDataRefList = new ArrayList<ServiceReference<AuthData>>();
+        authDataRefList.add(ref);
+    }
+
+    /**
+     * Declarative Services method for unsetting the service reference for default auth data
+     *
+     * @param ref reference to the service
+     */
+
+    protected void unsetAuthData(ServiceReference<AuthData> ref) {
+        authDataRefList = null;
     }
 }

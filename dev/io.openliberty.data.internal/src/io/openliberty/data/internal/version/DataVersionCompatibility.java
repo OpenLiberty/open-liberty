@@ -13,6 +13,7 @@
 package io.openliberty.data.internal.version;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -84,14 +85,14 @@ public interface DataVersionCompatibility {
     Annotation getExistsAnnotation(Method method);
 
     /**
-     * Obtains the value of the Select annotation if present on the method.
-     * Otherwise null.
+     * Obtains the value of the Select annotation if present on the method
+     * or record component. Otherwise null.
      *
-     * @param method repository method. Must not be null.
+     * @param element repository method or record component. Must not be null.
      * @return values of the Select annotation indicating the columns to select,
      *         otherwise null.
      */
-    String[] getSelections(Method method);
+    String[] getSelections(AnnotatedElement element);
 
     /**
      * Return a 2-element array where the first element is the entity attribute name

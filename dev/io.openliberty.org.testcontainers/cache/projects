@@ -178,6 +178,7 @@ com.ibm.ws.transaction.hadb_fat.sqlserver.retriablecodes
 com.ibm.ws.wsat.migration_fat.6
 com.ibm.ws.wsat.recovery_fat.multi.8
 com.ibm.ws.wsat.recovery_fat.multi.8.ee10
+com.ibm.ws.wsat.recovery_fat.multi.9.ee10
 fattest.simplicity
 io.openliberty.checkpoint_fat_jcache_hazelcast
 io.openliberty.checkpoint_fat_persistence

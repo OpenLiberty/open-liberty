@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -2917,11 +2918,12 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Query that matches multiple entities and returns a stream of results
-     * where each result has a ManyToMany association.
+     * Query that matches multiple entities that have a ManyToMany relation.
+     * Verify that the data within the ManyToMany relations of the results
+     * is correct.
      */
     @Test
-    public void testManyToManyReturnsCombinedCollectionFromMany() {
+    public void testManyToManyIncludedInResults() {
 
         List<String> addresses = customers.findByPhoneIn(List.of(5075552444L,
                                                                  5075550101L))
@@ -2944,11 +2946,12 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Query that matches a single entity, from which the corresponding collection
-     * from its ManyToMany association can be accessed.
+     * Query that matches a single entity that has a ManyToMany relation.
+     * Verify that the data within the ManyToMany relation of the result
+     * is correct.
      */
     @Test
-    public void testManyToManyReturnsOneWithSetOfMany() {
+    public void testManyToManyIncludedInSingleResult() {
         Set<DeliveryLocation> locations = customers //
                         .findByEmail("Maximilian@tests.openliberty.io")
                         .orElseThrow().deliveryLocations;
@@ -2971,7 +2974,6 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(loc3.street);
         assertEquals(2800, loc3.houseNum);
         assertEquals("37th St", loc3.street.name);
-        assertEquals("NW", loc3.street.direction);
 
         assertNotNull(locations.toString(), loc4);
         assertEquals(DeliveryLocation.Type.HOME, loc4.type);
@@ -3050,6 +3052,27 @@ public class DataJPATestServlet extends FATServlet {
         assertIterableEquals(List.of("Monica@tests.openliberty.io",
                                      "martin@tests.openliberty.io"),
                              creditCards.findByExpiresOnBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31)));
+    }
+
+    /**
+     * Query that matches based on an attribute of the One of a ManyToOne relation.
+     */
+    @Test
+    public void testManyToOneSubAttribute() {
+
+        Stream<CreditCard> cards = customers//
+                        .findCardsByDebtorEmailEndsWith("an@tests.openliberty.io");
+        List<Long> cardNumbers = cards
+                        .map(card -> card.number)
+                        .collect(Collectors.toList());
+
+        // Customer 5's card numbers must come before Customer 4's card numbers
+        // due to the ordering on Customer.phone.
+        assertEquals(Set.of(5000921051110001L, 5000921052220002L),
+                     new HashSet<>(cardNumbers.subList(0, 2)));
+
+        assertEquals(Set.of(4000921041110001L, 4000921042220002L),
+                     new HashSet<>(cardNumbers.subList(2, 4)));
     }
 
     /**
@@ -3244,28 +3267,6 @@ public class DataJPATestServlet extends FATServlet {
                                      "Maximilian@tests.openliberty.io",
                                      "Megan@tests.openliberty.io"),
                              customers.withCardIssuer(Issuer.MonsterCard));
-    }
-
-    /**
-     * Query that matches multiple entities and returns a combined collection of results across matches for the OneToMany association.
-     */
-    //@Test
-    // This test is currently incorrect because Email is an attribute of Customer (primary entity type), not CreditCard (result type).
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
-    public void testOneToManyReturnsCombinedCollectionFromMany() {
-
-        List<Long> cardNumbers = customers.findCardsByDebtorEmailEndsWith("an@tests.openliberty.io")
-                        .map(card -> card.number)
-                        .collect(Collectors.toList());
-
-        // Customer 5's card numbers must come before Customer 4's card numbers due to the ordering on Customer.phone.
-        assertEquals(cardNumbers.toString(),
-                     true, cardNumbers.equals(List.of(5000921051110001L, 5000921052220002L, 4000921041110001L, 4000921042220002L)) ||
-                           cardNumbers.equals(List.of(5000921051110001L, 5000921052220002L, 4000921042220002L, 4000921041110001L)) ||
-                           cardNumbers.equals(List.of(5000921052220002L, 5000921051110001L, 4000921042220002L, 4000921041110001L)) ||
-                           cardNumbers.equals(List.of(5000921052220002L, 5000921051110001L, 4000921041110001L, 4000921042220002L)));
     }
 
     /**

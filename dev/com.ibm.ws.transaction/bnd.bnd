@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -23,10 +23,13 @@ Service-Component: com.ibm.ws.transaction; \
       implementation:=com.ibm.ws.transaction.services.JTMConfigurationProvider; \
       locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
       dataSourceFactory=com.ibm.wsspi.resource.ResourceFactory; \
+      resourceConfigFactory=com.ibm.wsspi.resource.ResourceConfigFactory; \
+      authData=com.ibm.websphere.security.auth.data.AuthData; \
       transactionSettingsProvider=com.ibm.tx.jta.embeddable.TransactionSettingsProvider ;\
       runningCondition='org.osgi.service.condition.Condition';\
-      optional:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
+      optional:='dataSourceFactory,transactionSettingsProvider,runningCondition,authData';\
       dynamic:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
+	  multiple:='authData';\
       configuration-policy:=require;\
       properties:='\
          service.vendor=IBM,\
@@ -129,6 +132,8 @@ instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*
   com.ibm.ws.tx.embeddable;version=latest,\
   com.ibm.ws.tx.jta.extensions;version=latest,\
   com.ibm.ws.webcontainer;version=latest, \
+  com.ibm.ws.security.auth.data.common;version=latest,\
+  com.ibm.ws.security.jca;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations
 
 -testpath: \

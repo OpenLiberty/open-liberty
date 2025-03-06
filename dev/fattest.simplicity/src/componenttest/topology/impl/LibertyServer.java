@@ -1730,12 +1730,7 @@ public class LibertyServer implements LogMonitorClient {
         //FIPS 140-3
         // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM Arg
         if (isFIPS140_3EnabledAndSupported(info)) {
-            // TODO: `getJvmOptionsAsMap()` should be added to JVM_ARGS outside of this if-block so that we always run it.
-            // During FIPS 140-3 development, we found test scenarios where jvm.options is set before server start and the file is ignored.
-            // So that we can test FIPS 140-3 without causing issues unrelated to FIPS, we have put it inside this if-block, for now.
-            Map<String, String> combined = this.getJvmOptionsAsMap();
-            combined.putAll(this.getFipsJvmOptions(info, false));
-            JVM_ARGS += getJvmArgString(combined);
+            JVM_ARGS += getJvmArgString(this.getFipsJvmOptions(info, false));
         }
 
         Properties bootstrapProperties = getBootstrapProperties();
@@ -1996,23 +1991,12 @@ public class LibertyServer implements LogMonitorClient {
         for (String key : fipsOpts.keySet()) {
             String value = fipsOpts.get(key);
             if (value != null && !value.isEmpty()) {
-                joiner.add(String.format("%s=%s", escapeCharacters(key), escapeCharacters(value)));
+                joiner.add(String.format("%s=%s", key, value));
             } else {
                 joiner.add(key);
             }
         }
         return joiner.toString();
-    }
-
-    private String escapeCharacters(String input) {
-        StringBuilder builder = new StringBuilder();
-        for (char c : input.toCharArray()) {
-            if (SPECIAL_CHARS.indexOf(c) > -1) {
-                builder.append("\\");
-            }
-            builder.append(c);
-        }
-        return builder.toString();
     }
 
     private String[] checkpointAdjustParams(List<String> parametersList) {
@@ -8092,7 +8076,6 @@ public class LibertyServer implements LogMonitorClient {
 
     private Map<String, String> getFipsJvmOptions(JavaInfo info, boolean includeGlobalArgs) throws Exception, IOException {
         Map<String, String> opts = new HashMap<>();
-        opts.putAll(this.getJvmOptionsAsMap()); //Add all current JVM option so we don't unintentionally clear any set by tests.
         if (isFIPS140_3EnabledAndSupported(info, false)) {
             if (info.majorVersion() == 17) {
                 Log.info(c, "getFipsJvmOptions",

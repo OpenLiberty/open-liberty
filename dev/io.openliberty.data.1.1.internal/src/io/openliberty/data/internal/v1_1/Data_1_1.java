@@ -13,6 +13,7 @@
 package io.openliberty.data.internal.v1_1;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -294,8 +295,8 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public String[] getSelections(Method method) {
-        Annotation select = method.getAnnotation(Select.class);
+    public String[] getSelections(AnnotatedElement element) {
+        Annotation select = element.getAnnotation(Select.class);
         return select == null ? null : ((Select) select).value();
     }
 
