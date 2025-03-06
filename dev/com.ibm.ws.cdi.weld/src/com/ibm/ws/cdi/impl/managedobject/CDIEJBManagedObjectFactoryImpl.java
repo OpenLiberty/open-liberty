@@ -256,7 +256,7 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
 
     private EjbDescriptor<T> lookUpEjbDescriptor(String ejbName, WebSphereBeanDeploymentArchive bda, WeldManager bm) {
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "Looking for EJB Bean: " + ejbName + " in " + bda.toString() + "for class: " + getManagedObjectClass().getName() + " "
                          + System.identityHashCode(getManagedObjectClass()));
         }
@@ -270,7 +270,7 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "After Looking for EJB Bean: " + ejbName + " in " + bda.toString() + "for class: " + getManagedObjectClass().getName() + " "
                         + System.identityHashCode(getManagedObjectClass()));
         }
