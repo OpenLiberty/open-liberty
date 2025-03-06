@@ -17,7 +17,7 @@ Subsystem-Name: Distributed Map interface for Dynamic Caching 1.0
   com.ibm.websphere.appserver.jndi-1.0, \
   io.openliberty.distributedMapInternal-1.0; ibm.tolerates:="2.0"
 -jars=com.ibm.websphere.appserver.api.distributedMap; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.distributedMap_2.0-javadoc.zip
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.distributedMap_2.1-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
