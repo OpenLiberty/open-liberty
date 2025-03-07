@@ -176,8 +176,7 @@ public class LoggerOnThread implements LogFile {
                 this.fileinfo = this.myFullName;
                 this.extensioninfo = "";
             }
-        }
-
+        
         /** 
          * Manage existing backups: find files matching the pattern, sort by newest first, enforce limit, and delete excess.
          * */ 
@@ -198,6 +197,7 @@ public class LoggerOnThread implements LogFile {
                     }
                 }
             }
+        }
         }
 
         this.state = State.RUNNING;

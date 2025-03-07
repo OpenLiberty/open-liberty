@@ -455,27 +455,29 @@ public class LoggerOffThread implements LogFile {
                 }
                 this.backups = new LinkedList<File>();
             }
-
+            
             /** 
              * Manage existing backups: find files matching the pattern, sort by newest first, enforce limit, and delete excess.
              * */ 
-             File directory = new File(getFilePathName()).getParentFile();
-             if (directory != null && directory.isDirectory()) {
-                String fileinfoName = new File(this.fileinfo).getName();
-                File[] backupFiles = directory.listFiles((dir, name) -> name.startsWith(fileinfoName));
-                if (backupFiles != null) {
-                    Arrays.sort(backupFiles, Comparator.comparingLong(File::lastModified));
-                    this.backups.addAll(Arrays.asList(backupFiles));
-                    while (this.backups.size() > getMaximumBackupFiles()) {
-                        File oldestFile = this.backups.poll(); 
-                            if (oldestFile != null && oldestFile.exists()) {
-                                oldestFile.delete();
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "Deleted old log file: " + oldestFile.getName());
-                                } 
-                            }
+            if( getMaximumBackupFiles()>0){
+                File directory = new File(getFilePathName()).getParentFile();
+                if (directory != null && directory.isDirectory()) {
+                    String fileinfoName = new File(this.fileinfo).getName();
+                    File[] backupFiles = directory.listFiles((dir, name) -> name.startsWith(fileinfoName));
+                    if (backupFiles != null) {
+                        Arrays.sort(backupFiles, Comparator.comparingLong(File::lastModified));
+                        this.backups.addAll(Arrays.asList(backupFiles));
+                        while (this.backups.size() > getMaximumBackupFiles()) {
+                            File oldestFile = this.backups.poll(); 
+                                if (oldestFile != null && oldestFile.exists()) {
+                                    oldestFile.delete();
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "Deleted old log file: " + oldestFile.getName());
+                                    } 
+                                }
+                        }
                     }
-                }
+            }
             }
             //Set bytesWritten from the already existing file
             try {

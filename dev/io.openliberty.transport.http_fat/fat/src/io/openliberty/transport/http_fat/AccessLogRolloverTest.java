@@ -90,7 +90,6 @@ public class AccessLogRolloverTest {
     @Test
     @Mode(FULL)
     public void testmaxFilesDefaultValue() throws Exception {
-        setUp();
         LOG.info("Applying test-specific server configuration for maxFilesDefaultValue.");
         serverXml.setServerConfigurationFile("accessLogging/server-rollover-default-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
@@ -118,7 +117,6 @@ public class AccessLogRolloverTest {
     @Test
     @Mode(FULL)
     public void testmaxFilesAfterRestart() throws Exception {
-        setUp();
         LOG.info("Applying test-specific server configuration for maxFilesAfterRestart.");
         serverXml.setServerConfigurationFile("accessLogging/server-rollover-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
@@ -162,7 +160,6 @@ public class AccessLogRolloverTest {
      */
    @Test
    public void testZeroMaxFilesValue() throws Exception {
-        setUp();
         LOG.info("Applying test-specific server configuration for ZeroMaxFilesValue.");
         serverXml.setServerConfigurationFile("accessLogging/server-rollover-zero-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
@@ -177,7 +174,6 @@ public class AccessLogRolloverTest {
      */
    @Test
    public void testInvalidMaxFilesValue() throws Exception {
-        setUp();
         LOG.info("Applying test-specific server configuration for InvalidMaxFilesValue");
         serverXml.setServerConfigurationFile("accessLogging/server-rollover-invalid-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);

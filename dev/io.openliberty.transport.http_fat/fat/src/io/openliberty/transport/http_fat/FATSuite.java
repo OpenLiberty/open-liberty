@@ -8,9 +8,8 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  *******************************************************************************/
-
-//The FATSuite.java file was inside the accesslists folder. Moving it outside to align with the project structure.
 package io.openliberty.transport.http_fat;
+
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -30,8 +29,11 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(new RepeatWithServlet30().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
 }
+
+
