@@ -43,7 +43,7 @@ public class JULDuplicateTest {
 
     private static Class<?> c = JULDuplicateTest.class;
 
-    @Server("TelemetryAgentJULMessages")
+    @Server("SecondTelemetryAgentJULMessages")
     public static LibertyServer server;
 
     public static final String SERVER_XML_ALL_SOURCES = "allJULSources.xml";
@@ -110,7 +110,7 @@ public class JULDuplicateTest {
         //Allow time for the collector to receive and bridge logs.
         TimeUnit.SECONDS.sleep(5);
 
-        final String logs = getNewLogs();
+        final String logs = container.getLogs();
         Log.info(c, "Container logs", logs);
 
         String[] agentMappedJulMsg = logs.split("SRVE0250I");

@@ -98,7 +98,7 @@ public class JULLogServletTest {
 
         TimeUnit.SECONDS.sleep(5);
 
-        final String logs = getNewLogs();
+        final String logs = container.getLogs();
 
         Log.info(c, "Container logs", logs);
 
