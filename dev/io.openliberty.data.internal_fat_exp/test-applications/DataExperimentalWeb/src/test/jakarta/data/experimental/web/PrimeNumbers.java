@@ -31,6 +31,7 @@ import jakarta.data.repository.By;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Select;
 
@@ -86,6 +87,9 @@ public interface PrimeNumbers {
 
     @Count
     int numEvenWithSumOfBits(int sumOfBits, boolean even);
+
+    @Query("SELECT hex, numberId WHERE numberId = ?1")
+    Optional<Hexadecimal> toHexadecimal(long decimalValue);
 
     @Find
     @OrderBy("name")

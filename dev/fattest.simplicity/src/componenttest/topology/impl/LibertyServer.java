@@ -8096,7 +8096,6 @@ public class LibertyServer implements LogMonitorClient {
             }
             if (includeGlobalArgs) {
                 opts.put("-Dglobal.fips_140-3", "true");
-                opts.put("-Dcom.ibm.ws.beta.edition", "true");
             }
         }
         return opts;

@@ -75,6 +75,12 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public boolean atLeast(int major, int minor) {
+        return major == 1 && minor == 0;
+    }
+
+    @Override
+    @Trivial
     public Annotation getCountAnnotation(Method method) {
         return null;
     }

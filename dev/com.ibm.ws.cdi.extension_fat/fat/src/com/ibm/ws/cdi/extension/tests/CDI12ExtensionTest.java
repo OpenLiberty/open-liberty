@@ -49,6 +49,8 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -141,6 +143,10 @@ public class CDI12ExtensionTest extends FATServletClient {
         WebArchive invocationContextWar = ShrinkWrap.create(WebArchive.class, "invocationContext.war")
                                                     .addPackage(InvocationContextTestServlet.class.getPackage())
                                                     .addAsServiceProvider(Extension.class, BindingExtension.class);
+	// In EE7 the AnnotationLiteral needs to accessDeclaredMembers and doesn't have a doPriv
+	if (RepeatTestFilter.isRepeatActionActive(EE7FeatureReplacementAction.ID)) {
+            invocationContextWar.addAsManifestResource(InvocationContextTestServlet.class.getPackage(), "permissions.xml", "permissions.xml");
+	}
         CDIArchiveHelper.addBeansXML(invocationContextWar, DiscoveryMode.ANNOTATED);
 
         ShrinkHelper.exportDropinAppToServer(server, invocationContextWar, DeployOptions.SERVER_ONLY);

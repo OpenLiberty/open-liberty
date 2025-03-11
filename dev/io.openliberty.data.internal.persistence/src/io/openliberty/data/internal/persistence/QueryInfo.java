@@ -4252,14 +4252,23 @@ public class QueryInfo {
 
             StringBuilder q;
             if (selectLen > 0) {
-                q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
                 String selection = ql.substring(select0, select0 + selectLen);
+                q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
+                q.append("SELECT");
+                // TODO 1.1 use Jakarta Persistence enhancement issue 420 instead of
+                // editing the query
+                boolean insertConstructor = compat.atLeast(1, 1) &&
+                                            singleType.isRecord() &&
+                                            !selection.toUpperCase().contains(" NEW ");
+                if (insertConstructor)
+                    q.append(" NEW ").append(singleType.getName()).append('(');
                 if (insertEntityVar) {
-                    q.append("SELECT");
                     appendWithIdentifierName(ql, select0, select0 + selectLen, entityVar_, q);
                 } else {
-                    q.append("SELECT").append(selection);
+                    q.append(selection);
                 }
+                if (insertConstructor)
+                    q.append(") ");
                 if (fromLen == 0 && whereLen == 0 && orderLen == 0 &&
                     !Character.isWhitespace(q.charAt(q.length() - 1)))
                     q.append(' ');

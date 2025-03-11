@@ -88,7 +88,7 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
                                            SPNEGOConstants.USE_COMMON_KEYTAB,
                                            SPNEGOConstants.START_SERVER);
 
-        testHelper.addShutdownMessages("CWWKS9127W", "CWWKS4317E", "CWWKS4308E", "CWWKS4309E", "CWWKS4318E", "CWWKG0083W", "CWWKS4313E", "CWWKS4312E", "CWWKG0027W", "CWWKG0011W");
+        testHelper.addShutdownMessages("CWWKS9127W", "CWWKS4317E", "CWWKS4308E", "CWWKS4309E", "CWWKS4318E", "CWWKG0083W", "CWWKS4313E", "CWWKS4312E", "CWWKG0027W", "CWWKG0011W", "CWWKS4310W");
     }
 
     @Before
@@ -677,7 +677,7 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
     @Test
     @AllowedFFDC({ "java.net.MalformedURLException" })
     public void testNtlmTokenReceivedErrorPageWithMalformedUrl() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, MALFORMED_URL_ERROR_PAGE, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, null, MALFORMED_URL_ERROR_PAGE, false);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + NTLM_TOKEN, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headers, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 

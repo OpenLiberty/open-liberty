@@ -826,6 +826,15 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
+     * Query method that selects multiple entity attributes and returns a record.
+     */
+    @Test
+    public void testQuerySelectsRecord() {
+        assertEquals(new Hexadecimal("2F", 47L),
+                     primes.toHexadecimal(47L).orElseThrow());
+    }
+
+    /**
      * Use the provided methods of a Repository<T, K> interface that is a copy of Jakarta NoSQL's.
      */
     @Test

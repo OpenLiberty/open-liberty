@@ -14,7 +14,6 @@ package test.jakarta.data.jpa.web;
 
 import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
-import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
@@ -1099,12 +1098,6 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Aberdeen");
         cityNames.add("Mitchell");
         cityNames.add("Pierre");
-
-        //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/30444
-        if (jdbcJarName.startsWith("ojdbc8")) {
-            cities.removeByStateName("South Dakota"); //Cleanup Cities repository and skip the rest of these tests
-            return;
-        }
 
         Order<City> orderByCityName = supportsOrderByForUpdate ? Order.by(Sort.asc("name")) : Order.by();
         Iterator<CityId> ids = cities.deleteByStateName("South Dakota", Limit.of(3), orderByCityName).iterator();
@@ -2751,9 +2744,6 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Repository method that queries by the year component of an Instant attribute.
      */
-    @SkipIfSysProp({ DB_Postgres, //TODO Failing due to Eclipselink Issue on PostgreSQL: https://github.com/OpenLiberty/open-liberty/issues/29440
-                     DB_Oracle // //TODO Failing due to Eclipselink Issue on Oracle: https://github.com/OpenLiberty/open-liberty/issues/29440
-    })
     @Test
     public void testInstantExtractYear() {
 

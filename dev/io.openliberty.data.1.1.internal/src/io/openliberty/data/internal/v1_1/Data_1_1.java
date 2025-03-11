@@ -277,6 +277,12 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public boolean atLeast(int major, int minor) {
+        return major == 1 && minor <= 1;
+    }
+
+    @Override
+    @Trivial
     public Annotation getCountAnnotation(Method method) {
         return method.getAnnotation(Count.class);
     }

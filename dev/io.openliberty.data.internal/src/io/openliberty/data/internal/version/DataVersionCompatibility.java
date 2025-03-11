@@ -61,6 +61,17 @@ public interface DataVersionCompatibility {
                                              Annotation[] annos);
 
     /**
+     * Indicates whether the enabled version of Jakarta Data is at the requested
+     * level or higher.
+     *
+     * @param major major version of Jakarta Data specification. Must be >= 1.
+     * @param minor minor version of Jakarta Data specification. Must be >= 0.
+     * @return true if at the requested level of Jakarta Data or higher,
+     *         otherwise false.
+     */
+    boolean atLeast(int major, int minor);
+
+    /**
      * Obtains the Count annotation if present on the method. Otherwise null.
      *
      * @param method repository method. Must not be null.

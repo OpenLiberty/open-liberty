@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2018, 2023 IBM Corporation and others.
+    Copyright (c) 2018, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -78,6 +78,7 @@
     </dataSource>
     
     <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby/-" className="java.security.AllPermission"/>
     
     <jdbcDriver id="Derby1" libraryRef="DerbyLib"/>
         
