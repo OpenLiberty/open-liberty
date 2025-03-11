@@ -27,6 +27,8 @@ public class AgentDetection {
             Class.forName("io.opentelemetry.javaagent.bootstrap.AgentStarter");
             return true;
         } catch (Exception e) {
+            System.out.println("checkAgentDebug - Yasmin: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }

@@ -75,4 +75,5 @@ tested.features=mpTelemetry-2.0,\
 	io.openliberty.microprofile.telemetry.internal_fat.common,\
 	com.ibm.ws.logging.core,\
 	io.openliberty.org.testcontainers;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1
+	com.ibm.websphere.javaee.servlet.3.1,\
+  io.openliberty.microprofile.telemetry.internal.common
