@@ -1,0 +1,208 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+package io.openliberty.classloading.sharedclasses.fat;
+
+import static componenttest.topology.utils.FATServletClient.runTest;
+import static org.junit.Assert.fail;
+
+import java.util.Iterator;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.topology.impl.LibertyServer;
+import junit.framework.AssertionFailedError;
+
+@RunWith(Suite.class)
+@SuiteClasses({
+    AlwaysPassesTest.class,
+    SharedClassesWarTest.class,
+    SharedClassesServerLibTest.class,
+    SharedClassesEarTest.class
+})
+public class FATSuite {
+    static final String SHARED_CLASSES_WAR_TEST_SERVER = "sharedClassesWarTest";
+    static final String SHARED_CLASSES_EAR_TEST_SERVER = "sharedClassesEarTest";
+    static final String SHARED_CLASSES_LIB_TEST_SERVER = "sharedClassesLibTest";
+
+    static final String SHARED_CLASSES_LOOSE_WAR_TEST_SERVER = "sharedClassesLooseWarTest";
+    static final String SHARED_CLASSES_LOOSE_EAR_TEST_SERVER = "sharedClassesLooseEarTest";
+    static final String SHARED_CLASSES_LOOSE_LIB_TEST_SERVER = "sharedClassesLooseLibTest";
+
+    public static final String SHARED_CLASSES_WAR_PATH = "/TestSharedClassesWar";
+    public static final String SHARED_CLASSES_SERVER_LIB_PATH = "/TestSharedClassesServerLib";
+    public static final String SHARED_CLASSES_EAR_PATH = "/TestSharedClassesEar";
+
+    // ##### ARCHIVE NAMES #####
+    // WAR archive names
+    public static final String SHARED_CLASSES_WAR_NAME = SHARED_CLASSES_WAR_TEST_SERVER;
+
+    // EJB archive names
+    public static final String SHARED_CLASSES_EJB_NAME = "sharedClassesEJB";
+
+    // Library archive names
+    public static final String SHARED_CLASSES_WAR_LIB_NAME = "sharedClassesWarLib";
+    public static final String SHARED_CLASSES_EAR_LIB_NAME = "sharedClassesEarLib";
+    public static final String SHARED_CLASSES_SERVER_LIB_NAME = "sharedClassesServerLib";
+
+    // RAR inner jar archive names
+    public static final String SHARED_CLASSES_RESOURCE_ADAPTOR_NAME = "sharedClassesResourceAdaptor";
+
+    // RAR archive names
+    public static final String SHARED_CLASSES_RAR_NAME = "sharedClassesRar";
+
+    // Client archive names
+    public static final String SHARED_CLASSES_CLIENT_NAME = "sharedClassesClient";
+
+    // EAR archive names
+    public static final String SHARED_CLASSES_EAR_NAME = SHARED_CLASSES_EAR_TEST_SERVER;
+
+    // ##### SHRINK WRAP ARCHIVES #####
+    // WAR archives
+    static final WebArchive SHARED_CLASSES_WAR;
+
+    // EJB archives
+    static final JavaArchive SHARED_CLASSES_EJB;
+
+    // Library archives
+    static final JavaArchive SHARED_CLASSES_WAR_LIB;
+    static final JavaArchive SHARED_CLASSES_EAR_LIB;
+    static final JavaArchive SHARED_CLASSES_SERVER_LIB;
+
+    // RAR inner JAR archives
+    static final JavaArchive SHARED_CLASSES_RESOURCE_ADAPTOR;
+
+    // RAR archives
+    static final ResourceAdapterArchive SHARED_CLASSES_RAR;
+
+    // EAR archives
+    static final EnterpriseArchive SHARED_CLASSES_EAR;
+
+    static {
+        try {
+            SHARED_CLASSES_WAR_LIB = ShrinkHelper.buildJavaArchive(SHARED_CLASSES_WAR_LIB_NAME + ".jar", //
+                                                                   io.openliberty.classloading.sharedclasses.warlib.a.A.class.getPackage().getName(), //
+                                                                   io.openliberty.classloading.sharedclasses.warlib.b.B.class.getPackage().getName());
+            SHARED_CLASSES_EAR_LIB = ShrinkHelper.buildJavaArchive(SHARED_CLASSES_EAR_LIB_NAME + ".jar", //
+                                                                   io.openliberty.classloading.sharedclasses.earlib.a.A.class.getPackage().getName(), //
+                                                                   io.openliberty.classloading.sharedclasses.earlib.b.B.class.getPackage().getName());
+            SHARED_CLASSES_SERVER_LIB = ShrinkHelper.buildJavaArchive(SHARED_CLASSES_SERVER_LIB_NAME + ".jar", //
+                                                                    io.openliberty.classloading.sharedclasses.serverlib.a.A.class.getPackage().getName(), //
+                                                                    io.openliberty.classloading.sharedclasses.serverlib.b.B.class.getPackage().getName());
+
+            SHARED_CLASSES_EJB = ShrinkHelper.buildJavaArchive(SHARED_CLASSES_EJB_NAME + ".jar", //
+                                                               io.openliberty.classloading.sharedclasses.ejb.TestEJB.class.getPackage().getName(), //
+                                                               io.openliberty.classloading.sharedclasses.ejb.a.A.class.getPackage().getName(), //
+                                                               io.openliberty.classloading.sharedclasses.ejb.b.B.class.getPackage().getName());
+
+            SHARED_CLASSES_WAR = ShrinkHelper.buildDefaultApp(SHARED_CLASSES_WAR_NAME + ".war",
+                                                              io.openliberty.classloading.sharedclasses.war.TestSharedClassesWar.class.getPackage().getName(), //
+                                                              io.openliberty.classloading.sharedclasses.war.b.B.class.getPackage().getName(), //
+                                                              io.openliberty.classloading.sharedclasses.war.a.A.class.getPackage().getName())
+                            .addAsLibrary(SHARED_CLASSES_WAR_LIB);
+
+
+            SHARED_CLASSES_RESOURCE_ADAPTOR = ShrinkHelper.buildJavaArchive(SHARED_CLASSES_RESOURCE_ADAPTOR_NAME + ".jar", //
+                                                                            io.openliberty.classloading.sharedclasses.resourceadaptor.TestResourceAdapter.class.getPackage().getName(), //
+                                                                            io.openliberty.classloading.sharedclasses.resourceadaptor.a.A.class.getPackage().getName(), //
+                                                                            io.openliberty.classloading.sharedclasses.resourceadaptor.b.B.class.getPackage().getName());
+
+            SHARED_CLASSES_RAR = ShrinkHelper.buildDefaultRar(SHARED_CLASSES_RAR_NAME, //
+                                                               io.openliberty.classloading.sharedclasses.rar.a.A.class.getPackage().getName(), //
+                                                               io.openliberty.classloading.sharedclasses.rar.b.B.class.getPackage().getName())
+                            .addAsLibrary(SHARED_CLASSES_RESOURCE_ADAPTOR);
+
+
+            String sharedClassesEarFileName = SHARED_CLASSES_EAR_NAME + ".ear";
+            SHARED_CLASSES_EAR = ShrinkWrap.create(EnterpriseArchive.class, sharedClassesEarFileName)
+                            .addAsModule(SHARED_CLASSES_WAR)
+                            .addAsModule(SHARED_CLASSES_EJB)
+                            .addAsLibrary(SHARED_CLASSES_EAR_LIB)
+                            .addAsModule(SHARED_CLASSES_RAR);
+        } catch (Exception e) {
+            throw (AssertionFailedError) new AssertionFailedError().initCause(e);
+        }
+    }
+
+    enum TestMethod {
+        testWarClassesA(io.openliberty.classloading.sharedclasses.war.a.A.class),
+        testWarClassesB(io.openliberty.classloading.sharedclasses.war.b.B.class),
+        testWarLibA(io.openliberty.classloading.sharedclasses.warlib.a.A.class),
+        testWarLibB(io.openliberty.classloading.sharedclasses.warlib.b.B.class),
+        testServerLibClassesA(io.openliberty.classloading.sharedclasses.serverlib.a.A.class),
+        testServerLibClassesB(io.openliberty.classloading.sharedclasses.serverlib.b.B.class),
+        testEjbClassesA(io.openliberty.classloading.sharedclasses.ejb.a.A.class),
+        testEjbClassesB(io.openliberty.classloading.sharedclasses.ejb.b.B.class),
+        testEarLibA(io.openliberty.classloading.sharedclasses.earlib.a.A.class),
+        testEarLibB(io.openliberty.classloading.sharedclasses.earlib.b.B.class),
+        testResoureAdaptorClassesA(io.openliberty.classloading.sharedclasses.resourceadaptor.a.A.class),
+        testResoureAdaptorClassesB(io.openliberty.classloading.sharedclasses.resourceadaptor.b.B.class),
+        testRarClassesA(io.openliberty.classloading.sharedclasses.rar.a.A.class),
+        testRarClassesB(io.openliberty.classloading.sharedclasses.rar.b.B.class);
+
+
+        private final String className;
+        TestMethod(Class<?> c) {
+            this.className = c.getName();
+        }
+        String className() {
+            return className;
+        }
+    }
+
+    static void checkSharedClassTrace(LibertyServer server, TestMethod testMethod, String expectedTraceMsg) throws Exception {
+        Iterator<String> traceLines = server.findStringsInLogsAndTrace(".*").iterator();
+        while (traceLines.hasNext()) {
+            String line = traceLines.next();
+            if (line.contains(expectedTraceMsg)) {
+                String storedClass = traceLines.next();
+                if (storedClass.contains(testMethod.className())) {
+                    return;
+                }
+            }
+        }
+        fail("Did not find the expected trace message '" + expectedTraceMsg + "' for class: " + testMethod.className());
+    }
+
+    static void runSharedClassTest(LibertyServer server, String testServletPath, String testMethodName) throws Exception {
+        TestMethod testMethod = TestMethod.valueOf(testMethodName);
+        runTest(server, SHARED_CLASSES_WAR_NAME + testServletPath, testMethod.name());
+        checkSharedClassTrace(server, testMethod, "Called shared class cache to store class");
+        server.stopServer(false);
+        server.startServer(false);
+        runTest(server, SHARED_CLASSES_WAR_NAME + testServletPath, testMethod.name());
+        checkSharedClassTrace(server, testMethod, "Found class in shared class cache");
+    }
+
+    static void deleteSharedClassCache(LibertyServer server) throws Exception {
+        RemoteFile classCache = null;
+        try {
+            classCache = server.getFileFromLibertyInstallRoot("usr/servers/.classCache");
+        } catch (Exception e) {
+            // didn't find an existing cache; just return
+            Log.info(FATSuite.class, "deleteSharedClassCache", "No .classCache found to delete.");
+            return;
+        }
+        Log.info(FATSuite.class, "deleteSharedClassCache", "deleting " + classCache.getAbsolutePath());
+        classCache.delete();
+
+    }
+}

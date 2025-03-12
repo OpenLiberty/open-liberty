@@ -1,0 +1,12 @@
+<server>
+    <featureManager>
+        <feature>webProfile-8.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webApplication location="sharedClassesWarTest.war" />
+
+</server>
+
