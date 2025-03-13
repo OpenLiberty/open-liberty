@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,8 @@ package com.ibm.ws.security.token.ltpa.internal;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Properties;
 
 import com.ibm.websphere.ras.Tr;
@@ -61,8 +63,19 @@ public class LTPAKeyFileCreatorImpl extends LTPAKeyFileUtilityImpl implements LT
     /** {@inheritDoc} */
     @Override
     public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes) throws Exception {
+
+        Instant start = Instant.now();
         Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, getRealmName());
-        addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
+        Tr.debug(tc, "generateLTPAKeys completed in {} seconds", Duration.between(start, Instant.now()).getSeconds());
+
+        start = Instant.now();
+        OutputStream os = getOutputStream(locService, keyFile);
+        Tr.debug(tc, "getOutputStream completed in {} seconds", Duration.between(start, Instant.now()).getSeconds());
+
+        start = Instant.now();
+        addLTPAKeysToFile(os, ltpaProps);
+        Tr.debug(tc, "addLTPAKeysToFile completed in {} seconds", Duration.between(start, Instant.now()).getSeconds());
+
         return ltpaProps;
     }
 
