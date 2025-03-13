@@ -1,0 +1,73 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src, \
+	test-applications/DelayedHealthCheckApp/src, \
+	test-applications/DelayedHealthCheckAppFast/src, \
+	test-applications/FileHealthCheckApp/src
+
+fat.project: true
+
+tested.features: \
+  servlet-4.0,\
+  cdi-2.0,\
+  mpConfig-2.0,\
+  appSecurity-3.0,\
+  el-3.0,\
+  mpHealth-4.0,\
+  servlet-5.0,\
+  cdi-3.0,\
+  mpConfig-3.0,\
+  appSecurity-4.0,\
+  expressionlanguage-4.0,\
+  expressionlanguage-5.0,\
+  appSecurity-5.0,\
+  jsonp-2.1,\
+  jsonp-1.0,\
+  cdi-4.0,\
+  servlet-6.0,\
+  mpHealth-3.0,\
+  mpHealth-3.1,\
+  mpConfig-1.4,\
+  mpConfig-1.3,\
+  mpConfig-3.1,\
+  expressionlanguage-6.0,\
+  appSecurity-6.0,\
+  cdi-4.1,\
+  cdi-1.2,\
+  servlet-6.1,\
+  servlet-3.1
+  
+
+-buildpath: \
+	com.ibm.ws.org.apache.commons.compress;version=latest, \
+	com.ibm.ws.org.apache.commons.io;version=latest, \
+	org.apache.johnzon:johnzon-core;version=1.1.0, \
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
+	com.ibm.websphere.javaee.cdi.2.0;version=latest, \
+	io.openliberty.org.eclipse.microprofile.health.3.1;version=latest, \
+    com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+    com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+	org.apache.kafka:kafka-clients;version=3.5.1,\
+	io.openliberty.org.testcontainers;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	org.testng:testng;version=7.5.1,\
+	com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest,\
+	com.ibm.ws.microprofile.reactive.messaging.kafka;version=latest,\
+	com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest,\
+	io.openliberty.microprofile.health.internal_fat.common
+	
