@@ -238,14 +238,25 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
-                // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
-                ctx.pipeline().addBefore("chunkLoggingHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-                ctx.pipeline().addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, "objectAggregator",
-                                        new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? 8190 : httpConfig.getMessageSizeLimit()));
-                ctx.pipeline().remove(HttpServerUpgradeHandler.class);
-                ctx.fireChannelRead(ReferenceCountUtil.retain(msg, 1));
-                // Remove unused handlers
-                ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
+                if ("HTTP2".equals(ctx.pipeline().channel().attr(NettyHttpConstants.PROTOCOL).get())) {
+
+                    ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
+                    return;
+                }
+                // Turn on half closure for H1
+                ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
+
+
+
+                pipeline.addBefore("chunkWriteHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                //TODO: this is a very large number, check best practice
+                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
+                                  new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
+                pipeline.addAfter(HTTP_AGGREGATOR_HANDLER_NAME, HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler());
+                ctx.pipeline().remove(this);
+
+                ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
+
             }
 
             @Override

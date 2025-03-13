@@ -508,11 +508,28 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 	}
 
 	@Override
-    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+    public Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
         return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
     
+    @Override
+    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, LocalAddress localAddr,
+            ChannelFutureListener bindListener) throws NettyException {
+        return LocalUtils.start(this, bootstrap, localAddr, bindListener);
+    }
+
+    @Override
+    public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, LocalAddress localAddr,
+            ChannelFutureListener bindListener) throws NettyException {
+        return LocalUtils.start(this, bootstrap, localAddr, bindListener);
+    }
+
+    @Override
+    public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, LocalAddress localAddr,
+            ChannelFutureListener bindListener) throws NettyException {
+        return LocalUtils.start(this, bootstrap, localAddr, bindListener);
+    }
 
     @Override
     public Channel start(BootstrapExtended bootstrap, String inetHost, int inetPort,
@@ -530,8 +547,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     	}
     }
 
-
-    
     
     @Override
     public ChannelFuture stop(Channel channel) {
@@ -664,21 +679,4 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         return EndPointMgrImpl.getRef();
     }
     
-    @Override
-    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, LocalAddress localAddr,
-            ChannelFutureListener bindListener) throws NettyException {
-        return LocalUtils.start(this, bootstrap, localAddr, bindListener);
-    }
-
-    @Override
-    public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, LocalAddress localAddr,
-            ChannelFutureListener bindListener) throws NettyException {
-        return LocalUtils.start(this, bootstrap, localAddr, bindListener);
-    }
-
-    @Override
-    public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, LocalAddress localAddr,
-            ChannelFutureListener bindListener) throws NettyException {
-        return LocalUtils.start(this, bootstrap, localAddr, bindListener);
-    }
 }
