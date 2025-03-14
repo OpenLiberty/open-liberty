@@ -14,12 +14,8 @@ import static io.openliberty.classloading.sharedclasses.fat.FATSuite.SHARED_CLAS
 import static io.openliberty.classloading.sharedclasses.fat.FATSuite.SHARED_CLASSES_SERVER_LIB_PATH;
 import static io.openliberty.classloading.sharedclasses.fat.FATSuite.SHARED_CLASSES_WAR;
 import static io.openliberty.classloading.sharedclasses.fat.FATSuite.SHARED_CLASSES_WAR_NAME;
-import static io.openliberty.classloading.sharedclasses.fat.FATSuite.deleteSharedClassCache;
-import static io.openliberty.classloading.sharedclasses.fat.FATSuite.runSharedClassTest;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,6 +28,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.classloading.sharedclasses.fat.SharedClassTestRule.ServerMode;
 import io.openliberty.classloading.sharedclasses.war.TestSharedClassesServerLib;
 
 /**
@@ -46,20 +43,25 @@ public class SharedClassesServerLibTest extends FATServletClient {
     @TestServlet(servlet = TestSharedClassesServerLib.class, contextRoot = SHARED_CLASSES_WAR_NAME)
     public static LibertyServer server;
 
-    @BeforeClass
-    public static void setupTestApp() throws Exception {
-        ShrinkHelper.exportAppToServer(server, SHARED_CLASSES_WAR, DeployOptions.SERVER_ONLY);
-        ShrinkHelper.exportToServer(server, "libs", SHARED_CLASSES_SERVER_LIB, DeployOptions.OVERWRITE);
-    }
+    @ClassRule
+    public static SharedClassTestRule sharedClassTestRule = new SharedClassTestRule()
+                        .setConsoleLogName(SharedClassesServerLibTest.class.getSimpleName())
+                        .setServerSetup(SharedClassesServerLibTest::setupTestApp);
 
-    @Before
-    public void startTestServer() throws Exception {
-        deleteSharedClassCache(server);
-        server.startServer(getTestMethodSimpleName() + ".log");
+    public static LibertyServer setupTestApp(ServerMode mode) throws Exception {
+        if (mode == ServerMode.storeInCache) {
+            ShrinkHelper.exportAppToServer(server, SHARED_CLASSES_WAR, DeployOptions.SERVER_ONLY);
+            ShrinkHelper.exportToServer(server, "libs", SHARED_CLASSES_SERVER_LIB, DeployOptions.OVERWRITE);
+        }
+        if (mode == ServerMode.modifyAppClasses) {
+            Thread.sleep(5000);
+            ShrinkHelper.exportToServer(server, "libs", SHARED_CLASSES_SERVER_LIB, DeployOptions.SERVER_ONLY, DeployOptions.OVERWRITE);
+        }
+        return server;
     }
 
     private void runTest() throws Exception {
-        runSharedClassTest(server, SHARED_CLASSES_SERVER_LIB_PATH, getTestMethodSimpleName());
+        sharedClassTestRule.runSharedClassTest(SHARED_CLASSES_SERVER_LIB_PATH, getTestMethodSimpleName());
     }
 
     @Test
@@ -70,10 +72,5 @@ public class SharedClassesServerLibTest extends FATServletClient {
     @Test
     public void testServerLibClassesB() throws Exception {
         runTest();
-    }
-
-    @After
-    public void stopServer() throws Exception {
-        server.stopServer();
     }
 }

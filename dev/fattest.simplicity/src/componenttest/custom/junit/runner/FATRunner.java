@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.junit.ClassRule;
 import org.junit.ComparisonFailure;
@@ -98,6 +99,17 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
     private static final Set<String> classesUsingFATRunner = new HashSet<String>();
 
+    private static Function<String, String> testNameModifier;
+
+    /**
+     * A function that modifies the test display name being run by the FatRunner
+     *
+     * @param f
+     */
+    public static void setTestNameModifier(Function<String, String> f) {
+        testNameModifier = f;
+    }
+
     static {
         Log.info(c, "<clinit>", "Is this FAT running locally?  fat.test.localrun=" + FAT_TEST_LOCALRUN);
         Log.info(c, "<clinit>", "Is this FAT running on AWS network? " + AWS_NETWORK);
@@ -119,6 +131,10 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         }
         if (CheckpointRule.isActive()) {
             testName = testName + "_" + CheckpointRule.ID;
+        }
+        Function<String, String> current = testNameModifier;
+        if (current != null) {
+            testName = current.apply(testName);
         }
         return testName;
     }
