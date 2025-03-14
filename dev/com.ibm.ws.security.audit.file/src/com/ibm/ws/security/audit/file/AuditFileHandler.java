@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -211,6 +211,15 @@ public class AuditFileHandler implements SynchronousHandler {
     private static Object syncSeqNum = new Object();
 
     private String bundleLocation;
+
+    /**
+     * Constant for the size of the new line characters for an audit record.
+     * Since each audit record takes up 3 lines (opening tag, record, closing tag)
+     * and the new line sequence can be 1 or 2 chars depending on the OS,
+     * let's set this constant to 3 lines * 2 bytes = 6 bytes to account for the longest case.
+     * Using 6 also saves us an additional check for the OS / line separator.
+     */
+    private static final int AUDIT_RECORD_NEW_LINES_SIZE = 6;
 
     @Activate
     protected void activate(ComponentContext cc) throws KeyStoreException, AuditEncryptionException, AuditSigningException {
@@ -995,7 +1004,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
+                                            if ((currentFileSize + total_to_add_length + AUDIT_RECORD_NEW_LINES_SIZE) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1030,7 +1039,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
+                                            if ((currentFileSize + total_to_add_length + AUDIT_RECORD_NEW_LINES_SIZE) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1087,7 +1096,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                         if (tc.isDebugEnabled())
                                             Tr.debug(tc, "maxFileSize: " + max);
 
-                                        if ((currentFileSize + total_to_add_length + 2) >= max) {
+                                        if ((currentFileSize + total_to_add_length + AUDIT_RECORD_NEW_LINES_SIZE) >= max) {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "adding padding to roll into new log");
                                             byte[] padding = new byte[(int) (max - currentFileSize)];

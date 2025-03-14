@@ -222,12 +222,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
                     fileUpdateIntevalMilliseconds = Integer.parseInt(configValue) * 1000;
                 }
             } else {
-                //TODO: Create warning message with ID
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Invalid value provided for the file update interval"
-                                 + "The value provided must consist of a number followed by an optional time unit of 'ms' or 's'."
-                                 + "Defaulting to 10 seconds.");
-                }
+                Tr.warning(tc, "file.update.interval.config.invalid.CWMMH01010W", configValue);
                 //Default of 10 seconds.
                 fileUpdateIntevalMilliseconds = 10000;
             }

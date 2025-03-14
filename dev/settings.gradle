@@ -202,17 +202,23 @@ if (javaVersion < 21) {
   }
 }
 
-// Require cnf:initialize on clean workspace.
+// Require cnf:initialize on clean workspace for tasks that need it.
 File bndPluginsClassesDir = file(bnd_cnf+'/bndplugins/classes')
-boolean initialize = false
-Set<String> projectNames = new LinkedHashSet<>()
+boolean requiresInitialize = false
 for (Iterator<String> iter = startParameter.taskNames.iterator(); iter.hasNext();) {
   String taskName = iter.next()
-  if (taskName == 'cnf:initialize') {
-    initialize = true
+  if (taskName.contains('jar') ||
+      taskName.contains('assemble') ||
+      taskName.contains('test') ||
+      taskName.contains('build') ||
+      taskName.contains('buildfat') ||
+      taskName.contains('buildandrun') ||
+      taskName.contains('release') ||
+      taskName.contains('releaseNeeded')) {
+    requiresInitialize = true
   }
 }
-if (!initialize && !bndPluginsClassesDir.exists()) {
+if (requiresInitialize && !bndPluginsClassesDir.exists()) {
   print "ERROR: Building this repository requires bnd plugins to be compiled before building projects.  Please follow these steps:\n" +
       "  1) Run the cnf project's initialize task with `./gradlew cnf:initialize`\n" +
       "  2) Re-run the Gradle task you intend to build.\n";

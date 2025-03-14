@@ -96,6 +96,22 @@ public abstract class Registry {
      */
     public abstract String getMirrorRepository(DockerImageName original) throws IllegalArgumentException;
 
+    /**
+     * Validates the name of the registry to ensure it was configured correctly.
+     *
+     * @param  registry the name of the registry that has been found
+     * @return          true if valid, false otherwise
+     */
+    public abstract boolean validRegistryName(String registry);
+
+    /**
+     * Validates the docker image name has a registry, and that the registry name is valid.
+     *
+     * @param  image the image name
+     * @return       true iff the docker image name has a registry and that registry is valid, false otherwise.
+     */
+    public abstract boolean validDockerImageName(DockerImageName image);
+
     // SETUP METHODS
 
     /**

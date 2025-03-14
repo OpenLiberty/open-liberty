@@ -481,6 +481,23 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify MappingException is raised if attempting to supply an empty string
+     * value instead of a valid entity attribute name to the By annotation.
+     */
+    @Test
+    public void testEmptyBy() {
+        try {
+            List<Voter> found = voters.inPrecinct(2);
+            fail("Queried on an empty string attribute name and found " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1024E:") ||
+                !x.getMessage().contains("inPrecinct"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify IllegalArgumentException is raised if you attempt to delete an
      * empty list of entities.
      */
@@ -498,6 +515,23 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify MappingException is raised if the entity attribute name is omitted
+     * from a findBy comparison of a repository method name.
+     */
+    @Test
+    public void testEmptyFindComparison() {
+        try {
+            List<Voter> found = voters.findByIgnoreCaseContains("Civic Center Dr");
+            fail("Ordered by an empty string attribute name and returned " + found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1011E:") ||
+                !x.getMessage().contains("findByIgnoreCaseContains"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify IllegalArgumentException is raised if you attempt to delete an
      * empty array of entities.
      */
@@ -510,6 +544,57 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1092E:") ||
                 !x.getMessage().contains("register"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify MappingException is raised if attempting to supply an empty string
+     * value instead of a valid entity attribute name to the OrderBy annotation.
+     */
+    @Test
+    public void testEmptyOrderByAnno() {
+        try {
+            List<Voter> found = voters.inTownship("Haverhill");
+            fail("Ordered by an empty string attribute name and returned " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1024E:") ||
+                !x.getMessage().contains("inTownship"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify MappingException is raised if the entity attribute name is omitted
+     * from the OrderBy of a repository method name.
+     */
+    @Test
+    public void testEmptyOrderByInMethodName() {
+        try {
+            List<Voter> found = voters.findByAddressContainsOrderByAsc("Broadway Ave");
+            fail("Ordered by an empty string attribute name and returned " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1024E:") ||
+                !x.getMessage().contains("findByAddressContainsOrderByAsc"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify MappingException is raised if attempting to supply an empty string
+     * value instead of a valid named parameter name to the Param annotation.
+     */
+    @Test
+    public void testEmptyParam() {
+        try {
+            List<Voter> found = voters.inWard(3);
+            fail("Queried with an empty string named parameter and found " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1104E:") ||
+                !x.getMessage().contains("inWard"))
                 throw x;
         }
     }
@@ -663,6 +748,94 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Find-and-delete repository operations that return invalid types that are neither the entity class,
+     * record class, or id class.
+     */
+    @Test
+    public void testFindAndDeleteReturnsInvalidTypes() {
+
+        // test data includes an entity with this address:
+        final String address = "4051 E River Rd NE, Rochester, MN 55906";
+
+        Sort<Voter> sort = Sort.asc("ssn");
+
+        try {
+            char[] deleted = voters.deleteReturnCharByAddress(address,
+                                                              Limit.of(3),
+                                                              sort);
+            fail("Deleted with return type of char[]: " + Arrays.toString(deleted) +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            List<String> deleted = voters.deleteReturnStringByAddress(address,
+                                                                      Limit.of(4),
+                                                                      sort);
+            fail("Deleted with return type of List of String: " + deleted +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Page<Boolean> deleted = voters.deleteReturnBooleanByAddress(address,
+                                                                        Limit.of(5),
+                                                                        sort);
+            fail("Deleted with return type of Page of Boolean: " + deleted +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Find-and-delete repository operations that return invalid types that are neither the entity class,
+     * record class, or id class.
+     * In this case the table is empty and no results will have been deleted,
+     * we should still throw a mapping exception.
+     */
+    @Test
+    public void testFindAndDeleteReturnsInvalidTypesEmpty() {
+
+        // test data does not include any entities with this address:
+        final String address = "2800 37th St NW, Rochester, MN 55901";
+
+        Sort<Voter> sort = Sort.asc("ssn");
+
+        try {
+            char[] deleted = voters.deleteReturnCharByAddress(address,
+                                                              Limit.of(3),
+                                                              sort);
+            fail("Deleted with return type of char[]: " + Arrays.toString(deleted) +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            List<String> deleted = voters.deleteReturnStringByAddress(address,
+                                                                      Limit.of(4),
+                                                                      sort);
+            fail("Deleted with return type of List of String: " + deleted +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Page<Boolean> deleted = voters.deleteReturnBooleanByAddress(address,
+                                                                        Limit.of(5),
+                                                                        sort);
+            fail("Deleted with return type of Page of Boolean: " + deleted +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
      * Verify an error is raised for a repository insert method with a parameter
      * that can insert multiple entities and a return type that can only return
      * one inserted entity.
@@ -785,6 +958,49 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1018E") ||
                 !x.getMessage().contains("occupying"))
+                throw x;
+        }
+    }
+
+    /**
+     * A repository might attempt to define a method that returns a CursoredPage
+     * without specifying a PageRequest and attempt to use a Limit parameter
+     * instead. This is not supported by the spec.
+     * Expect UnsupportedOperationException.
+     */
+    @Test
+    public void testLacksPageRequestUseLimitInstead() {
+        CursoredPage<Voter> page;
+        try {
+            page = voters.findBySsnBetweenAndAddressNotNull(150000000,
+                                                            450000000,
+                                                            Limit.of(5));
+            fail("Able to obtain CursoredPage without a PageRequest: " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1041E") ||
+                !x.getMessage().contains("findBySsnBetweenAndAddressNotNull"))
+                throw x;
+        }
+    }
+
+    /**
+     * A repository might attempt to define a method that returns a CursoredPage
+     * without specifying a PageRequest and attempt to use a Sort parameter instead.
+     * This is not supported by the spec. Expect UnsupportedOperationException.
+     */
+    @Test
+    public void testLacksPageRequestUseSortInstead() {
+        CursoredPage<Voter> page;
+        try {
+            page = voters.findBySsnBetweenAndBirthdayNotNull(300000000, //
+                                                             400000000, //
+                                                             Sort.asc(ID));
+            fail("Able to obtain CursoredPage without a PageRequest: " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1041E") ||
+                !x.getMessage().contains("findBySsnBetweenAndBirthdayNotNull"))
                 throw x;
         }
     }
@@ -1213,6 +1429,75 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() != null &&
                 x.getMessage().startsWith("CWWKD1010E") &&
                 x.getMessage().contains("sortedByZipCode"))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Exceed the maximum offset allowed by JPA.
+     */
+    @Test
+    public void testOverflow() {
+        Limit range = Limit.range(Integer.MAX_VALUE + 5L, Integer.MAX_VALUE + 10L);
+        try {
+            List<Voter> found = voters.findBySsnLessThanEqualOrderBySsnDesc(999999999,
+                                                                            range);
+            fail("Expected an error because starting position of range exceeds" +
+                 " Integer.MAX_VALUE. Found: " + found);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1073E") &&
+                x.getMessage().contains("Limit[maxResults=6, startAt=2147483652]"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            Stream<Voter> found = voters.findFirst2147483648BySsnGreaterThan(1);
+            fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " +
+                 found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1028E") &&
+                x.getMessage().contains("2147483648"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            PageRequest pageReqWithInvalidOffset = PageRequest
+                            .ofPage(33)
+                            .size(Integer.MAX_VALUE / 30);
+            CursoredPage<Voter> found = voters.selectByBirthday(LocalDate.of(2000, 3, 13),
+                                                                pageReqWithInvalidOffset,
+                                                                Order.by(Sort.asc("ssn")));
+            fail("Expected an error because offset for pagination exceeds" +
+                 " Integer.MAX_VALUE. Found: " + found);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1043E") &&
+                x.getMessage().contains("page=33"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            PageRequest pageReqWithInvalidOffset = PageRequest
+                            .ofPage(22)
+                            .size(Integer.MAX_VALUE / 20);
+            Page<Voter> found = voters.selectAll(pageReqWithInvalidOffset,
+                                                 Sort.desc("ssn"));
+            fail("Expected an error because offset for pagination exceeds" +
+                 " Integer.MAX_VALUE. Found: " + found);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1043E") &&
+                x.getMessage().contains("page=22"))
                 ; // expected
             else
                 throw x;

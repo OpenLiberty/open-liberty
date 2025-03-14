@@ -41,6 +41,8 @@ public class ArtifactoryRegistry extends Registry {
 
     private static final String DEFAULT_REGISTRY = ""; //Blank registry is the default setting
 
+    private static final String REGISTRY_REGEX = ".*artifactory.swg-devops.com";
+
     private static final HashMap<String, String> REGISTRY_MIRRORS = new HashMap<>();
     static {
         REGISTRY_MIRRORS.put("docker.io", "wasliberty-docker-remote"); //Only for verified images
@@ -48,7 +50,7 @@ public class ArtifactoryRegistry extends Registry {
         REGISTRY_MIRRORS.put("icr.io", "wasliberty-icr-docker-remote");
         REGISTRY_MIRRORS.put("mcr.microsoft.com", "wasliberty-mcr-docker-remote");
         REGISTRY_MIRRORS.put("public.ecr.aws", "wasliberty-aws-docker-remote");
-//        MIRRORS.put("quay.io", "wasliberty-quay-docker-remote"); TODO
+        REGISTRY_MIRRORS.put("quay.io", "wasliberty-quay-docker-remote");
     }
 
     private static File configDir = new File(System.getProperty("user.home"), ".docker");
@@ -73,7 +75,7 @@ public class ArtifactoryRegistry extends Registry {
         // Priority 0: If forced external do not attempt to initialize Artifactory registry
         if (Boolean.getBoolean(FORCE_EXTERNAL)) {
             String message = "System property [ " + FORCE_EXTERNAL + " ] was set to true, "
-                             + "make Artifactory registry unavailable.";
+                             + "force Artifactory registry to be unavailable.";
             registry = DEFAULT_REGISTRY;
             isArtifactoryAvailable = false;
             setupException = new IllegalStateException(message);
@@ -87,6 +89,12 @@ public class ArtifactoryRegistry extends Registry {
             registry = DEFAULT_REGISTRY;
             isArtifactoryAvailable = false;
             setupException = t;
+            return;
+        }
+
+        if (!validRegistryName(registry)) {
+            isArtifactoryAvailable = false;
+            setupException = new IllegalStateException("The configured Artifactory registry was invalid and should have matched the regex: " + REGISTRY_REGEX);
             return;
         }
 
@@ -201,6 +209,20 @@ public class ArtifactoryRegistry extends Registry {
         } else {
             throw new IllegalArgumentException("The Artifactory registry does not have a mirror for the registry " + original.getRegistry());
         }
+    }
+
+    @Override
+    public boolean validRegistryName(String registry) {
+        return registry.matches(REGISTRY_REGEX);
+    }
+
+    @Override
+    public boolean validDockerImageName(DockerImageName image) {
+        if (image.getRegistry() == null || image.getRegistry().isEmpty()) {
+            return false;
+        }
+
+        return validRegistryName(image.getRegistry());
     }
 
     /**

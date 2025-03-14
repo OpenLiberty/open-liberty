@@ -26,5 +26,5 @@ RUN yum -y install krb5-workstation krb5-libs
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-//TODO This currently does not work need to do more debugging to figure out
-//why the database cannot be restarted after enabling kerberos
+# TODO This currently does not work need to do more debugging to figure out
+# why the database cannot be restarted after enabling kerberos

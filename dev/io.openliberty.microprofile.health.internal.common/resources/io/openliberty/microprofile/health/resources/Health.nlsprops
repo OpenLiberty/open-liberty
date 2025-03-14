@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 # Messages used by Health Impl -  range is 0000-0999
 # The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
 # The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+# The 0100-0149 range is reserved for messages that are issued by the file-based health check mechanism
 #-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,3 +56,29 @@ readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=This w
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: The startup health check reported a DOWN overall status because the following applications are not started yet: {0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=The startup health check reported a DOWN overall status because the specified applications are not started yet and are not ready to process requests.
 startup.healthcheck.applications.not.started.down.CWMMH0054W.useraction=This warning is a record of the DOWN status and no user action is needed. Wait until all the applications are started. After all the applications are started, the user-defined health checks are processed.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# File-based health check messages
+#-----------------------------------------------------------------------------------------------------------------------------
+file.healthcheck.health.directory.create.fail.CWMMH0100W=CWMMH0100W: Unable to create the /health directory at the following path [{0}]. The file-based health check function will be disabled.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.explanation=The runtime was unable to create the required /health directory for the file-based health checks to function properly.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.useraction=The user must identify the root cause preventing the runtime from creating the /health directory.
+
+
+file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Unable to write to the {0} directory. The file-based health check function will be disabled.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=The runtime requires write permissions to the /health directory to create the "live", "ready" and "started" files for the file-based health checks to function properly.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=The user must identify the root cause of the permission issue.
+
+
+file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: The runtime has detected the presence of the following directory [{0}]. A file with the same name is required for the file-based health check function at this path. The file-based health check function will be disabled.
+file.healthcheck.file.name.conflict.CWMMH0105W.explanation=The file-based health checks require the creation and use of the files "live", "ready" and "started" in the /health directory. An existing directory with one of those names is already present in the /health directory which prevents the required files from being created.
+file.healthcheck.file.name.conflict.CWMMH0105W.useraction=The directory is not created by this runtime and may contain contents that are important to the user. Please either remove or relocate the directory.
+
+file.healthcheck.file.delete.fail.CWMMH0106W=CWMMH0106W: Unable to delete existing file at [{0}]. The file-based health check function will be disabled.
+file.healthcheck.file.delete.fail.CWMMH0106W.explanation=The file-based health checks require the creation and use of the files "live", "ready" and "started" in the /health directory. For the file-based health checks to function correctly, these files must not exist when the runtime starts. The runtime has attempted to delete the existing file was unable to.
+file.healthcheck.file.delete.fail.CWMMH0106W.useraction=The user must identify the root cause preventing the runtime from deleting the files.
+
+file.update.interval.config.invalid.CWMMH01010W=CWMMH01010W: An invalid value [{0}] was provided for the file update interval. The value provided must consist of a number followed by an optional time unit of "ms" for milliseconds or "s" for seconds. If no time unit is specified, the value is in seconds by default. The runtime will default to 10 seconds.
+file.update.interval.config.invalid.CWMMH01010W.explanation=The file update interval configuration only accepts a number followed by an optional time unit of "ms" for milliseconds or "s" for seconds. If no time unit is specified, the value is in seconds by default.
+file.update.interval.config.invalid.CWMMH01010W.useraction=Input a correct value for the file update interval configuration.

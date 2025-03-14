@@ -1864,74 +1864,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Find-and-delete repository operations that return invalid types that are neither the entity class,
-     * record class, or id class.
-     */
-    @Test
-    public void testFindAndDeleteReturnsInvalidTypes() {
-        packages.deleteAll();
-
-        packages.save(new Package(60006, 16.0f, 61.1f, 6.0f, "testFindAndDeleteReturnsInvalidTypes#60006"));
-
-        Sort<Package> sort = Sort.asc("id");
-
-        try {
-            long[] deleted = packages.delete3(Limit.of(3), sort);
-            fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-
-        try {
-            List<String> deleted = packages.delete4(Limit.of(4), sort);
-            fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-
-        try {
-            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
-            fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-    }
-
-    /**
-     * Find-and-delete repository operations that return invalid types that are neither the entity class,
-     * record class, or id class.
-     * In this case the table is empty and no results will have been deleted,
-     * we should still throw a mapping exception.
-     */
-    @Test
-    public void testFindAndDeleteReturnsInvalidTypesEmpty() {
-        packages.deleteAll();
-
-        Sort<Package> sort = Sort.asc("id");
-
-        try {
-            long[] deleted = packages.delete3(Limit.of(3), sort);
-            fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-
-        try {
-            List<String> deleted = packages.delete4(Limit.of(4), sort);
-            fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-
-        try {
-            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
-            fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-    }
-
-    /**
      * Find-and-delete repository operations that return one or more objects, corresponding to removed entities.
      */
     @Test
@@ -3580,41 +3512,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * A repository might attempt to define a method that returns a CursoredPage
-     * without specifying a PageRequest and attempt to use a Limit parameter
-     * instead. This is not supported by the spec.
-     * Expect UnsupportedOperationException.
-     */
-    @Test
-    public void testLacksPageRequestUseLimitInstead() {
-        CursoredPage<Prime> page;
-        try {
-            page = primes.findByNumberIdBetween(15L, 45L, Limit.of(5));
-            fail("Able to obtain CursoredPage without a PageRequest: " + page);
-        } catch (UnsupportedOperationException x) {
-            // pass
-        }
-    }
-
-    /**
-     * A repository might attempt to define a method that returns a CursoredPage
-     * without specifying a PageRequest and attempt to use a Sort parameter instead.
-     * This is not supported by the spec. Expect UnsupportedOperationException.
-     */
-    @Test
-    public void testLacksPageRequestUseSortInstead() {
-        CursoredPage<Prime> page;
-        try {
-            page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, //
-                                                                      40L, //
-                                                                      Sort.asc(ID));
-            fail("Able to obtain CursoredPage without a PageRequest: " + page);
-        } catch (UnsupportedOperationException x) {
-            // pass
-        }
-    }
-
-    /**
      * Use a repository method that performs a JDQL query using LEFT function
      * to obtain the beginning of a String value.
      */
@@ -4010,41 +3907,6 @@ public class DataTestServlet extends FATServlet {
     public void testOrderedSet() {
         assertIterableEquals(List.of(47L, 43L, 41L, 37L, 31L, 29L, 23L),
                              primes.findNumberIdByNumberIdBetween(20, 49));
-    }
-
-    /**
-     * Exceed the maximum offset allowed by JPA.
-     */
-    @Test
-    public void testOverflow() {
-        Limit range = Limit.range(Integer.MAX_VALUE + 5L, Integer.MAX_VALUE + 10L);
-        try {
-            List<Prime> found = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(9L, range);
-            fail("Expected an error because starting position of range exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (IllegalArgumentException x) {
-            // expected
-        }
-
-        try {
-            Stream<Prime> found = primes.findFirst2147483648ByNumberIdGreaterThan(1L);
-            fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (UnsupportedOperationException x) {
-            // expected
-        }
-
-        try {
-            CursoredPage<Prime> found = primes.findByNumberIdBetween(5L, 15L, PageRequest.ofPage(33).size(Integer.MAX_VALUE / 30));
-            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (IllegalArgumentException x) {
-            // expected
-        }
-
-        try {
-            Page<Prime> found = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(52L, PageRequest.ofPage(22).size(Integer.MAX_VALUE / 20));
-            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (IllegalArgumentException x) {
-            // expected
-        }
     }
 
     /**

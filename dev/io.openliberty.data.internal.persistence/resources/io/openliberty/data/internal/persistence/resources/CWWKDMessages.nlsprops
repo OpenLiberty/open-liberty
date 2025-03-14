@@ -1050,3 +1050,15 @@ CWWKD1103.incompat.query.result.useraction=If the type of entity attributes that
  or a different set of entity attributes that the Jakarta Persistence provider \
  allows. If the type of entity attributes that the method selects is allowed, \
  check for other causes of incompatibility.
+
+CWWKD1104.empty.anno.value=CWWKD1104E: The empty value for the String class is \
+ not a valid value for the {0} annotation that is used on the {1} method of the \
+ {2} repository.
+CWWKD1104.empty.anno.value.explanation=The empty value for the String class is \
+ not a supported value. What the supported value is depends on the type of \
+ annotation. For example, if the annotation is a Param annotation, then valid \
+ values are the named parameter names that are used within the Query annotation \
+ value.
+CWWKD1104.empty.anno.value.useraction=If the annotation is not needed, \
+ remove it from the repository method. Otherwise, specify a valid value for \
+ the annotation.

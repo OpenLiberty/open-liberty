@@ -40,19 +40,41 @@ public class ImageBuilder {
 
     private static final Class<?> c = ImageBuilder.class;
 
+    private static final ImageBuilderSubstitutor BUILDER = new ImageBuilderSubstitutor();
+
     // The --build-arg necessary to overwrite the default BASE_IMAGE in the Dockerfile
     // with the mirrored image in an alternative registry
     private static final String BASE_IMAGE = "BASE_IMAGE";
 
-    // Image to build
-    private final DockerImageName image;
+    /**
+     * Image name standardized for use
+     * Used for locating the dockerfile and supporting files
+     * Example: openliberty/testcontainers/<image-name>:<image-version>
+     */
+    private final DockerImageName standardized;
+
+    /**
+     * Image name localized for externals
+     * Used when we have to resort to building the image at runtime
+     * Example: localhost/openliberty/testcontainers/<image-name>:<image-version>
+     */
+    private final DockerImageName localized;
+
+    /**
+     * Image name substituted based on environment
+     * Used when we are searching for a cached version of the image (local or pullable)
+     * Example: [localhost | <registry>/<repository>]/openliberty/testcontainers/<image-name>:<image-version>
+     */
+    private final DockerImageName substituted;
 
     // Cache image on docker host
     private boolean deleteOnExit = true;
 
     // Constructor - builder class
-    private ImageBuilder(DockerImageName image) {
-        this.image = image;
+    private ImageBuilder(DockerImageName original) {
+        this.standardized = BUILDER.standardize(original);
+        this.localized = BUILDER.localize(original);
+        this.substituted = BUILDER.apply(original);
     }
 
     /**
@@ -72,7 +94,7 @@ public class ImageBuilder {
     public static ImageBuilder build(String customImage) {
         Objects.requireNonNull(customImage);
 
-        return new ImageBuilder(ImageBuilderSubstitutor.instance().apply(DockerImageName.parse(customImage)));
+        return new ImageBuilder(DockerImageName.parse(customImage));
     }
 
     /**
@@ -145,7 +167,7 @@ public class ImageBuilder {
          * Finds the resource directory on the classpath and will extract the directory to a temporary location so we can read it.
          * This will be done during the image build step anyway so this is just front-loading that work for our benefit.
          */
-        return MountableFile.forClasspathResource(constructResourcePath(image)).getResolvedPath();
+        return MountableFile.forClasspathResource(constructResourcePath(standardized)).getResolvedPath();
     }
 
     /*
@@ -154,12 +176,12 @@ public class ImageBuilder {
     private Optional<RemoteDockerImage> getCached() {
         final String m = "getCached";
 
-        if (PullPolicy.defaultPolicy().shouldPull(image)) {
-            Log.info(c, m, "Unable to find cached image: " + image.asCanonicalNameString());
+        if (PullPolicy.defaultPolicy().shouldPull(substituted)) {
+            Log.info(c, m, "Unable to find cached image: " + substituted.asCanonicalNameString());
             return Optional.empty();
         } else {
-            Log.info(c, m, "Found cached image: " + image.asCanonicalNameString());
-            return Optional.of(new RemoteDockerImage(image));
+            Log.info(c, m, "Found cached image: " + substituted.asCanonicalNameString());
+            return Optional.of(new RemoteDockerImage(substituted));
         }
     }
 
@@ -169,19 +191,19 @@ public class ImageBuilder {
     private Optional<RemoteDockerImage> pullCached() {
         final String m = "pullCached";
 
-        if (image.getRegistry().equalsIgnoreCase("localhost")) {
-            Log.info(c, m, "Did not attempt to pull cached image from localhost for image: " + image.asCanonicalNameString());
+        if (substituted.getRegistry().equalsIgnoreCase("localhost")) {
+            Log.info(c, m, "Did not attempt to pull cached image from localhost for image: " + substituted.asCanonicalNameString());
             return Optional.empty();
         }
 
-        RemoteDockerImage cachedImage = new RemoteDockerImage(image);
+        RemoteDockerImage cachedImage = new RemoteDockerImage(substituted);
 
         try {
             cachedImage.get();
-            Log.info(c, m, "Found pullable image: " + image.asCanonicalNameString());
+            Log.info(c, m, "Found pullable image: " + substituted.asCanonicalNameString());
             return Optional.of(cachedImage);
         } catch (Exception e) {
-            Log.info(c, m, "Unable to find pullable image: " + image.asCanonicalNameString());
+            Log.info(c, m, "Unable to find pullable image: " + substituted.asCanonicalNameString());
             return Optional.empty();
         }
     }
@@ -190,10 +212,14 @@ public class ImageBuilder {
      * Helper method, constructs an image from a Dockerfile
      */
     private RemoteDockerImage buildFromDockerfile(String resourceDir) {
-        String resourcePath = constructResourcePath(image);
+        final String m = "buildFromDockerfile";
+
+        Log.info(c, m, "Building image from Dockerfile: " + localized.asCanonicalNameString());
+
+        String resourcePath = constructResourcePath(localized);
         String baseImage = findBaseImageFrom(resourceDir);
 
-        ImageFromDockerfile builtImage = new ImageFromDockerfile(image.asCanonicalNameString(), deleteOnExit)
+        ImageFromDockerfile builtImage = new ImageFromDockerfile(localized.asCanonicalNameString(), deleteOnExit)
                         .withFileFromClasspath(".", resourcePath)
                         .withBuildArg(BASE_IMAGE, baseImage);
 
@@ -206,7 +232,7 @@ public class ImageBuilder {
      *
      *
      * @param  image The name of this image in the form:
-     *                   [registry | localhost]/openliberty/testcontainers/<image-name>:<image-version>
+     *                   [localhost]/openliberty/testcontainers/<image-name>:<image-version>
      * @return       the resource path in the form: /openliberty/testcontainers/<image-name>/<image-version>/
      */
     private static String constructResourcePath(DockerImageName image) {

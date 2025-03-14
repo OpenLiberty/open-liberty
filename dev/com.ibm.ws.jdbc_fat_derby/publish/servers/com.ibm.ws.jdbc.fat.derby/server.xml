@@ -78,7 +78,7 @@
     </dataSource>
     
     <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codeBase="${shared.resource.dir}/derby/derby/-" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${server.config.dir}/derby/derby/-" className="java.security.AllPermission"/>
     
     <jdbcDriver id="Derby1" libraryRef="DerbyLib"/>
         

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -59,12 +58,6 @@ public interface Packages extends BasicRepository<Package, Integer> {
     int[] delete2(Limit limit, Sort<?>... sorts);
 
     LinkedList<?> delete2ByHeightLessThan(float maxHeight, Limit limit, Sort<?>... sorts);
-
-    long[] delete3(Limit limit, Sort<Package> sort); // invalid return type is not the entity or id
-
-    List<String> delete4(Limit limit, Sort<Package> sort); // invalid return type is not the entity or id
-
-    Collection<Number> delete5(Limit limit, Sort<Package> sort); // invalid return type is not the entity or id
 
     List<Package> deleteFirst2(); // 'first2' should be ignored and this should delete all entities
 

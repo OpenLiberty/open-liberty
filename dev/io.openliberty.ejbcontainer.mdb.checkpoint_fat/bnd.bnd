@@ -34,7 +34,8 @@ tested.features: \
 	messaging-3.0, \
 	messaging-3.1, \
 	mdb-3.2, \
-	mdb-4.0
+	mdb-4.0, \
+	checkpoint
 
 -buildpath: \
 	com.ibm.websphere.appserver.api.kernel.service;version=latest,\

@@ -108,6 +108,16 @@ public class ArtifactoryRegistryTest {
 
         assertFalse("Registry should not have been available", registry.isRegistryAvailable());
 
+        // invalid registry
+        System.setProperty(REGISTRY, "example.com");
+        registry = getConstructor().newInstance();
+
+        t = registry.getSetupException();
+        assertNotNull(t);
+        assertTrue("Throwable should have been an IllegalStateException", t instanceof IllegalStateException);
+
+        assertFalse("Registry should not have been available", registry.isRegistryAvailable());
+
         // no user
         System.setProperty(REGISTRY, "artifactory.swg-devops.com");
         registry = getConstructor().newInstance();

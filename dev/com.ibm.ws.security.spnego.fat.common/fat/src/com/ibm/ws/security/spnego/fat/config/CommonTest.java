@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -389,6 +389,14 @@ public class CommonTest {
         String thisMethod = "createKrbConf";
         Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
         FileOutputStream out = new FileOutputStream(testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+        // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
+        // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
+        InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
+        if (InitClass.KRB5_CONF.contains("clockskew  = 600")) {
+            Log.info(c, thisMethod, "Replaced clockskew  = 300 with clockskew  = 600");
+        } else {
+            Log.info(c, thisMethod, "Did not find clockskew  = 300 in krb5.conf");
+        }
         out.write(InitClass.KRB5_CONF.getBytes());
         out.close();
     }

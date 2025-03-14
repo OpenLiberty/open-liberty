@@ -170,17 +170,10 @@ public interface Primes {
 
     Prime findByNumberIdBetween(long min, long max);
 
-    // Unsupported pattern: lacks PageRequest parameter.
-    @OrderBy("numberId")
-    CursoredPage<Prime> findByNumberIdBetween(long min, long max, Limit limit);
-
     @OrderBy(ID)
     CursoredPage<Prime> findByNumberIdBetween(long min, long max, PageRequest pagination);
 
     List<Prime> findByNumberIdBetween(long min, long max, Sort<?>... orderBy);
-
-    // Unsupported pattern: lacks PageRequest parameter.
-    CursoredPage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy);
 
     CursoredPage<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, PageRequest pagination, Order<Prime> order);
 
@@ -252,8 +245,6 @@ public interface Primes {
 
     @Find
     Prime findFirst(Sort<Prime> sort, Limit limitOf1);
-
-    Stream<Prime> findFirst2147483648ByNumberIdGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
 
     @OrderBy(value = "name", descending = true)
     Prime[] findFirst5ByNumberIdLessThanEqual(long maxNumber);
