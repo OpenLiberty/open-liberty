@@ -298,7 +298,6 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
                 startedTimer = new Timer(false);
                 startedTimer.schedule(new FileUpdateProcess(startFile, HealthCheckConstants.HEALTH_CHECK_START, true), 0, 1000);
             }
-
             /*
              * Perform an immediate check and then start the processes for checking ready and live status.
              */
@@ -395,23 +394,30 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     @Override
     public Status performFileHealthCheck(File file, String healthCheckProcedure) {
 
-        resolveDefaultStatuses();
+        /*
+         * Entry point through AppTracker40Impl, needs to verify that system is valid, and we're enabled
+         */
+        if (isValidSystemForFileHealthCheck && isFileHealthCheckingEnabled() && ProductInfo.getBetaEdition()) {
+            resolveDefaultStatuses();
 
-        FileHealthCheckBuilder fhc = new FileHealthCheckBuilder(file);
+            FileHealthCheckBuilder fhc = new FileHealthCheckBuilder(file);
 
-        Set<String> appSet = validateApplicationSet();
-        Set<String> unstartedAppSet = new HashSet<String>();
+            Set<String> appSet = validateApplicationSet();
+            Set<String> unstartedAppSet = new HashSet<String>();
 
-        runHealthChecks(appSet, healthCheckProcedure, unstartedAppSet,
-                        status -> fhc.setOverallStatus(status),
-                        x -> fhc.handleUndeterminedResponse(),
-                        responses -> fhc.addResponses(responses));
+            runHealthChecks(appSet, healthCheckProcedure, unstartedAppSet,
+                            status -> fhc.setOverallStatus(status),
+                            x -> fhc.handleUndeterminedResponse(),
+                            responses -> fhc.addResponses(responses));
 
-        fhc.updateFile();
+            fhc.updateFile();
 
-        issueMessagesForUnstartedApps(unstartedAppSet, healthCheckProcedure);
+            issueMessagesForUnstartedApps(unstartedAppSet, healthCheckProcedure);
 
-        return fhc.getOverallStatus();
+            return fhc.getOverallStatus();
+        }
+
+        return null;
 
     }
 

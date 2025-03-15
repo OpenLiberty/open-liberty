@@ -24,6 +24,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -38,6 +39,7 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
  *
  */
 @RunWith(FATRunner.class)
+@AllowedFFDC("javax.management.InstanceNotFoundException")
 public class MPConfigDefaultValuesTest {
 
     final static String DEFAULT_SERVER = "HealthServer";
@@ -88,17 +90,7 @@ public class MPConfigDefaultValuesTest {
 
     }
 
-    public void cleanup(LibertyServer server) throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
-        }
-    }
-
-    @Test
-    public void NoDefaultConfigTest() throws Exception {
-        final String METHOD_NAME = "NoDefaultConfigTest";
-        LibertyServer server = defaultServer;
-
+    public void deployRegularAndDelayedApp(LibertyServer server) throws Exception {
         WebArchive regularWAR = ShrinkWrap
                         .create(WebArchive.class, REGULAR_APP_WAR)
                         .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
@@ -112,11 +104,28 @@ public class MPConfigDefaultValuesTest {
                         .addPackage("io.openliberty.microprofile.health.delayed.health.check.app");
 
         ShrinkHelper.exportDropinAppToServer(server, DelayedWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
+    }
 
+    public void cleanup(LibertyServer server) throws Exception {
+        if (server != null && server.isStarted()) {
+            server.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
+        }
+    }
+
+    @Test
+    /*
+     * Test where the MP Config elements are:
+     * [DEFAULT - DOWN] mp.health.default.startup.empty.response
+     * [DEFAULT - DOWN] mp.health.default.startup.empty.response
+     */
+    public void NoDefaultConfigTest() throws Exception {
+        final String METHOD_NAME = "NoDefaultConfigTest";
+        LibertyServer server = defaultServer;
+        deployRegularAndDelayedApp(server);
         server.startServer();
 
         // Wait for "CWWKZ0001I: Application RegularApp started "
-        Assert.assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I.*" + REGULAR_APP));
+        Assert.assertNotNull("CWWKZ0001I message not found", server.waitForStringInLogUsingMark("CWWKZ0001I.*" + REGULAR_APP));
 
         /*
          * At this point, Regular WAR is started and kicks off the health processes.
@@ -140,10 +149,10 @@ public class MPConfigDefaultValuesTest {
          * [X] Ready
          * [ ] Live
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         // SRVE0242I: [HealthDemo] [/HealthDemo] [DelayedServlet]: Initialization successful.
         server.waitForStringInLogUsingMark("SRVE0242I*DelayedServlet");
@@ -161,37 +170,30 @@ public class MPConfigDefaultValuesTest {
          * [ ] Live
          */
         //Check started and ready created
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
         //Check live file had been updating
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
 
         cleanup(server);
     }
 
     @Test
+    /*
+     * Test where the MP Config elements are:
+     * [DEFAULT - DOWN] mp.health.default.ready.empty.response
+     * [UP] mp.health.default.startup.empty.response
+     */
     public void DefaultStartupNoDefaultReadyConfigTest() throws Exception {
         final String METHOD_NAME = "DefaultStartupNoDefaultReadyConfigTest";
         LibertyServer server = mpConfigDefaultStartupUpServer;
 
-        WebArchive regularWAR = ShrinkWrap
-                        .create(WebArchive.class, REGULAR_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app");
-
-        ShrinkHelper.exportDropinAppToServer(server, regularWAR, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
-
-        WebArchive DelayedWar = ShrinkWrap
-                        .create(WebArchive.class, DELAYED_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/DelayedHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.delayed.health.check.app");
-
-        ShrinkHelper.exportDropinAppToServer(server, DelayedWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
+        deployRegularAndDelayedApp(server);
 
         server.startServer();
 
         // Wait for "CWWKZ0001I: Application RegularApp started "
-        Assert.assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I.*" + REGULAR_APP));
+        Assert.assertNotNull("CWWKZ0001I not found", server.waitForStringInLogUsingMark("CWWKZ0001I.*" + REGULAR_APP));
 
         /*
          * At this point, Regular WAR is started and kicks off the health processes.
@@ -215,10 +217,10 @@ public class MPConfigDefaultValuesTest {
          * [X] Ready
          * [ ] Live
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         // SRVE0242I: [HealthDemo] [/HealthDemo] [DelayedServlet]: Initialization successful.
         server.waitForStringInLogUsingMark("SRVE0242I*DelayedServlet");
@@ -237,36 +239,29 @@ public class MPConfigDefaultValuesTest {
          */
 
         //Check ready created
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
         //Check live has been updating
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
 
         cleanup(server);
     }
 
     @Test
+    /*
+     * Test where the MP Config elements are:
+     * [UP] mp.health.default.ready.empty.response
+     * [DEFAULT - DOWN] mp.health.default.startup.empty.response
+     */
     public void DefaultReadyupNoDefaultStartupConfigTest() throws Exception {
         final String METHOD_NAME = "DefaultReadyupNoDefaultStartupConfigTest";
         LibertyServer server = mpConfigDefaultReadinessUpServer;
 
-        WebArchive regularWAR = ShrinkWrap
-                        .create(WebArchive.class, REGULAR_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app");
-
-        ShrinkHelper.exportDropinAppToServer(server, regularWAR, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
-
-        WebArchive DelayedWar = ShrinkWrap
-                        .create(WebArchive.class, DELAYED_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/DelayedHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.delayed.health.check.app");
-
-        ShrinkHelper.exportDropinAppToServer(server, DelayedWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
+        deployRegularAndDelayedApp(server);
 
         server.startServer();
 
         // Wait for "CWWKZ0001I: Application RegularApp started "
-        Assert.assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I.*" + REGULAR_APP));
+        Assert.assertNotNull("CWWKZ0001I message not found", server.waitForStringInLogUsingMark("CWWKZ0001I.*" + REGULAR_APP));
 
         /*
          * At this point, Regular WAR is started and kicks off the health processes.
@@ -290,10 +285,10 @@ public class MPConfigDefaultValuesTest {
          * [ ] Ready
          * [ ] Live
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         // SRVE0242I: [HealthDemo] [/HealthDemo] [DelayedServlet]: Initialization successful.
         server.waitForStringInLogUsingMark("SRVE0242I*DelayedServlet");
@@ -312,37 +307,31 @@ public class MPConfigDefaultValuesTest {
          */
 
         //Check started created
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
 
         //Check ready and live have been updated
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
+                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
         cleanup(server);
     }
 
     @Test
+    /*
+     * Test where the MP Config elements are:
+     * [UP] mp.health.default.ready.empty.response
+     * [UP] mp.health.default.startup.empty.response
+     */
     public void DefaultAllUpConfigTest() throws Exception {
         final String METHOD_NAME = "DefaultAllUpConfigTest";
         LibertyServer server = mpConfigAllUpServer;
 
-        WebArchive regularWAR = ShrinkWrap
-                        .create(WebArchive.class, REGULAR_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app");
-
-        ShrinkHelper.exportDropinAppToServer(server, regularWAR, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
-
-        WebArchive DelayedWar = ShrinkWrap
-                        .create(WebArchive.class, DELAYED_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/DelayedHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.delayed.health.check.app");
-
-        ShrinkHelper.exportDropinAppToServer(server, DelayedWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
+        deployRegularAndDelayedApp(server);
 
         server.startServer();
 
         // Wait for "CWWKZ0001I: Application RegularApp started "
-        Assert.assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I.*" + REGULAR_APP));
+        Assert.assertNotNull("CWWKZ0001I message not found", server.waitForStringInLogUsingMark("CWWKZ0001I.*" + REGULAR_APP));
 
         /*
          * At this point, Regular WAR is started and kicks off the health processes.
@@ -366,10 +355,10 @@ public class MPConfigDefaultValuesTest {
          * [ ] Ready
          * [ ] Live
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         // SRVE0242I: [HealthDemo] [/HealthDemo] [DelayedServlet]: Initialization successful.
         server.waitForStringInLogUsingMark("SRVE0242I*DelayedServlet");
@@ -388,8 +377,9 @@ public class MPConfigDefaultValuesTest {
          */
 
         //Check ready and live have been updated
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
+                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
 
         cleanup(server);
     }

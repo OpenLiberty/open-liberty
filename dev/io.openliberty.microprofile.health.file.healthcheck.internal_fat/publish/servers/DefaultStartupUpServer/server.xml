@@ -11,7 +11,7 @@
 	
 	<mpHealth fileUpdateInterval="5s"/>
 	
-	<logging traceSpecification="*=info:HEALTH=all:logservice=all=enabled:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
+	<logging traceSpecification="*=info:HEALTH=all:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
 	
     <webContainer deferServletLoad="false"/>
 

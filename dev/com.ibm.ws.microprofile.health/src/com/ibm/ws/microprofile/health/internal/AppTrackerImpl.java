@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -83,7 +84,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     /**
      * Tracks the state of starting/started applications.
      */
-    protected final Map<String, ApplicationState> appStateMap = new HashMap<String, ApplicationState>();
+    protected final Map<String, ApplicationState> appStateMap = new ConcurrentHashMap<String, ApplicationState>();
 
     protected final Map<String, ApplicationState> configAdminMap = new HashMap<String, ApplicationState>();
 
@@ -184,6 +185,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     @FFDCIgnore(UnableToAdaptException.class)
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
         String appName = appInfo.getDeploymentName();
+
         if (tc.isDebugEnabled())
             Tr.debug(tc, "applicationStarting() : appName = " + appName);
 
@@ -292,6 +294,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     /** {@inheritDoc} */
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+
         String appName = appInfo.getDeploymentName();
         lock.writeLock().lock();
         try {

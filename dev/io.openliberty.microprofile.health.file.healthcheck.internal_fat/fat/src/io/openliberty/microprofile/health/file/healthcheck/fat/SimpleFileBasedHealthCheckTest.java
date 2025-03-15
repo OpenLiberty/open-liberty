@@ -31,6 +31,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -47,6 +48,7 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
  *
  */
 @RunWith(FATRunner.class)
+@AllowedFFDC("javax.management.InstanceNotFoundException")
 public class SimpleFileBasedHealthCheckTest {
 
     final static String SERVER_NAME = "HealthServer";
@@ -103,6 +105,9 @@ public class SimpleFileBasedHealthCheckTest {
     }
 
     @Test
+    /*
+     * No configuration used.
+     */
     public void emptyServerCheck() throws Exception {
         final String METHOD_NAME = "emptyServerCheck";
 
@@ -111,7 +116,7 @@ public class SimpleFileBasedHealthCheckTest {
         // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
 
-        assertTrue(server.isStarted());
+        assertTrue("Server is not started", server.isStarted());
 
         String serverRoot = server.getServerRoot();
         File serverRootDirFile = new File(serverRoot);
@@ -127,19 +132,24 @@ public class SimpleFileBasedHealthCheckTest {
          *
          *
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
-        TimeUnit.SECONDS.sleep(8);
+        TimeUnit.SECONDS.sleep(10);
+
         //Check that live and ready files have been updating.
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
+                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
 
     }
 
     @Test
+    /*
+     * Startup check fails.
+     */
     public void failedStartedHealthCheckTest() throws Exception {
         final String METHOD_NAME = "failedStartedHealthCheckTest";
 
@@ -155,7 +165,7 @@ public class SimpleFileBasedHealthCheckTest {
 
         // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
-        assertTrue(server.isStarted());
+        assertTrue("Server is not started", server.isStarted());
 
         String serverRoot = server.getServerRoot();
         File serverRootDirFile = new File(serverRoot);
@@ -174,22 +184,26 @@ public class SimpleFileBasedHealthCheckTest {
          * [] Ready
          * [ ] Live
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         //Started file should still not be created
         TimeUnit.SECONDS.sleep(10);
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
 
         //Check that live and ready are still being updated
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
+                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
 
     }
 
     @Test
+    /*
+     * Liveness check fails.
+     */
     public void failedLivenessHealthCheckTest() throws Exception {
         final String METHOD_NAME = "failedLivenessHealthCheckTest";
 
@@ -205,7 +219,7 @@ public class SimpleFileBasedHealthCheckTest {
 
         // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
-        assertTrue(server.isStarted());
+        assertTrue("Server is not started", server.isStarted());
 
         String serverRoot = server.getServerRoot();
         File serverRootDirFile = new File(serverRoot);
@@ -224,20 +238,24 @@ public class SimpleFileBasedHealthCheckTest {
          * [ ] Ready
          * [X] Live
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         TimeUnit.SECONDS.sleep(10);
 
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         //Check that ready is still being updated
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
+                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
     }
 
     @Test
+    /*
+     * Readiness check fails.
+     */
     public void failedReadinessHealthCheckTest() throws Exception {
         final String METHOD_NAME = "failedReadinessHealthCheckTest";
 
@@ -250,7 +268,7 @@ public class SimpleFileBasedHealthCheckTest {
 
         // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
-        assertTrue(server.isStarted());
+        assertTrue("Server is not started", server.isStarted());
 
         String serverRoot = server.getServerRoot();
         File serverRootDirFile = new File(serverRoot);
@@ -269,19 +287,22 @@ public class SimpleFileBasedHealthCheckTest {
          * [X] Ready
          * [ ] Live
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         TimeUnit.SECONDS.sleep(10);
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
 
         //Check that live is still being updated
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
     }
 
     @Test
+    /*
+     * Readiness check fails during runtime.
+     */
     public void toggleReadinessFailTest() throws Exception {
         final String METHOD_NAME = "toggleReadinessFailTest";
 
@@ -296,7 +317,7 @@ public class SimpleFileBasedHealthCheckTest {
 
         // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
-        assertTrue(server.isStarted());
+        assertTrue("Server is not started", server.isStarted());
 
         String serverRoot = server.getServerRoot();
         File serverRootDirFile = new File(serverRoot);
@@ -315,10 +336,10 @@ public class SimpleFileBasedHealthCheckTest {
          * [ ] Ready
          * [ ] Live
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=false");
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
@@ -327,13 +348,16 @@ public class SimpleFileBasedHealthCheckTest {
 
         TimeUnit.SECONDS.sleep(10);
 
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertFalse("The /health/ready file should not have been updated.",
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_UPDATED,
                            HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
 
     }
 
     @Test
+    /*
+     * Liveness check fails during runtime.
+     */
     public void toggleLivenessFailTest() throws Exception {
         final String METHOD_NAME = "toggleLivenessFailTest";
 
@@ -348,7 +372,7 @@ public class SimpleFileBasedHealthCheckTest {
 
         // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
-        assertTrue(server.isStarted());
+        assertTrue("Server is not started", server.isStarted());
 
         String serverRoot = server.getServerRoot();
         File serverRootDirFile = new File(serverRoot);
@@ -367,10 +391,10 @@ public class SimpleFileBasedHealthCheckTest {
          * [ ] Ready
          * [ ] Live
          */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
         URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?live=false");
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
@@ -379,8 +403,9 @@ public class SimpleFileBasedHealthCheckTest {
 
         TimeUnit.SECONDS.sleep(10);
 
-        Assert.assertTrue(HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertFalse("The /health/live file should not have been updated.",
+        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
+                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
+        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_UPDATED,
                            HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
 
     }

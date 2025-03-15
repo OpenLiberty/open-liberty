@@ -11,6 +11,9 @@ package io.openliberty.microprofile.health40.internal;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.management.MBeanInfo;
+import javax.management.ObjectName;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -80,6 +83,28 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    /**
+     * Returns the MBeanInfo of appName if the ApplicationMBean exists, otherwise null.
+     *
+     * @return the MBeanInfo of appName if the ApplicationMBean exists, otherwise null.
+     */
+    @Override
+    protected String getApplicationMBean(String appName) {
+        MBeanInfo bean = null;
+        String state = "";
+        try {
+            ObjectName objectName = new ObjectName("WebSphere:service=com.ibm.websphere.application.ApplicationMBean,name=" + appName);
+
+            bean = mbeanServer.getMBeanInfo(objectName);
+            state = (String) mbeanServer.getAttribute(objectName, "State");
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "getApplicationMBean() : Failed to retrieve MBean for app: " + appName + " : \n" + e.getMessage());
+            }
+        }
+        return state;
     }
 
 }
