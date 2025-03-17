@@ -568,13 +568,16 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     @Trivial
     public WebSphereBeanDeploymentArchive getBeanDeploymentArchiveFromClass(Class<?> clazz) {
 
-        WebSphereBeanDeploymentArchive wbda = classBDAMap.get(clazz);
+        WebSphereBeanDeploymentArchive wbda = classBDAMapFavouringEjb.get(clazz);
 
         if (wbda == null) {
-            wbda = orderedBDAs.stream()
-                              .filter(bda -> doesBDAContainClazz(bda, clazz))
-                              .findFirst()
-                              .get();
+
+            for (WebSphereBeanDeploymentArchive searchBDA : orderedBDAs) {
+                if (doesBDAContainClazz(searchBDA, clazz)) {
+                    wbda = searchBDA;
+                    break;
+                }
+            }
 
             if (wbda != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -604,12 +607,19 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         WebSphereBeanDeploymentArchive wbda = classBDAMapFavouringEjb.get(clazz);
 
         if (wbda == null) {
-            wbda = orderedBDAs.stream()
-                              .filter(bda -> bda.getType() == ArchiveType.EJB_MODULE)
-                              .filter(bda -> doesBDAContainClazz(bda, clazz))
-                              .findFirst()
-                              .get();
+            for (WebSphereBeanDeploymentArchive searchBDA : orderedBDAs) {
+                if (searchBDA.getType() == ArchiveType.EJB_MODULE && doesBDAContainClazz(searchBDA, clazz)) {
+                    wbda = searchBDA;
+                    break;
+                }
+            }
 
+            //if we didn't find an ejb_module check for a regular module.
+            if (wbda == null) {
+                wbda = getBeanDeploymentArchiveFromClass(clazz);
+            }
+
+            //If we found something, cache it
             if (wbda != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "mapping class: " + clazz.getName() + " " + System.identityHashCode(clazz) + " to EJB_MODULE bda: " + wbda.toString());
@@ -625,9 +635,8 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     private boolean doesBDAContainClazz(WebSphereBeanDeploymentArchive bda, Class<?> clazz) {
         if (bda.getAllClazzes().contains(clazz.getName())) {
 
-            Class<?> bdaClazz = null;
             try {
-                bdaClazz = CDIUtils.loadClass(bda.getClassLoader(), clazz.getName());
+                Class<?> bdaClazz = CDIUtils.loadClass(bda.getClassLoader(), clazz.getName());
 
                 if (bdaClazz == clazz) {
                     return true;
