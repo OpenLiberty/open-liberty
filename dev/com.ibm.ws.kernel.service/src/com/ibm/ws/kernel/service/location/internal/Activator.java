@@ -15,6 +15,8 @@ package com.ibm.ws.kernel.service.location.internal;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.spi.InitialContextFactoryBuilder;
 import javax.naming.spi.NamingManager;
@@ -144,9 +146,22 @@ public class Activator implements BundleActivator {
     @FFDCIgnore(Exception.class)
     protected final void shutdownFramework() {
         try {
-            Bundle bundle = context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
-            if (bundle != null)
+            Bundle bundle = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+            if (bundle != null) {
+                CountDownLatch stopping = new CountDownLatch(1);
+                SynchronousBundleListener l = new SynchronousBundleListener() {
+                    @Override
+                    public void bundleChanged(BundleEvent e) {
+                        if (BundleEvent.STOPPING == e.getType() && e.getBundle().getBundleId() == 0) {
+                            stopping.countDown();
+                        }
+                    }
+                };
+                bundleContext.addBundleListener(l);
                 bundle.stop();
+                stopping.await(1000, TimeUnit.MILLISECONDS);
+                // no need to remove listener since we are stopping anyway
+            }
         } catch (Exception e) {
             // Exception could happen here if bundle context is bad, or system bundle
             // is already stopping: not an exceptional condition, as we

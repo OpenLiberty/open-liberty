@@ -18,8 +18,10 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -611,9 +613,21 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
         try {
             Bundle bundle = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
-
-            if (bundle != null)
+            if (bundle != null) {
+                CountDownLatch stopping = new CountDownLatch(1);
+                SynchronousBundleListener l = new SynchronousBundleListener() {
+                    @Override
+                    public void bundleChanged(BundleEvent e) {
+                        if (BundleEvent.STOPPING == e.getType() && e.getBundle().getBundleId() == 0) {
+                            stopping.countDown();
+                        }
+                    }
+                };
+                bundleContext.addBundleListener(l);
                 bundle.stop();
+                stopping.await(1000, TimeUnit.MILLISECONDS);
+                // no need to remove listener since we are stopping anyway
+            }
         } catch (Exception e) {
             // do not FFDC this.
             // exceptions during bundle stop occur if framework is already stopping or stopped
