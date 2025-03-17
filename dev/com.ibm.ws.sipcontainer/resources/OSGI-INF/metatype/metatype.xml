@@ -94,7 +94,7 @@
             type="String" required="false"/>
 
 		<AD name="internal" description="internal" id="useNettyTransport"
-			required="false" type="Boolean" default="false" />
+			required="false" type="Boolean" default="true" />
 
 	</OCD>
 
