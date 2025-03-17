@@ -344,7 +344,7 @@ public class SimpleFileBasedHealthCheckTest {
         URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=false");
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
         con.connect();
-        Assert.assertTrue(con.getResponseCode() == 200);
+        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
 
         TimeUnit.SECONDS.sleep(10);
 
@@ -399,7 +399,7 @@ public class SimpleFileBasedHealthCheckTest {
         URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?live=false");
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
         con.connect();
-        Assert.assertTrue(con.getResponseCode() == 200);
+        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
 
         TimeUnit.SECONDS.sleep(10);
 
