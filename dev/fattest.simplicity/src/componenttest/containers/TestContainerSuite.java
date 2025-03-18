@@ -73,7 +73,7 @@ public class TestContainerSuite {
         @Override
         protected void after() {
             Log.info(TestContainerSuite.class, "after", "Tearing down testcontainers");
-            restoreConfig();
+//          restoreConfig(); //TODO re-enable once WL tests are updated to only extend TestContainerSuite on suite classes and not test classes
             ImageVerifier.assertImages();
         }
     };
@@ -115,7 +115,7 @@ public class TestContainerSuite {
     /**
      * Moves existing ~/.testcontainers.properties file (if present) to a backup location.
      * Then generates a new ~/.testcontainers.properties file in it's place.
-	 * 
+     *
      * The new properties file will be configured with only the image name substitutor or
      * the properties necessary to connect and use a remote docker host if one is required
      * by the {@link #useRemoteDocker()} method.
