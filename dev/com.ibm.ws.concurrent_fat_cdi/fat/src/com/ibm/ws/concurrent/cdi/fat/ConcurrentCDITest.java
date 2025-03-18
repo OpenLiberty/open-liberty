@@ -253,4 +253,9 @@ public class ConcurrentCDITest extends FATServletClient {
     public void testSelectManagedThreadFactoryQualified() throws Exception {
         runTest(server, APP_NAME, testName);
     }
+
+    @Test
+    public void testSelectNonbinding() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
 }

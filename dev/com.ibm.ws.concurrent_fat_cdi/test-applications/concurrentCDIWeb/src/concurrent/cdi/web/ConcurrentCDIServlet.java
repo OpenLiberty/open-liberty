@@ -1410,4 +1410,30 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         assertEquals("value2", future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
+
+    /**
+     * Use CDI.current() to select an instance of ContextService where the value of
+     * a nonbinding field of the qualifier annotation differs.
+     */
+    public void testSelectNonbinding() {
+        Annotation annoWithNonbinding = WithLocationContext.Literal.with(TRANSACTION);
+        Instance<ContextService> instance = CDI.current()
+                        .select(ContextService.class, annoWithNonbinding);
+
+        Supplier<String> getLocation;
+        ContextService contextSvc = instance.get();
+        try {
+            Location.set("2800 37th St NW, Rochester, MN 55901");
+            getLocation = contextSvc.contextualSupplier(Location::get);
+        } finally {
+            Location.clear();
+        }
+
+        assertEquals(null, Location.get());
+
+        assertEquals("2800 37th St NW, Rochester, MN 55901",
+                     getLocation.get());
+
+        assertEquals(null, Location.get());
+    }
 }
