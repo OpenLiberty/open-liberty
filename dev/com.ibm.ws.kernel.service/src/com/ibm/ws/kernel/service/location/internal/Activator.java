@@ -151,10 +151,10 @@ public class Activator implements BundleActivator {
             Bundle bundle = context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
             if (bundle != null) {
                 CountDownLatch stopping = new CountDownLatch(1);
-                org.osgi.framework.SynchronousBundleListener l = new org.osgi.framework.SynchronousBundleListener() {
+                    SynchronousBundleListener l = new SynchronousBundleListener() {
                     @Override
-                    public void bundleChanged(org.osgi.framework.BundleEvent e) {
-                        if (org.osgi.framework.BundleEvent.STOPPING == e.getType() && e.getBundle().getBundleId() == 0) {
+                    public void bundleChanged(BundleEvent e) {
+                        if (BundleEvent.STOPPING == e.getType() && e.getBundle().getBundleId() == 0) {
                             stopping.countDown();
                         }
                     }
