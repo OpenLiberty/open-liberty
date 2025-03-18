@@ -263,6 +263,20 @@ public class DeflateOutputHandler implements CompressionHandler {
     }
 
     /**
+     * Flushes any buffered data without finishing the compression stream.
+     * 
+     * @return List of buffers with flushed compressed data
+     */
+    public List<WsByteBuffer> flush() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "flush");
+        }
+        List<WsByteBuffer> list = new LinkedList<WsByteBuffer>();
+
+        return list;
+    }
+
+    /**
      * Create the output bytebuffer based on the output compressed storage.
      *
      * @param len

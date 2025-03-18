@@ -195,6 +195,43 @@ public class GzipOutputHandler implements CompressionHandler {
     }
 
     /**
+     * Flushes any buffered data without finishing the compression stream.
+     * 
+     * @return List of buffers with flushed compressed data
+     */
+    public List<WsByteBuffer> flush() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "flush");
+        }
+        
+        List<WsByteBuffer> list = new LinkedList<WsByteBuffer>();
+        
+        // If we haven't written the header yet, do so now
+        if (!this.haveWrittenHeader) {
+            list = writeHeader(list);
+        }
+        
+        // Force a flush of the deflater
+        int offset = 0;
+        // Use SYNC_FLUSH to ensure all pending output is flushed
+        int len = this.deflater.deflate(this.buf, offset, this.buf.length - offset, Deflater.SYNC_FLUSH);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Flushed amount=" + len + " read=" + this.deflater.getBytesRead() + " written=" + this.deflater.getBytesWritten());
+        }
+        
+        if (len > 0) {
+            offset += len;
+            list.add(makeBuffer(offset));
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "flush, return list of size " + list.size());
+        }
+        
+        return list;
+    }
+
+    /**
      * Create the output bytebuffer based on the output compressed storage.
      *
      * @param len
