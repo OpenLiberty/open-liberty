@@ -117,7 +117,7 @@ public class FATSuite {
                                                                             io.openliberty.classloading.sharedclasses.resourceadaptor.a.A.class.getPackage().getName(), //
                                                                             io.openliberty.classloading.sharedclasses.resourceadaptor.b.B.class.getPackage().getName());
 
-            // Using JavaArchive to create a RAR here because the ResourceAdapterArchive does allow packages to be added directly
+            // Using JavaArchive to create a RAR here because the ResourceAdapterArchive does not allow packages to be added directly
             SHARED_CLASSES_RAR = ShrinkWrap.create(JavaArchive.class, SHARED_CLASSES_RAR_NAME + ".rar")
                             .addPackage(io.openliberty.classloading.sharedclasses.rar.a.A.class.getPackage())
                             .addPackage(io.openliberty.classloading.sharedclasses.rar.b.B.class.getPackage())

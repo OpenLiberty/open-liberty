@@ -26,6 +26,6 @@ public class TestEJB {
 
     @PostConstruct
     public void initTest() {
-        logger.info("--> initialing EJB " + getClass());
+        logger.info("--> initializing EJB " + getClass());
     }
 }
