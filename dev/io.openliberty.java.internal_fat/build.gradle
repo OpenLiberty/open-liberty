@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2024 IBM Corporation and others.
+ * Copyright (c) 2017,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ configurations {
     app21 'io.openliberty:java-apps:21.0.0'
     app22 'io.openliberty:java-apps:22.1.0'
     app23 'io.openliberty:java-apps:23.1.0'
-    app24 'io.openliberty:java-apps:24.0.0'
+    app24 'io.openliberty:java-apps:24.1.0'
  }
 
 task copyKernelService(type: Copy) {
