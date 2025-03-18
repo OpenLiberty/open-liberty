@@ -2984,7 +2984,7 @@ public class QueryInfo {
         String o_ = entityVar_;
 
         String[] cols, selections = entityInfo.builder.provider.compat.getSelections(method);
-        if (selections == null || selections.length == 0) {
+        if (selections.length == 0) {
             cols = null;
         } else if (type == Type.FIND_AND_DELETE) {
             // Unreachable in version 1.0 and uncertain what will be added to
@@ -2993,7 +2993,8 @@ public class QueryInfo {
             ("The " + method.getName() + " method of the " +
              repositoryInterface.getName() + " repository has a " +
              method.getGenericReturnType().getTypeName() + " return type and" +
-             " specifies to return the " + selections + " entity attributes," +
+             " specifies to return the " +
+             Arrays.toString(selections) + " entity attributes," +
              " but delete operations can only return void, a deletion count," +
              " a boolean deletion indicator, or the removed entities.");
         } else {

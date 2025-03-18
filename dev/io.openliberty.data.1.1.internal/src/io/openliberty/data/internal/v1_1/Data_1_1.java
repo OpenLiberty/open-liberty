@@ -302,8 +302,13 @@ public class Data_1_1 implements DataVersionCompatibility {
     @Override
     @Trivial
     public String[] getSelections(AnnotatedElement element) {
-        Annotation select = element.getAnnotation(Select.class);
-        return select == null ? null : ((Select) select).value();
+        Select[] selects = element.getAnnotationsByType(Select.class);
+        if (selects.length == 0)
+            return NO_SELECTIONS;
+        String[] values = new String[selects.length];
+        for (int i = 0; i < selects.length; i++)
+            values[i] = selects[i].value();
+        return values;
     }
 
     @Override

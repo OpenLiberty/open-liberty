@@ -100,7 +100,7 @@ public class Data_1_0 implements DataVersionCompatibility {
     @Override
     @Trivial
     public String[] getSelections(AnnotatedElement element) {
-        return null;
+        return NO_SELECTIONS;
     }
 
     @Override

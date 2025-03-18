@@ -147,7 +147,8 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     // Use a stream of record as the return type
     @Find
-    @Select({ "start", "stop" })
+    @Select("start")
+    @Select("stop")
     Stream<ReservedTimeSlot> findByStoppingAtAnyOf(@By("stop") OffsetDateTime stop1,
                                                    @Or @By("stop") OffsetDateTime stop2,
                                                    @Or @By("stop") OffsetDateTime stop3);
@@ -165,7 +166,8 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     // Use a record as the return type
     @Find
-    @Select({ "start", "stop" })
+    @Select("start")
+    @Select("stop")
     @OrderBy("start")
     ReservedTimeSlot[] findTimeSlotWithin(String location,
                                           @By("start") @Is(GreaterThanEqual) OffsetDateTime startAfter,
