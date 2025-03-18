@@ -19,7 +19,9 @@ import java.util.concurrent.TimeUnit;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.Constants;
+import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;

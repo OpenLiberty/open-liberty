@@ -21,11 +21,12 @@ import java.util.concurrent.TimeUnit;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
-import org.xml.sax.ErrorHandler;
 
 import com.ibm.websphere.config.ConfigUpdateException;
 import com.ibm.websphere.config.ConfigValidationException;

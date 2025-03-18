@@ -24,9 +24,11 @@ import javax.naming.spi.NamingManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
@@ -146,18 +148,18 @@ public class Activator implements BundleActivator {
     @FFDCIgnore(Exception.class)
     protected final void shutdownFramework() {
         try {
-            Bundle bundle = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+            Bundle bundle = context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
             if (bundle != null) {
                 CountDownLatch stopping = new CountDownLatch(1);
-                SynchronousBundleListener l = new SynchronousBundleListener() {
+                org.osgi.framework.SynchronousBundleListener l = new org.osgi.framework.SynchronousBundleListener() {
                     @Override
-                    public void bundleChanged(BundleEvent e) {
-                        if (BundleEvent.STOPPING == e.getType() && e.getBundle().getBundleId() == 0) {
+                    public void bundleChanged(org.osgi.framework.BundleEvent e) {
+                        if (org.osgi.framework.BundleEvent.STOPPING == e.getType() && e.getBundle().getBundleId() == 0) {
                             stopping.countDown();
                         }
                     }
                 };
-                bundleContext.addBundleListener(l);
+                context.addBundleListener(l);
                 bundle.stop();
                 stopping.await(1000, TimeUnit.MILLISECONDS);
                 // no need to remove listener since we are stopping anyway
