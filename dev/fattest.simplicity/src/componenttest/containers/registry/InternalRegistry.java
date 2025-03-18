@@ -12,6 +12,7 @@ package componenttest.containers.registry;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.testcontainers.utility.DockerImageName;
 
@@ -51,6 +52,7 @@ public class InternalRegistry extends Registry {
     private static File configDir = new File(System.getProperty("user.home"), ".docker");
 
     private String registry;
+    private Optional<File> configFile;
     private boolean isRegistryAvailable;
     private Throwable setupException;
 
@@ -71,12 +73,14 @@ public class InternalRegistry extends Registry {
             registry = findRegistry(REGISTRY);
         } catch (Throwable t) {
             registry = DEFAULT_REGISTRY;
+            configFile = Optional.empty();
             isRegistryAvailable = false;
             setupException = t;
             return;
         }
 
         if (!validRegistryName(registry)) {
+            configFile = Optional.empty();
             isRegistryAvailable = false;
             setupException = new IllegalStateException("The configured Internal registry was invalid and should have matched the regex: " + REGISTRY_REGEX);
             return;
@@ -100,6 +104,7 @@ public class InternalRegistry extends Registry {
 
         // Could not generate auth token nor find auth token, give up all hope
         if (Objects.isNull(generatedAuthToken) && Objects.isNull(foundAuthToken)) {
+            configFile = Optional.empty();
             isRegistryAvailable = false;
             return;
         }
@@ -107,6 +112,9 @@ public class InternalRegistry extends Registry {
         // We could not generate an auth token, but we found an auth token
         // -- assume the found auth token will work.
         if (Objects.isNull(generatedAuthToken) && !Objects.isNull(foundAuthToken)) {
+            // NOTE: we should only go down this path during local runs and at this point
+            // we cannot guarentee that the found auth token was an encoded string.
+            configFile = Optional.empty();
             isRegistryAvailable = true;
             return;
         }
@@ -118,10 +126,11 @@ public class InternalRegistry extends Registry {
         // -- Create it by persisting the generated auth token
         if (Objects.isNull(foundAuthToken)) {
             try {
-                persistAuthToken(registry, generatedAuthToken, configDir);
+                configFile = persistAuthToken(registry, generatedAuthToken, configDir);
                 isRegistryAvailable = true;
                 return;
             } catch (Throwable t) {
+                configFile = Optional.empty();
                 isRegistryAvailable = false;
                 setupException = t.initCause(setupException);
                 return;
@@ -131,21 +140,13 @@ public class InternalRegistry extends Registry {
         // -- and found an auth token.
         Objects.requireNonNull(foundAuthToken);
 
-        // Was the generated auth token the same as the found auth token?
-        boolean matchingTokens = generatedAuthToken.equals(foundAuthToken);
-
-        // -- Yes, leave the config alone.
-        if (matchingTokens) {
-            isRegistryAvailable = true;
-            return;
-        }
-
-        // -- No, update it by persisting the generated auth token.
+        // -- Attempt to persist auth token.
         try {
-            persistAuthToken(registry, generatedAuthToken, configDir);
+            configFile = persistAuthToken(registry, generatedAuthToken, configDir);
             isRegistryAvailable = true;
             return;
         } catch (Throwable t) {
+            configFile = Optional.empty();
             isRegistryAvailable = false;
             setupException = t.initCause(setupException);
             return;
@@ -155,6 +156,11 @@ public class InternalRegistry extends Registry {
     @Override
     public String getRegistry() {
         return registry;
+    }
+
+    @Override
+    public Optional<File> getAuthConfigFile() {
+        return configFile;
     }
 
     @Override

@@ -12,6 +12,7 @@ package componenttest.containers.registry;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.testcontainers.utility.DockerImageName;
 
@@ -56,7 +57,8 @@ public class ArtifactoryRegistry extends Registry {
     private static File configDir = new File(System.getProperty("user.home"), ".docker");
 
     private String registry = ""; //Blank registry is the default setting
-    private String authToken;
+    private String authToken; // TODO remove
+    private Optional<File> configFile;
     private boolean isArtifactoryAvailable;
     private Throwable setupException;
 
@@ -77,6 +79,7 @@ public class ArtifactoryRegistry extends Registry {
             String message = "System property [ " + FORCE_EXTERNAL + " ] was set to true, "
                              + "force Artifactory registry to be unavailable.";
             registry = DEFAULT_REGISTRY;
+            configFile = Optional.empty();
             isArtifactoryAvailable = false;
             setupException = new IllegalStateException(message);
             return;
@@ -87,12 +90,14 @@ public class ArtifactoryRegistry extends Registry {
             registry = findRegistry(REGISTRY);
         } catch (Throwable t) {
             registry = DEFAULT_REGISTRY;
+            configFile = Optional.empty();
             isArtifactoryAvailable = false;
             setupException = t;
             return;
         }
 
         if (!validRegistryName(registry)) {
+            configFile = Optional.empty();
             isArtifactoryAvailable = false;
             setupException = new IllegalStateException("The configured Artifactory registry was invalid and should have matched the regex: " + REGISTRY_REGEX);
             return;
@@ -116,6 +121,7 @@ public class ArtifactoryRegistry extends Registry {
 
         // Could not generate auth token nor find auth token, give up all hope
         if (Objects.isNull(generatedAuthToken) && Objects.isNull(foundAuthToken)) {
+            configFile = Optional.empty();
             isArtifactoryAvailable = false;
             return;
         }
@@ -123,7 +129,10 @@ public class ArtifactoryRegistry extends Registry {
         // We could not generate an auth token, but we found an auth token
         // -- assume the found auth token will work.
         if (Objects.isNull(generatedAuthToken) && !Objects.isNull(foundAuthToken)) {
+            // NOTE: we should only go down this path during local runs and at this point
+            // we cannot guarentee that the found auth token was an encoded string.
             authToken = foundAuthToken;
+            configFile = Optional.empty();
             isArtifactoryAvailable = true;
             return;
         }
@@ -135,11 +144,12 @@ public class ArtifactoryRegistry extends Registry {
         // -- Create it by persisting the generated auth token
         if (Objects.isNull(foundAuthToken)) {
             try {
-                persistAuthToken(registry, generatedAuthToken, configDir);
+                configFile = persistAuthToken(registry, generatedAuthToken, configDir);
                 authToken = generatedAuthToken;
                 isArtifactoryAvailable = true;
                 return;
             } catch (Throwable t) {
+                configFile = Optional.empty();
                 isArtifactoryAvailable = false;
                 setupException = t.initCause(setupException);
                 return;
@@ -149,23 +159,15 @@ public class ArtifactoryRegistry extends Registry {
         // -- and found an auth token.
         Objects.requireNonNull(foundAuthToken);
 
-        // Was the generated auth token the same as the found auth token?
-        boolean matchingTokens = generatedAuthToken.equals(foundAuthToken);
-
-        // -- Yes, leave the config alone.
-        if (matchingTokens) {
-            authToken = generatedAuthToken;
-            isArtifactoryAvailable = true;
-            return;
-        }
-
-        // -- No, update it by persisting the generated auth token.
+        // -- Attempt to persist auth token.
+        // the persist method will check for matching tokens
         try {
-            persistAuthToken(registry, generatedAuthToken, configDir);
+            configFile = persistAuthToken(registry, generatedAuthToken, configDir);
             authToken = generatedAuthToken;
             isArtifactoryAvailable = true;
             return;
         } catch (Throwable t) {
+            configFile = Optional.empty();
             isArtifactoryAvailable = false;
             setupException = t.initCause(setupException);
             return;
@@ -176,6 +178,11 @@ public class ArtifactoryRegistry extends Registry {
     @Override
     public String getRegistry() {
         return registry;
+    }
+
+    @Override
+    public Optional<File> getAuthConfigFile() {
+        return configFile;
     }
 
     @Override
@@ -236,7 +243,7 @@ public class ArtifactoryRegistry extends Registry {
         }
 
         File configDir = new File(System.getProperty("java.io.tmpdir"), ".docker");
-        File configFile = persistAuthToken(registry, authToken, configDir);
+        File configFile = persistAuthToken(registry, authToken, configDir).get();
 
         Log.info(c, "generateTempDockerConfig", "Creating a temporary docker configuration file at: " + configFile.getAbsolutePath());
 
