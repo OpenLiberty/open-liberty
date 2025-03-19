@@ -62,7 +62,7 @@ public class Telemetry10 extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -77,7 +77,7 @@ public class Telemetry10 extends FATServletClient {
                                     ConfigServlet.class)
                         .addAsServiceProvider(Extension.class, WithSpanExtension.class);
 
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL20_ID)) {
+        if (TelemetryActions.mpTelemetryEE7IsActive()) {
             // On EE7 / CDI 1.2 only, use of AnnotationLiteral requires app permissions
             app.addAsManifestResource(WithSpanExtension.class.getResource("permissions-ee7.xml"), "permissions.xml");
         }
@@ -92,7 +92,8 @@ public class Telemetry10 extends FATServletClient {
     }
 
     @AfterClass
+    //CWMOT5006W: Warning about conflicting otel.sdk.enabled properties. A conflicting value is set in bootstrap.properties and server.xml
     public static void tearDown() throws Exception {
-        server.stopServer("CWNEN0047W.*Telemetry10Servlet");
+        server.stopServer("CWNEN0047W.*Telemetry10Servlet", "CWMOT5007W");
     }
 }

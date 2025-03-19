@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #
 #COMPONENTPREFIX CWWKT
@@ -210,3 +207,8 @@ log.rollover.start.time.format.warning.useraction=Assicurarsi che il valore di p
 log.rollover.interval.too.short.warning=CWWKT0046W: L'intervallo di rollover del log non pu\u00f2 essere lungo meno di 1 minuto. Se viene specificato un valore inferiore a 1 minuto, l'intervallo di rollover di log \u00e8 impostato su un valore predefinito di 1 giorno.
 log.rollover.interval.too.short.warning.explanation=L'intervallo di rollover del log non pu\u00f2 essere lungo meno di 1 minuto.
 log.rollover.interval.too.short.warning.useraction=Specificare un intervallo di rollover di log uguale o superiore a 1 minuto.
+
+#only if the Set-Cookie is added with the response set/addHeader API.  The best practice is to use Cookie() API which already has this check and uses its own message.
+cookie.attribute.name.invalid=CWWKT0047E: L''attributo cookie [{0}] contiene un carattere non valido.
+cookie.attribute.name.invalid.explanation=Il nome dell'attributo cookie non pu\u00f2 contenere alcun carattere speciale [ () <> @,;: \\/ []? = {}].
+cookie.attribute.name.invalid.useraction=Correggere il nome dell'attributo cookie per non utilizzare alcun carattere speciale.

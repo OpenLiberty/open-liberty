@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -53,6 +53,7 @@ public class StatelessTimedBean implements StatelessTimedLocal {
     private static final Logger logger = Logger.getLogger(StatelessTimedBean.class.getName());
 
     private static Timer timer[] = null;
+    private static long firstTimeout[] = null;
     private static int timeoutCounts[] = null;
     private static CountDownLatch timerLatch = new CountDownLatch(1);
     private static CountDownLatch timerIntervalLatch = new CountDownLatch(1);
@@ -347,9 +348,11 @@ public class StatelessTimedBean implements StatelessTimedLocal {
     public void testTimerServicePhase1() {
 
         timer = new Timer[6];
+        firstTimeout = new long[6];
         timeoutCounts = new int[timer.length];
         timerLatch = new CountDownLatch(timer.length - 1); // one timer cancelled
         cancelTimer = false;
+        long testStartTime = System.currentTimeMillis();
 
         // -------------------------------------------------------------------
         // 1 - Verify getTimerService() returns a valid TimerService
@@ -419,6 +422,35 @@ public class StatelessTimedBean implements StatelessTimedLocal {
         remaining = timer[2].getTimeRemaining();
         Assert.assertTrue("8 ---> Timer.getTimeRemaining() failed: " + remaining,
                           remaining >= 1 && remaining <= EXPIRATION);
+
+        // -------------------------------------------------------------------
+        // 8b - Verify Timer.getNextTimeout() on Timer works
+        // -------------------------------------------------------------------
+        logger.info("testTimerService: Calling Timer.getNextTimeout()");
+        Date nextTimeout = timer[0].getNextTimeout();
+        firstTimeout[0] = nextTimeout != null ? nextTimeout.getTime() : 0;
+        Assert.assertTrue("8b ---> Timer[0].getNextTimeout() failed: " + nextTimeout + ", " + firstTimeout[0],
+                          firstTimeout[0] > testStartTime);
+        nextTimeout = timer[1].getNextTimeout();
+        firstTimeout[1] = nextTimeout != null ? nextTimeout.getTime() : 0;
+        Assert.assertTrue("8b ---> Timer[1].getNextTimeout() failed: " + nextTimeout + ", " + firstTimeout[1],
+                          firstTimeout[1] > testStartTime);
+        nextTimeout = timer[2].getNextTimeout();
+        firstTimeout[2] = nextTimeout != null ? nextTimeout.getTime() : 0;
+        Assert.assertTrue("8b ---> Timer[2].getNextTimeout() failed: " + nextTimeout + ", " + firstTimeout[2],
+                          firstTimeout[2] > testStartTime);
+        nextTimeout = timer[3].getNextTimeout();
+        firstTimeout[3] = nextTimeout != null ? nextTimeout.getTime() : 0;
+        Assert.assertTrue("8b ---> Timer[3].getNextTimeout() failed: " + nextTimeout + ", " + firstTimeout[3],
+                          firstTimeout[3] > testStartTime);
+        nextTimeout = timer[4].getNextTimeout();
+        firstTimeout[4] = nextTimeout != null ? nextTimeout.getTime() : 0;
+        Assert.assertTrue("8b ---> Timer[4].getNextTimeout() failed: " + nextTimeout + ", " + firstTimeout[4],
+                          firstTimeout[4] > testStartTime);
+        nextTimeout = timer[5].getNextTimeout();
+        firstTimeout[5] = nextTimeout != null ? nextTimeout.getTime() : 0;
+        Assert.assertTrue("8b ---> Timer[5].getNextTimeout() failed: " + nextTimeout + ", " + firstTimeout[5],
+                          firstTimeout[5] > testStartTime);
 
         // -------------------------------------------------------------------
         // 9 - Verify Timer.getInfo() returning null works
@@ -656,20 +688,10 @@ public class StatelessTimedBean implements StatelessTimedLocal {
         // 20 - Verify Timer.getNextTimeout() on repeating Timer works
         // -------------------------------------------------------------------
         logger.info("testTimerService: Calling Timer.getNextTimeout()");
-        Date nextTime = timer[2].getNextTimeout();
-        long remaining = nextTime.getTime() - System.currentTimeMillis();
-
-        int retryCount = 0;
-        // If remaining is negative it is possible the postInvoke hasn't completed
-        while (remaining < 0 && retryCount < 4) {
-            FATHelper.sleep(POST_INVOKE_DELAY);
-            retryCount++;
-            nextTime = timer[4].getNextTimeout();
-            remaining = nextTime.getTime() - System.currentTimeMillis();
-        }
-
-        Assert.assertTrue("20 --> Timer.getNextTimeout() unexpected remaining time: " + remaining,
-                          remaining >= (1 - TIMER_PRECISION) && remaining <= (INTERVAL + TIMER_PRECISION));
+        Date nextTimeout = timer[2].getNextTimeout();
+        long nextTime = nextTimeout != null ? nextTimeout.getTime() : 0;
+        Assert.assertTrue("20 --> Timer.getNextTimeout() unexpected next timeout: " + nextTimeout + ", " + nextTime + ", first = " + firstTimeout[2],
+                          nextTimeout != null && nextTime > firstTimeout[2] && (nextTime - firstTimeout[2]) % INTERVAL == 0);
 
         // -------------------------------------------------------------------
         // Wait up to MAX_TIMER_WAIT for interval timers to expire (again)
@@ -1209,6 +1231,7 @@ public class StatelessTimedBean implements StatelessTimedLocal {
             logger.info("Waiting up to " + maxWaitTime + "ms for timers to fire...");
             if (latch.await(maxWaitTime, TimeUnit.MILLISECONDS)) {
                 logger.info("Timers fired; waiting for timeout postInvoke to complete");
+                return;
             }
         } catch (InterruptedException e) {
             e.printStackTrace(System.out);

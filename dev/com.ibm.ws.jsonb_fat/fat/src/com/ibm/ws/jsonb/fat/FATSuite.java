@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -190,11 +190,11 @@ public class FATSuite {
             server.addEnvVar("JSONP_JAR", "fake-json-p.jar");
 
             //TODO replace with a third party implementation when one is developed
-            server.addEnvVar("JSONB_PATH", "yasson/3.0.3/");
+            server.addEnvVar("JSONB_PATH", "yasson/3.0.4/");
             server.addEnvVar("JSONB_JAR", "yasson.jar");
             server.addEnvVar("JSONB_ALT_JAR", "yasson.jar");
 
-            server.addEnvVar("YASSON_PATH", "yasson/3.0.3/");
+            server.addEnvVar("YASSON_PATH", "yasson/3.0.4/");
             server.addEnvVar("YASSON_JAR", "yasson.jar");
         } else if (JakartaEEAction.isEE9Active()) {
             server.addEnvVar("JSONP_PATH", "johnzon/1.2.18/jakarta/");
@@ -270,7 +270,7 @@ public class FATSuite {
      */
     private static void addFakeProvider(LibertyServer server) throws Exception {
         if (JakartaEEAction.isEE10OrLaterActive()) {
-            RemoteFile parsson = server.getFileFromLibertySharedDir("resources/parsson/1.1.4/jakarta/parsson.jar");
+            RemoteFile parsson = server.getFileFromLibertySharedDir("resources/parsson/1.1.7/jakarta/parsson.jar");
             Path fakeDestination = Paths.get(server.getServerSharedPath(), "resources", "fakeProvider", "1.0", "jakarta");
 
             JavaArchive fake_json_p = ShrinkWrap.create(ZipImporter.class, "fake-json-p.jar")

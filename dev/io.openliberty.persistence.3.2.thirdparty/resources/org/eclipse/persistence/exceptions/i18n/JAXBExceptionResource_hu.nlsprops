@@ -85,7 +85,7 @@
 
 50028=A(z) [{0}] \u00faj p\u00e9ld\u00e1nya nem hozhat\u00f3 l\u00e9tre.
 
-50029=Az XmlCustomizer elemhez megadott [{0}] oszt\u00e1ly nem val\u00f3s\u00edtja meg az org.eclipse.persistence.config.DescriptorCustomizer fel\u00fcletet.
+50029=A XmlCustomizer mez\u0151ben megadott [{0}] oszt\u00e1ly nem val\u00f3s\u00edtja meg az org.eclipse.persistence.descriptors.DescriptorCustomizer fel\u00fcletet.
 
 50030=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt t\u00f6bb XmlID tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1ra a(z) [{1}] oszt\u00e1lyhoz.  A(z) [{0}] tulajdons\u00e1g nem \u00e1ll\u00edthat\u00f3 be, mint XmlID, mivel a(z) [{2}] tulajdons\u00e1g m\u00e1r be van \u00e1ll\u00edtva, mint XmlID.
 

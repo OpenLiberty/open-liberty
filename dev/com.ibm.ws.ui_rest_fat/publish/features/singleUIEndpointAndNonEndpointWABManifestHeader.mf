@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: singleUIEndpointAndNonEndpointWABManifestHeader-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.singleUIEndpointAndNonEndpointWABManifestHeader-1.0; visibility:=private
 Subsystem-Name: Single UIEndpoint And Non Endpoint WAB Manifest Header Tool Display Name

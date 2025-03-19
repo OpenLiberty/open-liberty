@@ -40,6 +40,9 @@
             
             <AD id="sslSessionTimeout" name="%ssl.sslSessionTimeout" description="%ssl.sslSessionTimeout.desc"
             required="false" type="String" ibm:type="duration" default="86400s" />
+
+            <AD id="sslSessionCacheSize" name="%ssl.sslSessionCacheSize" description="%ssl.sslSessionCacheSize.desc"
+            required="false" type="Integer"  default="100" />
     </OCD>
     
     <Designate factoryPid="com.ibm.ws.sslchannel.options">

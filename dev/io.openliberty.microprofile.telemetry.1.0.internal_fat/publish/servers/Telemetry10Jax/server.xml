@@ -40,6 +40,10 @@
         <classloader apiTypeVisibility="+third-party"/>
     </application>
 
+    <application type="war" location="w3cTraceContextPropagator.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
     <!--logging traceSpecification="TELEMETRY=all:RESTfulWS=all"/-->
 
 </server>

@@ -18,7 +18,8 @@ src: \
 	test-applications/jarneeder.war/src, \
 	test-applications/testServlet1/src, \
 	test-applications/testServlet2/src, \
-	test-applications/HoldingServlet/src
+	test-applications/HoldingServlet/src, \
+	test-applications/noDirZip/src
 
 test.project: true
 

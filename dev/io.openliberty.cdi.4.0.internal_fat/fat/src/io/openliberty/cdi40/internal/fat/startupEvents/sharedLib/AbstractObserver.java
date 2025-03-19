@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import javax.naming.InitialContext;
+
+import org.junit.Assert;
 
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -64,6 +66,7 @@ public abstract class AbstractObserver {
         }
     }
 
+    @LoggedTest
     public void observeInit(@Observes @Initialized(ApplicationScoped.class) Object event) throws Exception {
         trace("observeInit");
         initObserved = true;
@@ -73,10 +76,12 @@ public abstract class AbstractObserver {
         assertFalse(logMsg("@Initialized(ApplicationScoped.class) was observed after test"), testRequested);
 
         runAllJNDITests();
+        runTCCLTest();
     }
 
     //note the prefixes on these method names and the order they appear in the class is
     //designed to try and make sure that it is the Priority that decides the order, not some other factor
+    @LoggedTest
     public void a_observeStartup2(@Observes @Priority(2) Startup startupEvent) throws Exception {
         trace("a_observeStartup2");
         startupObserved2 = true;
@@ -86,8 +91,10 @@ public abstract class AbstractObserver {
         assertFalse(logMsg("Startup 2 was observed after test"), testRequested);
 
         runAllJNDITests();
+        runTCCLTest();
     }
 
+    @LoggedTest
     public void c_observeStartup1(@Observes @Priority(1) Startup startupEvent) {
         trace("c_observeStartup1");
         startupObserved1 = true;
@@ -97,6 +104,7 @@ public abstract class AbstractObserver {
         assertFalse(logMsg("Startup 1 was observed after test"), testRequested);
     }
 
+    @LoggedTest
     public void b_observeStartup3(@Observes @Priority(3) Startup startupEvent) {
         trace("b_observeStartup3");
         startupObserved3 = true;
@@ -106,6 +114,7 @@ public abstract class AbstractObserver {
         assertFalse(logMsg("Startup 3 was observed after test"), testRequested);
     }
 
+    @LoggedTest
     public void test() {
         trace("test");
         testRequested = true;
@@ -116,6 +125,7 @@ public abstract class AbstractObserver {
         assertFalse(logMsg("Shutdown observed before test requested"), shutdownObserved);
     }
 
+    @LoggedTest
     public void observeShutdown(@Observes Shutdown shutdownEvent) throws Exception {
         trace("observeShutdown");
         shutdownObserved = true;
@@ -123,15 +133,22 @@ public abstract class AbstractObserver {
         assertTrue(logMsg("Shutdown was observed before test"), testRequested);
         //Shutdown should be seen before @BeforeDestroyed(ApplicationScoped.class)
         assertFalse(logMsg("Shutdown was observed after @BeforeDestroyed(ApplicationScoped.class)"), destroyObserved);
+
+        runAllJNDITests();
+        runTCCLTest();
     }
 
-    public void observeDestroy(@Observes @BeforeDestroyed(ApplicationScoped.class) Object event) {
+    @LoggedTest
+    public void observeDestroy(@Observes @BeforeDestroyed(ApplicationScoped.class) Object event) throws Exception {
         trace("observeDestroy");
         destroyObserved = true;
         //@BeforeDestroyed(ApplicationScoped.class) should be seen after Shutdown
         assertTrue(logMsg("@BeforeDestroyed(ApplicationScoped.class) was observed before Shutdown"), shutdownObserved);
         //@BeforeDestroyed(ApplicationScoped.class) should be seen after any request
         assertTrue(logMsg("Shutdown was observed before test"), testRequested);
+
+        runAllJNDITests();
+        runTCCLTest();
     }
 
     // These tests use JNDI because that had known issues within the context of CDI lifecycle events
@@ -147,6 +164,17 @@ public abstract class AbstractObserver {
         testServletJNDILookup();
         testInjected();
         testBeanJNDILookup();
+    }
+
+    private void runTCCLTest() throws Exception {
+
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            Class.forName(SharedLibApplicationScopedBean.class.getName(), true, tccl);
+        } catch (ClassNotFoundException e) {
+            Assert.fail("We could not load a class from a package being used by the application from the TCCL.");
+        }
+
     }
 
     public void testCDICurrent() throws Exception {

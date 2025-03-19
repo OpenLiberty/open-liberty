@@ -13,9 +13,16 @@
 
 apply from: '../com.ibm.ws.wsat.migration_fat.1/common.gradle'
 
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
 // Define G:A:V coordinates of each dependency
 dependencies {
-  requiredLibs project(":com.ibm.ws.wsat.migration_fat.1")
+  requiredLibs project(":com.ibm.ws.transaction.fat.util"),
+               project(":com.ibm.ws.wsat.migration_fat.1")
 }
 
 autoFVT.dependsOn copyTestApps

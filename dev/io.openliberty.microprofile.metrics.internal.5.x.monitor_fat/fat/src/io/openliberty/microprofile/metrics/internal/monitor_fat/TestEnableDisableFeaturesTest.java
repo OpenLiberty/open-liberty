@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.metrics.internal.monitor_fat;
 
@@ -33,6 +30,7 @@ import javax.net.ssl.X509TrustManager;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,6 +41,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -80,6 +81,17 @@ public class TestEnableDisableFeaturesTest {
 
     private static LibertyServer currentServ;
 
+    private static final String SERVER_NAME = "MetricsMonitorServer";
+    
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
+                                                             MicroProfileActions.MP70_EE10, //MP61 is the same features here
+                                                             MicroProfileActions.MP70_EE11,
+                                                             MicroProfileActions.MP60);
+    
     private static boolean serverEDF6FirstUse = true;
 
     @BeforeClass
@@ -221,6 +233,35 @@ public class TestEnableDisableFeaturesTest {
         checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF4),
                 new String[] { "sql: create table cities" }, new String[] {});
         Log.info(c, testName, "------- connectionpool metrics should be available ------");
+        checkStrings(getHttpsServlet("/metrics?scope=vendor", serverEDF4),
+                new String[] { "connectionpool_connectionHandles{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_freeConnections{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_destroy_total{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_create_total{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_managedConnections{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_connectionHandles{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_freeConnections{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_destroy_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_create_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_managedConnections{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}" },
+                new String[] {});
+        
+        currentServ.setMarkToEndOfLog();
+        // FAT updated to check that connectionpool metric remains after unloading
+        // application.
+        boolean res = currentServ.removeDropinsApplications("testJDBCApp.war");
+        Assert.assertTrue("TestJDBCApp.war was not removed", res);
+
+        currentServ.waitForStringInLog(".*CWWKZ0009I: The application testJDBCApp has stopped successfully.*");
+        Log.info(c, testName, "------- Removed JDBC application ------");
         checkStrings(getHttpsServlet("/metrics?scope=vendor", serverEDF4),
                 new String[] { "connectionpool_connectionHandles{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
                         "connectionpool_freeConnections{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",

@@ -400,7 +400,8 @@ public class OracleUCPTestServlet extends FATServlet {
 
         } finally {
             con1.close();
-            con2.close();
+            if (con2 != null)
+                con2.close();
         }
     }
 
@@ -456,7 +457,8 @@ public class OracleUCPTestServlet extends FATServlet {
 
         } finally {
             con1.close();
-            con2.close();
+            if (con2 != null)
+                con2.close();
         }
     }
 
@@ -765,7 +767,8 @@ public class OracleUCPTestServlet extends FATServlet {
 
         } finally {
             con1.close();
-            con2.close();
+            if (con2 != null)
+                con2.close();
         }
     }
 

@@ -18,3 +18,4 @@ IBM-App-ForceRestart: install, uninstall
 -jars=com.ibm.ws.jsfContainer; location:=lib/
 kind=ga
 edition=core
+WLP-Platform: javaee-7.0

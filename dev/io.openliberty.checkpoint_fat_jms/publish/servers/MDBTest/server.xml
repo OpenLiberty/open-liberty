@@ -1,0 +1,140 @@
+<server>
+    <featureManager>
+      <feature>servlet-4.0</feature>
+      <feature>wasJmsClient-2.0</feature>
+      <feature>wasJmsServer-1.0</feature>
+      <feature>wasJmsSecurity-1.0</feature>
+      <feature>jndi-1.0</feature>
+      <feature>mdb-3.2</feature>
+      <feature>cdi-2.0</feature>
+      <feature>testjmsinternals-1.0</feature>
+      <feature>timedexit-1.0</feature>
+    </featureManager>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+      host="*"
+      httpPort="${bvt.prop.HTTP_default}"
+      httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+    <!-- Import from 'fatTestPorts.xml' -->
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+        <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+    <!-- Set the JMS endpoint port configuration to values which are known to the client. -->
+    <variable name="jms_port" defaultValue="9999" />
+    <variable name="jms_port_ssl" defaultValue="9999" />
+    <wasJmsEndpoint host="*" wasJmsPort="${jms_port}" wasJmsSSLPort="${jms_port_ssl}"/> 
+
+    <variable name="onError" value="FAIL"/>
+
+    <wasJmsOutbound id="BootstrapSecureMessaging" useSSL="true">
+    </wasJmsOutbound>
+
+    <keyStore id="defaultKeyStore" location="mykey.jks" type="JKS" password="key123"/>
+
+    <basicRegistry id="basic" realm="customRealm">
+        <user name="user1" password="user1pwd" />
+        <user name="user2" password="user2pwd" />
+        <user name="user3" password="user3pwd" />
+        <group name="Testers">
+        <member name="user3" />
+        </group>
+    </basicRegistry>
+
+    <messagingEngine id="defaultME" >
+
+        <queue id="QUEUE1" 
+               maxRedeliveryCount="2"
+               >
+        </queue>
+        
+        <queue id="QUEUE10" 
+               maxRedeliveryCount="2"
+               >
+        </queue>
+        
+        <topicSpace id="NewTopic1">
+        </topicSpace>
+        
+        <topicSpace id="NewTopic2">
+        </topicSpace>
+        
+        
+        <messagingSecurity>
+            <role name="developer">
+                <queuePermission queueRef="QUEUE1">
+                    <action>SEND</action>
+                    <action>BROWSE</action>
+                    <action>RECEIVE</action>
+                </queuePermission>
+                <queuePermission queueRef="QUEUE10">
+                    <action>SEND</action>
+                    <action>BROWSE</action>
+                    <action>RECEIVE</action>
+                </queuePermission>
+                <topicPermission topicSpaceRef="NewTopic1" topicName="testTopic">
+                    <action>ALL</action>
+                </topicPermission>
+                <topicPermission topicSpaceRef="NewTopic2" topicName="testTopic2">
+                    <action>ALL</action>
+                </topicPermission>
+            <user name="user1" /> 
+            <group name="Testers" />    
+            </role>
+        </messagingSecurity>
+
+        <fileStore id="com.ibm.ws.sib.fileStore"
+          logFileSize="10">
+        </fileStore>
+     </messagingEngine>
+
+    <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
+        <properties.wasJms queueName="QUEUE1" />
+    </jmsQueue> 
+    
+    <jmsQueue id="queue/test" jndiName="queue/test">
+        <properties.wasJms queueName="QUEUE10" />
+    </jmsQueue> 
+             
+    <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+        <properties.wasJms  userName="${USER_NAME}" password="${USER_PASSWORD}"/> 
+    </jmsQueueConnectionFactory>
+    <connectionManager id="ConMgr6" maxPoolSize="2"/>
+    
+    <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr5">
+        <properties.wasJms userName="${USER_NAME}" password="${USER_PASSWORD}" remoteServerAddress="localhost:${jms_port}:BootstrapBasicMessaging" /> 
+    </jmsQueueConnectionFactory>
+    <connectionManager id="ConMgr5" maxPoolSize="2"/>
+
+    <jmsQueueConnectionFactory jndiName="newQCF" connectionManagerRef="ConMgr1">
+        <properties.wasJms /> 
+    </jmsQueueConnectionFactory>
+    <connectionManager id="ConMgr1" maxPoolSize="2"/>
+    
+    <jmsTopic id="eis/topic1" jndiName="eis/topic1">
+        <properties.wasJms topicSpace="NewTopic1" topicName="testTopic" />
+    </jmsTopic>
+
+    <jmsTopic id="eis/topic2" jndiName="eis/topic2">
+        <properties.wasJms topicSpace="NewTopic2" topicName="testTopic2" />
+    </jmsTopic>
+
+
+    <jmsTopicConnectionFactory jndiName="eis/tcf1" connectionManagerRef="ConMgr2">
+        <properties.wasJms userName="${USER_NAME}" password="${USER_PASSWORD}" remoteServerAddress="localhost:${jms_port_ssl}:BootstrapSecureMessaging"  /> 
+    </jmsTopicConnectionFactory>
+    <connectionManager id="ConMgr2" maxPoolSize="2"/>
+    
+    <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr4">
+        <properties.wasJms userName="${USER_NAME}" password="${USER_PASSWORD}" /> 
+    </jmsTopicConnectionFactory>
+    <connectionManager id="ConMgr4" maxPoolSize="2"/>
+
+    <jmsActivationSpec id="MDBTestApp/MDBQueue">
+        <properties.wasJms userName="${USER_NAME}" password="${USER_PASSWORD}" />
+    </jmsActivationSpec>
+    <cdi emptyBeansXmlCDI3Compatibility="true"/>
+
+</server>

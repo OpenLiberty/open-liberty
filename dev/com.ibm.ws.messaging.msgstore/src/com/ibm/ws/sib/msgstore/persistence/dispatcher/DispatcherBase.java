@@ -1,6 +1,5 @@
-package com.ibm.ws.sib.msgstore.persistence.dispatcher;
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+/* ==============================================================================
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +9,9 @@ package com.ibm.ws.sib.msgstore.persistence.dispatcher;
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * ==============================================================================
+ */
+package com.ibm.ws.sib.msgstore.persistence.dispatcher;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.msgstore.MessageStoreConstants;
@@ -113,5 +114,10 @@ public abstract class DispatcherBase implements Dispatcher
         }; // end if
 
         return value;
+    }
+
+    @Deprecated
+    public final void stop(int mode) {
+        stop(mode, null);
     }
 }

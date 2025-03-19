@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,9 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -63,8 +66,6 @@ import com.ibm.ws.security.audit.event.JMXMBeanAttributeEvent;
 import com.ibm.ws.security.audit.event.JMXMBeanEvent;
 import com.ibm.ws.security.audit.event.JMXMBeanRegisterEvent;
 import com.ibm.ws.security.audit.event.JMXNotificationEvent;
-import com.ibm.ws.security.audit.event.MemberManagementEvent;
-import com.ibm.ws.security.audit.event.RESTAuthorizationEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -74,6 +75,7 @@ import com.ibm.wsspi.probeExtension.ProbeExtension;
 import com.ibm.wsspi.requestContext.Event;
 import com.ibm.wsspi.requestContext.RequestContext;
 import com.ibm.wsspi.security.audit.AuditService;
+
 
 /**
  *
@@ -93,13 +95,19 @@ public class AuditPE implements ProbeExtension {
 	protected final AtomicServiceReference<AuditService> auditServiceRef = new AtomicServiceReference<AuditService>(
 			KEY_AUDIT_SERVICE);
 
+	private static final String AUDITPE_REST_SERVICE = "auditPERestService";
+	protected final AtomicServiceReference <AuditPERestService> auditPERestServiceRef = new AtomicServiceReference<AuditPERestService>(
+		AUDITPE_REST_SERVICE);
+
 	@Activate
 	protected void activate(ComponentContext cc) {
 		auditServiceRef.activate(cc);
+		auditPERestServiceRef.activate(cc);
 	}
 
 	@Deactivate
 	protected void deactivate(ComponentContext cc) {
+		auditPERestServiceRef.deactivate(cc);
 		auditServiceRef.deactivate(cc);
 	}
 
@@ -111,6 +119,15 @@ public class AuditPE implements ProbeExtension {
 
 	protected void unsetAuditService(ServiceReference<AuditService> reference) {
 		auditServiceRef.unsetReference(reference);
+	}
+
+	@Reference(service = AuditPERestService.class, name = AUDITPE_REST_SERVICE, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
+	protected void setAuditPERestService(ServiceReference<AuditPERestService> reference) {
+		auditPERestServiceRef.setReference(reference);
+	}
+
+	protected void unsetAuditPERestService(ServiceReference<AuditPERestService> reference) {
+		auditPERestServiceRef.unsetReference(reference);
 	}
 
 	static ArrayList<String> events = new ArrayList<String>();
@@ -226,7 +243,13 @@ public class AuditPE implements ProbeExtension {
 					auditEventAuthnFailover01(methodParams);
 					break;
 				case SECURITY_MEMBER_MGMT_01:
-					auditEventMemberMgmt01(methodParams);
+					if (auditPERestServiceRef.getService() != null){
+
+						auditPERestServiceRef.getService().auditEventMemberMgmt01(auditServiceRef.getService(), methodParams);
+					}
+					else{
+						Tr.error(tc, "AUDIT_EVENT_MISSING_REST_ENDPOINT", new Object[] {AuditConstants.SECURITY_MEMBER_MGMT});
+					}
 					break;
 				case SECURITY_JMS_AUTHN_01:
 					auditEventJMSAuthn01(methodParams);
@@ -247,7 +270,12 @@ public class AuditPE implements ProbeExtension {
 					auditEventSafAuth(methodParams);
 					break;
 				case SECURITY_REST_HANDLER_AUTHZ:
-					auditEventRESTAuthz(methodParams);
+					if (auditPERestServiceRef.getService() != null){
+						auditPERestServiceRef.getService().auditEventRESTAuthz(auditServiceRef.getService(), methodParams);
+					}
+					else {
+						Tr.error(tc, "AUDIT_EVENT_MISSING_REST_ENDPOINT", new Object[] { AuditConstants.SECURITY_REST_HANDLER_AUTHZ });
+					}
 					break;
 				default:
 					// TODO: emit error message
@@ -515,34 +543,6 @@ public class AuditPE implements ProbeExtension {
 		}
 	}
 
-	private void auditEventMemberMgmt01(Object[] methodParams) {
-		Object[] varargs = (Object[]) methodParams[1];
-		Object req = varargs[0];
-		String action = (String) varargs[1];
-		String repositoryId = (String) varargs[2];
-		String uniqueName = (String) varargs[3];
-		String realmName = (String) varargs[4];
-		Object root = varargs[5];
-		Integer statusCode = (Integer) varargs[6];
-		String serviceType = null;
-		if (varargs.length > 7) {
-			serviceType = (String) varargs[7];
-		}
-		String outcome = statusCode.intValue() == 200 ? AuditConstants.SUCCESS : AuditConstants.FAILURE;
-
-		if (auditServiceRef.getService() != null && auditServiceRef.getService()
-				.isAuditRequired(AuditConstants.SECURITY_MEMBER_MGMT, outcome)) {
-			MemberManagementEvent av;
-			if (serviceType == null) {
-				av = new MemberManagementEvent(req, action, repositoryId, uniqueName, realmName, root, statusCode);
-			} else {
-				av = new MemberManagementEvent(req, action, repositoryId, uniqueName, realmName, root, statusCode,
-						serviceType);
-			}
-			auditServiceRef.getService().sendEvent(av);
-		}
-	}
-
 	private void auditEventJMSAuthn01(Object[] methodParams) {
 		Object[] varargs = (Object[]) methodParams[1];
 		String userName = (String) varargs[0];
@@ -717,21 +717,6 @@ public class AuditPE implements ProbeExtension {
 					principalName);
 			auditServiceRef.getService().sendEvent(safAuthDetails);
 		}
-	}
-
-	private void auditEventRESTAuthz(Object[] methodParams) {
-
-		Object[] varargs = (Object[]) methodParams[1];
-		Object req = varargs[0];
-		Object response = varargs[1];
-		int statusCode = (Integer) varargs[2];
-		if (auditServiceRef.getService() != null && auditServiceRef.getService()
-				.isAuditRequired(AuditConstants.SECURITY_REST_HANDLER_AUTHZ,
-						statusCode == HttpServletResponse.SC_OK ? AuditConstants.SUCCESS : AuditConstants.FAILURE)) {
-			RESTAuthorizationEvent av = new RESTAuthorizationEvent(req, response);
-			auditServiceRef.getService().sendEvent(av);
-		}
-
 	}
 
     private void auditEventSafAuth(Object[] methodParams) {

@@ -1557,8 +1557,8 @@ servlet.with.same.name.already.exists.explanation=Servlet s t\u00edmto n\u00e1zv
 servlet.with.same.name.already.exists.useraction=Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 akce. Zjist\u011bte konflikty v deskriptoru implementace, anotac\u00edch a zdrojov\u00e9m k\u00f3du, kter\u00e9 mohou dynamicky p\u0159id\u00e1vat tuto konfiguraci servletu. 
 
 servlet.feature.not.loaded.correctly=SRVE8501E: Kontejner servlet\u016f se nena\u010detl s akceptovatelnou verz\u00ed.
-servlet.feature.not.loaded.correctly.explanation=Kontejner servlet\u016f se na\u010detl s verz\u00ed, kter\u00e1 odpov\u00edd\u00e1 specifikaci Java EE funkce servletu. Kontejner nebyl na\u010dten se \u017e\u00e1dnou definovanou verz\u00ed.
-servlet.feature.not.loaded.correctly.useraction=Zkontrolujte soubor server.xml, zda v n\u011bm existuje funkce servlet-3.0 nebo servlet-3.1. Jedna z t\u011bchto funkc\u00ed by m\u011bla b\u00fdt definov\u00e1na, ale ne ob\u011b.
+servlet.feature.not.loaded.correctly.explanation=Kontejner servletu na\u010dten bez p\u0159ijateln\u00e9 verze. Aplikace se m\u016f\u017ee chovat jinak, ne\u017e se o\u010dek\u00e1valo.
+servlet.feature.not.loaded.correctly.useraction=Zkontrolovat server.xml soubor pro existenci v\u00edce funkc\u00ed servletu.  Soubor nesm\u00ed specifikovat v\u00edce ne\u017e jednu funkci servletu.
 
 filter.failed.app.destroyed=SRVE8502W: Po\u017eadavek pro {0} nelze dokon\u010dit, proto\u017ee aplikace byla zastavena.
 filter.failed.app.destroyed.explanation=Webov\u00e1 aplikace se zastavuje a po\u017eadavek nelze dokon\u010dit. Tato akce mohla b\u00fdt zp\u016fsobena vypnut\u00edm serveru b\u011bhem zpracov\u00e1n\u00ed po\u017eadavku.

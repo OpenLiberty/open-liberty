@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution,  and is available at
@@ -103,7 +103,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            String currentURL = this.pseudoHeaders.get(HpackConstants.PATH);
+            String currentURL = this.pseudoHeaders == null ? "UNSET_HEADERS" : this.pseudoHeaders.get(HpackConstants.PATH);
             Tr.exit(tc, "setAndGetIsGrpc returning " + isGrpc + " for request path " + currentURL);
         }
         return isGrpc;

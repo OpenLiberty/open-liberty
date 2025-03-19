@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@
 dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common.jwt'),
 	project(':com.ibm.ws.org.jose4j'),
-  	  project(':io.openliberty.org.apache.commons.logging'),
       project(':com.ibm.ws.org.apache.httpcomponents'),
       'net.sourceforge.htmlunit:htmlunit:2.44.0',
       'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
@@ -35,9 +34,7 @@ dependencies {
       'xml-apis:xml-apis:1.4.01',
       'xalan:xalan:2.7.2',
       project(':com.ibm.ws.org.apache.commons.io'),
-      project(':io.openliberty.org.apache.xercesImpl'),
-      project(':com.ibm.ws.org.slf4j.api')
-      
+      project(':io.openliberty.org.apache.xercesImpl')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

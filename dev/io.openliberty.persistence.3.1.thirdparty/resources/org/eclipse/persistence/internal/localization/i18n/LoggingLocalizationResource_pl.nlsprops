@@ -117,7 +117,7 @@ connected_user_database_driver=Nawi\u0105zano po\u0142\u0105czenie: {0}{6} U\u01
 
 corrupt_object=uszkodzony obiekt: {0}
 
-corrupt_object_referenced_through_mapping=Nast\u0119puj\u0105cy uszkodzony obiekt jest przywo\u0142ywany przez odwzorowanie: {0}.
+corrupt_object_referenced_through_mapping=Mapowanie odwo\u0142uje si\u0119 do nast\u0119puj\u0105cego uszkodzonego obiektu: {0}
 
 corrupted_session_announcement=Identyfikator sesji: {0} mened\u017cer wykrywania odebra\u0142 uszkodzone og\u0142oszenie sesji \u2013 zignorowano.
 
@@ -168,6 +168,12 @@ ejb_jar_xml_not_found_in_input=Brak pliku ejb-jar.xml w katalogu wej\u015bciowym
 elements=Liczba element\u00f3w: {0}{1}
 
 enable_batch_operations_as_true_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS enable-batch-operations-as-true nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
+
+encryptor_script_description=Ta aplikacja wewn\u0119trznie odszyfrowuje stare zaszyfrowane has\u0142o, kt\u00f3re by\u0142o u\u017cywane przez poprzednie EclipseLink wersj\u0119 i szyfruje j\u0105 najnowszym algorytmem.
+
+encryptor_script_output=Ponownie zaszyfrowane has\u0142o to: {0}
+
+encryptor_script_usage=U\u017cycie jest `passwordUpdate.sh|.cmd -ip <stare zaszyfrowane has\u0142o>`
 
 entity_manager_ignores_jta_data_source=Jednostka trwa\u0142o\u015bci nie u\u017cywa interfejsu JTA, wi\u0119c interfejs EntityManager ignoruje \u017ar\u00f3d\u0142o danych JTA. 
 
@@ -709,7 +715,12 @@ toplink_warning=[EL \u2013 ostrze\u017cenia]:
 
 unit_of_work_thread_info=Bie\u017c\u0105ca jednostka pracy w sesji ({0}) zosta\u0142a utworzona przez inny w\u0105tek (identyfikator: {1}, nazwa: {2}), ni\u017c bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4})
 
-unit_of_work_thread_info_thread_dump=W\u0105tek tworzenia (identyfikator: {0}, nazwa: {1}), stos wywo\u0142a\u0144: {2}Bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4}), stos wywo\u0142a\u0144:{5}\n
+unit_of_work_thread_info_thread_dump=Tworzenie w\u0105tku (identyfikator: {0} nazwa: {1}) \u015alad stosu:
+#{2}
+
+Current w\u0105tek (identyfikator: {3} nazwa: {4}) \u015alad stosu:
+#{5}
+
 unitofwork_identity_hashcode={0} Kod mieszaj\u0105cy to\u017csamo\u015bci jednostki pracy: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=Zapytanie UpdateAllQuery nie mo\u017ce u\u017cywa\u0107 powi\u0105zania na tej platformie bazy danych. Ustawienia zapytania zosta\u0142y zmienione tak, aby wykona\u0107 zapytanie bez powi\u0105zania.

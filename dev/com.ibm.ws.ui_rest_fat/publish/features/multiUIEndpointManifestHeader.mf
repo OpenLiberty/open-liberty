@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: uriManifestHeader-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.multiuiendpointmanifestHeader-1.0; visibility:=private
 Subsystem-Name: Multi UI Endpoint Manifest Header Tool Display Name

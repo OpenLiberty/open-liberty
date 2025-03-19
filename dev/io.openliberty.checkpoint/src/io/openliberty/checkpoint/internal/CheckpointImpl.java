@@ -30,8 +30,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -573,13 +571,15 @@ public class CheckpointImpl implements ServerReadyStatus {
                            Function<Throwable, CheckpointFailedException> failed) throws CheckpointFailedException {
         for (CheckpointHookService checkpointHookService : checkpointHooks) {
             try {
-                debug(tc, () -> operation + " operation on hook: " + checkpointHookService);
+                debug(tc, () -> "Calling " + operation + " operation on hook: " + checkpointHookService);
                 perform.accept(checkpointHookService.hook);
             } catch (Throwable abortCause) {
                 debug(tc, () -> operation + " failed on hook: " + checkpointHookService);
                 if (failed != null) {
                     throw failed.apply(abortCause);
                 }
+            } finally {
+                debug(tc, () -> "Finished " + operation + " operation on hook: " + checkpointHookService);
             }
         }
     }

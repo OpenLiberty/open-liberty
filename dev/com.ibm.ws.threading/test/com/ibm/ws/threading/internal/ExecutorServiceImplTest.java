@@ -70,6 +70,13 @@ public class ExecutorServiceImplTest {
         executorService.activate(componentConfig);
         ThreadPoolExecutor executor = executorService.getThreadPool();
 
+        // first check for startupPoolSize, which defaults to 6
+        Assert.assertEquals(6, executor.getCorePoolSize());
+        Assert.assertEquals(6, executor.getMaximumPoolSize());
+
+        // then tell the server that startup has completed
+        executorService.setServerStarted(null);
+        // and check for the expected core/max sizes based on earlier config
         Assert.assertEquals(10, executor.getCorePoolSize());
         Assert.assertEquals(10, executor.getMaximumPoolSize());
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -118,3 +118,8 @@ reaper.reopen.active.useraction=Restart the server.  When updating application f
 missing.zip.file=CWWKM0128E: The {0} zip file is missing.
 missing.zip.file.explanation=An exception occurred during archive processing because the specified file was not found. 
 missing.zip.file.useraction=Check that the specified file exits and has permissions that are readable by the server.
+
+# # {0} A jar: URL.
+CWWKM0129W.missing.dir.entry=CWWKM0129W: The archive {0} does not have the expected directory entry path: {1}
+CWWKM0129W.missing.dir.entry.explanation=The archive that is used in the resource URL has entries that are contained within the directory, but the archive is missing an entry for the directory itself. The directory URL is not returned. This omission can cause some applications that scan for resources to fail to find some resources in the archive file.
+CWWKM0129W.missing.dir.entry.useraction=The archive file must be built to include all the directory entries.

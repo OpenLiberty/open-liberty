@@ -105,8 +105,8 @@ public class LibertyOP_CookieVerificationTests extends SocialCommonTest {
                 Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES,
                 "Should have found a WASOidcNonce cookie but didn't.", null,
                 "WASOidcNonce[pn][0-9]+=[^" + CommonValidationTools.COOKIE_DELIMITER + "]+");
-        String expirationCookieFormat = JakartaEEAction.isEE10OrLaterActive() ? "; max-age=0"
-                : "; Expires=Thu, 01 Dec 1994";
+        String expirationCookieFormat = JakartaEEAction.isEE10OrLaterActive() ? ";(?i) max-age=0"
+                : ";(?i) Expires=Thu, 01 Dec 1994";
         expectations = vData.addExpectation(expectations, SocialConstants.LIBERTYOP_PERFORM_SOCIAL_LOGIN,
                 Constants.RESPONSE_HEADER, Constants.STRING_MATCHES,
                 "Should have found a Set-Cookie header to clear the WASOidcState cookie but didn't.", null,
@@ -116,7 +116,7 @@ public class LibertyOP_CookieVerificationTests extends SocialCommonTest {
                 "Should have found a Set-Cookie header to clear the WASOidcNonce cookie but didn't.", null,
                 "WASOidcNonce[pn][0-9]+=\"\"" + expirationCookieFormat);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, socialSettings, expectations);
 
         List<String> allowedCookies = new ArrayList<>();
         allowedCookies.add("JSESSIONID");

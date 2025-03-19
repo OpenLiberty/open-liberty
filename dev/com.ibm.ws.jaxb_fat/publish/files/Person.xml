@@ -1,0 +1,4 @@
+<ns:Person xmlns:ns="http://a">
+    <ns:firstNameWithPrefix>John</ns:firstNameWithPrefix>
+    <LastNameWithOutPrefix>Doe</LastNameWithOutPrefix>
+</ns:Person>

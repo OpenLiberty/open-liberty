@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,7 +25,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.cdi.web.factories.WeldListenerFactory;
 import com.ibm.ws.cdi.web.impl.security.PrincipalServletRequestListener;
 import com.ibm.ws.cdi.web.interfaces.CDIWebRuntime;
@@ -103,11 +102,6 @@ public abstract class AbstractServletInitializer implements ServletContainerInit
 
                     beanManager.wrapExpressionFactory(applicationCtx.getExpressionFactory());
                     applicationCtx.addELResolver(beanManager.getELResolver());
-                }
-                WeldDevelopmentMode devMode = cdiWebRuntime.getWeldDevelopmentMode();
-                if (devMode != null) {
-                    //add probeFilter
-                    devMode.addProbeFilter(isc);
                 }
             }
         }

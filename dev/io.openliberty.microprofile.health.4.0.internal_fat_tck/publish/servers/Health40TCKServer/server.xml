@@ -11,6 +11,7 @@
 <server>
     <featureManager>
         <feature>mpHealth-4.0</feature>
+        <feature>mpConfig-3.0</feature> <!-- add MP Config specifically so we can repeat for MP70 -->
         <feature>cdi-3.0</feature> <!-- add an EE feature so we can repeat for EE9 and EE10 -->
         <feature>componenttest-2.0</feature>
         <feature>localConnector-1.0</feature>

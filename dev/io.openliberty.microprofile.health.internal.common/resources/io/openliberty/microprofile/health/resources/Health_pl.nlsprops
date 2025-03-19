@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -42,8 +42,8 @@ healthcheck.bean.call.exception.CWMMH0050E.explanation=Podana metoda wywo\u0142a
 healthcheck.bean.call.exception.CWMMH0050E.useraction=Przejrzyj metod\u0119 wywo\u0142ania w komponencie bean HealthCheck, aby zidentyfikowa\u0107 zg\u0142oszony wyj\u0105tek.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMMH0052W=CWMMH0052W: Metoda {0} implementuj\u0105ca klas\u0119 HealthCheckResponse w aplikacji {1} modu\u0142u {2} zg\u0142osi\u0142a status {3} z danymi {4}.
-healthcheck.application.down.CWMMH0052W.explanation=Status Wy\u0142\u0105czony mo\u017ce spowodowa\u0107 podj\u0119cie dzia\u0142ania wzgl\u0119dem tego serwera przez us\u0142ug\u0119 monitorowania.
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: Produkt {0} implementuj\u0105cy odpowied\u017a HealthCheckw aplikacji {1} w module {2}zg\u0142osi\u0142 status {3} dla kontroli poprawno\u015bci, {4}, z danymi {5}.
+healthcheck.application.down.CWMMH0052W.explanation=Status WY\u0141\u0104CZONY mo\u017ce spowodowa\u0107, \u017ce us\u0142uga monitorowania b\u0119dzie dzia\u0142a\u0107 na tym serwerze.
 healthcheck.application.down.CWMMH0052W.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.  To ostrze\u017cenie jest rekordem statusu Wy\u0142\u0105czony.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet

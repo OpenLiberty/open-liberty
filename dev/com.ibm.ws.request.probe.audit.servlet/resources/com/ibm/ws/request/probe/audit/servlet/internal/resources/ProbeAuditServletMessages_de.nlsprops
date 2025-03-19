@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: Der Pr\u00fcfereignisname {0} wird nicht unterst\u00fctzt, weil der REST-Endpunkt nicht aktiviert ist.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=Damit das angegebene Pr\u00fcfereignis verwendet werden kann, muss der REST-Endpunkt aktiviert sein.
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=Stellen Sie sicher, dass ein Feature, das den REST-Endpunkt aktiviert, in der Konfiguration server.xml aktiviert ist.

@@ -1,0 +1,8 @@
+Subsystem-SymbolicName: t7.s-1.0; visibility:=public; singleton:=true
+Subsystem-Version: 1.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: 
+ t7.a-1.0; type="osgi.subsystem.feature",
+ t7.b-1.0; type="osgi.subsystem.feature",
+ t7.c-1.0; ibm.tolerates:="2.0"; type="osgi.subsystem.feature",
+ t7.d-1.0; ibm.tolerates:="2.0"; type="osgi.subsystem.feature"

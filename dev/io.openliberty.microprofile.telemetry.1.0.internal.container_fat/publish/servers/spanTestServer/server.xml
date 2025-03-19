@@ -4,7 +4,9 @@
     <!-- Enable features -->
     <featureManager>
         <feature>mpTelemetry-1.0</feature>
+        <feature>restfulWS-3.1</feature>	
         <feature>timedexit-1.0</feature>
+        <feature>concurrent-3.0</feature>
         <feature>mpRestClient-3.0</feature>
     </featureManager>
 

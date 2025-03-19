@@ -21,7 +21,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 -include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[5.1,5.2)}}!/META-INF/MANIFEST.MF,check-me-in-if-i-change.bnd
 
 -includeresource: \
-  @${repo;org.jboss.weld:weld-osgi-bundle;[5.1,5.2)}
+  @${repo;org.jboss.weld:weld-osgi-bundle;[5.1,5.2)}!/!META-INF/client/*
 
 Bundle-SymbolicName: io.openliberty.org.jboss.weld5; singleton:=true
 

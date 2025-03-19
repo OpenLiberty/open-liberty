@@ -1,36 +1,37 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import java.util.Set;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.annotation.Server;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * CDI Test
@@ -38,28 +39,25 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * Perform tests of {@link javax.enterprise.event.Observes} and {@link javax.interceptor.Interceptor}.
  */
 @RunWith(FATRunner.class)
-public class CDIBeanInterceptorServletTest extends LoggingTest {
+public class CDIBeanInterceptorServletTest {
 
     private static final Logger LOG = Logger.getLogger(CDIBeanInterceptorServletTest.class.getName());
 
     private static final String CDI12_TEST_V2_JAR_NAME = "CDI12TestV2";
     private static final String CDI12_TEST_V2_CURRENCY_APP_NAME = "CDI12TestV2Currency";
 
-    // Server instance ...
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_cdiBeanInterceptorServletServer");
+    // Server instance
+    @Server("servlet31_cdiBeanInterceptorServletServer")
+    public static LibertyServer LS;
 
     /**
      * Perform a request to the the server instance and verify that the
      * response has expected text. Throw an exception if the expected
      * text is not present or if the unexpected text is present.
      *
-     * The request path is used to create a request URL via {@link SharedServer.getServerUrl}.
-     *
      * Both the expected text and the unexpected text are tested using a contains
      * test. The test does not look for an exact match.
      *
-     * @param webBrowser          Simulated web browser instance through which the request is made.
      * @param requestPath         The path which will be requested.
      * @param expectedResponses   Expected response text. All elements are tested.
      * @param unexpectedResponses Unexpected response text. All elements are tested.
@@ -82,34 +80,26 @@ public class CDIBeanInterceptorServletTest extends LoggingTest {
                                                                          "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2currency.war.cdi.interceptors.servlets");
         CDI12TestV2CurrencyApp = (WebArchive) ShrinkHelper.addDirectory(CDI12TestV2CurrencyApp, "test-applications/CDI12TestV2Currency.war/resources");
         CDI12TestV2CurrencyApp = CDI12TestV2CurrencyApp.addAsLibraries(CDI12TestV2Jar);
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_CURRENCY_APP_NAME);
-            LOG.info("addAppToServer : " + CDI12_TEST_V2_CURRENCY_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2CurrencyApp);
-        }
-        SHARED_SERVER.startIfNotStarted();
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_CURRENCY_APP_NAME);
+
+        // Export the application
+        ShrinkHelper.exportDropinAppToServer(LS, CDI12TestV2CurrencyApp);
+
+        // Start the server and use the class name so we can find logs easily.
+        LS.startServer(CDIBeanInterceptorServletTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer(null);
+        if (LS != null && LS.isStarted()) {
+            LS.stopServer();
         }
     }
-
-    /** Standard failure text. Usually unexpected. */
-    public static final String[] FAILED_RESPONSE = new String[] { "FAILED" };
 
     // URL values for the bean interceptor servlet ...
 
     public static final String CURRENCY_INTERCEPTOR_CONTEXT_ROOT = "/CDI12TestV2Currency";
     public static final String CURRENCY_INTERCEPTOR_URL_FRAGMENT = "/CDICurrency";
-    public static final String CURRENCY_INTERCEPTOR_URL = CURRENCY_INTERCEPTOR_CONTEXT_ROOT + CURRENCY_INTERCEPTOR_URL_FRAGMENT;
-
     // Operation selection ...
 
     public static final String OPERATION_PARAMETER_NAME = "operation";
@@ -188,7 +178,7 @@ public class CDIBeanInterceptorServletTest extends LoggingTest {
      * @return The request url.
      */
     public String getCurrencyURL(String... parms) {
-        return CURRENCY_INTERCEPTOR_URL + getParameterText(parms);
+        return CURRENCY_INTERCEPTOR_URL_FRAGMENT + getParameterText(parms);
     }
 
     /**
@@ -199,73 +189,52 @@ public class CDIBeanInterceptorServletTest extends LoggingTest {
     @Test
     @Mode(TestMode.LITE)
     public void testCDIInterceptorObserver() throws Exception {
-        WebBrowser sessionBrowser = createWebBrowserForTestCase();
-
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_ALL),
-                       EXPECTED_INITIAL, FAILED_RESPONSE);
-
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_COUNTRY,
-                                      COUNTRY_PARAMETER_NAME, COUNTRY_USA),
-                       EXPECTED_INITIAL_USA, FAILED_RESPONSE);
-
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_COUNTRY,
-                                      COUNTRY_PARAMETER_NAME, COUNTRY_UK),
-                       EXPECTED_INITIAL_UK, FAILED_RESPONSE);
-
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_COUNTRY,
-                                      COUNTRY_PARAMETER_NAME, COUNTRY_GERMANY),
-                       EXPECTED_INITIAL_GERMANY, FAILED_RESPONSE);
-
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_COUNTRY,
-                                      COUNTRY_PARAMETER_NAME, COUNTRY_CHINA),
-                       EXPECTED_INITIAL_CHINA, FAILED_RESPONSE);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_ALL), EXPECTED_INITIAL);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_COUNTRY, COUNTRY_PARAMETER_NAME, COUNTRY_USA), EXPECTED_INITIAL_USA);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_COUNTRY, COUNTRY_PARAMETER_NAME, COUNTRY_UK), EXPECTED_INITIAL_UK);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_COUNTRY, COUNTRY_PARAMETER_NAME, COUNTRY_GERMANY), EXPECTED_INITIAL_GERMANY);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_COUNTRY, COUNTRY_PARAMETER_NAME, COUNTRY_CHINA), EXPECTED_INITIAL_CHINA);
 
         // 1 dollar ~= 0.91 euro
         // 1 pound  ~= 1.36 euro
         // 1 yuan   ~= 0.15 euro
 
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_EXCHANGE,
-                                      FROM_COUNTRY_PARAMETER_NAME, COUNTRY_UK,
-                                      FROM_AMOUNT_PARAMETER_NAME, "100",
-                                      TO_COUNTRY_PARAMETER_NAME, COUNTRY_GERMANY,
-                                      TO_AMOUNT_PARAMETER_NAME, "136"),
-                       EXPECTED_EXCHANGE_1, FAILED_RESPONSE);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_EXCHANGE,
+                                                                                    FROM_COUNTRY_PARAMETER_NAME, COUNTRY_UK,
+                                                                                    FROM_AMOUNT_PARAMETER_NAME, "100",
+                                                                                    TO_COUNTRY_PARAMETER_NAME, COUNTRY_GERMANY,
+                                                                                    TO_AMOUNT_PARAMETER_NAME, "136"), EXPECTED_EXCHANGE_1);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_EXCHANGE,
+                                                                                    FROM_COUNTRY_PARAMETER_NAME, COUNTRY_GERMANY,
+                                                                                    FROM_AMOUNT_PARAMETER_NAME, "100",
+                                                                                    TO_COUNTRY_PARAMETER_NAME, COUNTRY_CHINA,
+                                                                                    TO_AMOUNT_PARAMETER_NAME, "600"), EXPECTED_EXCHANGE_2);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_EXCHANGE,
+                                                                                    FROM_COUNTRY_PARAMETER_NAME, COUNTRY_USA,
+                                                                                    FROM_AMOUNT_PARAMETER_NAME, "100",
+                                                                                    TO_COUNTRY_PARAMETER_NAME, COUNTRY_CHINA,
+                                                                                    TO_AMOUNT_PARAMETER_NAME, "540"), EXPECTED_EXCHANGE_3);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_ALL), EXPECTED_FINAL);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_OBTAIN_CURRENCY_LOG), EXPECTED_CURRENCY_LOG);
+        verifyStringsInResponse(CURRENCY_INTERCEPTOR_CONTEXT_ROOT, getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_OBTAIN_APPLICATION_LOG), EXPECTED_APP_LOG);
+    }
 
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_EXCHANGE,
-                                      FROM_COUNTRY_PARAMETER_NAME, COUNTRY_GERMANY,
-                                      FROM_AMOUNT_PARAMETER_NAME, "100",
-                                      TO_COUNTRY_PARAMETER_NAME, COUNTRY_CHINA,
-                                      TO_AMOUNT_PARAMETER_NAME, "600"),
-                       EXPECTED_EXCHANGE_2, FAILED_RESPONSE);
-
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_EXCHANGE,
-                                      FROM_COUNTRY_PARAMETER_NAME, COUNTRY_USA,
-                                      FROM_AMOUNT_PARAMETER_NAME, "100",
-                                      TO_COUNTRY_PARAMETER_NAME, COUNTRY_CHINA,
-                                      TO_AMOUNT_PARAMETER_NAME, "540"),
-                       EXPECTED_EXCHANGE_3, FAILED_RESPONSE);
-
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_SHOW_ALL),
-                       EXPECTED_FINAL, FAILED_RESPONSE);
-
-        //
-
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_OBTAIN_CURRENCY_LOG),
-                       EXPECTED_CURRENCY_LOG, FAILED_RESPONSE);
-
-        verifyResponse(sessionBrowser,
-                       getCurrencyURL(OPERATION_PARAMETER_NAME, OPERATION_OBTAIN_APPLICATION_LOG),
-                       EXPECTED_APP_LOG, FAILED_RESPONSE);
+    private void verifyStringsInResponse(String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+  
+        WebRequest request = new GetMethodWebRequest("http://" + LS.getHostname() + ":" + LS.getHttpDefaultPort() + contextRoot + path);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Response : " + response.getText());
+  
+        assertEquals("Expected " + 200 + " status code was not returned!",
+                     200, response.getResponseCode());
+  
+        String responseText = response.getText();
+  
+        for (String expectedResponse : expectedResponseStrings) {
+            assertTrue("The response did not contain: " + expectedResponse, responseText.contains(expectedResponse));
+        }
     }
 
     // @formatter:off
@@ -390,10 +359,4 @@ public class CDIBeanInterceptorServletTest extends LoggingTest {
         ":Servlet:Exit:"
     };
     // @formatter:on
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
 }

@@ -632,7 +632,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         // This delays starting of the session bundle until a web application is
         // being initialized.  SessionHelper will be null if either the ComponentContext
         // or the SessionHelper service reference are null
-        SessionHelper sessionHelper = sessionHelperSRRef.getService();
+        SessionHelper sessionHelper = sessionHelperSRRef.getServiceWithException();
         if (sessionHelper != null) {
             return sessionHelper.getRegistry();
         }

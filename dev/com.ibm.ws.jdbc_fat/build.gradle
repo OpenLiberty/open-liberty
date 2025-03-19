@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,16 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 configurations {
-  db2
-  derbyClient
+  db2 {
+    transitive = false
+  }
+  derbyClient {
+    transitive = false
+  }
 }
 
 dependencies {
-  db2 'com.ibm.db2:jcc:11.1.4.4'
+  db2 'com.ibm.db2:jcc:12.1.0.0'
   derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
 }
  
@@ -28,7 +32,7 @@ task copyAnonymousDrivers(type: Copy) {
   rename 'jcc.*.jar', 'driver0.jar'
   rename 'derby-.*.jar', 'driver1.jar'
   rename 'derbyclient-.*.jar', 'driver2.jar'
-  rename 'ojdbc8_g.*.jar', 'driver3.jar'
+  rename 'ojdbc8.*.jar', 'driver3.jar'
   rename 'postgresql.*.jar', 'driver4.jar'
   rename 'mssql-jdbc.*.jar', 'driver5.jar'
 }

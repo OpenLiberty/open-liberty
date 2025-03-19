@@ -40,11 +40,10 @@ public class FATSuite {
         addfeatures.add("cdi-2.0");
         addfeatures.add("jaxrs-2.1");
         removefeatures.add("jaxrs-2.0");
-
     }
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction(removefeatures, addfeatures));
+                    .andWith(new FeatureReplacementAction(removefeatures, addfeatures).withID("CDI20_JAXRS21"));
 
 }

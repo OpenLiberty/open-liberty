@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
@@ -67,6 +68,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.util.CacheHashMap;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -1641,13 +1643,14 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         }
     }
 
+    private static ServiceCaller<ArtifactContainerFactory> acf = new ServiceCaller<>(ContainerClassLoader.class, ArtifactContainerFactory.class); 
     /**
      * Method to allow adding shared libraries to this classloader, currently using File.
      *
      * @param f the File to add as a shared lib.. can be a dir or a jar (or a loose xml ;p)
      */
-    @FFDCIgnore(NullPointerException.class)
-    protected void addLibraryFile(File f) {
+    @FFDCIgnore(IllegalStateException.class)
+    protected void addLibraryFile(final File f) {
 
         if (!!!f.exists()) {
             if (tc.isWarningEnabled()) {
@@ -1663,28 +1666,31 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         //this area subject to refactor following shared lib rework..
         //ideally the shared lib code will start passing us ArtifactContainers, and it
         //will own the management of the ACF via DS.
-
-        //NASTY.. need to use DS to get the ACF, not OSGi backdoor ;p
         BundleContext bc = FrameworkUtil.getBundle(ContainerClassLoader.class).getBundleContext();
-        ServiceReference<ArtifactContainerFactory> acfsr = bc.getServiceReference(ArtifactContainerFactory.class);
-        if (acfsr != null) {
-            ArtifactContainerFactory acf = bc.getService(acfsr);
-            if (acf != null) {
-                //NASTY.. using this bundle as the cache dir location for the data file..
-                try {
-                    ArtifactContainer ac = acf.getContainer(bc.getBundle().getDataFile(""), f);
+        File dataFile = null;
+        try {
+            dataFile = bc == null ? null : bc.getDataFile("");
+        } catch (IllegalStateException e) {
+            Tr.debug(tc, "Invalid context. Liberty is likely shutting down.");
+            return;
+        }
+        if (dataFile == null) {
+            // Just being safe; Equinox never returns null from a valid context
+            Tr.debug(tc, "Context returned null data file.");
+            return;
+        }
+        final File df = dataFile;
+        acf.call(new Consumer<ArtifactContainerFactory>() {
+            @Override
+            public void accept(ArtifactContainerFactory factory) {
+                ArtifactContainer ac = factory.getContainer(df, f);
+                if (ac == null) {
+                    Tr.info(tc, "cls.library.file.forbidden", f);
+                } else {
                     smartClassPath.addArtifactContainer(ac);
-                } catch (NullPointerException e) {
-                    // TODO completed under task 74097
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Exception while adding files to classpath", e);
-                    }
-                    if (tc.isInfoEnabled()) {
-                        Tr.info(tc, "cls.library.file.forbidden", f);
-                    }
                 }
             }
-        }
+        });
     }
 
     protected void addNativeLibraryContainer(Container container) {

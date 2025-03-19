@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
@@ -57,6 +58,7 @@ public abstract class EJBInJarServiceSecurityTest {
     }
 
     public static void startServer(String logName) throws Exception {
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         if (server != null && !server.isStarted()) {
             server.startServer(logName);
             checkAppsReady();

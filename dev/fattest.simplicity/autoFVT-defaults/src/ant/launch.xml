@@ -9,20 +9,27 @@
  -->
 <project name="standard.launch.tasks">
 
+	<target name="initBootstrapProperties">
+		<property name="bootstrapping.properties" value="${dir.component.root}/bootstrapping.properties" />
+		<property file="${bootstrapping.properties}" />
+	</target>
+
 	<!-- This is needed for Moonstone autowas to work -->
-	<target name="init-test-tasks-autowas" unless="inited-test-tasks">
+	<target name="init-test-tasks-autowas" unless="inited-test-tasks" depends="initBootstrapProperties">
 		<property name="inited-test-tasks" value="true" />
+		<condition property="local.java.dir" value="lib" else="build/libs/lib">
+			<available file="${local.java}/lib"/>
+		</condition>
 		<path id="test-buildtasks-autowas">
-			<fileset dir="./build/lib/" includes="infra.buildtasks*.jar" />
-			<fileset dir="./build/lib/" includes="asm*.jar" />
-			<fileset dir="./build/lib/" includes="jsch*.jar" />
+			<fileset dir="${local.java}/${local.java.dir}/" includes="infra.buildtasks*.jar" />
+			<fileset dir="${local.java}/${local.java.dir}/" includes="asm*.jar" />
+			<fileset dir="${local.java}/${local.java.dir}/" includes="jsch*.jar" />
 		</path>
 		<taskdef resource="com/ibm/aries/componenttest/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />
 		<taskdef resource="com/ibm/aries/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />
 	</target>
 
-	<target name="initProperties" depends="init-test-tasks-autowas">
-		<property name="bootstrapping.properties" value="${dir.component.root}/bootstrapping.properties" />
+	<target name="initProperties" depends="initBootstrapProperties,init-test-tasks-autowas">
 		<property name="configuration.properties" value="${dir.component.root}/configuration.properties" />
 		<property name="logging.properties" value="${dir.component.root}/logging.properties" />
 		<property name="gen.logging.properties" value="${dir.log}/logging.properties" />
@@ -57,7 +64,11 @@
 				<scanJars entry="entry.point" filesToFind="${filesToFind}">
 					<fileset dir="${basedir}/build/lib" includes="**.jar" />
 				</scanJars>
+				
 				<echo message="entry point: ${entry.point}" />
+				
+				<property name="test.bucket.class" value="${entry.point}" />
+				<property name="test.bucket.name" value="${test.bucket.class}" />
 			</else>
 		</iff>
 	</target>
@@ -93,7 +104,7 @@
 		<!-- Work out the actual entry point based on the current java level and database properties -->
 		<echo message="Checking min java level for project based on bootstrapping.properties file..." />
 
-		<!-- Get fat.test.databases and fat.minimum.java.level properties-->
+		<!-- Get fat.minimum.java.level properties-->
 		<property file="${basedir}/fat.bnd.properties" />
 		<property file="${basedir}/fat.sys.properties" />
 		
@@ -119,43 +130,24 @@
 		<echo message="fat.minimum.java.level=${fat.minimum.java.level}" />
 		<echo message="java.specification.version=${java.specification.version}" />
 		<echo message="micro.version=${micro.version}" />
-
-		<!-- Enforce fat.test.databases.only rule.  If bucket is not enlisted in database rotation skip it -->
-		<condition property="skip.no.db.tests" value="true">
-			<and>
-				<istrue value="${fat.test.databases.only}" />
-				<not>
-					<isTrue value="${fat.test.databases}" />
-				</not>
-			</and>
-		</condition>
-
-		<!-- Determine if we are going to skip testing or not -->
-		<!-- Bypass the tests by invoking the always passes test instead of real FAT tests -->
+		
 		<iff>
-			<or>
-				<istrue value="${skip.no.db.tests}" />
-				<istrue value="${skip.java.level}" />
-			</or>
+			<istrue value="${skip.java.level}" />
 			<then>
 				<var name="test.bucket.class" unset="true" />
 				<var name="test.bucket.name" unset="true" />
+				
 				<property name="test.bucket.class" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
 				<property name="test.bucket.name" value="${test.bucket.class}" />
 
 				<echo message="FAT bucket WILL NOT run tests, due to the following properties:" />
-				<echo message="     Only run database rotation buckets:  ${fat.test.databases.only}" />
-				<echo message="     This bucket uses database rotation:  ${fat.test.databases}" />
 				<echo message="     This bucket uses java level:         ${fat.minimum.java.level}" />
 			</then>
-			<else>
-				<property name="test.bucket.class" value="${entry.point}" />
-			</else>
 		</iff>
-
+		
 		<!-- What will our entry point be? -->
 		<echo message="FAT entry point will be: ${test.bucket.class}" />
-
+		
 	</target>
 
 	<!-- Properties used: test.bucket.name, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class -->
@@ -187,11 +179,24 @@
 		</condition>
 
 		<!-- boolean for Java15+.  The assumption is that at this point forward (Java 15), we will only be building using LTS 
-		     or interium versions of Java -->
+		     or interim versions of Java -->
 		<condition property="is.java15.orHigher" value="true">
 			<not>
 				<or>
 					<equals arg1="11" arg2="${java.specification.version}"/>
+					<equals arg1="1.8" arg2="${java.specification.version}"/>
+				</or>
+		    </not>
+		</condition>
+		
+		<!-- boolean for Java24+.  The assumption is that at this point forward (Java 24), we will only be building using LTS 
+		     or interim versions of Java -->
+		<condition property="is.java24.orHigher" value="true">
+			<not>
+				<or>
+					<equals arg1="21"  arg2="${java.specification.version}"/>
+					<equals arg1="17"  arg2="${java.specification.version}"/>
+					<equals arg1="11"  arg2="${java.specification.version}"/>
 					<equals arg1="1.8" arg2="${java.specification.version}"/>
 				</or>
 		    </not>
@@ -207,12 +212,14 @@
 		<property name="illegal.access.permit.fat" value=""/>
 		
 		<!-- Java 17 began the security manager's deprecation process (https://openjdk.java.net/jeps/411).
-			     In Java 18, the `java.security.manager` system property's default changed from `allow` to `disallow`, which causes our build process to fail.  
-				 Setting up a gated property (use.java.security.manager) so that any builds that take place on Java 15+ use the JVM override 
-				 -Djava.security.manager=allow which is needed for our build process, but older versions will be skipped --> 
+             In Java 18, the `java.security.manager` system property's default changed from `allow` to `disallow`, which causes our build process to fail.  
+             Setting up a gated property (use.java.security.manager) so that any builds that take place on Java 15+ use the JVM override 
+             -Djava.security.manager=allow which is needed for our build process, but older versions will be skipped. 
+             In Java 24, they are permanently disabling the security manager (https://openjdk.org/jeps/486) and trying to specify `-Djava.security.manager=allow` throws an exception.  So not allowing that parameter to be set if Java 24 or higher. --> 
 		<condition property="use.java.security.manager" value="-Djava.security.manager=allow">
 			<and>
 				<istrue value="${is.java15.orHigher}"/>
+				<not><istrue value="${is.java24.orHigher}"/></not>
 				<not><istrue value="${supports.framework.java}"/></not>
 			</and>
 		</condition>
@@ -266,9 +273,20 @@
 			</fileset>
 
 			<!-- We want our doctored simplicity high on the classpath -->
-			<fileset dir="${basedir}/lib/">
+			<fileset dir="${basedir}/lib/" erroronmissingdir="false">
 				<include name="*.jar" />
 				<exclude name="${bnd.transform.jar.to.exclude}" />
+			</fileset>
+
+			<!-- fattest.simplicity -->
+			<fileset dir="${local.java}/lib/" erroronmissingdir="false">
+				<include name="fattest.simplicity.jar" />
+				<include name="com.ibm.ws.componenttest.jar" />
+			</fileset>
+
+			<fileset dir="${local.java}/build/libs/lib/" erroronmissingdir="false">
+				<include name="fattest.simplicity.jar" />
+				<include name="com.ibm.ws.componenttest.jar" />
 			</fileset>
 
 			<!-- shared libraries from bootstrapping.properties -->
@@ -279,11 +297,13 @@
 			<!-- java libraries for secure SSH authentication -->
 			<fileset dir="${local.java}/lib/" erroronmissingdir="false">
 				<include name="*.jar" />
+				<exclude name="${bnd.transform.jar.to.exclude}" />
 			</fileset>
 
 			<!-- The maven dependencies of fattest.simplicity -->
 			<fileset dir="${local.java}/build/libs/lib" erroronmissingdir="false">
 				<include name="*.jar" />
+				<exclude name="${bnd.transform.jar.to.exclude}" />
 			</fileset>
 
 			<fileset dir="${ant.home}/lib/" includes="ant-junit*.jar, ant.jar" />
@@ -346,34 +366,56 @@
 		<!-- Load all env vars into env.* properties -->
 		<property environment="env" />
 		
+        <!-- Artifactory Registry Properties -->
+		
         <condition property="fat.test.artifactory.download.server"
                    value="${artifactory.download.server}"
-                   else="${env.artifactory.download.server}">
+                   else="${env.ARTIFACTORY_DOWNLOAD_SERVER}">
           <isset property="artifactory.download.server" />
         </condition>
         
         <condition property="fat.test.artifactory.download.token"
                    value="${artifactory.download.token}"
-                   else="${env.artifactory.download.token}">
+                   else="${env.ARTIFACTORY_DOWNLOAD_TOKEN}">
           <isset property="artifactory.download.token" />
         </condition>
         
         <condition property="fat.test.artifactory.download.user"
                    value="${artifactory.download.user}"
-                   else="${env.artifactory.download.user}">
+                   else="${env.ARTIFACTORY_DOWNLOAD_USER}">
           <isset property="artifactory.download.user" />
         </condition>
 		
         <condition property="fat.test.artifactory.docker.server"
                    value="${artifactory.docker.server}"
-                   else="${env.artifactory.docker.server}">
+                   else="${env.ARTIFACTORY_DOCKER_SERVER}">
           <isset property="artifactory.docker.server" />
         </condition>
 		
         <condition property="fat.test.artifactory.force.external.repo"
                    value="${artifactory.force.external.repo}"
-                   else="${env.artifactory.force.external.repo}">
+                   else="${env.ARTIFACTORY_FORCE_EXTERNAL_REPO}">
           <isset property="artifactory.force.external.repo" />
+        </condition>
+		
+        <!-- Internal Registry Properties -->
+		
+        <condition property="fat.test.docker.registry.server"
+                   value="${docker_registry.server}"
+                   else="${env.DOCKER_REGISTRY_SERVER}">
+          <isset property="docker_registry.server" />
+        </condition>
+		
+        <condition property="fat.test.docker.registry.user"
+                   value="${docker_registry.user}"
+                   else="${env.DOCKER_REGISTRY_USER}">
+          <isset property="docker_registry.user" />
+        </condition>
+        	
+        <condition property="fat.test.docker.registry.password"
+                   value="${docker_registry.password}"
+                   else="${env.DOCKER_REGISTRY_PASSWORD}">
+          <isset property="docker_registry.password" />
         </condition>
 
 		<tstamp>
@@ -705,6 +747,10 @@
 			<arg value="-Dbasedir=${basedir}" />
 			<arg value="-Ddir.log.html=${dir.log.html}" />
 			<arg value="-Ddir.log.xml=${dir.log.xml}" />
+			<!-- In Java 24, the default for 'jdk.xml.enableExtensionFunctions' was changed to false
+				 This broke our JUnit XML to HTML transformations for FAT output in junit.html
+				 Forcing value back to true - https://bugs.openjdk.org/browse/JDK-8343024 -->
+			<jvmarg line="-Djdk.xml.enableExtensionFunctions=true" />
 		</java>
 
 		<iff>

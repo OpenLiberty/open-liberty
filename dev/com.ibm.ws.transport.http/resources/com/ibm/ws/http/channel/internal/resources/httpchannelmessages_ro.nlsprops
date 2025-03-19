@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #
 #COMPONENTPREFIX CWWKT
@@ -210,3 +207,8 @@ log.rollover.start.time.format.warning.useraction=Asigura\u021bi-v\u0103 c\u0103
 log.rollover.interval.too.short.warning=CWWKT0046W: Intervalul de reutilizare a istoricului nu poate fi mai mic de 1 minut. Dac\u0103 este specificat\u0103 o valoare mai mic\u0103 dec\u00e2t 1 minut, intervalul de reutilizare a istoricului este setat la valoarea implicit\u0103 de 1 zi.
 log.rollover.interval.too.short.warning.explanation=Intervalul de reutilizare a istoricului nu poate fi mai mic de 1 minut.
 log.rollover.interval.too.short.warning.useraction=Specifica\u021bi un interval de reutilizare a istoricului care este egal sau mai mare dec\u00e2t 1 minut.
+
+#only if the Set-Cookie is added with the response set/addHeader API.  The best practice is to use Cookie() API which already has this check and uses its own message.
+cookie.attribute.name.invalid=CWWKT0047E: Atributul cookie [{0}un caracter nevalid.
+cookie.attribute.name.invalid.explanation=Numele cookie-ului nu con\u021bine nici un caracter special [() < > @,;: \\/ []? = {}] caracter.
+cookie.attribute.name.invalid.useraction=Corecta\u021bi numele atributului cookie pentru a nu folosi niciun caracter special.

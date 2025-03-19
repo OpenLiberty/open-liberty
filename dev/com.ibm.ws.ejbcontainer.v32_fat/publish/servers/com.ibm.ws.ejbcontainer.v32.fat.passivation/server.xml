@@ -1,0 +1,17 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <!-- Specify cacheSize=1 to force evictions. -->
+    <!-- Specify cacheCleanupInterval and the internal
+         DeferrableScheduledExecutorService.target property to cause cache
+         evictions to occur more promptly to make the test run faster. -->
+    <ejbContainer cacheSize="1"
+                  cacheCleanupInterval="1s"
+                  DeferrableScheduledExecutorService.target="(deferrable=false)"/>
+</server>

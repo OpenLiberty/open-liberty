@@ -103,7 +103,7 @@ public class OidcDelegatedSocialLoginWithLibertyOPTests extends CommonDelegatedT
 
         List<validationData> expectations = getGoodDelegatedLoginExpectations(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     @Test
@@ -114,19 +114,19 @@ public class OidcDelegatedSocialLoginWithLibertyOPTests extends CommonDelegatedT
         // Use the default credentials that are in the first Liberty OP's user registry, not the delegated OP's registry
         SocialTestSettings updatedSocialTestSettings = getUpdatedTestSettings(SocialConstants.LIBERTYOP_PROVIDER, SocialConstants.OAUTH_OP, DOES_NOT_USE_SELECTION_PAGE);
 
-        List<validationData> expectations = vData.addSuccessStatusCodesForActions(inovke_social_login_actions);
+        List<validationData> expectations = vData.addSuccessStatusCodesForActions(invoke_social_login_actions);
         expectations = setLoginPageExpectation(expectations, updatedSocialTestSettings, SocialConstants.INVOKE_SOCIAL_RESOURCE);
         // Make sure we get to the login page for the external OP server
         expectations = vData.addExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.RESPONSE_URL, SocialConstants.STRING_CONTAINS, "Did not reach the login page from the expected external OP server and port.", null, externalOPServer.getServerHttpsString() + "/oidc/login");
 
         // Make sure we're re-prompted with the login page after the invalid credentials are submitted
-        String finalAction = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String finalAction = invoke_social_login_actions[invoke_social_login_actions.length - 1];
         expectations = setLoginPageExpectation(expectations, updatedSocialTestSettings, finalAction);
         expectations = vData.addExpectation(expectations, finalAction, SocialConstants.RESPONSE_URL, SocialConstants.STRING_CONTAINS, "Did not reach the login page from the expected external OP server and port.", null, externalOPServer.getServerHttpsString() + "/oidc/login");
         expectations = vData.addExpectation(expectations, finalAction, SocialConstants.RESPONSE_FULL, SocialConstants.STRING_CONTAINS, "Did not find the username/password mismatch error message in the response.", null, "username and password doesn't match");
         expectations = validationTools.addMessageExpectation(externalOPServer, expectations, finalAction, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not find message in log for a username that could not be found in the registry.", SocialMessageConstants.CWIML4537E_PRINCIPAL_NOT_FOUND);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     @Mode(TestMode.LITE)
@@ -139,7 +139,7 @@ public class OidcDelegatedSocialLoginWithLibertyOPTests extends CommonDelegatedT
 
         List<validationData> expectations = getGoodDelegatedLoginExpectations(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     @Test
@@ -152,7 +152,7 @@ public class OidcDelegatedSocialLoginWithLibertyOPTests extends CommonDelegatedT
 
         List<validationData> expectations = getGoodDelegatedLoginExpectations(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /*************************************************** Helper methods ***************************************************/

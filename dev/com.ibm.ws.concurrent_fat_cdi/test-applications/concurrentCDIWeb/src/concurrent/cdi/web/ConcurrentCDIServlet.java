@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2024 IBM Corporation and others.
+ * Copyright (c) 2017,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -163,6 +164,12 @@ public class ConcurrentCDIServlet extends HttpServlet {
     ManagedExecutorService executorWithoutLocationAndTxContext;
 
     @Inject
+    OnConstruct onConstruct;
+
+    @Inject
+    OnStartup onStartup;
+
+    @Inject
     @WithAppContext
     ManagedScheduledExecutorService scheduledExecutorWithAppContext;
 
@@ -225,6 +232,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
     @Inject
     @WithoutLocationContext
     ContextService withoutLocationContext;
+
+    @Inject
+    TestBean testBean;
 
     @Resource
     UserTransaction tx;
@@ -340,6 +350,38 @@ public class ConcurrentCDIServlet extends HttpServlet {
             }
             return null;
         });
+    }
+
+    /**
+     * Test that a CDI extension can add Asynchronous to a bean method, and
+     * it will be recognized as an asynchronous method that is made to run on
+     * another thread.
+     */
+    public void testExtensionAddsAsynchronous() throws Exception {
+        // Use separate completable future to avoid causing the asynchronous
+        // method to complete inline on the requester thread.
+        CompletableFuture<Thread> cf = new CompletableFuture<>();
+
+        testBean.asyncByExtension().thenAccept(cf::complete);
+
+        Thread thread = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotSame(Thread.currentThread(), thread);
+    }
+
+    /**
+     * Test that an application-defined interceptor can be annotated with
+     * Asynchronous, causing the interceptor binding annotation to make
+     * methods into asynchronous methods.
+     */
+    public void testInheritAsynchronous() throws Exception {
+        // Use separate completable future to avoid causing the asynchronous
+        // method to complete inline on the requester thread.
+        CompletableFuture<Thread> cf = new CompletableFuture<>();
+
+        testBean.inheritAsync().thenAccept(cf::complete);
+
+        Thread thread = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotSame(Thread.currentThread(), thread);
     }
 
     /**
@@ -845,6 +887,14 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Tests using an injected ManagedScheduledExecutorService from Observes Startup.
+     */
+    public void testObserveStartup() throws Exception {
+        assertEquals("SUCCESS",
+                     onStartup.getResult(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
      * Specify qualifiers on a ContextServiceDefinition.
      * Specify a different qualifier on a matching context-service element in web.xml.
      * Expect the qualifier from web.xml to resolve the instance.
@@ -1035,6 +1085,14 @@ public class ConcurrentCDIServlet extends HttpServlet {
         thread.start();
         assertEquals(3, thread.getPriority());
         assertEquals(thread, future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Tests using an injected ManagedScheduledExecutorService from PostConstruct.
+     */
+    public void testPostConstruct() throws Exception {
+        assertEquals("SUCCESS",
+                     onConstruct.getResult(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**

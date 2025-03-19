@@ -38,11 +38,10 @@ installLocation=Installationsposition
 options=Optionen
 
 
-licenseOptionDescription=Wenn Sie im Folgenden die Option "Ich stimme zu" ausw\u00e4hlen, akzeptieren Sie die Bedingungen der Lizenzvereinbarung und der Bedingungen anderer Anbieter, sofern zutreffend. \
-Wenn Sie die Lizenzbedingungen nicht akzeptieren, w\u00e4hlen Sie "Ich stimme nicht zu" aus.
+licenseOptionDescription=Wenn Sie im Folgenden die Option "Ich stimme zu" ausw\u00e4hlen, akzeptieren Sie die Bedingungen der Lizenzvereinbarung und der Bedingungen anderer Anbieter, sofern zutreffend. Wenn Sie die Lizenzbedingungen nicht akzeptieren, w\u00e4hlen Sie "Ich stimme nicht zu" aus.
 
-licenseeAcknowledges=Der Lizenznehmer erkl\u00e4rt sich damit einverstanden, den gesamten im Zusammenhang hiermit heruntergeladenen Code, einschlie\u00dflich Features, Funktionen und anderer Software-Downloads (nachfolgend ''Code'' genannt) nur mit einer lizenzierten Version des Programms ''IBM WebSphere Application Server Liberty'' (nachfolgend ''Programm'' genannt) zu verwenden. \
-Der Lizenznehmer stimmt au\u00dferdem der Bedingung zu, dass die Nutzung des Codes den Lizenzbedingungen unterliegt, die die Nutzung des Programms regeln (z. B. International Nutzungsbedingungen f\u00fcr Programmpakete, Internationale Nutzungsbedingungen f\u00fcr Programme ohne Gew\u00e4hrleistung, Internationale Nutzungsbedingungen f\u00fcr die Bewertung von Programmen, Internationale Nutzungsbedingungen f\u00fcr Vorab-Releases von Programmen), einschlie\u00dflich evtl. geltender Lizenzinformationen. 
+licenseeAcknowledges=Der Lizenznehmer erkl\u00e4rt sich damit einverstanden, den gesamten im Zusammenhang hiermit heruntergeladenen Code, einschlie\u00dflich Features, Funktionen und anderer Software-Downloads (nachfolgend ''Code'' genannt) nur mit einer lizenzierten Version des Programms ''IBM WebSphere Application Server Liberty'' (nachfolgend ''Programm'' genannt) zu verwenden. Der Lizenznehmer stimmt au\u00dferdem der Bedingung zu, dass die Nutzung des Codes den Lizenzbedingungen unterliegt, die die Nutzung des Programms regeln (z. B. International Nutzungsbedingungen f\u00fcr Programmpakete, Internationale Nutzungsbedingungen f\u00fcr Programme ohne Gew\u00e4hrleistung, Internationale Nutzungsbedingungen f\u00fcr die Bewertung von Programmen, Internationale Nutzungsbedingungen f\u00fcr Vorab-Releases von Programmen), einschlie\u00dflich evtl. geltender Lizenzinformationen. 
+
 extractPrompt=Zielverzeichnis f\u00fcr Produktdateien?
 extractSuccess=Die Produktdateien wurden erfolgreich entpackt.
 extractLicenseSuccess=Die Lizenzdateien wurden erfolgreich angewendet.
@@ -61,8 +60,7 @@ licensePrompt=W\u00e4hlen Sie {0} (Ich stimme zu) oder {1} (Ich stimme nicht zu)
 # {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
 # {1} International Program License Agreement
 #
-licenseStatement=Bevor Sie {0} verwenden, entpacken oder installieren k\u00f6nnen, m\u00fcssen Sie die Bedingungen von {1} und weitere Lizenzinformationen akzeptieren. \
-Lesen Sie die folgenden Lizenzvereinbarungen sorgf\u00e4ltig.
+licenseStatement=Bevor Sie {0} verwenden, entpacken oder installieren k\u00f6nnen, m\u00fcssen Sie die Bedingungen von {1} und weitere Lizenzinformationen akzeptieren. Lesen Sie die folgenden Lizenzvereinbarungen sorgf\u00e4ltig.
 
 #
 # {0} --viewLicenseAgreement
@@ -197,7 +195,6 @@ externalDepsPrompt=M\u00f6chten Sie diese Abh\u00e4ngigkeiten automatisch herunt
 downloadFileError=Herunterladen der fernen Datei von {0} in {1} ist fehlgeschlagen. 
 downloadingFileNotice=Die folgende Ausnahme wurde w\u00e4hrend der Verarbeitung der Datei {0} ausgel\u00f6st: {1}
 
-
 # {0} --verbose
 downloadingBeginNotice=Externe Abh\u00e4ngigkeiten werden heruntergeladen. Weitere Informationen sind verf\u00fcgbar, wenn Sie die Option {0} verwenden.
 
@@ -229,7 +226,6 @@ invalidMetaDataFile=Es wurde ein interner Fehler bei der Verarbeitung von Fix-Me
 # {0} is the filename of the log that had the error, {1} is the error.
 unableToCreateFixLog=Die Installationsprotokolldatei {0} f\u00fcr den Fix konnte aus dem folgenden Grund nicht erstellt werden: {1}. Der Fix konnte nicht angewendet werden.
 
-
 #Used when the fix installer is unable to understand the content of a manifest contained in the fix.
 #{0} is the manifest with the issue, {1} is the error.
 invalidFixManifest=Es wurde ein interner Fehler bei der Verarbeitung der Manifestdaten {0} des Fix festgestellt: {1}. Der Fix konnte nicht angewendet werden.
@@ -241,8 +237,7 @@ unableToUpdateFingerprint=Die Aktualisierung des Service f\u00fcr den elektronis
 patchingNotApplicableNoChange=Es wurde kein Inhalt extrahiert, da keine \u00fcbereinstimmenden Features in der Laufzeitumgebung {0} vorhanden sind.
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
-patchingSkippedSupersededFix=Der Fix {0} wurde durch den Fix {1} ersetzt, der bereits installiert ist.\n\
-Die Installation von {0} wurde \u00fcbersprungen.
+patchingSkippedSupersededFix=Der Fix {0} wurde durch den Fix {1} ersetzt, der bereits installiert ist.\nDie Installation von {0} wurde \u00fcbersprungen.
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=Beim Lesen der Informationen zu den vorl\u00e4ufigen Fixes f\u00fcr die aktuelle Installation ist ein Fehler aufgetreten. Ausnahmenachricht: {0}
@@ -282,11 +277,14 @@ LICENSE_invalidVersion=Das Lizenzupgrade kann nicht durchgef\u00fchrt werden, we
 LICENSE_invalidEdition=Das Lizenzupgrade kann nicht durchgef\u00fchrt werden, weil die angegebene Produktinstallation die Edition {0} hat. Ein Lizenzupgrade ist nur von den Editionen {1} m\u00f6glich.
 LICENSE_invalidLicense=Das Lizenzupgrade kann nicht durchgef\u00fchrt werden, weil die angegebene Produktinstallation eine Lizenz des Typs {0} hat. Mit dem Lizenzupgrade k\u00f6nnen aber nur Produkte mit einer {1}-Lizenz aktualisiert werden.
 LICENSE_invalidInstallType=Das Lizenzupgrade kann nicht durchgef\u00fchrt werden, weil die angegebene Produktinstallation mit IBM Installation Manager installiert wurde. Verwenden Sie IBM Installation Manager f\u00fcr das Upgrade Ihrer Installation. 
+
 # new messages for license upgrade and downgrade
 LICENSE_replace_invalidVersion=Die Lizenz kann nicht angewendet werden, weil die angegebene Produktinstallation die Version {0} hat. Das Anwenden der Lizenz ist nur mit Version {1} m\u00f6glich.
 LICENSE_replace_invalidInstallType=Die Lizenz kann nicht angewendet werden, weil die angegebene Produktinstallation mit IBM Installation Manager installiert wurde. Verwenden Sie IBM Installation Manager f\u00fcr das Upgrade Ihrer Installation. 
-LICENSE_replace_invalidEditonFeatures=Die folgenden Features sind f\u00fcr die Edition {0} nicht g\u00fcltig und m\u00fcssen vor dem Anwenden der Lizenz deinstalliert werden: {1}\n\
-\n\
-Verwenden Sie den folgenden Befehl, um diese Features zu deinstallieren, bevor Sie die Lizenz f\u00fcr die Edition {2} anwenden: {3}
+
+LICENSE_replace_invalidEditonFeatures=Die folgenden Features sind f\u00fcr die Edition {0} nicht g\u00fcltig und m\u00fcssen vor dem Anwenden der Lizenz deinstalliert werden: {1}\n\nVerwenden Sie den folgenden Befehl, um diese Features zu deinstallieren, bevor Sie die Lizenz f\u00fcr die Edition {2} anwenden: {3}
 
 LICENSE_downgrade_block_8557_low=Diese Lizenz kann nur auf eine Installation von {0} und h\u00f6her angewendet werden. Die aktuelle Installation ist {1}. Laden Sie die neueste Version herunter und installieren Sie sie. Wenden Sie anschlie\u00dfend die Lizenz erneut an.
+
+#message for applying interim fix
+INTERIM_FIX_replace_invalidVersion=Der Interim-Fix kann nicht angewendet werden, weil die angegebene Produktinstallation die Version {0} aufweist, der Interim-Fix aber nur auf die Version {1} angewendet werden kann.

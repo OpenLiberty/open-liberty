@@ -1,0 +1,12 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>componentTest-1.0</feature>
+      <feature>txtest-1.0</feature>
+      <feature>ejb-3.2</feature>
+    </featureManager>
+
+    <application location="transaction.war"/>
+</server>

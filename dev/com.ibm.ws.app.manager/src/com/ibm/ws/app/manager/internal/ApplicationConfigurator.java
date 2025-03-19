@@ -67,8 +67,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.AppMessageHelper;
 import com.ibm.ws.app.manager.ApplicationManager;
 import com.ibm.ws.app.manager.ApplicationStateCoordinator;
-import com.ibm.ws.app.manager.CacheUtils;
 import com.ibm.ws.app.manager.ApplicationStateCoordinator.AppStatus;
+import com.ibm.ws.app.manager.CacheUtils;
 import com.ibm.ws.app.manager.internal.lifecycle.ServiceReg;
 import com.ibm.ws.app.manager.internal.monitor.AppMonitorConfigurator;
 import com.ibm.ws.app.manager.internal.statemachine.ApplicationStateMachine;
@@ -92,10 +92,9 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.logging.Introspector;
 
-import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
-@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class},
+@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { Constants.SERVICE_VENDOR + "=" + "IBM",
@@ -407,22 +406,47 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     //
     // DS dependencies
     //
-    private volatile ConfigurationAdmin _configAdmin;
-    private volatile WsLocationAdmin _locAdmin;
-    private volatile FutureMonitor _futureMonitor;
-    private volatile RuntimeUpdateManager _runtimeUpdateManager;
-    private volatile ArtifactContainerFactory _artifactFactory;
-    private volatile AdaptableModuleFactory _moduleFactory;
-    private volatile ExecutorService _executor;
-    private volatile ScheduledExecutorService _scheduledExecutor;
-    private volatile AppMonitorConfigurator _appMonitorConfigurator;
-    private volatile ApplicationManager _applicationManager;
+    private final ConfigurationAdmin _configAdmin;
+    private final WsLocationAdmin _locAdmin;
+    private final FutureMonitor _futureMonitor;
+    private final RuntimeUpdateManager _runtimeUpdateManager;
+    private final ArtifactContainerFactory _artifactFactory;
+    private final AdaptableModuleFactory _moduleFactory;
+    private final ExecutorService _executor;
+    private final ScheduledExecutorService _scheduledExecutor;
+    private final AppMonitorConfigurator _appMonitorConfigurator;
+    private final ApplicationManager _applicationManager;
     private final CheckpointPhase _checkpointPhase = CheckpointPhase.getPhase();
     private final List<Runnable> _restoreMessages = new CopyOnWriteArrayList<Runnable>();
 
     private static final Collection<String> SIMPLE_INITIAL_UPDATE_NOTIFICATIONS = Arrays.asList(new String[] { RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED,
                                                                                                                RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED,
                                                                                                                RuntimeUpdateNotification.ORB_STARTED });
+
+    @Activate
+    public ApplicationConfigurator( //
+                                   @Reference ConfigurationAdmin configurationAdmin, //
+                                   @Reference WsLocationAdmin locAdmin, //
+                                   @Reference FutureMonitor futureMonitor, //
+                                   @Reference RuntimeUpdateManager runtimeUpdateManager, //
+                                   @Reference ArtifactContainerFactory artifactFactory, //
+                                   @Reference AdaptableModuleFactory moduleFactory, //
+                                   @Reference ExecutorService executor, //
+                                   @Reference ScheduledExecutorService scheduledExecutor, //
+                                   @Reference AppMonitorConfigurator appMonitorConfigurator, //
+                                   @Reference ApplicationManager applicationManager //
+    ) {
+        _configAdmin = configurationAdmin;
+        _locAdmin = locAdmin;
+        _futureMonitor = futureMonitor;
+        _runtimeUpdateManager = runtimeUpdateManager;
+        _artifactFactory = artifactFactory;
+        _moduleFactory = moduleFactory;
+        _executor = executor;
+        _scheduledExecutor = scheduledExecutor;
+        _appMonitorConfigurator = appMonitorConfigurator;
+        _applicationManager = applicationManager;
+    }
 
     @Activate
     protected void activate(ComponentContext ctx) {
@@ -500,87 +524,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         ApplicationStateCoordinator.setApplicationConfigurator(null);
     }
 
-    @Reference
-    protected void setConfigurationAdmin(ConfigurationAdmin configurationAdmin) {
-        _configAdmin = configurationAdmin;
-    }
-
-    protected void unsetConfigurationAdmin(ConfigurationAdmin configAdmin) {
-        _configAdmin = null;
-    }
-
-    @Reference(name = "locationService", service = WsLocationAdmin.class)
-    protected void setLocationService(WsLocationAdmin locationService) {
-        _locAdmin = locationService;
-    }
-
-    protected void unsetLocationService(WsLocationAdmin locationService) {
-        _locAdmin = null;
-    }
-
-    @Reference(service = FutureMonitor.class)
-    protected void setFutureMonitor(FutureMonitor futureMonitor) {
-        _futureMonitor = futureMonitor;
-    }
-
-    protected void unsetFutureMonitor(FutureMonitor futureMonitor) {
-        _futureMonitor = null;
-    }
-
-    @Reference(service = RuntimeUpdateManager.class)
-    protected void setRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
-        _runtimeUpdateManager = runtimeUpdateManager;
-    }
-
-    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
-        _runtimeUpdateManager = null;
-    }
-
-    @Reference(name = "containerFactory", service = ArtifactContainerFactory.class)
-    protected void setContainerFactory(ArtifactContainerFactory containerFactory) {
-        _artifactFactory = containerFactory;
-    }
-
-    protected void unsetContainerFactory(ArtifactContainerFactory containerFactory) {
-        _artifactFactory = null;
-    }
-
-    @Reference(service = AdaptableModuleFactory.class)
-    protected void setAdaptableModuleFactory(AdaptableModuleFactory adaptableModuleFactory) {
-        _moduleFactory = adaptableModuleFactory;
-    }
-
-    protected void unsetAdaptableModuleFactory(AdaptableModuleFactory adaptableModuleFactory) {
-        _moduleFactory = null;
-    }
-
-    @Reference(name = "executorService", service = ExecutorService.class)
-    protected void setExecutorService(ExecutorService executorService) {
-        _executor = executorService;
-    }
-
-    protected void unsetExecutorService(ExecutorService executorService) {
-        _executor = null;
-    }
-
-    @Reference(name = "scheduledExecutorService", service = ScheduledExecutorService.class)
-    protected void setScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
-        _scheduledExecutor = scheduledExecutorService;
-    }
-
-    protected void unsetScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
-        _scheduledExecutor = null;
-    }
-
-    @Reference(service = AppMonitorConfigurator.class)
-    protected void setApplicationMonitorConfigurator(AppMonitorConfigurator appMonitorConfigurator) {
-        _appMonitorConfigurator = appMonitorConfigurator;
-    }
-
-    protected void unsetApplicationMonitorConfigurator(AppMonitorConfigurator appMonitorConfigurator) {
-        _appMonitorConfigurator = null;
-    }
-
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setServerStarted(ServerStarted serverStarted) {
         if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
@@ -589,7 +532,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    
     protected void unsetServerStarted(ServerStarted serverStarted) {
         // do nothing
     }
@@ -842,15 +784,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    @Reference
-    protected void setApplicationManager(ApplicationManager mgr) {
-        _applicationManager = mgr;
-    }
-
-    protected void unsetApplicationManager(ApplicationManager mgr) {
-        _applicationManager = null;
-    }
-
     @Override
     public String getName() {
         return "ApplicationConfigurator";
@@ -1089,7 +1022,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
         NamedApplication app;
         ApplicationStateMachine asm;
-        
+
         NamedApplication oldAppFromNewPid = _appFromPid.get(newPid);
         NamedApplication oldAppFromNewName = _appFromName.get(newAppName);
 
@@ -1247,9 +1180,9 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
      * 
      * Uninstall the application, then re-attempt the update.
      * 
-     * @param pid The PID of the application.
+     * @param pid          The PID of the application.
      * @param newAppConfig The new configuration for the application.
-     * @param appFromPid The application already present for the PID.
+     * @param appFromPid   The application already present for the PID.
      */
     private void processUpdateWithNameChange(String pid, ApplicationConfig newAppConfig, NamedApplication appFromPid) {
         String oldAppName = appFromPid.getAppName();
@@ -1290,12 +1223,12 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     private void processAddWithNameConflict(String pid, ApplicationConfig newAppConfig, NamedApplication appFromName) {
         String newAppName = newAppConfig.getName();
         ApplicationTypeSupport typeSupport = _appTypeSupport.get(newAppConfig.getType());
-        ApplicationHandler<?> handler = ((typeSupport != null) ? typeSupport.getHandler() : null); 
+        ApplicationHandler<?> handler = ((typeSupport != null) ? typeSupport.getHandler() : null);
         AppMessageHelper.get(handler).error("DUPLICATE_APPLICATION_NAME", newAppName);
         blockApplication(pid, newAppConfig, newAppName);
-        ApplicationStateCoordinator.updateStartingAppStatus(pid, ApplicationStateCoordinator.AppStatus.DUP_APP_NAME);        
-    }    
-    
+        ApplicationStateCoordinator.updateStartingAppStatus(pid, ApplicationStateCoordinator.AppStatus.DUP_APP_NAME);
+    }
+
     private void processUpdateWithNameConflict(String pid, ApplicationConfig newAppConfig,
                                                NamedApplication appFromPid, NamedApplication appFromName) {
         String newAppName = newAppConfig.getName();
@@ -1317,6 +1250,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                         episode.dropReference();
                     }
                 }
+
                 @Override
                 public void failedCompletion(Future<Boolean> future, Throwable t) {
                     episode.dropReference();
@@ -1688,8 +1622,9 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             startingFuture.onCompletion(new CompletionListener<Boolean>() {
                 @Override
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
-                    if (TraceComponent.isAnyTracingEnabled() && _tc.isEventEnabled())
+                    if (TraceComponent.isAnyTracingEnabled() && _tc.isEventEnabled()) {
                         Tr.event(_tc, "successfulCompletion: startingFuture, awaiting " + startedFuture);
+                    }
                 }
 
                 @Override
@@ -1705,8 +1640,9 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             installCalledFuture.onCompletion(new CompletionListener<Boolean>() {
                 @Override
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
-                    if (TraceComponent.isAnyTracingEnabled() && _tc.isEventEnabled())
+                    if (TraceComponent.isAnyTracingEnabled() && _tc.isEventEnabled()) {
                         Tr.event(_tc, "successfulCompletion: installCalledFuture, awaiting " + startedFuture);
+                    }
                 }
 
                 @Override
@@ -2051,8 +1987,9 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
     public void unblockAppStartDependencies(String appPid) {
         List<ApplicationDependency> deps = _startAfterDependencies.get(appPid);
-        if (deps == null)
+        if (deps == null) {
             return;
+        }
         for (ApplicationDependency dep : deps) {
             dep.setResult(true);
         }

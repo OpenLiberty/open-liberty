@@ -33,7 +33,7 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests
-                    .with(FeatureReplacementAction.EE9_FEATURES())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES())
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+                    .withoutModification()
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().setSkipTransformation(true))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
 }

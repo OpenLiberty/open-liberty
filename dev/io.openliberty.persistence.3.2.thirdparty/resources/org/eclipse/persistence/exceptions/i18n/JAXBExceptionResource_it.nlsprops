@@ -85,7 +85,7 @@
 
 50028=Non \u00e8 stato possibile creare una nuova istanza di [{0}].
 
-50029=La classe [{0}] fornita su XmlCustomizer non implementa l''interfaccia org.eclipse.persistence.config.DescriptorCustomizer.
+50029=La classe [{0}] fornita su XmlCustomizer non implementa l''interfaccia org.eclipse.persistence.descriptors.DescriptorCustomizer .
 
 50030=\u00c8 stato effettuato un tentativo di impostare pi\u00f9 di una propriet\u00e0 XmlID sulla classe [{1}].  La propriet\u00e0 [{0}] non pu\u00f2 essere impostata come XmlID, poich\u00e9 la propriet\u00e0 [{2}] \u00e8 gi\u00e0 impostata come XmlID.
 

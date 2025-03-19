@@ -9,18 +9,15 @@
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces41.fat.flow.beans;
 
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.Destroyed;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Observes;
-import jakarta.faces.component.UIViewRoot;
-import jakarta.faces.view.ViewScoped;
-import jakarta.faces.flow.FlowScoped;
-import jakarta.faces.flow.Flow;
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.context.BeforeDestroyed;
-
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.flow.Flow;
+import jakarta.faces.flow.FlowScoped;
 
 @Dependent
 public class Tracker {
@@ -29,9 +26,6 @@ public class Tracker {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Initialized FLOW"));
     }
 
-    /*
-     * Not working -- Invesigation Needed
-     */
     public void observeBeforeDestroyed(@Observes @BeforeDestroyed(FlowScoped.class) Flow flow) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("BeforeDestroyed FLOW"));
     }

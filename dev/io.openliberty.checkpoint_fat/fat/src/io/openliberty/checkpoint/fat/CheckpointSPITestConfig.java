@@ -56,6 +56,8 @@ public class CheckpointSPITestConfig {
 
     public final static String STATIC_ONRESTORE = "STATIC ONRESTORE - ";
 
+    public final static String WITH_LOCK = "WITH LOCK - ";
+
     private static final String USER_FEATURE_PATH = "usr/extension/lib/features/";
     private static final String USER_BUNDLE_PATH = "usr/extension/lib/";
     private static final String USER_FEATURE_USERTEST_MF = "features/test.checkpoint.config-1.0.mf";
@@ -91,6 +93,11 @@ public class CheckpointSPITestConfig {
         findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "-50 3 ", "SUCCESS", 500);
 
         findLogMessage("ProtectedString should be *****", "TESTING - ProtectedString prepare password: ", "*****", 500);
+
+        findLogMessage("runWithCheckpointLock", WITH_LOCK + "CALLED: ", "SUCCESS", 500);
+        findLogMessage("runWithCheckpointLock", WITH_LOCK + "NESTED IN READ: ", "SUCCESS", 500);
+        findLogMessage("runWithCheckpointLock", WITH_LOCK + "DELAYED: ", "SUCCESS", 500);
+        findLogMessage("runWithCheckpointLock", WITH_LOCK + "NESTED IN WRITE: ", "SUCCESS", 500);
     }
 
     @Before

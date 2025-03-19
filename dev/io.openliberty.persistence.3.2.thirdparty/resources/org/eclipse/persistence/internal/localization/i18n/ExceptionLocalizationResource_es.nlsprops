@@ -47,6 +47,8 @@ NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Se ha pasado un par\u00e1metro nulo a "se
 
 PARAMETER_NILL_NOT_FOUND=Par\u00e1metro nulo pasado a getParameterValue()
 
+RIGHT_JOIN_NOT_SUPPORTED=La uni\u00f3n derecha no est\u00e1 soportada
+
 add_attribute_key_was_null=Al especificar un AttributeGroup para una subclase de un tipo de atributo, el par\u00e1metro de tipo no puede ser nulo
 
 argument_collection_was_null=La colecci\u00f3n de argumentos era nula
@@ -99,9 +101,19 @@ cant_persist_detatched_object=No se puede PERSIST el objeto desconectado, posibl
 
 cant_refresh_not_managed_object=No se puede renovar un objeto no gestionado: {0}.
 
+configured_pu_name_conflict=No se puede crear una unidad de persistencia configurada con el nombre {0}. Este nombre se ha encontrado en unidades de persistencia personalizadas.
+
 create_insertion_failed=Ha fallado crear inserci\u00f3n.
 
 criteria_no_constructor_found=Se ha producido una excepci\u00f3n al inspeccionar la clase {0} de un constructor utilizando tipos de criterios de selecci\u00f3n como argumentos.  Si esta CriteriaQuery no tenia como objetivo ser una consulta de constructor, verifique que la selecci\u00f3n coincide con el tipo de retorno.
+
+custom_pu_create_error=No se puede crear una unidad de persistencia personalizada con el nombre {0}.
+
+custom_pu_create_error_no_caller=No se puede crear una unidad de persistencia personalizada con el nombre {0}. No se ha encontrado ning\u00fan m\u00e9todo de interlocutor en la pila.
+
+custom_pu_create_error_no_caller_class_url=No se puede crear una unidad de persistencia personalizada con el nombre {0}. No se ha encontrado ning\u00fan URL de clase de interlocutor {1} .
+
+custom_pu_name_conflict=No se puede crear una unidad de persistencia personalizada con el nombre {0}. Este nombre se ha encontrado en la configuraci\u00f3n xml.
 
 directory_not_exist=El directorio {0} no existe.
 
@@ -124,6 +136,8 @@ ejb30-wrong-type-for-query-hint=La consulta {0}, sugerencia de consulta {1} no e
 entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Conflicto de propiedades de EntityManager: jakarta.persistence.driver y/o jakarta.persistence.url requieren DefaultConnector, pero la unidad de persistencia utiliza el controlador de transacciones externo, por lo tanto, es necesario JNDIConnector.
 
 entity_manager_properties_conflict_default_connector_vs_jndi_connector=Conflicto de propiedades de EntityManager: jakarta.persistence.driver y/o jakarta.persistence.url requieren DefaultConnector, pero jakarta.persistence.jtaDataSource y/o jakarta.persistence.nonjtaDataSource requieren JNDIConnector.
+
+entity_manager_with_connection_failed=El c\u00f3digo de usuario ha fallado con un error: {0}
 
 entity_no_longer_exists_in_db=La entidad ya no existe en la base de datos: {0}.
 
@@ -148,6 +162,8 @@ error_unmarshalling_return=error al desclasificar devoluci\u00f3n
 file_exists=El archivo {0} ya existe.
 
 file_not_exist=El archivo {0} no existe.
+
+find_option_class_unknown=La FindOption que implementa la clase {0} no est\u00e1 soportada
 
 finder_query_failed=Ha fallado la consulta del buscador:
 
@@ -207,9 +223,9 @@ jmx_enabled_platform_mbean_runtime_exception=Se ha producido una excepci\u00f3n 
 
 join_trans_called_on_entity_trans=joinTransaction se ha llamado en un EntityManager local de recurso que no puede registrarse para una transacci\u00f3n JTA.
 
-jpa21-ddl-create-script-target-not-specified=Al generar DDL en scripts, se debe especificar un destino de creaci\u00f3n de script utilizando la propiedad [jakarta.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=Al generar DDL en scripts, se debe especificar un destino de creaci\u00f3n de script utilizando la propiedad [{0}].
 
-jpa21-ddl-drop-script-target-not-specified=Al generar DDL en scripts, se debe especificar un destino de descarte de script utilizando la propiedad [jakarta.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=Al generar DDL en scripts, se debe especificar un destino de descarte de script utilizando la propiedad [{0}].
 
 jpa21-ddl-invalid-source-script-type=El script de origen proporcionado {0} es de un tipo no v\u00e1lido {0}. Los tipos de script de origen v\u00e1lidos son: java.io.Reader o una serie que dise\u00f1a un URL de archivo.
 
@@ -253,6 +269,12 @@ jpa_helper_invalid_read_all_query=La consulta de tipo {0} no es una consulta de 
 
 jpa_helper_invalid_report_query=La consulta de tipo {0} no es una consulta de informe de EclipseLink y, por lo tanto, no se ha podido convertir.
 
+jpa_non_persistent_class=La clase [{0}] no es una clase persistente.
+
+jpa_persistence_util_get_version_no_version_in_class=PersistenceUtil.getVersion(entity) se ha llamado con el objeto [{0}], que no tiene ning\u00fan atributo de versi\u00f3n.
+
+jpa_persistence_util_get_version_non_persistent_class=PersistenceUtil.getVersion(entity) se ha llamado con el objeto [{0}], que no es un objeto persistente.
+
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) se ha llamado con el objeto [{0}] que no es un objeto persistente.
 
 json_ora21c_jsonvalue_to_oraclevalue=No se ha podido convertir JsonValue a OracleJsonValue.
@@ -268,6 +290,8 @@ json_pgsql_pgobject_conversion=La conversi\u00f3n del PGobject de base de datos 
 json_pgsql_unknown_type=La base de datos ha devuelto un tipo JSON desconocido.
 
 lock_called_without_version_locking=Las llamadas a entityManager.lock(Object entity, LockModeType lockMode) requieren que el bloqueo de versi\u00f3n est\u00e9 habilitado.
+
+lock_option_class_unknown=La clase de implementaci\u00f3n LockOption {0} no est\u00e1 soportada
 
 managed_component_not_found=Un atributo: {1} listado en EntityGraph: {0} ha referencia a un subgr\u00e1fico llamado: {2} que no se puede encontrar.
 
@@ -320,6 +344,8 @@ no_entities_retrieved_for_get_reference=No se ha podido encontrar la entidad par
 no_entities_retrieved_for_get_single_result=getSingleResult() no ha recuperado ninguna entidad.
 
 no_entity_graph_of_name=No existe ning\u00fan EntityGraph con el nombre {0}
+
+no_key_in_entity=No se puede a\u00f1adir la uni\u00f3n de {0} a {1} porque a la clase de destino le falta un atributo de tipo de origen
 
 not_an_entity=El objeto: {0} no es un tipo de entidad conocido.
 
@@ -375,9 +401,23 @@ position_param_not_found=No hab\u00eda ning\u00fan par\u00e1metro en la posici\u
 
 pu_configured_for_resource_local=No se ha podido crear un EntityManager con el SynchronizationType porque la PersistenceUnit se ha configurado con transacciones locales de recurso.
 
+refresh_option_class_unknown=La clase de implementaci\u00f3n RefreshOption {0} no est\u00e1 soportada
+
 remove_deletion_failed=Ha fallado la supresi\u00f3n de eliminaci\u00f3n:
 
 rollback_because_of_rollback_only=La transacci\u00f3n se ha "retrotra\u00eddo" porque la transacci\u00f3n estaba definida en RollbackOnly.
+
+schema_validation=Validaci\u00f3n mediante esquema
+
+schema_validation_failed=La validaci\u00f3n del esquema ha fallado
+
+schema_validation_missing_table=No se ha encontrado el lienzo de tabla {0} en el esquema
+
+schema_validation_table_different_columns=La tabla {0} tiene columnas diferentes en el esquema
+
+schema_validation_table_missing_columns=A la tabla {0} le faltan columnas en el esquema
+
+schema_validation_table_surplus_columns=La tabla {0} tiene columnas excedentes en el esquema
 
 sdo_helper_invalid_changesummary=El ChangeSummary proporcionado [{0}] no es un EclipseLink SDOChangeSummary y, por lo tanto, no se ha podido convertir.
 
@@ -434,6 +474,10 @@ sdo_helper_invalid_xsdhelper=El XSDHelper proporcionado [{0}] no es un EclipseLi
 subclass_sought_not_a_managed_type=el tipo de subgr\u00e1fico buscado: {0} no es un tipo gestionado para este atributo: {1}.
 
 too_many_results_for_get_single_result=Se ha devuelto m\u00e1s de un resultado de Query.getSingleResult()
+
+truncate_tables_failed=El truncamiento de tablas ha fallado
+
+typed_query_reference_is_null=La referencia a una consulta con nombre es nula
 
 unable_to_find_named_query=NamedQuery de nombre: {0} no encontrado.
 

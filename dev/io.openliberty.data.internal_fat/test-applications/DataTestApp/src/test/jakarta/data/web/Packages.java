@@ -12,7 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -45,22 +44,24 @@ public interface Packages extends BasicRepository<Package, Integer> {
 
     Package[] deleteByDescriptionEndsWith(String ending, Sort<?>... sorts);
 
+    List<Integer> deleteByDescriptionOrderByWidthAsc(String desc, Limit limit);
+
+    Package[] deleteByDescriptionOrderByWidthDesc(String desc, Limit limit);
+
     void deleteByIdIn(Iterable<Integer> ids);
 
     @Query("DELETE FROM Package")
     int deleteEverything();
 
-    Optional<Integer> deleteFirst(Sort<Package> sort);
+    Optional<Integer> delete1(Limit limit, Sort<Package> sort);
 
-    int[] deleteFirst2(Sort<?>... sorts);
+    int[] delete2(Limit limit, Sort<?>... sorts);
 
-    LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort<?>... sorts);
+    LinkedList<?> delete2ByHeightLessThan(float maxHeight, Limit limit, Sort<?>... sorts);
 
-    long[] deleteFirst3(Sort<Package> sort); // invalid return type is not the entity or id
+    List<Package> deleteFirst2(); // 'first2' should be ignored and this should delete all entities
 
-    List<String> deleteFirst4(Sort<Package> sort); // invalid return type is not the entity or id
-
-    Collection<Number> deleteFirst5(Sort<Package> sort); // invalid return type is not the entity or id
+    Package deleteFirst5ByWidthLessThan(float maxWidth); // 'first5' should be ignored and the number of results should be limited by the condition
 
     @Delete
     Object[] destroy(Limit limit, Sort<Package> sort);
@@ -89,13 +90,17 @@ public interface Packages extends BasicRepository<Package, Integer> {
     List<Integer> findIdByWidthRounded(int width);
 
     @Delete
+    @OrderBy(value = "length", descending = true)
+    List<Integer> removeIfDescriptionMatches(String description, Limit limit);
+
+    @Delete
     Package take(@By("id") int packageNum);
 
     @Delete
     List<Package> take(@By("description") String desc);
 
     @Delete
-    @OrderBy("id")
+    @OrderBy("width")
     List<Package> takeOrdered(String description);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);

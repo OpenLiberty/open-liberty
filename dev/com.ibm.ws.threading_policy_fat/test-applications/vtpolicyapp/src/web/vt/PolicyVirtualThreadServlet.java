@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -189,10 +189,13 @@ public class PolicyVirtualThreadServlet extends HttpServlet {
         char threadNum3 = thread3.getName().charAt(thread3.getName().length() - 1);
         char threadNum4 = thread4.getName().charAt(thread4.getName().length() - 1);
 
-        assertEquals(true, threadNum1 >= '1' && threadNum1 <= '4');
-        assertEquals(true, threadNum2 >= '1' && threadNum2 <= '4');
-        assertEquals(true, threadNum3 >= '1' && threadNum3 <= '4');
-        assertEquals(true, threadNum4 >= '1' && threadNum4 <= '4');
+        assertEquals(true, threadNum1 >= '1' && threadNum1 <= '3');
+        assertEquals(true, threadNum2 >= '1' && threadNum2 <= '3');
+        assertEquals(true, threadNum3 >= '1' && threadNum3 <= '3');
+        // Each of the above threads can create another virtual thread for tasks
+        // that remain on the queue. Any of those threads could end up running the
+        // fourth task.
+        assertEquals(true, threadNum4 >= '4' && threadNum4 <= '6');
 
         executor.shutdownNow();
     }

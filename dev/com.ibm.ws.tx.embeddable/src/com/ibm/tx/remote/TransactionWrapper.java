@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+/* *****************************************************************************
+ * Copyright (c) 2003, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * *****************************************************************************/
 package com.ibm.tx.remote;
 
 import java.util.Hashtable;
@@ -105,8 +105,7 @@ public final class TransactionWrapper implements ResourceCallback {
     public static TransactionWrapper getTransactionWrapper(String globalId) throws SystemException {
         // Make sure TM is open for business
         if (((EmbeddableTranManagerSet) EmbeddableTranManagerSet.instance()).isQuiesced()) {
-            final SystemException se = new SystemException();
-            throw se;
+            throw new SystemException("System is quiesced");
         }
         return _wrappers.get(globalId);
     }
@@ -157,7 +156,7 @@ public final class TransactionWrapper implements ResourceCallback {
         }
 
         // Ensure timeout cannot rollback the underlying transaction
-        ((DistributableTransaction) _transaction).addAssociation();
+        _transaction.addAssociation();
 
         if (_transaction.getTransactionState().getState() == TransactionState.STATE_ACTIVE) {
             try {
@@ -206,7 +205,7 @@ public final class TransactionWrapper implements ResourceCallback {
                     // swallow any exceptions ...
                 }
 
-                ((DistributableTransaction) _transaction).removeAssociation();
+                _transaction.removeAssociation();
 
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "prepare", hme);
@@ -224,7 +223,7 @@ public final class TransactionWrapper implements ResourceCallback {
                     // swallow any exceptions ...
                 }
 
-                ((DistributableTransaction) _transaction).removeAssociation();
+                _transaction.removeAssociation();
 
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "prepare", hhe);
@@ -244,7 +243,7 @@ public final class TransactionWrapper implements ResourceCallback {
             result = Vote.VoteRollback;
         }
 
-        ((DistributableTransaction) _transaction).removeAssociation();
+        _transaction.removeAssociation();
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "prepare", result);
@@ -282,7 +281,7 @@ public final class TransactionWrapper implements ResourceCallback {
 
         // Ensure in-doubt timeout cannot complete the underlying transaction
         try {
-            ((DistributableTransaction) _transaction).addAssociation();
+            _transaction.addAssociation();
         } catch (TRANSACTION_ROLLEDBACK ex) {
             // convert this to TRANSIENT as we want caller to retry
             if (tc.isDebugEnabled())
@@ -351,7 +350,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 // locally retrying we will be in a heuristic state as we returned
                 // heuristic hazard to the superior.
 
-                ((DistributableTransaction) _transaction).removeAssociation();
+                _transaction.removeAssociation();
                 final TRANSIENT tre = new TRANSIENT();
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "commit", tre);
@@ -370,7 +369,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 // Normally the remoteable object would be disconnected from the orb,
                 // but ... timing may mean get got here while it was happenning
                 // We could just return ok, but it is more true to return exception
-                ((DistributableTransaction) _transaction).removeAssociation();
+                _transaction.removeAssociation();
                 final OBJECT_NOT_EXIST one = new OBJECT_NOT_EXIST();
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "commit", one);
@@ -382,7 +381,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 break;
         } // end switch
 
-        ((DistributableTransaction) _transaction).removeAssociation();
+        _transaction.removeAssociation();
 
         if (_heuristic instanceof HeuristicRollbackException) {
             if (tc.isEntryEnabled())
@@ -440,7 +439,7 @@ public final class TransactionWrapper implements ResourceCallback {
             Tr.entry(tc, "commit_one_phase", this);
 
         // Ensure timeout cannot rollback the underlying transaction
-        ((DistributableTransaction) _transaction).addAssociation();
+        _transaction.addAssociation();
 
         // If the transaction that this object represents has already been completed,
         // raise an exception if necessary.
@@ -507,7 +506,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 // The superior will consider this as heuristic hazard.  Also the
                 // same for LPS state.
             case TransactionState.STATE_LAST_PARTICIPANT:
-                ((DistributableTransaction) _transaction).removeAssociation();
+                _transaction.removeAssociation();
                 final TRANSIENT tre = new TRANSIENT();
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "commit_one_phase", tre);
@@ -536,7 +535,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 // Transaction has completed and is now finished
                 // Normally the remoteable object would be disconnected from the orb,
                 // but ... timing may mean get got here while it was happenning
-                ((DistributableTransaction) _transaction).removeAssociation();
+                _transaction.removeAssociation();
                 final OBJECT_NOT_EXIST one = new OBJECT_NOT_EXIST();
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "commit_one_phase", one);
@@ -548,7 +547,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 break;
         } // end switch
 
-        ((DistributableTransaction) _transaction).removeAssociation();
+        _transaction.removeAssociation();
 
         if (_heuristic != null) {
             if (_heuristic instanceof HeuristicHazardException) {
@@ -610,7 +609,7 @@ public final class TransactionWrapper implements ResourceCallback {
             Tr.entry(tc, "rollback", this);
 
         // Ensure timeout cannot rollback the underlying transaction
-        ((DistributableTransaction) _transaction).addAssociation();
+        _transaction.addAssociation();
 
         boolean sysException = false;
 
@@ -670,7 +669,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 // we will hold out using the association counts and if we are
                 // locally retrying we will be in a heuristic state as we returned
                 // heuristic hazard to the superior.
-                ((DistributableTransaction) _transaction).removeAssociation();
+                _transaction.removeAssociation();
                 final TRANSIENT tre = new TRANSIENT();
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "rollback", tre);
@@ -689,7 +688,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 // Normally the remoteable object would be disconnected from the orb,
                 // but ... timing may mean get got here while it was happenning
                 // We could just return ok, but it is more true to return exception
-                ((DistributableTransaction) _transaction).removeAssociation();
+                _transaction.removeAssociation();
                 final OBJECT_NOT_EXIST one = new OBJECT_NOT_EXIST();
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "rollback", one);
@@ -702,7 +701,7 @@ public final class TransactionWrapper implements ResourceCallback {
                 break;
         } // end switch
 
-        ((DistributableTransaction) _transaction).removeAssociation();
+        _transaction.removeAssociation();
 
         if (_heuristic != null) {
             if (_heuristic instanceof HeuristicHazardException) {
@@ -989,3 +988,4 @@ public final class TransactionWrapper implements ResourceCallback {
         }
     }
 }
+

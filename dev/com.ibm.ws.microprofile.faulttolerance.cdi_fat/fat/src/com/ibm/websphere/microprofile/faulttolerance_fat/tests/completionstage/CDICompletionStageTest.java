@@ -40,6 +40,8 @@ public class CDICompletionStageTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL,
+                                                             MicroProfileActions.MP70_EE11,
+                                                             MicroProfileActions.MP70_EE10,
                                                              MicroProfileActions.MP61,
                                                              MicroProfileActions.MP41,
                                                              MicroProfileActions.MP22);

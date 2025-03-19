@@ -950,3 +950,19 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: O ID da chave p\u00fablica {0} n\u00e3o
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=A chave p\u00fablica pode ter mudado. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Se a chave p\u00fablica for um arquivo local, certifique-se de fornecer o arquivo correto.
 
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: A plataforma {0} n\u00e3o p\u00f4de ser encontrada.
+ERROR_MISSING_PLATFORM_NAME.explanation=O nome da plataforma especificado pela configura\u00e7\u00e3o ou vari\u00e1vel de ambiente n\u00e3o foi encontrado.
+ERROR_MISSING_PLATFORM_NAME.useraction=Verifique a ortografia do nome e da vers\u00e3o da plataforma, por exemplo, microProfile-6.1.
+
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: A plataforma n\u00e3o p\u00f4de ser determinada. Os seguintes recursos sem vers\u00e3o n\u00e3o podem ser instalados: {0}.
+ERROR_NO_DERIVED_PLATFORM.explanation= A plataforma n\u00e3o foi definida ou n\u00e3o p\u00f4de ser derivada de recursos com vers\u00e3o existente. 
+ERROR_NO_DERIVED_PLATFORM.useraction=Adicionar uma plataforma para recursos sem vers\u00e3o.
+
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: O comando installFeature n\u00e3o oferece suporte a recursos sem vers\u00e3o.
+ERROR_VERSIONLESS_INSTALL.explanation= O recurso que voc\u00ea tentou instalar usando o comando installFeature n\u00e3o tem uma vers\u00e3o especificada no nome do recurso.
+ERROR_VERSIONLESS_INSTALL.useraction=Use o comando installServerFeatures, que oferece suporte a recursos sem vers\u00e3o, ou instale um recurso diferente que n\u00e3o seja sem vers\u00e3o.
+
+LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Instala\u00e7\u00e3o usando as seguintes plataformas: {0}.
+LOG_INSTALL_WITH_PLATFORM.explanation=As vers\u00f5es de plataforma especificadas foram usadas para resolver recursos sem vers\u00e3o.
+LOG_INSTALL_WITH_PLATFORM.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+

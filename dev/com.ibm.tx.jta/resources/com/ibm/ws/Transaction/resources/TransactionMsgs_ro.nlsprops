@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -875,7 +875,7 @@ WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corecta\u021bi condi\u021biile indic
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: Cererea de punct de control al serverului nu a reu\u0219it, deoarece serviciul de tranzac\u021bii nu poate \u00eencepe o tranzac\u021bie.
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty nu are inclus suport pentru aplica\u021biile care \u00eencep sau necesit\u0103 o tranzac\u021bie \u00een timp ce aplica\u021bia porne\u0219te atunci c\u00e2nd se solicit\u0103 un punct de control al serverului.
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Utiliza\u021bi op\u021biunea at=deployment pentru punctul de control al serverului sau modifica\u021bi aplica\u021bia pentru a \u00eencepe tranzac\u021biile dup\u0103 ce a pornit.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Configura\u021bi punctul de control pentru a ap\u0103rea \u00eenainte ca aplica\u021bia s\u0103 \u00eenceap\u0103 prin utilizarea op\u021biunii de checkpoint a serverului de tip " beforeApps\u0103 modifica\u021bi aplica\u021bia pentru a \u00eencepe tranzac\u021biile dup\u0103 ce a \u00eenceput.
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: O aplica\u021bie a \u00eenceput sau a necesitat o tranzac\u021bie \u00een timpul solicit\u0103rii punctului de control al serverului. Urm\u0103toarea urm\u0103 de stiv\u0103 pentru acest fir a fost capturat\u0103 atunci c\u00e2nd a fost creat\u0103 tranzac\u021bia: {0}

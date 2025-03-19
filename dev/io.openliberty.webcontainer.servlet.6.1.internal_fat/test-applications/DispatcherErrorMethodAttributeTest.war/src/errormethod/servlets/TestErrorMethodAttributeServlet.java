@@ -12,7 +12,6 @@ package errormethod.servlets;
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,10 +28,6 @@ public class TestErrorMethodAttributeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final String CLASS_NAME = TestErrorMethodAttributeServlet.class.getName();
 
-    HttpServletRequest request;
-    HttpServletResponse response;
-    ServletOutputStream sos;
-
     public TestErrorMethodAttributeServlet() {
         super();
     }
@@ -44,36 +39,33 @@ public class TestErrorMethodAttributeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        request = req;
-        response = resp;
-        sos = response.getOutputStream();
 
         LOG("ENTER doGet");
 
-        switch (request.getHeader("runTest")) {
-            case "test_ErrorMethod_Attribute" : test_ErrorMethod_Attribute(); break;
-            case "test_ErrorQueryString_Attribute" : test_ErrorQueryString_Attribute(); break;
+        switch (req.getHeader("runTest")) {
+            case "test_ErrorMethod_Attribute" : test_ErrorMethod_Attribute(req,resp); break;
+            case "test_ErrorQueryString_Attribute" : test_ErrorQueryString_Attribute(req,resp); break;
         }
 
         LOG("EXIT doGet");
     }
 
-    private void test_ErrorMethod_Attribute() throws IOException {
+    private void test_ErrorMethod_Attribute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String method = new Object() {}.getClass().getEnclosingMethod().getName();
         LOG(">>> TESTING [" + method + "]");
 
-        String originalMethod = request.getMethod();
+        String originalMethod = req.getMethod();
         String afterErrorDispatchMethod = null;
 
         LOG(" Request method before calling into sendError , method [" + originalMethod + "]");
 
         //save it in the request attribute so that it can be compared and verified during the error-page handling
-        request.setAttribute("REQUEST_METHOD", originalMethod);
+        req.setAttribute("REQUEST_METHOD", originalMethod);
 
         try {
-            response.sendError(501, "Testing send error method attribute with a 501 status code!");
+            resp.sendError(501, "Testing send error method attribute with a 501 status code!");
 
-            LOG(" AFTER sendError, request method is [" + (afterErrorDispatchMethod = request.getMethod()) +"] ; it is compared to the original request method ["+ originalMethod + "]");
+            LOG(" AFTER sendError, request method is [" + (afterErrorDispatchMethod = req.getMethod()) +"] ; it is compared to the original request method ["+ originalMethod + "]");
 
             //Ideally, we want to report the result back to the client if the request method is not reset after
             //return to the caller method.  However, there is not a way to do this after sendError, since the response is committed and closed.
@@ -88,6 +80,8 @@ public class TestErrorMethodAttributeServlet extends HttpServlet {
             LOG(" Exception [" + e + "]");
             throw e;
         }
+
+        LOG("<<< TESTING [" + method + "]");
     }
 
     /*
@@ -96,13 +90,15 @@ public class TestErrorMethodAttributeServlet extends HttpServlet {
      * 1. retrieve the request attribute "jakarta.servlet.error.query_string",
      * 2. append the retrieved value to the response which the client will compare with what was sent.
      */
-    private void test_ErrorQueryString_Attribute() throws IOException {
+    private void test_ErrorQueryString_Attribute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String method = new Object() {}.getClass().getEnclosingMethod().getName();
         LOG(">>> TESTING [" + method + "]");
 
         //set attribute for ErrorPageServlet to run this test.
-        request.setAttribute("ERROR_QUERY_STRING", "run this test");
-        response.sendError(501, "SendError 501 to test jakarta.servlet.error.query_string attribute!");
+        req.setAttribute("ERROR_QUERY_STRING", "run this test");
+        resp.sendError(501, "SendError 501 to test jakarta.servlet.error.query_string attribute!");
+
+        LOG("<<< TESTING [" + method + "]");
     }
 
     public static void LOG(String s) {

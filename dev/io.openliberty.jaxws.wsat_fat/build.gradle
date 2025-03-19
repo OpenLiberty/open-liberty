@@ -17,7 +17,7 @@ configurations {
 
 dependencies {
   junitdependencies project(':com.ibm.ws.jaxws.tools'),
-  		'com.sun.xml.messaging.saaj:saaj-impl:1.4.0',
+  		project(':com.ibm.ws.com.sun.xml.messaging.saaj'),
   		'com.sun.xml.ws:policy:2.4',
   		'com.sun.xml.stream.buffer:streambuffer:1.5.3',
   		'com.sun.org.apache.xml.internal:resolver:20050927',

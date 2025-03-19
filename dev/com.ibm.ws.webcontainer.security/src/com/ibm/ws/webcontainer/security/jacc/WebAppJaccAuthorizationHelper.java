@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,10 +24,10 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.ws.security.audit.utils.AuditConstants;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
-import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.WebAppAuthorizationHelper;
+import com.ibm.ws.webcontainer.security.WebJaccService;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.security.internal.DenyReply;
 import com.ibm.ws.webcontainer.security.internal.PermitReply;
@@ -41,10 +41,10 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 public class WebAppJaccAuthorizationHelper implements WebAppAuthorizationHelper {
     private static final TraceComponent tc = Tr.register(WebAppJaccAuthorizationHelper.class);
 
-    private AtomicServiceReference<JaccService> jaccServiceRef = null;
+    private AtomicServiceReference<WebJaccService> jaccServiceRef = null;
     private static final WebReply DENY_AUTHZ_FAILED = new DenyReply("AuthorizationFailed");
 
-    public WebAppJaccAuthorizationHelper(AtomicServiceReference<JaccService> ref) {
+    public WebAppJaccAuthorizationHelper(AtomicServiceReference<WebJaccService> ref) {
         this.jaccServiceRef = ref;
     }
 

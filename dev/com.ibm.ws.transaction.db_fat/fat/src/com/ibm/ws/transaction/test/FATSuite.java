@@ -30,6 +30,6 @@ public class FATSuite extends TestContainerSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(FeatureReplacementAction.EE10_FEATURES());
 }

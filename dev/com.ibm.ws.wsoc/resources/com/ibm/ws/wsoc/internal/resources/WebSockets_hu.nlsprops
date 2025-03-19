@@ -1,17 +1,12 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
-#
-
 
 #COMPONENTPREFIX CWWKH
 #COMPONENTNAMEFOR CWWKH WebSphere WebSocket
@@ -228,9 +223,9 @@ missingslashornull.uri=CWWKH0052E: Kiv\u00e9tel t\u00f6rt\u00e9nt a kiszolg\u00e
 missingslashornull.uri.explanation=A kiszolg\u00e1l\u00f3 v\u00e9gpont (ServerEndpoint) \u00e9rv\u00e9nytelen, mivel a v\u00e9gpont URI null vagy nem / karakterrel kezd\u0151dik a v\u00e9gpont oszt\u00e1lyban. A WebSocket alkalmaz\u00e1s nem \u00e9rhet\u0151 el k\u00e9r\u00e9sek sz\u00e1m\u00e1ra.
 missingslashornull.uri.useraction=Hat\u00e1rozzon meg egy nem null v\u00e9gpont URI azonos\u00edt\u00f3t, amely a / karakterrel kezd\u0151dik. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
 
-wsoc.feature.not.loaded.correctly=CWWKH0053E: A websocket szolg\u00e1ltat\u00e1s nem elfogadhat\u00f3 v\u00e1ltozattal t\u00f6lt\u0151d\u00f6tt be.
-wsoc.feature.not.loaded.correctly.explanation=A websocket szolg\u00e1ltat\u00e1s olyan v\u00e1ltozattal t\u00f6lt\u0151d\u00f6tt be, amely megfelel az adott websocket szolg\u00e1ltat\u00e1s Java [Jakarta] EE specifik\u00e1ci\u00f3j\u00e1nak. A szolg\u00e1ltat\u00e1s a v\u00e1ltozat meghat\u00e1roz\u00e1sa n\u00e9lk\u00fcl ker\u00fclt bet\u00f6lt\u00e9sre.
-wsoc.feature.not.loaded.correctly.useraction=Ellen\u0151rizze a server.xml f\u00e1jlt, hogy l\u00e9tezik-e t\u00f6bb websocket szolg\u00e1ltat\u00e1s. Csak egy adhat\u00f3 meg.
+wsoc.feature.not.loaded.correctly=CWWKH0053E: A websocket kont\u00e9ner nem t\u00f6lt\u0151d\u00f6tt be elfogadhat\u00f3 verzi\u00f3val.
+wsoc.feature.not.loaded.correctly.explanation=A websocket kont\u00e9ner bet\u00f6ltve egy elfogadhat\u00f3 verzi\u00f3 n\u00e9lk\u00fcl. Az alkalmaz\u00e1s a v\u00e1rtt\u00f3l elt\u00e9r\u0151en viselkedhet.
+wsoc.feature.not.loaded.correctly.useraction=Ellen\u0151rizze a server.xml f\u00e1jlt, hogy l\u00e9tezik-e t\u00f6bb websocket szolg\u00e1ltat\u00e1s. A f\u00e1jl legfeljebb egy websocket funkci\u00f3t hat\u00e1rozhat meg.
 
 scheme.incorrect.error=CWWKH0054E: Azonos\u00edtatlan s\u00e9ma ker\u00fclt alkalmaz\u00e1sra a(z) {0} URI azonos\u00edt\u00f3ban.
 scheme.incorrect.error.explanation=A k\u00e9r\u00e9s kezel\u00e9se sor\u00e1n azonos\u00edtatlan s\u00e9m\u00e1t tal\u00e1lt a rendszer. 
@@ -239,3 +234,7 @@ scheme.incorrect.error.useraction=A s\u00e9ma t\u00edpusa csak http, https, ws v
 upgradeHttpToWebSocket.failed=CWWKH0055E: A jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket h\u00edv\u00e1sa {0} miatt meghi\u00fasult. 
 upgradeHttpToWebSocket.failed.explanation=A kiszolg\u00e1l\u00f3 nem tudta friss\u00edteni a HTTP vagy HTTPS k\u00e9r\u00e9st a ws/wss protokollra.
 upgradeHttpToWebSocket.failed.useraction=Tekintse \u00e1t a hib\u00e1t, hogy azonos\u00edthassa, mi\u00e9rt nem siker\u00fclt a k\u00e9r\u00e9s friss\u00edt\u00e9se.
+
+maxmessagesize.exceeded=CWWKH0056E: A {0} met\u00f3dus maxMessageSize meghaladja Integer.MAX_VALUE \u00e9rt\u00e9ket a(z) {1} oszt\u00e1lyban.
+maxmessagesize.exceeded.explanation=A maxMessageSize OnMessage annot\u00e1ci\u00f3s param\u00e9ter be\u00e1ll\u00edtja a met\u00f3dus maxim\u00e1lis \u00fczenetm\u00e9ret\u00e9t b\u00e1jtban. maxMessageSize csak Integer.MAX_VALUE maxim\u00e1lis \u00e9rt\u00e9kre \u00e1ll\u00edthat\u00f3 be.
+maxmessagesize.exceeded.useraction=Cs\u00f6kkentse a maxMessageSize param\u00e9ter \u00e9rt\u00e9k\u00e9t legfeljebb Integer.MAX_VALUE \u00e9rt\u00e9kre.

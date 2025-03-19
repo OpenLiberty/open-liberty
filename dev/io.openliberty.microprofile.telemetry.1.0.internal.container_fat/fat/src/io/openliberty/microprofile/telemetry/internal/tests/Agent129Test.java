@@ -52,13 +52,12 @@ import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
+import io.openliberty.microprofile.telemetry.internal.utils.KeyPairs;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -80,8 +79,11 @@ public class Agent129Test {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    public static RepeatTests repeat = FATSuite.telemetry11Repeats(SERVER_NAME);
+    private static KeyPairs keyPairs = new KeyPairs(server);
+
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(),keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(Agent129Test.class,
+                                                                                                                                                            "jaeger"));
+    public static RepeatTests repeat = TelemetryActions.telemetry11Repeats(SERVER_NAME);
 
     // In contrast to most tests, this test needs a new jaeger instance for each repeat
     // so that it can check for any trace IDs not accounted for
@@ -93,8 +95,7 @@ public class Agent129Test {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        client = new JaegerQueryClient(jaegerContainer);
+        client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
         server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
 
@@ -161,7 +162,7 @@ public class Agent129Test {
 
         Span span = findOneFrom(spans, hasNoParent());
 
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)) {
+        if (TelemetryActions.mpTelemetry11EE7orEE8IsActive()) {
             assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
                                               .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest")
                                               .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
@@ -258,10 +259,10 @@ public class Agent129Test {
         String traceId = request.run(String.class);
         traceIdsUsed.add(traceId);
 
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)) {
-
+        if (TelemetryActions.mpTelemetry11EE7orEE8IsActive()) {
             /*
              * JavaAgent 1.29 with MP7 and MP8 does not create the extra span for withSpan annotations (BUG)
+             * fixed in version 2.1.0 https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/10385
              */
 
             List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(2));
@@ -299,8 +300,7 @@ public class Agent129Test {
         String traceId = request.run(String.class);
         traceIdsUsed.add(traceId);
 
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)) {
-
+        if (TelemetryActions.mpTelemetry11EE7orEE8IsActive()) {
             /*
              * JavaAgent 1.29 with MP7 and MP8 does not create the extra span for withSpan annotations (BUG)
              */

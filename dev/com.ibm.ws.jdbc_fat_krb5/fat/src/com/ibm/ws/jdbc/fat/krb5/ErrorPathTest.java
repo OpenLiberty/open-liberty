@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -63,6 +63,10 @@ public class ErrorPathTest extends FATServletClient {
         Path krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
         FATSuite.krb5.generateConf(krbConfPath);
 
+        //TODO switch
+        Path krbKeytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab");
+//        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
+
         db2.start();
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.db2.web");
@@ -74,6 +78,7 @@ public class ErrorPathTest extends FATServletClient {
         server.addEnvVar("DB2_PASS", db2.getPassword());
         server.addEnvVar("KRB5_USER", DB2KerberosTest.KRB5_USER);
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
+        server.addEnvVar("KRB5_KEYTAB", krbKeytabPath.toAbsolutePath().toString());
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK

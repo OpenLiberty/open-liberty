@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -26,7 +26,7 @@ public class County {
     public Set<CityId> cities;
 
     @Version
-    public Timestamp lastUpdated;
+    public LocalDateTime lastUpdated;
 
     @Id
     public String name;

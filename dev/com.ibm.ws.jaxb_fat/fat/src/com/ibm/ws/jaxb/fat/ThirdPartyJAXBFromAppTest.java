@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxb.fat;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -19,10 +20,10 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxb.thirdparty.web.ThirdPartyJAXBFromAppTestServlet;
@@ -31,11 +32,11 @@ import jaxb.thirdparty.web.ThirdPartyJAXBFromAppTestServlet;
  * @see jaxb.thirdparty.web.ThirdpartyJAXBFromAppTestServlet for test details.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE9_FEATURES })
 public class ThirdPartyJAXBFromAppTest extends FATServletClient {
 
-    private static final String SERVER = "jaxb_fat.no-jaxb-feature";
     private static final String APP_NAME = "thirdPartyJaxbApp";
+
+    private static final String SERVER = "jaxb_fat.no-jaxb-feature";
 
     @Server(SERVER)
     @TestServlet(servlet = ThirdPartyJAXBFromAppTestServlet.class, contextRoot = APP_NAME)
@@ -43,7 +44,27 @@ public class ThirdPartyJAXBFromAppTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "jaxb.thirdparty.web");
+        WebArchive war = ShrinkHelper.buildDefaultApp(APP_NAME, "jaxb.thirdparty.web");
+
+        // Need to copy the specific binaries over for each EE level in to the WAR
+        if (JakartaEEAction.isEE10Active()) {
+            ShrinkHelper.addDirectory(war, server.pathToAutoFVTTestFiles + "/ee10");
+
+            server.setServerConfigurationFile("server-ee10.xml");
+
+        } else if (JakartaEEAction.isEE9Active()) {
+
+            ShrinkHelper.addDirectory(war, server.pathToAutoFVTTestFiles + "/ee9");
+
+            server.setServerConfigurationFile("server-ee9.xml");
+
+        } else {
+
+            ShrinkHelper.addDirectory(war, server.pathToAutoFVTTestFiles + "/ee8");
+
+        }
+
+        ShrinkHelper.exportAppToServer(server, war);
         server.startServer(RepeatTestFilter.getRepeatActionsAsString() + ".log");
     }
 

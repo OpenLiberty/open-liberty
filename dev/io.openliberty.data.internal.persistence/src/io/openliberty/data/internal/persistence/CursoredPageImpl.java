@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
+
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -53,47 +55,60 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
+    @Trivial // avoid tracing customer data
     CursoredPageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(tc, "<init>", queryInfo, pageRequest, queryInfo.loggable(args));
+
+        if (pageRequest == null)
+            queryInfo.missingPageRequest();
 
         this.args = args;
         this.queryInfo = queryInfo;
-        this.pageRequest = pageRequest == null ? PageRequest.ofSize(100) : pageRequest;
+        this.pageRequest = pageRequest;
         this.isForward = this.pageRequest.mode() != PageRequest.Mode.CURSOR_PREVIOUS;
-        Optional<PageRequest.Cursor> keysetCursor = this.pageRequest.cursor();
+
+        Optional<PageRequest.Cursor> cursor = this.pageRequest.cursor();
 
         int maxPageSize = this.pageRequest.size();
         int firstResult = this.pageRequest.mode() == PageRequest.Mode.OFFSET //
-                        ? RepositoryImpl.computeOffset(this.pageRequest) //
+                        ? queryInfo.computeOffset(this.pageRequest) //
                         : 0;
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
-            String jpql = keysetCursor.isEmpty() ? queryInfo.jpql : //
-                            isForward ? queryInfo.jpqlAfterKeyset : //
-                                            queryInfo.jpqlBeforeKeyset;
+            String jpql = cursor.isEmpty() ? queryInfo.jpql : //
+                            isForward ? queryInfo.jpqlAfterCursor : //
+                                            queryInfo.jpqlBeforeCursor;
 
             @SuppressWarnings("unchecked")
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);
             queryInfo.setParameters(query, args);
 
-            if (keysetCursor.isPresent())
-                queryInfo.setKeysetParameters(query, keysetCursor.get());
+            if (cursor.isPresent())
+                queryInfo.setParametersFromCursor(query, cursor.get());
 
             query.setFirstResult(firstResult);
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
 
             results = query.getResultList();
 
-            // Keyset pagination involves reversing the ORDER BY to obtain the previous page, but the entries
-            // on the page will also be in reverse order, so we need to reverse again to correct that
+            // Cursor-based pagination in the previous page direction is implemented
+            // by reversing the ORDER BY to obtain the previous page. A side-effect
+            // of that is that the resulting entries for the page are reversed,
+            // so we need to reverse again to correct that.
             if (!isForward)
                 for (int size = results.size(), i = 0, j = size - (size > maxPageSize ? 2 : 1); i < j; i++, j--)
                     Collections.swap(results, i, j);
         } catch (Exception x) {
-            throw RepositoryImpl.failure(x);
+            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
         } finally {
             em.close();
         }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "<init>");
     }
 
     /**
@@ -105,10 +120,11 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     @FFDCIgnore(Exception.class)
     private long countTotalElements() {
         if (!pageRequest.requestTotal())
-            throw new IllegalStateException("A total count of elements and pages is not retreived from the database because the " +
-                                            pageRequest + " page request specifies a value of 'false' for 'requestTotal'. " +
-                                            "To request a page with the total count included, use the " +
-                                            "PageRequest.withTotal method instead of the PageRequest.withoutTotal method."); // TODO NLS
+            throw exc(IllegalStateException.class,
+                      "CWWKD1042.no.totals",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      pageRequest);
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
@@ -119,27 +135,34 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
 
             return query.getSingleResult();
         } catch (Exception x) {
-            throw RepositoryImpl.failure(x);
+            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
         } finally {
             em.close();
         }
     }
 
     @Override
+    @Trivial
     public List<T> content() {
         int size = results.size();
         int max = pageRequest.size();
-        return size > max ? new ResultList(max) : results;
+        List<T> content = size > max ? new ResultList(max) : results;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "content", queryInfo.loggable(content));
+        return content;
     }
 
     @Override
     public PageRequest.Cursor cursor(int index) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         if (index < 0 || index >= pageRequest.size())
             throw new IllegalArgumentException("index: " + index);
 
         T entity = results.get(index);
 
-        final Object[] keyValues = new Object[queryInfo.sorts.size()];
+        final Object[] keyElements = new Object[queryInfo.sorts.size()];
         int k = 0;
         for (Sort<?> keyInfo : queryInfo.sorts)
             try {
@@ -150,12 +173,16 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                         value = ((Method) accessor).invoke(value);
                     else
                         value = ((Field) accessor).get(value);
-                keyValues[k++] = value;
+                keyElements[k++] = value;
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "key element " + k + ": " +
+                                       queryInfo.loggable(value));
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
                 throw new DataException(x.getCause());
             }
 
-        return Cursor.forKey(keyValues);
+        return Cursor.forKey(keyElements);
     }
 
     @Override
@@ -189,6 +216,48 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
         return pageRequest;
     }
 
+    /**
+     * Convert to readable text of the form:
+     *
+     * CursoredPage 4/10 of MyEntity, size 10/10, CURSOR_NEXT(name ASC IgnoreCase, id ASC) @ff22b3c5
+     *
+     * @return textual representation of the page.
+     */
+    @Override
+    @Trivial
+    public String toString() {
+        int maxPageSize = pageRequest.size();
+        int size = Math.min(results.size(), maxPageSize);
+        StringBuilder s = new StringBuilder(200) //
+                        .append("CursoredPage ").append(pageRequest.page());
+        if (totalElements >= 0) {
+            s.append('/');
+            s.append(totalElements / maxPageSize + (totalElements % maxPageSize > 0 ? 1 : 0));
+        }
+        if (!results.isEmpty()) {
+            s.append(" of ").append(results.get(0).getClass().getSimpleName());
+        }
+        s.append(", size ").append(size);
+        s.append('/').append(maxPageSize);
+        s.append(isForward ? ", CURSOR_NEXT(" : " CURSOR_PREVIOUS(");
+
+        boolean firstSort = true;
+        if (queryInfo.sorts != null)
+            for (Sort<?> sort : queryInfo.sorts) {
+                if (firstSort)
+                    firstSort = false;
+                else
+                    s.append(", ");
+                s.append(sort.property()); //
+                s.append(sort.isAscending() //
+                                ? sort.ignoreCase() ? " ASC IgnoreCase" : " ASC" //
+                                : sort.ignoreCase() ? " DESC IgnoreCase" : " DESC");
+            }
+
+        s.append(") @").append(Integer.toHexString(hashCode()));
+        return s.toString();
+    }
+
     @Override
     public long totalElements() {
         if (totalElements == -1)
@@ -218,13 +287,16 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     @Override
     public PageRequest nextPageRequest() {
         if (!hasNext())
-            throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
-                                             "true result of CursoredPage.hasNext before attempting this method."); // TODO NLS
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1040.no.next.page",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      "CursoredPage.hasNext");
 
         int maxPageSize = pageRequest.size();
         int endingResultIndex = Math.min(maxPageSize, results.size()) - 1; // CURSOR_PREVIOUS that reads a partial page can have a next page
 
-        return PageRequest.afterCursor(Cursor.forKey(queryInfo.getKeysetValues(results.get(endingResultIndex))),
+        return PageRequest.afterCursor(Cursor.forKey(queryInfo.getCursorValues(results.get(endingResultIndex))),
                                        pageRequest.page() == Long.MAX_VALUE ? Long.MAX_VALUE : pageRequest.page() + 1,
                                        maxPageSize,
                                        pageRequest.requestTotal());
@@ -233,11 +305,13 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     @Override
     public PageRequest previousPageRequest() {
         if (!hasPrevious())
-            throw new NoSuchElementException("Cannot request a previous page. To avoid this error, check for a " +
-                                             "true result of CursoredPage.hasPrevious before attempting this method."); // TODO NLS
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1039.no.prev.cursor.page",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName());
 
         // Decrement page number by 1 unless it would go below 1.
-        return PageRequest.beforeCursor(Cursor.forKey(queryInfo.getKeysetValues(results.get(0))),
+        return PageRequest.beforeCursor(Cursor.forKey(queryInfo.getCursorValues(results.get(0))),
                                         pageRequest.page() == 1 ? 1 : pageRequest.page() - 1,
                                         pageRequest.size(),
                                         pageRequest.requestTotal());

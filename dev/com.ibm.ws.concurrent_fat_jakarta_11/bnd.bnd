@@ -15,7 +15,8 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/Concurrency31TestWeb/src
+	test-applications/Concurrency31TestWeb/src,\
+	test-libraries/TimeZoneContext/src
 
 javac.source: 17
 javac.target: 17
@@ -23,8 +24,8 @@ javac.target: 17
 fat.minimum.java.level: 17
 fat.project: true
 
-# Include com.ibm.ws.concurrent_fat_jakarta for test-library/* classes
-# Avoid importing FATSuite and test classes from com.ibm.ws.concurrent_fat_jakarta
+# Include com.ibm.ws.concurrent_fat_jakarta_11 for test-library/* classes
+# Avoid importing FATSuite and test classes from test.jakarta.concurrency
 Import-Package:\
     !test.jakarta.concurrency,\
     *

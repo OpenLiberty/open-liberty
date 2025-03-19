@@ -1,27 +1,48 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 configurations {
-    mojarra
-    myfaces
-    myfacesLibs
-    mojarra30
-    myfaces30
-    mojarra40
-    myfaces40
+    mojarra {
+        transitive = false
+    }
+    myfaces {
+        transitive = false
+    }
+    myfacesLibs {
+        transitive = false
+    }
+    mojarra30 {
+        transitive = false
+    }
+    myfaces30 {
+        transitive = false
+    }
+    mojarra40 {
+        transitive = false
+    }
+    myfaces40 {
+        transitive = false
+    }
+    mojarra41 {
+        transitive = false
+    }
+    myfaces41 {
+        transitive = false
+    }
 }
 
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
 dependencies {
+    requiredLibs 'org.seleniumhq.selenium:selenium-java:4.8.3'
+    requiredLibs 'com.google.guava:guava:32.0.1-jre'
     requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit:2.20'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-core-js:2.17'
@@ -77,7 +98,12 @@ dependencies {
         }
     }
     requiredLibs project(':io.openliberty.org.apache.commons.codec')
-    requiredLibs project(':io.openliberty.org.apache.commons.logging')
+    // transitive = false makes it so that io.openliberty.faces.fat.selenium.util.internal dependencies are not imported
+    // it is required to keep from guava-android being imported
+    // guava-android is missing the toImmutableSortedSet method which is required so guava-android cannot be included
+    requiredLibs( project(':io.openliberty.faces.fat.selenium.util.internal') ) {
+        transitive = false
+    }
     requiredLibs 'xml-apis:xml-apis:1.4.01'
     mojarra 'org.glassfish:javax.faces:2.3.9',
       'javax.faces:javax.faces-api:2.3'
@@ -94,9 +120,13 @@ dependencies {
       'org.apache.myfaces.core:myfaces-impl:3.0.2'
     mojarra40 'org.glassfish:jakarta.faces:4.0.0'
     // Do not update since newer JS (in MyFaces 4.0.0-RC5+) is not supported 
-    myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.0-RC4',
-      'org.apache.myfaces.core:myfaces-impl:4.0.0-RC4'
+    myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.1',
+      'org.apache.myfaces.core:myfaces-impl:4.0.1'
+    mojarra41 'org.glassfish:jakarta.faces:4.1.0'
+    myfaces41 'org.apache.myfaces.core:myfaces-api:4.1.0-RC2',
+      'org.apache.myfaces.core:myfaces-impl:4.1.0-RC2'
     }
+    
 
 task addMojarra(type: Copy) {
     from configurations.mojarra
@@ -111,6 +141,11 @@ task addMojarra30(type: Copy) {
 task addMojarra40(type: Copy) {
     from configurations.mojarra40
     into "${buildDir}/autoFVT/publish/files/mojarra40/"
+}
+
+task addMojarra41(type: Copy) {
+    from configurations.mojarra41
+    into "${buildDir}/autoFVT/publish/files/mojarra41/"
 }
 
 task addMyFaces(type: Copy) {
@@ -128,6 +163,11 @@ task addMyFaces40(type: Copy) {
     into "${buildDir}/autoFVT/publish/files/myfaces40"
 }
 
+task addMyFaces41(type: Copy) {
+    from configurations.myfaces41
+    into "${buildDir}/autoFVT/publish/files/myfaces41"
+}
+
 task addMyFacesLibs(type: Copy) {
     from configurations.myfacesLibs
     into "${buildDir}/autoFVT/publish/files/myfaces-libs"
@@ -142,10 +182,13 @@ addRequiredLibraries {
     dependsOn addMojarra
     dependsOn addMojarra30
     dependsOn addMojarra40
+    dependsOn addMojarra41
     dependsOn addMyFaces
     dependsOn addMyFaces30
     dependsOn addMyFaces40
+    dependsOn addMyFaces41
     dependsOn addMyFacesLibs
     dependsOn copyPermissionFile
     dependsOn addJakartaTransformer
+    dependsOn copyTestContainers
 }

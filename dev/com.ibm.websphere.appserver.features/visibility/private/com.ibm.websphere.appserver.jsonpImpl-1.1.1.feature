@@ -5,7 +5,7 @@ WLP-DisableAllFeatures-OnConflict: false
 singleton=true
 visibility=private
 -features=com.ibm.websphere.appserver.eeCompatible-8.0
--bundles=com.ibm.websphere.javaee.jsonp.1.1; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.json:javax.json-api:1.1.3", \
+-bundles=com.ibm.websphere.javaee.jsonp.1.1; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.json:javax.json-api:1.1.4", \
  com.ibm.ws.org.glassfish.json.1.1
 kind=ga
 edition=core

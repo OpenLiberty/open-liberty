@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2017 IBM Corporation and others.
+ * Copyright (c) 2013,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,35 +14,34 @@ package com.ibm.ws.artifact.fat;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import org.junit.Assert;
-import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ClassloadingElement;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
-import com.ibm.websphere.simplicity.config.ClassloadingElement;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
 /**
  * FAT used to test the ability to configure and to dynamically update
  * the resource protocol configuration.
  */
+@RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class FATResourceProtocol {
     private static final Class<? extends FATResourceProtocol> CLASS = FATResourceProtocol.class;

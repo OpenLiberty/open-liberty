@@ -20,8 +20,8 @@
 package org.jboss.resteasy.spi.config;
 
 import java.math.BigDecimal;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+import java.security.AccessController; //Liberty change
+import java.security.PrivilegedAction; //Liberty change
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Function;
@@ -34,9 +34,9 @@ import org.jboss.resteasy.spi.config.security.ConfigPropertyPermission;
 /**
  * A default configuration which searches for a property in the following order:
  * <ol>
- *     <li>System properties</li>
- *     <li>Environment variables</li>
- *     <li>{@link ResteasyConfiguration}</li>
+ * <li>System properties</li>
+ * <li>Environment variables</li>
+ * <li>{@link ResteasyConfiguration}</li>
  * </ol>
  *
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
@@ -138,9 +138,9 @@ public class DefaultConfiguration implements Configuration {
 
         @Override
         public String apply(final String name) {
-            String value = config == null ? null : config.getInitParameter(name);  //Liberty change
-            if (value == null) {  //Liberty change
-                //Liberty change - adding doPriv
+            //Liberty change start
+            String value = config == null ? null : config.getInitParameter(name);
+            if (value == null) {
                 if (System.getSecurityManager() == null) {
                     value = System.getProperty(name);
                     if (value == null) {
@@ -164,5 +164,6 @@ public class DefaultConfiguration implements Configuration {
             }
             return value;
         }
+        //Liberty change end
     }
 }

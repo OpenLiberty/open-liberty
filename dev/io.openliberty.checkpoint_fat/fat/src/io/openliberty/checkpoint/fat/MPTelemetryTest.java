@@ -31,13 +31,13 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -58,10 +58,10 @@ public class MPTelemetryTest extends FATServletClient {
 
     public TestMethod testMethod;
 
+    // In theory mpTelemtry-2.0 should work on other EE versions, but the feature sets of
+    // componenttest.rules.repeater.MicroProfileActions do not currently allow that.
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME,
-                                                                      MicroProfileActions.MP60, // first test in LITE mode
-                                                                      MicroProfileActions.MP61); // rest are FULL mode
+    public static RepeatTests repeatTest = FATSuite.mpTelemetryRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void deployApp() throws Exception {
@@ -69,7 +69,7 @@ public class MPTelemetryTest extends FATServletClient {
                         .addAsResource(MpTelemetryServlet.class.getResource("microprofile-config.properties"), "META-INF/microprofile-config.properties")
                         .addClasses(MpTelemetryServlet.class);
 
-        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY, DeployOptions.OVERWRITE);
     }
 
     @Before

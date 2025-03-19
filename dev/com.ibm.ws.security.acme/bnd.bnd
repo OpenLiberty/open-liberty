@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2023 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,7 +100,9 @@ instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
 	com.ibm.ws.rest.handler;version=latest,\
 	com.ibm.ws.management.security;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.config;version=latest
 	
 
@@ -111,7 +113,4 @@ instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	com.ibm.ws.logging.core;version=latest,\
-	com.ibm.ws.logging;version=latest, \
-	com.ibm.ws.kernel.boot.logging;version=latest, \
-	com.ibm.ws.kernel.security.thread;version=latest,\
-	com.ibm.ws.kernel.boot.common;version=latest
+	com.ibm.ws.logging;version=latest

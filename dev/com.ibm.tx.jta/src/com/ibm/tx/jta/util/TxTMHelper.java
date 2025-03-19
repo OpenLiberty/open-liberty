@@ -13,6 +13,9 @@
 
 package com.ibm.tx.jta.util;
 
+import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
+import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
+
 import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
@@ -21,11 +24,13 @@ import javax.transaction.TransactionManager;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.XAResourceFactory;
 import com.ibm.tx.jta.impl.EventSemaphore;
 import com.ibm.tx.jta.impl.LocalTIDTable;
 import com.ibm.tx.jta.impl.RecoveryManager;
@@ -46,7 +51,6 @@ import com.ibm.ws.recoverylog.spi.RecoveryFailedException;
 import com.ibm.ws.recoverylog.spi.RecoveryLogFactory;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.ws.uow.UOWScopeCallbackAgent;
-import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.tx.UOWEventListener;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -71,13 +75,13 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     protected String _recoveryIdentity;
     protected String _recoveryGroup;
 
-    private static boolean _xaResourceFactoryReady;
+    private boolean _xaResourceFactoryReady;
     private boolean _waitForRecovery;
     private boolean _tmsReady;
-    private static boolean _recoveryLogFactoryReady;
-    private static RecoveryLogFactory _recoveryLogFactory;
-    private static boolean _recoveryLogServiceReady;
-    private static boolean _requireDataSourceActive;
+    private boolean _recoveryLogFactoryReady;
+    private RecoveryLogFactory _recoveryLogFactory;
+    private boolean _recoveryLogServiceReady;
+    private boolean _requireDataSourceActive;
     private boolean _localRecoveryFailed;
 
     protected static BundleContext _bc;
@@ -96,17 +100,14 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         TMHelper.setTMService(this);
     }
 
-    protected TxTMHelper(boolean dummy) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "NOT Adding shutdown hook");
-        TMHelper.setTMService(this);
-    }
+    //recoveryLogService=com.ibm.ws.recoverylog.spi.RecLogServiceImpl; \
+    //recoveryLogFactory=com.ibm.ws.recoverylog.spi.RecoveryLogFactory; \
+    //
 
-    /**
-     * Called by DS to inject reference to Config Provider
-     *
-     * @param p
-     */
+    //<reference name="recoveryLogService" cardinality="1..1" interface="com.ibm.ws.recoverylog.spi.RecLogServiceImpl" bind="setRecoveryLogService" unbind="unsetRecoveryLogService"/>
+    //<reference name="recoveryLogFactory" cardinality="1..1" interface="com.ibm.ws.recoverylog.spi.RecoveryLogFactory" bind="setRecoveryLogFactory" unbind="unsetRecoveryLogFactory"/>
+
+    @Reference(unbind = "shutdown")
     protected void setConfigurationProvider(ConfigurationProvider p) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setConfigurationProvider", p);
@@ -128,34 +129,8 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.exit(tc, "setConfigurationProvider");
     }
 
-    protected void unsetConfigurationProvider(ConfigurationProvider p) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "unsetConfigurationProvider", p);
-        if (p != null) {
-            // Used to test whether we are logging to an RDBMS
-            // configured
-            if (!p.isSQLRecoveryLog()) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Logging to a filesytem, shutdown now");
-                // Where transactions are logged to an RDBMS, shutdown is driven at the point where
-                // the DataSource Service is being unset.
-                try {
-                    shutdown();
-                } catch (Exception e) {
-                    FFDCFilter.processException(e, "com.ibm.tx.jta.util.TxTMHelper.unsetConfigurationProvider", "138", this);
-                }
-            }
-        }
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "unsetConfigurationProvider");
-    }
-
-    /**
-     * Called by DS to inject reference to XaResource Factory
-     *
-     * @param ref
-     */
-    protected void setXaResourceFactory(ServiceReference<ResourceFactory> ref) {
+    @Reference(cardinality = OPTIONAL, policy = DYNAMIC)
+    protected void setXaResourceFactory(ServiceReference<XAResourceFactory> ref) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setXaResourceFactory", "ref " + ref);
 
@@ -174,16 +149,12 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.exit(tc, "setXaResourceFactory");
     }
 
-    protected void unsetXaResourceFactory(ServiceReference<ResourceFactory> ref) {
+    protected void unsetXaResourceFactory(ServiceReference<XAResourceFactory> ref) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "unsetXaResourceFactory, ref " + ref);
     }
 
-    /**
-     * Called by DS to inject reference to RecoveryLog Factory
-     *
-     * @param ref
-     */
+    @Reference
     public void setRecoveryLogFactory(RecoveryLogFactory fac) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setRecoveryLogFactory, factory: " + fac, this);
@@ -202,16 +173,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.exit(tc, "setRecoveryLogFactory");
     }
 
-    public void unsetRecoveryLogFactory(RecoveryLogFactory fac) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "unsetRecoveryLogFactory, factory: " + fac, this);
-    }
-
-    /**
-     * Called by DS to inject reference to RecoveryLog Service
-     *
-     * @param ref
-     */
+    @Reference
     public void setRecoveryLogService(ServiceReference<RecLogServiceImpl> ref) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setRecoveryLogService", ref);
@@ -229,11 +191,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "setRecoveryLogService");
-    }
-
-    public void unsetRecoveryLogService(ServiceReference<RecLogServiceImpl> ref) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "unsetRecoveryLogService", ref);
     }
 
     @Override
@@ -425,7 +382,17 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 RecoveryManager._waitForRecovery = _waitForRecovery;
 
                 // Kick off recovery
-                _recLogService.startRecovery(_recoveryLogFactory);
+                try {
+                    _recLogService.startRecovery(_recoveryLogFactory);
+                } catch (Exception e) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Recovery failed with exception", e);
+                    // mark recovery failed
+                    _localRecoveryFailed = true;
+                    // ensure other threads don't wait for recovery to complete
+                    _asyncRecoverySemaphore.post();
+                    throw e;
+                }
 
                 // Defect RTC 99071. Don't make the STATE transition until recovery has been fully
                 // initialised, after replay completion but before resync completion.
@@ -435,6 +402,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Waiting for completion of asynchronous recovery");
                     _asyncRecoverySemaphore.waitEvent();
+                    if (_localRecoveryFailed) {
+                        // this thread awoke but recovery has already failed - bail out now
+                        Tr.debug(tc, "Asynchronous recovery failed on another thread");
+                        return;
+                    }
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Asynchronous recovery is complete");
 
@@ -492,8 +464,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                             Thread.sleep(1000);
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Waited " + ++timeSlept + " seconds for transactions to finish");
-                        } catch (InterruptedException e) {
-                        }
+                        } catch (InterruptedException e) {}
                     } else {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Gave up waiting for transactions to finish after " + ++timeSlept + " seconds");
@@ -569,10 +540,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 // as resync never started and will never complete (interrupt).
                 setResyncException(null);
             } else {
-                try {
-                    _asyncRecoverySemaphore.waitEvent();
-                } catch (InterruptedException e) {
-                }
+                _asyncRecoverySemaphore.waitEvent();
                 setResyncException(null);
                 _asyncRecoverySemaphore.clear();
             }
@@ -662,7 +630,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.exit(tc, "start");
     }
 
-    public synchronized static void resyncComplete(RuntimeException r) {
+    public static synchronized void resyncComplete(RuntimeException r) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "resyncComplete", r);
 
@@ -833,16 +801,14 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                              ", _dataSourceFactorySet: " + isDataSourceFactorySet +
                              ", _recoveryLogFactoryReady: " + _recoveryLogFactoryReady);
 
-            if (!_requireDataSourceActive) {
-                if (_waitForRecovery)
-                    // If the waitForRecovery flag has been specified then we need the full set of services in place before we can start recovery
-                    recoverNow = _tmsReady && _xaResourceFactoryReady && _recoveryLogServiceReady && _recoveryLogFactoryReady; // FOR NOW && _dataSourceFactoryReady;
-                else
-                    recoverNow = _tmsReady && _recoveryLogServiceReady;
-            } else {
+            if (_requireDataSourceActive)
                 // If logging to a database then we need the full set of services in place before we can start recovery
                 recoverNow = _tmsReady && _xaResourceFactoryReady && _recoveryLogServiceReady && _recoveryLogFactoryReady && isDataSourceFactorySet;
-            }
+            else if (_waitForRecovery)
+                // If the waitForRecovery flag has been specified then we need the full set of services in place before we can start recovery
+                recoverNow = _tmsReady && _recoveryLogServiceReady && _xaResourceFactoryReady && _recoveryLogFactoryReady; // FOR NOW && _dataSourceFactoryReady;
+            else
+                recoverNow = _tmsReady && _recoveryLogServiceReady;
         }
 
         if (tc.isEntryEnabled())

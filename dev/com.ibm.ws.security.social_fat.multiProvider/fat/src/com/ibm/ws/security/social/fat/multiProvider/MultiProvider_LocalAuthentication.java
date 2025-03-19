@@ -93,7 +93,7 @@ public class MultiProvider_LocalAuthentication extends CommonMultiProviderLocalA
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
         expectations = setLocalAuthenticationDisabledExpectations(expectations);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -116,7 +116,7 @@ public class MultiProvider_LocalAuthentication extends CommonMultiProviderLocalA
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
         expectations = setLocalAuthenticationDisabledExpectations(expectations);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**
@@ -137,7 +137,7 @@ public class MultiProvider_LocalAuthentication extends CommonMultiProviderLocalA
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
         expectations = setLocalAuthenticationEnabledExpectations(expectations);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /**

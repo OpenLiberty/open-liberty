@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.liberty;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -22,6 +24,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import javax.enterprise.inject.spi.CDIProvider;
 
+import org.jboss.weld.bootstrap.WeldStartup;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.spi.ProxyServices;
@@ -59,7 +62,6 @@ import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveFactory;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
-import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.cdi.proxy.ProxyServicesImpl;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
@@ -86,8 +88,9 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
  * This class is to get hold all necessary services.
  */
 @Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class,
-                                                                       CDIProvider.class }, property = { "service.vendor=IBM", "service.ranking:Integer=100" }) //CDI must shut down before EJB as EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)"
-                                                                                                                                                                                                                                                                                         //CDI must also start up after injection engine, as CDI can trigger JNDI lookups in app code as part of starting up and that code can do JNDI lookups
+                                                                       CDIProvider.class },
+           property = { "service.vendor=IBM", "service.ranking:Integer=100" }) //CDI must shut down before EJB as EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)"
+                                                                                                                                                                                                                             //CDI must also start up after injection engine, as CDI can trigger JNDI lookups in app code as part of starting up and that code can do JNDI lookups
 public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationStateListener, CDIService, CDILibertyRuntime, CDIProvider {
     private static final TraceComponent tc = Tr.register(CDIRuntimeImpl.class);
 
@@ -127,9 +130,6 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     private volatile CDIContainerEventManager cdiContainerEventManager;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    private volatile WeldDevelopmentMode weldDevelopmentMode;
-
     @Reference
     private CDIConfiguration cdiContainerConfig;
 
@@ -141,10 +141,15 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     private MetaDataSlot applicationSlot;
     private boolean isClientProcess;
-    private RuntimeFactory runtimeFactory;
     private ProxyServicesImpl proxyServices;
 
     public void activate(ComponentContext cc) {
+        //This emmits logging in a static block.
+        //OpenTelemetry can have a circular dependency if that loging goes into OTel
+        //And the application calls CDI.current() during its OTel configuration extensions.
+        //So force it early
+        WeldStartup ws = new WeldStartup();
+
         metaDataSlotServiceSR.activate(cc);
         ejbEndpointServiceSR.activate(cc);
         classLoadingSRRef.activate(cc);
@@ -210,7 +215,8 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         executorServiceRef.unsetReference(ref);
     }
 
-    @Reference(name = "managedExecutorService", service = ExecutorService.class, target = "(id=DefaultManagedExecutorService)", policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
+    @Reference(name = "managedExecutorService", service = ExecutorService.class, target = "(id=DefaultManagedExecutorService)", policyOption = ReferencePolicyOption.GREEDY,
+               cardinality = ReferenceCardinality.OPTIONAL)
     protected void setManagedExecutorService(ServiceReference<ExecutorService> ref) {
         managedExecutorServiceRef.setReference(ref);
     }
@@ -467,8 +473,8 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
             ClassLoader appCL = getRealAppClassLoader(application);
             if (appCL != null) {
-                ClassLoader newCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
-                application.setTCCL(newCL);
+                ClassLoader appTCCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
+                application.setTCCL(appTCCL);
             }
 
             for (CDIArchive archive : application.getModuleArchives()) {
@@ -514,9 +520,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
             } finally {
                 // Clean up the application TCCL created for startup
                 // Must do this at shutdown since it's possible for the app to hold onto it and use it after startup
-                ClassLoader tccl = application.getTCCL();
-                if (tccl != null) {
-                    classLoadingSRRef.getServiceWithException().destroyThreadContextClassLoader(tccl);
+                ClassLoader appTCCL = application.getTCCL();
+                if (appTCCL != null) {
+                    classLoadingSRRef.getServiceWithException().destroyThreadContextClassLoader(appTCCL);
                 }
                 application.setTCCL(null);
             }
@@ -673,20 +679,6 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     /** {@inheritDoc} */
     @Override
-    public WeldDevelopmentMode getWeldDevelopmentMode() {
-        //Given that this.weldDevelopmentMode is volatile and could change value while this code is running,
-        //copy it to a local variable before checking for null and enablement.
-        WeldDevelopmentMode devMode = this.weldDevelopmentMode;
-        if (devMode != null) {
-            if (!devMode.enabled()) {
-                devMode = null; // if it wasn't enabled then we'll return null
-            }
-        }
-        return devMode;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public ContextBeginnerEnder createContextBeginnerEnder() {
         return new ContextBeginnerEnderImpl();
     }
@@ -706,4 +698,21 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         }
         return contextBeginnerEnder.clone();
     }
+
+    //The System Property which enables Weld Development Mode. They have been removed from liberty.
+    //But it we want to issue a warning message if appropriate
+    private final static String DEVELOPMENT_MODE = "org.jboss.weld.development";
+
+    @SuppressWarnings("unused")
+    private static final boolean developmentMode = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+        @Override
+        public Boolean run() {
+            String developmentModeStr = System.getProperty(DEVELOPMENT_MODE);
+            Boolean developmentMode = Boolean.valueOf(developmentModeStr);
+            if (developmentMode) {
+                Tr.warning(tc, "dev.mode.enabled.CWOWB1020W");
+            }
+            return developmentMode;
+        }
+    });
 }

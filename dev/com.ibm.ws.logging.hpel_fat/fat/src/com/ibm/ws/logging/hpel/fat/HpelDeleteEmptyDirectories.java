@@ -1,12 +1,12 @@
 //%Z% %I% %W% %G% %U% [%H% %T%]
 /**
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -77,7 +77,7 @@ public class HpelDeleteEmptyDirectories {
         ShrinkHelper.defaultDropinApp(server, "LogFat", "com.ibm.ws.logging.hpel");
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
 
-        backup = new RemoteFile(server.getMachine(), new File(server.getServerRoot(), "server-backup.xml").getPath());
+        backup = server.getMachine().getFile(new File(server.getServerRoot(), "server-backup.xml").getPath());
         if (!backup.exists()) {
             backup.copyFromSource(server.getServerConfigurationFile());
         }
@@ -141,8 +141,8 @@ public class HpelDeleteEmptyDirectories {
         RemoteFile repositoryDir = CommonTasks.getBinaryLogDir(server);
         repositoryDirString = repositoryDir.getAbsolutePath();
 
-        serverLogdataDir = new RemoteFile(remoteMachine, repositoryDir, "logdata");
-        serverTracedataDir = new RemoteFile(remoteMachine, repositoryDir, "tracedata");
+        serverLogdataDir = remoteMachine.getFile(repositoryDir, "logdata");
+        serverTracedataDir = remoteMachine.getFile(repositoryDir, "tracedata");
 
         logPurgeMaxSize = 10; //CommonTasks.getBinaryLogChild(server).getAttributeByName("purgeMaxSize").getValueAsInt();
         tracePurgeMaxSize = 10; //CommonTasks.getBinaryTraceChild(server).getAttributeByName("purgeMaxSize").getValueAsInt();

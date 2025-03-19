@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -66,6 +66,7 @@ public class WlpInformation extends AbstractJSON implements VersionableContent, 
     private String vanityRelativeURL;
     private String featuredWeight;
     private Collection<String> supersededBy;
+    private Collection<String> platforms;
     private Collection<String> supersededByOptional;
     private JavaSEVersionRequirements javaSEVersionRequirements;
     private String mainAttachmentSHA256;
@@ -107,6 +108,7 @@ public class WlpInformation extends AbstractJSON implements VersionableContent, 
         vanityRelativeURL = other.vanityRelativeURL;
         featuredWeight = other.featuredWeight;
         supersededBy = copyCollection(other.supersededBy);
+        platforms = copyCollection(other.platforms);
         supersededByOptional = copyCollection(other.supersededByOptional);
         javaSEVersionRequirements = copyObject(other.javaSEVersionRequirements, JavaSEVersionRequirements::new);
         mainAttachmentSHA256 = other.mainAttachmentSHA256;
@@ -425,6 +427,14 @@ public class WlpInformation extends AbstractJSON implements VersionableContent, 
 
     public void setSupersededBy(Collection<String> supersededBy) {
         this.supersededBy = supersededBy;
+    }
+
+    public Collection<String> getPlatforms() {
+        return this.platforms;
+    }
+
+    public void setPlatforms(Collection<String> myPlatforms) {
+        this.platforms = myPlatforms;
     }
 
     public Collection<String> getSupersededByOptional() {
@@ -798,6 +808,14 @@ public class WlpInformation extends AbstractJSON implements VersionableContent, 
                 return false;
         } else if (!ibmInstallTo.equals(other.ibmInstallTo))
             return false;
+
+        if (platforms == null) {
+            if (other.platforms != null) {
+                return false;
+            }
+        } else if (!platforms.equals(other.platforms)) {
+            return false;
+        }
 
         return true;
     }

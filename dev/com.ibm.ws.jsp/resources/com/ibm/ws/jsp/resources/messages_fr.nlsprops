@@ -1258,9 +1258,9 @@ system.java.compiler.not.found=JSPG0304W: L''attribut JSP, useJDKCompiler, est d
 system.java.compiler.not.found.explanation=Le conteneur JSP n'a pas pu trouver le compilateur syst\u00e8me, ce qui indique g\u00e9n\u00e9ralement que le fichier jar SDK Java, tools.jar, est introuvable dans le chemin de classe.
 system.java.compiler.not.found.useraction=Assurez-vous que le fichier jar SDK Java, tools.jar, se trouve dans le chemin de classe et v\u00e9rifiez que SDK Java prend en charge l'API Java Compiler. Pour plus de d\u00e9tails, consultez la Java Specification Request 199.
 
-jsp.feature.not.loaded.correctly=CWWJS0001E: La fonction Pages (anciennement JSP) n'a pas \u00e9t\u00e9 charg\u00e9e avec une version acceptable.
-jsp.feature.not.loaded.correctly.explanation=Fonction charg\u00e9e sans une version acceptable. Le comportement de l'application peut \u00eatre diff\u00e9rent de celui attendu.
-jsp.feature.not.loaded.correctly.useraction=Regardez dans le fichier server.xml s'il n'y a pas plusieurs fonctions Pages (JSP). Le fichier ne doit pas sp\u00e9cifier plus d'une fonction Pages (JSP).
+jsp.feature.not.loaded.correctly=CWWJS0001E: Le conteneur de pages (JSP) ne s'est pas charg\u00e9 avec une version acceptable.
+jsp.feature.not.loaded.correctly.explanation=Le conteneur de pages (JSP) charg\u00e9 sans version acceptable. Le comportement de l'application peut \u00eatre diff\u00e9rent de celui attendu.
+jsp.feature.not.loaded.correctly.useraction=V\u00e9rifier la server.xml fichier pour l'existence de fonctionnalit\u00e9s de plusieurs pages (JSP). Le fichier ne doit pas sp\u00e9cifier plus d'une fonction Pages (JSP).
 
 jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Valeur non valide pour l'attribut errorOnELNotFound
 jsp.error.page.invalid.erroronelnotfound.explanation=

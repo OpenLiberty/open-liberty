@@ -23,7 +23,7 @@
         <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     </library>
     
-    <keyStore id="defaultKeyStore" password="openliberty"/>
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->
     <quickStartSecurity userName="admin" userPassword="adminpwd"/>
     <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 

@@ -12,6 +12,11 @@
  *******************************************************************************/
 package io.openliberty.jakarta.data.tck;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -27,6 +32,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.JavaInfo;
 
 @RunWith(Suite.class)
@@ -38,11 +44,15 @@ import componenttest.topology.impl.JavaInfo;
                 DataStandaloneTckLauncher.class
 })
 public class FATSuite extends TestContainerSuite {
+
+    private static final DockerImageName mongoDBImage = DockerImageName.parse("public.ecr.aws/docker/library/mongo:6.0.6")
+                    .asCompatibleSubstituteFor("mongo:6.0.6");
+
     @ClassRule
     public static JdbcDatabaseContainer<?> relationalDatabase = DatabaseContainerFactory.create();
 
     @ClassRule
-    public static MongoDBContainer noSQLDatabase = new MongoDBContainer(DockerImageName.parse("mongo:6.0.6"));
+    public static MongoDBContainer noSQLDatabase = new MongoDBContainer(mongoDBImage);
 
     public static boolean shouldRunSignatureTests() {
         boolean result = false;
@@ -71,6 +81,45 @@ public class FATSuite extends TestContainerSuite {
         } finally {
             Log.info(FATSuite.class, "shouldRunSignatureTests", "Return: " + result + ", because " + reason);
         }
+    }
 
+    public static Map<String, Level> getLoggingConfig() {
+        return Map.of("ee.jakarta.tck.data", Level.ALL,
+                      "org.jboss.arquillian", Level.ALL, //TODO reduce logging once GA
+                      "org.eclipse.jnosql", Level.ALL, //TODO reduce logging once GA
+                      "io.openliberty.arquillian", Level.ALL); //TODO reduce logging once GA
+    }
+
+    /**
+     * While in development we may need to skip some tests based on Database
+     *
+     * @param type - database type
+     * @return - Empty string if no tests need to be excluded, otherwise test names to be inserted into <exclude> config
+     */
+    public static String getExcludedTestByDatabase(DatabaseContainerType type) {
+        List<String> exclude = new ArrayList<>();
+
+        switch (type) {
+            case DB2:
+                return ""; //All tests passing on DB2
+            case Derby:
+                return ""; // All tests passing on Derby
+            case DerbyClient:
+                return ""; // Derby client currently not tested during DB Rotation
+            case Oracle:
+                return ""; // All tests passing on Oracle
+            case Postgres:
+                //TODO testInsertEntityThatAlreadyExists PostgreSQL throws org.postgresql.util.PSQLException which is not a subclass of SQLIntegrityConstraintViolationException
+                exclude.add("ee.jakarta.tck.data.standalone.persistence.PersistenceEntityTests");
+                break;
+            case SQLServer:
+                //TODO testInsertEntityThatAlreadyExists SQLServer throws com.microsoft.sqlserver.jdbc.SQLServerException which is not a subclass of SQLIntegrityConstraintViolationException
+                exclude.add("ee.jakarta.tck.data.standalone.persistence.PersistenceEntityTests");
+                break;
+            default:
+                break;
+        }
+
+        return String.join(", ", exclude);
     }
 }

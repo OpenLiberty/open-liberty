@@ -1,0 +1,39 @@
+#*******************************************************************************
+# Copyright (c) 2020, 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+     fat/src
+
+fat.project: true
+
+tested.features: \
+	audit-2.0, jacc-1.5, expressionLanguage-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, enterpriseBeansLite-4.0, appAuthorization-2.0, \
+	expressionLanguage-5.0, appsecurity-5.0, servlet-6.0, cdi-4.0, appAuthorization-2.1, jsonp-2.1, appAuthorization-3.0
+
+-buildpath: \
+    com.ibm.json4j;version=latest,\
+    com.ibm.websphere.security;version=latest,\
+    com.ibm.ws.ejbcontainer.security.jacc_fat.common;version=latest,\
+    com.ibm.ws.ejbcontainer.security_test.servlets;version=latest,\
+    com.ibm.ws.security.audit_fat.common.tooling;version=latest,\
+    com.ibm.ws.security.authorization.jacc.testprovider;version=latest,\
+    io.openliberty.security.authorization.jacc.testprovider;version=latest,\
+    com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
+    fattest.simplicity;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
+    io.openliberty.org.apache.commons.codec;version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

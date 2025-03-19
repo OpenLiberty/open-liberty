@@ -64,7 +64,7 @@ public class CookieSetAttributeServlet extends HttpServlet {
         else if (testName.equals("setAttributeSameSite")) {
             testSetAttributeSameSite(response);
         }
-        // Partitioned will be generated as "paritioned="
+        // Partitioned will be generated as "partitioned="
         else if (testName.equals("setAttributePartitioned")){
             testSetAttributePartitioned(response);
         }

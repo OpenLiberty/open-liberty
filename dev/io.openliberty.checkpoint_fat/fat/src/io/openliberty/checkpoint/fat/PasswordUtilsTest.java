@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -66,7 +66,8 @@ public class PasswordUtilsTest extends FATServletClient {
             // set the env for AUTO_USER_NAME and AUTO_USER_PASSWORD
             Map<String, String> envMap = new HashMap<>();
             envMap.put("AUTH_USER_NAME", "testUser");
-            envMap.put("AUTH_USER_PASSWORD", "testPassword");
+            envMap.put("AUTH_USER_PASSWORD",
+                       "{aes}ARAXt8l79yOF6iRwLqS2Skvu9JwGfke14pWWKKg1ZMHROoHojIL6ekKo7TLJFbYEIqlORBeFU4RAfTsyIJUJfXf1AWl/J/hpZHaDZsG/k9+bejJEZk15jSVoJRtr9+KJEAllGWBmloXLbMDcD+2j"); //testPassword
             try {
                 FATSuite.configureEnvVariable(s, envMap);
             } catch (Exception e) {

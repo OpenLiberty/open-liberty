@@ -11,6 +11,7 @@ IBM-API-Package: \
   io.opentelemetry.api.baggage.propagation;type="third-party",\
   io.opentelemetry.api;type="third-party",\
   io.opentelemetry.api.trace;type="third-party",\
+  io.opentelemetry.api.trace.propagation;type="third-party",\
   io.opentelemetry.api.common;type="third-party",\
   io.opentelemetry.context;type="third-party",\
   io.opentelemetry.context.propagation;type="third-party",\
@@ -25,6 +26,7 @@ IBM-API-Package: \
   io.opentelemetry.semconv.resource.attributes;type="third-party",\
   io.opentelemetry.sdk.resources;type="third-party",\
   io.opentelemetry.instrumentation.annotations;type="third-party"
+IBM-SPI-Package: io.openliberty.microprofile.telemetry.spi
 -features=\
   io.openliberty.mpTelemetry1.1.ee-10.0; ibm.tolerates:= "9.0, 8.0, 7.0"
 -bundles=\
@@ -33,8 +35,11 @@ IBM-API-Package: \
   io.openliberty.org.jetbrains.kotlin,\
   io.openliberty.org.jetbrains.annotation,\
   io.openliberty.io.zipkin.zipkin2.1.0
--jars=io.openliberty.mpTelemetry.1.1.thirdparty; location:="dev/api/third-party/,lib/"
+-jars=io.openliberty.mpTelemetry.1.1.thirdparty; location:="dev/api/third-party/,lib/",\
+  io.openliberty.microprofile.telemetry.spi; location:="dev/spi/ibm/"
+-files=dev/spi/ibm/javadoc/io.openliberty.microprofile.telemetry.spi_1.0-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: microProfile-6.1

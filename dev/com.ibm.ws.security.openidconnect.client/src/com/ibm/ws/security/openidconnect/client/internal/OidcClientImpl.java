@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,7 +34,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.auth.CredentialDestroyedException;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationData;
@@ -436,15 +435,18 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     }
 
     @Override
-    public void logoutIfSessionInvalidated(HttpServletRequest req) {
-        String provider = getOidcProvider(req);
+    public void logoutIfSessionInvalidated(HttpServletRequest req) {       
+        String selectByProviderHint = null;
+        boolean selectByIssuer = false;
+        //select provider only through auth filter or generic configuration. Do not look at request header or parameters here
+        String provider = getProviderConfig(selectByProviderHint, selectByIssuer, req);
         if (provider == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Could not get oidc provider.");
             }
             return;
         }
-
+        
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
         OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(req, oidcClientConfig);
         if (sessionInfo == null) {
@@ -582,7 +584,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
      * @return
      */
     protected String getProviderConfig(Iterator<OidcClientConfig> oidcClientConfigs, String reqProviderHint, HttpServletRequest req) {
-        return getProviderConfig(reqProviderHint, req);
+        return getProviderConfig(reqProviderHint, true, req); //select provider by provider hint , issuer, auth filter 
     }
 
     protected String getProviderConfigCurrent(Iterator<OidcClientConfig> oidcClientConfigs,
@@ -613,7 +615,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return null;
     }
 
-    protected String getProviderConfig(String reqProviderHint, HttpServletRequest req) {
+    protected String getProviderConfig(String reqProviderHint, boolean selectByIssuer, HttpServletRequest req) {
         String provider = null;
 
         if (reqProviderHint != null) {
@@ -621,7 +623,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         } else {
             provider = selectByAuthFilter(req);
 
-            if (provider == null) {
+            if (provider == null && selectByIssuer) {
                 provider = selectByIssuer(req);
             }
 

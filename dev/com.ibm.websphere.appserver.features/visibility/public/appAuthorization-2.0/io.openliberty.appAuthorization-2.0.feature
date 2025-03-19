@@ -14,8 +14,11 @@ Subsystem-Name: Jakarta Authorization 2.0
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   io.openliberty.jakarta.authorization-2.0
 -bundles=\
-  io.openliberty.security.authorization.internal.jacc
+  io.openliberty.security.authorization.internal.jacc.common, \
+  io.openliberty.security.authorization.internal.jacc.2.0
 kind=ga
 edition=core
 -jars=io.openliberty.jacc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.jacc_1.0-javadoc.zip
+WLP-Platform: jakartaee-9.1
+WLP-InstantOn-Enabled: true

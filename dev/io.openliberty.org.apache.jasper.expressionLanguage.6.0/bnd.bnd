@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,13 +28,12 @@ Export-Package: org.apache.el;thread-context=true;version=${Implementation-Versi
 Import-Package: \
     jakarta.el; version=6.0.0, \
     *
-# Set this to 5.0.0 for now until other EE11 features such as Security, CDI and Faces update
-# to depend on Expression Language 6.0.
+
 Require-Capability: osgi.contract;
- filter:="(&(osgi.contract=JavaEL)(version=5.0.0))"
+ filter:="(&(osgi.contract=JakartaExpressionLanguage)(version=6.0.0))"
 
 instrument.disabled: true
 
 -buildpath: \
-    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.0.M19,\
+    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.3,\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest

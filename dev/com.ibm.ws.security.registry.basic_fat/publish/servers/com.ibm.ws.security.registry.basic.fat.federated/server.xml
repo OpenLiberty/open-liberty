@@ -16,8 +16,8 @@
 
     <featureManager>
     	<feature>federatedRegistry-1.0</feature>
-        <feature>appSecurity-2.0</feature>
-        <feature>servlet-3.1</feature>
+        <feature>appSecurity-3.0</feature>
+        <feature>servlet-4.0</feature>
         <feature>basicRegistryInternals-1.0</feature>
     </featureManager>
 

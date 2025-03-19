@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,17 +50,16 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -84,13 +83,11 @@ public class SSLTest {
     public TestMethod testMethod;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() //
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly()) //
-                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+    public static RepeatTests repeatTest = FATSuite.defaultEERepeat(SERVER_NAME);
 
     @Before
     public void beforeEach() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "app2");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app2");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
         testMethod = getTestMethod(TestMethod.class, testName);
         configureBeforeCheckpoint();
@@ -108,7 +105,7 @@ public class SSLTest {
     @After
     public void tearDown() throws Exception {
         try {
-            server.stopServer();
+            server.stopServer("CWWKS1864W"); // warning for using {aes} AES-128 password
         } finally {
             server.restoreServerConfiguration();
             configureEnvVariable(server, emptyMap());
@@ -132,9 +129,23 @@ public class SSLTest {
             case testTransportSecurityConfigured:
                 addKeystore("serverKeyStore", "server-keystore.jks", "JKS", "secret");
                 addKeystore("serverTrustStore", "server-truststore.jks", "JKS", "secret");
-                addSSL("defaultSSLConfig", "serverKeyStore", "serverTrustStore");
-                LibertyServerFactory.recursivelyCopyDirectory(server.getMachine(), new LocalFile("lib/LibertyFATTestFiles/sslKeystore/resources"),
-                                                              new RemoteFile(server.getMachine(), server.getServerRoot() + "/resources"));
+                configureSSL();
+                break;
+            case testSSLConfiguredEncryptedAES128:
+            case testTransportSecurityConfiguredEncryptedAES128:
+                addKeystore("serverKeyStore", "server-keystore.jks", "JKS",
+                            "{aes}APbuDThpBP7uIDSWGxsRc18zh+4ZNFWnMDA32eSfCvx6");
+                addKeystore("serverTrustStore", "server-truststore.jks", "JKS",
+                            "{aes}APbuDThpBP7uIDSWGxsRc18zh+4ZNFWnMDA32eSfCvx6");
+                configureSSL();
+                break;
+            case testSSLConfiguredEncryptedAES256:
+            case testTransportSecurityConfiguredEncryptedAES256:
+                addKeystore("serverKeyStore", "server-keystore.jks", "JKS",
+                            "{aes}ARATaq8k5SQc6VBaw+IB9LmGg5R3ZvpsriWJTKOF7ty3F6mKcfCasPndBRD07yGyrJ7hJaCRD/NiibtkzqcPOxwudqsqLV3/q1Ucjjfh4XpeaEw3xOhY99JGlMxtFoPDDa7i/YHva5bU"); // keystore password = secret
+                addKeystore("serverTrustStore", "server-truststore.jks", "JKS",
+                            "{aes}ARATaq8k5SQc6VBaw+IB9LmGg5R3ZvpsriWJTKOF7ty3F6mKcfCasPndBRD07yGyrJ7hJaCRD/NiibtkzqcPOxwudqsqLV3/q1Ucjjfh4XpeaEw3xOhY99JGlMxtFoPDDa7i/YHva5bU"); //truststore password = secret
+                configureSSL();
                 break;
             default:
                 break;
@@ -145,17 +156,27 @@ public class SSLTest {
             case testSSLEnvPasswordOnCheckpoint:
             case testSSLEnvPasswordOnRestore:
             case testSSLConfigured:
+            case testSSLConfiguredEncryptedAES128:
+            case testSSLConfiguredEncryptedAES256:
                 addFeature("ssl-1.0");
                 break;
             case testTransportSecurityConfiguredAutoGenerated:
             case testTransportSecurityEnvPasswordOnCheckpoint:
             case testTransportSecurityEnvPasswordOnRestore:
             case testTransportSecurityConfigured:
+            case testTransportSecurityConfiguredEncryptedAES128:
+            case testTransportSecurityConfiguredEncryptedAES256:
                 addFeature("transportSecurity-1.0");
                 break;
             default:
                 break;
         }
+    }
+
+    private void configureSSL() throws Exception {
+        addSSL("defaultSSLConfig", "serverKeyStore", "serverTrustStore");
+        LibertyServerFactory.recursivelyCopyDirectory(server.getMachine(), new LocalFile("lib/LibertyFATTestFiles/sslKeystore/resources"),
+                                                      server.getMachine().getFile(server.getServerRoot() + "/resources"));
     }
 
     private void configureBeforeRestore() {
@@ -197,6 +218,16 @@ public class SSLTest {
     }
 
     @Test
+    public void testSSLConfiguredEncryptedAES128() throws Exception {
+        configuredSSL();
+    }
+
+    @Test
+    public void testSSLConfiguredEncryptedAES256() throws Exception {
+        configuredSSL();
+    }
+
+    @Test
     @Mode(TestMode.FULL)
     public void testTransportSecurityConfiguredAutoGenerated() throws Exception {
         configuredAutoGeneratedSSL();
@@ -217,6 +248,18 @@ public class SSLTest {
     @Test
     @Mode(TestMode.FULL)
     public void testTransportSecurityConfigured() throws Exception {
+        configuredSSL();
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testTransportSecurityConfiguredEncryptedAES128() throws Exception {
+        configuredSSL();
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testTransportSecurityConfiguredEncryptedAES256() throws Exception {
         configuredSSL();
     }
 
@@ -425,13 +468,11 @@ public class SSLTest {
 
             @Override
             public void checkClientTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {
-            }
+                                           java.security.cert.X509Certificate[] certs, String authType) {}
 
             @Override
             public void checkServerTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {
-            }
+                                           java.security.cert.X509Certificate[] certs, String authType) {}
         } };
 
         return trustAllCerts;
@@ -462,10 +503,14 @@ public class SSLTest {
         testSSLEnvPasswordOnCheckpoint,
         testSSLEnvPasswordOnRestore,
         testSSLConfigured,
+        testSSLConfiguredEncryptedAES128,
+        testSSLConfiguredEncryptedAES256,
         testTransportSecurityConfiguredAutoGenerated,
         testTransportSecurityEnvPasswordOnCheckpoint,
         testTransportSecurityEnvPasswordOnRestore,
         testTransportSecurityConfigured,
+        testTransportSecurityConfiguredEncryptedAES128,
+        testTransportSecurityConfiguredEncryptedAES256,
         unknown
     }
 }

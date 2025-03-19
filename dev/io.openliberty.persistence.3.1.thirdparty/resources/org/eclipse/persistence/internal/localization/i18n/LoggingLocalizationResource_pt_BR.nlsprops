@@ -117,7 +117,7 @@ connected_user_database_driver=Conectado: {0}{6}Usu\u00e1rio: {1}{6}Banco de Dad
 
 corrupt_object=objeto corrompido: {0}
 
-corrupt_object_referenced_through_mapping=O objeto corrompido a seguir \u00e9 referenciado por mapeamento: {0}.
+corrupt_object_referenced_through_mapping=O seguinte objeto corrompido \u00e9 referenciado por meio de mapeamento: {0}
 
 corrupted_session_announcement=SessionID: {0} O gerenciador de descoberta recebeu um an\u00fancio de sess\u00e3o corrompida - ignorando.
 
@@ -168,6 +168,12 @@ ejb_jar_xml_not_found_in_input=O ejb-jar.xml n\u00e3o est\u00e1 presente no dire
 elements={0}{1} elementos
 
 enable_batch_operations_as_true_not_supported=A configura\u00e7\u00e3o do CMP \u201cativar-opera\u00e7\u00f5es-de-lote-como-verdadeiras\u201d do WLS nativo n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
+
+encryptor_script_description=Este aplicativo descriptografa internamente uma senha criptografada antiga que foi usada por um usu\u00e1rio anterior. EclipseLink vers\u00e3o e criptografa-a pelo algoritmo mais recente.
+
+encryptor_script_output=A senha recriptografada \u00e9: {0}
+
+encryptor_script_usage=O uso \u00e9 `passwordUpdate.sh|.cmd -ip <senha criptografada antiga>`
 
 entity_manager_ignores_jta_data_source=A unidade de persist\u00eancia n\u00e3o usa JTA; portanto, o EntityManager ignora a origem de dados JTA. 
 
@@ -709,7 +715,12 @@ toplink_warning=[Aviso EL]:
 
 unit_of_work_thread_info=A unidade de trabalho atual na sess\u00e3o ({0}) foi criada por outro encadeamento (ID: {1} nome: {2}) que n\u00e3o o encadeamento atual (ID: {3} nome: {4})
 
-unit_of_work_thread_info_thread_dump=Rastreio de pilha do encadeamento de cria\u00e7\u00e3o (ID: {0} nome: {1}): {2} Rastreio de pilha do encadeamento atual (ID: {3} nome: {4}): {5}\n
+unit_of_work_thread_info_thread_dump=T\u00f3pico de cria\u00e7\u00e3o (id: {0} nome: {1}) rastreamento de pilha:
+#{2}
+
+Current t\u00f3pico (id: {3} nome: {4}) rastreamento de pilha:
+#{5}
+
 unitofwork_identity_hashcode={0}C\u00f3digo hash de identidade UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery n\u00e3o pode usar liga\u00e7\u00e3o nessa plataforma de banco de dados. Conjunto da consulta alterado para executar sem liga\u00e7\u00e3o.

@@ -14,8 +14,6 @@
     		<user name="user3" password="user3pwd" />
     		<user name="user4" password="user4pwd" />
     </basicRegistry>
-    
-    <logging traceSpecification="org.apache.cxf.*=all:com.ibm.ws.jaxws*=all" />
 	  
     <application type="war" id="EJBInWarServiceSecurity" name="EJBInWarServiceSecurity" location="EJBInWarServiceSecurity.war">
     		<application-bnd>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,8 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
 
     protected static final String PATCHY_SERVER_TRUST_STORE_CONFIG = "patchyServerTrustStoreConfiguration.xml";
 
+    protected static final String CUSTOMIZE_SSL_ENABLE_CN_CHECK = "customizeSSLEnableCNCheck.xml";
+
     protected static final String SCHEMA = "https";
 
     protected static final int SECURE_PORT = server.getHttpDefaultSecurePort();
@@ -85,7 +87,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
     public static void afterAllTests() throws Exception {
         if (dynamicUpdate) {
             if (server != null && server.isStarted()) {
-                server.stopServer("CWPKI0023E.*", "CWWKW0601E.*", "CWPKI0022E.*", "CWWKO0801E.*");
+                server.stopServer("CWPKI0023E.*", "CWWKW0601E.*", "CWPKI0022E.*", "CWWKO0801E.*", "CWPKI0063W");
             }
         }
     }
@@ -94,7 +96,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
     public void afterTest() throws Exception {
         if (!dynamicUpdate) {
             if (server != null && server.isStarted()) {
-                server.stopServer("CWPKI0023E.*", "CWWKW0601E.*", "CWPKI0022E.*", "CWWKO0801E.*"); // trust stop server to ensure server
+                server.stopServer("CWPKI0023E.*", "CWWKW0601E.*", "CWPKI0022E.*", "CWWKO0801E.*", "CWPKI0063W"); // trust stop server to ensure server
                 // is stopped
             }
         }
@@ -258,7 +260,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
     @Test
     @Mode(Mode.TestMode.FULL)
     public void testEnableCNCheck() throws Exception {
-        prepareForTest("serverConfigs/" + DEFAULT_CLIENT_CERT_CONFIG, "clientCert_provider_web.xml",
+        prepareForTest("serverConfigs/" + CUSTOMIZE_SSL_ENABLE_CN_CHECK, "clientCert_provider_web.xml",
                        "bindings/enableCNCheck.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(

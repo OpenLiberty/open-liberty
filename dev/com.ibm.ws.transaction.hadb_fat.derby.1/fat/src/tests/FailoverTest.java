@@ -19,13 +19,16 @@ import java.util.List;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.Before;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.tx.jta.ut.util.HADBTestControl;
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.fat.util.TxFATServletClient;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -62,6 +65,11 @@ public class FailoverTest extends TxFATServletClient {
         }
 
         FailoverTest.commonCleanup(this.getClass().getName());
+    }
+
+    @Before
+    public void assertHealthy() {
+        TxTestContainerSuite.assertHealthy();
     }
 
     public void runInServletAndCheck(LibertyServer server, String path, String method) throws Exception {
@@ -101,13 +109,17 @@ public class FailoverTest extends TxFATServletClient {
     };
 
     protected static void commonSetUp(Class<?> testClass) throws Exception {
+        //System.getProperties().entrySet().stream().forEach(e -> Log.info(FailoverTest.class, "commonSetUp", e.getKey() + " -> " + e.getValue()));
+
         final WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "web");
         for (LibertyServer server : LibertyServerFactory.getKnownLibertyServers(testClass.getName())) {
+            HADBTestControl.init(server.getServerSharedPath());
             ShrinkHelper.exportAppToServer(server, app);
         }
     }
 
     protected static void commonCleanup(String testClassName) throws Exception {
+        HADBTestControl.clear();
         for (LibertyServer server : LibertyServerFactory.getKnownLibertyServers(testClassName)) {
             // Clean up XA resource files
             server.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -117,5 +129,6 @@ public class FailoverTest extends TxFATServletClient {
 
             break;
         }
+        TxTestContainerSuite.dropTables("WAS_TRAN_LOG", "WAS_PARTNER_LOG");
     }
 }

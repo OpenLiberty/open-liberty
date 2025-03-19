@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: Sistemul nu a putut extrage setul de fi\u015fi
 cls.fileset.not.ready.explanation=O bibliotec\u0103 partajat\u0103 este \u00een uz, dar unul dintre seturile de fi\u0219iere asociate nu a putut fi extras la timp.
 cls.fileset.not.ready.useraction=Verifica\u0163i \u015fi corecta\u0163i toate erorile sau avertismentele asociate cu setul de fi\u015fiere.
 
-cls.library.file.invalid=CWWKL0012W: Biblioteca [{0}] specific\u0103 un fi\u015fier cu numele [{1}]. Acest fi\u015fier nu exist\u0103 sau este specificat incorect.
-cls.library.file.invalid.explanation=Pentru a ad\u0103uga un fi\u015fier \u00eentr-o bibliotec\u0103 din configura\u0163ia serverului, trebuie s\u0103 specifica\u0163i numele complet calificat al unui fi\u015fier existent.
+cls.library.file.invalid=CWWKL0012W: Biblioteca [ {0} ] specific\u0103 un fi\u0219ier cu numele [ {1} ]. Acest fi\u015fier nu exist\u0103 sau este specificat incorect.
+cls.library.file.invalid.explanation=Pentru a ad\u0103uga un fi\u0219ier la o bibliotec\u0103 \u00een configura\u021bia serverului, trebuie s\u0103 specifica\u021bi un fi\u0219ier care exist\u0103.
 cls.library.file.invalid.useraction=Edita\u0163i configura\u0163ia serverului \u015fi modifica\u0163i atributul de fi\u015fier al elementului bibliotecii.
 
-cls.library.folder.invalid=CWWKL0013W: Biblioteca [{0}] specific\u0103 un folder cu numele [{1}]. Acest folder fie nu exist\u0103, fie nu este un folder valid.
-cls.library.folder.invalid.explanation=Pentru a ad\u0103uga un fi\u015fier \u00eentr-o bibliotec\u0103 din configura\u0163ia serverului, trebuie s\u0103 specifica\u0163i calea complet calificat\u0103 a unui folder existent.
+cls.library.folder.invalid=CWWKL0013W: Biblioteca [ {0} ] specific\u0103 un folder cu numele [ {1} ]. Acest folder fie nu exist\u0103, fie nu este un folder valid.
+cls.library.folder.invalid.explanation=Pentru a ad\u0103uga un fi\u0219ier la o bibliotec\u0103 din configura\u021bia serverului, trebuie s\u0103 specifica\u021bi folderul care exist\u0103.
 cls.library.folder.invalid.useraction=Edita\u0163i configura\u0163ia serverului \u015fi modifica\u0163i atributul de folder al elementului bibliotecii.
 
 cls.library.file.forbidden=CWWKL0014I: Fi\u015fierul [{0}] nu poate fi ad\u0103ugat la o cale de clase.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Edita\u0163i configura\u0163ia serverului \u015fi
 cls.library.destroyed=CWWKL0018I: Biblioteca [{0}] este indisponibil\u0103.
 cls.library.destroyed.explanation=O bibliotec\u00ee a devenit indisponibil\u0103, de exemplu, pentru c\u0103 a fost \u00eenl\u0103turat\u0103 din configura\u0163ia serverului.
 cls.library.destroyed.useraction=Dac\u0103 biblioteca este \u00eenc\u0103 necesar\u0103, asigura\u0163i-v\u0103 c\u0103 \u00eenc\u0103 e configurat\u0103 corect.
+
+cls.library.path.invalid=CWWKL0019W: Biblioteca [ {0} ] specific\u0103 o cale cu numele [ {1} ]. Aceast\u0103 cale fie nu exist\u0103, fie este specificat\u0103 incorect.
+cls.library.path.invalid.explanation=Pentru a ad\u0103uga o cale c\u0103tre o bibliotec\u0103 \u00een configura\u021bia serverului, trebuie s\u0103 specifica\u021bi o cale care exist\u0103.
+cls.library.path.invalid.useraction=Edita\u021bi configura\u021bia serverului \u0219i modifica\u021bi atributul path al elementului library.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

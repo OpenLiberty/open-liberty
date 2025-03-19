@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,9 @@
 package com.ibm.ws.microprofile.rest.client.fat;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -77,24 +79,34 @@ public class CollectionsTest extends FATServletClient {
         remoteAppServer.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
 
         ShrinkHelper.defaultDropinApp(server, appName, new DeployOptions[] {DeployOptions.SERVER_ONLY}, "mpRestClient10.collections");
+        Set<String>features = server.getServerConfiguration().getFeatureManager().getFeatures();
         if (JakartaEEAction.isEE9Active()) {
-            server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "ssl-1.0", "jsonb-2.0"));
+            features.add("jsonb-2.0");
+            server.changeFeatures(new ArrayList<String>(features));
         } else if (JakartaEEAction.isEE10Active()) {
-            server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "ssl-1.0", "jsonb-3.0", "servlet-6.0"));
+            features.add("jsonb-3.0");
+            features.add("servlet-6.0");
+            server.changeFeatures(new ArrayList<String>(features));
         } else if (JakartaEEAction.isEE11Active()) {
-            server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "ssl-1.0", "jsonb-3.0", "servlet-6.1"));
+            features.add("jsonb-3.0");
+            features.add("servlet-6.1");
+            server.changeFeatures(new ArrayList<String>(features));
         }
+
         server.startServer();
         server.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        if (server != null) {
-            server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
-        }
-        if (remoteAppServer != null) {
-            remoteAppServer.stopServer("CWWKE1102W");
+        try {
+            if (server != null) {
+                server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
+            }
+        } finally {
+            if (remoteAppServer != null) {
+                remoteAppServer.stopServer("CWWKE1102W");
+            }
         }
     }
 }

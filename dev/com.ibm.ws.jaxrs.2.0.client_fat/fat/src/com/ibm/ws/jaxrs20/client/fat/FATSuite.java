@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,9 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jaxrs20.client.fat.test.BasicClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ClientContextInjectionTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ComplexClientTest;
+import com.ibm.ws.jaxrs20.client.fat.test.DynamicOutboundSSLTest;
 import com.ibm.ws.jaxrs20.client.fat.test.HandleResponsesTest;
+import com.ibm.ws.jaxrs20.client.fat.test.HostnameVerificationTest;
 import com.ibm.ws.jaxrs20.client.fat.test.IBMJson4JProvidersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientAsyncInvokerTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRS20ClientAsyncInvokerTestWithConcurrency;
@@ -45,6 +47,7 @@ import com.ibm.ws.jaxrs20.client.fat.test.MatchingSSLCiphersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.MisMatchingSSLCiphersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.PathParamTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ProxyClientTest;
+import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLMultipleServersDefaultLibertySSLConfigTest;
 import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLMultipleServersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ThirdpartyJerseyClientTest;
@@ -65,7 +68,9 @@ import componenttest.rules.repeater.RepeatTests;
                 BasicClientTest.class,
                 ClientContextInjectionTest.class,
                 ComplexClientTest.class,
+                DynamicOutboundSSLTest.class,
                 HandleResponsesTest.class,
+                HostnameVerificationTest.class,
                 IBMJson4JProvidersTest.class,
                 JacksonProvidersTest.class,
                 JAXRS20ClientAsyncInvokerTest.class,
@@ -88,6 +93,7 @@ import componenttest.rules.repeater.RepeatTests;
                 MisMatchingSSLCiphersTest.class,
                 PathParamTest.class,
                 ProxyClientTest.class,
+                SimpleSSLMultipleServersDefaultLibertySSLConfigTest.class,
                 SimpleSSLMultipleServersTest.class,
                 SimpleSSLTest.class,
                 ThirdpartyJerseyClientTest.class,
@@ -108,11 +114,13 @@ public class FATSuite {
             r = RepeatTests.withoutModificationInFullMode()
                             .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1").fullFATOnly())
                             .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                            .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0"));
+                            .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                            .andWith(FeatureReplacementAction.EE11_FEATURES().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.1"));
 
         } else {
             r = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                             .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0"));
+                            .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                            .andWith(FeatureReplacementAction.EE11_FEATURES().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.1"));
 
         }
     }

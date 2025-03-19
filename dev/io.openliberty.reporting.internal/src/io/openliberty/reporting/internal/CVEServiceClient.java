@@ -18,9 +18,13 @@ import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
@@ -85,6 +89,14 @@ public class CVEServiceClient {
     private static HttpsURLConnection getConnection(URL url) throws IOException {
         HttpsURLConnection connection = null;
         connection = (HttpsURLConnection) url.openConnection();
+        SSLContext sc = null;
+        try {
+            sc = SSLContext.getInstance("TLSv1.2");
+            sc.init(null, null, null);
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            throw new SSLHandshakeException("Issue when creating a secure connection: " + e);
+        }
+        connection.setSSLSocketFactory(sc.getSocketFactory());
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Accept", "application/json");

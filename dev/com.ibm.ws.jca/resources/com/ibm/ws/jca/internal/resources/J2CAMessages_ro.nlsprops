@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E: Nu s-a putut crea un cronometru pentru adap
 J2CA8510.create.timed.out.explanation=Ia mai mult dec\u00e2t era de a\u015fteptat s\u0103 se creeze cronometrul.
 J2CA8510.create.timed.out.useraction=Verifica\u0163i dac\u0103 este o \u00eenc\u0103rcare prea mare pe sistem \u015fi ave\u0163i \u00een vedere sc\u0103derea ei.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: Cererea de verificare a serverului a e\u0219uat deoarece adaptorul de resurse {0} creat un cronometru.
+J2CA8511.create.timer.failed.checkpoint.explanation=Liberty nu suport\u0103 adaptoarele de resurse care creeaz\u0103 un cronometru \u00een timp ce aplica\u021biile \u00eencep atunci c\u00e2nd se solicit\u0103 un punct de control al serverului.
+J2CA8511.create.timer.failed.checkpoint.useraction=Configura\u021bi punctul de control pentru a ap\u0103rea \u00eenainte de \u00eenceperea aplica\u021biei prin utilizarea op\u021biunii de verificare a serverului beforeAppStart.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: Un cronometru nu a putut fi creat pentru adaptorul de resurse {0} \u00een timpul cererii de verificare a serverului.
+J2CA8512.create.timer.not.supported.checkpoint.explanation=Liberty nu suport\u0103 crearea de cronometre prin adaptoare de resurse \u00een timp ce aplica\u021biile \u00eencep atunci c\u00e2nd se solicit\u0103 un punct de control al serverului.
+J2CA8512.create.timer.not.supported.checkpoint.useraction=Configura\u021bi punctul de control pentru a ap\u0103rea \u00eenainte de \u00eenceperea aplica\u021biei prin utilizarea op\u021biunii de verificare a serverului beforeAppStart.
+
 J2CA8600.work.start.timeout=J2CA8600E: Lucrul {0} lansat de adaptorul de resurse {1} nu a pornit \u00een {2} milisecunde.
 J2CA8600.work.start.timeout.explanation=\u00cencercarea de a porni lucrul a expirat.
 J2CA8600.work.start.timeout.useraction=Verifica\u0163i dac\u0103 este o \u00eenc\u0103rcare prea mare pe sistem \u015fi ave\u0163i \u00een vedere sc\u0103derea ei, sau contacta\u0163i v\u00e2nz\u0103torul adaptorului de resurse pentru a vedea dac\u0103 el ar trebui s\u0103 creasc\u0103 timeout-ul lucrului folosit la lansarea lucrului c\u0103tre managerul de lucru JCA.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: Cererea de verificare a serverului a e\u0219uat deoarece adaptorul de resurse {0} a depus lucrarea {1}.
+J2CA8601.work.submit.failed.checkpoint.explanation=Liberty nu suport\u0103 adaptoarele de resurse care depun munc\u0103 \u00een timp ce aplica\u021biile \u00eencep atunci c\u00e2nd se solicit\u0103 un punct de control al serverului.
+J2CA8601.work.submit.failed.checkpoint.useraction=Configura\u021bi punctul de control pentru a ap\u0103rea \u00eenainte de \u00eenceperea aplica\u021biei prin utilizarea op\u021biunii de verificare a serverului beforeAppStart.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: Munca {0} care a fost depus\u0103 de adaptorul de resurse {1} a fost respins\u0103 \u00een timpul solicit\u0103rii punctului de control al serverului.
+J2CA8602.work.submit.not.supported.checkpoint.explanation=Liberty nu sus\u021bine depunerea lucr\u0103rilor de c\u0103tre adaptoarele de resurse \u00een timp ce aplica\u021biile \u00eencep atunci c\u00e2nd se solicit\u0103 un punct de control al serverului.
+J2CA8602.work.submit.not.supported.checkpoint.useraction=Configura\u021bi punctul de control pentru a ap\u0103rea \u00eenainte de \u00eenceperea aplica\u021biei prin utilizarea op\u021biunii de verificare a serverului beforeAppStart.
 
 # 8622 deleted
 
@@ -168,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=Consulta\u0163i documenta\u0163ia fur
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Arhivele bean ale adaptorului de resurse nu sunt suportate.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Fi\u015fierul beans.xml din directorul META-INF va fi ignorat deoarece nu sunt suportate Arhivele bean ale adaptoarelor de resurse CDI gestionate.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=\u00cenl\u0103tura\u0163i fi\u015fierul beans.xml din directorul META-INF deoarece nu sunt suportate Arhivele bean ale adaptoarelor de resurse CDI gestionate.
-
-
-

@@ -1,0 +1,7 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: test.commons.logging-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: io.openliberty.commons.logging.test.bundle; version="[1,1.1)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: io.openliberty.commons.logging.test.bundle
+IBM-Feature-Version: 2

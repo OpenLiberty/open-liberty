@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Generation date: Tue Jul 02 09:45:56 CDT 2024">
+    <featureManager>
+        <feature>componenttest-2.0</feature>
+        <feature>concurrent-3.1</feature>
+        <feature>data-1.0</feature>
+        <feature>jdbc-4.3</feature>
+        <feature>jndi-1.0</feature>
+        <feature>servlet-6.1</feature>
+        <feature>restfulWS-4.0</feature>
+        <feature>jsonb-3.0</feature>
+        <feature>persistence-3.2</feature>
+    </featureManager>
+    <data logValues="test.jakarta.data.web"/>
+    <application location="jakartaDataApp.war">
+    </application>
+    <library id="JDBCLibrary">
+        <fileset dir="${shared.resource.dir}/postgres" includes="postgresql.jar"/>
+    </library>
+    <variable name="DB_PORT" defaultValue="9999" />
+    <dataSource id="DefaultDataSource">
+        <jdbcDriver libraryRef="JDBCLibrary"/>
+        <properties.postgresql databaseName="test" password="${DB_PASSWORD}" portNumber="${DB_PORT}" serverName="${DB_HOST}" user="${DB_USER}"/>
+    </dataSource>
+    <databaseStore id="defaultDatabaseStore" tablePrefix=""/>
+    <include location="../fatTestPorts.xml"/>
+</server>

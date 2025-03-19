@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,15 +14,16 @@
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Performs testing of EJB pure annotations with Java inheritance as specified in EJB 3.0 Specification section
@@ -44,14 +45,17 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * This test invokes SecurityEJBA07Bean methods with a variety of method signatures to insure that
  * annotations are processed correctly with methods of the same name and different signature.
  */
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@CheckpointTest(alwaysRun = true)
 public class PureAnnA07InWarInheritanceTest extends PureAnnA07Base {
 
     protected static Class<?> logClass = PureAnnA07InWarInheritanceTest.class;
 
     @Rule
     public TestName name = new TestName();
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.defaultAndCheckpointRepeat(Constants.SERVER_EJB);
 
     @BeforeClass
     public static void setUp() throws Exception {

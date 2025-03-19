@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2008 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -226,8 +226,9 @@ ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: UseFIPS est activ\u00e9, mais l
 ssl.config.not.using.fips.CWPKI0049W.explanation=Bien que l'option UseFIPS ait \u00e9t\u00e9 activ\u00e9e, les algorithmes de cryptographie certifi\u00e9s FIPS ne peuvent pas \u00eatre utilis\u00e9s car la configuration SSL n'utilise pas de fournisseur JSSE certifi\u00e9 FIPS.
 ssl.config.not.using.fips.CWPKI0049W.useraction=Pour permettre l'utilisation d'algorithmes de cryptographie certifi\u00e9s FIPS, modifiez la configuration SSL afin qu'elle utilise un fournisseur JSSE certifi\u00e9 FIPS.
 # -------------------------------------------------------------------------------------------------
-
-
+ssl.san.warning.CWPKI0050W=CWPKI0050W: Le certificat avec l''alias {0} du {1} keyStore n''a pas de nom alternatif pour le sujet. La v\u00e9rification de HostName n''est pas appliqu\u00e9e pour serverIdentity le contr\u00f4leur collectif, le r\u00e9plica et la communication SSL des membres.
+ssl.san.warning.CWPKI0050W.explanation=Le certificat par d\u00e9faut serverIdentity n'a pas de nom alternatif de sujet dans le keyStore. La v\u00e9rification du hostName est ignor\u00e9e pour les certificats serverIdentity
+ssl.san.warning.CWPKI0050W.useraction=Ouvrez le keyStore et v\u00e9rifiez le nom alternatif du sujet sur tous les certificats dans le keyStore. Utilisez les commandes genKey et genKeyController pour g\u00e9n\u00e9rer de nouveaux certificats afin d'activer la v\u00e9rification du nom d'h\u00f4te.
 ################################################################################
 # Range 100-110 reserved for TrustManager Prompt
 ################################################################################
@@ -634,9 +635,13 @@ ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: ECHEC D''ETABLISSEMENT DE LIAI
 ssl.client.handshake.error.CWPKI0823E.explanation=Une erreur s'est produite lors de l'\u00e9tablissement de la liaison SSL.  Il est possible que vous deviez exporter le signataire depuis l'h\u00f4te cible pour le r\u00e9importer ensuite dans le magasin de cl\u00e9s de confiance du client.
 ssl.client.handshake.error.CWPKI0823E.useraction=Consultez le message d'erreur d\u00e9taill\u00e9 \u00e9mis par le gestionnaire d'accr\u00e9ditation afin de d\u00e9terminer ce qui doit \u00eatre chang\u00e9 entre la configuration SSL de la cible et la configuration SSL du client.
 # -------------------------------------------------------------------------------------------------
-ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: ECHEC D''ETABLISSEMENT DE LIAISON SSL : erreur de v\u00e9rification du nom d''h\u00f4te lors de la connexion \u00e0 l''h\u00f4te [{0}].  Le nom d''h\u00f4te utilis\u00e9 pour acc\u00e9der au serveur ne correspond pas aux informations SubjectDN ou Subject Alternative Name (SAN) du certificat de serveur.  Message d''erreur d\u00e9taill\u00e9 g\u00e9n\u00e9r\u00e9 par l''exception d''\u00e9tablissement de liaison SSL : [{1}].
-ssl.client.handshake.error.CWPKI0824E.explanation=Une erreur s'est produite lors de l'\u00e9tablissement de la liaison SSL.  La v\u00e9rification du nom d'h\u00f4te est activ\u00e9e et l'identit\u00e9 du serveur ne peut pas \u00eatre v\u00e9rifi\u00e9e.  Le nom d'h\u00f4te utilis\u00e9 pour acc\u00e9der au serveur ne correspond pas aux informations SubjectDN ou Subject Alternative Name (SAN) du certificat de serveur.
+ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: ECHEC D''ETABLISSEMENT DE LIAISON SSL : erreur de v\u00e9rification du nom d''h\u00f4te lors de la connexion \u00e0 l''h\u00f4te [{0}].  Le nom d''h\u00f4te utilis\u00e9 pour acc\u00e9der au serveur ne correspond pas \u00e0 celui du certificat du serveur [{1}].  Le message d''erreur \u00e9tendu de l''exception relative \u00e0 la prise de contact SSL est le suivant : [{2}].
+ssl.client.handshake.error.CWPKI0824E.explanation=Une erreur s'est produite lors de l'\u00e9tablissement de la liaison SSL.  La v\u00e9rification du nom d'h\u00f4te est activ\u00e9e et l'identit\u00e9 du serveur ne peut pas \u00eatre v\u00e9rifi\u00e9e.  Le nom d'h\u00f4te utilis\u00e9 pour acc\u00e9der au serveur ne correspond pas aux informations Subject Alternative Name du certificat du serveur ou SubjectDN .
 ssl.client.handshake.error.CWPKI0824E.useraction=Lorsque la v\u00e9rification du nom d'h\u00f4te est activ\u00e9e, le serveur auquel vous acc\u00e9dez doit \u00eatre configur\u00e9 avec un certificat contenant les informations appropri\u00e9es n\u00e9cessaires \u00e0 la v\u00e9rification de son identit\u00e9.
+# -------------------------------------------------------------------------------------------------
+ssl.hnv.disabled.warning.CWPKI0063W=CWPKI0063W: La v\u00e9rification du nom d''h\u00f4te est d\u00e9sactiv\u00e9e pour {0}. Les connexions TLS/SSL ne v\u00e9rifient pas l''identit\u00e9 des serveurs pour s''assurer que le client communique avec le bon serveur.
+ssl.hnv.disabled.warning.CWPKI0063W.explanation=La v\u00e9rification du nom d'h\u00f4te doit \u00eatre activ\u00e9e pour s'assurer que le nom d'h\u00f4te dans l'URL \u00e0 laquelle le client se connecte correspond au nom d'h\u00f4te dans le certificat que le serveur renvoie pendant la communication TLS/SSL.
+ssl.hnv.disabled.warning.CWPKI0063W.useraction=Activez la v\u00e9rification du nom d'h\u00f4te en d\u00e9finissant la propri\u00e9t\u00e9 personnalis\u00e9e de s\u00e9curit\u00e9 com.ibm.ssl.verifyHostname sur true.
 # -------------------------------------------------------------------------------------------------
 ssl.cacerts.error.CWPKI0825W=CWPKI0825W: L''attribut trustDefaultCerts est activ\u00e9 mais l''initialisation du magasin de cl\u00e9s de confiance par d\u00e9faut a \u00e9chou\u00e9. Etant donn\u00e9 que l''initialisation du magasin de cl\u00e9s de confiance par d\u00e9faut a \u00e9chou\u00e9, seul le magasin de cl\u00e9s de confiance qui est configur\u00e9 par la configuration SSL {0} est utilis\u00e9. L''exception \u00e9mise est la suivante : {1}. 
 ssl.cacerts.error.CWPKI0825W.explanation=Le magasin de cl\u00e9s de confiance par d\u00e9faut n'a pas pu s'initialiser car il n'a pas pu \u00eatre extrait du gestionnaire d'accr\u00e9ditation. Le magasin de cl\u00e9s de confiance par d\u00e9faut n'est pas utilis\u00e9 pour \u00e9tablir la confiance. Seule la configuration SSL d\u00e9finie est utilis\u00e9e.

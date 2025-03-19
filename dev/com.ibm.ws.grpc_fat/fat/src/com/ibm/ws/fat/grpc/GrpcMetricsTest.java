@@ -17,6 +17,7 @@ import static com.ibm.ws.fat.grpc.monitoring.GrpcMetricsTestUtils.checkMetric;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -70,6 +71,9 @@ public class GrpcMetricsTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         LOG.info("GrpcMetricsTest : setUp() : add HelloWorldClient and HelloWorldService to GrpcClientOnly");
+
+        GrpcClientOnly.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
+        GrpcServerOnly.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         ShrinkHelper.defaultDropinApp(GrpcClientOnly, "HelloWorldClient.war",
                                       "com.ibm.ws.grpc.fat.helloworld.client",
                                       "io.grpc.examples.helloworld");

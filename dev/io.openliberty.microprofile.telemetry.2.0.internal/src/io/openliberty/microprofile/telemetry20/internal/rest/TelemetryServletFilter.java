@@ -37,9 +37,9 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
-import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryServletFilter;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
+import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
@@ -100,10 +100,10 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
         OpenTelemetryInfo otelInfo = OpenTelemetryAccessor.getOpenTelemetryInfo();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, CONFIG_DISABLE_HTTP_TRACING_PROPERTY + "=" + httpTracingDisabled);
-            Tr.debug(tc, "otelInfo.getEnabled()=" + otelInfo.getEnabled());
+            Tr.debug(tc, "otelInfo.isEnabled()=" + otelInfo.isEnabled());
         }
         if (otelInfo != null &&
-            otelInfo.getEnabled() &&
+            otelInfo.isEnabled() &&
             !AgentDetection.isAgentActive() &&
             !httpTracingDisabled) {
             InstrumenterBuilder<ServletRequest, ServletResponse> builder = Instrumenter.builder(

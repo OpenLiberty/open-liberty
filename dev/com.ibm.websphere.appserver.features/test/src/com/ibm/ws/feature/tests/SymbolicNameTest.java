@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2024 IBM Corporation and others.
+ * Copyright (c) 2020,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -139,7 +139,8 @@ public class SymbolicNameTest {
         }
         File workspaceDir = new File(System.getProperty("user.dir")).getAbsoluteFile().getParentFile();
 
-        Workspace bndWorkspace = new Workspace(workspaceDir);
+        Workspace bndWorkspace = new Workspace(workspaceDir, "cnf");
+        bndWorkspace.setOffline(true);
         Collection<Project> projects = bndWorkspace.getAllProjects();
         for (Project project : projects) {
             Collection<String> bsns = project.getBsns();

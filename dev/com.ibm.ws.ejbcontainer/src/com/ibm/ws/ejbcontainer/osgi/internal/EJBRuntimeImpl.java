@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -134,6 +134,7 @@ import com.ibm.ws.ejbcontainer.osgi.JCDIHelperFactory;
 import com.ibm.ws.ejbcontainer.osgi.MDBRuntime;
 import com.ibm.ws.ejbcontainer.osgi.internal.metadata.OSGiBeanMetaData;
 import com.ibm.ws.ejbcontainer.osgi.internal.metadata.OSGiEJBApplicationMetaData;
+import com.ibm.ws.ejbcontainer.osgi.internal.metadata.OSGiEJBModuleComponentMetaData;
 import com.ibm.ws.ejbcontainer.osgi.internal.metadata.OSGiEJBModuleMetaDataImpl;
 import com.ibm.ws.ejbcontainer.osgi.internal.metadata.WCCMMetaDataImpl;
 import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBBinding;
@@ -1909,14 +1910,37 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     @Override
     public ComponentMetaData createComponentMetaData(String identifier) {
         String[] parts = identifier.split("#");
-        J2EEName beanName = j2eeNameFactory.create(parts[1], parts[2], parts[3]); // ignore parts[0] which is the prefix: EJB
-        try {
-            return container.getInstalledHome(beanName).getBeanMetaData();
-        } catch (EJBNotFoundException e) {
+        if (parts.length > 0 && !parts[0].equals("EJB")) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "not found", e);
+                Tr.debug(this, tc, "not an EJB identifier : " + parts[0]);
             return null;
         }
+        if (parts.length == 4) {
+            J2EEName beanName = j2eeNameFactory.create(parts[1], parts[2], parts[3]); // ignore parts[0] which is the prefix: EJB
+            try {
+                return container.getInstalledHome(beanName).getBeanMetaData();
+            } catch (EJBNotFoundException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "EJB not found : " + e);
+                return null;
+            }
+        } else if (parts.length == 3) {
+            List<HomeRecord> hrs = container.getHomeOfHomes().getAllHomeRecords();
+            for (HomeRecord hr : hrs) {
+                J2EEName j2eeName = hr.getJ2EEName();
+                if (parts[1].equals(j2eeName.getApplication()) && parts[2].equals(j2eeName.getModule())) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Found bean in module : " + j2eeName);
+                    return new OSGiEJBModuleComponentMetaData(hr.getEJBModuleMetaData());
+                }
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Module not found : " + parts[1] + ", " + parts[2]);
+            return null;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "identifier not supported : " + identifier);
+        return null;
     }
 
     /**

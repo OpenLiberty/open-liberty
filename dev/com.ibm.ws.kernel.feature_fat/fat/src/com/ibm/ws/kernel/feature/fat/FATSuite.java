@@ -18,7 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                // Disabled FeatureProcessTypeTest.class,
+// Disabled FeatureProcessTypeTest.class,
                 MinifiedServerEnforceSingletonTest.class,
                 BundleOriginTest.class,
                 ActivationTypeTest.class,
@@ -28,6 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 UserFeatureTest.class,
                 SPIIsolationTest.class,
                 SimpleMinifiedServerTest.class,
+                SimpleVersionlessMinifiedServerTest.class,
                 MinifyIconsTest.class,
                 FeatureConflictUpgradeTest.class,
                 IgnoreAPITest.class,
@@ -41,7 +42,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 DisableAllFeaturesOnConflictTest.class,
                 EECompatibilityTest.class,
                 FeatureFragmentTest.class,
-                FixManagerTest.class
+                FixManagerTest.class,
+                ActiveConditionTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

@@ -10,5 +10,6 @@
  	<include location="../fatTestPorts.xml"/>
   	<logging traceSpecification="*=fine"/>
   
+  	<include location="serverSessionConfig.xml"/>
   
 </server>

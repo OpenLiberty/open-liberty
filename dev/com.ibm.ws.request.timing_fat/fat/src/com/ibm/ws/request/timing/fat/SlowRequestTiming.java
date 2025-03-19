@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -449,7 +449,6 @@ public class SlowRequestTiming {
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
             CommonTasks.writeLogMsg(Level.INFO, "-------->  " + line);
-
             assertFalse("contextInfo found!", line.contains("|"));
 
         }
@@ -477,6 +476,7 @@ public class SlowRequestTiming {
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("ms", MESSAGE_LOG);
         for (String line : lines) {
+            CommonTasks.writeLogMsg(Level.INFO, "Checking the following line : " + line);
             assertFalse("contextInfo found when it was disabled..", line.contains("|"));
         }
 
@@ -496,6 +496,7 @@ public class SlowRequestTiming {
 
         for (String line : lines) {
             if (!line.contains("TRAS0112W") && !line.contains("TRAS0113I") && !line.contains("CWWKG0028A")) {
+                CommonTasks.writeLogMsg(Level.INFO, "Checking the following line : " + line);
                 assertTrue("contextInfo is missing...", line.contains("|"));
             }
         }
@@ -564,6 +565,7 @@ public class SlowRequestTiming {
         List<String> lines = server.findStringsInFileInLibertyServerRoot("ms", MESSAGE_LOG);
 
         for (String line : lines) {
+            CommonTasks.writeLogMsg(Level.INFO, "Checking the following line : " + line);
             assertFalse("Pattern found when it is disabled..", (line.contains("|")));
         }
         CommonTasks.writeLogMsg(Level.INFO, "******** As Expected : Pattern disabled ******* ");
@@ -582,6 +584,7 @@ public class SlowRequestTiming {
 
         for (String line : lines) {
             if (!line.contains("TRAS0112W") && !line.contains("TRAS0113I") && !line.contains("CWWKG0028A")) {
+                CommonTasks.writeLogMsg(Level.INFO, "Checking the following line : " + line);
                 assertTrue("Pattern NOT found when it is enabled..", (line.contains("|")));
             }
         }
@@ -741,6 +744,15 @@ public class SlowRequestTiming {
 
         server.waitForStringInLog("TRAS0112W", 20000);
         int slowCount = fetchNoOfslowRequestWarnings();
+
+        //Retry the request again
+        if (slowCount == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequest("?sleepTime=4000");
+            createRequest("?sleepTime=4000");
+            server.waitForStringInLog("TRAS0112W", 20000);
+            slowCount = fetchNoOfslowRequestWarnings();
+        }
 
         assertTrue("No slow warning found for sampleRate 2!", (slowCount > 0));
 

@@ -1,17 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
+/********************************************************************************
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * 
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0, and the Apache License, Version 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ * 
+ * SPDX-License-Identifier: EPL-2.0 AND Apache-2.0
+ ********************************************************************************/
 //APARS:
 //PI89577    hmpadill    11/16/17    JSPs containg Java 8 specific syntaxes might fail to compile 
+//OLGH30861  volosied    02/25/25    Fix 'unexpected tag: 15'. Patch from Tomcat.
 package com.ibm.ws.jsp.translator.utils;
 
 import java.io.File;
@@ -250,6 +249,20 @@ public class SDEInstaller {
                     }
                     copy(2);
                     break;
+                // START BZ 54475 (Patch from Tomcat's SmapUtil.java)
+                case 16 : // MethodType
+                    if (verbose) {
+                        System.out.println(i + " copying 2 bytes");
+                    }
+                    copy(2);
+                    break;
+                case 15 : // MethodHandle
+                    if (verbose) {
+                        System.out.println(i + " copying 3 bytes");
+                    }
+                    copy(3);
+                    break;
+                // END BZ 54475
                 case 9 : // Field
                 case 10 : // Method
                 case 11 : // InterfaceMethod

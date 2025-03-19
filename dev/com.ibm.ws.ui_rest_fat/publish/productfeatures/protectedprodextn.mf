@@ -1,4 +1,5 @@
 Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
 IBM-ShortName: protectedprodextntool-1.0
 Subsystem-SymbolicName: com.ibm.websphere.appserver.protectedprodextn-1.0; visibility:=protected
 Subsystem-Name: Protected Prod Extn Tool Display Name

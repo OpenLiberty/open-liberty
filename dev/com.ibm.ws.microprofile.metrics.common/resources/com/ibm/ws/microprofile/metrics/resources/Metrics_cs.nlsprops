@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=Zadejte nezbytn\u00e9 z\u00
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: Funkce metrik MicroProfile je nakonfigurov\u00e1na tak, aby pou\u017e\u00edvala n\u00e1sleduj\u00edc\u00ed libraryRef: [{0}]
 libraryRefConfigured.info.CWMMC0014I.explanation=Funkce metrik MicroProfile je nakonfigurov\u00e1na pro pou\u017eit\u00ed libraryRef. Tato odkazovan\u00e1 knihovna mus\u00ed obsahovat knihovnu j\u00e1dra Micrometer, c\u00edlov\u00e9 knihovny Micrometer a z\u00e1vislosti.
 libraryRefConfigured.info.CWMMC0014I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: Hodnota {0} je pro vlastnost {1} neplatn\u00e1. Jsou akceptov\u00e1ny pouze celo\u010d\u00edseln\u00e9 a desetinn\u00e9 hodnoty.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=Nakonfigurovan\u00e9 hodnoty histogramu jsou neplatn\u00e9.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Konfigurujte hodnoty pouze s cel\u00fdmi \u010d\u00edsly a desetinn\u00fdmi \u010d\u00edsly.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: Hodnota {0} je pro vlastnost {1} neplatn\u00e1. Jsou akceptov\u00e1ny pouze celo\u010d\u00edseln\u00e9 hodnoty s \u010dasovou jednotkou (nap\u0159\u00edklad ms, s, m, h).
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=Nakonfigurovan\u00e9 hodnoty \u010dasova\u010de jsou neplatn\u00e9.
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Konfigurujte s celo\u010d\u00edseln\u00fdmi hodnotami a jednotkami \u010dasu (nap\u0159\u00edklad ms, s, m, h).
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: Hodnota {0} je pro vlastnost {1} neplatn\u00e1. Hodnoty mus\u00ed b\u00fdt v rozsahu od 0.0 do 1.0 v\u010detn\u011b, aby byly p\u0159ijaty.
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=Nakonfigurovan\u00e9 hodnoty percentilu jsou neplatn\u00e9.
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Nakonfigurujte hodnoty v inkluzivn\u00edm rozsahu 0.0 a\u017e 1.0 , aby byly p\u0159ijaty.
 
 #Memory usedHeap message
 memory.usedHeap.description=Zobrazuje mno\u017estv\u00ed vyu\u017eit\u00e9 pam\u011bti haldy v bajtech.

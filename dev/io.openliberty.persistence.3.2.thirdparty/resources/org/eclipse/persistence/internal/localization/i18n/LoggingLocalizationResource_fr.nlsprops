@@ -117,7 +117,7 @@ connected_user_database_driver=Connect\u00e9 : {0}{6}Utilisateur : {1}{6}Base de
 
 corrupt_object=objet endommag\u00e9 : {0}
 
-corrupt_object_referenced_through_mapping=L''objet endommag\u00e9 suivant est r\u00e9f\u00e9renc\u00e9 via le mappage : {0}.
+corrupt_object_referenced_through_mapping=L''objet endommag\u00e9 suivant est r\u00e9f\u00e9renc\u00e9 via le mappage: {0}
 
 corrupted_session_announcement=ID session : {0}  Le gestionnaire de reconnaissance a re\u00e7u une annonce de session endommag\u00e9e - annonce ignor\u00e9e.
 
@@ -169,6 +169,14 @@ elements={0}{1} \u00e9l\u00e9ments
 
 enable_batch_operations_as_true_not_supported=Le param\u00e8tre CMP natif WLS "enable-batch-operations-as-true" n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
 
+encryptor_script_description=Cette application poss\u00e8de un ancien mot de passe chiffr\u00e9 qui a \u00e9t\u00e9 utilis\u00e9 par une version pr\u00e9c\u00e9dente d'' EclipseLink. Chiffrez-le \u00e0 nouveau avec l''algorithme le plus r\u00e9cent.
+
+encryptor_script_output=Le mot de passe rechiffr\u00e9 est: {0}
+
+encryptor_script_usage=Syntaxe: `passwordUpdate.sh | .cmd -ip < ancien mot de passe chiffr\u00e9 > `
+
+entity_manager_has_multiple_connections=L''unit\u00e9 de persistance poss\u00e8de plusieurs connexions et renvoie la premi\u00e8re de la liste.
+
 entity_manager_ignores_jta_data_source=L''unit\u00e9 de persistance n''utilise pas JTA, par cons\u00e9quent le gestionnaire d''entit\u00e9s ignore la source de donn\u00e9es jta. 
 
 entity_manager_ignores_nonjta_data_source=L''unit\u00e9 de persistance utilise JTA, par cons\u00e9quent le gestionnaire d''entit\u00e9s ignore la source de donn\u00e9es non jta. 
@@ -192,6 +200,8 @@ error_in_create=Erreur lors de la cr\u00e9ation.
 error_in_remove=Erreur lors de la suppression.
 
 error_loading_xml_file=Exception lors du chargement du fichier ORM xml : {0} : {1}
+
+error_queryTimeoutParse=Impossible d''analyser la valeur de la propri\u00e9t\u00e9 {0} jakarta.persistence.query.timeout : {1}
 
 exception_loading_entity_class=Une exception s''est produite lors d''une tentative d''initialisation de persistance.  {1} lors d''une tentative de chargement de la classe entit\u00e9 : {0}.
 
@@ -647,6 +657,18 @@ retreived_null_message=Message null extrait de la rubrique : {0} ; ignor\u00e9
 
 retreived_unknown_message_type=Type de message inconnu extrait : {0} de la rubrique : {1} ; ignor\u00e9
 
+schema_default_create_tables_failed=Echec de la cr\u00e9ation des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
+
+schema_default_drop_tables_failed=Echec de la suppression des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
+
+schema_default_extend_tables_failed=Echec de l''extension des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
+
+schema_default_replace_tables_failed=Echec du remplacement des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
+
+schema_default_truncate_tables_failed=Echec de la troncature des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
+
+schema_drop_object_failed=Echec de la suppression de l''objet dans le sch\u00e9ma de table par d\u00e9faut: {0}
+
 sdo_classgenerator_exception={2}Une exception [{0}] s''est produite - message : [{1}]
 
 sdo_error_deserialization=Tentative de d\u00e9s\u00e9rialisation non autoris\u00e9e avec la classe {0}.
@@ -716,6 +738,8 @@ Current unit\u00e9 d''ex\u00e9cution (id: {3} nom: {4}) trace de pile:
 #{5}
 
 unitofwork_identity_hashcode={0} Code de hachage identit\u00e9 unit\u00e9 d''oeuvre : {1}
+
+unknown_property_type=Type {0} inconnu de la propri\u00e9t\u00e9 de persistance {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery ne peut pas utiliser la liaison sur cette plateforme de base de donn\u00e9es. Param\u00e8tre de requ\u00eate modifi\u00e9 pour ex\u00e9cution sans liaison.
 

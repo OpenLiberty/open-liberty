@@ -38,11 +38,9 @@ installLocation=local de instala\u00e7\u00e3o
 options=Op\u00e7\u00f5es
 
 
-licenseOptionDescription=Ao escolher a op\u00e7\u00e3o "Concordo" abaixo, estar\u00e1 concordando com os termos do contrato de licen\u00e7a e termos n\u00e3o IBM, se aplic\u00e1vel. \
-Se n\u00e3o concordar, selecione "N\u00e3o Concordo".
+licenseOptionDescription=Ao escolher a op\u00e7\u00e3o "Concordo" abaixo, estar\u00e1 concordando com os termos do contrato de licen\u00e7a e termos n\u00e3o IBM, se aplic\u00e1vel. Se n\u00e3o concordar, selecione "N\u00e3o Concordo".
 
-licenseeAcknowledges=O licenciado reconhece e concorda que todo c\u00f3digo (incluindo recursos, fun\u00e7\u00f5es ou outros downloads de software) transferido por download pelo Licenciado em conex\u00e3o com este instrumento (o "C\u00f3digo") ser\u00e1 usado apenas com uma vers\u00e3o licenciada do programa IBM WebSphere Application Server Liberty (o "Programa"). \
-O licenciado tamb\u00e9m reconhece e concorda que o uso do C\u00f3digo est\u00e1 sujeito aos termos dos contratos de licen\u00e7a que controlam o uso do Programa (por exemplo, Contrato de Licen\u00e7a do Programa Internacional, Contrato de Licen\u00e7a Internacional para Programas sem Garantia, Contrato de Licen\u00e7a Internacional para Avalia\u00e7\u00e3o de Programas, Contrato de Licen\u00e7a Internacional para Libera\u00e7\u00e3o Antecipada de Programas), incluindo, se aplic\u00e1veis, quaisquer Informa\u00e7\u00f5es sobre Licen\u00e7a.
+licenseeAcknowledges=O licenciado reconhece e concorda que todo c\u00f3digo (incluindo recursos, fun\u00e7\u00f5es ou outros downloads de software) transferido por download pelo Licenciado em conex\u00e3o com este instrumento (o "C\u00f3digo") ser\u00e1 usado apenas com uma vers\u00e3o licenciada do programa IBM WebSphere Application Server Liberty (o "Programa"). O licenciado tamb\u00e9m reconhece e concorda que o uso do C\u00f3digo est\u00e1 sujeito aos termos dos contratos de licen\u00e7a que controlam o uso do Programa (por exemplo, Contrato de Licen\u00e7a do Programa Internacional, Contrato de Licen\u00e7a Internacional para Programas sem Garantia, Contrato de Licen\u00e7a Internacional para Avalia\u00e7\u00e3o de Programas, Contrato de Licen\u00e7a Internacional para Libera\u00e7\u00e3o Antecipada de Programas), incluindo, se aplic\u00e1veis, quaisquer Informa\u00e7\u00f5es sobre Licen\u00e7a.
 
 extractPrompt=Diret\u00f3rio de destino para arquivos do produto?
 extractSuccess=Todos os arquivos do produto foram extra\u00eddos com sucesso.
@@ -62,8 +60,7 @@ licensePrompt=Selecione {0} Concordo, ou {1} N\u00e3o Concordo:
 # {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
 # {1} International Program License Agreement
 #
-licenseStatement=Antes de usar, extrair ou instalar {0}, \u00e9 necess\u00e1rio aceitar os termos de {1} e informa\u00e7\u00f5es adicionais sobre licen\u00e7a. \
-Leia a seguir o contrato de licen\u00e7a com aten\u00e7\u00e3o.
+licenseStatement=Antes de usar, extrair ou instalar {0}, \u00e9 necess\u00e1rio aceitar os termos de {1} e informa\u00e7\u00f5es adicionais sobre licen\u00e7a. Leia a seguir o contrato de licen\u00e7a com aten\u00e7\u00e3o.
 
 #
 # {0} --viewLicenseAgreement
@@ -102,12 +99,9 @@ extractFileExists=O arquivo j\u00e1 existe: {0}
 # 
 inputException=Entrada de processamento de exce\u00e7\u00e3o: {0}
 
-invalidInstall=O diret\u00f3rio {0} n\u00e3o \u00e9 um \
-diret\u00f3rio de instala\u00e7\u00e3o v\u00e1lido do Liberty.
+invalidInstall=O diret\u00f3rio {0} n\u00e3o \u00e9 um diret\u00f3rio de instala\u00e7\u00e3o v\u00e1lido do Liberty.
 invalidVersion=A instala\u00e7\u00e3o do produto especificado est\u00e1 na vers\u00e3o {0} e o complemento deste produto se aplica apenas \u00e0 vers\u00e3o {1}.
-invalidEdition=A instala\u00e7\u00e3o do produto \
-especificado \u00e9 a edi\u00e7\u00e3o {0} e este complemento de produto se aplica \
-somente \u00e0s edi\u00e7\u00f5es {1}.
+invalidEdition=A instala\u00e7\u00e3o do produto especificado \u00e9 a edi\u00e7\u00e3o {0} e este complemento de produto se aplica somente \u00e0s edi\u00e7\u00f5es {1}.
 invalidLicense=A instala\u00e7\u00e3o do produto especificado tem uma licen\u00e7a {0} e este complemento do produto \u00e9 para um produto com licen\u00e7a {1}.
 invalidInstallType=A instala\u00e7\u00e3o do produto especificado foi feita usando o IBM Installation Manager, use o IBM Installation Manager para instalar quaisquer complementos de produto.
 invalidOption=A op\u00e7\u00e3o {0} n\u00e3o \u00e9 reconhecida.
@@ -243,8 +237,7 @@ unableToUpdateFingerprint=N\u00e3o \u00e9 poss\u00edvel atualizar servi\u00e7o f
 patchingNotApplicableNoChange=Nenhum conte\u00fado foi extra\u00eddo porque n\u00e3o h\u00e1 recursos correspondentes no tempo de execu\u00e7\u00e3o {0}
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
-patchingSkippedSupersededFix=A corre\u00e7\u00e3o {0} foi substitu\u00edda por {1}, que j\u00e1 est\u00e1 instalada.\n\
-A instala\u00e7\u00e3o de {0} foi ignorada.
+patchingSkippedSupersededFix=A corre\u00e7\u00e3o {0} foi substitu\u00edda por {1}, que j\u00e1 est\u00e1 instalada.\nA instala\u00e7\u00e3o de {0} foi ignorada.
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=Ocorreu um erro ao ler as informa\u00e7\u00f5es do iFix para a instala\u00e7\u00e3o atual. A mensagem de exce\u00e7\u00e3o \u00e9: {0}.
@@ -289,8 +282,9 @@ LICENSE_invalidInstallType=N\u00e3o \u00e9 poss\u00edvel fazer upgrade da licen\
 LICENSE_replace_invalidVersion=A licen\u00e7a n\u00e3o pode ser aplicada porque a instala\u00e7\u00e3o do produto especificada est\u00e1 na vers\u00e3o {0}, mas a licen\u00e7a pode ser aplicada somente na vers\u00e3o {1}.
 LICENSE_replace_invalidInstallType=A licen\u00e7a n\u00e3o pode ser aplicada porque a instala\u00e7\u00e3o do produto especificada foi instalada usando o IBM Installation Manager. Use o IBM Installation Manager para fazer upgrade de sua instala\u00e7\u00e3o.
 
-LICENSE_replace_invalidEditonFeatures=Os recursos a seguir n\u00e3o se aplicam \u00e0 edi\u00e7\u00e3o {0} e devem ser desinstalados antes de aplicar a licen\u00e7a: {1}\n\
-\n\
-Use o comando a seguir para desinstalar esses recursos antes de aplicar a licen\u00e7a para a edi\u00e7\u00e3o do {2}: {3}
+LICENSE_replace_invalidEditonFeatures=Os recursos a seguir n\u00e3o se aplicam \u00e0 edi\u00e7\u00e3o {0} e devem ser desinstalados antes de aplicar a licen\u00e7a: {1}\n\nUse o comando a seguir para desinstalar esses recursos antes de aplicar a licen\u00e7a para a edi\u00e7\u00e3o do {2}: {3}
 
 LICENSE_downgrade_block_8557_low=Essa licen\u00e7a pode ser aplicada somente \u00e0 instala\u00e7\u00e3o na {0} ou superior. A instala\u00e7\u00e3o atual est\u00e1 na {1}. Fa\u00e7a download e atualize para o n\u00edvel mais recente e reaplique a licen\u00e7a.
+
+#message for applying interim fix
+INTERIM_FIX_replace_invalidVersion=A corre\u00e7\u00e3o provis\u00f3ria n\u00e3o pode ser aplicada porque a instala\u00e7\u00e3o do produto especificado est\u00e1 na vers\u00e3o {0}, mas a corre\u00e7\u00e3o provis\u00f3ria s\u00f3 pode ser aplicada \u00e0 vers\u00e3o {1}.

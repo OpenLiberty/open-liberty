@@ -341,7 +341,7 @@
 
 6174=No value was provided for the session property [{0}]. This exception is possible when using additional criteria or tenant discriminator columns without specifying the associated contextual property. These properties must be set through EntityManager, EntityManagerFactory or persistence unit properties. If using native EclipseLink, these properties should be set directly on the session.
 
-6175=Native SQL queries have been disabled. This is done either by setting the persistence unit property "eclipselink.jdbc.allow-native-sql-queries" to false or having at least one multitenant entity defined in your persistence unit. Check your persistence unit specification. To allow native sql queries, set this property to true. Alternatively, individual queries may bypass this setting by setting the "eclipselink.jdbc.allow-native-sql-query" query hint to true.
+6175=Native SQL queries have been disabled. This is done either by setting the persistence unit property "{0}" to false or having at least one multitenant entity defined in your persistence unit. Check your persistence unit specification. To allow native sql queries, set this property to true. Alternatively, individual queries may bypass this setting by setting the "{1}" query hint to true.
 
 6176=An exception was thrown while initializing the constructor from the class [{0}]:  [{1}]
 

@@ -358,7 +358,7 @@ public abstract class ClientServletBase extends FATServlet {
 							.getXAResourceImpl(xaResInfo)
 							.setPrepareAction(prepareAction);
 				}
-				final int recoveryId = TM.registerResourceInfo("xaResInfo",
+				final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo);
 				xaRes.setExpectedDirection(expectedDirection);
 				boolean result = TM.enlist(xaRes, recoveryId);

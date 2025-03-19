@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -126,7 +126,7 @@ public class TokenRequestorTest extends CommonTestClass {
             {
                 one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
                 will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, true, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -150,7 +150,7 @@ public class TokenRequestorTest extends CommonTestClass {
             {
                 one(oidcClientHttpUtil).setupPost(tokenEndpointSecure, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
                 will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, httpPost, sslSocketFactory, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpointSecure, httpPost, sslSocketFactory, true, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -165,15 +165,15 @@ public class TokenRequestorTest extends CommonTestClass {
     }
 
     @Test
-    public void test_requestTokens_useHostnameVerification() throws Exception {
-        TokenRequestor tokenRequestor = new TokenRequestor.Builder(tokenEndpoint, clientId, clientSecret, redirectUri, code).isHostnameVerification(true).build();
+    public void test_requestTokens_disableHostnameVerification() throws Exception {
+        TokenRequestor tokenRequestor = new TokenRequestor.Builder(tokenEndpoint, clientId, clientSecret, redirectUri, code).isHostnameVerification(false).build();
         tokenRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         mockery.checking(new Expectations() {
             {
                 one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
                 will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, true, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -199,7 +199,7 @@ public class TokenRequestorTest extends CommonTestClass {
             {
                 one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_BASIC);
                 will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, true, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -222,7 +222,7 @@ public class TokenRequestorTest extends CommonTestClass {
             {
                 one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_CLIENT_SECRET_POST);
                 will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, true, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -252,7 +252,7 @@ public class TokenRequestorTest extends CommonTestClass {
             {
                 one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
                 will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, true, false);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -276,7 +276,7 @@ public class TokenRequestorTest extends CommonTestClass {
             {
                 one(oidcClientHttpUtil).setupPost(tokenEndpoint, params, clientId, clientSecret, null, TokenConstants.METHOD_POST);
                 will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, true);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, true, true);
                 will(returnValue(postResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postResponseMap);
                 will(returnValue(tokenResponseEntity));
@@ -323,7 +323,7 @@ public class TokenRequestorTest extends CommonTestClass {
             {
                 one(oidcClientHttpUtil).setupPost(tokenEndpoint, refreshParams, clientId, clientSecret, null, TokenConstants.METHOD_POST);
                 will(returnValue(httpPost));
-                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, false, false);
+                one(oidcClientHttpUtil).postToEndpoint(tokenEndpoint, httpPost, null, true, false);
                 will(returnValue(postRefreshResponseMap));
                 one(oidcClientHttpUtil).extractEntityFromTokenResponse(postRefreshResponseMap);
                 will(returnValue(tokenRefreshResponseEntity));

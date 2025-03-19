@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,8 +57,6 @@ import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.channelfw.HttpProtocolBehavior;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
-import com.ibm.wsspi.timer.ApproximateTime;
-import com.ibm.wsspi.timer.QuickApproxTime;
 
 /**
  * OSGi public bundle API for the channel framework. This allows cross bundle
@@ -509,19 +507,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * @return the approximate time service instance to use within the channel framework
      */
     public static long getApproxTime() {
-        return QuickApproxTime.getApproxTime();
-    }
-
-    /**
-     * Set the approximate time service reference.
-     * This is a required reference: will be called before activation.
-     *
-     * @param ref new ApproximateTime service instance/provider
-     */
-    @Reference(service = ApproximateTime.class,
-               cardinality = ReferenceCardinality.MANDATORY)
-    protected void setApproxTimeService(ApproximateTime ref) {
-        // do nothing: need the ref for activation of service
+        return System.currentTimeMillis();
     }
 
     @Reference(service = HttpProtocolBehavior.class, cardinality = ReferenceCardinality.OPTIONAL,
@@ -558,16 +544,6 @@ public class CHFWBundle implements ServerQuiesceListener {
      */
     public static Boolean getHttp2DefaultSetting() {
         return !versionSet ? null : default20On ? Boolean.TRUE : Boolean.FALSE;
-    }
-
-    /**
-     * Remove the reference to the approximate time service.
-     * This is a required reference, will be called after deactivate.
-     *
-     * @param ref ApproximateTime service instance/provider to remove
-     */
-    protected void unsetApproxTimeService(ApproximateTime ref) {
-        // do nothing: need the ref for activation of service
     }
 
     /**

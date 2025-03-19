@@ -35,8 +35,8 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrsmisconfig.JaxRsMisConfigEndpoints;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 //Tests behaviour when placing an invalid value into the OpenTelemetry configuration options
 @Mode(TestMode.FULL)
@@ -63,7 +63,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     private static WebArchive invalidExporterApp = null;
     private static WebArchive invalidJaegerEndpointApp = null;
@@ -137,7 +137,9 @@ public class TelemetryMisconfigTest extends FATServletClient {
     @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
     @ExpectedFFDC(repeatAction = { MicroProfileActions.MP61_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP41_ID, MicroProfileActions.MP14_ID },
                   value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP60_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
+    //The native Jaeger exporter has been discontinued and is not supported in MpTelemetry-2.0. OTLP is used for Jaeger instead
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID,
+                     TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
     public void testInvalidJaegerExporterEndpoint() throws Exception {
         deployAndWaitForApp(invalidJaegerEndpointApp, INVALID_JAEGER_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_JAEGER_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
@@ -152,8 +154,10 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
     @Test
     @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
-    @ExpectedFFDC(repeatAction = { MicroProfileActions.MP61_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP41_ID, MicroProfileActions.MP14_ID, TelemetryActions.MP14_MPTEL20_ID, 
-                                    TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP60_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID},
+    @ExpectedFFDC(repeatAction = { MicroProfileActions.MP61_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP41_ID, MicroProfileActions.MP14_ID,
+                                   TelemetryActions.MP14_MPTEL20_ID,
+                                   TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID,
+                                   MicroProfileActions.MP70_EE11_ID },
                   value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
     public void testInvalidZipkinExporterEndpoint() throws Exception {
         deployAndWaitForApp(invalidZipkinEndpointApp, INVALID_ZIPKIN_ENDPOINT_APP_NAME);
@@ -180,7 +184,9 @@ public class TelemetryMisconfigTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP60_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID,
+                     TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
+    //The native Jaeger exporter has been discontinued and is not supported in MpTelemetry-2.0. OTLP is used for Jaeger instead
     public void testNotKnownEndpoint() throws Exception {
         deployAndWaitForApp(notKnownEndpointApp, NOT_KNOWN_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + NOT_KNOWN_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
@@ -197,7 +203,9 @@ public class TelemetryMisconfigTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP60_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID,
+                     TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
+    //The native Jaeger exporter has been discontinued and is not supported in MpTelemetry-2.0. OTLP is used for Jaeger instead
     public void testDoesNotExistEndpoint() throws Exception {
         deployAndWaitForApp(doesNotExistEndpointApp, DOES_NOT_EXIST_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + DOES_NOT_EXIST_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
@@ -213,7 +221,9 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
     @Test
     @ExpectedFFDC({ "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP60_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID,
+                     TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
+    //The native Jaeger exporter has been discontinued and is not supported in MpTelemetry-2.0. OTLP is used for Jaeger instead
     public void testInvalidJaegerTimeout() throws Exception {
         deployAndWaitForApp(invalidJaegerTimeoutApp, INVALID_JAEGER_TIMEOUT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_JAEGER_TIMEOUT_APP_NAME + "/misconfig/jaxrsclient")

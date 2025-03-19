@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2023 IBM Corporation and others.
+ * Copyright (c) 2012,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -81,7 +81,7 @@ public class JCABVTTest extends FATServletClient {
      */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        server.stopServer(
+        server.stopServer("CWWKS1864W", // warning for using {aes} AES-128 password
                           "CWWKE0700W", // permanent workaround for Derby per RTC 290586/github 25902
                           "J2CA0027E", // intentionally caused to require XA recovery
                           "J2CA8625E.*UnsupportedContext", // error path test for unsupported work context type

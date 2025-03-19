@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,10 +27,15 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.jboss.jandex.Index;
+import org.jboss.jandex.IndexReader;
+import org.jboss.jandex.IndexWriter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -52,12 +57,13 @@ import io.smallrye.openapi.runtime.io.OpenApiSerializer;
  * <li>the files scanned for annotations</li>
  * <li>the OpenAPI configuration</li>
  * </ul>
- * The cached value is the OpenAPI model constructed from the application.
+ * The cached value is the OpenAPI model constructed from the application and optionally a Jandex index of the scanned classes.
  * <p>
  * To cache a model:
  * <ul>
  * <li>Create a CacheEntry with {@link #createNew(String, Path)}</li>
  * <li>Add the model, the {@link OpenApiConfig} and all files used to generate the model</li>
+ * <li>Optionally add a Jandex index of the scanned classes</li>
  * <li>Call {@link #write()}</li>
  * </ul>
  * <p>
@@ -65,7 +71,8 @@ import io.smallrye.openapi.runtime.io.OpenApiSerializer;
  * <ul>
  * <li>Read the entry from the cache with {@link #read(String, Path)}</li>
  * <li>Create a new CacheEntry to represent the current application. Add the current {@link OpenApiConfig} and all files which would be used, but don't add a model.</li>
- * <li>Call {@link #isUpToDateWith(CacheEntry)} to check whether the cached model can be used in the current environment.</li>
+ * <li>Call {@link #modelUpToDate(CacheEntry)} to check whether the cached model can be used in the current environment.</li>
+ * <li>Call {@link #indexUpToDate(CacheEntry)} to check whether the cached Jandex index can be used in the current environment.</li>
  * </ul>
  */
 public class CacheEntry {
@@ -76,10 +83,12 @@ public class CacheEntry {
     private static final String MODEL_FILE = "model";
     private static final String CONFIG_FILE = "config";
     private static final String FILES_LIST_FILE = "files";
+    private static final String INDEX_FILE = "index";
 
     private String appName;
     private final Path cacheDir;
     private final ConfigSerializer configSerializer;
+    private Index index;
     private OpenAPI model;
     private OpenApiConfig config;
     private Properties configProperties;
@@ -92,6 +101,7 @@ public class CacheEntry {
      *
      * @param applicationName the name of the application
      * @param baseDir the cache directory
+     * @param configSerializer the config serializer
      * @return the new CacheEntry
      */
     public static CacheEntry createNew(String applicationName, Path baseDir, ConfigSerializer configSerializer) {
@@ -106,10 +116,11 @@ public class CacheEntry {
      *
      * @param applicationName the application name
      * @param baseDir the cache directory
+     * @param configSerializer the config serializer
      * @return the loaded cache entry, or {@code null} if a valid cache entry does not exist for this application name
      */
-    public static CacheEntry read(String applicationName, Path baseDir) {
-        CacheEntry cacheEntry = new CacheEntry(applicationName, baseDir, null);
+    public static CacheEntry read(String applicationName, Path baseDir, ConfigSerializer configSerializer) {
+        CacheEntry cacheEntry = new CacheEntry(applicationName, baseDir, configSerializer);
         if (!Files.isDirectory(cacheEntry.cacheDir)) {
             return null;
         }
@@ -187,7 +198,29 @@ public class CacheEntry {
     }
 
     /**
-     * Check whether this cache entry is up to date with the current state of the application and config.
+     * Get the Jandex index stored in this CacheEntry.
+     * <p>
+     * In some cases, a cache entry may not have an index if the user has disabled class scanning but in these cases {@link #indexUpToDate(CacheEntry)} will return {@code false}.
+     *
+     * @return the Jandex index, never {@code null} unless {@link #indexUpToDate(CacheEntry)} is {@code false}
+     */
+    public Index getIndex() {
+        return index;
+    }
+
+    /**
+     * Set the Jandex index to be cached.
+     * <p>
+     * In some cases, a cache entry may not have an index if the user has disabled class scanning.
+     *
+     * @param index the Jandex index, may be {@code null} to not store an index in the cache entry
+     */
+    public void setIndex(Index index) {
+        this.index = index;
+    }
+
+    /**
+     * Check whether the model from this cache entry can be used, based on the current state of the application and config.
      * <p>
      * This method may only be called on a cache entry read from disk with {@link #read(String, Path)}.
      *
@@ -195,7 +228,7 @@ public class CacheEntry {
      * @return {@code true} if this cache entry is up to date, {@code false} otherwise
      */
     @Trivial // method has sufficient tracing
-    public boolean isUpToDateWith(CacheEntry current) {
+    public boolean modelUpToDate(CacheEntry current) {
         if (model == null || configProperties == null) {
             throw new IllegalStateException("isUpToDateWith called on CacheEntry not read from disk");
         }
@@ -205,6 +238,15 @@ public class CacheEntry {
         if (!Objects.equals(appName, current.appName)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Cache out of date because app name is not the same?!", appName, current.appName);
+            }
+            return false;
+        }
+
+        // Check if reader or filter configured
+        // If there is user code that is run to build the model it could read additional config so we can't cache the model
+        if (current.config.modelReader() != null || current.config.filter() != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Cache not usable because a filter or reader is registered");
             }
             return false;
         }
@@ -235,11 +277,81 @@ public class CacheEntry {
         return true;
     }
 
+    /**
+     * Check whether the Jandex index from this cache entry can be used, based on the current state of the application and config. The requirements for using the index are lower
+     * than the requirements for using the model and building the index is usually the slowest part of building the model.
+     * <p>
+     * This method may only be called on a cache entry read from disk with {@link #read(String, Path)}.
+     *
+     * @param current a CacheEntry representing the current state. It must have the config set and all dependent files added before this method is called.
+     * @return {@code true} if this cache entry is up to date, {@code false} otherwise
+     */
+    @Trivial // method has sufficient tracing
+    public boolean indexUpToDate(CacheEntry current) {
+        if (model == null || configProperties == null) {
+            throw new IllegalStateException("isUpToDateWith called on CacheEntry not read from disk");
+        }
+        Objects.requireNonNull(current, "cache entry for current state must be given");
+
+        // check we have an index cached
+        if (index == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Index out of date because no index in cache");
+            }
+            return false;
+        }
+
+        // verify the app name
+        if (!Objects.equals(appName, current.appName)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Index out of date because app name is not the same?!", appName, current.appName);
+            }
+            return false;
+        }
+
+        // compare scanning config
+        Properties currentScanningProperties = current.getScanningConfig();
+        Properties ourScanningProperties = getScanningConfig();
+        if (!Objects.equals(ourScanningProperties, currentScanningProperties)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Index out of date because indexing config is not the same", ourScanningProperties, currentScanningProperties);
+            }
+            return false;
+        }
+
+        // compare scanned files
+        if (!Objects.equals(fileEntries, current.fileEntries)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Index out of date because files have changed", fileEntries, current.fileEntries);
+            }
+            return false;
+        }
+
+        return true;
+    }
+
     private Properties getConfigProperties(OpenAPI model) {
         if (configProperties != null) {
             return configProperties;
         } else if (config != null) {
             return configSerializer.serializeConfig(config, model);
+        } else {
+            return null;
+        }
+    }
+
+    private Properties getScanningConfig() {
+        if (configProperties != null) {
+            Set<String> scanningKeys = configSerializer.getIndexingConfigKeys();
+            Properties result = new Properties();
+            for (Entry<Object, Object> entry : configProperties.entrySet()) {
+                if (scanningKeys.contains(entry.getKey())) {
+                    result.put(entry.getKey(), entry.getValue());
+                }
+            }
+            return result;
+        } else if (config != null) {
+            return configSerializer.getIndexingConfig(config);
         } else {
             return null;
         }
@@ -287,6 +399,10 @@ public class CacheEntry {
             // serialize model
             writeModel(cacheDir.resolve(MODEL_FILE));
 
+            if (index != null) {
+                writeIndex(cacheDir.resolve(INDEX_FILE));
+            }
+
             if (LoggingUtils.isDebugEnabled(tc)) {
                 Tr.debug(this, tc, "Cache entry written");
             }
@@ -300,6 +416,7 @@ public class CacheEntry {
         Path modelFile = cacheDir.resolve(MODEL_FILE);
         Path configFile = cacheDir.resolve(CONFIG_FILE);
         Path filesListFile = cacheDir.resolve(FILES_LIST_FILE);
+        Path indexFile = cacheDir.resolve(INDEX_FILE);
 
         if (!Files.exists(modelFile) || !Files.exists(configFile) || !Files.exists(filesListFile)) {
             return false;
@@ -308,6 +425,10 @@ public class CacheEntry {
         readModel(modelFile);
         readConfig(configFile);
         readFileList(filesListFile);
+
+        if (Files.exists(indexFile)) {
+            readIndex(indexFile);
+        }
 
         return true;
     }
@@ -344,6 +465,20 @@ public class CacheEntry {
 
     private void writeFileList(Path output) throws IOException {
         Files.write(output, fileEntries, StandardCharsets.UTF_8);
+    }
+
+    private void readIndex(Path input) throws IOException {
+        try (InputStream in = Files.newInputStream(input)) {
+            IndexReader reader = new IndexReader(in);
+            index = reader.read();
+        }
+    }
+
+    private void writeIndex(Path output) throws IOException {
+        try (OutputStream out = Files.newOutputStream(output)) {
+            IndexWriter writer = new IndexWriter(out);
+            writer.write(index);
+        }
     }
 
     private static final FileVisitor<Path> RECURSIVE_DELETER = new SimpleFileVisitor<Path>() {

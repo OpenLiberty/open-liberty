@@ -17,6 +17,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -89,6 +90,24 @@ public class JaxRsSSLManager {
         return connectionInfo;
     }
 
+    private static Properties getSSLProperties(String sslRef, Map<String, Object> connectionInfo) throws SSLException {
+        Properties sslProps;
+        try {
+            sslProps = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                @Override
+                public Properties run() throws SSLException {
+                    return jsseHelper.getProperties(sslRef, connectionInfo, null);
+                }
+            });
+
+        } catch (PrivilegedActionException pae) {
+            Throwable cause = pae.getCause();
+            throw (SSLException) cause;
+        }
+
+        return sslProps;
+    }
+
     private static SSLContext getSSLContext(String sslRef, Map<String, Object> connectionInfo) throws SSLException {
         Boolean sslCfgExists = null;
         if (sslRef != null) {
@@ -116,8 +135,8 @@ public class JaxRsSSLManager {
                     if (sslRef != null) {
                         return jsseHelper.getSSLContext(sslRef, connectionInfo, null, false);
                     } else {
-                        // get the default ssl config
-                        return jsseHelper.getSSLContext(null, null, null);
+                        // get the default ssl context with possible dynamic outbound mapping
+                        return jsseHelper.getSSLContext(connectionInfo, getSSLProperties(sslRef, connectionInfo));
                     }
                 }
             });

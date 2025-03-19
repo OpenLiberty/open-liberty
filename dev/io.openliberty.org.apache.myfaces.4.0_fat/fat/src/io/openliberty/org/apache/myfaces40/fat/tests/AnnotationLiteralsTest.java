@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -26,6 +27,7 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -38,8 +40,9 @@ import io.openliberty.org.apache.myfaces40.fat.FATSuite;
  * Tests to ensure new Annotation Literals can be used in an expected way.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE11_FEATURES) // Errors in EE11
 public class AnnotationLiteralsTest {
+
+    protected static final Class<?> clazz = AnnotationLiteralsTest.class;
 
     private static final String APP_NAME = "AnnotationLiteralsTest";
 
@@ -71,8 +74,22 @@ public class AnnotationLiteralsTest {
         }
     }
 
+    public String getOriginalMethodName(){
+        String currentName = name.getMethodName();
+        /*
+         * Repeats are appended with _<repeat-name>, so we look for the underscore. 
+         */
+        int index = currentName.indexOf("_");
+        if(index == -1){
+            return currentName;
+        }
+        return currentName.substring(0, index);
+
+    }
+
     private URL getURL(String path, String... queries) throws Exception {
-        String finalQuery = "?" + name.getMethodName() + "=true";
+        // Original name needed as the test app checks for specifc query parameters. Otherwise, this test class breaks for repeats.
+        String finalQuery = "?" + getOriginalMethodName() + "=true";
         for (String query : queries) {
             finalQuery += "&" + query;
         }
@@ -85,7 +102,7 @@ public class AnnotationLiteralsTest {
 
     private HtmlPage getAndLogPage(String path, WebClient webClient, String... queries) throws Exception {
         URL url = getURL(path, queries);
-
+        Log.info(clazz, "getAndLogPage", "URL: " +  url);
         HtmlPage page = (HtmlPage) webClient.getPage(url);
 
         FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".html");

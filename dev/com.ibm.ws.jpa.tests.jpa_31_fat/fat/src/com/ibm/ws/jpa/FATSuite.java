@@ -46,7 +46,7 @@ public class FATSuite extends TestContainerSuite {
     public static JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE10_FEATURES())
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());;
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
 
 }

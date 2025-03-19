@@ -25,15 +25,15 @@ import jakarta.data.repository.Save;
  */
 @Repository
 public interface ShippingAddresses {
-    long countByRecipientInfoEmpty();
+    long countByStreetAddressRecipientInfoEmpty();
 
-    StreetAddress[] findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(int minHouseNumber, int maxHouseNumber);
+    StreetAddress[] findByStreetAddress_houseNumberBetweenOrderByStreetAddress_streetNameAscStreetAddress_houseNumber(int minHouseNumber, int maxHouseNumber);
 
-    List<ShippingAddress> findByRecipientInfoNotEmpty();
+    List<ShippingAddress> findByStreetAddress_recipientInfoNotEmpty();
 
-    WorkAddress[] findByStreetNameAndFloorNumber(String streetName, int floorNumber);
+    WorkAddress[] findByStreetAddress_streetNameAndFloorNumber(String streetName, int floorNumber);
 
-    ShippingAddress[] findByStreetNameOrderByHouseNumber(String streetName);
+    ShippingAddress[] findByStreetAddress_streetNameOrderByStreetAddress_houseNumber(String streetName);
 
     @Query("SELECT o FROM WorkAddress o WHERE o.office=?1")
     WorkAddress forOffice(String officeNum);

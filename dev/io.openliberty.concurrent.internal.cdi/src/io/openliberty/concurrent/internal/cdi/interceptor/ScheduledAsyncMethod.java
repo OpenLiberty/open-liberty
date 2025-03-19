@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,12 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.cdi.interceptor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -28,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -90,13 +93,18 @@ class ScheduledAsyncMethod implements Callable<CompletableFuture<Object>>, Sched
     /**
      * This is invoked when it is time for the scheduled async method to run.
      */
-    @FFDCIgnore(CompletionException.class)
+    @FFDCIgnore(Throwable.class)
     @Override
     @Trivial
-    public CompletableFuture<Object> call() throws Exception {
+    public CompletableFuture<Object> call() {
+        final Method method = firstInvocation.getMethod();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "call " + firstInvocation.getMethod()); // TODO improve trace
+            Tr.entry(this, tc,
+                     "call " + method.getName() + '(' +
+                               Arrays.toString(method.getGenericParameterTypes()) + ')',
+                     method.getDeclaringClass().getName(),
+                     method.getGenericReturnType().getTypeName());
 
         if (future.isDone()) {
             if (trace && tc.isEntryEnabled())
@@ -105,14 +113,19 @@ class ScheduledAsyncMethod implements Callable<CompletableFuture<Object>>, Sched
         }
 
         // Detect late starting tasks:
-        long secondsLate = nextExecutionTime.until(ZonedDateTime.now(nextExecutionTime.getZone()), ChronoUnit.SECONDS);
+        long secondsLate = nextExecutionTime //
+                        .until(ZonedDateTime.now(nextExecutionTime.getZone()), //
+                               ChronoUnit.SECONDS);
         if (secondsLate > nextExecutionSkipIfLateBySeconds) {
             try {
                 long delayNanos = computeDelayNanos();
-                ConcurrencyExtensionMetadata.scheduledExecutor.schedule(this, delayNanos, TimeUnit.NANOSECONDS);
+                ConcurrencyExtensionMetadata.scheduledExecutor //
+                                .schedule(this, delayNanos, TimeUnit.NANOSECONDS);
                 if (trace && tc.isEntryEnabled())
-                    Tr.exit(this, tc, "call: skip because late by " + secondsLate + " seconds");
+                    Tr.exit(this, tc, "call: skip because late by " + secondsLate +
+                                      " seconds");
             } catch (Throwable x) {
+                FFDCFilter.processException(x, getClass().getName(), "128", this);
                 future.completeExceptionally(x);
                 if (trace && tc.isEntryEnabled())
                     Tr.exit(this, tc, "call", x);
@@ -129,30 +142,45 @@ class ScheduledAsyncMethod implements Callable<CompletableFuture<Object>>, Sched
 
             if (isFirstExecution) {
                 try {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "proceed with " + method.getName());
                     cs = interceptor.invoke(firstInvocation, future);
                 } finally {
                     isFirstExecution = false;
                 }
             } else {
                 // For subsequent executions, invoke the bean method again,
-                // but use a thread local to signal that it should run inline on the scheduled async method thread:
+                // but use a thread local to signal that it should run inline
+                // on the scheduled async method thread:
                 inlineExecutionFuture.set(future);
                 try {
-                    Method method = firstInvocation.getMethod();
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc,
+                                 "invoke " + method.getName() + " on bean instance",
+                                 firstInvocation.getParameters());
                     method.setAccessible(true);
-                    cs = (CompletionStage<?>) method.invoke(firstInvocation.getTarget(), firstInvocation.getParameters());
+                    cs = (CompletionStage<?>) method.invoke(firstInvocation.getTarget(),
+                                                            firstInvocation.getParameters());
                 } finally {
                     inlineExecutionFuture.remove();
                 }
             }
-            // TODO is exception chaining correct?
-        } catch (CompletionException x) {
-            Throwable cause = x.getCause();
-            failure = cause == null ? x : cause;
-        } catch (RuntimeException x) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "completion stage from invocation is " + cs);
+        } catch (Throwable x) {
+            boolean appException = false;
             failure = x;
-        } catch (Error x) {
-            failure = x;
+            if (failure instanceof InvocationTargetException) {
+                appException = true;
+                failure = failure.getCause();
+            }
+            if (failure instanceof CompletionException) {
+                appException = true;
+                if (failure.getCause() != null)
+                    failure = failure.getCause();
+            }
+            if (!appException)
+                FFDCFilter.processException(x, getClass().getName(), "183", this);
         } finally {
             try {
                 if (contextApplied != null)
@@ -168,21 +196,33 @@ class ScheduledAsyncMethod implements Callable<CompletableFuture<Object>>, Sched
         if (!future.isDone())
             if (cs == null)
                 try { // reschedule next execution
-                    ConcurrencyExtensionMetadata.scheduledExecutor.schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
+                    ConcurrencyExtensionMetadata.scheduledExecutor //
+                                    .schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
                 } catch (Exception x) {
                     future.completeExceptionally(x);
                 }
             else
-                // complete with the same result/exception as the completion stage that is returned by the async method
+                // complete with the same result/exception as the
+                // completion stage that is returned by the async method
                 cs.whenComplete((result, x) -> {
                     if (x == null)
                         future.complete(result);
                     else
-                        future.completeExceptionally(x); // TODO is exception chaining correct?
+                        future.completeExceptionally(x);
                 });
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "call", future);
+            if (future.isCompletedExceptionally()) {
+                if (failure == null)
+                    try {
+                        future.getNow(null);
+                    } catch (Throwable x) {
+                        failure = x;
+                    }
+                Tr.exit(this, tc, "call", new Object[] { future, failure });
+            } else {
+                Tr.exit(this, tc, "call", future);
+            }
         return future;
     }
 

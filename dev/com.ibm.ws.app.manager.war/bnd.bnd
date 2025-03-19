@@ -57,7 +57,8 @@ instrument.classesExcludes: com/ibm/ws/app/manager/war/internal/resources/*.clas
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.javaee.ddmodel;version=latest,\
-	com.ibm.ws.javaee.dd.common;version=latest
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.kernel.boot.core
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

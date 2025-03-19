@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,38 @@ jndi.not.installed=CWWKE0800W: Podj\u0119to pr\u00f3b\u0119 pobrania kontekstu p
 jndi.not.installed.explanation=Sk\u0142adnik JNDI udost\u0119pnia rejestr JNDI i powi\u0105zane programy narz\u0119dziowe.  Zazwyczaj jest to wymagane, je\u015bli aplikacja lub sk\u0142adnik wyszukuje pozycje w kontek\u015bcie JNDI.
 jndi.not.installed.useraction=Upewnij si\u0119, \u017ce implementacja JNDI zosta\u0142a udost\u0119pniona (np. przez skonfigurowanie sk\u0142adnika JNDI w konfiguracji dla tego serwera).
 
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKS0000=CWWKS0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKS0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.common.crypto
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Common Crypto Utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# CWWKS5900 - CWWKS5910 com.ibm.ws.common.crypto
+# -------------------------------------------------------------------------------------------------
+#Message prefix block: CWWKS5900 - CWWKS5910
+CRYPTO_INSECURE=CWWKS5900W: Element konfiguracji {0} okre\u015bla niezabezpieczony algorytm kryptograficzny {1}.  Zamiast tego warto rozwa\u017cy\u0107 u\u017cycie bezpiecznego algorytmu {2}.
+CRYPTO_INSECURE.explanation=Skonfigurowany algorytm nie jest ju\u017c uwa\u017cany za bezpieczny kryptograficznie.
+CRYPTO_INSECURE.useraction=U\u017cyj sugerowanego bezpiecznego algorytmu.
+
+CRYPTO_INSECURE_REPLACED=CWWKS5901W: Element konfiguracji {0} okre\u015bla niezabezpieczony algorytm kryptograficzny {1}.  Zamiast tego u\u017cywany jest bezpieczny algorytm {2}.
+CRYPTO_INSECURE_REPLACED.explanation=Niezabezpieczony algorytm kryptograficzny zosta\u0142 zast\u0105piony bezpiecznym algorytmem.
+CRYPTO_INSECURE_REPLACED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CRYPTO_INSECURE_PROVIDER=CWWKS5902W: Element konfiguracji {0} wykorzystuje niezabezpieczony algorytm kryptograficzny {1}. Rozwa\u017c zast\u0105pienie konfiguracji innym dostawc\u0105, je\u015bli bezpiecze\u0144stwo ma znaczenie.
+CRYPTO_INSECURE_PROVIDER.explanation=Algorytm ten nie jest ju\u017c uwa\u017cany za bezpieczny kryptograficznie.
+CRYPTO_INSECURE_PROVIDER.useraction=Rozwa\u017c zast\u0105pienie konfiguracji innym dostawc\u0105, je\u015bli bezpiecze\u0144stwo ma znaczenie.
+
+FIPS_140_3ENABLED=CWWKS5903I: FIPS 140-3 jest w\u0142\u0105czony i korzysta z dostawcy FIPS {0}
+FIPS_140_3ENABLED.explanation=FIPS 140-3 jest w\u0142\u0105czony.
+FIPS_140_3ENABLED.useraction=Ten komunikat ma\ncharakter wy\u0142\u0105cznie informacyjny. Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+FIPS_140_3ENABLED_ERROR=CWWKS5904E: W\u0142a\u015bciwo\u015bci FIPS 140-3 s\u0105 skonfigurowane, ale dostawca FIPS nie jest dost\u0119pny.
+FIPS_140_3ENABLED_ERROR.explanation=Nie mo\u017cna w\u0142\u0105czy\u0107 FIPS 140-3, poniewa\u017c dostawca FIPS nie jest dost\u0119pny. Upewnij si\u0119, \u017ce system operacyjny obs\u0142uguje FIPS, wersja Java jest zgodna z FIPS 140-3, a dostawca FIPS jest skonfigurowany jako najwy\u017cszy priorytet w pliku java.security.
+FIPS_140_3ENABLED_ERROR.useraction=Nale\u017cy u\u017cywa\u0107 wersji Java i platformy systemu operacyjnego zgodnych ze standardem FIPS 140-3.

@@ -23,3 +23,4 @@ Subsystem-Name: Jakarta Authentication 3.0
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-10.0

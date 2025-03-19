@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,9 +45,6 @@ public interface X9ObjectIdentifiers
                     = new DERObjectIdentifier(id_fieldType + ".2.3.3");
 
     static final String    id_ecSigType = ansi_X9_62 + ".4";
-
-    static final DERObjectIdentifier    ecdsa_with_SHA1
-                    = new DERObjectIdentifier(id_ecSigType + ".1");
 
     static final String    id_publicKeyType = ansi_X9_62 + ".2";
 
@@ -112,11 +109,5 @@ public interface X9ObjectIdentifiers
     // dsapublicnumber OBJECT IDENTIFIER ::= { iso(1) member-body(2)
     //            us(840) ansi-x957(10040) number-type(4) 1 }
     static final DERObjectIdentifier    id_dsa = new DERObjectIdentifier("1.2.840.10040.4.1");
-
-    /**
-     *   id-dsa-with-sha1 OBJECT IDENTIFIER ::=  { iso(1) member-body(2)
-     *         us(840) x9-57 (10040) x9cm(4) 3 }
-     */
-    public static final DERObjectIdentifier id_dsa_with_sha1 = new DERObjectIdentifier("1.2.840.10040.4.3");
 }
 

@@ -38,11 +38,9 @@ installLocation=ubicazione di installazione
 options=Opzioni
 
 
-licenseOptionDescription=Scegliendo l''opzione "Accetto" di seguito, si accettano i termini dell''accordo di licenza e i termini non IBM, se applicabile. \
-Se non si accettano i termini, selezionare "Non accetto".
+licenseOptionDescription=Scegliendo l''opzione "Accetto" di seguito, si accettano i termini dell''accordo di licenza e i termini non IBM, se applicabile. Se non si accettano i termini, selezionare "Non accetto".
 
-licenseeAcknowledges=Il licenziatario riconosce e concorda che tutto il codice (tra cui gli scaricamenti di funzioni o di altro software) scaricato dal licenziatario in relazione al presente documento (il "Codice") verr\u00e0 utilizzato con una versione con licenza del programma IBM WebSphere Application Server Liberty (il "Programma"). \
-Inoltre, il licenziatario riconosce e concorda che l''utilizzo del codice \u00e8 soggetto ai termini degli accordi di licenza che regolano l''uso del Programma (ad esempio, International Program License Agreement, International License Agreement per Programmi privi di garanzia, International License Agreement per la Valutazione dei Programmi, International License Agreement per il release anticipato dei Programmi), incluse, se applicabile, le Informazioni relative alla licenza.
+licenseeAcknowledges=Il licenziatario riconosce e concorda che tutto il codice (tra cui gli scaricamenti di funzioni o di altro software) scaricato dal licenziatario in relazione al presente documento (il "Codice") verr\u00e0 utilizzato con una versione con licenza del programma IBM WebSphere Application Server Liberty (il "Programma"). Inoltre, il licenziatario riconosce e concorda che l''utilizzo del codice \u00e8 soggetto ai termini degli accordi di licenza che regolano l''uso del Programma (ad esempio, International Program License Agreement, International License Agreement per Programmi privi di garanzia, International License Agreement per la Valutazione dei Programmi, International License Agreement per il release anticipato dei Programmi), incluse, se applicabile, le Informazioni relative alla licenza.
 
 extractPrompt=Directory di destinazione per i file di prodotto?
 extractSuccess=Tutti i file di prodotto sono stati correttamente estratti.
@@ -62,8 +60,7 @@ licensePrompt=Selezionare {0} Accetto o {1} Non accetto:
 # {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
 # {1} International Program License Agreement
 #
-licenseStatement=Prima di poter utilizzare, estrarre o installare {0}, \u00e8 necessario accettare i termini di {1} e le informazioni aggiuntive sulla licenza. \
-Leggere attentamente i seguenti accordi di licenza.
+licenseStatement=Prima di poter utilizzare, estrarre o installare {0}, \u00e8 necessario accettare i termini di {1} e le informazioni aggiuntive sulla licenza. Leggere attentamente i seguenti accordi di licenza.
 
 #
 # {0} --viewLicenseAgreement
@@ -240,8 +237,7 @@ unableToUpdateFingerprint=Impossibile aggiornare l''impronta digitale del serviz
 patchingNotApplicableNoChange=Nessun contenuto estratto perch\u00e9 non sono presenti funzioni corrispondenti nel runtime {0}
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
-patchingSkippedSupersededFix=La fix {0} \u00e8 superata da {1}, che \u00e8 gi\u00e0 installata. \n\
-L''installazione di {0} \u00e8 stata ignorata.
+patchingSkippedSupersededFix=La fix {0} \u00e8 superata da {1}, che \u00e8 gi\u00e0 installata. \nL''installazione di {0} \u00e8 stata ignorata.
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=Si \u00e8 verificato un errore durante la lettura delle informazioni sugli iFix per l''installazione corrente. Il messaggio di eccezione \u00e8: {0}.
@@ -284,10 +280,11 @@ LICENSE_invalidInstallType=Impossibile aggiornare la licenza perch\u00e9 l''inst
 
 # new messages for license upgrade and downgrade
 LICENSE_replace_invalidVersion=Impossibile applicare la licenza perch\u00e9 l''installazione del prodotto specificata \u00e8 alla versione {0}, ma la licenza pu\u00f2 essere applicata solo dalla versione {1}.
-LICENSE_replace_invalidInstallType=Impossibile applicare la licenza perch\u00e9 l''installazione del prodotto specificato \u00e8 stata effettuata utilizzando IBM Installation Manager. \
-Utilizzare IBM Installation Manager per aggiornare l''installazione.
+LICENSE_replace_invalidInstallType=Impossibile applicare la licenza perch\u00e9 l''installazione del prodotto specificato \u00e8 stata effettuata utilizzando IBM Installation Manager. Utilizzare IBM Installation Manager per aggiornare l''installazione.
 
-LICENSE_replace_invalidEditonFeatures=Le seguenti funzioni non si applicano all''edizione {0} e devono essere disinstallate prima dell''applicazione della licenza: {1}\n \n\
-Utilizzare il seguente comando per disinstallare queste funzioni prima di applicare la licenza per l''edizione {2}: {3}
+LICENSE_replace_invalidEditonFeatures=Le seguenti funzioni non si applicano all''edizione {0} e devono essere disinstallate prima dell''applicazione della licenza: {1}\n \nUtilizzare il seguente comando per disinstallare queste funzioni prima di applicare la licenza per l''edizione {2}: {3}
 
 LICENSE_downgrade_block_8557_low=Questa licenza pu\u00f2 essere applicata solo a {0} o superiore. L''installazione corrente \u00e8 a {1}. Scaricare e aggiornare l''ultimo livello e riapplicare la licenza.
+
+#message for applying interim fix
+INTERIM_FIX_replace_invalidVersion=La correzione provvisoria non pu\u00f2 essere applicata perch\u00e9 l''installazione del prodotto specificato \u00e8 alla versione {0}, ma la correzione provvisoria pu\u00f2 essere applicata solo alla versione {1}.

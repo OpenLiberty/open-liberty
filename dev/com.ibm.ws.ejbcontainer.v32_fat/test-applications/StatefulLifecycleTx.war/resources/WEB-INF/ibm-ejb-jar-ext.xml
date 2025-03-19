@@ -1,0 +1,105 @@
+<ejb-jar-ext
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd"
+  version="1.1"
+>
+  <session name="StatefulLifecycleTxDefaultBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+    <session name="StatefulLifecycleTxDefault2xBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+
+  <session name="StatefulLifecycleTxNotSupportedClassBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedClass2xBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedMethodBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedMethod2xBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+
+  <session name="StatefulLifecycleTxNotSupportedXMLStyle1Bean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedXMLStyle1MIBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedXMLStyle2Bean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedXMLStyle2AmbigBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedXMLStyle2MIBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedXMLStyle3Bean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedXMLStyle3AmbigBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNotSupportedXMLStyle3MIBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+
+  <session name="StatefulLifecycleTxRequiresNewClassBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewClass2xBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewMethodBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewMethod2xBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+
+  <session name="StatefulLifecycleTxRequiresNewXMLStyle1Bean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewXMLStyle1MIBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewXMLStyle2Bean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewXMLStyle2AmbigBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewXMLStyle2MIBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewXMLStyle3Bean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewXMLStyle3AmbigBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiresNewXMLStyle3MIBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+
+  <session name="StatefulLifecycleTxMandatoryClassIgnoredBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxNeverClassIgnoredBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiredClassIgnoredBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxRequiredClass2xIgnoredBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+  <session name="StatefulLifecycleTxSupportsClassIgnoredBean">
+    <bean-cache activation-policy="TRANSACTION" />
+  </session>
+</ejb-jar-ext>

@@ -50,6 +50,7 @@ instrument.classesExcludes: com/ibm/ws/kernel/feature/internal/resources/*.class
 	wlp.lib.extract;version=latest
 
 -testpath: \
+	biz.aQute.bnd:biz.aQute.bnd;strategy=exact;version=6.4.1,\
 	org.hamcrest:hamcrest-all;version=1.3, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \

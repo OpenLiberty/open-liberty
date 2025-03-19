@@ -28,4 +28,5 @@ tested.features: \
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.org.osgi.service.component,\
-    com.ibm.ws.session;version=latest
+    com.ibm.ws.session;version=latest,\
+    io.openliberty.com.google.gson;version=latest

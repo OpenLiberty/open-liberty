@@ -1258,9 +1258,9 @@ system.java.compiler.not.found=JSPG0304W: L''attributo JSP, useJDKCompiler, \u00
 system.java.compiler.not.found.explanation=Il contenitore JSP non \u00e8 riuscito a trovare il compilatore di sistema, ci\u00f2 generalmente indica che il file jar SDK Java, tools.jar, non \u00e8 stato trovato nel percorso di classe.
 system.java.compiler.not.found.useraction=Verificare che il file jar SDK Java, tools.jar, sia nel percorso di classe e che l'SDK Java supporti l'API compilatore Java. Per maggiori informazioni consultare la richiesta di specifica Java 199.
 
-jsp.feature.not.loaded.correctly=CWWJS0001E: La funzione Pagine (precedentemente JSP) non \u00e8 stata caricata con una versione accettabile.
-jsp.feature.not.loaded.correctly.explanation=La funzione \u00e8 stata caricata senza una versione accettabile. L'applicazione potrebbe comportarsi in modo diverso rispetto al previsto.
-jsp.feature.not.loaded.correctly.useraction=Verificare il file server.xml per l'esistenza di pi\u00f9 funzioni JSP (Pages). Il file non deve specificare pi\u00f9 di una funzione JSP (Pages).
+jsp.feature.not.loaded.correctly=CWWJS0001E: Il contenitore delle pagine (JSP) non \u00e8 stato caricato con una versione accettabile.
+jsp.feature.not.loaded.correctly.explanation=Il contenitore delle pagine (JSP) \u00e8 stato caricato senza una versione accettabile. L'applicazione potrebbe comportarsi in modo diverso rispetto al previsto.
+jsp.feature.not.loaded.correctly.useraction=Controlla il server.xml file per l'esistenza di funzionalit\u00e0 JSP (pi\u00f9 pagine). Il file non deve specificare pi\u00f9 di una funzione JSP (Pages).
 
 jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Valore non valido per l'attributo errorOnELNotFound
 jsp.error.page.invalid.erroronelnotfound.explanation=

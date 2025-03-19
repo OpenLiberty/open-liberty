@@ -26,8 +26,8 @@ IBM-API-Package: jakarta.faces; type="spec", \
  jakarta.faces.view; type="spec", \
  jakarta.faces.view.facelets; type="spec", \
  jakarta.faces.webapp; type="spec", \
- org.apache.myfaces.core.api.shared; type="spec", \
- org.apache.myfaces.core.api.shared.lang; type="spec", \
+ org.apache.myfaces.core.api.shared; type="third-party", \
+ org.apache.myfaces.core.api.shared.lang; type="third-party", \
  org.apache.myfaces.renderkit.html; type="third-party", \
  org.apache.myfaces.config.webparameters; type="third-party", \
  org.apache.myfaces.renderkit; type="third-party", \
@@ -50,7 +50,8 @@ Subsystem-Name: Jakarta Faces 4.1
  com.ibm.ws.cdi.interfaces.jakarta, \
  com.ibm.ws.cdi.2.0.jsf.jakarta, \
  io.openliberty.faces.4.1.thirdparty; location:="dev/api/third-party/"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0

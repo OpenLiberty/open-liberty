@@ -19,6 +19,8 @@ src: \
 
 fat.project: true
 
+tested.features: mpconfig-3.1, cdi-4.1, mpfaulttolerance-4.1, concurrent-3.1, servlet-6.1
+
 -buildpath: \
 	com.ibm.tx.jta;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\

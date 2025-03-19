@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.launch.internal;
 
+import static com.ibm.ws.kernel.LibertyProcess.CONDITION_LIBERTY_PROCESS_ACTIVE;
 import static io.openliberty.checkpoint.spi.CheckpointPhase.CHECKPOINT_PROPERTY;
 import static io.openliberty.checkpoint.spi.CheckpointPhase.CHECKPOINT_RESTORED_PROPERTY;
 import static io.openliberty.checkpoint.spi.CheckpointPhase.CONDITION_PROCESS_RUNNING_ID;
@@ -51,6 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
@@ -58,6 +60,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 import org.osgi.service.condition.Condition;
@@ -83,7 +86,6 @@ import com.ibm.ws.kernel.boot.internal.commands.ServerDumpUtil;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilderListener;
 import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
-import com.ibm.ws.kernel.boot.jmx.service.VirtualMachineHelper;
 import com.ibm.ws.kernel.launch.internal.Provisioner.InvalidBundleContextException;
 import com.ibm.ws.kernel.launch.service.ClientRunner;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
@@ -256,14 +258,6 @@ public class FrameworkManager {
                             throw new IllegalStateException(Tr.formatMessage(tc, "error.checkpoint.securitymanager.not.supported"));
                         }
                     });
-                    // Initialize the VirtualMachineHelper here.  HotSpot Java's read the sun.jvmstat.monitor.local system property during class initialization
-                    // on Java 17 when doing Java dump or attaching for the localConnector-1.0 feature.
-                    // The permission cannot be set in security policy due to it being during class initialization.
-                    try {
-                        VirtualMachineHelper.getVirtualMachine();
-                    } catch (RuntimeException re) {
-                        // ignore the exception.
-                    }
                     if (j2secNoRethrow == null || j2secNoRethrow.equals("false")) {
                         try {
                             AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Void>() {
@@ -664,6 +658,12 @@ public class FrameworkManager {
 
                 }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
 
+                final ServiceRegistration<Condition> beforeCheckpointReg = //
+                                fwkContext.registerService(Condition.class,
+                                                           Condition.INSTANCE,
+                                                           FrameworkUtil.asDictionary(Collections.singletonMap(Condition.CONDITION_ID,
+                                                                                                               CheckpointPhase.CONDITION_BEFORE_CHECKPOINT_ID)));
+
                 Hashtable<String, Object> restoredHookProps = new Hashtable<>();
                 restoredHookProps.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
                 restoredHookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
@@ -672,6 +672,7 @@ public class FrameworkManager {
                     public void prepare() {
                         // kick equinox to force a save before checkpoint single-threaded mode
                         saveEquinoxStateNow(fwkContext);
+                        beforeCheckpointReg.unregister();
                     }
 
                     @Override
@@ -688,6 +689,7 @@ public class FrameworkManager {
                 // not an active checkpoint launch; register the running condition now
                 registerRunningCondition(fwk);
             }
+            registerLibertyActiveCondition(fwk);
             return fwk;
         } catch (BundleException ex) {
             throw ex;
@@ -731,6 +733,25 @@ public class FrameworkManager {
         BundleContext bc = framework.getBundleContext();
         bc.registerService(Condition.class, Condition.INSTANCE,
                            asDictionary(singletonMap(CONDITION_ID, CONDITION_PROCESS_RUNNING_ID)));
+    }
+
+    private static void registerLibertyActiveCondition(Framework framework) {
+        BundleContext bc = framework.getBundleContext();
+
+        final ServiceRegistration<Condition> reg = bc.registerService(Condition.class, Condition.INSTANCE,
+                                                                      asDictionary(singletonMap(CONDITION_ID, CONDITION_LIBERTY_PROCESS_ACTIVE)));
+        // unregister when server is stopping
+        bc.addBundleListener(new SynchronousBundleListener() {
+            @Override
+            public void bundleChanged(BundleEvent event) {
+                Bundle b = event.getBundle();
+                if (b.getBundleId() == 0) {
+                    if (b.getState() == Bundle.STOPPING) {
+                        reg.unregister();
+                    }
+                }
+            }
+        });
     }
 
     private static final String MANAGER_DIR_NAME = ".manager";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -52,6 +53,7 @@ public class WsdlLocationHttpsTest {
     @BeforeClass
     public static void beforeAllTests() throws Exception {
 
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         ShrinkHelper.defaultDropinApp(server, "WsdlLocationHttpsClient", "com.ibm.was.wssample.sei.echo",
                                       "com.ibm.was.wssample.servlet");
 

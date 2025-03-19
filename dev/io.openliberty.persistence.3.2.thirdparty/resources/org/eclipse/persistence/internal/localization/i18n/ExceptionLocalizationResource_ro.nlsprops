@@ -47,6 +47,8 @@ NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Parametrul nul a fostr transmis la "setPa
 
 PARAMETER_NILL_NOT_FOUND=Parametrul nul a fost transmis la getParameterValue()
 
+RIGHT_JOIN_NOT_SUPPORTED=Dreptul de aderare nu este acceptat
+
 add_attribute_key_was_null=C\u00e2nd se specific\u0103 un AttributeGroup pentru o subclas\u0103 a unui tip de atribut, parametrul tip nu trebuie s\u0103 fie nul
 
 argument_collection_was_null=Colec\u0163ia de argumente era null
@@ -99,9 +101,19 @@ cant_persist_detatched_object=Nu se poate PERSISTA obiectul deta\u015fat, cheie 
 
 cant_refresh_not_managed_object=Nu se poate re\u00eemprosp\u0103ta obiectul negestionat: {0}.
 
+configured_pu_name_conflict=Nu se poate crea o unitate de persisten\u021b\u0103 configurat cu numele de {0}. Acest nume a fost g\u0103sit \u00een unit\u0103\u021bi de persisten\u021b\u0103 personalizate.
+
 create_insertion_failed=A e\u015fuat crearea inser\u0163iei.
 
 criteria_no_constructor_found=A ap\u0103rut o excep\u0163ie la inspectarea clasei {0} pentru un constructor ce utilizeaz\u0103 ca argumente tipuri de criteriu de selec\u0163ie.  Dac\u0103 nu s-a inten\u0163ionat ca aceast\u0103 CriteriaQuery s\u0103 fie o interogare de constructor, verifica\u0163i c\u0103 selec\u0163ia se potrive\u015fte cu tipul de retur.
+
+custom_pu_create_error=Nu se poate crea o unitate de persisten\u021b\u0103 personalizat\u0103 cu numele de {0}.
+
+custom_pu_create_error_no_caller=Nu se poate crea unitate de persisten\u021b\u0103 personalizat\u0103 cu numele {0}0}. Nici o metod\u0103 apelantului nu a fost g\u0103sit \u00een stiv\u0103.
+
+custom_pu_create_error_no_caller_class_url=Nu se poate crea unitate de persisten\u021b\u0103 personalizat\u0103 cu numele {0}0}. Nu s-a g\u0103sit nicio adres\u0103 {1} apelare.
+
+custom_pu_name_conflict=Nu se poate crea o unitate de persisten\u021b\u0103 personalizat\u0103 cu numele de {0}. Acest nume a fost g\u0103sit \u00een configura\u021bia xml.
 
 directory_not_exist=Directorul {0} nu exist\u0103.
 
@@ -124,6 +136,8 @@ ejb30-wrong-type-for-query-hint=Interogarea {0}, indica\u0163ia de interogare {1
 entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Conflict de propriet\u0103\u021bi EntityManager: jakarta.persistence.driver \u0219i/sau jakarta.persistence.url necesit\u0103 DefaultConnector, dar unitatea de persisten\u021b\u0103 utilizeaz\u0103 un controler de tranzac\u021bii extern, prin urmare, JNDIConnector este necesar.
 
 entity_manager_properties_conflict_default_connector_vs_jndi_connector=Conflict de propriet\u0103\u021bi EntityManager: jakarta.persistence.driver \u0219i/sau jakarta.persistence.url necesit\u0103 DefaultConnector, dar jakarta.persistence.jtaDataSource \u0219i/sau jakarta.persistence.nonjtaDataSource necesit\u0103 JNDIConnector.
+
+entity_manager_with_connection_failed=Codul de utilizator a e\u0219uat cu o eroare: {0}
 
 entity_no_longer_exists_in_db=Entitatea nu mai exist\u0103 \u00een baza de date: {0}.
 
@@ -148,6 +162,8 @@ error_unmarshalling_return=eroare la anularea trierii returului
 file_exists=Fi\u015fierul {0} exist\u0103 deja.
 
 file_not_exist=Fi\u015fierul {0} nu exist\u0103.
+
+find_option_class_unknown=The FindOption punere \u00een aplicare a {0} este acceptat\u0103
 
 finder_query_failed=Interogarea c\u0103ut\u0103torului a e\u015fuat:
 
@@ -207,9 +223,9 @@ jmx_enabled_platform_mbean_runtime_exception=A ap\u0103rut o excep\u0163ie la ap
 
 join_trans_called_on_entity_trans=joinTransaction a fost apelat pe un resource-local EntityManager care nu se poate \u00eenregistra pentru o tranzac\u0163ie JTA.
 
-jpa21-ddl-create-script-target-not-specified=Atunci c\u00e2nd se genereaz\u0103 DDL la script-uri, trebuie specificat\u0103 o \u021bint\u0103 de creare script folosind proprietatea  [jakarta.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=Atunci c\u00e2nd genereaz\u0103 DDL la script-uri, o \u021bint\u0103 de script de creare trebuie s\u0103 fie specificate folosind [{0}proprietate.
 
-jpa21-ddl-drop-script-target-not-specified=Atunci c\u00e2nd se genereaz\u0103 DDL la script-uri, trebuie s\u0103 fie specificat\u0103 o \u021bint\u0103 de abandonare script folosind proprietatea [jakarta.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=Atunci c\u00e2nd genereaz\u0103 DDL la script-uri, o \u021bint\u0103 de script drop trebuie s\u0103 fie specificate folosind [{0}proprietate.
 
 jpa21-ddl-invalid-source-script-type=Scriptul surs\u0103 furnizat {0} este un tip invalid {0}. Tipurile de script surs\u0103 valide sunt: java.io.Reader sau un \u015fir care desemneaz\u0103 un URL de fi\u015fier.
 
@@ -253,6 +269,12 @@ jpa_helper_invalid_read_all_query=Interogarea de tipul {0} nu este interogare Ec
 
 jpa_helper_invalid_report_query=Interogarea de tipul {0} nu este o interogare EclipseLink raport \u015fi, prin urmare, nu a putut fi convertit\u0103.
 
+jpa_non_persistent_class=Clasa [{0}este o clas\u0103 persistent\u0103.
+
+jpa_persistence_util_get_version_no_version_in_class=PersistenceUtil.getVersion(entitate) a fost numit cu [{0}] obiect, care nu are nici un atribut versiune.
+
+jpa_persistence_util_get_version_non_persistent_class=PersistenceUtil.getVersion(entitate) a fost numit cu [{0}] obiect, care nu este un obiect persistent.
+
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) s-a apelat cu obiectul [{0}] care nu este un obiect persistent.
 
 json_ora21c_jsonvalue_to_oraclevalue=Nu s-a putut converti JsonValue la OracleJsonValue.
@@ -268,6 +290,8 @@ json_pgsql_pgobject_conversion=A e\u0219uat conversia PGobject pentru baza de da
 json_pgsql_unknown_type=A fost returnat un tip JSON necunoscut din baza de date.
 
 lock_called_without_version_locking=Apelurile la entityManager.lock(Object entity, LockModeType lockMode) necesit\u0103 activarea Bloc\u0103rii versiunii.
+
+lock_option_class_unknown=LockOption clasa de implementare {0} nu este acceptat\u0103
 
 managed_component_not_found=Un atribut: {1} listat \u00een EntityGraph: {0} referen\u0163iaz\u0103 un subgrafic numit: {2} ce nu poate fi g\u0103sit.
 
@@ -320,6 +344,8 @@ no_entities_retrieved_for_get_reference=Nu s-a g\u0103sit Entitatea pentru id-ul
 no_entities_retrieved_for_get_single_result=getSingleResult() nu a extras nicio entitate.
 
 no_entity_graph_of_name=Nu exist\u0103 niciun EntityGraph cu numele {0}
+
+no_key_in_entity=Nu se poate ad\u0103uga al\u0103tura de la {0} la {1} deoarece clasa \u021bint\u0103 lipse\u0219te un atribut de tip surs\u0103
 
 not_an_entity=Obiect: {0} nu este un tip de Entitate cunoscut.
 
@@ -375,9 +401,23 @@ position_param_not_found=Nu a fost niciun parametru la pozi\u0163ia: {0}.
 
 pu_configured_for_resource_local=Nu se poate crea un EntityManager cu SynchronizationType deoarece PersistenceUnit este configurat cu tranzac\u0163ii locale resurs\u0103.
 
+refresh_option_class_unknown=The RefreshOption punere \u00een aplicare {0} este acceptat\u0103
+
 remove_deletion_failed=\u015etergerea prin \u00eenl\u0103turare a e\u015fuat:
 
 rollback_because_of_rollback_only=Tranzac\u0163ia "s-a derulat \u00eenapoi" pentru c\u0103 tranzac\u0163ia a fost setat\u0103 la RollbackOnly.
+
+schema_validation=Validarea schemei
+
+schema_validation_failed=Validarea schemei a e\u0219uat
+
+schema_validation_missing_table=The {0} mas\u0103 nu a fost g\u0103sit \u00een schema
+
+schema_validation_table_different_columns={0} 0} are coloane diferite \u00een schema
+
+schema_validation_table_missing_columns={0} 0} are coloane lips\u0103 \u00een schema
+
+schema_validation_table_surplus_columns={0} surplusul de coloane \u00een schema
 
 sdo_helper_invalid_changesummary=ChangeSummary [{0}] furnizat nu este un EclipseLink SDOChangeSummary \u015fi, prin urmare, nu a putut fi convertit.
 
@@ -434,6 +474,10 @@ sdo_helper_invalid_xsdhelper=XSDHelper [{0}] furnizat nu este un EclipseLink SDO
 subclass_sought_not_a_managed_type=Tipul de subgrafic c\u0103utat: {0} nu este un tip gestionat pentru acest atribut: {1}.
 
 too_many_results_for_get_single_result=S-a returnat mai mult de un rezultat din Query.getSingleResult()
+
+truncate_tables_failed=Trunchierea tabelelor a e\u0219uat
+
+typed_query_reference_is_null=Referirea la o interogare pe nume este nul\u0103
 
 unable_to_find_named_query=NamedQuery cu numele: {0} nu s-a g\u0103sit.
 

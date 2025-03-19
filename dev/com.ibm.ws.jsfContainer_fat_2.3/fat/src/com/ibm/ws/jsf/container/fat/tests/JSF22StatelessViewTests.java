@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -265,14 +265,14 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Since the view here is stateless, the ViewScoped bean should be re-initialized on every submit.
      */
     // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(SkipForRepeat.EE10_OR_LATER_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_Transient.xhtml");
     }
 
     // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(SkipForRepeat.EE10_OR_LATER_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient_MyFaces() throws Exception {
         testViewScopeManagedBeanTransient(MYFACES_APP, "/JSF22StatelessView_ViewScope_Transient.xhtml");
@@ -296,7 +296,7 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Checks the behavior of a ViewScoped CDI bean, when embedded in a stateless view.
      * Since the view here is stateless, the ViewScoped bean should be re-initialized on every submit.
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Bug in Mojarra?
+    @SkipForRepeat(SkipForRepeat.EE10_OR_LATER_FEATURES) // Bug in Mojarra?
     @Test
     public void JSF22StatelessView_TestViewScopeCDIBeanTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_CDI_Transient.xhtml");

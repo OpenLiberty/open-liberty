@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -446,9 +447,19 @@ public class SocketFactory extends SocketFactoryHelper {
         SSLParameters params = socket.getSSLParameters();
 
         // Check to see if hostname verification needs to be enabled
-        boolean verifyHostname = Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false"));
+        boolean verifyHostname = Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true"));
         if (verifyHostname) {
-            params.setEndpointIdentificationAlgorithm("HTTPS");
+            String skipHostList = sslProps.getProperty(Constants.SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS);
+            if (!Constants.isSkipHostnameVerificationForHosts(host, skipHostList)) {
+                params.setEndpointIdentificationAlgorithm("HTTPS");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Hostname verification is enabled");
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Hostname verification is disabled");
+                }
+            }
         }
 
         params.setCipherSuites(iorSuites);
@@ -547,5 +558,4 @@ public class SocketFactory extends SocketFactoryHelper {
         }
         return addresses.toArray(new TransportAddress[addresses.size()]);
     }
-
 }

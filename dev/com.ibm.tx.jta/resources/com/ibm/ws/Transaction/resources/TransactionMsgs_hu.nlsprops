@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -875,7 +875,7 @@ WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Jav\u00edtsa ki a napl\u00f3 \u00e9r
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasult, mert a tranzakci\u00f3szolg\u00e1ltat\u00e1s nem tud tranzakci\u00f3t ind\u00edtani.
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=A Liberty nem t\u00e1mogatja az alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n tranzakci\u00f3t kezd\u0151 vagy ig\u00e9nyl\u0151 alkalmaz\u00e1sokat egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sekor.
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Haszn\u00e1lja a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont=telep\u00edt\u00e9skor lehet\u0151s\u00e9get, vagy m\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy az indul\u00e1sa ut\u00e1n kezdjen tranzakci\u00f3kat.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=\u00c1ll\u00edtsa be az ellen\u0151rz\u00e9si pontot, miel\u0151tt az alkalmaz\u00e1s elindul a beforeAppInd\u00edt\u00f3 kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont be\u00e1ll\u00edt\u00e1sa lehet\u0151s\u00e9ggel, vagy m\u00f3dos\u00edtsa az alkalmaz\u00e1st a tranzakci\u00f3k elkezd\u00e9se ut\u00e1n.
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Egy alkalmaz\u00e1s a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s sor\u00e1n tranzakci\u00f3t ind\u00edtott vagy ig\u00e9nyelt. A tranzakci\u00f3 l\u00e9trehoz\u00e1sakor a sz\u00e1l k\u00f6vetkez\u0151 verem-nyomk\u00f6vet\u00e9se ker\u00fclt r\u00f6gz\u00edt\u00e9sre: {0}

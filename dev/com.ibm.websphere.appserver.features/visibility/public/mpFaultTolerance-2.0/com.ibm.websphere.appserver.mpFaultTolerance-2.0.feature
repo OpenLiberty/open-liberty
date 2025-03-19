@@ -23,3 +23,4 @@ Subsystem-Name: MicroProfile Fault Tolerance 2.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-2.2,microProfile-3.0,microProfile-3.2

@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: Sch\u00e9ma bylo vytvo\u0159eno v
 schemagen.info.schema.file.created.explanation=P\u0159\u00edkaz byl \u00fasp\u011b\u0161n\u011b dokon\u010den.
 schemagen.info.schema.file.created.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
+error.config.root.deleted=CWWKG0110E: Byla zji\u0161t\u011bna aktualizace konfigurace, ale soubor server.xml neexistuje. Nebyly provedeny \u017e\u00e1dn\u00e9 aktualizace konfigurace.
+error.config.root.deleted.explanation=Soubor server.xml byl odstran\u011bn. Aby nedo\u0161lo k naru\u0161en\u00ed b\u011bhu aplikac\u00ed, neprov\u00e1d\u011bj\u00ed se \u017e\u00e1dn\u00e9 zm\u011bny konfigurace.
+error.config.root.deleted.useraction=P\u0159idejte soubor server.xml zp\u011bt na server.
+
 # Non-TR message
 error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

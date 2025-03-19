@@ -45,20 +45,10 @@ Include-Resource:\
   com.ibm.ws.concurrent.internal.ContextServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl,\
-  com.ibm.ws.concurrent.internal.ManagedThreadFactoryService
+  com.ibm.ws.concurrent.internal.ManagedThreadFactoryService,\
+  com.ibm.ws.concurrent.internal.ThreadGroupTracker
 
 -dsannotations-inherit: true
-
-Service-Component:\
-  com.ibm.ws.concurrent.tracker;\
-      provide:='\
-        com.ibm.ws.container.service.metadata.ComponentMetaDataListener,\
-        com.ibm.ws.concurrent.internal.ThreadGroupTracker';\
-    implementation:=com.ibm.ws.concurrent.internal.ThreadGroupTracker;\
-    configuration-policy:=ignore;\
-    immediate:=true;\
-    deferrableScheduledExecutor='java.util.concurrent.ScheduledExecutorService(deferrable=true)';\
-    metadataIdentifierService=com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService
 
 instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 

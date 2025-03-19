@@ -35,3 +35,5 @@ Subsystem-Name: Jakarta Batch 2.1
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
+WLP-Platform: jakartaee-10.0,jakartaee-11.0
+WLP-InstantOn-Enabled: true

@@ -155,7 +155,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
         // we created and saved a jwt for our test tooling token endpoint to return to the Social Client - let's invoke
         // the protected resource.  The Social Client will get the auth token, but, instead of getting a jwt from the OP, it will use a
         // token endpoint pointing to the test tooling app that will return the jwt previously obtained using a builder
-        genericSocial(_testName, wc, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, wc, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -235,7 +235,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
     }
 
     public List<validationData> getMissingDecryptionSettingsExpectations() throws Exception {
-        List<validationData> expectations = vData.addSuccessStatusCodesForActions(perform_social_login, inovke_social_login_actions);
+        List<validationData> expectations = vData.addSuccessStatusCodesForActions(perform_social_login, invoke_social_login_actions);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the Social Client logs.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS1536E_TOKEN_IS_NOT_A_JWS + ".*");
         return expectations;
     }

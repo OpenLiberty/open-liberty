@@ -50,8 +50,8 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
     //------------------------------------------------------------------------------
     @Override
     @Trivial
-    public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException, LogIncompatibleException {
-        _recoveryLog.openLog();
+    public void openLog(boolean localRecovery) throws LogCorruptedException, LogAllocationException, InternalLogException, LogIncompatibleException, PeerLogsMissingException {
+        _recoveryLog.openLog(localRecovery);
     }
 
     //------------------------------------------------------------------------------

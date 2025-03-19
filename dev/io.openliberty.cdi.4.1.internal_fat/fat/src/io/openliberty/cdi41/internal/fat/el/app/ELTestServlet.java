@@ -24,7 +24,6 @@ import jakarta.el.ExpressionFactory;
 import jakarta.el.StandardELContext;
 import jakarta.el.ValueExpression;
 import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,19 +32,16 @@ import jakarta.servlet.annotation.WebServlet;
 @WebServlet("/elTest")
 public class ELTestServlet extends FATServlet {
 
-    // TODO: direct injection of ELAwareBeanManager not yet implemented in weld
     @Inject
-    private BeanManager beanManager;
+    private ELAwareBeanManager beanManager;
 
     @Test
     public void testElAwareBeanManager() {
-        ELAwareBeanManager elBeanManager = (ELAwareBeanManager) beanManager;
-
         // Check it was injected
-        assertNotNull("elBeanManager", elBeanManager);
+        assertNotNull("elBeanManager", beanManager);
 
         // Check we can call it
-        ELResolver elResolver = elBeanManager.getELResolver();
+        ELResolver elResolver = beanManager.getELResolver();
         assertNotNull("elResolver", elResolver);
 
         // Attempt to use the resolver
@@ -58,7 +54,7 @@ public class ELTestServlet extends FATServlet {
         assertEquals("Result: hello", value);
 
         // Use it as a regular BeanManager (e.g. look up a bean)
-        Set<Bean<?>> beans = elBeanManager.getBeans(TestBean.class);
+        Set<Bean<?>> beans = beanManager.getBeans(TestBean.class);
         assertThat(beans, hasSize(1));
         Bean<?> bean = beans.stream().findFirst().get();
         assertEquals("testBean", bean.getName());

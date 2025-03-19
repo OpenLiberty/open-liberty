@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,16 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.rest.handler.config.fat.audit.ConfigRESTHandlerAuditTest;
+import com.ibm.ws.rest.handler.config.fat.audit.ConfigRestHandlerAuditFeatureTest;
+
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -27,16 +29,15 @@ import componenttest.topology.utils.HttpUtils;
                 ConfigRESTHandlerJCATest.class,
                 ConfigRESTHandlerJMSTest.class,
                 ConfigRESTHandlerTest.class,
-                ConfigOpenApiSchemaTest.class
+                ConfigOpenApiSchemaTest.class,
+                ConfigRESTHandlerAuditTest.class,
+                ConfigRestHandlerAuditFeatureTest.class
 })
 
 public class FATSuite {
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        HttpUtils.trustAllCertificates();
-        HttpUtils.trustAllHostnames();
-        HttpUtils.setDefaultAuth("adminuser", "adminpwd");
+    public static HttpsRequest createHttpsRequestWithAdminUser(LibertyServer server, String path) {
+        return new HttpsRequest(server, path).allowInsecure().basicAuth("adminuser", "adminpwd");
     }
 
     public static void setupServerSideAnnotations(LibertyServer server) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2023 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
+import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
 import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.ws.threading.ThreadQuiesce;
@@ -74,6 +75,23 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      * maximize throughput.
      */
     ThreadPoolController threadPoolController = null;
+
+    /**
+     * Receive notification when server start completes
+     */
+
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+    protected synchronized void setServerStarted(ServerStarted serverStarted) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, ": server start complete.");
+        }
+        threadPoolController.startupCompleted();
+    }
+
+    @Trivial
+    protected void unsetServerStarted(ServerStarted serverStarted) {
+        // No action required.
+    }
 
     /**
      * The thread pool name.
@@ -253,7 +271,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         }
         threadPool = new ThreadPoolExecutor(coreThreads, maxThreads, 0, TimeUnit.MILLISECONDS, workQueue, threadFactory != null ? threadFactory : new ThreadFactoryImpl(poolName, threadGroupName), rejectedExecutionHandler);
 
-        threadPoolController = new ThreadPoolController(this, threadPool);
+        threadPoolController = new ThreadPoolController(threadPool);
 
         if (oldPool != null) {
             softShutdown(oldPool);

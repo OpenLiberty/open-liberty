@@ -16,6 +16,7 @@
     <feature>componenttest-1.0</feature>
     <feature>mpOpenAPI-1.0</feature>
     <feature>jaxrs-2.0</feature> <!-- EE feature to ensure we get the expected EE version -->
+    <feature>mpConfig-1.2</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

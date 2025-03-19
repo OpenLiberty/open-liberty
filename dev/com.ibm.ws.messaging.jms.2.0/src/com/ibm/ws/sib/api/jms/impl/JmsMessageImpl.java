@@ -1,15 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2012, 2015, 2020 IBM Corporation and others.
+/* =============================================================================
+ * Copyright (c) 2012,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * =============================================================================
+ */
 package com.ibm.ws.sib.api.jms.impl;
 
 import java.io.IOException;
@@ -1987,34 +1988,29 @@ public class JmsMessageImpl implements Message, JmsInternalConstants, Serializab
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(tc, "body type: " + bt);
 
-        int bodyTypeInt = -2; // This is not one of the JmsBodyType constants.
-        if (bt != null) {
-            bodyTypeInt = bt.toInt();
-        }
+        switch (bt) {
 
-        switch (bodyTypeInt) {
-
-            case JmsBodyType.NULL_INT:
+            case NULL:
                 jmsMsg = new JmsMessageImpl(newMsg, newSess);
                 break;
 
-            case JmsBodyType.TEXT_INT:
+            case TEXT:
                 jmsMsg = new JmsTextMessageImpl((JsJmsTextMessage) newMsg, newSess);
                 break;
 
-            case JmsBodyType.MAP_INT:
+            case MAP:
                 jmsMsg = new JmsMapMessageImpl((JsJmsMapMessage) newMsg, newSess);
                 break;
 
-            case JmsBodyType.OBJECT_INT:
+            case OBJECT:
                 jmsMsg = new JmsObjectMessageImpl((JsJmsObjectMessage) newMsg, newSess);
                 break;
 
-            case JmsBodyType.BYTES_INT:
+            case BYTES:
                 jmsMsg = new JmsBytesMessageImpl((JsJmsBytesMessage) newMsg, newSess);
                 break;
 
-            case JmsBodyType.STREAM_INT:
+            case STREAM:
                 jmsMsg = new JmsStreamMessageImpl((JsJmsStreamMessage) newMsg, newSess);
                 break;
 
@@ -2736,63 +2732,60 @@ public class JmsMessageImpl implements Message, JmsInternalConstants, Serializab
 
         T returnObj = null;
         try {
-            int bodyType = msg.getBodyType().toInt();
-            Object _messageObject = null;
-            switch (bodyType) {
-                case JmsBodyType.TEXT_INT:
-                    try {
+            final Object _messageObject;
+            switch (msg.getBodyType()) {
+            case TEXT:
+                try {
                         _messageObject = ((JsJmsTextMessage) msg).getText();
-                    } catch (UnsupportedEncodingException exp) {
+                } catch (UnsupportedEncodingException exp) {
                         throw getJMSException(paramClass, exp);
-                    }
-                    break;
+                }
+                break;
 
-                case JmsBodyType.OBJECT_INT:
-                    try {
+            case OBJECT:
+                try {
                         _messageObject = ((JsJmsObjectMessage) msg).getRealObject();
 
-                        //As per spec: if the message is an ObjectMessage and object deserialization fails 
+                        //As per spec: if the message is an ObjectMessage and object deserialization fails
                         //then throw MessageFormatException.
                         if (_messageObject != null && !Serializable.class.isAssignableFrom(paramClass)) {
-                            throw getMessageFormatException(paramClass);
+                                throw getMessageFormatException(paramClass);
                         }
 
-                    } catch (ClassNotFoundException cnfe) {
+                } catch (ClassNotFoundException cnfe) {
                         throw getJMSException(paramClass, cnfe);
-                    } catch (IOException ioe) {
+                } catch (IOException ioe) {
                         throw getJMSException(paramClass, ioe);
-                    }
-                    break;
+                }
+                break;
 
-                case JmsBodyType.MAP_INT:
-                    try {
+            case MAP:
+                try {
                         _messageObject = getMapMessage();
 
-                        //As per spec: If the message is a MapMessage then this parameter must be set to java.util.Map.class (or java.lang.Object.class). 
+                        //As per spec: If the message is a MapMessage then this parameter must be set to java.util.Map.class (or java.lang.Object.class).
                         //then throw MessageFormatException.
                         if (_messageObject != null && !paramClass.isAssignableFrom(Map.class)) {
-                            throw getMessageFormatException(paramClass);
+                                throw getMessageFormatException(paramClass);
                         }
-                    } catch (UnsupportedEncodingException uee) {
+                } catch (UnsupportedEncodingException uee) {
                         throw getJMSException(paramClass, uee);
-                    }
-                    break;
+                }
+                break;
 
-                case JmsBodyType.BYTES_INT:
-                    byte[] byteMsg = ((JsJmsBytesMessage) msg).getBytes();
-                    _messageObject = (byteMsg != null && byteMsg.length > 0) ? byteMsg : null;
+            case BYTES:
+                byte[] byteMsg = ((JsJmsBytesMessage) msg).getBytes();
+                _messageObject = (byteMsg != null && byteMsg.length > 0) ? byteMsg : null;
 
-                    if (_messageObject != null && !paramClass.isAssignableFrom(byte[].class)) {
+                if (_messageObject != null && !paramClass.isAssignableFrom(byte[].class)) {
                         throw getMessageFormatException(paramClass);
-                    }
-                    break;
-
-                case JmsBodyType.STREAM_INT:
-                    throw getMessageFormatException(paramClass);
-
-                case JmsBodyType.NULL_INT:
-                    _messageObject = null;
-                    break;
+                }
+                break;
+            case STREAM:
+                throw getMessageFormatException(paramClass);
+            default:
+                _messageObject = null;
+                break;
             }
             if (_messageObject != null) {
                 if (paramClass.isAssignableFrom(_messageObject.getClass())) {
@@ -2894,35 +2887,37 @@ public class JmsMessageImpl implements Message, JmsInternalConstants, Serializab
         if (paramClass == null)
             return false;
         try {
-            // get the body type
-            int bodyType = msg.getBodyType().toInt();
-
-            if (bodyType == JmsBodyType.TEXT_INT) {
+            switch(msg.getBodyType()) {
+            case TEXT:
                 decision = String.class.isAssignableFrom(paramClass);
-            } else if (bodyType == JmsBodyType.OBJECT_INT) {
+                break;
+            case OBJECT:
                 decision = Serializable.class.isAssignableFrom(paramClass);
 
                 // try if the object can be deserialized, if not then return false
                 if (decision) {
                     try {
                         Object object = ((JsJmsObjectMessage) msg).getRealObject();
-                        decision = (paramClass.isAssignableFrom(object.getClass()));
+                        decision = paramClass.isAssignableFrom(object.getClass());
                     } catch (IOException jmse) {
                         return false;
                     } catch (ClassNotFoundException e) {
                         return false;
                     }
                 }
-            } else if (bodyType == JmsBodyType.MAP_INT) {
+                break;
+            case MAP:
                 decision = Map.class.isAssignableFrom(paramClass);
-            } else if (bodyType == JmsBodyType.BYTES_INT) {
+                break;
+            case BYTES:
                 decision = byte[].class.isAssignableFrom(paramClass);
-            } else if (bodyType == JmsBodyType.STREAM_INT) {
+                break;
+            case STREAM:
+            case NULL:
+            default: // return false if message does not have a body
                 decision = false;
-            } else if (bodyType == JmsBodyType.NULL_INT) { // return false if message does not have a body
-                decision = false;
+                break;
             }
-
         } finally {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.exit(tc, "isBodyAssignableTo", new Object[] { decision });

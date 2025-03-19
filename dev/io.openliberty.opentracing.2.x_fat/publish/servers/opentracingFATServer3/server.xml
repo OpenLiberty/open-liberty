@@ -16,4 +16,5 @@
         traceSpecification="*=info:io.openliberty.opentracing*=all:io.openliberty.microprofile.opentracing*=all"
         maxFileSize="100" maxFiles="1" />
 
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 </server>

@@ -28,6 +28,7 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Update;
+import jakarta.persistence.EntityManager;
 
 /**
  * Experiments with auto-generated keys.
@@ -55,6 +56,8 @@ public interface Orders extends CrudRepository<PurchaseOrder, UUID> {
     @Delete
     void deleteAll();
 
+    EntityManager entityMgr();
+
     @OrderBy("id")
     Optional<PurchaseOrder> findFirstByPurchasedBy(String purchaser);
 
@@ -74,4 +77,16 @@ public interface Orders extends CrudRepository<PurchaseOrder, UUID> {
 
     @Update
     PurchaseOrder modifyOne(PurchaseOrder orders);
+
+    @Query("SELECT total WHERE purchasedBy LIKE ?1")
+    @OrderBy("total")
+    List<Float> purchaseTotalsFor(String purchaser);
+
+    @Query("SELECT VERSION(THIS)")
+    @OrderBy("version(this)")
+    List<Integer> versionsAsc();
+
+    @Query("SELECT VERSION(THIS)")
+    @OrderBy(value = "versionNum", descending = true)
+    List<Integer> versionsDesc();
 }

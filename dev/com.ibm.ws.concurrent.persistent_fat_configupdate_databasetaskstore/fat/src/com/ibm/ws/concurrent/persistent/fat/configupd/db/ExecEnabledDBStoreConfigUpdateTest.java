@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,9 +64,12 @@ public class ExecEnabledDBStoreConfigUpdateTest {
 
     @AfterClass
     public static void afterSuite() throws Exception {
+    	// CWWKC1556W: task deferred until application available; application not yet started after update
+    	// J2CA0024E: Method rollback, within transaction; configuration update during execution
+    	// J2CA0081E: Method cleanup failed; configuration update during execution already destroyed connection
         if (server != null) {
             if (server.isStarted())
-                server.stopServer("CWWKC1556W");
+                server.stopServer("CWWKC1556W", "J2CA0024E", "J2CA0081E:.*cleanup");
             server.updateServerConfiguration(originalConfigForAfterSuite);
         }
     }

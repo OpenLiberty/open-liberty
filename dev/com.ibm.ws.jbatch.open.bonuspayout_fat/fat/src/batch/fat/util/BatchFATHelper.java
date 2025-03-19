@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -279,6 +279,7 @@ public abstract class BatchFATHelper {
     /**
      * Inner class that holds the output from a process.
      */
+    @Deprecated // TODO switch to use the DDLGenScriptHelper from fattest.simplicity
     private static class ProcessOutput {
         private final List<String> sysout;
         private final List<String> syserr;
@@ -331,6 +332,7 @@ public abstract class BatchFATHelper {
         }
     }
 
+    @Deprecated // TODO switch to use the DDLGenScriptHelper from fattest.simplicity
     private ProcessBuilder getProcessBuilder(LibertyServer server) throws Exception {
         String scriptName;
         String serverName = server.getServerName();
@@ -346,6 +348,7 @@ public abstract class BatchFATHelper {
         return new ProcessBuilder(scriptName, "generate", serverName).directory(new File(installRoot));
     }
 
+    @Deprecated // TODO switch to use the DDLGenScriptHelper from fattest.simplicity
     public String getBatchDDL(LibertyServer server) throws Exception {
 
         String methodName = "getBatchDDL";

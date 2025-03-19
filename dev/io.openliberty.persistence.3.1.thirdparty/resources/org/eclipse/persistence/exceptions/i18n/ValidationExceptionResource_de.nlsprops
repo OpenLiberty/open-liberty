@@ -633,9 +633,11 @@
 
 7356=Vorgehensweise: [{1}] kann nicht ausgef\u00fchrt werden, weil {0} derzeit nicht mehrere OUT-Parameter unterst\u00fctzt.
 
-7357=Die URL [{0}] f\u00fcr die Ressource [{1}] geh\u00f6rt nicht zu einem g\u00fcltigen Persistenzstammverzeichnis, wie in der JPA-Spezifikation definiert.
+7357=Der "[{0} ]" URL f\u00fcr die "[{1} ]"-Ressource geh\u00f6rt nicht zu einer g\u00fcltigen Persistenzwurzel, wie in der Jakarta Persistence-Spezifikation definiert
 
 7358=Falscher ASM-Servicename angegeben.
 
 7359=Kein ASM-Service verf\u00fcgbar.
+
+7360=Das Datenbankkennwort wurde mit einem veralteten Algorithmus verschl\u00fcsselt. Verschl\u00fcsseln Sie es erneut durch `passwordUpdate.sh` von eclipselink.zip b\u00fcndeln
 

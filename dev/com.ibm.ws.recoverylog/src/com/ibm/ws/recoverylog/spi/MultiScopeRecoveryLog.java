@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@
 
 package com.ibm.ws.recoverylog.spi;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -187,7 +189,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * The directory path under which the files that make up this recovery log will
      * be stored.
      */
-    private String _logDirectory;
+    private Path _logDirectory;
 
     /**
      * The size of this recovery log in kilobytes.
@@ -376,9 +378,11 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         // Ensure that if the physical location has been left unspecified (field is null) it is updated
         // with the correct default.
         if (_logDirectory == null) {
-            _logDirectory = Configuration.getWASInstallDirectory() + _fileSeparator + "recoveryLogs" + _fileSeparator +
-                            DirUtils.createDirectoryPath(_serverName) + _fileSeparator + _clientName + _fileSeparator +
-                            _logName;
+            _logDirectory = Paths.get(Configuration.getWASInstallDirectory(),
+                                      "recoveryLogs",
+                                      DirUtils.createDirectoryPath(_serverName),
+                                      _clientName,
+                                      _logName);
         }
 
         // Ensure that if the physical size has been left unspecified or is invalid it is updated with
@@ -501,11 +505,18 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *                                       cannot be opened.
      * @exception LogAllocationException The recovery log could not be created.
      * @exception InternalLogException   An unexpected failure has occured.
+     * @throws PeerLogsMissingException
      */
     @Override
-    public synchronized void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException, LogIncompatibleException {
+    public synchronized void openLog(boolean localRecovery) throws LogCorruptedException, LogAllocationException, InternalLogException, LogIncompatibleException, PeerLogsMissingException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "openLog", this);
+            Tr.entry(tc, "openLog", localRecovery, this);
+
+        if (!localRecovery && !_logDirectory.toFile().exists()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Doing peer recovery but {0} is missing", _logDirectory);
+            throw new PeerLogsMissingException();
+        }
 
         // If this recovery log instance has been marked as incompatible then throw an exception
         // accordingly.
@@ -2365,7 +2376,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * @return the _logDirectory
      */
     @Trivial
-    public String getLogDirectory() {
+    public Path getLogDirectory() {
         return _logDirectory;
     }
 

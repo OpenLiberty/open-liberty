@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,8 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.RemoteFile;
-
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEEAction;
@@ -100,8 +98,9 @@ public class LibertyCXFPositivePropertiesTest {
         if (JakartaEEAction.isEE10OrLaterActive()) {
             server.getServerBootstrapPropertiesFile().delete();
             server.getServerBootstrapPropertiesFile()
-                            .copyFromSource(new RemoteFile(server.getMachine(), server.pathToAutoFVTTestFiles
-                                                                                + "/LibertyCXFPropertiesTest/woodstox-true-bootstrap.properties"),
+                            .copyFromSource(server.getMachine()
+                                            .getFile(server.pathToAutoFVTTestFiles
+                                                     + "/LibertyCXFPropertiesTest/woodstox-true-bootstrap.properties"),
                                             false,
                                             true);
         }
@@ -120,7 +119,7 @@ public class LibertyCXFPositivePropertiesTest {
                         });
 
         // TODO need to fix the runtime to not do an application restart when configuring webservices-bnd.
-        // Decided NOT to make any changes to runtime. Maintain the current behavior of restarting the application when a change in the webservices-bnd configuration is detected(https://github.com/OpenLiberty/open-liberty/issues/27089). 
+        // Decided NOT to make any changes to runtime. Maintain the current behavior of restarting the application when a change in the webservices-bnd configuration is detected(https://github.com/OpenLiberty/open-liberty/issues/27089).
         checkpointInfo.setAssertNoAppRestartOnRestore(false);
 
         server.setCheckpoint(checkpointInfo);

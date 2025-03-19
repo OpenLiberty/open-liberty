@@ -300,7 +300,7 @@ public class BaseTraceService implements TrService {
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
 
         earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 5 * MINUTE); // 5 minutes wait time
-        checkpointPhase.addMultiThreadedHook(new CheckpointHook() {
+        checkpointPhase.addMultiThreadedHook(Integer.MIN_VALUE, new CheckpointHook() {
             @Override
             public void prepare() {
                 // Get exclusive write lock for the thread preparing to checkpoint.

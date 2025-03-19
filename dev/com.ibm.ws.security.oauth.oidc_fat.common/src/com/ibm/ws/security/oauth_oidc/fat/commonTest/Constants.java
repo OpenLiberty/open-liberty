@@ -852,6 +852,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String SOCIAL_JWT_TOKEN = "Social JWT Token";
 
     /*********************************** Same Site **********************************************/
+    public static final String SAMESITE_KEY = "SameSite";
+    public static final String PARTITIONEDCOOKIE_KEY = "Partitioned";
     public static final String SAMESITE_DISABLED = "Disabled";
     public static final String SAMESITE_LAX = "Lax";
     public static final String SAMESITE_NONE = "None";

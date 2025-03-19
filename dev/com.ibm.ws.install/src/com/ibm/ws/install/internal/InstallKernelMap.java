@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -151,6 +151,7 @@ public class InstallKernelMap implements Map {
     private static final String LICENSE_DIRECTORY = "lafiles" + File.separator;
     private static final String LIB_VERSIONS_DIRECTORY = "lib" + File.separator + "versions" + File.separator;
     private static final String FEATURE_UTILITY_PROPS_FILE = "featureUtility.env";
+    public static final String HIDDEN_PASSWORD = "********";
     private Map<String, Object> envMap = null;
     private final List<File> upgradeFiles = new ArrayList<File>();
     private final List<MavenRepository> workingRepos = new ArrayList<MavenRepository>();
@@ -315,6 +316,11 @@ public class InstallKernelMap implements Map {
                 return envMap;
             }
             envMap = getEnvMap();
+            if (envMap != null) { //set proxy if there were no errors
+                //set proxy system properties
+                setProxy();
+            }
+
             return envMap;
         } else if (InstallConstants.USER_PUBLIC_KEYS.equals(key)) {
             return data.get(InstallConstants.USER_PUBLIC_KEYS);
@@ -510,6 +516,12 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (InstallConstants.PLATFORMS.equals(key)) {
+            if (value instanceof Collection) {
+                data.put(InstallConstants.PLATFORMS, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else if (InstallConstants.VERIFY_OPTION.equals(key)) {
             if (value instanceof VerifyOption) {
                 data.put(InstallConstants.VERIFY_OPTION, value);
@@ -545,6 +557,8 @@ public class InstallKernelMap implements Map {
         } else if (InstallConstants.OVERRIDE_ENVIRONMENT_VARIABLES.equals(key)) {
             if (value instanceof Map<?, ?>) {
                 overrideEnvMap((Map<String, Object>) value);
+                //override proxy system properties
+                setProxy();
             } else {
                 throw new IllegalArgumentException();
             }
@@ -951,12 +965,14 @@ public class InstallKernelMap implements Map {
                 }
                 data.put(InstallConstants.UPGRADE_COMPLETE, true);
             }
+
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
 
             if (!isInstallServerFeature) {
                 resolveResult = resolver.resolve((Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE));
             } else {
-                resolveResult = resolver.resolveAsSet((Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE));
+                resolveResult = resolver.resolveAsSet((Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE),
+                                                      (Collection<String>) data.get(InstallConstants.PLATFORMS));
             }
 
             if (!resolveResult.isEmpty()) {
@@ -995,8 +1011,9 @@ public class InstallKernelMap implements Map {
                         if (repoResrc.getRepositoryConnection() instanceof DirectoryRepositoryConnection) {
                             featuresResolved.add(repoResrc.getId());
                         } else {
-                            String featurePath = repoResrc.getMavenCoordinates();
-                            if (featurePath == null) { //if user specified ESA file path
+                            String featureCoord = repoResrc.getMavenCoordinates();
+                            String featurePath = null;
+                            if (featureCoord == null) { //if user specified ESA file path
                                 if (repoResrc instanceof EsaResourceImpl) {
                                     String name = ((EsaResourceImpl) repoResrc).getShortName() == null ? repoResrc.getName() : ((EsaResourceImpl) repoResrc).getShortName();
                                     for (String k : shortNameMap.keySet()) {
@@ -1007,12 +1024,13 @@ public class InstallKernelMap implements Map {
                                     }
                                 }
                             } else {
-                                featuresResolved.add(featurePath);
-                                featurePath = ArtifactDownloaderUtils.getfilename(repoResrc.getMavenCoordinates()).toLowerCase() + ".esa";
+                                featuresResolved.add(featureCoord);
+                                featurePath = ArtifactDownloaderUtils.getfilename(featureCoord).toLowerCase() + ".esa";
                             }
 
-                            if (ibmInstallTo == null || ibmInstallTo.equals("usr")) {
+                            if (ibmInstallTo == null || ibmInstallTo.equals("usr")) { //add both featurePath and featureCoord to consider install of   local esa features and features available in Maven repository.
                                 usrFeatures.add(featurePath);
+                                usrFeatures.add(featureCoord);
                             }
                         }
                     }
@@ -1042,8 +1060,10 @@ public class InstallKernelMap implements Map {
             data.put(InstallConstants.ACTION_RESULT, ERROR);
             InstallException ie = ExceptionUtils.create(e, e.getTopLevelFeaturesNotResolved(), (File) data.get(InstallConstants.RUNTIME_INSTALL_DIR), false, isOpenLiberty,
                                                         isFeatureUtility);
-            data.put(InstallConstants.ACTION_ERROR_MESSAGE, ie.getMessage());
-            data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+            if (ie != null) {
+                data.put(InstallConstants.ACTION_ERROR_MESSAGE, ie.getMessage());
+                data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+            }
         } catch (InstallException e) {
             data.put(InstallConstants.ACTION_RESULT, ERROR);
             data.put(InstallConstants.ACTION_ERROR_MESSAGE, e.getMessage());
@@ -1108,7 +1128,78 @@ public class InstallKernelMap implements Map {
         logger.fine(this.envMap.toString());
         envMap.putAll(overrideMap);
         logger.fine("printing envmap after");
-        logger.fine(envMap.toString());
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        for (Entry<String, Object> entry : envMap.entrySet()) {
+            sb.append(entry.getKey());
+            sb.append("=");
+            //Encrypt proxy password
+            sb.append(entry.getKey().contains(".proxyPassword") ? HIDDEN_PASSWORD : entry.getValue());
+            sb.append(", ");
+        }
+        sb.append("}");
+        logger.fine(sb.toString());
+
+    }
+
+    /**
+     * set proxy jvm system properties
+     * http.nonProxyHosts:a list of hosts that should be reached directly, bypassing the proxy. This is a list of patterns separated by '|'. The patterns may start or end with a
+     * '*' for wildcards. Any host matching one of these patterns will be reached through a direct connection instead of through a proxy.
+     */
+    protected void setProxy() {
+        //set up basic auth HTTP tunnel
+        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+
+        try {
+            if (envMap.get("https.proxyHost") != null) {
+                checkValidProxy("https");
+                System.setProperty("https.proxyHost", (String) envMap.get("https.proxyHost"));
+                System.setProperty("https.proxyPort", (String) envMap.get("https.proxyPort"));
+            }
+            if (envMap.get("http.proxyHost") != null) {
+                checkValidProxy("http");
+                System.setProperty("http.proxyHost", (String) envMap.get("http.proxyHost"));
+                System.setProperty("http.proxyPort", (String) envMap.get("http.proxyPort"));
+                if (envMap.get("https.proxyHost") == null) {
+                    System.setProperty("https.proxyHost", (String) envMap.get("http.proxyHost"));
+                    System.setProperty("https.proxyPort", (String) envMap.get("http.proxyPort"));
+                }
+            }
+            if (envMap.get("http.nonProxyHosts") != null) {
+                String noProxyHosts = (String) envMap.get("http.nonProxyHosts");
+                //if users provide list of hosts using ",", replace to "|"
+                noProxyHosts = noProxyHosts.replace(",", "|");
+                System.setProperty("http.nonProxyHosts", noProxyHosts);
+            }
+            logger.fine("http.proxyHost " + System.getProperty("http.proxyHost"));
+            logger.fine("https.proxyHost " + System.getProperty("https.proxyHost"));
+            logger.fine("proxy exclusion list: " + System.getProperty("http.nonProxyHosts"));
+        } catch (InstallException e) {
+            data.put(InstallConstants.ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
+
+    }
+
+    /**
+     * @param protocol
+     * @throws InstallException
+     */
+    protected void checkValidProxy(String protocol) throws InstallException {
+        String proxyPort = (String) envMap.get(protocol + ".proxyPort");
+        if (protocol != null) {
+            int proxyPortnum = Integer.parseInt(proxyPort);
+            if (((String) envMap.get(protocol + ".proxyHost")).isEmpty()) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
+            } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
+            } else if (envMap.get(protocol + "proxyUser") != null && (envMap.get(protocol + ".proxyPassword") == null
+                                                                      || ((String) envMap.get(protocol + ".proxyPassword")).isEmpty())) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
+            }
+        }
     }
 
     private static Collection<String> keepFirstInstance(Collection<String> dupStrCollection) {
@@ -1200,16 +1291,16 @@ public class InstallKernelMap implements Map {
             for (MavenRepository repo : repos) {
                 try {
                     if (!copyFeatureList.isEmpty()) {
-                        Set<String> missingFeatures = artifactDownloader.getMissingFeaturesFromRepo(copyFeatureList, repo, verifyOption, false);
+                        Set<String> missingFeatures = artifactDownloader.getMissingFeaturesFromRepo(copyFeatureList, usrFeatures, repo, verifyOption, false);
                         copyFeatureList.removeAll(missingFeatures);
-                        artifactDownloader.synthesizeAndDownloadFeatures(copyFeatureList, downloadDir, repo, verifyOption, false);
+                        artifactDownloader.synthesizeAndDownloadFeatures(copyFeatureList, usrFeatures, downloadDir, repo, verifyOption, false);
                         //Try downloading missing features from next repo
                         copyFeatureList = new ArrayList<>(missingFeatures);
                     }
                     if (!copySignatureList.isEmpty()) {
-                        Set<String> missingSignatures = artifactDownloader.getMissingFeaturesFromRepo(copySignatureList, repo, verifyOption, true);
+                        Set<String> missingSignatures = artifactDownloader.getMissingFeaturesFromRepo(copySignatureList, usrFeatures, repo, verifyOption, true);
                         copySignatureList.removeAll(missingSignatures);
-                        artifactDownloader.synthesizeAndDownloadFeatures(copySignatureList, downloadDir, repo, verifyOption, true);
+                        artifactDownloader.synthesizeAndDownloadFeatures(copySignatureList, usrFeatures, downloadDir, repo, verifyOption, true);
                         //Try downloading missing signatures from next repo
                         copySignatureList = new ArrayList<>(missingSignatures);
                     }
@@ -1673,9 +1764,6 @@ public class InstallKernelMap implements Map {
             Path signaturePath = null;
             if (isValidEsa(artifact)) {
                 artifactPath = Paths.get(artifact);
-                if (verify != null && verify != VerifyOption.skip) {
-                    signaturePath = Paths.get(artifactPath.toString() + sigExtension);
-                }
             } else {
                 String[] coord = artifact.split(":");
                 String groupId = coord[0];
@@ -1702,7 +1790,7 @@ public class InstallKernelMap implements Map {
                 foundArtifacts.add(artifactPath.toFile());
                 artifactsClone.remove(artifact);
                 //if verify is set, check if the signatures are downloaded.
-                if (verify != null && verify != VerifyOption.skip) {
+                if (verify != null && verify != VerifyOption.skip && signaturePath != null) {
                     if (Files.isRegularFile(signaturePath)) {
                         fine("Found signature at path: " + signaturePath.toString());
                     } else {
@@ -1868,7 +1956,6 @@ public class InstallKernelMap implements Map {
 
     private Map<String, Object> getEnvMap() {
         Map<String, Object> envMapRet = new HashMap<String, Object>();
-
         //parse through httpProxy env variables
         String proxyEnvVarHttp = System.getenv("http_proxy");
         if (proxyEnvVarHttp != null) {
@@ -1904,6 +1991,7 @@ public class InstallKernelMap implements Map {
             }
         }
 
+        envMapRet.put("http.nonProxyHosts", System.getenv("no_proxy"));
         envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
         envMapRet.put("FEATURE_REPO_PASSWORD", System.getenv("FEATURE_REPO_PASSWORD"));
@@ -1917,7 +2005,8 @@ public class InstallKernelMap implements Map {
 
         envMapRet.put("FEATURE_VERIFY", System.getenv("FEATURE_VERIFY"));
 
-        //search through the properties file to look for overrides if they exist TODO
+        //search through the properties file to look for overrides if they exist
+        //TODO remove? - Do we use featureUtility.env ?
         Map<String, String> propsFileMap = getFeatureUtilEnvProps();
         if (!propsFileMap.isEmpty()) {
             fine("The properties found in featureUtility.env will override latent environment variables of the same name");
@@ -2320,7 +2409,7 @@ public class InstallKernelMap implements Map {
                     boolean libertyFeatureFailure = false;
                     //check if the failed feature is user feature
                     for (File f : failedFeatures) {
-                        if (!usrFeatures.contains(f.getName().toLowerCase())) {
+                        if (!(usrFeatures.contains(f.getName().toLowerCase()) || usrFeatures.contains(f.getAbsolutePath()))) {
                             libertyFeatureFailure = true;
                         }
                     }

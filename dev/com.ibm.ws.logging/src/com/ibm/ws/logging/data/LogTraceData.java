@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,8 @@ public class LogTraceData extends GenericData {
 
     static Pattern messagePattern;
     private long rawSequenceNumber = -1;
+
+    private boolean isTr;
 
     static {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
@@ -398,6 +400,20 @@ public class LogTraceData extends GenericData {
         if (matcher.find())
             messageId = msg.substring(matcher.start(), matcher.end() - 1);
         return messageId;
+    }
+
+    /**
+     * Verify if the log record is from Tr, JUL, or other logging frameworks.
+     */
+    public boolean isTr() {
+        return isTr;
+    }
+
+    /**
+     * @param isTr set to true, if the log record is logged using Tr. Otherwise, set it to false.
+     */
+    public void setTr(boolean isTr) {
+        this.isTr = isTr;
     }
 
 }

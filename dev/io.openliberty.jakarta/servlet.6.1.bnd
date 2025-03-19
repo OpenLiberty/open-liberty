@@ -26,8 +26,8 @@ Export-Package: \
     jakarta.servlet.resources;thread-context=true;version="6.1.0"
 
 -includeresource: \
-    @${repo;jakarta.servlet:jakarta.servlet-api;6.1.0.M2;EXACT}!/!(META-INF/maven/*|module-info.class),\
+    @${repo;jakarta.servlet:jakarta.servlet-api;6.1.0;EXACT}!/!(META-INF/maven/*|module-info.class),\
     jakarta=resources/servlet-6.1/jakarta
 
 -maven-dependencies: \
-    dep1;groupId=jakarta.servlet;artifactId=jakarta.servlet-api;version=6.1.0-M2;scope=runtime
+    dep1;groupId=jakarta.servlet;artifactId=jakarta.servlet-api;version=6.1.0;scope=runtime

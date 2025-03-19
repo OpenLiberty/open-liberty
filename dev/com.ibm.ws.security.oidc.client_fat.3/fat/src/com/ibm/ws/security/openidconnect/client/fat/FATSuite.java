@@ -22,6 +22,7 @@ import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientPKCEAndPrivateKeyJwtTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientPKCETests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientPrivateKeyJwtTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientWasReqURLTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
@@ -31,7 +32,8 @@ import componenttest.rules.repeater.RepeatTests;
         AlwaysPassesTest.class,
         OidcClientPKCETests.class,
         OidcClientPrivateKeyJwtTests.class,
-        OidcClientPKCEAndPrivateKeyJwtTests.class
+        OidcClientPKCEAndPrivateKeyJwtTests.class,
+        OidcClientWasReqURLTests.class
 
 })
 

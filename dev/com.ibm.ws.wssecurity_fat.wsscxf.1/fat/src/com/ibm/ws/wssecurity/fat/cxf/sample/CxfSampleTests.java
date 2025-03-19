@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,22 +13,30 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sample;
 
+import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLEndpoint;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -36,19 +44,24 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.CheckpointRule;
+import componenttest.rules.repeater.CheckpointRule.ServerMode;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
+@CheckpointTest(alwaysRun = true)
 public class CxfSampleTests {
 
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sample";
-    @Server(serverName)
 
+    @Server(serverName)
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfSampleTests.class;
@@ -62,16 +75,24 @@ public class CxfSampleTests {
 
     static String hostName = "localhost";
 
-    /**
-     * Sets up any configuration required for running the tests.
-     */
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @ClassRule
+    public static CheckpointRule checkpointRule = new CheckpointRule()
+                                                        .setConsoleLogName(CxfSampleTests.class.getSimpleName()+ ".log")
+                                                        .setServerSetup(CxfSampleTests::serverSetUp)
+                                                        .setServerStart(CxfSampleTests::serverStart)
+                                                        .setServerTearDown(CxfSampleTests::serverTearDown)
+                                                        .addUnsupportedRepeatIDs(EmptyAction.ID, RepeatWithEE7cbh20.ID)
+                                                        .addCheckpointRegexIgnoreMessages("CWWKG0101W", "SRVE0274W")
+                                                        .setPostCheckpointLambda(server -> {
+                                                            try {
+                                                                configureBeforeRestore();
+                                                            } catch (Exception e) {
+                                                                // TODO Auto-generated catch block
+                                                                e.printStackTrace();
+                                                            }
+                                                        });
 
-        // rename_webcontent(server);
-        String thisMethod = "setup";
-        String defaultPort = "8010";
-
+    public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
         //issue 23060
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
@@ -102,17 +123,51 @@ public class CxfSampleTests {
             JakartaEEAction.transformApp(WSSampleSei_archive);
         }
 
-        // start server "com.ibm.ws.wssecurity_fat.sample"
-        server.addInstalledAppForValidation("WSSampleSei");
-        server.addInstalledAppForValidation("webcontentprovider");
-        server.addInstalledAppForValidation("WSSampleSeiClient");
-        server.addInstalledAppForValidation("webcontent");
-        server.startServer(); // check CWWKS0008I: The security service is ready.
-        SharedTools.waitForMessageInLog(server, "CWWKS0008I");
+        //Environment variable values are not set before checkpoint.
+        if (CheckpointRule.isActive()) {
+            configureEnvVariable(server, emptyMap());
+        }
+        return server;
+    }
 
-        // get back the default http and https port number from server
+    private static void configureBeforeRestore() throws Exception {
+        Map<String, String> config = new HashMap<>();
+        config.put("WS_SECURITY_PWD", "security");
+        config.put("CLIENT_SIGNATURE_PWD", "LibertyX509Client");
+        config.put("CLIENT_SIGNATURE_KEYSTORE", "x509ClientDefault.jks");
+        config.put("PROVIDER_ENCRYPTION_KEYSTORE", "x509ServerDefault.jks");
+        config.put("PROVIDER_ENCRYPTION_PWD", "LibertyX509Server");
+        configureEnvVariable(server, config);
+    }
+
+    private static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        Properties serverEnvProperties = new Properties();
+        serverEnvProperties.putAll(newEnv);
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            serverEnvProperties.store(out, "");
+        }
+    }
+
+    public static void serverStart(ServerMode mode, LibertyServer server) throws Exception {
+        String thisMethod = "serverStart";
+        String defaultPort = "8010";
+        // get the default http and https port number from server
         portNumber = "" + server.getHttpDefaultPort();
         portNumberSecure = "" + server.getHttpDefaultSecurePort();
+
+        // start server "com.ibm.ws.wssecurity_fat.sample"
+        if (!CheckpointRule.isActive()) {
+            server.addInstalledAppForValidation("WSSampleSei");
+            server.addInstalledAppForValidation("webcontentprovider");
+            server.addInstalledAppForValidation("WSSampleSeiClient");
+            server.addInstalledAppForValidation("webcontent");
+        }
+
+        //LibertyX509Client
+
+        server.startServer(); // check CWWKS0008I: The security service is ready.
+        SharedTools.waitForMessageInLog(server, "CWWKS0008I");
 
         // Make sure the server is starting by checking the port number in server runtime logs
         server.waitForStringInLog("port " + portNumber);
@@ -155,6 +210,27 @@ public class CxfSampleTests {
         }
 
         return;
+    }
+
+    public static void serverTearDown(ServerMode mode, LibertyServer server) throws Exception {
+        try {
+            printMethodName("tearDown");
+            if (server != null && server.isStarted()) {
+                server.stopServer();
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
+
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/features/wsseccbh-2.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
+
     }
 
     @Test
@@ -315,28 +391,6 @@ public class CxfSampleTests {
         }
 
         return;
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        try {
-            printMethodName("tearDown");
-            if (server != null && server.isStarted()) {
-                server.stopServer();
-            }
-        } catch (Exception e) {
-            e.printStackTrace(System.out);
-        }
-
-        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");
-        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/features/wsseccbh-1.0.mf");
-        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
-        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/features/wsseccbh-2.0.mf");
-        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
-
     }
 
     private static void printMethodName(String strMethod) {

@@ -1,0 +1,21 @@
+<ejb-jar-ext
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd"
+  version="1.1"
+>
+  <!-- Use <start-at-app-start> to force metadata processing and any CNTR0332W
+       without needing to access the EJBs. -->
+  <session name="PassivationCapableXMLFalseLoadStrategyOnceBean">
+    <bean-cache activation-policy="ONCE"/>
+    <start-at-app-start value="true"/>
+  </session>
+  <session name="PassivationCapableXMLFalseLoadStrategyTransactionBean" >
+    <bean-cache activation-policy="TRANSACTION"/>
+    <start-at-app-start value="true"/>
+  </session>
+  <session name="PassivationCapableXMLFalseLoadStrategyActivitySessionBean">
+    <bean-cache activation-policy="ACTIVITY_SESSION"/>
+    <start-at-app-start value="true"/>
+  </session>
+</ejb-jar-ext>

@@ -17,11 +17,6 @@ Bundle-SymbolicName: io.openliberty.microprofile.telemetry.2.0.internal
 Bundle-Activator: io.openliberty.microprofile.telemetry20.internal.helper.InstrumenterActivator
 Bundle-Description: MicroProfile.telemetry, version 2.0
 
-javac.source: 11
-javac.target: 11
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
-
 src: src, resources
 
 -dsannotations-inherit: true
@@ -33,6 +28,7 @@ app-resources= \
 Include-Resource: \
   META-INF=resources/META-INF
 
+# This creates a DeclarativeService using `com.ibm.wsspi.classloading.ResourceProvider` as the implementation class with the name `io.openliberty.microprofile.telemetry.internal.ResourceProvider` and its purpose is to expose `${app-resources}` on the app classloader.
 Service-Component: \
     io.openliberty.microprofile.telemetry.internal.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
@@ -43,6 +39,9 @@ Service-Component: \
 # Need an explicit import for api.common because it gets used by weld proxies
 # created for other API classes
 Import-Package: \
+	!io.openliberty.http.monitor,\
+	!io.openliberty.http.monitor.metrics,\
+	!com.ibm.ws.connectionpool.monitor.metrics,\
 	io.opentelemetry.api.common;version="[1.2,3)",\
 	io.openliberty.microprofile.telemetry.internal.common.resources,\
 	javax.annotation;version="[1.2,2)",\
@@ -54,6 +53,11 @@ Import-Package: \
 	org.eclipse.microprofile.rest.client.spi; version="[1.0.0,3.0.0)",\
 	org.eclipse.microprofile.config; version="[1.0.0,3.0.0)",\
 	*
+
+DynamicImport-Package: \
+    io.openliberty.http.monitor,\
+    io.openliberty.http.monitor.metrics,\
+    com.ibm.ws.connectionpool.monitor.metrics
 
 # Export-Package and Private-Package specified in sub-bundles
 # because bundles have different contents in addition to being transformed
@@ -76,6 +80,10 @@ Import-Package: \
 	io.openliberty.org.jboss.resteasy.common;version=latest,\
 	io.openliberty.microprofile.telemetry.internal.common;version=latest,\
 	io.openliberty.io.opentelemetry.2.0;version=latest,\
-	com.ibm.ws.kernel.boot.common;version=latest
+	io.opentelemetry.semconv:opentelemetry-semconv;version='1.25.0.alpha';strategy=exact,\
+	com.ibm.ws.kernel.boot.common;version=latest,\
+	io.openliberty.http.monitor,\
+	io.opentelemetry.instrumentation:opentelemetry-resources;version=2.1.0.alpha,\
+	com.ibm.ws.connectionpool.monitor
 
 WS-TraceGroup: TELEMETRY

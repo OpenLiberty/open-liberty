@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -96,7 +96,7 @@ public class WeldDevModeTest {
         final String METHOD_NAME = "cleanup";
         Log.info(WeldDevModeTest.class, METHOD_NAME, "Stopping the server.");
         if (server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWOWB1020W"); // Weld developer mode has been removed
         }
         Log.info(WeldDevModeTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
         CDIExtensionRepeatActions.uninstallUserExtension(server, CDIExtensionRepeatActions.HELLOWORLD_EXTENSION_BUNDLE_ID);
@@ -105,24 +105,10 @@ public class WeldDevModeTest {
 
     @Test
     public void testExtensionLoaded() throws Exception {
-        assertStringsInLogs("WELD-000411: Observer method \\[BackedAnnotatedMethod\\] public org.jboss.weld.probe.ProbeExtension.processAnnotatedTypes");
-        assertStringsInLogs("Weld Development Mode: ENABLED");
-
-        assertProbeProcessedBDA("multipleWars2#org.jboss.weld.probe.ProbeExtension.additionalClasses");
-        assertProbeProcessedBDA("multipleWars2#multipleWar1.war");
-        assertProbeProcessedBDA("multipleWars2#multipleWar1.war#WEB_INF_LIB#WEB-INF/lib/multipleWarEmbeddedJar.jar");
-        assertProbeProcessedBDA("multipleWars2#multipleWarNoBeans.war");
-        //Where the BDA name varies only slightly in EE9, a wildcard is sufficient to check for them
-        assertProbeProcessedBDA("multipleWars2#cdi.helloworld.extension.*_1.additionalClasses");
-        assertProbeProcessedBDA("multipleWars2#io.openliberty.transaction.internal.cdi.*_1.additionalClasses");
-        //Ignoring BDAs which are part of internal components where the names have significantly changed between EE8 and EE9, e.g. Bean Validation and JSF
+        assertStringsInLogs("CWOWB1020W: Weld development mode has been removed");
     }
 
     private static void assertStringsInLogs(String msg) throws Exception {
         Assert.assertFalse("Log Message Not Found: " + msg, server.findStringsInLogs(msg).isEmpty());
-    }
-
-    private static void assertProbeProcessedBDA(String bda) throws Exception {
-        assertStringsInLogs("PROBE-000002: Processing bean deployment archive: " + bda);
     }
 }

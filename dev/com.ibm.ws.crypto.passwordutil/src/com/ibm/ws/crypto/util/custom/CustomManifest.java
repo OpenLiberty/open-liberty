@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,7 +45,7 @@ import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
  *    C:/liberty/wlp/bin/tools/extensions/ws-customPasswordEncryption/customEncryption.jar
  * An example contents of the extension manifest file:
  * -------------------------
- *  Require-Bundle: com.ibm.websphere.crypto.sample.customencryption; version="[1,1.0.100)"; location="usr/extension/lib"
+ *  Require-Bundle: com.ibm.websphere.crypto.sample.customencryption; version="[1,1.1)"; location="usr/extension/lib"
  *  IBM-ImplementationClass: com.ibm.websphere.crypto.sample.customencryption.CustomEncryptionImpl
  * -------------------------
  *
@@ -56,7 +56,7 @@ import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
  *  IBM-ShortName: customEncryption-1.0
  *  Subsystem-SymbolicName: customEncryption-1.0;visibility:=public
  *  Subsystem-Content: 
- *   com.ibm.websphere.crypto.sample.customencryption; version="[1,1.0.100)"; start-phase:="SERVICE_EARLY",
+ *   com.ibm.websphere.crypto.sample.customencryption; version="[1,1.1)"; start-phase:="SERVICE_EARLY",
  *   customEncryption.jar; location:="bin/tools/extensions/ws-customPasswordEncryption/customEncryption.jar"; type=file
  *  Subsystem-Description: %description
  * -------------------------

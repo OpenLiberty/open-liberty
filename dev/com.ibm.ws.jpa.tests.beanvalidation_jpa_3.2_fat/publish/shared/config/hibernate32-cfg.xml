@@ -1,6 +1,6 @@
 <server>
     <featureManager>
-        <feature>beanValidation-3.1</feature>
+        <feature>validation-3.1</feature>
         <feature>enterpriseBeansLite-4.0</feature>
         <feature>persistenceContainer-3.2</feature>
         <feature>servlet-6.1</feature>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -60,25 +62,50 @@ public class BasicEJBTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(remoteAppServer, "basicRemoteApp", new DeployOptions[] {DeployOptions.OVERWRITE, DeployOptions.SERVER_ONLY}, "remoteApp.basic");
-        if (JakartaEEAction.isEE9OrLaterActive()) {
-            remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.0", "ssl-1.0", "jsonb-2.0"));
+        Set<String> features = remoteAppServer.getServerConfiguration().getFeatureManager().getFeatures();
+        if (JakartaEEAction.isEE9Active()) {
+            features.add("ssl-1.0");
+            features.add("jsonb-2.0");
+            remoteAppServer.changeFeatures(new ArrayList<String>(features));
+        } else if (JakartaEEAction.isEE10Active()) {
+            features.add("jsonb-3.0");
+            features.add("ssl-1.0");
+            remoteAppServer.changeFeatures(new ArrayList<String>(features));
+        } else if (JakartaEEAction.isEE11Active()) {
+            features.add("jsonb-3.0");
+            features.add("ssl-1.0");
+            remoteAppServer.changeFeatures(new ArrayList<String>(features));
         }
+
         remoteAppServer.startServer();
 
         ShrinkHelper.defaultDropinApp(server, appName, new DeployOptions[] {DeployOptions.SERVER_ONLY}, "mpRestClient10.basicEJB");
+        features = server.getServerConfiguration().getFeatureManager().getFeatures();
         if (JakartaEEAction.isEE9Active()) {
-            server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "mpConfig-3.0", "cdi-3.0", "enterpriseBeansLite-4.0", "jsonb-2.0"));
+            features.add("enterpriseBeansLite-4.0");
+            features.add("jsonb-2.0");
+            server.changeFeatures(new ArrayList<String>(features));
         } else if (JakartaEEAction.isEE10Active()) {
-            server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "mpConfig-3.0", "cdi-4.0", "enterpriseBeansLite-4.0", "jsonb-3.0", "servlet-6.0"));
+            features.add("enterpriseBeansLite-4.0");
+            features.add("jsonb-3.0");
+            features.add("servlet-6.0");
+            server.changeFeatures(new ArrayList<String>(features));
         } else if (JakartaEEAction.isEE11Active()) {
-            server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "mpConfig-3.1", "cdi-4.1", "enterpriseBeansLite-4.0", "jsonb-3.0", "servlet-6.1"));
+            features.add("enterpriseBeansLite-4.0");
+            features.add("jsonb-3.0");
+            features.add("servlet-6.1");
+            server.changeFeatures(new ArrayList<String>(features));
         }
+
         server.startServer();
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
-        remoteAppServer.stopServer("CWWKE1102W");
+        try {
+            server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
+        } finally {
+            remoteAppServer.stopServer("CWWKE1102W");
+        }
     }
 }

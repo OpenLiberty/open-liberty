@@ -31,7 +31,7 @@
 
   <ssl id="SSLConfig" keyStoreRef="defaultKeyStore"/>
   
-  <wsAtomicTransaction sslEnabled="true" sslRef="SSLConfig"/>
+  <wsAtomicTransaction sslEnabled="true" sslRef="SSLConfig" asyncResponseTimeout="1m"/>
 
   <transaction
     backendURL="https://localhost:9445"

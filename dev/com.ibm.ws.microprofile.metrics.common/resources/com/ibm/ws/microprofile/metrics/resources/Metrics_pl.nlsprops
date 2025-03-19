@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=Podaj niezb\u0119dne zale\u
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: Funkcja MicroProfile Metrics jest skonfigurowana do u\u017cywania nast\u0119puj\u0105cej warto\u015bci libraryRef: [{0}]
 libraryRefConfigured.info.CWMMC0014I.explanation=Funkcja MicroProfile Metrics jest skonfigurowana do u\u017cywania warto\u015bci libraryRef. Ta wskazywana biblioteka musi zawiera\u0107 bibliotek\u0119 podstawow\u0105 Micrometer, docelowe biblioteki Micrometer oraz zale\u017cno\u015bci.
 libraryRefConfigured.info.CWMMC0014I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: Warto\u015b\u0107 {0} jest niepoprawna dla w\u0142a\u015bciwo\u015bci {1} . Akceptowane s\u0105 tylko warto\u015bci ca\u0142kowite i dziesi\u0119tne.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=Skonfigurowane warto\u015bci histogramu s\u0105 niepoprawne.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Skonfiguruj warto\u015bci tylko z liczbami ca\u0142kowitymi i miejscami dziesi\u0119tnymi.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: Warto\u015b\u0107 {0} jest niepoprawna dla w\u0142a\u015bciwo\u015bci {1} . Akceptowane s\u0105 tylko warto\u015bci ca\u0142kowite z jednostk\u0105 czasu (na przyk\u0142ad ms, s, m, h).
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=Skonfigurowane warto\u015bci licznika czasu s\u0105 niepoprawne.
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Skonfiguruj warto\u015bci ca\u0142kowite i jednostki czasu (na przyk\u0142ad ms, s, m, h).
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: Warto\u015b\u0107 {0} jest niepoprawna dla w\u0142a\u015bciwo\u015bci {1} . Aby warto\u015bci by\u0142y akceptowane, musz\u0105 nale\u017ce\u0107 do zakresu od 0.0 do 1.0 w\u0142\u0105cznie.
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=Skonfigurowane warto\u015bci percentyli s\u0105 niepoprawne.
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Skonfiguruj akceptowane warto\u015bci z zakresu od 0.0 do 1.0 w\u0142\u0105cznie.
 
 #Memory usedHeap message
 memory.usedHeap.description=Wy\u015bwietla ilo\u015b\u0107 u\u017cywanej pami\u0119ci sterty (w bajtach).

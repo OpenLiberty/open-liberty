@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -384,6 +384,71 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         JWK result = jwkRetriever.createJwkBasedOnKty(kty, keyEntry, signatureAlgorithm);
         assertNull("Created JWK should have been null but was not.", result);
+    }
+
+    @Test
+    public void testParseJsonObject_nullString() throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(jwkSet);
+
+        String jsonString = null;
+
+        JSONObject result = jwkRetriever.parseJsonObject(jsonString);
+        assertNull("Created JSON object should have been null but was not.", result);
+    }
+
+    @Test
+    public void testParseJsonObject_emptyString() throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(jwkSet);
+
+        String jsonString = "";
+
+        JSONObject result = jwkRetriever.parseJsonObject(jsonString);
+        assertNull("Created JSON object should have been null but was not.", result);
+    }
+
+    @Test
+    public void testParseJsonObject_nonJsonString() throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(jwkSet);
+
+        String jsonString = "non json";
+
+        JSONObject result = jwkRetriever.parseJsonObject(jsonString);
+        assertNull("Created JSON object should have been null but was not.", result);
+    }
+
+    @Test
+    public void testParseJsonObject_emptyJsonObject() throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(jwkSet);
+
+        String jsonString = "{}";
+
+        JSONObject result = jwkRetriever.parseJsonObject(jsonString);
+        assertNotNull("Created JSON object should not have been null but was.", result);
+        assertTrue("Created JSON object should have been empty but wasn't: " + result, result.isEmpty());
+    }
+
+    @Test
+    public void testParseJsonObject_simpleJsonObject() throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(jwkSet);
+
+        String jsonString = "{\"kid\":\"abc123\"}";
+
+        JSONObject result = jwkRetriever.parseJsonObject(jsonString);
+        assertNotNull("Created JSON object should not have been null but was.", result);
+        assertFalse("Created JSON object should not have been empty but was.", result.isEmpty());
+        assertTrue("Created JSON object did not contain an expected 'kid' entry. Result was: " + result, result.containsKey("kid"));
+    }
+
+    @Test
+    public void testParseJsonObject_simpleJsonObject_leadingWhitespace() throws Exception {
+        JwKRetriever jwkRetriever = new JwKRetriever(jwkSet);
+
+        String jsonString = " {\"kid\":\"abc123\"}";
+
+        JSONObject result = jwkRetriever.parseJsonObject(jsonString);
+        assertNotNull("Created JSON object should not have been null but was.", result);
+        assertFalse("Created JSON object should not have been empty but was.", result.isEmpty());
+        assertTrue("Created JSON object did not contain an expected 'kid' entry. Result was: " + result, result.containsKey("kid"));
     }
 
     //@Test

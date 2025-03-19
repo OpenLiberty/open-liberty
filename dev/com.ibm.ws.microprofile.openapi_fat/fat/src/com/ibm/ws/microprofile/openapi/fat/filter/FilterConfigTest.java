@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.fat.filter;
 
-import static org.junit.Assert.assertEquals;
-
-import org.eclipse.microprofile.openapi.models.OpenAPI;
-import org.eclipse.microprofile.openapi.models.info.Info;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -24,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
@@ -64,7 +61,7 @@ public class FilterConfigTest {
             .addProperty("filter.description", DESC_VALUE)
             .addProperty("mp.openapi.filter", MyTestFilter.class.getName());
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "filter-test.war")
             .addClasses(FilterTestApp.class, FilterTestResource.class, MyTestFilter.class)
             .addAsResource(config, "META-INF/microprofile-config.properties");
 
@@ -80,10 +77,10 @@ public class FilterConfigTest {
 
     @Test
     public void testFilterConfig() throws Exception {
-        OpenAPI model = OpenAPIConnection.openAPIDocsConnection(server, false).downloadModel();
-        Info info = model.getInfo();
-        assertEquals(TITLE_VALUE, info.getTitle());
-        assertEquals(DESC_VALUE, info.getDescription());
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode model = OpenAPITestUtil.readYamlTree(doc);
+
+        OpenAPITestUtil.checkInfo(model, TITLE_VALUE, "1.0", DESC_VALUE);
     }
 
 }

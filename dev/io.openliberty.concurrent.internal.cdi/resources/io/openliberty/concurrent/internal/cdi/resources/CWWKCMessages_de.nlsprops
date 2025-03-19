@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,16 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Die Anmerkung Schedule, {0}, gibt einen leeren Wert f\u00fcr die Sekunden an, in denen die Aufgabe l\u00e4uft. Geben Sie einen nicht leeren Wert f\u00fcr das Feld Sekunden an, oder lassen Sie das Feld Sekunden in der Anmerkung Zeitplan aus. Wenn Sie das Sekundenfeld weglassen, wird die Aufgabe zu Beginn der Minute ausgef\u00fchrt.
+CWWKC1410.schedule.lacks.seconds.explanation=Der leere Wert des Arrays zeigt an, dass das Sekundenfeld bei der Berechnung der geplanten Zeiten au\u00dfer Acht gelassen werden muss. Wenn Sie das Sekundenfeld weglassen, wird die Aufgabe zu Beginn der Minute ausgef\u00fchrt.
+CWWKC1410.schedule.lacks.seconds.useraction=\u00c4ndern Sie das Sekundenfeld der Zeitplananmerkung, um einen nicht leeren Wert anzugeben, oder lassen Sie das Sekundenfeld in der Zeitplananmerkung weg.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: Der Server hat keine {0} Bean f\u00fcr die {1} Annotation oder das {2} Deployment Descriptor Element erstellt. Das Annotations- oder Deployment-Deskriptor-Element hat den {3} Namen und die {4} Qualifier und ist im {5} Anwendungsartefakt definiert. Der Fehler ist {6}
+CWWKC1411.qualified.res.err.explanation=Der Code hat die Ressource nicht erstellt oder die Ressource nicht als Bean registriert.
+CWWKC1411.qualified.res.err.useraction=Stellen Sie sicher, dass die Ressource korrekt konfiguriert ist.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: Das {0} Anwendungsartefakt enth\u00e4lt mehrere {1} Ressourcendefinitionen, die die {2} Qualifikatoren aufweisen. Die Namen der widerspr\u00fcchlichen {1} Ressourcendefinitionen sind {3}.
+CWWKC1412.qualifier.conflict.explanation=Jede Ressourcendefinition desselben Typs, die einen Qualifier hat, muss einen anderen Qualifier haben.
+CWWKC1412.qualifier.conflict.useraction=Vergewissern Sie sich, dass jede Ressourcendefinition desselben Typs einen anderen Qualifier oder gar keinen Qualifier hat.

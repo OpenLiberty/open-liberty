@@ -50,10 +50,6 @@ CWWKC1100.resource.unavailable=CWWKC1100E: Resursa {0} este indisponibil\u0103.
 CWWKC1100.resource.unavailable.explanation=O resurs\u0103 ar putea deveni indisponibil\u0103 din cauza opririi activit\u0103\u0163ii serverului sau a unei modific\u0103ri de configura\u0163ie, fie asupra sa, fie a altui serviciu de care depinde.
 CWWKC1100.resource.unavailable.useraction=Verifica\u0163i configura\u0163ia resursei \u015fi a tuturor resurselor de care depinde.
 
-CWWKC1110.task.canceled=CWWKC1110I: Taskul {0}, care a fost lansat la serviciul executor {1}, este anulat.
-CWWKC1110.task.canceled.explanation=Execu\u0163ia taskului a fost anulat\u0103.
-CWWKC1110.task.canceled.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
-
 CWWKC1101.task.failed=CWWKC1101E: Taskul {0}, care a fost lansat c\u0103tre serviciul executor {1}, a e\u015fuat cu urm\u0103toarea eroare: {2}.
 CWWKC1101.task.failed.explanation=Un task lansat c\u0103tre un executor a e\u015fuat. Consulta\u0163i mesajul excep\u0163iei pentru cauz\u0103.
 CWWKC1101.task.failed.useraction=Corecta\u0163i cauza e\u015fu\u0103rii \u015fi relansa\u0163i taskul.
@@ -66,6 +62,10 @@ CWWKC1103.skip.run.failed=CWWKC1103E: Execu\u0163ia taskului {0}, care a fost la
 CWWKC1103.skip.run.failed.explanation=Opera\u0163ia skipRun pentru Trigger a e\u015fuat, f\u0103c\u00e2nd s\u0103 fie s\u0103rit\u0103 \u00eencercarea execu\u0163iei curente pentru task.
 CWWKC1103.skip.run.failed.useraction=Corecta\u0163i cauza e\u015fu\u0103rii \u015fi decide\u0163i dac\u0103 relansa\u0163i sau nu taskul.
 
+CWWKC1110.task.canceled=CWWKC1110I: Sarcina {0} , care a fost trimis\u0103 serviciului executor {1} , este anulat\u0103.
+CWWKC1110.task.canceled.explanation=Sarcina a fost anulat\u0103.
+CWWKC1110.task.canceled.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
 CWWKC1111.task.invalid=CWWKC1111E: Taskul {0} nu este valid.
 CWWKC1111.task.invalid.explanation=Taskul nu poate fi lansat pentru c\u0103 nu este valid.
 CWWKC1111.task.invalid.useraction=Actualiza\u0163i aplica\u0163ia pentru a lansa un task valid la ExecutorService.
@@ -77,6 +77,14 @@ CWWKC1112.all.tasks.canceled.useraction=Nu este necesar\u0103 nici o ac\u0163iun
 CWWKC1120.future.get.rejected=CWWKC1120E: Viitorul furnizat la metodele ManagedTaskListener taskSubmitted \u015fi taskStarting nu poate fi folosit pentru a a\u015ftepta finalizarea taskului.
 CWWKC1120.future.get.rejected.explanation=Metodele ManagedTaskListener taskSubmitted \u015fi taskStarting ruleaz\u0103 pe firul de execu\u0163ie care va lansa sau porni taskul. Prin urmare, Viitorul furnizat la aceste metode nu trebuie folosit pentru a a\u015ftepta taskul.
 CWWKC1120.future.get.rejected.useraction=Actualiza\u0163i aplica\u0163ia pentru a evita invocarea ob\u0163inerii pe Viitorul care este furnizat la taskSubmitted \u015fi taskStarting.
+
+CWWKC1121.virtual.invalid=CWWKC1121E: Adnotarea {0} sau elementul descriptor de implementare {1} care are numele {0} specific\u0103 virtual=true, dar firele virtuale nu sunt disponibile \u00eenainte de Java 21. Nivelul Java folosit este: {1} .
+CWWKC1121.virtual.invalid.explanation=Firele virtuale nu sunt disponibile \u00een versiunea Java care este utilizat\u0103.
+CWWKC1121.virtual.invalid.useraction=Actualiza\u021bi la o versiune Java mai nou\u0103, care accept\u0103 fire virtuale.
+
+CWWKC1122.mod.unavail=CWWKC1122E: Aplica\u021bia {0} sau modulul s\u0103u {1} nu sunt disponibile.
+CWWKC1122.mod.unavail.explanation=Aplica\u021bia \u0219i modulul care definesc configura\u021bia ManagedThreadFactory trebuie s\u0103 fie disponibile pentru a ob\u021bine o instan\u021b\u0103 ManagedThreadFactory .
+CWWKC1122.mod.unavail.useraction=Asigura\u021bi-v\u0103 c\u0103 aplica\u021bia este pornit\u0103 \u0219i c\u0103 aceasta include modulul care define\u0219te configura\u021bia ManagedThreadFactory .
 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Un task lansat la executorul gestionat {0} con\u0163ine o proprietate de execu\u0163ie {1} cu valoarea {2} care nu este valid\u0103 pentru executorii gestiona\u0163i.
 CWWKC1130.xprop.value.invalid.explanation=Unele valori de propriet\u0103\u0163i de execu\u0163ie nu sunt valide pentru executori gestiona\u0163i, dar ar putea fi valide pentru alte tipuri de resurse ca serviciul de context sau fabrica de fire de execu\u0163ie gestionate.

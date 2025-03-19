@@ -19,9 +19,17 @@ import java.time.OffsetDateTime;
  */
 public class Shipment implements ScheduledShipment {
 
+    public record Instructions(
+                    String handlingRequirements,
+                    String deliveryRequirements,
+                    boolean needsSignature) {
+    }
+
     private long id;
 
     private String destination;
+
+    private Instructions instructions;
 
     private String location;
 
@@ -44,6 +52,10 @@ public class Shipment implements ScheduledShipment {
 
     public long getId() {
         return id;
+    }
+
+    public Instructions getInstructions() {
+        return instructions;
     }
 
     public String getLocation() {
@@ -78,6 +90,10 @@ public class Shipment implements ScheduledShipment {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void setInstructions(Instructions value) {
+        this.instructions = value;
     }
 
     public void setLocation(String location) {

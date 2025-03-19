@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -408,7 +408,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                                      + " Session index: " + onMessageBinary.getMethodData().getSessionIndex());
                     }
                     //sets maxMessageSize if user has specified in @OnMessage annotation. This is applicable only for whole binary and text messages
-                    setMaxMessageSize(method, onMessageBinaryLocal);
+                    setMaxMessageSize(method, onMessageBinaryLocal, clazz);
                     continue;
                 }
                 //@OnMessage desn't have pong, binary or text message type, which is invalid
@@ -442,7 +442,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                                      + " Session index: " + onMessageText.getMethodData().getSessionIndex());
                     }
                     //sets maxMessageSize if user has specified in @OnMessage annotation. This is applicable only for whole binary and text messages
-                    setMaxMessageSize(method, onMessageTextLocal);
+                    setMaxMessageSize(method, onMessageTextLocal, clazz);
                     continue;
                 }
             }
@@ -1169,9 +1169,14 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
      * maxMessageSize attribute in @OnMessage: Specifies the maximum size of message in bytes that the method this annotates will be able to process, or -1 to indicate that there
      * is no maximum defined, and therefore it is undefined which means unlimited.
      */
-    private void setMaxMessageSize(Method method, EndpointMethodHelper endpointMethodHelper) {
+    private void setMaxMessageSize(Method method, EndpointMethodHelper endpointMethodHelper, Class<?> clazz) throws DeploymentException {
         OnMessage onMsgAnnotation = method.getAnnotation(OnMessage.class);
         Long maxMessageSize = onMsgAnnotation.maxMessageSize();
+        if (WebSocketVersionServiceManager.isWsoc22OrHigher() && maxMessageSize > Integer.MAX_VALUE) {
+            String msg = Tr.formatMessage(tc, "maxmessagesize.exceeded", method.getName(), clazz.getName());
+            Tr.error(tc, "maxmessagesize.exceeded", method.getName(), clazz.getName());
+            throw new DeploymentException(msg);
+        }
         // maxMessageSize is -1 if it is not defined.
         if (maxMessageSize < -1) {
             // user has put in an invalid value, so change it to undefined.

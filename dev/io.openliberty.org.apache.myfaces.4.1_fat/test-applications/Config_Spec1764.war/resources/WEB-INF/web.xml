@@ -34,6 +34,11 @@
     </context-param>
 
     <context-param>
+        <param-name>jakarta.faces.FULL_STATE_SAVING_VIEW_IDS</param-name>
+        <param-value>index.xhtml</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>jakarta.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>

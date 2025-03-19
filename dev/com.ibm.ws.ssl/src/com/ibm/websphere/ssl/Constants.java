@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2022 IBM Corporation and others.
+ * Copyright (c) 2005, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package com.ibm.websphere.ssl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -71,6 +72,7 @@ public class Constants {
     public static final String SSLPROP_URL_HOSTNAME_VERIFICATION = "com.ibm.ssl.performURLHostNameVerification";
     public static final String SSLPROP_SKIP_DEFAULT_TM_WHEN_CUSTOM_TM_DEFINED = "com.ibm.ssl.skipDefaultTrustManagerWhenCustomDefined";
     public static final String SSLPROP_HOSTNAME_VERIFICATION = "com.ibm.ws.ssl.verifyHostname";
+    public static final String SSLPROP_SKIP_HOSTNAME_VERIFICATION_FOR_HOSTS = "com.ibm.ws.ssl.skipHostnameVerificationForHosts";
     public static final String SSLPROP_USE_DEFAULTCERTS = "com.ibm.ws.ssl.trustDefaultCerts";
     public static final String SSLPROP_ENFORCE_CIPHER_ORDER = "com.ibm.ws.ssl.enforceCipherOrder";
 
@@ -199,6 +201,7 @@ public class Constants {
     public static final String PROTOCOL_TLSV1_1 = "TLSv1.1";
     public static final String PROTOCOL_TLSV1_2 = "TLSv1.2";
     public static final String PROTOCOL_TLSV1_3 = "TLSv1.3";
+    public static final String PROTOCOL_TLS_FIPS = PROTOCOL_TLSV1_2 + ", " + PROTOCOL_TLSV1_3;
 
     /*** SECURITY LEVEL CONSTANTS ***/
     public static final String SECURITY_LEVEL_HIGH = "HIGH";
@@ -210,7 +213,7 @@ public class Constants {
     public static final String IBMJCE = "com.ibm.crypto.provider.IBMJCE";
     public static final String IBMJCE_NAME = "IBMJCE";
     public static final String IBMJCEFIPS = "com.ibm.crypto.fips.provider.IBMJCEFIPS";
-    public static final String IBMJCEPlusFIPS = "com.ibm.crypto.fips.provider.IBMJCEPlusFIPS";
+    public static final String IBMJCEPlusFIPS = "com.ibm.crypto.plus.fips.provider.IBMJCEPlusFIPS";
     public static final String IBMJCEFIPS_NAME = "IBMJCEFIPS";
     public static final String IBMJCEPlusFIPS_NAME = "IBMJCEPlusFIPS";
     public static final String IBMJSSE2 = "com.ibm.jsse2.IBMJSSEProvider2";
@@ -287,6 +290,9 @@ public class Constants {
     public static final String TRUE = "true";
     public static final String FALSE = "false";
 
+    // START OF UNUSED CONSTANTS
+    //     unused in LIberty but not removed since this class is defined as an API
+
     // unknown cipher
     public static final String SSL_UNKNOWN_CIPHER = "UNKNOWN_CIPHER";
 
@@ -343,6 +349,7 @@ public class Constants {
                     SSL_DH_anon_WITH_3DES_EDE_CBC_SHA = "SSL_DH_anon_WITH_3DES_EDE_CBC_SHA",
                     SSL_DH_anon_WITH_AES_128_CBC_SHA = "SSL_DH_anon_WITH_AES_128_CBC_SHA",
                     SSL_DH_anon_WITH_AES_256_CBC_SHA = "SSL_DH_anon_WITH_AES_256_CBC_SHA";
+    // END OF UNUSED CONSTANTS
 
     /**
      * This method adjusts the supported ciphers to include those appropriate
@@ -449,5 +456,73 @@ public class Constants {
                                                                                         PROTOCOL_TLSV1_2,
                                                                                         PROTOCOL_TLSV1_3
     });
+
+
+    public static final List<String> FIPS_140_2_PROTOCOLS = Arrays.asList(new String[] {
+                                                                                         PROTOCOL_TLSV1,
+                                                                                         PROTOCOL_TLSV1_1
+    });
+
+    public static final List<String> FIPS_140_3_PROTOCOLS = Arrays.asList(new String[] {
+                                                                                         PROTOCOL_TLSV1_2,
+                                                                                         PROTOCOL_TLSV1_3
+    });
+
+    public boolean resolveDisableHostnameVerification(String targetHostname, String disabledVerifyHostname, Properties sslProps) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "resolveDisableHostnameVerification:  ", targetHostname, disabledVerifyHostname, sslProps);
+        }
+        boolean result = false;
+        if (targetHostname != null && disabledVerifyHostname != null && sslProps != null) {
+            if ("false".equalsIgnoreCase(disabledVerifyHostname) && sslProps != null) {
+                String skipHostList = sslProps.getProperty("com.ibm.ws.ssl.skipHostnameVerificationForHosts");
+                if (isSkipHostnameVerificationForHosts(targetHostname, skipHostList))
+                    result = true;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "resolveDisableHostnameVerification:  " + result);
+        }
+        return result;
+    }
+
+    /**
+     * https://datatracker.ietf.org/doc/html/rfc2830#section-3.6
+     * The "*" wildcard character is allowed. If present, it applies only to the left-most name component.
+     *
+     * @param String host - target host
+     * @param String skipHostList - comma separated list of hostnames with hostname verification disabled, e.g. "hello.com, world.com"
+     */
+    public static boolean isSkipHostnameVerificationForHosts(String remoteHost, String skipHostList) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "isSkipHostnameVerificationForHosts", new Object[] { remoteHost, skipHostList });
+        boolean skipHostnameVerification = false;
+        if (remoteHost != null && skipHostList != null && !!!skipHostList.isEmpty()) {
+            List<String> skipHosts = Arrays.asList(skipHostList.split("\\s*,\\s*"));
+
+            for (String host : skipHosts) {
+                if (host.startsWith("*.")) {
+                    // escapes special characters for regex notation
+                    String regex = host.replaceAll("([\\[\\]().+?^${}|\\\\])", "\\\\$1");
+                    regex = "^" + regex.replace("*", ".+") + "$";
+                    if (remoteHost.matches(regex)) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Hostname verification is disabled as remote host [" + remoteHost + "] matches pattern [" + host + "]");
+                        skipHostnameVerification = true;
+                    }
+                } else {
+                    if (remoteHost.equalsIgnoreCase(host)) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Hostname verification is disabled as remote host [" + remoteHost + "] matches [" + host + "]");
+                        skipHostnameVerification = true;
+                    }
+                }
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "isSkipHostnameVerificationForHosts", new Object[] { skipHostnameVerification });
+        return skipHostnameVerification;
+    }
 
 }

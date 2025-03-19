@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -67,6 +67,35 @@ public class ConfigSerializer {
             }
         }
         return result;
+    }
+
+    /**
+     * Convert the config relevant to annotation indexing into a Properties object so that it can be easily compared.
+     *
+     * @param config the config
+     * @return the properties which affect annotation indexing
+     */
+    public Properties getIndexingConfig(OpenApiConfig config) {
+        Properties result = new Properties();
+        for (ConfigField field : configFieldProvider.getIndexingConfigFields()) {
+            String value = field.getValue(config);
+            if (value != null) {
+                result.put(field.getMethod(), value);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Get the set of config keys which may be contained in a map returned by {@link #getIndexingConfig(OpenApiConfig)}.
+     *
+     * @return the list of property keys which affect annotation indexing
+     */
+    public Set<String> getIndexingConfigKeys() {
+        return configFieldProvider.getIndexingConfigFields()
+                                  .stream()
+                                  .map(ConfigField::getMethod)
+                                  .collect(Collectors.toSet());
     }
 
     private static Set<String> getPathNames(OpenAPI model) {

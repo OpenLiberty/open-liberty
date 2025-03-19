@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ public class UIOauthTest {
     @Rule
     public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>().withCapabilities(new ChromeOptions())
                                                                                   .withAccessToHost(true)
-                                                                                  .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_FAILING,
+                                                                                  .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP,
                                                                                                      Props.getInstance().getFileProperty(Props.DIR_LOG),
                                                                                                      VncRecordingFormat.MP4)
                                                                                   .withLogConsumer(new SimpleLogConsumer(UIBasicTest.class, "selenium-driver"));

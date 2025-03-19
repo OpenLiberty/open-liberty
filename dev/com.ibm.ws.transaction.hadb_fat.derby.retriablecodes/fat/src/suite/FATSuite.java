@@ -27,7 +27,7 @@ import tests.FailoverTestRetriableCodes;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                //Ensure something runs when failover tests are skipped on IBMi
+//Ensure something runs when failover tests are skipped on IBMi
                 AlwaysPassesTest.class,
                 FailoverTestRetriableCodes.class
 })

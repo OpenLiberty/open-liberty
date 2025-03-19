@@ -51,3 +51,4 @@ Subsystem-Name: JavaMail 1.5
  com.ibm.websphere.appserver.thirdparty.mail; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:javax.mail:1.5.6"
 kind=ga
 edition=core
+WLP-Platform: javaee-7.0

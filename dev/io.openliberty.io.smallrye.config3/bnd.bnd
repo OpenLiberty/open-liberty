@@ -44,6 +44,7 @@ Private-Package: io.openliberty.microprofile.config.internal.extension
 
 Import-Package: \
         io.openliberty.microprofile.config.internal.common.resources, \
+        jakarta.annotation;version="[2.1,4)",\
         *
 
 Export-Package: \

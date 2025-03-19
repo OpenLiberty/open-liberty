@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,11 @@ import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AccessLogDataFormatter;
 import com.ibm.ws.logging.data.AccessLogDataFormatter.AccessLogDataFormatterBuilder;
 import com.ibm.ws.logging.data.JsonFieldAdder;
+import com.ibm.ws.logging.data.KeyValueIntegerPair;
+import com.ibm.ws.logging.data.KeyValueLongPair;
+import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.KeyValueStringPair;
+import com.ibm.ws.logging.data.ListFieldAdder;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.http.HttpCookie;
@@ -66,6 +71,7 @@ public class AccessLogSource implements Source {
     Map<Configuration, SetterFormatter> setterFormatterMap = new ConcurrentHashMap<Configuration, SetterFormatter>();
     public static String jsonAccessLogFieldsConfig = "";
     public static String jsonAccessLogFieldsLogstashConfig = "";
+    public static String accessLogFieldsTelemetryConfig = "";
     public Map<String, Object> configuration;
     private static boolean isFirstWarning = true; // We only want to print warnings once - without this, the same warning could print up to 4 times
 
@@ -77,17 +83,22 @@ public class AccessLogSource implements Source {
         String loggingConfig;
         // The jsonAccessLogFields configuration value for Logstash Collector, default or logFormat
         String logstashConfig;
+        // The accessLogFields configuration value for OpenTelemetry Logging, default or logFormat
+        String telemetryLoggingConfig;
 
-        private Configuration(String logFormat, String loggingConfig, String logstashConfig) {
+        private Configuration(String logFormat, String loggingConfig, String logstashConfig, String telemetryLoggingConfig) {
             this.logFormat = logFormat;
             this.loggingConfig = loggingConfig;
             this.logstashConfig = logstashConfig;
+            this.telemetryLoggingConfig = telemetryLoggingConfig;
         }
 
         //@formatter:off
         String getLogFormat()      { return this.logFormat; }
         String getLoggingConfig()  { return this.loggingConfig; }
         String getLogstashConfig() { return this.logstashConfig; }
+        String getTelemetryLoggingConfig() { return this.telemetryLoggingConfig; }
+
         //@formatter:on
 
         // We need to put this object into a HashMap, so we're overriding hashCode and equals
@@ -99,6 +110,8 @@ public class AccessLogSource implements Source {
             result = prime * result + ((logFormat == null) ? 0 : logFormat.hashCode());
             result = prime * result + ((loggingConfig == null) ? 0 : loggingConfig.hashCode());
             result = prime * result + ((logstashConfig == null) ? 0 : logstashConfig.hashCode());
+            result = prime * result + ((telemetryLoggingConfig == null) ? 0 : telemetryLoggingConfig.hashCode());
+
             return result;
         }
 
@@ -113,7 +126,8 @@ public class AccessLogSource implements Source {
             Configuration other = (Configuration) obj;
             if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
                 return false;
-            if (!other.getLogFormat().equals(this.logFormat) || !other.getLoggingConfig().equals(this.loggingConfig) || !other.getLogstashConfig().equals(this.logstashConfig))
+            if (!other.getLogFormat().equals(this.logFormat) || !other.getLoggingConfig().equals(this.loggingConfig) || !other.getLogstashConfig().equals(this.logstashConfig)
+                || !other.getTelemetryLoggingConfig().equals(this.telemetryLoggingConfig))
                 return false;
             return true;
         }
@@ -231,6 +245,8 @@ public class AccessLogSource implements Source {
         // Prevents duplicate setters from needing to be created
         initializeFieldMap(map, parsedFormat, jsonAccessLogFieldsConfig);
         initializeFieldMap(map, parsedFormat, jsonAccessLogFieldsLogstashConfig);
+        initializeFieldMap(map, parsedFormat, accessLogFieldsTelemetryConfig);
+
     }
 
     private static void initializeFieldMap(Map<String, HashSet<Object>> map, FormatSegment[] parsedFormat, String format) {
@@ -424,7 +440,71 @@ public class AccessLogSource implements Source {
         return builder.build();
     }
 
-    private static AccessLogDataFormatter populateDefaultFormatters(int format) {
+    private static AccessLogDataFormatter populateCustomTelemetryFormatters(Map<String, HashSet<Object>> fields, int format) {
+        AccessLogDataFormatterBuilder builder = new AccessLogDataFormatterBuilder();
+
+        for (String s : fields.keySet()) {
+            switch (s) {
+                // Original - default fields
+                //@formatter:off
+                    case "%h": builder.add(addRemoteHostFieldTelemetry        (format)); break;
+                    case "%H": builder.add(addRequestProtocolFieldTelemetry   (format)); break;
+                    case "%A": builder.add(addRequestHostFieldTelemetry       (format)); break;
+                    case "%B": builder.add(addBytesReceivedFieldTelemetry     (format)); break;
+                    case "%m": builder.add(addRequestMethodFieldTelemetry     (format)); break;
+                    case "%p":
+                        if (fields.get("%p") == null) {
+                            builder.add(addRequestPortField(format));
+                        } else {
+                            for (Object data : fields.get("%p")) {
+                                if (AccessLogPort.TYPE_REMOTE.equals(data)) {
+                                    builder.add(addRemotePortFieldTelemetry(format));
+                                } else {
+                                    builder.add(addRequestPortFieldTelemetry(format));
+                                }
+                            }
+                        }
+                        break;
+                    case "%q": builder.add(addQueryStringFieldTelemetry       (format)); break;
+                    case "%{R}W": builder.add(addElapsedTimeFieldTelemetry    (format)); break;
+                    case "%s": builder.add(addResponseCodeFieldTelemetry      (format)); break;
+                    case "%U": builder.add(addUriPathFieldTelemetry           (format)); break;
+                    // New - access log only fields
+                    case "%a": builder.add(addRemoteIPFieldTelemetry          (format)); break;
+                    case "%b": builder.add(addBytesSentFieldTelemetry         (format)); break;
+                    case "%C": builder.add(addCookiesFieldTelemetry           (format)); break;
+                    case "%D": builder.add(addRequestElapsedTimeFieldTelemetry(format)); break;
+                    case "%i":
+                        // Error message was printed earlier in populateSetters(), so we just break in this case
+                        if (fields.get("%i") == null) {
+                            break;
+                        }
+                        if (fields.get("%i").contains(USER_AGENT_HEADER)) {
+                            builder.add(addUserAgentFieldTelemetry(format));
+                            // If "User-Agent" is the only header, we can break out to prevent adding the request header field
+                            if (fields.get("%i").size() == 1)
+                                break;
+
+                        }
+                        builder.add(addRequestHeaderFieldTelemetry(format));
+                        break;
+                    case "%o": builder.add(addResponseHeaderFieldTelemetry      (format)); break;
+                    case "%r": builder.add(addRequestFirstLineFieldTelemetry    (format)); break;
+                    case "%t": builder.add(addRequestStartTimeFieldTelemetry    (format)); break;
+                    case "%{t}W": builder.add(addAccessLogDatetimeFieldTelemetry(format)); break;
+                    case "%u": builder.add(addRemoteUserFieldTelemetry          (format)); break;
+                    //@formatter:on
+            }
+        }
+        //@formatter:off
+        builder.add(addDatetimeField(format))  // Datetime, present in all access logs
+               .add(addSequenceField(format)); // Sequence, present in all access logs
+        //@formatter:on
+
+        return builder.build();
+    }
+
+    public static AccessLogDataFormatter populateDefaultFormatters(int format) {
 
         // Note: @formatter is Eclipse's formatter - does not relate to the AccessLogDataFormatter
         //@formatter:off
@@ -447,22 +527,49 @@ public class AccessLogSource implements Source {
         //@formatter:on
     }
 
+    public static AccessLogDataFormatter populateDefaultTelemetryFormatters(int format) {
+
+        // Note: @formatter is Eclipse's formatter - does not relate to the AccessLogDataFormatter
+        //@formatter:off
+        AccessLogDataFormatterBuilder builder = new AccessLogDataFormatterBuilder();
+        builder.add(addRemoteHostFieldTelemetry(format))  // %h
+        .add(addRequestProtocolFieldTelemetry  (format))  // %H
+        .add(addRequestHostFieldTelemetry      (format))  // %A
+        .add(addBytesReceivedFieldTelemetry    (format))  // %B
+        .add(addRequestMethodFieldTelemetry    (format))  // %m
+        .add(addRequestPortFieldTelemetry      (format))  // %p
+        .add(addQueryStringFieldTelemetry      (format))  // %q
+        .add(addElapsedTimeFieldTelemetry      (format))  // %{R}W
+        .add(addResponseCodeFieldTelemetry     (format))  // %s
+        .add(addUriPathFieldTelemetry          (format))  // %U
+        .add(addUserAgentFieldTelemetry        (format))  // User agent
+        .add(addDatetimeFieldTelemetry         (format))  // Datetime, present in all access logs
+        .add(addSequenceFieldTelemetry         (format))  // Sequence, present in all access logs
+        .add(addRequestFirstLineFieldTelemetry (format)); // Adding requestFirstLine by default only to be used in the OTel logs body
+
+        return builder.build();
+        //@formatter:on
+    }
+
     private static SetterFormatter createSetterFormatter(Configuration config, FormatSegment[] parsedFormat, AtomicLong seq) {
         SetterFormatter newSF = new SetterFormatter(config);
         List<AccessLogDataFieldSetter> fieldSetters = new ArrayList<AccessLogDataFieldSetter>();
-        AccessLogDataFormatter[] formatters = { null, null, null, null };
+        AccessLogDataFormatter[] formatters = { null, null, null, null, null, null };
         Map<String, HashSet<Object>> fieldsToAdd = new HashMap<String, HashSet<Object>>();
         Map<String, HashSet<Object>> fieldsToAddJson = new HashMap<String, HashSet<Object>>();
         Map<String, HashSet<Object>> fieldsToAddLogstash = new HashMap<String, HashSet<Object>>();
+        Map<String, HashSet<Object>> fieldsToAddTelemetryLogging = new HashMap<String, HashSet<Object>>();
 
         // Create the mapping of fields to add:{<format key> : <data value/null>}
         // Prevents duplicates
         initializeFieldMap(fieldsToAdd, parsedFormat);
         initializeFieldMap(fieldsToAddJson, parsedFormat, jsonAccessLogFieldsConfig);
         initializeFieldMap(fieldsToAddLogstash, parsedFormat, jsonAccessLogFieldsLogstashConfig);
+        initializeFieldMap(fieldsToAddTelemetryLogging, parsedFormat, accessLogFieldsTelemetryConfig);
 
         // Create setter list
         fieldSetters = populateSetters(fieldsToAdd);
+
         // These fields are always added
         fieldSetters.add((ald, alrd) -> ald.setSequence(alrd.getStartTime() + "_" + String.format("%013X", seq.incrementAndGet())));
         fieldSetters.add((ald, alrd) -> ald.setDatetime(alrd.getTimestamp()));
@@ -471,6 +578,7 @@ public class AccessLogSource implements Source {
             formatters[0] = populateDefaultFormatters(CollectorConstants.KEYS_JSON);
         } else if (jsonAccessLogFieldsConfig.equals("logFormat")) {
             formatters[1] = populateCustomFormatters(fieldsToAddJson, CollectorConstants.KEYS_JSON);
+
         }
 
         if (jsonAccessLogFieldsLogstashConfig.equals("default")) {
@@ -478,6 +586,20 @@ public class AccessLogSource implements Source {
         } else if (jsonAccessLogFieldsLogstashConfig.equals("logFormat")) {
             formatters[3] = populateCustomFormatters(fieldsToAddLogstash, CollectorConstants.KEYS_LOGSTASH);
         }
+
+        if (accessLogFieldsTelemetryConfig.equals("default")) {
+            formatters[4] = populateDefaultTelemetryFormatters(CollectorConstants.KEYS_TELEMETRY_LOGGING);
+
+            //Include the requestFirstLine for Telemetry to be used as the body where applicable
+            fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null)));
+
+        } else if (accessLogFieldsTelemetryConfig.equals("logFormat")) {
+            formatters[5] = populateCustomTelemetryFormatters(fieldsToAddTelemetryLogging, CollectorConstants.KEYS_TELEMETRY_LOGGING);
+
+            //Include the requestFirstLine for Telemetry to be used as the body where applicable
+            fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null)));
+        }
+
         newSF.setSettersAndFormatters(fieldSetters, formatters);
 
         return newSF;
@@ -496,8 +618,9 @@ public class AccessLogSource implements Source {
             FormatSegment[] parsedFormat = ((AccessLogRecordDataExt) recordData).getParsedFormat();
             jsonAccessLogFieldsConfig = AccessLogConfig.jsonAccessLogFieldsConfig;
             jsonAccessLogFieldsLogstashConfig = AccessLogConfig.jsonAccessLogFieldsLogstashConfig;
+            accessLogFieldsTelemetryConfig = AccessLogConfig.accessLogFieldsTelemetryConfig;
 
-            Configuration config = new Configuration(formatString, jsonAccessLogFieldsConfig, jsonAccessLogFieldsLogstashConfig);
+            Configuration config = new Configuration(formatString, jsonAccessLogFieldsConfig, jsonAccessLogFieldsLogstashConfig, accessLogFieldsTelemetryConfig);
 
             SetterFormatter currentSF = setterFormatterMap.get(config);
             if (currentSF == null) {
@@ -526,6 +649,193 @@ public class AccessLogSource implements Source {
     }
 
     // Field formatters
+    private static ListFieldAdder addRemoteHostFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getRemoteHostKey(format), ald.getRemoteHost());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addRequestProtocolFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getRequestProtocolKey(format), ald.getRequestProtocol());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addRequestHostFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getRequestHostKey(format), ald.getRequestHost());
+            keyValuePairList.add(kvp);
+
+        };
+    }
+
+    private static ListFieldAdder addBytesReceivedFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueLongPair(AccessLogData.getBytesReceivedKey(format), ald.getBytesReceived());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addRequestMethodFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValueStringPair kvp = new KeyValueStringPair(AccessLogData.getRequestMethodKey(format), ald.getRequestMethod());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addRequestPortFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getRequestPortKey(format), ald.getRequestPort());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addRemotePortFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getRemotePortKey(format), ald.getRemotePort());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addQueryStringFieldTelemetry(int format) {
+        return ((keyValuePairList, ald) -> {
+            String jsonQueryString = ald.getQueryString();
+            if (jsonQueryString != null) {
+                try {
+                    jsonQueryString = URLDecoder.decode(jsonQueryString, LogFieldConstants.UTF_8);
+                } catch (UnsupportedEncodingException e) {
+                    // ignore, use the original value;
+                }
+            }
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getQueryStringKey(format), jsonQueryString);
+            keyValuePairList.add(kvp);
+        });
+    }
+
+    private static ListFieldAdder addElapsedTimeFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueLongPair(AccessLogData.getElapsedTimeKey(format), ald.getElapsedTime());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addResponseCodeFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueIntegerPair(AccessLogData.getResponseCodeKey(format), ald.getResponseCode());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addUriPathFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getUriPathKey(format), ald.getUriPath());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addRemoteIPFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getRemoteIPKey(format), ald.getRemoteIP());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addBytesSentFieldTelemetry(int format) {
+        return ((keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueLongPair(AccessLogData.getBytesSentKey(format), ald.getBytesSent());
+            keyValuePairList.add(kvp);
+        });
+    }
+
+    private static ListFieldAdder addCookiesFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            if (ald.getCookies() != null)
+                ald.getCookies().getList().forEach(c -> keyValuePairList.add(new KeyValueStringPair(AccessLogData.getCookieKey(format, c), c.getStringValue())));
+        };
+    }
+
+    private static ListFieldAdder addRequestElapsedTimeFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueLongPair(AccessLogData.getRequestElapsedTimeKey(format), ald.getRequestElapsedTime());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addUserAgentFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            String userAgent = ald.getUserAgent();
+            if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH)
+                userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getUserAgentKey(format), userAgent);
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addRequestHeaderFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            if (ald.getRequestHeaders() != null) {
+                ald.getRequestHeaders().getList().forEach(h -> keyValuePairList.add(new KeyValueStringPair(AccessLogData.getRequestHeaderKey(format, h), h.getStringValue())));
+
+            }
+        };
+    }
+
+    private static ListFieldAdder addResponseHeaderFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            if (ald.getResponseHeaders() != null)
+                ald.getResponseHeaders().getList().forEach(h -> keyValuePairList.add(new KeyValueStringPair(AccessLogData.getResponseHeaderKey(format, h), h.getStringValue())));
+        };
+    }
+
+    private static ListFieldAdder addRequestFirstLineFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getRequestFirstLineKey(format), ald.getRequestFirstLine());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addRequestStartTimeFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            String startTime = CollectorJsonHelpers.formatTime(ald.getRequestStartTime());
+            KeyValuePair kvp = new KeyValueLongPair(AccessLogData.getRequestStartTimeKey(format), Long.parseLong(startTime));
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addAccessLogDatetimeFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            String accessLogDatetime = CollectorJsonHelpers.formatTime(ald.getAccessLogDatetime());
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getAccessLogDatetimeKey(format), accessLogDatetime);
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addRemoteUserFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            if (ald.getRemoteUser() != null && !ald.getRemoteUser().isEmpty()) {
+                KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getRemoteUserKey(format), ald.getRemoteUser());
+                keyValuePairList.add(kvp);
+            }
+        };
+    }
+
+    private static ListFieldAdder addSequenceFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getSequenceKey(format), ald.getSequence());
+            keyValuePairList.add(kvp);
+        };
+    }
+
+    private static ListFieldAdder addDatetimeFieldTelemetry(int format) {
+        return (keyValuePairList, ald) -> {
+            String datetime = CollectorJsonHelpers.formatTime(ald.getDatetime());
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getDatetimeKey(format), datetime);
+            keyValuePairList.add(kvp);
+        };
+    }
+
     private static JsonFieldAdder addRemoteHostField(int format) {
         return (jsonBuilder, ald) -> {
             return jsonBuilder.addField(AccessLogData.getRemoteHostKey(format), ald.getRemoteHost(), false, true);

@@ -21,12 +21,13 @@ import java.net.ConnectException;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.HADBTestConstants.HADBTestType;
+import com.ibm.tx.jta.ut.util.HADBTestControl;
 import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
@@ -37,7 +38,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import suite.FATSuite;
 
 /**
  * These tests are designed to exercise the ability of the SQLMultiScopeRecoveryLog (transaction logs stored
@@ -135,11 +135,6 @@ public class FailoverTest1 extends FailoverTest {
                                                         "com.ibm.ws.transaction_multipleretries",
     };
 
-    @AfterClass
-    public static void afterSuite() {
-        FATSuite.afterSuite("HATABLE", "WAS_TRAN_LOG", "WAS_PARTNER_LOG");
-    }
-
     @BeforeClass
     public static void setUp() throws Exception {
         FailoverTest.commonSetUp(FailoverTest1.class);
@@ -155,14 +150,7 @@ public class FailoverTest1 extends FailoverTest {
         serverMsgs = new String[] { "WTRN0112E", };
 
         try {
-            FATUtils.startServers(runner, server);
-
-            runInServletAndCheck(server, SERVLET_NAME, "setupForRecoverableFailover");
-
-            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server);
-
-            Log.info(this.getClass(), method, "set timeout");
-            server.setServerStartTimeout(START_TIMEOUT);
+            HADBTestControl.write(HADBTestType.RUNTIME, -4498, 12, 1);
 
             server.setAdditionalSystemProperties(Collections.singletonMap(TxTestUtils.CONNECTION_MANAGER_FAILS, "1"));
 
@@ -194,14 +182,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForRecoverableFailover");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.RUNTIME, -4498, 14, 1);
 
         FATUtils.startServers(runner, server);
 
@@ -225,14 +206,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = retriesServer;
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForRecoverableFailureMultipleRetries");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.RUNTIME, -4498, 11, 5); // Can fail up to 5 times
 
         FATUtils.startServers(runner, server);
 
@@ -243,19 +217,6 @@ public class FailoverTest1 extends FailoverTest {
         // Should see a message like
         // WTRN0100E: Cannot recover from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
         assertNotNull("No error message signifying log failure", server.waitForStringInLog("Cannot recover from SQLException when forcing SQL RecoveryLog"));
-
-        // We need to tidy up the environment at this point. We cannot guarantee
-        // test order, so we should ensure
-        // that we do any necessary recovery at this point
-        FATUtils.stopServers(server);
-
-        FATUtils.startServers(runner, retriesServer);
-
-        // RTC defect 170741
-        // Wait for recovery to be driven - this may suffer from a delay (see
-        // RTC 169082), so wait until the "recover("
-        // string appears in the messages.log
-        assertNotNull("Recovery didn't happen for " + server.getServerName(), server.waitForStringInTrace("Performed recovery for " + server.getServerName()));
     }
 
     /**
@@ -272,14 +233,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableFailover");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.RUNTIME, -3, 12, 1);
 
         FATUtils.startServers(runner, server);
 
@@ -315,14 +269,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForStartupFailover");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.STARTUP, -4498, 11, 1, "--assertLogOwnershipAtOpenPeerLocking");
 
         FATUtils.startServers(runner, server);
 
@@ -330,29 +277,19 @@ public class FailoverTest1 extends FailoverTest {
     }
 
     @Test
-    @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogClosedException", })
+    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException", "java.lang.IllegalStateException" })
     public void testHADBNonRecoverableStartupFailover() throws Exception {
         final String method = "testHADBNonRecoverableStartupFailover";
 
         server = defaultServer;
         serverMsgs = new String[] { "WTRN0107W", "WTRN0000E", "WTRN0112E", "WTRN0153W" };
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableStartupFailover");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.STARTUP, -3, 11, 1, "--assertLogOwnershipAtOpenPeerLocking");
 
         FATUtils.startServers(runner, server);
         StringBuilder sb = runInServlet(server, SERVLET_NAME, "driveTransactions");
 
         assertFalse("driveTransactions unexpectedly succeeded", sb.toString().contains(SUCCESS)); // Log should be closed
-
-        // cleanup HATable
-        sb = runInServlet(server, SERVLET_NAME, "dropHATable");
     }
 
     @Test
@@ -363,22 +300,12 @@ public class FailoverTest1 extends FailoverTest {
         server = defaultServer;
         serverMsgs = new String[] { "WTRN0107W", "WTRN0000E", "WTRN0112E", "WTRN0153W" };
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForEarlyNonRecoverableStartupFailover");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.STARTUP, -3, 4, 1, "--internalClaimRecoveryLogs");
 
         FATUtils.startServers(runner, server);
         StringBuilder sb = runInServlet(server, SERVLET_NAME, "driveTransactions");
 
         assertFalse("driveTransactions unexpectedly succeeded", sb.toString().contains(SUCCESS)); // Log should be closed
-
-        // cleanup HATable
-        sb = runInServlet(server, SERVLET_NAME, "dropHATable");
     }
 
     /**
@@ -392,14 +319,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForDuplicationRestart");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.DUPLICATE_RESTART, 0, 10, 1);
 
         FATUtils.startServers(runner, server);
 
@@ -438,14 +358,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
-
-        runInServletAndCheck(server, SERVLET_NAME, "setupForDuplicationRuntime");
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.DUPLICATE_RUNTIME, 0, 10, 1);
 
         FATUtils.startServers(runner, server);
 
@@ -502,15 +415,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        FATUtils.startServers(runner, server);
-
-        sb = runTestWithResponse(server, SERVLET_NAME, "setupForHalt");
-        assertTrue("setupForHalt did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
-
-        FATUtils.stopServers(server);
-
-        Log.info(this.getClass(), method, "set timeout");
-        server.setServerStartTimeout(START_TIMEOUT);
+        HADBTestControl.write(HADBTestType.HALT, 0, 12, 1); // set the ioperation to the duplicate test value + 2
 
         FATUtils.startServers(runner, server);
 

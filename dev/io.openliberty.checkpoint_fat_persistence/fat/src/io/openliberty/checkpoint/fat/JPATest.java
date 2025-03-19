@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,21 +56,28 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @CheckpointTest
 public class JPATest {
 
+    //FIXME why is this test using the SSL image when the datasource doesn't even use SSL?
+
+    //TODO Start using ImageBuilder
+//    private static final DockerImageName DB2_SSL = ImageBuilder.build("db2-ssl:12.1.1.0")
+//                    .getDockerImageName()
+//                    .asCompatibleSubstituteFor("icr.io/db2_community/db2");
+
     // Updated docker image to use TLS1.2 for secure communication
-    static final DockerImageName db2Image = DockerImageName.parse("kyleaure/db2-ssl:3.0")
-                    .asCompatibleSubstituteFor("ibmcom/db2");
+    static final DockerImageName DB2_SSL = DockerImageName.parse("kyleaure/db2-ssl:3.0")
+                    .asCompatibleSubstituteFor("ibmcom/db2"); //TODO update .asCompatibleSubstituteFor("icr.io/db2_community/db2")
 
     @ClassRule
-    public static Db2Container db2 = new Db2Container(db2Image)
+    public static Db2Container db2 = new Db2Container(DB2_SSL)
                     .acceptLicense()
                     .withUsername("db2inst1") // set in Dockerfile
                     .withPassword("password") // set in Dockerfile
                     .withDatabaseName("testdb") // set in Dockerfile
                     .withExposedPorts(50000, 50001) // 50k is regular 50001 is secure
-                    // Use 5m timeout for local runs, 25m timeout for remote runs (extra time since the DB2 container can be slow to start)
+                    // Use 5m timeout for local runs, 35m timeout for remote runs (extra time since the DB2 container can be slow to start)
                     .waitingFor(new LogMessageWaitStrategy()
                                     .withRegEx(".*DB2 SSH SETUP DONE.*")
-                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25)))
+                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 35)))
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "db2-ssl"))
                     .withReuse(true);
 

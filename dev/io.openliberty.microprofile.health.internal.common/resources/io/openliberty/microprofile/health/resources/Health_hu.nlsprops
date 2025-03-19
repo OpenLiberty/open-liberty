@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -42,8 +42,8 @@ healthcheck.bean.call.exception.CWMMH0050E.explanation=A megadott h\u00edv\u00e1
 healthcheck.bean.call.exception.CWMMH0050E.useraction=A kiv\u00e9tel azonos\u00edt\u00e1s\u00e1hoz tekintse \u00e1t a h\u00edv\u00e1si met\u00f3dust a HealthCheck komponensen bel\u00fcl.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMMH0052W=CWMMH0052W: A HealthCheckResponse met\u00f3dust megval\u00f3s\u00edt\u00f3 {0} a(z) {1} alkalmaz\u00e1s {2} modulj\u00e1ban ({3}) \u00e1llapotot jelentett a k\u00f6vetkez\u0151 adatokkal: {4}.
-healthcheck.application.down.CWMMH0052W.explanation=A DOWN \u00e1llapot azt eredm\u00e9nyezheti, hogy egy megfigyel\u00e9si szolg\u00e1ltat\u00e1s m\u0171veletet v\u00e9gez az adott kiszolg\u00e1l\u00f3n.
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: A {0} alkalmaz\u00e1s HealthCheckalkalmaz\u00e1sa a modulban {1} , {2}, az \u00e1llapotellen\u0151rz\u00e9s {3} \u00e1llapot\u00e1t jelenti, {4}\u00e9s az adatokkal {5}.
+healthcheck.application.down.CWMMH0052W.explanation=A lefel\u00e9 ir\u00e1nyul\u00f3 \u00e1llapot figyel\u00e9si szolg\u00e1ltat\u00e1st okozhat a kiszolg\u00e1l\u00f3n.
 healthcheck.application.down.CWMMH0052W.useraction=Semmit sem kell tennie.  Ez a figyelmeztet\u00e9s a DOWN \u00e1llapot r\u00f6gz\u00edt\u00e9se.
 
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet

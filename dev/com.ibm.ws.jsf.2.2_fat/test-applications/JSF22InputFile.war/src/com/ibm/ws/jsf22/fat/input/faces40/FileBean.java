@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,5 +57,13 @@ public class FileBean implements Serializable {
 
     public String getFileContents() {
         return fileContents;
+    }
+
+    public long getFileSize(){
+        if(this.file == null){
+            System.out.println("0L");
+            return 0L;
+        }
+        return this.file.getSize();
     }
 }

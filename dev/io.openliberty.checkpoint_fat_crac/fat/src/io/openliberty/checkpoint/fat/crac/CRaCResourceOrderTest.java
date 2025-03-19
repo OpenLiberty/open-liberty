@@ -60,7 +60,7 @@ public class CRaCResourceOrderTest extends FATServletClient {
     public void setUp() throws Exception {
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                              server -> {
-                                 assertNotNull("'SRVE0169I: ' message not found in log before rerstore",
+                                 assertNotNull("'SRVE0169I: ' message not found in log before restore",
                                                server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: " + APP_NAME, 0));
                                  assertNotNull("'CWWKZ0001I: ' message not found in log.",
                                                server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));

@@ -1548,6 +1548,7 @@ public class BatchRestUtils {
     /**
      * Inner class that holds the output from a process.
      */
+    @Deprecated // TODO switch to use the DDLGenScriptHelper from fattest.simplicity
     private static class ProcessOutput {
         private final List<String> sysout;
         private final List<String> syserr;
@@ -1600,7 +1601,7 @@ public class BatchRestUtils {
         }
     }
     
-
+    @Deprecated // TODO switch to use the DDLGenScriptHelper from fattest.simplicity
     private ProcessBuilder getProcessBuilder(LibertyServer server) throws Exception {
         String scriptName;
         String serverName = server.getServerName();
@@ -1616,6 +1617,7 @@ public class BatchRestUtils {
         return new ProcessBuilder(scriptName, "generate", serverName).directory(new File(installRoot));
     }
 
+    @Deprecated // TODO switch to use the DDLGenScriptHelper from fattest.simplicity
     public String getBatchDDL(LibertyServer server) throws Exception {
 
         ProcessBuilder processBuilder = getProcessBuilder(server);

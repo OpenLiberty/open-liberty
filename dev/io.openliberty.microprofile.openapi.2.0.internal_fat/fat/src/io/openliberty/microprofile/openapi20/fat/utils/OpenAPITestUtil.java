@@ -1,17 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.fat.utils;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
@@ -26,12 +25,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -40,6 +44,8 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -48,6 +54,8 @@ import componenttest.topology.impl.LibertyServer;
 public class OpenAPITestUtil {
 
     private final static int TIMEOUT = 30000;
+
+    private final static Logger LOG = Logger.getLogger("OpenAPITestUtil");
 
     /**
      * Change Liberty features (Mark is set first on log. Then wait for feature updated message using mark)
@@ -229,7 +237,9 @@ public class OpenAPITestUtil {
 
     public static JsonNode readYamlTree(String contents) {
         org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml(new SafeConstructor(new LoaderOptions()));
-        return new ObjectMapper().convertValue(yaml.load(contents), JsonNode.class);
+        JsonNode node = new ObjectMapper().convertValue(yaml.load(contents), JsonNode.class);
+        LOG.info(node.toPrettyString());
+        return node;
     }
 
     /**
@@ -270,6 +280,29 @@ public class OpenAPITestUtil {
     }
 
     /**
+     * Test that the path of each server URL matches the expected context root.
+     * <p>
+     * {@code root} can be @{code ""} to test that no context root was appended,
+     * in the case where we're merging applications and the context root should be
+     * prepended to paths instead.
+     * 
+     * @param root the root JSON node for the OpenAPI document
+     * @param expectedContextRoot the context root we expect to find in the path of every server in the document
+     */
+    public static void checkServersForContextRoot(JsonNode root, String expectedContextRoot) {
+        JsonNode serversNode = root.get("servers");
+        assertNotNull(serversNode);
+        assertTrue(serversNode.isArray());
+        ArrayNode servers = (ArrayNode) serversNode;
+        assertThat("Server count", servers.size(), greaterThan(0));
+        servers.findValues("url")
+               .forEach(url -> {
+                   URI uri = URI.create(url.asText());
+                   assertThat("Path of " + url, uri.getPath(), equalTo(expectedContextRoot));
+               });
+    }
+
+    /**
      * Find the given path in the document and prepend the path from a relevant server to it and return the result
      *
      * @param root the document
@@ -305,18 +338,19 @@ public class OpenAPITestUtil {
 
     public static void checkInfo(JsonNode root,
                                  String defaultTitle,
-                                 String defaultVersion) {
+                                 String defaultVersion)
+                    throws JsonProcessingException {
         JsonNode infoNode = root.get("info");
         assertNotNull(infoNode);
 
-        assertNotNull("Title is not specified to the default value", infoNode.get("title"));
-        assertNotNull("Version is not specified to the default value", infoNode.get("version"));
+        assertNotNull("Title is not specified to the default value; " + new ObjectMapper().writeValueAsString(root), infoNode.get("title"));
+        assertNotNull("Version is not specified to the default value" + new ObjectMapper().writeValueAsString(root), infoNode.get("version"));
 
         String title = infoNode.get("title").textValue();
         String version = infoNode.get("version").textValue();
 
-        assertEquals("Incorrect default value for title", defaultTitle, title);
-        assertEquals("Incorrect default value for version", defaultVersion, version);
+        assertEquals("Incorrect default value for title" + new ObjectMapper().writeValueAsString(root), defaultTitle, title);
+        assertEquals("Incorrect default value for version" + new ObjectMapper().writeValueAsString(root), defaultVersion, version);
     }
 
     public static void changeServerPorts(LibertyServer server,
@@ -397,4 +431,96 @@ public class OpenAPITestUtil {
         assertTrue(childNode.isObject());
         return (ObjectNode) childNode;
     }
+
+    /**
+     * Checks if two JsonNode objects are recursively equal, ignoring the order of object properties
+     * 
+     * @param n1 the first node to compare
+     * @param n2 the second node to compare
+     * @return whether they are equal ignoring property order
+     */
+    public static boolean equalIgnoringPropertyOrder(JsonNode n1, JsonNode n2) {
+        if (n1 == n2) {
+            return true;
+        }
+
+        if (n1 == null || n2 == null) {
+            return false;
+        }
+
+        if (n1.getNodeType() != n2.getNodeType()) {
+            return false;
+        }
+
+        if (n1.isArray()) {
+            ArrayNode a1 = (ArrayNode) n1;
+            ArrayNode a2 = (ArrayNode) n2;
+            if (a1.size() != a2.size()) {
+                return false;
+            }
+            for (int i = 0; i < a1.size(); i++) {
+                if (!equalIgnoringPropertyOrder(a1.get(i), a2.get(i))) {
+                    return false;
+                }
+            }
+        } else if (n1.isObject()) {
+            ObjectNode o1 = (ObjectNode) n1;
+            ObjectNode o2 = (ObjectNode) n2;
+            if (o1.size() != o2.size()) {
+                return false;
+            }
+            for (Entry<String, JsonNode> entry : o1.properties()) {
+                JsonNode v1 = entry.getValue();
+                JsonNode v2 = o2.get(entry.getKey());
+                if (!equalIgnoringPropertyOrder(v1, v2)) {
+                    return false;
+                }
+            }
+        } else {
+            if (!Objects.equals(n1, n2)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void assertEqualIgnoringPropertyOrder(JsonNode expected, JsonNode actual) {
+        assertEqualIgnoringPropertyOrder("", expected, actual);
+    }
+
+    public static void assertEqualIgnoringPropertyOrder(String message, JsonNode expected, JsonNode actual) {
+        if (!equalIgnoringPropertyOrder(expected, actual)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(message).append("\n");
+            sb.append("Expected:\n").append(expected.toPrettyString()).append("\n");
+            sb.append("Actual:\n").append(actual.toPrettyString()).append("\n");
+            throw new AssertionError(sb.toString());
+        }
+    }
+
+    /**
+     * Get the version of the mpOpenAPI feature under test.
+     * <p>
+     * Retrieves the current {@code FeatureReplacementAction} and checks which version of the mpOpenAPI feature it adds
+     * 
+     * @return the mpOpenAPI feature version
+     * @throws IllegalStateException if the current repeat action does not add any mpOpenAPI feature
+     */
+    public static float getOpenAPIFeatureVersion() {
+        FeatureReplacementAction action = (FeatureReplacementAction) RepeatTestFilter.getMostRecentRepeatAction();
+        String feature = Stream.concat(action.getAddFeatures().stream(),
+                                       action.getAlwaysAddFeatures().stream())
+                               .map(String::toLowerCase)
+                               .filter(f -> f.startsWith("mpopenapi"))
+                               .findFirst()
+                               .orElseThrow(() -> new IllegalStateException("Current repeat does not add mpOpenAPI"));
+
+        String[] parts = feature.split("-");
+        if (parts.length != 2) {
+            throw new IllegalStateException("Malformed mpOpenAPI feature name: " + feature);
+        }
+
+        return Float.parseFloat(parts[1]);
+    }
+
 }

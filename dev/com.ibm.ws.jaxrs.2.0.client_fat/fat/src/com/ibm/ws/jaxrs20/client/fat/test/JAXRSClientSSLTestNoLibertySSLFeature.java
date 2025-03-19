@@ -15,7 +15,8 @@ package com.ibm.ws.jaxrs20.client.fat.test;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -25,7 +26,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEEAction;
 
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLTestNoLibertySSLFeature extends JAXRSClientSSLTestNoLibertySSLCfg {
@@ -43,11 +43,10 @@ public class JAXRSClientSSLTestNoLibertySSLFeature extends JAXRSClientSSLTestNoL
         } catch (Exception e) {
             System.out.println(e.toString());
         }
-        if (JakartaEEAction.isEE9Active()) {
-            serverNoSSL.changeFeatures(Arrays.asList("restfulWS-3.0", "ssl-1.0"));
-        } else {
-            serverNoSSL.changeFeatures(Arrays.asList("jaxrs-2.0", "ssl-1.0"));
-        }
+        
+        List<String> features = new ArrayList<>(serverNoSSL.getServerConfiguration().getFeatureManager().getFeatures());
+        features.add("ssl-1.0");
+        serverNoSSL.changeFeatures(features);
 
         try {
             server.startServer(true);

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -118,3 +118,8 @@ reaper.reopen.active.useraction=Reinicie el servidor.  Cuando actualice los arch
 missing.zip.file=CWWKM0128E: Falta el archivo zip {0}.
 missing.zip.file.explanation=Se ha producido una excepci\u00f3n durante el proceso de archivado porque no se ha encontrado el archivo especificado. 
 missing.zip.file.useraction=Compruebe se sale del archivo especificado y que tiene permisos que el servidor puede leer.
+
+# # {0} A jar: URL.
+CWWKM0129W.missing.dir.entry=CWWKM0129W: El archivo {0} no tiene la ruta de entrada de directorio esperada: {1}
+CWWKM0129W.missing.dir.entry.explanation=El archivo que se utiliza en la URL del recurso tiene entradas contenidas en el directorio, pero al archivo le falta una entrada para el directorio en s\u00ed. No se devuelve la URL del directorio. Esta omisi\u00f3n puede hacer que algunas aplicaciones que buscan recursos no encuentren algunos recursos en el archivo comprimido.
+CWWKM0129W.missing.dir.entry.useraction=El archivo de almacenamiento debe crearse para incluir todas las entradas del directorio.

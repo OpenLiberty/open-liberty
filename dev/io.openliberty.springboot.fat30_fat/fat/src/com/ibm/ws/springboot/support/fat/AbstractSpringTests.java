@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,24 +50,15 @@ public abstract class AbstractSpringTests {
 
     // All current FAT application names.
 
-    public static final String SPRING_BOOT_30_APP_ACTUATOR =
-        "io.openliberty.springboot.fat30.actuator.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_30_APP_BASE =
-        "io.openliberty.springboot.fat30.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_30_APP_JAVA =
-        "io.openliberty.springboot.fat30.java.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_30_APP_MULTI_CONTEXT =
-        "io.openliberty.springboot.fat30.multicontext.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_30_APP_WAR =
-        "io.openliberty.springboot.fat30.war.app-0.0.1-SNAPSHOT.war";
-    public static final String SPRING_BOOT_30_APP_WEBANNO =
-        "io.openliberty.springboot.fat30.webanno.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_30_APP_WEBFLUX =
-        "io.openliberty.springboot.fat30.webflux.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_30_APP_WEBSOCKET =
-        "io.openliberty.springboot.fat30.websocket.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_30_APP_SECURITY =
-        "io.openliberty.springboot.fat30.security.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_ACTUATOR = "io.openliberty.springboot.fat30.actuator.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_BASE = "io.openliberty.springboot.fat30.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_JAVA = "io.openliberty.springboot.fat30.java.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_MULTI_CONTEXT = "io.openliberty.springboot.fat30.multicontext.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_WAR = "io.openliberty.springboot.fat30.war.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_30_APP_WEBANNO = "io.openliberty.springboot.fat30.webanno.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_WEBFLUX = "io.openliberty.springboot.fat30.webflux.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_WEBSOCKET = "io.openliberty.springboot.fat30.websocket.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_SECURITY = "io.openliberty.springboot.fat30.security.app-0.0.1-SNAPSHOT.jar";
 
     // Various spring configuration property fragments.
 
@@ -101,7 +92,7 @@ public abstract class AbstractSpringTests {
      * return new storage.
      *
      * @return The bootstrap properties used by this Spring FAT test
-     *    class.  This default implementation answers an empty table.
+     *         class. This default implementation answers an empty table.
      */
     public Map<String, String> getBootStrapProperties() {
         return Collections.emptyMap();
@@ -131,15 +122,15 @@ public abstract class AbstractSpringTests {
     public static RemoteFile dropinsFile;
 
     public static RemoteFile getServerRootFile() throws Exception {
-        if ( serverRootFile == null ) {
+        if (serverRootFile == null) {
             serverRootFile = getServerFile("");
         }
         return serverRootFile;
     }
 
     public static RemoteFile getDropinsFile() throws Exception {
-        if ( dropinsFile == null ) {
-            dropinsFile = new RemoteFile( getServerRootFile(), "dropins" );
+        if (dropinsFile == null) {
+            dropinsFile = server.getMachine().getFile(getServerRootFile(), "dropins");
         }
         return dropinsFile;
     }
@@ -163,7 +154,7 @@ public abstract class AbstractSpringTests {
     }
 
     public static void requireServerMessage(String msg, String regex) {
-        assertNotNull( msg, server.waitForStringInLog(regex) );
+        assertNotNull(msg, server.waitForStringInLog(regex));
     }
 
     public static void requireServerTrace(String msg, String regex) {
@@ -202,24 +193,24 @@ public abstract class AbstractSpringTests {
 
     protected static RemoteFile addDropinFile(RemoteFile sourceFile,
                                               RemoteFile destRootFile, String destName) throws Exception {
-        RemoteFile destFile = new RemoteFile(destRootFile, destName);
+        RemoteFile destFile = sourceFile.getMachine().getFile(destRootFile, destName);
         sourceFile.copyToDest(destFile);
         recordDropinFile(destFile);
         return destFile;
     }
 
     /**
-     * Delete registered dropin files.  Clear the dropin file registry.
+     * Delete registered dropin files. Clear the dropin file registry.
      *
      * This is intended to be done at the conclusion of each FAT test class
-     * as a part of <code>@AfterClass</code> processing.  See {@link #stopServer}.
+     * as a part of <code>@AfterClass</code> processing. See {@link #stopServer}.
      *
      * @throws Exception Thrown if a registered file exists and
-     *     could not be deleted.
+     *                       could not be deleted.
      */
     protected static void deleteDropinFiles() throws Exception {
-        for ( RemoteFile remoteFile : getDropinFiles() ) {
-            if ( remoteFile.exists() ) {
+        for (RemoteFile remoteFile : getDropinFiles()) {
+            if (remoteFile.exists()) {
                 remoteFile.delete();
             }
         }
@@ -245,15 +236,15 @@ public abstract class AbstractSpringTests {
 
     /**
      * When requested (via <code>@Rule</code>), JUnit injects the test
-     * name at the beginning of the test lifecycle.  Injection occurs
+     * name at the beginning of the test lifecycle. Injection occurs
      * before <code>@Before</code> is invoked.
      *
      * These Spring FAT tests use the injected test name to specialize
-     * test behavior.  For example, this allows security to be
+     * test behavior. For example, this allows security to be
      * conditionally enabled.
      *
      * TODO: This is a pecululiar way to control test behavior, and is
-     * not advised.  Using a more direct mechanism would be much better,
+     * not advised. Using a more direct mechanism would be much better,
      * but is hard to put in at this time.
      */
     @Rule
@@ -268,7 +259,7 @@ public abstract class AbstractSpringTests {
     public void configureServer() throws Exception {
         System.out.println("Configuring server for " + testName.getMethodName());
 
-        if ( serverStarted.compareAndSet(false, true) ) {
+        if (serverStarted.compareAndSet(false, true)) {
             doConfigureServer();
         }
     }
@@ -305,8 +296,8 @@ public abstract class AbstractSpringTests {
         configureBootStrapProperties(dropinsTest);
         modifyServerConfiguration(config);
         server.updateServerConfiguration(config);
-        
-        server.startServer( getLogName(), true, false );
+
+        server.startServer(getLogName(), true, false);
         verifyServerStart();
     }
 
@@ -317,24 +308,24 @@ public abstract class AbstractSpringTests {
      *
      * <ul>
      * <li><code>DROPINS_SPRING</code>: Copy the spring application into
-     *     the "dropins/spring" folder.
+     * the "dropins/spring" folder.
      * </li>
      * <li><code>DROPINS_ROOT</code>: Copy the spring application into the
-     *     "dropins" folder.  Copy additional copies according to the
-     *     {@link #getDropinCopyNum()} value.
+     * "dropins" folder. Copy additional copies according to the
+     * {@link #getDropinCopyNum()} value.
      * </li>
      * <li><code>SPRING_BOOT_APP_TAG</code>: Use the spring application as
-     *     is in the "apps" folder.
+     * is in the "apps" folder.
      * </li>
      * </ul>
      * The <code>SPRING_BOOT_APP_TAG</code> case is the only case which where
      * the application may be configured to not use the default host.
      *
      * @param config The server configuration, to which a spring boot application
-     *     will be added if the case is <code>SPRING_BOOT_APP_TAG</code>.
+     *                   will be added if the case is <code>SPRING_BOOT_APP_TAG</code>.
      *
      * @return True or false telling if any applications were placed in the dropins
-     *     folder.
+     *         folder.
      *
      * @throws Exception Thrown if application configuration failed.
      */
@@ -344,12 +335,12 @@ public abstract class AbstractSpringTests {
         boolean dropinsTest = false;
         RemoteFile useDropinsFile = getDropinsFile();
 
-        switch ( getApplicationConfigType() ) {
+        switch (getApplicationConfigType()) {
             case DROPINS_SPRING: {
                 dropinsTest = true;
-                useDropinsFile = new RemoteFile(useDropinsFile, "spring/");
+                useDropinsFile = server.getMachine().getFile(useDropinsFile, "spring/");
                 useDropinsFile.mkdirs();
-                addDropinFile( appFile, useDropinsFile, appFile.getName() );
+                addDropinFile(appFile, useDropinsFile, appFile.getName());
                 break;
             }
 
@@ -363,18 +354,18 @@ public abstract class AbstractSpringTests {
                 addDropinFile(appFile, useDropinsFile, appHead + SPRING_APP_TYPE);
 
                 int copyNum = getDropinCopyNum();
-                for ( int copyNo = 0; copyNo < copyNum; copyNo++ ) {
+                for (int copyNo = 0; copyNo < copyNum; copyNo++) {
                     addDropinFile(appFile, dropinsFile, "app.copy" + copyNo + "." + SPRING_APP_TYPE);
                 }
                 break;
             }
-        
+
             case SPRING_BOOT_APP_TAG: {
                 SpringBootApplication app = new SpringBootApplication();
-                app.setLocation( appFile.getName() );
+                app.setLocation(appFile.getName());
                 app.setName("testName"); // TODO: Is this the most useful name?
                 modifyAppConfiguration(app);
-                if ( !useDefaultVirtualHost() ) {
+                if (!useDefaultVirtualHost()) {
                     app.getApplicationArguments().add("--" + LIBERTY_USE_DEFAULT_HOST + "=false");
                 }
                 config.getSpringBootApplications().add(app);
@@ -395,7 +386,7 @@ public abstract class AbstractSpringTests {
      * itself started.
      */
     public void verifyServerStart() {
-        if ( expectApplicationSuccess() ) {
+        if (expectApplicationSuccess()) {
             verifyApplication();
             verifyEndpoints();
             verifyServer();
@@ -407,13 +398,13 @@ public abstract class AbstractSpringTests {
     }
 
     public void verifyEndpoints() {
-        if ( !expectWebApplication() ) {
+        if (!expectWebApplication()) {
             return;
         }
 
         List<String> expectedEndpoints = getExpectedWebApplicationEndpoints();
-        if ( !expectedEndpoints.isEmpty() ) {
-            for ( String ep : expectedEndpoints ) {
+        if (!expectedEndpoints.isEmpty()) {
+            for (String ep : expectedEndpoints) {
                 verifyEndpoint(ep);
             }
         } else {
@@ -437,8 +428,8 @@ public abstract class AbstractSpringTests {
     //
 
     /**
-     * Extra arguments which are provided to the server.  These are available
-     * to subclasses.  Set these on the server prior to starting the server,
+     * Extra arguments which are provided to the server. These are available
+     * to subclasses. Set these on the server prior to starting the server,
      * and clear them when stopping the server.
      *
      * The intent is that any <code>@BeforeClass</code> processing will populate
@@ -467,22 +458,31 @@ public abstract class AbstractSpringTests {
 
         Exception exception = null;
 
-        if ( isActive ) {
+        if (isActive) {
             exception = cascade("Server stop failure", exception,
-                                () -> { server.stopServer(false, expectedErrors); } );
+                                () -> {
+                                    server.stopServer(false, expectedErrors);
+                                });
         }
-        if ( cleanupApps ) {
+        if (cleanupApps) {
             exception = cascade("Cleanup failure", exception,
-                                () -> { deleteDropinFiles(); deleteSpringCache(); } );
+                                () -> {
+                                    deleteDropinFiles();
+                                    deleteSpringCache();
+                                });
         }
-        if ( isActive ) {
+        if (isActive) {
             exception = cascade("Archive failure", exception,
-                                () -> { server.postStopServerArchive(); } );
+                                () -> {
+                                    server.postStopServerArchive();
+                                });
         }
         exception = cascade("Delete logs failure", exception,
-                            () -> { server.deleteDirectoryFromLibertyServerRoot("logs/"); } );
+                            () -> {
+                                server.deleteDirectoryFromLibertyServerRoot("logs/");
+                            });
 
-        if ( exception != null ) {
+        if (exception != null) {
             throw exception;
         }
     }
@@ -495,8 +495,8 @@ public abstract class AbstractSpringTests {
     public static Exception cascade(String message, Exception priorException, FailureAction action) {
         try {
             action.act();
-        } catch ( Exception e ) {
-            if ( priorException != null ) {
+        } catch (Exception e) {
+            if (priorException != null) {
                 System.out.println(message);
                 e.printStackTrace(System.out);
             } else {
@@ -519,7 +519,7 @@ public abstract class AbstractSpringTests {
      * Default features for spring web applications.
      *
      * @return Default features for spring web applications.
-     *     Currently, "springBoot-3.0" and "servlet-6.0".
+     *         Currently, "springBoot-3.0" and "servlet-6.0".
      */
     public Set<String> getWebFeatures() {
         Set<String> features = new HashSet<>(2);
@@ -540,17 +540,17 @@ public abstract class AbstractSpringTests {
     public abstract String getApplication();
 
     public RemoteFile getApplicationFile() throws Exception {
-        return getServerFile( "apps/" + getApplication() );
+        return getServerFile("apps/" + getApplication());
     }
 
     /**
      * Optional count of applications which are to be copied into the dropins
-     * folder.  This default implementation answers 0.  Subclasses may override.
+     * folder. This default implementation answers 0. Subclasses may override.
      * A positive non-zero value will cause that count of the base application
      * to be copied into the dropins folder.
      *
      * @return The count of applications which are to be copied into the dropins
-     *     folder.  This default implementation answers 0.
+     *         folder. This default implementation answers 0.
      */
     public int getDropinCopyNum() {
         return 0;
@@ -579,11 +579,11 @@ public abstract class AbstractSpringTests {
 
     /**
      * Tell the particular strategy in use for configuring
-     * the application of this test class.  Used by
+     * the application of this test class. Used by
      * {@link #doConfigureServer}.
      *
      * @return The strategy used when configuring the
-     *     application of this test class.
+     *         application of this test class.
      */
     public AppConfigType getApplicationConfigType() {
         return AppConfigType.DROPINS_SPRING;
@@ -594,7 +594,7 @@ public abstract class AbstractSpringTests {
      * successful test.
      *
      * @return True or false telling if the application is expected
-     *     to start.
+     *         to start.
      */
     public boolean expectApplicationSuccess() {
         return true;
@@ -605,7 +605,7 @@ public abstract class AbstractSpringTests {
      * application.
      *
      * @return True or false, telling if the test application is a
-     *     web application.
+     *         web application.
      */
     public boolean expectWebApplication() {
         return true;
@@ -613,7 +613,7 @@ public abstract class AbstractSpringTests {
 
     /**
      * Fragment test method name: Test methods which include this text fragment
-     * have the default host as an expected endpoint.  See {@link #ID_DEFAULT_HOST}.
+     * have the default host as an expected endpoint. See {@link #ID_DEFAULT_HOST}.
      */
     public static final String DEFAULT_HOST_WITH_APP_PORT = "DefaultHostWithAppPort";
     public static final String ID_DEFAULT_HOST = "default_host";
@@ -622,7 +622,7 @@ public abstract class AbstractSpringTests {
         List<String> expectedEndpoints = new ArrayList<String>();
 
         String testMethodName = testName.getMethodName();
-        if ( (testMethodName != null) && testMethodName.contains(DEFAULT_HOST_WITH_APP_PORT) ) {
+        if ((testMethodName != null) && testMethodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
             expectedEndpoints.add(ID_DEFAULT_HOST);
         }
 
@@ -639,18 +639,18 @@ public abstract class AbstractSpringTests {
 
     /**
      * Application argument used to indicate that a spring application
-     * will use the default host.  Added as an application argument unless
+     * will use the default host. Added as an application argument unless
      * {@link #useDefaultVirtualHost()} is false.
      */
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
 
     /**
-     * Tell if the spring application will use the default host.  When
+     * Tell if the spring application will use the default host. When
      * false, application argument {@link #LIBERTY_USE_DEFAULT_HOST} is
      * omitted from application arguments.
      *
      * @return True or false telling if the spring application will use the
-     *     default host.
+     *         default host.
      */
     public boolean useDefaultVirtualHost() {
         return false;
@@ -671,7 +671,7 @@ public abstract class AbstractSpringTests {
 
         Set<String> features = config.getFeatureManager().getFeatures();
         features.clear();
-        features.addAll( getFeatures() );
+        features.addAll(getFeatures());
 
         List<VirtualHost> virtualHosts = config.getVirtualHosts();
         virtualHosts.clear();
@@ -708,28 +708,27 @@ public abstract class AbstractSpringTests {
      * server bootstrap properties file.
      *
      * Conditionally add default properties from {@link #getDefaultBootStrapProperties()}.
-     * Always add properties from {@link #getBootStrapProperties}.  Conditionally
+     * Always add properties from {@link #getBootStrapProperties}. Conditionally
      * set {@link #LIBERTY_USE_DEFAULT_HOST} false when applications are in the dropins
      * folder and when {@link #useDefaultVirtualHost()} is false.
      *
-     * @param dropinsTest Control parameter: Tells if applications are in the dropins folder.
+     * @param dropinsTest      Control parameter: Tells if applications are in the dropins folder.
      * @param addDefaultProps: Control parameters: Tell if default property values are to be added.
      *
      * @throws Exception Thrown if the bootstrap properties could not be written.
      */
     protected void configureBootStrapProperties(boolean dropinsTest, boolean addDefaultProps) throws Exception {
-        if ( addDefaultProps ) {
-            bootStrapProperties.putAll( getDefaultBootStrapProperties() );
+        if (addDefaultProps) {
+            bootStrapProperties.putAll(getDefaultBootStrapProperties());
         }
-        bootStrapProperties.putAll( getBootStrapProperties() );
+        bootStrapProperties.putAll(getBootStrapProperties());
 
-        if ( dropinsTest && !useDefaultVirtualHost() ) {
+        if (dropinsTest && !useDefaultVirtualHost()) {
             bootStrapProperties.put(LIBERTY_USE_DEFAULT_HOST, Boolean.FALSE.toString());
         }
 
-        File bootStrapPropertiesFile =
-            new File( getServerFile("bootstrap.properties").getAbsolutePath() );
-        try ( OutputStream out = new FileOutputStream(bootStrapPropertiesFile) ) {
+        File bootStrapPropertiesFile = new File(getServerFile("bootstrap.properties").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
             bootStrapProperties.store(out, "");
         }
     }

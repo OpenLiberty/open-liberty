@@ -24,8 +24,8 @@ Include-Resource: \
     META-INF=resources/META-INF
 
 Import-Package: \
-    io.smallrye.openapi.runtime;version='[2.0.0,4.0.0)',\
-    io.smallrye.openapi.runtime.io;version='[2.0.0,4.0.0)',\
+    io.smallrye.openapi.runtime;version='[2.0.0,5.0.0)',\
+    io.smallrye.openapi.runtime.io;version='[2.0.0,5.0.0)',\
     *
 
 Private-Package:\

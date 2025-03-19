@@ -100,9 +100,9 @@ public class ExternalTestService {
         Exception firstEx = null;
         for (String consulServer : getConsulServers()) {
             try {
-                JsonArray propertiesJson = new HttpsRequest(consulServer + "/v1/kv/service/" + propertyName + "?recurse=true")
+                JsonArray propertiesJson = new HttpsRequest(consulServer + "/v1/kv/service/" + propertyName + "?recurse=true&stale")
                                 .allowInsecure()
-                                .timeout(10_000)
+                                .timeout(30000)
                                 .expectCode(HttpsURLConnection.HTTP_OK)
                                 .expectCode(HttpsURLConnection.HTTP_NOT_FOUND)
                                 .run(JsonArray.class);
@@ -205,8 +205,8 @@ public class ExternalTestService {
                                 + "this message can be ignored.");
         }
 
-        List<String> servers = Arrays.asList(consulServerList.split(","));
-        Collections.shuffle(servers);
+	// Add all the servers to the list twice, effectively giving us a retry so double the chance of working if consul is slow
+        List<String> servers = Arrays.asList((consulServerList+","+consulServerList).split(","));
         return consulServers = servers;
     }
 
@@ -248,8 +248,8 @@ public class ExternalTestService {
         for (String consulServer : getConsulServers()) {
             JsonArray instances;
             try {
-                HttpsRequest instancesRequest = new HttpsRequest(consulServer + "/v1/health/service/" + serviceName + "?passing=true");
-                instancesRequest.timeout(10000);
+                HttpsRequest instancesRequest = new HttpsRequest(consulServer + "/v1/health/service/" + serviceName + "?passing=true&stale");
+                instancesRequest.timeout(30000);
                 instancesRequest.allowInsecure();
                 instances = instancesRequest.run(JsonArray.class);
             } catch (Exception e) {
@@ -263,7 +263,7 @@ public class ExternalTestService {
 
             JsonArray propertiesJson;
             try {
-                HttpsRequest propsRequest = new HttpsRequest(consulServer + "/v1/kv/service/" + serviceName + "/?recurse=true");
+                HttpsRequest propsRequest = new HttpsRequest(consulServer + "/v1/kv/service/" + serviceName + "/?recurse=true&stale");
                 propsRequest.allowInsecure();
                 propsRequest.timeout(10000);
                 propsRequest.expectCode(HttpsURLConnection.HTTP_OK).expectCode(HttpsURLConnection.HTTP_NOT_FOUND);
@@ -604,14 +604,29 @@ public class ExternalTestService {
             return networkLocation;
         }
         String serverOrigin = System.getProperty(PROP_SERVER_ORIGIN);
-        if (!serverOrigin.startsWith("10.")) {
-            //It might be a 9.* address or a host name either way it is on the IBM9 Network
-            return "IBM9";
-        } else if (serverOrigin.startsWith("10.10")) {
-            return "HDCRTP";
-        } else if (serverOrigin.startsWith("10.34")) {
-            return "HDCHUR";
+	// Attempt to guess where the closest services will be located
+	if (serverOrigin.startsWith("9.20.")) {
+	    // Hursley
+	    return "IBM9UK";
+	} else if (serverOrigin.startsWith("9.42.") || serverOrigin.startsWith("9.46.")) {
+	    // RTP
+	    return "IBM9US";
+	} else if (serverOrigin.startsWith("9.30.")) {
+	    // SVL
+	    return "IBM9US";
+	}  else if (serverOrigin.startsWith("9.57.")) {
+	    // POK
+	    return "IBM9US";
+        } else if (serverOrigin.startsWith("10.34.") || serverOrigin.startsWith("10.36.")) {	    
+            return "HURPROD";
+	} else if (serverOrigin.startsWith("10.51.")) {
+	    return "FYREHUR";
+	} else if (serverOrigin.startsWith("10.17.") || serverOrigin.startsWith("10.11.") || serverOrigin.startsWith("10.15.")) {
+	    return "FYRESVL";
+	} else if (serverOrigin.startsWith("10.21.") || serverOrigin.startsWith("10.26.")) {
+	    return "FYRERTP";
         } else {
+	    System.out.println("Unknown host/IP address " + serverOrigin + ".  For better effeciency, please add global.network.location=IBM9UK or IBM9US to your user.build.properties.  If appropriate, please update fattest.simplicity/src/componenttest/topology/utils/ExternalTestService.getNetworkLocation()");
             return "UNKNOWN";
         }
     }

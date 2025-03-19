@@ -128,7 +128,9 @@ build.bnd.plugins: \
   io.openliberty.security.authentication.internal.tai;project=com.ibm.ws.security.authentication.tai;source=none, \
   io.openliberty.security.auth.internal.data;project=com.ibm.ws.security.auth.data;source=none, \
   io.openliberty.security.authorization.internal.jacc.ejb;project=com.ibm.ws.security.authorization.jacc.ejb;source=none, \
-  io.openliberty.security.authorization.internal.jacc;project=com.ibm.ws.security.authorization.jacc;source=none, \
+  io.openliberty.security.authorization.internal.jacc.common;project=com.ibm.ws.security.authorization.jacc;source=none, \
+  io.openliberty.security.authorization.internal.jacc.1.5;project=com.ibm.ws.security.authorization.jacc;source=none, \
+  io.openliberty.security.authorization.internal.jacc.2.0;project=com.ibm.ws.security.authorization.jacc;source=none, \
   io.openliberty.security.authorization.internal.jacc.web;project=com.ibm.ws.security.authorization.jacc.web;source=none, \
   io.openliberty.securityClient;project=com.ibm.websphere.appserver.api.securityClient;source=none, \
   io.openliberty.security.common.internal;project=com.ibm.ws.security.common;source=none, \

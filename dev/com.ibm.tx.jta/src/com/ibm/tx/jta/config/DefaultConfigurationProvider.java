@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2023 IBM Corporation and others.
+ * Copyright (c) 2007, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,15 @@ import com.ibm.wsspi.resource.ResourceFactory;
 public class DefaultConfigurationProvider implements ConfigurationProvider {
     private static AlarmManager _alarmManager;
     private byte[] _applId;
+
+    protected static final String THROW_CHECKED_EXCEPTIONS = "com.ibm.tx.jta.cdi.interceptors.throwCheckedExceptions";
+
+    protected static boolean _throwCheckedExceptionsProperty = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+        @Override
+        public Boolean run() {
+            return Boolean.getBoolean(THROW_CHECKED_EXCEPTIONS);
+        }
+    });
 
     public DefaultConfigurationProvider() {
         _alarmManager = new AlarmManagerImpl();
@@ -342,12 +351,11 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     * @see com.ibm.tx.config.ConfigurationProvider#enableLogLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean enableLogLocking() {
+        return true;
     }
 
     /*
@@ -475,5 +483,20 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     @Override
     public boolean peerRecoveryPrecedence() {
         return false;
+    }
+
+    @Override
+    public String getTransactionLogDBName() {
+        return "";
+    }
+
+    @Override
+    public String getUserDir() {
+        return System.getenv("WLP_USER_DIR");
+    }
+
+    @Override
+    public boolean isThrowCheckedExceptions() {
+        return _throwCheckedExceptionsProperty;
     }
 }

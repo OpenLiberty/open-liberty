@@ -950,3 +950,19 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: Die ID des \u00f6ffentlichen Schl\u00fc
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Der \u00f6ffentliche Schl\u00fcssel wurde m\u00f6glicherweise ge\u00e4ndert. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Wenn der \u00f6ffentliche Schl\u00fcssel eine lokale Datei ist, stellen Sie sicher, dass Sie die richtige Datei angeben.
 
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: Die {0} Plattform konnte nicht gefunden werden.
+ERROR_MISSING_PLATFORM_NAME.explanation=Der in der Konfiguration oder Umgebungsvariable angegebene Plattformname wurde nicht gefunden.
+ERROR_MISSING_PLATFORM_NAME.useraction=\u00dcberpr\u00fcfen Sie die Schreibweise des Plattformnamens und der Version, zum Beispiel microProfile-6.1.
+
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: Die Plattform konnte nicht ermittelt werden. Die folgenden versionslosen Funktionen k\u00f6nnen nicht installiert werden: {0}.
+ERROR_NO_DERIVED_PLATFORM.explanation= Die Plattform war nicht festgelegt oder konnte nicht von bestehenden versionierten Merkmalen abgeleitet werden. 
+ERROR_NO_DERIVED_PLATFORM.useraction=Hinzuf\u00fcgen einer Plattform f\u00fcr versionslose Funktionen.
+
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: Der Befehl installFeature unterst\u00fctzt keine versionslosen Features.
+ERROR_VERSIONLESS_INSTALL.explanation= F\u00fcr das Feature, das Sie mit dem Befehl installFeature zu installieren versucht haben, ist im Feature-Namen keine Version angegeben.
+ERROR_VERSIONLESS_INSTALL.useraction=Verwenden Sie den Befehl installServerFeatures, der versionslose Funktionen unterst\u00fctzt, oder installieren Sie eine andere Funktion, die nicht versionslos ist.
+
+LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Die Installation erfolgt auf den folgenden Plattformen: {0}.
+LOG_INSTALL_WITH_PLATFORM.explanation=Die angegebenen Plattformversionen wurden verwendet, um versionslose Funktionen aufzul\u00f6sen.
+LOG_INSTALL_WITH_PLATFORM.useraction=Es ist keine Aktion erforderlich.
+

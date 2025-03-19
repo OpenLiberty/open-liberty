@@ -35,6 +35,7 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -175,6 +176,7 @@ public class ServerStartTest {
     }
 
     @Test
+    @MaximumJavaLevel(javaLevel = 23)  // -Xfuture argument is no longer available in Java 24+
     /**
      * This test ensures that the servers starts without error when using the -Xfuture command line
      * argument. This argument enforces strict class file verification. One customer ran into

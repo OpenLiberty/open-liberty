@@ -48,6 +48,9 @@ public class ConfigHolder {
     // a cached map of search results
     // that have been processed to look up the best match for the serviceName or portName strings
     private static volatile Map<String, Map<String, Object>> resolvedConfigInfoCacheByName = new HashMap<>();
+    
+    
+    private static volatile boolean configExists = false;
 
     /**
      * add a configuration for a name (serviceName/portName). We'd like a set of hashmaps keyed by name,
@@ -109,8 +112,12 @@ public class ConfigHolder {
             }
             return enableSchemaValidation;
         } else {
-            // return the default value
-            return null;
+            
+            if(getDebugEnabled()) {
+                Tr.debug(tc, "getEnableSchemaValidation is returning null because no properties exist for name - " + name);
+            }
+            return null; // No properties exist so return null
+            
         }
     }
 
@@ -143,8 +150,39 @@ public class ConfigHolder {
         }
     }
 
+    
     /**
-     * This method uses the prpvided name (serviceName/portName) to find the associated property map
+     * Get the value of enableDefaultValidation from all known property maps using the name (serviceName/portName) provided.
+     *
+     * @param name - either the serviceName or portName depending on which configuration is being used to get the enableDefaultValidation
+     * 
+     * @return value of enableDefaultValidation if set, or null if the configuration doesn't contain the property
+     */
+    public static Object getEnableDefaultValidation(String name) {
+        
+        Map<String, Object> props = getNameProps(name);
+        
+        if (props != null) {
+
+            Object enableDefaultValidation = props.get(WebServiceConfigConstants.ENABLE_DEFAULT_VALIDATION_PROP);
+            
+            if(getDebugEnabled()) {
+                Tr.debug(tc, "getEnableDefaultValidation is returning: " + enableDefaultValidation);
+            }
+            return enableDefaultValidation;
+        } else {
+            
+            if(getDebugEnabled()) {
+                Tr.debug(tc, "getEnableDefaultValidation is returning null because no properties exist for name - " + name);
+            }
+            return null; // No properties exist so return null
+            
+        }
+    }
+    
+
+    /**
+     * This method uses the provided name (serviceName/portName) to find the associated property map
      * It will first check if the configInfo map is empty, if it is then we return null because there 
      * are no known configuration properties known to this class. Then if name is null, it will see if 
      * @param name - either the portName/serviceName used to look up the property map
@@ -240,7 +278,7 @@ public class ConfigHolder {
                 return null; // We found neither properties for the serviceName/portName or any default properties
             }
             if (debug) {
-                Tr.debug(tc, "getNameProps final result for nameame: " + name + " values: " + mergedProps);
+                Tr.debug(tc, "getNameProps final result for name: " + name + " values: " + mergedProps);
             }
 
             return mergedProps;
@@ -252,5 +290,21 @@ public class ConfigHolder {
     // Set debug = getDebugEnabled() if multiple checks are needed per method
     private static boolean getDebugEnabled() {
         return tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled();
+    }
+    
+    public static boolean checkConfig(Map<String, Object> properties) {
+        if (properties == null || properties.isEmpty()) {
+            if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                Tr.debug(tc, "properties are null or empty returning");
+            }
+            configExists = false;
+        } else {
+            configExists = true;
+        }
+        return configExists;
+    }
+    
+    public static boolean isConfigExists() {
+        return configExists;
     }
 }

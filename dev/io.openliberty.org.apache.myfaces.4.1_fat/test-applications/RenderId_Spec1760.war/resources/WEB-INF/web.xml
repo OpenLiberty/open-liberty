@@ -23,6 +23,8 @@
 
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml_xhtml</url-pattern>
+        <url-pattern>*.xhtml_xml</url-pattern>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 

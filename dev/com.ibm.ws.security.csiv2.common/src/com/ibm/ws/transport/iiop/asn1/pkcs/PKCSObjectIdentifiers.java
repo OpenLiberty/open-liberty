@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,6 @@ public interface PKCSObjectIdentifiers
     //
     static final String                 pkcs_1                    = "1.2.840.113549.1.1";
     static final DERObjectIdentifier    rsaEncryption             = new DERObjectIdentifier(pkcs_1 + ".1");
-    static final DERObjectIdentifier    md2WithRSAEncryption      = new DERObjectIdentifier(pkcs_1 + ".2");
-    static final DERObjectIdentifier    md4WithRSAEncryption      = new DERObjectIdentifier(pkcs_1 + ".3");
-    static final DERObjectIdentifier    md5WithRSAEncryption      = new DERObjectIdentifier(pkcs_1 + ".4");
-    static final DERObjectIdentifier    sha1WithRSAEncryption     = new DERObjectIdentifier(pkcs_1 + ".5");
     static final DERObjectIdentifier    srsaOAEPEncryptionSET     = new DERObjectIdentifier(pkcs_1 + ".6");
     static final DERObjectIdentifier    id_RSAES_OAEP             = new DERObjectIdentifier(pkcs_1 + ".7");
     static final DERObjectIdentifier    id_mgf1                   = new DERObjectIdentifier(pkcs_1 + ".8");
@@ -53,13 +49,6 @@ public interface PKCSObjectIdentifiers
     //
     static final String                 pkcs_5                  = "1.2.840.113549.1.5";
 
-    static final DERObjectIdentifier    pbeWithMD2AndDES_CBC    = new DERObjectIdentifier(pkcs_5 + ".1");
-    static final DERObjectIdentifier    pbeWithMD2AndRC2_CBC    = new DERObjectIdentifier(pkcs_5 + ".4");
-    static final DERObjectIdentifier    pbeWithMD5AndDES_CBC    = new DERObjectIdentifier(pkcs_5 + ".3");
-    static final DERObjectIdentifier    pbeWithMD5AndRC2_CBC    = new DERObjectIdentifier(pkcs_5 + ".6");
-    static final DERObjectIdentifier    pbeWithSHA1AndDES_CBC   = new DERObjectIdentifier(pkcs_5 + ".10");
-    static final DERObjectIdentifier    pbeWithSHA1AndRC2_CBC   = new DERObjectIdentifier(pkcs_5 + ".11");
-
     static final DERObjectIdentifier    id_PBES2                = new DERObjectIdentifier(pkcs_5 + ".13");
 
     static final DERObjectIdentifier    id_PBKDF2               = new DERObjectIdentifier(pkcs_5 + ".12");
@@ -70,7 +59,6 @@ public interface PKCSObjectIdentifiers
     //
     static final String                 encryptionAlgorithm     = "1.2.840.113549.3";
 
-    static final DERObjectIdentifier    des_EDE3_CBC            = new DERObjectIdentifier(encryptionAlgorithm + ".7");
     static final DERObjectIdentifier    RC2_CBC                 = new DERObjectIdentifier(encryptionAlgorithm + ".2");
 
     //
@@ -95,7 +83,6 @@ public interface PKCSObjectIdentifiers
     //
     static final DERObjectIdentifier    md5                     = new DERObjectIdentifier(digestAlgorithm + ".5");
 
-    static final DERObjectIdentifier    id_hmacWithSHA1         = new DERObjectIdentifier(digestAlgorithm + ".7");
     static final DERObjectIdentifier    id_hmacWithSHA224       = new DERObjectIdentifier(digestAlgorithm + ".8");
     static final DERObjectIdentifier    id_hmacWithSHA256       = new DERObjectIdentifier(digestAlgorithm + ".9");
     static final DERObjectIdentifier    id_hmacWithSHA384       = new DERObjectIdentifier(digestAlgorithm + ".10");
@@ -205,15 +192,6 @@ public interface PKCSObjectIdentifiers
     static final DERObjectIdentifier    crlBag                  = new DERObjectIdentifier(bagtypes + ".4");
     static final DERObjectIdentifier    secretBag               = new DERObjectIdentifier(bagtypes + ".5");
     static final DERObjectIdentifier    safeContentsBag         = new DERObjectIdentifier(bagtypes + ".6");
-
-    static final String pkcs_12PbeIds  = pkcs_12 + ".1";
-
-    static final DERObjectIdentifier    pbeWithSHAAnd128BitRC4 = new DERObjectIdentifier(pkcs_12PbeIds + ".1");
-    static final DERObjectIdentifier    pbeWithSHAAnd40BitRC4  = new DERObjectIdentifier(pkcs_12PbeIds + ".2");
-    static final DERObjectIdentifier    pbeWithSHAAnd3_KeyTripleDES_CBC = new DERObjectIdentifier(pkcs_12PbeIds + ".3");
-    static final DERObjectIdentifier    pbeWithSHAAnd2_KeyTripleDES_CBC = new DERObjectIdentifier(pkcs_12PbeIds + ".4");
-    static final DERObjectIdentifier    pbeWithSHAAnd128BitRC2_CBC = new DERObjectIdentifier(pkcs_12PbeIds + ".5");
-    static final DERObjectIdentifier    pbewithSHAAnd40BitRC2_CBC = new DERObjectIdentifier(pkcs_12PbeIds + ".6");
 
 }
 

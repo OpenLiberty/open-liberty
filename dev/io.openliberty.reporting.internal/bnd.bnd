@@ -26,6 +26,8 @@ Private-Package: io.openliberty.reporting.internal*
 Include-Resource: \
  OSGI-INF=resources/OSGI-INF, \
  OSGI-INF/metatype/metatype.xml=resources/OSGI-INF/metatype/metatype.xml
+ 
+Import-Package: *
 
 
 -dsannotations: io.openliberty.reporting.internal.FixReportingComponent

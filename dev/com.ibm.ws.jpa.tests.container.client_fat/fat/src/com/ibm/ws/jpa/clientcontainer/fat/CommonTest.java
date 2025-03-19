@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -308,8 +308,8 @@ public class CommonTest {
                 if (includeFiles != null) {
                     String[] files = includeFiles.split("\\s*,\\s*");
                     for (String fileName : files) {
-                        RemoteFile x = new RemoteFile(machine, clientRoot + "/"
-                                                               + fileName);
+                        RemoteFile x = machine.getFile(clientRoot + "/"
+                                                       + fileName);
                         if (x.exists()) {
                             props.clear();
                             InputStream is = null;
@@ -366,7 +366,7 @@ public class CommonTest {
 
     public static RemoteFile getClientBootstrapPropertiesFile(Machine machine,
                                                               String clientRoot) throws Exception {
-        return new RemoteFile(machine, clientRoot + "/bootstrap.properties");
+        return machine.getFile(clientRoot + "/bootstrap.properties");
     }
 
     @AfterClass

@@ -41,6 +41,8 @@ public class JaxRsTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatFaultTolerance.repeat("JaxRsFaultTolerance", TestMode.FULL,
+                                                              MicroProfileActions.MP70_EE11,
+                                                              MicroProfileActions.MP70_EE10,
                                                               MicroProfileActions.MP61,
                                                               MicroProfileActions.MP50,
                                                               MicroProfileActions.MP41,

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.annotation.Priority;
 import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
 import javax.interceptor.AroundConstruct;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -59,8 +59,11 @@ public class MyNonBindingInterceptor {
 
         //In a real app this wouldn't be possible, but for now we're just testing this utility method.
         Set<Annotation> interceptorBindings = CDIUtils.getInterceptorBindingsFromInvocationContext(ctx);
-        assertThat(interceptorBindings, containsInAnyOrder(instanceOf(MyNonBindingInterceptorBinding.class), instanceOf(MyInterceptorBinding.class), instanceOf(MyUnusedInterceptorBinding.class)));
-        assertEquals(3, interceptorBindings.size());
+        assertThat(interceptorBindings, containsInAnyOrder(instanceOf(MyNonBindingInterceptorBinding.class),
+                                                           instanceOf(MyInterceptorBinding.class),
+                                                           instanceOf(MyUnusedInterceptorBinding.class),
+                                                           instanceOf(MyAddedByExtensionBinding.class)));
+        assertEquals(4, interceptorBindings.size());
 
         for (Annotation ann : interceptorBindings) {
             if (ann instanceof MyNonBindingInterceptorBinding) {

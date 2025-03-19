@@ -1,6 +1,12 @@
 package com.ibm.ws.microprofile.openapi.validation.fat;
 
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -71,104 +77,112 @@ public class OpenAPIValidationTestTwo {
     }
 
     @Test
-    public void testSecuritySchemeValidation() {
-        assertNotNull("The SecurityScheme Validator should have been triggered by the missing \"type\" field",
-            server.waitForStringInLog(
+    public void testSecuritySchemeValidation() throws Exception {
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by the missing \"type\" field",
+            server.findStringsInLogs(
                 "Message: Required \"type\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/noType"));
-        assertNotNull(
+        assertNotEmpty(
             "The SecurityScheme Validator should have been triggered by the missing \"openIdConnectUrl\" field",
-            server.waitForStringInLog(
+            server.findStringsInLogs(
                 "Message: Required \"openIdConnectUrl\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/openIdConnectWithScheme"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by the missing \"scheme\" field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by the missing \"scheme\" field",
+            server.findStringsInLogs(
                 "Message: Required \"scheme\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/airlinesHttp"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by the missing \"flows\" field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by the missing \"flows\" field",
+            server.findStringsInLogs(
                 "Message: Required \"flows\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/reviewoauth2"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by the missing \"scheme\" field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by the missing \"scheme\" field",
+            server.findStringsInLogs(
                 "Message: Required \"scheme\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/httpWithOpenIdConnectUrl"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by the missing \"name\" field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by the missing \"name\" field",
+            server.findStringsInLogs(
                 "Message: Required \"name\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/ApiKeyWithScheme"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by the missing \"in\" field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by the missing \"in\" field",
+            server.findStringsInLogs(
                 "Message: Required \"in\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/ApiKeyWithScheme"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by the missing \"in\" field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by the missing \"in\" field",
+            server.findStringsInLogs(
                 "Message: Required \"in\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/ApiKeyWithInvalidIn"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by invalid URL",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by invalid URL",
+            server.findStringsInLogs(
                 "Message: The Security Scheme Object must contain a valid URL. The \"not a URL\" value specified for the URL is not valid*"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by a non-applicable field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by a non-applicable field",
+            server.findStringsInLogs(
                 "Message: The \"scheme\" field with \"openIdConnectWithScheme\" value is not applicable for \"Security Scheme Object\" of \"openIdConnect\" type"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by a non-applicable field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by a non-applicable field",
+            server.findStringsInLogs(
                 "Message: The \"name\" field with \"oauth2WithName\" value is not applicable for \"Security Scheme Object\" of \"oauth2\" type"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by a non-applicable field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by a non-applicable field",
+            server.findStringsInLogs(
                 "Message: The \"openIdConnectUrl\" field with \"http://www.url.com\" value is not applicable for \"Security Scheme Object\" of \"http\" type"));
-        assertNotNull("The SecurityScheme Validator should have been triggered by a non-applicable field",
-            server.waitForStringInLog(
+        assertNotEmpty("The SecurityScheme Validator should have been triggered by a non-applicable field",
+            server.findStringsInLogs(
                 "Message: The \"flows\" field is not applicable for \"Security Scheme Object\" of \"http\" type"));
     }
 
     @Test
-    public void testSecurityRequirementValidation() {
-        assertNotNull(
+    public void testSecurityRequirementValidation() throws Exception {
+        assertNotEmpty(
             "The SecurityRequirement Validator should have been triggered by SecurityScheme name that does not correspond to declared Security Scheme",
-            server.waitForStringInLog(
+            server.findStringsInLogs(
                 "Message: The \"schemeNotInComponent\" name provided for the Security Requirement Object does not correspond to a declared security scheme, Location: #/paths/~1availability/get/security"));
-        assertNotNull(
+        assertNotEmpty(
             "The SecurityRequirement Validator should have been triggered by non-empty scope for an http Security Requirement Object",
-            server.waitForStringInLog(
+            server.findStringsInLogs(
                 "Message: The \"airlinesHttp\" field of Security Requirement Object should be empty, but is: \"\\[write:app, read:app\\]\""));
-        assertNotNull(
+        assertNotEmpty(
             "The SecurityRequirement Validator should have been triggered by an empty scope for openIdConnect Security Requirement Object",
-            server.waitForStringInLog(
+            server.findStringsInLogs(
                 "Message: The \"openIdConnectWithScheme\" Security Requirement Object should specify be a list of scope names required for execution"));
     }
 
     @Test
-    public void testOAuthFlowValidation() {
-        assertNotNull("The OAuthFlow Validator should have been triggered by missing \"scopes\" field",
-            server.waitForMultipleStringsInLog(3,
-                "Message: Required \"scopes\" field is missing or is set to an invalid value*"));
-        assertNotNull("The OAuthFlow Validator should have been triggered by invalid URL",
-            server.waitForStringInLog(
+    public void testOAuthFlowValidation() throws Exception {
+        assertThat("The OAuthFlow Validator should have been triggered by missing \"scopes\" field",
+            server.findStringsInLogs(
+                "Message: Required \"scopes\" field is missing or is set to an invalid value*"),
+            hasSize(3));
+        assertNotEmpty("The OAuthFlow Validator should have been triggered by invalid URL",
+            server.findStringsInLogs(
                 "Message: The OAuth Flow Object must contain a valid URL. The \"invalid URL example\" value*"));
     }
 
     @Test
-    public void testOAuthFlowsValidation() {
-        assertNotNull("The OAuthFlows Validator should have been triggered by missing \"tokenUrl\" field",
-            server.waitForMultipleStringsInLog(2,
-                "Message: Required \"tokenUrl\" field is missing or is set to an invalid value"));
-        assertNotNull("The OAuthFlows Validator should have been triggered by non applicable field",
-            server.waitForStringInLog(
+    public void testOAuthFlowsValidation() throws Exception {
+        assertThat("The OAuthFlows Validator should have been triggered by missing \"tokenUrl\" field",
+            server.findStringsInLogs(
+                "Message: Required \"tokenUrl\" field is missing or is set to an invalid value"),
+            hasSize(2));
+        assertNotEmpty("The OAuthFlows Validator should have been triggered by non applicable field",
+            server.findStringsInLogs(
                 "Message: The \"authorizationUrl\" field with \"https://example.com/api/oauth/dialog\" value is not applicable for \"OAuth Flow Object\" of \"password\" type"));
     }
 
     @Test
-    public void testMediaTypeValidation() {
-        assertNotNull("The MediaType Validator should have been triggered by non-existant encoding property",
-            server.waitForMultipleStringsInLog(2,
-                "Message: The \"nonExistingField\" encoding property specified in the MediaType Object does not exist"));
-        assertNotNull(
+    public void testMediaTypeValidation() throws Exception {
+        assertThat("The MediaType Validator should have been triggered by non-existant encoding property",
+            server.findStringsInLogs(
+                "Message: The \"nonExistingField\" encoding property specified in the MediaType Object does not exist"),
+            hasSize(2));
+        assertNotEmpty(
             "The MediaType Validator should have been triggered by mutually exclusive \"examples\" and \"example\" fields",
-            server.waitForStringInLog(
+            server.findStringsInLogs(
                 "Message: The MediaType Object cannot have both \"examples\" and \"example\" fields*"));
-        assertNotNull("The MediaType Validator should have been triggered by null schema",
-            server.waitForStringInLog(
+        assertNotEmpty("The MediaType Validator should have been triggered by null schema",
+            server.findStringsInLogs(
                 "Message: The encoding property specified cannot be validated because the corresponding schema property is null"));
     }
 
     @Test
-    public void testExampleValidation() {
-        assertNotNull(
+    public void testExampleValidation() throws Exception {
+        assertNotEmpty(
             "The Example Validator should have been triggered by mutually exclusive \"value\" and \"externalValue\" fields",
-            server.waitForStringInLog(
+            server.findStringsInLogs(
                 "Message: The \"booking\" Example Object specifies both \"value\" and \"externalValue\" fields*"));
+    }
+
+    private void assertNotEmpty(String message,
+                                List<String> stringsInLogs) {
+        assertThat(message, stringsInLogs, not(empty()));
     }
 }

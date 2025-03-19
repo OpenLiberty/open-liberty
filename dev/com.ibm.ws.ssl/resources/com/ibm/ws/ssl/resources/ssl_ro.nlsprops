@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2008 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -225,8 +225,9 @@ ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: UseFIPS este activat, dar confi
 ssl.config.not.using.fips.CWPKI0049W.explanation=De\u015fi s-a activat UseFIPS, algoritmii criptografici aproba\u0163i de FIPS nu pot fi folosi\u0163i \u00eentruc\u00e2t configura\u0163ia SSL nu folose\u015fte un Furnizor JSSE aprobat de FIPS.
 ssl.config.not.using.fips.CWPKI0049W.useraction=Pentru a asigura utilizarea algoritmilor criptografici aproba\u0163i de FIPS, modifica\u0163i configura\u0163ia SSL pentru a utiliza un Furnizor JSSE aprobat de FIPS.
 # -------------------------------------------------------------------------------------------------
-
-
+ssl.san.warning.CWPKI0050W=CWPKI0050W: Certificatul cu alias {0} din keyStore {1} nu are un nume alternativ al subiectului. Verificarea HostName nu este impus\u0103 pentru comunica\u021biile SSL ale controlerului colectiv serverIdentity , replic\u0103 \u0219i membru.
+ssl.san.warning.CWPKI0050W.explanation=Certificatul implicit serverIdentity nu are un nume alternativ de subiect \u00een keyStore . Verificarea de verificare hostName este omis\u0103 pentru certificatele serverIdentity
+ssl.san.warning.CWPKI0050W.useraction=Deschide\u021bi keyStore \u0219i verifica\u021bi numele alternativ al subiectului pe toate certificatele din keyStore . Utiliza\u021bi comenzile genKey \u0219i genKeyController pentru a genera certificate noi pentru a activa verificarea numelui de gazd\u0103.
 ################################################################################
 # Range 100-110 reserved for TrustManager Prompt
 ################################################################################
@@ -633,9 +634,13 @@ ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: E\u015eUARE DIALOG DE CONFIRMA
 ssl.client.handshake.error.CWPKI0823E.explanation=A survenit o eroare \u00een timpul dialogului de confirmare SSL.  Ar putea fi necesar un export/import semnatar de la gazda destina\u0163ie la TrustStore client.
 ssl.client.handshake.error.CWPKI0823E.useraction=Revede\u0163i mesajul extins al erorii de la managerul de \u00eencrederi pentru determinarea schimb\u0103rii necesare \u00eentre configura\u0163ia SSL destina\u0163ie \u015fi configura\u0163ia SSL a clientului.
 # -------------------------------------------------------------------------------------------------
-ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: E\u015eUARE DIALOG DE CONFIRMARE SSL: Eroare de verificare nume de gazd\u0103 la conectarea la gazda [{0}].  Numele de gazd\u0103 utilizat pentru accesarea serverului nu se potrive\u015fte cu informa\u0163iile SubjectDN sau Subject Alternative Name ale certificatului serverului.  Mesajul extins al erorii de la excep\u0163ia dialogului de confirmare SSL este: [{1}].
-ssl.client.handshake.error.CWPKI0824E.explanation=A survenit o eroare \u00een timpul dialogului de confirmare SSL.  Eeste activat\u0103 verificarea numelui de gazd\u0103 \u015fi identitatea serverului nu poate fi verificat\u0103.  Numele de gazd\u0103 utilizat pentru accesarea serverului nu se potrive\u015fte cu informa\u0163iile SubjectDN sau Subject Alternative Name ale certificatului serverului.
+ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: E\u015eUARE DIALOG DE CONFIRMARE SSL: Eroare de verificare nume de gazd\u0103 la conectarea la gazda [{0}].  Numele de gazd\u0103 folosit pentru a accesa serverul nu se potrive\u0219te cu certificatul de server [ {1} ].  Mesajul de eroare extins de la excep\u021bia SSL handshake este: [ {2} ].
+ssl.client.handshake.error.CWPKI0824E.explanation=O eroare a survenit \u00een timpul dialogului de confirmare SSL.  Eeste activat\u0103 verificarea numelui de gazd\u0103 \u015fi identitatea serverului nu poate fi verificat\u0103.  Numele de gazd\u0103 folosit pentru a accesa serverul nu se potrive\u0219te cu informa\u021biile Subject Alternative Name sau SubjectDN ale certificatului de server.
 ssl.client.handshake.error.CWPKI0824E.useraction=C\u00e2nd este activat\u0103 verificarea numelui de gazd\u0103 serverul care se acceseaz\u0103 trebuie s\u0103 fie setat cu un certificat care s\u0103 con\u0163in\u0103 informa\u0163iile corespunz\u0103toare necesare verific\u0103rii identit\u0103\u0163ii serverului.
+# -------------------------------------------------------------------------------------------------
+ssl.hnv.disabled.warning.CWPKI0063W=CWPKI0063W: Verificarea numelui de gazd\u0103 este dezactivat\u0103 pentru {0} . Conexiunile TLS/SSL nu verific\u0103 identit\u0103\u021bile serverului pentru a verifica dac\u0103 clientul comunic\u0103 cu serverul corect.
+ssl.hnv.disabled.warning.CWPKI0063W.explanation=Verificarea numelui de gazd\u0103 trebuie s\u0103 fie activat\u0103 pentru a se asigura c\u0103 numele de gazd\u0103 din adresa URL la care se conecteaz\u0103 clientul se potrive\u0219te cu numele de gazd\u0103 din certificatul pe care serverul \u00eel trimite \u00eenapoi \u00een timpul comunic\u0103rii TLS/SSL.
+ssl.hnv.disabled.warning.CWPKI0063W.useraction=Activa\u021bi verificarea numelui de gazd\u0103 set\u00e2nd proprietatea personalizat\u0103 de securitate com.ibm.ssl.verifyHostname la true.
 # -------------------------------------------------------------------------------------------------
 ssl.cacerts.error.CWPKI0825W=CWPKI0825W: Atributul trustDefaultCerts este activat, dar depozitul de \u00eencrederi implicit a e\u015fuat s\u0103 se ini\u0163ializeze. din cauz\u0103 c\u0103 depozitul de \u00eencrederi implicit nu s-a ini\u0163ializat, este folosit doar depozitul de \u00eencrederi care este configurat de configura\u0163ia SSL {0}. Excep\u0163ia returnat\u0103 este: {1}. 
 ssl.cacerts.error.CWPKI0825W.explanation=Depozitul de \u00eencrederi implicit nu s-a ini\u0163ializat deoarece nu a putut fi extras de la Trust Manager. Depozitul de \u00eencrederi implicit nu este folosit pentru \u00eencredere. Este folosit\u0103 doar configura\u0163ia SSL configurat\u0103.

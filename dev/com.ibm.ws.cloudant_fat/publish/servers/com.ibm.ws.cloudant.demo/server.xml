@@ -15,7 +15,7 @@
   <cloudantDatabase jndiName="cloudant/db" cloudantRef="builder" databaseName="${CLOUDANT_DBNAME}" create="false"/>
   
   <library id="CloudantLib">
-    <fileset dir="${shared.resource.dir}/cloudant-2.16"/>
+    <fileset dir="${shared.resource.dir}/cloudant"/>
   </library>
 
   <application location="cloudantapp.war">
@@ -27,7 +27,7 @@
   <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   <javaPermission className="java.security.SecurityPermission" name="getProperty.networkaddress.cache.ttl"/>
   
-  <variable name="CloudantCodebase" value="${shared.resource.dir}/cloudant-2.16/cloudant-client-2.16.0.jar"/>
+  <variable name="CloudantCodebase" value="${shared.resource.dir}/cloudant/cloudant-client-2.20.1.jar"/>
   <javaPermission codebase="${CloudantCodebase}" className="java.lang.RuntimePermission" name="setFactory"/>
   <javaPermission className="java.security.AllPermission"/> <!-- TODO replace with URLPermission once it permits wildcards-->
   <!--

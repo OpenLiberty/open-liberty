@@ -50,4 +50,5 @@ tested.features: \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.jws.1.0;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0;version=latest
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	com.ibm.ws.com.sun.xml.messaging.saaj;version=latest

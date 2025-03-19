@@ -87,4 +87,5 @@ public class WSSecurityConstants {
     public static final String KEY_timeToLive = "timeToLive";
     public static final String KEY_audienceRestrictions = "audienceRestrictions";
 
+    public static final String WSSEC_DEFAULT_SIGNATURE_ALGORITHM = "SHA1";
 }

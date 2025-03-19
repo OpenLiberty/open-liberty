@@ -8,7 +8,7 @@
       recoveryGroup="defaultGroup"
       leaseLength="20"
       leaseCheckInterval="25"
-      enableHADBPeerLocking="false"
+      enableLogLocking="false"
     />
 
     <featureManager>

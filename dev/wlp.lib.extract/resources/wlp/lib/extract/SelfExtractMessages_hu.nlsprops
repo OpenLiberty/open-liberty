@@ -38,11 +38,10 @@ installLocation=telep\u00edt\u00e9si hely
 options=Be\u00e1ll\u00edt\u00e1sok
 
 
-licenseOptionDescription=Az "Elfogadom" lehet\u0151s\u00e9g kiv\u00e1laszt\u00e1s\u00e1val elfogadja a licencszerz\u0151d\u00e9st \u00e9s a nem-IBM felt\u00e9teleket, ha alkalmazhat\u00f3ak. \
-Ha nem fogadja el, v\u00e1lassza a "Nem fogadom el" lehet\u0151s\u00e9get".
+licenseOptionDescription=Az "Elfogadom" lehet\u0151s\u00e9g kiv\u00e1laszt\u00e1s\u00e1val elfogadja a licencszerz\u0151d\u00e9st \u00e9s a nem-IBM felt\u00e9teleket, ha alkalmazhat\u00f3ak. Ha nem fogadja el, v\u00e1lassza a "Nem fogadom el" lehet\u0151s\u00e9get".
 
-licenseeAcknowledges=A Licencfelhaszn\u00e1l\u00f3 tudom\u00e1sul veszi \u00e9s egyet\u00e9rt vele, hogy a Licencfelhaszn\u00e1l\u00f3 \u00e1ltal ezzel kapcsolatban let\u00f6lt\u00f6tt minden k\u00f3d (a "K\u00f3d"), az \u00f6sszetev\u0151ket, f\u00fcggv\u00e9nyeket \u00e9s egy\u00e9b szoftverlet\u00f6lt\u00e9seket is bele\u00e9rtve, csak az IBM WebSphere  Application Server Liberty program  (a "Program") licenc hat\u00e1lya al\u00e1 tartoz\u00f3 v\u00e1ltozat\u00e1val ker\u00fcl felhaszn\u00e1l\u00e1sra. \
-A Licencfelhaszn\u00e1l\u00f3 tudom\u00e1sul veszi tov\u00e1bb\u00e1, hogy a K\u00f3d haszn\u00e1lat\u00e1ra a Program haszn\u00e1lat\u00e1t szab\u00e1lyoz\u00f3 licencszerz\u0151d\u00e9sek (p\u00e9ld\u00e1ul International Program License Agreement, International License Agreement for Non-Warranted Programs, International License Agreement for Evaluation of Programs, International License Agreement for Early Release of Programs) vonatkoznak (az esetleges licenc inform\u00e1ci\u00f3kat is bele\u00e9rtve).
+licenseeAcknowledges=A Licencfelhaszn\u00e1l\u00f3 tudom\u00e1sul veszi \u00e9s egyet\u00e9rt vele, hogy a Licencfelhaszn\u00e1l\u00f3 \u00e1ltal ezzel kapcsolatban let\u00f6lt\u00f6tt minden k\u00f3d (a "K\u00f3d"), az \u00f6sszetev\u0151ket, f\u00fcggv\u00e9nyeket \u00e9s egy\u00e9b szoftverlet\u00f6lt\u00e9seket is bele\u00e9rtve, csak az IBM WebSphere  Application Server Liberty program  (a "Program") licenc hat\u00e1lya al\u00e1 tartoz\u00f3 v\u00e1ltozat\u00e1val ker\u00fcl felhaszn\u00e1l\u00e1sra. A Licencfelhaszn\u00e1l\u00f3 tudom\u00e1sul veszi tov\u00e1bb\u00e1, hogy a K\u00f3d haszn\u00e1lat\u00e1ra a Program haszn\u00e1lat\u00e1t szab\u00e1lyoz\u00f3 licencszerz\u0151d\u00e9sek (p\u00e9ld\u00e1ul International Program License Agreement, International License Agreement for Non-Warranted Programs, International License Agreement for Evaluation of Programs, International License Agreement for Early Release of Programs) vonatkoznak (az esetleges licenc inform\u00e1ci\u00f3ka\
+    t is bele\u00e9rtve).
 
 extractPrompt=A term\u00e9k f\u00e1jljainak c\u00e9lk\u00f6nyvt\u00e1ra?
 extractSuccess=Minden term\u00e9kf\u00e1jl sikeresen kibontva.
@@ -62,8 +61,7 @@ licensePrompt=V\u00e1lasszon az {0} Elfogadom, vagy {1} Nem fogadom el lehet\u01
 # {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
 # {1} International Program License Agreement
 #
-licenseStatement=Miel\u0151tt haszn\u00e1ln\u00e1, bontsa ki vagy telep\u00edtse az {0}-t, el kell fogadnia az {1} felt\u00e9teleit, \u00e9s a tov\u00e1bbi licencinform\u00e1ci\u00f3kat. \
-Alaposan olvassa el a k\u00f6vetkez\u0151 licencszerz\u0151d\u00e9st.
+licenseStatement=Miel\u0151tt haszn\u00e1ln\u00e1, bontsa ki vagy telep\u00edtse az {0}-t, el kell fogadnia az {1} felt\u00e9teleit, \u00e9s a tov\u00e1bbi licencinform\u00e1ci\u00f3kat. Alaposan olvassa el a k\u00f6vetkez\u0151 licencszerz\u0151d\u00e9st.
 
 #
 # {0} --viewLicenseAgreement
@@ -240,8 +238,7 @@ unableToUpdateFingerprint=Kiszolg\u00e1l\u00f3 ujjlenyomat nem friss\u00edthet\u
 patchingNotApplicableNoChange=Nem ker\u00fclt kibont\u00e1sra tartalom, mert nincsenek megfelel\u0151 \u00f6sszetev\u0151k a fut\u00e1si k\u00f6rnyezetben: {0}
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
-patchingSkippedSupersededFix=A(z) {0} jav\u00edt\u00e1st a m\u00e1r telep\u00edtett {1} felf\u00fcggesztette. \n\
-A(z) {0} telep\u00edt\u00e9se kihagy\u00e1sra ker\u00fclt.
+patchingSkippedSupersededFix=A(z) {0} jav\u00edt\u00e1st a m\u00e1r telep\u00edtett {1} felf\u00fcggesztette. \nA(z) {0} telep\u00edt\u00e9se kihagy\u00e1sra ker\u00fclt.
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=Hiba t\u00f6rt\u00e9nt a jelenlegi telep\u00edt\u00e9s iFix inform\u00e1ci\u00f3inak beolvas\u00e1sakor. A kiv\u00e9tel\u00fczenet: {0}.
@@ -286,8 +283,9 @@ LICENSE_invalidInstallType=A licenc nem friss\u00edthet\u0151, mert a megadott t
 LICENSE_replace_invalidVersion=A licenc nem alkalmazhat\u00f3, mert a megadott term\u00e9ktelep\u00edt\u00e9s v\u00e1ltozatsz\u00e1ma {0}, \u00e9s a licenc csak a(z) {1} v\u00e1ltozatt\u00f3l alkalmazhat\u00f3.
 LICENSE_replace_invalidInstallType=A licenc nem alkalmazhat\u00f3, mert a megadott term\u00e9ktelep\u00edt\u00e9s az IBM Installation Manager seg\u00edts\u00e9g\u00e9vel ker\u00fclt telep\u00edt\u00e9sre. A telep\u00edt\u00e9st az IBM Installation Manager seg\u00edts\u00e9g\u00e9vel friss\u00edtse.
 
-LICENSE_replace_invalidEditonFeatures=A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok nem \u00e9rv\u00e9nyesek a(z) {0} kiad\u00e1sra, \u00e9s el kell \u0151ket t\u00e1vol\u00edtani a licenc alkalmaz\u00e1sa el\u0151tt: {1}\n\
-\n\
-A szolg\u00e1ltat\u00e1sok elt\u00e1vol\u00edt\u00e1s\u00e1hoz haszn\u00e1lja a k\u00f6vetkez\u0151 parancsot, miel\u0151tt alkalmazn\u00e1 a(z) {2} kiad\u00e1s licenc\u00e9t: {3}
+LICENSE_replace_invalidEditonFeatures=A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok nem \u00e9rv\u00e9nyesek a(z) {0} kiad\u00e1sra, \u00e9s el kell \u0151ket t\u00e1vol\u00edtani a licenc alkalmaz\u00e1sa el\u0151tt: {1}\n\nA szolg\u00e1ltat\u00e1sok elt\u00e1vol\u00edt\u00e1s\u00e1hoz haszn\u00e1lja a k\u00f6vetkez\u0151 parancsot, miel\u0151tt alkalmazn\u00e1 a(z) {2} kiad\u00e1s licenc\u00e9t: {3}
 
 LICENSE_downgrade_block_8557_low=Ez a licenc csak a(z) {0} vagy \u00fajabb telep\u00edt\u00e9sre alkalmazhat\u00f3. A jelenlegi telep\u00edt\u00e9s {1} szinten van. T\u00f6ltse le \u00e9s friss\u00edtse a term\u00e9ket a leg\u00fajabb szintre, \u00e9s alkalmazza \u00fajra a licencet.
+
+#message for applying interim fix
+INTERIM_FIX_replace_invalidVersion=Az ideiglenes jav\u00edt\u00e1s nem alkalmazhat\u00f3, mert a megadott term\u00e9k telep\u00edt\u00e9se a(z) {0} verzi\u00f3ban van, de az ideiglenes jav\u00edt\u00e1s csak a(z {1} verzi\u00f3ra alkalmazhat\u00f3.

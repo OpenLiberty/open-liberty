@@ -18,6 +18,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsf.container.fat.tests.CDIFlowsTests;
@@ -30,6 +31,7 @@ import com.ibm.ws.jsf.container.fat.tests.JSF23CDIGeneralTests;
 import com.ibm.ws.jsf.container.fat.tests.JSF23WebSocketTests;
 import com.ibm.ws.jsf.container.fat.tests.JSFContainerTest;
 
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -50,7 +52,7 @@ import componenttest.topology.impl.JavaInfo;
                 JSF23WebSocketTests.class
 })
 
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     @ClassRule
     public static RepeatTests repeat;
@@ -65,9 +67,14 @@ public class FATSuite {
                 repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                                 .andWith(FeatureReplacementAction.EE10_FEATURES());
             } else {
+                // EE10 requires Java 11.
+                // EE11 requires Java 17
+                // If we only specify EE10/EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
+                // If we are running with a Java version less than 11, have EE9 be the lite mode test to run.
                 repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                                .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                                .andWith(FeatureReplacementAction.EE10_FEATURES());
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES());
             }
 
         } else {
@@ -78,15 +85,29 @@ public class FATSuite {
 
     public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.9.jar";
     public static final String MOJARRA_API_IMP_40 = "publish/files/mojarra40/jakarta.faces-4.0.0.jar";
-    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.10.jar";
+    public static final String MOJARRA_API_IMP_41 = "publish/files/mojarra41/jakarta.faces-4.1.0.jar";
     public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.10.jar";
-    public static final String MYFACES_IMP_40 = "publish/files/myfaces40//myfaces-impl-4.0.0-RC4.jar";
+    public static final String MYFACES_IMP_30 = "publish/files/myfaces30/myfaces-impl-3.0.2.jar";
+    public static final String MYFACES_IMP_40 = "publish/files/myfaces40/myfaces-impl-4.0.1.jar";
+    public static final String MYFACES_IMP_41 = "publish/files/myfaces41/myfaces-impl-4.1.0-RC2.jar";
     // For ErrorPathsTest#testBadImplVersion_MyFaces Test (apps need the correct api since the tests checks for a bad implementation)
+    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.10.jar";
     public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.2.jar";
-    public static final String MYFACES_API_40 = "publish/files/myfaces40/myfaces-api-4.0.0-RC4.jar";
+    public static final String MYFACES_API_40 = "publish/files/myfaces40/myfaces-api-4.0.1.jar";
+    public static final String MYFACES_API_41 = "publish/files/myfaces41/myfaces-api-4.1.0-RC2.jar";
+
+    public static DockerImageName getChromeImage() {
+        if (FATRunner.ARM_ARCHITECTURE) {
+            return DockerImageName.parse("seleniarm/standalone-chromium:4.8.3").asCompatibleSubstituteFor("selenium/standalone-chrome");
+        } else {
+            return DockerImageName.parse("selenium/standalone-chrome:4.8.3");
+        }
+    }
 
     public static WebArchive addMojarra(WebArchive app) throws Exception {
-        if (JakartaEEAction.isEE10OrLaterActive()) {
+        if (JakartaEEAction.isEE11Active()){
+            return app.addAsLibraries(new File("publish/files/mojarra41/").listFiles());
+        } else if (JakartaEEAction.isEE10Active()) {
             return app.addAsLibraries(new File("publish/files/mojarra40/").listFiles());
         } else if (JakartaEEAction.isEE9Active()) {
             return app.addAsLibraries(new File("publish/files/mojarra30/").listFiles());
@@ -95,7 +116,9 @@ public class FATSuite {
     }
 
     public static WebArchive addMyFaces(WebArchive app) throws Exception {
-        if (JakartaEEAction.isEE10OrLaterActive()) {
+        if (JakartaEEAction.isEE11Active()) {
+            return app.addAsLibraries(new File("publish/files/myfaces41/").listFiles());
+        } else if (JakartaEEAction.isEE10Active()) {
             return app.addAsLibraries(new File("publish/files/myfaces40/").listFiles());
         } else if (JakartaEEAction.isEE9Active()) {
             return app.addAsLibraries(new File("publish/files/myfaces30/").listFiles()).addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());

@@ -1,239 +1,173 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+/* =============================================================================
+ * Copyright (c) 2012,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * =============================================================================
+ */
 package com.ibm.ws.sib.mfp.control;
 
-import com.ibm.ws.sib.mfp.*;
-import com.ibm.ws.sib.utils.ras.SibTr;
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+import static com.ibm.ws.sib.mfp.MfpConstants.MSG_BUNDLE;
+import static com.ibm.ws.sib.mfp.MfpConstants.MSG_GROUP;
+import static com.ibm.ws.sib.utils.ras.SibTr.debug;
+import static com.ibm.ws.sib.utils.ras.SibTr.register;
+import static java.util.Collections.unmodifiableMap;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.sib.mfp.IntAble;
 
 /**
  * ControlMessageType is a type-safe enumeration which indicates the type of a
  * Control Message.
  */
-public final class ControlMessageType implements IntAble {
+public enum ControlMessageType implements IntAble {
+        /**  Constant denoting an indeterminate DDD Message  */
+        UNKNOWN(0, false),
+        /**  Constant denoting an Ack Expected Messge */
+        ACKEXPECTED(1, false),
+        /**  Constant denoting a Silence Message  */
+        SILENCE(2, false),
+        /**  Constant denoting an Ack Message  */
+        ACK(3, false),
+        /**  Constant denoting a Nack Message  */
+        NACK(4, false),
+        /**  Constant denoting a Prevalue Message  */
+        PREVALUE(5, false),
+        /**  Constant denoting an Accept Message  */
+        ACCEPT(6, false),
+        /**  Constant denoting a Reject Message  */
+        REJECT(7, false),
+        /**  Constant denoting a Decision Message  */
+        DECISION(8, false),
+        /**  Constant denoting a Request Message  */
+        REQUEST(9),
+        /**  Constant denoting a RequestAck Message  */
+        REQUESTACK(10),
+        /**  Constant denoting a RequestHighestGeneratedTick Message  */
+        REQUESTHIGHESTGENERATEDTICK(11),
+        /**  Constant denoting a HighestGeneratedTick Message  */
+        HIGHESTGENERATEDTICK(12),
+        /**  Constant denoting a RequestRequestAck Message  */
+        RESETREQUESTACK(13),
+        /**  Constant denoting a RequestRequestAckAck Message  */
+        RESETREQUESTACKACK(14),
+        /**  Constant denoting a BrowseGet Message  */
+        BROWSEGET(15),
+        /**  Constant denoting a BrowseEnd Message  */
+        BROWSEEND(16),
+        /**  Constant denoting a BrowseStatus Message  */
+        BROWSESTATUS(17),
+        /**  Constant denoting a Completed Message  */
+        COMPLETED(18),
+        /**  Constant denoting a DecisionExpected Message  */
+        DECISIONEXPECTED(19),
+        /**  Constant denoting a CreateStream Message  */
+        CREATESTREAM(20),
+        /**  Constant denoting an AreYouFlushed Message  */
+        AREYOUFLUSHED(21),
+        /**  Constant denoting a Flushed Message  */
+        FLUSHED(22),
+        /**  Constant denoting a NotFlushed Message  */
+        NOTFLUSHED(23),
+        /**  Constant denoting a RequestFlushed Message  */
+        REQUESTFLUSH(24),
+        /**  Constant denoting a RequestCardinalityInfo Message  */
+        REQUESTCARDINALITYINFO(25),
+        /**  Constant denoting a CardinalityInfo Message  */
+        CARDINALITYINFO(26),
+        /** Constant denoting a CreateDurable Message */
+        CREATEDURABLE(27),
+        /**  Constant denoting a DeleteDurable Message */
+        DELETEDURABLE(28),
+        /**  Constant denoting a DurableConfirm Message */
+        DURABLECONFIRM(29),
+        ;
 
-  private static TraceComponent tc = SibTr.register(ControlMessageType.class, MfpConstants.MSG_GROUP, MfpConstants.MSG_BUNDLE);
+        private static final TraceComponent tc = register(ControlMessageType.class, MSG_GROUP, MSG_BUNDLE);
 
-  /** Integer value of the Control Message Types                                  */
-  public final static int UNKNOWN_INT                       = 0;
-  public final static int ACKEXPECTED_INT                   = 1;
-  public final static int SILENCE_INT                       = 2;
-  public final static int ACK_INT                           = 3;
-  public final static int NACK_INT                          = 4;
-  public final static int PREVALUE_INT                      = 5;
-  public final static int ACCEPT_INT                        = 6;
-  public final static int REJECT_INT                        = 7;
-  public final static int DECISION_INT                      = 8;
-  public final static int REQUEST_INT                       = 9;
-  public final static int REQUESTACK_INT                    = 10;
-  public final static int REQUESTHIGHESTGENERATEDTICK_INT   = 11;
-  public final static int HIGHESTGENERATEDTICK_INT          = 12;
-  public final static int RESETREQUESTACK_INT               = 13;
-  public final static int RESETREQUESTACKACK_INT            = 14;
-  public final static int BROWSEGET_INT                     = 15;
-  public final static int BROWSEEND_INT                     = 16;
-  public final static int BROWSESTATUS_INT                  = 17;
-  public final static int COMPLETED_INT                     = 18;
-  public final static int DECISIONEXPECTED_INT              = 19;
-  public final static int CREATESTREAM_INT                  = 20;
-  public final static int AREYOUFLUSHED_INT                 = 21;
-  public final static int FLUSHED_INT                       = 22;
-  public final static int NOTFLUSHED_INT                    = 23;
-  public final static int REQUESTFLUSH_INT                  = 24;
-  public final static int REQUESTCARDINALITYINFO_INT        = 25;
-  public final static int CARDINALITYINFO_INT               = 26;
-  public final static int CREATEDURABLE_INT                 = 27;
-  public final static int DELETEDURABLE_INT                 = 28;
-  public final static int DURABLECONFIRM_INT                = 29;
+        private static String format(String name) { return String.format("%-27s", name); }
+
+        private static final Map<Integer,ControlMessageType> types;
+
+        static {
+                Map<Integer,ControlMessageType> map = new HashMap<>();
+                for (ControlMessageType type: values()) map.put(type.toInt(), type);
+                types = unmodifiableMap(map);
+        }
+
+        private final Function<String,String> nameFormatter;
+        private final Byte   value;
+        private final int    intValue;
+
+        private ControlMessageType(int aValue) {
+                this(aValue, true);
+        }
+
+        private ControlMessageType(int aValue, boolean customFormatted) {
+                nameFormatter = customFormatted ? ControlMessageType::format : s -> s;
+                value = Byte.valueOf((byte)aValue);
+                intValue = aValue;
+        }
 
 
-  /**  Constant denoting an indeterminate DDD Message  */
-  public final static ControlMessageType UNKNOWN     = new ControlMessageType("UNKNOWN"     ,(byte)UNKNOWN_INT );
+        /**
+         * Returns the corresponding ControlMessageType for a given integer.
+         * This method should NOT be called by any code outside the MFP component.
+         * It is only public so that it can be accessed by sub-packages.
+         *
+         * @param  aValue         The integer for which an ControlMessageType is required.
+         *
+         * @return The corresponding ControlMessageType
+         */
+        public static final ControlMessageType getControlMessageType(Byte aValue) {
+                if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc,"Value = " + aValue);
+                return types.get(aValue.intValue());
+        }
 
-  /**  Constant denoting an Ack Expected Messge */
-  public final static ControlMessageType ACKEXPECTED = new ControlMessageType("ACKEXPECTED" ,(byte)ACKEXPECTED_INT   );
+        public static final ControlMessageType getControlMessageType(int aValue) {
+            return types.get(aValue);
+        }
 
-  /**  Constant denoting a Silence Message  */
-  public final static ControlMessageType SILENCE     = new ControlMessageType("SILENCE"     ,(byte)SILENCE_INT  );
+        /**
+         * Returns the Byte representation of the ControlMessageType.
+         * This method should NOT be called by any code outside the MFP component.
+         * It is only public so that it can be accessed by sub-packages.
+         *
+         * @return The Byte representation of the instance.
+         */
+        public final Byte toByte() {
+                return value;
+        }
 
-  /**  Constant denoting an Ack Message  */
-  public final static ControlMessageType ACK         = new ControlMessageType("ACK"         ,(byte)ACK_INT  );
+        /**
+         * Returns the integer representation of the ControlMessageType.
+         * This method should NOT be called by any code outside the MFP component.
+         * It is only public so that it can be accessed by sub-packages.
+         *
+         * @return  The int representation of the instance.
+         */
+        public final int toInt() {
+                return intValue;
+        }
 
-  /**  Constant denoting a Nack Message  */
-  public final static ControlMessageType NACK        = new ControlMessageType("NACK"        ,(byte)NACK_INT  );
-
-  /**  Constant denoting a Prevalue Message  */
-  public final static ControlMessageType PREVALUE    = new ControlMessageType("PREVALUE"    ,(byte)PREVALUE_INT  );
-
-  /**  Constant denoting an Accept Message  */
-  public final static ControlMessageType ACCEPT      = new ControlMessageType("ACCEPT"      ,(byte)ACCEPT_INT  );
-
-  /**  Constant denoting a Reject Message  */
-  public final static ControlMessageType REJECT      = new ControlMessageType("REJECT"      ,(byte)REJECT_INT  );
-
-  /**  Constant denoting a Decision Message  */
-  public final static ControlMessageType DECISION    = new ControlMessageType("DECISION"    ,(byte)DECISION_INT  );
-
-  /**  Constant denoting a Request Message  */
-  public final static ControlMessageType REQUEST                     = new ControlMessageType("REQUEST                    ",(byte)REQUEST_INT                     );
-
-  /**  Constant denoting a RequestAck Message  */
-  public final static ControlMessageType REQUESTACK                  = new ControlMessageType("REQUESTACK                 ",(byte)REQUESTACK_INT                  );
-
-  /**  Constant denoting a RequestHighestGeneratedTick Message  */
-  public final static ControlMessageType REQUESTHIGHESTGENERATEDTICK = new ControlMessageType("REQUESTHIGHESTGENERATEDTICK",(byte)REQUESTHIGHESTGENERATEDTICK_INT );
-
-  /**  Constant denoting a HighestGeneratedTick Message  */
-  public final static ControlMessageType HIGHESTGENERATEDTICK        = new ControlMessageType("HIGHESTGENERATEDTICK       ",(byte)HIGHESTGENERATEDTICK_INT        );
-
-  /**  Constant denoting a RequestRequestAck Message  */
-  public final static ControlMessageType RESETREQUESTACK             = new ControlMessageType("RESETREQUESTACK            ",(byte)RESETREQUESTACK_INT             );
-
-  /**  Constant denoting a RequestRequestAckAck Message  */
-  public final static ControlMessageType RESETREQUESTACKACK          = new ControlMessageType("RESETREQUESTACKACK         ",(byte)RESETREQUESTACKACK_INT          );
-
-  /**  Constant denoting a BrowseGet Message  */
-  public final static ControlMessageType BROWSEGET                   = new ControlMessageType("BROWSEGET                  ",(byte)BROWSEGET_INT                   );
-
-  /**  Constant denoting a BrowseEnd Message  */
-  public final static ControlMessageType BROWSEEND                   = new ControlMessageType("BROWSEEND                  ",(byte)BROWSEEND_INT                   );
-
-  /**  Constant denoting a BrowseStatus Message  */
-  public final static ControlMessageType BROWSESTATUS                = new ControlMessageType("BROWSESTATUS               ",(byte)BROWSESTATUS_INT                );
-
-  /**  Constant denoting a Completed Message  */
-  public final static ControlMessageType COMPLETED                   = new ControlMessageType("COMPLETED                  ",(byte)COMPLETED_INT                   );
-
-  /**  Constant denoting a DecisionExpected Message  */
-  public final static ControlMessageType DECISIONEXPECTED            = new ControlMessageType("DECISIONEXPECTED           ",(byte)DECISIONEXPECTED_INT            );
-
-  /**  Constant denoting a CreateStream Message  */
-  public final static ControlMessageType CREATESTREAM                = new ControlMessageType("CREATESTREAM               ",(byte)CREATESTREAM_INT                );
-
-  /**  Constant denoting an AreYouFlushed Message  */
-  public final static ControlMessageType AREYOUFLUSHED               = new ControlMessageType("AREYOUFLUSHED              ",(byte)AREYOUFLUSHED_INT               );
-
-  /**  Constant denoting a Flushed Message  */
-  public final static ControlMessageType FLUSHED                     = new ControlMessageType("FLUSHED                    ",(byte)FLUSHED_INT                     );
-
-  /**  Constant denoting a NotFlushed Message  */
-  public final static ControlMessageType NOTFLUSHED                  = new ControlMessageType("NOTFLUSHED                 ",(byte)NOTFLUSHED_INT                  );
-
-  /**  Constant denoting a RequestFlushed Message  */
-  public final static ControlMessageType REQUESTFLUSH                = new ControlMessageType("REQUESTFLUSH               ",(byte)REQUESTFLUSH_INT                );
-
-  /**  Constant denoting a RequestCardinalityInfo Message  */
-  public final static ControlMessageType REQUESTCARDINALITYINFO      = new ControlMessageType("REQUESTCARDINALITYINFO     ",(byte)REQUESTCARDINALITYINFO_INT      );
-
-  /**  Constant denoting a CardinalityInfo Message  */
-  public final static ControlMessageType CARDINALITYINFO             = new ControlMessageType("CARDINALITYINFO            ",(byte)CARDINALITYINFO_INT             );
-
-  /** Constant denoting a CreateDurable Message */
-  public final static ControlMessageType CREATEDURABLE               = new ControlMessageType("CREATEDURABLE              ",(byte)CREATEDURABLE_INT               );
-
-  /**  Constant denoting a DeleteDurable Message */
-  public final static ControlMessageType DELETEDURABLE               = new ControlMessageType("DELETEDURABLE              ",(byte)DELETEDURABLE_INT               );
-
-  /**  Constant denoting a DurableConfirm Message */
-  public final static ControlMessageType DURABLECONFIRM              = new ControlMessageType("DURABLECONFIRM             ",(byte)DURABLECONFIRM_INT               );
-
-  /*  Array of defined ControlMessageTypes - needed by getControlMessageType  */
-  private final static ControlMessageType[] set = {UNKNOWN
-                                                  ,ACKEXPECTED
-                                                  ,SILENCE
-                                                  ,ACK
-                                                  ,NACK
-                                                  ,PREVALUE
-                                                  ,ACCEPT
-                                                  ,REJECT
-                                                  ,DECISION
-                                                  ,REQUEST
-                                                  ,REQUESTACK
-                                                  ,REQUESTHIGHESTGENERATEDTICK
-                                                  ,HIGHESTGENERATEDTICK
-                                                  ,RESETREQUESTACK
-                                                  ,RESETREQUESTACKACK
-                                                  ,BROWSEGET
-                                                  ,BROWSEEND
-                                                  ,BROWSESTATUS
-                                                  ,COMPLETED
-                                                  ,DECISIONEXPECTED
-                                                  ,CREATESTREAM
-                                                  ,AREYOUFLUSHED
-                                                  ,FLUSHED
-                                                  ,NOTFLUSHED
-                                                  ,REQUESTFLUSH
-                                                  ,REQUESTCARDINALITYINFO
-                                                  ,CARDINALITYINFO
-                                                  ,CREATEDURABLE
-                                                  ,DELETEDURABLE
-                                                  ,DURABLECONFIRM
-                                                  };
-
-  private String name;
-  private Byte   value;
-  private int    intValue;
-
-  /* Private constructor - ensures the 'constants' defined here are the total set. */
-  private ControlMessageType(String aName, byte aValue) {
-    name  = aName;
-    value = Byte.valueOf(aValue);
-    intValue = (int)aValue;
-  }
-
-  /**
-   * Returns the corresponding ControlMessageType for a given integer.
-   * This method should NOT be called by any code outside the MFP component.
-   * It is only public so that it can be accessed by sub-packages.
-   *
-   * @param  aValue         The integer for which an ControlMessageType is required.
-   *
-   * @return The corresponding ControlMessageType
-   */
-  public final static ControlMessageType getControlMessageType(Byte aValue) {
-    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc,"Value = " + aValue);
-    return set[aValue.intValue()];
-  }
-
-  /**
-   * Returns the Byte representation of the ControlMessageType.
-   * This method should NOT be called by any code outside the MFP component.
-   * It is only public so that it can be accessed by sub-packages.
-   *
-   * @return The Byte representation of the instance.
-   */
-  public final Byte toByte() {
-    return value;
-  }
-
-  /**
-   * Returns the integer representation of the ControlMessageType.
-   * This method should NOT be called by any code outside the MFP component.
-   * It is only public so that it can be accessed by sub-packages.
-   *
-   * @return  The int representation of the instance.
-   */
-  public final int toInt() {
-    return intValue;
-  }
-
-  /**
-   * Returns the name of the ControlMessageType.
-   *
-   * @return  The name of the instance.
-   */
-  public final String toString() {
-    return name;
-  }
-
+        /**
+         * Returns the name of the ControlMessageType.
+         *
+         * @return  The name of the instance.
+         */
+        @Override
+        public final String toString() {
+                return nameFormatter.apply(name());
+        }
 }

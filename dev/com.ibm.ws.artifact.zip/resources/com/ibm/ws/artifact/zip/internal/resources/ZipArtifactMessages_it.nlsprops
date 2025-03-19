@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -118,3 +118,8 @@ reaper.reopen.active.useraction=Riavviare il server.  Quando si aggiornano i fil
 missing.zip.file=CWWKM0128E: File zip {0} mancante.
 missing.zip.file.explanation=Si \u00e8 verificata un'eccezione durante l'elaborazione dell'archivio in quanto il file specificato non \u00e8 stato trovato. 
 missing.zip.file.useraction=Verificare che il file specificato esista e che disponga di autorizzazioni leggibili dal server.
+
+# # {0} A jar: URL.
+CWWKM0129W.missing.dir.entry=CWWKM0129W: L''archivio {0} non ha il percorso di voce della directory previsto: {1}
+CWWKM0129W.missing.dir.entry.explanation=L'archivio utilizzato nell'URL della risorsa dispone di voci contenute nella directory, ma nell'archivio manca una voce per la directory stessa. L'URL della directory non viene restituito. Questa omissione pu\u00f2 far s\u00ec che alcune applicazioni che eseguono la scansione delle risorse non riescano a trovare alcune risorse nel file di archivio.
+CWWKM0129W.missing.dir.entry.useraction=Il file di archivio deve essere creato per includere tutte le voci della directory.

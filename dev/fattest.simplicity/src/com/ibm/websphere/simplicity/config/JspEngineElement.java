@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ public class JspEngineElement extends ConfigElement {
     private String scratchdir;
     private Boolean keepGenerated;
     private Boolean useJDKCompiler;
+    private String prepareJSPs;
 
     /**
      * @return the useStringCast
@@ -131,6 +132,18 @@ public class JspEngineElement extends ConfigElement {
         this.useJDKCompiler = b;
     }
 
+    /**
+     * @return the prepareJSPs
+     */
+    public String getPrepareJSPs() {
+        return prepareJSPs;
+    }
+
+    @XmlAttribute(name = "prepareJSPs")
+    public void setPrepareJSPs(String prepareJSPs) {
+        this.prepareJSPs = prepareJSPs;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("JspElement{");
@@ -152,6 +165,8 @@ public class JspEngineElement extends ConfigElement {
             buf.append("keepGenerated=\"" + keepGenerated + "\" ");
         if (useJDKCompiler != null)
             buf.append("useJDKCompiler=\"" + useJDKCompiler + "\" ");
+        if (useJDKCompiler != null)
+            buf.append("prepareJSPs=\"" + prepareJSPs + "\" ");
 
         buf.append("}");
         return buf.toString();

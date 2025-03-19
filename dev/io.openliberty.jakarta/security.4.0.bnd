@@ -27,8 +27,8 @@ Export-Package: \
     jakarta.security.enterprise.identitystore.openid;version="4.0.0"
 
 -includeresource: \
-  @${repo;jakarta.security.enterprise:jakarta.security.enterprise-api;4.0.0.M1;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.security.enterprise:jakarta.security.enterprise-api;4.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-   dep1;groupId=jakarta.security.enterprise;artifactId=jakarta.security.enterprise-api;version=4.0.0.M1;scope=runtime
+   dep1;groupId=jakarta.security.enterprise;artifactId=jakarta.security.enterprise-api;version=4.0.0;scope=runtime
 

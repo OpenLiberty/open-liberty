@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,5 +49,8 @@ test.project: true
     com.ibm.ws.security.sso.common;version=latest, \
     net.sourceforge.htmlunit:htmlunit;version=2.44.0, \
     com.ibm.ws.security.token;version=latest,\
+    com.ibm.ws.kernel.boot.core;version=latest, \
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.kernel.security.thread;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest
     

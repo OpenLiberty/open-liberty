@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Class-Path: testLib1.jar testLib2.jar doesNotExistFrom_testClassPath1.war

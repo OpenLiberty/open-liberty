@@ -21,7 +21,19 @@
     </web>
   </module>
 
-  <!-- TODO concurrency resources with virtual=true -->
+  <context-service>
+    <name>java:global/concurrent/appdd/TimeZoneContextOnly</name>
+    <cleared>Application</cleared>
+    <propagated>TimeZone</propagated>
+    <unchanged>Remaining</unchanged>
+  </context-service>
+
+  <managed-executor>
+    <name>java:global/concurrent/appdd/managed-executor</name>
+    <context-service-ref>java:global/concurrent/appdd/TimeZoneContextOnly</context-service-ref>
+    <max-async>3</max-async>
+    <virtual>true</virtual>
+  </managed-executor>
 
   <managed-thread-factory>
     <name>java:app/concurrent/appdd/virtual-thread-factory</name>

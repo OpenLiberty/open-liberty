@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -343,18 +343,28 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "chooseEngineClientAlias", new Object[] { keyType, issuers, engine });
 
-        String rc = null;
+        String alias = null;
         if (null != customKM && customKM instanceof X509ExtendedKeyManager) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "chooseEngineClientAlias, using customKM -> " + customKM.getClass().getName());
-            rc = ((X509ExtendedKeyManager) customKM).chooseEngineClientAlias(keyType, issuers, engine);
-        } else {
-            rc = chooseClientAlias(keyType[0], issuers);
+            alias = ((X509ExtendedKeyManager) customKM).chooseEngineClientAlias(keyType, issuers, engine);
+        } 
+        else {
+           //Despite the Javadoc indicating support for passing an array of keyTypes, 
+           //there is a historical requirement to pass the key individually each time. 
+           //To maintain the zero-migration policy approach, iteration will continue 
+           //unless a performance issue arises. 
+           for (String type : keyType) {
+               alias = chooseClientAlias(type, issuers);
+               if (alias != null) {
+                   break;
+               }
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "chooseEngineClientAlias");
-        return rc;
+        return alias;
     }
 
     /**

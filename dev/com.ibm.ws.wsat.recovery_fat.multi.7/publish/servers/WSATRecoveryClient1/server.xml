@@ -22,10 +22,11 @@
 
   <transaction
     backendURL="http://localhost:${bvt.prop.HTTP_default}"
-    leaseLength="2m"
     heuristicRetryInterval="10"
+    leaseExpiryThreshold="5"
+    leaseLength="10m"
     recoverOnStartup="true"
-    recoveryGroup="client-group"
+    recoveryGroup="recovery-group-1"
     recoveryIdentity="WSATRecoveryClient1"
     waitForRecovery="false"
   />

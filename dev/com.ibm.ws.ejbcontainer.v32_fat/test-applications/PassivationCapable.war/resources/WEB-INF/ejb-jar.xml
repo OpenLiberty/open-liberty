@@ -1,0 +1,33 @@
+<ejb-jar
+  xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd"
+  version="3.2"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>PassivationCapableXMLFalseBean</ejb-name>
+      <passivation-capable>false</passivation-capable>
+    </session>
+
+    <session>
+      <ejb-name>PassivationCapableXMLTrueBean</ejb-name>
+      <passivation-capable>true</passivation-capable>
+    </session>
+
+    <session>
+      <ejb-name>PassivationCapableXMLFalseLoadStrategyOnceBean</ejb-name>
+      <passivation-capable>false</passivation-capable>
+    </session>
+
+    <session>
+      <ejb-name>PassivationCapableXMLFalseLoadStrategyTransactionBean</ejb-name>
+      <passivation-capable>false</passivation-capable>
+    </session>
+
+    <session>
+      <ejb-name>PassivationCapableXMLFalseLoadStrategyActivitySessionBean</ejb-name>
+      <passivation-capable>false</passivation-capable>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

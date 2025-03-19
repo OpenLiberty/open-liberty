@@ -1,15 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+/* =============================================================================
+ * Copyright (c) 2012,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * =============================================================================
+ */
 package com.ibm.ws.sib.mfp.impl;
 
 import java.util.List;
@@ -819,124 +820,94 @@ public final class ControlMessageFactoryImpl extends ControlMessageFactory {
     ControlMessage controlMessage = null;
 
     /* Create an instance of the appropriate message subclass                 */
-    switch (messageType) {
-
-      case ControlMessageType.ACKEXPECTED_INT:
+    switch (ControlMessageType.getControlMessageType(messageType)) {
+      case ACKEXPECTED:
         controlMessage = new ControlAckExpectedImpl(jmo);
         break;
-
-      case ControlMessageType.SILENCE_INT:
+      case SILENCE:
         controlMessage = new ControlSilenceImpl(jmo);
         break;
-
-      case ControlMessageType.ACK_INT:
+      case ACK:
         controlMessage = new ControlAckImpl(jmo);
         break;
-
-      case ControlMessageType.NACK_INT:
+      case NACK:
         controlMessage = new ControlNackImpl(jmo);
         break;
-
-      case ControlMessageType.PREVALUE_INT:
+      case PREVALUE:
         controlMessage = new ControlPrevalueImpl(jmo);
         break;
-
-      case ControlMessageType.ACCEPT_INT:
+      case ACCEPT:
         controlMessage = new ControlAcceptImpl(jmo);
         break;
-
-      case ControlMessageType.REJECT_INT:
+      case REJECT:
         controlMessage = new ControlRejectImpl(jmo);
         break;
-
-      case ControlMessageType.DECISION_INT:
+      case DECISION:
         controlMessage = new ControlDecisionImpl(jmo);
         break;
-
-      case ControlMessageType.REQUEST_INT:
+      case REQUEST:
         controlMessage = new ControlRequestImpl(jmo);
         break;
-
-      case ControlMessageType.REQUESTACK_INT:
+      case REQUESTACK:
         controlMessage = new ControlRequestAckImpl(jmo);
         break;
-
-      case ControlMessageType.REQUESTHIGHESTGENERATEDTICK_INT:
+      case REQUESTHIGHESTGENERATEDTICK:
         controlMessage = new ControlRequestHighestGeneratedTickImpl(jmo);
         break;
-
-      case ControlMessageType.HIGHESTGENERATEDTICK_INT:
+      case HIGHESTGENERATEDTICK:
         controlMessage = new ControlHighestGeneratedTickImpl(jmo);
         break;
-
-      case ControlMessageType.RESETREQUESTACK_INT:
+      case RESETREQUESTACK:
         controlMessage = new ControlResetRequestAckImpl(jmo);
         break;
-
-      case ControlMessageType.RESETREQUESTACKACK_INT:
+      case RESETREQUESTACKACK:
         controlMessage = new ControlResetRequestAckAckImpl(jmo);
         break;
-
-      case ControlMessageType.BROWSEGET_INT:
+      case BROWSEGET:
         controlMessage = new ControlBrowseGetImpl(jmo);
         break;
-
-      case ControlMessageType.BROWSEEND_INT:
+      case BROWSEEND:
         controlMessage = new ControlBrowseEndImpl(jmo);
         break;
-
-      case ControlMessageType.BROWSESTATUS_INT:
+      case BROWSESTATUS:
         controlMessage = new ControlBrowseStatusImpl(jmo);
         break;
-
-      case ControlMessageType.COMPLETED_INT:
+      case COMPLETED:
         controlMessage = new ControlCompletedImpl(jmo);
         break;
-
-      case ControlMessageType.DECISIONEXPECTED_INT:
+      case DECISIONEXPECTED:
         controlMessage = new ControlDecisionExpectedImpl(jmo);
         break;
-
-      case ControlMessageType.CREATESTREAM_INT:
+      case CREATESTREAM:
         controlMessage = new ControlCreateStreamImpl(jmo);
         break;
-
-      case ControlMessageType.AREYOUFLUSHED_INT:
+      case AREYOUFLUSHED:
         controlMessage = new ControlAreYouFlushedImpl(jmo);
         break;
-
-      case ControlMessageType.FLUSHED_INT:
+      case FLUSHED:
         controlMessage = new ControlFlushedImpl(jmo);
         break;
-
-      case ControlMessageType.NOTFLUSHED_INT:
+      case NOTFLUSHED:
         controlMessage = new ControlNotFlushedImpl(jmo);
         break;
-
-      case ControlMessageType.REQUESTFLUSH_INT:
+      case REQUESTFLUSH:
         controlMessage = new ControlRequestFlushImpl(jmo);
         break;
-
-      case ControlMessageType.REQUESTCARDINALITYINFO_INT:
+      case REQUESTCARDINALITYINFO:
         controlMessage = new ControlRequestCardinalityInfoImpl(jmo);
         break;
-
-      case ControlMessageType.CARDINALITYINFO_INT:
+      case CARDINALITYINFO:
         controlMessage = new ControlCardinalityInfoImpl(jmo);
         break;
-
-      case ControlMessageType.CREATEDURABLE_INT:
+      case CREATEDURABLE:
         controlMessage = new ControlCreateDurableImpl(jmo);
         break;
-
-      case ControlMessageType.DELETEDURABLE_INT:
+      case DELETEDURABLE:
         controlMessage = new ControlDeleteDurableImpl(jmo);
         break;
-
-      case ControlMessageType.DURABLECONFIRM_INT:
+      case DURABLECONFIRM:
         controlMessage = new ControlDurableConfirmImpl(jmo);
         break;
-
       default:
         /* This shouldn't happen at the moment but will provide some support  */
         /* for new types being added by future releases & arriving at an old  */

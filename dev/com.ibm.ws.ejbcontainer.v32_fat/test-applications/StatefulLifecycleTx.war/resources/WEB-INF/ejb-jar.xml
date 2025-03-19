@@ -1,0 +1,235 @@
+<ejb-jar
+  xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd"
+  version="3.2"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle1Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxNotSupportedXMLStyle1Bean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle1MIBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxNotSupportedXMLStyle1MIBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle2Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxNotSupportedXMLMethodBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle2AmbigBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxNotSupportedXMLStyle2AmbigBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle2MIBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxNotSupportedXMLStyle2MIBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle3Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxNotSupportedXMLMethodBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle3AmbigBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxNotSupportedXMLStyle3AmbigBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle3MIBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxNotSupportedXMLStyle3MIBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle1Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxRequiresNewXMLStyle1Bean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle1MIBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxRequiresNewXMLStyle1MIBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle2Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxRequiresNewXMLMethodBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle2AmbigBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxRequiresNewXMLStyle2AmbigBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle2MIBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxRequiresNewXMLStyle2MIBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle3Bean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxRequiresNewXMLMethodBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle3AmbigBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxRequiresNewXMLStyle3AmbigBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle3MIBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxRequiresNewXMLStyle3MIBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxMandatoryXMLErrorBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxDefaultBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxNeverXMLErrorBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxDefaultBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxRequiredXMLErrorBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxDefaultBean</ejb-class>
+    </session>
+
+    <session>
+      <ejb-name>StatefulLifecycleTxSupportsXMLErrorBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.v32.fat.statefullifecycletx.StatefulLifecycleTxDefaultBean</ejb-class>
+    </session>
+  </enterprise-beans>
+
+  <assembly-descriptor>
+    <container-transaction>
+      <method>
+        <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle1Bean</ejb-name>
+        <!-- ...except remove (see below) -->
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle1MIBean</ejb-name>
+        <method-intf>LifecycleCallback</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle2Bean</ejb-name>
+        <method-name>postConstruct</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle2AmbigBean</ejb-name>
+        <method-name>postConstruct</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle2MIBean</ejb-name>
+        <method-intf>LifecycleCallback</method-intf>
+        <method-name>postConstruct</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle3Bean</ejb-name>
+        <method-name>postConstruct</method-name>
+        <method-params/>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle3AmbigBean</ejb-name>
+        <method-name>postConstruct</method-name>
+        <method-params/>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle3MIBean</ejb-name>
+        <method-intf>LifecycleCallback</method-intf>
+        <method-name>postConstruct</method-name>
+        <method-params/>
+      </method>
+      <trans-attribute>NotSupported</trans-attribute>
+    </container-transaction>
+
+    <container-transaction>
+      <method>
+        <ejb-name>StatefulLifecycleTxNotSupportedXMLStyle1Bean</ejb-name>
+        <method-name>remove</method-name>
+      </method>
+      <trans-attribute>Required</trans-attribute>
+    </container-transaction>
+
+    <container-transaction>
+      <method>
+        <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle1Bean</ejb-name>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle1MIBean</ejb-name>
+        <method-intf>LifecycleCallback</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle2Bean</ejb-name>
+        <method-name>postConstruct</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle2AmbigBean</ejb-name>
+        <method-name>postConstruct</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle2MIBean</ejb-name>
+        <method-intf>LifecycleCallback</method-intf>
+        <method-name>postConstruct</method-name>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle3Bean</ejb-name>
+        <method-name>postConstruct</method-name>
+        <method-params/>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle3AmbigBean</ejb-name>
+        <method-name>postConstruct</method-name>
+        <method-params/>
+      </method>
+      <method>
+        <ejb-name>StatefulLifecycleTxRequiresNewXMLStyle3MIBean</ejb-name>
+        <method-intf>LifecycleCallback</method-intf>
+        <method-name>postConstruct</method-name>
+        <method-params/>
+      </method>
+      <trans-attribute>RequiresNew</trans-attribute>
+    </container-transaction>
+
+    <container-transaction>
+      <method>
+        <ejb-name>StatefulLifecycleTxMandatoryXMLErrorBean</ejb-name>
+        <method-name>postConstruct</method-name>
+      </method>
+      <trans-attribute>Mandatory</trans-attribute>
+    </container-transaction>
+
+    <container-transaction>
+      <method>
+        <ejb-name>StatefulLifecycleTxNeverXMLErrorBean</ejb-name>
+        <method-name>postConstruct</method-name>
+      </method>
+      <trans-attribute>Never</trans-attribute>
+    </container-transaction>
+
+    <container-transaction>
+      <method>
+        <ejb-name>StatefulLifecycleTxRequiredXMLErrorBean</ejb-name>
+        <method-name>postConstruct</method-name>
+      </method>
+      <trans-attribute>Required</trans-attribute>
+    </container-transaction>
+
+    <container-transaction>
+      <method>
+        <ejb-name>StatefulLifecycleTxSupportsXMLErrorBean</ejb-name>
+        <method-name>postConstruct</method-name>
+      </method>
+      <trans-attribute>Supports</trans-attribute>
+    </container-transaction>
+  </assembly-descriptor>
+</ejb-jar>

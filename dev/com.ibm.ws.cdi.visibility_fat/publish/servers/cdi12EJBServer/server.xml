@@ -13,6 +13,7 @@
         <!-- Fault Tolerance included as a feature with CDI extension which can see application BDAs -->
         <!-- which caused issues with masked classes -->
         <feature>mpFaultTolerance-1.1</feature>
+        <feature>mpConfig-1.3</feature>
     </featureManager>
     
     <orb id="defaultOrb" orbSSLInitTimeout="60"/>

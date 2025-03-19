@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,7 +47,6 @@ import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
-import com.ibm.ws.kernel.feature.fat.TestUtils;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -2018,7 +2017,7 @@ public class AutoFeaturesTest {
         RemoteFile templateFile = server.getFileFromLibertyInstallRoot(FEATURE_PATH + TEST_MF);
         RemoteFile autoFeatureRoot = server.getFileFromLibertyInstallRoot(FEATURE_PATH);
         for (int i = 1; i < numberToCreate; i++) {
-            RemoteFile generatedAutoFile = new RemoteFile(autoFeatureRoot, TEST_FEATURE + i + TEST_FEATURE_VERSION);
+            RemoteFile generatedAutoFile = server.getMachine().getFile(autoFeatureRoot, TEST_FEATURE + i + TEST_FEATURE_VERSION);
             templateFile.copyToDest(generatedAutoFile);
         }
     }

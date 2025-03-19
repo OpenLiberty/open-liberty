@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,9 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.cdi;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,8 +24,14 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIServiceUtils;
+import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.concurrent.internal.cdi.interceptor.AsyncInterceptor;
@@ -33,9 +39,13 @@ import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
@@ -51,6 +61,8 @@ import jakarta.enterprise.inject.spi.Extension;
  * CDI Extension for Jakarta Concurrency 3.1+ in Jakarta EE 11+, which corresponds to CDI 4.1+
  */
 public class ConcurrencyExtension implements Extension {
+    private static final TraceComponent tc = Tr.register(ConcurrencyExtension.class);
+
     private static final Annotation[] DEFAULT_QUALIFIER_ARRAY = new Annotation[] { Default.Literal.INSTANCE };
 
     private static final Set<Annotation> DEFAULT_QUALIFIER_SET = Set.of(Default.Literal.INSTANCE);
@@ -61,11 +73,11 @@ public class ConcurrencyExtension implements Extension {
     private ConcurrencyExtensionMetadata extSvc;
 
     /**
-     * List of the qualifier sets for each ManagedThreadFactory bean with qualifiers that is
-     * created during afterBeanDiscovery. Instances of these beans are obtained during
-     * afterDeploymentValidation to force context capture to occur.
+     * Indicates if we were able to create a default ManagedThreadFactory bean.
+     * If so, an instance of the bean is obtained during afterDeploymentValidation
+     * to force context capture to occur.
      */
-    private List<Set<Annotation>> qualifierSetsPerMTF;
+    private boolean producedDefaultMTF;
 
     /**
      * Register interceptors before bean discovery.
@@ -114,8 +126,7 @@ public class ConcurrencyExtension implements Extension {
 
         if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
             event.addBean(new ManagedThreadFactoryBean(cmd, extSvc, DEFAULT_QUALIFIER_SET));
-            qualifierSetsPerMTF = new ArrayList<>();
-            qualifierSetsPerMTF.add(Collections.emptySet());
+            producedDefaultMTF = true;
         }
 
         // Look for beans from the module and the application.
@@ -149,11 +160,14 @@ public class ConcurrencyExtension implements Extension {
             try {
                 event.addBean(new ContextServiceBean(factory));
             } catch (Throwable x) {
-                // TODO NLS
-                System.out.println(" E Unable to create a bean for the " +
-                                   factory + " ContextServiceDefinition with the " + factory.getQualifiers() + " qualifiers" +
-                                   " due to the following error: ");
-                x.printStackTrace();
+                Tr.error(tc, "CWWKC1411.qualified.res.err",
+                         ContextService.class.getSimpleName(),
+                         ContextServiceDefinition.class.getSimpleName(),
+                         "context-service",
+                         factory.getName(),
+                         factory.getQualifiers(),
+                         toArtifactName(factory.getDeclaringMetadata()),
+                         toStackTrace(x));
             }
         }
 
@@ -164,11 +178,14 @@ public class ConcurrencyExtension implements Extension {
             try {
                 event.addBean(new ManagedExecutorBean(factory));
             } catch (Throwable x) {
-                // TODO NLS
-                System.out.println(" E Unable to create a bean for the " +
-                                   factory + " ManagedExecutorDefinition with the " + factory.getQualifiers() + " qualifiers" +
-                                   " due to the following error: ");
-                x.printStackTrace();
+                Tr.error(tc, "CWWKC1411.qualified.res.err",
+                         ManagedExecutorService.class.getSimpleName(),
+                         ManagedExecutorDefinition.class.getSimpleName(),
+                         "managed-executor",
+                         factory.getName(),
+                         factory.getQualifiers(),
+                         toArtifactName(factory.getDeclaringMetadata()),
+                         toStackTrace(x));
             }
         }
 
@@ -179,11 +196,14 @@ public class ConcurrencyExtension implements Extension {
             try {
                 event.addBean(new ManagedScheduledExecutorBean(factory));
             } catch (Throwable x) {
-                // TODO NLS
-                System.out.println(" E Unable to create a bean for the " +
-                                   factory + " ManagedScheduledExecutorDefinition with the " + factory.getQualifiers() + " qualifiers" +
-                                   " due to the following error: ");
-                x.printStackTrace();
+                Tr.error(tc, "CWWKC1411.qualified.res.err",
+                         ManagedScheduledExecutorService.class.getSimpleName(),
+                         ManagedScheduledExecutorDefinition.class.getSimpleName(),
+                         "managed-scheduled-executor",
+                         factory.getName(),
+                         factory.getQualifiers(),
+                         toArtifactName(factory.getDeclaringMetadata()),
+                         toStackTrace(x));
             }
         }
 
@@ -194,33 +214,67 @@ public class ConcurrencyExtension implements Extension {
             try {
                 event.addBean(new ManagedThreadFactoryBean(factory, extSvc));
             } catch (Throwable x) {
-                // TODO NLS
-                System.out.println(" E Unable to create a bean for the " +
-                                   factory + " ManagedThreadFactoryDefinition with the " + factory.getQualifiers() + " qualifiers" +
-                                   " due to the following error: ");
-                x.printStackTrace();
+                Tr.error(tc, "CWWKC1411.qualified.res.err",
+                         ManagedThreadFactory.class.getSimpleName(),
+                         ManagedThreadFactoryDefinition.class.getSimpleName(),
+                         "managed-thread-factory",
+                         factory.getName(),
+                         factory.getQualifiers(),
+                         toArtifactName(factory.getDeclaringMetadata()),
+                         toStackTrace(x));
             }
         }
     }
 
     /**
-     * Force context to be initialized for each ManagedThreadFactory that we registered a bean for.
+     * Force context to be initialized for the default ManagedThreadFactory instance
+     * if we were able to produce one.
      *
      * @param event
      * @param beanManager
      */
-    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
-        // TODO remove this once we handle the default instances similar to the qualified instances
-        if (qualifierSetsPerMTF != null) {
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event,
+                                          BeanManager beanManager) {
+        if (producedDefaultMTF) {
             CDI<Object> cdi = CDI.current();
+            Instance<ManagedThreadFactory> instance = //
+                            cdi.select(ManagedThreadFactory.class, new Annotation[0]);
+            ManagedThreadFactory mtf = instance.get();
 
-            for (Set<Annotation> qualifierSet : qualifierSetsPerMTF) {
-                Instance<ManagedThreadFactory> instance = cdi.select(ManagedThreadFactory.class, qualifierSet.toArray(new Annotation[qualifierSet.size()]));
-                ManagedThreadFactory mtf = instance.get();
-                // Force instantiation of the bean in order to cause context to be captured
-                mtf.toString();
-            }
-            qualifierSetsPerMTF = null;
+            // Force instantiation of the bean in order to cause context to be captured
+            mtf.toString();
         }
+    }
+
+    /**
+     * Utility method to obtain the JEE name for a MetaData instance if possible,
+     * and otherwise the name.
+     *
+     * @param metadata ComponentMetaData, ModuleMetaData, or ApplicationMetaData.
+     * @return the artifact name, preferably as a JEE name string.
+     */
+    @Trivial
+    private static String toArtifactName(MetaData metadata) {
+        if (metadata instanceof ComponentMetaData)
+            return ((ComponentMetaData) metadata).getJ2EEName().toString();
+        else if (metadata instanceof ModuleMetaData)
+            return ((ModuleMetaData) metadata).getJ2EEName().toString();
+        else if (metadata instanceof ApplicationMetaData)
+            return ((ApplicationMetaData) metadata).getJ2EEName().toString();
+        else
+            return metadata.getName();
+    }
+
+    /**
+     * Utility method that converts an exception to a stack trace string.
+     *
+     * @param x exception.
+     * @return stack trace string.
+     */
+    @Trivial
+    private static String toStackTrace(Throwable x) {
+        StringWriter s = new StringWriter();
+        x.printStackTrace(new PrintWriter(s));
+        return s.toString();
     }
 }

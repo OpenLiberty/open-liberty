@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,11 @@
 package com.ibm.ws.logging.internal.osgi;
 
 import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.EQUINOX_METATYPE_BSN;
+import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.EQUINOX_TRACE;
 import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.LOGGER_EVENTS;
 import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.LOG_SERVICE_GROUP;
-import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.TRACE_SPEC_OSGI_EVENTS;
 import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.TRACE_ENABLED;
+import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.TRACE_SPEC_OSGI_EVENTS;
 
 import java.util.Collections;
 import java.util.Dictionary;
@@ -41,7 +42,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCConfigurator;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.logging.internal.osgi.stackjoiner.StackJoinerManager;
 
 /**
@@ -155,6 +155,14 @@ public class LoggingConfigurationService implements ManagedService {
             String[] comps = spec.split("=");
             if (comps.length >= 2) {
                 String comp = comps[0];
+                String loggerName = Logger.ROOT_LOGGER_NAME;
+                int isEquinoxTrace = comp.indexOf('/');
+                if (isEquinoxTrace >= 0) {
+                    // Equinox trace options use bsn/<trace key> as the logger name
+                    loggerName = comp;
+                    // set the component just to the bsn part of the trace option
+                    comp = comp.substring(0, isEquinoxTrace);
+                }
                 LogLevel logLevel = mapLogLevel(comps[1]);
                 String enabled = (comps.length > 2) ? comps[2] : TRACE_ENABLED;
                 if (logLevel != null && TRACE_ENABLED.equalsIgnoreCase(enabled)) {
@@ -167,7 +175,12 @@ public class LoggingConfigurationService implements ManagedService {
                     } else {
                         if (comp.indexOf('*') == -1) {
                             // only do fully qualified BSNs
-                            add(newContextLogLevels, comp, Logger.ROOT_LOGGER_NAME, logLevel, true);
+                            add(newContextLogLevels, comp, loggerName, logLevel, true);
+                            if (isEquinoxTrace >= 0) {
+                                // we are enabling equinox trace options;
+                                // we need to set the EQUINOX.TRACE level to enable the equinox trace logging
+                                add(newContextLogLevels, comp, EQUINOX_TRACE, logLevel, true);
+                            }
                         }
                         if (logLevel.implies(LogLevel.DEBUG)) {
                             // If any level is set to debug then enable all events, but

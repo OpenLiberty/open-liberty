@@ -1557,8 +1557,8 @@ servlet.with.same.name.already.exists.explanation=Serwlet o takiej nazwie ju\u01
 servlet.with.same.name.already.exists.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.  Sprawd\u017a, czy istnieje konflikt w deskryptorze wdra\u017cania, adnotacjach lub kodzie \u017ar\u00f3d\u0142owym s\u0142u\u017c\u0105cym do dynamicznego dodawania tej konfiguracji serwletu. 
 
 servlet.feature.not.loaded.correctly=SRVE8501E: Kontener serwletu nie zosta\u0142 za\u0142adowany w akceptowalnej wersji.
-servlet.feature.not.loaded.correctly.explanation=Kontener serwletu zosta\u0142 za\u0142adowany w wersji, kt\u00f3ra odpowiada specyfikacji Java EE tego sk\u0142adnika serwletu. Kontener zosta\u0142 za\u0142adowany bez zdefiniowanej wersji.
-servlet.feature.not.loaded.correctly.useraction=Sprawd\u017a, czy w pliku server.xml istnieje sk\u0142adnik servlet-3.0 lub servlet-3.1. Jeden z tych sk\u0142adnik\u00f3w powinien by\u0107 zdefiniowany, ale nie oba jednocze\u015bnie.
+servlet.feature.not.loaded.correctly.explanation=Za\u0142adowano kontener serwletu bez akceptowalnej wersji. Aplikacja mo\u017ce zachowywa\u0107 si\u0119 inaczej, ni\u017c oczekiwano.
+servlet.feature.not.loaded.correctly.useraction=Sprawd\u017a server.xml plik pod k\u0105tem istnienia wielu funkcji serwletu.  Plik nie mo\u017ce okre\u015bla\u0107 wi\u0119cej ni\u017c jednej funkcji serwletu.
 
 filter.failed.app.destroyed=SRVE8502W: Nie mo\u017cna wykona\u0107 \u017c\u0105dania {0}, poniewa\u017c aplikacja zosta\u0142a zatrzymana.
 filter.failed.app.destroyed.explanation=Aplikacja WWW jest zatrzymywana i nie mo\u017cna zako\u0144czy\u0107 wykonywania \u017c\u0105dania. To dzia\u0142anie mo\u017ce by\u0107 spowodowane zamykaniem serwera podczas obs\u0142ugi \u017c\u0105dania.

@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Descriptions of metrics used by Fault Tolerance. 
+# See https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0.2/microprofile-fault-tolerance-spec-4.0.2.html#_integration_with_microprofile_metrics
+#-----------------------------------------------------------------------------------------------------------------------------
+
+ft.invocations.total.description=Il numero di volte in cui il metodo \u00e8 stato richiamato.
+
+ft.retry.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica di riprova. Questo valore \u00e8 sempre uguale a una volta per ogni chiamata di metodo.
+
+ft.retry.retries.total.description=Il numero di volte in cui il metodo \u00e8 stato riprovato.
+
+ft.timeout.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica di timeout. Questo valore \u00e8 in genere pari a una volta per ogni chiamata di metodo. Tuttavia, potrebbe essere zero se l'interruttore impedisce l'esecuzione o pi\u00f9 di una volta per ogni chiamata di metodo se il metodo viene riproposto.
+
+ft.timeout.executionDuration.description=Istogramma dei tempi di esecuzione del metodo.
+
+ft.circuitbreaker.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica dell'interruttore automatico. Questo valore \u00e8 in genere pari a una volta per ogni chiamata al metodo, ma potrebbe essere pi\u00f9 di una volta se il metodo viene riproposto.
+
+ft.circuitbreaker.state.total.description=Tempo trascorso dall'interruttore in ogni stato.
+
+ft.circuitbreaker.opened.total.description=Numero di volte in cui l'interruttore \u00e8 passato dallo stato chiuso allo stato aperto.
+
+ft.bulkhead.calls.total.description=Il numero di volte in cui \u00e8 stata eseguita la logica della paratia. Questo valore \u00e8 in genere pari a una volta per ogni chiamata di metodo. Tuttavia, potrebbe essere zero se l'interruttore impedisce l'esecuzione o pi\u00f9 di una volta per ogni chiamata di metodo se il metodo viene riproposto.
+
+ft.bulkhead.executionsRunning.description=Numero di esecuzioni attualmente in esecuzione.
+
+ft.bulkhead.executionsWaiting.description=Numero di esecuzioni attualmente in attesa nella coda.
+
+ft.bulkhead.runningDuration.description=Istogramma del tempo impiegato dalle esecuzioni del metodo per l'esecuzione.
+
+ft.bulkhead.waitingDuration.description=Istogramma del tempo che le esecuzioni del metodo hanno trascorso in attesa nella coda.

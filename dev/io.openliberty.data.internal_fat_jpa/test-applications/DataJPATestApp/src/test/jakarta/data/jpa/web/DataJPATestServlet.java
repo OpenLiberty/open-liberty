@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,27 +12,38 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import static com.ibm.websphere.simplicity.config.DataSourceProperties.DERBY_EMBEDDED;
+import static componenttest.annotation.SkipIfSysProp.DB_DB2;
+import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
+import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
-import java.sql.Timestamp;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,6 +63,7 @@ import java.util.stream.StreamSupport;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.data.Direction;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -65,6 +77,7 @@ import jakarta.data.page.PageRequest.Cursor;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.TypedQuery;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -75,11 +88,13 @@ import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
-import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
-
+import componenttest.annotation.OnlyIfSysProp;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
+import test.jakarta.data.jpa.web.Mobile.OS;
+import test.jakarta.data.jpa.web.Residence.Occupant;
 
 @DataSourceDefinition(name = "java:module/jdbc/RepositoryDataStore",
                       className = "${repository.datasource.class.name}",
@@ -87,10 +102,7 @@ import test.jakarta.data.jpa.web.CreditCard.Issuer;
                       user = "${repository.database.user}",
                       password = "${repository.database.password}",
                       properties = {
-                                     "createDatabase=create",
-                                     "data.createTables=${repository.database.tables.create}",
-                                     "data.dropTables=${repository.database.tables.drop}",
-                                     "data.tablePrefix=${repository.database.tables.prefix}"
+                                     "createDatabase=create"
                       })
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -98,6 +110,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Accounts accounts;
+
+    @Inject
+    Apartments apartments;
 
     @Inject
     Businesses businesses;
@@ -115,7 +130,13 @@ public class DataJPATestServlet extends FATServlet {
     Customers customers;
 
     @Inject
+    Demographics demographics;
+
+    @Inject
     Drivers drivers;
+
+    @Inject
+    ECRepo ecRepo;
 
     @Inject
     Employees employees;
@@ -127,6 +148,9 @@ public class DataJPATestServlet extends FATServlet {
     MixedRepository mixed;
 
     @Inject
+    MobilePhones mobilePhones;
+
+    @Inject
     Models models;
 
     @Inject
@@ -134,6 +158,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Rebates rebates;
+
+    @Inject
+    Segments segments;
 
     @Inject
     ShippingAddresses shippingAddresses;
@@ -216,6 +243,35 @@ public class DataJPATestServlet extends FATServlet {
         creditCards.save(card1a, card1m, card1v);
         creditCards.save(c2, c3, c4);
         customers.save(c5, c6, c7);
+
+        demographics.write(new DemographicInfo(2024, 4, 30, 133809000, 7136033799632.56, 27480960216618.32));
+        demographics.write(new DemographicInfo(2023, 4, 28, 134060000, 6852746625848.93, 24605068022566.94));
+        demographics.write(new DemographicInfo(2022, 4, 29, 132250000, 6526909395140.41, 23847245116757.60));
+        demographics.write(new DemographicInfo(2021, 4, 30, 127160000, 6118659345749.70, 22056055138417.67));
+        demographics.write(new DemographicInfo(2020, 4, 30, 123190000, 5920553066244.38, 19053618801919.97));
+        demographics.write(new DemographicInfo(2019, 4, 30, 130600000, 5843472921623.80, 16192789476576.03));
+        demographics.write(new DemographicInfo(2018, 4, 30, 128570000, 5733071837291.80, 15335128360141.59));
+        demographics.write(new DemographicInfo(2017, 4, 28, 125970000, 5552784531172.11, 14293344777463.61));
+        demographics.write(new DemographicInfo(2016, 4, 29, 123760000, 5346192750684.33, 13841194733299.04));
+        demographics.write(new DemographicInfo(2015, 4, 30, 121490000, 5098878878836.55, 13053681247951.16));
+        demographics.write(new DemographicInfo(2014, 4, 30, 118720000, 5004968792143.34, 12503468335518.28));
+        demographics.write(new DemographicInfo(2013, 4, 30, 116310000, 4885697098978.25, 11943148398205.65));
+        demographics.write(new DemographicInfo(2012, 4, 30, 114810000, 4776297169202.55, 10916070898102.68));
+        demographics.write(new DemographicInfo(2011, 4, 29, 112560000, 4632679886492.71, 9654950165830.41));
+        demographics.write(new DemographicInfo(2010, 4, 30, 111710000, 4514304290243.70, 8434434625613.16));
+        demographics.write(new DemographicInfo(2009, 4, 30, 112630000, 4307767198983.08, 6930824942975.56));
+        demographics.write(new DemographicInfo(2008, 4, 30, 120030000, 4133362638109.27, 5244194578964.17));
+        demographics.write(new DemographicInfo(2007, 4, 30, 121090000, 3833110332444.19, 5007058051986.64));
+        demographics.write(new DemographicInfo(2006, 4, 30, 119690000, 3535769322660.75, 4819948752057.74));
+        demographics.write(new DemographicInfo(2005, 4, 29, 117020000, 3213472491939.22, 4551064845424.92));
+        demographics.write(new DemographicInfo(2004, 4, 30, 114520000, 2974811477645.08, 4158978012936.35));
+        demographics.write(new DemographicInfo(2003, 4, 30, 113320000, 2757535748111.21, 3702844997678.07));
+        demographics.write(new DemographicInfo(2002, 4, 30, 112700000, 2582340471146.16, 3402336886067.70));
+
+        // TODO remove this workaround for intermittent issue triggered by test ordering once 28078 is fixed
+        testLiteralDouble();
+        // To quickly try reproducing the issue, remove the above line and add the following line to tearDown,
+        // runTest(server, "DataJPATestApp", "testLiteralDouble");
     }
 
     /**
@@ -238,6 +294,52 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());
         assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Use a repository method comparing a BigDecimal value on an entity that includes BigDecimal attributes.
+     * This includes both a comparison in the query conditions as well as ordering on the BigDecimal attribute.
+     */
+    @Test
+    public void testBigDecimal() {
+        final ZoneId EASTERN = ZoneId.of("America/New_York");
+
+        List<DemographicInfo> list = demographics.findByPublicDebtBetween(BigDecimal.valueOf(5000000000000.00), // 5 trillion
+                                                                          BigDecimal.valueOf(10000000000000.00)); // 10 trillion
+        assertEquals(list.toString(), 5, list.size());
+        assertEquals(2007, list.get(0).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2008, list.get(1).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2009, list.get(2).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2010, list.get(3).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2011, list.get(4).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+
+        // Use the BigDecimal and BigInteger values in a computation.
+        List<BigDecimal> debtPerFullTimeWorker = demographics.debtPerFullTimeWorker()
+                        .map(DebtPerWorker::get)
+                        .sorted()
+                        .toList();
+
+        assertEquals(debtPerFullTimeWorker.toString(), 23, debtPerFullTimeWorker.size());
+        assertEquals(53102.72, debtPerFullTimeWorker.get(0).doubleValue(), 0.02); // 2002
+        assertEquals(258704.53, debtPerFullTimeWorker.get(22).doubleValue(), 0.02); // 2024
+    }
+
+    /**
+     * Use a repository method comparing a BigInteger value on an entity that includes BigInteger attributes.
+     * This includes both a comparison in the query conditions as well as ordering on the BigInteger attribute.
+     */
+    @Test
+    public void testBigInteger() {
+        ZoneId ET = ZoneId.of("America/New_York");
+
+        List<Instant> list = demographics.whenFullTimeEmploymentWithin(BigInteger.valueOf(120000000),
+                                                                       BigInteger.valueOf(126000000));
+        assertEquals(2008, list.get(0).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2007, list.get(1).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2015, list.get(2).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2020, list.get(3).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2016, list.get(4).atZone(ET).get(ChronoField.YEAR));
+        assertEquals(2017, list.get(5).atZone(ET).get(ChronoField.YEAR));
     }
 
     /**
@@ -315,17 +417,22 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(Arrays.toString(list.get(5)), 0, Arrays.compare(new byte[] { 39, 80, 89 }, list.get(5)));
 
         // select values including a function on byte[] column
-        int[][] sidesInfo = triangles.sidesInfo((byte) 65);
-        assertEquals(2, sidesInfo.length);
-        assertEquals(0, sidesInfo[0][0]);
-        assertEquals(3, sidesInfo[0][1]);
-        assertEquals(0, sidesInfo[1][0]);
-        assertEquals(3, sidesInfo[1][1]);
+        // SQLServer does not support length for IMAGE values
+        // SQLServer JDBC Jar Name : mssql-jdbc.jar
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        if (!(jdbcJarName.startsWith("mssql-jdbc"))) {
+            int[][] sidesInfo = triangles.sidesInfo((byte) 65);
+            assertEquals(2, sidesInfo.length);
+            assertEquals(0, sidesInfo[0][0]);
+            assertEquals(3, sidesInfo[0][1]);
+            assertEquals(0, sidesInfo[1][0]);
+            assertEquals(3, sidesInfo[1][1]);
 
-        sidesInfo = triangles.sidesInfo((byte) 89);
-        assertEquals(sidesInfo.toString(), 1, sidesInfo.length);
-        assertEquals(0, sidesInfo[0][0]);
-        assertEquals(3, sidesInfo[0][1]);
+            sidesInfo = triangles.sidesInfo((byte) 89);
+            assertEquals(sidesInfo.toString(), 1, sidesInfo.length);
+            assertEquals(0, sidesInfo[0][0]);
+            assertEquals(3, sidesInfo[0][1]);
+        }
 
         // empty stream
         assertEquals(1, triangles.deleteByHypotenuseNull());
@@ -343,6 +450,191 @@ public class DataJPATestServlet extends FATServlet {
         // empty list
         list = triangles.sidesWhereNumSidesEqual((short) 0);
         assertEquals(List.of(), list);
+    }
+
+    /**
+     * Comparison ignoring case on an entity attribute of type char.
+     */
+    @Test
+    public void testCharIgnoreCase() {
+        // Clear out data before test
+        employees.deleteByLastName("TestCharIgnoreCase");
+
+        businesses.save(new Employee(33, "Charlotte", "TestCharIgnoreCase", (short) 1033, 'C'),
+                        new Employee(14, "Christina", "TestCharIgnoreCase", (short) 1014, 'c'),
+                        new Employee(22, "Claudia", "TestCharIgnoreCase", (short) 1022, 'b'),
+                        new Employee(54, "Cecilia", "TestCharIgnoreCase", (short) 1073, 'D'),
+                        new Employee(73, "Cindy", "TestCharIgnoreCase", (short) 1054, 'c'));
+
+        assertEquals(List.of(14, 33, 73, 54),
+                     employees.findByBadgeAccessLevelIgnoreCaseGreaterThan("B")
+                                     .map(e -> e.empNum)
+                                     .collect(Collectors.toList()));
+
+        employees.deleteByLastName("TestCharIgnoreCase");
+    }
+
+    /**
+     * Use repository methods that return a collection attribute as a single value
+     * and multiple attributes including a collection attribute via a record.
+     */
+    @Test
+    public void testCollectionAttribute() {
+        assertEquals(Set.of(507),
+                     cities.areaCodes("Rochester", "Minnesota").orElseThrow());
+
+        List<AreaInfo> list = cities.areaInfo("Missouri").collect(Collectors.toList());
+        assertEquals(list.toString(), 2, list.size());
+
+        assertEquals("Kansas City", list.get(0).name());
+        assertEquals("Missouri", list.get(0).stateName());
+        assertEquals(Set.of(816, 975), list.get(0).areaCodes());
+
+        assertEquals("Springfield", list.get(1).name());
+        assertEquals("Missouri", list.get(1).stateName());
+        assertEquals(Set.of(417), list.get(1).areaCodes());
+    }
+
+    /**
+     * Use repository methods that convert a BigInteger value to other
+     * numeric types.
+     */
+    @SkipIfSysProp({
+                     DB_DB2, //TODO Failing on DB2 due to eclipselink issue. https://github.com/OpenLiberty/open-liberty/issues/29443
+    })
+    @Test
+    public void testConvertBigDecimalValue() {
+        ZoneId ET = ZoneId.of("America/New_York");
+        Instant when = ZonedDateTime.of(2024, 4, 30, 12, 0, 0, 0, ET)
+                        .toInstant();
+
+        assertEquals(27480960216618.32,
+                     demographics.publicDebtAsBigDecimal(when)
+                                     .doubleValue(),
+                     1.0);
+
+        try {
+            Optional<BigInteger> i = demographics.publicDebtAsBigInteger(when);
+            // TODO is BigDecimal.toBigIntegerExact() broken?
+            // or are the fractional digits not being included?
+            //fail("Should not convert BigDecimal 27480960216618.32 to BigInteger " + i);
+            assertEquals(27480960216618L,
+                         i.orElseThrow().longValue());
+        } catch (MappingException x) {
+            if (x.getCause() instanceof ArithmeticException)
+                ; // expected - out of range
+            else
+                throw x;
+        }
+
+        try {
+            byte b = demographics.publicDebtAsByte(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to byte " + b);
+        } catch (MappingException x) {
+            if (x.getCause() instanceof ArithmeticException)
+                ; // expected - out of range
+            else
+                throw x;
+        }
+
+        try {
+            Double d = demographics.publicDebtAsDouble(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to Double " + d);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            Optional<Float> f = demographics.publicDebtAsFloat(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to Float " + f);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            int i = demographics.publicDebtAsInt(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to int " + i);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            Long l = demographics.publicDebtAsLong(when);
+            // TODO is BigDecimal.longValueExact() broken?
+            // or are the fractional digits not being included?
+            //fail("Should not convert BigDecimal 27480960216618.32 to Long " + l);
+            assertEquals(Long.valueOf(27480960216618L),
+                         l);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            Optional<Short> s = demographics.publicDebtAsShort(when);
+            fail("Should not convert BigDecimal 27480960216618.32 to Short " + s);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+    }
+
+    /**
+     * Use repository methods that convert a BigInteger value to other
+     * numeric types.
+     */
+    @SkipIfSysProp({
+                     DB_DB2, //TODO Failing on DB2 due to eclipselink issue. https://github.com/OpenLiberty/open-liberty/issues/29443
+    })
+    @Test
+    public void testConvertBigIntegerValue() {
+        ZoneId ET = ZoneId.of("America/New_York");
+        Instant when = ZonedDateTime.of(2024, 4, 30, 12, 0, 0, 0, ET)
+                        .toInstant();
+
+        assertEquals(133809000L,
+                     demographics.numFullTimeWorkersAsBigDecimal(when)
+                                     .orElseThrow()
+                                     .longValueExact());
+
+        assertEquals(133809000L,
+                     demographics.numFullTimeWorkersAsBigInteger(when)
+                                     .longValueExact());
+
+        try {
+            Optional<Byte> b = demographics.numFullTimeWorkersAsByte(when);
+            fail("Should not convert BigInteger 133809000 to byte value " + b);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            Double d = demographics.numFullTimeWorkersAsDouble(when);
+            fail("Should not convert BigInteger 133809000 to Double value " + d);
+        } catch (MappingException x) {
+            // expected - not convertible
+        }
+
+        try {
+            float f = demographics.numFullTimeWorkersAsFloat(when);
+            fail("Should not convert BigInteger 133809000 to float value " + f);
+        } catch (MappingException x) {
+            // expected - not convertible
+        }
+
+        assertEquals(Integer.valueOf(133809000),
+                     demographics.numFullTimeWorkersAsInteger(when)
+                                     .toCompletableFuture()
+                                     .join()
+                                     .orElseThrow());
+
+        assertEquals(133809000L,
+                     demographics.numFullTimeWorkersAsLong(when));
+
+        try {
+            short s = demographics.numFullTimeWorkersAsShort(when);
+            fail("Should not convert BigInteger 133809000 to short value " + s);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
     }
 
     /**
@@ -417,6 +709,182 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Test that a query with named parameters can be used for pagination
+     * where the cursor is an IdClass value.
+     */
+    @Test
+    public void testCursoredPagesWithNamedParametersAndIdClass() {
+        PageRequest page1req = PageRequest
+                        .ofSize(3)
+                        .afterCursor(Cursor.forKey(CityId.of("Indianapolis",
+                                                             "Indiana")));
+
+        CursoredPage<City> page1 = cities.smallerThanOrNotNamed(100000,
+                                                                "Springfield",
+                                                                page1req);
+
+        assertEquals(List.of("Kansas City in Kansas",
+                             "Kansas City in Missouri",
+                             "Rochester in Minnesota"),
+                     page1.stream()
+                                     .map(c -> c.name + " in " + c.stateName)
+                                     .collect(Collectors.toList()));
+
+        CursoredPage<City> page2 = cities.smallerThanOrNotNamed(100000,
+                                                                "Springfield",
+                                                                page1.nextPageRequest());
+
+        assertEquals(List.of("Rochester in New York",
+                             "Springfield in Ohio",
+                             "Springfield in Oregon"),
+                     page2.stream()
+                                     .map(c -> c.name + " in " + c.stateName)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(false, page2.hasNext());
+    }
+
+    /**
+     * Demonstrates inconsistency and wrong behavior in how EclipseLink returns an
+     * entity attribute that is an ElementCollection vs an entity attribute of the
+     * same type that is not an ElementCollection. Note that the former is not
+     * supported by Jakarta Persistence, and it would be fine if EclipseLink would
+     * reject it, but EclipseLink should not be running the query and producing
+     * wrong data.
+     */
+    @Test
+    public void testElementCollection() throws Exception {
+        ECEntity e1 = new ECEntity();
+        e1.setId("EC1");
+        e1.setIntArray(new int[] { 14, 12, 1 });
+        e1.setLongList(new ArrayList<>(List.of(14L, 12L, 1L)));
+        e1.setLongListEC(new ArrayList<>(List.of(14L, 12L, 1L)));
+        e1.setStringSet(Set.of("fourteen", "twelve", "one"));
+        e1.setStringSetEC(Set.of("fourteen", "twelve", "one"));
+        ecRepo.insert(e1);
+
+        ECEntity e2 = new ECEntity();
+        e2.setId("EC2");
+        e2.setIntArray(new int[] { 14, 12, 2 });
+        e2.setLongList(new ArrayList<>(List.of(14L, 12L, 2L)));
+        e2.setLongListEC(new ArrayList<>(List.of(14L, 12L, 2L)));
+        e2.setStringSet(Set.of("fourteen", "twelve", "two"));
+        e2.setStringSetEC(Set.of("fourteen", "twelve", "two"));
+        ecRepo.insert(e2);
+
+        try (EntityManager em = ecRepo.getEntityManager()) {
+            String jpql;
+            jakarta.persistence.Query q;
+            List<?> results;
+
+            jpql = "SELECT intArray FROM ECEntity WHERE id=?1";
+            q = em.createQuery(jpql);
+            q.setParameter(1, "EC1");
+            results = q.getResultList();
+            System.out.println();
+            System.out.println(jpql);
+            System.out.println("getResultList returned a " + results.getClass().getTypeName());
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+            // Vector of int[] needs special handling to print:
+            StringBuilder s = new StringBuilder();
+            boolean first = true;
+            for (Object element : results) {
+                if (first)
+                    first = false;
+                else
+                    s.append(", ");
+                if (element instanceof int[])
+                    s.append(Arrays.toString((int[]) element));
+                else
+                    s.append(element);
+            }
+            System.out.println("            contents are [" + s.toString() + "]");
+
+            jpql = "SELECT longList FROM ECEntity WHERE id=?1";
+            q = em.createQuery(jpql);
+            q.setParameter(1, "EC1");
+            results = q.getResultList();
+            System.out.println();
+            System.out.println(jpql);
+            System.out.println("getResultList returned a " + results.getClass().getTypeName());
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+            System.out.println("            contents are " + results);
+
+            jpql = "SELECT longListEC FROM ECEntity WHERE id=?1";
+            q = em.createQuery(jpql);
+            q.setParameter(1, "EC1");
+            results = q.getResultList();
+            System.out.println();
+            System.out.println(jpql);
+            System.out.println("getResultList returned a " + results.getClass().getTypeName());
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+            System.out.println("            contents are " + results);
+
+            jpql = "SELECT stringSet FROM ECEntity WHERE id=?1";
+            q = em.createQuery(jpql);
+            q.setParameter(1, "EC1");
+            results = q.getResultList();
+            System.out.println();
+            System.out.println(jpql);
+            System.out.println("getResultList returned a " + results.getClass().getTypeName());
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+            System.out.println("            contents are " + results);
+
+            jpql = "SELECT stringSetEC FROM ECEntity WHERE id=?1";
+            q = em.createQuery(jpql);
+            q.setParameter(1, "EC1");
+            results = q.getResultList();
+            System.out.println();
+            System.out.println(jpql);
+            System.out.println("getResultList returned a " + results.getClass().getTypeName());
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+            System.out.println("            contents are " + results);
+
+            // with multiple results (that ElementCollection wrongly combines into one!),
+
+            jpql = "SELECT longList FROM ECEntity WHERE id LIKE ?1";
+            q = em.createQuery(jpql);
+            q.setParameter(1, "EC%");
+            results = q.getResultList();
+            System.out.println();
+            System.out.println(jpql);
+            System.out.println("getResultList returned a " + results.getClass().getTypeName());
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+            System.out.println("            contents are " + results);
+
+            jpql = "SELECT longListEC FROM ECEntity WHERE id LIKE ?1";
+            q = em.createQuery(jpql);
+            q.setParameter(1, "EC%");
+            results = q.getResultList();
+            System.out.println();
+            System.out.println(jpql);
+            System.out.println("getResultList returned a " + results.getClass().getTypeName());
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+            System.out.println("            contents are " + results);
+
+            jpql = "SELECT stringSet FROM ECEntity WHERE id LIKE ?1";
+            q = em.createQuery(jpql);
+            q.setParameter(1, "EC%");
+            results = q.getResultList();
+            System.out.println();
+            System.out.println(jpql);
+            System.out.println("getResultList returned a " + results.getClass().getTypeName());
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+            System.out.println("            contents are " + results);
+
+            jpql = "SELECT stringSetEC FROM ECEntity WHERE id LIKE ?1";
+            q = em.createQuery(jpql);
+            q.setParameter(1, "EC%");
+            results = q.getResultList();
+            System.out.println();
+            System.out.println(jpql);
+            System.out.println("getResultList returned a " + results.getClass().getTypeName());
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+            System.out.println("            contents are " + results);
+        }
+    }
+
+    /**
      * Verify that an EntityManager can be obtained for a repository and used to perform database operations.
      */
     @Test
@@ -483,12 +951,104 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Verify that escape characters can be used to correctly match results.
+     * TODO PostgreSQL fails due to https://github.com/OpenLiberty/open-liberty/issues/30400
+     */
+    @Test
+    /*
+     * Even without providing an "ESCAPE '\'" clause to the SQL statement
+     * PostgreSQL will always escape a '\' within a string literal.
+     * See documentation here: https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-STRINGS-ESCAPE
+     * Which indicates that you can set `standard_conforming_strings=on` (which is default)
+     * but it seems the PostgreSQL JDBC driver always provides prepared strings as
+     * escape string contents. So there is no work around.
+     */
+    @SkipIfSysProp(DB_Postgres)
+    public void testEscapeCharacters() {
+        orders.deleteAll();
+
+        orders.create(PurchaseOrder.of(21.91f, "Escape_Characters"),
+                      PurchaseOrder.of(22.92f, "Escape%Characters"),
+                      PurchaseOrder.of(23.93f, "Escape\\Characters"),
+                      PurchaseOrder.of(24.94f, "Escape_%Characters"),
+                      PurchaseOrder.of(25.95f, "Escape\\_Characters"),
+                      PurchaseOrder.of(26.96f, "Escape\\%Characters"),
+                      PurchaseOrder.of(27.97f, "Escape\\\\Characters"),
+                      PurchaseOrder.of(28.98f, "EscapeCharacters"));
+
+        List<Float> found;
+
+        // The % wildcard matches any number of characters (including 0)
+        found = orders.purchaseTotalsFor("Escape%Characters");
+        assertEquals(found.toString(), 8, found.size());
+
+        // The _ wildcard matches any 1 character, so expect 3 results:
+        found = orders.purchaseTotalsFor("Escape_Characters");
+        assertEquals(found.toString(), 3, found.size());
+        assertEquals(21.91f, found.get(0).floatValue(), 0.001f);
+        assertEquals(22.92f, found.get(1).floatValue(), 0.001f);
+        assertEquals(23.93f, found.get(2).floatValue(), 0.001f);
+
+        // \ is NOT an escape character unless ESCAPE '\' is specified in the JPQL.
+        // and in that case, it would only apply to the _ and % wildcard characters.
+        // Nothing in JPA says that an escape character can escape itself.
+
+        // Without ESCAPE '\':
+        found = orders.purchaseTotalsFor("Escape\\\\Characters");
+        assertEquals(found.toString(), 1, found.size());
+        assertEquals(27.97f, found.get(0).floatValue(), 0.001f);
+
+        // Without ESCAPE '\':
+        found = orders.purchaseTotalsFor("Escape\\_Characters");
+        assertEquals(found.toString(), 3, found.size());
+        assertEquals(25.95f, found.get(0).floatValue(), 0.001f);
+        assertEquals(26.96f, found.get(1).floatValue(), 0.001f);
+        assertEquals(27.97f, found.get(2).floatValue(), 0.001f);
+
+        // With ESCAPE '\':
+        try (EntityManager em = orders.entityMgr()) {
+            String queryWithEscape = "SELECT total FROM Orders" +
+                                     " WHERE purchasedBy LIKE ?1 ESCAPE '\\'" +
+                                     " ORDER BY total";
+            TypedQuery<Float> query = em.createQuery(queryWithEscape, Float.class);
+
+            // Escaped % character is not a wildcard
+            query.setParameter(1, "Escape\\%Characters");
+            found = query.getResultList();
+            assertEquals(found.toString(), 1, found.size());
+            assertEquals(22.92f, found.get(0).floatValue(), 0.001f);
+
+            // Escaped _ character is not a wildcard
+            query.setParameter(1, "Escape\\_Characters");
+            found = query.getResultList();
+            assertEquals(found.toString(), 1, found.size());
+            assertEquals(21.91f, found.get(0).floatValue(), 0.001f);
+
+            // matches \ followed by any one character
+            query.setParameter(1, "Escape\\\\_Characters");
+            found = query.getResultList();
+            assertEquals(found.toString(), 3, found.size());
+            assertEquals(25.95f, found.get(0).floatValue(), 0.001f);
+            assertEquals(26.96f, found.get(1).floatValue(), 0.001f);
+            assertEquals(27.97f, found.get(2).floatValue(), 0.001f);
+
+            // matches \_ where _ is not a wildcard.
+            query.setParameter(1, "Escape\\\\\\_Characters");
+            found = query.getResultList();
+            assertEquals(found.toString(), 1, found.size());
+            assertEquals(25.95f, found.get(0).floatValue(), 0.001f);
+        }
+
+        orders.deleteAll();
+    }
+
+    /**
      * Query-by-method name repository operation to remove and return one or more entities
      * where the entity has an IdClass.
      */
-    // Test annotation is present on corresponding method in DataTest
-    public void testFindAndDeleteEntityThatHasAnIdClass(HttpServletRequest request, HttpServletResponse response) {
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+    @Test
+    public void testFindAndDeleteEntityThatHasAnIdClass() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         cities.save(new City("Milwaukee", "Wisconsin", 577222, Set.of(414)));
@@ -540,12 +1100,12 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Pierre");
 
         Order<City> orderByCityName = supportsOrderByForUpdate ? Order.by(Sort.asc("name")) : Order.by();
-        Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
+        Iterator<CityId> ids = cities.deleteByStateName("South Dakota", Limit.of(3), orderByCityName).iterator();
         CityId id;
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Aberdeen", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -553,7 +1113,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Brookings", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -561,7 +1121,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
             assertEquals("Mitchell", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
@@ -570,15 +1130,15 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, ids.hasNext());
 
         Order<City> orderByPopulation = supportsOrderByForUpdate ? Order.by(Sort.asc("population")) : Order.by();
-        id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
-        assertEquals("South Dakota", id.stateName);
+        id = cities.deleteAtMost1ByStateName("South Dakota", Limit.of(1), orderByPopulation).orElseThrow();
+        assertEquals("South Dakota", id.getStateName());
         if (supportsOrderByForUpdate)
-            assertEquals("Pierre", id.name);
+            assertEquals("Spearfish", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
-        id = cities.deleteByStateName("South Dakota", Limit.of(1));
-        assertEquals("South Dakota", id.stateName);
+        id = cities.delete1ByStateName("South Dakota", Limit.of(1));
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         List<CityId> some = cities.deleteSome("South Dakota", Limit.of(2));
@@ -586,12 +1146,12 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(false, ids.hasNext());
@@ -602,7 +1162,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, ids.hasNext());
         id = ids.next();
-        assertEquals("South Dakota", id.stateName);
+        assertEquals("South Dakota", id.getStateName());
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
         assertEquals(false, ids.hasNext());
@@ -629,15 +1189,15 @@ public class DataJPATestServlet extends FATServlet {
 
         CityId id = ids.next();
         assertEquals("Davenport", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         id = ids.next();
         assertEquals("Iowa City", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         id = ids.next();
         assertEquals("Sioux City", id.name);
-        assertEquals("Iowa", id.stateName);
+        assertEquals("Iowa", id.getStateName());
 
         removed = cities.deleteByStateName("Iowa");
 
@@ -688,7 +1248,7 @@ public class DataJPATestServlet extends FATServlet {
                      added.stream().map(a -> a.id).collect(Collectors.toSet()));
 
         assertArrayEquals(new ShippingAddress[] { a4, a2 },
-                          shippingAddresses.findByStreetNameOrderByHouseNumber("4th St SE"),
+                          shippingAddresses.findByStreetAddress_streetNameOrderByStreetAddress_houseNumber("4th St SE"),
                           Comparator.<ShippingAddress, Long> comparing(o -> o.id)
                                           .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
                                           .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
@@ -697,7 +1257,7 @@ public class DataJPATestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
         assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
-                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(150, 250))
+                             Stream.of(shippingAddresses.findByStreetAddress_houseNumberBetweenOrderByStreetAddress_streetNameAscStreetAddress_houseNumber(150, 250))
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
@@ -716,7 +1276,7 @@ public class DataJPATestServlet extends FATServlet {
         // assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
         // assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
 
-        // assertEquals(3L, shippingAddresses.countByRecipientInfoEmpty());
+        // assertEquals(3L, shippingAddresses.countByStreetAddressRecipientInfoEmpty());
 
         // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
         //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
@@ -774,11 +1334,34 @@ public class DataJPATestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("AccountId:10105600:560237", "AccountId:15561600:391588", "AccountId:43014400:410224"),
-                             taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold)
-                                             .map(AccountId::toString)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        List<Set<AccountId>> list;
+        try {
+            list = taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold);
+            assertEquals(list.toString(), 2, list.size());
+            assertEquals(Set.of("AccountId:43014400:410224"),
+                         list.get(0)
+                                         .stream()
+                                         .map(AccountId::toString)
+                                         .collect(Collectors.toSet()));
+            assertEquals(Set.of("AccountId:10105600:560237",
+                                "AccountId:15561600:391588"),
+                         list.get(1)
+                                         .stream()
+                                         .map(AccountId::toString)
+                                         .collect(Collectors.toSet()));
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1103E:"))
+                // Works around bad behavior from EclipseLink (see #30575)
+                // for ElementCollection:
+                // SELECT o.bankAccounts FROM TaxPayer o WHERE (o.filingStatus=?1)
+                //  ORDER BY o.numDependents, o.ssn
+                // combines the two Set<AccountId> values that ought to be the result
+                // into a single combined list of AccountId.
+                ;
+            else
+                throw x;
+        }
 
         // TODO report EclipseLink bug that occurs on the following
         if (false)
@@ -803,7 +1386,7 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testEmbeddableDepth1() {
         assertIterableEquals(List.of("Olmsted Medical", "Mayo Clinic", "Home Federal Savings Bank", "Custom Alarm"),
-                             businesses.findByLatitudeBetweenOrderByLongitudeDesc(44.0f, 44.03f)
+                             businesses.findByLocationLatitudeBetweenOrderByLocationLongitudeDesc(44.0f, 44.03f)
                                              .stream()
                                              .map(b -> b.name)
                                              .collect(Collectors.toList()));
@@ -817,7 +1400,7 @@ public class DataJPATestServlet extends FATServlet {
         CursoredPage<Business> page;
         List<Integer> zipCodes = List.of(55906, 55902, 55901, 55976, 55905);
 
-        page = businesses.findByZipIn(zipCodes, PageRequest.ofSize(4).withoutTotal());
+        page = businesses.findByLocationAddressZipIn(zipCodes, PageRequest.ofSize(4).withoutTotal());
 
         assertIterableEquals(List.of(345, 1421, 1016, 1600),
                              page
@@ -825,7 +1408,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.location.address.houseNum)
                                              .collect(Collectors.toList()));
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
+        page = businesses.findByLocationAddressZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(2800, 2960, 3100, 3428),
                              page
@@ -836,7 +1419,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(2L, page.pageRequest().page());
         assertEquals(4, page.pageRequest().size());
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
+        page = businesses.findByLocationAddressZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(5201, 1661, 3706, 200),
                              page
@@ -846,7 +1429,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(3, page.pageRequest().page());
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
+        page = businesses.findByLocationAddressZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(1402, 3008),
                              page
@@ -858,7 +1441,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(4, page.pageRequest().page());
         assertEquals(false, page.hasNext());
 
-        page = businesses.findByZipIn(zipCodes, page.previousPageRequest());
+        page = businesses.findByLocationAddressZipIn(zipCodes, page.previousPageRequest());
 
         assertIterableEquals(List.of(5201, 1661, 3706, 200),
                              page
@@ -901,6 +1484,70 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use an entity with embeddable attributes that are Java records.
+     */
+    @Test
+    public void testEmbeddableRecord() {
+        Segment s1 = new Segment();
+        s1.pointA = new Point(0, 0);
+        s1.pointB = new Point(120, 209); // length 241
+        s1 = segments.addOrModify(s1);
+
+        Segment s2 = new Segment();
+        s2.pointA = new Point(-20, 0);
+        s2.pointB = new Point(120, 171); // length 221
+        s2 = segments.addOrModify(s2);
+
+        Segment s3 = new Segment();
+        s3.pointA = new Point(24, 7);
+        s3.pointB = new Point(180, 140); // length 205
+        s3 = segments.addOrModify(s3);
+
+        Segment s4 = new Segment();
+        s4.pointA = new Point(12, 45);
+        s4.pointB = new Point(180, 140); // length 193
+        s4 = segments.addOrModify(s4);
+
+        Segment s5 = new Segment();
+        s5.pointA = new Point(4, 3);
+        s5.pointB = new Point(180, 60); // length 185
+        s5 = segments.addOrModify(s5);
+
+        Segment s6 = new Segment();
+        s6.pointA = new Point(0, 41);
+        s6.pointB = new Point(180, 60); // length 181
+        s6 = segments.addOrModify(s6);
+
+        assertEquals(3, segments.countByPointAXLessThan(1));
+
+        // TODO enable once #29460 is fixed
+        //assertEquals(List.of(s3.id, s4.id, s2.id, s1.id),
+        //             segments.endingSouthOf(100)
+        //                             .map(s -> s.id)
+        //                             .collect(Collectors.toList()));
+
+        //assertEquals(List.of(-20, 0, 24),
+        //             segments.longerThan(200, Sort.asc("pointA.x"))
+        //                             .stream()
+        //                             .map(s -> s.pointA.x())
+        //                             .collect(Collectors.toList()));
+
+        //s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
+        //s3.pointA = new Point(0, 0);
+        //s3 = segments.addOrModify(s3);
+
+        // removes s1 and s3
+        //assertEquals(2L, segments.removeStartingAt(0, 0));
+
+        //Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
+        //assertEquals(120, s2pointB.x());
+        //assertEquals(171, s2pointB.y());
+
+        assertEquals(6L, // TODO change to 4L, once #29460 is fixed
+                     segments.erase());
+    }
+
+    /**
      * Repository method where the result type is the embeddable class of one of the entity attributes.
      */
     @Test
@@ -912,7 +1559,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "NW Lakeridge Pl",
                                      "NW Members Parkway",
                                      "W Highway 14"),
-                             businesses.findByZip(55901)
+                             businesses.findByLocationAddressZip(55901)
                                              .map(loc -> loc.address.street.direction + " " + loc.address.street.name)
                                              .collect(Collectors.toList()));
     }
@@ -928,7 +1575,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "SW 1st St",
                                      "SW Enterprise Dr",
                                      "SW Greenview Dr"),
-                             businesses.findByZipNotAndCity(55901, "Rochester")
+                             businesses.findByLocationAddressZipNotAndLocationAddressCity(55901, "Rochester")
                                              .map(street -> street.direction + " " + street.name)
                                              .collect(Collectors.toList()));
     }
@@ -1028,6 +1675,7 @@ public class DataJPATestServlet extends FATServlet {
 
     /**
      * Tests CrudRepository methods that supply entities as parameters.
+     * Also tests compatibility with Converters using OffsetDateTimeToStringConverter
      */
     @Test
     public void testEntitiesAsParameters() throws Exception {
@@ -1075,23 +1723,23 @@ public class DataJPATestServlet extends FATServlet {
         o5 = orders.create(o5);
         int o5_v1 = o5.versionNum;
 
-        // delete even though a property doesn't match
+        // delete even though an entity attribute doesn't match
         o4.total = 44.99f;
         orders.delete(o4);
 
         // cannot delete when the version number doesn't match
+        o1 = orders.findById(o1.id).orElseThrow();
+        UUID o1id = o1.id;
+
+        // Update on another thread:
+        CompletableFuture.supplyAsync(() -> {
+            PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
+            o1updated.total = 11.99f;
+            return orders.save(o1updated);
+        }).get(2, TimeUnit.MINUTES);
+
         tran.begin();
         try {
-            o1 = orders.findById(o1.id).orElseThrow();
-            UUID o1id = o1.id;
-
-            // Update in separate transaction:
-            CompletableFuture.supplyAsync(() -> {
-                PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
-                o1updated.total = 11.99f;
-                return orders.save(o1updated);
-            }).get(30, TimeUnit.SECONDS);
-
             try {
                 orders.delete(o1);
                 fail("Deletion must be rejected when the version doesn't match.");
@@ -1164,11 +1812,24 @@ public class DataJPATestServlet extends FATServlet {
         o7.purchasedOn = OffsetDateTime.now();
         o7.total = 70.99f;
 
-        try {
-            orders.insertAll(List.of(o7, o5));
-            fail("Should not be able insert an entity with an Id that is already present.");
-        } catch (EntityExistsException x) {
-            // expected
+        // TODO SQLServer throws com.microsoft.sqlserver.jdbc.SQLServerException: Violation of PRIMARY KEY constraint ...
+        // which is not a subset of SQLIntegrityConstraintViolationException
+        // we are not correctly parsing this exception to re-throw as EntityExistsException
+        // Related issue: https://github.com/microsoft/mssql-jdbc/issues/1199
+        // SQLServer JDBC Jar Name : mssql-jdbc.jar
+        // TODO PostgreSQL throws org.postgresql.util.PSQLException:
+        // ERROR: duplicate key value violates unique constraint "purchaseorder_pkey"
+        // Detail: Key (id)=(c2383324-d0a1-4d71-be8c-b2fda27f1701) already exists.
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        if (!jdbcJarName.startsWith("mssql-jdbc") &&
+            !jdbcJarName.startsWith("postgresql")) {
+            try {
+
+                orders.insertAll(List.of(o7, o5));
+                fail("Should not be able insert an entity with an Id that is already present.");
+            } catch (EntityExistsException x) {
+                // expected
+            }
         }
 
         assertEquals(false, orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").isPresent());
@@ -1259,6 +1920,16 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that uses query language to perform an exists query
+     * that returns a boolean true/false value.
+     */
+    @Test
+    public void testExistsViaQueryLanguage() {
+        assertEquals(true, businesses.isLocatedAt(2800, "37th St", "NW", "IBM"));
+        assertEquals(false, businesses.isLocatedAt(200, "1st St", "SW", "IBM"));
+    }
+
+    /**
      * Verify WithYear, WithQuarter, WithMonth, and WithDay Functions to compare different parts of a date.
      */
     @Test
@@ -1319,25 +1990,55 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Verify WithWeek Function to compare the week-of-year part of a date.
      */
-    @SkipIfDataSourceProperties(DERBY_EMBEDDED) // Derby doesn't support a WEEK function in SQL
+    @OnlyIfSysProp(DB_Not_Default) // Derby doesn't support a WEEK function in SQL
     @Test
     public void testExtractWeekFromDateFunction() {
-
         // WithWeek
-        assertEquals(List.of(4000921041110001L),
-                     creditCards.expiringInWeek(15));
+        List<CreditCard> results = creditCards.expiringInWeek(15);
+
+        assertEquals(1, results.size());
+        assertEquals(4000921041110001L, results.get(0).number);
     }
 
     /**
      * Verify WithWeek in query-by-method-name to compare the week-of-year part of a date.
      */
-    @SkipIfDataSourceProperties(DERBY_EMBEDDED) // Derby doesn't support a WEEK function in SQL
+    @OnlyIfSysProp(DB_Not_Default) // Derby doesn't support a WEEK function in SQL
     @Test
     public void testExtractWeekFromDateKeyword() {
-
         // WithWeek
-        assertEquals(List.of(4000921042220002L),
-                     creditCards.findByExpiresOnWithWeek(17));
+        List<CreditCard> results = creditCards.findByExpiresOnWithWeek(17);
+
+        assertEquals(1, results.size());
+        assertEquals(4000921042220002L, results.get(0).number);
+    }
+
+    /**
+     * Verify that fetch type eager and lazy both work when using a detached entity returned by Jakarta Data
+     */
+    @Test
+    public void testFetchType() {
+        mobilePhones.removeAll();
+
+        List<String> apps = Arrays.asList("Settings", "Camera", "Phone", "Email", "Messages",
+                                          "UnoLingo", "BankApp", "SoloGame", "LocalNews");
+
+        List<String> emails = Arrays.asList("john.smith@example.com", "JohnDSmith@example.work.com");
+
+        // Populate database
+        UUID id = mobilePhones.insert(Mobile.of(OS.ANDROID, apps, emails)).deviceId;
+
+        // Outside of transaction, returned entity should be detached
+        Mobile johnsMobile = mobilePhones.findById(id).orElseThrow();
+
+        // Fetch type lazy should be populated when accessing apps field
+        assertFalse("Expected apps to be populated when using fetch type lazy", johnsMobile.apps.isEmpty());
+        assertEquals("Entity apps did not match expected apps", apps, johnsMobile.apps);
+
+        // Fetch type eager emails field should be pre-populated
+        assertFalse("Expected emails to be populated when using fetch type eager", johnsMobile.emails.isEmpty());
+        assertEquals("Entity emails did not match expected apps", emails, johnsMobile.emails);
+
     }
 
     /**
@@ -1375,9 +2076,15 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(Integer.valueOf(1983), camry.getYearIntroduced());
         assertEquals("Toyota", camry.getManufacturer().getName());
 
-        corolla = models.findById(corollaId).orElseThrow();
-
-        assertEquals("Corolla", corolla.getName());
+        Instant corollaLastMod;
+        corollaLastMod = models.lastModified(corollaId).orElseThrow();
+        List<Model> found = models.modifiedAt(corollaLastMod);
+        assertEquals(false, found.isEmpty());
+        corolla = null;
+        for (Model model : found)
+            if ("Corolla".equals(model.getName()))
+                corolla = model;
+        assertNotNull(corolla);
         assertEquals(Integer.valueOf(1966), corolla.getYearIntroduced());
         assertEquals("Toyota", corolla.getManufacturer().getName());
 
@@ -1409,6 +2116,89 @@ public class DataJPATestServlet extends FATServlet {
                      list.stream()
                                      .map(c -> c.name + ":" + c.stateName)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method with query language that includes only the
+     * FROM and ORDER BY clauses and returns a Page. Verify the page count
+     * and the total count of matching entities.
+     */
+    @Test
+    public void testFromAndOrderByClausesOnlyWithPageCount() {
+
+        Page<Business> page1 = businesses.sorted(PageRequest.ofSize(5));
+
+        assertEquals(3l, page1.totalPages());
+        assertEquals(15l, page1.totalElements());
+
+        assertEquals(List.of("RAC",
+                             "IBM",
+                             "Crenlo",
+                             "Home Federal Savings Bank",
+                             "Benike Construction"),
+                     page1.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        Page<Business> page2 = businesses.sorted(page1.nextPageRequest());
+
+        assertEquals(List.of("Metafile",
+                             "Think Bank",
+                             "Reichel Foods",
+                             "Custom Alarm",
+                             "Olmsted Medical"),
+                     page2.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        Page<Business> page3 = businesses.sorted(page2.nextPageRequest());
+
+        assertEquals(List.of("Mayo Clinic",
+                             "Silver Lake Foods",
+                             "Cardinal",
+                             "Geotek",
+                             "HALCON"),
+                     page3.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(false, page3.hasNext());
+    }
+
+    /**
+     * Use a repository method with query language that includes only the
+     * FROM and WHERE and ORDER BY clauses and returns a Page. Verify the
+     * page count and the total count of matching entities.
+     */
+    @Test
+    public void testFromAndWhereAndOrderByClausesOnly() {
+
+        Page<Business> page1 = businesses
+                        .withStreetDirection("NW", PageRequest.ofSize(4));
+
+        assertEquals(8l, page1.totalElements());
+        assertEquals(2l, page1.totalPages());
+
+        assertEquals(List.of("Think Bank",
+                             "Metafile",
+                             "RAC",
+                             "IBM"),
+                     page1.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        Page<Business> page2 = businesses
+                        .withStreetDirection("NW", page1.nextPageRequest());
+
+        assertEquals(List.of("Crenlo",
+                             "Geotek",
+                             "Home Federal Savings Bank",
+                             "HALCON"),
+                     page2.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(false, page2.hasNext());
     }
 
     /**
@@ -1580,10 +2370,11 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use keyset pagination with the OrderBy annotation on a composite id that is defined by an IdClass attribute.
+     * Use cursor-based pagination with the OrderBy annotation on a composite id
+     * that is defined by an IdClass attribute.
      */
     @Test
-    public void testIdClassOrderByAnnotationWithKeysetPagination() {
+    public void testIdClassOrderByAnnotationWithCursorPagination() {
         PageRequest pagination = PageRequest
                         .ofSize(3)
                         .withoutTotal()
@@ -1612,10 +2403,11 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use keyset pagination with the OrderBy query-by-method pattern on a composite id that is defined by an IdClass attribute.
+     * Use cursor-based pagination with the OrderBy query-by-method pattern on a
+     * composite id that is defined by an IdClass attribute.
      */
     @Test
-    public void testIdClassOrderByNamePatternWithKeysetPagination() {
+    public void testIdClassOrderByNamePatternWithCursorPagination() {
         PageRequest pagination = PageRequest.ofSize(5).withoutTotal();
 
         CursoredPage<City> slice1 = cities.findByStateNameNotNull(pagination, Order.by());
@@ -1655,11 +2447,12 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use keyset pagination with the OrderBy query-by-method pattern in descending direction
-     * on a composite id that is defined by an IdClass attribute.
+     * Use cursor-based pagination with the OrderBy query-by-method pattern in
+     * descending direction on a composite id that is defined by an IdClass
+     * attribute.
      */
     @Test
-    public void testIdClassOrderByNamePatternWithKeysetPaginationDescending() {
+    public void testIdClassOrderByNamePatternWithCursorPaginationDescending() {
         PageRequest pagination = PageRequest.ofSize(3)
                         .withTotal()
                         .afterCursor(Cursor.forKey(CityId.of("Springfield", "Tennessee")));
@@ -1692,10 +2485,11 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use keyset pagination with the pagination sort criteria on a composite id that is defined by an IdClass attribute.
+     * Use cursor-based pagination with the pagination sort criteria on a
+     * composite id that is defined by an IdClass attribute.
      */
     @Test
-    public void testIdClassOrderByPaginationWithKeyset() {
+    public void testIdClassOrderByPaginationWithCursor() {
         // ascending:
         Order<City> asc = Order.by(Sort.asc(ID));
         PageRequest pagination = PageRequest.ofSize(5);
@@ -1765,7 +2559,7 @@ public class DataJPATestServlet extends FATServlet {
         // single result
         CityId cityId = cities.findFirstByNameOrderByPopulationDesc("Springfield");
         assertEquals("Springfield", cityId.name);
-        assertEquals("Missouri", cityId.stateName);
+        assertEquals("Missouri", cityId.getStateName());
 
         // Stream result
         assertIterableEquals(List.of("Springfield, Oregon",
@@ -1885,7 +2679,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("37th St NW", a.streetAddress.streetName);
         assertEquals(55901, a.zipCode);
 
-        WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetNameAndFloorNumber("37th St NW", 2);
+        WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetAddress_streetNameAndFloorNumber("37th St NW", 2);
 
         assertArrayEquals(new WorkAddress[] { work }, secondFloorOfficesOn37th,
                           Comparator.<WorkAddress, Long> comparing(o -> o.id)
@@ -1897,7 +2691,7 @@ public class DataJPATestServlet extends FATServlet {
                                           .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
                                           .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.zipCode)));
 
-        ShippingAddress[] found = shippingAddresses.findByStreetNameOrderByHouseNumber("37th St NW");
+        ShippingAddress[] found = shippingAddresses.findByStreetAddress_streetNameOrderByStreetAddress_houseNumber("37th St NW");
 
         assertArrayEquals(new ShippingAddress[] { work }, found,
                           Comparator.<ShippingAddress, Long> comparing(o -> o.id)
@@ -1909,7 +2703,7 @@ public class DataJPATestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
-        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(1000, 3000);
+        StreetAddress[] streetAddresses = shippingAddresses.findByStreetAddress_houseNumberBetweenOrderByStreetAddress_streetNameAscStreetAddress_houseNumber(1000, 3000);
 
         assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
                           Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
@@ -1919,13 +2713,67 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method that queries by an Instant attribute and retrieves an
+     * entity that includes the Instant attribute.
+     */
+    @Test
+    public void testInstant() {
+        final ZoneId EASTERN = ZoneId.of("America/New_York");
+        final Instant apr_28_2023 = ZonedDateTime.of(2023, 4, 28,
+                                                     12, 0, 0, 0,
+                                                     EASTERN)
+                        .toInstant();
+
+        DemographicInfo info = demographics.read(apr_28_2023).orElseThrow();
+
+        assertEquals(apr_28_2023,
+                     info.collectedOn);
+
+        assertEquals(134060000L,
+                     info.numFullTimeWorkers.longValue());
+
+        assertEquals(6852746625849.0,
+                     info.intragovernmentalDebt.doubleValue(),
+                     1.0);
+
+        assertEquals(24605068022567.0,
+                     info.publicDebt.doubleValue(),
+                     1.0);
+    }
+
+    /**
+     * Repository method that queries by the year component of an Instant attribute.
+     */
+    @Test
+    public void testInstantExtractYear() {
+
+        assertEquals(30189.32,
+                     demographics.publicDebtPerFullTimeWorker(2002)
+                                     .orElseThrow()
+                                     .doubleValue(),
+                     0.01);
+
+        assertEquals(102683.76,
+                     demographics.publicDebtPerFullTimeWorker(2013)
+                                     .orElseThrow()
+                                     .doubleValue(),
+                     0.01);
+
+        assertEquals(205374.53,
+                     demographics.publicDebtPerFullTimeWorker(2024)
+                                     .orElseThrow()
+                                     .doubleValue(),
+                     0.01);
+    }
+
+    /**
      * Use a repository method with a Query that hard codes a literal for a double value in E notation,
      * as is done in an example within the spec.
      */
-    @Test
+    // enable once 28078 is fixed @Test
     public void testLiteralDouble() {
         // Clear out data before test
-        accounts.deleteByOwnerEndsWith("testLiteralDouble");
+        accounts.deleteByOwnerEndsWith("TestLiteralDouble");
 
         accounts.create(new Account(1006520, 28002, "Think Bank", true, 21.04, "Lester TestLiteralDouble"));
         accounts.create(new Account(2003291, 28002, "Think Bank", true, 331.01, "Laura TestLiteralDouble"));
@@ -1936,14 +2784,102 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(1L, accounts.countByOwnerAndBalanceBetween("Laura TestLiteralDouble", 331.159, 331.161));
 
-        // TODO Enable the following once fixed,
-        //Account account = accounts.findByAccountId(id);
-        //assertEquals(331.16, account.balance, 0.001);
-        // Failure is:
-        // Caused by: java.lang.NullPointerException: Cannot read field "index" because "key" is null
-        // at org.eclipse.persistence.internal.sessions.ArrayRecord.get(ArrayRecord.java:139) ...
+        Account account = accounts.findByAccountId(id);
+        assertEquals(331.16, account.balance, 0.001);
 
         assertEquals(2L, accounts.deleteByOwnerEndsWith("TestLiteralDouble"));
+    }
+
+    /**
+     * Use repository methods with JDQL that specifies LOCAL DATE, LOCAL DATETIME,
+     * and LOCAL TIME.
+     */
+    @Test
+    public void testLocalDateAndTimeFunctions() {
+
+        Rebate r1 = new Rebate(21, 1.01, "testLocalDateAndTimeFunctions-CustomerA", //
+                        LocalTime.of(10, 51, 0), //
+                        LocalDate.of(2024, Month.JULY, 19), //
+                        Rebate.Status.SUBMITTED, //
+                        LocalDateTime.of(2024, Month.JULY, 19, 13, 10, 0), //
+                        null);
+
+        Rebate r2 = new Rebate(22, 2.02, "testLocalDateAndTimeFunctions-CustomerB", //
+                        LocalTime.of(14, 28, 52), //
+                        LocalDate.of(2024, Month.JULY, 18), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2024, Month.JULY, 20, 8, 2, 59), //
+                        null);
+
+        Rebate r3 = new Rebate(23, 1.23, "testLocalDateAndTimeFunctions-CustomerB", //
+                        LocalTime.of(16, 33, 53), //
+                        LocalDate.of(2024, Month.JUNE, 30), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.JULY, 20, 13, 3, 31), //
+                        null);
+
+        Rebate r4 = new Rebate(24, 1.44, "testLocalDateAndTimeFunctions-CustomerA", //
+                        LocalTime.of(16, 4, 44), //
+                        LocalDate.of(2024, Month.JULY, 13), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2024, Month.JULY, 16, 18, 42, 0), //
+                        null);
+
+        Rebate[] all = rebates.addAll(r1, r2, r3, r4);
+
+        assertEquals(List.of(r2.id(), r4.id(), r3.id(), r1.id()),
+                     rebates.notRecentlyUpdated("testLocalDateAndTimeFunctions-%"));
+
+        assertEquals(List.of(r4.id(), r1.id(), r2.id(), r3.id()),
+                     rebates.purchasedInThePast("testLocalDateAndTimeFunctions-%"));
+
+        LocalDateTime lastUpdate = rebates.lastUpdated(r3.id()).orElseThrow();
+        assertEquals(2024, lastUpdate.getYear());
+        assertEquals(Month.JULY, lastUpdate.getMonth());
+        assertEquals(20, lastUpdate.getDayOfMonth());
+        assertEquals(13, lastUpdate.getHour());
+        assertEquals(3, lastUpdate.getMinute());
+        assertEquals(31, lastUpdate.getSecond());
+
+        LocalDate dayOfPurchase = (LocalDate) rebates.dayOfPurchase(r2.id())
+                        .orElseThrow();
+        assertEquals(2024, dayOfPurchase.getYear());
+        assertEquals(Month.JULY, dayOfPurchase.getMonth());
+        assertEquals(18, dayOfPurchase.getDayOfMonth());
+
+        rebates.removeAll(all);
+    }
+
+    /**
+     * Verify that LOWER(ID(o)) is valid in a query.
+     */
+    @Test
+    public void testLowerId() {
+        assertEquals(0, counties.deleteByNameIn(List.of("Freeborn", "Steele")));
+
+        int[] freebornZipCodes = new int[] { 55912, 56007, 56009, 56016, 56020, //
+                                             56026, 56029, 56032, 56035, 56036 };
+
+        int[] steeleZipCodes = new int[] { 55049, 55060, 55917, 55924, 55926, //
+                                           55946, 559072 };
+
+        County freeborn = new County("Freeborn", "Minnesota", 30895, freebornZipCodes, //
+                        "Albert Lea", "Alden", "Clarks Grove", "Conger", "Emmons", //
+                        "Freeborn", "Geneva", "Glenville", "Hartland", "Hayward", //
+                        "Hollandale", "Manchester", "Myrtle", "Twin Lakes");
+
+        County steele = new County("Steele", "Minnesota", 37406, steeleZipCodes, //
+                        "Blooming Prairie", "Ellendale", "Medford", "Owatonna");
+
+        counties.save(freeborn, steele);
+
+        assertEquals(Integer.valueOf(30895),
+                     counties.populationOf("freeborn").orElseThrow());
+
+        assertEquals(Integer.valueOf(37406),
+                     counties.populationOf("steele").orElseThrow());
+
+        assertEquals(2, counties.deleteByNameIn(List.of("Freeborn", "Steele")));
     }
 
     /**
@@ -1972,35 +2908,43 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Query that matches multiple entities and returns a combined collection of results across matches for the ManyToMany association.
+     * Query that matches multiple entities that have a ManyToMany relation.
+     * Verify that the data within the ManyToMany relations of the results
+     * is correct.
      */
-    //@Test
-    // This test is currently incorrect because Phone is an attribute of Customer (primary entity type), not DeliveryLocation (result type).
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
-    public void testManyToManyReturnsCombinedCollectionFromMany() {
+    @Test
+    public void testManyToManyIncludedInResults() {
 
-        List<String> addresses = customers.findLocationsByPhoneIn(List.of(5075552444L, 5075550101L))
-                        .map(loc -> loc.houseNum + " " + loc.street.toString())
+        List<String> addresses = customers.findByPhoneIn(List.of(5075552444L,
+                                                                 5075550101L))
+                        .map(cust -> cust.deliveryLocations)
+                        .map(locs -> locs
+                                        .stream()
+                                        .map(loc -> loc.houseNum + " " +
+                                                    loc.street.toString())
+                                        .sorted()
+                                        .collect(Collectors.toList())
+                                        .toString())
                         .collect(Collectors.toList());
 
-        // Customer 1's delivery addresses must come before Customer 4's card numbers due to the ordering on Customer.email.
-        assertEquals(addresses.toString(),
-                     true, List.of("1001 1st Ave SW", "2800 37th St NW", "4004 4th Ave SE").equals(addresses) ||
-                           List.of("1001 1st Ave SW", "4004 4th Ave SE", "2800 37th St NW").equals(addresses));
+        // Customer 1's delivery address must come before
+        // Customer 4's delivery addresses due to ordering
+        // on Customer.email
+        assertEquals(List.of("[1001 1st Ave SW]",
+                             "[2800 37th St NW, 4004 4th Ave SE]"),
+                     addresses);
     }
 
     /**
-     * Query that matches a single entity and returns the corresponding collection from its ManyToMany association.
+     * Query that matches a single entity that has a ManyToMany relation.
+     * Verify that the data within the ManyToMany relation of the result
+     * is correct.
      */
-    //@Test
-    // This test is currently incorrect because Email is an attribute of Customer (primary entity type), not DeliveryLocation (result type)
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
-    public void testManyToManyReturnsOneSetOfMany() {
-        Set<DeliveryLocation> locations = customers.findLocationsByEmail("Maximilian@tests.openliberty.io");
+    @Test
+    public void testManyToManyIncludedInSingleResult() {
+        Set<DeliveryLocation> locations = customers //
+                        .findByEmail("Maximilian@tests.openliberty.io")
+                        .orElseThrow().deliveryLocations;
 
         assertEquals(locations.toString(), 2, locations.size());
 
@@ -2020,7 +2964,6 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(loc3.street);
         assertEquals(2800, loc3.houseNum);
         assertEquals("37th St", loc3.street.name);
-        assertEquals("NW", loc3.street.direction);
 
         assertNotNull(locations.toString(), loc4);
         assertEquals(DeliveryLocation.Type.HOME, loc4.type);
@@ -2062,21 +3005,19 @@ public class DataJPATestServlet extends FATServlet {
 
     /**
      * Many-to-one entity mapping, where a repository query from the many side
-     * filters on an attribute from the many side,
-     * orders by an attribute on the one side,
-     * returning results from the one side.
+     * filters on an attribute from the many side (CreditCard),
+     * orders by an attribute on the one side (Customer email),
+     * returning results (CreditCard) from which the one (Customer)
+     * can be obtained.
      */
-    //@Test
-    // This test is currently incorrect because Issuer is an attribute of CreditCard (primary entity type), not Customer (result type).
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
+    @Test
     public void testManyToOneMM11() {
         assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
                                      "Matthew@tests.openliberty.io",
                                      "Maximilian@tests.openliberty.io",
                                      "Megan@tests.openliberty.io"),
                              creditCards.findByIssuer(Issuer.MonsterCard)
+                                             .map(cc -> cc.debtor)
                                              .map(c -> c.email)
                                              .collect(Collectors.toList()));
 
@@ -2085,6 +3026,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "Megan@tests.openliberty.io",
                                      "Monica@tests.openliberty.io"),
                              creditCards.findByIssuer(Issuer.Feesa)
+                                             .map(cc -> cc.debtor)
                                              .map(c -> c.email)
                                              .collect(Collectors.toList()));
     }
@@ -2100,6 +3042,27 @@ public class DataJPATestServlet extends FATServlet {
         assertIterableEquals(List.of("Monica@tests.openliberty.io",
                                      "martin@tests.openliberty.io"),
                              creditCards.findByExpiresOnBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31)));
+    }
+
+    /**
+     * Query that matches based on an attribute of the One of a ManyToOne relation.
+     */
+    @Test
+    public void testManyToOneSubAttribute() {
+
+        Stream<CreditCard> cards = customers//
+                        .findCardsByDebtorEmailEndsWith("an@tests.openliberty.io");
+        List<Long> cardNumbers = cards
+                        .map(card -> card.number)
+                        .collect(Collectors.toList());
+
+        // Customer 5's card numbers must come before Customer 4's card numbers
+        // due to the ordering on Customer.phone.
+        assertEquals(Set.of(5000921051110001L, 5000921052220002L),
+                     new HashSet<>(cardNumbers.subList(0, 2)));
+
+        assertEquals(Set.of(4000921041110001L, 4000921042220002L),
+                     new HashSet<>(cardNumbers.subList(2, 4)));
     }
 
     /**
@@ -2211,7 +3174,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
         assertEquals(false, it.hasNext());
 
-        // Iterator with keyset pagination:
+        // Iterator with cursor-based pagination:
         try {
             it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2)
                             .afterCursor(Cursor.forKey(t8key)));
@@ -2220,7 +3183,8 @@ public class DataJPATestServlet extends FATServlet {
             // expected
         }
 
-        // Iterator with keyset pagination obtaining pages in the previous page direction
+        // Iterator with cursor-based pagination obtaining pages in the
+        // previous page direction
         try {
             it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2)
                             .beforeCursor(Cursor.forKey(t2key)));
@@ -2296,38 +3260,11 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Query that matches multiple entities and returns a combined collection of results across matches for the OneToMany association.
-     */
-    //@Test
-    // This test is currently incorrect because Email is an attribute of Customer (primary entity type), not CreditCard (result type).
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
-    public void testOneToManyReturnsCombinedCollectionFromMany() {
-
-        List<Long> cardNumbers = customers.findCardsByEmailEndsWith("an@tests.openliberty.io")
-                        .map(card -> card.number)
-                        .collect(Collectors.toList());
-
-        // Customer 5's card numbers must come before Customer 4's card numbers due to the ordering on Customer.phone.
-        assertEquals(cardNumbers.toString(),
-                     true, cardNumbers.equals(List.of(5000921051110001L, 5000921052220002L, 4000921041110001L, 4000921042220002L)) ||
-                           cardNumbers.equals(List.of(5000921051110001L, 5000921052220002L, 4000921042220002L, 4000921041110001L)) ||
-                           cardNumbers.equals(List.of(5000921052220002L, 5000921051110001L, 4000921042220002L, 4000921041110001L)) ||
-                           cardNumbers.equals(List.of(5000921052220002L, 5000921051110001L, 4000921041110001L, 4000921042220002L)));
-    }
-
-    /**
      * Query that matches a single entity and so returns one collection for a OneToMany association.
      */
-    //@Test
-    // Test is currently incorrect because the text expects to query on the Id of Customer (primary entity type),
-    // not the Id of CreditCard (result type).
-    // This would require a way to indicate that a projection is desired, meaning the return type indicates
-    // an attribute of the entity rather than the entity class itself.
-    // TODO Could this be achieved with @Select?
+    @Test
     public void testOneToManyReturnsOneSetOfMany() {
-        Set<CreditCard> cards = customers.findCardsById(9210005);
+        Set<CreditCard> cards = customers.findCardsByDebtorCustomerId(9210005);
 
         assertEquals(cards.toString(), 2, cards.size());
 
@@ -2390,7 +3327,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Oscar TestOneToOne", d.fullName);
 
         // Query by an attribute of the entity to which OneToOne maps:
-        d = drivers.findByLicenseNum("T121-200-200-200");
+        d = drivers.findByLicense_licenseNum("T121-200-200-200");
         assertEquals("Oliver TestOneToOne", d.fullName);
 
         // Query by and order by attributes of the entity to which OneToOne maps:
@@ -2408,7 +3345,7 @@ public class DataJPATestServlet extends FATServlet {
         assertIterableEquals(List.of("Minnesota T121-100-100-100", "Minnesota T121-300-300-300",
                                      "Wisconsin T121-500-500-500", "Wisconsin T121-200-200-200",
                                      "Iowa T121-400-400-400"),
-                             drivers.findByFullNameEndsWith(" TestOneToOne")
+                             drivers.findByDriver_fullNameEndsWith(" TestOneToOne")
                                              .map(license -> license.stateName + " " + license.licenseNum)
                                              .collect(Collectors.toList()));
 
@@ -2420,7 +3357,199 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(driver -> driver.fullName)
                                              .collect(Collectors.toList()));
 
+        drivers.setInfo(new Driver("Oscar TestOneToOne", //
+                        100404000, //
+                        LocalDate.of(2004, 4, 4), //
+                        75, // height updated
+                        242, // weight updated
+                        "T121-400-400-400", //
+                        "Iowa", //
+                        LocalDate.of(2020, 4, 4), //
+                        LocalDate.of(2024, 4, 4)));
+        d4 = drivers.findById(100404000).orElseThrow();
+        assertEquals("Oscar TestOneToOne", d4.fullName);
+        assertEquals(75, d4.heightInInches);
+        assertEquals(242, d4.weightInPounds);
+        assertEquals("Iowa", d4.license.stateName);
+        assertEquals(LocalDate.of(2020, 4, 4), d4.license.issuedOn);
+
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
+    }
+
+    /**
+     * Use a repository method with Page<Object> return type.
+     * The primary entity type of the repository should be used.
+     */
+    @Test
+    public void testPageOfObjectReturnType() {
+        Page<Object> page1 = businesses
+                        .findAsPageByNameBetween("Crenlo",
+                                                 "RAC",
+                                                 PageRequest.ofSize(4));
+
+        assertEquals(List.of("Metafile", // 3428
+                             "RAC", // 3100
+                             "IBM", // 2800
+                             "Custom Alarm"), // 1661
+                     page1.stream()
+                                     .map(b -> ((Business) b).name)
+                                     .collect(Collectors.toList()));
+
+        Page<Object> page2 = businesses
+                        .findAsPageByNameBetween("Crenlo",
+                                                 "RAC",
+                                                 page1.nextPageRequest());
+
+        assertEquals(List.of("Crenlo", // 1600
+                             "Geotek", // 1421
+                             "Home Federal Savings Bank", // 1016
+                             "HALCON"), // 345
+                     page2.stream()
+                                     .map(b -> ((Business) b).name)
+                                     .collect(Collectors.toList()));
+
+        Page<Object> page3 = businesses
+                        .findAsPageByNameBetween("Crenlo",
+                                                 "RAC",
+                                                 page2.nextPageRequest());
+
+        assertEquals(List.of("Olmsted Medical", // 210
+                             "Mayo Clinic"), // 200
+                     page3.stream()
+                                     .map(b -> ((Business) b).name)
+                                     .collect(Collectors.toList()));
+
+    }
+
+    /**
+     * Tests entity attribute names from embeddables and MappedSuperclass that
+     * can have delimiters. Includes tests for name collisions with attributes from an
+     * embeddable or superinteface.
+     */
+    @Test
+    public void testPersistentFieldNamesAndDelimiters() {
+        apartments.removeAll();
+
+        Apartment a101 = new Apartment();
+        a101.occupant = new Occupant();
+        a101.occupant.firstName = "Kyle";
+        a101.occupant.lastName = "Smith";
+        a101.isOccupied = true;
+        a101.aptId = 101L;
+        a101.quarters = new Bedroom();
+        a101.quarters.length = 10;
+        a101.quarters.width = 10;
+        a101.quartersWidth = 15;
+
+        Apartment a102 = new Apartment();
+        a102.occupant = new Occupant();
+        a102.occupant.firstName = "Brent";
+        a102.occupant.lastName = "Smith";
+        a102.isOccupied = false;
+        a102.aptId = 102L;
+        a102.quarters = new Bedroom();
+        a102.quarters.length = 11;
+        a102.quarters.width = 11;
+        a102.quartersWidth = 15;
+
+        Apartment a103 = new Apartment();
+        a103.occupant = new Occupant();
+        a103.occupant.firstName = "Brian";
+        a103.occupant.lastName = "Smith";
+        a103.isOccupied = false;
+        a103.aptId = 103L;
+        a103.quarters = new Bedroom();
+        a103.quarters.length = 11;
+        a103.quarters.width = 12;
+        a103.quartersWidth = 15;
+
+        Apartment a104 = new Apartment();
+        a104.occupant = new Occupant();
+        a104.occupant.firstName = "Scott";
+        a104.occupant.lastName = "Smith";
+        a104.isOccupied = false;
+        a104.aptId = 104L;
+        a104.quarters = new Bedroom();
+        a104.quarters.length = 12;
+        a104.quarters.width = 11;
+        a104.quartersWidth = 15;
+
+        apartments.saveAll(List.of(a101, a102, a103, a104));
+
+        List<Apartment> results;
+
+        results = apartments.findApartmentsByBedroomWidth(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroom(11, 11);
+        assertEquals(1, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomLength();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllOrderByBedroomWidth();
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findApartmentsByBedroomLength(10);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuarters_Width(12);
+        assertEquals(1, results.size());
+        assertEquals("Brian", results.get(0).occupant.firstName);
+
+        results = apartments.findByQuartersLength(12);
+        assertEquals(1, results.size());
+        assertEquals("Scott", results.get(0).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters.length"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        results = apartments.findAllSorted(Sort.asc("quarters_width"));
+        assertEquals(4, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(3).occupant.firstName);
+
+        results = apartments.findByOccupied(true);
+        assertEquals(1, results.size());
+        assertEquals("Kyle", results.get(0).occupant.firstName);
+
+        results = apartments.findByOccupantLastNameOrderByFirstName("Smith");
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        // Colliding non-delimited attribute name quartersWidth, ensure we use entity attribute and not embedded attribute for query
+        results = apartments.findByQuartersWidth(15);
+        assertEquals(4, results.size());
+        assertEquals("Brent", results.get(0).occupant.firstName);
+        assertEquals("Brian", results.get(1).occupant.firstName);
+        assertEquals("Kyle", results.get(2).occupant.firstName);
+        assertEquals("Scott", results.get(3).occupant.firstName);
+
+        try {
+            apartments.findAllCollidingEmbeddable();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from embeddable");
+        } catch (MappingException e) {
+            //expected
+        }
+
+        try {
+            apartments.findAllCollidingSuperclass();
+            fail("Should not have been able to execute query on an entity with colliding attibute name from superclass");
+        } catch (MappingException e) {
+            // expected
+        }
     }
 
     /**
@@ -2456,6 +3585,104 @@ public class DataJPATestServlet extends FATServlet {
                                      .collect(Collectors.toList()));
 
         assertEquals(false, page3.hasNext());
+    }
+
+    /**
+     * Use a repository method that runs a query without specifying an entity type
+     * and returns a record entity. The repository must be able to infer the record type
+     * to use from the return value and generate the proper select clause so that the
+     * generated entity type is converted to the record type.
+     */
+    @Test
+    public void testRecordQueryInfersSelectClause() {
+
+        Rebate r1 = new Rebate(10, 10.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(15, 40, 0), //
+                        LocalDate.of(2024, Month.MAY, 1), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 1, 15, 40, 0), //
+                        null);
+
+        Rebate r2 = new Rebate(12, 12.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(12, 46, 30), //
+                        LocalDate.of(2024, Month.APRIL, 5), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 2, 10, 18, 0), //
+                        null);
+
+        Rebate r3 = new Rebate(13, 3.00, "testRecordEntityInferredFromReturnType-CustomerB", //
+                        LocalTime.of(9, 15, 0), //
+                        LocalDate.of(2024, Month.MAY, 2), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 2, 9, 15, 0), //
+                        null);
+
+        Rebate r4 = new Rebate(14, 4.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(10, 55, 0), //
+                        LocalDate.of(2024, Month.MAY, 1), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2024, Month.MAY, 2, 14, 27, 45), //
+                        null);
+
+        Rebate r5 = new Rebate(15, 5.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(17, 50, 0), //
+                        LocalDate.of(2024, Month.MAY, 1), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 5, 15, 5, 0), //
+                        null);
+
+        Rebate[] all = rebates.addAll(r1, r2, r3, r4, r5);
+
+        List<Rebate> paid = rebates.paidTo("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(paid.toString(), 3, paid.size());
+        Rebate r;
+        r = paid.get(0);
+        assertEquals(12.0f, r.amount(), 0.001);
+        r = paid.get(1);
+        assertEquals(10.0f, r.amount(), 0.001);
+        r = paid.get(2);
+        assertEquals(5.0f, r.amount(), 0.001);
+
+        List<Double> amounts = rebates.amounts("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(4.0f, amounts.get(0), 0.001);
+        assertEquals(5.0f, amounts.get(1), 0.001);
+        assertEquals(10.0f, amounts.get(2), 0.001);
+        assertEquals(12.0f, amounts.get(3), 0.001);
+
+        assertEquals(Rebate.Status.VERIFIED, rebates.status(all[4 - 1].id()).orElseThrow());
+        assertEquals(Rebate.Status.PAID, rebates.status(all[3 - 1].id()).orElseThrow());
+
+        List<LocalDate> purchaseDates = rebates.findByCustomerIdOrderByPurchaseMadeOnDesc("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(0));
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(1));
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(2));
+        assertEquals(LocalDate.of(2024, Month.APRIL, 5), purchaseDates.get(3));
+
+        PurchaseTime time = rebates.purchaseTime(all[3 - 1].id()).orElseThrow();
+        assertEquals(LocalDate.of(2024, Month.MAY, 2), time.purchaseMadeOn());
+        assertEquals(LocalTime.of(9, 15, 0), time.purchaseMadeAt());
+
+        PurchaseTime[] times = rebates.findTimeOfPurchaseByCustomerId("testRecordEntityInferredFromReturnType-CustomerA");
+        assertEquals(Arrays.toString(times), 4, times.length);
+
+        assertEquals(LocalDate.of(2024, Month.APRIL, 5), times[0].purchaseMadeOn());
+        assertEquals(LocalTime.of(12, 46, 30), times[0].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[1].purchaseMadeOn());
+        assertEquals(LocalTime.of(10, 55, 0), times[1].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[2].purchaseMadeOn());
+        assertEquals(LocalTime.of(15, 40, 0), times[2].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[3].purchaseMadeOn());
+        assertEquals(LocalTime.of(17, 50, 0), times[3].purchaseMadeAt());
+
+        rebates.removeAll(all);
+
+        assertEquals(false, rebates.status(all[3 - 1].id()).isPresent());
     }
 
     /**
@@ -2514,15 +3741,6 @@ public class DataJPATestServlet extends FATServlet {
 
         // Delete
         rebates.remove(r1);
-        // TODO allow entity return type on delete?
-        //r1 = rebates.remove(r1);
-        //assertEquals(Integer.valueOf(1), r1.id());
-        //assertEquals(1.00, r1.amount(), 0.001f);
-        //assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
-        //assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
-        //assertEquals(Rebate.Status.PAID, r1.status());
-        //assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), r1.updatedAt());
-        //assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
     }
 
     /**
@@ -2930,6 +4148,97 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method that queries for the IdClass using id(this)
+     * and sorts based on the attributes of the IdClass.
+     */
+    // @Test // TODO enable once #29073 is fixed
+    public void testSelectIdClass() {
+        assertEquals(List.of("Illinois:Springfield",
+                             "Kansas:Kansas City",
+                             "Massachusetts:Springfield",
+                             "Minnesota:Rochester",
+                             "Missouri:Kansas City",
+                             "Missouri:Springfield",
+                             "New York:Rochester",
+                             "Ohio:Springfield",
+                             "Oregon:Springfield"),
+                     cities.ids()
+                                     .map(id -> id.getStateName() + ":" + id.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use the JPQL version(entityVar) function as the sort attribute to perform
+     * an ascending sort.
+     */
+    @Test
+    public void testSortByVersionFunction() {
+        orders.deleteAll();
+
+        PurchaseOrder o1 = new PurchaseOrder();
+        o1.purchasedBy = "testSortByVersionFunction-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 21.99f;
+        o1 = orders.create(o1);
+
+        PurchaseOrder o2 = new PurchaseOrder();
+        o2.purchasedBy = "testSortByVersionFunction-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 22.99f;
+        o2 = orders.create(o2);
+
+        PurchaseOrder o3 = new PurchaseOrder();
+        o3.purchasedBy = "testSortByVersionFunction-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 23.99f;
+        o3 = orders.create(o3);
+
+        PurchaseOrder o4 = new PurchaseOrder();
+        o4.purchasedBy = "testSortByVersionFunction-Customer4";
+        o4.purchasedOn = OffsetDateTime.now();
+        o4.total = 24.99f;
+        o4 = orders.create(o4);
+
+        PurchaseOrder[] updated;
+
+        o3.total = 33.39f;
+        o1.total = 31.19f;
+        o2.total = 32.29f;
+        updated = orders.modifyAll(o3, o1, o2);
+        o3 = updated[0];
+        o1 = updated[1];
+        o2 = updated[2];
+
+        o3.total = 33.59f;
+        o1.total = 31.59f;
+        updated = orders.modifyAll(o3, o1);
+        o3 = updated[0];
+        o1 = updated[1];
+
+        o3.total = 33.99f;
+        updated = orders.modifyAll(o3);
+        o3 = updated[0];
+
+        assertEquals(List.of("testSortByVersionFunction-Customer4",
+                             "testSortByVersionFunction-Customer2",
+                             "testSortByVersionFunction-Customer1",
+                             "testSortByVersionFunction-Customer3"),
+                     orders.findAll(PageRequest.ofSize(10),
+                                    Order.by(Sort.asc("version(this)")))
+                                     .stream()
+                                     .map(o -> o.purchasedBy)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(1, 2, 3, 4),
+                     orders.versionsAsc());
+
+        assertEquals(List.of(4, 3, 2, 1),
+                     orders.versionsDesc());
+
+        orders.deleteAll();
+    }
+
+    /**
      * Tests direct usage of StaticMetamodel auto-populated fields.
      */
     @Test
@@ -2973,26 +4282,90 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Use an Entity which has a version attribute of type Timestamp.
+     * Test passing a Sort created with Sort.of, particularly the ignoreCase parameter
+     */
+    @SkipIfSysProp(DB_SQLServer) //SQLServer does not sort by case by default, thus ignoreCase=false will produce the same result as ignoreCase=true
+    @Test
+    public void testSortOf() {
+        City eagan = cities.save(new City("eagan", "minnesota", 67_396, Set.of(651)));
+
+        // With ignoreCase=true, eagan should be first
+        Sort<City> of = Sort.of("name", Direction.ASC, true);
+        List<City> all = cities.allSorted(of);
+        City first = all.get(0);
+        assertEquals("eagan", first.name);
+
+        // With ignoreCase=false Kansas City should be first
+        of = Sort.of("name", Direction.ASC, false);
+        all = cities.allSorted(of);
+        assertEquals("Kansas City", all.get(0).name);
+
+        of = Sort.of("population", Direction.DESC, true);
+        try {
+            cities.allSorted(of);
+            fail("Should not be able to applay a Sort with ignoreCase=true on a" +
+                 " non-string entity attribute");
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+
+        cities.remove(eagan);
+    }
+
+    /**
+     * Use an Entity which has a version attribute of type LocalDateTime.
      */
     @Test
-    public void testTimestampAsVersion(HttpServletRequest request, HttpServletResponse response) {
+    public void testTimeAsVersion() throws Exception {
+        /*
+         * Reference Issue: https://github.com/eclipse-ee4j/eclipselink/issues/205
+         * Without using the Eclipselink Oracle plugin the precision of Timestamp is 1 second
+         * Therefore, we need to ensure 1 second has passed between queries where we expect
+         * the LocalDateTime/version to be different.
+         *
+         * For Derby the timestamp field can hold a precision of nanoseconds,
+         * but the CURRENT_TIMESTAMP function returns a timestamp with millis
+         * precision and there is no configuration to change that.
+         *
+         * For SQLServer the timestamp field also defaults to millis and Eclipselink
+         * offers no alternative query to get better percision.
+         *
+         * PostgreSQL - default is nanoseconds
+         * DB2 - default is microseconds
+         */
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        boolean secondPrecision = jdbcJarName.startsWith("ojdbc");
+        boolean millisecondPrecision = jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("mssql-jdbc");
+
         assertEquals(0, counties.deleteByNameIn(List.of("Dodge", "Mower")));
 
         int[] dodgeZipCodes = new int[] { 55924, 55927, 55940, 55944, 55955, 55985 };
-        int[] mowerZipCodes = new int[] { 55912, 55917, 55918, 55926, 55933, 55936, 55950, 55951, 55961, 55953, 55967, 55970, 55973, 55975, 55982 };
+        int[] mowerZipCodes = new int[] { 55912, 55917, 55918, 55926, 55933, 55936, //
+                                          55950, 55951, 55961, 55953, 55967, 55970, //
+                                          55973, 55975, 55982 };
 
-        County dodge = new County("Dodge", "Minnesota", 20867, dodgeZipCodes, "Mantorville", "Blooming Prairie", "Claremont", "Dodge Center", "Hayfield", "Kasson", "West Concord");
-        County mower = new County("Mower", "Minnesota", 49671, mowerZipCodes, "Austin", "Adams", "Brownsdale", "Dexter", "Elkton", "Grand Meadow", "Le Roy", "Lyle", "Mapleview", "Racine", "Rose Creek", "Sargeant", "Taopi", "Waltham");
+        County dodge = new County("Dodge", "Minnesota", 20867, dodgeZipCodes, //
+                        "Mantorville", "Blooming Prairie", "Claremont", //
+                        "Dodge Center", "Hayfield", "Kasson", "West Concord");
+
+        County mower = new County("Mower", "Minnesota", 49671, mowerZipCodes, //
+                        "Austin", "Adams", "Brownsdale", "Dexter", "Elkton", //
+                        "Grand Meadow", "Le Roy", "Lyle", "Mapleview", "Racine", //
+                        "Rose Creek", "Sargeant", "Taopi", "Waltham");
 
         counties.save(dodge, mower);
 
         dodge = counties.findByName("Dodge").orElseThrow();
 
-        assertEquals(true, counties.updateByNameSetZipCodes("Dodge",
-                                                            dodgeZipCodes = new int[] { 55917, 55924, 55927, 55940, 55944, 55955, 55963, 55985 }));
+        if (secondPrecision)
+            Thread.sleep(Duration.ofSeconds(1).toMillis());
+        if (millisecondPrecision)
+            Thread.sleep(Duration.ofMillis(1).toMillis());
 
-        // Try to update with outdated version/timestamp:
+        dodgeZipCodes = new int[] { 55917, 55924, 55927, 55940, 55944, 55955, 55963, 55985 };
+        assertEquals(true, counties.updateByNameSetZipCodes("Dodge", dodgeZipCodes));
+
+        // Try to update with outdated version/LocalDateTime:
         try {
             dodge.population = 20873;
             counties.save(dodge);
@@ -3001,20 +4374,27 @@ public class DataJPATestServlet extends FATServlet {
             // expected
         }
 
-        // Update the version/timestamp and retry:
-        Timestamp timestamp = dodge.lastUpdated = counties.findLastUpdatedByName("Dodge");
+        // Update the version/LocalDateTime and retry:
+        LocalDateTime lastUpdate;
+        lastUpdate = dodge.lastUpdated = counties.findLastUpdatedByName("Dodge");
         dodge.population = 20981;
+
+        if (secondPrecision)
+            Thread.sleep(Duration.ofSeconds(1).toMillis());
+        if (millisecondPrecision)
+            Thread.sleep(Duration.ofMillis(1).toMillis());
+
         counties.save(dodge);
 
-        // Try to delete by previous version/timestamp,
-        assertEquals(false, counties.deleteByNameAndLastUpdated("Dodge", timestamp));
+        // Try to delete by previous version/LocalDateTime,
+        assertEquals(false, counties.deleteByNameAndLastUpdated("Dodge", lastUpdate));
 
-        // Should be able to delete with latest version/timestamp,
-        timestamp = counties.findLastUpdatedByName("Dodge");
-        assertEquals(true, counties.deleteByNameAndLastUpdated("Dodge", timestamp));
+        // Should be able to delete with latest version/LocalDateTime,
+        lastUpdate = counties.findLastUpdatedByName("Dodge");
+        assertEquals(true, counties.deleteByNameAndLastUpdated("Dodge", lastUpdate));
 
-        // Try to delete with wrong version/timestamp (from other entity),
-        mower.lastUpdated = timestamp;
+        // Try to delete with wrong version/LocalDateTime (from other entity),
+        mower.lastUpdated = lastUpdate;
         try {
             counties.remove(mower);
             fail("Deletion attempt with wrong version did not raise OptimisticLockingFailureException.");
@@ -3022,7 +4402,7 @@ public class DataJPATestServlet extends FATServlet {
             // pass
         }
 
-        // Use correct version/timestamp,
+        // Use correct version/LocalDateTime,
         mower = counties.findByName("Mower").orElseThrow();
         counties.remove(mower);
     }
@@ -3030,8 +4410,8 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Use an Entity which has an attribute which is a collection that is not annotated with the JPA ElementCollection annotation.
      */
-    // Test annotation is present on corresponding method in DataJPATest
-    public void testUnannotatedCollection(HttpServletRequest request, HttpServletResponse response) {
+    @Test
+    public void testUnannotatedCollection() {
         assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
 
         int[] olmstedZipCodes = new int[] { 55901, 55902, 55903, 55904, 55905, 55906, 55920, 55923, 55929, 55932, 55934, 55940, 55960, 55963, 55964, 55972, 55976 };
@@ -3061,12 +4441,12 @@ public class DataJPATestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        // Derby & Oracle  does not support comparisons of BLOB values
+        // Derby, Oracle, SQLServer  does not support comparisons of BLOB (IMAGE sqlserver) values
         // Derby JDBC Jar Name : derby.jar
-        // Oracle JDBC Jar Name : ojdbc8_g.jar
-        // This value is passed as HTTP request Parameter(eg: http://{host}/DataJPATestApp?testMethod=testUnannotatedCollection&jdbcJarName=ojdbc8_g.jar)
-        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
-        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8_g"))) {
+        // Oracle JDBC Jar Name : ojdbc8.jar
+        // SQLServer JDBC Jar Name : mssql-jdbc.jar
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8") || jdbcJarName.startsWith("mssql-jdbc"))) {
             // find one entity by zipcodes as Optional
             c = counties.findByZipCodes(wabashaZipCodes).orElseThrow();
             assertEquals("Wabasha", c.name);
@@ -3134,7 +4514,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         // optional iterator of array attribute
-        Iterator<int[]> it = counties.findZipCodesByPopulationLessThanEqual(50000).orElseThrow();
+        Iterator<int[]> it = counties.findZipCodesByPopulationLessThanEqual(50000);
         assertIterableEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
                              StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false)
                                              .map(Arrays::toString)
@@ -3153,9 +4533,8 @@ public class DataJPATestServlet extends FATServlet {
         // page of array attribute with none found
         assertEquals(0, counties.findZipCodesByNameStartsWith("Hous", PageRequest.ofSize(5)).numberOfElements());
 
-        // optional for iterator over array attribute with none found
-        counties.findZipCodesByPopulationLessThanEqual(1) //
-                        .ifPresent(i -> fail("Unexpected iterator: " + (i.hasNext() ? Arrays.toString(i.next()) : "(empty)")));
+        // iterator over array attribute with none found
+        assertEquals(false, counties.findZipCodesByPopulationLessThanEqual(1).hasNext());
 
         // update array value to empty
         assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", new int[0]));
@@ -3173,6 +4552,98 @@ public class DataJPATestServlet extends FATServlet {
                      Arrays.toString(counties.findZipCodesByName("Wabasha").orElseThrow()));
 
         assertEquals(4, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
+    }
+
+    /**
+     * Update an entity that has an IdClass.
+     * This covers update that returns the updated value
+     * and update that returns no value,
+     * which are different code paths.
+     */
+    @Test
+    public void testUpdateEntityWithIdClass() {
+        CreditCard original = creditCards
+                        .findByIssuedOnWithMonthIn(Set.of(Month.MAY.getValue()))
+                        .findFirst()
+                        .orElseThrow();
+
+        CreditCard replacement = new CreditCard( //
+                        original.debtor, //
+                        original.number, //
+                        551, // new security code
+                        LocalDate.of(2024, Month.MAY, 10), //
+                        LocalDate.of(2028, Month.MAY, 10), //
+                        original.issuer);
+
+        replacement = creditCards.replace(replacement);
+
+        assertEquals(original.debtor.customerId, replacement.debtor.customerId);
+        assertEquals(original.number, replacement.number);
+        assertEquals(551, replacement.securityCode);
+        assertEquals(LocalDate.of(2024, Month.MAY, 10), replacement.issuedOn);
+        assertEquals(LocalDate.of(2028, Month.MAY, 10), replacement.expiresOn);
+        assertEquals(original.issuer, replacement.issuer);
+
+        CreditCard card = creditCards
+                        .findByIssuedOnWithMonthIn(Set.of(Month.MAY.getValue()))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertEquals(original.debtor.customerId, card.debtor.customerId);
+        assertEquals(original.number, card.number);
+        assertEquals(551, card.securityCode);
+        assertEquals(LocalDate.of(2024, Month.MAY, 10), card.issuedOn);
+        assertEquals(LocalDate.of(2028, Month.MAY, 10), card.expiresOn);
+        assertEquals(original.issuer, card.issuer);
+
+        // Put the original value back to avoid impacting other tests.
+        // This also tests an Update method with void return.
+        creditCards.revert(original);
+    }
+
+    /**
+     * Update an entity that has an IdClass and Version.
+     * This covers update that returns the updated value
+     * and update that returns no value,
+     * which are different code paths.
+     */
+    @Test
+    public void testUpdateEntityWithIdClassAndVersion() {
+        CityId mnId = CityId.of("Rochester", "Minnesota");
+        CityId nyId = CityId.of("Rochester", "New York");
+
+        long mnVer = cities.currentVersion(mnId.name, mnId.getStateName());
+        long nyVer = cities.currentVersion(nyId.name, nyId.getStateName());
+        // TODO
+        //long mnVer = cities.currentVersion(mnId);
+        //long nyVer = cities.currentVersion(nyId);
+
+        // TODO allow this test to run once 28589 is fixed
+        // and verify that EclipseLink does not corrupt the area code value
+        // for the following subsequent tests:
+        // testCollectionAttribute, testIdClassOrderBySorts, testIdClassOrderByAnnotationWithCursorPagination,
+        // testIdClassOrderByNamePatternWithCursorPagination, testIdClassOrderByAnnotationReverseDirection
+        if (true)
+            return;
+
+        City[] updated = cities.modifyData(City.of(mnId, 122413, Set.of(507, 924), mnVer),
+                                           City.of(nyId, 208546, Set.of(585), nyVer));
+        assertEquals(Arrays.toString(updated), 2, updated.length);
+        assertEquals("Rochester", updated[0].name);
+        assertEquals("Minnesota", updated[0].stateName);
+        assertEquals(122413, updated[0].population);
+        assertEquals(Set.of(507, 924), updated[0].areaCodes);
+        assertEquals(mnVer + 1, updated[0].changeCount);
+
+        assertEquals("Rochester", updated[1].name);
+        assertEquals("New York", updated[1].stateName);
+        assertEquals(208546, updated[1].population);
+        assertEquals(Set.of(585), updated[1].areaCodes);
+        assertEquals(nyVer + 1, updated[1].changeCount);
+
+        // restore original data
+        cities.modifyStats(City.of(mnId, 121395, Set.of(507), mnVer + 1),
+                           City.of(nyId, 211328, Set.of(585), nyVer + 1));
     }
 
     /**
@@ -3219,8 +4690,8 @@ public class DataJPATestServlet extends FATServlet {
             ibm = businesses.findFirstByName("IBM");
 
             assertEquals("IBM", ibm.name);
-            assertEquals(44.05881f, ibm.location.latitude, 0.00001f);
-            assertEquals(-92.50556f, ibm.location.longitude, 0.00001f);
+            assertEquals(44.05881f, ibm.location.latitude, 0.0001f);
+            assertEquals(-92.50556f, ibm.location.longitude, 0.0001f);
             assertEquals(3605, ibm.location.address.houseNum);
             assertEquals("US 52", ibm.location.address.street.name);
             assertEquals("N", ibm.location.address.street.direction);
@@ -3242,8 +4713,8 @@ public class DataJPATestServlet extends FATServlet {
         ibm = businesses.findFirstByName("IBM");
 
         assertEquals("IBM", ibm.name);
-        assertEquals(originalLatitude, ibm.location.latitude, 0.00001f);
-        assertEquals(originalLongitude, ibm.location.longitude, 0.00001f);
+        assertEquals(originalLatitude, ibm.location.latitude, 0.0001f);
+        assertEquals(originalLongitude, ibm.location.longitude, 0.0001f);
         assertEquals(2800, ibm.location.address.houseNum);
         assertEquals("37th St", ibm.location.address.street.name);
         assertEquals("NW", ibm.location.address.street.direction);
@@ -3592,5 +5063,90 @@ public class DataJPATestServlet extends FATServlet {
         } catch (OptimisticLockingFailureException x) {
             // pass
         }
+    }
+
+    /**
+     * Use a repository method with CursoredPage<?> return type.
+     * The primary entity type of the repository should be used.
+     */
+    @Test
+    public void testWildcardCursoredPageReturnType() {
+        CursoredPage<?> page1 = businesses.findAsCursoredPage("Crenlo",
+                                                              "RAC",
+                                                              PageRequest.ofSize(4));
+
+        assertEquals(List.of("Crenlo",
+                             "Custom Alarm",
+                             "Geotek",
+                             "HALCON"),
+                     page1.stream()
+                                     .map(b -> ((Business) b).name)
+                                     .collect(Collectors.toList()));
+
+        CursoredPage<?> page2 = businesses.findAsCursoredPage(
+                                                              "Crenlo",
+                                                              "RAC",
+                                                              page1.nextPageRequest());
+
+        assertEquals(List.of("Home Federal Savings Bank",
+                             "IBM",
+                             "Mayo Clinic",
+                             "Metafile"),
+                     page2.stream()
+                                     .map(b -> ((Business) b).name)
+                                     .collect(Collectors.toList()));
+
+        CursoredPage<?> page3 = businesses.findAsCursoredPage("Crenlo",
+                                                              "RAC",
+                                                              page2.nextPageRequest());
+
+        assertEquals(List.of("Olmsted Medical",
+                             "RAC"),
+                     page3.stream()
+                                     .map(b -> ((Business) b).name)
+                                     .collect(Collectors.toList()));
+
+    }
+
+    /**
+     * Use a repository method with List<?> return type.
+     * The primary entity type of the repository should be used.
+     */
+    @Test
+    public void testWildcardListReturnType() {
+        assertEquals(List.of("IBM",
+                             "Mayo Clinic",
+                             "Metafile",
+                             "Olmsted Medical",
+                             "RAC"),
+                     businesses.findAsListByNameBetween("IBM", "RAC")
+                                     .stream()
+                                     .map(b -> ((Business) b).name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method with Optional<?> return type.
+     * The primary entity type of the repository should be used.
+     */
+    @Test
+    public void testWildcardOptionalReturnType() {
+        Business found = (Business) businesses.findAsOptional("IBM")
+                        .orElseThrow();
+        assertEquals("IBM", found.name);
+    }
+
+    /**
+     * Use a repository method with CompletableFuture<Stream<?>> return type.
+     * The primary entity type of the repository should be used.
+     */
+    @Test
+    public void testWildcardStreamReturnType() {
+        assertEquals(List.of("Geotek",
+                             "HALCON"),
+                     businesses.findAsStreamByCity("Stewartville", "MN")
+                                     .join()
+                                     .map(b -> ((Business) b).name)
+                                     .collect(Collectors.toList()));
     }
 }

@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: A s\u00e9ma a(z) [{0}] f\u00e1jlb
 schemagen.info.schema.file.created.explanation=A parancs v\u00e9grehajt\u00e1sa sikeresen megt\u00f6rt\u00e9nt.
 schemagen.info.schema.file.created.useraction=Nincs teend\u0151.
 
+error.config.root.deleted=CWWKG0110E: A rendszer konfigur\u00e1ci\u00f3s friss\u00edt\u00e9st \u00e9szlelt, de a server.xml nem l\u00e9tezik. Nem t\u00f6rt\u00e9nt konfigur\u00e1ci\u00f3friss\u00edt\u00e9s.
+error.config.root.deleted.explanation=A server.xml f\u00e1jl t\u00f6r\u00f6lve lett. Annak \u00e9rdek\u00e9ben, hogy ne okozzon fennakad\u00e1st az alkalmaz\u00e1sok futtat\u00e1s\u00e1ban, nem t\u00f6rt\u00e9nik konfigur\u00e1ci\u00f3m\u00f3dos\u00edt\u00e1s.
+error.config.root.deleted.useraction=Adja vissza a server.xml f\u00e1jlt a szerverhez.
+
 # Non-TR message
 error.invalidOCDRef=HIBA: A(z) [{0}] metat\u00edpus PID nem l\u00e9tez\u0151 objektumoszt\u00e1ly meghat\u00e1roz\u00e1s azonos\u00edt\u00f3t ([{1}]) ad meg.

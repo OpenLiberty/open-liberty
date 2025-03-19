@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2024 IBM Corporation and others.
+ * Copyright (c) 2013,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,11 +32,12 @@ import javax.enterprise.concurrent.ManagedThreadFactory;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -53,7 +54,6 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-import com.ibm.ws.threading.VirtualThreadOps;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -62,12 +62,15 @@ import com.ibm.wsspi.resource.ResourceInfo;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
+import io.openliberty.threading.virtual.VirtualThreadOps;
+
 /**
  * Resource factory for ManagedThreadFactory.
  * Unlike ManagedExecutorService and ManagedScheduledExecutorService, we need a separate instance of ManagedThreadFactory
  * for each lookup/injection because, per the spec, thread context is captured at that point.
  */
-@Component(configurationPid = "com.ibm.ws.concurrent.managedThreadFactory", configurationPolicy = ConfigurationPolicy.REQUIRE,
+@Component(configurationPid = "com.ibm.ws.concurrent.managedThreadFactory",
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ResourceFactory.class, ApplicationRecycleComponent.class },
            property = { "creates.objectClass=java.util.concurrent.ThreadFactory",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedThreadFactory" })
@@ -107,7 +110,8 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     /**
      * Reference to the context service for this managed thread factory service.
      */
-    private final AtomicServiceReference<WSContextService> contextSvcRef = new AtomicServiceReference<WSContextService>("ContextService");
+    private final AtomicServiceReference<WSContextService> contextSvcRef = //
+                    new AtomicServiceReference<WSContextService>("ContextService");
 
     /**
      * Specifies whether or not to create daemon threads.
@@ -122,7 +126,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     /**
      * Default execution properties for thread context capture.
      */
-    private Map<String, String> defaultExecutionProperties;
+    private final Map<String, String> defaultExecutionProperties;
 
     /**
      * Default thread priority. Null if unspecified.
@@ -135,33 +139,33 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     final AtomicBoolean isShutdown = new AtomicBoolean();
 
     /**
+     * The metadata identifier service.
+     */
+    private final MetaDataIdentifierService metadataIdentifierService;
+
+    /**
      * Name of this managed thread factory.
      * The name is the jndiName if specified, otherwise the config id.
      */
-    private String name;
+    private final String name;
 
     /**
      * Thread group for the managed thread factory.
      */
-    private ThreadGroup threadGroup;
+    private final ThreadGroup threadGroup;
 
     /**
      * Tracks thread groups for application components.
      */
-    private ThreadGroupTracker threadGroupTracker;
+    private final ThreadGroupTracker threadGroupTracker;
 
     /**
-     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.internal.java21 bundle.
+     * Factory that creates virtual threads if greater than Java 21
+     * or raises an error if configured to create virtual threads
+     * on less than Java 21.
+     * Null if not configured to create virtual threads.
      */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected volatile VirtualThreadOps virtualThreadOps;
-
-    /**
-     * Factory that creates virtual threads. Null if not configured to create virtual threads.
-     */
-    private ThreadFactory virtualThreadFactory;
+    private final ThreadFactory virtualThreadFactory;
 
     /**
      * Metadata factory for the web container.
@@ -172,23 +176,38 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     protected DeferredMetaDataFactory webMetadataFactory;
 
     /**
-     * The metadata identifier service.
-     */
-    private MetaDataIdentifierService metadataIdentifierService;
-
-    /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
      *
      * @param componentContext DeclarativeService defined/populated component context
      */
+    @Activate
     @Trivial
-    protected void activate(ComponentContext componentContext) {
+    public ManagedThreadFactoryService(ComponentContext componentContext,
+                                       @Reference(name = "ContextService",
+                                                  service = WSContextService.class,
+                                                  target = "(id=unbound)") //
+                                       ServiceReference<WSContextService> ref,
+                                       @Reference //
+                                       MetaDataIdentifierService metadataSvc,
+                                       @Reference //
+                                       ThreadGroupTracker threadGroupTracker,
+                                       @Reference //
+                                       VirtualThreadOps virtualThreadOps) {
         Dictionary<String, ?> properties = componentContext.getProperties();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "activate", properties);
+            Tr.entry(this, tc, "activate",
+                     properties,
+                     "ContextService: " + ref,
+                     metadataSvc,
+                     threadGroupTracker,
+                     virtualThreadOps);
 
+        this.metadataIdentifierService = metadataSvc;
+        this.threadGroupTracker = threadGroupTracker;
+
+        contextSvcRef.setReference(ref);
         contextSvcRef.activate(componentContext);
 
         String jndiName = (String) properties.get(JNDI_NAME);
@@ -205,14 +224,17 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
         threadGroup = AccessController.doPrivileged(new CreateThreadGroupAction(name + " Thread Group", maxPriority),
                                                     threadGroupTracker.serverAccessControlContext);
 
-        //Ignore virtual configuration unless Java 21+
-        boolean virtual = JavaInfo.majorVersion() >= 21 ? Boolean.TRUE.equals(properties.get(VIRTUAL)) : false;
+        boolean virtual = Boolean.TRUE.equals(properties.get(VIRTUAL));
 
         // TODO check the SPI to override virtual=true for CICS
 
-        virtualThreadFactory = virtual //
-                        ? virtualThreadOps.createFactoryOfVirtualThreads(properties.get(CONFIG_ID) + ":", 1L, false, null) //
-                        : null;
+        if (virtual)
+            if (JavaInfo.majorVersion() >= 21)
+                virtualThreadFactory = virtualThreadOps.createFactoryOfVirtualThreads(properties.get(CONFIG_ID) + ":", 1L, false, null);
+            else
+                virtualThreadFactory = new VirtualThreadsUnsupported();
+        else
+            virtualThreadFactory = null;
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -224,6 +246,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
      *
      * @param componentContext DeclarativeService defined/populated component context
      */
+    @Deactivate
     protected void deactivate(ComponentContext componentContext) {
         isShutdown.set(true);
 
@@ -290,8 +313,14 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                                                                " of type " + mData.getClass().getName()); // internal error
 
                         cData = webMetadataFactory.createComponentMetaData(webMetadataIdentifier);
-                        if (cData == null)
-                            throw new IllegalStateException("Web module " + mData.getJ2EEName() + " is not available."); // TODO NLS
+                        if (cData == null) {
+                            J2EEName jeeName = mData.getJ2EEName();
+                            String err = Tr.formatMessage(tc,
+                                                          "CWWKC1122.mod.unavail",
+                                                          jeeName.getModule(),
+                                                          jeeName.getApplication());
+                            throw new IllegalStateException(err);
+                        }
                     }
                 } else {
                     // Should be unreachable because mock ComponentMetaData is created for resources defined in application.xml.
@@ -304,9 +333,6 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                 identifier = cData instanceof IdentifiableComponentMetaData //
                                 ? metadataIdentifierService.getMetaDataIdentifier(cData) //
                                 : null;
-                System.out.println("MTF createResource for " + identifier);
-                System.out.println("     with " + (cData == null ? null : cData.getClass().getSimpleName()) + " metadata " + cData);
-                System.out.println("     and class loader " + beanInfo.getDeclaringClassLoader());
 
                 // push class loader onto the thread for context capture
                 ClassLoader declaringClassLoader = beanInfo.getDeclaringClassLoader();
@@ -321,8 +347,6 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                     accessor.beginContext(cData);
                     restoreMetadata = true;
                 }
-
-                // TODO look into a shortcut to avoid push/recapture and instead supply directly to the context service
             }
 
             if (appName == null) {
@@ -346,63 +370,6 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
             if (restoreClassLoader)
                 Thread.currentThread().setContextClassLoader(classLoaderToRestore);
         }
-    }
-
-    /**
-     * Declarative Services method for setting the context service reference
-     *
-     * @param ref reference to the service
-     */
-    @Reference(target = "(id=unbound)")
-    protected void setContextService(ServiceReference<WSContextService> ref) {
-        contextSvcRef.setReference(ref);
-    }
-
-    /**
-     * Declarative Services method for setting the ThreadGroupTracker service
-     *
-     * @param the service
-     */
-    @Reference
-    protected void setThreadGroupTracker(ThreadGroupTracker svc) {
-        threadGroupTracker = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the metadata identifier service
-     *
-     * @param the service
-     */
-    @Reference
-    protected void setMetadataIdentifierService(MetaDataIdentifierService svc) {
-        metadataIdentifierService = svc;
-    }
-
-    /**
-     * Declarative Services method for unsetting the context service reference
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetContextService(ServiceReference<WSContextService> ref) {
-        contextSvcRef.unsetReference(ref);
-    }
-
-    /**
-     * Declarative Services method for unsetting the ThreadGroupTracker service
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetThreadGroupTracker(ThreadGroupTracker svc) {
-        threadGroupTracker = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the metadata identifier service
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetMetadataIdentifierService(MetaDataIdentifierService svc) {
-        metadataIdentifierService = null;
     }
 
     /**
@@ -512,7 +479,6 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                 thread = new ManagedThreadImpl(this, runnable, threadName);
             } else {
                 thread = virtualThreadFactory.newThread(new ManagedVirtualThreadAction(this, runnable));
-                // TODO track virtual threads similar to what ThreadGroupTracker does and interrupt when the application component goes away.
             }
 
             if (trace && tc.isEntryEnabled())
@@ -544,6 +510,23 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
             // Return false if our identity is null (even if the current component's metadata or metadata identity is also null).
             ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             return identifier != null && metadataIdentifierService != null && identifier.equals(metadataIdentifierService.getMetaDataIdentifier(cData));
+        }
+    }
+
+    /**
+     * Raises an error if the application requests a virtual threads.
+     */
+    @Trivial
+    private class VirtualThreadsUnsupported implements ThreadFactory {
+
+        @Override
+        public Thread newThread(Runnable r) {
+            throw new UnsupportedOperationException(Tr //
+                            .formatMessage(tc,
+                                           "CWWKC1121.virtual.invalid",
+                                           "ManagedThreadFactoryDefinition",
+                                           "managed-thread-factory",
+                                           name));
         }
     }
 }

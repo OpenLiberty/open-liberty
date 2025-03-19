@@ -88,6 +88,8 @@ public class SsoRequestTest {
                 will(returnValue(new ReferrerURLCookieHandler(webAppSecConfig)));
                 allowing(webAppSecConfig).getSameSiteCookie();
                 will(returnValue(null));
+                allowing(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(null));
 
                 one(response).addCookie(with(any(Cookie.class)));
             }

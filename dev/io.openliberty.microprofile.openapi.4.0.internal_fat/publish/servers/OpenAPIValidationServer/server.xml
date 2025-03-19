@@ -1,0 +1,13 @@
+<server description="Server for OpenAPI model validation testing">
+
+  <!-- Enable features -->
+  <featureManager>
+    <feature>mpOpenAPI-4.0</feature>
+    <feature>componenttest-2.0</feature>
+    <feature>restfulWS-3.1</feature> <!-- EE feature to ensure we get the expected EE version -->
+    <feautre>mpConfig-3.1</feautre>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml" />
+
+</server>

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,9 +31,15 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
 
     private static final Class<?> c = PostgresKerberosContainer.class;
 
+    //TODO Start using ImageBuilder
+//    private static final DockerImageName POSTGRES_KRB5 = ImageBuilder
+//                    .build("postgres-krb5:17.0")
+//                    .getDockerImageName()
+//                    .asCompatibleSubstituteFor("postgres");
+
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
     private static final String IMAGE = "kyleaure/postgres-krb5:1.0";
-    private static final DockerImageName postgresImage = DockerImageName.parse(IMAGE)
+    private static final DockerImageName POSTGRES_KRB5 = DockerImageName.parse(IMAGE)
                     .asCompatibleSubstituteFor("postgres");
 
     public static final int PG_PORT = 5432;
@@ -41,7 +47,7 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
     private final Map<String, String> options = new HashMap<>();
 
     public PostgresKerberosContainer(Network network) {
-        super(postgresImage);
+        super(POSTGRES_KRB5);
         withNetwork(network);
 
         withNetworkAliases("postgresql");
@@ -65,7 +71,7 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
         withEnv("KRB5_TRACE", "/dev/stdout");
 
         withExposedPorts(PG_PORT);
-        withLogConsumer(new SimpleLogConsumer(c, "postgre"));
+        withLogConsumer(new SimpleLogConsumer(c, "postgre-krb5"));
     }
 
     @Override

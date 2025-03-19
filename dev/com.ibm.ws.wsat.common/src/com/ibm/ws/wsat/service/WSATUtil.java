@@ -29,18 +29,27 @@ import com.ibm.ws.jaxws.wsat.Constants;
 public class WSATUtil {
     private static final TraceComponent TC = Tr.register(WSATUtil.class);
 
-    public static EndpointReferenceType createEpr(String hostname, String... recoveryIds) {
+    public static EndpointReferenceType createEpr(String hostname) {
         EndpointReferenceType epr = new EndpointReferenceType();
         AttributedURIType uri = new AttributedURIType();
         uri.setValue(hostname);
         epr.setAddress(uri);
-        ReferenceParametersType para = new ReferenceParametersType();
+        epr.setReferenceParameters(new ReferenceParametersType());
+        return epr;
+    }
 
-        if (recoveryIds.length > 0 && recoveryIds[0] != null) {
-            para.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, recoveryIds[0]));
+    public static EndpointReferenceType createEpr(String hostname, String globalId, String recoveryId) {
+        EndpointReferenceType epr = WSATUtil.createEpr(hostname);
+
+        final ReferenceParametersType para = epr.getReferenceParameters();
+
+        if (recoveryId != null && !recoveryId.isEmpty()) {
+            para.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, recoveryId));
+        }
+        if (globalId != null && !globalId.isEmpty()) {
+            para.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, globalId));
         }
 
-        epr.setReferenceParameters(para);
         return epr;
     }
 

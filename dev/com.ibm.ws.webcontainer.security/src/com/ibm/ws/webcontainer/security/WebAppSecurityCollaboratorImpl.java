@@ -55,7 +55,6 @@ import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.tai.TAIService;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.authorization.AuthorizationService;
-import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.registry.RegistryException;
@@ -115,7 +114,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     public static final String KEY_SSO_SERVICE = "ssoAuthFilter";
     public static final String KEY_TAI_SERVICE = "taiService";
     public static final String KEY_INTERCEPTOR_SERVICE = "interceptorService";
-    static final String KEY_JACC_SERVICE = "jaccService";
+    static final String KEY_WEB_JACC_SERVICE = "webJaccService";
     static final String JASPI_SERVICE_COMPONENT_NAME = "com.ibm.ws.security.jaspi";
     public static final String KEY_WEB_AUTHENTICATOR = "webAuthenticator";
     public static final String KEY_UNPROTECTED_RESOURCE_SERVICE = "unprotectedResourceService";
@@ -129,7 +128,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     protected final AtomicServiceReference<TAIService> taiServiceRef = new AtomicServiceReference<TAIService>(KEY_TAI_SERVICE);
     protected final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(KEY_INTERCEPTOR_SERVICE);
     protected final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
-    protected final AtomicServiceReference<JaccService> jaccServiceRef = new AtomicServiceReference<JaccService>(KEY_JACC_SERVICE);
+    protected final AtomicServiceReference<WebJaccService> webJaccServiceRef = new AtomicServiceReference<WebJaccService>(KEY_WEB_JACC_SERVICE);
     protected final ConcurrentServiceReferenceSet<WebAppSecurityConfigChangeListener> webAppSecurityConfigchangeListenerRef = new ConcurrentServiceReferenceSet<WebAppSecurityConfigChangeListener>(KEY_CONFIG_CHANGE_LISTENER);
 
     private static final String KEY_LOCATION_ADMIN = "locationAdmin";
@@ -304,19 +303,19 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         }
     }
 
-    protected void setJaccService(ServiceReference<JaccService> ref) {
+    protected void setWebJaccService(ServiceReference<WebJaccService> ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "enabling JACC service");
         }
-        jaccServiceRef.setReference(ref);
-        wasch = new WebAppJaccAuthorizationHelper(jaccServiceRef);
+        webJaccServiceRef.setReference(ref);
+        wasch = new WebAppJaccAuthorizationHelper(webJaccServiceRef);
     }
 
-    protected void unsetJaccService(ServiceReference<JaccService> ref) {
+    protected void unsetWebJaccService(ServiceReference<WebJaccService> ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "disabling JACC service");
         }
-        jaccServiceRef.unsetReference(ref);
+        webJaccServiceRef.unsetReference(ref);
         wasch = this;
     }
 
@@ -361,7 +360,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         interceptorServiceRef.activate(cc);
         ssoAuthFilterRef.activate(cc);
         taiServiceRef.activate(cc);
-        jaccServiceRef.activate(cc);
+        webJaccServiceRef.activate(cc);
         webAuthenticatorRef.activate(cc);
         unprotectedResourceServiceRef.activate(cc);
         webAppSecurityConfigchangeListenerRef.activate(cc);
@@ -413,7 +412,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         ssoAuthFilterRef.deactivate(cc);
         taiServiceRef.deactivate(cc);
         interceptorServiceRef.deactivate(cc);
-        jaccServiceRef.deactivate(cc);
+        webJaccServiceRef.deactivate(cc);
         webAuthenticatorRef.deactivate(cc);
         unprotectedResourceServiceRef.deactivate(cc);
         webAppSecurityConfigchangeListenerRef.deactivate(cc);
@@ -546,8 +545,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     @Override
     public void postInvokeForSecureResponse(Object secObject) throws ServletException {
         try {
-            if (jaccServiceRef.getService() != null) {
-                jaccServiceRef.getService().resetPolicyContextHandlerInfo();
+            if (webJaccServiceRef.getService() != null) {
+                webJaccServiceRef.getService().resetPolicyContextHandlerInfo();
             }
 
             if (secObject != null) {

@@ -45,9 +45,9 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.org.apache.myfaces40.fat.FATSuite;
 import io.openliberty.org.apache.myfaces40.fat.JSFUtils;
-import io.openliberty.org.apache.myfaces40.fat.selenium_util.CustomDriver;
-import io.openliberty.org.apache.myfaces40.fat.selenium_util.ExtendedWebDriver;
-import io.openliberty.org.apache.myfaces40.fat.selenium_util.WebPage;
+import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 /**
  * Tests for the <h:inputFile/> with multiple attribute which is a new feature for Faces 4.0.

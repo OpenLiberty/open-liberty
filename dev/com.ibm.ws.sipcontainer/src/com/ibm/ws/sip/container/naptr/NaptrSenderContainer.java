@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,6 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.naptr;
 
@@ -60,8 +58,8 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 	 */
 	public NaptrSenderContainer() {
 		if (c_logger.isTraceDebugEnabled()) {
-			c_logger.traceDebug(this, "NaptrSender", 
-					"New NaptrSender created  = " + toString());
+			c_logger.traceDebug(this, "NaptrSenderContainer", 
+					"New NaptrSenderContainer created  = " + toString());
 		}
 		_naptrHandler = new NaptrHandler(this);
 	}
@@ -78,7 +76,7 @@ public class NaptrSenderContainer extends SendProcessor implements INaptrSender{
 		super.cleanItself();
 		if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "cleanItself", 
-					" Clean NaptrSender = " + toString());
+					"Clean NaptrSenderContainer = " + toString());
 		}
 	}
 

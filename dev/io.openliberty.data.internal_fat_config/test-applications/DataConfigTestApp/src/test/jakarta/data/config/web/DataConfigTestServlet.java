@@ -17,6 +17,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
 
@@ -151,4 +154,28 @@ public class DataConfigTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Verifies that the databaseStore tablePrefix is included in the table name when configured.
+     */
+    @Test
+    public void testTablePrefix(HttpServletRequest request, PrintWriter response) throws SQLException {
+        employees.save(new Employee(444555, "Thomas", "testTablePrefix", 40));
+        students.save(new Student(4567, "Teresa", "testTablePrefix", 20));
+
+        try (Connection con = employees.getDataSource().getConnection()) {
+            assertEquals("dbuser1", con.getMetaData().getUserName().toLowerCase());
+
+            ResultSet result = con.createStatement().executeQuery("SELECT firstName FROM TESTemp WHERE employeeId = 444555");
+            assertEquals(true, result.next());
+            assertEquals("Thomas", result.getString(1));
+        }
+
+        try (Connection con = students.getConnection()) {
+            assertEquals("dbuser1", con.getMetaData().getUserName().toLowerCase());
+
+            ResultSet result = con.createStatement().executeQuery("SELECT firstName FROM TESTStudent WHERE studentId = 4567");
+            assertEquals(true, result.next());
+            assertEquals("Teresa", result.getString(1));
+        }
+    }
 }

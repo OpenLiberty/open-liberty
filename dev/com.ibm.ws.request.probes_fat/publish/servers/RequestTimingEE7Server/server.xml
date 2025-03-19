@@ -9,6 +9,8 @@
    
  	<include location="../fatTestPorts.xml"/>
   	<logging traceSpecification="com.ibm.ws.request.timing.*=all:com.ibm.ws.request.probe.*=all"/>
+  	
+  	<include location="serverSessionConfig.xml"/>
   
   
 </server>

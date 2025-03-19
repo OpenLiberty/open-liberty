@@ -953,3 +953,19 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: ID ve\u0159ejn\u00e9ho kl\u00ed\u010de 
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Je mo\u017en\u00e9, \u017ee se ve\u0159ejn\u00fd kl\u00ed\u010d zm\u011bnil. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Je-li ve\u0159ejn\u00fd kl\u00ed\u010d lok\u00e1ln\u00ed soubor, ujist\u011bte se, \u017ee jste zadali spr\u00e1vn\u00fd soubor.
 
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: Platforma {0} nebyla nalezena.
+ERROR_MISSING_PLATFORM_NAME.explanation=Nebyl nalezen n\u00e1zev platformy ur\u010den\u00fd prom\u011bnnou konfigurace nebo prost\u0159ed\u00ed.
+ERROR_MISSING_PLATFORM_NAME.useraction=Zkontrolujte pravopis n\u00e1zvu a verze platformy, nap\u0159\u00edklad microProfile-6.1 .
+
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: Platformu se nepoda\u0159ilo ur\u010dit. Nelze nainstalovat n\u00e1sleduj\u00edc\u00ed funkce bez verze: {0} .
+ERROR_NO_DERIVED_PLATFORM.explanation= Platforma nebyla nastavena nebo nemohla b\u00fdt odvozena z existuj\u00edc\u00edch verzovan\u00fdch funkc\u00ed. 
+ERROR_NO_DERIVED_PLATFORM.useraction=P\u0159idejte platformu pro funkce bez verze.
+
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: P\u0159\u00edkaz installFeature nepodporuje funkce bez verze.
+ERROR_VERSIONLESS_INSTALL.explanation= Funkce, kterou jste se pokusili nainstalovat pomoc\u00ed p\u0159\u00edkazu installFeature , nem\u00e1 v n\u00e1zvu funkce uvedenou verzi.
+ERROR_VERSIONLESS_INSTALL.useraction=Pou\u017eijte p\u0159\u00edkaz installServerFeatures , kter\u00fd podporuje funkce bez verze, nebo nainstalujte jinou funkci, kter\u00e1 nen\u00ed bez verze.
+
+LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Instalace pomoc\u00ed n\u00e1sleduj\u00edc\u00edch platforem: {0} .
+LOG_INSTALL_WITH_PLATFORM.explanation=Ur\u010den\u00e9 verze platformy byly pou\u017eity k vy\u0159e\u0161en\u00ed funkc\u00ed bez verze.
+LOG_INSTALL_WITH_PLATFORM.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+

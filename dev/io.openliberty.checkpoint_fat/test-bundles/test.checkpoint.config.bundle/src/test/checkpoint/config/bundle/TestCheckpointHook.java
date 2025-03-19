@@ -43,6 +43,7 @@ public class TestCheckpointHook implements CheckpointHook {
     private final CheckpointPhase phase;
     private final ServiceReference<CheckpointPhase> phaseRef;
     private volatile ServiceReference<Condition> runningCondition = null;
+    private volatile ServiceReference<Condition> beforeCheckpointCondition = null;
 
     @Activate
     public TestCheckpointHook(Map<String, Object> config,
@@ -58,6 +59,7 @@ public class TestCheckpointHook implements CheckpointHook {
     @Activate
     void activate() {
         System.out.println("TESTING - activate running condition: " + getRunningCondition());
+        System.out.println("TESTING - activate before checkpoint condition: " + getBeforeCheckpointCondition());
     }
 
     @Reference(service = Condition.class, //
@@ -73,6 +75,19 @@ public class TestCheckpointHook implements CheckpointHook {
         this.runningCondition = null;
     }
 
+    @Reference(service = Condition.class, //
+               policy = ReferencePolicy.DYNAMIC, //
+               cardinality = ReferenceCardinality.OPTIONAL, //
+               target = "(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_BEFORE_CHECKPOINT_ID + ")")
+    protected void setBeforeCheckpointCondition(ServiceReference<Condition> beforeCheckpointCondition) {
+        this.beforeCheckpointCondition = beforeCheckpointCondition;
+        System.out.println("TESTING - bind before checkpoint condition: " + getBeforeCheckpointCondition());
+    }
+
+    protected void unsetBeforeCheckpointCondition(ServiceReference<Condition> runningCondition) {
+        this.beforeCheckpointCondition = null;
+    }
+
     /**
      * @return
      */
@@ -81,6 +96,14 @@ public class TestCheckpointHook implements CheckpointHook {
             return "null";
         } else {
             return runningCondition.getProperty(Condition.CONDITION_ID) + " " + runningCondition.getProperty(CheckpointPhase.CHECKPOINT_PROPERTY);
+        }
+    }
+
+    private String getBeforeCheckpointCondition() {
+        if (beforeCheckpointCondition == null) {
+            return "null";
+        } else {
+            return (String) beforeCheckpointCondition.getProperty(Condition.CONDITION_ID);
         }
     }
 

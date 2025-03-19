@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.kernel.service.util.JavaInfo;
@@ -50,7 +52,8 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 /**
  * Creates, modifies, and removes ManagedExecutorService resource factories that are defined via ManagedExecutorDefinition.
  */
-public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBuilder {
+public class ManagedExecutorResourceFactoryBuilder implements //
+                ConcurrencyResourceFactoryBuilder, ResourceFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ManagedExecutorResourceFactoryBuilder.class);
 
     /**
@@ -218,12 +221,19 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);
         concurrencyPolicyProps.put("runIfQueueFull", false);
 
-        if (Boolean.TRUE.equals(virtual) && JavaInfo.majorVersion() >= 21) { // only available in Concurrency 3.1+ and Java 21+
+        if (Boolean.TRUE.equals(virtual) && JavaInfo.majorVersion() >= 21) {
+            // only available in Concurrency 3.1+ and Java 21+
             concurrencyPolicyProps.put("virtual", virtual);
-            // maxPolicy unspecified makes the policy conditional on whether or not the submitter thread is virtual
-            // TODO remove the following once unspecified is supported
-            concurrencyPolicyProps.put("maxPolicy", "loose");
+            concurrencyPolicyProps.put("maxPolicy", "strict");
         } else {
+            if (Boolean.TRUE.equals(virtual))
+                Tr.info(tc, "CWWKC1217.no.virtual.threads",
+                        declaringMetadata.getName(),
+                        getDefinitionAnnotationClass().getSimpleName(),
+                        getDDElementName(),
+                        jndiName,
+                        JavaInfo.majorVersion());
+
             // virtual = false is the default
             concurrencyPolicyProps.put("maxPolicy", "loose");
         }
@@ -260,11 +270,16 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
 
                 ServiceReference<QualifiedResourceFactories> ref = concurrencyBundleCtx.getServiceReference(QualifiedResourceFactories.class);
 
-                if (ref == null) // TODO message should include possibility of deployment descriptor element
-                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
-                                                            qualifierNames + " qualifiers on the " +
-                                                            jndiName + " " + ManagedExecutorDefinition.class.getSimpleName() +
-                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+                if (ref == null)
+                    throw new UnsupportedOperationException(Tr //
+                                    .formatMessage(tc,
+                                                   "CWWKC1205.qualifiers.require.cdi",
+                                                   jeeName,
+                                                   qualifierNames,
+                                                   getDefinitionAnnotationClass().getSimpleName(),
+                                                   getDDElementName(),
+                                                   jndiName,
+                                                   ContextServiceDefinitionProvider.getCDIFeatureName()));
 
                 QualifiedResourceFactories qrf = concurrencyBundleCtx.getService(ref);
                 qrf.add(jeeName, QualifiedResourceFactory.Type.ManagedExecutorService, qualifierNames, factory);
@@ -291,6 +306,18 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
     protected void deactivate(ComponentContext context) {
         configAdminRef.deactivate(context);
         variableRegistryRef.deactivate(context);
+    }
+
+    @Override
+    @Trivial
+    public final String getDDElementName() {
+        return "managed-executor";
+    }
+
+    @Override
+    @Trivial
+    public final Class<? extends Annotation> getDefinitionAnnotationClass() {
+        return ManagedExecutorDefinition.class;
     }
 
     /**

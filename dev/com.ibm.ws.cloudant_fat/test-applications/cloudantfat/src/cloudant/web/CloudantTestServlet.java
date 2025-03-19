@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -288,8 +288,10 @@ public class CloudantTestServlet extends FATServlet {
     /**
      * Use a <cloudant> that points to an <ssl> with an invalid keystore.
      * Expect that we get a SSLHandshakeException when we try to create a database.
+     *
+     * @throws Throwable
      */
-    public void testInvalidSSL() throws Exception {
+    public void testInvalidSSL() throws Throwable {
         ClientBuilder cloudant_invalidSSL;
         try {
             cloudant_invalidSSL = InitialContext.doLookup("java:app/env/cloudant/invalidSSLRef");
@@ -306,9 +308,13 @@ public class CloudantTestServlet extends FATServlet {
             client.database(databaseName, true);
             fail("Expected to get a javax.net.ssl.SSLHandshakeException");
         } catch (CouchDbException ex) {
-            if (ex.getCause() != null && ex.getCause() instanceof javax.net.ssl.SSLHandshakeException)
-                System.out.println("Got expected SSLHandshakeException");
-            else
+            if (ex.getCause() != null && ex.getCause() instanceof java.io.IOException) {
+                Throwable sslEx = ex.getCause();
+                if (sslEx.getCause() != null && sslEx.getCause() instanceof javax.net.ssl.SSLHandshakeException)
+                    System.out.println("Got expected SSLHandshakeException");
+                else
+                    throw sslEx;
+            } else
                 throw ex;
         } finally {
             try {

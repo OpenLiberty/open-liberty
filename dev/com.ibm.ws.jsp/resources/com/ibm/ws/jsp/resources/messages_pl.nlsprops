@@ -1258,9 +1258,9 @@ system.java.compiler.not.found=JSPG0304W: Atrybut JSP useJDKCompiler jest ustawi
 system.java.compiler.not.found.explanation=Kontener JSP nie m\u00f3g\u0142 znale\u017a\u0107 kompilatora systemowego, co zwykle oznacza, \u017ce w \u015bcie\u017cce klas nie zosta\u0142 znaleziony plik JAR pakietu Java SDK tools.jar.
 system.java.compiler.not.found.useraction=Upewnij si\u0119, \u017ce plik JAR pakietu Java SDK tools.jar znajduje si\u0119 w \u015bcie\u017cce klas i sprawd\u017a, czy pakiet Java SDK obs\u0142uguje interfejs API kompilatora j\u0119zyka Java. Wi\u0119cej informacji na ten temat zawiera specyfikacja Java Specification Request 199.
 
-jsp.feature.not.loaded.correctly=CWWJS0001E: Opcja Pages (poprzednio JSP) nie zosta\u0142a za\u0142adowana z dopuszczaln\u0105 wersj\u0105.
-jsp.feature.not.loaded.correctly.explanation=Opcja zosta\u0142a za\u0142adowana bez akceptowalnej wersji. Aplikacja mo\u017ce zachowywa\u0107 si\u0119 inaczej, ni\u017c oczekiwano.
-jsp.feature.not.loaded.correctly.useraction=Sprawd\u017a, czy plik server.xml istnieje w przypadku istnienia wielu funkcji Pages (JSP). Plik musi okre\u015bla\u0107 nie wi\u0119cej ni\u017c jedn\u0105 opcj\u0119 Pages (JSP).
+jsp.feature.not.loaded.correctly=CWWJS0001E: Kontener stron (JSP) nie zosta\u0142 za\u0142adowany w akceptowalnej wersji.
+jsp.feature.not.loaded.correctly.explanation=Za\u0142adowano kontener stron (JSP) bez akceptowalnej wersji. Aplikacja mo\u017ce zachowywa\u0107 si\u0119 inaczej, ni\u017c oczekiwano.
+jsp.feature.not.loaded.correctly.useraction=Sprawd\u017a server.xml plik pod k\u0105tem istnienia funkcji wielu stron (JSP). Plik musi okre\u015bla\u0107 nie wi\u0119cej ni\u017c jedn\u0105 opcj\u0119 Pages (JSP).
 
 jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Niepoprawna warto\u015b\u0107 atrybutu errorOnELNotFound
 jsp.error.page.invalid.erroronelnotfound.explanation=

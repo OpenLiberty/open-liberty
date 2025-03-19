@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,3 +46,52 @@ CWMOT5002.telemetry.error.useraction=Ermitteln Sie das Problem anhand der Protok
 CWMOT5003.factory.used.after.shutdown=CWMOT5003W: Die Anwendung {0} hat versucht, MicroProfile Telemetry anzufordern, nachdem die Anwendung beendet wurde.
 CWMOT5003.factory.used.after.shutdown.explanation=CWMOT5003.factory.used.after.shutdown.explanation=Nachdem eine Anwendung beendet wurde, gibt MicroProfile Telemetry Objekte zur\u00fcck, die beim Aufrufen Aktionen mit Nulloperationen im Hintergrund ausf\u00fchren. Dieser Prozess kann dazu f\u00fchren, dass erwartete Telemetriedaten fehlen.
 CWMOT5003.factory.used.after.shutdown.useraction=\u00dcberpr\u00fcfen Sie die Anwendung, um festzustellen, warum die Nutzung von MicroProfile Telemetry nach dem Beenden versucht wurde. Zu den Aktionen, die die Verwendung von MicroProfile Telemetrie ausl\u00f6sen k\u00f6nnen, geh\u00f6rt das Aufrufen einer Methode, die mit @WithSpan annotiert ist, oder das Ausgeben einer Anforderung mit einem JAX-RS-Client oder einem MP-REST-Client.
+
+CWMOT5004.factory.used.without.metadata=CWMOT5004W: Es wurde eine Anfrage gestellt f\u00fcr eine OpenTelemetry Objekt, aber keine Anwendungsmetadaten und keine globalen OpenTelemetry Objekt war vorhanden. 
+CWMOT5004.factory.used.without.metadata.explanation=CWMOT5004.factory.used.without.metadata.explanation=If es gibt keine globale OpenTelemetry Objekt Liberty'S MicroProfile Der Telemetrieintegrationscode versucht, die richtige OpenTelemetry Objekt f\u00fcr die aktuelle Anwendung, indem die Anwendungsmetadaten im aktuellen Thread verwendet werden. Da jedoch keine Metadaten zum Thread vorhanden waren, war dies nicht m\u00f6glich. 
+CWMOT5004.factory.used.without.metadata.useraction=\u00dcberpr\u00fcfen Sie Ihren Code, um festzustellen, warum der Integrationscode versucht hat, MicroProfile Telemetrie ohne Metadaten und ein serverspezifisches OpenTelemetry Objekt zu verwenden. Der Integrationscode versucht h\u00f6chstwahrscheinlich, neue Threads zu erstellen, ohne die Schnittstelle ManagedExecutorService zu verwenden, und ein OpenTelemetry-Objekt aus der Anwendung zu erwerben. Um ein OpenTemetry-Objekt au\u00dferhalb einer Anwendung zu erfassen, aktivieren Sie OpenTelemetry \u00fcber eine Umgebungsvariable oder eine Systemeigenschaft.
+
+CWMOT5005.mptelemetry.unknown.log.source=CWMOT5005W: Die MicroProfile Telemetrie-Protokollierungsfunktion erkennt die [ {0} ] Protokollquelle nicht.
+CWMOT5005.mptelemetry.unknown.log.source.explanation=Die Liberty-Laufzeitumgebung stellt die angegebene Protokollquelle nicht zur Verf\u00fcgung.
+CWMOT5005.mptelemetry.unknown.log.source.useraction=\u00dcberpr\u00fcfen Sie die Konfigurationsinformationen und geben Sie eine der unterst\u00fctzten Quellen f\u00fcr MicroProfile Telemetrie an.
+
+CWMOT5006.tel.enabled.conflict=CWMOT5006W: Widerspr\u00fcchliche Konfiguration f\u00fcr die Konfigurationseigenschaft otel.sdk.disabled f\u00fcr die Anwendung {0} erkannt. Der endg\u00fcltige Wert ist otel.sdk.disabled=false. Die Telemetrie kann nicht f\u00fcr eine Anwendung deaktiviert werden, wenn sie f\u00fcr die Laufzeit aktiviert ist.
+CWMOT5006.tel.enabled.conflict.explanation: MicroProfile Die Telemetrie kann f\u00fcr den gesamten Server mit Hilfe von Systemeigenschaften oder Umgebungsvariablen aktiviert werden. Wenn es nicht f\u00fcr den gesamten Server aktiviert ist, kann es f\u00fcr jede Anwendung durch Setzen der MicroProfile Config-Eigenschaften aktiviert werden; zum Beispiel durch Setzen von Variablen in der server.xml-Datei. Diese Warnung wird ausgegeben, wenn es eine explizite Konfiguration gibt, die Telemetrie f\u00fcr den gesamten Server deaktiviert, die durch eine MP Config-Eigenschaft \u00fcberschrieben wird, die Telemetrie f\u00fcr eine Anwendung aktiviert.
+CWMOT5006.tel.enabled.conflict.useraction: Geben Sie die Einstellungen zum Aktivieren oder Deaktivieren von OpenTelemetry-Instanzen an, indem Sie entweder Umgebungsvariablen und Systemeigenschaften oder andere MP Config-Quellen verwenden, aber nicht beides.
+
+CWMOT5007.tel.enabled.conflict=CWMOT5007W: Widerspr\u00fcchliche Konfiguration f\u00fcr die Konfigurationseigenschaft otel.sdk.disabled f\u00fcr die Anwendung {0} erkannt. Der endg\u00fcltige Wert ist otel.sdk.disabled=false, da die Eigenschaft, die die Telemetrie f\u00fcr die Anwendung aktiviert, die Eigenschaft, die die Telemetrie f\u00fcr die Laufzeit deaktiviert, \u00fcberschreibt.
+CWMOT5007.tel.enabled.conflict.explanation: MicroProfile Die Telemetrie kann f\u00fcr den gesamten Server mit Hilfe von Systemeigenschaften oder Umgebungsvariablen aktiviert werden. Wenn es nicht f\u00fcr den gesamten Server aktiviert ist, kann es f\u00fcr eine Anwendung durch Setzen der MicroProfile Config-Eigenschaften aktiviert werden; zum Beispiel durch Setzen von Variablen in der server.xml-Datei. Diese Warnung wird ausgegeben, wenn Telemetrie f\u00fcr den gesamten Server aktiviert ist, aber die MicroProfile Config-Eigenschaften Telemetrie f\u00fcr eine Anwendung deaktivieren. Da Telemetrie f\u00fcr den gesamten Server aktiviert ist, wird die Konfiguration f\u00fcr diese Anwendung ignoriert.
+CWMOT5007.tel.enabled.conflict.useraction: Geben Sie die Einstellungen zum Aktivieren oder Deaktivieren von OpenTelemetry-Instanzen an, indem Sie entweder Umgebungsvariablen und Systemeigenschaften oder andere MP Config-Quellen verwenden, aber nicht beides.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+threadpool.activeThreads.description=Die Anzahl der Threads, die aktiv die Tasks ausf\u00fchren.
+threadpool.size.description=Die Gr\u00f6\u00dfe des Thread-Pools.
+
+session.activeSessions.description=Die Anzahl der gleichzeitig aktiven Sitzungen. Eine Sitzung ist aktiv, wenn die Laufzeitumgebung eine Anfrage verarbeitet, die diese Benutzersitzung verwendet.
+session.created.description=Die Anzahl der Sitzungen, die angemeldet wurden, seit diese Metrik aktiviert wurde.
+session.invalidated.description=Die Anzahl der abgemeldeten Sitzungen, seit diese Metrik aktiviert wurde.
+session.invalidatedbyTimeout.description=Die Anzahl der Sitzungen, die aufgrund einer Zeit\u00fcberschreitung abgemeldet wurden, seit diese Metrik aktiviert wurde.
+session.live.description=Die Anzahl der Benutzer, die derzeit angemeldet sind.
+
+connectionpool.handle.count.description=Anzahl der genutzten Verbindungen. Dieser Wert kann mehrere Verbindungen enthalten, die von einer einzigen verwalteten Verbindung gemeinsam genutzt werden.
+connectionpool.connection.created.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung erstellt wurden.
+connectionpool.connection.destroyed.description=Die Gesamtzahl der verwalteten Verbindungen, die seit der Erstellung des Pools zerst\u00f6rt wurden.
+connectionpool.connection.free.description=Die Anzahl der verwalteten Verbindungen, die verf\u00fcgbar sind.
+connectionpool.connection.waitTime.description=Die Gesamtzeit, die die Verbindungsanfragen auf eine Verbindung gewartet haben.
+connectionpool.connection.useTime.description=Die Gesamtzeit, in der alle Verbindungen zur Datenquelle genutzt wurden.
+connectionpool.connection.count.description=Die aktuelle Anzahl der verwalteten Verbindungen im Pool. Dieser Wert umfasst verwaltete Verbindungen, die verf\u00fcgbar sind, und solche, die in Gebrauch sind. Eine einzelne verwaltete Verbindung, die von mehreren Verbindungen gemeinsam genutzt wird, z\u00e4hlt nur einmal.
+
+requestTiming.processed.description=Die Anzahl der Servletanforderungen seit dem Serverstart.
+requestTiming.active.description=Die Anzahl der Servlet-Anfragen, die derzeit laufen.
+requestTiming.slow.description=Die Anzahl der Servletanforderungen, die momentan zwar ausgef\u00fchrt werden, deren Ausf\u00fchrung jedoch langsam ist.
+requestTiming.hung.description=Die Anzahl der Servlet-Anfragen, die derzeit aufgeh\u00e4ngt sind.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# HTTP Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+
+http.server.request.duration.description=Dauer der HTTP-Serveranfragen.

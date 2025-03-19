@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2024 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ Import-Package: \
   javax.enterprise.context.spi; version="[1.1,3)",\
   javax.enterprise.inject.*; version="[1.1,3)",\
   javax.enterprise.util; version="[1.1,3)",\
+  org.eclipse.microprofile.config; version="[2.0.0,3.0.0)",\
   *
 
 Export-Package: \
@@ -62,11 +63,11 @@ src: src,resources
 testsrc: test/src
 
 -buildpath: \
-        com.ibm.websphere.javaee.annotation.1.3;version=latest,\
-        com.ibm.websphere.javaee.servlet.4.0; version=latest,\
-        com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+        com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+        com.ibm.websphere.javaee.servlet.3.0; version=latest,\
+        com.ibm.websphere.javaee.cdi.1.2;version=latest,\
         io.openliberty.org.eclipse.microprofile.health.3.0;version=latest,\
-        io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
+        com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
         com.ibm.websphere.org.osgi.core;version=latest,\
         com.ibm.websphere.org.osgi.service.component;version=latest,\
         com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
@@ -85,7 +86,7 @@ testsrc: test/src
         com.ibm.ws.org.apache.commons.lang3;version=latest,\
         org.eclipse.osgi;version=latest,\
         io.openliberty.microprofile.health.internal.common,\
-        com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
+        com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
         com.ibm.ws.microprofile.health;version=latest
 
 -testpath: \

@@ -6,6 +6,8 @@
         <feature>mpOpenTracing-3.0</feature>
         <feature>mpRestClient-3.0</feature>
         <feature>timedexit-1.0</feature>
+        <feature>restfulWS-3.0</feature>
+        <feature>concurrent-2.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />

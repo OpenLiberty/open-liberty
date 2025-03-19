@@ -47,3 +47,6 @@
 
 5011=Uno o varios objetos no se pueden actualizar porque se han cambiado o suprimido desde que se leyeron por \u00faltima vez.
 
+5012=Uno o m\u00e1s objetos de la clase {0} con la lista de par\u00e1metros {1} no se pueden actualizar para la consulta SQL {2} porque ha cambiado o se ha suprimido desde la \u00faltima lectura
+
+

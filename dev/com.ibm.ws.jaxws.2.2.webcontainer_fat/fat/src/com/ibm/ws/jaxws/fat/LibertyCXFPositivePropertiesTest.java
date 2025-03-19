@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 import com.ibm.ws.properties.test.servlet.LibertyCXFPositivePropertiesTestServlet;
@@ -84,8 +83,8 @@ public class LibertyCXFPositivePropertiesTest {
         // For EE10, we test all the properties tested in the other repeats plus the additional Woodstox configuration property
         if (JakartaEEAction.isEE10OrLaterActive()) {
             server.getServerBootstrapPropertiesFile().delete(); // In the next line we are forcing overwrite, however, we are deleting here to be sure.
-            server.getServerBootstrapPropertiesFile().copyFromSource(new RemoteFile(server.getMachine(), server.pathToAutoFVTTestFiles
-                                                                                                         + "/LibertyCXFPropertiesTest/woodstox-true-bootstrap.properties"),
+            server.getServerBootstrapPropertiesFile().copyFromSource(server.getMachine().getFile(server.pathToAutoFVTTestFiles
+                                                                                                 + "/LibertyCXFPropertiesTest/woodstox-true-bootstrap.properties"),
                                                                      false,
                                                                      true);
         }

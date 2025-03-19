@@ -18,7 +18,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 -include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}}!/META-INF/MANIFEST.MF,check-me-in-if-i-change.bnd
 
 -includeresource: \
-  @${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}
+  @${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}!/!META-INF/client/*
 
 Bundle-SymbolicName: io.openliberty.org.jboss.weld6; singleton:=true
 
@@ -32,4 +32,4 @@ instrument.disabled: true
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest,\
     io.openliberty.jakarta.cdi.4.1;version=latest,\
-    io.openliberty.org.jboss.logging35;version=latest
+    io.openliberty.org.jboss.logging36;version=latest

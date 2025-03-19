@@ -37,17 +37,19 @@ public class FATSuite {
 
     public static final String MP50_RS30_ID = MicroProfileActions.MP50_ID + "_" + "RS30";
     public static final String MP61_RS30_ID = MicroProfileActions.MP61_ID + "_" + "RS30";
+    public static final String MP70_RS30_ID = MicroProfileActions.MP70_EE11_ID + "_" + "RS30";
 
     //MP50 runs on Java 8 but RSO30 will only run on Java11 or higher
     public static final FeatureSet MP50_RS30 = MicroProfileActions.MP50.addFeature(MP_REACTIVE_STREAMS_30).setMinJavaLevel(RepeatActions.SEVersion.JAVA11).build(MP50_RS30_ID);
     public static final FeatureSet MP61_RS30 = MicroProfileActions.MP61.addFeature(MP_REACTIVE_STREAMS_30).build(MP61_RS30_ID);
+    public static final FeatureSet MP70_RS30 = MicroProfileActions.MP70_EE11.addFeature(MP_REACTIVE_STREAMS_30).build(MP70_RS30_ID);
 
     //All MicroProfile ReactiveMessaging FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_RS_SETS_ARRAY = { MP61_RS30, MP50_RS30 };
+    private static final FeatureSet[] ALL_RS_SETS_ARRAY = { MP61_RS30, MP50_RS30, MP70_RS30 };
     private static final List<FeatureSet> ALL = Arrays.asList(ALL_RS_SETS_ARRAY);
 
     public static RepeatTests repeatDefault(String serverName) {
-        return repeat(serverName, Mode.TestMode.FULL, FATSuite.MP61_RS30, FATSuite.MP50_RS30);
+        return repeat(serverName, Mode.TestMode.FULL, FATSuite.MP70_RS30, FATSuite.MP61_RS30, FATSuite.MP50_RS30);
     }
 
     /**

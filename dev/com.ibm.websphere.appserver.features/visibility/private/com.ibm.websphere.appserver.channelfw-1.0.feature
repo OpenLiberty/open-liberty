@@ -6,7 +6,6 @@ IBM-Process-Types: server, \
  client
 -bundles= \
  com.ibm.ws.channelfw, \
- com.ibm.ws.timer, \
  io.openliberty.endpoint, \
  com.ibm.ws.wsbytebuffer, \
  io.openliberty.accesslists.internal

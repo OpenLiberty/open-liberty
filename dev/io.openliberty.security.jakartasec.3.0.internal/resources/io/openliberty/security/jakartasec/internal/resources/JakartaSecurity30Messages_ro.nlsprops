@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -52,3 +52,7 @@ JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Pentru mai multe informa\u021bii, 
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: Valoarea atributului {0} din adnotarea defini\u021biei mecanismului de autentificare OpenID trebuie s\u0103 nu fie un num\u0103r \u00eentreg negativ. Dac\u0103 valoarea atributului este o expresie EL (Expression Language), aceasta trebuie s\u0103 nu se rezolve la un num\u0103r \u00eentreg negativ. Valoarea furnizat\u0103 a fost "{1}". Este utilizat\u0103 \u00een loc valoarea de atribut implicit\u0103 ''{2}''.
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Valoarea atributului trebuie s\u0103 nu fie un num\u0103r \u00eentreg negativ. Dac\u0103 valoarea atributului este o expresie EL, valoarea trebuie s\u0103 nu se rezolve la un num\u0103r \u00eentreg negativ.
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Actualiza\u021bi atributul pentru a utiliza un num\u0103r \u00eentreg care nu este negativ. Dac\u0103 valoarea atributului este o expresie EL, actualiza\u021bi bean-ul de referin\u021b\u0103 pentru rezolvarea la un num\u0103r \u00eentreg care nu este negativ.
+
+CREDENTIAL_VALIDATION_CALLER_MISSING=CWWKS2508E: Acreditarea nu poate fi validat\u0103 deoarece valoarea apelantului nu este stabilit\u0103. Revendicarea numelui apelantului [{0}nul\u0103 sau goal\u0103, sau o cerere cu acest nume nu poate fi g\u0103sit\u0103 \u00een token-ul de acces, \u00een token-ul ID-ului sau UserInfo
+CREDENTIAL_VALIDATION_CALLER_MISSING.explanation=Validarea creden\u021bial\u0103 necesit\u0103 o valoare mai mare \u0219i care nu este stabilit\u0103.
+CREDENTIAL_VALIDATION_CALLER_MISSING.useraction=Verific\u0103 dac\u0103 numele apelantului nu este nul sau gol. Verifica\u021bi dac\u0103 numele apelantului pretinde c\u0103 este o cerere care este inclus\u0103 fie \u00een token-ul de acces, \u00een token-ul ID, fie UserInfo

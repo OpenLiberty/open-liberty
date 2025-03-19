@@ -38,6 +38,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCust
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCustomSerializerTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sharedLib.KafkaSharedLibTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tck.ReactiveStreamsTckTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;

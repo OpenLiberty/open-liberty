@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2008 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -225,8 +225,9 @@ ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: W\u0142\u0105czono w\u0142a\u01
 ssl.config.not.using.fips.CWPKI0049W.explanation=Mimo \u017ce w\u0142\u0105czono w\u0142a\u015bciwo\u015b\u0107 UseFIPS, nie mo\u017cna u\u017cywa\u0107 algorytm\u00f3w szyfrowania zatwierdzonych przez standard FIPS, poniewa\u017c w konfiguracji protoko\u0142u SSL nie jest u\u017cywany dostawca funkcji JSSE zatwierdzony przez standard FIPS.
 ssl.config.not.using.fips.CWPKI0049W.useraction=Aby zapewni\u0107 mo\u017cliwo\u015b\u0107 u\u017cycia algorytm\u00f3w szyfruj\u0105cych zatwierdzonych przez standard FIPS, zmodyfikuj konfiguracj\u0119 protoko\u0142u SSL, uwzgl\u0119dniaj\u0105c u\u017cycie dostawcy funkcji JSSE zatwierdzonego przez standard FIPS.
 # -------------------------------------------------------------------------------------------------
-
-
+ssl.san.warning.CWPKI0050W=CWPKI0050W: Certyfikat z aliasem {0} z keyStore {1} nie ma alternatywnej nazwy podmiotu. Weryfikacja HostName nie jest wymuszana w przypadku zbiorczego kontrolera serverIdentity , repliki i komunikacji SSL cz\u0142onka.
+ssl.san.warning.CWPKI0050W.explanation=Domy\u015blny certyfikat serverIdentity nie ma alternatywnej nazwy podmiotu w keyStore . Weryfikacja hostName jest pomijana w przypadku certyfikat\u00f3w serverIdentity
+ssl.san.warning.CWPKI0050W.useraction=Otw\u00f3rz keyStore i sprawd\u017a alternatywn\u0105 nazw\u0119 podmiotu we wszystkich certyfikatach w keyStore . U\u017cyj polece\u0144 genKey i genKeyController , aby wygenerowa\u0107 nowe certyfikaty umo\u017cliwiaj\u0105ce weryfikacj\u0119 nazwy hosta.
 ################################################################################
 # Range 100-110 reserved for TrustManager Prompt
 ################################################################################
@@ -633,9 +634,13 @@ ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: NIEPOWODZENIE UZGADNIANIA SSL:
 ssl.client.handshake.error.CWPKI0823E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas uzgadniania protoko\u0142u SSL.  Mo\u017ce by\u0107 wymagany eksport/import osoby podpisuj\u0105cej z docelowego hosta do magazynu zaufanych certyfikat\u00f3w klienta.
 ssl.client.handshake.error.CWPKI0823E.useraction=Aby dowiedzie\u0107 si\u0119, co nale\u017cy zmieni\u0107 w konfiguracjach protoko\u0142u SSL hosta docelowego i klienta, przeczytaj rozszerzony komunikat o b\u0142\u0119dzie z mened\u017cera zaufania.
 # -------------------------------------------------------------------------------------------------
-ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: NIEPOWODZENIE UZGADNIANIA SSL: B\u0142\u0105d weryfikacji nazwy hosta podczas nawi\u0105zywania po\u0142\u0105czenia z hostem [{0}].  Nazwa hosta u\u017cywana do uzyskania dost\u0119pu do serwera nie jest zgodna z informacjami o nazwie wyr\u00f3\u017cniaj\u0105cej podmiotu lub alternatywnej nazwie podmiotu w certyfikacie serwera.  Rozszerzony komunikat o b\u0142\u0119dzie pochodz\u0105cy z wyj\u0105tku uzgadniania SSL to: [{1}].
-ssl.client.handshake.error.CWPKI0824E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas uzgadniania protoko\u0142u SSL.  Weryfikacja nazwy hosta jest w\u0142\u0105czona, a to\u017csamo\u015b\u0107 serwera nie mo\u017ce zosta\u0107 zweryfikowana.  Nazwa hosta u\u017cywana do uzyskania dost\u0119pu do serwera nie jest zgodna z informacjami o nazwie wyr\u00f3\u017cniaj\u0105cej podmiotu lub alternatywnej nazwie podmiotu w certyfikacie serwera.
+ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: NIEPOWODZENIE UZGADNIANIA SSL: B\u0142\u0105d weryfikacji nazwy hosta podczas nawi\u0105zywania po\u0142\u0105czenia z hostem [{0}].  Nazwa hosta u\u017cywana do uzyskania dost\u0119pu do serwera nie jest zgodna z certyfikatem serwera [ {1} ].  Rozszerzony komunikat o b\u0142\u0119dzie z wyj\u0105tku uzgadniania SSL to: [ {2} ].
+ssl.client.handshake.error.CWPKI0824E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas uzgadniania protoko\u0142u SSL.  Weryfikacja nazwy hosta jest w\u0142\u0105czona, a to\u017csamo\u015b\u0107 serwera nie mo\u017ce zosta\u0107 zweryfikowana.  Nazwa hosta u\u017cywana do uzyskania dost\u0119pu do serwera nie jest zgodna z informacjami w polu Subject Alternative Name ( SubjectDN certyfikatu serwera.
 ssl.client.handshake.error.CWPKI0824E.useraction=Je\u015bli weryfikacja nazwy hosta jest w\u0142\u0105czona, serwer, do kt\u00f3rego uzyskiwany jest dost\u0119p, musi zosta\u0107 skonfigurowany z certyfikatem, kt\u00f3ry zawiera odpowiednie informacje potrzebne do sprawdzenia to\u017csamo\u015bci serwera.
+# -------------------------------------------------------------------------------------------------
+ssl.hnv.disabled.warning.CWPKI0063W=CWPKI0063W: Weryfikacja nazwy hosta jest wy\u0142\u0105czona dla {0} . Po\u0142\u0105czenia TLS/SSL nie sprawdzaj\u0105 to\u017csamo\u015bci serwera, aby upewni\u0107 si\u0119, \u017ce klient komunikuje si\u0119 z w\u0142a\u015bciwym serwerem.
+ssl.hnv.disabled.warning.CWPKI0063W.explanation=Weryfikacja nazwy hosta musi by\u0107 w\u0142\u0105czona, aby mie\u0107 pewno\u015b\u0107, \u017ce nazwa hosta w adresie URL, z kt\u00f3rym \u0142\u0105czy si\u0119 klient, jest zgodna z nazw\u0105 hosta w certyfikacie odsy\u0142anym przez serwer podczas komunikacji TLS/SSL.
+ssl.hnv.disabled.warning.CWPKI0063W.useraction=W\u0142\u0105cz weryfikacj\u0119 nazwy hosta, ustawiaj\u0105c niestandardow\u0105 w\u0142a\u015bciwo\u015b\u0107 zabezpiecze\u0144 com.ibm.ssl.verifyHostname na true.
 # -------------------------------------------------------------------------------------------------
 ssl.cacerts.error.CWPKI0825W=CWPKI0825W: Atrybut trustDefaultCerts jest w\u0142\u0105czony, ale nie mo\u017cna by\u0142o zainicjowa\u0107 domy\u015blnego magazynu zaufanych certyfikat\u00f3w. Poniewa\u017c domy\u015blny magazyn zaufanych certyfikat\u00f3w nie zosta\u0142 zainicjowany, b\u0119dzie u\u017cywany tylko magazyn zdefiniowany w konfiguracji SSL {0}. Zwr\u00f3cony wyj\u0105tek: {1}. 
 ssl.cacerts.error.CWPKI0825W.explanation=Domy\u015blny magazyn zaufanych certyfikat\u00f3w nie zosta\u0142 zainicjowany, poniewa\u017c nie mo\u017cna by\u0142o go pobra\u0107 z mened\u017cera zaufania. Do obs\u0142ugi relacji zaufania nie jest u\u017cywany domy\u015blny magazyn zaufanych certyfikat\u00f3w. U\u017cywana jest tylko zdefiniowana konfiguracja SSL.

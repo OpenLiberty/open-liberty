@@ -204,7 +204,7 @@ public class RequestTimingMetricsTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    //@Test
+    @Test
     public void testHungThreads() throws Exception {
         final String testName = "testHungThreads";
         Log.info(c, testName, "Entry");
@@ -310,7 +310,7 @@ public class RequestTimingMetricsTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    //@Test
+    @Test
     public void testSlowServletRequest() throws Exception {
 
         final String METHOD_NAME = "testSlowServletRequest";
@@ -420,7 +420,7 @@ public class RequestTimingMetricsTest {
      * allow a test to finish
      *
      * @param countToWaitFor
-     *            Value looked for in CountDownLatch
+     *                           Value looked for in CountDownLatch
      * @throws Exception
      */
     private void waitInServletForCountDownLatch(int countToWaitFor) throws Exception {
@@ -502,13 +502,13 @@ public class RequestTimingMetricsTest {
      * test
      *
      * @param th
-     *            -- array of threads
+     *                            -- array of threads
      * @param numReqs
-     *            -- number of requests is the number of threads needed
+     *                            -- number of requests is the number of threads needed
      * @param servletTestName
-     *            -- Used for request to servlet
+     *                            -- Used for request to servlet
      * @param testMethodName
-     *            -- Used for printing to logs
+     *                            -- Used for printing to logs
      */
     private void createRequestThreads(Thread[] th, int numReqs) {
         // Send N servlet requests to server, last request used to terminate

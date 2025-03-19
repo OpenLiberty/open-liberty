@@ -50,10 +50,6 @@ CWWKC1100.resource.unavailable=CWWKC1100E: Zas\u00f3b {0} jest niedost\u0119pny.
 CWWKC1100.resource.unavailable.explanation=Zas\u00f3b m\u00f3g\u0142 sta\u0107 si\u0119 niedost\u0119pny, poniewa\u017c serwer zosta\u0142 zamkni\u0119ty lub wprowadzona zosta\u0142a zmiana konfiguracyjna dotycz\u0105ca zasobu lub innej us\u0142ugi, od kt\u00f3rej zas\u00f3b jest zale\u017cny.
 CWWKC1100.resource.unavailable.useraction=Sprawd\u017a konfiguracj\u0119 tego zasobu i wszystkich zasob\u00f3w, od kt\u00f3rych zale\u017cy.
 
-CWWKC1110.task.canceled=CWWKC1110I: Zadanie {0}, kt\u00f3re zosta\u0142o wprowadzone do us\u0142ugi wykonawcy {1}, zosta\u0142o anulowane.
-CWWKC1110.task.canceled.explanation=Wykonanie zadania zosta\u0142o anulowane.
-CWWKC1110.task.canceled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
-
 CWWKC1101.task.failed=CWWKC1101E: Zadanie {0}, kt\u00f3re zosta\u0142o wprowadzone do us\u0142ugi wykonawcy {1}, nie powiod\u0142o si\u0119 i zosta\u0142 zwr\u00f3cony nast\u0119puj\u0105cy b\u0142\u0105d: {2}.
 CWWKC1101.task.failed.explanation=Zadanie wys\u0142ane do wykonawcy nie powiod\u0142o si\u0119. Przyczyn\u0119 mo\u017cna znale\u017a\u0107 w komunikacie o wyj\u0105tku.
 CWWKC1101.task.failed.useraction=Usu\u0144 przyczyn\u0119 niepowodzenia i ponownie uruchom zadanie.
@@ -66,6 +62,10 @@ CWWKC1103.skip.run.failed=CWWKC1103E: Wykonanie zadania {0}, kt\u00f3re zosta\u0
 CWWKC1103.skip.run.failed.explanation=Operacja skipRun obiektu Trigger nie powiod\u0142a si\u0119, powoduj\u0105c pomini\u0119cie bie\u017c\u0105cej pr\u00f3by wykonania zadania.
 CWWKC1103.skip.run.failed.useraction=Usu\u0144 przyczyn\u0119 niepowodzenia i zdecyduj, czy ponownie uruchomi\u0107 zadanie.
 
+CWWKC1110.task.canceled=CWWKC1110I: Zadanie {0} , kt\u00f3re zosta\u0142o przes\u0142ane do us\u0142ugi wykonawczej {1} , zosta\u0142o anulowane.
+CWWKC1110.task.canceled.explanation=Zadanie zosta\u0142o anulowane.
+CWWKC1110.task.canceled.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
 CWWKC1111.task.invalid=CWWKC1111E: Zadanie {0} jest niepoprawne.
 CWWKC1111.task.invalid.explanation=Zadanie nie mo\u017ce zosta\u0107 wprowadzone, poniewa\u017c jest niepoprawne.
 CWWKC1111.task.invalid.useraction=Zaktualizuj aplikacj\u0119 tak, aby wprowadza\u0142a poprawne zadanie do us\u0142ugi ExecutorService.
@@ -77,6 +77,14 @@ CWWKC1112.all.tasks.canceled.useraction=Nie jest wymagana \u017cadna czynno\u015
 CWWKC1120.future.get.rejected=CWWKC1120E: Adnotacja Future udost\u0119pniona dla metod ManagedTaskListener taskSubmitted i taskStarting nie mo\u017ce zosta\u0107 u\u017cyta podczas oczekiwania na zako\u0144czenie zadania.
 CWWKC1120.future.get.rejected.explanation=Metody ManagedTaskListener taskSubmitted i taskStarting s\u0105 uruchamiane w w\u0105tku, kt\u00f3ry wprowadza lub uruchamia zadanie. Dlatego podczas oczekiwania na zako\u0144czenie zadania nie mo\u017cna u\u017cywa\u0107 adnotacji Future udost\u0119pnianej dla tych metod.
 CWWKC1120.future.get.rejected.useraction=Zaktualizuj aplikacj\u0119, aby unikn\u0105\u0107 wywo\u0142ywania metody get w adnotacji Future udost\u0119pnianej dla metod taskSubmitted i taskStarting.
+
+CWWKC1121.virtual.invalid=CWWKC1121E: Adnotacja {0} lub element deskryptora wdro\u017cenia {1} o nazwie {0} okre\u015bla virtual=true, ale w\u0105tki wirtualne nie s\u0105 dost\u0119pne w wersjach starszych ni\u017c Java 21. U\u017cywany poziom Java to: {1} .
+CWWKC1121.virtual.invalid.explanation=W u\u017cywanej wersji Java w\u0105tki wirtualne nie s\u0105 dost\u0119pne.
+CWWKC1121.virtual.invalid.useraction=Zaktualizuj do nowszej wersji Java, kt\u00f3ra obs\u0142uguje w\u0105tki wirtualne.
+
+CWWKC1122.mod.unavail=CWWKC1122E: Aplikacja {0} lub jej modu\u0142 {1} s\u0105 niedost\u0119pne.
+CWWKC1122.mod.unavail.explanation=Aby uzyska\u0107 instancj\u0119 ManagedThreadFactory , musi by\u0107 dost\u0119pna aplikacja i modu\u0142 definiuj\u0105ce konfiguracj\u0119 ManagedThreadFactory .
+CWWKC1122.mod.unavail.useraction=Sprawd\u017a, czy aplikacja jest uruchomiona i czy zawiera modu\u0142 definiuj\u0105cy konfiguracj\u0119 ManagedThreadFactory .
 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Zadanie wprowadzone do zarz\u0105dzanego wykonawcy {0} zawiera w\u0142a\u015bciwo\u015b\u0107 wykonania {1} o warto\u015bci {2}, kt\u00f3ra jest niepoprawna dla zarz\u0105dzanych wykonawc\u00f3w.
 CWWKC1130.xprop.value.invalid.explanation=Niekt\u00f3re warto\u015bci w\u0142a\u015bciwo\u015bci wykonania s\u0105 niepoprawne w przypadku zarz\u0105dzanych wykonawc\u00f3w, jednak mog\u0105 by\u0107 warto\u015bciami poprawnymi dla innych typ\u00f3w zasob\u00f3w, takich jak us\u0142uga kontekstu lub zarz\u0105dzana fabryka w\u0105tk\u00f3w.

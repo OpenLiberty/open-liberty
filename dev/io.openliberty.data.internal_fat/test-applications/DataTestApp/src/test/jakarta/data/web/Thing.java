@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,17 +13,18 @@
 package test.jakarta.data.web;
 
 /**
- * For testing entity property names with reserved keywords in them.
+ * For testing entity attribute names with reserved keywords in them.
  */
 public class Thing {
 
-    // single character property name, for testing the difference between findByALike and findByAlike
+    // single character attribute name, for testing the difference between findByALike and findByAlike
     public String a;
 
     // ending with "like" does not conflict with reserved word "Like" due to case difference.
     public Boolean alike;
 
-    // starting with reserved word "And" is okay in at least some cases - TODO test findByAttr1OrAttr2OrAndroid... to find out
+    // starting with reserved word "And" is okay in at least some cases.
+    // For example, "Android" in the method findByBrandOrNotesContainsOrAndroid
     public boolean android;
 
     // ending with "and" does not conflict with reserved word "And" due to case difference.
@@ -41,11 +42,12 @@ public class Thing {
     // starting with reserved word "Not" is okay
     public String notes;
 
-    // Due to reserved word "Or" within property name, this cannot be used in query by method name.
+    // Due to reserved word "Or" within attribute name, this cannot be used in query by method name.
     // Test with @Query instead.
     public int purchaseOrder;
 
-    // starting with reserved word "Or" is okay in at least some cases - TODO test findByAttr1AndAttr2AndOrderNumber... to find out
+    // starting with reserved word "Or" is okay in at least some cases.
+    // For example, "OrderNumber" in the method findByFloorNotAndInfoLikeAndOrderNumberLessThan
     public long orderNumber;
 
     // The algorithm that infers IDs should choose this as the ID over "android" (ends with "id")

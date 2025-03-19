@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: Syst\u00e9m nem\u016f\u017ee na\u010d\u00edst 
 cls.fileset.not.ready.explanation=Je pou\u017e\u00edv\u00e1na sd\u00edlen\u00e1 knihovna, ale jedna z p\u0159idru\u017een\u00fdch sad soubor\u016f nebyla v\u010das na\u010dtena.
 cls.fileset.not.ready.useraction=Vyhledejte a opravte v\u0161echny chyby a varov\u00e1n\u00ed p\u0159idru\u017een\u00e1 k t\u00e9to sad\u011b soubor\u016f.
 
-cls.library.file.invalid=CWWKL0012W: Knihovna [{0}] ur\u010duje soubor s n\u00e1zvem [{1}]. Tento soubor bu\u010f neexistuje, nebo je nespr\u00e1vn\u011b zad\u00e1n.
-cls.library.file.invalid.explanation=Chcete-li p\u0159idat soubor do knihovny v konfiguraci serveru, mus\u00edte uv\u00e9st \u00fapln\u00fd n\u00e1zev existuj\u00edc\u00edho souboru.
+cls.library.file.invalid=CWWKL0012W: Knihovna [ {0} ] ur\u010duje soubor s n\u00e1zvem [ {1} ]. Tento soubor bu\u010f neexistuje, nebo je nespr\u00e1vn\u011b zad\u00e1n.
+cls.library.file.invalid.explanation=Chcete-li p\u0159idat soubor do knihovny v konfiguraci serveru, mus\u00edte zadat existuj\u00edc\u00ed soubor.
 cls.library.file.invalid.useraction=Upravte konfiguraci serveru a zm\u011b\u0148te atribut souboru prvku knihovny.
 
-cls.library.folder.invalid=CWWKL0013W: Knihovna [{0}] ur\u010duje slo\u017eku s n\u00e1zvem [{1}]. Tato slo\u017eka bu\u010f neexistuje, nebo se nejedn\u00e1 o platnou slo\u017eku.
-cls.library.folder.invalid.explanation=Chcete-li p\u0159idat soubor do knihovny v konfiguraci serveru, mus\u00edte uv\u00e9st \u00faplnou cestu k existuj\u00edc\u00ed slo\u017ece.
+cls.library.folder.invalid=CWWKL0013W: Knihovna [ {0} ] ur\u010duje slo\u017eku s n\u00e1zvem [ {1} ]. Tato slo\u017eka bu\u010f neexistuje, nebo se nejedn\u00e1 o platnou slo\u017eku.
+cls.library.folder.invalid.explanation=Chcete-li p\u0159idat soubor do knihovny v konfiguraci serveru, mus\u00edte zadat existuj\u00edc\u00ed slo\u017eku.
 cls.library.folder.invalid.useraction=Upravte konfiguraci serveru a zm\u011b\u0148te atribut slo\u017eky prvku knihovny.
 
 cls.library.file.forbidden=CWWKL0014I: Soubor [{0}] nelze p\u0159idat do cesty ke t\u0159\u00edd\u011b.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Upravte konfiguraci serveru a zajist\u011bte, aby
 cls.library.destroyed=CWWKL0018I: Knihovna [{0}] je nedostupn\u00e1.
 cls.library.destroyed.explanation=Knihovna je nedostupn\u00e1, nap\u0159\u00edklad proto, \u017ee byla odebr\u00e1na z konfigurace serveru.
 cls.library.destroyed.useraction=Pokud je knihovna st\u00e1le po\u017eadov\u00e1na, ujist\u011bte se, \u017ee je st\u00e1le spr\u00e1vn\u011b konfigurov\u00e1na.
+
+cls.library.path.invalid=CWWKL0019W: Knihovna [ {0} ] ur\u010duje cestu s n\u00e1zvem [ {1} ]. Tato cesta bu\u010f neexistuje, nebo je zad\u00e1na nespr\u00e1vn\u011b.
+cls.library.path.invalid.explanation=Chcete-li p\u0159idat cestu ke knihovn\u011b v konfiguraci serveru, mus\u00edte zadat existuj\u00edc\u00ed cestu.
+cls.library.path.invalid.useraction=Upravte konfiguraci serveru a zm\u011b\u0148te atribut cesty prvku knihovny.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

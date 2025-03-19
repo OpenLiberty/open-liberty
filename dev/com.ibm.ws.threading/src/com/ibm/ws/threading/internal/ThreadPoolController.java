@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.CpuInfo;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 // @formatter:off
 /**
@@ -356,11 +358,63 @@ public final class ThreadPoolController {
     private static final int deepQueuePoolIncrementMultiple;
 
     /**
+     * Pool size on initial startup, until "ready to run" - after the server reports that it has
+     * started, the pool size will be set to coreThreads and will auto-adjust as usual
+     */
+    private static final int startupPoolSize;
+
+    /**
+     * When server and app startup reports that it has started, this will be set "true" so
+     * that if the thread pool is recreated due to a config action, the new pool will not use
+     * startupPoolSize but rather will use coreThreads and maxThreads.
+     */
+    private static boolean initialStartupCompleted = false;
+
+    /**
+     * During server startup, there may be no tasks completed during a controller cycle.
+     * This would normally be detected as a hang, and the controller would intervene to break the
+     * hang by adding threads. However the hang resolution response may not be appropriate during
+     * startup, because large complex applications may take a long time to complete tasks, even
+     * though they are making progress, and adding threads may cause slower startup. So we will
+     * check the process cpu-util, and allow startup to continue without hang intervention
+     * if cpu-util exceeds a modest threshold.
+     */
+    private static final int startupHangCpuUtilThreshold;
+
+    /**
+     * During server startup, there may be anomalous behaviors that affect the first few controller
+     * cycles. We will skip startup hang detection for the first few cycles, to avoid false positive
+     * hang detection events.
+     */
+    private static final int startupHangControllerCyclesSkip;
+
+    /**
      * Read in applicable system properties, use defaults if the property is not present
      * These system properties will not be documented, and are intended for diagnostic and/or
      * triage use by support.
      */
     static {
+        String tpcStartupPoolSize = getSystemProperty("tpcStartupPoolSize");
+        if (tpcStartupPoolSize == null) {
+            startupPoolSize = 6;
+        } else {
+            int cfgStartupPoolSize = Integer.parseInt(tpcStartupPoolSize);
+            if (cfgStartupPoolSize == -1) {
+                // escape - don't run startupPoolSize logic
+                initialStartupCompleted = true;
+                startupPoolSize = -1;
+            } else {
+                // make sure startupPoolSize is not set to be less than less than MINIMUM_POOL_SIZE
+                startupPoolSize = Math.max(ExecutorServiceImpl.MINIMUM_POOL_SIZE, cfgStartupPoolSize);
+            }
+        }
+
+        String tpcStartupHangCpuUtilThreshold = getSystemProperty("tpcStartupHangCpuUtilThreshold");
+        startupHangCpuUtilThreshold = (tpcStartupHangCpuUtilThreshold == null) ? 10 : Integer.parseInt(tpcStartupHangCpuUtilThreshold);
+
+        String tpcStartupHangControllerCyclesSkip = getSystemProperty("tpcStartupHangControllerCyclesSkip");
+        startupHangControllerCyclesSkip = (tpcStartupHangControllerCyclesSkip == null) ? 2 : Integer.parseInt(tpcStartupHangControllerCyclesSkip);
+
         String tpcResetDistroStdDevEwmaRatio = getSystemProperty("tpcResetDistroStdDevEwmaRatio");
         resetDistroStdDevEwmaRatio = (tpcResetDistroStdDevEwmaRatio == null) ? 0.10 : Double.parseDouble(tpcResetDistroStdDevEwmaRatio);
 
@@ -520,13 +574,6 @@ public final class ThreadPoolController {
     private final int maxThreadsToBreakHang;
 
     /**
-     * Reference to the configured ExecutorService implementation that
-     * delegates to the {@link ThreadPoolExecutorImpl} that is controlled
-     * by this controller.
-     */
-    private final ExecutorServiceImpl executorService;
-
-    /**
      * A representation of the action taken by this controller at the end of the
      * previous interval.
      */
@@ -661,27 +708,70 @@ public final class ThreadPoolController {
     private boolean hangMaxThreadsMessageEmitted = false;
 
     /**
+     * This instance variable is used to count the number of controller cycles we will skip
+     * during startup, to avoid being misled by anomalous startup behaviors. It is an instance
+     * variable so that if the thread pool is replaced after initial Liberty startup, the new
+     * pool will get the same controller cycle startup skip behavior as the original pool.
+     */
+
+    private int startupCycleSkipCount = startupHangControllerCyclesSkip;
+
+    /**
+     * We need to normalize the startup hang cpu-util threshold based on the number of CPUs available.
+     * When Liberty runs in a many-CPU environment, even if the startup threads are working at a
+     * reasonable rate, the percentage of total CPU they use will be low because the number of
+     * startup threads is small.
+     */
+
+    private int normalizedStartupHangCpuUtilThreshold = startupHangCpuUtilThreshold;
+
+    /**
      * Constructor
      *
      * @param executorServce the configured OSGi component that's associated with
      *                           the managed thread pool.
      */
-    ThreadPoolController(ExecutorServiceImpl executorService, ThreadPoolExecutor pool) {
-        this.executorService = executorService;
+    ThreadPoolController(ThreadPoolExecutor pool) {
         this.threadPool = pool;
         this.coreThreads = pool.getCorePoolSize();
         this.currentMinimumPoolSize = this.coreThreads;
         this.maxThreads = pool.getMaximumPoolSize();
         this.threadRange = this.maxThreads - this.coreThreads;
-        setPoolSize(coreThreads);
+        if (!initialStartupCompleted) {
+            // make sure pool size during startup is not greater than maxThreads
+            setPoolSize(Math.min(startupPoolSize, this.maxThreads));
+            // controller cycle only needs to run during startup to monitor for possible hang condition,
+            // and checking for hang is only useful if increasing the pool size is permitted
+            if (startupPoolSize < maxThreads) {
+                activeTask = new IntervalTask(this);
+                timer.schedule(activeTask, interval, interval);
+            }
+        } else {
+            setPoolSize(coreThreads);
+            if (coreThreads != maxThreads) {
+                // start controller cycle
+                activeTask = new IntervalTask(this);
+                timer.schedule(activeTask, interval, interval);
+            }
+        }
+
         targetPoolSize = coreThreads;
         resetStatistics(true);
-        // nothing to do if core == max
-        if (coreThreads < maxThreads) {
-            activeTask = new IntervalTask(this);
-            timer.schedule(activeTask, interval, interval);
-        }
         numberCpus = CpuInfo.getAvailableProcessors().get();
+
+        // adjust the cpu-util threshold for startup hang detection when running in a large CPU set
+        if (numberCpus > startupPoolSize) {
+            normalizedStartupHangCpuUtilThreshold = Math.max(1, (int) Math.round((double) (startupPoolSize * startupHangCpuUtilThreshold) / numberCpus));
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "number of cpus: " + numberCpus + ", startup hang cpu-util threshold adjusted to " + normalizedStartupHangCpuUtilThreshold + "%");
+            }
+        }
+
+        // initialize CPU utilization info
+        processCpuUtil = CpuInfo.getJavaCpuUsage();
+        systemCpuUtil = CpuInfo.getSystemCpuUsage();
+        cpuUtil = Math.max(systemCpuUtil, processCpuUtil);
+
         /**
          * if coreThreads has been configured to a small value, we will use the
          * configured value as guidance for how large to make poolSize changes
@@ -713,6 +803,36 @@ public final class ThreadPoolController {
 
         if (tc.isEventEnabled()) {
             reportSystemProperties();
+        }
+    }
+
+    /**
+     * Switch to regular pool sizing after startup completes
+     */
+    synchronized void startupCompleted() {
+        // if pool hung during startup, we will already have moved out of startup
+        // pool size mode, so check that first
+        if (!initialStartupCompleted) {
+            initialStartupCompleted = true;
+            if (threadPool == null) {
+                // not expected, but we can just return quietly
+                return;
+            }
+            setPoolSize(coreThreads);
+            // make sure the controller cycle is running or not, as per core/max thread values
+            if (coreThreads < maxThreads) {
+                // cycle should already be running? anyway check and start if needed
+                if (activeTask == null && !paused) {
+                    activeTask = new IntervalTask(this);
+                    timer.schedule(activeTask, interval, interval);
+                }
+            } else {
+                // fixed pool size, cancel the controller cycle if it is running
+                if (activeTask != null) {
+                    activeTask.cancel();
+                    activeTask = null;
+                }
+            }
         }
     }
 
@@ -1338,9 +1458,19 @@ public final class ThreadPoolController {
 
         // we can't even think about adjusting the pool size until the underlying executor has aggressively
         // grown the pool to the coreThreads value, so if that hasn't happened yet we should just bail
-        if (poolSize < coreThreads) {
-            return "poolSize < coreThreads";
+        if (poolSize < coreThreads && initialStartupCompleted) {
+            // Try setting the pool to the correct size again
+            setPoolSize(coreThreads);
+            return "poolSize " + poolSize + " < coreThreads " + coreThreads;
         }
+
+        // update cpu utilization info
+        processCpuUtil = CpuInfo.getJavaCpuUsage();
+        systemCpuUtil = CpuInfo.getSystemCpuUsage();
+        cpuUtil = Math.max(systemCpuUtil, processCpuUtil);
+
+        boolean cpuHigh = (cpuUtil > highCpu);
+        boolean systemCpuNA = (systemCpuUtil < 0);
 
         long currentTime = System.currentTimeMillis();
         long completedWork = threadPool.getCompletedTaskCount();
@@ -1349,7 +1479,58 @@ public final class ThreadPoolController {
         long deltaTime = Math.max(currentTime - lastTimerPop, interval);
         long deltaCompleted = completedWork - previousCompleted;
         double throughput = 1000.0 * deltaCompleted / deltaTime;
+
         try {
+            // check for hang during server/app startup
+            if (!initialStartupCompleted) {
+                if (poolSize < startupPoolSize) {
+                    // That's odd - let's try setting the pool size again
+                    setPoolSize(startupPoolSize);
+                    return "poolSize " + poolSize + " < startupPoolSize " + startupPoolSize;
+                }
+                if (startupCycleSkipCount > 0) {
+                    /**
+                     * We do not check for startup hang until a couple of controller cycles have passed
+                     * to avoid false startup hang detection caused by startup anomalies
+                     */
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "     skipping startup hang check - cycles remaining to skip: " + startupCycleSkipCount,
+                                 "       " + threadPool);
+                    }
+                    startupCycleSkipCount--;
+                    return "server startup in progress";
+                }
+
+                String cpuUtilString = "";
+                if (tc.isEventEnabled()) {
+                    cpuUtilString = String.format(" cpuUtil = %.2f", Double.valueOf(processCpuUtil));
+                }
+                if (deltaCompleted <= 0) {
+                    if (processCpuUtil < normalizedStartupHangCpuUtilThreshold && !cpuHigh) {
+                        if (tc.isEventEnabled()) {
+                            Tr.event(tc, "     hang detected during startup, process " + cpuUtilString + "%, cpuHigh: " + cpuHigh + " - switching to normal controller operation");
+                        }
+
+                        // startup has hung - switch to post-startup mode to allow hang resolution to work
+                        initialStartupCompleted = true;
+                        setPoolSize(coreThreads);
+                        poolSize = threadPool.getPoolSize();
+                    } else {
+                        if (tc.isEventEnabled()) {
+                            Tr.event(tc, "     no tasks completed this interval, process " + cpuUtilString + "%",
+                                     "       " + threadPool);
+                        }
+                        return "server startup in progress";
+                    }
+                } else {
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "     tasks completed: " + deltaCompleted + ", process " + cpuUtilString + "%",
+                                 "       " + threadPool);
+                    }
+                    return "server startup in progress";
+                }
+            }
+
             queueDepth = threadPool.getQueue().size();
             boolean queueEmpty = (queueDepth <= 0);
             // Count the number of consecutive times we've seen an empty queue
@@ -1374,14 +1555,6 @@ public final class ThreadPoolController {
 
             activeThreads = threadPool.getActiveCount();
 
-            // update cpu utilization info
-            processCpuUtil = CpuInfo.getJavaCpuUsage();
-            systemCpuUtil = CpuInfo.getSystemCpuUsage();
-            cpuUtil = Math.max(systemCpuUtil, processCpuUtil);
-
-            boolean cpuHigh = (cpuUtil > highCpu);
-            boolean systemCpuNA = (systemCpuUtil < 0);
-
             // Handle pausing the task if the pool has been idle
             if (manageIdlePool(threadPool, deltaCompleted)) {
                 return "monitoring paused";
@@ -1405,7 +1578,7 @@ public final class ThreadPoolController {
                     // do nothing
                 }
                 completedWork = threadPool.getCompletedTaskCount();
-                return "action take to resolve hang";
+                return "action taken to resolve hang";
             }
 
             if (checkTargetPoolSize(poolSize)) {
@@ -1982,6 +2155,14 @@ public final class ThreadPoolController {
     private void reportSystemProperties() {
         StringBuilder sb = new StringBuilder();
 
+        sb.append("\n coreThreads: ").append(String.format("%6d", Integer.valueOf(coreThreads)));
+        sb.append(" maxThreads: ").append(String.format("%6d", Integer.valueOf(maxThreads)));
+        sb.append(" numberCpus: ").append(String.format("%6d", Integer.valueOf(numberCpus)));
+
+        sb.append("\n startupPoolSize: ").append(String.format("%6d", Integer.valueOf(startupPoolSize)));
+        sb.append(" startupHangCpuUtilThreshold: ").append(String.format("%6d", Integer.valueOf(startupHangCpuUtilThreshold)));
+        sb.append(" normalizedStartupHangCpuUtilThreshold: ").append(String.format("%6d", Integer.valueOf(normalizedStartupHangCpuUtilThreshold)));
+
         sb.append("\n interval: ").append(String.format("%6d", Long.valueOf(interval)));
         sb.append(" hangInterval: ").append(String.format("%6d", Long.valueOf(hangInterval)));
         sb.append(" compareRange: ").append(String.format("%6d", Integer.valueOf(compareRange)));
@@ -2077,7 +2258,7 @@ public final class ThreadPoolController {
  * expires.
  */
 class IntervalTask extends TimerTask {
-
+    private final CheckpointPhase phase = CheckpointPhase.getPhase();
     final ThreadPoolController threadPoolController;
 
     IntervalTask(ThreadPoolController threadPoolController) {
@@ -2087,7 +2268,7 @@ class IntervalTask extends TimerTask {
     @Override
     public void run() {
         try {
-            threadPoolController.evaluateInterval();
+            phase.runWithCheckpointLock(threadPoolController::evaluateInterval);
         } catch (Throwable t) {
             // Don't let any odd exceptions escape. BCI FFDC only.
         }

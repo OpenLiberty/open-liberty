@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -14,8 +14,8 @@
 bVersion: 1.0
 
 #Common Versions
-testContainerVersion: 1.19.5
-dockerJavaVersion: 3.3.4
+testContainerVersion: 1.20.3
+dockerJavaVersion: 3.4.0
 
 Bundle-Name: FAT Testcontainer Bundle
 Bundle-SymbolicName: io.openliberty.org.testcontainers
@@ -38,7 +38,8 @@ Export-Package: \
 #Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
 # This will ensure that the other docker container strategies are accessible at runtime.
 Include-Resource: \
-	@${repo;org.testcontainers:testcontainers;${testContainerVersion};EXACT}!/META-INF/**
+	@${repo;org.testcontainers:testcontainers;${testContainerVersion};EXACT}!/META-INF/**,\
+	openliberty=resources/openliberty
 
 publish.wlp.jar.disabled: true
 

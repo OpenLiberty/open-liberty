@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -171,10 +171,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     private final AtomicReference<String> jndiNameRef = new AtomicReference<String>();
 
     /**
-     * Reference to the executor that runs tasks according to the long running concurrency policy for this managed executor.
-     * Null if longRunningPolicy is not configured, in which case the executor for the normal concurrency policy should be used instead.
+     * ConcurrencyPolicy and PolicyExecutor for long running tasks.
+     * Null if longRunningPolicy is not configured, in which case the executor for
+     * the normal concurrency policy should be used instead.
      */
-    final AtomicReference<PolicyExecutor> longRunningPolicyExecutorRef = new AtomicReference<PolicyExecutor>();
+    private final AtomicReference<PolicyAndExecutor> longRunningPolicyAndExecutorRef = //
+                    new AtomicReference<>();
 
     /**
      * Available only on the MicroProfile code path (CDI injection or ManagedExecutorBuilder).
@@ -188,9 +190,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     final AtomicReference<String> name = new AtomicReference<String>();
 
     /**
-     * Executor that runs tasks against the general concurrency policy for this managed executor.
+     * ConcurrencyPolicy and PolicyExecutor for normal tasks.
+     * It can also be used for long running tasks if longRunningPolicy is
+     * not configured.
      */
-    volatile PolicyExecutor policyExecutor;
+    private final AtomicReference<PolicyAndExecutor> normalPolicyAndExecutorRef = //
+                    new AtomicReference<>();
 
     /**
      * The service.pid of the managed executor service config.
@@ -221,8 +226,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         this.name.set(name);
         this.hash = hash;
         this.eeVersion = eeVersion;
-        this.policyExecutor = policyExecutor;
-        this.longRunningPolicyExecutorRef.set(policyExecutor);
+        PolicyAndExecutor shared = new PolicyAndExecutor(null, policyExecutor);
+        this.longRunningPolicyAndExecutorRef.set(shared);
+        this.normalPolicyAndExecutorRef.set(shared);
         this.mpContextService = mpThreadContext;
         this.tranContextProviderRef = tranContextProviderRef;
         allowLifeCycleMethods = true;
@@ -289,11 +295,18 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     @Deactivate
     protected void deactivate(ComponentContext context) {
         // Cancel submitted or running tasks
-        int count = policyExecutor.cancel(getIdentifier(policyExecutor.getIdentifier()), true);
+        int count = 0;
+        PolicyAndExecutor normal = normalPolicyAndExecutorRef.get();
+        if (normal != null && normal.executor != null) {
+            String identifier = getIdentifier(normal.executor.getIdentifier());
+            count = normal.executor.cancel(identifier, true);
+        }
 
-        PolicyExecutor longRunningExecutor = longRunningPolicyExecutorRef.get();
-        if (longRunningExecutor != null)
-            count += longRunningExecutor.cancel(getIdentifier(longRunningExecutor.getIdentifier()), true);
+        PolicyAndExecutor longRunning = longRunningPolicyAndExecutorRef.get();
+        if (longRunning != null && longRunning.executor != null) {
+            String identifier = getIdentifier(longRunning.executor.getIdentifier());
+            count += longRunning.executor.cancel(identifier, true);
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, count + " submitted tasks canceled");
@@ -487,25 +500,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         return members;
     }
 
-    @Override
-    @Trivial
-    public PolicyExecutor getLongRunningPolicyExecutor() {
-        PolicyExecutor executor = longRunningPolicyExecutorRef.get();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "getLongRunningPolicyExecutor: " + executor);
-        return executor;
-    }
-
-    @Override
-    @Trivial
-    public PolicyExecutor getNormalPolicyExecutor() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "getNormalPolicyExecutor: " + policyExecutor);
-
-        return policyExecutor;
-    }
-
     /** {@inheritDoc} */
     @Override
     public void execute(Runnable command) {
@@ -574,6 +568,64 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     }
 
     /**
+     * If a long-running ConcurrencyPolicy is configured, obtains its
+     * long-running PolicyExecutor, otherwise null.
+     *
+     * @return PolicyExecutor for long-running tasks, or null.
+     */
+    @Override
+    @Trivial
+    public PolicyExecutor getLongRunningPolicyExecutor() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getLongRunningPolicyExecutor",
+                     longRunningPolicyAndExecutorRef);
+
+        PolicyAndExecutor longRunning;
+        while ((longRunning = longRunningPolicyAndExecutorRef.get()) != null &&
+               longRunning.executor == null &&
+               longRunning.policy != null &&
+               !longRunningPolicyAndExecutorRef.compareAndSet(longRunning, longRunning = //
+                               new PolicyAndExecutor( //
+                                               longRunning.policy, //
+                                               longRunning.policy.getExecutor())));
+
+        PolicyExecutor executor = longRunning == null ? null : longRunning.executor;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getLongRunningPolicyExecutor", executor);
+        return executor;
+    }
+
+    /**
+     * Obtains the PolicyExecutor for normal tasks.
+     *
+     * @return the PolicyExecutor for normal tasks.
+     */
+    @Override
+    @Trivial
+    public PolicyExecutor getNormalPolicyExecutor() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getNormalPolicyExecutor",
+                     normalPolicyAndExecutorRef);
+
+        PolicyAndExecutor normal;
+        while ((normal = normalPolicyAndExecutorRef.get()) != null &&
+               normal.executor == null &&
+               normal.policy != null &&
+               !normalPolicyAndExecutorRef.compareAndSet(normal, normal = //
+                               new PolicyAndExecutor( //
+                                               normal.policy, //
+                                               normal.policy.getExecutor())));
+
+        if (normal == null) // Impossible due to declarative services dependency
+            throw new IllegalStateException();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getNormalPolicyExecutor", normal.executor);
+        return normal.executor;
+    }
+
+    /**
      * This method was added to MicroProfile Context Propagation after v1.0.
      *
      * @return the backing instance of MicroProfile ThreadContext.
@@ -600,8 +652,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         tasks = entry.getKey();
         TaskLifeCycleCallback[] callbacks = entry.getValue();
 
-        // Policy executor can optimize the last task in the list to run on the current thread if we submit under the same executor,
-        PolicyExecutor executor = callbacks.length > 0 ? callbacks[callbacks.length - 1].policyExecutor : policyExecutor;
+        // Policy executor can optimize the last task in the list to
+        // run on the current thread if we submit under the same executor,
+        PolicyExecutor executor = callbacks.length > 0 //
+                        ? callbacks[callbacks.length - 1].policyExecutor //
+                        : getNormalPolicyExecutor();
         return (List) executor.invokeAll(tasks, callbacks);
     }
 
@@ -613,7 +668,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         tasks = entry.getKey();
         TaskLifeCycleCallback[] callbacks = entry.getValue();
 
-        PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
+        PolicyExecutor executor = callbacks.length > 0 //
+                        ? callbacks[0].policyExecutor //
+                        : getNormalPolicyExecutor();
         return (List) executor.invokeAll(tasks, callbacks, timeout, unit);
     }
 
@@ -624,7 +681,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         tasks = entry.getKey();
         TaskLifeCycleCallback[] callbacks = entry.getValue();
 
-        PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
+        PolicyExecutor executor = callbacks.length > 0 //
+                        ? callbacks[0].policyExecutor //
+                        : getNormalPolicyExecutor();
         return executor.invokeAny(tasks, callbacks);
     }
 
@@ -635,7 +694,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         tasks = entry.getKey();
         TaskLifeCycleCallback[] callbacks = entry.getValue();
 
-        PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
+        PolicyExecutor executor = callbacks.length > 0 //
+                        ? callbacks[0].policyExecutor //
+                        : getNormalPolicyExecutor();
         return executor.invokeAny(tasks, callbacks, timeout, unit);
     }
 
@@ -684,7 +745,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
-        policyExecutor = svc.getExecutor();
+        normalPolicyAndExecutorRef.set(new PolicyAndExecutor(svc, null));
     }
 
     /**
@@ -736,7 +797,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
     protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
-        longRunningPolicyExecutorRef.set(svc.getExecutor());
+        longRunningPolicyAndExecutorRef.set(new PolicyAndExecutor(svc, null));
     }
 
     /**
@@ -847,6 +908,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * @param svc the service
      */
     protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
+        PolicyAndExecutor current, none = new PolicyAndExecutor(null, null);
+        while ((current = normalPolicyAndExecutorRef.get()).policy == svc &&
+               !normalPolicyAndExecutorRef.compareAndSet(current, none));
     }
 
     /**
@@ -885,7 +949,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * @param svc the service
      */
     protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
-        longRunningPolicyExecutorRef.compareAndSet(svc.getExecutor(), null);
+        PolicyAndExecutor current, none = new PolicyAndExecutor(null, null);
+        while ((current = longRunningPolicyAndExecutorRef.get()).policy == svc &&
+               !longRunningPolicyAndExecutorRef.compareAndSet(current, none));
     }
 
     /**

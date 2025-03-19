@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.webcontainer.servlet60.fat.tests;
 
@@ -32,6 +29,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -101,6 +99,10 @@ public class Servlet60RequestCookieHeaderTest {
         }
     }
 
+    /*
+     * EE 10 expects both Max-Age=0 and Expires
+     * EE 11 and others - expect Expires
+     */
     @Test
     public void test_MaxAgeZero() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=MaxAgeZero";
@@ -116,7 +118,14 @@ public class Servlet60RequestCookieHeaderTest {
 
                 LOG.info("\n TestResult : " + headerValue);
 
-                assertTrue("The Set-Cookie response header does not contain [max-age=0]. TestResult header [" + headerValue + "]", headerValue.contains("max-age=0"));
+                if (JakartaEEAction.isEE10Active()) {
+                    assertTrue("The Set-Cookie response header does not contain attribute [Max-Age=0]. TestResult header [" + headerValue + "]", headerValue.contains("Max-Age=0"));
+                } else if (JakartaEEAction.isEE11OrLaterActive()) {
+                    assertTrue("The Set-Cookie response header contains unexpected attribute [Max-Age=0]. TestResult header [" + headerValue + "]",
+                               !headerValue.contains("Max-Age=0"));
+                }
+
+                assertTrue("The Set-Cookie response header does not contain attribute [Expires]. TestResult header [" + headerValue + "]", headerValue.contains("Expires"));
             }
         }
     }

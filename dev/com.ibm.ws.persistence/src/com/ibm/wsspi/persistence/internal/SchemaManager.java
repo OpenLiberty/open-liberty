@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,7 +34,7 @@ import org.eclipse.persistence.platform.database.OraclePlatform;
 import org.eclipse.persistence.platform.database.SQLServerPlatform;
 import org.eclipse.persistence.sessions.DatabaseSession;
 
-import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.wsspi.persistence.DDLGenerationWriter;
 import com.ibm.wsspi.persistence.internal.eclipselink.PsPersistenceProvider;
 
 /**
@@ -94,12 +94,20 @@ class SchemaManager {
         }
         props.putAll(_serviceProperties);
 
-        Writer writer = (Writer) props.get(SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET);
-        if (writer != null) {
-            // replace the provided writer with our own implementation that ignores close()
-            // calls. This allows us to add some extra bits onto the end of the writer prior to
-            // really closing
-            writer = new DelegatingWriter(writer, false);
+        boolean closeWriter = false;
+        DDLGenerationWriter writer = null;
+        Writer out = (Writer) props.get(SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET);
+        if (out != null) {
+            if (out instanceof DDLGenerationWriter) {
+                // the caller that provided this writer is responsible for closing it
+                writer = (DDLGenerationWriter)out;
+            } else {
+                // replace the provided writer with our own implementation that ignores close()
+                // calls. This allows us to add some extra bits onto the end of the writer prior to
+                // really closing
+                writer = new DDLGenerationWriter(out);
+                closeWriter = true;
+            }
             props.put(SCHEMA_GENERATION_SCRIPTS_CREATE_TARGET, writer);
         }
 
@@ -155,9 +163,9 @@ class SchemaManager {
             }
         }
 
-        if (writer != null) {
+        if (writer != null && closeWriter) {
             try {
-                ((DelegatingWriter) writer).closeInternal();
+                writer.writeExitAndClose();
             } catch (IOException e) {
                 throw new PersistenceException(ValidationException.fileError(e));
             }
@@ -190,45 +198,13 @@ class SchemaManager {
         }
     }
 
-    private void postProcess(EntityManagerFactory emf, Writer writer) {
+    private void postProcess(EntityManagerFactory emf, DDLGenerationWriter writer) {
         if (_dbMgr.isOracle(emf)) {
             try {
-                writer.write("\nEXIT;");
+                writer.setExitCommand("\nEXIT;");
             } catch (IOException e) {
                 throw new PersistenceException(ValidationException.fileError(e));
             }
-        }
-    }
-
-    @Trivial
-    private static class DelegatingWriter extends Writer {
-        final Writer _del;
-        final boolean _ignoreClose;
-
-        public DelegatingWriter(Writer del, boolean ignoreClose) {
-            _del = del;
-            _ignoreClose = ignoreClose;
-        }
-
-        @Override
-        public void write(char[] cbuf, int off, int len) throws IOException {
-            _del.write(cbuf, off, len);
-        }
-
-        @Override
-        public void flush() throws IOException {
-            _del.flush();
-        }
-
-        @Override
-        public void close() throws IOException {
-            if (_ignoreClose) {
-                _del.close();
-            }
-        }
-
-        public void closeInternal() throws IOException {
-            _del.close();
         }
     }
 }

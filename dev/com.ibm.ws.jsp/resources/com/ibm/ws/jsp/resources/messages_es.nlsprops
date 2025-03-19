@@ -1258,9 +1258,9 @@ system.java.compiler.not.found=JSPG0304W: El atributo JSP, useJDKCompiler, se ha
 system.java.compiler.not.found.explanation=El contenedor JSP no ha podido encontrar el compilador del sistema, que habitualmente indica que el archivo jar de SDK de Java, tools.jar, no se ha encontrado en la v\u00eda de acceso de clases.
 system.java.compiler.not.found.useraction=Aseg\u00farese de que el archivo jar de SDK de Java, tools.jar, est\u00e1 en la v\u00eda de acceso de clases y verifique que el SDK de Java da soporte a la API del compilador Java. Para m\u00e1s informaci\u00f3n, consulte Specification Request 199.
 
-jsp.feature.not.loaded.correctly=CWWJS0001E: La caracter\u00edstica P\u00e1ginas (anteriormente JSP) no se ha cargado con una versi\u00f3n aceptable.
-jsp.feature.not.loaded.correctly.explanation=La caracter\u00edstica se ha cargado sin una versi\u00f3n aceptable. La aplicaci\u00f3n puede comportarse de forma diferente a la esperada.
-jsp.feature.not.loaded.correctly.useraction=Compruebe en el archivo server.xml la existencia de varias caracter\u00edsticas P\u00e1ginas (JSP). El archivo no debe especificar m\u00e1s de una caracter\u00edstica P\u00e1ginas (JSP).
+jsp.feature.not.loaded.correctly=CWWJS0001E: El contenedor de p\u00e1ginas (JSP) no se carg\u00f3 con una versi\u00f3n aceptable.
+jsp.feature.not.loaded.correctly.explanation=El contenedor de p\u00e1ginas (JSP) se carg\u00f3 sin una versi\u00f3n aceptable. La aplicaci\u00f3n puede comportarse de forma diferente a la esperada.
+jsp.feature.not.loaded.correctly.useraction=Comprobar el server.xml archivo para la existencia de funciones de p\u00e1ginas m\u00faltiples (JSP). El archivo no debe especificar m\u00e1s de una caracter\u00edstica P\u00e1ginas (JSP).
 
 jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Valor no v\u00e1lido para el atributo errorOnELNotFound
 jsp.error.page.invalid.erroronelnotfound.explanation=

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -20,8 +20,7 @@ global.actions=Ac\u0163iuni:
 global.options=Op\u0163iuni:
 global.usage=Utilizare:
 global.required=Necesar:
-global.options.statement=\tUtiliza\u0163i help [actionName] pentru informa\u0163ii detaliate despre op\u0163iuni\n\
-pentru fiecare op\u0163iune.
+global.options.statement=\tUtiliza\u0163i help [actionName] pentru informa\u0163ii detaliate despre op\u0163iuni\npentru fiecare op\u0163iune.
 
 
 
@@ -50,41 +49,23 @@ help.usage.options=\t{0} help [actionName]
 #------------------------------\n at 72 chars -------------------------\n\#
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
-encode.desc=\tCodifica\u0163i textul furnizat.
+encode.desc=\tCodifica\u021bi textul furnizat.\n\n\tDac\u0103 parola include caractere speciale, trebuie s\u0103 evada\u021bi fiecare caracter special pentru a v\u0103 asigura c\u0103 parola este codificat\u0103 corect.\n\tCaracterele speciale \u0219i caracterele de escape pot varia \u00een func\u021bie de sistemul dvs. de operare.\n\tDe exemplu, pe sistemele UNIX, pa$$W0rd trebuie furnizat ca pa\\$\\$W0rd .\n\tPentru mai multe informa\u021bii, consulta\u021bi documenta\u021bia de codificare Open Liberty securityUtility .
 #Note to translator the word "encode" should not be translated
 encode.usage.options=\t{0} encode [op\u0163iuni]
 encode.option-key.text=\ \ \ \ textToEncode
-encode.option-desc.text=\tDac\u0103 nu este specificat niciun argument, unealta va introduce modul\n\
-\tinteractiv; altfel, textul furnizat va fi codificat.\n\
-\tTextul cu spa\u0163ii trebuie pus \u00een \u00eentregime \u00eentre ghilimele dac\u0103 este \n\
-specificat ca argument.
+encode.option-desc.text=\tDac\u0103 nu este specificat niciun argument, unealta va introduce modul\n\tinteractiv; altfel, textul furnizat va fi codificat.\n\tTextul cu spa\u0163ii trebuie pus \u00een \u00eentregime \u00eentre ghilimele dac\u0103 este \nspecificat ca argument.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
-encode.option-desc.encoding=\tSpecifica\u0163i cum s\u0103 se codifice parola. Codific\u0103rile suportate sunt xor,\n\
-\t aes \u015fi hash. Codificarea implicit\u0103 este xor. {2}
+encode.option-desc.encoding=\tSpecifica\u0163i cum s\u0103 se codifice parola. Codific\u0103rile suportate sunt xor,\n\t aes \u015fi hash. Codificarea implicit\u0103 este xor. {2}
 encode.option-key.key=\ \ \ \ --key=[key]
-encode.option-desc.key=\tSpecifica\u0163i o cheie de folosit c\u00e2nd codifica\u0163i folosind AES. Acest \u015fir\n\
-\tva fi f\u0103cut hash pentru a produce o cheie de criptare ce va fi folosit\u0103\n\
-\tpentru a cripta \u015fi a decripta parola. Cheia poate fi furnizat\u0103 serverului\n\
-\tdefinind variabila wlp.password.encryption.key a c\u0103rei valoare este\n\
-\tcheia. Dac\u0103 aceast\u0103 op\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
+encode.option-desc.key=\tSpecifica\u0163i o cheie de folosit c\u00e2nd codifica\u0163i folosind AES. Acest \u015fir\n\tva fi f\u0103cut hash pentru a produce o cheie de criptare ce va fi folosit\u0103\n\tpentru a cripta \u015fi a decripta parola. Cheia poate fi furnizat\u0103 serverului\n\tdefinind variabila wlp.password.encryption.key a c\u0103rei valoare este\n\tcheia. Dac\u0103 aceast\u0103 op\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
 encode.option-key.notrim=\ \ \ \ --notrim
-encode.option-desc.notrim=\tSpecifica\u0163i dac\u0103 spa\u0163iile sunt sau nu \u00eenl\u0103turate de la \u00eenceputul \u015fi\n\
-\tsf\u00e2r\u015fitul textului specificat. Dac\u0103 este specificat\u0103 aceast\u0103 op\u0163iune, textul\n\
-\tfurnizat va fi codificat ca atare.\n\
-\tDac\u0103 aceast\u0103 op\u0163iune nu este specificat\u0103, spa\u0163iile de la \u00eenceputul\n\
-\t\u015fi sf\u00e2r\u015fitul textului specificat vor fi \u00eenl\u0103turate. 
+encode.option-desc.notrim=\tSpecifica\u0163i dac\u0103 spa\u0163iile sunt sau nu \u00eenl\u0103turate de la \u00eenceputul \u015fi\n\tsf\u00e2r\u015fitul textului specificat. Dac\u0103 este specificat\u0103 aceast\u0103 op\u0163iune, textul\n\tfurnizat va fi codificat ca atare.\n\tDac\u0103 aceast\u0103 op\u0163iune nu este specificat\u0103, spa\u0163iile de la \u00eenceputul\n\t\u015fi sf\u00e2r\u015fitul textului specificat vor fi \u00eenl\u0103turate. 
 encode.option-key.listCustom=\ \ \ \ --listCustom
-encode.option-desc.listCustom=\tAfi\u015feaz\u0103 informa\u0163iile de criptare parol\u0103 personalizat\u0103 \u00een\n\
-\tformat JSON (JavaScript Object Notation).\n\
-\tInforma\u0163iile con\u0163in:\n\
-\tname: numele algoritmului de criptare parol\u0103 personalizat\u0103\n\
-\tfeaturename: numele caracteristicii\n\
-\tdescription: descrierea cript\u0103rii de parol\u0103 personalizate
+encode.option-desc.listCustom=\tAfi\u015feaz\u0103 informa\u0163iile de criptare parol\u0103 personalizat\u0103 \u00een\n\tformat JSON (JavaScript Object Notation).\n\tInforma\u0163iile con\u0163in:\n\tname: numele algoritmului de criptare parol\u0103 personalizat\u0103\n\tfeaturename: numele caracteristicii\n\tdescription: descrierea cript\u0103rii de parol\u0103 personalizate
 encode.option-key.keyring=\ \ \ \ --keyring=[keyring]
 encode.option-desc.keyring=\tSpecifica\u0163i inelul de chei SAF unde se g\u0103se\u015fte cheia de criptare AES.
 encode.option-key.keyringType=\ \ \ \ --keyringType=[keyringType]
-encode.option-desc.keyringType=\tSpecifica\u0163i tipul de inel de chei SAF al inelului de chei unde\n\
-\tse g\u0103se\u015fte cheia de criptare AES.
+encode.option-desc.keyringType=\tSpecifica\u0163i tipul de inel de chei SAF al inelului de chei unde\n\tse g\u0103se\u015fte cheia de criptare AES.
 encode.option-key.keyLabel=\ \ \ \ --keyLabel=[keyLabel]
 encode.option-desc.keyLabel=\tSpecifica\u0163i eticheta certificatului SAF al cheii de criptare AES.
 
@@ -97,73 +78,40 @@ encode.option-desc.keyLabel=\tSpecifica\u0163i eticheta certificatului SAF al ch
 #------------------------------\n at 72 chars -------------------------\n\#
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
-sslCert.desc=\tCrea\u0163i un certificat SSL implicit de utilizat de server sau             \n\
-\tde configura\u0163ia de client. 
+sslCert.desc=\tCrea\u0163i un certificat SSL implicit de utilizat de server sau             \n\tde configura\u0163ia de client. 
 #Note to translator the word "createSSLCertificate" should not be translated
-sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\
-\t--password[=password] [options]
+sslCert.usage.options=\t{0} createSSLCertificate '{--server=servername |--client=clientname'}\n\t--password[=password] [options]
 sslCert.required-key.server=\ \ \ \ --server=nume
-sslCert.required-desc.server=\tServerul pentru care se creeaz\u0103 certificatul.  Acest argument nu poate \n\
-\tfi utilizat dac\u0103 este utilizat argumentul --client.
+sslCert.required-desc.server=\tServerul pentru care se creeaz\u0103 certificatul.  Acest argument nu poate \n\tfi utilizat dac\u0103 este utilizat argumentul --client.
 sslCert.required-key.client=\ \ \ \ --client=nume
-sslCert.required-desc.client=\tClientul pentru care se creeaz\u0103 certificatul.  Acest argument nu poate\n\
-\tfi utilizat dac\u0103 este utilizat argumentul --server.
+sslCert.required-desc.client=\tClientul pentru care se creeaz\u0103 certificatul.  Acest argument nu poate\n\tfi utilizat dac\u0103 este utilizat argumentul --server.
 sslCert.required-key.password=\ \ \ \ --password[=parol\u0103]
-sslCert.required-desc.password=\tParol\u0103 depozit de chei, minim {1} caractere.\n\
-\tDac\u0103 nu este definit\u0103 nici o valoare, ve\u0163i fi promptat.
+sslCert.required-desc.password=\tParol\u0103 depozit de chei, minim {1} caractere.\n\tDac\u0103 nu este definit\u0103 nici o valoare, ve\u0163i fi promptat.
 sslCert.option-key.validity=\ \ \ \ --validity=zile
-sslCert.option-desc.validity=\tNum\u0103rul de zile c\u00e2t certificatul este valid. Perioada de validitate \n\
-\timplicit\u0103 este {2}. Perioada de validitate minim\u0103 este {3}.
+sslCert.option-desc.validity=\tNum\u0103rul de zile c\u00e2t certificatul este valid. Perioada de validitate \n\timplicit\u0103 este {2}. Perioada de validitate minim\u0103 este {3}.
 sslCert.option-key.subject=\ \ \ \ --subject=DN
-sslCert.option-desc.subject=\tDN pentru subiectul certificatului \u015fi pentru emitent. DN implicit \n\
-\t este bazat pe nume gazd\u0103.
-sslCert.option.addon=Certificatul va fi creat cu alias {4}.\n\
-Algoritmul de cheie este {5} \u015fi algoritmul de semn\u0103tur\u0103 este {6}.\n\
-Pentru un control mai bun la crearea certificatelor, utiliza\u0163i unealta de chei direct.
+sslCert.option-desc.subject=\tDN pentru subiectul certificatului \u015fi pentru emitent. DN implicit \n\t este bazat pe nume gazd\u0103.
+sslCert.option.addon=Certificatul va fi creat cu alias {4}.\nAlgoritmul de cheie este {5} \u015fi algoritmul de semn\u0103tur\u0103 este {6}.\nPentru un control mai bun la crearea certificatelor, utiliza\u0163i unealta de chei direct.
 sslCert.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
-sslCert.option-desc.password.encoding=\tSpecifica\u0163i cum se codific\u0103 parola depozitului de chei. Codific\u0103rile \n\
-\tsuportate sunt xor \u015fi aes. Codificarea implicit\u0103 este xor. \n\
-\tUtiliza\u0163i comanda securityUtility encode --listCustom pentru a vedea\n\
-\tdac\u0103 sunt suportate cript\u0103ri personalizate suplimentare.
+sslCert.option-desc.password.encoding=\tSpecifica\u0163i cum se codific\u0103 parola depozitului de chei. Codific\u0103rile \n\tsuportate sunt xor \u015fi aes. Codificarea implicit\u0103 este xor. \n\tUtiliza\u0163i comanda securityUtility encode --listCustom pentru a vedea\n\tdac\u0103 sunt suportate cript\u0103ri personalizate suplimentare.
 sslCert.option-key.password.key=\ \ \ \ --passwordKey=[key]
-sslCert.option-desc.password.key=\tSpecifica\u0163i o cheie de utilizat c\u00e2nd codifica\u0163i parola depozitului de \n\
-\tchei folosind AES. Acest \u015fir va fi f\u0103cut hash pentru a produce o cheie de \n\
-\tcriptare care va fi folosit\u0103 pentru a cripta \u015fi decripta parola. Cheia \n\
-\tpoate fi furnizat\u0103 serverului definind variabila\n\
-\twlp.password.encryption.key a c\u0103rei valoare este cheia. Dac\u0103 aceast\u0103 \n\
-\top\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
+sslCert.option-desc.password.key=\tSpecifica\u0163i o cheie de utilizat c\u00e2nd codifica\u0163i parola depozitului de \n\tchei folosind AES. Acest \u015fir va fi f\u0103cut hash pentru a produce o cheie de \n\tcriptare care va fi folosit\u0103 pentru a cripta \u015fi decripta parola. Cheia \n\tpoate fi furnizat\u0103 serverului definind variabila\n\twlp.password.encryption.key a c\u0103rei valoare este cheia. Dac\u0103 aceast\u0103 \n\top\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
 
 sslCert.option-key.createConfigFile=\ \ \ \ --createConfigFile=fi\u015fier
-sslCert.option-desc.createConfigFile=\tOp\u0163ional. Snippet-ul de cod va fi scris \u00een fi\u015fierul specificat\n\
-\t\u00een loc de a fi afi\u015fat pe ecranul consolei. Fi\u015fierul poate apoi fi inclus \n\
-\t\u00een configura\u0163ia server.xml folosind snippet-ul de cod furnizat.
+sslCert.option-desc.createConfigFile=\tOp\u0163ional. Snippet-ul de cod va fi scris \u00een fi\u015fierul specificat\n\t\u00een loc de a fi afi\u015fat pe ecranul consolei. Fi\u015fierul poate apoi fi inclus \n\t\u00een configura\u0163ia server.xml folosind snippet-ul de cod furnizat.
 
 sslCert.option-key.keySize=\ \ \ \ --keySize=size
-sslCert.option-desc.keySize=\tDimensiune cheie de certificat.  \
-Dimensiunea implicit\u0103 este {7}.
+sslCert.option-desc.keySize=\tDimensiune cheie de certificat.  Dimensiunea implicit\u0103 este {7}.
 
 sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=algoritm de semn\u0103tur\u0103
-sslCert.option-desc.sigAlg=\tAlgoritmul de semn\u0103tur\u0103 al certificatului.\n\
-\tValoarea implicit\u0103 pentru algoritmul de semn\u0103tur\u0103 este {8}.
+sslCert.option-desc.sigAlg=\tAlgoritmul de semn\u0103tur\u0103 al certificatului.\n\tValoarea implicit\u0103 pentru algoritmul de semn\u0103tur\u0103 este {8}.
 
 sslCert.option-key.keyType=\ \ \ \ --keyType
-sslCert.option-desc.keyType=\tOp\u0163ional. Implicit, va fi generat un depozit de chei PKCS12. Pentru\n\
-\ta genera un depozit de chei JKS, specifica\u0163i op\u0163iunea --keyType cu valoarea\n\
-\tJKS. Nu este nevoie s\u0103 specifica\u0163i aceast\u0103 op\u0163iune dac\u0103 un depozit de chei PKCS12\n\
-\teste a\u015fteptat.\n\
-\tPKCS12 are un num\u0103r de avantaje: este mai extinsibil; suport\u0103\n\
-\talgoritmi criptografici puternici; \u015fi este adoptat pe scar\u0103 larg\u0103. PKCS12 este\n\
-\t\u00een mod frecvent formatul furnizat de autorit\u0103\u0163ilor de certificare c\u00e2nd \n\
-\temit certificatele.
+sslCert.option-desc.keyType=\tOp\u0163ional. Implicit, va fi generat un depozit de chei PKCS12. Pentru\n\ta genera un depozit de chei JKS, specifica\u0163i op\u0163iunea --keyType cu valoarea\n\tJKS. Nu este nevoie s\u0103 specifica\u0163i aceast\u0103 op\u0163iune dac\u0103 un depozit de chei PKCS12\n\teste a\u015fteptat.\n\tPKCS12 are un num\u0103r de avantaje: este mai extinsibil; suport\u0103\n\talgoritmi criptografici puternici; \u015fi este adoptat pe scar\u0103 larg\u0103. PKCS12 este\n\t\u00een mod frecvent formatul furnizat de autorit\u0103\u0163ilor de certificare c\u00e2nd \n\temit certificatele.
 
 sslCert.option-key.ext=\ \ \ \ --extInfo=informa\u0163ii extensii certificat
-sslCert.option-desc.ext=\tInforma\u0163iile de extensii certificat de ad\u0103ugat la certificat.\n\
-\tExtensia implicit\u0103 este o intrare Subject Alternative Name care utilizeaz\u0103 \n\
-\tnumele de gazd\u0103. Acest stegule\u0163 urmeaz\u0103 aceea\u015fi sintax\u0103 ca \u015fi stegule\u0163ul -ext\n\
-\t \
-al comenzii Java Keytool. Acest stegule\u0163 poate fi folosit de mai multe ori pe comand\u0103\n\
-\ 
-line.
+sslCert.option-desc.ext=\tInforma\u0163iile de extensii certificat de ad\u0103ugat la certificat.\n\tExtensia implicit\u0103 este o intrare Subject Alternative Name care utilizeaz\u0103 \n\tnumele de gazd\u0103. Acest stegule\u0163 urmeaz\u0103 aceea\u015fi sintax\u0103 ca \u015fi stegule\u0163ul -ext\n\t al comenzii Java Keytool. Acest stegule\u0163 poate fi folosit de mai multe ori pe comand\u0103\n 
+#line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -173,32 +121,19 @@ line.
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 # Note to translator: the words 'LTPA' and 'ltpa.keys' should not be translated 
-createLTPAKeys.desc=\tCrea\u0163i un set de chei LTPA pentru a fi utilizate de server sar care s\u0103 poat\u0103\n\
-\tfi partajate cu mai multe servere. Dac\u0103 nu este specificat niciun server sau \n\
-\tfi\u015fier, un fi\u015fier ltpa.keys va fi creat \u00een directorul de lucru curent.
+createLTPAKeys.desc=\tCrea\u0163i un set de chei LTPA pentru a fi utilizate de server sar care s\u0103 poat\u0103\n\tfi partajate cu mai multe servere. Dac\u0103 nu este specificat niciun server sau \n\tfi\u015fier, un fi\u015fier ltpa.keys va fi creat \u00een directorul de lucru curent.
 #Note to translator the word "createLTPAKeys" should not be translated
 createLTPAKeys.usage.options=\t{0} createLTPAKeys --password[=pwd] [op\u0163iuni]
 createLTPAKeys.required-key.password=\ \ \ \ --password[=parol\u0103]
-createLTPAKeys.required-desc.password=\tParola pentru cheile LTPA. \
-Dac\u0103 nu este definit\u0103 nici o valoare, se va afi\u015fa un prompt.
+createLTPAKeys.required-desc.password=\tParola pentru cheile LTPA. Dac\u0103 nu este definit\u0103 nici o valoare, se va afi\u015fa un prompt.
 createLTPAKeys.option-key.server=\ \ \ \ --server=nume
-createLTPAKeys.option-desc.server=\tServerul pentru care se creeaz\u0103 cheile LTPA. \n\
-\tAcest argument nu poate fi folosit dac\u0103 este folosit argumentul --file.
+createLTPAKeys.option-desc.server=\tServerul pentru care se creeaz\u0103 cheile LTPA. \n\tAcest argument nu poate fi folosit dac\u0103 este folosit argumentul --file.
 createLTPAKeys.option-key.file=\ \ \ \ --file=nume
-createLTPAKeys.option-desc.file=\tFi\u015fierul \u00een care se creeaz\u0103 cheile LTPA.\n\
-\tAcest argument nu poate fi folosit dac\u0103 este folosit argumentul --server.
+createLTPAKeys.option-desc.file=\tFi\u015fierul \u00een care se creeaz\u0103 cheile LTPA.\n\tAcest argument nu poate fi folosit dac\u0103 este folosit argumentul --server.
 createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
-createLTPAKeys.option-desc.password.encoding=\tSpecifica\u0163i cum se codific\u0103 parola de cehi LTPA \u00een server.xml.\n\
-\tCodific\u0103rile suportate sunt xor \u015fi aes. Codificarea implicit\u0103 este xor. \n\
-\tUtiliza\u0163i comanda securityUtility encode --listCustom pentru a vedea\n\
-\tdac\u0103 sunt suportate cript\u0103ri personalizate suplimentare.
+createLTPAKeys.option-desc.password.encoding=\tSpecifica\u0163i cum se codific\u0103 parola de cehi LTPA \u00een server.xml.\n\tCodific\u0103rile suportate sunt xor \u015fi aes. Codificarea implicit\u0103 este xor. \n\tUtiliza\u0163i comanda securityUtility encode --listCustom pentru a vedea\n\tdac\u0103 sunt suportate cript\u0103ri personalizate suplimentare.
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[key]
-createLTPAKeys.option-desc.password.key=\tSpecifica\u0163i o cheie de utilizat c\u00e2nd codifica\u0163i parola cheilor LTPA\n\
-\tfolosind AES. Acest \u015fir va fi f\u0103cut hash pentru a produce o cheie de \n\
-\tcriptare care va fi folosit\u0103 pentru a cripta \u015fi decripta parola. Cheia \n\
-\tpoate fi furnizat\u0103 serverului definind variabila\n\
-\twlp.password.encryption.key a c\u0103rei valoare este cheia. Dac\u0103 aceast\u0103 \n\
-\top\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
+createLTPAKeys.option-desc.password.key=\tSpecifica\u0163i o cheie de utilizat c\u00e2nd codifica\u0163i parola cheilor LTPA\n\tfolosind AES. Acest \u015fir va fi f\u0103cut hash pentru a produce o cheie de \n\tcriptare care va fi folosit\u0103 pentru a cripta \u015fi decripta parola. Cheia \n\tpoate fi furnizat\u0103 serverului definind variabila\n\twlp.password.encryption.key a c\u0103rei valoare este cheia. Dac\u0103 aceast\u0103 \n\top\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -214,7 +149,6 @@ tlsProfiler.required-desc.port=\tSpecifica\u0163i portul.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\tSpecifica\u0163i gazda.
 tlsProfiler.option-key.file=\ \ \ \ --file
-tlsProfiler.option-desc.file=\tOp\u0163ional. rezultatul va fi scris \u00een fi\u015fierul specificat \n\
-\t\u00een loc s\u0103 fie scris pe ecranul consolei.
+tlsProfiler.option-desc.file=\tOp\u0163ional. rezultatul va fi scris \u00een fi\u015fierul specificat \n\t\u00een loc s\u0103 fie scris pe ecranul consolei.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tInclude\u0163i informa\u0163ii suplimentare despre protocoalele nesigure.

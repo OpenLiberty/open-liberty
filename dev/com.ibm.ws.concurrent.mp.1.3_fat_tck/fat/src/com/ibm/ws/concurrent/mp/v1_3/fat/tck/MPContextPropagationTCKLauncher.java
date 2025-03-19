@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2022 IBM Corporation and others.
+ * Copyright (c) 2018,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,8 @@ public class MPContextPropagationTCKLauncher {
     private static final String SERVER_NAME = "tckServerForMPContextPropagation13";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP61, MicroProfileActions.MP60, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE11, MicroProfileActions.MP61, MicroProfileActions.MP60,
+                                                             MicroProfileActions.MP50);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -54,12 +55,8 @@ public class MPContextPropagationTCKLauncher {
     })
     @Test
     public void launchMPContextPropagation_1_3_Tck() throws Exception {
-        // TODO use this to only test with local build (when tckRunner/tck.pom.xml specifies a #.#-SNAPSHOT version)
-        //if (FATRunner.FAT_TEST_LOCALRUN)
-        String bucketName = "com.ibm.ws.concurrency.mp.1.3_fat_tck";
-        String testName = this.getClass() + ":launchMPContextPropagation_1_3_Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Context Propogation";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+        TCKRunner.build(server, Type.MICROPROFILE, "Context Propogation")
+                        .withDefaultSuiteFileName()
+                        .runTCK();
     }
 }

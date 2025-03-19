@@ -24,7 +24,7 @@
       heuristicRetryInterval="10"
       recoveryIdentity="cloud001-1"
       recoveryGroup="defaultGroup"
-      enableHADBPeerLocking="true"
+      enableLogLocking="true"
       leaseLength="20"
       leaseCheckInterval="25"
     />

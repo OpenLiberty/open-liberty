@@ -22,6 +22,7 @@ import org.testcontainers.utility.DockerImageName;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.FatLogHandler;
 
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -47,8 +48,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.SubscribeToEventTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.bugfixes.MyFaces4628Test;
-
-import componenttest.containers.TestContainerSuite;
+import io.openliberty.org.apache.myfaces40.fat.tests.bugfixes.MyFaces4658Test;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -72,22 +72,23 @@ import componenttest.containers.TestContainerSuite;
                 Faces40URNTest.class,
                 WebSocketTests.class,
                 Html5Tests.class,
-                MyFaces4628Test.class
+                MyFaces4628Test.class,
+                MyFaces4658Test.class
 
 })
 
-public class FATSuite  extends TestContainerSuite {
+public class FATSuite extends TestContainerSuite {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                                                  .andWith(FeatureReplacementAction.EE11_FEATURES());
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
 
     /**
      * Utility method that will write xmlContent to output.txt and
      * when running locally will also write to a file under output/servers/[yourServer]/logs/output/
      *
      * @param xmlContent - Content from an XmlPage
-     * @param fileName - Name of the file, typically in the form [testname].[subtest].html
+     * @param fileName   - Name of the file, typically in the form [testname].[subtest].html
      */
     public static final void logOutputForDebugging(LibertyServer server, String xmlContent, String fileName) {
         //always output to log

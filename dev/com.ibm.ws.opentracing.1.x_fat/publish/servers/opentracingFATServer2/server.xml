@@ -12,4 +12,6 @@
 
   <logging traceSpecification="*=info:com.ibm.ws.opentracing*=all:com.ibm.ws.microprofile.opentracing*=all" maxFileSize="100" maxFiles="1" />
 
+  <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+
  </server>

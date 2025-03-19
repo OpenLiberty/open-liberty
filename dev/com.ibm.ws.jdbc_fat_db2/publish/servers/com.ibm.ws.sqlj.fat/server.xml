@@ -37,6 +37,7 @@
 
     <variable name="onError" value="FAIL"/>
     
+    <javaPermission className="java.util.PropertyPermission" name="sqlj.runtime.uncustomizedWarningOrException" actions="read"/>
     <javaPermission className="java.util.PropertyPermission" name="sqlj.runtime" actions="read"/>
     <javaPermission className="java.sql.SQLPermission" name="setNetworkTimeout"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>

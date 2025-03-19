@@ -56,6 +56,7 @@ public class EJBVisibilityTests extends FATServletClient {
     //At some point we need to repeat this test with EE11 but Fault Tolerance does not yet support EE11.
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP70_EE11,
                                                              MicroProfileActions.MP61,
                                                              MicroProfileActions.MP50,
                                                              MicroProfileActions.MP14);

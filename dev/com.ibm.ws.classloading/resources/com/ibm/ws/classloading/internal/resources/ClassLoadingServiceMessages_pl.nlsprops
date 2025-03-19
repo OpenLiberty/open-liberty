@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: System nie mo\u017ce pobra\u0107 zestawu plik\
 cls.fileset.not.ready.explanation=Biblioteka wsp\u00f3\u0142u\u017cytkowana jest u\u017cywana, ale jeden z powi\u0105zanych zestaw\u00f3w plik\u00f3w nie mo\u017ce zosta\u0107 pobrany w odpowiednim czasie.
 cls.fileset.not.ready.useraction=Sprawd\u017a, czy wyst\u0119puj\u0105 b\u0142\u0119dy lub ostrze\u017cenia powi\u0105zane z zestawem plik\u00f3w i wyeliminuj je.
 
-cls.library.file.invalid=CWWKL0012W: Biblioteka [{0}] okre\u015bla plik o nazwie [{1}]. Plik ten nie istnieje albo jest niepoprawnie okre\u015blony.
-cls.library.file.invalid.explanation=Aby doda\u0107 plik do biblioteki w konfiguracji serwera, nale\u017cy poda\u0107 pe\u0142n\u0105 nazw\u0119 istniej\u0105cego pliku.
+cls.library.file.invalid=CWWKL0012W: Biblioteka [ {0} ] okre\u015bla plik o nazwie [ {1} ]. Plik ten nie istnieje albo jest niepoprawnie\nokre\u015blony.
+cls.library.file.invalid.explanation=Aby doda\u0107 plik do biblioteki w konfiguracji serwera, nale\u017cy okre\u015bli\u0107 istniej\u0105cy plik.
 cls.library.file.invalid.useraction=Zmie\u0144 konfiguracj\u0119 serwera i zmodyfikuj atrybut pliku elementu biblioteki.
 
-cls.library.folder.invalid=CWWKL0013W: Biblioteka [{0}] okre\u015bla folder o nazwie [{1}]. Folder nie istnieje lub nie jest to poprawny folder.
-cls.library.folder.invalid.explanation=Aby doda\u0107 plik do biblioteki w konfiguracji serwera, nale\u017cy poda\u0107 pe\u0142n\u0105 \u015bcie\u017ck\u0119 do istniej\u0105cego folderu.
+cls.library.folder.invalid=CWWKL0013W: Biblioteka [ {0} ] okre\u015bla folder o nazwie [ {1} ]. Folder nie istnieje lub nie jest to poprawny\nfolder.
+cls.library.folder.invalid.explanation=Aby doda\u0107 plik do biblioteki w konfiguracji serwera, nale\u017cy okre\u015bli\u0107 folder, kt\u00f3ry istnieje.
 cls.library.folder.invalid.useraction=Zmie\u0144 konfiguracj\u0119 serwera i zmodyfikuj atrybut folderu elementu biblioteki.
 
 cls.library.file.forbidden=CWWKL0014I: Plik [{0}] nie mo\u017ce zosta\u0107 dodany do \u015bcie\u017cki klasy.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Zmodyfikuj konfiguracj\u0119 serwera i upewnij si
 cls.library.destroyed=CWWKL0018I: Biblioteka [{0}] jest niedost\u0119pna.
 cls.library.destroyed.explanation=Biblioteka sta\u0142a si\u0119 niedost\u0119pna na przyk\u0142ad dlatego, \u017ce zosta\u0142a usuni\u0119ta z konfiguracji serwera.
 cls.library.destroyed.useraction=Je\u015bli biblioteka jest nadal wymagana, upewnij si\u0119, \u017ce nadal jest ona skonfigurowana poprawnie.
+
+cls.library.path.invalid=CWWKL0019W: Biblioteka [ {0} ] okre\u015bla \u015bcie\u017ck\u0119 z nazw\u0105 [ {1} ]. Ta \u015bcie\u017cka albo nie istnieje, albo jest nieprawid\u0142owo okre\u015blona.
+cls.library.path.invalid.explanation=Aby doda\u0107 \u015bcie\u017ck\u0119 do biblioteki w konfiguracji serwera, nale\u017cy okre\u015bli\u0107 istniej\u0105c\u0105 \u015bcie\u017ck\u0119.
+cls.library.path.invalid.useraction=Edytuj konfiguracj\u0119 serwera i zmodyfikuj atrybut path elementu library.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

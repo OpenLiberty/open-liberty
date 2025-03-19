@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -234,7 +234,8 @@ public class FileLogHolder implements TraceWriter {
      * @param newLogsOnStart   Whether to fill an existing primary file if there's space (if it exists).
      * @param isCheckpoint     Whether checkpoint is enabled or not
      */
-    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean newLogsOnStart, boolean isRestore) {
+    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean newLogsOnStart,
+                          boolean isRestore) {
         this.logHeader = logHeader;
         this.newLogsOnStart = newLogsOnStart;
 
@@ -286,17 +287,35 @@ public class FileLogHolder implements TraceWriter {
      * @param record
      */
     @Override
-    public synchronized void writeRecord(String record) {
-        long length = record.length() + LoggingConstants.nlen;
-        PrintStream ps = getPrintStream(length);
-        ps.println(record);
-        if (ps.checkError()) {
-            setStreamStatus(StreamStatus.CLOSED, null, null, DummyOutputStream.psInstance);
-            // to avoid junit test to print an error message
-            if (System.getProperty("test.classesDir") == null && System.getProperty("test.buildDir") == null) {
-                System.err.println(Tr.formatMessage(getTc(), "FAILED_TO_WRITE_LOG", new Object[] { getPrimaryFile().getAbsolutePath() }));
+    public void writeRecord(String record) {
+
+        ThreadLocal<Boolean> isError = ThreadLocal.withInitial(() -> false);
+
+        synchronized (this) {
+            long length = record.length() + LoggingConstants.nlen;
+            PrintStream ps = getPrintStream(length);
+            ps.println(record);
+            if (ps.checkError()) {
+                setStreamStatus(StreamStatus.CLOSED, null, null, DummyOutputStream.psInstance);
+                isError.set(true);
             }
         }
+        /*
+         * To avoid potential deadlock where SysOut and SysErr almost simultaneously. We'ved moved this out of synchronzation block.
+         *
+         * Context:
+         * Thread 1 > Print of some sort > (locks System Out stream) > .... > (locks FileLogHolder ) Write to file ( no memory causes failed to write to file error) > write to
+         * System err (Thread 2 holds lock)
+         * Thread 2 > System Err ( locks System Err stream) > ... > Write to file (Thread 1 holds FileLogHolder locks)
+         *
+         * This message maybe a bit delayed, but this will avoid deadlocks
+         *
+         */
+        // to avoid junit test to print an error message
+        if (isError.get().booleanValue() == true && System.getProperty("test.classesDir") == null && System.getProperty("test.buildDir") == null) {
+            System.err.println(Tr.formatMessage(getTc(), "FAILED_TO_WRITE_LOG", new Object[] { getPrimaryFile().getAbsolutePath() }));
+        }
+
     }
 
     /**

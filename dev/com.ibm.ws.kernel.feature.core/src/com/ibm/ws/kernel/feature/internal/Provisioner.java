@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -107,6 +107,11 @@ public class Provisioner {
 
     private static final Pattern INVALID_REGION_CHARS = Pattern.compile("[:=\\n*?\"\\\\]");
 
+    // RegionFilter.VISIBLE_SERVICE_NAMESPACE is deprecated.
+    // The deprecation comment suggests using RegionFilter.VISIBLE_OSGI_SERVICE_NAMESPACE ("osgi.service").
+    @SuppressWarnings("deprecation")
+    private static final String VISIBLE_SERVICE_NAMESPACE = RegionFilter.VISIBLE_SERVICE_NAMESPACE;
+
     /**
      * This rule denies all capabilities with the namespace
      * osgi.wiring.package, osgi.wiring.bundle, or osgi.wiring.host.
@@ -133,7 +138,7 @@ public class Provisioner {
                                                                         "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + ")" +
                                                                         "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_LIFECYCLE_NAMESPACE
                                                                         + ")" +
-                                                                        "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_SERVICE_NAMESPACE + ")" +
+                                                                        "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + VISIBLE_SERVICE_NAMESPACE + ")" +
                                                                         "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + ServiceNamespace.SERVICE_NAMESPACE + ")))";
 
     /**
@@ -815,7 +820,7 @@ public class Provisioner {
         RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
         // allow all services into the product hub so that all services registered by
         //  gateway bundles are visible for all to use (JNDI needs this).
-        builder.allowAll(RegionFilter.VISIBLE_SERVICE_NAMESPACE);
+        builder.allowAll(VISIBLE_SERVICE_NAMESPACE);
         RegionFilter filter = builder.build();
 
         for (ApiRegion apiRegion : ApiRegion.values()) {
@@ -981,7 +986,7 @@ public class Provisioner {
                         }
                         toProductBuilder.allow(ServiceNamespace.SERVICE_NAMESPACE, serviceFilterBuilder.toString());
                         // TODO Need to remove the following allow once it is deprecated by equinox regions
-                        toProductBuilder.allow(RegionFilter.VISIBLE_SERVICE_NAMESPACE, serviceFilterBuilder.toString());
+                        toProductBuilder.allow(VISIBLE_SERVICE_NAMESPACE, serviceFilterBuilder.toString());
                     }
                 }
             }
@@ -989,7 +994,7 @@ public class Provisioner {
             for (String commonServiceFilter : COMMON_OSGI_APPS_SERVICE_REQUIREMENTS) {
                 toProductBuilder.allow(ServiceNamespace.SERVICE_NAMESPACE, commonServiceFilter);
                 // TODO Need to remove the following allow once it is deprecated by equinox regions
-                toProductBuilder.allow(RegionFilter.VISIBLE_SERVICE_NAMESPACE, commonServiceFilter);
+                toProductBuilder.allow(VISIBLE_SERVICE_NAMESPACE, commonServiceFilter);
             }
         }
 

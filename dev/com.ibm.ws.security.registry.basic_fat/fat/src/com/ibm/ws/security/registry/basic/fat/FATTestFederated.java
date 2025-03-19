@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011,2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,12 @@ package com.ibm.ws.security.registry.basic.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,6 +31,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -35,6 +42,10 @@ import componenttest.vulnerability.LeakedPasswordChecker;
  */
 @RunWith(FATRunner.class)
 public class FATTestFederated {
+    private static final String CWWKS1857E_INVALID_PASSWORD_CIPHER = "CWWKS1857E";
+    private static final String CWWKS1860E_FIPS_128BIT_AES_SECRET_NOT_ALLOWED = "CWWKS1860E";
+    private static final String CWWKS1863E_FIPS_SHA1_HASH_NOT_ALLOWED = "CWWKS1863E";
+    private static final String CWWKS1864W_WEAK_ALGORITHM_WARNING = "CWWKS1864W";
     private static final String DEFAULT_CONFIG_FILE = "basic.server.xml.orig";
     private static final String ALTERNATE_BASIC_REGISTRY_CONFIG = "alternateBasicRegistry.xml";
     private static final String DEFAULT_AES_CONFIG_FILE = "defaultAESBasicRegistry.xml";
@@ -45,6 +56,11 @@ public class FATTestFederated {
     private static final Class<?> c = FATTestFederated.class;
     private static UserRegistryServletConnection servlet;
     private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
+    private static final List<String> expectedErrors = new ArrayList(Arrays.asList("CWIML4537E.*admin"));
+    /** CWWKS1864w is only logged one time for SHA1 {hash} passwords per server start */
+    private static boolean CWWKS1864wAlreadyLoggedForHash = false;
+    /** CWWKS1864w is only logged one time for AES-128 {aes} passwords per server start */
+    private static boolean CWWKS1864wAlreadyLoggedForAES = false;
 
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
@@ -68,7 +84,7 @@ public class FATTestFederated {
     @AfterClass
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
-        server.stopServer("CWIML4537E.*admin");
+        stopServer();
     }
 
     /**
@@ -117,44 +133,147 @@ public class FATTestFederated {
     }
 
     /**
-     * This test just validates that the server correctly processes AES encoded credentials.
+     * This test validates that the server correctly processes AES-128 (v0) encoded credentials.
      * This is really a test for password decoding making use of the fact basic registry FAT
      * will exercise the test code. We also check the dynamism here to ensure when changing
      * config to have a new encoding key we pick it up dynamically.
      */
     @Test
-    public void checkPasswordEncodedUsingAES() throws Exception {
-        Log.info(c, "checkPasswordEncodedUsingAES", "Checking aes encoded credentials");
+    public void checkPasswordEncodedUsingAES128() throws Exception {
+        Log.info(c, "checkPasswordEncodedUsingAES128", "Checking aes encoded credentials");
 
         setServerConfiguration(server, DEFAULT_AES_CONFIG_FILE);
 
         String password = "alternatepwd";
+
+        if (server.isFIPS140_3EnabledAndSupported()) {
+            assertNotNull("FIPS 140-3 should not allow AES-128bit secrets",
+                          server.waitForStringInLog(CWWKS1860E_FIPS_128BIT_AES_SECRET_NOT_ALLOWED));
+            expectedErrors.add(CWWKS1860E_FIPS_128BIT_AES_SECRET_NOT_ALLOWED);
+        } else {
+
+            if (!!!CWWKS1864wAlreadyLoggedForAES) {
+                assertNotNull("AES-128bit password Should cause CWWKS1864W",
+                              server.waitForStringInLog(CWWKS1864W_WEAK_ALGORITHM_WARNING));
+                expectedErrors.add(CWWKS1864W_WEAK_ALGORITHM_WARNING);
+                CWWKS1864wAlreadyLoggedForAES = true;
+            }
+
+            assertEquals("Authentication should succeed.",
+                         "defaultUser", servlet.checkPassword("defaultUser", password));
+
+            passwordChecker.checkForPasswordInAnyFormat(password);
+
+            setServerConfiguration(server, CUSTOM_AES_CONFIG_FILE);
+
+            assertEquals("Authentication should succeed.",
+                         "customUser", servlet.checkPassword("customUser", password));
+
+            passwordChecker.checkForPasswordInAnyFormat(password);
+
+        }
+    }
+
+    /**
+     * This test validates that the server correctly processes AES-256 (v1) encoded credentials. Currently only BETA.
+     * This is really a test for password decoding making use of the fact basic registry FAT
+     * will exercise the test code. We also check the dynamism here to ensure when changing
+     * config to have a new encoding key we pick it up dynamically.
+     */
+    @Test
+    public void checkPasswordEncodedUsingAES256() throws Exception {
+        Log.info(c, "checkPasswordEncodedUsingAES256", "Checking aes encoded credentials");
+
+        setServerConfiguration(server, DEFAULT_AES_CONFIG_FILE);
+
+        //The following errors/warnings are still expected because the server.xml still contains the AES-128 password
+        if (server.isFIPS140_3EnabledAndSupported()) {
+            assertNotNull("FIPS 140-3 should not allow AES-128bit secrets",
+                          server.waitForStringInLog(CWWKS1860E_FIPS_128BIT_AES_SECRET_NOT_ALLOWED));
+            expectedErrors.add(CWWKS1860E_FIPS_128BIT_AES_SECRET_NOT_ALLOWED);
+        } else {
+            if (!!!CWWKS1864wAlreadyLoggedForAES) {
+                assertNotNull("AES-128bit password Should cause CWWKS1864W",
+                              server.waitForStringInLog(CWWKS1864W_WEAK_ALGORITHM_WARNING));
+                expectedErrors.add(CWWKS1864W_WEAK_ALGORITHM_WARNING);
+                CWWKS1864wAlreadyLoggedForAES = true;
+            }
+        }
+
+        String password = "superAES256password";
         assertEquals("Authentication should succeed.",
-                     "defaultUser", servlet.checkPassword("defaultUser", password));
+                     "defaultUserAES256", servlet.checkPassword("defaultUserAES256", password));
 
         passwordChecker.checkForPasswordInAnyFormat(password);
 
         setServerConfiguration(server, CUSTOM_AES_CONFIG_FILE);
 
         assertEquals("Authentication should succeed.",
-                     "customUser", servlet.checkPassword("customUser", password));
+                     "customUserAES256", servlet.checkPassword("customUserAES256", password));
 
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
     /**
      * This test just validates that the server correctly processes hashed passwords
-     * which was generated by default parameters.
+     * which was generated by old (<=25.0.0.2) default parameters.
      */
     @Test
-    public void checkPasswordEncodedUsingHashDefault() throws Exception {
-        Log.info(c, "checkPasswordEncodedUsingHash", "Checking hash encoded credentials");
+    @AllowedFFDC(value = "com.ibm.websphere.crypto.InvalidPasswordEncodingException")
+    public void checkPasswordEncodedUsingSHA1HashDefault() throws Exception {
+        Log.info(c, "checkPasswordEncodedUsingSHA1HashDefault", "Checking hash encoded credentials");
 
         setServerConfiguration(server, DEFAULT_HASH_CONFIG_FILE);
 
         String GoodPassword = "pa$$w0rd";
         String BadPassword = "pa@@w0rd";
         String user = "hashedUser";
+
+        if (server.isFIPS140_3EnabledAndSupported()) {
+            try {
+                servlet.checkPassword(user, GoodPassword);
+                passwordChecker.checkForPasswordInAnyFormat(GoodPassword);
+                fail("Expected IllegalArgumentException was not thrown.");
+            } catch (IllegalArgumentException e) {
+                Log.info(c, "checkPasswordEncodedUsingSHA1HashDefault", "Exception: " + e);
+            }
+            assertNotNull("FIPS 140-3 should not allow SHA1 password hash",
+                          server.waitForStringInLog(CWWKS1863E_FIPS_SHA1_HASH_NOT_ALLOWED));
+            expectedErrors.add(CWWKS1863E_FIPS_SHA1_HASH_NOT_ALLOWED);
+            //Because SHA1 is not allowed, we're unable to process the hash, which will result in CWWKS1857E
+            assertNotNull("FIPS 140-3 error CWWKS1863E should also cause CWWKS1857E: INVALID PASSWORD CIPHER",
+                          server.waitForStringInLog(CWWKS1857E_INVALID_PASSWORD_CIPHER));
+            expectedErrors.add(CWWKS1857E_INVALID_PASSWORD_CIPHER);
+        } else {
+            assertEquals("Authentication should succeed.",
+                         user, servlet.checkPassword(user, GoodPassword));
+            passwordChecker.checkForPasswordInAnyFormat(GoodPassword);
+
+            if (!!!CWWKS1864wAlreadyLoggedForHash) {
+                assertNotNull("SHA1 hash password Should cause CWWKS1864W",
+                              server.waitForStringInLog(CWWKS1864W_WEAK_ALGORITHM_WARNING));
+                expectedErrors.add(CWWKS1864W_WEAK_ALGORITHM_WARNING);
+                CWWKS1864wAlreadyLoggedForHash = true;
+            }
+
+            assertNull("Authentication should fail.", servlet.checkPassword(user, BadPassword));
+            passwordChecker.checkForPasswordInAnyFormat(BadPassword);
+        }
+    }
+
+    /**
+     * This test just validates that the server correctly processes hashed passwords
+     * which was generated by new SHA512 (>25.0.0.2) default parameters.
+     */
+    @Test
+    public void checkPasswordEncodedUsingSHA512HashDefault() throws Exception {
+        Log.info(c, "checkPasswordEncodedUsingHash", "Checking hash encoded credentials");
+
+        setServerConfiguration(server, DEFAULT_HASH_CONFIG_FILE);
+
+        String GoodPassword = "sha512hashpassword";
+        String BadPassword = "pa@@w0rd";
+        String user = "hashedSHA512User";
         assertEquals("Authentication should succeed.",
                      user, servlet.checkPassword(user, GoodPassword));
         passwordChecker.checkForPasswordInAnyFormat(GoodPassword);
@@ -167,7 +286,8 @@ public class FATTestFederated {
     /**
      * This test just validates that the server correctly processes hashed passwords
      * which was generated by following parameters.
-     * securityutility encode --encoding=hash --salt=$alt --iteration=999 --algorithm=SHA-256 1234!@#$
+     * securityUtility encode --encoding=hash --iteration=500 --algorithm=PBKDF2WithHmacSHA256 WebAS
+     * {hash}ARAAAAAUUEJLREYyV2l0aEhtYWNTSEEyNTYgAAAB9DAAAAAICc3/5EBfhnpAAAAAIGaOuUfsNQYb7+NIx8wU2Z7UgMuJEfRmmFLK24BQJGvk
      */
     @Test
     public void checkPasswordEncodedUsingHashCustom() throws Exception {
@@ -184,7 +304,6 @@ public class FATTestFederated {
 
         assertNull("Authentication should fail.", servlet.checkPassword(user, BadPassword));
         passwordChecker.checkForPasswordInAnyFormat(BadPassword);
-
     }
 
     /**
@@ -232,5 +351,14 @@ public class FATTestFederated {
             server.waitForStringInLog("CWWKZ0003I"); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
             serverConfigurationFile = serverXML;
         }
+    }
+
+    /**
+     * Stops the server providing the expectedErrors list as input
+     */
+    private static void stopServer() throws IOException, Exception {
+        server.stopServer(expectedErrors.toArray(new String[0]));
+        CWWKS1864wAlreadyLoggedForHash = false;
+        CWWKS1864wAlreadyLoggedForAES = false;
     }
 }

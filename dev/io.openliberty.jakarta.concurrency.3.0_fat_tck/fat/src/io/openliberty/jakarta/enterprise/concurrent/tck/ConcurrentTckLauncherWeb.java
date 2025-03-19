@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package io.openliberty.jakarta.enterprise.concurrent.tck;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -50,7 +51,7 @@ public class ConcurrentTckLauncherWeb {
     public static void setUp() throws Exception {
         //UNCOMMENT - To test against a local snapshot of TCK
 //        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-//        additionalProps.put("jakarta.concurrent.tck.version", "3.0.3-SNAPSHOT");
+//        additionalProps.put("jakarta.concurrent.tck.version", "3.0.4-SNAPSHOT");
 
         //Path that jimage will output modules for signature testing
         Map<String, String> opts = server.getJvmOptionsAsMap();
@@ -79,15 +80,12 @@ public class ConcurrentTckLauncherWeb {
 
         suiteXmlFile = FATSuite.createSuiteXML(FATSuite.PROFILE.WEB);
 
-        /**
-         * The runTCKMvnCmd will set the following properties for use by arquillian
-         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
-         * and then run the mvn test command.
-         */
-        String bucketName = "io.openliberty.jakarta.concurrency.3.0_fat_tck";
-        String testName = this.getClass() + ":launchConcurrent30TCKWeb";
-        Type type = Type.JAKARTA;
-        String specName = "Concurrency (Web)";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteXmlFile, additionalProps);
+        TCKRunner.build(server, Type.JAKARTA, "Concurrency")
+                        .withPlatfromVersion("10")
+                        .withQualifiers("web")
+                        .withSuiteFileName(suiteXmlFile)
+                        .withAdditionalMvnProps(additionalProps)
+                        .withLogging(Map.of("ee.jakarta.tck.concurrent", Level.ALL))
+                        .runTCK();
     }
 }

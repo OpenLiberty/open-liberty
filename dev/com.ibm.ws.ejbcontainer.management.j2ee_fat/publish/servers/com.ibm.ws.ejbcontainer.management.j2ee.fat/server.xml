@@ -1,0 +1,15 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>restConnector-2.0</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>j2eeManagement-1.1</feature>
+    </featureManager>
+
+    <application id="EJBJ2EEManagement" location="EJBJ2EEManagement.ear"/>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->
+    <quickStartSecurity userName="theUser" userPassword="thePassword"/>
+</server>

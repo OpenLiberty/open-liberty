@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi.extension.tests;
+
+import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -34,6 +36,7 @@ import com.ibm.ws.cdi.extension.apps.enablementWar.EnablementSharedLibServlet;
 import com.ibm.ws.cdi.extension.apps.enablementWar.EnablementTestServlet;
 import com.ibm.ws.cdi.extension.apps.helloworld.HelloWorldExtensionBean;
 import com.ibm.ws.cdi.extension.apps.helloworld.HelloWorldExtensionTestServlet;
+import com.ibm.ws.cdi.extension.apps.invocationContext.BindingExtension;
 import com.ibm.ws.cdi.extension.apps.invocationContext.InvocationContextTestServlet;
 import com.ibm.ws.cdi.extension.apps.multipleWar.NoBeansTestServlet;
 import com.ibm.ws.cdi.extension.apps.multipleWar.ejb.EmbeddedJarMyEjb;
@@ -46,6 +49,8 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -136,7 +141,13 @@ public class CDI12ExtensionTest extends FATServletClient {
         // invocationContext.war
 
         WebArchive invocationContextWar = ShrinkWrap.create(WebArchive.class, "invocationContext.war")
-                                                    .addPackage(InvocationContextTestServlet.class.getPackage());
+                                                    .addPackage(InvocationContextTestServlet.class.getPackage())
+                                                    .addAsServiceProvider(Extension.class, BindingExtension.class);
+	// In EE7 the AnnotationLiteral needs to accessDeclaredMembers and doesn't have a doPriv
+	if (RepeatTestFilter.isRepeatActionActive(EE7FeatureReplacementAction.ID)) {
+            invocationContextWar.addAsManifestResource(InvocationContextTestServlet.class.getPackage(), "permissions.xml", "permissions.xml");
+	}
+        CDIArchiveHelper.addBeansXML(invocationContextWar, DiscoveryMode.ANNOTATED);
 
         ShrinkHelper.exportDropinAppToServer(server, invocationContextWar, DeployOptions.SERVER_ONLY);
 

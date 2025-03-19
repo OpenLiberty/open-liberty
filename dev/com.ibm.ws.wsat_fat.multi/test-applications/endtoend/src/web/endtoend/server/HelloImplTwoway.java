@@ -45,7 +45,7 @@ public class HelloImplTwoway{
 				final ExtendedTransactionManager TM = TransactionManagerFactory
 						.getTransactionManager();
 				final Serializable xaResInfo = XAResourceInfoFactory
-						.getXAResourceInfo(0);
+						.getXAResourceInfo();
 				XAResourceImpl xaRes;
 				if (vote.startsWith("rollback")) {
 					xaRes = XAResourceFactoryImpl.instance().getXAResourceImpl(
@@ -75,11 +75,10 @@ public class HelloImplTwoway{
 		System.out.println("callAnother("+URL+", "+vote1+", "+vote2+", "+expectedDirection+")");
 		boolean result = false;
 		try {
-			XAResourceImpl.clear();
 			final ExtendedTransactionManager TM = TransactionManagerFactory
 					.getTransactionManager();
 			final Serializable xaResInfo = XAResourceInfoFactory
-					.getXAResourceInfo(0);
+					.getXAResourceInfo();
 			XAResourceImpl xaRes;
 			if (vote1.equals("rollback")) {
 				xaRes = XAResourceFactoryImpl.instance().getXAResourceImpl(

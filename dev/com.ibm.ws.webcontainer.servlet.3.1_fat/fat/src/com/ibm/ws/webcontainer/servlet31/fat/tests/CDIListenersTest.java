@@ -1,38 +1,38 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.annotation.Server;
+import componenttest.topology.impl.LibertyServer;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 
 /**
  * CDI Test
@@ -40,13 +40,13 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * Verify that injection is performed into several listener types.
  */
 @RunWith(FATRunner.class)
-public class CDIListenersTest extends LoggingTest {
+public class CDIListenersTest {
 
     private static final Logger LOG = Logger.getLogger(CDIListenersTest.class.getName());
 
     // Server instance ...
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_cdiListenersServer");
+    @Server("servlet31_cdiListenersServer")
+    public static LibertyServer LS;
 
     private static final String CDI12_TEST_V2_JAR_NAME = "CDI12TestV2";
     private static final String CDI12_TEST_V2_LISTENERS_APP_NAME = "CDI12TestV2Listeners";
@@ -55,8 +55,6 @@ public class CDIListenersTest extends LoggingTest {
      * Perform a request to the the server instance and verify that the
      * response has expected text. Throw an exception if the expected
      * text is not present or if the unexpected text is present.
-     *
-     * The request path is used to create a request URL via {@link SharedServer.getServerUrl}.
      *
      * Both the expected text and the unexpected text are tested using a contains
      * test. The test does not look for an exact match.
@@ -86,28 +84,21 @@ public class CDIListenersTest extends LoggingTest {
                                                                           "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2listeners.war.cdi.listeners.servlets");
         CDI12TestV2ListenersApp = (WebArchive) ShrinkHelper.addDirectory(CDI12TestV2ListenersApp, "test-applications/CDI12TestV2Listeners.war/resources");
         CDI12TestV2ListenersApp = CDI12TestV2ListenersApp.addAsLibraries(CDI12TestV2Jar);
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_LISTENERS_APP_NAME);
-            LOG.info("addAppToServer : " + CDI12_TEST_V2_LISTENERS_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2ListenersApp);
-        }
-        SHARED_SERVER.startIfNotStarted();
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_LISTENERS_APP_NAME);
+        
+        // Export the application.
+        ShrinkHelper.exportDropinAppToServer(LS, CDI12TestV2ListenersApp);
+
+        // Start the server and use the class name so we can find logs easily.
+        LS.startServer(CDIListenersTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer(null);
+        if (LS != null && LS.isStarted()) {
+            LS.stopServer();
         }
     }
-
-    /** Standard failure text. Usually unexpected. */
-    public static final String[] FAILED_RESPONSE = new String[] { "FAILED" };
-
     // Operation selection ...
 
     public static final String OPERATION_PARAMETER_NAME = "operation";
@@ -115,7 +106,6 @@ public class CDIListenersTest extends LoggingTest {
 
     public static final String LISTENERS_SERVLET_CONTEXT_ROOT = "/CDI12TestV2Listeners";
     public static final String LISTENERS_SERVLET_URL_FRAGMENT = "/CDIListeners";
-    public static final String LISTENERS_SERVLET_URL = LISTENERS_SERVLET_CONTEXT_ROOT + LISTENERS_SERVLET_URL_FRAGMENT;
 
     public static final String OPERATION_ADD_ATTRIBUTES = "addAttributes";
 
@@ -129,7 +119,7 @@ public class CDIListenersTest extends LoggingTest {
 
         // @formatter:off
         return
-            LISTENERS_SERVLET_URL + "?" +
+            LISTENERS_SERVLET_URL_FRAGMENT + "?" +
             OPERATION_PARAMETER_NAME + "=" + operationName + "&" +
             COMMENT_PARAMETER_NAME + "=" + comment;
         // @formatter:on
@@ -142,7 +132,7 @@ public class CDIListenersTest extends LoggingTest {
 
         // @formatter:off
         return
-            LISTENERS_SERVLET_URL + "?" +
+            LISTENERS_SERVLET_URL_FRAGMENT + "?" +
             OPERATION_PARAMETER_NAME + "=" + operationName + "&" +
             ATTRIBUTE_NAME_PARAMETER_NAME + "=" + attributeName + "&" +
             ATTRIBUTE_VALUE_PARAMETER_NAME + "=" + attributeValue + "&" +
@@ -174,70 +164,35 @@ public class CDIListenersTest extends LoggingTest {
     @Test
     @Mode(TestMode.LITE)
     public void testCDIListeners() throws Exception {
-        WebBrowser firstSessionBrowser = createWebBrowserForTestCase();
 
-        verifyResponse(firstSessionBrowser,
-                       getListenersURL(OPERATION_DISPLAY_LOG, "Verify CDI Listeners Servlet"),
-                       LISTENERS_SERVLET_EXPECTED_VERIFICATION,
-                       FAILED_RESPONSE);
+        HttpClient session1 = new HttpClient();
+        verifyStringsInResponse(session1, LISTENERS_SERVLET_CONTEXT_ROOT, getListenersURL(OPERATION_DISPLAY_LOG, "Verify CDI Listeners Servlet"), LISTENERS_SERVLET_EXPECTED_VERIFICATION);
+        verifyStringsInResponse(session1, LISTENERS_SERVLET_CONTEXT_ROOT, getListenersURL(OPERATION_ADD_ATTRIBUTES, CDI_ATTRIBUTE_NAME_PREFIX + "_" + "A1", "V1", "Assignment to A1 of V1 in S1"), LISTENERS_SERVLET_EXPECTED_ASSIGN_A1);
+        verifyStringsInResponse(session1, LISTENERS_SERVLET_CONTEXT_ROOT, getListenersURL(OPERATION_DISPLAY_LOG, "Log assignment to A1 of V1 in S1"), LISTENERS_SERVLET_EXPECTED_ASSIGNED_A1);
+        verifyStringsInResponse(session1, LISTENERS_SERVLET_CONTEXT_ROOT, getListenersURL(OPERATION_ADD_ATTRIBUTES, CDI_ATTRIBUTE_NAME_PREFIX + "_" + "A2", "V2", "Assignment to A2 of V2 in S1"), LISTENERS_SERVLET_EXPECTED_ASSIGN_A2);
+        verifyStringsInResponse(session1, LISTENERS_SERVLET_CONTEXT_ROOT, getListenersURL(OPERATION_DISPLAY_LOG, "Log assignment to A2 of V2 in S1"), LISTENERS_SERVLET_EXPECTED_ASSIGNED_A2);
 
-        verifyResponse(firstSessionBrowser,
-                       getListenersURL(OPERATION_ADD_ATTRIBUTES,
-                                       CDI_ATTRIBUTE_NAME_PREFIX + "_" + "A1", "V1",
-                                       "Assignment to A1 of V1 in S1"),
-                       LISTENERS_SERVLET_EXPECTED_ASSIGN_A1,
-                       FAILED_RESPONSE);
-
-        verifyResponse(firstSessionBrowser,
-                       getListenersURL(OPERATION_DISPLAY_LOG,
-                                       "Log assignment to A1 of V1 in S1"),
-                       LISTENERS_SERVLET_EXPECTED_ASSIGNED_A1,
-                       FAILED_RESPONSE);
-
-        verifyResponse(firstSessionBrowser,
-                       getListenersURL(OPERATION_ADD_ATTRIBUTES,
-                                       CDI_ATTRIBUTE_NAME_PREFIX + "_" + "A2", "V2",
-                                       "Assignment to A2 of V2 in S1"),
-                       LISTENERS_SERVLET_EXPECTED_ASSIGN_A2,
-                       FAILED_RESPONSE);
-
-        verifyResponse(firstSessionBrowser,
-                       getListenersURL(OPERATION_DISPLAY_LOG,
-                                       "Log assignment to A2 of V2 in S1"),
-                       LISTENERS_SERVLET_EXPECTED_ASSIGNED_A2,
-                       FAILED_RESPONSE);
-
-        WebBrowser secondSessionBrowser = createWebBrowserForTestCase();
-
-        verifyResponse(secondSessionBrowser,
-                       getListenersURL(OPERATION_ADD_ATTRIBUTES,
-                                       CDI_ATTRIBUTE_NAME_PREFIX + "_" + "A3", "V3",
-                                       "Assignment to A3 of V3 in S2"),
-                       LISTENERS_SERVLET_EXPECTED_ASSIGN_A3,
-                       FAILED_RESPONSE);
-
-        verifyResponse(secondSessionBrowser,
-                       getListenersURL(OPERATION_DISPLAY_LOG,
-                                       "Log assignment to A3 of V3 in S2"),
-                       LISTENERS_SERVLET_EXPECTED_ASSIGNED_A3,
-                       FAILED_RESPONSE);
-
-        verifyResponse(secondSessionBrowser,
-                       getListenersURL(OPERATION_ADD_ATTRIBUTES,
-                                       CDI_ATTRIBUTE_NAME_PREFIX + "_" + "A4", "V4",
-                                       "Assign to A4 of V4 in S2"),
-                       LISTENERS_SERVLET_EXPECTED_ASSIGN_A4,
-                       FAILED_RESPONSE);
-
-        verifyResponse(secondSessionBrowser,
-                       getListenersURL(OPERATION_DISPLAY_LOG,
-                                       "Log assignment to A4 of V4 in S2"),
-                       LISTENERS_SERVLET_EXPECTED_ASSIGNED_A4,
-                       FAILED_RESPONSE);
+        HttpClient session2 = new HttpClient();
+        verifyStringsInResponse(session2, LISTENERS_SERVLET_CONTEXT_ROOT, getListenersURL(OPERATION_ADD_ATTRIBUTES, CDI_ATTRIBUTE_NAME_PREFIX + "_" + "A3", "V3", "Assignment to A3 of V3 in S2"), LISTENERS_SERVLET_EXPECTED_ASSIGN_A3);
+        verifyStringsInResponse(session2, LISTENERS_SERVLET_CONTEXT_ROOT, getListenersURL(OPERATION_DISPLAY_LOG, "Log assignment to A3 of V3 in S2"), LISTENERS_SERVLET_EXPECTED_ASSIGNED_A3);
+        verifyStringsInResponse(session2, LISTENERS_SERVLET_CONTEXT_ROOT, getListenersURL(OPERATION_ADD_ATTRIBUTES, CDI_ATTRIBUTE_NAME_PREFIX + "_" + "A4", "V4", "Assign to A4 of V4 in S2"), LISTENERS_SERVLET_EXPECTED_ASSIGN_A4);
+        verifyStringsInResponse(session2, LISTENERS_SERVLET_CONTEXT_ROOT, getListenersURL(OPERATION_DISPLAY_LOG, "Log assignment to A4 of V4 in S2"), LISTENERS_SERVLET_EXPECTED_ASSIGNED_A4);
 
     }
 
-    // @formatter:off
+    private void verifyStringsInResponse(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
+        GetMethod get = new GetMethod("http://" + LS.getHostname() + ":" + LS.getHttpDefaultPort() + contextRoot + path);
+        int responseCode = client.executeMethod(get);
+        String responseBody = get.getResponseBodyAsString();
+        LOG.info("Response : " + responseBody);
+  
+        assertEquals("Expected " + 200 + " status code was not returned!",
+                     200, responseCode);
+  
+        for (String expectedResponse : expectedResponseStrings) {
+            assertTrue("The response did not contain: " + expectedResponse, responseBody.contains(expectedResponse));
+        }
+    }
 
     private static final String CDI_ATTRIBUTE_NAME_PREFIX = "CDI";
 
@@ -741,14 +696,4 @@ public class CDIListenersTest extends LoggingTest {
         // very long durations.  We could try to log the session destructions, but that would be hard
         // to make happen in a reliable sequence.
     };
-
-    /* (non-Javadoc)
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
-    // @formatter:on
 }

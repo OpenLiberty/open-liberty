@@ -299,6 +299,11 @@ public class FlashImpl extends Flash implements ReleasableFlash
     @Override
     public void setRedirect(boolean redirect)
     {
+        if (_flashScopeDisabled)
+        {
+            return;
+        }
+
         // FIXME this method has a design flaw, because the only valid value
         // is true and it should only be called by the NavigationHandler
         // in a redirect case RIGHT BEFORE ExternalContext.redirect().
@@ -412,6 +417,11 @@ public class FlashImpl extends Flash implements ReleasableFlash
     @Override
     public void setKeepMessages(boolean keepMessages)
     {
+        if (_flashScopeDisabled)
+        {
+            return;
+        }
+        
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
         Map<String, Object> requestMap = externalContext.getRequestMap();

@@ -12,7 +12,12 @@
  *******************************************************************************/
 
 configurations {
-  jpaFatTools
+  jpaFatTools {
+    transitive = false
+  }
+  requiredLibs {
+    transitive = false
+  }
 }
 
 dependencies {

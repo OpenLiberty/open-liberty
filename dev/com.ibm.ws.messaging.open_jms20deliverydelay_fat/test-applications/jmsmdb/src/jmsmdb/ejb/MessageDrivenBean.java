@@ -59,7 +59,7 @@ public class MessageDrivenBean implements MessageListener {
                 min.setTimeInMillis( msg.readLong() );
 
                 if ( min.before(now) ) {
-                    System.out.println("Message received on mdb : " + text);
+                    System.out.println("Message received on mdb : " + text + " at " + now);
 
                 } else {
                     System.out.println(

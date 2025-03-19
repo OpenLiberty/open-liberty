@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.jsf;
 
@@ -388,4 +385,6 @@ public class JSFAppTest extends JSFAppTestBase {
         parse( jsf(FacesConfig.VERSION_4_0, MANAGED_BEAN_TEXT), FacesConfig.VERSION_4_0,
                XML_ERROR_ALT_UNEXPECTED_CHILD, XML_ERROR_UNEXPECTED_CHILD);
     }    
+
+    //No update to JSF 4.1 elements - thus no test
 }

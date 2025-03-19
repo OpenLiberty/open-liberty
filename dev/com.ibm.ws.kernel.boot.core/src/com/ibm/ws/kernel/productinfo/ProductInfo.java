@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,6 +50,7 @@ public class ProductInfo {
     public static final String COM_IBM_WEBSPHERE_LOG_REPLACED_PRODUCT = "com.ibm.websphere.logReplacedProduct";
     public static final String BETA_EDITION_JVM_PROPERTY = "com.ibm.ws.beta.edition";
     public static final String EARLY_ACCESS = "EARLY_ACCESS";
+    public static final String COM_IBM_WEBSPHERE_CVEREPORTINGURI_KEY = "com.ibm.websphere.cveReportingUri";
 
     private static FileFilter versionFileFilter = new FileFilter() {
         @Override
@@ -342,6 +343,10 @@ public class ProductInfo {
         }
 
         return versionFiles;
+    }
+
+    public String getCVEReportingUri() {
+        return properties.getProperty(COM_IBM_WEBSPHERE_CVEREPORTINGURI_KEY);
     }
 
 }

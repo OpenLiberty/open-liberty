@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=The password was not encr
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Check the server log and if the custom password encryption is used check the custom password encryption logs for further information.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: The password was not decrypted because a decoding error was reported.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=The encrypted password was not encoded properly.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Make sure that the encrypted password is not truncated and encoded by using Base64 encoding.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Make sure that the encrypted password is not truncated and encoded with Base64 encoding.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 encrypted passwords cannot be used when FIPS 140-3 is enabled. Regenerate the password with AES-256 using the securityUtility command.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 is enabled and does not support AES-128. Use the securityUtility command to encrypt the password using AES-256.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Make sure the password is encrypted with AES-256.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: AES password encryption failed. Check your java.security settings and add the missing algorithm.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=An encryption algorithm is missing from your java.security file.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Make sure that the algorithm is added to your java.security file.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: AES password decryption failed. Check your java.security settings and add the missing algorithm.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=An encryption algorithm is missing from your java.security file.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Make sure that the algorithm is added to your java.security file.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: You cannot use SHA1 hash-encoded passwords when FIPS 140-3 is enabled. Regenerate the password hash using the securityUtility command.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 is enabled and does not support SHA1. Use the securityUtility encode command to generate a new SHA512 password hash.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Make sure the password hash is generated with SHA512.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: One or more {0} password values stored in the server configuration were generated with an older algorithm{1}. Use the securityUtility encode command to re-generate the {0} passwords with the latest algorithm{2}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty now uses stronger algorithms for newly generated {aes} and {hash} passwords.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Make sure {aes} and {hash} password values are generated with the latest version of Liberty.
 
 
 # ---------------- This is an exception message ------------
@@ -57,4 +72,4 @@ PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=More than one CustomPasswordEncryption 
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=An error was reported while processing the extension manifest file {0}. This file was ignored. The custom encryption is not available. The error message is {1}.
 PASSWORDUTIL_ERROR_MISSING_HEADER=The required header {0} was not found in the extension manifest file {1}. The custom encryption is not available.
 PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=The feature manifest file which corresponds with the extension manifest file {0} was not found. The custom encryption is not available.
-PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=The decryption operation is not supported by the hash algorithm. 
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=The decryption operation is not supported by the hash algorithm.

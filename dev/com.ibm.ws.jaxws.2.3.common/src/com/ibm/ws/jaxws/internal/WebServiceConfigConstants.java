@@ -14,6 +14,7 @@ public class WebServiceConfigConstants {
     // config related constants
     public static final String ENABLE_SCHEMA_VALIDATION_PROP = "enableSchemaValidation";
     public static final String IGNORE_UNEXPECTED_ELEMENTS_PROP = "ignoreUnexpectedElements";
+    public static final String ENABLE_DEFAULT_VALIDATION_PROP = "enableDefaultValidation";
     public static final String SERVICE_NAME_PROP = "serviceName";
     public static final String PORT_NAME_PROP = "portName";
     public static final String DEFAULT_PROP = "default";

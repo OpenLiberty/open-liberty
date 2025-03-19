@@ -494,5 +494,9 @@ schemagen.info.schema.file.created=CWWKG0109I: The schema was created in the [{0
 schemagen.info.schema.file.created.explanation=The command completed successfully.
 schemagen.info.schema.file.created.useraction=No action is required.
 
+error.config.root.deleted=CWWKG0110E: A configuration update was detected, but the server.xml does not exist. No configuration updates were made.
+error.config.root.deleted.explanation=The server.xml file was deleted. To cause no disruptions to running apps, no configuration changes are made.
+error.config.root.deleted.useraction=Add the server.xml file back to the server.
+
 # Non-TR message
 error.invalidOCDRef=ERROR: Metatype PID [{0}] specifies non-existent object class definition ID [{1}]

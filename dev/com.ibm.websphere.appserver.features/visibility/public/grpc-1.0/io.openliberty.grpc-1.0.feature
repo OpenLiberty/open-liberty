@@ -21,8 +21,8 @@ Subsystem-Name: gRPC 1.0
 -files=dev/api/ibm/javadoc/io.openliberty.grpc.1.0_1.0-javadoc.zip
 -jars=\
   io.openliberty.grpc.1.0; location:="dev/api/ibm/,lib/", \
-  io.openliberty.io.grpc.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.57.2", \
-  io.openliberty.io.grpc.1.0.jakarta; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.57.2"
+  io.openliberty.io.grpc.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.69.0", \
+  io.openliberty.io.grpc.1.0.jakarta; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.69.0"
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

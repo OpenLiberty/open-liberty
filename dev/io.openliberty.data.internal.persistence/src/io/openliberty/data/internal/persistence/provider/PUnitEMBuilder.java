@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,112 +12,113 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.provider;
 
-import java.util.Objects;
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
-import com.ibm.websphere.csi.J2EEName;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.util.Set;
+
+import javax.sql.DataSource;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceException;
 
 /**
  * This builder is used when a persistence unit reference JNDI name is configured as the repository dataStore.
  */
 public class PUnitEMBuilder extends EntityManagerBuilder {
-    /**
-     * These are present only if needed to disambiguate a persistence unit reference JNDI name
-     * that is in java:app, java:module, or java:comp
-     */
-    private final String application, module, component;
+    private static final TraceComponent tc = Tr.register(PUnitEMBuilder.class);
 
     private final EntityManagerFactory emf;
 
-    private final String persistenceUnitRef;
-
-    public PUnitEMBuilder(EntityManagerFactory emf, ClassLoader repositoryClassLoader) {
-        super(repositoryClassLoader);
+    /**
+     * Obtains entity manager instances from a persistence unit reference /
+     * EntityManagerFactory.
+     *
+     * @param provider              OSGi service that provides the CDI extension.
+     * @param repositoryClassLoader class loader of the repository interface.
+     * @param repositoryInterfaces  repository interfaces that use the entities.
+     * @param emf                   entity manager factory.
+     * @param pesistenceUnitRef     persistence unit reference.
+     * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
+     * @param entityTypes           entity classes as known by the user, not generated.
+     * @throws Exception if an error occurs.
+     */
+    public PUnitEMBuilder(DataProvider provider,
+                          ClassLoader repositoryClassLoader,
+                          Set<Class<?>> repositoryInterfaces,
+                          EntityManagerFactory emf,
+                          String persistenceUnitRef,
+                          String metadataIdentifier,
+                          Set<Class<?>> entityTypes) throws Exception {
+        super(provider, //
+              repositoryClassLoader, //
+              repositoryInterfaces, //
+              persistenceUnitRef);
         this.emf = emf;
-        this.persistenceUnitRef = emf.toString();
 
-        this.application = null;
-        this.module = null;
-        this.component = null;
-
-        // TODO For EntityManagerFactory managed by Open Liberty, the persistence unit and app/module/component are known
-        // Example of emf.toString():
-        // com.ibm.ws.jpa.container.v31.JPAEMFactoryV31@ed2fe703[PuId=DataStoreTestApp#DataStoreTestWeb.war#MyPersistenceUnit,
-        // DataStoreTestApp#DataStoreTestWeb.war, org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl@3708cabf]
+        collectEntityInfo(entityTypes);
     }
 
-    public PUnitEMBuilder(EntityManagerFactory emf, String persistenceUnitRef, ClassLoader repositoryClassLoader) {
-        super(repositoryClassLoader);
-        this.emf = emf;
-        this.persistenceUnitRef = persistenceUnitRef;
+    @Override
+    @Trivial
+    public EntityManager createEntityManager() {
+        EntityManager em = emf.createEntityManager();
 
-        boolean javaApp = persistenceUnitRef.regionMatches(5, "app", 0, 3);
-        boolean javaModule = !javaApp && persistenceUnitRef.regionMatches(5, "module", 0, 6);
-        boolean javaComp = !javaApp && !javaModule && persistenceUnitRef.regionMatches(5, "comp", 0, 4);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "createEntityManager: " + em);
+        return em;
+    }
 
-        // TODO it might not be predictable which module this thread runs from. If so, module and component cannot be used.
-        if (javaApp || javaModule || javaComp) {
-            ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            J2EEName jeeName = cData == null ? null : cData.getJ2EEName();
-
-            application = jeeName == null ? null : jeeName.getApplication();
-            module = jeeName == null || javaApp ? null : jeeName.getModule();
-            component = jeeName == null || javaApp || javaModule ? null : jeeName.getComponent();
-            // TODO how do we know if running in the web module so component should be omitted? Can we look for a ModuleMetadata subclass?
-        } else {
-            application = null;
-            module = null;
-            component = null;
+    @FFDCIgnore(PersistenceException.class)
+    @Override
+    public DataSource getDataSource(Method repoMethod, Class<?> repoInterface) {
+        try {
+            return emf.unwrap(DataSource.class);
+        } catch (PersistenceException x) {
+            try {
+                EntityManager em = emf.createEntityManager();
+                return em.unwrap(DataSource.class);
+            } catch (PersistenceException xx) {
+                throw exc(UnsupportedOperationException.class,
+                          "CWWKD1063.unsupported.resource",
+                          repoMethod.getName(),
+                          repoInterface.getName(),
+                          repoMethod.getReturnType().getName(),
+                          DataSource.class.getName());
+            }
         }
     }
 
-    @Override
-    public EntityManager createEntityManager() {
-        return emf.createEntityManager();
-    }
-
-    @Override
-    @Trivial
-    public boolean equals(Object o) {
-        PUnitEMBuilder b;
-        return this == o || o instanceof PUnitEMBuilder
-                            && persistenceUnitRef.equals((b = (PUnitEMBuilder) o).persistenceUnitRef)
-                            && Objects.equals(application, b.application)
-                            && Objects.equals(module, b.module)
-                            && Objects.equals(component, b.component)
-                            && Objects.equals(getRepositoryClassLoader(), b.getRepositoryClassLoader());
-    }
-
+    /**
+     * Write information about this instance to the introspection file for
+     * Jakarta Data.
+     *
+     * @param writer writes to the introspection file.
+     * @param indent indentation for lines.
+     */
     @Override
     @Trivial
-    public int hashCode() {
-        return persistenceUnitRef.hashCode();
-    }
-
-    @Override
-    @Trivial
-    protected void initialize() throws Exception {
+    public void introspect(PrintWriter writer, String indent) {
+        super.introspect(writer, indent);
+        writer.println(indent + "  EntityManagerFactory: " + emf);
     }
 
     @Override
     @Trivial
     public String toString() {
-        return new StringBuilder(27 + persistenceUnitRef.length() +
-                                 (application == null ? 4 : application.length()) +
-                                 (module == null ? 4 : module.length()) +
-                                 (component == null ? 4 : component.length())) //
-                                                 .append("PUnitEMBuilder@") //
-                                                 .append(Integer.toHexString(hashCode())) //
-                                                 .append(":").append(persistenceUnitRef) //
-                                                 .append(' ').append(application) //
-                                                 .append('#').append(module) //
-                                                 .append('#').append(component) //
-                                                 .toString();
+        return new StringBuilder(27 + dataStore.length()) //
+                        .append("PUnitEMBuilder@") //
+                        .append(Integer.toHexString(hashCode())) //
+                        .append(":").append(dataStore) //
+                        .toString();
     }
 }

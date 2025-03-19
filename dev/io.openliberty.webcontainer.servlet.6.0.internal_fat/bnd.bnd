@@ -14,6 +14,7 @@ src: \
     fat/src,\
     test-applications/CookieSetAttributeTest.war/src,\
     test-applications/GetMappingAsyncDispatchTest.war/src,\
+    test-applications/GetRealPathDirectoryBrowsing.war/src,\
     test-applications/GetRealPathTest.war/src,\
     test-applications/RequestConnectionTest.war/src,\
     test-applications/RequestCookieHeaderTest.war/src,\

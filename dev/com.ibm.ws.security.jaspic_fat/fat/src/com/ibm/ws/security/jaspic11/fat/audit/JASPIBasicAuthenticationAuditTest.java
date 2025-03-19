@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,10 @@
 package com.ibm.ws.security.jaspic11.fat.audit;
 
 import javax.servlet.http.HttpServletResponse;
+
+import org.junit.ClassRule;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.FeatureReplacementAction;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
@@ -40,6 +44,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+
 /**
  * Test Description:
  *
@@ -55,6 +60,13 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JASPIBasicAuthenticationAuditTest extends JASPITestBase {
+
+    /**
+     * Need the first repeat to make sure that audit-2.0 from a previous repeat gets put back to audit-1.0
+     */
+    @ClassRule
+    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServers("com.ibm.ws.security.jaspic11.fat.audit").fullFATOnly())
+                    .andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServers("com.ibm.ws.security.jaspic11.fat.audit"));
 
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.jaspic11.fat.audit");
     protected static Class<?> logClass = JASPIBasicAuthenticationAuditTest.class;

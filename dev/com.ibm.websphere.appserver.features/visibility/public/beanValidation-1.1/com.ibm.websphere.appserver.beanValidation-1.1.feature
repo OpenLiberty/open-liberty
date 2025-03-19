@@ -49,3 +49,4 @@ IBM-SPI-Package: \
   com.ibm.ws.com.fasterxml.classmate
 kind=ga
 edition=core
+WLP-Platform: javaee-7.0

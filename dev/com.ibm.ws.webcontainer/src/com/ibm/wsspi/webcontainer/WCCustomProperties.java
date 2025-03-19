@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,8 @@ public class WCCustomProperties {
     private static TraceComponent tc = Tr.register(WCCustomProperties.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
 
     public static Properties customProps = WebContainer.getWebContainerProperties();
+
+    private static boolean IS_SERVLET_61_OR_HIGHER = com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_61;
 
     public static String DO_NOT_SERVE_BY_CLASSNAME;
     public static boolean SUPPRESS_WSEP_HEADER;
@@ -338,6 +340,9 @@ public class WCCustomProperties {
     //23.0.0.9 This is an old property which was not exposed in this class; moving it here
     public static boolean SET_400_SC_ON_TOO_MANY_PARENT_DIRS; 
 
+    //24.0.0.10 -- jakarta.servlet.http.Part#write( filename ) -- treat filename as absolute (when specified)
+    public static boolean ALLOW_ABSOLUTE_FILENAME_FOR_WRITE; // PH62271
+
     static {
         setCustomPropertyVariables(); //initializes all the variables
     }
@@ -436,6 +441,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("maxfilecount", "com.ibm.ws.webcontainer.maxfilecount");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("donotcloseoutputonforwardforservleterror", "com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("set400scontoomanyparentdirs", "com.ibm.ws.webcontainer.set400scontoomanyparentdirs");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("allowabsolutefilenameforpartwrite", "com.ibm.ws.webcontainer.allowabsolutefilenameforpartwrite");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -834,8 +840,12 @@ public class WCCustomProperties {
         //23.0.0.9
         SET_400_SC_ON_TOO_MANY_PARENT_DIRS = (Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.set400scontoomanyparentdirs"))).booleanValue();
 
+        //24.0.0.10 -- true for servlet 6.1+ and false for 6.0 and lower
+        ALLOW_ABSOLUTE_FILENAME_FOR_WRITE = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowabsolutefilenameforpartwrite", IS_SERVLET_61_OR_HIGHER ? "true" :"false")).booleanValue();
+        
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
+
             if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60) {
                 // If Servlet 6.0 or later don't allow DISABLE_X_POWERED_BY to be configured. It will always be disabled regardless of what anyone configures in
                 // the server.xml.
@@ -843,6 +853,7 @@ public class WCCustomProperties {
             } else {
                 DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
             }
+
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "true")).booleanValue();
             DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "false")).booleanValue(); 
             ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "true")).booleanValue();
@@ -865,7 +876,7 @@ public class WCCustomProperties {
             DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror", "false")).booleanValue(); //PI26908
 
         }
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName, "DISABLE_X_POWERED_BY [" + DISABLE_X_POWERED_BY + "], " +
                                      "STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ["+ STOP_APP_STARTUP_ON_LISTENER_EXCEPTION + "], " +

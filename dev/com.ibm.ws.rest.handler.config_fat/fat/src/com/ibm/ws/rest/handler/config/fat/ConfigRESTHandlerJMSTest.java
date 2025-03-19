@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,6 @@ import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
 public class ConfigRESTHandlerJMSTest extends FATServletClient {
@@ -88,7 +87,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsActivationSpec/{uid} REST endpoint.
     @Test
     public void testJMSActivationSpec() throws Exception {
-        JsonObject aspec = new HttpsRequest(server, "/ibm/api/config/jmsActivationSpec/App1%2FEJB1%2FMessageDrivenBean1").run(JsonObject.class);
+        JsonObject aspec = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsActivationSpec/App1%2FEJB1%2FMessageDrivenBean1").run(JsonObject.class);
         String err = "unexpected response: " + aspec;
         assertEquals(err, "jmsActivationSpec", aspec.getString("configElementName"));
         assertEquals(err, "App1/EJB1/MessageDrivenBean1", aspec.getString("uid"));
@@ -128,7 +127,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsActivationSpec REST endpoint.
     @Test
     public void testJMSActivationSpecs() throws Exception {
-        JsonArray activationSpecs = new HttpsRequest(server, "/ibm/api/config/jmsActivationSpec").run(JsonArray.class);
+        JsonArray activationSpecs = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsActivationSpec").run(JsonArray.class);
         String err = "unexpected response: " + activationSpecs;
         assertEquals(err, 2, activationSpecs.size());
 
@@ -173,7 +172,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsConnectionFactory/{uid} REST endpoint.
     @Test
     public void testJMSConnectionFactory() throws Exception {
-        JsonObject cf = new HttpsRequest(server, "/ibm/api/config/jmsConnectionFactory/cf1").run(JsonObject.class);
+        JsonObject cf = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsConnectionFactory/cf1").run(JsonObject.class);
         String err = "unexpected response: " + cf;
         assertEquals(err, "jmsConnectionFactory", cf.getString("configElementName"));
         assertEquals(err, "cf1", cf.getString("uid"));
@@ -215,7 +214,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsConnectionFactory REST endpoint.
     @Test
     public void testJMSConnectionFactories() throws Exception {
-        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/jmsConnectionFactory").run(JsonArray.class);
+        JsonArray cfs = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsConnectionFactory").run(JsonArray.class);
         String err = "unexpected response: " + cfs;
         assertEquals(err, 2, cfs.size());
 
@@ -237,7 +236,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsDestination/{uid} REST endpoint.
     @Test
     public void testJMSDestination() throws Exception {
-        JsonObject dest = new HttpsRequest(server, "/ibm/api/config/jmsDestination/dest1").run(JsonObject.class);
+        JsonObject dest = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsDestination/dest1").run(JsonObject.class);
         String err = "unexpected response: " + dest;
         assertEquals(err, "jmsDestination", dest.getString("configElementName"));
         assertEquals(err, "dest1", dest.getString("uid"));
@@ -254,7 +253,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // which should return all configured JMS destinations.
     @Test
     public void testJMSDestinations() throws Exception {
-        JsonArray destinations = new HttpsRequest(server, "/ibm/api/config/jmsDestination").run(JsonArray.class);
+        JsonArray destinations = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsDestination").run(JsonArray.class);
         String err = "unexpected response: " + destinations;
         assertEquals(err, 2, destinations.size());
 
@@ -281,7 +280,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsQueue/{uid} REST endpoint.
     @Test
     public void testJMSQueue() throws Exception {
-        JsonObject q = new HttpsRequest(server, "/ibm/api/config/jmsQueue/q1").run(JsonObject.class);
+        JsonObject q = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsQueue/q1").run(JsonObject.class);
         String err = "unexpected response: " + q;
         assertEquals(err, "jmsQueue", q.getString("configElementName"));
         assertEquals(err, "q1", q.getString("uid"));
@@ -298,7 +297,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // which should return all configured JMS queues.
     @Test
     public void testJMSQueues() throws Exception {
-        JsonArray queues = new HttpsRequest(server, "/ibm/api/config/jmsQueue").run(JsonArray.class);
+        JsonArray queues = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsQueue").run(JsonArray.class);
         String err = "unexpected response: " + queues;
         assertEquals(err, 2, queues.size());
 
@@ -325,7 +324,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsQueueConnectionFactory/{uid} REST endpoint.
     @Test
     public void testJMSQueueConnectionFactory() throws Exception {
-        JsonObject cf = new HttpsRequest(server, "/ibm/api/config/jmsQueueConnectionFactory/jmsQueueConnectionFactory[default-0]").run(JsonObject.class);
+        JsonObject cf = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsQueueConnectionFactory/jmsQueueConnectionFactory%5Bdefault-0%5D")
+                        .run(JsonObject.class);
         String err = "unexpected response: " + cf;
         assertEquals(err, "jmsQueueConnectionFactory", cf.getString("configElementName"));
         assertEquals(err, "jmsQueueConnectionFactory[default-0]", cf.getString("uid"));
@@ -344,7 +344,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsQueueConnectionFactory REST endpoint.
     @Test
     public void testJMSQueueConnectionFactories() throws Exception {
-        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/jmsQueueConnectionFactory").run(JsonArray.class);
+        JsonArray cfs = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsQueueConnectionFactory").run(JsonArray.class);
         String err = "unexpected response: " + cfs;
         assertEquals(err, 1, cfs.size());
 
@@ -360,7 +360,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsTopic/{uid} REST endpoint.
     @Test
     public void testJMSTopic() throws Exception {
-        JsonObject topic = new HttpsRequest(server, "/ibm/api/config/jmsTopic/topic1").run(JsonObject.class);
+        JsonObject topic = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsTopic/topic1").run(JsonObject.class);
         String err = "unexpected response: " + topic;
         assertEquals(err, "jmsTopic", topic.getString("configElementName"));
         assertEquals(err, "topic1", topic.getString("uid"));
@@ -377,7 +377,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // which should return all configured JMS queues.
     @Test
     public void testJMSTopics() throws Exception {
-        JsonArray topics = new HttpsRequest(server, "/ibm/api/config/jmsTopic").run(JsonArray.class);
+        JsonArray topics = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsTopic").run(JsonArray.class);
         String err = "unexpected response: " + topics;
         assertEquals(err, 2, topics.size());
 
@@ -403,7 +403,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsTopicConnectionFactory/{uid} REST endpoint.
     @Test
     public void testJMSTopicConnectionFactory() throws Exception {
-        JsonObject cf = new HttpsRequest(server, "/ibm/api/config/jmsTopicConnectionFactory/cf3").run(JsonObject.class);
+        JsonObject cf = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsTopicConnectionFactory/cf3").run(JsonObject.class);
         String err = "unexpected response: " + cf;
         assertEquals(err, "jmsTopicConnectionFactory", cf.getString("configElementName"));
         assertEquals(err, "cf3", cf.getString("uid"));
@@ -426,7 +426,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
     // Test the output of the /ibm/api/config/jmsTopicConnectionFactory REST endpoint.
     @Test
     public void testJMSTopicConnectionFactories() throws Exception {
-        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/jmsTopicConnectionFactory").run(JsonArray.class);
+        JsonArray cfs = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsTopicConnectionFactory").run(JsonArray.class);
         String err = "unexpected response: " + cfs;
         assertEquals(err, 2, cfs.size());
 

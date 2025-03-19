@@ -30,9 +30,26 @@ Private-Package: \
 Import-Package: \
  !org.apache.commons.compress.compressors.lzw, \
  !org.apache.commons.compress, \
- !org.apache.commons.compress.parallel, *
+ !org.apache.commons.compress.parallel, \
+ !org.apache.commons.io.file, *
 
 -includeresource: \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/input/NullInputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/output/NullOutputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/output/NullWriter*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/output/QueueOutputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/output/ThresholdingOutputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/output/ByteArrayOutputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/output/AbstractByteArrayOutputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/output/StringBuilderWriter*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/output/AppendableWriter*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/output/UnsynchronizedByteArrayOutputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/input/BoundedInputStream*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/Charsets*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/IOUtils*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/CloseableURLConnection*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/StandardLineSeparator*, \
+ @${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/function/IOTriFunction*, \
  @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/ArchiveEntry*, \
  @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/ArchiveInputStream*, \
  @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream*, \

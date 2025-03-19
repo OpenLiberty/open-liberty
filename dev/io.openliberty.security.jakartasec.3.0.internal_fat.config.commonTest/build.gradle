@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common'),
   	  project(':com.ibm.ws.security.fat.common.jwt'),
       project(':io.openliberty.security.jakartasec.3.0.internal_fat.common'),
-      project(':io.openliberty.org.apache.commons.logging'),
       project(':com.ibm.ws.org.apache.httpcomponents'),
       'net.sourceforge.htmlunit:htmlunit:2.44.0',
       'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
@@ -38,7 +37,6 @@ dependencies {
       'xml-apis:xml-apis:1.4.01',
       'xerces:xercesImpl:2.11.0',
       project(':io.openliberty.org.apache.xercesImpl'),
-      project(':com.ibm.ws.org.slf4j.api'),
       'org.eclipse.parsson:parsson:1.1.0'
 
 }

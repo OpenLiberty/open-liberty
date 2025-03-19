@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,11 +27,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent;
+import io.openliberty.microprofile.openapi20.internal.services.OASValidationResult.ValidationEvent.Severity;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.internal.utils.ValidationMessageConstants;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent;
-import io.openliberty.microprofile.openapi20.internal.validation.OASValidationResult.ValidationEvent.Severity;
 
 /**
  *
@@ -135,16 +135,7 @@ public class ValidatorUtils {
         return Constants.REGEX_EMAIL_PATTERN.matcher(email).matches();
     }
 
-    public static void referenceValidatorHelper(String reference, Object t, ValidationHelper helper, Context context, String key) {
-        ReferenceValidator referenceValidator = ReferenceValidator.getInstance();
-        Object component = referenceValidator.validate(helper, context, key, reference);
-        if (!t.getClass().isInstance(component)) {
-            final String message = Tr.formatMessage(tc, ValidationMessageConstants.REFERENCE_TO_OBJECT_INVALID, reference);
-            helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
-        }
-    }
-
-    public static String formatMessage(String messageId, String... strings) {
+    public static String formatMessage(String messageId, Object... strings) {
         return Tr.formatMessage(tc, messageId, strings);
     }
 }

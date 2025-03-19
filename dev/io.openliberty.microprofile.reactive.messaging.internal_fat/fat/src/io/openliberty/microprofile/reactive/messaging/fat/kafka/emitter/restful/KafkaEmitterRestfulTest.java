@@ -51,7 +51,7 @@ import componenttest.topology.utils.HttpUtils;
 import io.openliberty.microprofile.reactive.messaging.fat.apps.emitter.EmitterApplication;
 import io.openliberty.microprofile.reactive.messaging.fat.apps.emitter.EmitterRestResource;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.KafkaTests;
-import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 @RunWith(FATRunner.class)
 @Mode(Mode.TestMode.FULL)
@@ -67,9 +67,9 @@ public class KafkaEmitterRestfulTest {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    //Repeats for RM 3.0 tests only. MP 2.0 is not tested as it has RM 1.0
     @ClassRule
-    public static final RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP50_RM30,
-                                                                        ReactiveMessagingActions.MP60_RM30);
+    public static final RepeatTests r = ReactiveMessagingActions.reactive30Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {

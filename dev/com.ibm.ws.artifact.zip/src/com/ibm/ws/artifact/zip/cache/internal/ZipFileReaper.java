@@ -25,8 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Supplier;
-//import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -917,12 +916,21 @@ public class ZipFileReaper {
 
     //
 
-    private static final class ZipFilePathLock { }
-
-    private static KeyBasedLockStore<String, ZipFilePathLock> zipFilePathLockStore = new KeyBasedLockStore<>(new Supplier<ZipFilePathLock>() {
+    private static final class ZipFilePathLock {
+        private final String path;
+        ZipFilePathLock(String path){
+            this.path = path;
+        }
         @Override
-        public ZipFilePathLock get() {
-            return new ZipFilePathLock();
+        public String toString() {
+            return "ZipFilePathLock: " + path;
+        }
+    }
+
+    private static KeyBasedLockStore<String, ZipFilePathLock> zipFilePathLockStore = new KeyBasedLockStore<>(new Function<String, ZipFilePathLock>() {
+        @Override
+        public ZipFilePathLock apply(String path) {
+            return new ZipFilePathLock(path);
         }
     });
     

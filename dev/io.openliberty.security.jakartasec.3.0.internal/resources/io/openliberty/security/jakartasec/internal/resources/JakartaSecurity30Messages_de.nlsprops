@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -52,3 +52,7 @@ JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Weitere Informationen k\u00f6nnen 
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: Der Wert des Attributs {0} der Annotation OpenID f\u00fcr die Definition des Authentifizierungsverfahrens darf keine negative ganze Zahl sein. Wenn der Attributwert ein EL-Ausdruck (Expression Language) ist, darf er nicht in eine negative ganze Zahl aufgel\u00f6st werden. Es war ''{1}'' als Wert angegeben. Stattdessen wird der Standardattributwert ''{2}'' verwendet.
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Der Wert des Attributs darf keine negative ganze Zahl sein. Wenn der Attributwert ein EL-Ausdruck ist, darf der Wert nicht in eine negative ganze Zahl aufgel\u00f6st werden.
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Aktualisieren Sie das Attribut so, dass eine nicht negative ganze Zahl verwendet wird. Wenn der Attributwert ein EL-Ausdruck ist, aktualisieren Sie die referenzierte Bean so, dass sie in eine nicht negative ganze Zahl aufgel\u00f6st wird.
+
+CREDENTIAL_VALIDATION_CALLER_MISSING=CWWKS2508E: Der Berechtigungsnachweis kann nicht validiert werden, da der Caller-Wert nicht festgelegt ist. Der Anspruch [{0}] f\u00fcr den Caller-Namen ist null oder leer oder ein Anspruch mit diesem Namen wurde nicht im Zugriffstoken, im ID-Token oder in den UserInfo -Daten f\u00fcr den Benutzer gefunden.
+CREDENTIAL_VALIDATION_CALLER_MISSING.explanation=Die Berechtigungsnachweisvalidierung erfordert einen Caller-Wert, der nicht festgelegt ist.
+CREDENTIAL_VALIDATION_CALLER_MISSING.useraction=Stellen Sie sicher, dass der Claim f\u00fcr den Caller-Namen nicht null oder leer ist. Stellen Sie sicher, dass der Caller-Namensanspruch ein Anspruch ist, der entweder im Zugriffstoken, im ID-Token oder in den UserInfo -Daten f\u00fcr den Benutzer enthalten ist.

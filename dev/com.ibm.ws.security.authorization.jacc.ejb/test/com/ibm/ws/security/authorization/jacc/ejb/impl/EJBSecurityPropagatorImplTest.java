@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,8 +36,9 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.ws.security.authorization.jacc.MethodInfo;
+import com.ibm.ws.security.authorization.jacc.PolicyConfigurationManager;
 import com.ibm.ws.security.authorization.jacc.RoleInfo;
-import com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManager;
+import com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManagerImpl;
 
 import test.common.SharedOutputManager;
 
@@ -56,11 +57,13 @@ public class EJBSecurityPropagatorImplTest {
     private final String STARSTAR = "**";
 
     private PolicyConfigurationFactory pcf = null;
+    private PolicyConfigurationManager pcm = null;
 
     @Before
     public void setUp() {
         pcf = new DummyPolicyConfigurationFactory(pc);
-        PolicyConfigurationManager.initialize(null, pcf);
+        pcm = new PolicyConfigurationManagerImpl();
+        pcm.initialize(null, pcf);
     }
 
     @After
@@ -91,8 +94,8 @@ public class EJBSecurityPropagatorImplTest {
         }
 
         EJBSecurityPropagatorImpl esp = new EJBSecurityPropagatorImpl();
-        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap);
-        esp.processEJBRoles(pcf, contextId);
+        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap, pcm);
+        esp.processEJBRoles(pcf, contextId, pcm);
     }
 
     /**
@@ -126,8 +129,8 @@ public class EJBSecurityPropagatorImplTest {
         }
 
         EJBSecurityPropagatorImpl esp = new EJBSecurityPropagatorImpl();
-        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap);
-        esp.processEJBRoles(pcf, contextId);
+        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap, pcm);
+        esp.processEJBRoles(pcf, contextId, pcm);
     }
 
     /**
@@ -171,8 +174,8 @@ public class EJBSecurityPropagatorImplTest {
         }
 
         EJBSecurityPropagatorImpl esp = new EJBSecurityPropagatorImpl();
-        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap);
-        esp.processEJBRoles(pcf, contextId);
+        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap, pcm);
+        esp.processEJBRoles(pcf, contextId, pcm);
     }
 
     /**
@@ -209,8 +212,8 @@ public class EJBSecurityPropagatorImplTest {
         }
 
         EJBSecurityPropagatorImpl esp = new EJBSecurityPropagatorImpl();
-        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap);
-        esp.processEJBRoles(pcf, contextId);
+        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap, pcm);
+        esp.processEJBRoles(pcf, contextId, pcm);
     }
 
     /**
@@ -247,8 +250,8 @@ public class EJBSecurityPropagatorImplTest {
         }
 
         EJBSecurityPropagatorImpl esp = new EJBSecurityPropagatorImpl();
-        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap);
-        esp.processEJBRoles(pcf, contextId);
+        esp.propagateEJBRoles(contextId, appName, beanName, roleLinkMap, methodMap, pcm);
+        esp.processEJBRoles(pcf, contextId, pcm);
     }
 
 }

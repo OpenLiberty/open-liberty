@@ -1,1 +1,2 @@
 -Dcom.ibm.ws.recoverylog.disablehomelogdeletion=true
+-Dcom.ibm.ws.recoverylog.custom.jdbc.tagSQL=true

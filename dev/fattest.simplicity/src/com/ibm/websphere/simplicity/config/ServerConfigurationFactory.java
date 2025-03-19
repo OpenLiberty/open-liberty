@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -36,12 +38,23 @@ import componenttest.topology.impl.LibertyFileManager;
  */
 public class ServerConfigurationFactory {
 
-    private static ServerConfigurationFactory INSTANCE;
+    private static final ServerConfigurationFactory INSTANCE;
+
+    static {
+        ServiceLoader<ServerConfigurationFactory> loader = ServiceLoader.load(ServerConfigurationFactory.class, ServerConfigurationFactory.class.getClassLoader());
+        Iterator<ServerConfigurationFactory> iter = loader.iterator();
+        if (iter.hasNext()) {
+            INSTANCE = iter.next();
+        } else {
+            try {
+                INSTANCE = new ServerConfigurationFactory();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     public static ServerConfigurationFactory getInstance() throws Exception {
-        if (INSTANCE == null) {
-            INSTANCE = new ServerConfigurationFactory();
-        }
         return INSTANCE;
     }
 
@@ -69,11 +82,15 @@ public class ServerConfigurationFactory {
         LibertyFileManager.moveLibertyFile(newServerFile, originalFile);
     }
 
-    private final Marshaller marshaller;
-    private final Unmarshaller unmarshaller;
+    protected final Marshaller marshaller;
+    protected final Unmarshaller unmarshaller;
 
-    private ServerConfigurationFactory() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(ServerConfiguration.class);
+    protected ServerConfigurationFactory() throws Exception {
+        this(OpenLibertyServerConfiguration.class);
+    }
+
+    protected ServerConfigurationFactory(Class<? extends ServerConfiguration> configClass) throws Exception {
+        JAXBContext context = JAXBContext.newInstance(configClass);
         this.marshaller = context.createMarshaller();
         this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         this.unmarshaller = context.createUnmarshaller();
@@ -164,7 +181,7 @@ public class ServerConfigurationFactory {
         String expectedInvalidationTimeout = "120";
         String expectedCreateDatabase = "create";
 
-        ServerConfiguration server = new ServerConfiguration();
+        ServerConfiguration server = new OpenLibertyServerConfiguration();
         server.getFeatureManager().getFeatures().add(FeatureManager.FEATURE_SERVLET_3_0);
         server.getFeatureManager().getFeatures().add(FeatureManager.FEATURE_JSP_2_2);
         server.getFeatureManager().getFeatures().add(FeatureManager.FEATURE_SESSION_DATABASE_1_0);
@@ -223,7 +240,7 @@ public class ServerConfigurationFactory {
 
         ServerConfiguration unmarshalled = scf.unmarshal(new FileInputStream(serverConfig));
         scf.marshaller.marshal(unmarshalled, System.out); // call private variable to avoid calling System.out!
-        Integer actualInvalidationTimeout = Integer.valueOf(unmarshalled.getHttpSession().getInvalidationTimeout());
+        String actualInvalidationTimeout = unmarshalled.getHttpSession().getInvalidationTimeout();
         String actualCreateDatabase = unmarshalled.getDataSources().get(0).getProperties_derby_embedded().get(0).getCreateDatabase();
         if (!expectedInvalidationTimeout.equals(actualInvalidationTimeout)) {
             throw new Exception("Expected invalidation timeout does not match actual invalidation timeout.  Expected: " + expectedInvalidationTimeout + " Actual: "

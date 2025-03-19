@@ -330,8 +330,16 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
      */
     getFormData:function () {
         var formDataDecorator = this._Lang.createFormDataDecorator(jsf.getViewState(this._sourceForm));
-        this._AJAXUTIL.appendIssuingItem(this._source, formDataDecorator);
+        if (this._source && !this._isBehaviorEvent()) {
+            this._AJAXUTIL.appendIssuingItem(this._source, formDataDecorator);
+        }
         return formDataDecorator;
+    },
+
+    _isBehaviorEvent: function() {
+        var eventType = this._passThrough[this.attr("impl").P_BEHAVIOR_EVENT] || null;
+        var isBehaviorEvent = (!!eventType) && eventType != 'click';
+        return isBehaviorEvent;
     },
 
     /**

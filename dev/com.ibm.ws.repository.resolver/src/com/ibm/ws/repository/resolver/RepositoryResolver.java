@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -48,6 +49,7 @@ import com.ibm.ws.repository.resources.ApplicableToProduct;
 import com.ibm.ws.repository.resources.EsaResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
 import com.ibm.ws.repository.resources.SampleResource;
+import com.ibm.ws.repository.transport.model.AppliesToFilterInfo;
 
 /**
  * Resolves a list of names into lists of {@link RepositoryResource} to be installed
@@ -81,6 +83,11 @@ public class RepositoryResolver {
     Set<String> requestedFeatureNames;
 
     /**
+     * The platforms passed to {@link #resolve(Collection)} which will help resolve versionless features
+     */
+    Collection<String> requestedPlatformNames;
+
+    /**
      * The list of samples the user has requested to install
      */
     List<SampleResource> samplesToInstall;
@@ -112,6 +119,11 @@ public class RepositoryResolver {
     List<ApplicableToProduct> resourcesWrongProduct;
 
     /**
+     * List of platform names that were determined after resolve if versionless features requested, an empty list indicates a failed resolution if versionless features requested.
+     */
+    Set<String> resolvedPlatforms;
+
+    /**
      * List of requirements which couldn't be resolved but for which we found a solution that applied to the wrong product
      * <p>
      * Each requirement will be a symbolic name, feature name or sample name
@@ -129,6 +141,18 @@ public class RepositoryResolver {
      * List of all the missing requirements we've found so far
      */
     List<MissingRequirement> missingRequirements;
+    /**
+     * List of all the missing platforms after resolution
+     */
+    Set<String> missingPlatforms;
+    /**
+     * returns if versionless features are part of the resolution - used to skip extra processing
+     */
+    boolean includesVersionless;
+    /**
+     * Map of unresolved base platforms, and the associated passed versionless features
+     */
+    Map<String, Set<String>> missingBasePlatforms;
 
     /**
      * <p>
@@ -306,7 +330,7 @@ public class RepositoryResolver {
      * @throws RepositoryResolutionException If the resource cannot be resolved
      */
     public Collection<List<RepositoryResource>> resolve(Collection<String> toResolve) throws RepositoryResolutionException {
-        return resolve(toResolve, ResolutionMode.IGNORE_CONFLICTS);
+        return resolve(toResolve, null, ResolutionMode.IGNORE_CONFLICTS);
     }
 
     /**
@@ -345,6 +369,8 @@ public class RepositoryResolver {
      * For example, if {@code ejbLite-3.2} is already installed and {@code resolve(Arrays.asList("cdi-2.0"))} is called, it will not return the autofeature which would be required
      * for {@code cdi-2.0} and {@code ejbLite-3.2} to work together.
      *
+     * @deprecated - calling this method should be replaced by passing the platform list, required to support versionless features.
+     *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
      *                      <code>{name}/{version}</code></br>
      *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
@@ -367,15 +393,80 @@ public class RepositoryResolver {
      *
      * @throws RepositoryResolutionException If the resource cannot be resolved
      */
+    @Deprecated
     public Collection<List<RepositoryResource>> resolveAsSet(Collection<String> toResolve) throws RepositoryResolutionException {
-        return resolve(toResolve, ResolutionMode.DETECT_CONFLICTS);
+        return resolve(toResolve, null, ResolutionMode.DETECT_CONFLICTS);
     }
 
-    Collection<List<RepositoryResource>> resolve(Collection<String> toResolve, ResolutionMode resolutionMode) throws RepositoryResolutionException {
+    protected boolean hasRequestedVersionlessFeatures(Collection<String> featureList, KernelResolverRepository repo) {
+        for (String s : featureList) {
+            ProvisioningFeatureDefinition feature = repo.getFeature(s);
+            if (feature == null)
+                //Can't find the feature of that name - just skip for now....
+                continue;
+            if (feature.isVersionless()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Takes a list of feature names that the user wants to install and returns a minimal set of the {@link RepositoryResource}s that should be installed to allow those features to
+     * start together in one server.
+     * <p>
+     * This method uses the same resolution logic that is used by the kernel at server startup to decide which features to start. Therefore calling this method with a list of
+     * feature names and installing the resources returned will guarantee that a server which has the same list of feature names in its server.xml will start.
+     * <p>
+     * The caller must provide the full set of features from the server.xml, including those that are already installed, so that tolerated dependencies and auto-features can be
+     * resolved correctly.
+     * <p>
+     * This method will fail if there's no valid set of dependencies for the required features that doesn't include conflicting versions of singleton features.
+     * <p>
+     * For example, {@code resolve(Arrays.asList("javaee-7.0", "javaee-8.0"))} would work but {@code resolveAsSet(Arrays.asList("javaee-7.0", "javaee-8.0"))} would fail because
+     * javaee-7.0 and javaee-8.0 contain features which conflict with each other (and other versions are not tolerated).
+     * <p>
+     * This method guarantees that it will return all the features required to start the requested features but will not ensure that the requested features will work with features
+     * which were already installed but were not requested in the call to this method.
+     * <p>
+     * For example, if {@code ejbLite-3.2} is already installed and {@code resolve(Arrays.asList("cdi-2.0"))} is called, it will not return the autofeature which would be required
+     * for {@code cdi-2.0} and {@code ejbLite-3.2} to work together.
+     *
+     * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
+     *                      <code>{name}/{version}</code></br>
+     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *                      optional. The collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     * @param platforms A collection of the identifiers of the platforms used for resolving versionless features
+     *
+     * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
+     *         at all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
+     *         multiple lists. For instance if you have requested to install A and B and A requires N which requires M and O whereas B requires Z that requires O then the returned
+     *         collection will be (represented in JSON):</p>
+     *         <code>
+     *         [[M, O, N, A],[O, Z, B]]
+     *         </code>
+     *         <p>This will not return <code>null</code> although it may return an empty collection if there isn't anything to install (i.e. it resolves to resources that are
+     *         already installed)</p>
+     *         <p>Every auto-feature will have it's own list in the collection, this is to stop the failure to install either an auto feature or one of it's dependencies from
+     *         stopping everything from installing. Therefore if you have features A and B that are required to provision auto feature C and you ask to resolve A and B then this
+     *         method will return:</p>
+     *         <code>
+     *         [[A],[B],[A,B,C]]
+     *         </code>
+     *
+     * @throws RepositoryResolutionException If the resource cannot be resolved
+     */
+    public Collection<List<RepositoryResource>> resolveAsSet(Collection<String> toResolve, Collection<String> platforms) throws RepositoryResolutionException {
+        return resolve(toResolve, platforms, ResolutionMode.DETECT_CONFLICTS);
+    }
+
+    Collection<List<RepositoryResource>> resolve(Collection<String> toResolve, Collection<String> platforms, ResolutionMode resolutionMode) throws RepositoryResolutionException {
         initResolve();
         initializeResolverRepository(installDefinition);
 
         processNames(toResolve);
+        //Set platform names passed for kernel resolver resolution
+        requestedPlatformNames = platforms;
 
         if (resolutionMode == ResolutionMode.DETECT_CONFLICTS) {
             // Call the kernel resolver to determine the features needed
@@ -414,6 +505,10 @@ public class RepositoryResolver {
         missingRequirements = new ArrayList<>();
         resolverRepository = null;
         featureConflicts = new HashMap<>();
+        missingBasePlatforms = new HashMap<>();
+        resolvedPlatforms = new HashSet<>();
+        missingPlatforms = new HashSet<>();
+        includesVersionless = false;
     }
 
     /**
@@ -475,9 +570,15 @@ public class RepositoryResolver {
      */
     void resolveFeaturesAsSet() {
         FeatureResolver resolver = new FeatureResolverImpl();
-        Result result = resolver.resolveFeatures(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), false);
+        Result result = resolver.resolve(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), false, requestedPlatformNames);
 
         featureConflicts.putAll(result.getConflicts());
+        if (hasRequestedVersionlessFeatures(featureNamesToResolve, resolverRepository)) {
+            includesVersionless = true;
+            resolvedPlatforms = result.getResolvedPlatforms();
+            missingPlatforms = result.getMissingPlatforms();
+            missingBasePlatforms = result.getNoPlatformVersionless();
+        }
 
         for (String name : result.getResolvedFeatures()) {
             ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
@@ -898,7 +999,8 @@ public class RepositoryResolver {
      * @throws RepositoryResolutionException if any errors occurred during resolution
      */
     private void reportErrors() throws RepositoryResolutionException {
-        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty()) {
+        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty() && featureConflicts.isEmpty()
+            && (!includesVersionless || ((!resolvedPlatforms.isEmpty()) && (missingPlatforms.isEmpty())))) {
             // Everything went fine!
             return;
         }
@@ -906,7 +1008,21 @@ public class RepositoryResolver {
         Set<ProductRequirementInformation> missingProductInformation = new HashSet<>();
 
         for (ApplicableToProduct esa : resourcesWrongProduct) {
-            missingRequirements.add(new MissingRequirement(esa.getAppliesTo(), (RepositoryResource) esa));
+            String appliesTo = esa.getAppliesTo();
+            if (appliesTo.contains("productEdition=Open")) { //Check if there are WebSphere editions and add
+                if (esa instanceof EsaResource && ((EsaResource) esa).getAppliesToFilterInfo() != null) {
+                    for (AppliesToFilterInfo atfi : ((EsaResource) esa).getAppliesToFilterInfo()) {
+                        if (!atfi.getEditions().toString().isEmpty()) {
+                            StringBuffer sb = new StringBuffer("; editions=\"");
+                            sb.append(atfi.getEditions().stream().map(String::trim).collect(Collectors.joining(",")));
+                            sb.append("\"");
+                            appliesTo = appliesTo.concat(sb.toString());
+                        }
+                    }
+                }
+            }
+
+            missingRequirements.add(new MissingRequirement(appliesTo, (RepositoryResource) esa));
             missingProductInformation.addAll(ProductRequirementInformation.createFromAppliesTo(esa.getAppliesTo()));
         }
 
@@ -915,7 +1031,8 @@ public class RepositoryResolver {
             missingRequirementNames.add(req.getRequirementName());
         }
 
-        throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts);
+        throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements, featureConflicts,
+                                                resolvedPlatforms, missingPlatforms, missingBasePlatforms);
     }
 
     static class NameAndVersion {

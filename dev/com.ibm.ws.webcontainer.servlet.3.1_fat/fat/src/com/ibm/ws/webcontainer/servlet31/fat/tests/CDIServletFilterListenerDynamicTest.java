@@ -1,36 +1,36 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import java.util.Set;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.annotation.Server;
+import componenttest.topology.impl.LibertyServer;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 
 /**
  * CDI Tests
@@ -38,13 +38,13 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * Tests dynamic servlet filter / listener injection
  */
 @RunWith(FATRunner.class)
-public class CDIServletFilterListenerDynamicTest extends LoggingTest {
+public class CDIServletFilterListenerDynamicTest {
 
     private static final Logger LOG = Logger.getLogger(CDIServletFilterListenerDynamicTest.class.getName());
 
     // Server instance ...
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_cdiServletFilterListenerDynamicServer");
+    @Server("servlet31_cdiServletFilterListenerDynamicServer")
+    public static LibertyServer LS;
 
     private static final String CDI12_TEST_V2_JAR_NAME = "CDI12TestV2";
     private static final String CDI12_TEST_V2_DYNAMIC_APP_NAME = "CDI12TestV2Dynamic";
@@ -54,12 +54,9 @@ public class CDIServletFilterListenerDynamicTest extends LoggingTest {
      * response has expected text. Throw an exception if the expected
      * text is not present or if the unexpected text is present.
      *
-     * The request path is used to create a request URL via {@link SharedServer.getServerUrl}.
-     *
      * Both the expected text and the unexpected text are tested using a contains
      * test. The test does not look for an exact match.
      *
-     * @param webBrowser          Simulated web browser instance through which the request is made.
      * @param requestPath         The path which will be requested.
      * @param expectedResponses   Expected response text. All elements are tested.
      * @param unexpectedResponses Unexpected response text. All elements are tested.
@@ -81,27 +78,21 @@ public class CDIServletFilterListenerDynamicTest extends LoggingTest {
                                                                         "com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2dynamic.war.cdi.servlets");
         CDI12TestV2DynamicApp = (WebArchive) ShrinkHelper.addDirectory(CDI12TestV2DynamicApp, "test-applications/CDI12TestV2Dynamic.war/resources");
         CDI12TestV2DynamicApp = CDI12TestV2DynamicApp.addAsLibrary(CDI12TestV2Jar);
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_DYNAMIC_APP_NAME);
-            LOG.info("addAppToServer : " + CDI12_TEST_V2_DYNAMIC_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2DynamicApp);
-        }
-        SHARED_SERVER.startIfNotStarted();
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_DYNAMIC_APP_NAME);
+        
+        // Export the application.
+        ShrinkHelper.exportDropinAppToServer(LS, CDI12TestV2DynamicApp);
+
+        // Star tthe server and use the class name so we can find logs easily.
+        LS.startServer(CDIServletFilterListenerDynamicTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer(null);
+        if (LS != null && LS.isStarted()) {
+          LS.stopServer();
         }
     }
-
-    /** Standard failure text. Usually unexpected. */
-    public static final String[] FAILED_RESPONSE = new String[] { "FAILED" };
 
     // The pattern for expected text is:
     //
@@ -259,42 +250,31 @@ public class CDIServletFilterListenerDynamicTest extends LoggingTest {
 
     public static final String SERVLET_DYNAMIC_CONTEXT_ROOT = "/CDI12TestV2Dynamic";
     public static final String SERVLET_VERIFIER_URL_FRAGMENT = "/CDIVerifier";
-    public static final String SERVLET_VERIFIER_URL = SERVLET_DYNAMIC_CONTEXT_ROOT + SERVLET_VERIFIER_URL_FRAGMENT;
 
     public static final String SERVLET_DYNAMIC_URL_FRAGMENT = "/CDIDynamicServlet";
-    public static final String SERVLET_DYNAMIC_URL = SERVLET_DYNAMIC_CONTEXT_ROOT + SERVLET_DYNAMIC_URL_FRAGMENT;
 
-    // @formatter:off
     @Test
     @Mode(TestMode.LITE)
     public void testCDIServletFilterListenerDynamic() throws Exception {
-        verifyResponse( createWebBrowserForTestCase(),
-                        SERVLET_VERIFIER_URL + "?operation=verify",
-                        new String[] {}, FAILED_RESPONSE );
-
-        WebBrowser firstSessionBrowser = createWebBrowserForTestCase();
-        verifyResponse(
-            firstSessionBrowser,
-            SERVLET_DYNAMIC_URL + "?payload=" + "V1",
-            SERVLET_EXPECTED_TEXT_1, FAILED_RESPONSE);
-
-        verifyResponse(
-            firstSessionBrowser,
-            SERVLET_DYNAMIC_URL + "?payload=" + "V2",
-            SERVLET_EXPECTED_TEXT_2, FAILED_RESPONSE);
-
-        WebBrowser secondSessionBrowser = createWebBrowserForTestCase();
-        verifyResponse(
-            secondSessionBrowser,
-            SERVLET_DYNAMIC_URL + "?payload=" + "V3",
-            SERVLET_EXPECTED_TEXT_3, FAILED_RESPONSE);
+        verifyStringsInResponse(new HttpClient(), SERVLET_DYNAMIC_CONTEXT_ROOT, SERVLET_VERIFIER_URL_FRAGMENT + "?operation=verify", new String[] {});
+        HttpClient session1 = new HttpClient();
+        verifyStringsInResponse(session1, SERVLET_DYNAMIC_CONTEXT_ROOT, SERVLET_DYNAMIC_URL_FRAGMENT + "?payload=" + "V1", SERVLET_EXPECTED_TEXT_1);
+        verifyStringsInResponse(session1, SERVLET_DYNAMIC_CONTEXT_ROOT, SERVLET_DYNAMIC_URL_FRAGMENT + "?payload=" + "V2", SERVLET_EXPECTED_TEXT_2);
+        HttpClient session2 = new HttpClient();
+        verifyStringsInResponse(session2, SERVLET_DYNAMIC_CONTEXT_ROOT, SERVLET_DYNAMIC_URL_FRAGMENT + "?payload=" + "V3", SERVLET_EXPECTED_TEXT_3);
     }
 
-    /* (non-Javadoc)
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    private void verifyStringsInResponse(HttpClient client, String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
+      GetMethod get = new GetMethod("http://" + LS.getHostname() + ":" + LS.getHttpDefaultPort() + contextRoot + path);
+      int responseCode = client.executeMethod(get);
+      String responseBody = get.getResponseBodyAsString();
+      LOG.info("Response : " + responseBody);
+
+      assertEquals("Expected " + 200 + " status code was not returned!",
+                   200, responseCode);
+
+      for (String expectedResponse : expectedResponseStrings) {
+          assertTrue("The response did not contain: " + expectedResponse, responseBody.contains(expectedResponse));
+      }
+  }
 }

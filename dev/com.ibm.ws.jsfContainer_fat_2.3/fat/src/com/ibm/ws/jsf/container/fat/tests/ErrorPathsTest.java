@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
@@ -51,11 +48,13 @@ public class ErrorPathsTest extends FATServletClient {
 
     private static boolean isEE9;
     private static boolean isEE10;
+    private static boolean isEE11;
 
     @BeforeClass
     public static void setup() throws Exception {
         isEE9 = JakartaEEAction.isEE9Active();
-        isEE10 = JakartaEEAction.isEE10OrLaterActive();
+        isEE10 = JakartaEEAction.isEE10Active();
+        isEE11 = JakartaEEAction.isEE11Active();
     }
 
     /**
@@ -73,7 +72,12 @@ public class ErrorPathsTest extends FATServletClient {
             String message = ".* CWWKF0033E: " +
                              ".* com.ibm.websphere.appserver.jsfProvider-2.3.0.[MyFaces|Container]" +
                              ".* com.ibm.websphere.appserver.jsfProvider-2.3.0.[MyFaces|Container].*";
-            if (isEE10) {
+            if (isEE11){
+                
+                message = ".* CWWKF0033E: " +
+                          ".* io.openliberty.facesProvider-4.1.0.[MyFaces|Container]" +
+                          ".* io.openliberty.facesProvider-4.1.0.[MyFaces|Container].*";
+            } else if (isEE10) {
 
                 message = ".* CWWKF0033E: " +
                           ".* io.openliberty.facesProvider-4.0.0.[MyFaces|Container]" +
@@ -103,11 +107,12 @@ public class ErrorPathsTest extends FATServletClient {
     public void testBadApiVersion_Mojarra() throws Exception {
         JavaArchive badApiJar;
         // Build test app with that has the wrong JSF spec API Specification-Version
-        if(isEE10){
+        if(isEE10 || isEE11){
             badApiJar = ShrinkWrap.create(JavaArchive.class)
                             .as(ZipImporter.class)
-                            .importFrom(new File(FATSuite.MOJARRA_API_IMP_40))
+                            .importFrom(new File(isEE10 ? FATSuite.MOJARRA_API_IMP_40 : FATSuite.MOJARRA_API_IMP_41))
                             .as(JavaArchive.class)
+                            // Okay to use same manifest because the spec API Specification-Version is wrong in both cases
                             .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMojarra_40.MF"));
         } else {
             badApiJar = ShrinkWrap.create(JavaArchive.class)
@@ -141,10 +146,10 @@ public class ErrorPathsTest extends FATServletClient {
     public void testBadApiVersion_MyFaces() throws Exception {
         JavaArchive badApiJar;
         // Build test app with that has the wrong JSF spec API Specification-Version
-        if(isEE10){
+        if(isEE10 || isEE11){
             badApiJar = ShrinkWrap.create(JavaArchive.class)
                             .as(ZipImporter.class)
-                            .importFrom(new File(FATSuite.MYFACES_API_40))
+                            .importFrom(new File(isEE10 ? FATSuite.MYFACES_API_40 : FATSuite.MYFACES_API_41))
                             .as(JavaArchive.class)
                             .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMyfacesApi_40.MF"));
         } else {
@@ -158,9 +163,23 @@ public class ErrorPathsTest extends FATServletClient {
         WebArchive jsfApp = ShrinkHelper.buildDefaultApp(JSF_APP_BAD_API, "jsf.container.bean");
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources/");
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources-myfaces/");
-        jsfApp = jsfApp.addAsLibraries(badApiJar)
+
+        if (isEE11) {
+            jsfApp = jsfApp.addAsLibraries(badApiJar)
+                        .addAsLibraries(new File(FATSuite.MYFACES_IMP_41));
+        } else if (isEE10) {
+            jsfApp = jsfApp.addAsLibraries(badApiJar)
+                        .addAsLibraries(new File(FATSuite.MYFACES_IMP_40));
+        } else if (isEE9) {
+            jsfApp = jsfApp.addAsLibraries(badApiJar)
+                        .addAsLibraries(new File(FATSuite.MYFACES_IMP_30))
+                        .addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
+        }else {
+            jsfApp = jsfApp.addAsLibraries(badApiJar)
                         .addAsLibraries(new File(FATSuite.MYFACES_IMP))
                         .addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
+        }
+
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "publish/files/permissions");
 
         ShrinkHelper.exportAppToServer(server, jsfApp, DeployOptions.DISABLE_VALIDATION);
@@ -184,11 +203,10 @@ public class ErrorPathsTest extends FATServletClient {
         // Build test app with that has JSF spec API Specification-Version of 2.2
 
         JavaArchive badImplJar;
-
-        if (isEE10) {
+        if (isEE10 || isEE11) {
             badImplJar = ShrinkWrap.create(JavaArchive.class)
                             .as(ZipImporter.class)
-                            .importFrom(new File(FATSuite.MYFACES_IMP_40))
+                            .importFrom(new File(isEE10 ? FATSuite.MYFACES_IMP_40 : FATSuite.MYFACES_IMP_41))
                             .as(JavaArchive.class)
                             .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMyfacesImpl_40.MF"));
         } else {
@@ -210,7 +228,9 @@ public class ErrorPathsTest extends FATServletClient {
             jsfApp.addAsLibraries(new File(FATSuite.MYFACES_API_30));
         } else if (isEE10) {
             jsfApp.addAsLibraries(new File(FATSuite.MYFACES_API_40));
-        } else {
+        } else if (isEE11) {
+            jsfApp.addAsLibraries(new File(FATSuite.MYFACES_API_41));
+        }else {
             jsfApp.addAsLibraries(new File(FATSuite.MYFACES_API));
         }
 

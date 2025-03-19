@@ -42,16 +42,15 @@ public class PartitionedCookieServlet extends HttpServlet {
             resp.addCookie(sameSiteNoneOnlyCookie);
 
             //Sets both SameSite=None and Partitioned
-            Cookie sameSiteNoneParitionedCookie = new Cookie("AddCookie_SameSiteNone_Name","AddCookie_SameSiteNone_Value");
-            sameSiteNoneParitionedCookie.setAttribute("SameSite", "None");
-            sameSiteNoneParitionedCookie.setAttribute("Partitioned", "");
-            resp.addCookie(sameSiteNoneParitionedCookie);
+            Cookie sameSiteNonepartitionedCookie = new Cookie("AddCookie_SameSiteNone_Name","AddCookie_SameSiteNone_Value");
+            sameSiteNonepartitionedCookie.setAttribute("SameSite", "None");
+            sameSiteNonepartitionedCookie.setAttribute("Partitioned", "");
+            resp.addCookie(sameSiteNonepartitionedCookie);
 
-            // Not a supported combination by Browsers, but cookie is created to test that the behavior is consistent
-            Cookie sameSiteLaxParitionedCookie = new Cookie("AddCookie_SameSiteLax_Name","AddCookie_SameSiteLax_Value");
-            sameSiteLaxParitionedCookie.setAttribute("SameSite", "Lax");
-            sameSiteLaxParitionedCookie.setAttribute("Partitioned", "");
-            resp.addCookie(sameSiteLaxParitionedCookie);
+            Cookie sameSiteLaxpartitionedCookie = new Cookie("AddCookie_SameSiteLax_Name","AddCookie_SameSiteLax_Value");
+            sameSiteLaxpartitionedCookie.setAttribute("SameSite", "Lax");
+            sameSiteLaxpartitionedCookie.setAttribute("Partitioned", ""); // will be ignored by server since partitioned doesn't apply to lax
+            resp.addCookie(sameSiteLaxpartitionedCookie);
 
         }
     

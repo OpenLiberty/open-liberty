@@ -6,17 +6,13 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
 fat.test.container.images:\
     seleniarm/standalone-chromium:4.8.3,\
-    selenium/standalone-chrome:4.8.3,\
-    alpine:3.16
+    selenium/standalone-chrome:4.8.3
 
 tested.features: \
     expressionlanguage-4.0, \
@@ -40,11 +36,10 @@ tested.features: \
     cdi-4.0,\
     expressionlanguage-6.0,\
     faces-4.1,\
-    noship-1.0,\
     cdi-4.1,\
     servlet-6.1,\
     websocket-2.2,\
-    beanvalidation-3.1,\
+    validation-3.1,\
     persistence-3.2,\
     persistencecontainer-3.2
 
@@ -107,4 +102,5 @@ fat.project: true
     org.seleniumhq.selenium:selenium-chromium-driver;version=4.8.3,\
     org.seleniumhq.selenium:selenium-remote-driver;version=4.8.3,\
     org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+    io.openliberty.faces.fat.selenium.util.internal;version=latest,\
     xml-apis:xml-apis;version=1.4.01

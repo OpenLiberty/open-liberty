@@ -1,0 +1,8 @@
+#Mon Jun 04 12:57:37 EDT 2012
+com.ibm.websphere.CreationDate=Mon Jun 04 12\:57\:37 EDT 2012
+com.ibm.websphere.ltpa.version=2.0
+com.ibm.websphere.ltpa.SharedKey=badKeys
+com.ibm.websphere.CreationHost=localhost
+com.ibm.websphere.ltpa.PrivateKey=badPrivateKey
+com.ibm.websphere.ltpa.Realm=SecureRealm
+com.ibm.websphere.ltpa.PublicKey=badPublicKey

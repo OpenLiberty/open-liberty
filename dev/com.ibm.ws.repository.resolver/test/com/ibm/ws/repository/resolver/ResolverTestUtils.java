@@ -65,6 +65,8 @@ public class ResolverTestUtils {
                 will(returnValue(true));
                 allowing(featureDefinition).isKernel();
                 will(returnValue(isKernel));
+                allowing(featureDefinition).isVersionless();
+                will(returnValue(false));
             }
         });
         return featureDefinition;

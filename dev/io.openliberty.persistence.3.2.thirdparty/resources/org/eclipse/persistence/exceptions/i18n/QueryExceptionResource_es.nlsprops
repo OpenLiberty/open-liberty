@@ -341,7 +341,7 @@
 
 6174=No se ha proporcionado ning\u00fan valor para la propiedad de sesi\u00f3n [{0}]. Esta excepci\u00f3n es posible cuando se utilizan criterios adicionales o columnas de discriminador de inquilino sin especificar la propiedad contextual asociada. Estas propiedades deben establecerse utilizando EntityManager, EntityManagerFactory o las propiedades de unidad de persistencia. Si se utiliza EclipseLink nativo, estas propiedades deben establecerse directamente en la sesi\u00f3n.
 
-6175=Las consultas de SQL nativo se han inhabilitado. Esto se hace estableciendo la propiedad de unidad de persistencia "eclipselink.jdbc.allow-native-sql-queries" en false o teniendo al menos una entidad de varios inquilinos definida en la unidad de persistencia. Compruebe la especificaci\u00f3n de la unidad de persistencia. Para permitir las consultas de SQL nativo, establezca esta propiedad en true. De forma alternativa, las consultas individuales pueden ignorar este valor estableciendo la sugerencia de consulta "eclipselink.jdbc.allow-native-sql-query" en true.
+6175=Las consultas de SQL nativo se han inhabilitado. Esto se realiza estableciendo la propiedad de unidad de persistencia "{0}" en false o teniendo al menos una entidad multiarrendatario definida en la unidad de persistencia. Compruebe la especificaci\u00f3n de la unidad de persistencia. Para permitir las consultas de SQL nativo, establezca esta propiedad en true. De forma alternativa, las consultas individuales pueden ignorar este valor estableciendo la sugerencia de consulta "{1}" en true.
 
 6176=Se ha generado una excepci\u00f3n al inicializar el constructor a partir de la clase [{0}]: [{1}]
 

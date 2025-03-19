@@ -27,9 +27,9 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -66,7 +66,7 @@ public class CRaCResourceFailCheckpointTest {
     public void setUp() throws Exception {
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, true, true, true, //
                         server -> {
-                            assertNotNull("'SRVE0169I: ' message not found in log before rerstore",
+                            assertNotNull("'SRVE0169I: ' message not found in log before restore",
                                           server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: " + APP_NAME, 0));
                             assertNotNull("'CWWKZ0001I: ' message not found in log.",
                                           server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));
@@ -76,6 +76,12 @@ public class CRaCResourceFailCheckpointTest {
                                           server.waitForStringInLogUsingMark("TESTING - beforeCheckpoint " + 2, 0));
                             assertNotNull("beforeCheckpoint not called",
                                           server.waitForStringInLogUsingMark("TESTING - beforeCheckpoint " + 1, 0));
+                            assertNotNull("beforeCheckpoint not called",
+                                          server.waitForStringInLogUsingMark("TESTING - afterRestore " + 1, 0));
+                            assertNotNull("beforeCheckpoint not called",
+                                          server.waitForStringInLogUsingMark("TESTING - afterRestore " + 2, 0));
+                            assertNotNull("beforeCheckpoint not called",
+                                          server.waitForStringInLogUsingMark("TESTING - afterRestore " + 3, 0));
                         }));
 
     }

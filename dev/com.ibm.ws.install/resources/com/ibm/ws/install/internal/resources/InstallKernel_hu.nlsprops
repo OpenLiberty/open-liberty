@@ -954,3 +954,19 @@ ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: A(z) {0} nyilv\u00e1nos kulcs azonos\u0
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Lehet, hogy a nyilv\u00e1nos kulcs megv\u00e1ltozott. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Ha a nyilv\u00e1nos kulcs helyi f\u00e1jl, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megfelel\u0151 f\u00e1jlt adja meg.
 
+ERROR_MISSING_PLATFORM_NAME=CWWKF1515E: A(z) {0} platform nem tal\u00e1lhat\u00f3.
+ERROR_MISSING_PLATFORM_NAME.explanation=A konfigur\u00e1ci\u00f3s vagy k\u00f6rnyezeti v\u00e1ltoz\u00f3 \u00e1ltal megadott platformn\u00e9v nem tal\u00e1lhat\u00f3.
+ERROR_MISSING_PLATFORM_NAME.useraction=Ellen\u0151rizze a platform nev\u00e9nek \u00e9s verzi\u00f3j\u00e1nak helyes\u00edr\u00e1s\u00e1t, p\u00e9ld\u00e1ul microProfile-6.1 .
+
+ERROR_NO_DERIVED_PLATFORM=CWWKF1516E: A platformot nem lehetett meghat\u00e1rozni. A k\u00f6vetkez\u0151 verzi\u00f3 n\u00e9lk\u00fcli szolg\u00e1ltat\u00e1sok nem telep\u00edthet\u0151k: {0} .
+ERROR_NO_DERIVED_PLATFORM.explanation= A platform nincs be\u00e1ll\u00edtva, vagy nem sz\u00e1rmaztathat\u00f3 a megl\u00e9v\u0151 verzi\u00f3j\u00fa szolg\u00e1ltat\u00e1sokb\u00f3l. 
+ERROR_NO_DERIVED_PLATFORM.useraction=Adjon hozz\u00e1 egy platformot a verzi\u00f3 n\u00e9lk\u00fcli funkci\u00f3khoz.
+
+ERROR_VERSIONLESS_INSTALL=CWWKF1517E: Az installFeature parancs nem t\u00e1mogatja a verzi\u00f3 n\u00e9lk\u00fcli szolg\u00e1ltat\u00e1sokat.
+ERROR_VERSIONLESS_INSTALL.explanation= Az installFeature paranccsal telep\u00edteni pr\u00f3b\u00e1lt szolg\u00e1ltat\u00e1snak nincs megadva verzi\u00f3ja a szolg\u00e1ltat\u00e1s nev\u00e9ben.
+ERROR_VERSIONLESS_INSTALL.useraction=Haszn\u00e1lja az installServerFeatures parancsot, amely t\u00e1mogatja a verzi\u00f3 n\u00e9lk\u00fcli szolg\u00e1ltat\u00e1sokat, vagy telep\u00edtsen egy m\u00e1sik szolg\u00e1ltat\u00e1st, amely nem verzi\u00f3 n\u00e9lk\u00fcli.
+
+LOG_INSTALL_WITH_PLATFORM=CWWKF1314I: Telep\u00edt\u00e9s a k\u00f6vetkez\u0151 platformokon: {0} .
+LOG_INSTALL_WITH_PLATFORM.explanation=A megadott platformverzi\u00f3k a verzi\u00f3 n\u00e9lk\u00fcli funkci\u00f3k megold\u00e1s\u00e1ra szolg\u00e1ltak.
+LOG_INSTALL_WITH_PLATFORM.useraction=Nincs teend\u0151.
+

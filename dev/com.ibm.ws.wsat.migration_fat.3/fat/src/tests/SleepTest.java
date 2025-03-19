@@ -33,6 +33,8 @@ import web.simpleclient.SleepClientServlet;
 @RunWith(FATRunner.class)
 public class SleepTest extends DBTestBase {
 
+	private static final float MIN_PERF_FACTOR = 0.3f;
+
 	@Server("WSATSleep")
     @TestServlet(servlet = SleepClientServlet.class, contextRoot = "simpleClient")
 	public static LibertyServer server;
@@ -65,7 +67,10 @@ public class SleepTest extends DBTestBase {
 		server2.updateServerConfiguration(config);
 
 		meanStartTime = FATUtils.startServers(server, server2);
-		final float perfFactor = (float)normalStartTime.getSeconds() / (float)meanStartTime.getSeconds();
+		float perfFactor = (float)normalStartTime.getSeconds() / (float)meanStartTime.getSeconds();
+		if (perfFactor < MIN_PERF_FACTOR) {
+			perfFactor = MIN_PERF_FACTOR;
+		}
 		Log.info(SleepTest.class, "beforeTests", "Mean startup time: "+meanStartTime+", Perf factor="+perfFactor);
 		setTestQuerySuffix("perfFactor="+perfFactor);
 	}

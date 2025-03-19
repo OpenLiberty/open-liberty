@@ -35,6 +35,14 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
+// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_RESPONSE_STATUS_CODE;
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
+import static io.opentelemetry.semconv.SemanticAttributes.URL_PATH;
+import static io.opentelemetry.semconv.SemanticAttributes.URL_QUERY;
+import static io.opentelemetry.semconv.SemanticAttributes.URL_FULL;
+import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
+
 /**
  * Test that the HTTP_ROUTE attribute is set correctly for a method with placeholders
  */
@@ -71,20 +79,35 @@ public class JaxRsRouteTestServlet extends FATServlet {
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
 
-        assertThat(clientSpan, isSpan()
-                        .withKind(SpanKind.CLIENT)
-                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
-                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getWithId/myIdForTesting"));
+        if(featureVersion.equals("2.0")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(URL_FULL, testUri.toString() + "/getWithId/myIdForTesting"));
 
-        assertThat(serverSpan, isSpan()
-                        .withKind(SpanKind.SERVER)
-                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
-                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getWithId/{id}")
-                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getWithId/myIdForTesting"));
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(HTTP_ROUTE, getPath() + "/getWithId/{id}")
+                            .withAttribute(URL_PATH, getPath() + "/getWithId/myIdForTesting"));
+        } else {
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                            .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                            .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getWithId/myIdForTesting"));
 
-        if (featureVersion.equals("1.1")) {
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                            .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                            .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getWithId/{id}")
+                            .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getWithId/myIdForTesting"));
+
+        }
+        if (featureVersion.equals("1.1") || featureVersion.equals("2.0")) {
             assertThat(serverSpan, hasName("GET " + getPath() + "/getWithId/{id}"));
         } else {
             assertThat(serverSpan, hasName(getPath() + "/getWithId/{id}"));
@@ -111,20 +134,36 @@ public class JaxRsRouteTestServlet extends FATServlet {
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
 
-        assertThat(clientSpan, isSpan()
-                        .withKind(SpanKind.CLIENT)
-                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
-                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getWithQueryParam?id=myIdForTesting"));
+        if(featureVersion.equals("2.0")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(URL_FULL, testUri.toString() + "/getWithQueryParam?id=myIdForTesting"));
 
-        assertThat(serverSpan, isSpan()
-                        .withKind(SpanKind.SERVER)
-                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
-                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getWithQueryParam")
-                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getWithQueryParam?id=myIdForTesting"));
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(HTTP_ROUTE, getPath() + "/getWithQueryParam")
+                            .withAttribute(URL_QUERY, "id=myIdForTesting"));
+                            
+        } else {
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                            .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                            .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getWithQueryParam?id=myIdForTesting"));
 
-        if (featureVersion.equals("1.1")) {
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                            .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                            .withAttribute(SemanticAttributes.HTTP_ROUTE, getPath() + "/getWithQueryParam")
+                            .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getWithQueryParam?id=myIdForTesting"));
+        
+        }
+        if (featureVersion.equals("1.1") || featureVersion.equals("2.0")) {
             assertThat(serverSpan, hasName("GET " + getPath() + "/getWithQueryParam"));
         } else {
             assertThat(serverSpan, hasName(getPath() + "/getWithQueryParam"));
@@ -132,8 +171,8 @@ public class JaxRsRouteTestServlet extends FATServlet {
     }
 
     /*
-     * Ideal behaviour for this test would be HHTP_ROUTE = /getSubResourceWithPathParam/{id}/details
-     * Due to the current behaviour when sub resources are used is that only the context root is returned
+     * Ideal behaviour for this test would be HTTP_ROUTE = /getSubResourceWithPathParam/{id}/details
+     * Due to the current behaviour when sub resources are used, only the context root is returned
      */
     @Test
     public void testRouteWithSubResourceWithPathParam() {
@@ -151,23 +190,38 @@ public class JaxRsRouteTestServlet extends FATServlet {
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
 
-        assertThat(clientSpan, isSpan()
-                        .withKind(SpanKind.CLIENT)
-                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
-                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithPathParam/myIdForTesting/details"));
+        if(featureVersion.equals("2.0")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(URL_FULL, testUri.toString() + "/getSubResourceWithPathParam/myIdForTesting/details"));
 
-        assertThat(serverSpan, isSpan()
-                        .withKind(SpanKind.SERVER)
-                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
-                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, request.getContextPath())
-                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithPathParam/myIdForTesting/details"));
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(HTTP_ROUTE, request.getContextPath())
+                            .withAttribute(URL_PATH, getPath() + "/getSubResourceWithPathParam/myIdForTesting/details"));
+        } else {
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                            .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                            .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithPathParam/myIdForTesting/details"));
+
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                            .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                            .withAttribute(SemanticAttributes.HTTP_ROUTE, request.getContextPath())
+                            .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithPathParam/myIdForTesting/details"));
+        }
     }
 
     /*
-     * Ideal behaviour for this test would be HHTP_ROUTE = /getSubResourceWithQueryParam/details
-     * Due to the current behaviour when sub resources are used is that only the context root is returned
+     * Ideal behaviour for this test would be HTTP_ROUTE = /getSubResourceWithQueryParam/details
+     * Due to the current behaviour when sub resources are used, only the context root is returned
      */
     @Test
     public void testRouteWithSubResourceWithQueryParam() {
@@ -188,19 +242,34 @@ public class JaxRsRouteTestServlet extends FATServlet {
 
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
+            if(featureVersion.equals("2.0")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(URL_FULL, testUri.toString() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
 
-        assertThat(clientSpan, isSpan()
-                        .withKind(SpanKind.CLIENT)
-                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
-                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(HTTP_ROUTE, request.getContextPath()));
+                            //.withAttribute(SemanticAttributes.URL_PATH, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
+            } else {
+                assertThat(clientSpan, isSpan()
+                                .withKind(SpanKind.CLIENT)
+                                .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                                .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                                .withAttribute(SemanticAttributes.HTTP_URL, testUri.toString() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
 
-        assertThat(serverSpan, isSpan()
-                        .withKind(SpanKind.SERVER)
-                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
-                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
-                        .withAttribute(SemanticAttributes.HTTP_ROUTE, request.getContextPath()));
-//                        .withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
+                assertThat(serverSpan, isSpan()
+                                .withKind(SpanKind.SERVER)
+                                .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                                .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L)
+                                .withAttribute(SemanticAttributes.HTTP_ROUTE, request.getContextPath()));
+                                //.withAttribute(SemanticAttributes.HTTP_TARGET, getPath() + "/getSubResourceWithQueryParam/details?id=myIdForTesting"));
+                }
+    
     }
 
     private URI getUri() {

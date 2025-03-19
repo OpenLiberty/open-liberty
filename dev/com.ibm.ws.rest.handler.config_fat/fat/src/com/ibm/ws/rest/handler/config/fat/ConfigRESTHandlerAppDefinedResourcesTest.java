@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,6 @@ import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
 public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
@@ -121,7 +120,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedAdminObject() throws Exception {
-        JsonObject cspec = new HttpsRequest(server, "/ibm/api/config/adminObject/adminObject%5Bjava:global%2Fenv%2Feis%2FconSpec1%5D")
+        JsonObject cspec = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/adminObject/adminObject%5Bjava:global%2Fenv%2Feis%2FconSpec1%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + cspec;
 
@@ -149,7 +148,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedAdminObjectsQueryByComponent() throws Exception {
-        JsonArray ispecs = new HttpsRequest(server, "/ibm/api/config/adminObject?component=AppDefinedResourcesBean")
+        JsonArray ispecs = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/adminObject?component=AppDefinedResourcesBean")
                         .run(JsonArray.class);
         String err = "unexpected response: " + ispecs;
         assertEquals(err, 1, ispecs.size());
@@ -179,7 +178,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedConnectionFactoriesByJndiName() throws Exception {
-        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/connectionFactory?jndiName=java:module%2Fenv%2Feis%2Fcf1")
+        JsonArray cfs = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/connectionFactory?jndiName=java:module%2Fenv%2Feis%2Fcf1")
                         .run(JsonArray.class);
         String err = "unexpected response: " + cfs;
         assertEquals(2, cfs.size());
@@ -268,7 +267,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedConnectionFactoryFromEmbeddedResourceAdapter() throws Exception {
-        JsonArray array = new HttpsRequest(server, "/ibm/api/config/connectionFactory?component=AppDefinedResourcesBean")
+        JsonArray array = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/connectionFactory?component=AppDefinedResourcesBean")
                         .run(JsonArray.class);
         String err = "unexpected response: " + array;
         assertEquals(err, 1, array.size());
@@ -324,7 +323,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     @AllowedFFDC("java.lang.IllegalArgumentException") // java:app/env/ds1's connectionManager has duration value that is not valid
     @Test
     public void testAppDefinedConnectionManager() throws Exception {
-        JsonObject cm = new HttpsRequest(server, "/ibm/api/config/connectionManager/application%5BAppDefResourcesApp%5D%2FdataSource%5Bjava:app%2Fenv%2Fjdbc%2Fds1%5D%2FconnectionManager")
+        JsonObject cm = FATSuite
+                        .createHttpsRequestWithAdminUser(server,
+                                                         "/ibm/api/config/connectionManager/application%5BAppDefResourcesApp%5D%2FdataSource%5Bjava:app%2Fenv%2Fjdbc%2Fds1%5D%2FconnectionManager")
                         .run(JsonObject.class);
         String err = "unexpected response: " + cm;
 
@@ -347,7 +348,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedDataSource() throws Exception {
-        JsonObject ds = new HttpsRequest(server, "/ibm/api/config/dataSource/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FdataSource%5Bjava:module%2Fenv%2Fjdbc%2Fds2%5D")
+        JsonObject ds = FATSuite
+                        .createHttpsRequestWithAdminUser(server,
+                                                         "/ibm/api/config/dataSource/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FdataSource%5Bjava:module%2Fenv%2Fjdbc%2Fds2%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + ds;
 
@@ -456,7 +459,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testAppDefinedDataSourceInJavaGlobalAndTestConnection() throws Exception {
-        JsonObject ds = new HttpsRequest(server, "/ibm/api/config/dataSource/dataSource%5Bjava:global%2Fenv%2Fjdbc%2Fds4%5D")
+        JsonObject ds = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource/dataSource%5Bjava:global%2Fenv%2Fjdbc%2Fds4%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + ds;
 
@@ -532,7 +535,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                      api.getString(0));
 
         // Use validation API
-        JsonObject json = new HttpsRequest(server, api.getString(0)).run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, api.getString(0)).run(JsonObject.class);
         err = "unexpected response: " + json;
 
         assertEquals(err, "dataSource[java:global/env/jdbc/ds4]", json.getString("uid"));
@@ -556,7 +559,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     @AllowedFFDC("java.lang.IllegalArgumentException") // java:app/env/ds1's connectionManager has duration value that is not valid
     @Test
     public void testAppDefinedDataSourcesAreIncluded() throws Exception {
-        JsonArray dataSources = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
+        JsonArray dataSources = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         String err = "unexpected response: " + dataSources;
         assertEquals(err, 6, dataSources.size());
     }
@@ -567,7 +570,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedDataSourcesWithSameJndiName() throws Exception {
-        JsonArray dataSources = new HttpsRequest(server, "/ibm/api/config/dataSource?jndiName=java:comp%2Fenv%2Fjdbc%2Fds3").run(JsonArray.class);
+        JsonArray dataSources = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/dataSource?jndiName=java:comp%2Fenv%2Fjdbc%2Fds3").run(JsonArray.class);
         String err = "unexpected response: " + dataSources;
         assertEquals(err, 2, dataSources.size());
 
@@ -680,7 +683,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedDestination() throws Exception {
-        JsonObject q = new HttpsRequest(server, "/ibm/api/config/jmsDestination/jmsDestination%5Bjava:global%2Fenv%2Fjms%2Fdest1%5D")
+        JsonObject q = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsDestination/jmsDestination%5Bjava:global%2Fenv%2Fjms%2Fdest1%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + q;
 
@@ -704,7 +707,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedJDBCDriver() throws Exception {
-        JsonObject driver = new HttpsRequest(server, "/ibm/api/config/jdbcDriver/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FdataSource%5Bjava:comp%2Fenv%2Fjdbc%2Fds3%5D%2FjdbcDriver")
+        JsonObject driver = FATSuite
+                        .createHttpsRequestWithAdminUser(server,
+                                                         "/ibm/api/config/jdbcDriver/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FdataSource%5Bjava:comp%2Fenv%2Fjdbc%2Fds3%5D%2FjdbcDriver")
                         .run(JsonObject.class);
         String err = "unexpected response: " + driver;
 
@@ -738,7 +743,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedJMSConnectionFactory() throws Exception {
-        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/jmsConnectionFactory?application=AppDefResourcesApp&module=AppDefResourcesApp.war")
+        JsonArray cfs = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsConnectionFactory?application=AppDefResourcesApp&module=AppDefResourcesApp.war")
                         .run(JsonArray.class);
         String err = "unexpected response: " + cfs;
         assertEquals(1, cfs.size());
@@ -801,7 +806,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedJMSQueueConnectionFactory() throws Exception {
-        JsonObject cf = new HttpsRequest(server, "/ibm/api/config/jmsQueueConnectionFactory/application[AppDefResourcesApp]%2Fmodule[AppDefResourcesApp.war]%2FjmsQueueConnectionFactory[java:module%2Fenv%2Fjms%2Fqcf]")
+        JsonObject cf = FATSuite
+                        .createHttpsRequestWithAdminUser(server,
+                                                         "/ibm/api/config/jmsQueueConnectionFactory/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FjmsQueueConnectionFactory%5Bjava:module%2Fenv%2Fjms%2Fqcf%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + cf;
 
@@ -859,7 +866,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedJMSTopicConnectionFactory() throws Exception {
-        JsonObject cf = new HttpsRequest(server, "/ibm/api/config/jmsTopicConnectionFactory/application[AppDefResourcesApp]%2FjmsTopicConnectionFactory[java:app%2Fenv%2Fjms%2Ftcf]")
+        JsonObject cf = FATSuite
+                        .createHttpsRequestWithAdminUser(server,
+                                                         "/ibm/api/config/jmsTopicConnectionFactory/application%5BAppDefResourcesApp%5D%2FjmsTopicConnectionFactory%5Bjava:app%2Fenv%2Fjms%2Ftcf%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + cf;
 
@@ -909,7 +918,8 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedQueue() throws Exception {
-        JsonObject q = new HttpsRequest(server, "/ibm/api/config/jmsQueue/application%5BAppDefResourcesApp%5D%2FjmsQueue%5Bjava:app%2Fenv%2Fjms%2Fqueue1%5D")
+        JsonObject q = FATSuite
+                        .createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsQueue/application%5BAppDefResourcesApp%5D%2FjmsQueue%5Bjava:app%2Fenv%2Fjms%2Fqueue1%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + q;
 
@@ -937,7 +947,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testAppDefinedTopicsQueryByModuleAndComponent() throws Exception {
-        JsonArray topics = new HttpsRequest(server, "/ibm/api/config/jmsTopic?module=AppDefResourcesEJB.jar&component=AppDefinedResourcesBean")
+        JsonArray topics = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/jmsTopic?module=AppDefResourcesEJB.jar&component=AppDefinedResourcesBean")
                         .run(JsonArray.class);
         String err = "unexpected response: " + topics;
         assertEquals(err, 1, topics.size());
@@ -973,7 +983,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testConnectionFactoryFromEmbeddedResourceAdapter() throws Exception {
-        JsonArray cfs = new HttpsRequest(server, "/ibm/api/config/connectionFactory?jndiName=eis/cf3")
+        JsonArray cfs = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/connectionFactory?jndiName=eis/cf3")
                         .run(JsonArray.class);
         String err = "unexpected response: " + cfs;
         assertEquals(err, 1, cfs.size());
@@ -1030,7 +1040,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testNestedDataSourceCase() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/config/DATASOURCE").run(JsonArray.class);
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/config/DATASOURCE").run(JsonArray.class);
         String err = "unexpected response: " + json;
 
         assertEquals(err, 1, json.size());
@@ -1093,7 +1103,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testValidateAppDefinedConnectionFactories() throws Exception {
-        JsonArray array = new HttpsRequest(server, "/ibm/api/validation/connectionFactory")
+        JsonArray array = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/connectionFactory")
                         .run(JsonArray.class);
         String err = "unexpected response: " + array;
         assertEquals(err, 4, array.size());
@@ -1187,7 +1197,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testValidateAppDefinedDataSources() throws Exception {
-        JsonArray array = new HttpsRequest(server, "/ibm/api/validation/dataSource?auth=container&authAlias=derbyAuth3")
+        JsonArray array = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource?auth=container&authAlias=derbyAuth3")
                         .run(JsonArray.class);
         String err = array.toString();
         assertEquals(err, 6, array.size());
@@ -1321,7 +1331,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testValidateAppDefinedJMSConnectionFactory() throws Exception {
-        JsonObject j = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FjmsConnectionFactory%5Bjava%3Acomp%2Fenv%2Fjms%2Fcf%5D")
+        JsonObject j = FATSuite
+                        .createHttpsRequestWithAdminUser(server,
+                                                         "/ibm/api/validation/jmsConnectionFactory/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FjmsConnectionFactory%5Bjava%3Acomp%2Fenv%2Fjms%2Fcf%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + j;
 
@@ -1345,7 +1357,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testValidateAppDefinedJMSQueueConnectionFactory() throws Exception {
-        JsonObject j = new HttpsRequest(server, "/ibm/api/validation/jmsQueueConnectionFactory/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FjmsQueueConnectionFactory%5Bjava%3Amodule%2Fenv%2Fjms%2Fqcf%5D")
+        JsonObject j = FATSuite
+                        .createHttpsRequestWithAdminUser(server,
+                                                         "/ibm/api/validation/jmsQueueConnectionFactory/application%5BAppDefResourcesApp%5D%2Fmodule%5BAppDefResourcesApp.war%5D%2FjmsQueueConnectionFactory%5Bjava%3Amodule%2Fenv%2Fjms%2Fqcf%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + j;
 
@@ -1365,7 +1379,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @Test
     public void testValidateAppDefinedJMSTopicConnectionFactory() throws Exception {
-        JsonObject j = new HttpsRequest(server, "/ibm/api/validation/jmsTopicConnectionFactory/application%5BAppDefResourcesApp%5D%2FjmsTopicConnectionFactory%5Bjava%3Aapp%2Fenv%2Fjms%2Ftcf%5D")
+        JsonObject j = FATSuite
+                        .createHttpsRequestWithAdminUser(server,
+                                                         "/ibm/api/validation/jmsTopicConnectionFactory/application%5BAppDefResourcesApp%5D%2FjmsTopicConnectionFactory%5Bjava%3Aapp%2Fenv%2Fjms%2Ftcf%5D")
                         .run(JsonObject.class);
         String err = "unexpected response: " + j;
 

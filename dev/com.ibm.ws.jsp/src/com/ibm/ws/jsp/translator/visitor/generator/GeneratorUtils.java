@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -626,8 +626,22 @@ public class GeneratorUtils {
         writer.println("    }");
         writer.println("  }");
         writer.println("}");
+        writer.println();
     }
 
+   /*
+    *  Refactored in PH62212. Any clean up at the end of the jsp service method should be invoked here.
+    */
+    public static void generate_finalCleanUp_method(JavaCodeWriter writer, JspOptions jspOptions) {
+        writer.println("public void _jsp_performFinalCleanUp(java.util.ArrayList _jspTagList, PageContext pageContext) {");
+        if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
+            writer.println("_jsp_cleanUpTagArrayList(_jspTagList);");
+        }
+        writer.println("_jspxFactory.releasePageContext(pageContext);");
+        writer.println("}");
+        writer.println();
+    }
+    
     public static void generateVersionInformation(JavaCodeWriter writer, boolean isDebugClassFile) {
         writer.println("private static String _jspx_classVersion;");
         //		 begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.

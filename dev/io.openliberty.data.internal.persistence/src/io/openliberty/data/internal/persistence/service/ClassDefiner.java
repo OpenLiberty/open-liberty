@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,18 @@ import java.security.AllPermission;
 import java.security.Permissions;
 import java.security.ProtectionDomain;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+
+import io.openliberty.data.internal.persistence.Util;
+
 /**
  * Initially copied from @nmittles pull #25248
  */
 class ClassDefiner {
+    private static final TraceComponent tc = Tr.register(ClassDefiner.class);
+
     /**
      * Accessible {@link ClassLoader#findLoadedClass}. This field is lazily
      * initialized by {@link #findLoadedClass}.
@@ -87,7 +95,11 @@ class ClassDefiner {
      * @throws LinkageError     if a class is defined twice within the given class loader
      * @throws ClassFormatError if the bytes passed in are invalid
      */
+    @Trivial
     Class<?> defineClass(ClassLoader classLoader, String className, byte[] classbytes) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "defineClass", classLoader, className, classbytes.length);
+
         Method defineClassMethod = svDefineClassMethod;
         if (defineClassMethod == null) {
             Permissions perms = new Permissions();
@@ -112,12 +124,17 @@ class ClassDefiner {
         try {
             // We declare the class using a non-dynamic AllPermission
             // ProtectionDomain so that it will be ignored by Java 2 security.
-            return (Class<?>) defineClassMethod.invoke(classLoader,
-                                                       className,
-                                                       classbytes,
-                                                       0,
-                                                       classbytes.length,
-                                                       svAllPermissionProtectionDomain);
+            Class<?> c = (Class<?>) defineClassMethod.invoke(classLoader,
+                                                             className,
+                                                             classbytes,
+                                                             0,
+                                                             classbytes.length,
+                                                             svAllPermissionProtectionDomain);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "defineClass", Util.toString(c, ""));
+
+            return c;
         } catch (IllegalAccessException ex) {
             throw new IllegalStateException(ex);
         } catch (InvocationTargetException ex) {
@@ -144,7 +161,11 @@ class ClassDefiner {
      * @throws LinkageError     if a class is defined twice within the given class loader
      * @throws ClassFormatError if the bytes passed in are invalid
      */
+    @Trivial
     Class<?> findLoadedOrDefineClass(ClassLoader classLoader, String className, byte[] classbytes) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "findLoadedOrDefineClass", classLoader, className, classbytes.length);
+
         Class<?> klass = findLoadedClass(classLoader, className);
         if (klass == null) {
             try {
@@ -157,7 +178,9 @@ class ClassDefiner {
             }
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "findLoadedOrDefineClass", klass);
+
         return klass;
     }
-
 }

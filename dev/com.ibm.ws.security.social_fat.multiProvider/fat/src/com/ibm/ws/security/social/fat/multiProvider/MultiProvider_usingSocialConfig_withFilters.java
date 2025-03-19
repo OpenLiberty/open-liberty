@@ -114,7 +114,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings.setProviderButton(SocialConstants.FACEBOOK_LOGIN + "1");
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         // Then use the config that does match a filter
         // expectations will look for the login panel immediately after we try to invoke the filter protected app
@@ -125,7 +125,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings2.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_facebook");
 
         List<validationData> expectations2 = setGoodSocialExpectations(updatedSocialTestSettings2, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings2, expectations2);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings2, expectations2);
 
     }
 
@@ -158,7 +158,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings.setProviderButton(SocialConstants.LINKEDIN_LOGIN + "1");
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         // Then use the config that does match a filter
         // expectations will look for the login panel immediately after we try to invoke the filter protected app
@@ -169,7 +169,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings2.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_linkedin");
 
         List<validationData> expectations2 = setGoodSocialExpectations(updatedSocialTestSettings2, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings2, expectations2);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings2, expectations2);
     }
 
     /**
@@ -205,7 +205,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings.setProviderButton(SocialConstants.GITHUB_LOGIN + "/1");
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         // Then use the config that does match a filter
         // expectations will look for the login panel immediately after we try to invoke the filter protected app
@@ -216,7 +216,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings2.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_github");
 
         List<validationData> expectations2 = setGoodSocialExpectations(updatedSocialTestSettings2, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings2, expectations2);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings2, expectations2);
 
     }
 
@@ -247,7 +247,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings.setProviderButton(SocialConstants.OAUTH_2_LOGIN + 1);
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         // Then use the config that does match a filter
         // expectations will look for the login panel immediately after we try to invoke the filter protected app
@@ -258,7 +258,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings2.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oauth2");
 
         List<validationData> expectations2 = setGoodSocialExpectations(updatedSocialTestSettings2, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings2, expectations2);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings2, expectations2);
     }
 
     /**
@@ -288,7 +288,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings.setProviderButton(SocialConstants.OIDC_LOGIN + 1);
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
         // Then use the config that does match a filter
         // expectations will look for the login panel immediately after we try to invoke the filter protected app
@@ -299,7 +299,7 @@ public class MultiProvider_usingSocialConfig_withFilters extends SocialCommonTes
         updatedSocialTestSettings2.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidc");
 
         List<validationData> expectations2 = setGoodSocialExpectations(updatedSocialTestSettings2, doNotAddJWTTokenValidation);
-        genericSocial(_testName, null, inovke_social_login_actions, updatedSocialTestSettings2, expectations2);
+        genericSocial(_testName, null, invoke_social_login_actions, updatedSocialTestSettings2, expectations2);
 
     }
 

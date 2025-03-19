@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ apply from: '../wlp-gradle/subprojects/fat.gradle'
 dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common'),
   	  project(':com.ibm.ws.security.fat.common.jwt'),
-      project(':io.openliberty.org.apache.commons.logging'),
       project(':com.ibm.ws.org.apache.httpcomponents'),
       'net.sourceforge.htmlunit:htmlunit:2.44.0',
       'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',

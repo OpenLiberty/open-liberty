@@ -15,3 +15,4 @@ IBM-API-Package: \
   com.ibm.ws.microprofile.contextpropagation.1.0
 kind=ga
 edition=core
+WLP-Platform: microProfile-4.0,microProfile-4.1

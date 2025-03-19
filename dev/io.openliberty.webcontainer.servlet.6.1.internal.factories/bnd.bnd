@@ -45,7 +45,7 @@ Service-Component: \
   com.ibm.ws.webcontainer.v61.httpBehavior; \
     implementation:=com.ibm.wsspi.http.ee.behaviors.HttpBehavior; \
     provide:=com.ibm.wsspi.http.ee.behaviors.HttpBehavior; \
-    properties:="useEE10Cookies:Boolean=true"
+    properties:="useEE10Cookies:Boolean=true,isEE11:Boolean=true"
 
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 

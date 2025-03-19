@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #
 #COMPONENTPREFIX CWWKT
@@ -210,3 +207,8 @@ log.rollover.start.time.format.warning.useraction=\u8acb\u78ba\u4fdd\u4ee5 HH:MM
 log.rollover.interval.too.short.warning=CWWKT0046W: \u65e5\u8a8c\u8f2a\u66ff\u9593\u9694\u9577\u5ea6\u4e0d\u80fd\u5c0f\u65bc 1 \u5206\u9418\u3002 \u5982\u679c\u6307\u5b9a\u5c0f\u65bc 1 \u5206\u9418\u7684\u503c\uff0c\u5247\u65e5\u8a8c\u8f2a\u66ff\u9593\u9694\u6703\u8a2d\u70ba\u9810\u8a2d\u503c 1 \u5929\u3002
 log.rollover.interval.too.short.warning.explanation=\u65e5\u8a8c\u8f2a\u66ff\u9593\u9694\u9577\u5ea6\u4e0d\u80fd\u5c0f\u65bc 1 \u5206\u9418\u3002
 log.rollover.interval.too.short.warning.useraction=\u8acb\u6307\u5b9a\u7b49\u65bc\u6216\u5927\u65bc 1 \u5206\u9418\u7684\u65e5\u8a8c\u8f2a\u66ff\u9593\u9694\u3002
+
+#only if the Set-Cookie is added with the response set/addHeader API.  The best practice is to use Cookie() API which already has this check and uses its own message.
+cookie.attribute.name.invalid=CWWKT0047E: [{0}] Cookie \u5c6c\u6027\u5305\u542b\u7121\u6548\u5b57\u5143\u3002
+cookie.attribute.name.invalid.explanation=The cookie attribute name cannnot contain any special [()<>@,;:\\/[]?={} \t] character.
+cookie.attribute.name.invalid.useraction=\u8acb\u66f4\u6b63 Cookie \u5c6c\u6027\u540d\u7a31\uff0c\u4e0d\u8981\u4f7f\u7528\u4efb\u4f55\u7279\u6b8a\u5b57\u5143\u3002

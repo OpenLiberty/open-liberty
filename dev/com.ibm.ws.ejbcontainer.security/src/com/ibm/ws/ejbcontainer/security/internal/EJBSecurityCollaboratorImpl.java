@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,7 +51,7 @@ import com.ibm.ws.ejbcontainer.EJBMethodMetaData;
 import com.ibm.ws.ejbcontainer.EJBRequestData;
 import com.ibm.ws.ejbcontainer.EJBSecurityCollaborator;
 import com.ibm.ws.ejbcontainer.security.internal.jacc.EJBJaccAuthorizationHelper;
-import com.ibm.ws.ejbcontainer.security.internal.jacc.JaccUtil;
+import com.ibm.ws.ejbcontainer.security.jacc.EJBJaccService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
@@ -62,7 +62,6 @@ import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.principals.WSIdentity;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authorization.AuthorizationService;
-import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.credentials.CredentialsService;
@@ -79,13 +78,13 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     protected static final String KEY_SECURITY_SERVICE = "securityService";
     protected static final String KEY_CREDENTIAL_SERVICE = "credentialsService";
     protected static final String KEY_UNAUTHENTICATED_SUBJECT_SERVICE = "unauthenticatedSubjectService";
-    protected static final String KEY_JACC_SERVICE = "jaccService";
+    protected static final String KEY_EJB_JACC_SERVICE = "eJBJaccService";
     protected static final String KEY_SECURITY_READY_SERVICE = "securityReadyService";
     private SecurityReadyService securityReadyService;
     protected final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     private final AtomicServiceReference<CredentialsService> credServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIAL_SERVICE);
     private final AtomicServiceReference<UnauthenticatedSubjectService> unauthenticatedSubjectServiceRef = new AtomicServiceReference<UnauthenticatedSubjectService>(KEY_UNAUTHENTICATED_SUBJECT_SERVICE);
-    private final AtomicServiceReference<JaccService> jaccService = new AtomicServiceReference<JaccService>(KEY_JACC_SERVICE);
+    private final AtomicServiceReference<EJBJaccService> ejbJaccService = new AtomicServiceReference<EJBJaccService>(KEY_EJB_JACC_SERVICE);
 
     protected SubjectManager subjectManager;
     protected CollaboratorUtils collabUtils;
@@ -96,9 +95,9 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     private EJBAuthorizationHelper eah = this;
 
     private boolean waitedForSecurity = false;
-    
+
     private static final String securityWaitTimeProperty = "io.openliberty.ejb.security.startWaitTime";
-    
+
     // wait time in seconds, default 0
     private static final int securityWaitTime = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
         @Override
@@ -156,13 +155,13 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         unauthenticatedSubjectServiceRef.unsetReference(ref);
     }
 
-    protected void setJaccService(ServiceReference<JaccService> reference) {
-        jaccService.setReference(reference);
-        eah = new EJBJaccAuthorizationHelper(jaccService);
+    protected void setEJBJaccService(ServiceReference<EJBJaccService> reference) {
+        ejbJaccService.setReference(reference);
+        eah = new EJBJaccAuthorizationHelper(ejbJaccService);
     }
 
-    protected void unsetJaccService(ServiceReference<JaccService> reference) {
-        jaccService.unsetReference(reference);
+    protected void unsetEJBJaccService(ServiceReference<EJBJaccService> reference) {
+        ejbJaccService.unsetReference(reference);
         eah = this;
     }
 
@@ -170,7 +169,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         securityServiceRef.activate(cc);
         credServiceRef.activate(cc);
         unauthenticatedSubjectServiceRef.activate(cc);
-        jaccService.activate(cc);
+        ejbJaccService.activate(cc);
         ejbSecConfig = new EJBSecurityConfigImpl(props);
     }
 
@@ -186,7 +185,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         securityServiceRef.deactivate(cc);
         credServiceRef.deactivate(cc);
         unauthenticatedSubjectServiceRef.deactivate(cc);
-        jaccService.deactivate(cc);
+        ejbJaccService.deactivate(cc);
     }
 
     /**
@@ -237,7 +236,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     @Override
     public void postInvoke(EJBRequestData request, SecurityCookieImpl preInvokeResult) throws EJBAccessDeniedException {
         if (preInvokeResult != null) {
-            JaccService js = jaccService.getService();
+            EJBJaccService js = ejbJaccService.getService();
             if (js != null) {
                 js.resetPolicyContextHandlerInfo();
             }
@@ -726,7 +725,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
     @Override
     public boolean areRequestMethodArgumentsRequired() {
-        JaccService js = jaccService.getService();
+        EJBJaccService js = ejbJaccService.getService();
         boolean result = false;
         if (js != null) {
             result = js.areRequestMethodArgumentsRequired();
@@ -741,13 +740,12 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      */
     @Override
     public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
-        JaccService js = jaccService.getService();
+        EJBJaccService js = ejbJaccService.getService();
         if (js != null) {
             MetaData metaData = event.getMetaData();
             if (metaData instanceof BeanMetaData) {
                 BeanMetaData bmd = (BeanMetaData) metaData;
-                js.propagateEJBRoles(bmd.j2eeName.getApplication(), bmd.j2eeName.getModule(), bmd.enterpriseBeanName, bmd.ivRoleLinkMap,
-                                     JaccUtil.convertMethodInfoList(JaccUtil.mergeMethodInfos(bmd)));
+                js.propagateEJBRoles(bmd);
             }
         }
     }

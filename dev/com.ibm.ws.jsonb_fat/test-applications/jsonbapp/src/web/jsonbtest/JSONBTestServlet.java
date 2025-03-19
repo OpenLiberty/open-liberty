@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -194,7 +194,7 @@ public class JSONBTestServlet extends FATServlet {
             System.out.println("JSON for byte[]: " + cw.toString());
 
             /**
-             * Yasson 3.0.3 ensures the closure of the constructed parser and consequently the Reader.
+             * Yasson 3.0.4 ensures the closure of the constructed parser and consequently the Reader.
              * Therefore, this test needed to be modified to avoid calling reset()
              * The more pragmatic way to write this test, is to use try-with-resources to control the scope of the Reader.
              */

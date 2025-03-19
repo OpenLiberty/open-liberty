@@ -25,5 +25,6 @@
     <requestTiming slowRequestThreshold="4s" />
     
 	<include location="../fatTestPorts.xml"/>
+	<include location="serverSessionConfig.xml"/>
   
 </server>

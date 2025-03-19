@@ -117,7 +117,7 @@ connected_user_database_driver=Csatlakoztatott: {0}{6}Felhaszn\u00e1l\u00f3: {1}
 
 corrupt_object=s\u00e9r\u00fclt objektum: {0}
 
-corrupt_object_referenced_through_mapping=A k\u00f6vetkez\u0151 s\u00e9r\u00fclt objektumra lek\u00e9pez\u00e9sen kereszt\u00fcl t\u00f6rt\u00e9nik hivatkoz\u00e1s: {0}.
+corrupt_object_referenced_through_mapping=A k\u00f6vetkez\u0151 s\u00e9r\u00fclt objektumra a lek\u00e9pez\u00e9s hivatkozik: {0}
 
 corrupted_session_announcement=SessionID: {0}  Felt\u00e9rk\u00e9pez\u00e9s-kezel\u0151 s\u00e9r\u00fclt munkamenet-k\u00f6zlem\u00e9nyt kapott - mell\u0151z\u00e9s.
 
@@ -169,6 +169,14 @@ elements={0}{1} elem
 
 enable_batch_operations_as_true_not_supported=A WLS "enable-batch-operations-as-true" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
+encryptor_script_description=Az alkalmaz\u00e1snak van egy r\u00e9gi titkos\u00edtott jelszava, amelyet a EclipseLinkkor\u00e1bbi v\u00e1ltozata haszn\u00e1lt. A leg\u00fajabb algoritmussal titkos\u00edtom.
+
+encryptor_script_output=Az \u00fajrak\u00f3dolt jelsz\u00f3: {0}
+
+encryptor_script_usage=Haszn\u00e1lat: "passwordUpdate.sh | .cmd -ip < r\u00e9gi titkos\u00edtott jelsz\u00f3 >"
+
+entity_manager_has_multiple_connections=A perzisztencia egys\u00e9gnek t\u00f6bb kapcsolata is van, az els\u0151 az els\u0151 a list\u00e1b\u00f3l.
+
 entity_manager_ignores_jta_data_source=A perzisztencia egys\u00e9g nem haszn\u00e1l JTA-t, ez\u00e9rt az EntityManager figyelmen k\u00edv\u00fcl hagyja a jta adatforr\u00e1st. 
 
 entity_manager_ignores_nonjta_data_source=A perzisztencia egys\u00e9g JTA-t haszn\u00e1l, ez\u00e9rt az EntityManager figyelmen k\u00edv\u00fcl hagyja a nem jta adatforr\u00e1st. 
@@ -192,6 +200,8 @@ error_in_create=Hiba a l\u00e9trehoz\u00e1sban.
 error_in_remove=Hiba az elt\u00e1vol\u00edt\u00e1sban.
 
 error_loading_xml_file=Kiv\u00e9tel az ORM xml f\u00e1jl bet\u00f6lt\u00e9se sor\u00e1n: {0}: {1}
+
+error_queryTimeoutParse=A {0} jakarta.persistence.query.timeout tulajdons\u00e1g\u00e9rt\u00e9k nem \u00e9rtelmezhet\u0151: {1}
 
 exception_loading_entity_class=Kiv\u00e9tel t\u00f6rt\u00e9nt a perzisztencia inicializ\u00e1l\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  {1} t\u00f6rt\u00e9nt az entit\u00e1soszt\u00e1ly bet\u00f6lt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n: {0}.
 
@@ -647,6 +657,18 @@ retreived_null_message=Null \u00fczenet lek\u00e9rve a t\u00e9mak\u00f6rb\u0151l
 
 retreived_unknown_message_type=Ismeretlen {0} \u00fczenett\u00edpus lek\u00e9r\u00e9se a(z) {1} t\u00e9mak\u00f6rb\u0151l; figyelmen k\u00edv\u00fcl hagy\u00e1s
 
+schema_default_create_tables_failed=Nem siker\u00fclt t\u00e1bl\u00e1kat l\u00e9trehozni az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
+
+schema_default_drop_tables_failed=Nem siker\u00fclt megsz\u00fcntetni a t\u00e1bl\u00e1kat az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
+
+schema_default_extend_tables_failed=A t\u00e1bl\u00e1k kiterjeszt\u00e9se az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban meghi\u00fasult: {0}
+
+schema_default_replace_tables_failed=Nem siker\u00fclt lecser\u00e9lni a t\u00e1bl\u00e1kat az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
+
+schema_default_truncate_tables_failed=Nem siker\u00fclt a t\u00e1bl\u00e1k csonkol\u00e1sa az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
+
+schema_drop_object_failed=Nem siker\u00fclt eldobni az objektumot az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
+
 sdo_classgenerator_exception={2} [{0}] kiv\u00e9tel t\u00f6rt\u00e9nt - \u00fczenet: [{1}]
 
 sdo_error_deserialization=Jogosulatlan visszaalak\u00edt\u00e1si k\u00eds\u00e9rlet a(z) {0} oszt\u00e1llyal.
@@ -716,6 +738,8 @@ Current Sz\u00e1l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) verem nyomk\u00f6vet\
 #{5}
 
 unitofwork_identity_hashcode={0}UnitOfWork azonoss\u00e1g kivonatk\u00f3d: {1}
+
+unknown_property_type=Ismeretlen {0} t\u00edpus a {1} megmarad\u00e1si tulajdons\u00e1g
 
 update_all_query_cannot_use_binding_on_this_platform=Az UpdateAllQuery nem haszn\u00e1lhat k\u00f6t\u00e9st ezen az adatb\u00e1zis-platformon. Lek\u00e9rdez\u00e9s be\u00e1ll\u00edt\u00e1s m\u00f3dos\u00edtva a v\u00e9grehajt\u00e1shoz k\u00f6t\u00e9s n\u00e9lk\u00fcl.
 

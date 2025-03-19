@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2024 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,6 @@ import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.logging.internal.DisabledLogger;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.logging.AccessLog;
 import com.ibm.wsspi.http.logging.DebugLog;
@@ -212,6 +211,9 @@ public class HttpChannelConfig {
 
     /** Tracks headers that have been configured erroneously **/
     private HashSet<String> configuredHeadersErrorSet = null;
+    /** Identifies if the transport will ignore writes if the message has been committed. When false, an exception 
+     * is expected to be thrown marking the invalid state. */
+    private boolean ignoreWriteAfterCommit = false;
 
     /**
      * Constructor for an HTTP channel config object.
@@ -503,10 +505,9 @@ public class HttpChannelConfig {
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_SAMESITE_STRICT)) {
                 props.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, value);
             }
-            if (ProductInfo.getBetaEdition()) {
-                if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_SAMESITE_PARTITIONED)) {
-                    props.put(HttpConfigConstants.PROPNAME_SAMESITE_PARTITIONED, value);
-                }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_SAMESITE_PARTITIONED)) {
+                props.put(HttpConfigConstants.PROPNAME_SAMESITE_PARTITIONED, value);
             }
 
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS)) {
@@ -527,6 +528,10 @@ public class HttpChannelConfig {
 
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE)) {
                 props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_IGNORE_WRITE_AFTER_COMMIT)){
+                props.put(HttpConfigConstants.PROPNAME_IGNORE_WRITE_AFTER_COMMIT, value);
             }
 
             props.put(key, value);
@@ -591,11 +596,10 @@ public class HttpChannelConfig {
         parseCookiesSameSiteLax(props);
         parseCookiesSameSiteNone(props);
         parseCookiesSameSiteStrict(props);
-        if (ProductInfo.getBetaEdition()) {
-            parseCookiesSameSitePartitioned(props);
-        }
+        parseCookiesSameSitePartitioned(props);
         initSameSiteCookiesPatterns();
         parseHeaders(props);
+        parseIgnoreWriteAfterCommit(props);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -617,6 +621,8 @@ public class HttpChannelConfig {
         return (null != value) ? value.trim() : null;
     }
 
+    
+
     /**
      * Method to handle parsing all of the persistence related configuration
      * values.
@@ -627,6 +633,20 @@ public class HttpChannelConfig {
         parseKeepAliveEnabled(props);
         if (isKeepAliveEnabled()) {
             parseMaxPersist(props);
+        }
+    }
+
+    /**
+     * Method to determine if a keep-alive connection should be kept open even if
+     * an error is found during closure.
+     */
+    private void parseIgnoreWriteAfterCommit(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_IGNORE_WRITE_AFTER_COMMIT);
+        if (null != value) {
+            ignoreWriteAfterCommit = convertBoolean(value);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Config: ignoreWriteAfterCommit is " + ignoreWriteAfterCommit());
+            }
         }
     }
 
@@ -3104,6 +3124,14 @@ public class HttpChannelConfig {
      */
     public Map<Integer, String> getConfiguredHeadersToRemove() {
         return this.configuredHeadersToRemove;
+    }
+
+    /**
+     * Returns whether a connection should remain active even if an error occurs during 
+     * closure.
+     */
+    public boolean ignoreWriteAfterCommit(){
+        return this.ignoreWriteAfterCommit;
     }
 
 }

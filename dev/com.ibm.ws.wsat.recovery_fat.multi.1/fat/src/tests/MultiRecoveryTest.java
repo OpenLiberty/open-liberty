@@ -14,6 +14,7 @@ package tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,6 +42,8 @@ public class MultiRecoveryTest {
 	protected static String BASE_URL2;
 
 	protected final static int REQUEST_TIMEOUT = HttpUtils.DEFAULT_TIMEOUT;
+
+	private static final int MAX_ATTEMPTS = 5;
 
 	private final static String recoveryClient = "recoveryClient";
 	protected final static String recoveryServer = "recoveryServer";
@@ -85,13 +88,11 @@ public class MultiRecoveryTest {
 		ShrinkHelper.exportDropinAppToServer(server1, serverApp);
 		ShrinkHelper.exportDropinAppToServer(server2, serverApp);
 	}
-	
-	@Before
-	public void before() throws Exception {
-		Log.info(MultiRecoveryTest.class, "before", "");
-		FATUtils.startServers(runner, server1, server2);
 
-		WSATTest.callClearResourcesServlet(recoveryServer, server1, server2);
+    @Before
+	public void before() throws Exception {
+		WSATTest.deleteStateFiles(server1, server2);
+		FATUtils.startServers(runner, server1, server2);
 	}
 
 	@After
@@ -181,6 +182,8 @@ public class MultiRecoveryTest {
 
 		URL url1 = new URL(urlStr1);
 		URL url2 = new URL(urlStr2);
+		
+		int attempt = 0;
 
 		while (result1.isEmpty() || result2.isEmpty()) {
 			if (result1.isEmpty()) {
@@ -225,6 +228,27 @@ public class MultiRecoveryTest {
 
 			// Do we need to retry?
 			if (result1.isEmpty() || result2.isEmpty()) {
+				if (++attempt >= MAX_ATTEMPTS) {
+					if (result1.isEmpty()) {
+						result1 = "Gave up after attempt "+attempt;
+						try {
+							server1.javadumpThreads();
+						} catch (Exception e) {
+							Log.error(getClass(), method, e);
+						}
+					}
+					if (result2.isEmpty()) {
+						result2 = "Gave up after attempt "+attempt;
+						try {
+							server2.javadumpThreads();
+						} catch (Exception e) {
+							Log.error(getClass(), method, e);
+						}
+					}
+					fail("Couldn't check results. Check for javacores. result1: " + result1 + 
+							", result2 : " + result2);
+				}
+
 				Log.info(getClass(), method, "Sleeping 5 seconds before retrying");
 				try {
 					Thread.sleep(5000);

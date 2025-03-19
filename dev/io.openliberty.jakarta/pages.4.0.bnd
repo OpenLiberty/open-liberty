@@ -39,7 +39,7 @@ Import-Package: \
     org.xml.sax.helpers; resolution:=optional
 
 -includeresource: \
-    @${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;4.0.0.M2;EXACT}!/!(META-INF/maven/*|module-info.class)
+    @${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;4.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-    dep1;groupId=jakarta.servlet.jsp;artifactId=jakarta.servlet.jsp-api;version=4.0.0-M2;scope=runtime
+    dep1;groupId=jakarta.servlet.jsp;artifactId=jakarta.servlet.jsp-api;version=4.0.0;scope=runtime

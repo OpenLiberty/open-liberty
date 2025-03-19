@@ -18,3 +18,7 @@
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
 # cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+AUDIT_EVENT_MISSING_REST_ENDPOINT=CWWKS5856E: \u4e0d\u652f\u63f4\u5be9\u6838\u4e8b\u4ef6\u540d\u7a31 {0} \uff0c\u56e0\u70ba\u672a\u555f\u7528 REST \u7aef\u9ede\u3002
+AUDIT_EVENT_MISSING_REST_ENDPOINT.explanation=\u82e5\u8981\u4f7f\u7528\u6307\u5b9a\u7684\u5be9\u6838\u4e8b\u4ef6\uff0c\u9700\u8981\u555f\u7528\u300cREST \u7aef\u9ede\u300d\u3002
+AUDIT_EVENT_MISSING_REST_ENDPOINT.useraction=\u8acb\u78ba\u5b9a server.xml \u914d\u7f6e\u4e2d\u5df2\u555f\u7528\u555f\u7528\u300cREST \u7aef\u9ede\u300d\u7684\u7279\u6027\u3002

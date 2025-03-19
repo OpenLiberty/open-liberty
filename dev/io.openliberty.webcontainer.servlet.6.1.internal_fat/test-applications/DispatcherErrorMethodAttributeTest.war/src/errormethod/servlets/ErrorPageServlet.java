@@ -35,22 +35,16 @@ public class ErrorPageServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final String CLASS_NAME = ErrorPageServlet.class.getName();
 
-    //available to all methods
-    HttpServletRequest request;
-    StringBuilder responseSB;
-    ServletOutputStream sos;
-
     public ErrorPageServlet() {
         super();
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
         LOG("ENTER doGet");
 
-        request = req;
-        responseSB = new StringBuilder();
-        sos = resp.getOutputStream();
+        StringBuilder responseSB = new StringBuilder();
+        ServletOutputStream sos = resp.getOutputStream();
 
         boolean testErrorQueryString = ((request.getAttribute("ERROR_QUERY_STRING") != null) ? true : false);
 

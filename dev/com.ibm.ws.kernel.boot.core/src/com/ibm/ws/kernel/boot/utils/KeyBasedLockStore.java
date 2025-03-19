@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,18 +15,18 @@ package com.ibm.ws.kernel.boot.utils;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
 @Trivial
 public final class KeyBasedLockStore<Key, Lock> {
 
-    private final ReferenceQueue<Lock> refQueue = new ReferenceQueue<>();
+    final ReferenceQueue<Lock> refQueue = new ReferenceQueue<>();
     private final ConcurrentHashMap<Key, LockWeakRef> lockMap = new ConcurrentHashMap<>();
-    private final Supplier<Lock> lockCreator;
+    private final Function<Key, Lock> lockCreator;
 
-    public KeyBasedLockStore(Supplier<Lock> lockCreator) {
+    public KeyBasedLockStore(Function<Key, Lock> lockCreator) {
         this.lockCreator = lockCreator;
     }
 
@@ -48,7 +48,7 @@ public final class KeyBasedLockStore<Key, Lock> {
             return lock;
         }
 
-        lock = lockCreator.get();
+        lock = lockCreator.apply(key);
 
         while (true) {
             LockWeakRef retVal = lockMap.putIfAbsent(key, new LockWeakRef(lock, key));

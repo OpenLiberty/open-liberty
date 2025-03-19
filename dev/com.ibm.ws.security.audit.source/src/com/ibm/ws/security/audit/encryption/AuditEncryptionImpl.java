@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import javax.management.ObjectName;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -51,7 +52,6 @@ public class AuditEncryptionImpl implements AuditEncrypting {
     private static String subjectDN = "CN=auditsigner, OU=SWG, O=IBM, C=US";
     private static String keyStoreName = "auditSignerKeyStore_";
     private static String certLabelPrefix = "auditcert";
-    private static String CRYPTO_ALGORITHM = "SHA256withRSA";
     private final int signerKeyStoreIncrement = 1;
     private final ObjectName mgmScopeObjName = null;
     AuditKeyEncryptor encryptor = null;
@@ -170,7 +170,7 @@ public class AuditEncryptionImpl implements AuditEncrypting {
         try {
             if (crypto != null) {
                 try {
-                    sharedKey = new javax.crypto.spec.SecretKeySpec(AuditCrypto.generate3DESKey(), 0, 24, "DESede");
+                    sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, CryptoUtils.AES_256_KEY_LENGTH_BYTES, CryptoUtils.ENCRYPT_ALGORITHM_AES);
                 } catch (Exception me) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "me.getMessage: " + me.getMessage());

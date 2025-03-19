@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 import com.ibm.ws.jdbc.fat.krb5.containers.OracleKerberosContainer;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -47,6 +48,9 @@ import jdbc.krb5.oracle.web.OracleKerberosTestServlet;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+//TODO The current Oracle JDBC driver (ojdbc8.jar v23.4.0.24.05) only supports Java 11-21
+//modify/remove this line once it or another driver release supports 23+
+@MaximumJavaLevel(javaLevel = 21)
 public class OracleKerberosTest extends FATServletClient {
 
     private static final Class<?> c = OracleKerberosTest.class;
@@ -75,16 +79,17 @@ public class OracleKerberosTest extends FATServletClient {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.oracle.web");
 
         if (JavaInfo.JAVA_VERSION >= 1.8 && JavaInfo.JAVA_VERSION < 11) {
-            server.addEnvVar("ORACLE_DRIVER", "ojdbc8_g.jar");
+            server.addEnvVar("ORACLE_DRIVER", "ojdbc8.jar");
         }
 
         if (JavaInfo.JAVA_VERSION >= 11 && JavaInfo.JAVA_VERSION < 21) {
-            server.addEnvVar("ORACLE_DRIVER", "ojdbc11_g.jar");
+            server.addEnvVar("ORACLE_DRIVER", "ojdbc11.jar");
         }
 
-        // Precaution in case there are breaking changes to the driver in Java 21
+        // TODO update to next ojdbc version that supports Java 23
+        // for now use ojdbc11.jar as a place holder for local testing.
         if (JavaInfo.JAVA_VERSION >= 21) {
-            server.addEnvVar("ORACLE_DRIVER", "ojdbc11_g.jar");
+            server.addEnvVar("ORACLE_DRIVER", "ojdbc11.jar");
         }
 
         server.addEnvVar("ORACLE_DBNAME", oracle.getDatabaseName());

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E: Um cron\u00f4metro n\u00e3o p\u00f4de ser c
 J2CA8510.create.timed.out.explanation=Est\u00e1 levando mais tempo do que esperado para criar o cron\u00f4metro.
 J2CA8510.create.timed.out.useraction=Verifique se h\u00e1 uma carga alta no sistema e considere sua diminui\u00e7\u00e3o.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: A solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou porque o adaptador de recursos {0} criou um cron\u00f4metro..
+J2CA8511.create.timer.failed.checkpoint.explanation=Liberty n\u00e3o suporta adaptadores de recursos que criam um cron\u00f4metro enquanto os aplicativos s\u00e3o iniciados quando um ponto de verifica\u00e7\u00e3o do servidor \u00e9 solicitado.
+J2CA8511.create.timer.failed.checkpoint.useraction=Configure o ponto de verifica\u00e7\u00e3o para ocorrer antes que o aplicativo seja iniciado usando a op\u00e7\u00e3o beforeAppIniciar ponto de verifica\u00e7\u00e3o do servidor.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: Um cron\u00f4metro n\u00e3o p\u00f4de ser criado para o adaptador de recursos {0} durante o pedido do ponto de verifica\u00e7\u00e3o do servidor..
+J2CA8512.create.timer.not.supported.checkpoint.explanation=O Liberty n\u00e3o suporta a cria\u00e7\u00e3o de cron\u00f4metros por adaptadores de recurso enquanto os aplicativos s\u00e3o iniciados quando um ponto de verifica\u00e7\u00e3o do servidor \u00e9 solicitado
+J2CA8512.create.timer.not.supported.checkpoint.useraction=Configure o ponto de verifica\u00e7\u00e3o para ocorrer antes que o aplicativo seja iniciado usando a op\u00e7\u00e3o beforeAppIniciar ponto de verifica\u00e7\u00e3o do servidor.
+
 J2CA8600.work.start.timeout=J2CA8600E: O trabalho {0} enviado pelo adaptador de recursos {1} n\u00e3o iniciou em {2} milissegundos.
 J2CA8600.work.start.timeout.explanation=A tentativa de iniciar o trabalho atingiu tempo limite.
 J2CA8600.work.start.timeout.useraction=Verifique se h\u00e1 uma carga alta no sistema e considere sua diminui\u00e7\u00e3o, ou entre em contato com o fornecedor do adaptador de recursos para analisar se eles devem aumentar o tempo limite de trabalho usado ao enviar o trabalho para o gerenciador de trabalho JCA.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: O pedido do ponto de verifica\u00e7\u00e3o do servidor falhou porque o adaptador de recursos {0} enviou trabalho {1}.
+J2CA8601.work.submit.failed.checkpoint.explanation=Liberty n\u00e3o suporta adaptadores de recursos que enviam trabalho enquanto os aplicativos s\u00e3o iniciados quando um ponto de verifica\u00e7\u00e3o do servidor \u00e9 solicitado.
+J2CA8601.work.submit.failed.checkpoint.useraction=Configure o ponto de verifica\u00e7\u00e3o para ocorrer antes que o aplicativo seja iniciado usando a op\u00e7\u00e3o beforeAppIniciar ponto de verifica\u00e7\u00e3o do servidor.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: O trabalho {0} que foi enviado pelo adaptador de recursos {1} foi rejeitado durante o pedido de ponto de verifica\u00e7\u00e3o do servidor..
+J2CA8602.work.submit.not.supported.checkpoint.explanation=O Liberty n\u00e3o suporta o envio de trabalho por adaptadores de recursos enquanto os aplicativos iniciam quando um ponto de verifica\u00e7\u00e3o do servidor \u00e9 solicitado
+J2CA8602.work.submit.not.supported.checkpoint.useraction=Configure o ponto de verifica\u00e7\u00e3o para ocorrer antes que o aplicativo seja iniciado usando a op\u00e7\u00e3o beforeAppIniciar ponto de verifica\u00e7\u00e3o do servidor.
 
 # 8622 deleted
 
@@ -168,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=Consulte a documenta\u00e7\u00e3o do 
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Os Archives de Beans de Adaptadores de Recursos n\u00e3o s\u00e3o suportados.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=O arquivo beans.xml no diret\u00f3rio META-INF ser\u00e1 ignorado, pois os Adaptadores de Recursos de Archive do Bean Gerenciado do CDI n\u00e3o s\u00e3o suportados.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Remova o arquivo beans.xml do diret\u00f3rio META-INF, pois os Adaptadores de Recursos de Archive do Bean Gerenciado do CDI n\u00e3o s\u00e3o suportados.
-
-
-

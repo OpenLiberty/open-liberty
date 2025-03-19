@@ -32,12 +32,14 @@ tested.features: \
   jsonb-3.0,\
   restfulws-3.0,\
   restfulws-3.1,\
+  restfulws-4.0,\
   cdi-3.0,\
   jsonp-2.0,\
   xmlBinding-3.0,\
   xmlBinding-4.0,\
   servlet-5.0,\
-  servlet-6.0
+  servlet-6.0,\
+  servlet-6.1
 
 
 -buildpath: \
@@ -48,5 +50,6 @@ tested.features: \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-  com.ibm.websphere.javaee.jsonb.1.0;version=latest
+  com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+  fattest.simplicity;version=latest
 

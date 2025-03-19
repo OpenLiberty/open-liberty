@@ -106,6 +106,6 @@ public class LibertyOP_BasicTests_oidc_usingSocialDiscoveryConfig extends Social
         WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = setGoodSocialExpectations(socialSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, socialSettings, expectations);
     }
 }

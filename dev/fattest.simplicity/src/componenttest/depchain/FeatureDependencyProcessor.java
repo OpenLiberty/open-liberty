@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,9 +57,14 @@ public class FeatureDependencyProcessor {
         if (installedFeaturesRaw == null || installedFeaturesRaw.size() == 0)
             return;
         Set<String> installedFeatures = new HashSet<String>();
-        for (String f : installedFeaturesRaw)
-            for (String installedFeature : f.substring(0, f.lastIndexOf(']')).substring(f.lastIndexOf('[') + 1).split(","))
+        for (String f : installedFeaturesRaw) {
+            f = f.substring(f.indexOf("CWWKF0012I"));
+            int startBracketIndex = f.indexOf('[');
+            int endBracketIndex = f.indexOf(']', startBracketIndex);
+            for (String installedFeature : f.substring(startBracketIndex + 1, endBracketIndex).split(",")) {
                 installedFeatures.add(installedFeature.trim().toLowerCase());
+            }
+        }
 
         // Make sure that any features installed in the server are known to the test dependency graph
         File featureListFile = FeatureList.get(server);

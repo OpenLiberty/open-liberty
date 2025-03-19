@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,14 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import org.eclipse.microprofile.graphql.ConfigKey;
+import org.jboss.jandex.IndexView;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
@@ -41,7 +49,6 @@ import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.logging.Introspector;
 
 import graphql.schema.GraphQLSchema;
-
 import io.smallrye.graphql.bootstrap.Bootstrap;
 import io.smallrye.graphql.cdi.config.GraphQLConfig;
 import io.smallrye.graphql.execution.ExecutionService;
@@ -52,18 +59,26 @@ import io.smallrye.graphql.servlet.ExecutionServlet;
 import io.smallrye.graphql.servlet.IndexInitializer;
 import io.smallrye.graphql.servlet.SchemaServlet;
 
-import org.eclipse.microprofile.graphql.ConfigKey;
-import org.osgi.service.component.annotations.Component;
-import org.jboss.jandex.IndexView;
-
 @Component(property = { "service.vendor=IBM" })
 public class GraphQLServletContainerInitializer implements ServletContainerInitializer, Introspector {
     private static final TraceComponent tc = Tr.register(GraphQLServletContainerInitializer.class);
 
     private static Map<ClassLoader, DiagnosticsBag> diagnostics = new WeakHashMap<ClassLoader, DiagnosticsBag>();
+    private GraphQLSecurityInitializer securityInitializer;
     public static final String EXECUTION_SERVLET_NAME = "ExecutionServlet";
     public static final String SCHEMA_SERVLET_NAME = "SchemaServlet";
     public static final String UI_SERVLET_NAME = "UIServlet";
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    public void setSecurityInitializer(GraphQLSecurityInitializer secInitializer) {
+        securityInitializer = secInitializer;
+    }
+
+    public void unsetSecurityInitializer(GraphQLSecurityInitializer secInitializer) {
+        if (securityInitializer == secInitializer) {
+            securityInitializer = null;
+        }
+    }
 
     @FFDCIgnore({Throwable.class})
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
@@ -118,6 +133,25 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         }
         diagBag.webinfClassesUrl = webinfClassesUrl;
 
+        
+        GraphQLSchema graphQLSchema = null;
+        try {
+            IndexInitializer indexInitializer = new IndexInitializer();
+            IndexView index = indexInitializer.createIndex(Collections.singleton(webinfClassesUrl));
+            Schema schema = SchemaBuilder.build(index);
+            if (schema == null || (!schema.hasQueries() && !schema.hasMutations())) {
+                // not a GraphQL app as far as we can tell - trace and exit:
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No GraphQL components found in app: " + ctx.getServletContextName());
+                }
+                diagnostics.remove(ctx.getClassLoader());
+                return;
+            }
+            diagBag.modelSchema = schema;
+        } catch (Throwable t) {
+            Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
+            throw new ServletException(t);
+        }
         GraphQLConfig config = new GraphQLConfig() {
             @Override
             public String getDefaultErrorMessage() {
@@ -178,25 +212,8 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         };
         diagBag.config = config;
         
-        GraphQLSchema graphQLSchema = null;
-        try {
-            IndexInitializer indexInitializer = new IndexInitializer();
-            IndexView index = indexInitializer.createIndex(Collections.singleton(webinfClassesUrl));
-            Schema schema = SchemaBuilder.build(index);
-            if (schema == null || (!schema.hasQueries() && !schema.hasMutations())) {
-                // not a GraphQL app as far as we can tell - trace and exit:
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "No GraphQL components found in app: " + ctx.getServletContextName());
-                }
-                diagnostics.remove(ctx.getClassLoader());
-                return;
-            }
-            diagBag.modelSchema = schema;
-            graphQLSchema = Bootstrap.bootstrap(schema, config);
-        } catch (Throwable t) {
-            Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
-            throw new ServletException(t);
-        }
+        graphQLSchema = Bootstrap.bootstrap(diagBag.modelSchema, config);
+
         diagBag.graphQLSchema = graphQLSchema;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -217,6 +234,10 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         diagBag.schemaPrinter = printer;
         ServletRegistration.Dynamic schemaServletReg = ctx.addServlet(SCHEMA_SERVLET_NAME, new SchemaServlet(printer));
         schemaServletReg.addMapping(path + "/schema.graphql");
+
+        if (securityInitializer != null) {
+            securityInitializer.onStartup(ctx);
+        }
 
         boolean enableGraphQLUIServlet = ConfigFacade.getOptionalValue("io.openliberty.enableGraphQLUI", boolean.class)
                                                      .orElse(false);

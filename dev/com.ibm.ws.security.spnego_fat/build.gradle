@@ -17,8 +17,7 @@ dependencies {
                project(':com.ibm.ws.org.slf4j.jdk14'),
                project(':com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1'),
                project(':com.ibm.ws.security.spnego.fat.common'),
-               project(':io.openliberty.org.apache.commons.codec'),
-               project(':io.openliberty.org.apache.commons.logging')          
+               project(':io.openliberty.org.apache.commons.codec')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
@@ -39,6 +38,7 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.spnego.fat.common:SPNEGOTokenHelperFVT_EAR'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+
 autoFVT.doLast {
   
   /******************************************************************
@@ -268,4 +268,7 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }
+  
+  def publishBaseDir = new File(autoFvtDir, 'publish') 
+  defaultCopyLTPAFIPSKeys(publishBaseDir)
 }

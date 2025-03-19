@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -126,7 +126,7 @@ public class SsoConfigImplTest {
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_clockSkew, 10l);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_wantAssertionsSigned, true);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_includeX509InSPMetadata, true);
-        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, SignatureMethodAlgorithm.SHA1.toString());
+        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, SignatureMethodAlgorithm.SHA256.toString());
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_authnRequestsSigned, true);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_forceAuthn, true);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_isPassive, true);
@@ -590,19 +590,19 @@ public class SsoConfigImplTest {
     }
 
     @Test
-    public void testGetSignatureMethodAlgorithm_SHA1Algorithm() {
+    public void testGetSignatureMethodAlgorithm_SHA256Algorithm() {
         try {
             ssoConfig.setConfig(SAML_CONFIG_PROPS, confAdmin, filterIdMap);
         } catch (SamlException e) {
             e.printStackTrace();
             fail("Unexpected exception was thrown: " + e);
         }
-        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, "SHA1");
+        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, "SHA256");
 
         String result = ssoConfig.getSignatureMethodAlgorithm();
 
-        assertTrue("Algorithm should be " + SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1 + " and got " + result,
-                   result.equals(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1));
+        assertTrue("Algorithm should be " + SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256 + " and got " + result,
+                   result.equals(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256));
     }
 
     @Test

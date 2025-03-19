@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2022 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,12 +72,12 @@ cls.fileset.not.ready=CWWKL0011W: O sistema n\u00e3o p\u00f4de recuperar o conju
 cls.fileset.not.ready.explanation=Uma biblioteca compartilhada est\u00e1 em uso, mas um dos conjuntos de arquivos associados n\u00e3o p\u00f4de ser recuperado em tempo.
 cls.fileset.not.ready.useraction=Verifique e corrija quaisquer erros ou avisos associados ao conjunto de arquivos.
 
-cls.library.file.invalid=CWWKL0012W: A biblioteca [{0}] especifica um arquivo com o nome [{1}]. Esse arquivo n\u00e3o existe ou est\u00e1 especificado incorretamente.
-cls.library.file.invalid.explanation=Para incluir um arquivo em uma biblioteca na configura\u00e7\u00e3o do servidor, \u00e9 preciso especificar o nome completo de um arquivo existente.
+cls.library.file.invalid=CWWKL0012W: A biblioteca [ {0} ] especifica um arquivo com o nome [ {1} ]. Esse arquivo n\u00e3o existe ou est\u00e1 especificado incorretamente.
+cls.library.file.invalid.explanation=Para adicionar um arquivo a uma biblioteca na configura\u00e7\u00e3o do servidor, voc\u00ea deve especificar um arquivo existente.
 cls.library.file.invalid.useraction=Edite a configura\u00e7\u00e3o do servidor e modifique o atributo do arquivo do elemento da biblioteca.
 
-cls.library.folder.invalid=CWWKL0013W: A biblioteca [{0}] especifica uma pasta com o nome [{1}]. Essa pasta n\u00e3o existe ou n\u00e3o \u00e9 uma pasta v\u00e1lida.
-cls.library.folder.invalid.explanation=Para incluir um arquivo em uma biblioteca na configura\u00e7\u00e3o do servidor, \u00e9 preciso especificar o caminho completo para uma pasta existente.
+cls.library.folder.invalid=CWWKL0013W: A biblioteca [ {0} ] especifica uma pasta com o nome [ {1} ]. Essa pasta n\u00e3o existe ou n\u00e3o \u00e9 uma pasta v\u00e1lida.
+cls.library.folder.invalid.explanation=Para adicionar um arquivo a uma biblioteca na configura\u00e7\u00e3o do servidor, voc\u00ea deve especificar a pasta existente.
 cls.library.folder.invalid.useraction=Edite a configura\u00e7\u00e3o do servidor e modifique o atributo da pasta do elemento da biblioteca.
 
 cls.library.file.forbidden=CWWKL0014I: O arquivo [{0}] n\u00e3o pode ser inclu\u00eddo em um caminho de classe.
@@ -99,6 +99,10 @@ cls.library.archive.useraction=Edite a configura\u00e7\u00e3o do servidor e asse
 cls.library.destroyed=CWWKL0018I: A biblioteca [{0}] est\u00e1 indispon\u00edvel.
 cls.library.destroyed.explanation=Uma biblioteca foi indisponibilizada, por exemplo, por ter sido removida da configura\u00e7\u00e3o do servidor.
 cls.library.destroyed.useraction=Se a biblioteca ainda for necess\u00e1ria, assegure-se de que ainda esteja configurada corretamente.
+
+cls.library.path.invalid=CWWKL0019W: A biblioteca [ {0} ] especifica um caminho com o nome [ {1} ]. Esse caminho n\u00e3o existe ou foi especificado incorretamente.
+cls.library.path.invalid.explanation=Para adicionar um caminho a uma biblioteca na configura\u00e7\u00e3o do servidor, voc\u00ea deve especificar um caminho existente.
+cls.library.path.invalid.useraction=Edite a configura\u00e7\u00e3o do servidor e modifique o atributo path do elemento library.
 
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################

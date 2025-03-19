@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,8 +17,6 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import org.osgi.framework.launch.FrameworkFactory;
 
@@ -134,16 +132,6 @@ public class FrameworkConfigurator {
 
         // default module.lock.timeout value in seconds.
         config.putIfAbsent("osgi.module.lock.timeout", "5");
-
-        // The IBM shared class adapter issues a message if it's loaded on a
-        // non-IBM JVM.  Since it does no harm, we'll suppress the message.
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                System.setProperty("ibm.cds.suppresserrors", "true");
-                return null;
-            }
-        });
 
         // Want to bind to the port specified but set the address to be localhost
         // unless it is explicitly overridden.  To listen on all addresses, '*'

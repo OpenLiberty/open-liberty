@@ -1,0 +1,4 @@
+Subsystem-SymbolicName: t5.b-1.0; visibility:=public; singleton:=true
+Subsystem-Version: 1.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: t5.a-1.0; type="osgi.subsystem.feature"

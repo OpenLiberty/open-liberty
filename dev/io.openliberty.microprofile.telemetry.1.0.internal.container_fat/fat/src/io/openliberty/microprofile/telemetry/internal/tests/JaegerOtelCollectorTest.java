@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -31,13 +32,15 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
+import io.openliberty.microprofile.telemetry.internal.utils.KeyPairs;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorContainer;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * Test exporting traces to a Jaeger server with OpenTelemetry Collector
@@ -50,17 +53,20 @@ public class JaegerOtelCollectorTest extends JaegerBaseTest {
 
     public static Network network = Network.newNetwork();
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer()
-                                                                         .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"))
-                                                                         .withNetwork(network)
-                                                                         .withNetworkAliases("jaeger-all-in-one");
+    private static KeyPairs keyPairs = new KeyPairs(server);
+
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(),keyPairs.getKey())
+                                                                                                                     .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
+                                                                                                                                                            "jaeger"))
+                                                                                                                     .withNetwork(network)
+                                                                                                                     .withNetworkAliases("jaeger-all-in-one");
 
     public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-jaeger.yaml"))
                                                                                                                                                                    .withNetwork(network)
                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
                                                                                                                                                                                                           "otelCol"))
                                                                                                                                                                    .withNetworkAliases("otel-collector-jaeger");
-    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain
@@ -73,8 +79,7 @@ public class JaegerOtelCollectorTest extends JaegerBaseTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        client = new JaegerQueryClient(jaegerContainer);
+        client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, otelCollectorContainer.getOtlpGrpcUrl());

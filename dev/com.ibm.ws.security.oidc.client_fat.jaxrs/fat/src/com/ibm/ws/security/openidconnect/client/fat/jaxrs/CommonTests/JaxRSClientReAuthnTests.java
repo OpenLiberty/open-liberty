@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -611,7 +611,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
         // RP LTPA token, we do NOT have to login again
         genericRP(_testName, wc, updatedTestSettings, Constants.GET_LOGIN_PAGE_ONLY, expectationsNoLogin);
 
-        helpers.testSleep(20);
+        helpers.testSleep(35);
         cookieTools.removeCookieFromConverstation(wc, Constants.OP_COOKIE);
 
         // again, since we have the LTPA Token, the RP does NOT make us login, but the OP sees the expired tokens

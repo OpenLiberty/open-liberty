@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ public class PropsTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(PropsTestServlet.class.getName());
 
     @Test
-    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID}) // EE9 does not support keep-alive property
+    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID}) // EE9 does not support keep-alive property
     public void testKeepAliveProp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final String m = "testKeepAliveProp";
         int port = req.getServerPort();

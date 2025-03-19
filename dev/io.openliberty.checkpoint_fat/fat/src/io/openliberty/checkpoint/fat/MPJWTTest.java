@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,15 +43,14 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -245,12 +244,12 @@ public class MPJWTTest extends FATServletClient {
     }
 
     private static String getPrivateKey() throws Exception {
-        String keystorePath = new RemoteFile(server.getMachine(), server.getServerRoot() + "/resources/security/key.p12").getAbsolutePath();
-        String rsPrivateKeyPath = new RemoteFile(server.getMachine(), server.getServerRoot() + "/resources/security/RS256private-key.pem").getAbsolutePath();
+        String keystorePath = server.getMachine().getFile(server.getServerRoot() + "/resources/security/key.p12").getAbsolutePath();
+        String rsPrivateKeyPath = server.getMachine().getFile(server.getServerRoot() + "/resources/security/RS256private-key.pem").getAbsolutePath();
         try {
             KeyStore keystore = KeyStore.getInstance("PKCS12");
             char[] password = new String("secret").toCharArray();
-            keystore.load(new FileInputStream(new RemoteFile(server.getMachine(), keystorePath).getAbsolutePath()), password);
+            keystore.load(new FileInputStream(server.getMachine().getFile(keystorePath).getAbsolutePath()), password);
             Key key = keystore.getKey("default", password);
             String output = "-----BEGIN PRIVATE KEY-----\n"
                             + Base64.getEncoder().encodeToString(key.getEncoded()) + "\n"

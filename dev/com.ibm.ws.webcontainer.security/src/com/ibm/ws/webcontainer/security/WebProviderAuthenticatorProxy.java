@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -510,10 +510,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
      * @return
      */
     private AuthenticationResult handleAccessToken(WebRequest webRequest) {
-        HttpServletRequest req = webRequest.getHttpServletRequest();
-        HttpServletResponse res = webRequest.getHttpServletResponse();
-
-        AuthenticationResult authResult = handleOAuth(req, res);
+        AuthenticationResult authResult = handleOAuth(webRequest);
         if (authResult.getStatus() != AuthResult.CONTINUE) {
             authResult.setAuditCredType(AuditEvent.CRED_TYPE_OAUTH_TOKEN);
         }
@@ -756,12 +753,18 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
      * @param webRequest
      * @return
      */
-    private AuthenticationResult handleOAuth(HttpServletRequest req, HttpServletResponse res) {
+    private AuthenticationResult handleOAuth(WebRequest webRequest) {
+        HttpServletRequest req = webRequest.getHttpServletRequest();
+        HttpServletResponse res = webRequest.getHttpServletResponse();
+
         AuthenticationResult authResult = OAUTH_CONT;
         if (oauthServiceRef != null) {
             OAuth20Service oauthService = oauthServiceRef.getService();
             if (oauthService == null) {
                 return new AuthenticationResult(AuthResult.CONTINUE, "OAuth service is not available, skipping OAuth...");
+            }
+            else if (webRequest.isUnprotectedURI() && !webRequest.hasAuthenticationData()){
+                return new AuthenticationResult(AuthResult.CONTINUE, "OAuth service is  available, but resource is unprotected, skipping OAuth...");
             }
 
             ProviderAuthenticationResult oauthResult = oauthService.authenticate(req, res);

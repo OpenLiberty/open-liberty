@@ -23,6 +23,7 @@ import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
@@ -63,7 +64,7 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     Stream<CreditCard> findByIssuedOnWithDayBetween(int minDayOfMonth, int maxDayOfMonth);
 
     @OrderBy("debtor_email")
-    Stream<Customer> findByIssuer(Issuer cardIssuer);
+    Stream<CreditCard> findByIssuer(Issuer cardIssuer);
 
     @OrderBy(ID)
     Stream<CardId> findBySecurityCode(int code);
@@ -79,6 +80,12 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @Query("SELECT o FROM CreditCard o WHERE EXTRACT (MONTH FROM o.issuedOn) IN ?1")
     @OrderBy("number")
     Stream<CreditCard> issuedInMonth(Iterable<Integer> months);
+
+    @Update
+    CreditCard replace(CreditCard newCard);
+
+    @Update
+    void revert(CreditCard previousCard);
 
     @Save
     void save(CreditCard... cards);

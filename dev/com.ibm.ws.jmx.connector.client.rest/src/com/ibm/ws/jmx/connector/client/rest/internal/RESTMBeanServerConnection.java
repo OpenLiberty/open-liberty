@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jmx.connector.client.rest.internal;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
@@ -2330,6 +2331,16 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
                         continue mainLoop;
                     } catch (IOException io) {
                         logger.logp(Level.FINE, logger.getName(), sourceMethod, io.getMessage(), io);
+                        connection.disconnect();
+                        try {
+                            synchronized (waitFlag) {
+                                waitFlag.wait(connector.getServerStatusPollingInterval());
+                            }
+                        } catch (InterruptedException e) {
+                            if (logger.isLoggable(Level.FINE)) {
+                                logger.logp(Level.FINE, logger.getName(), sourceMethod, "Interrupted sleep in thread: " + getCustomId());
+                            }
+                        }
                         continue mainLoop;
                     }
 
@@ -2377,6 +2388,13 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
                                     }
                                 } else {
                                     //no-op for failover polling, just break into the sleep segment
+                                    // Server sends a string back that needs to be consumed to close the connection
+                                    try (InputStream is = connection.getInputStream()) {
+                                        int data = is.read();
+                                        while (data != -1) {
+                                            data = is.read();
+                                        }
+                                    }
                                 }
                                 break;
                             } catch (ClassNotFoundException cnf) {

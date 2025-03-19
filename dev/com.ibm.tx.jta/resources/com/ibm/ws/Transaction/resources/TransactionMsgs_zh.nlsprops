@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -875,7 +875,7 @@ WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=\u8bf7\u66f4\u6b63\u62a5\u544a\u65e5
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: \u7531\u4e8e\u4e8b\u52a1\u670d\u52a1\u65e0\u6cd5\u5f00\u59cb\u4e8b\u52a1\uff0c\u56e0\u6b64\u670d\u52a1\u5668\u68c0\u67e5\u70b9\u8bf7\u6c42\u5931\u8d25\u3002
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=\u5f53\u5e94\u7528\u7a0b\u5e8f\u5728\u8bf7\u6c42\u670d\u52a1\u5668\u68c0\u67e5\u70b9\u65f6\u542f\u52a8\u65f6\uff0cLiberty \u4e0d\u652f\u6301\u5f00\u59cb\u6216\u9700\u8981\u4e8b\u52a1\u7684\u5e94\u7528\u7a0b\u5e8f\u3002
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=\u4f7f\u7528\u670d\u52a1\u5668\u68c0\u67e5\u70b9 at=deployment \u9009\u9879\u6216\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee5\u5728\u5176\u542f\u52a8\u540e\u5f00\u59cb\u4e8b\u52a1\u3002
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=\u4f7f\u7528 beforeApp"\u542f\u52a8\u670d\u52a1\u5668\u68c0\u67e5\u70b9" \u9009\u9879\u5c06\u68c0\u67e5\u70b9\u914d\u7f6e\u4e3a\u5728\u5e94\u7528\u7a0b\u5e8f\u542f\u52a8\u4e4b\u524d\u53d1\u751f\uff0c\u6216\u8005\u5728\u5e94\u7528\u7a0b\u5e8f\u542f\u52a8\u540e\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee5\u5f00\u59cb\u4e8b\u52a1\u3002
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: \u5e94\u7528\u7a0b\u5e8f\u5728\u670d\u52a1\u5668\u68c0\u67e5\u70b9\u8bf7\u6c42\u671f\u95f4\u5f00\u59cb\u6216\u9700\u8981\u4e8b\u52a1\u3002 \u521b\u5efa\u4e8b\u52a1\u65f6\u6355\u83b7\u5230\u6b64\u7ebf\u7a0b\u7684\u4ee5\u4e0b\u5806\u6808\u8ddf\u8e2a\uff1a{0}

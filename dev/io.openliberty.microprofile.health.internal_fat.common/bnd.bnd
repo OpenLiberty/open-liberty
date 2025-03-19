@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+Bundle-Name: Health FAT common bundle
+Bundle-SymbolicName: io.openliberty.microprofile.health.internal_fat.common
+Bundle-Description: Health FAT common bundle ${bVersion}
+
+bVersion=1.0
+
+test.project: true
+publish.wlp.jar.disabled: true
+
+Export-Package: \
+	io.openliberty.microprofile.health.internal_fat.shared
+
+src: src
+
+-buildpath: \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

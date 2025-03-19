@@ -141,8 +141,8 @@ public class PomUtils {
             put("javax.resource:javax.resource-api:1.7", "javax.transaction:javax.transaction-api");
             put("org.jboss.weld:weld-osgi-bundle:2.4.8.Final", "org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec");
             put("org.jboss.weld:weld-osgi-bundle:3.1.9.Final", "org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.2_spec");
-            put("org.jboss.weld:weld-osgi-bundle:5.1.1.SP1", "org.jboss.logging:jboss-logging-processor");
-            put("org.jboss.weld.se:weld-se-core:5.1.1.SP1", "org.jboss.logging:jboss-logging-processor");
+            put("org.jboss.weld:weld-osgi-bundle:5.1.1.SP2", "org.jboss.logging:jboss-logging-processor");
+            put("org.jboss.weld.se:weld-se-core:5.1.1.SP2", "org.jboss.logging:jboss-logging-processor");
             put("org.apache.cxf:cxf-rt-rs-service-description:3.3.0", "org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec");
             put("org.apache.cxf:cxf-rt-rs-sse:3.3.0", "org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec");
         }

@@ -5,7 +5,9 @@
     <featureManager>
         <feature>mpOpenTracing-3.0</feature>
         <feature>mpRestClient-3.0</feature>
+        <feature>restfulWS-3.0</feature>
         <feature>timedexit-1.0</feature>
+        <feature>concurrent-2.0</feature>
         <feature>usr:opentracingZipkin-0.33</feature>
     </featureManager>
     

@@ -26,3 +26,4 @@ Subsystem-Name: MicroProfile Rest Client 1.2
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: microProfile-2.2

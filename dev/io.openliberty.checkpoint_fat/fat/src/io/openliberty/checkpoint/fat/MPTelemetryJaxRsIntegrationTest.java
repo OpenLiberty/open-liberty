@@ -13,20 +13,14 @@
 package io.openliberty.checkpoint.fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.configureEnvVariable;
-import static jaxrspropagation.JaxRsEndpoints.TEST_PASSED;
 import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonMap;
+import static jaxrspropagation.JaxRsEndpoints.TEST_PASSED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -40,37 +34,36 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 import jaxrspropagation.JaxRsEndpoints;
 import jaxrspropagation.common.PropagationHeaderEndpoint;
 import jaxrspropagation.methods.JaxRsMethodTestEndpoints;
 import jaxrspropagation.methods.JaxRsMethodTestServlet;
 import jaxrspropagation.responses.JaxRsResponseCodeTestEndpoints;
 import jaxrspropagation.responses.JaxRsResponseCodeTestServlet;
+import jaxrspropagation.spanexporter.InMemorySpanExporter;
+import jaxrspropagation.spanexporter.InMemorySpanExporterProvider;
+import jaxrspropagation.spanexporter.TestSpans;
 import jaxrspropagation.transports.B3MultiPropagationTestServlet;
 import jaxrspropagation.transports.B3PropagationTestServlet;
 import jaxrspropagation.transports.JaegerPropagationTestServlet;
 import jaxrspropagation.transports.W3CTraceBaggagePropagationTestServlet;
 import jaxrspropagation.transports.W3CTracePropagationTestServlet;
-import jaxrspropagation.spanexporter.TestSpans;
-import jaxrspropagation.spanexporter.InMemorySpanExporter;
-import jaxrspropagation.spanexporter.InMemorySpanExporterProvider;
-import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
-import io.openliberty.checkpoint.fat.MPTelemetryTest.TestMethod;
-import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @CheckpointTest
@@ -100,12 +93,9 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
-    
+
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME,
-                                                                      MicroProfileActions.MP60, // first test in LITE mode
-                                                                      MicroProfileActions.MP61, // rest are FULL mode
-                                                                      MP50_MPTEL11); 
+    public static RepeatTests repeatTest = FATSuite.mpTelemetryRepeat2(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -183,13 +173,13 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
-        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
-        ShrinkHelper.exportAppToServer(server, w3cTraceApp, SERVER_ONLY);
-        ShrinkHelper.exportAppToServer(server, w3cTraceBaggageApp, SERVER_ONLY);
-        ShrinkHelper.exportAppToServer(server, b3App, SERVER_ONLY);
-        ShrinkHelper.exportAppToServer(server, b3MultiApp, SERVER_ONLY);
-        ShrinkHelper.exportAppToServer(server, jaegerApp, SERVER_ONLY);
-        ShrinkHelper.exportAppToServer(server, methodsApp, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY, DeployOptions.OVERWRITE);
+        ShrinkHelper.exportAppToServer(server, w3cTraceApp, SERVER_ONLY, DeployOptions.OVERWRITE);
+        ShrinkHelper.exportAppToServer(server, w3cTraceBaggageApp, SERVER_ONLY, DeployOptions.OVERWRITE);
+        ShrinkHelper.exportAppToServer(server, b3App, SERVER_ONLY, DeployOptions.OVERWRITE);
+        ShrinkHelper.exportAppToServer(server, b3MultiApp, SERVER_ONLY, DeployOptions.OVERWRITE);
+        ShrinkHelper.exportAppToServer(server, jaegerApp, SERVER_ONLY, DeployOptions.OVERWRITE);
+        ShrinkHelper.exportAppToServer(server, methodsApp, SERVER_ONLY, DeployOptions.OVERWRITE);
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                              server -> {
                                  assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
@@ -198,10 +188,10 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
                                                server.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                                  configureBeforeRestore();
                              });
-         
+
         server.startServer("JaxRsIntegrationTest.log");
     }
-    
+
     private static void configureBeforeRestore() {
         try {
             server.saveServerConfiguration();
@@ -213,19 +203,19 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
             throw new AssertionError("Unexpected error configuring test.", e);
         }
     }
-    
+
     @Test
     public void testIntegrationWithJaxRsClient() throws Exception {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclient");
         String traceId = readTraceId(pokeJax);
-        
+
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
-            assertEquals(TEST_PASSED, readspans.run(String.class));           
+            assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        }           
+        }
     }
 
     @Test
@@ -239,7 +229,7 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
         } else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } 
+        }
     }
 
     @Test
@@ -253,7 +243,7 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
         } else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } 
+        }
     }
 
     @Test
@@ -267,7 +257,7 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
         } else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } 
+        }
     }
 
     @AfterClass

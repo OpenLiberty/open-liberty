@@ -8,3 +8,4 @@ Subsystem-Version: 7.0.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-Platform: javaee-7.0

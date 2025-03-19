@@ -1,0 +1,66 @@
+/*******************************************************************************
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
+dependencies {
+  requiredLibs project(":com.ibm.ws.wsat.recovery_fat.lps"),
+               project(":com.ibm.ws.wsat.recovery_fat.multi.1"),
+               project(":com.ibm.ws.wsat.recovery_fat.multi.9"),
+               project(":com.ibm.ws.transaction.test.util"),
+               project(":com.ibm.ws.transaction.fat.util")
+}
+
+task copyCommonFiles {
+  doLast {
+    /*
+     * Copy common publish files.
+     */
+    copy {
+      from project(':com.ibm.ws.wsat.recovery_fat.multi.9').file('publish')
+      into new File('publish')
+    }
+  }
+}
+
+jar {
+  dependsOn copyCommonFiles
+}
+
+autoFVT.dependsOn copyCommonFiles
+
+autoFVT.doLast {
+  copy {
+    from project(':com.ibm.ws.wsat.recovery_fat.lps').autoFvtDir
+    into autoFvtDir
+    include 'test-applications/**'
+  }
+}
+
+autoFVT.dependsOn project(':com.ibm.ws.wsat.recovery_fat.lps').autoFVT
+
+clean.doLast {
+  if (file('publish').exists()){
+    file('publish').deleteDir()
+  }
+  if (file('build').exists()){
+    file('build').deleteDir()
+  }
+}
+
+addRequiredLibraries.dependsOn copyJdbcDrivers
+addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn addJakartaTransformer

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
- * For testing entity property names with reserved keywords in them.
+ * For testing entity attribute names with reserved keywords in them.
  */
 @Repository
 public interface Things {
@@ -63,7 +63,7 @@ public interface Things {
      * "Desc" within OrderByDescription would be treated as a keyword,
      * but @OrderBy can be used instead.
      */
-    @OrderBy("description")
+    @OrderBy("Description")
     Stream<Thing> findByThingIdGreaterThan(long exclusiveMin);
 
     /**

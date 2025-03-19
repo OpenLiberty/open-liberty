@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,6 @@ import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
 public class ValidateDSCustomLoginModuleTest extends FATServletClient {
@@ -107,7 +106,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         // Lacking this fix, transaction manager will experience an auth failure and log FFDC for it.
         // The following line causes an XA-capable data source to be used for the first time outside of a test method execution,
         // so that the FFDC is not considered a test failure.
-        JsonObject response = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDS").run(JsonObject.class);
+        JsonObject response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/customLoginDS").run(JsonObject.class);
         Log.info(c, "setUp", "DefaultDataSource response: " + response);
     }
 
@@ -129,7 +128,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
                     "javax.resource.spi.SecurityException",
                     "javax.resource.spi.ResourceAllocationException" })
     public void testCustomLoginModuleDirectLookupInvalid() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDS")
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/customLoginDS")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         String err = "unexpected response: " + json;
@@ -159,7 +158,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testCustomLoginContainerAuth() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDS?auth=container")
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/customLoginDS?auth=container")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         assertSuccessResponse(json, "customLoginDS", "customLoginDS", "jdbc/customLoginDS");
@@ -174,7 +173,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testCustomLoginIBMWebBnd() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry")
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         assertSuccessResponse(json, "customLoginDSWebBnd", "customLoginDSWebBnd", "jdbc/customLoginDSWebBnd");
@@ -192,7 +191,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
     @Test
     public void testCustomLoginModuleProperties() throws Exception {
         String URL = "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=customLoginEntry";
-        JsonObject json = new HttpsRequest(server, URL)
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, URL)
                         .method("GET")
                         .requestProp("X-Login-Config-Props", TestLoginModule.CUSTOM_PROPERTY_KEY + "=foo")
                         .run(JsonObject.class);
@@ -211,7 +210,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
                     "javax.resource.ResourceException",
                     "java.sql.SQLException" })
     public void testCustomLoginIBMWebBndWrongName() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=bogus")
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=bogus")
                         .run(JsonObject.class);
         Log.info(c, testName.getMethodName(), "HTTP response: " + json);
         String err = "unexpected response: " + json;
@@ -240,7 +239,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testJMSConnectionFactoryWithLoginModule() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/jmscf1?auth=container").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsConnectionFactory/jmscf1?auth=container").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "jmscf1", json.getString("uid"));
         assertEquals(err, "jmscf1", json.getString("id"));
@@ -261,7 +260,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testJMSConnectionFactoryWithLoginModuleNotUsed() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsConnectionFactory/jmscf1?auth=application").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsConnectionFactory/jmscf1?auth=application").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "jmscf1", json.getString("uid"));
         assertEquals(err, "jmscf1", json.getString("id"));
@@ -282,7 +281,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testJMSQueueConnectionFactoryWithLoginModule() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsQueueConnectionFactory/qcf2?auth=container").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsQueueConnectionFactory/qcf2?auth=container").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "qcf2", json.getString("uid"));
         assertEquals(err, "qcf2", json.getString("id"));
@@ -303,7 +302,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testJMSQueueConnectionFactoryWithLoginModuleNotUsed() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsQueueConnectionFactory/qcf2?auth=application").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsQueueConnectionFactory/qcf2?auth=application").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "qcf2", json.getString("uid"));
         assertEquals(err, "qcf2", json.getString("id"));
@@ -324,7 +323,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testJMSTopicConnectionFactoryWithLoginModule() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsTopicConnectionFactory/tcf3?auth=container").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsTopicConnectionFactory/tcf3?auth=container").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "tcf3", json.getString("uid"));
         assertEquals(err, "tcf3", json.getString("id"));
@@ -345,7 +344,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testJMSTopicConnectionFactoryWithLoginModuleNotUsed() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/jmsTopicConnectionFactory/tcf3?auth=application").run(JsonObject.class);
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/jmsTopicConnectionFactory/tcf3?auth=application").run(JsonObject.class);
         String err = "Unexpected json response: " + json;
         assertEquals(err, "tcf3", json.getString("uid"));
         assertEquals(err, "tcf3", json.getString("id"));
@@ -367,7 +366,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testValidateNestedDifferentCase() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/DATASOURCE/transaction%2FDATASOURCE%5Bdefault-0%5D?auth=container&authAlias=auth1")
+        JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/DATASOURCE/transaction%2FDATASOURCE%5Bdefault-0%5D?auth=container&authAlias=auth1")
                         .run(JsonObject.class);
         String err = "unexpected response: " + json;
 
@@ -393,7 +392,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      */
     @Test
     public void testValidateNestedDifferentCaseMulitple() throws Exception {
-        JsonArray json = new HttpsRequest(server, "/ibm/api/validation/DATASOURCE?auth=container&authAlias=auth1")
+        JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/DATASOURCE?auth=container&authAlias=auth1")
                         .run(JsonArray.class);
         String err = "unexpected response: " + json;
 

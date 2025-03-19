@@ -50,10 +50,6 @@ CWWKC1100.resource.unavailable=CWWKC1100E: The resource {0} is unavailable.
 CWWKC1100.resource.unavailable.explanation=A resource might become unavailable due to the server shutting down or because of a configuration change, either to itself or another service upon which it depends.
 CWWKC1100.resource.unavailable.useraction=Verify the configuration of the resource and any resources upon which it depends.
 
-CWWKC1110.task.canceled=CWWKC1110I: The task {0}, which was submitted to executor service {1}, is canceled.
-CWWKC1110.task.canceled.explanation=Execution of the task has been canceled.
-CWWKC1110.task.canceled.useraction=No action is required.
-
 CWWKC1101.task.failed=CWWKC1101E: The task {0}, which was submitted to executor service {1}, failed with the following error: {2}.
 CWWKC1101.task.failed.explanation=A task submitted to an executor has failed. Refer to the exception message for the cause.
 CWWKC1101.task.failed.useraction=Correct the cause of the failure and resubmit the task.
@@ -66,6 +62,10 @@ CWWKC1103.skip.run.failed=CWWKC1103E: Execution of task {0}, which was submitted
 CWWKC1103.skip.run.failed.explanation=The skipRun operation for the Trigger has failed, causing the current execution attempt for the task to be skipped.
 CWWKC1103.skip.run.failed.useraction=Correct the cause of the failure and decide whether or not to resubmit the task.
 
+CWWKC1110.task.canceled=CWWKC1110I: The {0} task, which was submitted to the {1} executor service, is canceled.
+CWWKC1110.task.canceled.explanation=The task was canceled.
+CWWKC1110.task.canceled.useraction=No action is required.
+
 CWWKC1111.task.invalid=CWWKC1111E: The task {0} is not valid.
 CWWKC1111.task.invalid.explanation=The task cannot be submitted because it is not valid.
 CWWKC1111.task.invalid.useraction=Update the application to submit a valid task to the ExecutorService.
@@ -77,6 +77,24 @@ CWWKC1112.all.tasks.canceled.useraction=No action is required.
 CWWKC1120.future.get.rejected=CWWKC1120E: The Future supplied to ManagedTaskListener methods taskSubmitted and taskStarting cannot be used to wait for task completion.
 CWWKC1120.future.get.rejected.explanation=The ManagedTaskListener taskSubmitted and taskStarting methods run on the thread that will submit or start the task. Therefore, the Future supplied to these methods must not be used to wait for the task.
 CWWKC1120.future.get.rejected.useraction=Update the application to avoid invoking get on the Future that is supplied to taskSubmitted and taskStarting.
+
+CWWKC1121.virtual.invalid=CWWKC1121E: The {0} annotation or {1} deployment \
+ descriptor element that has the {0} name specifies virtual=true, \
+ but virtual threads are not available prior to Java 21. \
+ The Java level used is: {1}.
+CWWKC1121.virtual.invalid.explanation=Virtual threads are not available in the \
+ Java version that is used.
+CWWKC1121.virtual.invalid.useraction=Update to a newer Java version that supports \
+ virtual threads.
+
+CWWKC1122.mod.unavail=CWWKC1122E: The {0} application or its {1} module is not \
+ available.
+CWWKC1122.mod.unavail.explanation=The application and module that define the \
+ ManagedThreadFactory configuration must be available to obtain a \
+ ManagedThreadFactory instance.
+CWWKC1122.mod.unavail.useraction=Ensure the application is started and that \
+ the application includes the module that defines the ManagedThreadFactory \
+ configuration.
 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: A task submitted to managed executor {0} contains an execution property {1} with value {2} that is not valid for managed executors.
 CWWKC1130.xprop.value.invalid.explanation=Some execution property values are not valid for managed executors, but might be valid for other resource types such as context service or managed thread factory.

@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: Se ha creado el esquema en el arc
 schemagen.info.schema.file.created.explanation=El mandato ha finalizado correctamente.
 schemagen.info.schema.file.created.useraction=No se requiere ninguna acci\u00f3n.
 
+error.config.root.deleted=CWWKG0110E: Se ha detectado una actualizaci\u00f3n de la configuraci\u00f3n, pero el server.xml no existe. No se han realizado actualizaciones de configuraci\u00f3n.
+error.config.root.deleted.explanation=Se ha eliminado el archivo server.xml. Para no causar interrupciones en las aplicaciones en ejecuci\u00f3n, no se realizan cambios en la configuraci\u00f3n.
+error.config.root.deleted.useraction=Vuelva a a\u00f1adir el archivo server.xml al servidor.
+
 # Non-TR message
 error.invalidOCDRef=ERROR: PID de metatype [{0}] especifica un ID de definici\u00f3n de clase de objeto no existente [{1}]

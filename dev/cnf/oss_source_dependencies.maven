@@ -9,7 +9,7 @@ com.sun.mail:javax.mail:1.6.2
 com.sun.org.apache.xml.internal:resolver:20050927
 com.sun.xml.bind:jaxb-core:2.2.10
 com.sun.xml.bind:jaxb-core:2.3.0.1
-com.sun.xml.messaging.saaj:saaj-impl:1.4.0
+com.sun.xml.messaging.saaj:saaj-impl:1.5.3
 com.sun.xml.messaging.saaj:saaj-impl:2.0.0
 com.sun.xml.stream.buffer:streambuffer:1.5.3
 com.sun.xml.ws:policy:2.4

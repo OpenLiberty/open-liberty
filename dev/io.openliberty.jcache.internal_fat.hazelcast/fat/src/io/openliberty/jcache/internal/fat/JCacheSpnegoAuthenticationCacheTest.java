@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.testresource.KdcResource;
+import componenttest.annotation.SkipIfSysProp;
 
 /**
  * Test the distributed authentication cache with GSS credentials generated from SPNEGO authentication.
@@ -167,6 +168,7 @@ public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
      * @throws Exception if the test fails for some unforeseen reason.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS) // Skip on z/OS due to connection refusal by kerberos client
     @CheckForLeakedPasswords(USER1_PASSWORD)
     public void authCache_spnego() throws Exception {
         /*
@@ -235,6 +237,7 @@ public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
      * @throws Exception if the test fails for some unforeseen reason.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS) // Skip on z/OS due to connection refusal by kerberos client
     @CheckForLeakedPasswords(USER1_PASSWORD)
     public void authCache_spnego_excludeGssCred() throws Exception {
         /*

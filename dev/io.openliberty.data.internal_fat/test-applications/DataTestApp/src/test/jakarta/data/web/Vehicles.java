@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import jakarta.data.Limit;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
@@ -36,7 +38,7 @@ public interface Vehicles {
 
     List<Vehicle> deleteAll();
 
-    List<Vehicle> deleteFirst2FoundOrderByPriceAscVinIdAsc();
+    List<Vehicle> deleteFoundOrderByPriceAscVinIdAsc(Limit limit);
 
     boolean exists();
 
@@ -63,4 +65,7 @@ public interface Vehicles {
     Iterable<Vehicle> save(Iterable<Vehicle> v);
 
     boolean updateByVinIdAddPrice(String vin, float priceIncrease);
+
+    @Query("WHERE LOWER(ID(THIS)) = ?1")
+    Optional<Vehicle> withVINLowerCase(String lowerCaseVIN);
 }

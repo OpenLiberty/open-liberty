@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -335,7 +335,7 @@ public class SecurityContextImpl implements ThreadContext {
      * @param fields
      * @throws IOException if there are I/O errors while reading from the underlying InputStream
      */
-    private void readState(GetField fields) throws IOException {
+    private void readState(GetField fields) throws IOException, ClassNotFoundException {
         //get caller principal
         callerPrincipal = (WSPrincipal) fields.get(CALLER_PRINCIPAL, null);
 

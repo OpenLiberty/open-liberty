@@ -69,6 +69,10 @@ CONFIG_ATTRIBUTE_IGNORED=SESN0311W: A fost specificat atributul de configura\u02
 CONFIG_ATTRIBUTE_IGNORED.explanation=Configura\u021bia specificat\u0103 este ignorat\u0103, deoarece ea este furnizat\u0103 de cacheManagerRef specificat.
 CONFIG_ATTRIBUTE_IGNORED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
+UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: The {0} HTTP Session Cache configuration atributul schimbat de c\u00e2nd serverul a fost verificat. Dac\u0103 valoarea atributului este modificat\u0103 dup\u0103 punctul de control al serverului, dar \u00eenainte ca procesul de server s\u0103 fie restabilit, aplica\u021bia nu folose\u0219te valoarea actualizat\u0103.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=Atributul de configurare specificat nu poate fi modificat \u00een timpul dintre punctul de control al serverului \u0219i procesul de restaurare a serverului.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Seta\u021bi valoarea pentru atributul \u00eenainte de a efectua punctul de control al serverului.
+
 INTERNAL_SERVER_ERROR=Eroare intern\u0103 de server
 
 SESSION_CACHE_CONFIG_MESSAGE=Verifica\u0163i dac\u0103 configura\u0163ia de server con\u0163ine o configura\u0163ie httpSessionCache valid\u0103. Vede\u0163i configura\u0163ia e\u015fantion. ''{0}''

@@ -1,0 +1,23 @@
+<server description="Server for testing Config Admin with dropin applications">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>mpHealth-4.0</feature>
+        <feature>mpConfig-3.0</feature>
+        <feature>servlet-4.0</feature>
+    </featureManager>
+	
+	
+	<mpHealth fileUpdateInterval="5s"/>
+	
+	<logging traceSpecification="*=info:HEALTH=all:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
+	
+    <webContainer deferServletLoad="false"/>
+
+	<httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+		<tcpOptions portOpenRetries="60" />                   
+	</httpEndpoint>
+	
+</server>

@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2002, 2022 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #
 #COMPONENTPREFIX CWWKT
@@ -210,3 +207,8 @@ log.rollover.start.time.format.warning.useraction=Gy\u0151z\u0151dj\u00f6n meg r
 log.rollover.interval.too.short.warning=CWWKT0046W: A napl\u00f3\u00e1tford\u00edt\u00e1s intervalluma nem lehet 1 percn\u00e9l r\u00f6videbb. Ha egy 1 percn\u00e9l kisebb \u00e9rt\u00e9k van megadva, akkor a napl\u00f3\u00e1tford\u00edt\u00e1si intervallum az alap\u00e9rtelmezett 1 napra lesz be\u00e1ll\u00edtva.
 log.rollover.interval.too.short.warning.explanation=A napl\u00f3\u00e1tford\u00edt\u00e1s intervalluma nem lehet 1 percn\u00e9l r\u00f6videbb.
 log.rollover.interval.too.short.warning.useraction=Adjon meg 1 perces vagy nagyobb napl\u00f3\u00e1tford\u00edt\u00e1si intervallumot.
+
+#only if the Set-Cookie is added with the response set/addHeader API.  The best practice is to use Cookie() API which already has this check and uses its own message.
+cookie.attribute.name.invalid=CWWKT0047E: A [{0}] cookie attrib\u00fatum \u00e9rv\u00e9nytelen karaktert tartalmaz.
+cookie.attribute.name.invalid.explanation=A cookie attrib\u00fatum neve nem tartalmaz k\u00fcl\u00f6nleges [() > @,;: \\/ []? = {}] karaktert.
+cookie.attribute.name.invalid.useraction=Jav\u00edtsa ki a cookie attrib\u00fatum nev\u00e9t, hogy ne haszn\u00e1ljon speci\u00e1lis karaktert.

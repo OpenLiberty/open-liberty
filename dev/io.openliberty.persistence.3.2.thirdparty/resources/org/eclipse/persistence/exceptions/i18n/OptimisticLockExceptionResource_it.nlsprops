@@ -47,3 +47,6 @@
 
 5011=Uno o pi\u00f9 oggetti non possono essere aggiornati poich\u00e9 sono stati modificati o eliminati dall''ultima volta che sono stati letti
 
+5012=Uno o pi\u00f9 oggetti della classe {0} con l''elenco di parametri {1} non possono essere aggiornati per la query SQL {2} perch\u00e9 \u00e8 stata modificata o eliminata dall''ultima lettura
+
+

@@ -21,6 +21,9 @@ module.exports = {
     }
   },
   devtool: "hidden-source-map",
+  optimization: {
+     minimize: true
+  },
   performance : {
     // SwaggerUI itself is already big enough to prompt warnings from webpack
     // so webpack's hints aren't helpful to us.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -207,6 +207,21 @@ public class EndpointActivationService implements XAResourceFactory, Application
         @Override
         public int hashCode() {
             return System.identityHashCode(activationSpec) + System.identityHashCode(messageEndpointFactory);
+        }
+
+        @Override
+        @Trivial
+        public String toString() {
+            // Both hashCode and identityHashCode are included so that we can correlate
+            // output in Liberty trace, which prints toString for values and method args
+            // but uses uses identityHashCode (id=...) when printing trace for a class
+            return new StringBuilder(38) //
+                            .append("ActivationParams@") //
+                            .append(Integer.toHexString(hashCode())) //
+                            .append("(id=") //
+                            .append(Integer.toHexString(System.identityHashCode(this))) //
+                            .append(')') //
+                            .toString();
         }
     }
 

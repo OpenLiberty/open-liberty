@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -68,4 +68,7 @@ Service-Component: \
 	com.ibm.ws.jca;version=latest,\
 	com.ibm.ws.jca.cm;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
+  com.ibm.ws.kernel.boot.core;version=latest, \
+  com.ibm.ws.kernel.service;version=latest, \
+  com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.resource;version=latest

@@ -268,7 +268,7 @@ public class TimeBasedLogRolloverTest {
         setUp(server_time_rollover_disabled, "testMissingRolloverStartTime");
         setServerConfiguration(false, true, false, "", "3m", 0);
 
-        RemoteFile traceLog = new RemoteFile(serverInUse.getMachine(), getLogsDirPath() + TRACE_LOG_NAME);
+        RemoteFile traceLog = serverInUse.getMachine().getFile(getLogsDirPath() + TRACE_LOG_NAME);
         List<String> lines = serverInUse.findStringsInLogs("rolloverStartTime=00:00", traceLog);
         assertTrue("The rolloverStartTime was not set to a default of 00:00.", lines.size() > 0);
     }
@@ -285,7 +285,7 @@ public class TimeBasedLogRolloverTest {
         setUp(server_time_rollover_disabled, "testMissingRolloverInterval");
         setServerConfiguration(true, false, false, "00:00", "", 0);
 
-        RemoteFile traceLog = new RemoteFile(serverInUse.getMachine(), getLogsDirPath() + TRACE_LOG_NAME);
+        RemoteFile traceLog = serverInUse.getMachine().getFile(getLogsDirPath() + TRACE_LOG_NAME);
         List<String> lines = serverInUse.findStringsInLogs("rolloverInterval=1440", traceLog);
         assertTrue("The rolloverInterval was not set to a default of 1440 minutes.", lines.size() > 0);
     }

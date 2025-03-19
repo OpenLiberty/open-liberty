@@ -1557,8 +1557,8 @@ servlet.with.same.name.already.exists.explanation=Exist\u0103 deja un servlet cu
 servlet.with.same.name.already.exists.useraction=Nu e necesar\u0103 nicio ac\u0163iune.  Verifica\u0163i conflictele din descriptorul de implementare, adnot\u0103ri \u015fi codul surs\u0103 care ar putea ad\u0103uga dinamic aceast\u0103 configura\u0163ie de servlet. 
 
 servlet.feature.not.loaded.correctly=SRVE8501E: Containerul de servlet nu s-a \u00eenc\u0103rcat cu o versiune acceptabil\u0103.
-servlet.feature.not.loaded.correctly.explanation=Containerul de servlet este \u00eenc\u0103rcat cu o versiune care corespunde specifica\u0163iei Java EE a acelei caracteristici de servlet. Containerul nu a fost \u00eenc\u0103rcat cu nicio versiune definit\u0103.
-servlet.feature.not.loaded.correctly.useraction=Verifica\u0163i fi\u015fierul server.xml pentru existen\u0163a fie a unui servlet-3.0 sau a unei caracteristici servlet-3.1. Una din aceste caracteristici ar trebui s\u0103 fie definit\u0103, dar nu ambele.
+servlet.feature.not.loaded.correctly.explanation=Containerul servlet a fost \u00eenc\u0103rcat f\u0103r\u0103 o versiune acceptabil\u0103. Este posibil ca aplica\u021bia s\u0103 nu se comporte a\u0219a cum era de a\u0219teptat.
+servlet.feature.not.loaded.correctly.useraction=Verific\u0103 server.xml fi\u0219ier pentru existen\u021ba mai multor caracteristici de servlet.  Fi\u0219ierul trebuie s\u0103 specifice nu mai mult de o caracteristic\u0103 servlet.
 
 filter.failed.app.destroyed=SRVE8502W: Cererea pentru {0} nu poate fi finalizat\u0103, deoarece aplica\u0163ia s-a oprit.
 filter.failed.app.destroyed.explanation=Aplica\u0163ia web este \u00een curs de oprire \u015fi cererea nu poate fi finalizat\u0103. Aceast\u0103 ac\u0163iune ar putea fi cauzat\u0103 de oprirea serverului \u00een timpul trat\u0103rii cererii.

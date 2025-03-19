@@ -91,6 +91,7 @@ public class BoulderContainer extends CAContainer {
 
 	/**
 	 * Docker image that contains all the files from boulder-tools-go.
+	 * TODO publish Dockerfile for this custom image
 	 */
 	private static final String DOCKER_IMAGE = "ryanesch/acme-boulder:1.2";
 

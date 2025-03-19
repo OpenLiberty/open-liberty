@@ -12,5 +12,7 @@
  *******************************************************************************/
 
 dependencies {
-  requiredLibs project(':com.ibm.ws.concurrent_fat_jakarta')
+  requiredLibs (project(':com.ibm.ws.concurrent_fat_jakarta')) {
+    transitive = false
+  }    
 }

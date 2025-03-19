@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: Le sch\u00e9ma a \u00e9t\u00e9 cr
 schemagen.info.schema.file.created.explanation=La commande s'est correctement ex\u00e9cut\u00e9e.
 schemagen.info.schema.file.created.useraction=Aucune\naction n'est requise.
 
+error.config.root.deleted=CWWKG0110E: Une mise \u00e0 jour de la configuration a \u00e9t\u00e9 d\u00e9tect\u00e9e, mais le server.xml n'existe pas. Aucune mise \u00e0 jour de la configuration n'a \u00e9t\u00e9 effectu\u00e9e.
+error.config.root.deleted.explanation=Le fichier server.xml a \u00e9t\u00e9 supprim\u00e9. Pour ne pas perturber les applications en cours, aucun changement de configuration n'est effectu\u00e9.
+error.config.root.deleted.useraction=Ajoutez le fichier server.xml au serveur.
+
 # Non-TR message
 error.invalidOCDRef=ERREUR : Le PID [{0}] du m\u00e9tatype sp\u00e9cifie un ID de d\u00e9finition de classe d''objets qui n''existe pas [{1}]

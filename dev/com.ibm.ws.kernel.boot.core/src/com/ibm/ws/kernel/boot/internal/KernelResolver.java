@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -573,7 +573,7 @@ public class KernelResolver {
 
                                 if (libertyBoot) {
                                     // Marking these as start-phase LIBERTY_BOOT to indicate that they are not really bundles
-                                    // com.ibm.ws.logging; version="[1,1.0.100)"; type="boot.jar"; start-phase:=LIBERTY_BOOT
+                                    // com.ibm.ws.logging; version="[1,1.1)"; type="boot.jar"; start-phase:=LIBERTY_BOOT
                                     SubsystemContentElement element = new SubsystemContentElement(line + "; start-phase:=LIBERTY_BOOT");
 
                                     // this might throw an IllegalArgumentException (unknown start phase)
@@ -584,7 +584,7 @@ public class KernelResolver {
 
                                 } else {
 
-                                    // com.ibm.ws.logging; version="[1,1.0.100)"; type="boot.jar"
+                                    // com.ibm.ws.logging; version="[1,1.1)"; type="boot.jar"
                                     SubsystemContentElement element = new SubsystemContentElement(line);
 
                                     // Now we do the work to find the right jar given the version range.
@@ -628,7 +628,7 @@ public class KernelResolver {
                                 // the default subsystem content type is "osgi.bundle".. so if we don't have a type,
                                 // we assume it's one of these.
 
-                                // com.ibm.ws.org.objectweb.asm.all.4.0; version="[1,1.0.100)"; start-phase:=BOOTSTRAP,
+                                // com.ibm.ws.org.objectweb.asm.all.4.0; version="[1,1.1)"; start-phase:=BOOTSTRAP,
                                 SubsystemContentElement element = new SubsystemContentElement(line);
 
                                 // this might throw an IllegalArgumentException (unknown start phase)
@@ -963,7 +963,7 @@ public class KernelResolver {
          * Parse a subsystem content element. Assumes leading/trailing spaces have been trimmed
          *
          * <pre>
-         * org.apache.aries.util; version="[1,1.0.100)"; type="boot.jar"
+         * org.apache.aries.util; version="[1,1.1)"; type="boot.jar"
          * com.ibm.wsspi.org.osgi.cmpn; location="dev/spi/spec/"; version="[5.0, 5.1)"; start-phase:=BOOTSTRAP
          * </pre>
          *

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.recoverylog.spi;
+
+import java.nio.file.Path;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -67,9 +69,9 @@ public class FileLogProperties implements LogProperties {
     private final String _logName;
 
     /**
-     * The phyisical log location
+     * The physical log location
      */
-    private final String _logDirectory;
+    private final Path _logDirectory;
 
     /**
      * The phyisical log size (in kilobytes)
@@ -179,7 +181,7 @@ public class FileLogProperties implements LogProperties {
      * @param logName       The unique RLN value.
      * @param logDirectory  The required physical location.
      */
-    public FileLogProperties(int logIdentifier, String logName, String logDirectory) {
+    public FileLogProperties(int logIdentifier, String logName, Path logDirectory) {
         this(logIdentifier, logName, logDirectory, 0, 0, null);
     }
 
@@ -203,11 +205,11 @@ public class FileLogProperties implements LogProperties {
      * @param logDirectory  The required physical log directory.
      * @param logFileSize   The required size of the recovery log in kilobytes.
      */
-    public FileLogProperties(int logIdentifier, String logName, String logDirectory, int logFileSize) {
+    public FileLogProperties(int logIdentifier, String logName, Path logDirectory, int logFileSize) {
         this(logIdentifier, logName, logDirectory, logFileSize, logFileSize, null);
     }
 
-    public FileLogProperties(int logIdentifier, String logName, String logDirectory, int logFileSize, String logDirStem) {
+    public FileLogProperties(int logIdentifier, String logName, Path logDirectory, int logFileSize, String logDirStem) {
         this(logIdentifier, logName, logDirectory, logFileSize, logFileSize, logDirStem);
     }
 
@@ -229,7 +231,7 @@ public class FileLogProperties implements LogProperties {
      * @param logFileSize    The required size of the recovery log in kilobytes.
      * @param maxLogFileSize The required maximum size of the recovery log in kilobytes.
      */
-    public FileLogProperties(int logIdentifier, String logName, String logDirectory, int logFileSize, int maxLogFileSize, String logDirStem) {
+    public FileLogProperties(int logIdentifier, String logName, Path logDirectory, int logFileSize, int maxLogFileSize, String logDirStem) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "FileLogProperties", logIdentifier, logName, logDirectory, logFileSize, maxLogFileSize, logDirStem);
 
@@ -288,7 +290,7 @@ public class FileLogProperties implements LogProperties {
      * @return String The phyisical log directory path
      */
     @Trivial
-    public String logDirectory() {
+    public Path logDirectory() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "logDirectory {0} {1}", this, _logDirectory);
         return _logDirectory;

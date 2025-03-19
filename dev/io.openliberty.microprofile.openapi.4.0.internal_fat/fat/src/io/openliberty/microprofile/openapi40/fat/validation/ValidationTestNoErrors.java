@@ -1,0 +1,55 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+package io.openliberty.microprofile.openapi40.fat.validation;
+
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.microprofile.openapi40.fat.validation.ValidationTestUtils.assertNoMessage;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+
+@RunWith(FATRunner.class)
+public class ValidationTestNoErrors {
+    private static final String SERVER_NAME = "OpenAPIValidationServer";
+
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "validation-noerrors.war")
+                                   .addAsManifestResource(ValidationTestNoErrors.class.getPackage(), "validation-noerrors.yml", "openapi.yml");
+        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+
+        server.startServer();
+    }
+
+    @AfterClass
+    public static void shutdown() throws Exception {
+        server.stopServer();
+    }
+
+    @Test
+    public void testNoErrors() throws Exception {
+        assertNoMessage(server, "CWWKO1650E"); // Assert no validation errors
+        assertNoMessage(server, "CWWKO1651W"); // Assert no validation warnings
+    }
+
+}

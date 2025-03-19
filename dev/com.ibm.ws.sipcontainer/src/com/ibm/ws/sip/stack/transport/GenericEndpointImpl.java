@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -371,11 +371,19 @@ public class GenericEndpointImpl {
 		}
 		else {
 			isForcedDefaultEndpointIdDeactivate = true;
-			if (c_logger.isTraceDebugEnabled()){
-				c_logger.traceDebug("defaultSipEndpoint endpoint wasn't activated since was configured other sipendpoint");
-			}
 			
-			removeDefaultSipEndpointIdFromConfiguration();
+			if (c_logger.isTraceDebugEnabled()){
+				c_logger.traceDebug("INFO: defaultSipEndpoint endpoint won't be activated as other sipendpoint is configured on the server!!!");
+			}
+
+			//Do not remove defaultSipEndpont ID from configuration
+			//when other sipEndpoints are configured.
+			//By removing the defaultSipEndpointId from configuretions we
+			//also remove the ssl configuration, which results in
+			//TLS endpoints not coming online
+			//see open-liberty issue #30874
+			
+			//removeDefaultSipEndpointIdFromConfiguration();
 		}
 	}
 

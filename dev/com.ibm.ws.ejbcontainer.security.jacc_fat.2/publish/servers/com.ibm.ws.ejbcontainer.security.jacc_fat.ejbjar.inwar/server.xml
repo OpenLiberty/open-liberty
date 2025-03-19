@@ -21,6 +21,8 @@
 	
 	<jaccTestProvider roleMappingFile="${server.config.dir}/resources/security/roleMapping.props" />
 	
+	<!--startEJBsAtAppStart is false by default. But in the case of checkpoint/restore, the default value is true. hence, setting false explicitly -->
+	<ejbContainer startEJBsAtAppStart="false"/>
 	
 	<basicRegistry id="basic" realm="BasicRealm">
 		<user name="user0" password="user0pwd" />

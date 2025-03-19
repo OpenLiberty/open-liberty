@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019,2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,7 +46,7 @@ public class HealthTCKLauncher {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMH0051W", "CWWKZ0002E", "SRVE0190E", "CWWKZ0014W");
+        server.stopServer("CWMH0052W", "CWWKZ0002E", "SRVE0190E", "CWWKZ0014W");
     }
 
     @Test
@@ -59,11 +59,10 @@ public class HealthTCKLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        String bucketName = "com.ibm.ws.microprofile.health.1.0_fat_tck";
-        String testName = this.getClass() + ":launchHealth10Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Health";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
+        TCKRunner.build(server, Type.MICROPROFILE, "Health")
+                        .withDefaultSuiteFileName()
+                        .withAdditionalMvnProps(additionalProps)
+                        .runTCK();
     }
 
 }

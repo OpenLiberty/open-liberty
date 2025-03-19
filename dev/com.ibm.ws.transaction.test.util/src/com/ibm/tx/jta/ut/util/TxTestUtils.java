@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,12 @@ import java.net.ConnectException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -40,6 +44,19 @@ public class TxTestUtils {
 
     /**  */
     private static final long serialVersionUID = 1L;
+
+    private static final String pattern = "dd/MM/uuuu, HH:mm.ss:SSS z";
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(pattern);
+    private static final ZoneId ZONE_ID = ZoneId.systemDefault();
+
+    public static final String traceTime(long timestamp) {
+        return Instant.ofEpochMilli(timestamp).atZone(ZONE_ID).format(DATE_TIME_FORMATTER);
+    }
+
+    public static final String traceTime(FileTime timestamp) {
+        return timestamp.toInstant().atZone(ZONE_ID).format(DATE_TIME_FORMATTER);
+    }
 
     // This is an environment variable which should take the form 1,2,6
     // That would make connections 1,2 & 6 fail.
@@ -75,27 +92,6 @@ public class TxTestUtils {
             default:
                 return "Status.STATUS_UNKNOWN";
         }
-    }
-
-    public void tryUOWManagerLookup(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        final UOWManager uowm = (UOWManager) new InitialContext().lookup("java:comp/websphere/UOWManager");
-
-        if (!(uowm instanceof UOWManager)) {
-            throw new Exception("Lookup of java:comp/websphere/UOWManager failed");
-        }
-
-        final long localUOWId = uowm.getLocalUOWId();
-
-        uowm.runUnderUOW(UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION, false, new UOWAction() {
-            @Override
-            public void run() throws Exception {
-                if (localUOWId == uowm.getLocalUOWId()) {
-                    throw new Exception("UOWAction not run under new UOW");
-                }
-
-                System.out.println("Expiration time: " + uowm.getUOWExpiration());
-            }
-        });
     }
 
 	public static void scupperConnection() throws SQLException {

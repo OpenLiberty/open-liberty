@@ -25,8 +25,9 @@ IBM-App-ForceRestart: uninstall, \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2, \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2, \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2
--jars=com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2, \
-  com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2, \
+-jars=\
+  io.openliberty.jaxrs.2.0.wadl2java.jaxb.runtime, \
+  com.ibm.ws.jaxrs.2.0.common, \
   com.ibm.ws.jaxrs.2.0.tools
 -files=\
   bin/jaxrs/wadl2java, \

@@ -774,6 +774,14 @@ warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: P\u0159i \u010dek\u00e1
 warning.timeoutWaitingForServerProcessToStop.explanation=Server se nezastavil v dob\u011b povolen\u00e9 hodnotou \u010dasov\u00e9ho limitu. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt pomal\u00e9 ukon\u010den\u00ed pr\u00e1ce serveru nebo uv\u00e1znut\u00ed serveru.   
 warning.timeoutWaitingForServerProcessToStop.useraction=Pokud je server st\u00e1le spu\u0161t\u011bn, zva\u017ete zv\u00fd\u0161en\u00ed hodnoty \u010dasov\u00e9ho limitu pro p\u0159\u00edkaz 'server stop'. Na syst\u00e9mech typu UNIX p\u0159\u00edkaz pro zastaven\u00ed serveru \u010dek\u00e1 na zastaven\u00ed procesu serveru. V syst\u00e9mu Windows p\u0159\u00edkaz \u010dek\u00e1 na z\u00edsk\u00e1n\u00ed z\u00e1mku v souboru console.log . Pomoc\u00ed n\u00e1stroj\u016f pro monitorov\u00e1n\u00ed soubor\u016f zkontrolujte, zda jin\u00fd program, nap\u0159\u00edklad editor, uzamkl soubor console.log .
 
+warning.manual.PPV.env.var=CWWKE0969W: B\u011bhem balen\u00ed serveru byla ur\u010dena ru\u010dn\u00ed prom\u011bnn\u00e1 prost\u0159ed\u00ed PREFERRED_PLATFORM_VERSION.
+warning.manual.PPV.env.var.explanation=Ru\u010dn\u00ed prom\u011bnn\u00e1 prost\u0159ed\u00ed PREFERRED_PLATFORM_VERSION byla nastavena v prost\u0159ed\u00ed, ale nebude zahrnuta v bal\u00edku serveru.
+warning.manual.PPV.env.var.useraction=Chcete-li zachovat prom\u011bnnou prost\u0159ed\u00ed PREFERRED_PLATFORM_VERSION, zadejte ji v konfigura\u010dn\u00edm souboru server.env .
+
+error.read.server.env=CWWKE0970E: Nelze \u010d\u00edst soubor server.env v um\u00edst\u011bn\u00ed {}.
+error.read.server.env.explanation=Selh\u00e1n\u00ed p\u0159i \u010dten\u00ed souboru server.env .
+error.read.server.env.useraction=Nelze \u010d\u00edst soubor server.env .  Zkontrolujte opr\u00e1vn\u011bn\u00ed k souboru a zopakujte operaci.
+
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.
 info.serverStartedWithPID=Server {0} byl spu\u0161t\u011bn s ID procesu {1}.

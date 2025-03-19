@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,8 @@ package io.openliberty.jcache.internal.fat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.Assume;
@@ -78,14 +80,15 @@ public abstract class BaseTestCase {
     /**
      * Start server 1.
      *
-     * @param server           The server to start.
-     * @param clusterName      The cluster name (Hazelcast).
+     * @param server The server to start.
+     * @param clusterName The cluster name (Hazelcast).
      * @param authCacheMaxSize The maximum size of the 'AuthCache' cache. 25000 if null.
-     * @param authCacheTtl     The time to live for the 'AuthCache' cache. 600s if null.
+     * @param authCacheTtl The time to live for the 'AuthCache' cache. 600s if null.
      * @throws Exception If starting the server failed for some unforeseen reason.
      */
     protected static void startServer1(LibertyServer server, String clusterName, Integer authCacheMaxSize, Integer authCacheTtl) throws Exception {
 
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         /*
          * Go to the specific provider's setup.
          */
@@ -111,12 +114,13 @@ public abstract class BaseTestCase {
     /**
      * Start server 2.
      *
-     * @param server      The server to start.
+     * @param server The server to start.
      * @param clusterName The cluster name (Hazelcast).
      * @throws Exception If starting the server failed for some unforeseen reason.
      */
     protected static void startServer2(LibertyServer server, String clusterName) throws Exception {
 
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         /*
          * Go to the specific provider's setup.
          */
@@ -146,7 +150,7 @@ public abstract class BaseTestCase {
     /**
      * Stop the server with the expected exceptions.
      *
-     * @param server             The server to stop.
+     * @param server The server to stop.
      * @param expectedExceptions The expected exceptions.
      * @throws Exception if there was an error stopping the server.
      */
@@ -187,7 +191,7 @@ public abstract class BaseTestCase {
      * Assert whether there was or was not a basic auth (user/password) cache hit to the JCache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
-     * @param server         The server to check.
+     * @param server The server to check.
      * @throws Exception If the check failed for some unforeseen reason.
      */
     protected static void assertJCacheBasicAuthCacheHit(boolean expectCacheHit, LibertyServer server) throws Exception {
@@ -204,7 +208,7 @@ public abstract class BaseTestCase {
      * Assert whether there was or was not a basic auth (user/password) cache hit to the in-memory cache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
-     * @param server         The server to check.
+     * @param server The server to check.
      * @throws Exception If the check failed for some unforeseen reason.
      */
     protected static void assertInMemoryBasicAuthCacheHit(boolean expectCacheHit, LibertyServer server) throws Exception {
@@ -221,8 +225,8 @@ public abstract class BaseTestCase {
      * Assert whether there was or was not an LTPA authentication cache hit to the JCache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
-     * @param server         The server to check the logs for the cache hit.
-     * @param cookie         The LTPA cookie to check for.
+     * @param server The server to check the logs for the cache hit.
+     * @param cookie The LTPA cookie to check for.
      * @throws Exception If the check failed for some unforeseen reason.
      */
     protected static void assertJCacheLtpaAuthCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
@@ -244,8 +248,8 @@ public abstract class BaseTestCase {
      * Assert whether there was or was not an LTPA authentication cache hit to the in-memory cache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
-     * @param server         The server to check the logs for the cache hit.
-     * @param cookie         The LTPA cookie to check for.
+     * @param server The server to check the logs for the cache hit.
+     * @param cookie The LTPA cookie to check for.
      * @throws Exception If the check failed for some unforeseen reason.
      */
     protected static void assertInMemoryLtpaAuthCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
@@ -267,8 +271,8 @@ public abstract class BaseTestCase {
      * Assert whether there was or was not a JWT authentication cache hit to the JCache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
-     * @param server         The server to check the logs for the cache hit.
-     * @param cookie         The JWT cookie to check for.
+     * @param server The server to check the logs for the cache hit.
+     * @param cookie The JWT cookie to check for.
      * @throws Exception If the check failed for some unforeseen reason.
      */
     protected static void assertJCacheJwtAuthCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
@@ -288,8 +292,8 @@ public abstract class BaseTestCase {
      * Assert whether there was or was not a SAML authentication cache hit to the JCache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
-     * @param server         The server to check the logs for the cache hit.
-     * @param key            The key to check for.
+     * @param server The server to check the logs for the cache hit.
+     * @param key The key to check for.
      * @throws Exception If the check failed for some unforeseen reason.
      */
     protected static void assertJCacheSamlAuthCacheHit(boolean expectCacheHit, LibertyServer server, String key) throws Exception {
@@ -308,8 +312,8 @@ public abstract class BaseTestCase {
      * Assert whether there was or was not a SAML authentication cache hit to the in-memory cache.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
-     * @param server         The server to check the logs for the cache hit.
-     * @param key            The key to check for.
+     * @param server The server to check the logs for the cache hit.
+     * @param key The key to check for.
      * @throws Exception If the check failed for some unforeseen reason.
      */
     protected static void assertInMemorySamlAuthCacheHit(boolean expectCacheHit, LibertyServer server, String key) throws Exception {
@@ -328,8 +332,8 @@ public abstract class BaseTestCase {
      * Assert whether there was or was not a logged out cookie cache hit for the specified LTPA cookie.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
-     * @param server         The server to check the logs for the cache hit.
-     * @param cookie         The LTPA cookie to check for.
+     * @param server The server to check the logs for the cache hit.
+     * @param cookie The LTPA cookie to check for.
      * @throws Exception If the check failed for some unforeseen reason.
      */
     protected static void assertLtpaLoggedOutCookieCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
@@ -348,8 +352,8 @@ public abstract class BaseTestCase {
      * Assert whether there was or was not a logged out cookie cache hit for the specified JWT cookie.
      *
      * @param expectCacheHit Whether to expect there was a cache hit.
-     * @param server         The server to check the logs for the cache hit.
-     * @param cookie         The JWT cookie to check for.
+     * @param server The server to check the logs for the cache hit.
+     * @param cookie The JWT cookie to check for.
      * @throws Exception If the check failed for some unforeseen reason.
      */
     protected static void assertJwtLoggedOutCookieCacheHit(boolean expectCacheHit, LibertyServer server, String cookie) throws Exception {
@@ -431,7 +435,7 @@ public abstract class BaseTestCase {
      *
      * The real test is whether the data has been shared between the two servers.
      *
-     * @param server    The server to check the logs for the message.
+     * @param server The server to check the logs for the message.
      * @param cacheName The name of the cache to check for the message.
      */
     protected static void waitForCreatedOrExistingJCache(LibertyServer server, String cacheName) {
@@ -456,8 +460,8 @@ public abstract class BaseTestCase {
      * This method will the reset the log and trace marks for log and trace searches, update the
      * configuration and then wait for the server to re-initialize. Optionally it will then wait for the application to start.
      *
-     * @param server            The server to update.
-     * @param config            The configuration to use.
+     * @param server The server to update.
+     * @param config The configuration to use.
      * @param waitForAppToStart Wait for the application to start.
      * @throws Exception If there was an issue updating the server configuration.
      */
@@ -474,8 +478,8 @@ public abstract class BaseTestCase {
      * Print some output for the {@link WebResponse}.
      *
      * @param methodName The method making the call.
-     * @param response   The {@link WebResponse} to printout.
-     * @param webClient  The {@link WebClient} the response came from.
+     * @param response The {@link WebResponse} to printout.
+     * @param webClient The {@link WebClient} the response came from.
      */
     protected static void printWebResponse(String methodName, WebResponse response, WebClient webClient) {
         StringBuffer sb = new StringBuffer();

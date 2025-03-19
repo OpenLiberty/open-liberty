@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at 	
@@ -25,6 +25,8 @@ IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
 Import-Package: \
+	!io.openliberty.http.monitor,\
+	!io.openliberty.http.monitor.metrics,\
 	jakarta.enterprise.inject; version="[4.0,5)",\
 	jakarta.enterprise.util; version="[4.0,5)",\
 	jakarta.annotation; version="[2.1,3)",\
@@ -32,6 +34,10 @@ Import-Package: \
 	jakarta.enterprise.context.spi; version="[4.0,5)",\
 	org.eclipse.microprofile.config; version="[3.0,4)",\
 	*
+
+DynamicImport-Package: \
+    io.openliberty.http.monitor,\
+    io.openliberty.http.monitor.metrics
 
 Private-Package: \
 	com.ibm.ws.microprofile.metrics.resources,\
@@ -43,14 +49,16 @@ Export-Package: \
 	io.openliberty.microprofile.metrics50.rest,\
 	io.openliberty.microprofile.metrics50.helper,\
 	io.openliberty.smallrye.metrics.adapters,\
-	io.openliberty.smallrye.metrics.cdi.adapters
+	io.openliberty.smallrye.metrics.cdi.adapters,\
+	io.openliberty.microprofile.metrics50.http
 
 -dsannotations-inherit: true
 -dsannotations: \
 	io.openliberty.microprofile.metrics50.internal.MetricsConfig,\
 	io.openliberty.microprofile.metrics50.SharedMetricRegistries,\
 	io.openliberty.microprofile.metrics50.internal.SmallryeMetricsCDIMetadata,\
-	io.openliberty.microprofile.metrics50.internal.ApplicationListener50
+	io.openliberty.microprofile.metrics50.internal.ApplicationListener50,\
+	io.openliberty.microprofile.metrics50.http.MPMetricsHTTPMetricsAdapterImpl
 
 WS-TraceGroup: METRICS
 
@@ -82,4 +90,5 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.microprofile.metrics.common;version=latest,\
-	com.ibm.ws.microprofile.metrics;version=latest
+	com.ibm.ws.microprofile.metrics;version=latest,\
+	io.openliberty.http.monitor

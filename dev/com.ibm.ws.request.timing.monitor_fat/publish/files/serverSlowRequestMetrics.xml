@@ -6,6 +6,7 @@
     <feature>mpMetrics-3.0</feature>
     <feature>requestTiming-1.0</feature>
     <feature>monitor-1.0</feature>
+    <feature>servlet-4.0</feature>
   </featureManager>
   <mpMetrics authentication="false"/>
   <include location="../fatTestPorts.xml"/>

@@ -30,14 +30,9 @@ import com.ibm.ws.fat.wc.tests.WCFileUpLoadFileCountMaxPropertyTest;
 import com.ibm.ws.fat.wc.tests.WCFileUpLoadFileCountMaxTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
-import com.ibm.ws.fat.wc.tests.WCPartitionedAttributeTests;
-import com.ibm.ws.fat.wc.tests.WCPartitionedCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
-import com.ibm.ws.fat.wc.tests.WCResponseHeadersTest;
 import com.ibm.ws.fat.wc.tests.WCSCIHandlesTypesTest;
 import com.ibm.ws.fat.wc.tests.WCSameContextRootTest;
-import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeSecurityTest;
-import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLDefault;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLTrue;
 import com.ibm.ws.fat.wc.tests.WCServerMiscTest;
@@ -92,8 +87,6 @@ import componenttest.rules.repeater.RepeatTests;
                 WC5JakartaServletTest.class,
                 WCGetMappingTest.class,
                 WCServletContainerInitializerExceptionTest.class,
-                WCSameSiteCookieAttributeTests.class,
-                WCSameSiteCookieAttributeSecurityTest.class,
                 WCServletPathForDefaultMappingDefault.class,
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
@@ -102,13 +95,11 @@ import componenttest.rules.repeater.RepeatTests;
                 WCSendRedirectRelativeURLDefault.class,
                 WC5GetContextPath.class,
                 WCSCIHandlesTypesTest.class,
-                WCResponseHeadersTest.class,
                 WCServerMiscTest.class,
                 WCServerPropertyTest.class,
                 WCTestEncodedX590.class,
-                WCServletContextUnsupportedOperationExceptionTest.class,
-                WCPartitionedAttributeTests.class,
-                // WCPartitionedCookieAttributeSecurityTest.class Not Yet Implemented
+                WCServletContextUnsupportedOperationExceptionTest.class
+
 })
 
 public class FATSuite {

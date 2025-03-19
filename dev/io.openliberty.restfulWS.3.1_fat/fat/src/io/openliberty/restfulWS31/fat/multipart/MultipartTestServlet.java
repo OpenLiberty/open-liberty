@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -76,22 +76,22 @@ public class MultipartTestServlet extends FATServlet {
 
         List<EntityPart> parts = response.readEntity(new GenericType<List<EntityPart>>() {});
         System.out.println("testMultipartResponse - got list of parts: " + parts);
-        assertEquals(4, parts.size());
+        assertEquals(6, parts.size());
 
-        EntityPart part = parts.get(3);
+        EntityPart part = parts.get(0);
         assertEquals("file1", Util.getPartName(part));
         assertEquals("some.xml", Util.getFileName(part));
         assertEquals(MediaType.APPLICATION_XML_TYPE, part.getMediaType());
 
-        part = parts.get(2);
+        part = parts.get(1);
         assertEquals("file2", Util.getPartName(part));
         assertEquals("mpRestClient2.0.asciidoc", part.getFileName().get());
         assertEquals("mpRestClient2.0.asciidoc", Util.getFileName(part));
         assertEquals("text/asciidoc", part.getMediaType().getType() + "/" + part.getMediaType().getSubtype());
-        assertEquals("[myContentId]", part.getHeaders().get("Content-ID").get(0));
-        assertEquals("[SomeValue]", part.getHeaders().get("MyCoolHeader").get(0));
+        assertEquals("myContentId", part.getHeaders().get("Content-ID").get(0));
+        assertEquals("SomeValue", part.getHeaders().get("MyCoolHeader").get(0));
 
-        part = parts.get(1);
+        part = parts.get(2);
         assertEquals("notAFile", Util.getPartName(part));
 
         assertEquals("notAFile", part.getName());
@@ -107,39 +107,34 @@ public class MultipartTestServlet extends FATServlet {
                     contentDisposition.contains("filename="));
         assertEquals("text/asciidoc", part.getMediaType().getType() + "/" + part.getMediaType().getSubtype());
         MultivaluedMap<String, String> headers = part.getHeaders();
-        assertEquals("[Value1]", headers.getFirst("Header1"));
-        // there is a behavior difference between CXF and RESTEasy
+        assertEquals("Value1", headers.getFirst("Header1").toString());
         List<String> header2ValuesList = headers.get("Header2");
         assertNotNull(header2ValuesList);
-        if (header2ValuesList.size() == 1) {
-            // CXF returns a single-entry list of one comma-separated string
-            String header2Values = headers.getFirst("Header2");
-            assertNotNull(header2Values);
-            header2Values = header2Values.substring(1, header2Values.length()-1);
-            String[] header2ValuesArr = header2Values.split(",");
-            assertEquals(3, header2ValuesArr.length);
-            System.out.println("header2ValuesArr[0] = " + header2ValuesArr[0]);
-            System.out.println("header2ValuesArr[1] = " + header2ValuesArr[1]);
-            System.out.println("header2ValuesArr[2] = " + header2ValuesArr[2]);
-            assertEquals("Value2", header2ValuesArr[0].strip());
-            assertEquals("Value3", header2ValuesArr[1].strip());
-            assertEquals("Value4", header2ValuesArr[2].strip());
-        } else if (header2ValuesList.size() == 3) {
-            // RESTEasy returns a list of 3 strings
-            assertEquals("[Value2]", header2ValuesList.get(0));
-            assertEquals("[Value3]", header2ValuesList.get(1));
-            assertEquals("[Value4]", header2ValuesList.get(2));
-        } else {
-            fail("unexpected number of header values for Header2");
-        }
         
-        part = parts.get(0);
+        if (header2ValuesList.size() == 3) {
+            assertEquals("[Value2, Value3, Value4]", header2ValuesList.toString());
+        } else {
+            fail("Unexpected number of header values for Header2: " + header2ValuesList.toString());
+       }
+
+        part = parts.get(3);
         assertEquals("noSpecifiedContentType", Util.getPartName(part));
         assertEquals("noSpecifiedContentType", part.getName());
         contentDisposition = part.getHeaders().get("Content-Disposition").get(0);
         assertFalse("Content-Disposition header contains filename attr, but should not: " + contentDisposition,
                     contentDisposition.contains("filename="));
         assertEquals("text/plain", part.getMediaType().getType() + "/" + part.getMediaType().getSubtype()); // not specified ; should default to text/plain
+        
+        part = parts.get(4);
+        assertEquals("empty-entity-part", Util.getPartName(part));
+        assertEquals("empty-entity-part", part.getName());
+        assertEquals("", part.getContent(String.class)); 
+
+        part = parts.get(5);
+        assertEquals("empty-input-stream-part", Util.getPartName(part));
+        assertEquals("empty-input-stream-part", part.getName());
+        assertEquals("", part.getContent(String.class));
+
     }
 
     @Test
@@ -259,6 +254,14 @@ public class MultipartTestServlet extends FATServlet {
                                     .build(),
                             EntityPart.withName("noSpecifiedContentType")
                                     .content(new ByteArrayInputStream("No content type specified".getBytes()))
+                                    .build(),
+                            EntityPart.withName("empty-entity-part")
+                                    .content("empty.txt", new ByteArrayInputStream(new byte[0]))
+                                    .mediaType(MediaType.TEXT_PLAIN_TYPE)
+                                    .build(),
+                            EntityPart.withName("empty-input-stream-part")
+                                    .content("test.csv", new ByteArrayInputStream(new byte[0]))
+                                    .mediaType(MediaType.APPLICATION_OCTET_STREAM_TYPE)
                                     .build()
                         );
          } catch (IOException e) {

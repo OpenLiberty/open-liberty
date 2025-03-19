@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,8 +42,8 @@ import com.ibm.ws.ejbcontainer.EJBMethodMetaData;
 import com.ibm.ws.ejbcontainer.EJBRequestData;
 import com.ibm.ws.ejbcontainer.InternalConstants;
 import com.ibm.ws.ejbcontainer.security.internal.EJBAccessDeniedException;
+import com.ibm.ws.ejbcontainer.security.jacc.EJBJaccService;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
-import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 import test.common.SharedOutputManager;
@@ -58,7 +58,7 @@ public class EJBJaccAuthorizationHelperTest {
     @Rule
     public TestRule managerRule = outputMgr;
 
-    static final String KEY_JACC_SERVICE = "jaccService";
+    static final String KEY_EJB_JACC_SERVICE = "eJBJaccService";
 
     private final Mockery context = new JUnit4Mockery();
     private final EJBRequestData erd = context.mock(EJBRequestData.class);
@@ -66,12 +66,12 @@ public class EJBJaccAuthorizationHelperTest {
     private final EJBComponentMetaData ecmd = context.mock(EJBComponentMetaData.class);
     private final J2EEName jen = context.mock(J2EEName.class);
     @SuppressWarnings("unchecked")
-    private final ServiceReference<JaccService> jsr = context.mock(ServiceReference.class, "jaccServiceRef");
-    private final JaccService js = context.mock(JaccService.class);
+    private final ServiceReference<EJBJaccService> jsr = context.mock(ServiceReference.class, "jaccServiceRef");
+    private final EJBJaccService js = context.mock(EJBJaccService.class);
     private final ComponentContext cc = context.mock(ComponentContext.class);
     private final EnterpriseBean eb = context.mock(EnterpriseBean.class);
     private final WSPrincipal wp = new WSPrincipal("securityName", "accessId", "BASIC");
-    private final AtomicServiceReference<JaccService> ajsr = new AtomicServiceReference<JaccService>(KEY_JACC_SERVICE);
+    private final AtomicServiceReference<EJBJaccService> ajsr = new AtomicServiceReference<EJBJaccService>(KEY_EJB_JACC_SERVICE);
 
     /**
      * Tests authorizeEJB method normal role.
@@ -118,7 +118,7 @@ public class EJBJaccAuthorizationHelperTest {
                 will(returnValue(0L));
                 allowing(jsr).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
-                one(cc).locateService("jaccService", jsr);
+                one(cc).locateService("eJBJaccService", jsr);
                 will(returnValue(js));
                 one(js).isAuthorized(APP_NAME, MODULE_NAME, BEAN_NAME, METHOD_NAME, METHOD_INTERFACE_NAME, METHOD_SIGNATURE, null, null, SUBJECT);
                 will(returnValue(false));
@@ -185,7 +185,7 @@ public class EJBJaccAuthorizationHelperTest {
                 will(returnValue(0L));
                 allowing(jsr).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
-                one(cc).locateService("jaccService", jsr);
+                one(cc).locateService("eJBJaccService", jsr);
                 will(returnValue(js));
                 one(js).isAuthorized(APP_NAME, MODULE_NAME, BEAN_NAME, METHOD_NAME, METHOD_INTERFACE_NAME, METHOD_SIGNATURE, Arrays.asList(ARG_LIST), eb, SUBJECT);
                 will(returnValue(true));
@@ -243,7 +243,7 @@ public class EJBJaccAuthorizationHelperTest {
                 will(returnValue(0L));
                 allowing(jsr).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
-                one(cc).locateService("jaccService", jsr);
+                one(cc).locateService("eJBJaccService", jsr);
                 will(returnValue(js));
                 one(js).isSubjectInRole(APP_NAME, MODULE_NAME, BEAN_NAME, METHOD_NAME, Arrays.asList(ARG_LIST), ROLE, eb, SUBJECT);
                 will(returnValue(false));
@@ -294,7 +294,7 @@ public class EJBJaccAuthorizationHelperTest {
                 will(returnValue(0L));
                 allowing(jsr).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
-                one(cc).locateService("jaccService", jsr);
+                one(cc).locateService("eJBJaccService", jsr);
                 will(returnValue(js));
                 one(js).isSubjectInRole(APP_NAME, MODULE_NAME, BEAN_NAME, METHOD_NAME, null, ROLE, null, SUBJECT);
                 will(returnValue(true));

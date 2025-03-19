@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,7 +26,7 @@ import componenttest.topology.utils.PrivHelper;
  * All Bean Validation tests for the 1.1 feature level.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
+@SkipForRepeat({ SkipForRepeat.EE9_OR_LATER_FEATURES })
 public class BasicValidation11Test extends BasicValidation_Common {
 
     @Server("com.ibm.ws.beanvalidation_1.1.fat")

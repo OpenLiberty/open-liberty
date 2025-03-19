@@ -18,4 +18,8 @@
         <feature>localConnector-1.0</feature>
         <feature>servlet-3.1</feature>
     </featureManager>
+    
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="9085"
+                  httpsPort="9448" />
 </server>

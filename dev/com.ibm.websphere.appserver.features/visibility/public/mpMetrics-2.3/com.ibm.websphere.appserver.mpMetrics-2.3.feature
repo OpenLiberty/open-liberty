@@ -23,3 +23,4 @@ Subsystem-Name: MicroProfile Metrics 2.3
  com.ibm.ws.microprofile.metrics.public
 kind=ga
 edition=core
+WLP-Platform: microProfile-3.3

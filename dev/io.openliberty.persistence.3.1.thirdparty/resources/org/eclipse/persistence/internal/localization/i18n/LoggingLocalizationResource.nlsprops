@@ -117,7 +117,7 @@ connected_user_database_driver=Connected: {0}{6}User: {1}{6}Database: {2}  Versi
 
 corrupt_object=corrupt object: {0}
 
-corrupt_object_referenced_through_mapping=The following corrupt object is referenced through mapping: {0}.
+corrupt_object_referenced_through_mapping=The following corrupt object is referenced through mapping: {0}
 
 corrupted_session_announcement=SessionID: {0}  Discovery manager received corrupted session announcement - ignoring.
 
@@ -168,6 +168,12 @@ ejb_jar_xml_not_found_in_input=The ejb-jar.xml is not present under input direct
 elements={0}{1} elements
 
 enable_batch_operations_as_true_not_supported=WLS native CMP setting "enable-batch-operations-as-true" is not directly supported in EclipseLink CMP. See migration doc for details.
+
+encryptor_script_description=This application internally decrypts an old encrypted password that was used by a previous EclipseLink version and encrypts it by the latest algorithm.
+
+encryptor_script_output=Reencrypted password is: {0}
+
+encryptor_script_usage=Usage is `passwordUpdate.sh|.cmd -ip <old encrypted password>`
 
 entity_manager_ignores_jta_data_source=Persistence unit does not use JTA, therefore the EntityManager ignores jta data source. 
 

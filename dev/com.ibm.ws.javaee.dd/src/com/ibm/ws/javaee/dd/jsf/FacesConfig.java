@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.javaee.dd.jsf;
 
@@ -29,12 +26,14 @@ public interface FacesConfig extends DeploymentDescriptor {
     int VERSION_2_3 = 23;
     int VERSION_3_0 = 30;
     int VERSION_4_0 = 40;
+    int VERSION_4_1 = 41;
 
     int[] VERSIONS = {
         VERSION_1_0, VERSION_1_1,
         VERSION_1_2, VERSION_2_0, VERSION_2_1,
         VERSION_2_2, VERSION_2_3,
-        VERSION_3_0, VERSION_4_0
+        VERSION_3_0, 
+        VERSION_4_0, VERSION_4_1
     };
 
     int[] DTD_VERSIONS = {
@@ -44,7 +43,8 @@ public interface FacesConfig extends DeploymentDescriptor {
     int[] SCHEMA_VERSIONS = {
         VERSION_1_2, VERSION_2_0, VERSION_2_1,
         VERSION_2_2, VERSION_2_3,
-        VERSION_3_0, VERSION_4_0
+        VERSION_3_0,
+        VERSION_4_0, VERSION_4_1
     };
     
     int[] SCHEMA_BREAKPOINTS = {

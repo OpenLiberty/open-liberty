@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -60,8 +60,8 @@ import com.ibm.ws.security.audit.event.AuditMgmtEvent;
 import com.ibm.ws.security.audit.logutils.FileLog;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.collector.manager.BufferManager;
-import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.CollectorManager;
+import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -212,6 +212,15 @@ public class AuditFileHandler implements SynchronousHandler {
 
     private String bundleLocation;
 
+    /**
+     * Constant for the size of the new line characters for an audit record.
+     * Since each audit record takes up 3 lines (opening tag, record, closing tag)
+     * and the new line sequence can be 1 or 2 chars depending on the OS,
+     * let's set this constant to 3 lines * 2 bytes = 6 bytes to account for the longest case.
+     * Using 6 also saves us an additional check for the OS / line separator.
+     */
+    private static final int AUDIT_RECORD_NEW_LINES_SIZE = 6;
+
     @Activate
     protected void activate(ComponentContext cc) throws KeyStoreException, AuditEncryptionException, AuditSigningException {
         Tr.info(tc, "AUDIT_FILEHANDLER_STARTING");
@@ -224,6 +233,7 @@ public class AuditFileHandler implements SynchronousHandler {
         Map<String, Object> configuration = (Map) cc.getProperties();
         thisConfiguration = configuration;
 
+        //TODO: UTLE - new config option to enable FIPS 140-3 or just use SSL config?
         if (configuration != null && !configuration.isEmpty()) {
             for (Map.Entry<String, Object> entry : configuration.entrySet()) {
                 String key = entry.getKey();
@@ -438,7 +448,7 @@ public class AuditFileHandler implements SynchronousHandler {
     /**
      * Given a Map, add the corresponding JSON to the given JSONObject.
      *
-     * @param jo - JSONObject
+     * @param jo  - JSONObject
      * @param map - Java Map object
      */
     private JSONObject map2JSON(JSONObject jo, Map<String, Object> map) {
@@ -504,7 +514,7 @@ public class AuditFileHandler implements SynchronousHandler {
     /**
      * Given a Java array, add the corresponding JSON to the given JSONArray object
      *
-     * @param ja - JSONArray object
+     * @param ja    - JSONArray object
      * @param array - Java array object
      */
     private JSONArray array2JSON(JSONArray ja, Object[] array) {
@@ -994,7 +1004,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
+                                            if ((currentFileSize + total_to_add_length + AUDIT_RECORD_NEW_LINES_SIZE) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1029,7 +1039,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
+                                            if ((currentFileSize + total_to_add_length + AUDIT_RECORD_NEW_LINES_SIZE) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1086,7 +1096,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                         if (tc.isDebugEnabled())
                                             Tr.debug(tc, "maxFileSize: " + max);
 
-                                        if ((currentFileSize + total_to_add_length + 2) >= max) {
+                                        if ((currentFileSize + total_to_add_length + AUDIT_RECORD_NEW_LINES_SIZE) >= max) {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "adding padding to roll into new log");
                                             byte[] padding = new byte[(int) (max - currentFileSize)];

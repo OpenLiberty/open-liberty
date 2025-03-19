@@ -1,7 +1,7 @@
 package com.ibm.ws.Transaction.JTA;
 
 /*******************************************************************************
- * Copyright (c) 2001, 2021 IBM Corporation and others.
+ * Copyright (c) 2001, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -275,6 +275,21 @@ public final class Util {
             result.append(digits.charAt(b[i] & 0xf));
         }
         return (result.toString());
+    }
+
+    /**
+     * Use this when generating an Xid from one of our own global Ids
+     */
+    public static byte[] fromHexString(String s) {
+        byte[] result = new byte[s.length() / 2];
+        for (int i = 0; i < result.length; i++) {
+            int high = digits.indexOf(s.charAt(2 * i));
+            int low = digits.indexOf(s.charAt(2 * i + 1));
+            if (high < 0 || low < 0)
+                return null;
+            result[i] = (byte) ((high << 4) + low);
+        }
+        return result;
     }
 
     /**

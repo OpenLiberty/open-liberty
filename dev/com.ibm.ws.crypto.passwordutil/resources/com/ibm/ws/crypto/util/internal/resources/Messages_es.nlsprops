@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=La contrase\u00f1a no se 
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Compruebe el registro del servidor y, si se utiliza el cifrado de contrase\u00f1as personalizadas, compruebe si hay m\u00e1s informaci\u00f3n en los registros de cifrado de contrase\u00f1as personalizadas.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: La contrase\u00f1a no se ha descifrado porque se ha informado de un error de codificaci\u00f3n.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=La contrase\u00f1a cifrada no se ha codificado correctamente.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Aseg\u00farese de que la contrase\u00f1a cifrada no est\u00e9 truncada y est\u00e9 codificada utilizando la codificaci\u00f3n Base64.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Aseg\u00farese de que la contrase\u00f1a cifrada no est\u00e9 truncada y codificada con un cifrad Base64.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 las contrase\u00f1as cifradas no se pueden utilizar cuando FIPS 140-3 est\u00e1 habilitado. Regenera la contrase\u00f1a con AES-256 utilizando el comando securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 est\u00e1 habilitado y no es compatible con AES-128. Utilice el comando securityUtility para cifrar la contrase\u00f1a utilizando AES-256.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Aseg\u00farese de que la contrase\u00f1a est\u00e9 cifrada con AES-256.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: Error en el cifrado de la contrase\u00f1a AES. Comprueba la configuraci\u00f3n de java.security y a\u00f1ade el algoritmo que falta.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=Falta un algoritmo de cifrado en tu archivo java.security.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Aseg\u00farese de que el algoritmo se haya agregado a su archivo java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: Error al descifrar la contrase\u00f1a AES. Comprueba la configuraci\u00f3n de java.security y a\u00f1ade el algoritmo que falta.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=Falta un algoritmo de cifrado en tu archivo java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Aseg\u00farese de que el algoritmo se haya agregado a su archivo java.security.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: No puede utilizar contrase\u00f1as codificadas con hash SHA1 cuando FIPS 140-3 est\u00e1 habilitado. Regenera el hash de la contrase\u00f1a utilizando el comando securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 est\u00e1 habilitado y no admite SHA1. Utilice el comando de codificaci\u00f3n securityUtility para generar un nuevo hash de contrase\u00f1a de SHA512.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Aseg\u00farese de que el hash de la contrase\u00f1a se genera con SHA512.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Uno o m\u00e1s valores de contrase\u00f1a de {0} almacenados en la configuraci\u00f3n del servidor se generaron con un algoritmo m\u00e1s antiguo {1}. Utilice el comando de codificaci\u00f3n securityUtility para volver a generar las contrase\u00f1as de {0} con el algoritmo m\u00e1s reciente {2}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty ahora utiliza algoritmos m\u00e1s fuertes para las contrase\u00f1as de {aes} y {hash} reci\u00e9n generadas.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Aseg\u00farese de que los valores de las contrase\u00f1as de {aes} y {hash} se generen con la \u00faltima versi\u00f3n de Liberty.
 
 
 # ---------------- This is an exception message ------------

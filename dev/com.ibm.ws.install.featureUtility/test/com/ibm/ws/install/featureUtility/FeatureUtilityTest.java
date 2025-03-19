@@ -14,7 +14,7 @@ import com.ibm.ws.install.InstallException;
 
 public class FeatureUtilityTest {
 
-    FeatureUtility featureUtility = new FeatureUtility(null, null, null, null, null, null, null, null, null, null, null,
+    FeatureUtility featureUtility = new FeatureUtility(null, null, null, null, null, null, null, null, null, null, null, null,
 	    null, false, null);
 
     @Before

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,11 +14,9 @@ package com.ibm.websphere.logging.hpel;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Provides a means to add key-value pairs to log and trace records.
@@ -161,10 +159,7 @@ public class LogRecordContext {
     private final static ThreadLocal<HashMap<String, String>> extensions = new ThreadLocal<HashMap<String, String>>();
 
     /* Map of registered extension */
-    private final static Map<String, WeakReference<Extension>> extensionMap = new HashMap<String, WeakReference<Extension>>();
-    private final static ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
-    private final static Lock r = rwl.readLock();
-    private final static Lock w = rwl.writeLock();
+    private final static Map<String, WeakReference<Extension>> extensionMap = new ConcurrentHashMap<String, WeakReference<Extension>>();
     public static final String PTHREADID = "thread";
     private final static ThreadLocal<Boolean> recursion = new ThreadLocal<Boolean>();
 
@@ -245,15 +240,8 @@ public class LogRecordContext {
             throw new IllegalArgumentException(
                             "Neither 'key' nor 'extension' parameter can be null.");
         }
-        w.lock();
-        try {
-            if (extensionMap.containsKey(key)) {
-                throw new IllegalArgumentException("Extension with the key "
-                                                   + key + " is registered already");
-            }
-            extensionMap.put(key, new WeakReference<Extension>(extension));
-        } finally {
-            w.unlock();
+        if (extensionMap.putIfAbsent(key, new WeakReference<Extension>(extension)) != null) {
+            throw new IllegalArgumentException("Extension with the key " + key + " is registered already");
         }
     }
 
@@ -271,12 +259,7 @@ public class LogRecordContext {
             throw new IllegalArgumentException(
                             "Parameter 'key' can not be null");
         }
-        w.lock();
-        try {
-            return extensionMap.remove(key) != null;
-        } finally {
-            w.unlock();
-        }
+        return extensionMap.remove(key) != null;
     }
 
     /**
@@ -298,41 +281,29 @@ public class LogRecordContext {
             return;
         }
         recursion.set(Boolean.TRUE);
-        LinkedList<String> cleanup = new LinkedList<String>();
-        r.lock();
+        HashMap<String, WeakReference<Extension>> cleanup = new HashMap<>();
         try {
             for (Map.Entry<String, WeakReference<Extension>> entry : extensionMap
                             .entrySet()) {
-                Extension extension = entry.getValue().get();
+                WeakReference<Extension> value = entry.getValue();
+                Extension extension = value.get();
                 if (extension == null) {
-                    cleanup.add(entry.getKey());
+                    cleanup.put(entry.getKey(), value);
                 } else {
-                    String value = extension.getValue();
-                    if (value != null) {
-                        map.put(entry.getKey(), value);
+                    String extValue = extension.getValue();
+                    if (extValue != null) {
+                        map.put(entry.getKey(), extValue);
                     }
                 }
             }
         } finally {
-            r.unlock();
             recursion.remove();
         }
         if (cleanup.size() > 0) {
-            w.lock();
-            try {
-                for (String key : cleanup) {
-                    WeakReference<Extension> extension = extensionMap
-                                    .remove(key);
-                    if (extension != null && extension.get() != null) {
-                        // Special case! Somebody has put new extension for this
-                        // key after we released
-                        // read lock and before we took write lock. We need to
-                        // put it back.
-                        extensionMap.put(key, extension);
-                    }
-                }
-            } finally {
-                w.unlock();
+            for (Map.Entry<String, WeakReference<Extension>> entry : cleanup.entrySet()) {
+                // Passing in the value for the special case that somebody has
+                // put a new extension for this key
+                extensionMap.remove(entry.getKey(), entry.getValue());
             }
         }
         if (extensions.get() != null) {

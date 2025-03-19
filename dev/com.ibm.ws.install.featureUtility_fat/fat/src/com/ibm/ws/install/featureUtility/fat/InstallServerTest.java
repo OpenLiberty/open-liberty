@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
@@ -43,7 +44,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
     @Before
     public void beforeSetUp() throws Exception {
 	copyFileToMinifiedRoot("etc", "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo);
+	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
     }
 
     @After
@@ -155,7 +156,8 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	checkCommandOutput(po, 21, "CWWKF1405E", null);
 	Log.exiting(c, METHOD_NAME);
     }
-
+    
+   
     /**
      * Install an user feature with the "--featuresBom" parameters
      */
@@ -270,7 +272,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	    copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/usrFeaturesServerXml/server.xml");
 
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+		    mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };

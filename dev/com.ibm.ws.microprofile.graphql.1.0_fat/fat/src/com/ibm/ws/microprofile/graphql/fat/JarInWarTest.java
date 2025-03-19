@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@ import mpGraphQL10.jarInWar.EntityInWar;
 import mpGraphQL10.jarInWar.JarInWarTestServlet;
 import mpGraphQL10.jarInWar.inJar.EntityInJar;
 
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+
 @RunWith(FATRunner.class)
 public class JarInWarTest extends FATServletClient {
 
@@ -47,7 +49,7 @@ public class JarInWarTest extends FATServletClient {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         war.addAsLibrary(jar);
         war.addPackage(EntityInWar.class.getPackage());
-        ShrinkHelper.exportDropinAppToServer(server, war);
+        ShrinkHelper.exportDropinAppToServer(server, war,new DeployOptions[] { DeployOptions.SERVER_ONLY });
         server.startServer();
     }
 

@@ -13,4 +13,4 @@ kind=ga
 edition=core
 # The directive type:=beta indicates this feature works with InstantOn in the beta.
 # This is independent of the overall feature beta status.
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true

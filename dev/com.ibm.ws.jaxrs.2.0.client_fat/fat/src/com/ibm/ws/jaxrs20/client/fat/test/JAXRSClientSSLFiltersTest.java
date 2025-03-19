@@ -32,7 +32,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // Continue to skip this test for EE9 as Default SSL is not supported yet
+@SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // Continue to skip this test for EE9 as Default SSL is not supported yet
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLFiltersTest extends AbstractTest {
 

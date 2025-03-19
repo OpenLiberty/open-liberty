@@ -16,7 +16,8 @@ src:\
     test-applications/LibertyReadWriteListenerTest.war/src,\
     test-applications/LibertyWriteListenerFilterTest.war/src,\
     test-applications/FormLogin_ReadListener.war/src,\
-    test-applications/multiNBReadApp.war/src
+    test-applications/multiNBReadApp.war/src,\
+    test-applications/UpgradeReadListenerSendImmediateData.war/src
 
 fat.project: true
 

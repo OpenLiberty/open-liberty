@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.postgresql;
+
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -50,6 +52,7 @@ public class PostgreSQLAWSTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
         // Set server environment variables
         server.addEnvVar("PG_URL", transformJdbcUrl(FATSuite.postgre.getJdbcUrl()));
         server.addEnvVar("PG_USER", FATSuite.postgre.getUsername());

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -85,17 +85,44 @@ public interface MetricRecorder {
     /**
      * Called when the circuit opens
      */
-    public void reportCircuitOpen();
+    public default void reportCircuitOpen() {
+        reportCircuitOpen(System.nanoTime());
+    }
 
     /**
      * Called when the circuit half-opens
      */
-    public void reportCircuitHalfOpen();
+    public default void reportCircuitHalfOpen() {
+        reportCircuitHalfOpen(System.nanoTime());
+    }
 
     /**
      * Called when the circuit closes
      */
-    public void reportCircuitClosed();
+    public default void reportCircuitClosed() {
+        reportCircuitClosed(System.nanoTime());
+    }
+
+    /**
+     * Called when the circuit opens
+     * 
+     * @param now the current time in nanoseconds.
+     */
+    public void reportCircuitOpen(long now);
+
+    /**
+     * Called when the circuit half-opens
+     *
+     * @param now the current time in nanoseconds
+     */
+    public void reportCircuitHalfOpen(long now);
+
+    /**
+     * Called when the circuit closes
+     * 
+     * @param now the current time in nanoseconds
+     */
+    public void reportCircuitClosed(long now);
 
     /**
      * Called when the bulkhead rejects a call

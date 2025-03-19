@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -82,6 +83,10 @@ public class ClientConfigTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        GrpcClientOnly.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
+        GrpcServerOnly.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
+
         LOG.info("ClientConfigTests : setUp() : add helloWorldClient app to the grpc client");
         // add all classes from com.ibm.ws.grpc.fat.helloworld.client, io.grpc.examples.helloworld,
         // and com.ibm.ws.fat.grpc.tls to a new app HelloWorldClient.war in the server that holds

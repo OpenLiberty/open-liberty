@@ -13,8 +13,8 @@
 <server description="com.ibm.ws.security.registry.basic.fat.custom.certmapper">
 
 	<featureManager>
-		<feature>appSecurity-2.0</feature>
-		<feature>jsp-2.2</feature>
+		<feature>appSecurity-3.0</feature>
+		<feature>jsp-2.3</feature>
 		<feature>usr:basicCertificateMapperSample-1.0</feature>
 	</featureManager>
 

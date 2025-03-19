@@ -264,6 +264,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             return null;
         }
 
+        @Trivial
         @Override
         public String toString() {
             // Value is intentionally omitted
@@ -279,20 +280,38 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     // The value for a FileSystemVariable is only read when it is used (except for variables from
     // property files which we process immediately)
     protected final class FileSystemVariable extends AbstractLibertyVariable {
+        final String propertiesFileName;
+
+        // If null, use a name relative to 'varFileName'.
+        final String name;
+
+        // Required if either 'name' or 'value' is null.
         final File variableFile;
+        final String varFileName;
+
+        // Not final: If null, assigned on demand from the variable file.
         String value;
-        String name;
-        String propertiesFileName;
 
         public FileSystemVariable(File varFile) {
+            this.propertiesFileName = null;
+
+            this.name = null;
             this.variableFile = varFile;
+            // Assign 'varFileName' immediately to prevent a 'calling traceable methods'
+            // warning from 'toString'.
+            this.varFileName = getFileSystemVariableName(varFile);
+
+            this.value = null;
         }
 
         public FileSystemVariable(File propertiesFile, String name, String value) {
-            this.name = name;
-            this.value = value;
             this.propertiesFileName = propertiesFile.getName();
+
+            this.name = name;
             this.variableFile = null;
+            this.varFileName = null;
+
+            this.value = value;
         }
 
         @Override
@@ -310,33 +329,36 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             return this.value;
         }
 
+        @Trivial
         @Override
         public String getName() {
-            if (this.name == null)
-                return getFileSystemVariableName(variableFile);
-
-            return this.name;
+            return ( (this.name == null) ? this.varFileName : this.name );
         }
 
+        @Trivial
         @Override
         public boolean isSensitive() {
             return true;
         }
 
+        @Trivial
         @Override
         public Source getSource() {
             return Source.FILE_SYSTEM;
         }
 
+        @Trivial
         @Override
         public String getDefaultValue() {
             return null;
         }
 
+        @Trivial
         public String getPropertiesFileName() {
             return this.propertiesFileName;
         }
 
+        @Trivial
         @Override
         public String toString() {
             // Value is intentionally omitted
@@ -847,13 +869,25 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         return this.fileVariableRootDirs;
     }
 
+    /**
+     * Determine the variable name of a file based system variable.
+     *
+     * The name is based on the simple file name, but may be qualified
+     * With the parent file when then file is not a root variable file.
+     * Only one level of nesting is supported.
+     *
+     * @param f The file of the system variable.
+     *
+     * @return The name of a file system based system variable.
+     */
     public String getFileSystemVariableName(File f) {
         String name = f.getName();
 
         // If the parent file is one of our root directories, just return the file name
         for (File fsVarRootDirectoryFile : this.fsVarRootDirectoryFiles) {
-            if (f.getParentFile().compareTo(fsVarRootDirectoryFile) == 0)
+            if (f.getParentFile().compareTo(fsVarRootDirectoryFile) == 0) {
                 return name;
+            }
         }
 
         // Otherwise, return the parent directory name + / + file name

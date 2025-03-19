@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2023 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -45,7 +45,8 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.jaxb.*;version=${cxfVersion}
+  org.apache.cxf.jaxb.*;version=${cxfVersion}, \
+  io.openliberty.jaxws.jaxb.*;version=${cxfVersion}
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/*-INF/*, \
@@ -62,4 +63,5 @@ instrument.ffdc: false
   com.ibm.websphere.org.osgi.core, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.logging.core, \
-  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3
+  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest

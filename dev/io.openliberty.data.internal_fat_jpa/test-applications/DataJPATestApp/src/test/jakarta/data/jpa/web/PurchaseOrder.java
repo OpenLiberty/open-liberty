@@ -41,4 +41,12 @@ public class PurchaseOrder {
 
     @Version
     public int versionNum;
+
+    static PurchaseOrder of(float total, String purchasedBy) {
+        PurchaseOrder order = new PurchaseOrder();
+        order.total = total;
+        order.purchasedBy = purchasedBy;
+        order.purchasedOn = OffsetDateTime.now();
+        return order;
+    }
 }

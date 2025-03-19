@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
@@ -80,7 +82,7 @@ public class CoordinationLock {
     /**
      * The expanded directory string that identifies where the lock file resides.
      */
-    private final String _lockDirectory;
+    private final Path _lockDirectory;
 
     /**
      * A boolean flag to indicate if the lock file has either been created or has
@@ -102,7 +104,7 @@ public class CoordinationLock {
      *
      * @param lockDirectory The directory in which the lock should reside.
      */
-    public CoordinationLock(String lockDirectory) {
+    public CoordinationLock(Path lockDirectory) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "CoordinationLock", lockDirectory);
 
@@ -207,7 +209,7 @@ public class CoordinationLock {
         int result = LOCK_FAILURE;
 
         try {
-            final File file = new File(handle._directory, handle._fileName);
+            final File file = Paths.get(handle._directory.toString(), handle._fileName).toFile();
 
             try {
                 handle._raf = AccessController.doPrivileged(
@@ -353,7 +355,7 @@ public class CoordinationLock {
 
         // If the directory exists then ensure that the lock file exists.
         if (RLSUtils.createDirectoryTree(_lockDirectory)) {
-            final File file = new File(_lockDirectory, lockFile);
+            final File file = Paths.get(_lockDirectory.toString(), lockFile).toFile();
 
             // Ensure that the file exists. Creating the RandomAccessFile object
             // will create the file if it does not.
@@ -407,7 +409,7 @@ public class CoordinationLock {
         RandomAccessFile _raf = null;
         FileChannel _channel = null;
         String _fileName = null;
-        String _directory = null;
+        Path _directory = null;
         FileLock _fileLock = null;
 
         void raf(RandomAccessFile raf) {

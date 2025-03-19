@@ -1,0 +1,4 @@
+Subsystem-SymbolicName: t11.e-1.0; visibility:=private; singleton:=true
+Subsystem-Version: 1.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: t11.eeCompatible-1.0; type="osgi.subsystem.feature"

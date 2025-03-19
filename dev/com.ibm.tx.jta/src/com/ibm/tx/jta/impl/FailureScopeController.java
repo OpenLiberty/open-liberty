@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +10,8 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
+
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Set;
@@ -237,21 +237,24 @@ public class FailureScopeController {
                 if (!partnersLeft && (_tranLog != null && !_tranLog.failed()) && (_xaLog != null && !_xaLog.failed())) {
                     Tr.audit(tc, "WTRN0105_CLEAN_SHUTDOWN");
                     // Shutdown is clean, we do some housekeeping if peer recovery is enabled.
-                    if (_recoveryManager != null) {
+                    if (_recoveryManager != null && com.ibm.ws.recoverylog.spi.Configuration.HAEnabled()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Peer recovery enabled, do housekeeping");
+                        // Renew lease to avoid a peer acquiring the home server's logs just as we are about to delete them.
+                        _recoveryManager.updateServerLease(serverName());
+
                         // If we are operating in a peer recovery environment this method will delete the home server's
                         // recovery logs where it has shutdown cleanly.
-                        boolean success = _recoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv();
+                        _recoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv();
 
-                        // Delete the home server's lease. Note deleteServerLease() is a noop if peer recovery is disabled.
-                        // Retain the lease if an unexpected problem occurred when deleting the recovery log
-                        if (success)
-                            _recoveryManager.deleteServerLease(serverName());
+                        // Delete the home server's lease
+                        _recoveryManager.deleteServerLease(serverName());
                     }
-                } else if (tc.isDebugEnabled()) {
+                } else {
                     if (partnersLeft) {
-                        Tr.debug(tc, "Not a clean shutdown", new Object[] { immediate, _localFailureScope });
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Not a clean shutdown", new Object[] { immediate, _localFailureScope });
                     }
-
                 }
 
                 if ((_tranLog != null && _tranLog.failed()) || (_xaLog != null && _xaLog.failed())) {
@@ -263,7 +266,7 @@ public class FailureScopeController {
                     _recoveryManager.cleanupRemoteFailureScope();
             }
 
-            // Now that recovery processing has stopped, clear out all the fields to guarentee what
+            // Now that recovery processing has stopped, clear out all the fields to guarantee what
             // we can no longer drive recovery processing for this failure scope.
             _tranLog = null;
             _xaLog = null;

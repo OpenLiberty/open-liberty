@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=Furniza\u021bi dependen\u02
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: Caracteristica MicroProfile Metrics este configurat\u0103 pentru a utiliza urm\u0103toarele libraryRef: [{0}]
 libraryRefConfigured.info.CWMMC0014I.explanation=Caracteristica MicroProfile Metrics este configurat\u0103 pentru a utiliza o libraryRef. Aceast\u0103 bibliotec\u0103 referit\u0103 trebuie s\u0103 con\u021bin\u0103 biblioteca nucleu Micrometer, bibliotecile Micrometer \u021bint\u0103 \u0219i dependen\u021bele.
 libraryRefConfigured.info.CWMMC0014I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: Valoarea {0} este invalid\u0103 pentru {1} . Se accept\u0103 numai valori \u00eentregi \u0219i zecimale.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=Valorile histogramei configurat sunt invalide.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Configura\u021bi valorile cu numere \u00eentregi \u0219i numai zecimale.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: Valoarea {0} este invalid\u0103 pentru {1} . Se accept\u0103 numai valori \u00eentregi cu o unitate de timp (de exemplu ms, s, m, h).
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=Valorile cronometrului configurat sunt invalide.
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Configura\u021bi cu valori \u00eentregi \u0219i unit\u0103\u021bi de timp (de exemplu ms, s, m, h).
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: Valoarea {0} este invalid\u0103 pentru {1} . Valorile trebuie s\u0103 se situeze \u00een intervalul de 0.0 la 1.0
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=Valorile percentile configurate sunt invalide.
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Configura\u021bi valorile din gama " 0.0 to 1.0 " pentru a fi acceptate.
 
 #Memory usedHeap message
 memory.usedHeap.description=Afi\u015feaz\u0103 cantitatea de memorie heap utilizat\u0103 \u00een octe\u0163i.

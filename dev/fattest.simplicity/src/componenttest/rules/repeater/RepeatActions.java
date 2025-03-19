@@ -88,7 +88,33 @@ public class RepeatActions {
                                      List<FeatureSet> otherFeatureSets) {
         // if server is null use an empty array, else return an array with the server as the sole element
         String[] servers = server != null ? new String[] { server } : new String[] {};
-        return repeat(servers, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets);
+        return repeat(servers, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets, false);
+    }
+
+    /**
+     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode.
+     * The others will be run in the mode specified by otherFeatureSetsTestMode.
+     *
+     * If {@code firstFeatureSet} isn't compatible with the current Java version, we try to
+     * replace it with the newest set from {@code otherFeatureSets} that is compatible.
+     *
+     * @param  server                   The server to repeat on
+     * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  allFeatureSets           An ORDERED list of all the FeatureSets which may apply to this test. Newest FeatureSet should be first. Oldest last.
+     * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
+     * @param  skipTransformation       Skip transformation for actions
+     * @return                          A RepeatTests instance
+     */
+    public static RepeatTests repeat(String server,
+                                     TestMode otherFeatureSetsTestMode,
+                                     List<FeatureSet> allFeatureSets,
+                                     FeatureSet firstFeatureSet,
+                                     List<FeatureSet> otherFeatureSets,
+                                     boolean skipTransformation) {
+        // if server is null use an empty array, else return an array with the server as the sole element
+        String[] servers = server != null ? new String[] { server } : new String[] {};
+        return repeat(servers, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets, skipTransformation);
     }
 
     /**
@@ -110,6 +136,30 @@ public class RepeatActions {
                                      List<FeatureSet> allFeatureSets,
                                      FeatureSet firstFeatureSet,
                                      List<FeatureSet> otherFeatureSets) {
+        return repeat(servers, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets, false);
+    }
+
+    /**
+     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode.
+     * The others will be run in the mode specified by otherFeatureSetsTestMode.
+     *
+     * If {@code firstFeatureSet} isn't compatible with the current Java version, we try to
+     * replace it with the newest set from {@code otherFeatureSets} that is compatible.
+     *
+     * @param  servers                  The servers to repeat on
+     * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  allFeatureSets           An ORDERED list of all the FeatureSets which may apply to this test. Newest FeatureSet should be first. Oldest last.
+     * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
+     * @param  skipTransformation       Skip transformation in repeat actions used
+     * @return                          A RepeatTests instance
+     */
+    public static RepeatTests repeat(String[] servers,
+                                     TestMode otherFeatureSetsTestMode,
+                                     List<FeatureSet> allFeatureSets,
+                                     FeatureSet firstFeatureSet,
+                                     List<FeatureSet> otherFeatureSets,
+                                     boolean skipTransformation) {
 
         FeatureSet actualFirstFeatureSet = firstFeatureSet;
         List<FeatureSet> actualOtherFeatureSets = new ArrayList<>(otherFeatureSets);
@@ -129,9 +179,9 @@ public class RepeatActions {
                 actualOtherFeatureSets.remove(actualFirstFeatureSet);
             }
         }
-        RepeatTests r = RepeatTests.with(forFeatureSet(allFeatureSets, actualFirstFeatureSet, servers, TestMode.LITE));
+        RepeatTests r = RepeatTests.with(forFeatureSet(allFeatureSets, actualFirstFeatureSet, servers, TestMode.LITE, skipTransformation));
         for (FeatureSet other : actualOtherFeatureSets) {
-            r = r.andWith(forFeatureSet(allFeatureSets, other, servers, otherFeatureSetsTestMode));
+            r = r.andWith(forFeatureSet(allFeatureSets, other, servers, otherFeatureSetsTestMode, skipTransformation));
         }
         return r;
     }
@@ -146,6 +196,20 @@ public class RepeatActions {
      * @return                A FeatureReplacementAction instance
      */
     public static FeatureReplacementAction forFeatureSet(List<FeatureSet> allFeatureSets, FeatureSet featureSet, String[] servers, TestMode testMode) {
+        return forFeatureSet(allFeatureSets, featureSet, servers, testMode, false);
+    }
+
+    /**
+     * Get a FeatureReplacementAction instance for a given FeatureSet. It will be run in the mode specified.
+     *
+     * @param  allFeatureSets     All known FeatureSets. The features not in the specified FeatureSet are removed from the repeat action
+     * @param  featureSet         The FeatureSet to repeat with.
+     * @param  servers            The servers to repeat on
+     * @param  testMode           The test mode to run the FeatureSet
+     * @param  skipTransformation Skip transformation in repeat actions used
+     * @return                    A FeatureReplacementAction instance
+     */
+    public static FeatureReplacementAction forFeatureSet(List<FeatureSet> allFeatureSets, FeatureSet featureSet, String[] servers, TestMode testMode, boolean skipTransformation) {
         //First create a base FeatureReplacementAction
         //Need to use a FeatureReplacementAction which is specific to the EE version because it also contains the transformation code
         FeatureReplacementAction action = null;
@@ -166,6 +230,9 @@ public class RepeatActions {
             action = new FeatureReplacementAction();
         }
         action.withMinJavaLevel(featureSet.getMinJavaLevel());
+        if (action instanceof JakartaEEAction) {
+            ((JakartaEEAction) action).setSkipTransformation(skipTransformation);
+        }
 
         //add all the features from the primary FeatureSet
         action.addFeatures(featureSet.getFeatures());

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2022 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal;
 
@@ -49,8 +46,6 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.ee.behaviors.HttpBehavior;
 import com.ibm.wsspi.http.ee7.HttpTransportBehavior;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
-import com.ibm.wsspi.timer.ApproximateTime;
-import com.ibm.wsspi.timer.QuickApproxTime;
 
 /**
  * Component that handles configuration for the dispatching of inbound
@@ -82,6 +77,9 @@ public class HttpDispatcher {
     //Servlet 6.0
     private volatile ServiceReference<HttpBehavior> cookieBehaviorRef;
     private static volatile boolean useEE10Cookies = false;
+
+    //Servlet 6.1 (EE11)
+    private static volatile boolean isEE11 = false;
 
     static final String CONFIG_ALIAS = "httpDispatcher";
 
@@ -556,29 +554,7 @@ public class HttpDispatcher {
      * @return the approximate time service instance to use within the channel framework
      */
     public static long getApproxTime() {
-        return QuickApproxTime.getApproxTime();
-    }
-
-    /**
-     * Set the approximate time service reference.
-     * This is a required reference: will be called before activation.
-     * It is also dynamic: it may be replaced-- but we will always have one.
-     *
-     * @param ref new ApproximateTime service instance/provider
-     */
-    @Reference(name = "approxTime", policy = ReferencePolicy.DYNAMIC)
-    protected void setApproxTime(ApproximateTime ref) {
-        // do nothing: need the ref for activation of service
-    }
-
-    /**
-     * Remove the reference to the approximate time service.
-     * This is a required reference, will be called after deactivate.
-     *
-     * @param ref ApproximateTime service instance/provider to remove
-     */
-    protected void unsetApproxTime(ApproximateTime ref) {
-        // do nothing: need the ref for activation of service
+        return System.currentTimeMillis();
     }
 
     /**
@@ -796,21 +772,27 @@ public class HttpDispatcher {
     protected synchronized void setCookiesBehavior(ServiceReference<HttpBehavior> reference) {
         cookieBehaviorRef = reference;
         useEE10Cookies = (Boolean) reference.getProperty(HttpBehavior.USE_EE10_COOKIES);
+        isEE11 = reference.getProperty(HttpBehavior.IS_EE11) == null ? false : true;
 
-        Tr.debug(tc, "setCookiesBehavior useEE10Cookies [" + useEE10Cookies + "]");
+        Tr.debug(tc, "setCookiesBehavior , useEE10Cookies [" + useEE10Cookies + "] , isEE11 [" + isEE11 + "]");
     }
 
     protected synchronized void unsetCookiesBehavior(ServiceReference<HttpBehavior> reference) {
         if (reference == this.cookieBehaviorRef) {
             cookieBehaviorRef = null;
             useEE10Cookies = false;
+            isEE11 = false;
 
-            Tr.debug(tc, "unsetCookiesBehavior useEE10Cookies [" + useEE10Cookies + "]");
+            Tr.debug(tc, "unsetCookiesBehavior , useEE10Cookies [" + useEE10Cookies + "] , isEE11 [" + isEE11 + "]");
         }
     }
 
     public static boolean useEE10Cookies() {
         return useEE10Cookies;
+    }
+
+    public static boolean isEE11() {
+        return isEE11;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package io.openliberty.restfulWS.internal.ssl.component;
 
 import java.security.AccessController;
+import java.security.KeyStore;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Optional;
@@ -32,6 +33,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConstants;
@@ -59,18 +61,28 @@ public class SslClientBuilderListener implements ClientBuilderListener {
     }
 
     @Override
+    @FFDCIgnore(SSLException.class)
     public void building(ClientBuilder clientBuilder) { // for JAX-RS clients
         Object sslRef = clientBuilder.getConfiguration().getProperty(JAXRSClientConstants.SSL_REFKEY);
         try {
             SSLContext sslContext = ((ResteasyClientBuilder) clientBuilder).getSSLContext();
+            
+            // don't override SSL config provided by the user
             if (sslContext == null) {
                 getSSLContext(toRefString(sslRef)).ifPresent(clientBuilder::sslContext);
             }
         } catch (SSLException ex) {
-            throw new IllegalStateException(ex);
+            // Check if the user has supplied a KeyStore or TrustStore and throw an exception if they haven't
+            // Otherwise, continue and use the supplied KeyStore/TrustStore
+            KeyStore keyStore = ((ResteasyClientBuilder) clientBuilder).getKeyStore();
+            KeyStore trustStore = ((ResteasyClientBuilder) clientBuilder).getTrustStore();
+            if (keyStore == null && trustStore == null) {
+                throw new IllegalStateException(ex);
+            }
         }
     }
 
+    @FFDCIgnore(PrivilegedActionException.class)
     static Optional<SSLContext> getSSLContext(String sslRef) throws SSLException {
         if (jsseHelper == null) {
             return Optional.empty();

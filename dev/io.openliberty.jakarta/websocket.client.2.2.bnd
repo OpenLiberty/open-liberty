@@ -21,7 +21,7 @@ Export-Package: \
 	jakarta.websocket; version="2.2.0"
 
 -includeresource: \
-    @${repo;jakarta.websocket:jakarta.websocket-client-api;2.2.0.M1;EXACT}!/!(META-INF/maven/*|module-info.class)
+    @${repo;jakarta.websocket:jakarta.websocket-client-api;2.2.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-    dep1;groupId=jakarta.websocket;artifactId=jakarta.websocket-client-api;version=2.2.0-M1;scope=runtime
+    dep1;groupId=jakarta.websocket;artifactId=jakarta.websocket-client-api;version=2.2.0;scope=runtime

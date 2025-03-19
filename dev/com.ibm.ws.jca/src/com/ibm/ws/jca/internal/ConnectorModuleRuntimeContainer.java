@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.resource.spi.BootstrapContext;
 
@@ -34,7 +33,7 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -64,18 +63,13 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
 
     private static final TraceComponent tc = Tr.register(ConnectorModuleRuntimeContainer.class);
 
-    private BundleContext bundleContext = null;
+    private final BundleContext bundleContext;
 
-    private ConfigurationAdmin configAdmin;
+    private final ConfigurationAdmin configAdmin;
 
-    private FutureMonitor futureMonitor;
+    private final FutureMonitor futureMonitor;
 
-    /**
-     * Read/write lock for bundleContext
-     */
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-    private MetaDataService metaDataService;
+    private final MetaDataService metaDataService;
 
     private final ConcurrentHashMap<String, ConnectorModuleMetatype> moduleMetatype = new ConcurrentHashMap<String, ConnectorModuleMetatype>();;
 
@@ -84,48 +78,15 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
      */
     private final ConcurrentHashMap<String, ServiceListener[]> serviceListeners = new ConcurrentHashMap<String, ServiceListener[]>();
 
-    protected void activate(ComponentContext context) {
-        lock.writeLock().lock();
-        try {
-            bundleContext = Utils.priv.getBundleContext(context);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    protected void deactivate(ComponentContext context) {
-        lock.writeLock().lock();
-        try {
-            bundleContext = null;
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    @Reference
-    protected void setConfigurationAdmin(ConfigurationAdmin configAdmin) {
+    @Activate
+    public ConnectorModuleRuntimeContainer(BundleContext bundleContext, //
+                                           @Reference ConfigurationAdmin configAdmin,
+                                           @Reference FutureMonitor futureMonitor,
+                                           @Reference MetaDataService metaDataService) {
+        this.bundleContext = bundleContext;
         this.configAdmin = configAdmin;
-    }
-
-    protected void unsetConfigurationAdmin(ConfigurationAdmin configAdmin) {
-        this.configAdmin = null;
-    }
-
-    @Reference(name = "futureMonitor")
-    protected void setFutureMonitor(FutureMonitor futureMonitor) {
         this.futureMonitor = futureMonitor;
-    }
-
-    protected void unsetFutureMonitor(FutureMonitor futureMonitor) {
-        this.futureMonitor = null;
-    }
-
-    @Reference(name = "metaDataService")
-    protected void setMetaDataService(MetaDataService metaDataService) {
         this.metaDataService = metaDataService;
-    }
-
-    protected void unsetMetaDataService(MetaDataService metaDataService) {
     }
 
     /*
@@ -152,17 +113,13 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
      */
     private void removeServiceListeners(String id) {
         final ServiceListener[] listeners = serviceListeners.remove(id);
-        if (listeners != null)
-            for (ServiceListener listener : listeners)
+        if (listeners != null) {
+            for (ServiceListener listener : listeners) {
                 if (listener != null) {
-                    lock.readLock().lock();
-                    try {
-                        if (bundleContext != null)
-                            bundleContext.removeServiceListener(listener);
-                    } finally {
-                        lock.readLock().unlock();
-                    }
+                    bundleContext.removeServiceListener(listener);
                 }
+            }
+        }
     }
 
     private class RARInstallListener implements ServiceListener {
@@ -227,31 +184,25 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
             final ServiceListener[] listeners = new ServiceListener[4];
             serviceListeners.put(id, listeners);
 
-            lock.readLock().lock();
-            try {
-                if (bundleContext != null) {
-                    // properties for resourceAdapter
-                    bundleContext.addServiceListener(listeners[0] = this,
-                                                     "(&(objectClass=ja*.resource.spi.BootstrapContext)(id=" + id + "))");
+            // properties for resourceAdapter
+            bundleContext.addServiceListener(listeners[0] = this,
+                                             "(&(objectClass=ja*.resource.spi.BootstrapContext)(id=" + id + "))");
 
-                    // properties for adminObject, jmsDestination, jmsQueue, jmsTopic
-                    bundleContext.addServiceListener(listeners[1] = new ResourceListener(),
-                                                     "(&(objectClass=com.ibm.ws.jca.service.AdminObjectService)(properties.0.config.referenceType=com.ibm.ws.jca.*.properties."
-                                                                                            + id + ".*))");
+            // properties for adminObject, jmsDestination, jmsQueue, jmsTopic
+            bundleContext.addServiceListener(listeners[1] = new ResourceListener(),
+                                             "(&(objectClass=com.ibm.ws.jca.service.AdminObjectService)(properties.0.config.referenceType=com.ibm.ws.jca.*.properties."
+                                                                                    + id + ".*))");
 
-                    // properties for connectionFactory, jmsConnectionFactory, jmsQueueConnectionFactory, jmsTopicConnectionFactory
-                    bundleContext.addServiceListener(listeners[2] = new ResourceListener(),
-                                                     "(&(objectClass=com.ibm.ws.jca.service.ConnectionFactoryService)(properties.0.config.referenceType=com.ibm.ws.jca.*onnectionFactory.properties."
-                                                                                            + id + ".*))");
+            // properties for connectionFactory, jmsConnectionFactory, jmsQueueConnectionFactory, jmsTopicConnectionFactory
+            bundleContext.addServiceListener(listeners[2] = new ResourceListener(),
+                                             "(&(objectClass=com.ibm.ws.jca.service.ConnectionFactoryService)(properties.0.config.referenceType=com.ibm.ws.jca.*onnectionFactory.properties."
+                                                                                    + id + ".*))");
 
-                    // properties for activationSpec, jmsActivationSpec
-                    bundleContext.addServiceListener(listeners[3] = new ResourceListener(),
-                                                     "(&(objectClass=com.ibm.ws.jca.service.EndpointActivationService)(properties.0.config.referenceType=com.ibm.ws.jca.*ctivationSpec.properties."
-                                                                                            + id + ".*))");
-                }
-            } finally {
-                lock.readLock().unlock();
-            }
+            // properties for activationSpec, jmsActivationSpec
+            bundleContext.addServiceListener(listeners[3] = new ResourceListener(),
+                                             "(&(objectClass=com.ibm.ws.jca.service.EndpointActivationService)(properties.0.config.referenceType=com.ibm.ws.jca.*ctivationSpec.properties."
+                                                                                    + id + ".*))");
+
         }
 
         /**
@@ -282,13 +233,9 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
                 if ("com.ibm.ws.jca.resourceAdapter.properties".equals(pid)) {
                     latch.countDown();
                     if (autoStart) {
-                        lock.readLock().lock();
                         try {
-                            if (bundleContext != null)
-                                Utils.priv.getService(bundleContext, event.getServiceReference());
+                            Utils.priv.getService(bundleContext, event.getServiceReference());
                         } catch (Throwable x) {
-                        } finally {
-                            lock.readLock().unlock();
                         }
                     }
                 } else {
@@ -403,12 +350,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
 
                 try {
                     Collection<ServiceReference<BootstrapContext>> refs;
-                    lock.readLock().lock();
-                    try {
-                        refs = bundleContext == null ? null : Utils.priv.getServiceReferences(bundleContext, BootstrapContext.class, "(id=" + id + ')');
-                    } finally {
-                        lock.readLock().unlock();
-                    }
+                    refs = Utils.priv.getServiceReferences(bundleContext, BootstrapContext.class, "(id=" + id + ')');
                     if (refs == null || refs.isEmpty()) {
                         FFDCFilter.processException(x, getClass().getName(), "420", this, new Object[] { id, bootstrapContextFactoryPid });
                         futureMonitor.setResult(rarInstallListener.future, x);

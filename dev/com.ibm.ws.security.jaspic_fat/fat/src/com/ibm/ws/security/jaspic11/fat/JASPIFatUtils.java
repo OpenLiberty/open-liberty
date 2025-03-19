@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -70,7 +70,10 @@ public class JASPIFatUtils {
      * @throws Exception If the install failed.
      */
     public static void installJaccUserFeature(LibertyServer myServer) throws Exception {
-        if (JakartaEEAction.isEE10OrLaterActive()) {
+        if (JakartaEEAction.isEE11OrLaterActive()) {
+            myServer.installUserBundle("io.openliberty.security.authorization.jacc.testprovider_3.0");
+            myServer.installUserFeature("jaccTestProvider-3.0");
+        } else if (JakartaEEAction.isEE10Active()) {
             myServer.installUserBundle("com.ibm.ws.security.authorization.jacc.testprovider_2.1");
             myServer.installUserFeature("jaccTestProvider-2.1");
         } else if (JakartaEEAction.isEE9Active()) {
@@ -89,7 +92,10 @@ public class JASPIFatUtils {
      * @throws Exception If the uninstall failed.
      */
     public static void uninstallJaccUserFeature(LibertyServer myServer) throws Exception {
-        if (JakartaEEAction.isEE10OrLaterActive()) {
+        if (JakartaEEAction.isEE11OrLaterActive()) {
+            myServer.uninstallUserBundle("io.openliberty.security.authorization.jacc.testprovider_3.0");
+            myServer.uninstallUserFeature("jaccTestProvider-3.0");
+        } else if (JakartaEEAction.isEE10Active()) {
             myServer.uninstallUserBundle("com.ibm.ws.security.authorization.jacc.testprovider_2.1");
             myServer.uninstallUserFeature("jaccTestProvider-2.1");
         } else if (JakartaEEAction.isEE9Active()) {

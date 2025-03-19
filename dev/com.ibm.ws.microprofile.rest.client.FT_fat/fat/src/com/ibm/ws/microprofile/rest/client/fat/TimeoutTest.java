@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,8 @@ public class TimeoutTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP70_EE11, // 4.0_EE11
+                                                             MicroProfileActions.MP70_EE10, // 4.0_EE10
                                                              MicroProfileActions.MP61, // 3.0 + EE10
                                                              MicroProfileActions.MP22, // 1.2
                                                              MicroProfileActions.MP30, // 1.3

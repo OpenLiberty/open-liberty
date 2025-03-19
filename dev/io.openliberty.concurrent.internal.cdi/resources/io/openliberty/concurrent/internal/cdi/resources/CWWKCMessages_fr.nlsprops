@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,16 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: L''annotation Schedule, {0}, sp\u00e9cifie une valeur vide pour les secondes d''ex\u00e9cution de la t\u00e2che. Sp\u00e9cifiez une valeur non vide pour le champ des secondes, ou omettez le champ des secondes dans l''annotation Schedule. L''omission du champ des secondes planifie l''ex\u00e9cution de la t\u00e2che au d\u00e9but de la minute.
+CWWKC1410.schedule.lacks.seconds.explanation=La valeur vide du tableau indique que le champ des secondes ne doit pas \u00eatre pris en compte lors du calcul des heures programm\u00e9es. L'omission du champ des secondes planifie l'ex\u00e9cution de la t\u00e2che au d\u00e9but de la minute.
+CWWKC1410.schedule.lacks.seconds.useraction=Modifier le champ secondes de l'annotation Schedule pour sp\u00e9cifier une valeur non vide, ou omettre le champ secondes de l'annotation Schedule.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: Le serveur n''a pas cr\u00e9\u00e9 de bean {0} pour l''\u00e9l\u00e9ment d''annotation {1} ou de descripteur de d\u00e9ploiement {2}. L''\u00e9l\u00e9ment d''annotation ou de descripteur de d\u00e9ploiement a le nom {3} et les qualificatifs {4} et est d\u00e9fini dans l''artefact d''application {5}. L''erreur est {6}
+CWWKC1411.qualified.res.err.explanation=Le code n'a pas cr\u00e9\u00e9 la ressource ou ne l'a pas enregistr\u00e9e en tant que bean.
+CWWKC1411.qualified.res.err.useraction=Assurez-vous que la ressource est correctement configur\u00e9e.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: L''artefact d''application {0} comprend plusieurs d\u00e9finitions de ressources {1} qui ont les qualificatifs {2}. Les noms des d\u00e9finitions de ressources {1} en conflit sont {3}.
+CWWKC1412.qualifier.conflict.explanation=Chaque d\u00e9finition de ressource du m\u00eame type ayant un qualificatif doit avoir un qualificatif diff\u00e9rent.
+CWWKC1412.qualifier.conflict.useraction=Veiller \u00e0 ce que chaque d\u00e9finition de ressource du m\u00eame type ait un qualificatif diff\u00e9rent ou n'en ait pas.

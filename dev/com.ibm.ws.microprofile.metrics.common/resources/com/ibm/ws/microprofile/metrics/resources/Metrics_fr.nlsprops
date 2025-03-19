@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2023 IBM Corporation and others.
+# Copyright (c) 2009, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -100,6 +100,21 @@ missingDependencyClasses.error.CWMMC0013E.useraction=Indiquez les d\u00e9pendanc
 libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: La fonction MicroProfile Metrics est configur\u00e9e pour utiliser l'attribut libraryRef suivant : [{0}]
 libraryRefConfigured.info.CWMMC0014I.explanation=La fonction MicroProfile Metrics est configur\u00e9e pour utiliser un attribut libraryRef. Cette biblioth\u00e8que r\u00e9f\u00e9renc\u00e9e doit contenir la biblioth\u00e8que de base Micrometer, les biblioth\u00e8ques Micrometer cible et les d\u00e9pendances.
 libraryRefConfigured.info.CWMMC0014I.useraction=Aucune action n'est\nrequise.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidHistogramValueConfigured.warning.CWMMC0015W=CWMMC0015W: La valeur {0} n'est pas valide pour la propri\u00e9t\u00e9 {1} . Seules les valeurs enti\u00e8res et d\u00e9cimales sont accept\u00e9es.
+invalidHistogramValueConfigured.warning.CWMMC0015W.explanation=Les valeurs d'histogramme configur\u00e9es ne sont pas valides.
+invalidHistogramValueConfigured.warning.CWMMC0015W.useraction=Configurez les valeurs avec des entiers et des d\u00e9cimales uniquement.
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidTimerValueConfigured.warning.CWMMC0016W=CWMMC0016W: La valeur {0} n'est pas valide pour la propri\u00e9t\u00e9 {1} . Seules les valeurs enti\u00e8res avec une unit\u00e9 de temps (par exemple, ms, s, m, h) sont accept\u00e9es.
+invalidTimerValueConfigured.warning.CWMMC0016W.explanation=Les valeurs de temporisateur configur\u00e9es ne sont pas valides.
+invalidTimerValueConfigured.warning.CWMMC0016W.useraction=Configurez avec des valeurs enti\u00e8res et des unit\u00e9s de temps (par exemple, ms, s, m, h).
+
+#MicroProfile Metrics 3.0/4.0 configuration errors
+invalidPercentileValueConfigured.warning.CWMMC0017W=CWMMC0017W: La valeur {0} n'est pas valide pour la propri\u00e9t\u00e9 {1} . Les valeurs doivent \u00eatre comprises entre 0.0 et 1.0 inclus pour \u00eatre accept\u00e9es.
+invalidPercentileValueConfigured.warning.CWMMC0017W.explanation=Les valeurs de percentile configur\u00e9es ne sont pas valides.
+invalidPercentileValueConfigured.warning.CWMMC0017W.useraction=Configurez les valeurs de la plage d'inclusion 0.0 \u00e0 1.0 \u00e0 accepter.
 
 #Memory usedHeap message
 memory.usedHeap.description=Affiche la quantit\u00e9 de m\u00e9moire dynamique utilis\u00e9e en octets.

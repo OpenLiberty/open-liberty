@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.jsf;
 
@@ -35,11 +32,12 @@ public final class FacesConfigDDParser extends DDParserSpec {
         new VersionData("2.3", null, NAMESPACE_JCP_JAVAEE, FacesConfig.VERSION_2_3, VERSION_8_0_INT),                            
         
         new VersionData("3.0", null, NAMESPACE_JAKARTA, FacesConfig.VERSION_3_0, VERSION_9_0_INT),
-        new VersionData("4.0", null, NAMESPACE_JAKARTA, FacesConfig.VERSION_4_0, VERSION_10_0_INT)
+        new VersionData("4.0", null, NAMESPACE_JAKARTA, FacesConfig.VERSION_4_0, VERSION_10_0_INT),
+        new VersionData("4.1", null, NAMESPACE_JAKARTA, FacesConfig.VERSION_4_1, VERSION_11_0_INT)
     };
     
     public static int getMaxTolerated() {
-        return FacesConfig.VERSION_4_0;
+        return FacesConfig.VERSION_4_1;
     }
     
     public static int getMaxImplemented() {
@@ -63,7 +61,7 @@ public final class FacesConfigDDParser extends DDParserSpec {
     }
 
     public FacesConfigDDParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
-        this(ddRootContainer, ddEntry, FacesConfig.VERSION_4_0);
+        this(ddRootContainer, ddEntry, FacesConfig.VERSION_4_1);
     }
 
     public FacesConfigDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {

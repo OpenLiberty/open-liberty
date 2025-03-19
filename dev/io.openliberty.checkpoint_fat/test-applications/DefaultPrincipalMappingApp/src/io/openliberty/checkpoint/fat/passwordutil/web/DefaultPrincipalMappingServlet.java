@@ -63,4 +63,14 @@ public class DefaultPrincipalMappingServlet extends FATServlet {
         assertEquals("The user name must be set in the auth data.", "testUser", authData.getUserName());
         assertEquals("The password must be set in the auth data.", "testPassword", String.valueOf(authData.getPassword()));
     }
+
+    /**
+     * Verify authData attributes configure at restore when not overridden.
+     */
+    @Test
+    public void getDefaultAuthDataUsingAuthDataProvider() throws Exception {
+        AuthData authData = AuthDataProvider.getAuthData("defaultAuthData");
+        assertEquals("The user name must be set in the auth data.", "APPUSR", authData.getUserName());
+        assertEquals("The password must be set in the auth data.", "APPPWD", String.valueOf(authData.getPassword()));
+    }
 }

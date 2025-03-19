@@ -276,7 +276,7 @@ public class SimpleServlet extends FATServlet {
             // UserTransaction Commit
             con.setAutoCommit(false);
             UserTransaction tran = (UserTransaction) context.lookup("java:comp/UserTransaction");
-            tran.setTransactionTimeout(5); // afford 4 more seconds to commit
+            tran.setTransactionTimeout(7); // afford 6 more seconds to commit
             tran.begin();
             try {
                 stmt = con.createStatement();

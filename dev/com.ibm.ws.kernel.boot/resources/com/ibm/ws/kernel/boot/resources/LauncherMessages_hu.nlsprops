@@ -774,6 +774,14 @@ warning.timeoutWaitingForServerProcessToStop=CWWKE0968W: Id\u0151t\u00fall\u00e9
 warning.timeoutWaitingForServerProcessToStop.explanation=A kiszolg\u00e1l\u00f3 az id\u0151korl\u00e1t \u00e9rt\u00e9ke \u00e1ltal enged\u00e9lyezett id\u0151n bel\u00fcl nem \u00e1llt le. Ez egy lass\u00fa kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s\u00e1nak vagy egy kiszolg\u00e1l\u00f3 l\u00f3g\u00e1snak tudhat\u00f3 be.   
 warning.timeoutWaitingForServerProcessToStop.useraction=Ha a kiszolg\u00e1l\u00f3 m\u00e9g fut, akkor fontolja meg a 'server stop' parancs id\u0151korl\u00e1t \u00e9rt\u00e9k\u00e9nek n\u00f6vel\u00e9s\u00e9t. UNIX-szer\u0171 rendszereken a kiszolg\u00e1l\u00f3 stop parancs v\u00e1rakozik a kiszolg\u00e1l\u00f3 folyamat le\u00e1ll\u00edt\u00e1s\u00e1ra. Windows rendszeren a parancs v\u00e1rakozik a z\u00e1rol\u00e1sra a console.log f\u00e1jlban. A f\u00e1jlmegfigyel\u00e9si eszk\u00f6z\u00f6kkel ellen\u0151rizheti, hogy egy m\u00e1sik program, p\u00e9ld\u00e1ul egy szerkeszt\u0151 z\u00e1rolta-e a console.log f\u00e1jlt.
 
+warning.manual.PPV.env.var=CWWKE0969W: K\u00e9zi PREFERRED_PLATFORM_VERSION k\u00f6rnyezeti v\u00e1ltoz\u00f3 lett megadva a kiszolg\u00e1l\u00f3 csomagol\u00e1sa sor\u00e1n.
+warning.manual.PPV.env.var.explanation=K\u00e9zi PREFERRED_PLATFORM_VERSION k\u00f6rnyezeti v\u00e1ltoz\u00f3 lett be\u00e1ll\u00edtva a k\u00f6rnyezetben, de nem ker\u00fcl bele a kiszolg\u00e1l\u00f3csomagba.
+warning.manual.PPV.env.var.useraction=A PREFERRED_PLATFORM_VERSION k\u00f6rnyezeti v\u00e1ltoz\u00f3 meg\u0151rz\u00e9s\u00e9hez adja meg azt a server.env konfigur\u00e1ci\u00f3s f\u00e1jlban.
+
+error.read.server.env=CWWKE0970E: A (z) {} helyen tal\u00e1lhat\u00f3 server.env f\u00e1jl nem olvashat\u00f3.
+error.read.server.env.explanation=Nem siker\u00fclt beolvasni a server.env f\u00e1jlt.
+error.read.server.env.useraction=A server.env f\u00e1jl nem olvashat\u00f3.  Ellen\u0151rizze a f\u00e1jl enged\u00e9lyeit, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.
 info.serverStartedWithPID=A(z) {0} kiszolg\u00e1l\u00f3 {1} folyamatazonos\u00edt\u00f3val elindult.

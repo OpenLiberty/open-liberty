@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,14 +22,15 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.MSSQLServerContainer;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.SQLServerTestServlet;
@@ -45,13 +46,11 @@ public class SQLServerTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04") //
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "sqlserver")) //
-                    .acceptLicense();
+    public static JdbcDatabaseContainer<?> sqlserver = DatabaseContainerFactory.createType(DatabaseContainerType.SQLServer);
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.setupDatabase(sqlserver, false);
+        FATSuite.setupDatabase(sqlserver);
 
         server.addEnvVar("SQL_DBNAME", FATSuite.DB_NAME);
         server.addEnvVar("SQL_HOST", sqlserver.getHost());

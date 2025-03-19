@@ -3772,7 +3772,7 @@ public abstract class EJBMDOrchestrator {
             //
             // However, if the ManagedBean has either PreDestroy or AroundInvoke
             // interceptors, then a special version of a No-Interface wrapper
-            // is needed (which skips pre/post inovke).. so fall through to
+            // is needed (which skips pre/post invoke).. so fall through to
             // the code below and generate one.                        F743-34301.1
             // --------------------------------------------------------------------
             if (bmd.type == InternalConstants.TYPE_MANAGED_BEAN) {

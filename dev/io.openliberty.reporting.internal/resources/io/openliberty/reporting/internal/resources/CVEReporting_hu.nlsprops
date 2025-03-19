@@ -52,3 +52,7 @@ CWWKF1705.failed.response.useraction=Jav\u00edtsa ki a kommunik\u00e1ci\u00f3s p
 CWWKF1706.issue.parsing=CWWKF1706W: Probl\u00e9ma a Term\u00e9kinform\u00e1ci\u00f3k \u00e9rtelmez\u00e9sekor.
 CWWKF1706.issue.parsing.explanation=A szolg\u00e1ltat\u00e1s nem tudja sikeresen \u00e9rtelmezni a term\u00e9k inform\u00e1ci\u00f3it.
 CWWKF1706.issue.parsing.useraction=Jav\u00edtsa ki a kommunik\u00e1ci\u00f3s probl\u00e9m\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+CWWKF1707.internal.error=CWWKF1706W: Bels\u0151 hiba t\u00f6rt\u00e9nt, amikor a Liberty fut\u00e1si k\u00f6rnyezet biztons\u00e1gi r\u00e9seket k\u00e9rt. A hiba a k\u00f6vetkez\u0151: {0}
+CWWKF1707.internal.error.explanation=Hiba t\u00f6rt\u00e9nt, amely megakad\u00e1lyozta a Liberty fut\u00e1si k\u00f6rnyezet biztons\u00e1gi sebezhet\u0151s\u00e9g\u00e9nek ellen\u0151rz\u00e9s\u00e9t.
+CWWKF1707.internal.error.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.

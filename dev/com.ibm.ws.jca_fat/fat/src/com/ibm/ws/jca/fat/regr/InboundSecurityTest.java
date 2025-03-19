@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,8 +15,7 @@ package com.ibm.ws.jca.fat.regr;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,36 +23,51 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.CheckpointRule;
+import componenttest.rules.repeater.CheckpointRule.ServerMode;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
+@CheckpointTest(alwaysRun = true)
 public class InboundSecurityTest extends JCAFATTest implements RarTests {
     private final static Class<?> c = InboundSecurityTest.class;
     private final String servletName = "InboundSecurityTestServlet";
     private static ServerConfiguration originalServerConfig;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @ClassRule
+    public static CheckpointRule checkpointRule = new CheckpointRule()
+                    .setConsoleLogName(InboundSecurityTest.class.getSimpleName() + ".log")
+                    .addUnsupportedRepeatIDs(EmptyAction.ID)
+                    .setServerSetup(InboundSecurityTest::serverSetUp)
+                    .setServerStart(InboundSecurityTest::serverStart)
+                    .setServerTearDown(InboundSecurityTest::serverTearDown);
+
+    public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.regr", null, true);
         buildFvtAppEar();
+        return server;
+    }
 
+    public static void serverStart(ServerMode mode, LibertyServer server) throws Exception {
         originalServerConfig = server.getServerConfiguration().clone();
-        server.startServer("InboundSecurityTest.log");
+        server.startServer();
         server.waitForStringInLog("CWWKE0002I");
         server.waitForStringInLog("CWWKZ0001I:.*fvtapp"); // Wait for application start.
         server.waitForStringInLog("CWWKF0011I");
         server.waitForStringInLog("CWWKS4104A"); // Wait for Ltpa keys to be generated
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    public static void serverTearDown(ServerMode mode, LibertyServer server) throws Exception {
         try {
             server.stopServer("J2CA0677E", // EXPECTED
                               "J2CA0668E", // EXPECTED

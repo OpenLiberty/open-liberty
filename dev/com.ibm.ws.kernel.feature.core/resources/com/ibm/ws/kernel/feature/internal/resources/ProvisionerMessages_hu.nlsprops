@@ -225,19 +225,50 @@ UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: A konfigur\u00e1ci\u00f3 szolg\
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=A konfigur\u00e1ci\u00f3 szolg\u00e1ltat\u00e1sok nem kompatibilis kombin\u00e1ci\u00f3j\u00e1t tartalmazza. Az \u00e9rv\u00e9nytelen viselked\u00e9s elker\u00fcl\u00e9se \u00e9rdek\u00e9ben a szolg\u00e1ltat\u00e1skezel\u0151 letiltotta az \u00f6sszes szolg\u00e1ltat\u00e1st.
 UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Adja meg az \u00fctk\u00f6z\u00e9st okoz\u00f3 konfigur\u00e1lt szolg\u00e1ltat\u00e1sok egy elt\u00e9r\u0151 v\u00e1ltozat\u00e1t.
 
-# CWWK0044E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlaformCommonToProgModels
+# CWWK0047E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = EeConflictFeature1: {3} = EeConflictFeature2: {4} = configuredFeature1: {5} configuredFeature2 {6} EePlatformCommonToProgModels
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: A(z) {2} \u00e9s {3} szolg\u00e1ltat\u00e1sok nem t\u00f6lthet\u0151k be egyidej\u0171leg.  A(z) {0} {2} szolg\u00e1ltat\u00e1sa nem kompatibilis a(z) {1} {3} szolg\u00e1ltat\u00e1s\u00e1val.  A konfigur\u00e1ci\u00f3 a(z) {6} szolg\u00e1ltat\u00e1sainak nem kompatibilis kombin\u00e1ci\u00f3j\u00e1t tartalmazza, ami nem t\u00e1mogatott. A konfigur\u00e1lt {4} \u00e9s {5} \u00f6sszetev\u0151k a szolg\u00e1ltat\u00e1sok inkompatibilis kombin\u00e1ci\u00f3j\u00e1t tartalmazz\u00e1k.  Ez a konfigur\u00e1ci\u00f3 nem t\u00e1mogatott. Friss\u00edtse a konfigur\u00e1ci\u00f3t a(z) {0} vagy {1} programoz\u00e1si modelleket t\u00e1mogat\u00f3 konfigur\u00e1lt szolg\u00e1ltat\u00e1sok kompatibilis v\u00e1ltozatainak haszn\u00e1lat\u00e1ra.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 a jelzett programoz\u00e1si modellek szolg\u00e1ltat\u00e1sainak nem kompatibilis kombin\u00e1ci\u00f3j\u00e1t tartalmazza. Ez a konfliktus el\u0151fordulhat, ha a k\u00e9t inkompatibilis szolg\u00e1ltat\u00e1s k\u00f6zvetlen\u00fcl a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban ker\u00fcl be\u00e1ll\u00edt\u00e1sra, vagy ha a konfigur\u00e1lt szolg\u00e1ltat\u00e1sok egy nem kompatibilis szolg\u00e1ltat\u00e1s k\u00fcl\u00f6nb\u00f6z\u0151 v\u00e1ltozatait tartalmazz\u00e1k.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Pr\u00f3b\u00e1lja meg az \u00fctk\u00f6z\u00e9st okoz\u00f3 konfigur\u00e1lt szolg\u00e1ltat\u00e1soknak egy kompatibilis v\u00e1ltozat\u00e1t megadni a server.xml f\u00e1jlban. Ha nem \u00e9rhet\u0151 el m\u00e1sik v\u00e1ltozat, akkor a konfigur\u00e1lt szolg\u00e1ltat\u00e1sok nem kompatibilisek egym\u00e1ssal, \u00e9s nem \u00e1ll\u00edthat\u00f3k be egyidej\u0171leg.
 
-UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: Nem tal\u00e1lhat\u00f3 \u00e9rt\u00e9k a PREFERRED_FEATURE_VERSIONS k\u00f6rnyezeti v\u00e1ltoz\u00f3hoz
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=A konfigur\u00e1ci\u00f3 v\u00e1ltozatn\u00e9lk\u00fcli szolg\u00e1ltat\u00e1sai \u00e9s a PREFERRED_FEATURE_VERSIONS k\u00f6rnyezeti v\u00e1ltoz\u00f3 nem tal\u00e1lhat\u00f3
-UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a PREFERRED_FEATURE_VERSIONS k\u00f6rnyezeti v\u00e1ltoz\u00f3 l\u00e9tezik \u00e9s helyesen van \u00edrva.
+# CWWKF0048E  {0} = the unknown platform value in the environment variable
+UNKNOWN_PLATFORM_VALUE_ENV_VAR=CWWKF0048E: A {0} a PREFERRED_PLATFORM_VERSIONS platform k\u00f6rnyezeti v\u00e1ltoz\u00f3 \u00e9rt\u00e9ke nem tartalmaz \u00e9rv\u00e9nyes verzi\u00f3t.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.explanation=A platform k\u00f6rnyezeti v\u00e1ltoz\u00f3 minden \u00e9rt\u00e9k\u00e9nek ismert platformnak kell lennie. Az ismert platformok a javaee, jakartaee, ill microProfile.
+UNKNOWN_PLATFORM_VALUE_ENV_VAR.useraction=Ellen\u0151rizze, hogy a k\u00f6rnyezeti v\u00e1ltoz\u00f3 csak ismert platformokat tartalmaz-e.
 
-# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: A PREFERRED_FEATURE_VERSIONS k\u00f6rnyezeti v\u00e1ltoz\u00f3 nem tartalmaz \u00e9rt\u00e9ket a {0}
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=A konfigur\u00e1ci\u00f3 minden egyes versionless szolg\u00e1ltat\u00e1s\u00e1hoz a PREFERRED_FEATURE_VERSIONS \u00e9rt\u00e9k\u00e9ben a prefer\u00e1lt v\u00e1ltozat\u00e9rt\u00e9knek kell lennie.
-UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Adjon hozz\u00e1 egy PREFERRED_FEATURE_VERSIONS \u00e9rt\u00e9ket a szolg\u00e1ltat\u00e1shoz
+# CWWKF0049E  {0} = set of duplicate platforms
+DUPLICATE_PLATFORMS=CWWKF0049E: A k\u00f6vetkez\u0151 konfigur\u00e1lt platformverzi\u00f3k \u00fctk\u00f6znek: {0}.
+DUPLICATE_PLATFORMS.explanation=Egyn\u00e9l t\u00f6bb verzi\u00f3t is megadtak ugyanahhoz a platformhoz.
+DUPLICATE_PLATFORMS.useraction=T\u00e1vol\u00edtsa el az \u00f6sszes platformverzi\u00f3t egy kiv\u00e9tel\u00e9vel.
+
+# CWWKF0050E  {0} = the versionless features that cannot be resolved
+UNRESOLVED_VERSIONLESS_FEATURE=CWWKF0050E: A {0} verzi\u00f3 n\u00e9lk\u00fcli funkci\u00f3k nem oldhat\u00f3k meg
+UNRESOLVED_VERSIONLESS_FEATURE.explanation=A verzi\u00f3 n\u00e9lk\u00fcli funkci\u00f3k megold\u00e1sa el\u0151tt egy kijel\u00f6lt platformra van sz\u00fcks\u00e9g.
+UNRESOLVED_VERSIONLESS_FEATURE.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy van platformelem megadva a szolg\u00e1ltat\u00e1s\u00e1hoz.
+
+# CWWKF0051I  {0} = the versionless features: {1} = the features that were resolved from the versionless features
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE=CWWKF0051I: A {0} verzi\u00f3 n\u00e9lk\u00fcli funkci\u00f3k megoldva {1}
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.explanation=A verzi\u00f3 n\u00e9lk\u00fcli szolg\u00e1ltat\u00e1sokb\u00f3l feloldott verzi\u00f3j\u00fa szolg\u00e1ltat\u00e1sok.
+VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE.useraction=Nincs teend\u0151.
+
+# CWWKF0052E  {0} = the unknown platform
+UNKNOWN_PLATFORM_ELEMENT=CWWKF0052E: A {0} platform nem \u00e9rv\u00e9nyes
+UNKNOWN_PLATFORM_ELEMENT.explanation=A megadott platformelem nem ismert platform. Az ismert platformok a javaee, jakartaee, ill microProfile
+UNKNOWN_PLATFORM_ELEMENT.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a konfigur\u00e1lt platform ismert platform.
+
+# CWWKF0053I  {0} = the resolved platforms
+RESOLVED_PLATFORM=CWWKF0053I: A funkci\u00f3 felbont\u00e1sa kiv\u00e1lasztott {0} platformok.
+RESOLVED_PLATFORM.explanation=A platform verzi\u00f3it \u00fagy v\u00e1lasztottuk ki, hogy lehet\u0151v\u00e9 tegy\u00e9k a verzi\u00f3 n\u00e9lk\u00fcli funkci\u00f3k felbont\u00e1s\u00e1t. A platformverzi\u00f3k platformelemekb\u0151l, verzi\u00f3zott szolg\u00e1ltat\u00e1sokb\u00f3l vagy egy k\u00f6rnyezeti v\u00e1ltoz\u00f3b\u00f3l sz\u00e1rmaznak.
+RESOLVED_PLATFORM.useraction=Nincs teend\u0151.
+
+# CWWKF0054E  {0} = the versionless feature that cannot be resolved: {1} = the resolved platform
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM=CWWKF0054E: A {0} verzi\u00f3 n\u00e9lk\u00fcli szolg\u00e1ltat\u00e1snak nincs olyan verzi\u00f3ja, amely a {1} fel\u00fclet.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.explanation=A platform verzi\u00f3hoz nem \u00e9rhet\u0151 el a funkci\u00f3 verzi\u00f3ja. A funkci\u00f3felold\u00e1s befejez\u0151d\u00f6tt, de nem v\u00e1lasztotta ki a funkci\u00f3 verzi\u00f3j\u00e1t.
+INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM.useraction=T\u00e1vol\u00edtsa el a verzi\u00f3 n\u00e9lk\u00fcli szolg\u00e1ltat\u00e1st, adjon meg egy m\u00e1sik platformverzi\u00f3t, vagy haszn\u00e1ljon verzi\u00f3sz\u00e1m\u00fa szolg\u00e1ltat\u00e1st.
+
+# CWWKF0055E  {0} = the versionless features
+NO_RESOLVED_PLATFORM=CWWKF0055E: A {0} a verzi\u00f3 n\u00e9lk\u00fcli funkci\u00f3knak nincs konfigur\u00e1lt platformja.
+NO_RESOLVED_PLATFORM.explanation=Minden verzi\u00f3 n\u00e9lk\u00fcli szolg\u00e1ltat\u00e1st\u00edpushoz konfigur\u00e1lt platform sz\u00fcks\u00e9ges. Ha javaee vagy jakartaee verzi\u00f3 n\u00e9lk\u00fcli funkci\u00f3k vannak konfigur\u00e1lva, akkor ezekhez megfelel\u0151 javaee vagy jakartaee platform sz\u00fcks\u00e9ges. Ha microProfile verzi\u00f3 n\u00e9lk\u00fcli szolg\u00e1ltat\u00e1sok konfigur\u00e1lva vannak, ezekhez a microProfile fel\u00fclet.
+NO_RESOLVED_PLATFORM.useraction=Adjon hozz\u00e1 platformelemet, verzi\u00f3sz\u00e1m\u00fa szolg\u00e1ltat\u00e1st vagy k\u00f6rnyezeti v\u00e1ltoz\u00f3t.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

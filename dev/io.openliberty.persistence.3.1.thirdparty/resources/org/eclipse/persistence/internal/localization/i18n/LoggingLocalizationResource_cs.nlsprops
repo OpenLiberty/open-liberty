@@ -117,7 +117,7 @@ connected_user_database_driver=P\u0159ipojeno: {0}{6}U\u017eivatel: {1}{6}Datab\
 
 corrupt_object=po\u0161kozen\u00fd objekt: {0}
 
-corrupt_object_referenced_through_mapping=Mapov\u00e1n\u00ed odkazuje na n\u00e1sleduj\u00edc\u00ed po\u0161kozen\u00fd objekt: {0}.
+corrupt_object_referenced_through_mapping=N\u00e1sleduj\u00edc\u00ed po\u0161kozen\u00fd objekt odkazuje prost\u0159ednictv\u00edm mapov\u00e1n\u00ed: {0}
 
 corrupted_session_announcement=ID relace: {0}  Spr\u00e1vce zji\u0161\u0165ov\u00e1n\u00ed p\u0159ijal ozn\u00e1men\u00ed o poru\u0161en\u00e9 relaci - ignoruje se.
 
@@ -168,6 +168,12 @@ ejb_jar_xml_not_found_in_input=Soubor ejb-jar.xml nen\u00ed ve vstupn\u00edm adr
 elements={0}{1} prvk\u016f
 
 enable_batch_operations_as_true_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "enable-batch-operations-as-true" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+encryptor_script_description=Tato aplikace intern\u011b de\u0161ifruje star\u00e9 za\u0161ifrovan\u00e9 heslo, kter\u00e9 bylo pou\u017eito d\u0159\u00edve EclipseLink verzi a za\u0161ifruje ji nejnov\u011bj\u0161\u00edm algoritmem.
+
+encryptor_script_output=Znovu za\u0161ifrovan\u00e9 heslo je: {0}
+
+encryptor_script_usage=Pou\u017eit\u00ed je `passwordUpdate.sh|.cmd -ip <star\u00e9 \u0161ifrovan\u00e9 heslo>`
 
 entity_manager_ignores_jta_data_source=Jednotka perzistence nepou\u017e\u00edv\u00e1 JTA, a proto bude spr\u00e1vce entit ignorovat zdroj dat JTA. 
 
@@ -709,7 +715,12 @@ toplink_warning=[EL varov\u00e1n\u00ed]:
 
 unit_of_work_thread_info=Aktu\u00e1ln\u00ed jednotka pr\u00e1ce v relaci ({0}) byla vytvo\u0159ena jin\u00fdm podprocesem (ID: {1} n\u00e1zev: {2}), ne\u017e je aktu\u00e1ln\u00ed podproces (ID: {3} n\u00e1zev: {4})
 
-unit_of_work_thread_info_thread_dump=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku podprocesu vytvo\u0159en\u00ed (ID: {0} n\u00e1zev: {1}): {2} Trasov\u00e1n\u00ed z\u00e1sobn\u00edku aktu\u00e1ln\u00edho podprocesu (ID: {3} n\u00e1zev: {4}): {5}\n
+unit_of_work_thread_info_thread_dump=Vytvo\u0159en\u00ed vl\u00e1kna (id: {0} n\u00e1zev: {1}) trasov\u00e1n\u00ed z\u00e1sobn\u00edku:
+#{2}
+
+Current vl\u00e1kno (id: {3} n\u00e1zev: {4}) trasov\u00e1n\u00ed z\u00e1sobn\u00edku:
+#{5}
+
 unitofwork_identity_hashcode={0}Ha\u0161ovac\u00ed k\u00f3d identity UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nem\u016f\u017ee pou\u017e\u00edvat vazbu na t\u00e9to datab\u00e1zov\u00e9 platform\u011b. Zm\u011bn\u011bno nastaven\u00ed dotazu, aby ho bylo mo\u017en\u00e9 prov\u00e9st bez vazby.

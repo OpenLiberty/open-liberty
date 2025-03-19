@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,13 +24,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
-import junit.framework.AssertionFailedError;
 import mapCacheApp.MapCache;
 
 //Verify correct function of distributed map w.r.t timing out of map entries.
@@ -48,10 +49,16 @@ public class MapCacheTest {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat(SERVER_NAME);
+
     @BeforeClass
     public static void exportWebApp() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, WAR_APP_NAME + ".war").addClass(MapCache.class);
         ShrinkHelper.exportAppToServer(server, war, DeployOptions.OVERWRITE);
+
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server.startServer(); // take a checkpoint
     }
 
     @Test
@@ -61,8 +68,6 @@ public class MapCacheTest {
         config.getVariables().getById("useInactivityParm").setValue("true"); // timetolive is 20 secs
         server.updateServerConfiguration(config); //                             inactivity timeout is 4 secs
 
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
-        server.startServer(); // take a checkpoint
         server.checkpointRestore();
 
         //load servlet and verify mapCache entry is present.
@@ -78,7 +83,7 @@ public class MapCacheTest {
         Thread.sleep(8 * 1000);
         try {
             HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
-        } catch (AssertionFailedError afe) {
+        } catch (Throwable error) {
             // On slow systems entry does not always time out of cache in 8 sec so allow one retry
             Thread.sleep(8 * 1000);
             HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
@@ -86,14 +91,12 @@ public class MapCacheTest {
     }
 
     @Test
-    public void testIimeout() throws Exception {
+    public void testTimeout() throws Exception {
 
         ServerConfiguration config = server.getServerConfiguration();
         config.getVariables().getById("useInactivityParm").setValue("false"); // timetolive is 8 secs
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
-        server.startServer(); // take a checkpoint
         server.checkpointRestore();
 
         //servlet init(). Load mapCache. Timeout count start here.
@@ -107,7 +110,7 @@ public class MapCacheTest {
         Thread.sleep(10 * 1000);
         try {
             HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
-        } catch (AssertionFailedError afe) {
+        } catch (Throwable afe) {
             // On slow systems entry does not always time out of cache on time so allow one retry
             Thread.sleep(8 * 1000);
             HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");

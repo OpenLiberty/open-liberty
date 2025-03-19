@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,22 +12,30 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.cdi;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.data.internal.persistence.EntityManagerBuilder;
+import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
+import io.openliberty.data.internal.persistence.Util;
+import jakarta.data.exceptions.DataException;
+import jakarta.data.repository.Repository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Any;
@@ -54,24 +62,27 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
 
     private final BeanManager beanMgr;
     private final Set<Type> beanTypes;
-    private final EntityManagerBuilder entityManagerBuilder;
+    private final FutureEMBuilder futureEMBuilder;
     private final DataExtension extension;
     private final Map<R, R> intercepted = new ConcurrentHashMap<>();
     private final Class<?> primaryEntityClass;
-    private final DataExtensionProvider provider;
+    private final DataProvider provider;
     private final Map<Class<?>, List<QueryInfo>> queriesPerEntityClass;
+    private final AtomicReference<RepositoryImpl<?>> repositoryImplRef = //
+                    new AtomicReference<>(); // most recently created instance
     private final Class<?> repositoryInterface;
 
-    RepositoryProducer(Class<?> repositoryInterface, BeanManager beanMgr, DataExtensionProvider provider, DataExtension extension,
-                       EntityManagerBuilder entityManagerBuilder, Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+    RepositoryProducer(Class<?> repositoryInterface, BeanManager beanMgr, DataProvider provider, DataExtension extension,
+                       FutureEMBuilder futureEMBuilder, Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
         this.beanMgr = beanMgr;
         this.beanTypes = Set.of(repositoryInterface);
-        this.entityManagerBuilder = entityManagerBuilder;
         this.extension = extension;
+        this.futureEMBuilder = futureEMBuilder;
         this.primaryEntityClass = primaryEntityClass;
         this.provider = provider;
         this.queriesPerEntityClass = queriesPerEntityClass;
         this.repositoryInterface = repositoryInterface;
+        provider.producerCreated(futureEMBuilder.moduleName.getApplication(), this);
     }
 
     @Override
@@ -88,6 +99,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
             repository = r;
 
         RepositoryImpl<?> handler = (RepositoryImpl<?>) Proxy.getInvocationHandler(repository);
+        repositoryImplRef.compareAndSet(handler, null);
         handler.beanDisposed();
     }
 
@@ -127,12 +139,67 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         return beanTypes;
     }
 
+    /**
+     * Write information about this instance to the introspection file for
+     * Jakarta Data.
+     *
+     * @param writer          writes to the introspection file.
+     * @param indent          indentation for lines.
+     * @param repositoryImpls list to populate with a RepositoryImpl that is produced
+     *                            by this producer.
+     * @return list of QueryInfo for the caller to log.
+     */
+    @Trivial
+    public List<QueryInfo> introspect(PrintWriter writer,
+                                      String indent,
+                                      List<RepositoryImpl<?>> repositoryImpls) {
+        RepositoryImpl<?> repositoryImpl = repositoryImplRef.get();
+        if (repositoryImpl != null)
+            repositoryImpls.add(repositoryImpl);
+
+        List<QueryInfo> queryInfos = new ArrayList<>();
+
+        writer.println(indent + "RepositoryProducer@" + Integer.toHexString(hashCode()));
+        writer.println(indent + "  repository: " + repositoryInterface.getName());
+        writer.println(indent + "  primary entity: " +
+                       (primaryEntityClass == null ? null : primaryEntityClass.getName()));
+        writer.println(indent + "  intercepted: " + intercepted);
+
+        writer.println();
+        writer.println(Util.toString(repositoryInterface, indent + "  "));
+
+        queriesPerEntityClass.forEach((entityClass, queries) -> {
+            writer.println();
+            if (QueryInfo.ENTITY_TBD.equals(entityClass))
+                writer.println(indent + "  Queries for entity to be determined:");
+            else
+                writer.println(indent + "  Queries for entity " + entityClass.getName() + ':');
+
+            TreeMap<String, QueryInfo> sorted = new TreeMap<>();
+            for (QueryInfo qi : queries)
+                sorted.put(qi.method.toString(), qi);
+
+            for (QueryInfo qi : sorted.values())
+                writer.println(indent + "    " + qi.toString() //
+                                .replace('\r', ' ') // print on single line
+                                .replace('\n', ' '));
+
+            queryInfos.addAll(queries);
+        });
+
+        writer.println();
+        futureEMBuilder.introspect(writer, "  " + indent);
+
+        return queryInfos;
+    }
+
     @Override
     @Trivial
     public boolean isAlternative() {
         return false;
     }
 
+    @FFDCIgnore(Throwable.class)
     @Override
     @Trivial
     public R produce(CreationalContext<R> cc) {
@@ -143,41 +210,57 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "produce", cc, repositoryInterface.getName());
 
-        InterceptionFactory<R> interception = beanMgr.createInterceptionFactory(cc, repositoryInterface);
+        try {
+            InterceptionFactory<R> interception = beanMgr.createInterceptionFactory(cc, repositoryInterface);
 
-        boolean intercept = false;
-        AnnotatedTypeConfigurator<R> configurator = interception.configure();
-        for (Annotation anno : configurator.getAnnotated().getAnnotations())
-            if (beanMgr.isInterceptorBinding(anno.annotationType())) {
-                intercept = true;
-                configurator.add(anno);
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "add " + anno + " for " + configurator.getAnnotated().getJavaClass());
-            }
-        for (AnnotatedMethodConfigurator<? super R> method : configurator.methods())
-            for (Annotation anno : method.getAnnotated().getAnnotations())
+            boolean intercept = false;
+            AnnotatedTypeConfigurator<R> configurator = interception.configure();
+            for (Annotation anno : configurator.getAnnotated().getAnnotations())
                 if (beanMgr.isInterceptorBinding(anno.annotationType())) {
                     intercept = true;
-                    method.add(anno);
+                    configurator.add(anno);
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
+                        Tr.debug(this, tc, "add " + anno + " for " + configurator.getAnnotated().getJavaClass());
                 }
+            for (AnnotatedMethodConfigurator<? super R> method : configurator.methods())
+                for (Annotation anno : method.getAnnotated().getAnnotations())
+                    if (beanMgr.isInterceptorBinding(anno.annotationType())) {
+                        intercept = true;
+                        method.add(anno);
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
+                    }
 
-        RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, entityManagerBuilder, //
-                        repositoryInterface, primaryEntityClass, queriesPerEntityClass);
+            RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, futureEMBuilder, //
+                            repositoryInterface, primaryEntityClass, queriesPerEntityClass);
 
-        R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
-                                                                     new Class<?>[] { repositoryInterface },
-                                                                     handler));
+            R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
+                                                                         new Class<?>[] { repositoryInterface },
+                                                                         handler));
 
-        if (intercept) {
-            R r = interception.createInterceptedInstance(instance);
-            intercepted.put(r, instance);
-            instance = r;
+            if (intercept) {
+                R r = interception.createInterceptedInstance(instance);
+                intercepted.put(r, instance);
+                instance = r;
+            }
+
+            repositoryImplRef.set(handler);
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "produce", instance.toString());
+            return instance;
+        } catch (Throwable x) {
+            if (x instanceof DataException || x.getCause() instanceof DataException)
+                ; // already logged the error
+            else
+                Tr.error(tc, "CWWKD1095.repo.err",
+                         repositoryInterface.getName(),
+                         repositoryInterface.getAnnotation(Repository.class),
+                         primaryEntityClass == null ? null : primaryEntityClass.getName(),
+                         x);
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "produce", x);
+            throw x;
         }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "produce", instance.toString());
-        return instance;
     }
 }

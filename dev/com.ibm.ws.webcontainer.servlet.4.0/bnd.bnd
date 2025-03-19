@@ -70,8 +70,7 @@ Import-Package: \
     com.ibm.ws.session;version=latest,\
     com.ibm.ws.javaee.dd.common;version=latest,\
     com.ibm.ws.javaee.dd;version=latest,\
-    com.ibm.ws.kernel.boot.core;version=latest,\
-    com.ibm.ws.kernel.security.thread;version=latest
+    com.ibm.ws.kernel.boot.core;version=latest
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \

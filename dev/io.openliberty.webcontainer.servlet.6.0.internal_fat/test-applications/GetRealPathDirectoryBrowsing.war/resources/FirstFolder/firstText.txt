@@ -1,0 +1,3 @@
+firstText
+
+ WEB-INF/ibm-web-ext.xml "enable-directory-browsing=true"

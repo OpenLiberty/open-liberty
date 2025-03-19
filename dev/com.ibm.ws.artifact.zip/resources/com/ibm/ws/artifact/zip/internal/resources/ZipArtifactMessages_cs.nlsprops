@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -118,3 +118,8 @@ reaper.reopen.active.useraction=Restartujte server. P\u0159i aktualizaci soubor\
 missing.zip.file=CWWKM0128E: Chyb\u00ed soubor {0} zip.
 missing.zip.file.explanation=B\u011bhem zpracov\u00e1n\u00ed archivu do\u0161lo k v\u00fdjimce, proto\u017ee zadan\u00fd soubor nebyl nalezen. 
 missing.zip.file.useraction=Zkontrolujte, zda se zadan\u00fd soubor ukon\u010d\u00ed a m\u00e1 opr\u00e1vn\u011bn\u00ed, kter\u00e1 jsou \u010diteln\u00e1 pro server.
+
+# # {0} A jar: URL.
+CWWKM0129W.missing.dir.entry=CWWKM0129W: Archiv {0} nem\u00e1 o\u010dek\u00e1vanou cestu vstupu do adres\u00e1\u0159e: {1}
+CWWKM0129W.missing.dir.entry.explanation=Archiv pou\u017eit\u00fd v adrese URL zdroje obsahuje polo\u017eky, kter\u00e9 jsou obsa\u017eeny v adres\u00e1\u0159i, ale v archivu chyb\u00ed polo\u017eka pro samotn\u00fd adres\u00e1\u0159. Adresa URL adres\u00e1\u0159e nen\u00ed vr\u00e1cena. Toto opomenut\u00ed m\u016f\u017ee zp\u016fsobit, \u017ee n\u011bkter\u00e9 aplikace, kter\u00e9 vyhled\u00e1vaj\u00ed prost\u0159edky, nenajdou n\u011bkter\u00e9 prost\u0159edky v archivn\u00edm souboru.
+CWWKM0129W.missing.dir.entry.useraction=Archivn\u00ed soubor mus\u00ed b\u00fdt vytvo\u0159en tak, aby zahrnoval v\u0161echny polo\u017eky adres\u00e1\u0159e.

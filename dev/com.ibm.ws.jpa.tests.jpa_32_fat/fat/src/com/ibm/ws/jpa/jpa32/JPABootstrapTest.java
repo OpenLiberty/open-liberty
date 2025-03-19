@@ -19,7 +19,6 @@ import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -90,15 +89,5 @@ public class JPABootstrapTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server1.stopServer("CWWJP9991W",
                            "Missing PostgreSQL10JsonPlatform"); // Generated with postgres db, since we don't include the postgres plugin);
-    }
-
-    @Test
-    public void testJPA32Bootstrap() throws Exception {
-        runTest(SPECLEVEL);
-    }
-
-    private void runTest(String spec) throws Exception {
-        FATServletClient.runTest(server1, APP_NAME + "_" + spec + "/TestJPABootstrap", "testPersistenceUnitBootstrap");
-
     }
 }

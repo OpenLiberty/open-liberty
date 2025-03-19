@@ -12,6 +12,11 @@
  *******************************************************************************/
 package test.jakarta.concurrency;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collections;
+import java.util.List;
+
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -23,6 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -55,33 +61,53 @@ public class Concurrency31Test extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, Concurrency31TestApp);
 
         // fake third-party library that also includes a thread context provider
-        JavaArchive locationUtilsContextProviderJar = ShrinkWrap.create(JavaArchive.class, "location-utils.jar")
-                        .addPackage("test.context.location")
+        JavaArchive timeZoneContextProviderJar = ShrinkWrap //
+                        .create(JavaArchive.class, "time-zone-context.jar")
+                        .addPackage("test.context.timezone")
                         .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                                              "test.context.location.ZipCodeContextProvider");
-        ShrinkHelper.exportToServer(server, "lib", locationUtilsContextProviderJar);
-
-        // fake thread context provider on its own (this will be made available via a bell)
-        JavaArchive priorityContextProviderJar = ShrinkWrap.create(JavaArchive.class, "priority-context.jar")
-                        .addPackage("test.context.priority")
-                        .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                                              "test.context.priority.PriorityContextProvider");
-        ShrinkHelper.exportToServer(server, "lib", priorityContextProviderJar);
-
-        // fake third-party library that includes multiple thread context providers
-        JavaArchive statUtilsContextProviderJar = ShrinkWrap.create(JavaArchive.class, "stat-utils.jar")
-                        .addPackage("test.context.list")
-                        .addPackage("test.context.timing")
-                        .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                                              "test.context.list.ListContextProvider",
-                                              "test.context.timing.TimestampContextProvider");
-        ShrinkHelper.exportToServer(server, "lib", statUtilsContextProviderJar);
+                                              "test.context.timezone.TimeZoneContextProvider");
+        ShrinkHelper.exportToServer(server, "lib", timeZoneContextProviderJar);
 
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        try {
+            // Test that virtual threads are interrupted (two of them will print to
+            // System.out after interrupt) when the application stops.
+            ServerConfiguration config = server.getServerConfiguration();
+            config.getApplications()
+                            .removeBy("location", "Concurrency31TestApp.ear");
+            server.setMarkToEndOfLog(server.getDefaultLogFile());
+            server.updateServerConfiguration(config);
+
+            String[] expected = {
+                                  "WWKZ0009I.*Concurrency31TestApp",
+                                  "O TestVirtualThreadsInterruptedWhenAppStopped1",
+                                  "O TestVirtualThreadsInterruptedWhenAppStopped2"
+            };
+            List<String> found = server //
+                            .waitForConfigUpdateInLogUsingMark(Collections.emptySet(),
+                                                               expected);
+
+            // waitForConfigUpdateInLogUsingMark returns additional lines
+            // that we didn't ask for, so we cannot compare the count.
+            // Instead, check for each separately.
+
+            assertEquals(found.toString(), 1, found.stream()
+                            .filter(line -> line.matches(".*" + expected[0] + ".*"))
+                            .count());
+
+            assertEquals(found.toString(), 1, found.stream()
+                            .filter(line -> line.contains(expected[1]))
+                            .count());
+
+            assertEquals(found.toString(), 1, found.stream()
+                            .filter(line -> line.contains(expected[2]))
+                            .count());
+        } finally {
+            server.stopServer();
+        }
     }
 }

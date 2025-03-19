@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,16 @@ package com.ibm.ws.logging.internal.osgi;
 
 import static com.ibm.ws.logging.internal.osgi.OsgiLogConstants.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EventObject;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.equinox.log.ExtendedLogEntry;
-import org.eclipse.equinox.log.LogFilter;
 import org.eclipse.equinox.log.SynchronousLogListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
@@ -35,7 +38,7 @@ import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 
-public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBundleListener, LogFilter {
+public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBundleListener {
     private static final TraceComponent _tc = Tr.register(TrOSGiLogForwarder.class,OsgiLogConstants.TRACE_GROUP, OsgiLogConstants.MESSAGE_BUNDLE);
 
     final static class OSGiTraceComponent extends TraceComponent {
@@ -54,12 +57,17 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
     public static final int LOG_EVENT = -5;
 
     private static final Object COULD_NOT_OBTAIN_LOCK_EXCEPTION = "Could not obtain lock";
-	private static final String COULD_NOT_GET_SERVICE_FROM_REF = "could not get service from ref";
-	private static final String COULD_NOT_OBTAIN_ALL_REQ_DEPS = "could not obtain all required dependencies";
-	private static final String SERVICE_NOT_AVAILABLE = "service not available from service registry for servicereference";
-	private static final String CANNOT_BE_CALLED_ON_NULL_OBJECT = "cannot be called on null object";
+    private static final String COULD_NOT_GET_SERVICE_FROM_REF = "could not get service from ref";
+    private static final String COULD_NOT_OBTAIN_ALL_REQ_DEPS = "could not obtain all required dependencies";
+    private static final String SERVICE_NOT_AVAILABLE = "service not available from service registry for servicereference";
+    private static final String CANNOT_BE_CALLED_ON_NULL_OBJECT = "cannot be called on null object";
 
     private final Map<Bundle, OSGiTraceComponent> traceComponents = new ConcurrentHashMap<Bundle, OSGiTraceComponent>();
+
+    public TrOSGiLogForwarder() {
+        // force LogEntry class load
+        LogEntry.class.getName();
+    }
 
     OSGiTraceComponent getTraceComponent(Bundle b) {
         OSGiTraceComponent tc = traceComponents.get(b);
@@ -80,14 +88,24 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
                     ffdcMe = bsn + "-" + b.getVersion();
                 }
                 String logName = id + "-" + bsn;
-                String group = b.getHeaders("").get("WS-TraceGroup");
-                String[] groups;
-                if (group == null) {
-                    groups = new String[] { bsn, LOG_SERVICE_GROUP, TRACE_SPEC_OSGI_EVENTS };
-                } else {
-                    groups = new String[] { bsn, group, LOG_SERVICE_GROUP, TRACE_SPEC_OSGI_EVENTS };
+                List<String> groups = new ArrayList<>(5);
+
+                groups.add(bsn);
+
+                String groupHeader = b.getHeaders("").get("WS-TraceGroup");
+                if (groupHeader != null) {
+                    groups.add(groupHeader);
                 }
-                tc = new OSGiTraceComponent(logName, this.getClass(), groups, ffdcMe);
+
+                groups.add(LOG_SERVICE_GROUP);
+                groups.add(TRACE_SPEC_OSGI_EVENTS);
+
+                if (b.getBundleId() == 0) {
+                    // Add all the trace groups from the Framework
+                    groups.addAll(getEquinoxTraceGroups(b));
+                }
+
+                tc = new OSGiTraceComponent(logName, this.getClass(), groups.toArray(new String[0]), ffdcMe);
                 traceComponents.put(b, tc);
                 TrConfigurator.registerTraceComponent(tc);
                 if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
@@ -98,10 +116,35 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         }
     }
 
-    @Override
+    private Collection<String> getEquinoxTraceGroups(Bundle b) {
+        // the .options resource contains all the trace group keys
+        // that Equinox uses.
+        Properties options = new Properties();
+        try {
+            options.load(b.getResource(".options").openStream());
+        } catch (IOException e) {
+            // auto FFDC
+        }
+        return options.stringPropertyNames();
+    }
+
+	@Override
     public void logged(LogEntry le) {
+        if (currentlyLogging.get() == Boolean.TRUE) {
+            // using == to avoid null checks
+            // detected recursion into logged; return without logging
+            return;
+        }
+        currentlyLogging.set(Boolean.TRUE);
+        try {
+            loggedImpl(le);
+        } finally {
+            currentlyLogging.set(null);
+        }
+    }
+
+    private void loggedImpl(LogEntry logEntry) {
         boolean isAnyTraceEnabled = TraceComponent.isAnyTracingEnabled();
-        ExtendedLogEntry logEntry = (ExtendedLogEntry) le;
         Bundle b = logEntry.getBundle();
         if (b == null) {
             // This is possible in rare conditions;
@@ -124,30 +167,21 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
             switch (logEntry.getLogLevel()) {
                 default:
                 case AUDIT:
-                    if (tc.isAuditEnabled()) {
-                        Tr.audit(tc, "OSGI_AUDIT_MSG", getObjects(logEntry, true));
-                    }
+                    Tr.audit(tc, "OSGI_AUDIT_MSG", getObjects(logEntry, true));
                     break;
                 case DEBUG:
-                    if (isAnyTraceEnabled && tc.isDebugEnabled()) {
-                        Tr.debug(b, tc, logEntry.getMessage(), getObjects(logEntry, false));
-                    }
+                    Tr.debug(b, tc, logEntry.getMessage(), getObjects(logEntry, false));
                     break;
-    
                 case INFO:
-                    if (tc.isInfoEnabled()) {
-                        if(shouldBeLogged(logEntry, tc)) {
-                            Tr.info(tc, "OSGI_MSG001", getObjects(logEntry, true));
-                        }
+                    if(shouldBeLogged(logEntry, tc)) {
+                        Tr.info(tc, "OSGI_MSG001", getObjects(logEntry, true));
                     }
                     break;
-    
                 case WARN:
                     if(shouldBeLogged(logEntry, tc)) {
                         Tr.warning(tc, "OSGI_WARNING_MSG", getObjects(logEntry, true));
                     }
                     break;
-    
                 case ERROR:
                     Throwable t = logEntry.getException();
                     // BundleException's have good translated messages, so if
@@ -160,16 +194,13 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
                         Tr.error(tc, "OSGI_ERROR_MSG", getObjects(logEntry, true));
                     }
                     break;
-    
                 case TRACE:
-                    if (isAnyTraceEnabled && tc.isDumpEnabled()) {
-                        Tr.dump(tc, logEntry.getMessage(), getObjects(logEntry, false));
-                    }
+                    Tr.dump(tc, logEntry.getMessage(), getObjects(logEntry, false));
                     break;
 
             }
-        } catch (Throwable t2) {
-            FFDCFilter.processException(t2, tc.getFfdcMe(), "log", logEntry);
+        } catch (Throwable t) {
+            FFDCFilter.processException(t, tc.getFfdcMe(), "log", logEntry);
         }
     }
 
@@ -182,7 +213,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
      *                      for inclusion in translated/formatted messages
      * @return Object array for trace
      */
-    Object[] getObjects(ExtendedLogEntry logEntry, boolean translatedMsg) {
+    Object[] getObjects(LogEntry logEntry, boolean translatedMsg) {
         ArrayList<Object> list = new ArrayList<Object>(5);
 
         if (translatedMsg && logEntry.getMessage() != null) {
@@ -209,7 +240,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
             list.add(t);
         }
 
-        Object event = logEntry.getContext();
+        Object event = ((ExtendedLogEntry) logEntry).getContext();
         if (event instanceof EventObject) {
             String sString = String.format("Event:%s", event.toString());
             list.add(sString);
@@ -227,7 +258,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
     /*
      * Check to see if this exception should be squelched.
      */
-    private boolean shouldBeLogged(Throwable t, OSGiTraceComponent tc, ExtendedLogEntry logEntry) {
+    private boolean shouldBeLogged(Throwable t, OSGiTraceComponent tc, LogEntry logEntry) {
         while (t != null) {
             if (t instanceof IllegalStateException && COULD_NOT_OBTAIN_LOCK_EXCEPTION.equals(t.getMessage())) {
                 if (tc.isDebugEnabled()) {
@@ -251,7 +282,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
     /*
      * Squelch info / warnings related to circular references
      */
-    private boolean shouldBeLogged(ExtendedLogEntry logEntry, OSGiTraceComponent tc) {
+    private boolean shouldBeLogged(LogEntry logEntry, OSGiTraceComponent tc) {
         String message = logEntry.getMessage().toLowerCase();
         if(message.contains(COULD_NOT_GET_SERVICE_FROM_REF) ||
                 message.contains(COULD_NOT_OBTAIN_ALL_REQ_DEPS) ||
@@ -266,46 +297,6 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         return true;
     }
 
-    @Override
-    public boolean isLoggable(Bundle b, String loggerName, int level) {
-        if (b == null) {
-            // This is possible in rare conditions;
-            // For example log entries for service events when the service is unregistered
-            // before we could get the bundle
-            return false;
-        }
-        boolean isAnyTraceEnabled = TraceComponent.isAnyTracingEnabled();
-
-        // Do error first because we don't do the check below for errors
-        if (level == LogLevel.ERROR.ordinal()) {
-            return getTraceComponent(b).isErrorEnabled();
-        }
-
-        // check for events specifically to log them with Tr.event
-        if (loggerName != null && loggerName.startsWith(LOGGER_EVENTS_PREFIX))  {
-            return isAnyTraceEnabled && getTraceComponent(b).isEventEnabled();
-        }
-
-        if (level == LogLevel.AUDIT.ordinal()) {
-            return getTraceComponent(b).isAuditEnabled();
-        }
-
-        if (level == LogLevel.INFO.ordinal()) {
-            return getTraceComponent(b).isInfoEnabled();
-        }
-
-        if (level == LogLevel.WARN.ordinal()) {
-            return getTraceComponent(b).isWarningEnabled();
-        }
-
-        if (level == LogLevel.DEBUG.ordinal()) {
-            return isAnyTraceEnabled && getTraceComponent(b).isDebugEnabled();
-        }
-
-        if (level == LogLevel.TRACE.ordinal()) {
-            return isAnyTraceEnabled && getTraceComponent(b).isDumpEnabled();
-        }
-
-        return false;
-    }
+    final ThreadLocal<Boolean> currentlyLogging = new ThreadLocal<>();
+    
 }

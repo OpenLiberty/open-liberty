@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.jdbc.fat.postgresql;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -56,7 +57,7 @@ public class ThreadLocalConnectionTest extends FATServletClient {
     //This also means that we can only run this test manually because if this test were to run more than once at the same time
     //on the same host, the ports would conflict and it would fail.
     //But it is still useful to have in case a similar incident happens in the future.
-    public static FixedHostPortGenericContainer<?> postgre = new FixedHostPortGenericContainer<>("postgres:14.1-alpine")
+    public static FixedHostPortGenericContainer<?> postgre = new FixedHostPortGenericContainer<>("public.ecr.aws/docker/library/postgres:17-alpine")
                     .withFixedExposedPort(POSTGRE_HOST_PORT, POSTGRE_CONTAINER_PORT)
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)
@@ -69,6 +70,9 @@ public class ThreadLocalConnectionTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        server.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
+
         postgre.start();
 
         ShrinkHelper.defaultApp(server, APP_NAME, "jdbc.fat.postgresql.web");

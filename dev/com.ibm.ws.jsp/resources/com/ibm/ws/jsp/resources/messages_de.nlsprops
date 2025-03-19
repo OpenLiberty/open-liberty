@@ -1258,9 +1258,9 @@ system.java.compiler.not.found=JSPG0304W: Das JSP-Attribut useJDKCompiler ist au
 system.java.compiler.not.found.explanation=Der JSP-Container hat den Systemcompiler nicht gefunden. Dies weist gew\u00f6hnlich darauf hin, dass die JAR-Datei des Java-SDK, tools.jar, nicht im Klassenpfad gefunden wurde.
 system.java.compiler.not.found.useraction=Stellen Sie sicher, dass die JAR-Datei des Java-SDK, tools.jar, im Klassenpfad enthalten ist und dass das Java-SDK die Java-Compiler-API unterst\u00fctzt. Weitere Informationen finden Sie in Java Specification Request 199.
 
-jsp.feature.not.loaded.correctly=CWWJS0001E: Die Seitenfunktion (fr\u00fcher JSP) wurde nicht mit einer akzeptablen Version geladen.
-jsp.feature.not.loaded.correctly.explanation=Das Feature wurde ohne g\u00fcltige Version geladen. Die Anwendung verh\u00e4lt sich m\u00f6glicherweise anders als erwartet.
-jsp.feature.not.loaded.correctly.useraction=\u00dcberpr\u00fcfen Sie, ob die Datei "server.xml" mehrere JSP-Features enth\u00e4lt. Die Datei darf nicht mehr als ein Feature f\u00fcr Seiten (JSP) angeben.
+jsp.feature.not.loaded.correctly=CWWJS0001E: Der Seitencontainer (JSP) wurde nicht mit einer akzeptablen Version geladen.
+jsp.feature.not.loaded.correctly.explanation=Der Seitencontainer (JSP) wurde ohne eine akzeptable Version geladen. Die Anwendung verh\u00e4lt sich m\u00f6glicherweise anders als erwartet.
+jsp.feature.not.loaded.correctly.useraction=\u00dcberpr\u00fcf den server.xml Datei f\u00fcr das Vorhandensein mehrerer Seitenfunktionen (JSP). Die Datei darf nicht mehr als ein Feature f\u00fcr Seiten (JSP) angeben.
 
 jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Ung\u00fcltiger Wert f\u00fcr Attribut "errorOnELNotFound"
 jsp.error.page.invalid.erroronelnotfound.explanation=

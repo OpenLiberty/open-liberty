@@ -124,7 +124,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badClientId");
 
         List<validationData> expectations = null;
-        expectations = vData.addSuccessStatusCodesForActions(inovke_social_login_actions);
+        expectations = vData.addSuccessStatusCodesForActions(invoke_social_login_actions);
         expectations = vData.addExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.RESPONSE_FULL, SocialConstants.STRING_MATCHES, "Did not get a message about an unknown clientId", null, SocialMessageConstants.CWOAU0061E_BAD_CLIENTID);
 
         genericSocial(_testName, webClient, SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY, updatedSocialTestSettings, expectations);
@@ -147,8 +147,8 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_blankClientSecret");
 
-        String[] actions = inovke_social_login_actions;
-        String finalAction = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String[] actions = invoke_social_login_actions;
+        String finalAction = invoke_social_login_actions[invoke_social_login_actions.length - 1];
         List<validationData> expectations = null;
         expectations = vData.addResponseStatusExpectation(expectations, finalAction, SocialConstants.BAD_REQUEST_STATUS);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, finalAction, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Should have received an unable to contact provider exception", SocialMessageConstants.CWWKS1708E_UNABLE_TO_CONTACT_PROVIDER);        genericSocial(_testName, webClient, actions, updatedSocialTestSettings, expectations);
@@ -170,7 +170,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -197,7 +197,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
             expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.INVOKE_PROTECTED_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that a config reference couldn't be found.", SocialMessageConstants.CWWKG0033W_ATTRIBUTE_VALUE_NOT_FOUND);
         }
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -221,7 +221,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -244,7 +244,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         List<validationData> expectations = null;
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -266,7 +266,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -287,7 +287,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
         updatedSocialTestSettings.setRealm("myLibertyOPRealm");
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -309,7 +309,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
     /**
@@ -332,7 +332,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
         List<validationData> expectations = set401ResponseBaseExpectations(updatedSocialTestSettings);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, perform_social_login, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating that the authentication failed", SocialMessageConstants.CWWKS1106A_AUTHENTICATION_FAILED);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, perform_social_login, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating the user id was not good", updatedSocialTestSettings.getUserName());
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -357,7 +357,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, addJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -385,7 +385,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         List<validationData> expectations = setGoodSocialExpectations(updatedSocialTestSettings, addJWTTokenValidation);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 
@@ -402,7 +402,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badScope.xml", null);
 
         WebClient webClient = getAndSaveWebClient();
-        String[] steps = inovke_social_login_actions;
+        String[] steps = invoke_social_login_actions;
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badScope");
@@ -437,7 +437,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         List<validationData> expectations = null;
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
     
@@ -460,7 +460,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
 
         List<validationData> expectations = null;
         expectations = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
     
@@ -489,7 +489,7 @@ public class Social_BasicDiscoveryConfigTests extends SocialCommonTest {
         expectations = validationTools.addMessageExpectation(testOPServer, expectations, perform_social_login, SocialConstants.TRACE_LOG, SocialConstants.STRING_CONTAINS, 
                 "OP trace log did not contain entry indicating that the authzParameter was passed to the OP.", "name:.*response_type.*values:.*\\[code\\].*name:.*mq_authz1.*values:.*\\[mqa1234\\]");
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, updatedSocialTestSettings, expectations);
 
     }
 

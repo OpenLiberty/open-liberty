@@ -9,21 +9,17 @@
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces41.fat.flow.beans;
 
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Named;
-
 import java.io.Serializable;
-import java.util.UUID;
-import jakarta.inject.Inject;
 
 import jakarta.enterprise.context.SessionScoped;
-
 import jakarta.faces.flow.Flow;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @SessionScoped
 @Named("bean")
 public class Bean implements Serializable {
-    
+
     @Inject
     Flow currentFlow;
 
@@ -31,9 +27,4 @@ public class Bean implements Serializable {
         return currentFlow;
     }
 
-    // public void setCurrentFlow(Flow currentFlow) {
-    //     this.currentFlow = currentFlow;
-    // }
-
-    
 }

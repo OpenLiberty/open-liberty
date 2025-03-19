@@ -50,10 +50,6 @@ CWWKC1100.resource.unavailable=CWWKC1100E: El recurso {0} no est\u00e1 disponibl
 CWWKC1100.resource.unavailable.explanation=Un recurso puede quedar no disponible debido a la conclusi\u00f3n del servidor o debido a un cambio de configuraci\u00f3n, ya sea en s\u00ed mismo u en otro servicio del que depende.
 CWWKC1100.resource.unavailable.useraction=Verifique la configuraci\u00f3n del recurso y de los recursos de los que depende.
 
-CWWKC1110.task.canceled=CWWKC1110I: La tarea {0}, enviada al servicio ejecutor {1}, se ha cancelado.
-CWWKC1110.task.canceled.explanation=La ejecuci\u00f3n de la tarea se ha cancelado.
-CWWKC1110.task.canceled.useraction=No se requiere ninguna acci\u00f3n.
-
 CWWKC1101.task.failed=CWWKC1101E: La tarea {0}, enviada al servicio ejecutor {1}, ha fallado con el error siguiente: {2}.
 CWWKC1101.task.failed.explanation=Ha fallado una tarea enviada a un ejecutor. Consulte el mensaje de excepci\u00f3n para ver la causa.
 CWWKC1101.task.failed.useraction=Corrija la causa del error y vuelva a enviar la tarea.
@@ -66,6 +62,10 @@ CWWKC1103.skip.run.failed=CWWKC1103E: Se omite la ejecuci\u00f3n de la tarea {0}
 CWWKC1103.skip.run.failed.explanation=La operaci\u00f3n skipRun para Trigger ha fallado, por lo que se ha omitido el intento de ejecuci\u00f3n actual de la tarea.
 CWWKC1103.skip.run.failed.useraction=Corrija la causa del error y decida si se vuelve a enviar la tarea.
 
+CWWKC1110.task.canceled=CWWKC1110I: La tarea {0}, que fue enviada al servicio ejecutor {1}, es cancelada.
+CWWKC1110.task.canceled.explanation=La tarea se cancel\u00f3.
+CWWKC1110.task.canceled.useraction=No se requiere ninguna acci\u00f3n.
+
 CWWKC1111.task.invalid=CWWKC1111E: La tarea {0} no es v\u00e1lida.
 CWWKC1111.task.invalid.explanation=La tarea no se puede enviar porque no es v\u00e1lida.
 CWWKC1111.task.invalid.useraction=Actualice la aplicaci\u00f3n para enviar una tarea v\u00e1lida a ExecutorService.
@@ -77,6 +77,14 @@ CWWKC1112.all.tasks.canceled.useraction=No se requiere ninguna acci\u00f3n.
 CWWKC1120.future.get.rejected=CWWKC1120E: El futuro suministrado a los m\u00e9todos de ManagedTaskListener taskSubmitted y taskStarting no se puede utilizar para esperar a que finalice la tarea.
 CWWKC1120.future.get.rejected.explanation=Los m\u00e9todos de ManagedTaskListener taskSubmitted y taskStarting se ejecutan en la hebra que enviar\u00e1 o iniciar\u00e1 la tarea. Por lo tanto, el futuro suministrado a estos m\u00e9todos no debe utilizarse para la espera de la tarea.
 CWWKC1120.future.get.rejected.useraction=Actualice la aplicaci\u00f3n para evitar que invoque get en el futuro que se suministra a taskSubmitted y taskStarting.
+
+CWWKC1121.virtual.invalid=CWWKC1121E: La anotaci\u00f3n {0} o elemento descriptor de despliegue {1} que tiene el nombre {0} especifica virtual=true, pero los hilos virtuales no est\u00e1n disponibles antes de Java 21. El nivel Java utilizado es: {1}.
+CWWKC1121.virtual.invalid.explanation=Los hilos virtuales no est\u00e1n disponibles en la versi\u00f3n de Java que se utiliza.
+CWWKC1121.virtual.invalid.useraction=Actualice a una versi\u00f3n m\u00e1s reciente de Java que admita hilos virtuales.
+
+CWWKC1122.mod.unavail=CWWKC1122E: La aplicaci\u00f3n {0} o su m\u00f3dulo {1} no est\u00e1n disponibles.
+CWWKC1122.mod.unavail.explanation=La aplicaci\u00f3n y el m\u00f3dulo que definen la configuraci\u00f3n de ManagedThreadFactory deben estar disponibles para obtener una instancia de ManagedThreadFactory.
+CWWKC1122.mod.unavail.useraction=Aseg\u00farese de que la aplicaci\u00f3n se ha iniciado y de que incluye el m\u00f3dulo que define la configuraci\u00f3n ManagedThreadFactory.
 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Una tarea enviada al ejecutor gestionado {0} contiene una propiedad de ejecuci\u00f3n {1} con el valor {2}, que no es v\u00e1lido para los ejecutores gestionados.
 CWWKC1130.xprop.value.invalid.explanation=Algunos valores de propiedad de ejecuci\u00f3n no son v\u00e1lidos para ejecutores gestionados, pero pueden ser v\u00e1lidos para otros tipos de recursos, como f\u00e1brica de hebras gestionadas o servicio de contexto.

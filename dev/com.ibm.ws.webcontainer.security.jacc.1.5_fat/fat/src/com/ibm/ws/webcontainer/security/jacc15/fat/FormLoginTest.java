@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,8 +51,7 @@ package com.ibm.ws.webcontainer.security.jacc15.fat;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -60,23 +59,31 @@ import com.ibm.ws.webcontainer.security.test.servlets.FormLoginClient;
 import com.ibm.ws.webcontainer.security.test.servlets.FormLoginClient.LogoutOption;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLFormLoginClient;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.CheckpointRule;
+import componenttest.rules.repeater.CheckpointRule.ServerMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@CheckpointTest(alwaysRun = true)
 public class FormLoginTest extends CommonServletTestScenarios {
-    private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.webcontainer.security.fat.formlogin");
+    private static LibertyServer myServer;
     private static Class<?> myLogClass = FormLoginTest.class;
     private static FormLoginClient myClient;
     private static SSLFormLoginClient mySSLClient;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @ClassRule
+    public static CheckpointRule checkpointRule = new CheckpointRule()
+                                                      .setConsoleLogName(FormLoginTest.class.getSimpleName() + ".log")
+                                                      .setServerSetup(FormLoginTest::serverSetUp)
+                                                      .setServerStart(FormLoginTest::serverStart)
+                                                      .setServerTearDown(FormLoginTest::serverTearDown);
+
+    public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
+        myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.webcontainer.security.fat.formlogin");
         myServer.addInstalledAppForValidation("formlogin");
 
         JACCFatUtils.installJaccUserFeature(myServer);
@@ -84,6 +91,14 @@ public class FormLoginTest extends CommonServletTestScenarios {
 
         LDAPUtils.addLDAPVariables(myServer);
 
+        myClient = new FormLoginClient(myServer);
+        mySSLClient = new SSLFormLoginClient(myServer);
+        myClient.setJaccValidation(true);
+        mySSLClient.setJaccValidation(true);
+        return myServer;
+    }
+
+    public static void serverStart(ServerMode mode, LibertyServer server) throws Exception {
         myServer.startServer(true);
         assertNotNull("FeatureManager did not report update was complete",
                       myServer.waitForStringInLog("CWWKF0008I"));
@@ -92,12 +107,17 @@ public class FormLoginTest extends CommonServletTestScenarios {
         assertNotNull("The application did not report is was started",
                       myServer.waitForStringInLog("CWWKZ0001I"));
 
-        if (myServer.getValidateApps()) { // If this build is Java 7 or above
+        if (myServer.getValidateApps() && !CheckpointRule.isActive()) { // If this build is Java 7 or above
             verifyServerStartedWithJaccFeature(myServer);
         }
+    }
 
-        myClient = new FormLoginClient(myServer);
-        mySSLClient = new SSLFormLoginClient(myServer);
+    public static void serverTearDown(ServerMode mode, LibertyServer server) throws Exception {
+        try {
+            myServer.stopServer();
+        } finally {
+            JACCFatUtils.uninstallJaccUserFeature(myServer);
+        }
     }
 
     protected static void verifyServerStartedWithJaccFeature(LibertyServer server) {
@@ -107,15 +127,6 @@ public class FormLoginTest extends CommonServletTestScenarios {
 
     public FormLoginTest() {
         super(myServer, myLogClass, myClient, mySSLClient);
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        try {
-            myServer.stopServer();
-        } finally {
-            JACCFatUtils.uninstallJaccUserFeature(myServer);
-        }
     }
 
     /**

@@ -35,6 +35,13 @@
 
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
+    
+    <ssl id="defaultSSLConfig"
+      keyStoreRef="NewKeyStore"
+      trustStoreRef="NewTrustStore"/>
+      
+    <keyStore id="NewKeyStore" location="NewKeyStore.jks" type="JKS" password="Liberty" />
+    <keyStore id="NewTrustStore" location="NewTrustStore.jks" type="JKS" password="Liberty" />
 	
 
 </server>

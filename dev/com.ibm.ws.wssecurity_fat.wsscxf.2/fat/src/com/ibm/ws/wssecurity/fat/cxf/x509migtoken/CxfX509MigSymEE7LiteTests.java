@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -150,13 +150,15 @@ public class CxfX509MigSymEE7LiteTests extends CommonTests {
             String messageToSearch = "org.apache.cxf.binding.soap.SoapFault: BSP:R5620: Any ED_ENCRYPTION_METHOD Algorithm attribute MUST have a value of \\\"http://www.w3.org/2001/04/xmlenc#tripledes-cbc\\\", \\\"http://www.w3.org/2001/04/xmlenc#aes128-cbc\\\" or \\\"http://www.w3.org/2001/04/xmlenc#aes256-cbc\\\"";
             Log.info(thisClass, thisMethod,
                      "Searching the input string in messages.log: " + messageToSearch);
-            String result_client = server.waitForStringInLog(messageToSearch);
-            Log.info(thisClass, thisMethod, "The search result in messages.log is: " + result_client);
+            long startSearch = System.currentTimeMillis(); // Get the time before the search to give proper timeout if necessary
+            String result_client = server.waitForStringInLog(messageToSearch, 200000);
+            Log.info(thisClass, thisMethod, "The search result in messages.log is: " + result_client + ", took :" + (System.currentTimeMillis() - startSearch) + " ms.");
 
             String traceToSearch = "Fault occured, printing Exception cause to trace.";
             Log.info(thisClass, thisMethod, "Searching the input string in trace.log: " + traceToSearch);
-            String result_server = server.waitForStringInTrace(traceToSearch);
-            Log.info(thisClass, thisMethod, "The search result in trace.log is: " + result_server);
+            startSearch = System.currentTimeMillis(); // Get the time before the search to give proper timeout if necessary
+            String result_server = server.waitForStringInTrace(traceToSearch, 40000);
+            Log.info(thisClass, thisMethod, "The search result in trace.log is: " + result_server + ", took :" + (System.currentTimeMillis() - startSearch) + " ms.");
 
             if (result_client == null) {
                 fail("The message " + "'" + messageToSearch + "'" + " is not found in messages.log ");
@@ -209,16 +211,19 @@ public class CxfX509MigSymEE7LiteTests extends CommonTests {
             } catch (Exception e) {
                 throw e;
             }
+
             Log.info(thisClass, thisMethod, "In test method testBasic192ServiceDisableReturnError, ");
             String messageToSearch = "org.apache.cxf.binding.soap.SoapFault: A security error was encountered when verifying the message";
             Log.info(thisClass, thisMethod, "Searching the input string in messages.log: " + messageToSearch);
-            String result_client = server.waitForStringInLog(messageToSearch);
-            Log.info(thisClass, thisMethod, "The search result in messages.log is: " + result_client);
+            long startSearch = System.currentTimeMillis(); // Get the time before the search to give proper timeout if necessary
+            String result_client = server.waitForStringInLog(messageToSearch, 20000);
+            Log.info(thisClass, thisMethod, "The search result in messages.log is: " + result_client + ", took :" + (System.currentTimeMillis() - startSearch) + " ms.");
 
             String traceToSearch = "Fault occured, printing Exception cause to trace.";
             Log.info(thisClass, thisMethod, "Searching the input string in trace.log: " + traceToSearch);
-            String result_server = server.waitForStringInTraceUsingMark(traceToSearch);
-            Log.info(thisClass, thisMethod, "The search result in trace.log is: " + result_server);
+            startSearch = System.currentTimeMillis(); // Get the time before the search to give proper timeout if necessary
+            String result_server = server.waitForStringInTraceUsingMark(traceToSearch, 40000);
+            Log.info(thisClass, thisMethod, "The search result in trace.log is: " + result_server + ", took :" + (System.currentTimeMillis() - startSearch) + " ms.");
 
             if (result_client == null) {
                 fail("The message " + "'" + messageToSearch + "'" + " is not found in messages.log ");

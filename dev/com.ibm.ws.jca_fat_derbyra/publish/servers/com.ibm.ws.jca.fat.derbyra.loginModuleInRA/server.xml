@@ -48,7 +48,7 @@
     </jaasLoginContextEntry>
 
     <!-- "APP" is the default schema for Derby -->
-    <authData id="APP" user="APP" password="{aes}APb9ZaYzUL+JsfFD/OOBGaPM0evjmx5AnvmzbaKgffyX"/>
+    <authData id="APP" user="APP" password="{aes}ARAM+spFSyffcLzRa7yFumadNtLCSyfySk98jjDJ/lR5x4P9ipHU/rei/9W0e0BrjWO0sJLNNLP5EXIArLhAjiT4UATmFDvuQ0cLRcci0483AtbzNOP+dP0IcLd0LWJV+/oCSVVR4LzP"/>
 
     <!-- TODO go through these copied permissions once we are properly loading the login module from the resource adapter -->
     <!-- 

@@ -230,3 +230,4 @@ Subsystem-Name: Java Persistence API 2.1
  com.ibm.ws.jpa.container.eclipselink
 kind=ga
 edition=core
+WLP-Platform: javaee-7.0

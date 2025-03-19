@@ -38,17 +38,13 @@ installLocation=miejsce instalacji
 options=Opcje
 
 
-licenseOptionDescription=Wybieraj\u0105c opcj\u0119 Zgadzam si\u0119 poni\u017cej, u\u017cytkownik wyra\u017ca zgod\u0119 \
-na warunki umowy licencyjnej i warunki firm innych ni\u017c IBM, je\u015bli maj\u0105 zastosowanie. \
-Je\u015bli u\u017cytkownik nie wyra\u017ca zgody, nale\u017cy wybra\u0107 opcj\u0119 Nie zgadzam si\u0119.
+licenseOptionDescription=Wybieraj\u0105c opcj\u0119 Zgadzam si\u0119 poni\u017cej, u\u017cytkownik wyra\u017ca zgod\u0119 na warunki umowy licencyjnej i warunki firm innych ni\u017c IBM, je\u015bli maj\u0105 zastosowanie. Je\u015bli u\u017cytkownik nie wyra\u017ca zgody, nale\u017cy wybra\u0107 opcj\u0119 Nie zgadzam si\u0119.
 
-licenseeAcknowledges=Licencjobiorca potwierdza i zgadza si\u0119 z tym, \u017ce wszystkie kody (w tym opcje, funkcje i inne oprogramowanie) pobierane przez Licencjobiorc\u0119 w zwi\u0105zku z niniejszym Kodem b\u0119d\u0105 u\u017cywane wy\u0142\u0105cznie z licencjonowan\u0105 wersj\u0105 programu IBM WebSphere Application Server Liberty (zwanego dalej "Programem"). \
-Licencjobiorca potwierdza i zgadza si\u0119 z tym, \u017ce korzystanie z Kodu podlega warunkom um\u00f3w licencyjnych, na mocy kt\u00f3rych u\u017cywany jest Programu (np. Mi\u0119dzynarodowej Umowie Licencyjnej na Program, Mi\u0119dzynarodowej Umowie Licencyjnej na Programy nieobj\u0119te Gwarancj\u0105, Mi\u0119dzynarodowej Umowie Licencyjnej na Pr\u00f3bne U\u017cywanie Program\u00f3w, Mi\u0119dzynarodowej Umowie Licencyjnej na Wst\u0119pne Wydanie Program\u00f3w), w tym Informacjom licencyjnym, o ile maj\u0105 zastosowanie.
+licenseeAcknowledges=Licencjobiorca potwierdza i zgadza si\u0119 z tym, \u017ce wszystkie kody (w tym opcje, funkcje i inne oprogramowanie) pobierane przez Licencjobiorc\u0119 w zwi\u0105zku z niniejszym Kodem b\u0119d\u0105 u\u017cywane wy\u0142\u0105cznie z licencjonowan\u0105 wersj\u0105 programu IBM WebSphere Application Server Liberty (zwanego dalej "Programem"). Licencjobiorca potwierdza i zgadza si\u0119 z tym, \u017ce korzystanie z Kodu podlega warunkom um\u00f3w licencyjnych, na mocy kt\u00f3rych u\u017cywany jest Programu (np. Mi\u0119dzynarodowej Umowie Licencyjnej na Program, Mi\u0119dzynarodowej Umowie Licencyjnej na Programy nieobj\u0119te Gwarancj\u0105, Mi\u0119dzynarodowej Umowie Licencyjnej na Pr\u00f3bne U\u017cywanie Program\u00f3w, Mi\u0119dzynarodowej Umowie Licencyjnej na Wst\u0119pne Wydanie Program\u00f3w), w tym Informacjom licencyjnym, o ile maj\u0105 zastosowanie.
 
 extractPrompt=Katalog docelowy dla plik\u00f3w produktu?
 extractSuccess=Pomy\u015blnie wyodr\u0119bniono wszystkie pliki produktu.
-extractLicenseSuccess=Pomy\u015blnie \
-zastosowano pliki licencji.
+extractLicenseSuccess=Pomy\u015blnie zastosowano pliki licencji.
 licenseNotFound=Nie mo\u017cna znale\u017a\u0107 plik\u00f3w umowy licencyjnej.
 
 promptAgreement=Naci\u015bnij klawisz Enter, aby wy\u015bwietli\u0107 warunki licencji teraz, lub kliknij ikon\u0119 x, aby je pomin\u0105\u0107.
@@ -64,10 +60,7 @@ licensePrompt=Wybierz opcj\u0119 {0} Zgadzam si\u0119 lub {1} Nie zgadzam si\u01
 # {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
 # {1} International Program License Agreement
 #
-licenseStatement=Zanim b\u0119dzie mo\u017cna u\u017cy\u0107, wyodr\u0119bni\u0107 lub zainstalowa\u0107 produkt {0}, \
-nale\u017cy \
-zaakceptowa\u0107 warunki licencji {1} i informacje dodatkowe. \
-Zapoznaj si\u0119 uwa\u017cnie z niniejszymi umowami licencyjnymi.
+licenseStatement=Zanim b\u0119dzie mo\u017cna u\u017cy\u0107, wyodr\u0119bni\u0107 lub zainstalowa\u0107 produkt {0}, nale\u017cy zaakceptowa\u0107 warunki licencji {1} i informacje dodatkowe. Zapoznaj si\u0119 uwa\u017cnie z niniejszymi umowami licencyjnymi.
 
 #
 # {0} --viewLicenseAgreement
@@ -82,14 +75,12 @@ showInformation=Dodatkowe informacje licencyjne mo\u017cna wy\u015bwietli\u0107 
 #
 # {0} --acceptLicense
 # 
-licenseAccepted=Nie znaleziono argumentu {0}. Oznacza to, \u017ce u\u017cytkownik zaakceptowa\u0142 \
-warunki umowy licencyjnej.
+licenseAccepted=Nie znaleziono argumentu {0}. Oznacza to, \u017ce u\u017cytkownik zaakceptowa\u0142 warunki umowy licencyjnej.
 
 #
 # {0} c:/full/directory/path
 # 
-extractInstruction=Podaj katalog dla plik\u00f3w produktu lub pozostaw pole puste, aby \
-zaakceptowa\u0107 warto\u015b\u0107 domy\u015bln\u0105.
+extractInstruction=Podaj katalog dla plik\u00f3w produktu lub pozostaw pole puste, aby zaakceptowa\u0107 warto\u015b\u0107 domy\u015bln\u0105.
 extractLicenseInstruction=Okre\u015bl katalog archiwum aktualizacji licencji lub naci\u015bnij klawisz Enter, aby zaakceptowa\u0107 katalog domy\u015blny.
 extractDefault=Domy\u015blny katalog docelowy to {0}
 extractDirectoryExists=Katalog ju\u017c istnieje: {0}
@@ -109,13 +100,10 @@ extractFileExists=Plik ju\u017c istnieje: {0}
 inputException=Dane wej\u015bciowe przetwarzania wyj\u0105tku: {0}
 
 invalidInstall=Katalog {0} nie jest poprawnym katalogiem instalacji produktu Liberty.
-invalidVersion=Okre\u015blona instalacja produktu jest w wersji {0}, a ten \
-program dodatkowy produktu ma zastosowanie tylko do wersji {1}.
+invalidVersion=Okre\u015blona instalacja produktu jest w wersji {0}, a ten program dodatkowy produktu ma zastosowanie tylko do wersji {1}.
 invalidEdition=Edycja okre\u015blonej instalacji produktu to {0}, a ten program dodatkowy produktu ma zastosowanie tylko do edycji {1}.
 invalidLicense=Okre\u015blona instalacja produktu ma licencj\u0119 {0}, a ten program dodatkowy produktu jest przeznaczony dla produktu z licencj\u0105 {1}.
-invalidInstallType=Okre\u015blona instalacja produktu zosta\u0142a zainstalowana za \
-pomoc\u0105 programu IBM Installation Manager. U\u017cyj programu IBM Installation Manager do zainstalowania \
-program\u00f3w dodatkowych produktu.
+invalidInstallType=Okre\u015blona instalacja produktu zosta\u0142a zainstalowana za pomoc\u0105 programu IBM Installation Manager. U\u017cyj programu IBM Installation Manager do zainstalowania program\u00f3w dodatkowych produktu.
 invalidOption=Opcja {0} nie zosta\u0142a rozpoznana.
 
 #
@@ -131,8 +119,7 @@ allFeaturesAlreadyPresent=Program dodatkowy produktu {0} nie musi by\u0107 zains
 # {0} the install directory
 # {1} the list of addons installed into that installed
 #
-addonsInstalled=Instalacja produktu w po\u0142o\u017ceniu {0} ma zainstalowane nast\u0119puj\u0105ce \
-programy dodatkowe: {1}.
+addonsInstalled=Instalacja produktu w po\u0142o\u017ceniu {0} ma zainstalowane nast\u0119puj\u0105ce programy dodatkowe: {1}.
 
 #
 # {0} the install directory
@@ -155,37 +142,29 @@ couldNotFindLiberty=Nie mo\u017cna znale\u017a\u0107 katalogu {0}.
 
 # {0} is the Liberty install directory.
 patchingStarted=Stosowanie poprawki do katalogu instalacyjnego serwera Liberty: {0}.
-patchingStartedWithFix=Stosowanie poprawki {1} do katalogu instalacyjnego \
-serwera Liberty: {0}.
+patchingStartedWithFix=Stosowanie poprawki {1} do katalogu instalacyjnego serwera Liberty: {0}.
 
 patchingSuccessful=Poprawka zosta\u0142a zastosowana pomy\u015blnie.
 patchingSuccessfulWithFix=Poprawka {1} zosta\u0142a zastosowana pomy\u015blnie.
 
-patchingNotNeeded=Poprawka zosta\u0142a ju\u017c zastosowana do katalogu instalacyjnego \
-serwera Liberty: {0}.
-patchingNotNeededWithFix=Poprawka {1} zosta\u0142a ju\u017c zastosowana do katalogu \
-instalacyjnego serwera Liberty: {0}.
+patchingNotNeeded=Poprawka zosta\u0142a ju\u017c zastosowana do katalogu instalacyjnego serwera Liberty: {0}.
+patchingNotNeededWithFix=Poprawka {1} zosta\u0142a ju\u017c zastosowana do katalogu instalacyjnego serwera Liberty: {0}.
 
-patchingNotApplicable=\u017baden ze sk\u0142adnik\u00f3w poprawionych przez poprawk\u0119 \
-nie znajduje si\u0119 w katalogu instalacyjnym serwera Liberty: {0}.
-patchingNotApplicableWithFix=\u017baden ze sk\u0142adnik\u00f3w poprawionych przez poprawk\u0119 \
-{1} nie znajduje si\u0119 w katalogu instalacyjnym serwera Liberty: {0}.
+patchingNotApplicable=\u017baden ze sk\u0142adnik\u00f3w poprawionych przez poprawk\u0119 nie znajduje si\u0119 w katalogu instalacyjnym serwera Liberty: {0}.
+patchingNotApplicableWithFix=\u017baden ze sk\u0142adnik\u00f3w poprawionych przez poprawk\u0119 {1} nie znajduje si\u0119 w katalogu instalacyjnym serwera Liberty: {0}.
 
 invalidPatch=Nie mo\u017cna odczyta\u0107 zawarto\u015bci poprawki. Przerywanie stosowania poprawki.
 invalidPatchWithFix=Nie mo\u017cna odczyta\u0107 tre\u015bci poprawki {0}. Przerywanie stosowania poprawki.
 
 # {0} directory location does not exist and cannot be created.
 noWriteAccess=Nie mo\u017cna znale\u017a\u0107 lub utworzy\u0107 katalogu {0}. Przerywanie stosowania poprawki.
-noWriteAccessWithFix=Nie mo\u017cna znale\u017a\u0107 lub utworzy\u0107 katalogu {0}. Instalacja \
-poprawki {1} zostanie przerwana.
+noWriteAccessWithFix=Nie mo\u017cna znale\u017a\u0107 lub utworzy\u0107 katalogu {0}. Instalacja poprawki {1} zostanie przerwana.
 
 restoreBackupsNeeded=Poprawka nie zosta\u0142a pomy\u015blnie zastosowana i nale\u017cy odtworzy\u0107 poprzedni\u0105 instalacj\u0119 serwera Liberty. Wykonaj instrukcje podane w sekcji Wskaz\u00f3wki w zakresie usuwania poprawki w pliku readme.txt. (Niekt\u00f3re z plik\u00f3w, kt\u00f3re wskazano w tych instrukcjach do usuni\u0119cia, mog\u0142y nie zosta\u0107 utworzone).
-restoreBackupsNeededWithFix=Poprawka {1} nie zosta\u0142a pomy\u015blnie zastosowana i \
-nale\u017cy odtworzy\u0107 poprzedni\u0105 instalacj\u0119 serwera Liberty. Wykonaj instrukcje podane w sekcji Wskaz\u00f3wki w zakresie usuwania poprawki w pliku readme.txt. (Niekt\u00f3re z plik\u00f3w, kt\u00f3re wskazano w tych instrukcjach do usuni\u0119cia, mog\u0142y nie zosta\u0107 utworzone).
+restoreBackupsNeededWithFix=Poprawka {1} nie zosta\u0142a pomy\u015blnie zastosowana i nale\u017cy odtworzy\u0107 poprzedni\u0105 instalacj\u0119 serwera Liberty. Wykonaj instrukcje podane w sekcji Wskaz\u00f3wki w zakresie usuwania poprawki w pliku readme.txt. (Niekt\u00f3re z plik\u00f3w, kt\u00f3re wskazano w tych instrukcjach do usuni\u0119cia, mog\u0142y nie zosta\u0107 utworzone).
 
 noRestoreNeeded=Poprawka nie zosta\u0142a pomy\u015blnie zastosowana, ale nie trzeba odtwarza\u0107 ani usuwa\u0107 \u017cadnych plik\u00f3w.
-noRestoreNeededWithFix=Pomimo \u017ce poprawka {1} nie zosta\u0142a pomy\u015blnie \
-zastosowana, nie trzeba odtwarza\u0107 ani usuwa\u0107 \u017cadnych plik\u00f3w.
+noRestoreNeededWithFix=Pomimo \u017ce poprawka {1} nie zosta\u0142a pomy\u015blnie zastosowana, nie trzeba odtwarza\u0107 ani usuwa\u0107 \u017cadnych plik\u00f3w.
 
 # {0} is a file's location
 replacingFile=Zast\u0119powanie pliku w ''{0}''.
@@ -193,9 +172,7 @@ replacingFile=Zast\u0119powanie pliku w ''{0}''.
 patchFailed=Nie mo\u017cna pomy\u015blnie zastosowa\u0107 poprawki.
 
 # This message was written speculatively and is sadly not what we need. Use addOnNeedsIFixes instead.
-addonsNeedsFix=Instalacja produktu w po\u0142o\u017ceniu {0} ma zastosowane poprawki, kt\u00f3re nie \
-s\u0105 do\u0142\u0105czone do programu dodatkowego produktu {1}. Te poprawki musz\u0105 zosta\u0107 ponownie zastosowane, poniewa\u017c \
-program dodatkowy produktu nie zawiera ich. Sk\u0142adniki, kt\u00f3rych dotyczy ta sytuacja: {2}
+addonsNeedsFix=Instalacja produktu w po\u0142o\u017ceniu {0} ma zastosowane poprawki, kt\u00f3re nie s\u0105 do\u0142\u0105czone do programu dodatkowego produktu {1}. Te poprawki musz\u0105 zosta\u0107 ponownie zastosowane, poniewa\u017c program dodatkowy produktu nie zawiera ich. Sk\u0142adniki, kt\u00f3rych dotyczy ta sytuacja: {2}
 
 # This message is terse because it was part of a 2000-character emergency translation. 
 addOnNeedsIFixes=Instalacja produktu w po\u0142o\u017ceniu {0} zosta\u0142a rozszerzona. Nale\u017cy ponownie zastosowa\u0107 nast\u0119puj\u0105ce poprawki: {1}.  
@@ -204,83 +181,63 @@ addOnNeedsIFixes=Instalacja produktu w po\u0142o\u017ceniu {0} zosta\u0142a rozs
 fileProcessingException=Podczas przetwarzania pliku {0} zosta\u0142 zg\u0142oszony nast\u0119puj\u0105cy wyj\u0105tek: {1}
 
 #
-helpDownloadDependencies=Automatycznie pobierz dowolne \
-zale\u017cno\u015bci zewn\u0119trzne.
+helpDownloadDependencies=Automatycznie pobierz dowolne zale\u017cno\u015bci zewn\u0119trzne.
 # {0} Space-separated list of URLs
-externalDepsInstruction=Ten pakiet jest zale\u017cny od \
-nast\u0119puj\u0105cych bibliotek zewn\u0119trznych: {0}
+externalDepsInstruction=Ten pakiet jest zale\u017cny od nast\u0119puj\u0105cych bibliotek zewn\u0119trznych: {0}
 
 #
 # {0} [1]
 # {1} [2]
-externalDepsPrompt=Czy automatycznie pobra\u0107 te \
-zale\u017cno\u015bci? Wybierz opcj\u0119 {0} Tak (domy\u015blnie) lub {1} Nie: 
+externalDepsPrompt=Czy automatycznie pobra\u0107 te zale\u017cno\u015bci? Wybierz opcj\u0119 {0} Tak (domy\u015blnie) lub {1} Nie: 
 
 # {0} URL to download the file from, e.g. : http://url-for-download.com/path/to/file.jar
 # {1] Destination file to download the file to, eg c:/path/to/file/download-file.jar
-downloadFileError=Pobranie pliku zdalnego z adresu {0} \
-do po\u0142o\u017cenia {1} nie powiod\u0142o si\u0119. 
-downloadingFileNotice=Pobieranie pliku zdalnego z \
-adresu {0} do po\u0142o\u017cenia {1}. 
+downloadFileError=Pobranie pliku zdalnego z adresu {0} do po\u0142o\u017cenia {1} nie powiod\u0142o si\u0119. 
+downloadingFileNotice=Pobieranie pliku zdalnego z adresu {0} do po\u0142o\u017cenia {1}. 
 
 # {0} --verbose
-downloadingBeginNotice=Trwa pobieranie \
-zewn\u0119trznych zale\u017cno\u015bci - informacje dodatkowe s\u0105 dost\u0119pne w przypadku u\u017cycia \
-opcji {0}.
+downloadingBeginNotice=Trwa pobieranie zewn\u0119trznych zale\u017cno\u015bci - informacje dodatkowe s\u0105 dost\u0119pne w przypadku u\u017cycia opcji {0}.
 
 # {0} Exception description
-readDepsError=Odczyt pliku metadanych zewn\u0119trznych \
-zale\u017cno\u015bci nie powi\u00f3d\u0142 si\u0119, wyst\u0105pi\u0142 wyj\u0105tek {0}
+readDepsError=Odczyt pliku metadanych zewn\u0119trznych zale\u017cno\u015bci nie powi\u00f3d\u0142 si\u0119, wyst\u0105pi\u0142 wyj\u0105tek {0}
 
-archiveContainsNoLicense=Ten plik archiwum nie zawiera \
-licencji.
+archiveContainsNoLicense=Ten plik archiwum nie zawiera licencji.
 
 # {0} is a path to a directory
 targetUserDirectory=Docelowym katalogiem u\u017cytkownika jest {0}
 
 #Used when the ifix installer subclass specified by the header in the fix manifest cannot be found/created/invoked.
 # {0} is the error detected, eg class not found, method not found, etc should only happen if the ifix is built incorrectly.
-invalidFixInstaller=Wykryto b\u0142\u0105d wewn\u0119trzny podczas \
-wykonywania instalatora poprawki: {0}. Nie mo\u017cna zastosowa\u0107 poprawki.
+invalidFixInstaller=Wykryto b\u0142\u0105d wewn\u0119trzny podczas wykonywania instalatora poprawki: {0}. Nie mo\u017cna zastosowa\u0107 poprawki.
 
 #Used if the fix is built missing the required header that specifies the subclass to handle fix installation.
 # {0} is the missing header name.
-missingFixInstallerHeader=Wykryto b\u0142\u0105d wewn\u0119trzny \
-zwi\u0105zany z brakiem nag\u0142\u00f3wka poprawki {0}. Nie mo\u017cna zastosowa\u0107 poprawki.
+missingFixInstallerHeader=Wykryto b\u0142\u0105d wewn\u0119trzny zwi\u0105zany z brakiem nag\u0142\u00f3wka poprawki {0}. Nie mo\u017cna zastosowa\u0107 poprawki.
 
 #Used if the specified fix installer does not meet the interface requirement.
 # {0} is the bad fix class name
-badFixInstaller=B\u0142\u0105d wewn\u0119trzny, b\u0142\u0119dny instalator \
-poprawki {0}. Nie mo\u017cna zastosowa\u0107 poprawki.
+badFixInstaller=B\u0142\u0105d wewn\u0119trzny, b\u0142\u0119dny instalator poprawki {0}. Nie mo\u017cna zastosowa\u0107 poprawki.
 
 #Used when the lpmf file inside the fix is unabled to be parsed.
 # {0} is the error reported parsing the lpmf
-invalidMetaDataFile=Wykryto b\u0142\u0105d wewn\u0119trzny podczas \
-przetwarzania metadanych poprawki: {0}. Nie mo\u017cna zastosowa\u0107 poprawki.
+invalidMetaDataFile=Wykryto b\u0142\u0105d wewn\u0119trzny podczas przetwarzania metadanych poprawki: {0}. Nie mo\u017cna zastosowa\u0107 poprawki.
 
 #Cannot create the output log file.
 # {0} is the filename of the log that had the error, {1} is the error.
-unableToCreateFixLog=Nie mo\u017cna utworzy\u0107 pliku dziennika \
-instalacji poprawki {0}. Przyczyna: {1}. Nie mo\u017cna zastosowa\u0107 poprawki. 
+unableToCreateFixLog=Nie mo\u017cna utworzy\u0107 pliku dziennika instalacji poprawki {0}. Przyczyna: {1}. Nie mo\u017cna zastosowa\u0107 poprawki. 
 
 #Used when the fix installer is unable to understand the content of a manifest contained in the fix.
 #{0} is the manifest with the issue, {1} is the error.
-invalidFixManifest=Wykryto b\u0142\u0105d wewn\u0119trzny podczas \
-przetwarzania danych manifestu poprawki {0}: {1}. Nie mo\u017cna zastosowa\u0107 \
-poprawki.
+invalidFixManifest=Wykryto b\u0142\u0105d wewn\u0119trzny podczas przetwarzania danych manifestu poprawki {0}: {1}. Nie mo\u017cna zastosowa\u0107 poprawki.
 
 #The update to the fingerprint could fail.. but the fix will have been applied.
-unableToUpdateFingerprint=Nie mo\u017cna zaktualizowa\u0107 \
-odcisku us\u0142ugi. Przyczyna: {0}. Poprawka zosta\u0142a zastosowana, u\u017cyj opcji \
---clean podczas uruchamiania serwera.
+unableToUpdateFingerprint=Nie mo\u017cna zaktualizowa\u0107 odcisku us\u0142ugi. Przyczyna: {0}. Poprawka zosta\u0142a zastosowana, u\u017cyj opcji --clean podczas uruchamiania serwera.
 
 #Updated not applicable message stating no files have been written.
-patchingNotApplicableNoChange=Nie wyodr\u0119bniono tre\u015bci, \
-poniewa\u017c w \u015brodowisku wykonawczym {0} brakuje zgodnych sk\u0142adnik\u00f3w.
+patchingNotApplicableNoChange=Nie wyodr\u0119bniono tre\u015bci, poniewa\u017c w \u015brodowisku wykonawczym {0} brakuje zgodnych sk\u0142adnik\u00f3w.
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
-patchingSkippedSupersededFix=Poprawka {0} zosta\u0142a zast\u0105piona poprawk\u0105 {1}, kt\u00f3ra jest ju\u017c zainstalowana. \n\
-Instalacja poprawki {0} zosta\u0142a pomini\u0119ta.
+patchingSkippedSupersededFix=Poprawka {0} zosta\u0142a zast\u0105piona poprawk\u0105 {1}, kt\u00f3ra jest ju\u017c zainstalowana. \nInstalacja poprawki {0} zosta\u0142a pomini\u0119ta.
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odczytywania informacji o poprawce iFix dla bie\u017c\u0105cej instalacji. Komunikat o wyj\u0105tku: {0}.
@@ -300,9 +257,7 @@ ERROR_EXECUTING_COMMAND=Wyst\u0105pi\u0142 b\u0142\u0105d podczas wykonywania ko
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=Nie mo\u017cna znale\u017a\u0107 pliku wykonywalnego {0} po sprawdzeniu w nast\u0119puj\u0105cych po\u0142o\u017ceniach: {1}
 
 # java -jar messages 
-UNABLE_TO_FIND_PID=Nie powiod\u0142o si\u0119 uzyskanie \
-identyfikatora procesu java -jar. Nie mo\u017cna usun\u0105\u0107 tymczasowego katalogu \
-rozpakowanych plik\u00f3w {1} do czasu r\u0119cznego zako\u0144czenia procesu java -jar.
+UNABLE_TO_FIND_PID=Nie powiod\u0142o si\u0119 uzyskanie identyfikatora procesu java -jar. Nie mo\u017cna usun\u0105\u0107 tymczasowego katalogu rozpakowanych plik\u00f3w {1} do czasu r\u0119cznego zako\u0144czenia procesu java -jar.
 
 UNABLE_TO_ATTACH_AGENT=Nie mo\u017cna przy\u0142\u0105czy\u0107 agenta Java serwera Liberty. Ten serwer b\u0119dzie dzia\u0142a\u0107, ale nie b\u0119dzie m\u00f3g\u0142 wykonywa\u0107 funkcji wymagaj\u0105cych agenta Java, na przyk\u0142ad monitorowania lub \u015bledzenia. Wyj\u0105tek: {0}
 
@@ -324,12 +279,12 @@ LICENSE_invalidLicense=Nie mo\u017cna zaktualizowa\u0107 licencji, poniewa\u017c
 LICENSE_invalidInstallType=Nie mo\u017cna zaktualizowa\u0107 licencji, poniewa\u017c okre\u015blony produkt zainstalowano przy u\u017cyciu programu IBM Installation Manager. U\u017cyj programu IBM Installation Manager, aby zaktualizowa\u0107 instalacj\u0119.
 
 # new messages for license upgrade and downgrade
-LICENSE_replace_invalidVersion=Nie mo\u017cna zastosowa\u0107 \
-licencji, poniewa\u017c zainstalowano produkt w wersji {0}, a mo\u017cna zastosowa\u0107 wy\u0142\u0105cznie licencj\u0119 wersji {1}.
+LICENSE_replace_invalidVersion=Nie mo\u017cna zastosowa\u0107 licencji, poniewa\u017c zainstalowano produkt w wersji {0}, a mo\u017cna zastosowa\u0107 wy\u0142\u0105cznie licencj\u0119 wersji {1}.
 LICENSE_replace_invalidInstallType=Nie mo\u017cna zastosowa\u0107 licencji, poniewa\u017c okre\u015blony produkt zainstalowano przy u\u017cyciu programu IBM Installation Manager. U\u017cyj programu IBM Installation Manager, aby zaktualizowa\u0107 instalacj\u0119.
 
-LICENSE_replace_invalidEditonFeatures=Nast\u0119puj\u0105ce sk\u0142adniki nie maj\u0105 zastosowania do edycji {0} i nale\u017cy je zdeinstalowa\u0107 przed zastosowaniem licencji: {1}\n\
-\n\
-U\u017cyj nast\u0119puj\u0105cej komendy, aby zdeinstalowa\u0107 te sk\u0142adniki przed zastosowaniem licencji dla edycji {2}: {3}
+LICENSE_replace_invalidEditonFeatures=Nast\u0119puj\u0105ce sk\u0142adniki nie maj\u0105 zastosowania do edycji {0} i nale\u017cy je zdeinstalowa\u0107 przed zastosowaniem licencji: {1}\n\nU\u017cyj nast\u0119puj\u0105cej komendy, aby zdeinstalowa\u0107 te sk\u0142adniki przed zastosowaniem licencji dla edycji {2}: {3}
 
 LICENSE_downgrade_block_8557_low=T\u0119 licencj\u0119 mo\u017cna zastosowa\u0107 tylko do instalacji w wersji {0} lub nowszej. Aktualnie zainstalowana wersja to {1}. Pobierz najnowsz\u0105 wersj\u0119 i przeprowad\u017a aktualizacj\u0119, a nast\u0119pnie ponownie zastosuj licencj\u0119.
+
+#message for applying interim fix
+INTERIM_FIX_replace_invalidVersion=Nie mo\u017cna zastosowa\u0107 poprawki tymczasowej, poniewa\u017c okre\u015blona instalacja produktu jest w wersji {0} , ale poprawk\u0119 tymczasow\u0105 mo\u017cna zastosowa\u0107 tylko do wersji {1} .

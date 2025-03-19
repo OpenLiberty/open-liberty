@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -57,6 +57,7 @@ public class ValidationMessageConstants {
 
     public static final String OPENAPI_VERSION_INVALID = "openAPIVersionInvalid"; //$NON-NLS-1$
     public static final String OPENAPI_TAG_IS_NOT_UNIQUE = "openAPITagIsNotUnique"; //$NON-NLS-1$
+    public static final String OPENAPI_MISSING_REQUIRED_FIELDS = "openAPIMissingRequiredFields";
 
     public static final String OPERATION_IDS_MUST_BE_UNIQUE = "operationIdsMustBeUnique"; //$NON-NLS-1$
 
@@ -86,6 +87,7 @@ public class ValidationMessageConstants {
     public static final String REFERENCE_NOT_VALID_FORMAT = "referenceNotValidFormat"; //$NON-NLS-1$
     public static final String REFERENCE_NULL = "referenceNull"; //$NON-NLS-1$
     public static final String REFERENCE_TO_OBJECT_INVALID = "referenceToObjectInvalid"; //$NON-NLS-1$
+    public static final String REFERENCE_NOT_VALID_URI = "referenceNotValidUri"; //$NON-NLS-1$
 
     public static final String REQUIRED_FIELD_MISSING = "requiredFieldMissing"; //$NON-NLS-1$
 
@@ -98,6 +100,13 @@ public class ValidationMessageConstants {
     public static final String SCHEMA_PROPERTY_LESS_THAN_ZERO = "schemaPropertyLessThanZero"; //$NON-NLS-1$
     public static final String SCHEMA_TYPE_DOES_NOT_MATCH_PROPERTY = "schemaTypeDoesNotMatchProperty"; //$NON-NLS-1$
 
+    public static final String SCHEMA_PROPERTY_WRONG_TYPE = "schemaPropertyWrongType"; //$NON-NLS-1$
+    public static final String SCHEMA_PROPERTY_EMPTY_ARRAY = "schemaPropertyEmptyArray"; //$NON-NLS-1$
+    public static final String SCHEMA_PROPERTY_NOT_UNIQUE = "schemaPropertyNotUnique"; //$NON-NLS-1$
+    public static final String SCHEMA_INVALID_TYPE = "schemaInvalidType"; //$NON-NLS-1$
+    public static final String SCHEMA_COLLECTION_ELEMENT_WRONG_TYPE = "schemaCollectionElementWrongType"; //$NON-NLS-1$
+    public static final String SCHEMA_DEPENDENT_REQUIRED_UNIQUE_STRINGS = "schemaDependentRequiredUniqueStrings";
+
     public static final String SECURITY_REQ_NOT_DECLARED = "securityRequirementNotDeclared"; //$NON-NLS-1$
     public static final String SECURITY_REQ_SCOPE_NAMES_REQUIRED = "securityRequirementScopeNamesRequired"; //$NON-NLS-1$
     public static final String SECURITY_REQ_FIELD_NOT_EMPTY = "securityRequirementFieldNotEmpty"; //$NON-NLS-1$
@@ -108,6 +117,9 @@ public class ValidationMessageConstants {
 
     public static final String SERVER_VARIABLE_NOT_DEFINED = "serverVariableNotDefined"; //$NON-NLS-1$
     public static final String SERVER_INVALID_URL = "serverInvalidURL"; //$NON-NLS-1$
+
+    public static final String SERVER_VARIABLE_ARRAY_EMPTY = "serverVariableArrayEmpty";
+    public static final String SERVER_VARIABLE_DEFAULT_NOT_IN_ENUM = "serverVariableDefaultNotInEnum";
 
     public static final String VALIDATION_MESSAGE = "validationMessage"; //$NON-NLS-1$
 

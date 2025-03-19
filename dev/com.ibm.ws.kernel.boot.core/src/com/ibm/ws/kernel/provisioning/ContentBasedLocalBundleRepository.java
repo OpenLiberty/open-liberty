@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -311,7 +311,7 @@ public class ContentBasedLocalBundleRepository extends AbstractResourceRepositor
      * or a comma separated directory then the subsequent matching rules will be used to choose a matching bundle
      * in the specified directories.
      * 
-     * <p>Assuming a baseLocation of "dev/,lib/" a symbolic name of "a.b" and a version range of "[1,1.0.100)" then all
+     * <p>Assuming a baseLocation of "dev/,lib/" a symbolic name of "a.b" and a version range of "[1,1.1)" then all
      * bundles in dev and lib will be searched looking for the highest versioned bundle with a symbolic name of a.b. Note
      * highest versioned excludes iFixes where the iFix base version is not located. So given identified bundles:
      * <ol>

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -112,9 +112,9 @@ public abstract class Database {
      *
      * The create will be tried NUMBER_OF_CREATE_RETRIES times before giving up.
      *
-     * @param bootstrap Contents of the bootstrapping.properties file.
+     * @param  bootstrap Contents of the bootstrapping.properties file.
      * @throws Exception If the database or user IDs could not be created. This may be due to problems with the
-     *             database or because of collisions with other running test buckets selecting the same names.
+     *                       database or because of collisions with other running test buckets selecting the same names.
      */
     final public void createDatabase() throws Exception {
         final String method = "createDatabase";
@@ -224,7 +224,7 @@ public abstract class Database {
         String remoteMachineDDLPath = databaseMachine.getTempDir().getAbsolutePath() +
                                       "/libertyfat/" + dbtype + "/" + dbversion + "/" + dbname + "/" + dbuser1 + "/" +
                                       testBucketName + "/ddl/" + dbtype.toLowerCase() + "/";
-        RemoteFile destFile = new RemoteFile(databaseMachine, remoteMachineDDLPath);
+        RemoteFile destFile = databaseMachine.getFile(remoteMachineDDLPath);
         if (!destFile.delete())
             throw new Exception("The ddl directory was not successfully deleted before copy.");
         if (!sourceFile.copyToDestText(destFile, true, true))

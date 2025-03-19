@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
@@ -35,6 +34,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequest;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
+import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
 import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
@@ -44,6 +44,8 @@ import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     public static final TraceComponent tc = Tr.register(OidcAuthorizationRequest.class);
+
+    protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
 
     ConvergedClientConfig clientConfig;
     WebSSOUtils webSsoUtils = new WebSSOUtils();
@@ -207,7 +209,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     void addOptionalParameters(AuthorizationRequestParameters authzParameters, OidcClientRequest oidcClientRequest, String state, String acr_values, boolean isImplicit) throws UnsupportedEncodingException {
         if (clientConfig.isNonceEnabled() || isImplicit) {
-            String nonceValue = OidcUtil.generateRandom(Constants.STATE_LENGTH);
+            String nonceValue = requestUtils.generateNonceValue();
             storeNonceValue(nonceValue, state);
             authzParameters.addParameter("nonce", nonceValue);
         }
@@ -231,7 +233,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             addImplicitParameters(authzParameters);
         }
         String resources = getResourcesParameter();
-        if (resources != null) {          
+        if (resources != null) {
             authzParameters.addParameter("resource", resources);
         }
 
@@ -241,7 +243,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
         // check and see if we have any additional params to forward from the request
         addForwardLoginParams(authzParameters);
     }
-    
+
     private boolean isACRConfigured() {
         boolean isACR = false;
         String acr_values = null;

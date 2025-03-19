@@ -23,20 +23,22 @@ fat.project: true
 tested.features=\
   cdi-3.0,\
   cdi-4.0,\
-  concurrent-2.0,\
+  cdi-4.1,\
   jndi-1.0,\
   jsonp-2.0,\
   jsonp-2.1,\
   mpConfig-3.0,\
+  mpConfig-3.1,\
   mpOpenAPI-2.0,\
   mpOpenAPI-3.0,\
   mpOpenAPI-3.1,\
-  restfulwsclient-3.0,\
-  restfulwsclient-3.1,\
+  mpOpenAPI-4.0,\
   restfulws-3.0,\
   restfulws-3.1,\
+  restfulws-4.0,\
   servlet-5.0,\
   servlet-6.0,\
+  servlet-6.1,\
   transportsecurity-1.0
 
 -buildpath: \

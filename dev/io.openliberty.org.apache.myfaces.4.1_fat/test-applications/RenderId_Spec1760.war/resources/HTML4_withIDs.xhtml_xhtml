@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html" xmlns:c="jakarta.tags.core"
+    xmlns:cb="http://io.openliberty/test/annotation/literal/clientBehavior">
+
+    <h:head id="headID">
+        <title>Test ids on h:head and h:body</title>
+    </h:head>
+
+    <h:body id="bodyID">
+
+        Type: HTML4
+
+        Verifying IDs are NOT generated on head and body elements
+
+    </h:body>
+
+</html>

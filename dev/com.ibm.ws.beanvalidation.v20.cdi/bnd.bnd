@@ -27,6 +27,7 @@ Private-Package: \
 Import-Package: \
   org.hibernate.validator.internal,\
   org.hibernate.validator.cdi.internal,\
+  org.hibernate.validator.cdi.spi;version="[6.0,10)",\
   *
 
 Include-Resource: \
@@ -41,21 +42,26 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
   com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyHibernateValidatorExtension
 
 -buildpath: \
-    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-    com.ibm.websphere.javaee.validation.2.0;version=latest,\
-    com.ibm.websphere.appserver.spi.logging;version=latest,\
-    com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
-    com.ibm.websphere.org.osgi.core;version=latest,\
-    com.ibm.websphere.org.osgi.service.component;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    com.ibm.ws.beanvalidation;version=latest,\
-    com.ibm.ws.beanvalidation.core;version=latest,\
-    com.ibm.ws.cdi.interfaces;version=latest,\
-    com.ibm.ws.classloading;version=latest,\
-    com.ibm.ws.container.service;version=latest,\
-    com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.ws.javaee.dd;version=latest,\
-    com.ibm.ws.logging.core,\
-    com.ibm.ws.managedobject;version=latest,\
-    com.ibm.ws.org.hibernate.validator;version=latest, \
-    com.ibm.ws.org.hibernate.validator.cdi;version=latest
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.beanvalidation;version=latest,\
+	com.ibm.ws.beanvalidation.core;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.ws.org.hibernate.validator;version=latest,\
+	com.ibm.ws.org.hibernate.validator.cdi;version=latest,\
+	com.ibm.ws.kernel.feature,\
+	io.openliberty.org.hibernate.validator.cdi.9.0;version=latest,\
+	io.openliberty.org.hibernate.validator.9.0;version=latest,\
+	io.openliberty.jakarta.validation.3.1;version=latest
+	

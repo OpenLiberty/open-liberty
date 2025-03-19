@@ -6,3 +6,4 @@ IBM-API-Package: com.ibm.ws.security.registry; type="ibm-api",
  org.osgi.framework; type="internal",
  com.ibm.websphere.ras; type="internal"
 IBM-Feature-Version: 2
+WLP-InstantOn-Enabled: true

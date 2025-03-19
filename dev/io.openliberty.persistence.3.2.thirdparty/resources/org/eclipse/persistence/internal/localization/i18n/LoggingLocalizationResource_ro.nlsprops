@@ -117,7 +117,7 @@ connected_user_database_driver=Conectat: {0}{6}Utilizator: {1}{6}Baz\u0103 de da
 
 corrupt_object=obiect corupt: {0}
 
-corrupt_object_referenced_through_mapping=Urm\u0103torul obiect corupt este referit prin maparea: {0}.
+corrupt_object_referenced_through_mapping=Urm\u0103torul obiect corupt este men\u021bionat prin cartografiere: {0}
 
 corrupted_session_announcement=SessionID: {0} Managerul de descoperire a primit un anun\u0163 de sesiune corupt - se ignor\u0103.
 
@@ -169,6 +169,14 @@ elements={0}{1} elemente
 
 enable_batch_operations_as_true_not_supported=Setarea WLS native CMP "enable-batch-operations-as-true" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
+encryptor_script_description=Aceast\u0103 aplica\u021bie are o parol\u0103 criptat\u0103 veche care a fost folosit\u0103 de o versiune anterioar\u0103 a lui EclipseLink Recripteaz\u0103-l cu cel mai recent algoritm.
+
+encryptor_script_output=Parola de recriptare este: {0}
+
+encryptor_script_usage=Utilizarea este ` `passwordUpdate .sh | .cmd -ip < old criptat password> `
+
+entity_manager_has_multiple_connections=Unitatea de persisten\u021b\u0103 are mai multe conexiuni, revenind primul de pe list\u0103.
+
 entity_manager_ignores_jta_data_source=Unitatea de persisten\u0163\u0103 nu utilizeaz\u0103 JTA, prin urmare, EntityManager ignor\u0103 sursa de date jta. 
 
 entity_manager_ignores_nonjta_data_source=Unitatea de persisten\u0163\u0103 utilizeaz\u0103 JTA, prin urmare, EntityManager ignor\u0103 sursa de date non jta. 
@@ -192,6 +200,8 @@ error_in_create=Eroare la creare.
 error_in_remove=Eroare la \u00eenl\u0103turare.
 
 error_loading_xml_file=Excep\u0163ie la \u00eenc\u0103rcarea fi\u015fierului ORM xml: {0}: {1}
+
+error_queryTimeoutParse=Nu se poate parsa valoarea proprietatii {0} jakarta.persistence.query.timeout {1}
 
 exception_loading_entity_class=O excep\u0163ie \u00een timp ce se \u00eencerca ini\u0163ializarea persisten\u0163ei.  {1} a ap\u0103rut \u00een timp ce se \u00eencerca \u00eenc\u0103rcarea clasei de entitate: {0}.
 
@@ -647,6 +657,18 @@ retreived_null_message=S-a extras mesajul nul de la subiectul: {0}; se ignor\u01
 
 retreived_unknown_message_type=S-a extras tipul de mesaj necunoscut: {0} de la subiectul: {1}; se ignor\u0103
 
+schema_default_create_tables_failed=Nu a reu\u0219it s\u0103 creeze tabele \u00een schema de tabel implicit\u0103: {0}
+
+schema_default_drop_tables_failed=Nu a reu\u0219it s\u0103 scad\u0103 tabele \u00een schema de tabel implicit: {0}
+
+schema_default_extend_tables_failed=Nu a reu\u0219it s\u0103 extind\u0103 tabelele \u00een schema de tabel implicit\u0103: {0}
+
+schema_default_replace_tables_failed=Nu a reu\u0219it s\u0103 \u00eenlocuiasc\u0103 tabelele din schema de tabel implicit\u0103: {0}
+
+schema_default_truncate_tables_failed=Nu a reu\u0219it s\u0103 trunchieze tabele \u00een schema de tabel implicit: {0}
+
+schema_drop_object_failed=Nu a reu\u0219it s\u0103 renun\u021be la obiect \u00een schema de tabel implicit: {0}
+
 sdo_classgenerator_exception={2} A ap\u0103rut o excep\u0163ie [{0}] - mesajul este [{1}]
 
 sdo_error_deserialization=\u00cencercare neautorizat\u0103 de deserializare cu clasa {0}.
@@ -716,6 +738,8 @@ Current Fir (id: {3} : {4}
 #{5}
 
 unitofwork_identity_hashcode={0}Cod hash identitate UnitOfWork: {1}
+
+unknown_property_type=Necunoscut {0} de { {1} persisten\u0163\u0103
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nu poate folosi legarea pe aceast\u0103 platform\u0103 de baz\u0103 de date. S-a modificat setarea interog\u0103rii pentru execu\u0163ie f\u0103r\u0103 legare.
 

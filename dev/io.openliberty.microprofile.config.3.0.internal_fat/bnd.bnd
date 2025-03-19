@@ -25,11 +25,14 @@ tested.features: mpconfig-3.0,\
                  servlet-5.0, \
                  localconnector-1.0,\
                  cdi-4.0,\
-                 servlet-6.0
+                 cdi-4.1,\
+                 servlet-6.0,\
+                 servlet-6.1
 
 -buildpath: \
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.org.eclipse.microprofile.config.3.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.cdi.3.0;version=latest,\
-	com.ibm.ws.componenttest.2.0
+	com.ibm.ws.componenttest.2.0,\
+	io.openliberty.microprofile.config.internal_repeat_tests;version=latest

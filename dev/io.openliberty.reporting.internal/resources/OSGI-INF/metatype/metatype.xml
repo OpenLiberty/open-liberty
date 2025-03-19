@@ -24,7 +24,7 @@
          
         <AD id="enabled" name="%enabled" description="%enabled.desc" required="false" type="Boolean" default="true" />
         
-        <AD id="urlLink" type="String" default="https://cves.openliberty.io/report" 
+        <AD id="urlLink" type="String"
             required="false"
             name="internal" 
             description="internal use only"/>

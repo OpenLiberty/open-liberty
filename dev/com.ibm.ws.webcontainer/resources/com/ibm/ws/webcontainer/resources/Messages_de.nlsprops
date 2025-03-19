@@ -1557,8 +1557,8 @@ servlet.with.same.name.already.exists.explanation=Es ist bereits ein Servlet mit
 servlet.with.same.name.already.exists.useraction=Es ist keine Aktion erforderlich. Suchen Sie nach Konflikten im Implementierungsdeskriptor, in den Annotationen und in den Quellcodes, \u00fcber die diese Servletkonfiguration dynamisch hinzugef\u00fcgt werden k\u00f6nnte.
 
 servlet.feature.not.loaded.correctly=SRVE8501E: Der Servlet-Container wurde nicht mit einer zul\u00e4ssigen Version geladen.
-servlet.feature.not.loaded.correctly.explanation=Der Servlet-Container wurde mit einer Version geladen, die der Java EE-Spezifikation dieses Servlet-Features entspricht. Der Container wurde ohne definierte Version geladen.
-servlet.feature.not.loaded.correctly.useraction=Pr\u00fcfen Sie, ob in der Datei server.xml das Feature servlet-3.0 oder das Feature servlet-3.1 enthalten ist. Es darf nur ein einziges dieser beiden Features definiert werden.
+servlet.feature.not.loaded.correctly.explanation=Der Servlet-Container wurde ohne eine akzeptable Version geladen. Die Anwendung verh\u00e4lt sich m\u00f6glicherweise anders als erwartet.
+servlet.feature.not.loaded.correctly.useraction=\u00dcberpr\u00fcf den server.xml Datei f\u00fcr das Vorhandensein mehrerer Servlet-Funktionen.  Die Datei darf nicht mehr als eine Servlet-Funktion angeben.
 
 filter.failed.app.destroyed=SRVE8502W: Die Anforderung f\u00fcr {0} kann nicht ausgef\u00fchrt werden, weil die Anwendung gestoppt wurde.
 filter.failed.app.destroyed.explanation=Die Webanwendung wird gerade gestoppt und deshalb kann die Anforderung nicht ausgef\u00fchrt werden. Diese Aktion kann darauf zur\u00fcckzuf\u00fchren sein, dass der Server heruntergefahren wird, w\u00e4hrend die Anforderung verarbeitet wird.

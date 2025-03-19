@@ -69,7 +69,7 @@ public class MessageAndRestClientTestServlet extends FATServlet {
         //Each message will end up with four spans being registered. And there are five messages.
         assertTrue(recordedSpans.size() == 5);
         for (int i = 0; i < 5; i++) {
-            List<SpanData> results = new ArrayList(inMemorySpanExporter.getFinishedSpanItems(4, recordedSpans.get(i)));
+            List<SpanData> results = new ArrayList<SpanData>(inMemorySpanExporter.getFinishedSpanItems(4, recordedSpans.get(i)));
 
             assertThat("Failed to find spans for index " + i,
                 results,

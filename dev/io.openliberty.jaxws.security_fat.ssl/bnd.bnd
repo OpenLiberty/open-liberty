@@ -83,3 +83,5 @@ tested.features: jaxws-2.3, \
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.org.slf4j.jdk14;version=latest
   
+# Copy in FIPS keys
+ltpa.fips.enabled: true

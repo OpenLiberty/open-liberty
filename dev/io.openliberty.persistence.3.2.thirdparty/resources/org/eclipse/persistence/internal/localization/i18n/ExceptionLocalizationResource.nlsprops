@@ -47,6 +47,8 @@ NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Null parameter was passed to "setParamete
 
 PARAMETER_NILL_NOT_FOUND=Null parameter passed to getParameterValue()
 
+RIGHT_JOIN_NOT_SUPPORTED=Right join is not supported
+
 add_attribute_key_was_null=When specifying an AttributeGroup for a subclass of an attribute type, the type parameter must not be null
 
 argument_collection_was_null=Argument collection was null
@@ -99,9 +101,19 @@ cant_persist_detatched_object=Cannot PERSIST detached object, possible duplicate
 
 cant_refresh_not_managed_object=Cannot refresh unmanaged object: {0}.
 
+configured_pu_name_conflict=Cannot create a configured persistence unit with the name {0}. This name was found in custom persistence units.
+
 create_insertion_failed=Create insertion failed.
 
 criteria_no_constructor_found=An exception occurred while inspecting class {0} for a constructor using selection criteria types as arguments.  If this CriteriaQuery was not intended to be a constructor query please verify that the selection matches the return type.
+
+custom_pu_create_error=Cannot create a custom persistence unit with the name {0}.
+
+custom_pu_create_error_no_caller=Cannot create custom persistence unit with name {0}. No caller method was found in stack.
+
+custom_pu_create_error_no_caller_class_url=Cannot create custom persistence unit with name {0}. No caller class {1} URL was found.
+
+custom_pu_name_conflict=Cannot create a custom persistence unit with the name {0}. This name was found in the xml configuration.
 
 directory_not_exist=Directory {0} does not exist.
 
@@ -124,6 +136,8 @@ ejb30-wrong-type-for-query-hint=Query {0}, query hint {1} is not valid for this 
 entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager properties conflict: jakarta.persistence.driver and/or jakarta.persistence.url require DefaultConnector, but persistence unit uses external transaction controller, therefore JNDIConnector is required.
 
 entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager properties conflict: jakarta.persistence.driver and/or jakarta.persistence.url require DefaultConnector, but jakarta.persistence.jtaDataSource and/or jakarta.persistence.nonjtaDataSource require JNDIConnector.
+
+entity_manager_with_connection_failed=The user code failed with an error: {0}
 
 entity_no_longer_exists_in_db=Entity no longer exists in the database: {0}.
 
@@ -148,6 +162,8 @@ error_unmarshalling_return=error unmarshalling return
 file_exists=The file {0} already exists.
 
 file_not_exist=File {0} does not exist.
+
+find_option_class_unknown=The FindOption implementing the {0} class is not supported
 
 finder_query_failed=Finder query failed:
 
@@ -207,9 +223,9 @@ jmx_enabled_platform_mbean_runtime_exception=An exception occurred while calling
 
 join_trans_called_on_entity_trans=joinTransaction has been called on a resource-local EntityManager which is unable to register for a JTA transaction.
 
-jpa21-ddl-create-script-target-not-specified=When generating DDL to scripts, a create script target must be specified using the [jakarta.persistence.schema-generation.scripts.create-target] property.
+jpa21-ddl-create-script-target-not-specified=When generating DDL to scripts, a create script target must be specified using the [{0}] property.
 
-jpa21-ddl-drop-script-target-not-specified=When generating DDL to scripts, a drop script target must be specified using the [jakarta.persistence.schema-generation.scripts.drop-target] property.
+jpa21-ddl-drop-script-target-not-specified=When generating DDL to scripts, a drop script target must be specified using the [{0}] property.
 
 jpa21-ddl-invalid-source-script-type=The source script provided {0} is of an invalid type {0}. Valid source script types are: java.io.Reader or a string designating a file URL.
 
@@ -253,6 +269,12 @@ jpa_helper_invalid_read_all_query=The query of type {0} is not an EclipseLink re
 
 jpa_helper_invalid_report_query=The query of type {0} is not an EclipseLink report query and therefore, could not be converted.
 
+jpa_non_persistent_class=The [{0}] class is not a persistent class.
+
+jpa_persistence_util_get_version_no_version_in_class=PersistenceUtil.getVersion(entity) was called with the [{0}] object, which has no version attribute.
+
+jpa_persistence_util_get_version_non_persistent_class=PersistenceUtil.getVersion(entity) was called with the [{0}] object, which is not a persistent object.
+
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) was called with object [{0}] which is not a persistent object.
 
 json_ora21c_jsonvalue_to_oraclevalue=Could not convert JsonValue to OracleJsonValue.
@@ -268,6 +290,8 @@ json_pgsql_pgobject_conversion=Database PGobject conversion failed.
 json_pgsql_unknown_type=Unknown JSON type returned from database.
 
 lock_called_without_version_locking=Calls to entityManager.lock(Object entity, LockModeType lockMode) require that Version Locking be enabled.
+
+lock_option_class_unknown=The LockOption implementing class {0} is not supported
 
 managed_component_not_found=An attribute: {1} listed in EntityGraph: {0} references a subgraph named: {2} which cannot be found.
 
@@ -320,6 +344,8 @@ no_entities_retrieved_for_get_reference=Could not find Entity for id: {0}
 no_entities_retrieved_for_get_single_result=getSingleResult() did not retrieve any entities.
 
 no_entity_graph_of_name=No EntityGraph exists with name {0}
+
+no_key_in_entity=Cannot add join of {0} to {1} because the target class is missing an attribute of source type
 
 not_an_entity=Object: {0} is not a known Entity type.
 
@@ -375,9 +401,23 @@ position_param_not_found=There was no parameter at position: {0}.
 
 pu_configured_for_resource_local=Unable to create an EntityManager with SynchronizationType because PersistenceUnit is configured with resource-local transactions.
 
+refresh_option_class_unknown=The RefreshOption implementing class {0} is not supported
+
 remove_deletion_failed=Remove deletion failed:
 
 rollback_because_of_rollback_only=Transaction "rolled back" because transaction was set to RollbackOnly.
+
+schema_validation=Schema validation
+
+schema_validation_failed=Schema validation failed
+
+schema_validation_missing_table=The {0} table vas not found in the schema
+
+schema_validation_table_different_columns=The {0} table has different columns in the schema
+
+schema_validation_table_missing_columns=The {0} table has missing columns in the schema
+
+schema_validation_table_surplus_columns=The {0} table has surplus columns in the schema
 
 sdo_helper_invalid_changesummary=The provided ChangeSummary [{0}] is not an EclipseLink SDOChangeSummary, and therefore could not be converted.
 
@@ -434,6 +474,10 @@ sdo_helper_invalid_xsdhelper=The provided XSDHelper [{0}] is not an EclipseLink 
 subclass_sought_not_a_managed_type=subgraph type sought: {0} is not a managed type for this attribute: {1}.
 
 too_many_results_for_get_single_result=More than one result was returned from Query.getSingleResult()
+
+truncate_tables_failed=Tables truncation failed
+
+typed_query_reference_is_null=Reference to a named query is null
 
 unable_to_find_named_query=NamedQuery of name: {0} not found.
 

@@ -77,7 +77,7 @@ public class OidcDelegatedSocialLoginWithSelectionPageTests extends CommonDelega
 
         List<validationData> expectations = getGoodExpectations(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfExternalProvidersShouldntRun.class)
@@ -88,7 +88,7 @@ public class OidcDelegatedSocialLoginWithSelectionPageTests extends CommonDelega
 
         List<validationData> expectations = getGoodExpectations(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfExternalProvidersShouldntRun.class)
@@ -99,7 +99,7 @@ public class OidcDelegatedSocialLoginWithSelectionPageTests extends CommonDelega
 
         List<validationData> expectations = getGoodExpectations(updatedSocialTestSettings);
 
-        genericSocial(_testName, getAndSaveWebClient(), inovke_social_login_actions, updatedSocialTestSettings, expectations);
+        genericSocial(_testName, getAndSaveWebClient(), invoke_social_login_actions, updatedSocialTestSettings, expectations);
     }
 
     /********************************************** Helper methods **********************************************/

@@ -1,7 +1,7 @@
 # Jakarta Concurrency TCK Open Liberty Implementation
 
 This project runs the Jakarta Concurrency Technology Compatibility Kit (TCK) on Open Liberty.
-Before running this project it is recommended to read the documentation located in the base [TCK project](https://github.com/eclipse-ee4j/concurrency-api/blob/master/tck/README.md)
+Before running this project it is recommended to read the documentation located in the base [TCK project](https://github.com/jakartaee/concurrency/blob/3.0.3/tck/README.md)
 
 ## Overview
 

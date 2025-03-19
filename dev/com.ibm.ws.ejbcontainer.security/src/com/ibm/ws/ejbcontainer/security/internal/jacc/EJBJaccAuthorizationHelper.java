@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015,2022 IBM Corporation and others.
+ * Copyright (c) 2015,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,9 +33,9 @@ import com.ibm.ws.ejbcontainer.EJBRequestData;
 import com.ibm.ws.ejbcontainer.security.internal.EJBAccessDeniedException;
 import com.ibm.ws.ejbcontainer.security.internal.EJBAuthorizationHelper;
 import com.ibm.ws.ejbcontainer.security.internal.TraceConstants;
+import com.ibm.ws.ejbcontainer.security.jacc.EJBJaccService;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
-import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
@@ -44,9 +44,9 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public class EJBJaccAuthorizationHelper implements EJBAuthorizationHelper {
     private static final TraceComponent tc = Tr.register(EJBJaccAuthorizationHelper.class);
 
-    private AtomicServiceReference<JaccService> jaccServiceRef = null;
+    private AtomicServiceReference<EJBJaccService> jaccServiceRef = null;
 
-    public EJBJaccAuthorizationHelper(AtomicServiceReference<JaccService> jaccServiceRef) {
+    public EJBJaccAuthorizationHelper(AtomicServiceReference<EJBJaccService> jaccServiceRef) {
         this.jaccServiceRef = jaccServiceRef;
     }
 

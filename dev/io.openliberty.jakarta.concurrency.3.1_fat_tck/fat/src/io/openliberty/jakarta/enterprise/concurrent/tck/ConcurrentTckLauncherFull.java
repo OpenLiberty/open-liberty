@@ -16,6 +16,7 @@ import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -52,18 +53,15 @@ public class ConcurrentTckLauncherFull {
     public static void setUp() throws Exception {
         //Comment out to use snapshot version
         additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-RC2");
+        additionalProps.put("jakarta.concurrent.tck.version", "3.1.1");
 
         //Jakarta TCK platform
-        additionalProps.put("jakarta.tck.platform", "full");
+        additionalProps.put("jakarta.tck.platform", "platform");
+        additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
 
         if (!FATSuite.shouldRunSignatureTests(ConcurrentTckLauncherFull.class)) {
-            additionalProps.put("jakarta.tck.platform", "full & !signature");
+            additionalProps.put("jakarta.tck.platform", "platform & !signature");
         }
-
-        Map<String, String> opts = server.getJvmOptionsAsMap();
-        opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
-        server.setJvmOptions(opts);
 
         //Finally start the server
         server.startServer();
@@ -89,11 +87,13 @@ public class ConcurrentTckLauncherFull {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrent31TCKFull() throws Exception {
-
-        String bucketName = "io.openliberty.jakarta.concurrency.3.1_fat_tck";
-        String testName = this.getClass() + ":launchConcurrent31TCKFull";
-        Type type = Type.JAKARTA;
-        String specName = "Concurrency (Full)";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, null, additionalProps);
+        TCKRunner.build(server, Type.JAKARTA, "Concurrency")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("full")
+                        .withAdditionalMvnProps(additionalProps)
+                        .withLogging(Map.of("ee.jakarta.tck.concurrent", Level.ALL,
+                                            "org.jboss.arquillian", Level.ALL, //TODO reduce logging after debugging defect 300064 is finished
+                                            "io.openliberty.arquillian", Level.ALL)) //TODO reduce logging after debugging defect 300064 is finished
+                        .runTCK();
     }
 }

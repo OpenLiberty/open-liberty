@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.ws.cdi.visibility.tests.vistest.framework;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.inject.Any;
@@ -22,6 +23,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 
+import com.ibm.websphere.csi.J2EEName;
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InAppClient;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InAppClientAsAppClientLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InAppClientAsEjbLib;
@@ -40,16 +43,21 @@ import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InNonLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InPrivateLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtRegular;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtSeeApp;
+import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InStandaloneWar;
+import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InStandaloneWarLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWar;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWar2;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWarAppClientLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWarLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWarWebinfLib;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 /**
  * Holds the visibility test implementation
  */
 public class VisTester {
+
+    private static final ServiceCaller<CDIService> cdiServiceCaller = new ServiceCaller(VisTester.class, CDIService.class);
 
     /**
      * The full set of qualifiers to test
@@ -135,6 +143,12 @@ public class VisTester {
         class InRuntimeExtSeeAppQualifier extends AnnotationLiteral<InRuntimeExtSeeApp> implements InRuntimeExtSeeApp {};
         qualifiers.add(new InRuntimeExtSeeAppQualifier());
 
+        class InStandaloneWarQualifier extends AnnotationLiteral<InStandaloneWar> implements InStandaloneWar {};
+        qualifiers.add(new InStandaloneWarQualifier());
+
+        class InStandaloneWarLibQualifier extends AnnotationLiteral<InStandaloneWarLib> implements InStandaloneWarLib {};
+        qualifiers.add(new InStandaloneWarLibQualifier());
+
         QUALIFIERS = Collections.unmodifiableSet(qualifiers);
     }
 
@@ -160,5 +174,26 @@ public class VisTester {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * @param location
+     * @return
+     */
+    public static Annotation getQualiferForLocation(String location) {
+        for (Annotation qualifier : QUALIFIERS) {
+            if (qualifier.annotationType().getSimpleName().equals(location)) {
+                return qualifier;
+            }
+        }
+        throw new RuntimeException("No qualifier for location: " + location);
+    }
+
+    public static Optional<String> getModuleForClass(Class<?> clazz) {
+        Optional<Optional<J2EEName>> result = cdiServiceCaller.run(cdiService -> {
+            return cdiService.getModuleNameForClass(clazz);
+        });
+        return result.orElseThrow(() -> new RuntimeException("Failed to get CDI Service"))
+                     .map(J2EEName::toString);
     }
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2023 IBM Corporation and others.
+# Copyright (c) 2002, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -875,7 +875,7 @@ WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Korrigieren Sie alle Bedingungen, di
 
 WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil der Transaktionsservice keine Transaktion starten kann.
 WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty unterst\u00fctzt keine Anwendungen, die eine Transaktion starten oder erfordern, w\u00e4hrend die Anwendung bei der Anforderung eines Serverpr\u00fcfpunkts gestartet wird.
-WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Verwenden Sie die Serverpr\u00fcfpunktoption w\u00e4hrend der Implementierung oder \u00e4ndern Sie die Anwendung so, dass Transaktionen nach ihrem Start gestartet werden.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Konfigurieren Sie den Pr\u00fcfpunkt so, dass er vor dem Starten der Anwendung auftritt, indem Sie die Option beforeAppzum Starten des Serverpr\u00fcfpunkts verwenden oder die Anwendung so \u00e4ndern, dass Transaktionen gestartet werden, nachdem sie gestartet wurde.
 
 # 0 - Stack trace of call to create new tx
 WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Eine Anwendung hat w\u00e4hrend der Serverpr\u00fcfpunktanforderung eine Transaktion gestartet oder erfordert. Der folgende Stack-Trace f\u00fcr diesen Thread wurde erfasst, als die Transaktion erstellt wurde: {0}

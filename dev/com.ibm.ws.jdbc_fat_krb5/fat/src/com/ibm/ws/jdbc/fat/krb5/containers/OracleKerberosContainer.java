@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,18 +26,25 @@ import componenttest.topology.database.container.OracleXEContainer;
 
 /**
  * Custom Oracle Kerberos Container class
- * TODO replace with OracleFree
+ * TODO replace with OracleFree (org.testcontainers.oracle.OracleContainer)
  */
+//public class OracleKerberosContainer extends org.testcontainers.oracle.OracleContainer {
 public class OracleKerberosContainer extends OracleXEContainer {
 
     private static final Class<?> c = OracleKerberosContainer.class;
 
+    //TODO Start using ImageBuilder
+//    private static final DockerImageName ORACLE_KRB5 = ImageBuilder
+//                    .build("oracle-krb5:23.5-full-faststart")
+//                    .getDockerImageName()
+//                    .asCompatibleSubstituteFor("gvenzl/oracle-free");
+
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
     private static final String IMAGE_NAME_STRING = "kyleaure/oracle-21.3.0-faststart:1.0.full.krb5";
-    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
+    private static final DockerImageName ORACLE_KRB5 = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
 
     public OracleKerberosContainer(Network network) {
-        super(IMAGE_NAME);
+        super(ORACLE_KRB5);
         super.withPassword("oracle"); //Tell superclass the hardcoded password
         super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
         super.withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));

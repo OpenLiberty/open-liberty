@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -217,13 +217,6 @@ public interface CDIRuntime extends CDIService {
      * @return the CDIContainerEventManager, or {@code null} if there is not one
      */
     public CDIContainerEventManager getCDIContainerEventManager();
-
-    /**
-     * Get the WeldDevelopmentMode service if it exists and it is enabled
-     *
-     * @return the WeldDevelopmentMode, or {@code null} if does not exist or it is not enabled
-     */
-    public WeldDevelopmentMode getWeldDevelopmentMode();
 
     /**
      * creates a ContextBeginnerEnder that will do the same thing as the currently

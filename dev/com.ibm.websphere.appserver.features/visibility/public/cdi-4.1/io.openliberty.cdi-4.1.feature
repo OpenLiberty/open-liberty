@@ -14,6 +14,7 @@ IBM-API-Package: jakarta.decorator;  type="spec", \
  jakarta.enterprise.inject.spi;  type="spec", \
  jakarta.enterprise.inject.spi.configurator;  type="spec", \
  jakarta.enterprise.inject.se;  type="spec", \
+ jakarta.enterprise.invoke;  type="spec", \
  jakarta.enterprise.util;  type="spec", \
  jakarta.inject;  type="spec", \
  jakarta.interceptor;  type="spec", \
@@ -31,6 +32,7 @@ IBM-API-Package: jakarta.decorator;  type="spec", \
  org.jboss.weld.module.ejb; type="internal", \
  org.jboss.weld.proxy; type="internal", \
  org.jboss.weld.security; type="internal", \
+ org.jboss.weld.util.reflection;type="internal", \
  org.jboss.weld.serialization.spi; type="internal", \
  org.jboss.weld.context;type="third-party", \
  org.jboss.weld.context.api;type="third-party", \
@@ -55,7 +57,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.1
  io.openliberty.org.jboss.weld6.se, \
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \
  com.ibm.ws.managedobject, \
- io.openliberty.org.jboss.logging35, \
+ io.openliberty.org.jboss.logging36, \
  io.openliberty.org.jboss.classfilewriter.1.3, \
  com.ibm.ws.cdi.weld.jakarta, \
  com.ibm.ws.cdi.internal.jakarta, \
@@ -64,7 +66,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.1
  com.ibm.ws.cdi.interfaces.jakarta, \
  io.openliberty.cdi.4.0.internal.interfaces, \
  io.openliberty.cdi.spi; location:="dev/spi/ibm/,lib/"
--jars=io.openliberty.cdi.4.1.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:6.0.0.Beta1"
+-jars=io.openliberty.cdi.4.1.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:6.0.0.CR1"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd, \
  dev/spi/ibm/javadoc/io.openliberty.cdi.spi_1.1-javadoc.zip
@@ -72,3 +74,4 @@ kind=beta
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-11.0

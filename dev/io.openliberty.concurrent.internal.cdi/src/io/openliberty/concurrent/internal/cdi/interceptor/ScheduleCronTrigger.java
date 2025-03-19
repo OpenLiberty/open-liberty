@@ -17,6 +17,8 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import jakarta.enterprise.concurrent.CronTrigger;
@@ -27,6 +29,7 @@ import jakarta.enterprise.concurrent.Schedule;
  * so that multiple triggers can compute from the same time.
  */
 class ScheduleCronTrigger extends CronTrigger {
+    private static final TraceComponent tc = Tr.register(ScheduleCronTrigger.class);
 
     private static final Month[] ALL_MONTHS = Month.values();
 
@@ -105,7 +108,12 @@ class ScheduleCronTrigger extends CronTrigger {
 
             int[] seconds = schedule.seconds();
             if (seconds.length == 0)
-                throw new IllegalArgumentException("seconds: {}"); // TODO NLS The seconds field cannot be ignored because no other units of Schedule are more granular.
+                // The seconds field cannot be ignored because no other
+                // units of Schedule are more granular.
+                throw new IllegalArgumentException(Tr //
+                                .formatMessage(tc,
+                                               "CWWKC1410.schedule.lacks.seconds",
+                                               schedule));
 
             trigger.months(months) //
                             .daysOfMonth(daysOfMonth) //

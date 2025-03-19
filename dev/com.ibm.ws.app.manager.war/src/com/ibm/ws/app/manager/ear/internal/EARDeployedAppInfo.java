@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -44,6 +45,7 @@ import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ConnectorModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
+import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
@@ -76,6 +78,27 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     private final ModuleHandler clientModuleHandler;
     private final ModuleHandler connectorModuleHandler;
 
+    enum ClassPathLoader {
+        WAR,
+        EAR;
+
+        public static ClassPathLoader convert(Object config) {
+            if (!(config instanceof String)) {
+                // handles null case; default to WAR
+                return WAR;
+            }
+            try {
+                return valueOf(((String) config).toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // auto FFDC here
+                return WAR;
+            }
+        }
+    }
+
+    private static final String WAR_CLASS_PATH_LOADER_CONFIG = "webModuleClassPathLoader";
+    private final ClassPathLoader classPathLoader;
+
     private final DeployedAppMBeanRuntime appMBeanRuntime;
     private ServiceRegistration<?> mbeanServiceReg;
 
@@ -100,6 +123,28 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     private final ClassLoaderIdentity appClassLoaderId;
     private ClassLoader appClassLoader;
     private ProtectionDomain protectionDomain; // Used for both the app class loader and for module class loaders.
+
+    static class EarManifestClassPathConsumer implements ManifestClassPathConsumer {
+        private final ClassPathLoader classPathLoader;
+        private final List<ContainerInfo> manifestClassPaths = new ArrayList<>();
+
+        public EarManifestClassPathConsumer(ClassPathLoader classPathLoader) {
+            this.classPathLoader = classPathLoader;
+        }
+
+        @Override
+        public void consume(List<ContainerInfo> manifestClassPaths, List<ContainerInfo> destination) {
+            if (classPathLoader == ClassPathLoader.EAR) {
+                this.manifestClassPaths.addAll(manifestClassPaths);
+            }
+            // always do the default so the CP JARs are associated with the declaring module
+            DEFAULT_MANIFEST_CLASS_PATH_CONSUMER.consume(manifestClassPaths, destination);
+        }
+
+        public List<ContainerInfo> getManifestClassPaths() {
+            return manifestClassPaths;
+        }
+    }
 
     @Override
     public ClassLoader createAppClassLoader() {
@@ -206,6 +251,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         this.clientModuleHandler = factory.clientModuleHandler;
         this.connectorModuleHandler = factory.connectorModuleHandler;
         this.appMBeanRuntime = factory.appMBeanRuntime;
+        this.classPathLoader = ClassPathLoader.convert(appInfo.getConfigProperty(WAR_CLASS_PATH_LOADER_CONFIG));
 
         this.appDD = appDD;
         this.altDDEnabled = (factory.platformVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0); // JavaEE7 or higher
@@ -300,8 +346,10 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             // was successfully gathered.
             return null;
         }
-
-        return new AppLibsInfo(libDirContainer);
+        EarManifestClassPathConsumer manifestClassPathConsumer = new EarManifestClassPathConsumer(classPathLoader);
+        AppLibsInfo result = new AppLibsInfo(libDirContainer, manifestClassPathConsumer);
+        manifestClassPathInfos.addAll(manifestClassPathConsumer.getManifestClassPaths());
+        return result;
     }
 
     /**
@@ -358,7 +406,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
      * actual application libraries.
      */
     private static class AppLibsInfo {
-        public AppLibsInfo(Container libsContainer) {
+        public AppLibsInfo(Container libsContainer, ManifestClassPathConsumer manifestClassPathConsumer) {
             this.libsContainer = libsContainer;
 
             String libsPath = libsContainer.getPath(); // Usually "lib"
@@ -402,7 +450,11 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 useLibsInfos.add(libInfo);
 
                 try {
-                    ManifestClassPathHelper.addCompleteJarEntryUrls(useLibsInfos, libEntry, libContainer, resolvedManifestIdentities);
+                    List<ContainerInfo> manifestClassPaths = new ArrayList<>();
+                    // For EAR libraries that have Class-Path keep the containers associated with the AppLibsInfo
+                    // This is necessary for getLibraryClassesContainerInfo to keep returning the Class-Path references
+                    ManifestClassPathHelper.addCompleteJarEntryUrls(manifestClassPaths, libEntry, libContainer, resolvedManifestIdentities);
+                    manifestClassPathConsumer.consume(manifestClassPaths, useLibsInfos);
                     // throws UnableToAdaptException
                 } catch (UnableToAdaptException e) {
                     // FFDC
@@ -497,7 +549,6 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         if (appPrefix != null) {
             Tr.debug(_tc, appPrefix + "Modules [ " + Integer.valueOf(moduleContainerInfos.size()) + " ]");
         }
-
         return true;
     }
 
@@ -631,26 +682,27 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                                           Container moduleContainer,
                                           Entry altDDEntry,
                                           String moduleURI,
-                                          ModuleClassesInfoProvider moduleClassesInfo,
+                                          ManifestClassPathProvider moduleClassesInfo,
                                           String contextRoot, String mainClass,
                                           boolean checkForDDOrAnnotations) throws UnableToAdaptException {
 
+        EarManifestClassPathConsumer manifestClassPathConsumer = new EarManifestClassPathConsumer(classPathLoader);
         if (moduleHandler == connectorModuleHandler) {
-            ConnectorModuleContainerInfo mci = new ConnectorModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("connector"), deployedAppServices.getNestedModuleMetaDataFactories("connector"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo);
+            ConnectorModuleContainerInfo mci = new ConnectorModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("connector"), deployedAppServices.getNestedModuleMetaDataFactories("connector"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, manifestClassPathConsumer);
             if (ddInitializeInOrder) {
                 moduleContainerInfos.add(mci);
             } else {
                 moduleContainerInfos.add(connectorModuleCount, mci);
                 connectorModuleCount++;
             }
+            manifestClassPathInfos.addAll(manifestClassPathConsumer.getManifestClassPaths());
             if (_tc.isDebugEnabled()) {
                 Tr.debug(_tc, "Added connector module [ " + mci.moduleName + " ]" +
                               " with module uri [ " + mci.getModuleURI() + " ]" +
                               " at [ " + moduleContainer.getPath() + " ]");
             }
-        }
-        if (moduleHandler == ejbModuleHandler) {
-            EJBModuleContainerInfo mci = new EJBModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("ejb"), deployedAppServices.getNestedModuleMetaDataFactories("ejb"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo);
+        } else if (moduleHandler == ejbModuleHandler) {
+            EJBModuleContainerInfo mci = new EJBModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("ejb"), deployedAppServices.getNestedModuleMetaDataFactories("ejb"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, manifestClassPathConsumer);
 
             if (!checkForDDOrAnnotations || mci.moduleDD != null || hasAnnotations(mci.getContainer(), EJB_ANNOTATIONS)) {
                 if (ddInitializeInOrder) {
@@ -659,14 +711,15 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                     moduleContainerInfos.add(connectorModuleCount + ejbModuleCount, mci);
                     ejbModuleCount++;
                 }
+                manifestClassPathInfos.addAll(manifestClassPathConsumer.getManifestClassPaths());
+
                 if (_tc.isDebugEnabled()) {
                     Tr.debug(_tc, "Added ejb module [ " + mci.moduleName + " ]" +
                                   " with module uri [ " + mci.getModuleURI() + " ]" +
                                   " at [ " + moduleContainer.getPath() + " ]");
                 }
             }
-        }
-        if (moduleHandler == clientModuleHandler) {
+        } else if (moduleHandler == clientModuleHandler) {
             // If this is called from processModuleContainerInfo(...), the mainClass argument is null.
             // Also, if checkForDDOrAnnotations is true, mainClass should not be null.
             String mfMainClass = mainClass;
@@ -677,19 +730,23 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 mfMainClass = getMFMainClass(moduleContainer, "/META-INF/MANIFEST.MF", true);
             }
             if (mfMainClass != null) {
-                ClientModuleContainerInfo mci = new ClientModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("client"), deployedAppServices.getNestedModuleMetaDataFactories("client"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, mfMainClass);
+                // For client JARs the Class-Path is never added to the EAR class loader
+                ClientModuleContainerInfo mci = new ClientModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("client"), deployedAppServices.getNestedModuleMetaDataFactories("client"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, mfMainClass, DEFAULT_MANIFEST_CLASS_PATH_CONSUMER);
                 moduleContainerInfos.add(mci);
+                manifestClassPathInfos.addAll(manifestClassPathConsumer.getManifestClassPaths());
+
                 if (_tc.isDebugEnabled()) {
                     Tr.debug(_tc, "Added client module [ " + mci.moduleName + " ]" +
                                   " with module uri [ " + mci.getModuleURI() + " ]" +
                                   " at [ " + moduleContainer.getPath() + " ]");
                 }
             }
-        }
-        if (moduleHandler == webModuleHandler) {
+        } else if (moduleHandler == webModuleHandler) {
 
-            WebModuleContainerInfo mci = new WebModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("web"), deployedAppServices.getNestedModuleMetaDataFactories("web"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, contextRoot);
+            WebModuleContainerInfo mci = new WebModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("web"), deployedAppServices.getNestedModuleMetaDataFactories("web"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, contextRoot, manifestClassPathConsumer);
             moduleContainerInfos.add(mci);
+            manifestClassPathInfos.addAll(manifestClassPathConsumer.getManifestClassPaths());
+
             if (_tc.isDebugEnabled()) {
                 Tr.debug(_tc, "Added web module [ " + mci.moduleName + " ]" +
                               " with web-uri [ " + mci.getModuleURI() + " ] and context-root [ " + mci.contextRoot + " ]" +
@@ -1003,6 +1060,40 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     private List<ContainerInfo> classpathContainerInfos;
 
+    private class ManifestClassPathInfos {
+        private final Set<ContainerInfo> classPathInfos = new LinkedHashSet<>();
+
+        void addAll(List<ContainerInfo> containerInfos) {
+            classPathInfos.addAll(containerInfos);
+        }
+
+        void addTo(List<ContainerInfo> containerInfos) {
+            if (classPathInfos.isEmpty()) {
+                return;
+            }
+            Set<String> shouldAdd = new LinkedHashSet<>();
+            for (ContainerInfo c : containerInfos) {
+                String name = c.getName();
+                if (!name.startsWith("/")) {
+                    name = "/" + name; // add leading slash
+                }
+                shouldAdd.add(name);
+            }
+
+            for (ContainerInfo c : classPathInfos) {
+                if (shouldAdd.add(c.getName())) {
+                    containerInfos.add(c);
+                }
+            }
+        }
+
+        boolean contains(ContainerInfo manifestClassPath) {
+            return classPathInfos.contains(manifestClassPath);
+        }
+    }
+
+    private final ManifestClassPathInfos manifestClassPathInfos = new ManifestClassPathInfos();
+
     private List<ContainerInfo> getClasspathContainerInfos() {
         if (classpathContainerInfos == null) {
             List<ContainerInfo> containerInfos = new ArrayList<ContainerInfo>();
@@ -1011,6 +1102,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             addEARLibContainerInfos(containerInfos);
             addConnectorContainerInfos(containerInfos);
             checkClientJarContainerInfos(containerInfos);
+            manifestClassPathInfos.addTo(containerInfos);
 
             classpathContainerInfos = containerInfos;
         }
@@ -1018,20 +1110,17 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     }
 
     private void addEJBJarContainerInfos(List<ContainerInfo> classpathContainerInfos) {
-        try {
-            for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
-                if (modInfo instanceof EJBModuleContainerInfo) {
-                    classpathContainerInfos.addAll(modInfo.getClassesContainerInfo());
-                }
-            }
-        } catch (Throwable th) {
-            Tr.error(_tc, "error.application.libraries", getName(), th);
-        }
+        addModuleContainerInfos(classpathContainerInfos, EJBModuleContainerInfo.class);
     }
 
     private void addEARLibContainerInfos(List<ContainerInfo> classpathContainerInfos) {
         if (this.appLibsInfo != null) {
-            classpathContainerInfos.addAll(this.appLibsInfo.getLibsInfos());
+            for (ContainerInfo c : appLibsInfo.getLibsInfos()) {
+                // filter if already on the ear loader from manifestClassPathInfos
+                if (!manifestClassPathInfos.contains(c)) {
+                    classpathContainerInfos.add(c);
+                }
+            }
         }
     }
 
@@ -1062,10 +1151,19 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     }
 
     private void addConnectorContainerInfos(List<ContainerInfo> classpathContainerInfos) {
+        addModuleContainerInfos(classpathContainerInfos, ConnectorModuleContainerInfo.class);
+    }
+
+    private void addModuleContainerInfos(final List<ContainerInfo> classpathContainerInfos, Class<?> type) {
         try {
             for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
-                if (modInfo instanceof ConnectorModuleContainerInfo) {
-                    classpathContainerInfos.addAll(modInfo.getClassesContainerInfo());
+                if (type.isInstance(modInfo)) {
+                    for (ContainerInfo c : modInfo.getClassesContainerInfo()) {
+                        // filter if already on the ear loader from manifestClassPathInfos
+                        if (!manifestClassPathInfos.contains(c)) {
+                            classpathContainerInfos.add(c);
+                        }
+                    }
                 }
             }
         } catch (Throwable th) {
@@ -1315,6 +1413,10 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         List<Container> classesContainers = new ArrayList<Container>(classesContainerInfo.size());
         for (ContainerInfo containerInfo : classesContainerInfo) {
+            if (containerInfo.getType() == Type.MANIFEST_CLASSPATH && manifestClassPathInfos.contains(containerInfo)) {
+                // We already added the manifest Class-Path to the EAR loader.
+                continue;
+            }
             classesContainers.add(containerInfo.getContainer());
         }
 

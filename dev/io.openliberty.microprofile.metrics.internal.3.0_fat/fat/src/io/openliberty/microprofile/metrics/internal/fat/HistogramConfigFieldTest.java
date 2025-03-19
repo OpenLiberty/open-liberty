@@ -140,7 +140,8 @@ public class HistogramConfigFieldTest {
 		// catch if a server is still running.
 		if (server != null && server.isStarted()) {
 			server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E",
-					"CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
+					"CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W",
+					"CWMMC0015W", "CWMMC0016W", "CWMMC0017W");
 		}
 		server.removeAllInstalledAppsForValidation();
 
@@ -154,16 +155,16 @@ public class HistogramConfigFieldTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -201,16 +202,16 @@ public class HistogramConfigFieldTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -238,16 +239,16 @@ public class HistogramConfigFieldTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -312,16 +313,16 @@ public class HistogramConfigFieldTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -387,16 +388,16 @@ public class HistogramConfigFieldTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -448,16 +449,16 @@ public class HistogramConfigFieldTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 
@@ -523,16 +524,16 @@ public class HistogramConfigFieldTest {
 
 		String metrics = "";
 		try {
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 
 		} catch (Exception e) {
 			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
-			metrics = getHttpsServlet("/metrics");
+			metrics = getHttpServlet("/metrics");
 		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
-		metrics = getHttpsServlet("/metrics");
+		metrics = getHttpServlet("/metrics");
 
 		Log.info(c, method, "[ALL METRICS]: " + metrics);
 

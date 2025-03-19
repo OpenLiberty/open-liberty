@@ -28,7 +28,9 @@ Export-Package: \
   org.apache.myfaces.config.webparameters;version=${Implementation-Version}, \
   org.apache.myfaces.renderkit;version=${Implementation-Version}, \
   org.apache.myfaces.renderkit.html.base;version=${Implementation-Version}, \
-  org.apache.myfaces.renderkit.html.util;version=${Implementation-Version}
+  org.apache.myfaces.renderkit.html.util;version=${Implementation-Version},\
+  org.apache.myfaces.core.api.shared; version=${Implementation-Version},\
+  org.apache.myfaces.core.api.shared.lang; version=${Implementation-Version}
 
 instrument.ffdc: false
 instrument.classesExcludes: \
@@ -38,6 +40,6 @@ publish.wlp.jar.suffix: dev/api/third-party
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
-# Use this format (4.1.0.RC#) once we have an official release and not an RC Version
 -buildpath: io.openliberty.org.apache.myfaces.4.1;version=project, \
-    org.apache.myfaces.core:myfaces-impl;version=4.1.0.RC1
+   org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
+   org.apache.myfaces.core:myfaces-impl;strategy=exact;version=${Implementation-Version}

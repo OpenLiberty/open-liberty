@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.equinox.log.ExtendedLogReaderService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.log.LogReaderService;
 
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
@@ -90,8 +89,10 @@ public class Activator implements BundleActivator {
         // We also never remove our listener because that will be done automatically when 
         // we are stopped.
         ExtendedLogReaderService logReader = context.getService(context.getServiceReference(ExtendedLogReaderService.class));
+
         TrOSGiLogForwarder logForwarder = new TrOSGiLogForwarder();
-        logReader.addLogListener(logForwarder, logForwarder);
+
+        logReader.addLogListener(logForwarder);
     }
 
     /**

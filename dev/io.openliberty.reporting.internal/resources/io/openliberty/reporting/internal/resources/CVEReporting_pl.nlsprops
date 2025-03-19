@@ -52,3 +52,7 @@ CWWKF1705.failed.response.useraction=Rozwi\u0105\u017c problem z komunikacj\u010
 CWWKF1706.issue.parsing=CWWKF1706W: Wyst\u0105pi\u0142 problem podczas analizowania informacji o produkcie.
 CWWKF1706.issue.parsing.explanation=Us\u0142uga nie mo\u017ce pomy\u015blnie przeanalizowa\u0107 informacji o produkcie.
 CWWKF1706.issue.parsing.useraction=Rozwi\u0105\u017c problem z komunikacj\u0105 i spr\u00f3buj ponownie.
+
+CWWKF1707.internal.error=CWWKF1706W: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas sprawdzania przez \u015brodowisko wykonawcze Liberty s\u0142abych punkt\u00f3w zabezpiecze\u0144. B\u0142\u0105d: {0}
+CWWKF1707.internal.error.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, kt\u00f3ry uniemo\u017cliwi\u0142 \u015brodowisku wykonawczemu Liberty sprawdzenie pod k\u0105tem s\u0142abych punkt\u00f3w zabezpiecze\u0144.
+CWWKF1707.internal.error.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.

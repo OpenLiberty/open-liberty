@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,6 +26,9 @@ public class DatabaseStore extends ConfigElement {
     @XmlElement(name = "authData")
     private ConfigElementList<AuthData> authDatas;
 
+    /** The drop tables indicator. */
+    private String dropTables;
+
     /** Config reference to the dataSource attribute. */
     private String dataSourceRef;
 
@@ -45,7 +48,7 @@ public class DatabaseStore extends ConfigElement {
 
     /**
      * Set the authDataRef attribute.
-     * 
+     *
      * @param authDataRef The authDataRef attribute to be set.
      */
     @XmlAttribute
@@ -55,7 +58,7 @@ public class DatabaseStore extends ConfigElement {
 
     /**
      * Returns the authDataRef attribute value.
-     * 
+     *
      * @return The authDataRef attribute value.
      */
     public String getAuthDataRef() {
@@ -67,8 +70,27 @@ public class DatabaseStore extends ConfigElement {
     }
 
     /**
+     * Sets the drop tables indicator attribute value.
+     *
+     * @param value The drop tables indicator.
+     */
+    @XmlAttribute
+    public void setDropTables(String value) {
+        dropTables = value;
+    }
+
+    /**
+     * Returns the drop tables indicator.
+     *
+     * @return The drop tables indicator.
+     */
+    public String getDropTables() {
+        return dropTables;
+    }
+
+    /**
      * Sets the dataSourceRef attribute.
-     * 
+     *
      * @param dataSourceRef The set attribute.
      */
     @XmlAttribute
@@ -78,7 +100,7 @@ public class DatabaseStore extends ConfigElement {
 
     /**
      * Returns the dataSourceRef attribute value.
-     * 
+     *
      * @return The dataSourceRef attribute value.
      */
     public String getDataSourceRef() {
@@ -100,7 +122,7 @@ public class DatabaseStore extends ConfigElement {
 
     /**
      * Sets the schema name attribute value.
-     * 
+     *
      * @param schema The schema name attribute value.
      */
     @XmlAttribute
@@ -110,7 +132,7 @@ public class DatabaseStore extends ConfigElement {
 
     /**
      * Returns the schema name attribute value.
-     * 
+     *
      * @return The schema name attribute value.
      */
     public String getSchema() {
@@ -119,7 +141,7 @@ public class DatabaseStore extends ConfigElement {
 
     /**
      * Sets the table prefix name attribute value.
-     * 
+     *
      * @param tablePrefix the table prefix name attribute value.
      */
     @XmlAttribute
@@ -129,7 +151,7 @@ public class DatabaseStore extends ConfigElement {
 
     /**
      * Returns the table prefix name.
-     * 
+     *
      * @return The table prefix name.
      */
     public String getTablePrefix() {
@@ -138,7 +160,7 @@ public class DatabaseStore extends ConfigElement {
 
     /**
      * Sets the create tables indicator attribute value.
-     * 
+     *
      * @param createTables The create tables indicator.
      */
     @XmlAttribute
@@ -148,7 +170,7 @@ public class DatabaseStore extends ConfigElement {
 
     /**
      * Returns the create tables indicator.
-     * 
+     *
      * @return The create tables indicator.
      */
     public String getCreateTables() {
@@ -175,6 +197,8 @@ public class DatabaseStore extends ConfigElement {
             buf.append("authDataRef=\"" + authDataRef + "\", ");
         if (createTables != null)
             buf.append("createTables=\"" + createTables + "\", ");
+        if (dropTables != null)
+            buf.append("dropTables=\"" + dropTables + "\", ");
         if (dataSources != null)
             buf.append(dataSources).append(' ');
         if (authDatas != null)

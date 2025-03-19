@@ -52,3 +52,7 @@ CWWKF1705.failed.response.useraction=Corrigez le probl\u00e8me de communication 
 CWWKF1706.issue.parsing=CWWKF1706W: Probl\u00e8me lors de l'analyse syntaxique des informations produit.
 CWWKF1706.issue.parsing.explanation=Le service ne peut pas analyser correctement les informations sur le produit.
 CWWKF1706.issue.parsing.useraction=Corrigez le probl\u00e8me de communication et r\u00e9essayez.
+
+CWWKF1707.internal.error=CWWKF1706W: Une erreur interne s'est produite lorsque l'environnement d'ex\u00e9cution Liberty a v\u00e9rifi\u00e9 les vuln\u00e9rabilit\u00e9s en mati\u00e8re de s\u00e9curit\u00e9. L'erreur est la suivante : {0}
+CWWKF1707.internal.error.explanation=Une erreur s'est produite et a emp\u00each\u00e9 l'environnement d'ex\u00e9cution Liberty de v\u00e9rifier les vuln\u00e9rabilit\u00e9s en mati\u00e8re de s\u00e9curit\u00e9.
+CWWKF1707.internal.error.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau (FFDC) pour identifier le probl\u00e8me.

@@ -139,7 +139,7 @@ public class PathUtils {
             // Assume we might not be case sensitive.
             return false;
         } finally {
-            //caseSensitiveFile.delete();
+            caseSensitiveFile.delete();
         }
         // Something went wrong. Assume we might be not be case sensitive.
         return false;

@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+/* =============================================================================
+ * Copyright (c) 2012,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,8 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * =============================================================================
+ */
 package com.ibm.ws.sib.processor.proxyhandler;
 
 import java.util.ArrayList;
@@ -198,43 +199,28 @@ public class NeighbourProxyListener implements AsynchConsumerCallback
           // Get a transaction to operate under
           transaction = iProxyHandler.getTransactionManager().createLocalTransaction(true);
     
-          switch (subMessage.getSubscriptionMessageType().toInt())
-          {
-            case SubscriptionMessageType.CREATE_INT :
-    
+          switch (subMessage.getSubscriptionMessageType()) {
+          case CREATE:
               // Create a new Proxy subscription
               handleCreateProxySubscription(subMessage, (Transaction) transaction);
-    
               break;
-    
-            case SubscriptionMessageType.DELETE_INT :
-    
+          case DELETE:
               // Delete a proxy subscription
               handleDeleteProxySubscription(subMessage, (Transaction) transaction);
-    
               break;
-    
-            case SubscriptionMessageType.RESET_INT :
-    
+          case RESET:
               // Reset the subscription state.
               handleResetState(subMessage, (Transaction) transaction, false);
-    
               break;
-    
-            case SubscriptionMessageType.REQUEST_INT :
-    
+          case REQUEST:
               // Reset the subscription state.
               handleResetState(subMessage, (Transaction) transaction, true);
-    
               break;
-  
-            case SubscriptionMessageType.REPLY_INT :
-    
+          case REPLY:
               // Reset the subscription state.
               handleResetState(subMessage, (Transaction) transaction, false);
-    
               break;
-            default :
+          default :
               // Log Message
               break;
           }
@@ -317,50 +303,39 @@ public class NeighbourProxyListener implements AsynchConsumerCallback
       }
     
       Transaction msTran = iProxyHandler.getMessageProcessor().resolveAndEnlistMsgStoreTransaction(transaction);
-      
-      switch (subMessage.getSubscriptionMessageType().toInt())
-      {
-        case SubscriptionMessageType.CREATE_INT :
-    
+      switch (subMessage.getSubscriptionMessageType()) {
+      case CREATE:
           // Remove any created Proxy subscriptions
-         iProxyHandler.remoteUnsubscribeEvent(iAddTopicSpaces,
-                                              iAddTopics, 
-                                              subMessage.getBus(), 
-                                              msTran,
-                                              false);
-    
+          iProxyHandler.remoteUnsubscribeEvent(iAddTopicSpaces,
+                  iAddTopics,
+                  subMessage.getBus(),
+                  msTran,
+                  false);
           break;
-    
-        case SubscriptionMessageType.DELETE_INT :
-    
-        // Create any removed Proxy subscriptions
-        iProxyHandler.remoteSubscribeEvent(iDeleteTopicSpaces,
-                                           iDeleteTopics,                                          
-                                           subMessage.getBus(),
-                                           msTran, 
-                                           false);              
-    
+      case DELETE:
+          // Create any removed Proxy subscriptions
+          iProxyHandler.remoteSubscribeEvent(iDeleteTopicSpaces,
+                  iDeleteTopics,
+                  subMessage.getBus(),
+                  msTran,
+                  false);
           break;
-    
-        case SubscriptionMessageType.RESET_INT :
-    
-        // Remove any created Proxy subscriptions
-        iProxyHandler.remoteUnsubscribeEvent(iAddTopicSpaces,
-                                             iAddTopics,                                            
-                                             subMessage.getBus(), 
-                                             msTran,
-                                             false);
-    
-        // Create any removed Proxy subscriptions
-        iProxyHandler.remoteSubscribeEvent(iDeleteTopicSpaces,
-                                           iDeleteTopics,                                            
-                                           subMessage.getBus(),
-                                           msTran, 
-                                           false);
-                                                         
+      case RESET:
+          // Remove any created Proxy subscriptions
+          iProxyHandler.remoteUnsubscribeEvent(iAddTopicSpaces,
+                  iAddTopics,
+                  subMessage.getBus(),
+                  msTran,
+                  false);
+
+          // Create any removed Proxy subscriptions
+          iProxyHandler.remoteSubscribeEvent(iDeleteTopicSpaces,
+                  iDeleteTopics,
+                  subMessage.getBus(),
+                  msTran,
+                  false);
           break;
-    
-        default :
+      default :
           // Log Message
           break;
       }

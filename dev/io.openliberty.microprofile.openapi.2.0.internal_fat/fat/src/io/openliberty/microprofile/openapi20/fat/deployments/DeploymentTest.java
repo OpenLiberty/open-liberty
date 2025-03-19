@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -215,6 +215,16 @@ public class DeploymentTest {
     }
 
     @Test
+    public void testJsonStaticFileWithTabs() throws Exception {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "testWar.war")
+                                   .addAsManifestResource(DeploymentTest.class.getPackage(), "static-file-with-tabs.json", "openapi.json");
+
+        deployApp(war);
+
+        assertOpenApiDoc();
+    }
+
+    @Test
     public void testLooseWarWithLib() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "testLooseWarWithLib.war");
         war.addPackage(DeploymentTestResource.class.getPackage());
@@ -294,8 +304,7 @@ public class DeploymentTest {
 
     private void assertServerContextRoot(JsonNode model,
                                          String contextRoot) {
-        OpenAPITestUtil.checkServer(model, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(),
-                                                                         server.getHttpDefaultSecurePort(), contextRoot));
+        OpenAPITestUtil.checkServer(model, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), -1, contextRoot));
     }
 
     /**

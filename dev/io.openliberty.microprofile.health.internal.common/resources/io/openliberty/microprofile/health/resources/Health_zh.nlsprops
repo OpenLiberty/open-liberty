@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ healthcheck.bean.call.exception.CWMMH0050E.explanation=\u6240\u6307\u5b9a\u8c03\
 healthcheck.bean.call.exception.CWMMH0050E.useraction=\u67e5\u770b HealthCheck bean \u4e2d\u7684\u8c03\u7528\u65b9\u6cd5\u4ee5\u786e\u5b9a\u6240\u53d1\u751f\u7684\u5f02\u5e38\u3002
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMMH0052W=CWMMH0052W: \u6a21\u5757 {2} \u7684 {1} \u5e94\u7528\u7a0b\u5e8f\u4e2d\u5b9e\u73b0 HealthCheckResponse \u7684 {0} \u62a5\u544a\u4e86 {3} \u72b6\u6001\u4ee5\u53ca\u6570\u636e {4}\u3002
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: \u5728\u6a21\u5757 {2}\u7684 {1} \u5e94\u7528\u7a0b\u5e8f\u4e2d\u5b9e\u65bd HealthCheck\u54cd\u5e94\u7684 {0} \u62a5\u544a\u4e86\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u7684 {3} \u72b6\u6001 {4}\u4ee5\u53ca\u6570\u636e {5}\u3002
 healthcheck.application.down.CWMMH0052W.explanation=DOWN \u72b6\u6001\u53ef\u80fd\u5bfc\u81f4\u76d1\u89c6\u670d\u52a1\u5728\u6b64\u670d\u52a1\u5668\u4e0a\u6267\u884c\u64cd\u4f5c\u3002
 healthcheck.application.down.CWMMH0052W.useraction=\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u6b64\u8b66\u544a\u662f\u4e00\u6761 DOWN \u72b6\u6001\u8bb0\u5f55\u3002
 

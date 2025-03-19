@@ -29,14 +29,19 @@ fat.test.container.images: confluentinc/cp-kafka:7.1.1
 tested.features:\
   concurrent-3.0,\
   cdi-4.0,\
+  cdi-4.1,\
   servlet-6.0,\
+  servlet-6.1,\
   mpConfig-3.1,\
   restfulws-3.0,\
   mpTelemetry-1.1,\
+  mpTelemetry-2.0,\
   mpmetrics-5.0,\
   mpmetrics-5.1,\
   restfulwsclient-3.0, \
+  restfulwsclient-4.0,\
   restfulws-3.0, \
+  restfulws-4.0, \
   jsonp-2.0
 
 -buildpath: \

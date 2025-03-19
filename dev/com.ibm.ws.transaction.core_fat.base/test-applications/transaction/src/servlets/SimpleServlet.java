@@ -1,15 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+/*
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package servlets;
 
 import static org.junit.Assert.assertEquals;
@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,8 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
+
+import org.junit.Test;
 
 import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.UserTransactionFactory;
@@ -125,6 +128,32 @@ public class SimpleServlet extends FATServlet {
         }
     }
 
+    @Test
+    public void testUserTranLookupOutsideEE() throws Exception {
+        final Object[] utHolder = { null };
+        Thread t = new Thread(() -> {
+            try {
+                utHolder[0] = new InitialContext().lookup("jta/usertransaction");
+            } catch (NamingException e) {
+                utHolder[0] = e;
+            }
+        });
+        t.start();
+        t.join();
+        final Object ut = utHolder[0];
+
+        if (ut instanceof UserTransaction) {
+            ((UserTransaction) ut).begin();
+            ((UserTransaction) ut).commit();
+        } else {
+            if (ut == null) {
+                throw new Exception("UserTransaction instance was null");
+            } else {
+                throw new Exception("UserTransaction lookup did not work: " + ut.getClass().getCanonicalName());
+            }
+        }
+    }
+
     public void testUserTranFactory(HttpServletRequest request, HttpServletResponse response) throws Exception {
         UserTransaction ut = UserTransactionFactory.getUserTransaction();
         ut.begin();
@@ -154,6 +183,22 @@ public class SimpleServlet extends FATServlet {
         status = tsr.getTransactionStatus();
         if (status != Status.STATUS_NO_TRANSACTION) {
             throw new IllegalStateException("Expected second STATUS_NO_TRANSACTION, got " + printStatus(status));
+        }
+    }
+
+    @Test
+    public void testTransactionManagerLookup() throws Exception {
+        Object tm = new InitialContext().lookup("java:comp/TransactionManager");
+
+        if (tm instanceof TransactionManager) {
+            ((TransactionManager) tm).begin();
+            ((TransactionManager) tm).commit();
+        } else {
+            if (tm == null) {
+                throw new Exception("TransactionManager instance was null");
+            } else {
+                throw new Exception("TransactionManager lookup did not work: " + tm.getClass().getCanonicalName());
+            }
         }
     }
 
@@ -721,3 +766,4 @@ public class SimpleServlet extends FATServlet {
         }
     }
 }
+

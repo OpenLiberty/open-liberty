@@ -71,7 +71,7 @@ public class Social_BasicTests extends SocialCommonTest {
 
         WebClient webClient = getAndSaveWebClient();
 
-        String lastStep = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String lastStep = invoke_social_login_actions[invoke_social_login_actions.length - 1];
 
         List<validationData> expectations = setGoodSocialExpectations(socialSettings, doNotAddJWTTokenValidation);
         // Ensure that the subject principals do NOT include a JWT
@@ -80,7 +80,7 @@ public class Social_BasicTests extends SocialCommonTest {
                 SocialConstants.STRING_DOES_NOT_CONTAIN, "Found an unexpected JWT principal in the app response.", null,
                 jwtUserPrincipal);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, socialSettings, expectations);
 
         if (isTestingOidc) {
             testUserInfo(webClient);
@@ -137,7 +137,7 @@ public class Social_BasicTests extends SocialCommonTest {
 
         WebClient webClient = getAndSaveWebClient();
 
-        String lastStep = inovke_social_login_actions[inovke_social_login_actions.length - 1];
+        String lastStep = invoke_social_login_actions[invoke_social_login_actions.length - 1];
 
         List<validationData> expectations = setGoodSocialExpectations(socialSettings, doNotAddJWTTokenValidation);
         // Ensure that the subject principals include a JWT
@@ -147,7 +147,7 @@ public class Social_BasicTests extends SocialCommonTest {
                 SocialConstants.STRING_MATCHES,
                 "Did not find the expected JWT principal in the app response but should have.", null, jwtUserPrincipal);
 
-        genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);
+        genericSocial(_testName, webClient, invoke_social_login_actions, socialSettings, expectations);
     }
 
     /**
@@ -171,7 +171,7 @@ public class Social_BasicTests extends SocialCommonTest {
 
         // Invoke the protected app, get the login page, put a bad pw in the login page and expect to get the login page
         // again
-        List<validationData> expectations = vData.addSuccessStatusCodesForActions(inovke_social_login_actions);
+        List<validationData> expectations = vData.addSuccessStatusCodesForActions(invoke_social_login_actions);
         expectations = vData.addExpectation(expectations, SocialConstants.INVOKE_SOCIAL_RESOURCE,
                 Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not get to the Login page", null,
                 updatedSocialTestSettings.getLoginPage());
@@ -200,7 +200,7 @@ public class Social_BasicTests extends SocialCommonTest {
                     "The OP should have received a login error from WIM ",
                     SocialMessageConstants.CWIML4537E_LOGIN_FAILED);
         }
-        HtmlPage response = (HtmlPage) genericSocial(_testName, webClient, inovke_social_login_actions,
+        HtmlPage response = (HtmlPage) genericSocial(_testName, webClient, invoke_social_login_actions,
                 updatedSocialTestSettings, expectations);
 
         /***

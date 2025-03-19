@@ -341,7 +341,7 @@
 
 6174=F\u00fcr die Sitzungseigenschaft [{0}] wurde kein Wert angegeben. Diese Ausnahme ist m\u00f6glich, wenn zus\u00e4tzliche Kriterien oder Tenantdiskriminatorspalten verwendet werden, ohne die zugeordnete Kontexteigenschaft anzugeben. Diese Eigenschaften m\u00fcssen mit EntityManager, EntityManagerFactory oder Persistenzeinheiteneigenschaften definiert werden. Wird natives EclipseLink verwendet, m\u00fcssen diese Eigenschaften direkt in der Sitzung definiert werden.
 
-6175=Native SQL-Abfragen wurden inaktiviert. Dies erfolgt durch Setzen der Persistenzeinheiteneigenschaft "eclipselink.jdbc.allow-native-sql-queries" auf false oder durch Definition mindestens einer Multitenantentit\u00e4t in Ihrer Persistenzeinheit. \u00dcberpr\u00fcfen Sie Ihre Persistenzeinheitenspezifikation. Damit native SQL-Abfragen m\u00f6glich sind, m\u00fcssen Sie diese Eigenschaften auf true setzen. Alternativ k\u00f6nnen einzelne Abfragen diese Einstellung umgehen, indem der Abfragehinweis "eclipselink.jdbc.allow-native-sql-query" auf true gesetzt wird.
+6175=Native SQL-Abfragen wurden inaktiviert. Dazu wird entweder die Persistenzeinheiteneigenschaft "{0}" auf "false" gesetzt oder mindestens eine Multi-Tenant-Entit\u00e4t in Ihrer Persistenzeinheit definiert. \u00dcberpr\u00fcfen Sie Ihre Persistenzeinheitenspezifikation. Damit native SQL-Abfragen m\u00f6glich sind, m\u00fcssen Sie diese Eigenschaften auf true setzen. Alternativ k\u00f6nnen einzelne Abfragen diese Einstellung umgehen, indem der Abfragehinweis{1}auf ''true'' gesetzt wird.
 
 6176=W\u00e4hrend der Initialisierung des Konstruktors \u00fcber die Klasse [{0}] wurde eine Ausnahme ausgel\u00f6st: [{1}]
 

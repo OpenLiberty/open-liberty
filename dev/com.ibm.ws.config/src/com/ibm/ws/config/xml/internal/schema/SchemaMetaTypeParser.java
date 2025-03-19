@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -81,6 +81,20 @@ public class SchemaMetaTypeParser {
     public static final String PROP_EXT = ".properties";
     private static final ResourceBundle _msgs = ResourceBundle.getBundle(XMLConfigConstants.NLS_PROPS);
 
+    private static final Map<String, Integer> typeMap = new HashMap<>();
+
+    static {
+        typeMap.put("long", AttributeDefinition.LONG);
+        typeMap.put("double", AttributeDefinition.DOUBLE);
+        typeMap.put("float", AttributeDefinition.FLOAT);
+        typeMap.put("integer", AttributeDefinition.INTEGER);
+        typeMap.put("byte", AttributeDefinition.BYTE);
+        typeMap.put("char", AttributeDefinition.CHARACTER);
+        typeMap.put("boolean", AttributeDefinition.BOOLEAN);
+        typeMap.put("short", AttributeDefinition.SHORT);
+        typeMap.put("password", AttributeDefinition.PASSWORD);
+    }
+
     private final XMLInputFactory inputFactory;
     private final List<MetaTypeInformationSpecification> metatypeList;
     MetaTypeInformationSpecification metatype = null;
@@ -99,9 +113,9 @@ public class SchemaMetaTypeParser {
 
     /**
      * Constructor.
-     * 
+     *
      * @param generatorOptions The user options wrapper.
-     * @param prodJars The Map of bundle jars organized by product (core, usr, prodExt1, prodExt2 ...)
+     * @param prodJars         The Map of bundle jars organized by product (core, usr, prodExt1, prodExt2 ...)
      */
     public SchemaMetaTypeParser(Locale locale, Map<String, List<File>> prodJars) {
         inputFactory = DesignatedXMLInputFactory.newInstance();
@@ -114,7 +128,7 @@ public class SchemaMetaTypeParser {
      * Since we don't have have the luxury of OSGi framework getting the OCDs for us,
      * we need to look up all the metatype.xml files from each jar manually and
      * construct a metatypeinformation which will be passed to SchemaWriter
-     * 
+     *
      * @param jars
      * @return StreamSource containing all the metatype XMLs
      */
@@ -165,7 +179,8 @@ public class SchemaMetaTypeParser {
         return metatypeList;
     }
 
-    private void parse(InputStream metatypeXML, JarFile jarFile, boolean generateNewMetatype, Map<String, URL> metatypePropMap, String productName) throws XMLStreamException, IOException {
+    private void parse(InputStream metatypeXML, JarFile jarFile, boolean generateNewMetatype, Map<String, URL> metatypePropMap,
+                       String productName) throws XMLStreamException, IOException {
 
         XMLStreamReader xmlStreamReader = inputFactory.createXMLStreamReader(metatypeXML);
         DepthAwareXMLStreamReader parser = new DepthAwareXMLStreamReader(xmlStreamReader);
@@ -229,7 +244,7 @@ public class SchemaMetaTypeParser {
 
     private void warning(String message, Object... args) {
         // Don't generate an error when this is being run by the mbean. Not all
-        // bundles may be included by a running server. 
+        // bundles may be included by a running server.
         String msg = message;
         try {
             msg = _msgs.getString(message);
@@ -245,7 +260,7 @@ public class SchemaMetaTypeParser {
 
     /**
      * Tries to generate the correct metatype properties location according to locale
-     * 
+     *
      * @param metatypeName
      * @return a String with the correct metatype properties location
      */
@@ -459,7 +474,7 @@ public class SchemaMetaTypeParser {
     }
 
     /**
-     * 
+     *
      * @param xmlStreamReader
      * @return
      */
@@ -484,29 +499,7 @@ public class SchemaMetaTypeParser {
      * @return
      */
     private int parseType(String type) {
-        type = type.toLowerCase();
-        if (type.equals("long")) {
-            return AttributeDefinition.LONG;
-        } else if (type.equals("double")) {
-            return AttributeDefinition.DOUBLE;
-        } else if (type.equals("float")) {
-            return AttributeDefinition.FLOAT;
-        } else if (type.equals("integer")) {
-            return AttributeDefinition.INTEGER;
-        } else if (type.equals("byte")) {
-            return AttributeDefinition.BYTE;
-        } else if (type.equals("char")) {
-            return AttributeDefinition.CHARACTER;
-        } else if (type.equals("boolean")) {
-            return AttributeDefinition.BOOLEAN;
-        } else if (type.equals("short")) {
-            return AttributeDefinition.SHORT;
-        } else if (type.equals("password")) {
-            return AttributeDefinition.PASSWORD;
-        } else {
-            //defaults to string at least that's what SchemaWriter does
-            return AttributeDefinition.STRING;
-        }
+        //defaults to string at least that's what SchemaWriter does
+        return typeMap.getOrDefault(type.toLowerCase(), AttributeDefinition.STRING);
     }
-
 }

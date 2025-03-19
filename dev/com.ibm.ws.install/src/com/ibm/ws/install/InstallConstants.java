@@ -75,6 +75,7 @@ public class InstallConstants {
     public static final String INSTALL_LOCAL_ESA = "install.local.esa";
     public static final String SINGLE_JSON_FILE = "single.json.file";
     public static final String FEATURES_TO_RESOLVE = "features.to.resolve";
+    public static final String PLATFORMS = "platforms";
     public static final String INDIVIDUAL_ESAS = "individual.esas";
     public static final String INSTALL_INDIVIDUAL_ESAS = "install.individual.esas";
     public static final String LICENSE_ACCEPT = "license.accept";

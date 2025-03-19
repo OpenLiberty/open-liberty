@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,16 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Schedule \u8a3b\u91cb{0}\u70ba\u4efb\u52d9\u904b\u884c\u7684\u79d2\u6578\u6307\u5b9a\u4e00\u500b\u7a7a\u503c\u3002 \u70ba\u79d2\u5b57\u6bb5\u6307\u5b9a\u4e00\u500b\u975e\u7a7a\u503c\uff0c\u6216\u5f9e Schedule \u8a3b\u91cb\u4e2d\u7701\u7565\u79d2\u5b57\u6bb5\u3002 \u7701\u7565\u79d2\u6b04\u4f4d\u6703\u5b89\u6392\u4efb\u52d9\u5728\u5206\u9418\u958b\u59cb\u6642\u57f7\u884c\u3002
+CWWKC1410.schedule.lacks.seconds.explanation=\u7a7a\u6578\u7d44\u503c\u6307\u793a\u8a08\u7b97\u8a08\u5283\u6642\u9593\u6642\u5fc5\u9808\u5ffd\u7565\u79d2\u5b57\u6bb5\u3002 \u7701\u7565\u79d2\u6b04\u4f4d\u6703\u5b89\u6392\u4efb\u52d9\u5728\u5206\u9418\u958b\u59cb\u6642\u57f7\u884c\u3002
+CWWKC1410.schedule.lacks.seconds.useraction=\u4fee\u6539 Schedule \u8a3b\u89e3\u7684\u79d2\u5b57\u6bb5\u4ee5\u6307\u5b9a\u975e\u7a7a\u503c\uff0c\u6216\u7701\u7565 Schedule \u8a3b\u89e3\u4e2d\u7684\u79d2\u5b57\u6bb5\u3002
+
+CWWKC1411.qualified.res.err=CWWKC1411E: \u4f3a\u670d\u5668\u6c92\u6709\u70ba{1}\u8a3b\u89e3\u6216{2}\u90e8\u7f72\u63cf\u8ff0\u7b26\u5143\u7d20\u5efa\u7acb{0} bean\u3002 \u8a3b\u89e3\u6216\u90e8\u7f72\u63cf\u8ff0\u7b26\u5143\u7d20\u5177\u6709{3}\u540d\u7a31\u548c{4}\u9650\u5b9a\u7b26\uff0c\u4e26\u5728{5}\u61c9\u7528\u7a0b\u5f0f\u5de5\u4ef6\u4e2d\u5b9a\u7fa9\u3002 \u932f\u8aa4\u662f{6}
+CWWKC1411.qualified.res.err.explanation=\u8a72\u7a0b\u5f0f\u78bc\u672a\u5efa\u7acb\u8cc7\u6e90\u6216\u672a\u5c07\u8cc7\u6e90\u8a3b\u518a\u70ba bean\u3002
+CWWKC1411.qualified.res.err.useraction=\u78ba\u4fdd\u8cc7\u6e90\u914d\u7f6e\u6b63\u78ba\u3002
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: {0}\u61c9\u7528\u7a0b\u5f0f\u5de5\u4ef6\u5305\u542b\u591a\u500b\u5177\u6709{2}\u9650\u5b9a\u7b26\u7684{1}\u8cc7\u6e90\u5b9a\u7fa9\u3002 \u885d\u7a81\u7684{1}\u8cc7\u6e90\u5b9a\u7fa9\u7684\u540d\u7a31\u662f{3} \u3002
+CWWKC1412.qualifier.conflict.explanation=\u5177\u6709\u9650\u5b9a\u7b26\u7684\u540c\u4e00\u985e\u578b\u7684\u6bcf\u500b\u8cc7\u6e90\u5b9a\u7fa9\u5fc5\u9808\u5177\u6709\u4e0d\u540c\u7684\u9650\u5b9a\u7b26\u3002
+CWWKC1412.qualifier.conflict.useraction=\u78ba\u4fdd\u540c\u4e00\u985e\u578b\u7684\u6bcf\u500b\u8cc7\u6e90\u5b9a\u7fa9\u5177\u6709\u4e0d\u540c\u7684\u9650\u5b9a\u7b26\u6216\u6c92\u6709\u4efb\u4f55\u9650\u5b9a\u7b26\u3002

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -54,9 +54,9 @@ public class BinaryLogRecordContextTest {
         ShrinkHelper.defaultDropinApp(server, "LogFat", "com.ibm.ws.logging.hpel");
         ShrinkHelper.defaultDropinApp(server, "HpelFat", "com.ibm.ws.logging.hpel.servlet");
         // Liberty profile root is the install root.
-        rProfRootDir = new RemoteFile(server.getMachine(), server.getInstallRoot());
-//        rProfRootDir = new RemoteFile(HpelSetup.getNodeUnderTest().getMachine(), HpelSetup.getNodeUnderTest().getProfileDir());
-        rProfBinFile = new RemoteFile(server.getMachine(), rProfRootDir, "bin");
+        rProfRootDir = server.getMachine().getFile(server.getInstallRoot());
+//        rProfRootDir = HpelSetup.getNodeUnderTest().getMachine().getFile(HpelSetup.getNodeUnderTest().getProfileDir());
+        rProfBinFile = server.getMachine().getFile(rProfRootDir, "bin");
         // Setting the bootstrap with trace specification to get the trace logs.
         CommonTasks.addBootstrapProperty(server, "com.ibm.ws.test", "*=all=enabled");
         server.stopServer();
@@ -115,9 +115,9 @@ public class BinaryLogRecordContextTest {
 //                      } else {
 //                              exeExt = ".sh";
         }
-        rProfRootDir = new RemoteFile(server.getMachine(), server.getInstallRoot());
-//      rProfRootDir = new RemoteFile(HpelSetup.getNodeUnderTest().getMachine(), HpelSetup.getNodeUnderTest().getProfileDir());
-        rProfBinFile = new RemoteFile(server.getMachine(), rProfRootDir, "bin");
+        rProfRootDir = server.getMachine().getFile(server.getInstallRoot());
+//      rProfRootDir = HpelSetup.getNodeUnderTest().getMachine().getFile(HpelSetup.getNodeUnderTest().getProfileDir());
+        rProfBinFile = server.getMachine().getFile(rProfRootDir, "bin");
         StringBuilder cmd = new StringBuilder(100);
         cmd.append(rProfBinFile.getAbsolutePath()).append(server.getMachine().getOperatingSystem().getFileSeparator());
         cmd.append(BINARY_LOG).append(exeExt).append(" ");

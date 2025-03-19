@@ -30,6 +30,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+
 @RunWith(FATRunner.class)
 public class RolesAuthTest extends FATServletClient {
 
@@ -43,7 +45,7 @@ public class RolesAuthTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive webArchive = ShrinkHelper.buildDefaultApp(APP_NAME, "mpGraphQL10.rolesAuth");
-        ShrinkHelper.exportAppToServer(server, webArchive);
+        ShrinkHelper.exportAppToServer(server, webArchive,new DeployOptions[] { DeployOptions.SERVER_ONLY });
         server.startServer();
 
         // wait for LTPA key to be available to avoid CWWKS4000E

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi31.internal.services.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -70,7 +71,7 @@ public class ConfigFieldProvider31Impl implements ConfigFieldProvider {
         SCAN_PROFILES("getScanProfiles", OpenApiConstants.SCAN_PROFILES, OpenApiConfig::getScanProfiles, ConfigField::serializeSet),
         SCAN_EXCLUDE_PROFILES("getScanExcludeProfiles", OpenApiConstants.SCAN_EXCLUDE_PROFILES, OpenApiConfig::getScanExcludeProfiles, ConfigField::serializeSet),
         DUPLICATE_OPERATION_ID_BEHAVIOR("getDuplicateOperationIdBehavior", OpenApiConstants.DUPLICATE_OPERATION_ID_BEHAVIOR, OpenApiConfig::getDuplicateOperationIdBehavior, DuplicateOperationIdBehavior::name),
-        REMOVE_UNUSED_SCHEMAS("removeUnusedSchemas", OpenApiConstants.SMALLRYE_REMOVE_UNUSED_SCHEMAS, c -> Boolean.toString(c.removeUnusedSchemas()));
+        REMOVE_UNUSED_SCHEMAS("removeUnusedSchemas", OpenApiConstants.SMALLRYE_REMOVE_UNUSED_SCHEMAS, c -> Boolean.toString(c.removeUnusedSchemas()))
         ;
 
         Function<OpenApiConfig, String> function;
@@ -112,6 +113,19 @@ public class ConfigFieldProvider31Impl implements ConfigFieldProvider {
     @Override
     public Collection<ConfigField> getConfigFields() {
         return Arrays.asList(ConfigField31.values());
+    }
+
+    @Override
+    public Collection<ConfigField> getIndexingConfigFields() {
+        ArrayList<ConfigField> result = new ArrayList<>();
+        result.add(ConfigField31.SCAN_DISABLE);
+        result.add(ConfigField31.SCAN_CLASSES);
+        result.add(ConfigField31.SCAN_EXCLUDE_CLASSES);
+        result.add(ConfigField31.SCAN_PACKAGES);
+        result.add(ConfigField31.SCAN_EXCLUDE_PACKAGES);
+        result.add(ConfigField31.SCAN_DEPENDENCIES_DISABLE);
+        result.add(ConfigField31.SCAN_DEPENDENCIES_JARS);
+        return result;
     }
 
     @Override

@@ -34,15 +34,18 @@ import componenttest.topology.utils.tck.TCKRunner;
 @MinimumJavaLevel(javaLevel = 17)
 public class DataCoreTckLauncher {
 
-    @Server("io.openliberty.org.jakarta.data.1.0.core")
+    @Server("io.openliberty.jakarta.data.1.0.core")
     public static LibertyServer persistenceServer;
 
-    @Server("io.openliberty.org.jakarta.data.1.0.core.nosql")
+    @Server("io.openliberty.jakarta.data.1.0.core.nosql")
     public static LibertyServer noSQLServer;
 
     @After
     public void tearDown() throws Exception {
         String[] ignoredMessages = new String[] {
+                                                  "CWWKD0202E", // TODO : https://github.com/OpenLiberty/open-liberty/issues/30155
+                                                  "CWWKD1054E", // tested error path
+                                                  "CWWKD1080E", // TODO : https://github.com/OpenLiberty/open-liberty/issues/30155
                                                   "CWWKE0955E" //websphere.java.security java 18+
         };
         if (persistenceServer.isStarted()) {
@@ -68,6 +71,8 @@ public class DataCoreTckLauncher {
         additionalProps.put("jimage.dir", persistenceServer.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "rest");
         additionalProps.put("jakarta.profile", "core");
+        additionalProps.put("jakarta.tck.database.type", "relational");
+        additionalProps.put("jakarta.tck.database.name", FATSuite.relationalDatabase.getClass().getSimpleName());
 
         if (FATSuite.shouldRunSignatureTests()) {
             additionalProps.put("included.groups", "core & persistence");
@@ -75,16 +80,19 @@ public class DataCoreTckLauncher {
             additionalProps.put("included.groups", "core & persistence & !signature");
         }
 
+        additionalProps.put("excluded.tests", FATSuite.getExcludedTestByDatabase(DatabaseContainerType.valueOf(FATSuite.relationalDatabase)));
+
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
-        String testName = this.getClass() + ":launchDataTckCorePersistence";
-        Type type = Type.JAKARTA;
-        String specName = "Data (Core, Persistence)";
-        String relativeTckRunner = "publish/tckRunner/platform/";
-        TCKRunner.runTCK(persistenceServer, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
+        TCKRunner.build(persistenceServer, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("core", "persistence")
+                        .withRelativeTCKRunner("publish/tckRunner/platform/")
+                        .withAdditionalMvnProps(additionalProps)
+                        .withLogging(FATSuite.getLoggingConfig())
+                        .runTCK();
     }
 
     /**
@@ -105,6 +113,8 @@ public class DataCoreTckLauncher {
         additionalProps.put("jimage.dir", noSQLServer.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "rest");
         additionalProps.put("jakarta.profile", "core");
+        additionalProps.put("jakarta.tck.database.type", "document");
+        additionalProps.put("jakarta.tck.database.name", FATSuite.noSQLDatabase.getClass().getSimpleName());
 
         if (FATSuite.shouldRunSignatureTests()) {
             additionalProps.put("included.groups", "core & nosql");
@@ -114,13 +124,14 @@ public class DataCoreTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
-        String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
-        String testName = this.getClass() + ":launchDataTckCoreNoSQL";
-        Type type = Type.JAKARTA;
-        String specName = "Data (Core, NoSQL)";
-        String relativeTckRunner = "publish/tckRunner/platform/";
-        TCKRunner.runTCK(noSQLServer, bucketName, testName, type, specName, null, relativeTckRunner, additionalProps);
+        TCKRunner.build(noSQLServer, Type.JAKARTA, "Data")
+                        .withPlatfromVersion("11")
+                        .withQualifiers("core", "NoSQL")
+                        .withRelativeTCKRunner("publish/tckRunner/platform/")
+                        .withAdditionalMvnProps(additionalProps)
+                        .withLogging(FATSuite.getLoggingConfig())
+                        .runTCK();
     }
 }

@@ -34,9 +34,9 @@
 #
 # cmvc_en_version_level=
 #
-#CMVCPATHNAME io.openliberty.org.jboss.resteasy.common.ee10/resources/io/openliberty/org/jboss/resteasy/common/nls/RESTfulWS.nlsprops
+#CMVCPATHNAME io.openliberty.org.jboss.resteasy.common.ee11/resources/io/openliberty/org/jboss/resteasy/common/nls/RESTfulWS.nlsprops
 #COMPONENTPREFIX CWWKW
-#COMPONENTNAMEFOR CWWKW io.openliberty.restfulWS-3.1
+#COMPONENTNAMEFOR CWWKW io.openliberty.restfulWS-4.0
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE

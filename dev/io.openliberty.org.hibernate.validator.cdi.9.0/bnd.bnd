@@ -1,0 +1,24 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= jar:${fileuri;${repo;org.hibernate.validator:hibernate-validator-cdi;9.0.0.Beta3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+instrument.disabled: true
+
+-buildpath: \
+  org.hibernate.validator:hibernate-validator;version=9.0.0.Beta3,\
+  org.hibernate.validator:hibernate-validator-cdi;version=9.0.0.Beta3
+  
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"

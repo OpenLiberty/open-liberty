@@ -1,0 +1,23 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+
+Bundle-Name: Liberty Security JACC 1.5 Service implementation
+Bundle-SymbolicName: io.openliberty.security.authorization.internal.jacc.1.5; singleton:=true
+Bundle-Description: Liberty Security JACC 1.5 Service implementation, version=${bVersion}
+
+Export-Package: \
+  com.ibm.wsspi.security.authorization.jacc
+
+Private-Package: \
+  com.ibm.ws.security.authorization.jacc.internal.resources, \
+  io.openliberty.security.authorization.jacc.internal.proxy
+
+-dsannotations: \
+  io.openliberty.security.authorization.jacc.internal.proxy.ProviderServiceProxyImpl

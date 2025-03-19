@@ -69,6 +69,10 @@ CONFIG_ATTRIBUTE_IGNORED=SESN0311W: Das Konfigurationsattribut {0} wurde angegeb
 CONFIG_ATTRIBUTE_IGNORED.explanation=Die angegebene Konfiguration wird ignoriert, da sie vom angegebenen Attribut 'cacheManagerRef' bereitgestellt wird.
 CONFIG_ATTRIBUTE_IGNORED.useraction=Es ist keine Aktion erforderlich.
 
+UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: Das Konfigurationsattribut {0} f\u00fcr den HTTP-Sitzungscache hat sich seit dem Pr\u00fcfpunkt des Servers ge\u00e4ndert. Wenn der Wert des Attributs nach dem Serverpr\u00fcfpunkt, aber vor der Wiederherstellung des Serverprozesses ge\u00e4ndert wird, verwendet die Anwendung den aktualisierten Wert nicht.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=Das angegebene Konfigurationsattribut kann zwischen dem Serverpr\u00fcfpunkt und der Wiederherstellung des Serverprozesses nicht ge\u00e4ndert werden.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Legen Sie den Wert f\u00fcr das Attribut fest, bevor Sie den Serverpr\u00fcfpunkt ausf\u00fchren.
+
 INTERNAL_SERVER_ERROR=Interner Serverfehler
 
 SESSION_CACHE_CONFIG_MESSAGE=Stellen Sie sicher, dass die Serverkonfiguration eine g\u00fcltige httpSessionCache-Konfiguration enth\u00e4lt. Sehen Sie sich die Beispielkonfiguration an. {0}

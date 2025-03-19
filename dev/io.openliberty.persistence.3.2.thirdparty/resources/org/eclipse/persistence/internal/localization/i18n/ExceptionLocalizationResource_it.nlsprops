@@ -47,6 +47,8 @@ NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Parametro null passato a "setParameter". 
 
 PARAMETER_NILL_NOT_FOUND=Parametro null passato a getParameterValue()
 
+RIGHT_JOIN_NOT_SUPPORTED=L''unione di destra non \u00e8 supportata
+
 add_attribute_key_was_null=Quando si specifica un AttributeGroup per una sottoclasse di un tipo di attributo, il parametro tipo non deve essere null
 
 argument_collection_was_null=La raccolta di argomenti era null
@@ -99,9 +101,19 @@ cant_persist_detatched_object=Impossibile rendere persistente l''oggetto scolleg
 
 cant_refresh_not_managed_object=Impossibile aggiornare l''oggetto non gestito: {0}.
 
+configured_pu_name_conflict=Impossibile creare un''unit\u00e0 di persistenza configurata con il nome {0}. Questo nome \u00e8 stato trovato nelle unit\u00e0 di persistenza personalizzate.
+
 create_insertion_failed=Creazione inserimento non riuscita.
 
 criteria_no_constructor_found=Si \u00e8 verificata un''eccezione ispezionando la classe {0} per un costruttore che utilizza tipi di criteri di selezione come argomenti.  Se questa CriteriaQuery non deve essere una query costruttore, verificare che la selezione corrisponda al tipo di ritorno.
+
+custom_pu_create_error=Impossibile creare un''unit\u00e0 di persistenza personalizzata con il nome {0}.
+
+custom_pu_create_error_no_caller=Impossibile creare un''unit\u00e0 di persistenza personalizzata con nome {0}. Non \u00e8 stato trovato alcun metodo chiamante nello stack.
+
+custom_pu_create_error_no_caller_class_url=Impossibile creare un''unit\u00e0 di persistenza personalizzata con nome {0}. Non \u00e8 stato trovato alcun URL della classe chiamante {1} .
+
+custom_pu_name_conflict=Impossibile creare un''unit\u00e0 di persistenza personalizzata con il nome {0}. Questo nome \u00e8 stato rilevato nella configurazione xml.
 
 directory_not_exist=La directory {0} non esiste.
 
@@ -124,6 +136,8 @@ ejb30-wrong-type-for-query-hint=Query {0}, il suggerimento di query {1} non \u00
 entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Il conflitto delle propriet\u00e0 entityManager: jakarta.persistence.driver e/o jakarta.persistence.url richiedono DefaultConnector, ma l''unit\u00e0 di persistenza utilizza un controller di transazione esterno, quindi \u00e8 richiesto JNDIConnector.
 
 entity_manager_properties_conflict_default_connector_vs_jndi_connector=Il conflitto delle propriet\u00e0 entityManager: jakarta.persistence.driver e/o jakarta.persistence.url richiedono DefaultConnector, ma jakarta.persistence.jtaDataSource e/o jakarta.persistence.nonjtaDataSource richiedono JNDIConnector.
+
+entity_manager_with_connection_failed=Il codice utente non \u00e8 riuscito con un errore: {0}
 
 entity_no_longer_exists_in_db=L''entit\u00e0 non esiste pi\u00f9 nel database: {0}.
 
@@ -148,6 +162,8 @@ error_unmarshalling_return=Errore durante l''annullamento del marshalling della 
 file_exists=Il file {0} gi\u00e0 esiste.
 
 file_not_exist=Il file {0} non esiste.
+
+find_option_class_unknown=L''opzione FindOption che implementa la classe {0} non \u00e8 supportata
 
 finder_query_failed=Query finder non riuscita:
 
@@ -207,9 +223,9 @@ jmx_enabled_platform_mbean_runtime_exception=Si \u00e8 verificata un''eccezione 
 
 join_trans_called_on_entity_trans=joinTransaction chiamato su un EntityManager locale risorsa che non \u00e8 in grado di registrarsi per una transazione JTA.
 
-jpa21-ddl-create-script-target-not-specified=Durante la generazione di DDL negli script, \u00e8 necessario specificare una destinazione per lo script di creazione utilizzando la propriet\u00e0 [jakarta.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=Quando si genera la DDL per gli script, \u00e8 necessario specificare una destinazione di creazione script utilizzando la propriet\u00e0 [{0}].
 
-jpa21-ddl-drop-script-target-not-specified=Durante la generazione di DDL negli script, \u00e8 necessario specificare una destinazione per lo script di creazione utilizzando la propriet\u00e0 [jakarta.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=Quando si genera la DDL per gli script, \u00e8 necessario specificare una destinazione di eliminazione script utilizzando la propriet\u00e0 [{0}].
 
 jpa21-ddl-invalid-source-script-type=Lo script origine fornito {0} \u00e8 di un tipo non valido {0}. I tipi di script di origine validi sono: java.io.Reader o una stringa che designa un URL di file.
 
@@ -253,6 +269,12 @@ jpa_helper_invalid_read_all_query=La query di tipo {0} non \u00e8 una query lett
 
 jpa_helper_invalid_report_query=La query di tipo {0} non \u00e8 una query report EclipseLink e quindi non \u00e8 stata convertita.
 
+jpa_non_persistent_class=La classe [{0}] non \u00e8 una classe persistente.
+
+jpa_persistence_util_get_version_no_version_in_class=PersistenceUtil.getVersion(entit\u00e0) \u00e8 stato richiamato con l''oggetto [{0}], che non ha alcun attributo di versione.
+
+jpa_persistence_util_get_version_non_persistent_class=PersistenceUtil.getVersion(entity) \u00e8 stato chiamato con l''oggetto [{0}], che non \u00e8 un oggetto persistente.
+
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) \u00e8 stato richiamato con l''oggetto [{0}] che non \u00e8 un oggetto persistente.
 
 json_ora21c_jsonvalue_to_oraclevalue=Impossibile convertire JsonValue in OracleJsonValue.
@@ -268,6 +290,8 @@ json_pgsql_pgobject_conversion=Conversione PGobject del database non riuscita.
 json_pgsql_unknown_type=Tipo JSON sconosciuto restituito dal database.
 
 lock_called_without_version_locking=Chiamate a entityManager.lock(Object entity, LockModeType lockMode) richiedono che venga abilitato il blocco Versione.
+
+lock_option_class_unknown=La classe di implementazione LockOption {0} non \u00e8 supportata
 
 managed_component_not_found=Un attributo: {1} elencato nell''EntityGraph: {0} fa riferimento a un sottografico denominato: {2} che non \u00e8 stato possibile trovare.
 
@@ -320,6 +344,8 @@ no_entities_retrieved_for_get_reference=Impossibile trovare l''entit\u00e0\u00a0
 no_entities_retrieved_for_get_single_result=getSingleResult() non ha richiamato entit\u00e0.
 
 no_entity_graph_of_name=Nessun EntityGraph esistente con nome {0}
+
+no_key_in_entity=Impossibile aggiungere l''unione di {0} a {1} perch\u00e9 nella classe di destinazione manca un attributo di tipo origine
 
 not_an_entity=L''oggetto: {0} non \u00e8 un tipo di entit\u00e0 noto.
 
@@ -375,9 +401,23 @@ position_param_not_found=Nessun parametro nella posizione: {0}.
 
 pu_configured_for_resource_local=Impossibile creare un EntityManager con SynchronizationType perch\u00e9 PersistenceUnit \u00e8 configurato con transazioni locali risorsa.
 
+refresh_option_class_unknown=La classe di implementazione RefreshOption {0} non \u00e8 supportata
+
 remove_deletion_failed=Rimozione eliminazione non riuscita:
 
 rollback_because_of_rollback_only=Transazione sottoposta a "roll back" perch\u00e9 era impostata su RollbackOnly.
+
+schema_validation=Convalida schema
+
+schema_validation_failed=Convalida schema non riuscita
+
+schema_validation_missing_table=L''area della tabella {0} non \u00e8 stata trovata nello schema
+
+schema_validation_table_different_columns=La tabella {0} ha diverse colonne nello schema
+
+schema_validation_table_missing_columns=Nella tabella {0} mancano delle colonne nello schema
+
+schema_validation_table_surplus_columns=La tabella {0} ha colonne di surplus nello schema
 
 sdo_helper_invalid_changesummary=Il ChangeSummary fornito [{0}] non \u00e8 un SDOChangeSummary EclipseLink e quindi non \u00e8 stato convertito.
 
@@ -434,6 +474,10 @@ sdo_helper_invalid_xsdhelper=L''XSDHelper\u00a0fornito [{0}] non \u00e8 un SDOXS
 subclass_sought_not_a_managed_type=il tipo di sottografico cercato: {0} non \u00e8 un tipo gestito per questo attributo: {1}.
 
 too_many_results_for_get_single_result=Pi\u00f9 di un risultato restituito da Query.getSingleResult()
+
+truncate_tables_failed=Troncamento tabelle non riuscito
+
+typed_query_reference_is_null=Il riferimento a una query denominata \u00e8 null
 
 unable_to_find_named_query=NamedQuery con nome: {0} non trovata.
 

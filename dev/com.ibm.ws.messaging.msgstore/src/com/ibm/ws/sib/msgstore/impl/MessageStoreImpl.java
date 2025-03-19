@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+/* ==============================================================================
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,8 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-
+ * ==============================================================================
+ */
 package com.ibm.ws.sib.msgstore.impl;
 
 import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
@@ -215,7 +215,7 @@ public final class MessageStoreImpl extends MessageStore {
     // only to be used by existing unit tests, not within an OSGi environment
     // N.B. this is invoked reflectively — run messaging unit tests to validate any changes
     public static MessageStoreImpl createForTesting() {
-	return new MessageStoreImpl(null);
+        return new MessageStoreImpl(null);
     }
     
     public final AbstractItem _findById(long itemID) throws SevereMessageStoreException
@@ -1654,7 +1654,7 @@ public final class MessageStoreImpl extends MessageStore {
             setStartupException(e);
 
             // close everything we have opened
-            stop(0); // 247659
+            stop(0, e); // 247659
             //Report that we have failed to start cleanly.
             reportLocalError();
             throw new Exception(e);
@@ -1670,7 +1670,7 @@ public final class MessageStoreImpl extends MessageStore {
      * @see com.ibm.ws.sib.admin.JsEngineComponent#stop(int)
      */
     @Override
-    public final void stop(int arg0)
+    public final void stop(int arg0, Throwable reason)
     {
         if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "stop", Integer.valueOf(arg0));
@@ -1698,7 +1698,7 @@ public final class MessageStoreImpl extends MessageStore {
                 _membershipMap.clear();
 
             if (null != _persistentMessageStore)
-                _persistentMessageStore.stop(arg0);
+                _persistentMessageStore.stop(arg0, reason);
 
             // Null out any references to our cache/om cache
             _rootMembership = null;

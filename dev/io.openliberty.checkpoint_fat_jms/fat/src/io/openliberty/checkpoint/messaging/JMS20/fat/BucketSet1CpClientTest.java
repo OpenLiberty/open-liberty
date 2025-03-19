@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,21 +12,16 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.messaging.JMS20.fat;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.function.Consumer;
-
-import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,10 +29,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -49,6 +43,11 @@ public class BucketSet1CpClientTest {
 
     private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet1Client");
     private static LibertyServer engineServer = LibertyServerFactory.getLibertyServer("LiteSet1Engine");
+
+    private static String[] servers = { "LiteSet1Client", "LiteSet1Engine" };
+    @ClassRule
+    public static RepeatTests r1 = EERepeatActions.repeat(servers, TestMode.FULL, false, EERepeatActions.EE11,
+                                                          EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8);
 
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHostName = clientServer.getHostname();
@@ -66,31 +65,35 @@ public class BucketSet1CpClientTest {
         // Prepare the server which runs the messaging engine.
 
         engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
-        engineServer.setServerConfigurationFile("Lite1Engine.xml");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
 
         // Prepare the server which runs the messaging client and which
         // runs the test application.
 
         clientServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
+        ShrinkHelper.cleanAllExportedArchives();
         TestUtils.addDropinsWebApp(clientServer, producerAppName, "jmsproducer.web");
-        clientServer.setServerConfigurationFile("Lite1Client.xml");
 
-        // postCheckpointLogic: get ports specified in FAT file testport.properties and add to server.env.
-        // This will drive a post restore config update, updating ports unspecified at checkpoint 
+        // postCheckpointLogic: get ports specified in FAT file testport.properties and
+        // add to server.env.
+        // This will drive a post restore config update, updating ports unspecified at
+        // checkpoint
         // to those of the runtime environment.
+        final FATSuite.PortSetting setting = new FATSuite.PortSetting("jms.1", 17011, "jms_port_1");
         Consumer<LibertyServer> postCheckpointLogic = checkpointServer -> {
-        	FATSuite.PortSetting setting = new FATSuite.PortSetting("jms.1",17011,"jms_port_1");
-            FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting))); 
+            FATSuite.addServerEnvPorts(checkpointServer, new ArrayList<>(Collections.singletonList(setting)), Collections.emptyMap());
         };
 
-        // Start both servers, engine first, so that its resources are available when the client starts.
+        // Start both servers, engine first, so that its resources are available when
+        // the client starts.
+        // Specify ports for engine
+        FATSuite.addServerEnvPorts(engineServer, new ArrayList<>(Collections.singletonList(setting)), Collections.emptyMap());
         engineServer.startServer("BucketSet1CpClientTest1_Engine.log");
-        
-        clientServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, postCheckpointLogic);        
+
+        clientServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, postCheckpointLogic);
         clientServer.startServer("BucketSet1CpClientTest_Client.log");
     }
 
@@ -109,7 +112,7 @@ public class BucketSet1CpClientTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         ShrinkHelper.cleanAllExportedArchives();
     }
 

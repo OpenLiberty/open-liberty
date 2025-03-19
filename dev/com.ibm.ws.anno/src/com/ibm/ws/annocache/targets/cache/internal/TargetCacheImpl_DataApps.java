@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,14 @@
 package com.ibm.ws.annocache.targets.cache.internal;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_ExternalConstants;
+import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;
 
 /**
  * Root of annotation caching data.
@@ -50,6 +53,8 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
     // private static final String CLASS_NAME = TargetCacheImpl_DataApps.class.getSimpleName();
 
     //
+    
+    private final Map<String,AppKey> appNamesToKeys = new HashMap<String,AppKey>();
 
 	/**
 	 * Create new root cache data.
@@ -74,7 +79,7 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
                new File( factory.getCacheOptions().getDir() ) );
 
         this.appsLock = new AppsLock();
-        this.apps = new WeakHashMap<String, TargetCacheImpl_DataApp>();
+        this.apps = new HashMap<AppKey, TargetCacheImpl_DataApp>();
 
         this.queriesLock = new QueriesLock();
         this.queries = new WeakHashMap<String, TargetCacheImpl_DataQueries>();
@@ -152,7 +157,7 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
         // EMPTY
     }
     private final AppsLock appsLock;
-    private final WeakHashMap<String, TargetCacheImpl_DataApp> apps;
+    private final HashMap<AppKey, TargetCacheImpl_DataApp> apps;
 
     /**
      * Obtain cache data for an application.
@@ -173,13 +178,34 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
         }
 
         synchronized( appsLock ) {
-            TargetCacheImpl_DataApp app = apps.get(appName);
+            AppKey key = appNamesToKeys.computeIfAbsent(appName, AppKey::new);
+            TargetCacheImpl_DataApp app = apps.get(key);
             if ( app == null ) {
                 app = createAppData(appName);
-                apps.put(appName, app);
+                apps.put(key, app);
             }
             return app;
         }
+    }
+
+    /**
+     * Release cache data for an application.
+     * 
+     * @param appName The name of the application.
+     */
+    public boolean release(String appName) {
+        return false;
+        // by commenting out this code and just returning false,
+        // the code reverts back to its old behavior where the apps object keeps
+        // a reference onto the application specific data.  The cleaning up of the app data
+        // from the apps object caused a regression which need to be worked out before this can be re-enabled.
+        /*synchronized( appsLock ) {
+            if (appNamesToKeys.containsKey(appName)) {
+                AppKey key = appNamesToKeys.remove(appName);
+                return apps.remove(key) != null;
+            }
+            return false;
+        }*/
     }
 
     //
@@ -287,4 +313,44 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
             return queriesData;
         }
     }
+    
+
+    private static final class AppKey {
+        private final String deploymentName;
+
+        public AppKey(String deploymentName) {
+            this.deploymentName = deploymentName;
+        }
+
+        public String getDeploymentName() {
+            return deploymentName;
+        }
+
+        @Override
+        public int hashCode() {
+            if (deploymentName == null) {
+                return 0;
+            }
+            
+            return deploymentName.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            AppKey other = (AppKey) obj;
+            
+            if (deploymentName == null) {
+                return other.getDeploymentName() == null;
+            }
+
+            return deploymentName.equals(other.getDeploymentName());
+        }
+    }
+
 }

@@ -27,9 +27,11 @@ Subsystem-Name: Jakarta Data 1.1
 -bundles=\
   io.openliberty.data; location:="dev/api/ibm/,lib/",\
   io.openliberty.data.internal,\
+  io.openliberty.data.internal.beandef,\
   io.openliberty.data.1.1.internal
 -files=dev/api/ibm/javadoc/io.openliberty.data_1.1-javadoc.zip
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+WLP-Platform: jakartaee-12.0

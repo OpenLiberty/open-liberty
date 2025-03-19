@@ -50,3 +50,4 @@ Subsystem-Name: MicroProfile Metrics 5.0
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
+WLP-Platform: microProfile-6.0

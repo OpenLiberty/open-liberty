@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -163,10 +163,17 @@ public class MPContextProp1_3_EE9_TestServlet extends FATServlet {
             fail("Got result " + result + " for a failed future");
         } catch (CancellationException x) {
             boolean foundInStack = false;
-            for (StackTraceElement line : x.getStackTrace())
+            for (StackTraceElement line : x.getStackTrace()) {
                 foundInStack |= "testFailureStackShowsCallerOfGetNow".equals(line.getMethodName());
-            if (!foundInStack || x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause())
+            }
+            // In Java 23, the pre-set failedFuture CancellationException gets wrapped in another CancellationException,
+            // so check if there is another cause and it is equal to the one we originally set as the failedFuture cause.
+            if (!foundInStack ||
+                x.getCause() instanceof CancellationException 
+                    ? x.getCause().getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause() // Java 23+
+                    : x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause()) { // Java 22 or earlier
                 throw x;
+            }
         }
 
         future = defaultManagedExecutor.failedFuture(COMPLETION_X_CAUSED_BY_NAMING_X);
@@ -196,10 +203,15 @@ public class MPContextProp1_3_EE9_TestServlet extends FATServlet {
             fail("Got result " + result + " by joining a failed future");
         } catch (CancellationException x) {
             boolean foundInStack = false;
-            for (StackTraceElement line : x.getStackTrace())
+            for (StackTraceElement line : x.getStackTrace()) {
                 foundInStack |= "testFailureStackShowsCallerOfJoin".equals(line.getMethodName());
-            if (!foundInStack || x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause())
+            }
+            if (!foundInStack ||
+                x.getCause() instanceof CancellationException 
+                    ? x.getCause().getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause() // Java 23+
+                    : x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause()) { // Java 22 or earlier
                 throw x;
+            }
         }
 
         future = defaultManagedExecutor.failedFuture(COMPLETION_X_CAUSED_BY_NAMING_X);
@@ -242,10 +254,15 @@ public class MPContextProp1_3_EE9_TestServlet extends FATServlet {
             fail("Got result " + result + " for a failed future");
         } catch (CancellationException x) {
             boolean foundInStack = false;
-            for (StackTraceElement line : x.getStackTrace())
+            for (StackTraceElement line : x.getStackTrace()) {
                 foundInStack |= "testFailureStackShowsCallerOfTimedGet".equals(line.getMethodName());
-            if (!foundInStack || x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause())
+            }
+            if (!foundInStack ||
+                x.getCause() instanceof CancellationException 
+                    ? x.getCause().getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause() // Java 23+
+                    : x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause()) { // Java 22 or earlier
                 throw x;
+            }
         }
     }
 
@@ -275,10 +292,15 @@ public class MPContextProp1_3_EE9_TestServlet extends FATServlet {
             fail("Got result " + result + " for a failed future");
         } catch (CancellationException x) {
             boolean foundInStack = false;
-            for (StackTraceElement line : x.getStackTrace())
+            for (StackTraceElement line : x.getStackTrace()) {
                 foundInStack |= "testFailureStackShowsCallerOfUntimedGet".equals(line.getMethodName());
-            if (!foundInStack || x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause())
+            }
+            if (!foundInStack ||
+                x.getCause() instanceof CancellationException 
+                    ? x.getCause().getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause() // Java 23+
+                    : x.getCause() != CANCELLATION_X_CAUSED_BY_ARRAY_X.getCause()) { // Java 22 or earlier
                 throw x;
+            }
         }
     }
 

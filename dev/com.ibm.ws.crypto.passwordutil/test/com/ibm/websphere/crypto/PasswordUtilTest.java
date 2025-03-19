@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2024 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,6 @@ import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import test.common.SharedOutputManager;
@@ -38,7 +35,7 @@ public class PasswordUtilTest {
      *
      * @throws Exception
      */
-    @BeforeClass
+    //@BeforeClass
     public static void setUpBeforeClass() throws Exception {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
@@ -49,7 +46,7 @@ public class PasswordUtilTest {
      *
      * @throws Exception
      */
-    @AfterClass
+    //@AfterClass
     public static void tearDownAfterClass() throws Exception {
         // Make stdout and stderr "normal"
         outputMgr.restoreStreams();
@@ -60,7 +57,7 @@ public class PasswordUtilTest {
      *
      * @throws Exception
      */
-    @After
+    //@After
     public void tearDown() throws Exception {
         // Clear the output generated after each method invocation
         outputMgr.resetStreams();
@@ -133,7 +130,6 @@ public class PasswordUtilTest {
 
     @Test
     public void testAESEncoding() throws Exception {
-        assertEquals("The password was not decoded correctly", "alternatepwd", PasswordUtil.decode("{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ=="));
         String encoding = PasswordUtil.encode("WebAS", "aes");
         assertTrue("The encoded password should start with {aes} " + encoding, encoding.startsWith("{aes}"));
         String encoding2 = PasswordUtil.encode("WebAS", "aes");
@@ -142,6 +138,11 @@ public class PasswordUtilTest {
         assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding));
         assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode(encoding2));
         assertEquals("The password was not decoded correctly", "WebAS", PasswordUtil.decode("{aes}AGTpzRDW//VE3Jshg1fd89rxw/JMjHfFM9UdYdVNIUt2"));
+
+        assertEquals("Did not decode password encoded with AES_V0 (AES-128) encoded password", "alternatepwd",
+                     PasswordUtil.decode("{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ=="));
+        assertEquals("Did not decode password encoded with AES_V1 (AES-256) encoded password", "alternatepwd",
+                     PasswordUtil.decode("{aes}ARABGAM7S4HrIRtZWJ229TnxuKZrrPN3dsKrrQzCQE/3U5F4zp3UrDQ+Czmnvz1kaQyN7JktDzieJxelwu077ZYET2V+7/1Gi37iztr7lY0i+j4dlHOFIi5PESnZ7V8XOmdSbH9DSgkuJaXNoEqb"));
     }
 
     @Test

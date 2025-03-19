@@ -24,7 +24,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 AlwaysPassesTest.class,
                 DB2Test.class,
                 JPATest.class,
-                SessionDatabaseTest.class
+                SessionDatabaseTest.class,
+                JakartaDataTest.class
 })
 
 public class FATSuite extends TestContainerSuite {

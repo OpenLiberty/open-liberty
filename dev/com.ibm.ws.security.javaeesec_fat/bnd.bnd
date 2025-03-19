@@ -84,4 +84,5 @@ src: \
 	com.ibm.ws.com.unboundid;version=latest,\
 	com.unboundid:unboundid-ldapsdk;version=5.1.0
 	
-	
+# Copy in FIPS keys
+ltpa.fips.enabled: true

@@ -62,6 +62,7 @@ Service-Component: \
         |org.jboss.weld.annotated.slim.unbacked\
         |org.jboss.weld.bean\
         |org.jboss.weld.bean.builtin\
+        |org.jboss.weld.bean.builtin.ee\
         |org.jboss.weld.bean.proxy.util\
         |org.jboss.weld.context.beanstore\
         |org.jboss.weld.context.conversation\
@@ -74,11 +75,3 @@ Service-Component: \
         |org.jboss.weld.manager\
         |org.jboss.weld.serialization\
         |org.jboss.weld.util.bean"
-
-Include-Resource: \
-  @${repo;org.jboss.weld:weld-osgi-bundle;[2.4.8.Final,3)}!/!META-INF/maven/*, \
-  org/jboss/weld/config=${bin}/org/jboss/weld/config, \
-  org/jboss/weld/context=${bin}/org/jboss/weld/context, \
-  org/jboss/weld/resources=${bin}/org/jboss/weld/resources, \
-  org/jboss/weld/bean/proxy=${bin}/org/jboss/weld/bean/proxy
-

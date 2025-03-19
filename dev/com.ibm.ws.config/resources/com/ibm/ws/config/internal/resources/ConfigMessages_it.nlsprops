@@ -489,5 +489,9 @@ schemagen.info.schema.file.created=CWWKG0109I: Lo schema \u00e8 stato creato nel
 schemagen.info.schema.file.created.explanation=Il comando \u00e8 stato completato correttamente.
 schemagen.info.schema.file.created.useraction=Non \u00e8 richiesta alcuna azione.
 
+error.config.root.deleted=CWWKG0110E: \u00c8 stato rilevato un aggiornamento della configurazione, ma il file server.xml non esiste. Non sono stati effettuati aggiornamenti della configurazione.
+error.config.root.deleted.explanation=Il file server.xml \u00e8 stato eliminato. Per non causare interruzioni alle applicazioni in esecuzione, non vengono apportate modifiche alla configurazione.
+error.config.root.deleted.useraction=Aggiungere il file server.xml al server.
+
 # Non-TR message
 error.invalidOCDRef=ERRORE: il PID metatipo [{0}] specifica un ID di definizione della classe oggetto inesistente [{1}]

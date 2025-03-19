@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,13 +18,14 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import tests.RerouteRecoveryTest;
+import tests.MultiRecoveryTest5;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	RerouteRecoveryTest.class,
+	MultiRecoveryTest5.class,
 })
 public class FATSuite {
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())

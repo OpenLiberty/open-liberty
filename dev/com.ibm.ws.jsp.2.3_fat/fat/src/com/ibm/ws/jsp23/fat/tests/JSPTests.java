@@ -67,6 +67,9 @@ public class JSPTests {
     private static final String OLGH20509_APP_NAME1 = "OLGH20509jar";
     private static final String OLGH20509_APP_NAME2 = "OLGH20509TDfalse";
     private static final String OLGH27779_APP_NAME = "OLGH27779";
+    private static final String PH62212_APP_NAME = "PH62212";
+    private static final String PH62212_THREADPOOL_APP_NAME = "PH62212_ThreadPool";
+    private static final String PH62212_PAGEPOOL_APP_NAME = "PH62212_PagePool";
 
     @Server("jspServer")
     public static LibertyServer server;
@@ -92,6 +95,12 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, TestEDR_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, OLGH27779_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, PH62212_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, PH62212_THREADPOOL_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, PH62212_PAGEPOOL_APP_NAME + ".war");
 
         JavaArchive jspJar = ShrinkWrap.create(JavaArchive.class, "OLGH20509Include.jar");
         jspJar = (JavaArchive) ShrinkHelper.addDirectory(jspJar, "test-applications/includejar/resources");
@@ -999,8 +1008,76 @@ public class JSPTests {
     public void testOLGH27779() throws Exception {
         this.verifyStringInResponse(OLGH27779_APP_NAME, "index.jsp", "Test Passed!");
     }
+    /*
+     *  Test to verify the following error does not occur: 
+     * "The code of method _jspService(HttpServletRequest, HttpServletResponse) is exceeding the 65535 bytes limit"
+     * 
+     * Method should be around 65518 bytes long.  (Checked via javap -v _test.class) 
+      65514: aload_3
+      65515: invokevirtual #551               // Method _jsp_performFinalCleanUp:(Ljava/util/ArrayList;Ljakarta/servlet/jsp/PageContext;)V
+      65518: return
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testPH62212() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
 
+        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, PH62212_APP_NAME, "large-jsp.jsp"));
+        WebResponse response = wc.getResponse(request);
+        
+        int status = response.getResponseCode();
+        
+        if(status != 200){
+            LOG.info("Response : " + response.getText());
+        }
+        assertEquals("Expected " + 200 + " status code was not returned!", 200, status);
+    }
 
+    /* This is with usePageTagPool enabled. Size should be around 65514 bytes long: 
+     *   65509: aload         7
+     *   65511: invokespecial #659               // Method cleanupTaglibLookup:(Ljava/util/HashMap;)V
+     *   65514: return
+     */ 
+    @Test
+    @Mode(TestMode.FULL)
+    public void testPH62212_ThreadPool() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, PH62212_THREADPOOL_APP_NAME, "large-jsp.jsp"));
+        WebResponse response = wc.getResponse(request);
+        
+        int status = response.getResponseCode();
+        
+        if(status != 200){
+            LOG.info("Response : " + response.getText());
+        }
+        assertEquals("Expected " + 200 + " status code was not returned!", 200, status);
+    }
+
+    /*
+     *   This is with useThreadTagPool enabled. Size should be around 65522 bytes long. 
+     *   65517: aload         7
+     *   65519: invokespecial #649               // Method cleanupTaglibLookup:(Ljakarta/servlet/http/HttpServletRequest;Ljava/util/HashMap;)V
+     *   65522: return
+    */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testPH62212_PagePool() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, PH62212_PAGEPOOL_APP_NAME, "large-jsp.jsp"));
+        WebResponse response = wc.getResponse(request);
+        
+        int status = response.getResponseCode();
+        
+        if(status != 200){
+            LOG.info("Response : " + response.getText());
+        }
+        assertEquals("Expected " + 200 + " status code was not returned!", 200, status);
+    }
     // Helper Methods
 
     public void makeConcurrentRequests(WebConversation wc1, WebRequest request1, int numberOfCalls) throws Exception {

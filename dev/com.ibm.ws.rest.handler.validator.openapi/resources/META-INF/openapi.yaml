@@ -549,26 +549,24 @@ components:
           resourceAdapterVersion: "104.153.185"
           resourceAdapterVendor: "OpenLiberty"
           resourceAdapterDescription: "This isn't a real resource adapter."
-          connectorSepcVersion: "1.7"
+          connectorSpecVersion: "1.7"
           eisProductName: "VeryFast Enterprise DB"
           eisProductVersion: "44.117.125"
           user: "dbuser1"
         failure:
-          errorCode: "ERR_NOT_AUTHORIZED"
-          class: "javax.resource.spi.SecurityException"
-          message: "User has insufficient privileges to access the backend data store."
+          errorCode: "ERR_RESOURCE_NOT_FOUND"
+          class: "java.io.FileNotFoundException"
+          message: "Resource adapter configuration file not found."
           stack:
-            - "org.example.lca.ConnectionImpl.createInteraction(ConnectionImpl.java:146)"
-            - "com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validateCCIConnectionFactory(ConnectionFactoryValidator.java:304)"
-            - "com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validate(ConnectionFactoryValidator.java:169)"
+            - "org.example.lca.ResourceAdapterLoader.load(ResourceAdapterLoader.java:85)"
+            - "com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validate(ConnectionFactoryValidator.java:202)"
             - "com.ibm.ws.rest.handler.validator.internal.ValidatorRestHandler.handleSingleInstance(ValidatorRestHandler:231)"
           cause:
-            class: "javax.security.auth.login.LoginException"
-            message: "unauthorized"
+            class: "java.io.IOException"
+            message: "Configuration file missing: adapter-config.xml"
             stack:
-              - "org.example.lca.AuthHelper.verifyPrivileges(AuthHelper.java:82)"
-              - "org.example.lca.ConnectionImpl.authenticate(EFConnection.java:223)"
-              - "org.example.lca.ConnectionImpl.deferredLogin(EFConnection.java:385)"
+              - "java.io.FileInputStream.<init>(FileInputStream.java:146)"
+              - "org.example.lca.ResourceAdapterLoader.loadFile(ResourceAdapterLoader.java:40)"
     validation.dataSource.result:
       type: object
       properties:
@@ -605,21 +603,20 @@ components:
           schema: "MYSCHEMA"
           user: "dbuser1"
         failure:
-          sqlState: "08004"
-          errorCode: "9409"
-          class: "java.sql.SQLInvalidAuthorizationSpecException"
-          message: "User has insufficient privileges to access database."
+          sqlState: "08001"
+          errorCode: "1017"
+          class: "java.sql.SQLNonTransientConnectionException"
+          message: "Database connection timed out."
           stack:
             - "org.example.efjdbc.EFConnection.isValid(EFConnection.java:253)"
             - "com.ibm.ws.rest.handler.validator.jdbc.DataSourceValidator(DataSourceValidator.java:129)"
             - "com.ibm.ws.rest.handler.validator.internal.ValidatorRestHandler.handleSingleInstance(ValidatorRestHandler:231)"
           cause:
-            class: "javax.security.auth.login.LoginException"
-            message: "unauthorized"
+            class: "java.net.SocketTimeoutException"
+            message: "Connection to database server timed out after 30 seconds."
             stack:
-              - "org.example.efjdbc.AuthHelper.verifyPrivileges(AuthHelper.java:82)"
-              - "org.example.efjdbc.EFConnection.authenticate(EFConnection.java:223)"
-              - "org.example.efjdbc.EFConnection.deferredLogin(EFConnection.java:385)"
+              - "java.net.SocketInputStream.read(SocketInputStream.java:141)"
+              - "org.example.efjdbc.ConnectionHelper.openConnection(ConnectionHelper.java:92)"
     validation.jms.result:
       type: object
       properties:
@@ -662,21 +659,20 @@ components:
           jmsProviderSpecVersion: "2.0"
           clientID: "MyClient"
         failure:
-          errorCode: "ERR_UNAUTHORIZED"
-          class: "javax.jms.SecurityException"
-          message: "User lacks authority to send or receive messages."
+          errorCode: "ERR_INVALID_CONFIGURATION"
+          class: "javax.jms.JMSException"
+          message: "The JMS provider is misconfigured."
           stack:
             - "org.example.am.JMSConnectionImpl.createSession(JMSConnectionImpl.java:71)"
             - "com.ibm.ws.rest.handler.validator.jms.JMSConnectionFactoryValidator.validate(JMSConnectionFactoryValidator.java:150)"
             - "com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator.validate(ConnectionFactoryValidator.java:189)"
             - "com.ibm.ws.rest.handler.validator.internal.ValidatorRestHandler.handleSingleInstance(ValidatorRestHandler:231)"
           cause:
-            class: "javax.security.auth.login.LoginException"
-            message: "unauthorized"
+            class: "java.lang.IllegalArgumentException"
+            message: "Invalid configuration property: maxConnections=-1"
             stack:
-              - "org.example.lca.AuthHelper.verifyPrivileges(AuthHelper.java:82)"
-              - "org.example.lca.ConnectionImpl.authenticate(EFConnection.java:223)"
-              - "org.example.lca.ConnectionImpl.deferredLogin(EFConnection.java:385)"
+              - "org.example.am.ConfigurationValidator.validate(ConfigurationValidator.java:30)"
+              - "org.example.am.JMSProviderConfiguration.validateConfiguration(JMSProviderConfiguration.java:45)"
     info:
       type: object
       properties:

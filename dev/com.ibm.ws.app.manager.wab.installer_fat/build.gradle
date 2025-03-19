@@ -10,10 +10,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
-dependencies {
-  requiredLibs project(':com.ibm.ws.org.apache.commons.compress')
-}
 
 task copyBundles {
   dependsOn jar

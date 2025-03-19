@@ -1,0 +1,28 @@
+<server>
+    <featureManager>
+        <feature>webProfile-8.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webApplication location="testLibFileSet.war">
+        <classloader commonLibraryRef="testCommonLib" />
+    </webApplication>
+
+    <library id="testCommonLib">
+       <!-- test of relative path to jar -->
+       <path name="libs/testLib6.jar"/>
+       <!-- test of absolute path to jar -->
+       <path name="${server.config.dir}/libs/testLib7.jar"/>
+       <!-- test of relative path to dir -->
+       <path name="libs/testLib8"/>
+       <!-- test of absolute path to dir -->
+       <path name="${server.config.dir}/libs/testLib9"/>
+       <!-- test path that does not exist -->
+       <path name="libs/DOES_NOT_EXIST"/>
+    </library>
+
+    <javaPermission codeBase="${server.config.dir}/apps/testLibFileSet.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>
+

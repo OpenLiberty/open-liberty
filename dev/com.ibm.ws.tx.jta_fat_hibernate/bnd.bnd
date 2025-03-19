@@ -28,4 +28,4 @@ tested.features:\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	org.hibernate:hibernate-core;version=5.2.17.Final
+	org.hibernate:hibernate-core;version=5.3.20.Final

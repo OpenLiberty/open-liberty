@@ -34,3 +34,6 @@ tested.features: authFilter-1.0
 	org.apache.httpcomponents:httpcore;version=4.1.2,\
 	com.ibm.ws.componenttest.2.0,\
 	com.ibm.ws.componenttest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

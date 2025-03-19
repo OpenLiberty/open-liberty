@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+/* *****************************************************************************
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * *****************************************************************************/
 package com.ibm.ws.transaction.services;
 
 import java.io.Serializable;
@@ -47,6 +47,7 @@ import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
 
 /**
@@ -402,6 +403,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
     }
 
     @Override
+    @FFDCIgnore({ SystemException.class })
     public Object getResource(String globalId) {
         TransactionWrapper tw;
         try {
@@ -465,3 +467,4 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         return null;
     }
 }
+

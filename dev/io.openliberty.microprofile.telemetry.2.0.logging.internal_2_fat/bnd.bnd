@@ -1,0 +1,81 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+        fat/src,\
+        test-applications/MpTelemetryLogApp/src
+
+
+fat.project: true
+
+tested.features=mpTelemetry-2.0,\
+  mpTelemetry-1.1,\
+  pages-3.1,\
+  checkpoint,\
+  restfulwsclient-4.0,\
+  restfulws-4.0,\
+  cdi-4.1,\
+  servlet-6.1,\
+  restfulwsclient-3.0,\
+  restfulwsclient-4.0,\
+  jaxrsclient-2.1,\
+  jaxrsclient-2.0,\
+  jaxrs-2.0,\
+  jaxrs-2.1,\
+  concurrent-2.0,\
+  mpconfig-3.0,\
+  mpconfig-2.0,\
+  mpconfig-1.3,\
+  servlet-5.0,\
+  servlet-4.0,\
+  servlet-3.1,\
+  restfulws-3.0,\
+  restfulws-4.0,\
+  jaxrs-2.1,\
+  jaxrs-2.0,\
+  cdi-3.0,\
+  cdi-4.1,\
+  cdi-2.0,\
+  cdi-1.2,\
+  jsonp-2.0,\
+  jsonp-1.1,\
+  json-1.0,\
+  expressionlanguage-6.0,\
+  expressionlanguage-4.0,\
+  expressionlanguage-3.0,\
+  pages-4.0,\
+  pages-3.0,\
+  jsp-2.3,\
+  jsp-2.2,\
+  el-3.0,\
+  appsecurity-6.0,\
+  appsecurity-5.0,\
+  appsecurity-4.0,\
+  appsecurity-3.0
+
+-buildpath: \
+	com.ibm.ws.componenttest.2.0,\
+	io.openliberty.microprofile.telemetry.internal_fat.common,\
+	io.openliberty.io.opentelemetry;version=latest,\
+	io.openliberty.io.opentelemetry.2.0;version=latest,\
+	io.openliberty.jakarta.servlet.6.1,\
+	com.ibm.wsspi.org.osgi.core;version=latest,\
+	com.ibm.ws.logging.core,\
+	org.testng,\
+	io.openliberty.jakarta.jsonp.2.1,\
+	com.ibm.ws.logging,\
+	com.ibm.websphere.javaee.servlet.3.1
+
+-sub: *.bnd

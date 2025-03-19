@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,9 +49,25 @@ J2CA8510.create.timed.out=J2CA8510E: \u010casova\u010d nelze vytvo\u0159it pro a
 J2CA8510.create.timed.out.explanation=Vytvo\u0159en\u00ed \u010dasova\u010de trv\u00e1 d\u00e9le, ne\u017e se o\u010dek\u00e1valo.
 J2CA8510.create.timed.out.useraction=Ov\u011b\u0159te, zda je syst\u00e9m velmi zat\u00ed\u017een a zva\u017ete sn\u00ed\u017een\u00ed z\u00e1t\u011b\u017ee.
 
+J2CA8511.create.timer.failed.checkpoint=J2CA8511E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il, proto\u017ee adapt\u00e9r prost\u0159edk\u016f {0} vytvo\u0159il \u010dasova\u010d.
+J2CA8511.create.timer.failed.checkpoint.explanation=Server Liberty nepodporuje adapt\u00e9ry prost\u0159edk\u016f, kter\u00e9 vytv\u00e1\u0159ej\u00ed \u010dasova\u010d, zat\u00edmco se aplikace spou\u0161t\u00ed p\u0159i po\u017eadavku na kontroln\u00ed bod serveru.
+J2CA8511.create.timer.failed.checkpoint.useraction=Nakonfigurujte kontroln\u00ed bod, aby se vyskytoval p\u0159ed spu\u0161t\u011bn\u00edm aplikace, pomoc\u00ed volby beforeAppSpustit kontroln\u00ed bod serveru.
+
+J2CA8512.create.timer.not.supported.checkpoint=J2CA8512E: B\u011bhem po\u017eadavku na kontroln\u00ed bod serveru nebylo mo\u017en\u00e9 vytvo\u0159it \u010dasova\u010d pro adapt\u00e9r prost\u0159edk\u016f {0} .
+J2CA8512.create.timer.not.supported.checkpoint.explanation=Server Liberty nepodporuje vytv\u00e1\u0159en\u00ed \u010dasova\u010d\u016f adapt\u00e9ry prost\u0159edk\u016f, zat\u00edmco se aplikace spou\u0161t\u011bj\u00ed p\u0159i po\u017eadavku na kontroln\u00ed bod serveru.
+J2CA8512.create.timer.not.supported.checkpoint.useraction=Nakonfigurujte kontroln\u00ed bod, aby se vyskytoval p\u0159ed spu\u0161t\u011bn\u00edm aplikace, pomoc\u00ed volby beforeAppSpustit kontroln\u00ed bod serveru.
+
 J2CA8600.work.start.timeout=J2CA8600E: Pr\u00e1ce {0} odeslan\u00e1 adapt\u00e9rem prost\u0159edku {1} nebyla spu\u0161t\u011bna do {2} ms.
 J2CA8600.work.start.timeout.explanation=Vypr\u0161el \u010dasov\u00fd limit pokusu o zah\u00e1jen\u00ed pr\u00e1ce.
 J2CA8600.work.start.timeout.useraction=Ov\u011b\u0159te, zda je syst\u00e9m velmi zat\u00ed\u017een a zva\u017ete sn\u00ed\u017een\u00ed z\u00e1t\u011b\u017ee, nebo kontaktujte dodavatele adapt\u00e9ru prost\u0159edku s t\u00edm, aby zv\u00e1\u017eil, zda by mohl zv\u00fd\u0161it \u010dasov\u00fd limit pr\u00e1ce pou\u017e\u00edvan\u00fd p\u0159i pr\u00e1ci se spr\u00e1vcem Work Manager JCA.
+
+J2CA8601.work.submit.failed.checkpoint=J2CA8601E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il, proto\u017ee adapt\u00e9r prost\u0159edk\u016f {0} odeslal pr\u00e1ci {1}.
+J2CA8601.work.submit.failed.checkpoint.explanation=Server Liberty nepodporuje adapt\u00e9ry prost\u0159edk\u016f, kter\u00e9 odes\u00edlaj\u00ed pr\u00e1ci p\u0159i spu\u0161t\u011bn\u00ed aplikac\u00ed, kdy\u017e je po\u017eadov\u00e1n kontroln\u00ed bod serveru.
+J2CA8601.work.submit.failed.checkpoint.useraction=Nakonfigurujte kontroln\u00ed bod, aby se vyskytoval p\u0159ed spu\u0161t\u011bn\u00edm aplikace, pomoc\u00ed volby beforeAppSpustit kontroln\u00ed bod serveru.
+
+J2CA8602.work.submit.not.supported.checkpoint=J2CA8602E: Pr\u00e1ce {0} odeslan\u00e1 adapt\u00e9rem prost\u0159edk\u016f {1} byla odm\u00edtnuta b\u011bhem po\u017eadavku na kontroln\u00ed bod serveru.
+J2CA8602.work.submit.not.supported.checkpoint.explanation=Liberty nepodporuje odes\u00edl\u00e1n\u00ed pr\u00e1ce adapt\u00e9ry prost\u0159edk\u016f, zat\u00edmco se aplikace spou\u0161t\u011bj\u00ed, kdy\u017e je po\u017eadov\u00e1n kontroln\u00ed bod serveru.
+J2CA8602.work.submit.not.supported.checkpoint.useraction=Nakonfigurujte kontroln\u00ed bod, aby se vyskytoval p\u0159ed spu\u0161t\u011bn\u00edm aplikace, pomoc\u00ed volby beforeAppSpustit kontroln\u00ed bod serveru.
 
 # 8622 deleted
 
@@ -168,6 +184,3 @@ BEAN_VALIDATION_FAILED_J2CA0238.useraction=V dokumentaci poskytovatele adapt\u00
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Archivy objekt\u016f typu bean adapt\u00e9ru prost\u0159edk\u016f nejsou podporov\u00e1ny.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Soubor beans.xml v adres\u00e1\u0159i META-INF bude ignorov\u00e1n, proto\u017ee adapt\u00e9ry prost\u0159edk\u016f archivu spravovan\u00fdch objekt\u016f typu bean CDI nejsou podporov\u00e1ny.
 BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Odeberte soubor beans.xml z adres\u00e1\u0159e META-INF, proto\u017ee adapt\u00e9ry prost\u0159edk\u016f archivu spravovan\u00fdch objekt\u016f typu bean CDI nejsou podporov\u00e1ny.
-
-
-

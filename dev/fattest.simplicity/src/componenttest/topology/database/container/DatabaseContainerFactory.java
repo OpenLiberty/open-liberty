@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,12 +13,15 @@
 package componenttest.topology.database.container;
 
 import java.io.File;
-import java.lang.reflect.Method;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
-import java.util.function.Consumer;
 
+import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.containers.MSSQLServerContainer;
+import org.testcontainers.oracle.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -32,20 +35,25 @@ import componenttest.custom.junit.runner.FATRunner;
  *
  * The {fat.bucket.db.type} property is set to different databases
  * by our test infrastructure when a fat-suite is enlisted in
- * database rotation by setting the property {fat.test.databases} to true.</br>
+ * database rotation by setting 'databaseRotation' on the tested.features property in bnd.bnd.</br>
  *
  * <br> Container Information: <br>
  * Derby: Uses a derby no-op test container <br>
  * DerbyClient: Uses a derby no-op test container <br>
  * DB2: Uses <a href="https://hub.docker.com/repository/docker/kyleaure/db2">Custom DB2 container</a> <br>
- * Oracle: Uses <a href="https://hub.docker.com/r/gvenzl/oracle-free">Offical Oracle container</a> <br>
- * Postgres: Uses <a href="https://hub.docker.com/_/postgres">Offical Postgres Container</a> <br>
+ * Oracle: Uses <a href="https://github.com/gvenzl/oci-oracle-free/pkgs/container/oracle-free">Offical Oracle container</a> <br>
+ * Postgres: Uses <a href="https://gallery.ecr.aws/docker/library/postgres">Offical Postgres Container</a> <br>
  * MS SQL Server: Uses <a href="https://hub.docker.com/_/microsoft-mssql-server">Offical Microsoft SQL Container</a> <br>
  *
  * @see DatabaseContainerType
  */
 public class DatabaseContainerFactory {
     private static final Class<DatabaseContainerFactory> c = DatabaseContainerFactory.class;
+
+    // Features in fat-metadata.json are transformed to lowercase by default
+    private static final String databaseRotationTestFeature = "databaserotation";
+
+    private static final String databaseRotationDatabaseType = "fat.bucket.db.type";
 
     /**
      * Used for <b>database rotation testing</b>.
@@ -59,7 +67,7 @@ public class DatabaseContainerFactory {
      *
      * @return                          JdbcDatabaseContainer - The test container.
      *
-     * @throws IllegalArgumentException - if database rotation {fat.test.databases} is not set or is false,
+     * @throws IllegalArgumentException - if databaseRotation is not set on tested.features,
      *                                      or database type {fat.bucket.db.type} is unsupported.
      */
     public static JdbcDatabaseContainer<?> create() throws IllegalArgumentException {
@@ -73,19 +81,29 @@ public class DatabaseContainerFactory {
      *      This should mainly be used if you want to use derby client instead of derby embedded as your default.
      */
     public static JdbcDatabaseContainer<?> create(DatabaseContainerType defaultType) throws IllegalArgumentException {
-        String dbRotation = System.getProperty("fat.test.databases");
-        String dbProperty = System.getProperty("fat.bucket.db.type", defaultType.name());
+        Path testedFeatures = new File("fat-metadata.json").toPath();
+        String dbProperty = System.getProperty(databaseRotationDatabaseType, defaultType.name());
 
-        Log.info(c, "create", "System property: fat.test.databases is " + dbRotation);
+        boolean validateDatabaseRotationFeature;
+        try {
+            validateDatabaseRotationFeature = Files.lines(testedFeatures)
+                            .filter(line -> line.contains(databaseRotationTestFeature))
+                            .count() > 0;
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to validate tested features", e);
+        }
+
+        Log.info(c, "create", "fat-metadata.json: contains databaseRoation " + validateDatabaseRotationFeature);
         Log.info(c, "create", "System property: fat.bucket.db.type is " + dbProperty);
 
-        if (!"true".equals(dbRotation)) {
-            throw new IllegalArgumentException("To use a generic database, the FAT must be opted into database rotation by setting 'fat.test.databases: true' in the FAT project's bnd.bnd file");
+        if (!validateDatabaseRotationFeature) {
+            throw new IllegalArgumentException("To use a generic database, the FAT must be opted into database rotation by setting 'tested.features: " //
+                                               + databaseRotationTestFeature + "' in the FAT project's bnd.bnd file");
         }
 
         DatabaseContainerType type = null;
         try {
-            type = DatabaseContainerType.valueOf(dbProperty);
+            type = DatabaseContainerType.valueOfAlias(dbProperty);
             Log.info(c, "create", "FOUND: database test-container type: " + type);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("No database test-container supported for " + dbProperty, e);
@@ -114,24 +132,27 @@ public class DatabaseContainerFactory {
 
             switch (dbContainerType) {
                 case DB2:
+                    Db2Container db2 = dbContainerType.cast(cont);
+
                     //Accept License agreement
-                    Method acceptDB2License = cont.getClass().getMethod("acceptLicense");
-                    acceptDB2License.invoke(cont);
+                    db2.acceptLicense();
                     //Add startup timeout since DB2 tends to take longer than the default 3 minutes on build machines.
-                    Method withStartupTimeoutDB2 = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeoutDB2.invoke(cont, getContainerTimeout(5, 15));
+                    // TODO figure out if there is a way to create a 'fast-start' image that has the database already created.
+                    db2.withStartupTimeout(getContainerTimeout(5, 35));
+
                     break;
                 case Derby:
                     break;
                 case DerbyClient:
                     break;
                 case Oracle:
+                    OracleContainer oracle = dbContainerType.cast(cont);
+
                     //Keep behavior the same as we did before by using a SID instead of pluggable db
-                    Method usingSid = cont.getClass().getMethod("usingSid");
-                    usingSid.invoke(cont);
+                    oracle.usingSid();
                     //Add startup timeout since Oracle tends to take longer than the default 3 minutes on build machines.
-                    Method withStartupTimeoutOracle = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeoutOracle.invoke(cont, getContainerTimeout(3, 25));
+                    oracle.withStartupTimeout(getContainerTimeout(3, 25));
+
                     break;
                 case Postgres:
                     //This allows postgres by default to participate in XA transactions (2PC).
@@ -140,24 +161,27 @@ public class DatabaseContainerFactory {
                     //If a test is failing that is using XA connections check to see if postgres is failing due to:
                     // ERROR: prepared transaction with identifier "???" does not exist STATEMENT: ROLLBACK PREPARED '???'
                     // then this value may need to be increased.
-                    Method withCommand = cont.getClass().getMethod("withCommand", String.class);
-                    withCommand.invoke(cont, "postgres -c max_prepared_transactions=5");
+                    PostgreSQLContainer postgre = dbContainerType.cast(cont);
+
+                    postgre.withCommand("postgres -c max_prepared_transactions=5");
+
                     break;
                 case SQLServer:
+                    MSSQLServerContainer<?> sqlserver = dbContainerType.cast(cont);
+
                     //Accept license agreement
-                    Method acceptSQLServerLicense = cont.getClass().getMethod("acceptLicense");
-                    acceptSQLServerLicense.invoke(cont);
+                    sqlserver.acceptLicense();
+
                     //Init Script
-                    Method initScript = cont.getClass().getMethod("withInitScript", String.class);
-                    initScript.invoke(cont, "init-sqlserver.sql");
+                    sqlserver.withInitScript("init-sqlserver.sql");
+
                     break;
                 default:
                     break;
             }
 
             //Allow each container to log to output.txt
-            Method withLogConsumer = cont.getClass().getMethod("withLogConsumer", Consumer.class);
-            withLogConsumer.invoke(cont, (Consumer<OutputFrame>) dbContainerType::log);
+            cont.withLogConsumer(dbContainerType::log);
 
         } catch (Exception e) {
             throw new RuntimeException("Unable to create a " + dbContainerType.name() + " TestContainer instance.", e);

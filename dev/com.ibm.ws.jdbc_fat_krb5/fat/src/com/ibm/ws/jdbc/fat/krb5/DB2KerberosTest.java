@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -64,6 +65,7 @@ public class DB2KerberosTest extends FATServletClient {
     public static LibertyServer server;
 
     private static Path krbConfPath;
+    private static Path krbKeytabPath;
 
     @ClassRule
     public static KerberosPlatformRule skipRule = new KerberosPlatformRule();
@@ -71,6 +73,10 @@ public class DB2KerberosTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
+
+        //TODO switch
+        krbKeytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab");
+//        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
 
         FATSuite.krb5.generateConf(krbConfPath);
 
@@ -85,9 +91,16 @@ public class DB2KerberosTest extends FATServletClient {
         server.addEnvVar("DB2_PASS", db2.getPassword());
         server.addEnvVar("KRB5_USER", KRB5_USER);
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
+        server.addEnvVar("KRB5_KEYTAB", krbKeytabPath.toAbsolutePath().toString());
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+
+        // TODO extract security files from container prior to server start
+        // TODO delete security files from git
+
+        // Extract keytab from container
+//        db2.copyFileFromContainer("/tmp/krb5.keytab", krbKeytabPath.toAbsolutePath().toString());
 
         server.setJvmOptions(jvmOpts);
 
@@ -219,11 +232,11 @@ public class DB2KerberosTest extends FATServletClient {
      */
     private static void generateTicketCache(String ccPath, boolean expired) throws Exception {
         final String m = "generateTicketCache";
-        String keytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab").toAbsolutePath().toString();
 
         ProcessBuilder pb = new ProcessBuilder();
         pb.environment().put("KRB5_CONFIG", krbConfPath.toAbsolutePath().toString());
-        pb.command("kinit", "-k", "-t", keytabPath, //
+        pb.environment().put("KRB5_TRACE", File.createTempFile("kinit", ".log", new File(server.getServerRoot(), "logs")).getAbsolutePath());
+        pb.command("kinit", "-k", "-t", krbKeytabPath.toAbsolutePath().toString(), //
                    "-c", "FILE:" + ccPath, //Some linux kinit installs require FILE:
                    "-l", expired ? "1" : "604800", //Ticket lifetime, if expired set the minimum of 1s, otherwise 7 days.
                    KRB5_USER + "@" + KerberosContainer.KRB5_REALM);

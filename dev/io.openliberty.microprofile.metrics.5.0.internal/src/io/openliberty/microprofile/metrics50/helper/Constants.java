@@ -103,4 +103,18 @@ public class Constants {
     public final static String DURATION = "DURATION";
     public final static String TOTAL = "TOTAL";
     public final static String GAUGE = "GAUGE";
+
+    // HTTP Metrics
+    public static final String HTTP_SERVER_REQUEST_DURATION_NAME = "http.server.request.duration";
+    public static final String HTTP_SERVER_REQUEST_DURATION_DESC = "Duration of HTTP server requests.";
+
+    // HTTP Metrics tags
+    public static final String HTTP_REQUEST_METHOD = "http_request_method";
+    public static final String URL_SCHEME = "url_scheme";
+    public static final String HTTP_RESPONSE_STATUS_CODE = "http_response_status_code";
+    public static final String HTTP_ROUTE = "http_route";
+    public static final String NETWORK_PROTOCOL_VERSION = "network_protocol_version";
+    public static final String SERVER_ADDRESS = "server_address";
+    public static final String SERVER_PORT = "server_port";
+    public static final String ERROR_TYPE = "error_type";
 }

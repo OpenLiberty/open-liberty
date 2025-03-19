@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -279,6 +279,26 @@ public class OpenAPITestUtil {
 
         assertTrue("Incorrect default value for title", title.equals(defaultTitle));
         assertTrue("Incorrect default value for version", version.equals(defaultVersion));
+    }
+
+    public static void checkInfo(JsonNode root,
+                                 String expectedTitle,
+                                 String expectedVersion,
+                                 String expectedDescription) {
+        JsonNode infoNode = root.get("info");
+        assertNotNull(infoNode);
+
+        assertNotNull("Title is not specified", infoNode.get("title"));
+        assertNotNull("Version is not specified", infoNode.get("version"));
+        assertNotNull("Description is not specified", infoNode.get("description"));
+
+        String title = infoNode.get("title").textValue();
+        String version = infoNode.get("version").textValue();
+        String description = infoNode.get("description").textValue();
+
+        assertTrue("Incorrect value for title", title.equals(expectedTitle));
+        assertTrue("Incorrect value for version", version.equals(expectedVersion));
+        assertTrue("Incorrect value for description", description.equals(expectedDescription));
     }
 
     public static void changeServerPorts(LibertyServer server,

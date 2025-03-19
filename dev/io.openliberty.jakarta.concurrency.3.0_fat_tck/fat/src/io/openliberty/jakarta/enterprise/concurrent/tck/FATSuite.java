@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -88,8 +88,7 @@ public class FATSuite {
          */
         if (TestModeFilter.FRAMEWORK_TEST_MODE != Mode.TestMode.FULL) {
             Log.info(ConcurrentTckLauncherFull.class, "createSuiteXML", "Modifying API and Spec packages to exclude specific tests for lite mode.");
-            specExcludes.addAll(Arrays.asList("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi",
-                                              "ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet"));
+            specExcludes.addAll(Arrays.asList("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi"));
         }
 
         /**
@@ -107,13 +106,14 @@ public class FATSuite {
          * This will protect us from regressions as new JDK versions are released and tested.
          */
         int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
-        if (!(javaSpecVersion == 11 || javaSpecVersion == 17)) {
+        if (!(javaSpecVersion == 11 || javaSpecVersion == 17 || javaSpecVersion == 21)) {
             Log.info(ConcurrentTckLauncherFull.class, "createSuiteXML", "Skipping Signature Tests on unsupported JDK");
             specExcludes.add("ee.jakarta.tck.concurrent.spec.signature");
         }
 
-        // Skip LastExecutionTests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/258
+        // Skip tests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/258
         apiExcludes.add("ee.jakarta.tck.concurrent.api.LastExecution");
+        specExcludes.add("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet");
 
         // Skip TriggerTests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/270
         apiExcludes.add("ee.jakarta.tck.concurrent.api.Trigger");

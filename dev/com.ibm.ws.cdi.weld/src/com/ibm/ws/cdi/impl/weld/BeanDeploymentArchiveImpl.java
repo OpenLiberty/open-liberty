@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -192,6 +192,10 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     @Override
     public Set<String> scanForBeanDefiningAnnotations(boolean includeAccessible) throws CDIException {
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "scanForBeanDefiningAnnotations [ " + getHumanReadableName() + " ] includeAccessible: " + includeAccessible);
+        }
+
         Set<String> beanDefiningAnnotations = new HashSet<String>(this.additionalBeanDefiningAnnotations);
 
         //these are the annotations directly in this BDA
@@ -219,6 +223,10 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             beanDefiningAnnotations.addAll(this.accessibleBeanDefiningAnnotations);
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "scanForBeanDefiningAnnotations [ " + getHumanReadableName() + " ] { " + beanDefiningAnnotations + " }");
+        }
+
         return beanDefiningAnnotations;
     }
 
@@ -242,7 +250,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 // If the server.xml has the configuration of enableImplicitBeanArchives sets to false, we will not scan the implicit bean archives
                 beanDiscoveryMode = BeanDiscoveryMode.NONE;
             } else if (archive.getType() == ArchiveType.RUNTIME_EXTENSION) {
-                // Runtime extensions default to none as they are extension archives (and this means that only classes explicitly returned by getBeans() will be a bean. 
+                // Runtime extensions default to none as they are extension archives (and this means that only classes explicitly returned by getBeans() will be a bean.
                 // But if another component has added a beans.xml we will honour their request.
                 beanDiscoveryMode = BeanDiscoveryMode.NONE;
             }
@@ -300,7 +308,8 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             String debugClassesString = this.beanClasses.entrySet().stream().filter(Objects::nonNull).map(entry -> entry.getKey() + " = "
-                                                                                                                   + entry.getValue().toString()).collect(Collectors.joining(", "));
+                                                                                                                   + entry.getValue().toString())
+                                                        .collect(Collectors.joining(", "));
             Tr.debug(tc, "scan [ " + getHumanReadableName() + " ] AFTER SCAN. Bean classes: { " + debugClassesString + "}");
         }
 

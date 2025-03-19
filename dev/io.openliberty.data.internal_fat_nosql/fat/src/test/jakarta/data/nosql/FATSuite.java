@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,12 +27,16 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
+                DataContainerNoSQLTest.class,
                 DataNoSQLTest.class
 })
 public class FATSuite extends TestContainerSuite {
 
+    private static final DockerImageName mongoDBImage = DockerImageName.parse("public.ecr.aws/docker/library/mongo:6.0.6")
+                    .asCompatibleSubstituteFor("mongo:6.0.6");
+
     @ClassRule
-    public static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:6.0.6"));
+    public static MongoDBContainer mongoDBContainer = new MongoDBContainer(mongoDBImage);
 
     /**
      * Pre-bucket execution setup.

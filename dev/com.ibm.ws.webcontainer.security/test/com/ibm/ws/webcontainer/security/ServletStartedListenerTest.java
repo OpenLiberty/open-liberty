@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,7 +32,6 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.webapp.WebAppConfigExtended;
@@ -54,7 +53,7 @@ public class ServletStartedListenerTest {
     @Rule
     public TestRule managerRule = outputMgr;
 
-    static final String KEY_JACC_SERVICE = "jaccService";
+    static final String KEY_WEB_JACC_SERVICE = "webJaccService";
 
     private final Mockery context = new JUnit4Mockery();
     private final Container mc = context.mock(Container.class);
@@ -62,8 +61,8 @@ public class ServletStartedListenerTest {
     private final ModuleMetaData mmd = context.mock(ModuleMetaData.class);
     private final WebAppConfigExtended wac = context.mock(WebAppConfigExtended.class);
     @SuppressWarnings("unchecked")
-    private final ServiceReference<JaccService> jsr = context.mock(ServiceReference.class, "jaccServiceRef");
-    private final JaccService js = context.mock(JaccService.class);
+    private final ServiceReference<WebJaccService> jsr = context.mock(ServiceReference.class, "jaccServiceRef");
+    private final WebJaccService js = context.mock(WebJaccService.class);
     private final ComponentContext cc = context.mock(ComponentContext.class);
     private final Iterator it = context.mock(Iterator.class);
     @SuppressWarnings("rawtypes")
@@ -124,7 +123,7 @@ public class ServletStartedListenerTest {
                     will(returnValue(APP_NAME));
                     one(wac).getModuleName();
                     will(returnValue(MODULE_NAME));
-                    one(cc).locateService("jaccService", jsr);
+                    one(cc).locateService("webJaccService", jsr);
                     will(returnValue(js));
                     one(js).propagateWebConstraints(APP_NAME, MODULE_NAME, wac);
                 }
@@ -136,14 +135,14 @@ public class ServletStartedListenerTest {
             fail("An exception is caught." + e);
         }
         ServletStartedListener ssl = new ServletStartedListener();
-        ssl.setJaccService(jsr);
+        ssl.setWebJaccService(jsr);
         ssl.activate(cc);
 
         ssl.starting(mc);
         ssl.started(mc);
 
         ssl.deactivate(cc);
-        ssl.unsetJaccService(jsr);
+        ssl.unsetWebJaccService(jsr);
 
         context.assertIsSatisfied();
     }

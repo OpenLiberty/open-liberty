@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2008 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -225,8 +225,9 @@ ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: UseFIPS \u00e8 abilitato, ma la
 ssl.config.not.using.fips.CWPKI0049W.explanation=Sebbene UseFIPS sia stato abilitato, non \u00e8 possibile utilizzare gli algoritmi crittografici approvati da FIPS perch\u00e9 la configurazione SSL non utilizza un provider JSSE approvato da FIPS.
 ssl.config.not.using.fips.CWPKI0049W.useraction=Per garantire l'utilizzo degli algoritmi crittografici approvati da FIPS, modificare la configurazione SSL in modo da utilizzare un provider JSSE approvato da FIPS.
 # -------------------------------------------------------------------------------------------------
-
-
+ssl.san.warning.CWPKI0050W=CWPKI0050W: Il certificato con l''alias {0} del {1} keyStore non ha un nome alternativo di soggetto. La verifica di HostName non viene applicata per la comunicazione collettiva serverIdentity tra controllore, replica e membro SSL.
+ssl.san.warning.CWPKI0050W.explanation=Il certificato predefinito serverIdentity non ha un nome alternativo di soggetto nel keyStore. Il controllo di verifica hostName viene saltato per i certificati serverIdentity
+ssl.san.warning.CWPKI0050W.useraction=Aprire il keyStore e controllare il nome alternativo del soggetto su tutti i certificati presenti nel keyStore. Usare i comandi genKey e genKeyController per generare nuovi certificati per abilitare la verifica dell'hostname.
 ################################################################################
 # Range 100-110 reserved for TrustManager Prompt
 ################################################################################
@@ -633,9 +634,13 @@ ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: ERRORE HANDSHAKE SSL:  Un firm
 ssl.client.handshake.error.CWPKI0823E.explanation=Si \u00e8 verificato un errore durante l'handshake SSL.  Potrebbe essere necessaria un'esportazione/importazione del firmatario dall'host di destinazione al TrustStore del client.
 ssl.client.handshake.error.CWPKI0823E.useraction=Esaminare il messaggio di errore esteso da TrustManager per determinare le modifiche da effettuare tra la configurazione SSL di destinazione e la configurazione SSL client.
 # -------------------------------------------------------------------------------------------------
-ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: ERRORE HANDSHAKE SSL: errore di verifica del nome host durante la connessione all''host [{0}].  Il nome host utilizzato per accedere al server non corrisponde alle informazioni DN soggetto o Nome alternativo soggetto del certificato server.  Il messaggio di errore esteso proveniente dall''eccezione handshake SSL \u00e8: [{1}].
-ssl.client.handshake.error.CWPKI0824E.explanation=Si \u00e8 verificato un errore durante l'handshake SSL.  La verifica del nome host \u00e8 abilitata e l'identit\u00e0 del server non pu\u00f2 essere verificata.  Il nome host utilizzato per accedere al server non corrisponde alle informazioni DN soggetto o Nome alternativo soggetto del certificato server.
+ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: ERRORE HANDSHAKE SSL: errore di verifica del nome host durante la connessione all''host [{0}].  Il nome host utilizzato per accedere al server non corrisponde al certificato del server [{1}].  Il messaggio di errore esteso dell''eccezione di handshake SSL \u00e8: [{2}].
+ssl.client.handshake.error.CWPKI0824E.explanation=Si \u00e8 verificato un errore durante l'handshake SSL.  La verifica del nome host \u00e8 abilitata e l'identit\u00e0 del server non pu\u00f2 essere verificata.  Il nome host utilizzato per accedere al server non corrisponde alle informazioni del Subject Alternative Name del certificato del server o SubjectDN .
 ssl.client.handshake.error.CWPKI0824E.useraction=Quando la verifica del nome host \u00e8 abilitata, il server a cui si accede deve essere configurato con un certificato contenente le informazioni corrette necessarie per verificare l'identit\u00e0 del server.
+# -------------------------------------------------------------------------------------------------
+ssl.hnv.disabled.warning.CWPKI0063W=CWPKI0063W: La verifica dell''hostname \u00e8 disabilitata per {0}. Le connessioni TLS/SSL non controllano l''identit\u00e0 del server per verificare che il client stia comunicando con il server corretto.
+ssl.hnv.disabled.warning.CWPKI0063W.explanation=La verifica dell'hostname deve essere attivata per garantire che l'hostname nell'URL a cui il client si connette corrisponda all'hostname nel certificato che il server invia durante la comunicazione TLS/SSL.
+ssl.hnv.disabled.warning.CWPKI0063W.useraction=Abilitare la verifica dell'hostname impostando la propriet\u00e0 personalizzata di sicurezza com.ibm.ssl.verifyHostname su true.
 # -------------------------------------------------------------------------------------------------
 ssl.cacerts.error.CWPKI0825W=CWPKI0825W: L''attributo trustDefaultCerts \u00e8 abilitato ma il truststore predefinito non \u00e8 stato inizializzato. Poich\u00e9 il truststore predefinito non \u00e8 stato inizializzato, viene utilizzato solo quello configurato dalla configurazione SSL {0}. L''eccezione restituita \u00e8: {1}. 
 ssl.cacerts.error.CWPKI0825W.explanation=Il truststore predefinito non \u00e8 stato inizializzato perch\u00e9 non \u00e8 stato possibile richiamarlo dal gestore di trust. Il truststore predefinito non \u00e8 utilizzato per il trust. Viene utilizzata solo la configurazione SSL configurata.

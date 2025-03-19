@@ -1,6 +1,7 @@
 <server>
     <featureManager>
         <feature>jsp-2.3</feature>
+        <feature>servlet-3.1</feature>
         <!--  <feature>globalWebservicesHandler-1.0</feature> -->
     </featureManager>
 

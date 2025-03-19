@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@ public class MultiThreaded {
 		try {
 			xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(
 						xaResInfo1);
-			final int recoveryId1 = TM.registerResourceInfo("xaResInfo1",
+			final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo1);
 			result1 = TM.enlist(xaRes1, recoveryId1);
 		} catch (Exception e) {

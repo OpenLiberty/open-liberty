@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ apply from: '../wlp-gradle/subprojects/fat.gradle'
 
 dependencies {
   requiredLibs project(':io.openliberty.org.apache.commons.codec'),
-				project(':io.openliberty.org.apache.commons.logging'),
 				'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
 				'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
 				'net.sourceforge.htmlunit:htmlunit:2.44.0',

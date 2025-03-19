@@ -84,9 +84,11 @@ public class FeatureList {
 
     public static synchronized void reset() throws IOException {
         Log.info(c, "reset", "Removing existing " + FAT_FEATURE_LIST);
-        if (featureList != null)
-            if (!featureList.delete())
-                throw new IOException("Unable to delete old " + FAT_FEATURE_LIST + " at: " + featureList.getAbsolutePath());
+        if (featureList != null) {
+            if (featureList.exists() && !featureList.delete()) {
+                throw new IOException("Failed to delete " + FAT_FEATURE_LIST + " at: " + featureList.getAbsolutePath());
+            }
+        }
         featureList = null;
     }
 }

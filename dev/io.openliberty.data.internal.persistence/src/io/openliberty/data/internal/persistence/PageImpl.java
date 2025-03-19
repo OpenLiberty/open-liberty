@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,12 +26,15 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
+import jakarta.data.page.PageRequest.Mode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 /**
+ * A page of results.
  */
 public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
@@ -41,16 +46,27 @@ public class PageImpl<T> implements Page<T> {
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
+    @Trivial
     PageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
-        this.queryInfo = queryInfo;
-        this.pageRequest = pageRequest == null ? PageRequest.ofSize(100) : pageRequest;
-        this.args = args;
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(tc, "<init>", queryInfo, pageRequest, queryInfo.loggable(args));
 
-        // BasicRepository.findAll(PageRequest, Order) requires NullPointerException when PageRequest is null.
-        // TODO Should this apply in general?
-        if (pageRequest == null && queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 2
-            && PageRequest.class.equals(queryInfo.method.getParameterTypes()[0]))
-            throw new NullPointerException("PageRequest: null");
+        if (pageRequest == null)
+            queryInfo.missingPageRequest();
+
+        if (pageRequest.mode() != Mode.OFFSET)
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1035.incompat.page.mode",
+                      Mode.OFFSET,
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      CursoredPage.class.getName());
+
+        this.queryInfo = queryInfo;
+        this.pageRequest = pageRequest;
+        this.args = args;
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
@@ -59,15 +75,18 @@ public class PageImpl<T> implements Page<T> {
             queryInfo.setParameters(query, args);
 
             int maxPageSize = pageRequest.size();
-            query.setFirstResult(RepositoryImpl.computeOffset(pageRequest));
+            query.setFirstResult(queryInfo.computeOffset(pageRequest));
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
 
             results = query.getResultList();
         } catch (Exception x) {
-            throw RepositoryImpl.failure(x);
+            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
         } finally {
             em.close();
         }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "<init>");
     }
 
     /**
@@ -79,12 +98,14 @@ public class PageImpl<T> implements Page<T> {
     @FFDCIgnore(Exception.class)
     private long countTotalElements() {
         if (!pageRequest.requestTotal())
-            throw new IllegalStateException("A total count of elements and pages is not retreived from the database because the " +
-                                            pageRequest + " page request specifies a value of 'false' for 'requestTotal'. " +
-                                            "To request a page with the total count included, use the " +
-                                            "PageRequest.withTotal method instead of the PageRequest.withoutTotal method."); // TODO NLS
+            throw exc(IllegalStateException.class,
+                      "CWWKD1042.no.totals",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      pageRequest);
 
-        if (pageRequest.page() == 1L && results.size() <= pageRequest.size() && pageRequest.size() < Integer.MAX_VALUE)
+        if (pageRequest.page() == 1L && results.size() <= pageRequest.size() &&
+            pageRequest.size() < Integer.MAX_VALUE)
             return results.size();
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
@@ -96,17 +117,22 @@ public class PageImpl<T> implements Page<T> {
 
             return query.getSingleResult();
         } catch (Exception x) {
-            throw RepositoryImpl.failure(x);
+            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
         } finally {
             em.close();
         }
     }
 
     @Override
+    @Trivial
     public List<T> content() {
         int size = results.size();
         int max = pageRequest.size();
-        return size > max ? new ResultList(max) : results;
+        List<T> content = size > max ? new ResultList(max) : results;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "content", queryInfo.loggable(content));
+        return content;
     }
 
     @Override
@@ -154,23 +180,55 @@ public class PageImpl<T> implements Page<T> {
         if (hasNext())
             return PageRequest.ofPage(pageRequest.page() + 1, pageRequest.size(), pageRequest.requestTotal());
         else
-            throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
-                                             "true result of Page.hasNext before attempting this method."); // TODO NLS
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1040.no.next.page",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      "Page.hasNext");
     }
 
     @Override
     public PageRequest previousPageRequest() {
         if (pageRequest.page() > 1)
-            return PageRequest.ofPage(pageRequest.page() - 2, pageRequest.size(), pageRequest.requestTotal());
+            return PageRequest.ofPage(pageRequest.page() - 1, pageRequest.size(), pageRequest.requestTotal());
         else
-            throw new NoSuchElementException("Cannot request a page number prior to " + pageRequest.page() +
-                                             ". To avoid this error, check for a true result of Page.hasPrevious " +
-                                             "before attempting this method."); // TODO NLS
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1038.no.prev.offset.page",
+                      pageRequest.page(),
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName());
     }
 
     @Override
     public Stream<T> stream() {
         return content().stream();
+    }
+
+    /**
+     * Convert to readable text of the form:
+     *
+     * Page 4/10 of MyEntity, size 10/10 @ff22b3c5
+     *
+     * @return textual representation of the page.
+     */
+    @Override
+    @Trivial
+    public String toString() {
+        int maxPageSize = pageRequest.size();
+        int size = Math.min(results.size(), maxPageSize);
+        StringBuilder s = new StringBuilder(80) //
+                        .append("Page ").append(pageRequest.page());
+        if (totalElements >= 0) {
+            s.append('/');
+            s.append(totalElements / maxPageSize + (totalElements % maxPageSize > 0 ? 1 : 0));
+        }
+        if (!results.isEmpty()) {
+            s.append(" of ").append(results.get(0).getClass().getSimpleName());
+        }
+        s.append(", size ").append(size);
+        s.append('/').append(maxPageSize);
+        s.append(" @").append(Integer.toHexString(hashCode()));
+        return s.toString();
     }
 
     @Override

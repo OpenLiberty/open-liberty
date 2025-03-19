@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -95,9 +95,9 @@ public class LogViewerExec {
         assertTrue("Failed assertion that HPEL is enabled", CommonTasks.isHpelEnabled(server));
 
         // Liberty profile root is the install root.
-        rProfRootDir = new RemoteFile(server.getMachine(), server.getInstallRoot());
-//        rProfRootDir = new RemoteFile(HpelSetup.getNodeUnderTest().getMachine(), HpelSetup.getNodeUnderTest().getProfileDir());
-        rProfBinFile = new RemoteFile(server.getMachine(), rProfRootDir, "bin");
+        rProfRootDir = server.getMachine().getFile(server.getInstallRoot());
+//        rProfRootDir = HpelSetup.getNodeUnderTest().getMachine().getFile(HpelSetup.getNodeUnderTest().getProfileDir());
+        rProfBinFile = server.getMachine().getFile(rProfRootDir, "bin");
 
     }
 
@@ -152,7 +152,7 @@ public class LogViewerExec {
     public void testLogViewerExecutes() throws Exception {
         // need to have messages for the logViewer to process.
         CommonTasks.createLogEntries(server, LogViewerExec.class.getName(), "Some Msg goes here", null, 25, CommonTasks.LOGS, -1);
-        rOutLog = new RemoteFile(server.getMachine(), server.getMachine().getTempDir(), outFileName);
+        rOutLog = server.getMachine().getFile(server.getMachine().getTempDir(), outFileName);
 
         CommonTasks.writeLogMsg(Level.INFO, "executing logViewer on " + server.getServerName());
 
@@ -179,8 +179,8 @@ public class LogViewerExec {
         // pull the resulting text based log over to test machine.
         Props props = Props.getInstance();
         CommonTasks.writeLogMsg(Level.INFO, "Pulling logViewer output file ( " + outFileName + " ) to results dir");
-        RemoteFile lResultsDir = new RemoteFile(Machine.getLocalMachine(), props.getFileProperty(Props.DIR_LOG).getCanonicalPath());
-        RemoteFile lOutLog = new RemoteFile(Machine.getLocalMachine(), lResultsDir, outFileName);
+        RemoteFile lResultsDir = Machine.getLocalMachine().getFile(props.getFileProperty(Props.DIR_LOG).getCanonicalPath());
+        RemoteFile lOutLog = Machine.getLocalMachine().getFile(lResultsDir, outFileName);
 
         lOutLog.copyFromSource(rOutLog, true); // Even though file is text we are getting transfer exceptions that
         // appear to be because logViewer output is UTF8 or contains other

@@ -23,7 +23,8 @@ javac.source: 11
 javac.target: 11
 
 tested.features: connectors-2.1,\
-                 xmlbinding-4.0,\ noship-1.0,\
+                 xmlbinding-4.0,\
+                 noship-1.0,\
                  cdi-4.1,\
                  servlet-6.1
     
@@ -34,5 +35,6 @@ fat.project: true
 	io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
-	com.ibm.ws.componenttest.2.0;version=latest
+	com.ibm.ws.componenttest.2.0;version=latest,\
+	io.openliberty.jakarta.interceptor.2.1
 

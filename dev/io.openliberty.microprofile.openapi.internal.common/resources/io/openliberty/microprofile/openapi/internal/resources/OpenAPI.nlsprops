@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -130,3 +130,46 @@ OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Ensure the OpenAPI Path contains
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Path segment "/." or "/.." is invalid for OpenAPI endpoints.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=OpenAPI path segment "/." or "/.." is invalid.
 OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Remove any path "/." or "/.." segment from the path.
+
+# {1} - the server.xml element name, either includeApplication or excludeApplication
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W=CWWKO1678W: The configured {0} application name in the {1} element is not valid because it contains the "/" character or is empty.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.explanation=An application cannot name cannot include a "/" as the "/" is used to separate the application from its component modules.
+OPEN_API_SLASH_IN_APPLICATION_CWWKO1678W.useraction=Remove the "/" from the includeApplication or excludeApplication element in your server.xml file, or convert that element to includeModule or excludeModule to reference a single module.
+
+# {1} - the server.xml element name, either includeModule or excludeModule
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W=CWWKO1679W: The configured {0} module name in the {1} element is not valid as it is not in the format "<application-name>/<module-name>".
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.explanation=A module must be in the format "<application-name>/<module-name>"; therefore, a module name without a forward slash ("/") , or an empty application name or module name, is not valid.
+OPEN_API_SLASH_IN_MODULE_CWWKO1679W.useraction=Correct the includeModule or excludeModule element in your server.xml file, or convert that element to includeApplication or excludeApplication to reference an entire application.
+
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W=CWWKO1680W: The {1} application name in the {0} configuration element does not match the name of any deployed application, but it matches either the name from the deployment descriptor or the archive name of the {2} application. The application name that is used here must be the one specified in the server.xml file, or if no name is specified, the archive file name without the extension.
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.explanation=The application name reference in the mpOpenAPI configuration element matches the name from an application deployment descriptor, but does not match any application name that is defined in the server.xml file.
+OPENAPI_USING_WRONG_NAME_SOURCE_CWWKO1680W.useraction=Check that all applications started correctly and that the names in the configuration element are specified correctly.
+
+OPENAPI_VERSION_INVALID_CWWK06181W=CWWKO1681W: The configured {0} OpenAPI version is not in a valid format, it must be either two or three numbers that are separated by a period (.) character. The supported values are {1}. The default version of {2} is used instead.
+OPENAPI_VERSION_INVALID_CWWK06181W.explanation=The openAPIVersion attribute of the mpOpenAPI configuration element is set to a value that is not a valid OpenAPI version.
+OPENAPI_VERSION_INVALID_CWWK06181W.useraction=Update the openAPIVersion attribute to one of the supported values from the error message.
+
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W=CWWKO1682W: This version of mpOpenAPI does not support the configured {0} OpenAPI version. The supported values are {1}. The default version of {2} is used instead.
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.explanation=The openAPIVersion attribute of the mpOpenAPI configuration element is set to an OpenAPI version that is not supported by the running version of the mpOpenAPI feature.
+OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Update the openAPIVersion attribute to one of the supported values from the error message, or use a version of the mpOpenAPI feature that supports the configured OpenAPI version.
+
+# "mpOpenAPI", "info", "title" and "version" are names in server.xml and should not be translated
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: The mpOpenAPI info configuration element in the server.xml file is invalid. Both the title and version attributes must be set. The info element will be ignored.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=The title and version fields are required properties in the info object of an OpenAPI document. When configuring the info object, a value must be provided for the title and version attributes.
+OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Ensure that the title and version attributes are set to valid values in the mpOpenAPI info element.
+
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: The {0} configuration element includes "{1}" but that does not match any deployed application or web module.
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=The server is configured to create OpenAPI documentation for the application or module name, but no application or web module with that name was deployed.
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=Check that all applications started correctly and that the names in the configuration are specified correctly.
+
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I=CWWKO1685I: The {0} MicroProfile Config property is ignored because equivalent configuration is provided in the server.xml file.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.explanation=When this property is set and the same function is configured by using the server.xml file, the configuration in the server.xml file is used and the MicroProfile Config property is ignored.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.useraction=Remove the MicroProfile Config property.
+
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W=CWWKO1686W: The {0} MicroProfile Config property is ignored because conflicting configuration is provided in the server.xml file.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.explanation=When this property is set and the same function is configured by using the server.xml file, the configuration in the server.xml file is used and the MicroProfile Config property is ignored.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Remove the MicroProfile Config property and make sure that the configuration in the server.xml file is correct.
+
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: The {0} annotation element in the {1} class is ignored because it requires OpenAPI version {2} but the current OpenAPI version is {3}.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=The annotation element relates to a feature added to a newer version of the OpenAPI specification than the one configured. The OpenAPI version in use cannot represent this information, so it is excluded from the produced OpenAPI documentation.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Consider removing the annotation element or setting the openAPIVersion configuration element to a version which supports it in the server.xml file.

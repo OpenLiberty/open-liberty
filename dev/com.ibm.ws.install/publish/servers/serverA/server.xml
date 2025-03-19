@@ -3,6 +3,7 @@
 
     <!-- Enable features -->
     <featureManager>
+		<platform>jakartaee-10.0</platform>
         <feature>genericCoreFeature</feature>
 		<feature>featureA-1.0</feature>
 		<feature>featureB-1.0</feature>

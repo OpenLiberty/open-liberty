@@ -1,16 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+/* =============================================================================
+ * Copyright (c) 2012,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * =============================================================================
+ */
 package com.ibm.ws.sib.mfp.impl;
+
+import static com.ibm.ws.sib.mfp.JmsBodyType.getJmsBodyType;
 
 import java.util.HashSet;
 import java.util.List;
@@ -110,7 +113,7 @@ class JsJmsMessageImpl extends JsApiMessageImpl implements JsJmsMessage {
 
         /* Set the JMS message fields */
         setJsMessageType(MessageType.JMS);
-        setSubtype(JmsBodyType.NULL_INT);
+        setSubtype(JmsBodyType.NULL.toInt());
 
         /* Set some of the JMS specific header values unless flagged not to */
         /* For an Inbound MQ message the fields will be set by the */
@@ -319,8 +322,7 @@ class JsJmsMessageImpl extends JsApiMessageImpl implements JsJmsMessage {
     @Override
     public final JmsBodyType getBodyType() {
         /* Get the subtype and get the corresponding JmsBodyType to return */
-        int bType = getSubtype();
-        return JmsBodyType.getJmsBodyType(Byte.valueOf((byte) bType));
+        return getJmsBodyType(getSubtype());
     }
 
     /* ************************************************************************* */

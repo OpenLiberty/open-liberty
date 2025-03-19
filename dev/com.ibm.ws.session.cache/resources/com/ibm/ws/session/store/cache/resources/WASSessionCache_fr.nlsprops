@@ -69,6 +69,10 @@ CONFIG_ATTRIBUTE_IGNORED=SESN0311W : L''attribut de configuration {0} a \u00e9t\
 CONFIG_ATTRIBUTE_IGNORED.explanation=La configuration sp\u00e9cifi\u00e9e est ignor\u00e9e car elle est fournie par l'attribut cacheManagerRef sp\u00e9cifi\u00e9.
 CONFIG_ATTRIBUTE_IGNORED.useraction=Aucune action n'est requise.
 
+UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: L''attribut de configuration du cache de session HTTP {0} a \u00e9t\u00e9 modifi\u00e9 depuis le point de contr\u00f4le du serveur. Si la valeur de l''attribut est modifi\u00e9e apr\u00e8s le point de contr\u00f4le du serveur, mais avant la restauration du processus serveur, l''application n''utilise pas la valeur mise \u00e0 jour.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=L'attribut de configuration sp\u00e9cifi\u00e9 ne peut pas \u00eatre modifi\u00e9 entre le point de contr\u00f4le du serveur et la restauration du processus serveur.
+UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=D\u00e9finissez la valeur de l'attribut avant d'effectuer le point de contr\u00f4le du serveur.
+
 INTERNAL_SERVER_ERROR=Erreur de serveur interne
 
 SESSION_CACHE_CONFIG_MESSAGE=V\u00e9rifiez que la configuration du serveur contient une configuration httpSessionCache valide. Reportez-vous \u00e0 l''exemple de configuration. {0}

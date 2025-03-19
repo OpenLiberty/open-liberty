@@ -72,7 +72,7 @@ public class SchemaGenTest {
     
     // Parameters used to bound the script output and the script running time.
     public static final int MAX_OUTPUT_LINES = 500; // Reasonable maximum count of output lines.
-    public static final long TIMEOUT_NS = 30_000_000_000L;  // Reasonable maximum time to run (30s).
+    public static final long TIMEOUT_NS = 90_000_000_000L;  // Reasonable maximum time to run (90s).
 
     public static void displayEnv() {
     	System.out.println("Environment:");

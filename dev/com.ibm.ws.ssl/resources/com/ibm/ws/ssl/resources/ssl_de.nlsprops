@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2008 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -225,8 +225,9 @@ ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: UseFIPS ist aktiviert, aber die
 ssl.config.not.using.fips.CWPKI0049W.explanation=Obwohl UseFIPS aktiviert ist, k\u00f6nnen die FIPS-konformen Verschl\u00fcsselungsalgorithmen nicht verwendet werden, weil die SSL-Konfiguration keinen FIPS-konformen JSSE-Provider verwendet.
 ssl.config.not.using.fips.CWPKI0049W.useraction=Um die Verwendung FIPS-konformer Verschl\u00fcsselungsalgorithmen sicherzustellen, \u00e4ndern Sie die SSL-Konfiguration so, dass ein FIPS-konformer JSSE-Provider verwendet wird.
 # -------------------------------------------------------------------------------------------------
-
-
+ssl.san.warning.CWPKI0050W=CWPKI0050W: Das Zertifikat mit dem {0}-Alias aus dem {1} keyStore hat keinen alternativen Namen f\u00fcr den Betreff. HostName \u00dcberpr\u00fcfung wird f\u00fcr serverIdentity kollektive Controller-, Replica- und Member-SSL-Kommunikation nicht erzwungen.
+ssl.san.warning.CWPKI0050W.explanation=Das Standardzertifikat serverIdentity hat keinen alternativen Subjektnamen im keyStore. Die hostName-\u00dcberpr\u00fcfung wird f\u00fcr serverIdentity-Zertifikate \u00fcbersprungen
+ssl.san.warning.CWPKI0050W.useraction=\u00d6ffnen Sie den keyStore und \u00fcberpr\u00fcfen Sie den alternativen Namen des Betreffs f\u00fcr alle Zertifikate im keyStore. Verwenden Sie die Befehle genKey und genKeyController, um neue Zertifikate zu generieren und die Hostnamen\u00fcberpr\u00fcfung zu aktivieren.
 ################################################################################
 # Range 100-110 reserved for TrustManager Prompt
 ################################################################################
@@ -633,9 +634,13 @@ ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: FEHLER BEIM SSL-HANDSHAKE: Es 
 ssl.client.handshake.error.CWPKI0823E.explanation=Es ist ein Fehler w\u00e4hrend des SSL-Handshake aufgetreten. Es ist m\u00f6glicherweise ein Export/Import des Unterzeichners vom Zielhost in den Client-Truststore erforderlich.
 ssl.client.handshake.error.CWPKI0823E.useraction=Lesen Sie die erweiterte Nachricht des Trust Manager, um festzustellen, welche \u00c4nderungen zwischen SSL-Zielkonfiguration und SSL-Clientkonfiguration vorgenommen werden m\u00fcssen.
 # -------------------------------------------------------------------------------------------------
-ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: FEHLER BEIM SSL-HANDSHAKE: Fehler bei der \u00dcberpr\u00fcfung des Hostnamens bei dem Versuch, eine Verbindung zum Host [{0}] herzustellen. Der Hostname, der f\u00fcr den Zugriff auf den Server verwendet wurde, stimmt nicht mit den Informationen im registrierter Namen des Zertifikatsinhabers des Serverzertifikats oder dem zugeh\u00f6rigen alternativen Namen \u00fcberein. Die erweiterte Fehlernachricht aus der SSL-Handshake-Ausnahme lautet wie folgt: [{1}].
-ssl.client.handshake.error.CWPKI0824E.explanation=Es ist ein Fehler w\u00e4hrend des SSL-Handshake aufgetreten. Die \u00dcberpr\u00fcfung des Hostnamens ist aktiviert und die die Serveridentit\u00e4t kann nicht \u00fcberpr\u00fcft werden. Der Hostname, der f\u00fcr den Zugriff auf den Server verwendet wurde, stimmt nicht mit den Informationen im registrierter Namen des Zertifikatsinhabers des Serverzertifikats oder dem zugeh\u00f6rigen alternativen Namen \u00fcberein.
+ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: FEHLER BEIM SSL-HANDSHAKE: Fehler bei der \u00dcberpr\u00fcfung des Hostnamens bei dem Versuch, eine Verbindung zum Host [{0}] herzustellen.  Der f\u00fcr den Zugriff auf den Server verwendete Hostname stimmt nicht mit dem des Serverzertifikats [{1}] \u00fcberein.  Die erweiterte Fehlermeldung der SSL-Handshake-Ausnahme lautet: [{2}].
+ssl.client.handshake.error.CWPKI0824E.explanation=Es ist ein Fehler w\u00e4hrend des SSL-Handshake aufgetreten.  Die \u00dcberpr\u00fcfung des Hostnamens ist aktiviert und die die Serveridentit\u00e4t kann nicht \u00fcberpr\u00fcft werden.  Der f\u00fcr den Zugriff auf den Server verwendete Hostname stimmt nicht mit den Subject Alternative Name-Informationen des Serverzertifikats oder SubjectDN \u00fcberein.
 ssl.client.handshake.error.CWPKI0824E.useraction=Wenn die \u00dcberpr\u00fcfung des Hostnamens aktiviert ist, muss der Server, auf den zugegriffen wird, ein Zertifikat mit den ordnungsgem\u00e4\u00dfen Informationen konfiguriert sein, die erforderlich sind, um die Identit\u00e4t des Servers \u00fcberpr\u00fcfen zu k\u00f6nnen.
+# -------------------------------------------------------------------------------------------------
+ssl.hnv.disabled.warning.CWPKI0063W=CWPKI0063W: Die \u00dcberpr\u00fcfung des Hostnamens ist f\u00fcr {0} deaktiviert. Bei TLS/SSL-Verbindungen wird die Identit\u00e4t des Servers nicht \u00fcberpr\u00fcft, um sicherzustellen, dass der Client mit dem richtigen Server kommuniziert.
+ssl.hnv.disabled.warning.CWPKI0063W.explanation=Die \u00dcberpr\u00fcfung des Hostnamens muss aktiviert sein, um sicherzustellen, dass der Hostname in der URL, mit der sich der Client verbindet, mit dem Hostnamen im Zertifikat \u00fcbereinstimmt, das der Server w\u00e4hrend der TLS/SSL-Kommunikation zur\u00fccksendet.
+ssl.hnv.disabled.warning.CWPKI0063W.useraction=Aktivieren Sie die Hostnamen\u00fcberpr\u00fcfung, indem Sie die benutzerdefinierte Sicherheitseigenschaft com.ibm.ssl.verifyHostname auf true setzen.
 # -------------------------------------------------------------------------------------------------
 ssl.cacerts.error.CWPKI0825W=CWPKI0825W: Das Attribut trustDefaultCerts ist aktiviert, aber der Standardtruststore konnte nicht initialisiert werden. Da der Standardtruststore nicht initialisiert wurde, wird nur der Truststore verwendet, der mit der {0}-SSL-Konfiguration konfiguriert wurde. Die zur\u00fcckgegebene Ausnahme ist: {1}. 
 ssl.cacerts.error.CWPKI0825W.explanation=Der Standardtruststore wurde nicht initialisiert, weil er nicht aus dem Trust-Manager abgerufen werden konnte. Der Standardtruststore wird nicht zum Herstellen einer Vertrauensbeziehung verwendet. Es wird nur die konfigurierte SSL-Konfiguration verwendet.

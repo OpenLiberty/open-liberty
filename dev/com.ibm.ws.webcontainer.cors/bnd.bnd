@@ -51,9 +51,7 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/cors/internal/resources/*.cl
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.transport.http,\
-	com.ibm.ws.kernel.boot.core;version=latest,\
-	com.ibm.ws.kernel.security.thread;version=latest
+	com.ibm.ws.transport.http
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
+import com.ibm.ws.cdi.annotations.fat.apps.abstractDecorator.AbstractDecoratorServlet;
 import com.ibm.ws.cdi.annotations.fat.apps.defaultDecorator.DefaultDecoratorServlet;
 import com.ibm.ws.cdi.annotations.fat.apps.dependentScopedProducer.AppScopedMethodServlet;
 import com.ibm.ws.cdi.annotations.fat.apps.dependentScopedProducer.AppScopedSteryotypedServlet;
@@ -60,6 +61,7 @@ public class AnnotationsTests extends FATServletClient {
     public static final String DEFAULT_DECORATOR_APP_NAME = "defaultDecoratorApp";
     public static final String GLOBAL_PRIORITY_APP_NAME = "globalPriorityWebApp";
     public static final String WITH_ANNOTATIONS_APP_NAME = "withAnnotationsApp";
+    public static final String ABSTRACT_DECORATOR_APP_NAME = "abstractDecoratorApp";
 
     @ClassRule
     public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE9, EERepeatActions.EE7); //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
@@ -71,7 +73,9 @@ public class AnnotationsTests extends FATServletClient {
                     @TestServlet(servlet = NullProducerServlet.class, contextRoot = DEP_PRODUCER_APP_NAME), //FULL
                     @TestServlet(servlet = DefaultDecoratorServlet.class, contextRoot = DEFAULT_DECORATOR_APP_NAME), //FULL
                     @TestServlet(servlet = GlobalPriorityTestServlet.class, contextRoot = GLOBAL_PRIORITY_APP_NAME), //FULL
-                    @TestServlet(servlet = WithAnnotationsServlet.class, contextRoot = WITH_ANNOTATIONS_APP_NAME) }) //FULL
+                    @TestServlet(servlet = WithAnnotationsServlet.class, contextRoot = WITH_ANNOTATIONS_APP_NAME), // FULL
+                    @TestServlet(servlet = AbstractDecoratorServlet.class, contextRoot = ABSTRACT_DECORATOR_APP_NAME), // FULL
+    })
     public static LibertyServer server;
 
     @BeforeClass
@@ -109,9 +113,14 @@ public class AnnotationsTests extends FATServletClient {
             CDIArchiveHelper.addBeansXML(withAnnotationsApp, DiscoveryMode.ALL);
             CDIArchiveHelper.addCDIExtensionService(withAnnotationsApp, WithAnnotationsExtension.class);
 
+            WebArchive abstractDecorator = ShrinkWrap.create(WebArchive.class, ABSTRACT_DECORATOR_APP_NAME + ".war")
+                                                     .addPackage(AbstractDecoratorServlet.class.getPackage());
+            CDIArchiveHelper.addBeansXML(abstractDecorator);
+
             ShrinkHelper.exportDropinAppToServer(server, withAnnotationsApp, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, globalPriorityApp, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, defaultDecorator, DeployOptions.SERVER_ONLY);
+            ShrinkHelper.exportDropinAppToServer(server, abstractDecorator, DeployOptions.SERVER_ONLY);
         }
 
         server.startServer();

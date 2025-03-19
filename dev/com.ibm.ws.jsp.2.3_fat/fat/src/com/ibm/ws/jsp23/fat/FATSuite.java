@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,10 +21,13 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsp23.fat.tests.JSP23JSP22ServerTest;
 import com.ibm.ws.jsp23.fat.tests.JSPCdiTest;
+import com.ibm.ws.jsp23.fat.tests.JSPChannelTest;
+import com.ibm.ws.jsp23.fat.tests.JSPDebugSupport;
 import com.ibm.ws.jsp23.fat.tests.JSPExceptionTests;
 import com.ibm.ws.jsp23.fat.tests.JSPJava11Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava17Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava21Test;
+import com.ibm.ws.jsp23.fat.tests.JSPJava7Test;
 import com.ibm.ws.jsp23.fat.tests.JSPGlobalTLDTest;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
@@ -50,6 +53,7 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JSPTests.class,
                 JSPExceptionTests.class,
                 JSPSkipMetaInfTests.class,
+                JSPJava7Test.class,
                 JSPJava8Test.class,
                 JSPJava11Test.class,
                 JSPJava17Test.class,
@@ -59,8 +63,11 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JSPPrepareJSPThreadCountNonDefaultValueTests.class,
                 JSPPrepareJSPThreadCountDefaultValueTests.class,
                 JSTLTests.class,
-                JSPGlobalTLDTest.class
+                JSPGlobalTLDTest.class,
+                JSPChannelTest.class,
+                JSPDebugSupport.class
 })
+
 public class FATSuite {
 
     /**

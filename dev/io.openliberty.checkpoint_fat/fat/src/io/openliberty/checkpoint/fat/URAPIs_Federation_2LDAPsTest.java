@@ -43,8 +43,6 @@ import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
@@ -59,7 +57,8 @@ import junit.framework.AssertionFailedError;
 @RunWith(FATRunner.class)
 @CheckpointTest
 public class URAPIs_Federation_2LDAPsTest {
-    private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.federation");
+    private static final String SERVER_NAME = "com.ibm.ws.security.wim.adapter.ldap.fat.federation";
+    private static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
     private static final Class<?> c = URAPIs_Federation_2LDAPsTest.class;
     private static UserRegistryServletConnection servlet;
     private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
@@ -69,9 +68,7 @@ public class URAPIs_Federation_2LDAPsTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers(server.getServerName()).fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers(server.getServerName()).fullFATOnly());
+    public static RepeatTests r = FATSuite.defaultEERepeat(SERVER_NAME);
 
     /**
      * Updates the sample, which is expected to be at the hard-coded path.

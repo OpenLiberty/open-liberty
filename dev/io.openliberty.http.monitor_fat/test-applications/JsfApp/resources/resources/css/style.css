@@ -1,0 +1,4 @@
+* {
+  color:red;
+  background: url("#{resource['images/milo2.jpg']}");
+}

@@ -1,0 +1,3 @@
+# Specify strictMaxCacheSize to cause cache evictions to occur more promptly to
+# make the test run faster.
+-Dcom.ibm.websphere.ejbcontainer.strictMaxCacheSize=true

@@ -17,13 +17,17 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest;
+import io.openliberty.microprofile.health31.fat.DefaultOverallStartupStatusUpAppStartupFastTest;
 import io.openliberty.microprofile.health31.fat.DefaultOverallStartupStatusUpAppStartupTest;
+import io.openliberty.microprofile.health31.fat.SlowAppStartupHealthCheckFastTest;
 import io.openliberty.microprofile.health31.fat.SlowAppStartupHealthCheckTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 DefaultOverallStartupStatusUpAppStartupTest.class,
+                DefaultOverallStartupStatusUpAppStartupFastTest.class,
                 SlowAppStartupHealthCheckTest.class,
+                SlowAppStartupHealthCheckFastTest.class,
                 ConfigAdminHealthCheckTest.class
 })
 

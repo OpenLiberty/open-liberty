@@ -25,8 +25,8 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -43,7 +43,7 @@ public class WebAppMessageTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat("checkpointFATServer");
+    public static RepeatTests repeatTest = FATSuite.defaultEERepeat("checkpointFATServer");
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {

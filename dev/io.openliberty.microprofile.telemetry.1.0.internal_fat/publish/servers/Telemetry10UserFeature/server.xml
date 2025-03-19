@@ -1,0 +1,24 @@
+<server description="Telemetry10Servlet">
+
+    <include location="../fatTestPorts.xml" />
+    
+    <include location="serverxmlsnippet.xml" />
+
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>pages-3.1</feature>
+        <feature>mpTelemetry-1.0</feature>
+        <feature>componentTest-2.0</feature>
+        <feature>restfulWS-3.1</feature>
+    </featureManager>
+    
+    <application type="war" location="TelemetryUserFeatureTestApp.war">
+        <classloader apiTypeVisibility="+third-party" />
+    </application>
+    
+    <logging traceSpecification="TELEMETRY=all"/>
+
+    <!-- For HttpURLConnection -->
+    <javaPermission className="java.net.URLPermission" name="http://localhost:-/-" actions="GET:" />
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread" />
+</server>

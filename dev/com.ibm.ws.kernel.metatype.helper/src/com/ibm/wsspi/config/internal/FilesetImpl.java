@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,6 +43,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
 import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier.ServicePropertySupplier;
 import com.ibm.wsspi.config.Fileset;
@@ -351,6 +352,22 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
             return accept(fullname);
         }
 
+        @Trivial
+        private void getHumanReadableSummary(StringBuilder sb) {
+
+            if (!includes.isEmpty()) {
+                sb.append("With include filters: ");
+                includes.forEach(p -> sb.append(System.lineSeparator()).append("\t").append(p));
+                sb.append(System.lineSeparator());
+            }
+
+            if (!excludes.isEmpty()) {
+                sb.append("With exclude filters: ");
+                excludes.forEach(p -> sb.append(System.lineSeparator()).append("\t").append(p));
+                sb.append(System.lineSeparator());
+            }
+        }
+
         private boolean accept(String fullname) {
             boolean accept = false;
 
@@ -541,4 +558,29 @@ public class FilesetImpl implements Fileset, FileMonitor, ServicePropertySupplie
         }
     }
 
+    @Override
+    @FFDCIgnore(Exception.class)
+    @Trivial
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        try {
+            sb.append("FileSet for directory: " + basedir);
+            sb.append(System.lineSeparator());
+
+            filter.getHumanReadableSummary(sb); //provides its own line break
+
+            // append first element
+            fileset.stream().limit(1).map(File::getPath).forEach(sb::append);
+            // append subsequent elements with delimiters
+            fileset.stream().skip(1).map(File::getPath).forEach(p -> sb.append(", ").append(p));
+
+        } catch (Exception e) {
+            String originalToString = super.toString();
+            sb.append(System.lineSeparator());
+            sb.append("Caught an exception calling to String on " + originalToString + " exception was: " + e);
+        }
+
+        return sb.toString();
+    }
 }

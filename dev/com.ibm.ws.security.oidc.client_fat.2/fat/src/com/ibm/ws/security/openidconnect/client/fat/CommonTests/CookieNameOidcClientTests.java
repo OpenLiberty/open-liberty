@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -131,8 +132,9 @@ public class CookieNameOidcClientTests extends CommonTest {
         }
         boolean foundExpiredCookie = false;
         if (cookieLine != null) {
-            foundExpiredCookie = JakartaEEAction.isEE10OrLaterActive() ? cookieLine.contains("max-age=0") : 
-                (cookieLine.contains("Expires=") && cookieLine.contains("16:00"));
+            String lowerCookieLine = cookieLine.toLowerCase(Locale.ENGLISH);
+            foundExpiredCookie = JakartaEEAction.isEE10OrLaterActive() ? lowerCookieLine.contains("max-age=0") : 
+                (lowerCookieLine.contains("expires=") && cookieLine.contains("16:00"));
         }
         Assert.assertTrue("did not find expected expired cookie", foundExpiredCookie);
     }

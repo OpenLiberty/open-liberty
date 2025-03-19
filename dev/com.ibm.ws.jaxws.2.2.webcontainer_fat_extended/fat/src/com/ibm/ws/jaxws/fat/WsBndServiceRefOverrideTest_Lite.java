@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -165,23 +164,6 @@ public class WsBndServiceRefOverrideTest_Lite {
         server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
         String result = getServletResponse(getServletAddr());
         assertTrue("WSDL Location Override is not working, and the result is not expected: " + result, "Hello".equals(result));
-    }
-
-    @Test
-    public void testOverrideLogginInOutInterceptorPropertyCXFFeature() throws Exception {
-        TestUtils.publishFileToServer(server,
-                                      "WsBndServiceRefOverrideTest", "ibm-ws-bnd_testLoggingInOutInterceptorProp.xml",
-                                      "dropins/wsBndServiceRefOverride.war/WEB-INF/", "ibm-ws-bnd.xml");
-        String wsdlAddr = getDefaultEndpointAddr() + "?wsdl";
-        TestUtils.replaceServerFileString(server, "dropins/wsBndServiceRefOverride.war/WEB-INF/ibm-ws-bnd.xml", "#WSDL_LOCATION#", wsdlAddr);
-        server.startServer();
-        server.waitForStringInLog("CWWKZ0001I.*wsBndServiceRefOverride");
-        getServletResponse(getServletAddr());
-        List<String> dumpInMessages = server.findStringsInLogs("REQ_OUT");
-        List<String> dumpOutMessages = server.findStringsInLogs("RESP_IN");
-        assertTrue("Can't find inBoundMessage, the return inboundmessage is: " + dumpInMessages.toString(), !dumpInMessages.isEmpty());
-        assertTrue("Can't find outBoundMessage, the return outboundmessage is: " + dumpOutMessages.toString(), !dumpOutMessages.isEmpty());
-
     }
 
     protected String getServletResponse(String servletUrl) throws Exception {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -118,3 +118,8 @@ reaper.reopen.active.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t. 
 missing.zip.file=CWWKM0128E: A(z) {0} zip f\u00e1jl hi\u00e1nyzik.
 missing.zip.file.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az archiv\u00e1l\u00e1si feldolgoz\u00e1s sor\u00e1n, mert a megadott f\u00e1jl nem tal\u00e1lhat\u00f3. 
 missing.zip.file.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megadott f\u00e1jl l\u00e9tezik \u00e9s rendelkezik a kiszolg\u00e1l\u00f3 \u00e1ltal olvashat\u00f3 enged\u00e9lyekkel.
+
+# # {0} A jar: URL.
+CWWKM0129W.missing.dir.entry=CWWKM0129W: Az arch\u00edvum {0} nem rendelkezik a v\u00e1rt k\u00f6nyvt\u00e1r bel\u00e9p\u00e9si \u00fatvonal\u00e1val: {1}
+CWWKM0129W.missing.dir.entry.explanation=Az er\u0151forr\u00e1s URL-ben haszn\u00e1lt arch\u00edvumban vannak olyan bejegyz\u00e9sek, amelyek a c\u00edmt\u00e1rban tal\u00e1lhat\u00f3k, de az arch\u00edvumb\u00f3l hi\u00e1nyzik egy bejegyz\u00e9s mag\u00e1r\u00f3l a c\u00edmt\u00e1rr\u00f3l. A k\u00f6nyvt\u00e1r URL-c\u00edme nem ker\u00fcl visszaad\u00e1sra. Ez a mulaszt\u00e1s azt okozhatja, hogy egyes er\u0151forr\u00e1sokat keres\u0151 alkalmaz\u00e1sok nem tal\u00e1lnak bizonyos er\u0151forr\u00e1sokat az arch\u00edv f\u00e1jlban.
+CWWKM0129W.missing.dir.entry.useraction=Az arch\u00edv f\u00e1jlt \u00fagy kell fel\u00e9p\u00edteni, hogy az tartalmazza az \u00f6sszes k\u00f6nyvt\u00e1rbejegyz\u00e9st.

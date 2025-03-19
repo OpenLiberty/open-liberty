@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -81,7 +81,7 @@ public class LogTester extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             return;
         }
-        if (!testEvent(req)) {
+        if (!testEvent(req) && !testClassload(req)) {
             testLog(bc, ref, req);
         }
 
@@ -123,6 +123,19 @@ public class LogTester extends HttpServlet {
                     break;
             }
         } catch (Exception e) {
+            throw new ServletException(e);
+        }
+        return true;
+    }
+
+    private boolean testClassload(HttpServletRequest req) throws ServletException {
+        String className = getClassName(req);
+        if (className == null) {
+            return false;
+        }
+        try {
+            b1.loadClass(className);
+        } catch (ClassNotFoundException e) {
             throw new ServletException(e);
         }
         return true;
@@ -193,6 +206,10 @@ public class LogTester extends HttpServlet {
         return throwableMsg == null ? null : new RuntimeException(throwableMsg);
     }
 
+    private String getClassName(HttpServletRequest req) {
+        return req.getParameter("classload");
+    }
+
     private boolean includeRef(HttpServletRequest req) {
         return req.getParameter("service") != null;
     }
@@ -211,6 +228,7 @@ public class LogTester extends HttpServlet {
         attributes.putValue("Manifest-Version", "1.0");
         attributes.putValue("Bundle-ManifestVersion", "2");
         attributes.putValue("Bundle-SymbolicName", "bundle" + id);
+        attributes.putValue("Import-Package", "org.osgi.framework");
         return manifest;
     }
 }

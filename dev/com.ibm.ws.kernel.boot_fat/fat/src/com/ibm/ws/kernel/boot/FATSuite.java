@@ -25,6 +25,7 @@ import com.ibm.ws.kernel.boot.internal.commands.LogLevelPropertyTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageCommandTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageLooseContentsTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageLooseRunnableTest;
+import com.ibm.ws.kernel.boot.internal.commands.PackageVersionlessFeatures;
 import com.ibm.ws.kernel.osgi.OSGiEmbedManagerTest;
 import com.ibm.ws.kernel.provisioning.KernelChangeTest;
 import com.ibm.ws.kernel.provisioning.ProvisioningTest;
@@ -59,6 +60,7 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 PackageCommandTest.class,
                 PackageLooseRunnableTest.class,
                 PackageLooseContentsTest.class,
+                PackageVersionlessFeatures.class,
                 // PackageLooseFilterTest.class, // Recreates issue 15724; disabled until that is fixed.
                 LogLevelPropertyTest.class,
                 CreateCommandTest.class,

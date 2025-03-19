@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,18 +24,25 @@ import componenttest.topology.database.container.OracleXEContainer;
 
 /**
  * Custom Oracle SSL Container class
- * TODO replace with OracleFree
+ * TODO replace with OracleFree (org.testcontainers.oracle.OracleContainer)
  */
+//public class OracleSSLContainer extends org.testcontainers.oracle.OracleContainer {
 public class OracleSSLContainer extends OracleXEContainer {
 
     private static final int TCPS_PORT = 1522;
     private static final String WALLET_PASS = "WalletPasswd123";
 
+    //TODO Start using ImageBuilder
+//    private static final DockerImageName ORACLE_KRB5 = ImageBuilder
+//                    .build("oracle-ssl:23-full-faststart")
+//                    .getDockerImageName()
+//                    .asCompatibleSubstituteFor("gvenzl/oracle-free");
+
     private static final String IMAGE_NAME_STRING = "kyleaure/oracle-21.3.0-faststart:1.0.full.ssl";
-    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
+    private static final DockerImageName ORACLE_KRB5 = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
 
     public OracleSSLContainer() {
-        super(IMAGE_NAME);
+        super(ORACLE_KRB5);
         super.addExposedPort(TCPS_PORT);
         super.withPassword("oracle"); //Tell superclass the hardcoded password
         super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
@@ -45,6 +52,7 @@ public class OracleSSLContainer extends OracleXEContainer {
 
     //Do not allow developer to use a custom password
     @Override
+//    public org.testcontainers.oracle.OracleContainer withPassword(String password) {
     public OracleXEContainer withPassword(String password) {
         throw new UnsupportedOperationException("Oracle SSL container does not support use of a customer password.");
     }

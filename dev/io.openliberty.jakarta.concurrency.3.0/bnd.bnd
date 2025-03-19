@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2023 IBM Corporation and others.
+# Copyright (c) 2021, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -21,8 +21,8 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Bundle-SymbolicName: io.openliberty.jakarta.concurrency.3.0; singleton:=true
 
 Export-Package: \
-  jakarta.enterprise.concurrent;version="3.0.3",\
-  jakarta.enterprise.concurrent.spi;version="3.0.3"
+  jakarta.enterprise.concurrent;version="3.0.4",\
+  jakarta.enterprise.concurrent.spi;version="3.0.4"
 
 DynamicImport-Package: \
   jakarta.enterprise.util,\
@@ -34,11 +34,11 @@ Import-Package: \
   *
 
 -includeresource: \
-  @${repo;jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.3;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.4;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.3;strategy=exact
+  jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.4;strategy=exact

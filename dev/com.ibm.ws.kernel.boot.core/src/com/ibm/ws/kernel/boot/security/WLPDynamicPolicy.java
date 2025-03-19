@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,11 +19,25 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Policy;
 import java.security.ProtectionDomain;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class WLPDynamicPolicy extends Policy {
+
+    private static final Set<String> JDK_MODULE_PREFIXES;
+
+    static {
+        Set<String> prefixes = new HashSet<>();
+        prefixes.add("jrt:/jdk");
+        prefixes.add("jrt:/java");
+        prefixes.add("jrt:/openj9");
+        prefixes.add("jrt:/openjceplus");
+        JDK_MODULE_PREFIXES = Collections.unmodifiableSet(prefixes);
+    }
 
     // The policy that this WLPDynamicPolicy is replacing
     private Policy policy;
@@ -119,8 +133,10 @@ public class WLPDynamicPolicy extends Policy {
             // By adding modules here, we are effectively granting AllPermissions to those JDK modules
             String location = (domain != null && domain.getCodeSource() != null && domain.getCodeSource().getLocation() != null) //
                             ? domain.getCodeSource().getLocation().toExternalForm() : "";
-            // Added because of https://github.com/eclipse/openj9/issues/6119
-            return location.startsWith("jrt:/jdk.attach");
+            // Added because of https://github.com/eclipse/openj9/issues/6119 and other issues where Java runtime modules do not
+            // have AllPermission at all times.
+            int index = location.indexOf('.');
+            return JDK_MODULE_PREFIXES.contains(index == -1 ? location : location.substring(0, index));
         }
     }
 

@@ -31,6 +31,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.context.MultiThreadedContextServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * Check that the Context API can be used to transfer context between threads when submitting tasks to a ManagedExecutor,
@@ -64,7 +65,7 @@ public class MultiThreadedContextTest extends FATServletClient {
     }
     
     @ClassRule
-    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.allMPRepeats(SERVER_NAME);
     
     @AfterClass
     public static void teardown() throws Exception {

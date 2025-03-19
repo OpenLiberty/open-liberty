@@ -42,7 +42,7 @@ import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.Reactiv
 import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.RmTelemetryProcessingBean;
 import io.openliberty.microprofile.reactive.messaging.fat.apps.telemetry.RmTelemetryReceptionBean;
 import io.openliberty.microprofile.reactive.messaging.fat.suite.KafkaTests;
-import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 
 /**
  * Assert what happens when a message from Kafka is nacked
@@ -59,9 +59,7 @@ public class ReactiveMessagingTelemetryTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME,
-                                                                  ReactiveMessagingActions.MP61_RM30,
-                                                                  ReactiveMessagingActions.MP50_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.telemetryRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
