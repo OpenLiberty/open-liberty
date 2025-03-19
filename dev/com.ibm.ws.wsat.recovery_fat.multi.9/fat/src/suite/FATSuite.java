@@ -26,6 +26,6 @@ import tests.ReroutePeerRecoveryTest;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES())
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES());
 }

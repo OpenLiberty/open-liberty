@@ -44,5 +44,5 @@ public class FATSuite extends TxTestContainerSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE10_FEATURES());
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
 }
