@@ -12,13 +12,14 @@
  -->
 <server description="Telemetry Server to test all telemetry source attributes">
 	<featureManager>
+		<feature>audit-1.0</feature>
 		<feature>mpTelemetry-2.0</feature>
 		<feature>componentTest-2.0</feature>
 		<feature>servlet-6.1</feature>
+		<feature>appSecurity-6.0</feature>
 	</featureManager>
-	
 	<include location="../fatTestPorts.xml"/>
-	<mpTelemetry source="message, trace, ffdc, accessLog"/>
+	<mpTelemetry source="message, trace, ffdc, audit, accessLog"/>
 	<logging traceSpecification="io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.*=all"/>
 	<application location="MpTelemetryLogApp.war"/>
 	<httpAccessLogging id="accessLogging" />

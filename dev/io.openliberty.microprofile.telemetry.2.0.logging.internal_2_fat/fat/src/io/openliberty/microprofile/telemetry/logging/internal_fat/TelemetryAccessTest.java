@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -163,9 +162,6 @@ public class TelemetryAccessTest extends FATServletClient {
             }
         };
 
-        Log.info(c, "Whatever", "Mandatory keys: " + expectedAccessFieldsMap.toString());
-        Log.info(c, "Whatever", "found keys: " + accessLine);
-
         TestUtils.checkJsonMessage(accessLine, expectedAccessFieldsMap);
     }
 
@@ -191,6 +187,11 @@ public class TelemetryAccessTest extends FATServletClient {
 
         assertNotNull("The access log event was not found.", accessLine);
         checkAccessOTelAttributeMapping(accessLine);
+
+        //Ensure audit log is bridged over, that is generated from an app.
+        String auditLine = server.waitForStringInLog("SECURITY_AUTHN", consoleLogFile);
+        assertNotNull("The Security Authentication audit event was not found.", auditLine);
+        checkAuditOTelAttributeMapping(auditLine);
 
         //Ensure the other sources - message, trace, and ffdc logs are bridged, as well.
         String messageLine = server.waitForStringInLog("info message", consoleLogFile);
@@ -342,7 +343,6 @@ public class TelemetryAccessTest extends FATServletClient {
      * Source configuraton is as follows: <mpTelemetry source="accessLoog"/>
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testTelemetryInvalidAccessSource() throws Exception {
         RemoteFile messageLogFile = server.getDefaultLogFile();
         RemoteFile consoleLogFile = server.getConsoleLogFile();
@@ -395,6 +395,32 @@ public class TelemetryAccessTest extends FATServletClient {
             }
         };
         TestUtils.checkJsonMessage(accessLine, expectedAccessFieldsMap);
+    }
+
+    private static void checkAuditOTelAttributeMapping(String auditLine) {
+        // Ensures the triggered application audit security event is mapped correctly.
+        Map<String, String> expectedAuditFieldsMap = new HashMap<String, String>() {
+            {
+                put("io.openliberty.type", "liberty_audit");
+
+                put("io.openliberty.audit.event_name", "SECURITY_AUTHN");
+
+                put("io.openliberty.audit.observer.name", "SecurityService");
+                put("io.openliberty.audit.observer.type_uri", "service/server");
+
+                put("io.openliberty.audit.outcome", "success");
+
+                put("io.openliberty.audit.reason.reason_code", "200");
+                put("io.openliberty.audit.reason.reason_type", "HTTP");
+
+                put("io.openliberty.audit.target.appname", "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.LogServlet");
+                put("io.openliberty.audit.target.method", "GET");
+                put("io.openliberty.audit.target.name", "/MpTelemetryLogApp/LogURL");
+                put("io.openliberty.audit.target.realm", "defaultRealm");
+                put("io.openliberty.audit.target.type_uri", "service/application/web");
+            }
+        };
+        TestUtils.checkJsonMessage(auditLine, expectedAuditFieldsMap);
     }
 
     private static void setConfig(LibertyServer server, RemoteFile logFile, String fileName) throws Exception {
