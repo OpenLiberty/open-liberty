@@ -29,7 +29,8 @@ import componenttest.topology.utils.HttpUtils;
 @SuiteClasses({
                 TelemetryAuditTest.class,
                 TelemetryAuditCheckpointTest.class,
-                TelemetryAccessTest.class
+                TelemetryAccessTest.class,
+                TelemetryAccessCheckpointTest.class
 })
 
 public class FATSuite {
