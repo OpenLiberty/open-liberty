@@ -20,15 +20,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.CheckpointRule;
 import componenttest.rules.repeater.CheckpointRule.ServerMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
@@ -53,10 +55,13 @@ public class TelemetryAccessCheckpointTest extends FATServletClient {
     @ClassRule
     public static RepeatTests rt = TelemetryActions.telemetry20Repeats();
 
-    private static LibertyServer server;
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     public static LibertyServer initialSetup(ServerMode mode) throws Exception {
-        server = LibertyServerFactory.getLibertyServer(SERVER_NAME, null, true);
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.SERVER_ONLY },
+                                "io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp");
+
         server.saveServerConfiguration();
         return server;
     }
