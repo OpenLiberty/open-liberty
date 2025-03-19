@@ -31,6 +31,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -239,6 +241,7 @@ public class TelemetryAccessTest extends FATServletClient {
      * Tests when the access source is dynamically removed to the server.xml, with the access configuration already present.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testDynamicAccessSourceRemoval() throws Exception {
         RemoteFile messageLogFile = server.getDefaultLogFile();
         RemoteFile consoleLogFile = server.getConsoleLogFile();
@@ -272,6 +275,7 @@ public class TelemetryAccessTest extends FATServletClient {
      * Tests when the access configuration is dynamically added to the server.xml, with the access source already present.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testDynamicAccessConfigurationAddition() throws Exception {
         RemoteFile messageLogFile = server.getDefaultLogFile();
         RemoteFile consoleLogFile = server.getConsoleLogFile();
@@ -304,6 +308,7 @@ public class TelemetryAccessTest extends FATServletClient {
      * Tests when the access configuration is dynamically removed in the server.xml, with the access source already present.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testDynamicAccessConfigurationRemoval() throws Exception {
         RemoteFile messageLogFile = server.getDefaultLogFile();
         RemoteFile consoleLogFile = server.getConsoleLogFile();
@@ -337,6 +342,7 @@ public class TelemetryAccessTest extends FATServletClient {
      * Source configuraton is as follows: <mpTelemetry source="accessLoog"/>
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testTelemetryInvalidAccessSource() throws Exception {
         RemoteFile messageLogFile = server.getDefaultLogFile();
         RemoteFile consoleLogFile = server.getConsoleLogFile();
