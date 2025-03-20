@@ -346,8 +346,6 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             if (accessLogField.toLowerCase().equals("default") || accessLogField.toLowerCase().equals("logformat"))
                 AccessLogConfig.accessLogFieldsTelemetryConfig = accessLogField;
             else {
-                Tr.warning(tc, "CWMOT5008.mptelemetry.unknown.access.log.field",
-                           accessLogField);
                 AccessLogConfig.accessLogFieldsTelemetryConfig = "default";
             }
         } else {
