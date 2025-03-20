@@ -353,7 +353,11 @@ public class JAASServiceImpl implements JAASService {
     public Subject performLogin(String jaasEntryName, CallbackHandler callbackHandler, Subject partialSubject) throws LoginException {
         LoginContext loginContext = null;
         loginContext = doLoginContext(jaasEntryName, callbackHandler, partialSubject);
-        return (loginContext == null ? null : loginContext.getSubject());
+        Subject retVal = (loginContext == null ? null : loginContext.getSubject());
+        if (retVal != null && !retVal.isReadOnly()) {
+           retVal.setReadOnly();
+        }
+        return retVal;
     }
 
     /**
