@@ -458,7 +458,7 @@ public class AccessLogSource implements Source {
                     case "%m": builder.add(addRequestMethodFieldTelemetry     (format)); break;
                     case "%p":
                         if (fields.get("%p") == null) {
-                            builder.add(addRequestPortField(format));
+                            builder.add(addRequestPortFieldTelemetry(format));
                         } else {
                             for (Object data : fields.get("%p")) {
                                 if (AccessLogPort.TYPE_REMOTE.equals(data)) {
@@ -501,8 +501,8 @@ public class AccessLogSource implements Source {
             }
         }
         //@formatter:off
-        builder.add(addDatetimeField(format))  // Datetime, present in all access logs
-               .add(addSequenceField(format)); // Sequence, present in all access logs
+        builder.add(addDatetimeFieldTelemetry(format))  // Datetime, present in all access logs
+               .add(addSequenceFieldTelemetry(format)); // Sequence, present in all access logs
         //@formatter:on
 
         return builder.build();
@@ -803,7 +803,7 @@ public class AccessLogSource implements Source {
     private static ListFieldAdder addRequestStartTimeFieldTelemetry(int format) {
         return (keyValuePairList, ald) -> {
             String startTime = CollectorJsonHelpers.formatTime(ald.getRequestStartTime());
-            KeyValuePair kvp = new KeyValueLongPair(AccessLogData.getRequestStartTimeKey(format), Long.parseLong(startTime));
+            KeyValuePair kvp = new KeyValueStringPair(AccessLogData.getRequestStartTimeKey(format), startTime);
             keyValuePairList.add(kvp);
         };
     }
