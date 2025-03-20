@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal.udp;
@@ -26,37 +26,36 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 import io.openliberty.netty.internal.impl.NettyConstants;
+import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 
 public class UDPUtils {
 
     private static final TraceComponent tc = Tr.register(UDPUtils.class, UDPMessageConstants.NETTY_TRACE_NAME,
-            UDPMessageConstants.UDP_BUNDLE);
+                                                         UDPMessageConstants.UDP_BUNDLE);
 
     /**
      * Create a {@link BootstrapExtended} for inbound UDP channels
-     * 
+     *
      * @param framework
      * @param options
      * @return
      * @throws NettyException
      */
-    public static BootstrapExtended createUDPBootstrap(NettyFrameworkImpl framework, Map<String, Object> options)
-            throws NettyException {
+    public static BootstrapExtended createUDPBootstrap(NettyFrameworkImpl framework, Map<String, Object> options) throws NettyException {
         return create(framework, new UDPConfigurationImpl(options, true));
     }
 
     /**
      * Create a {@link BootstrapExtended} for outbound channels
-     * 
+     *
      * @param framework
      * @param options
      * @return
      * @throws NettyException
      */
     public static BootstrapExtended createUDPBootstrapOutbound(NettyFrameworkImpl framework,
-            Map<String, Object> options) throws NettyException {
+                                                               Map<String, Object> options) throws NettyException {
         return create(framework, new UDPConfigurationImpl(options, false));
     }
 
@@ -69,7 +68,7 @@ public class UDPUtils {
     }
 
     private static ChannelFuture bind(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
-            int inetPort, final int retryCount, final int retryDelay, ChannelFutureListener bindListener) {
+                                      int inetPort, final int retryCount, final int retryDelay, ChannelFutureListener bindListener) {
         ChannelFuture bindFuture = bootstrap.bind(inetHost, inetPort);
         if (inetHost.equals("*")) {
             inetHost = NettyConstants.INADDR_ANY;
@@ -100,11 +99,10 @@ public class UDPUtils {
 
                 channel.closeFuture().addListener(innerFuture -> logChannelStopped(channel));
 
-                
                 // set up a helpful log message
                 String hostLogString = newHost;
                 SocketAddress addr = channel.localAddress();
-                InetSocketAddress inetAddr = (InetSocketAddress)addr;
+                InetSocketAddress inetAddr = (InetSocketAddress) addr;
                 String IPvType = "IPv4";
                 if (inetAddr.getAddress() instanceof Inet6Address) {
                     IPvType = "IPv6";
@@ -113,9 +111,8 @@ public class UDPUtils {
                     hostLogString = "*  (" + IPvType + ")";
                 } else {
                     hostLogString = config.getHostname() + "  (" + IPvType + ": "
-                               + inetAddr.getAddress().getHostAddress() + ")";
+                                    + inetAddr.getAddress().getHostAddress() + ")";
                 }
-
 
                 if (config.isInboundChannel()) {
                     // UDP CWWKO0400I listening message
@@ -124,7 +121,7 @@ public class UDPUtils {
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, UDPMessageConstants.UDP_CHANNEL_STARTED,
-                                new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
+                                 new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
                     }
                 }
             } else {
@@ -135,7 +132,7 @@ public class UDPUtils {
                 if (retryCount > 0) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "attempt to bind again after a wait of " + retryDelay + "ms; " + retryCount
-                                + " attempts remaining");
+                                     + " attempts remaining");
                     }
                     // recurse until we either complete successfully or run out of retries;
                     try {
@@ -150,11 +147,11 @@ public class UDPUtils {
                 } else {
                     if (config.isInboundChannel()) {
                         Tr.error(tc, UDPMessageConstants.BIND_FAILURE,
-                                new Object[] { channelName, newHost, String.valueOf(inetPort) });
+                                 new Object[] { channelName, newHost, String.valueOf(inetPort) });
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, UDPMessageConstants.BIND_FAILURE,
-                                    new Object[] { channelName, newHost, String.valueOf(inetPort) });
+                                     new Object[] { channelName, newHost, String.valueOf(inetPort) });
                         }
                     }
                 }
@@ -165,7 +162,7 @@ public class UDPUtils {
 
     /**
      * Start an outbound UDP channel
-     * 
+     *
      * @param nettyFrameworkImpl
      * @param bootstrap
      * @param inetHost
@@ -175,7 +172,7 @@ public class UDPUtils {
      * @throws NettyException
      */
     public static FutureTask<ChannelFuture> startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
-            String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException {
+                                                          String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "startOutbound (UDP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
         }
@@ -184,7 +181,7 @@ public class UDPUtils {
 
     /**
      * Start an inbound UDP channel
-     * 
+     *
      * @param framework
      * @param bootstrap
      * @param inetHost
@@ -194,7 +191,7 @@ public class UDPUtils {
      * @throws NettyException
      */
     public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
-            int inetPort, ChannelFutureListener bindListener) throws NettyException {
+                                                  int inetPort, ChannelFutureListener bindListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "start (UDP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
         }
@@ -202,8 +199,8 @@ public class UDPUtils {
     }
 
     private static FutureTask<ChannelFuture> startHelper(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
-            int inetPort, ChannelFutureListener bindListener) throws NettyException {
-        if(framework.isStopping()){ // Framework already started and is no longer active
+                                                         int inetPort, ChannelFutureListener bindListener) throws NettyException {
+        if (framework.isStopping()) { // Framework already started and is no longer active
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "server is stopping, channel will not be started");
             }
@@ -225,15 +222,14 @@ public class UDPUtils {
                     address = new InetSocketAddress(newHost, inetPort);
                     if (address.isUnresolved()) {
                         final String channelName = ((UDPConfigurationImpl) bootstrap.getConfiguration())
-                                .getExternalName();
+                                        .getExternalName();
                         Tr.error(tc, UDPMessageConstants.DNS_LOOKUP_FAILURE,
-                                new Object[] { channelName, hostLogString, String.valueOf(inetPort) });
-                        throw new NettyException(
-                                "local address unresolved for " + channelName + " - " + hostLogString + ":" + inetPort);
+                                 new Object[] { channelName, hostLogString, String.valueOf(inetPort) });
+                        throw new NettyException("local address unresolved for " + channelName + " - " + hostLogString + ":" + inetPort);
                     }
 
                     return bind(framework, bootstrap, newHost, inetPort, bindRetryCount, bindRetryInterval,
-                            bindListener);
+                                bindListener);
                 }
             });
         } catch (Exception e) {
@@ -247,7 +243,7 @@ public class UDPUtils {
     /**
      * Log a UDP channel stopped message. Inbound channels will log a INFO message,
      * and outbound channels will log DEBUG
-     * 
+     *
      * @param channel
      */
     public static void logChannelStopped(Channel channel) {

@@ -19,12 +19,14 @@ public interface BootstrapConfiguration {
 
     /**
      * Apply this configuration to the given ServerBootstrap
+     * 
      * @param bootstrap
      */
     void applyConfiguration(ServerBootstrap bootstrap);
 
     /**
      * Apply this configuration to the given Bootstrap
+     * 
      * @param bootstrap
      */
     void applyConfiguration(Bootstrap bootstrap);

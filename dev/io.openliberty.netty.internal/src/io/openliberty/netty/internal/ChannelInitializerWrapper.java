@@ -20,6 +20,7 @@ public abstract class ChannelInitializerWrapper extends ChannelInitializer<Chann
 
     /**
      * invoke initChannel(channel) on this object
+     * 
      * @param channel
      * @throws Exception
      */

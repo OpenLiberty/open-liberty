@@ -10,7 +10,7 @@
 package io.openliberty.netty.internal.exception;
 
 /**
- * This exception class will be the base for exception classes related to netty 
+ * This exception class will be the base for exception classes related to netty
  * integrations.
  * 
  * Taken from {@link com.ibm.wsspi.channelfw.exception.ChannelException}

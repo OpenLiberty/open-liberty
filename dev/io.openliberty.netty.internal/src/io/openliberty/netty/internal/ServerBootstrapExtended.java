@@ -12,7 +12,7 @@ package io.openliberty.netty.internal;
 import io.netty.bootstrap.ServerBootstrap;
 
 /**
- * Extends {@link ServerBootstrap} to allow configuration via a {@link BootstrapConfiguration} 
+ * Extends {@link ServerBootstrap} to allow configuration via a {@link BootstrapConfiguration}
  */
 public class ServerBootstrapExtended extends ServerBootstrap {
 
@@ -32,6 +32,7 @@ public class ServerBootstrapExtended extends ServerBootstrap {
 
     /**
      * Get the ServerBootstrapConfiguration associated with this bootstrap
+     * 
      * @return ServerBootstrapConfiguration
      */
     public BootstrapConfiguration getConfiguration() {
@@ -47,6 +48,7 @@ public class ServerBootstrapExtended extends ServerBootstrap {
 
     /**
      * Get the base {@link ChannelInitializerWrapper} used by this bootstrap
+     * 
      * @return ChannelInitializerWrapper
      */
     public ChannelInitializerWrapper getBaseInitializer() {

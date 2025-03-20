@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal.impl;
@@ -38,7 +38,6 @@ import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.tcp.TCPChannelInitializerImpl;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
-import io.openliberty.netty.internal.tcp.TCPMessageConstants;
 import test.common.SharedOutputManager;
 
 /**
@@ -47,7 +46,7 @@ import test.common.SharedOutputManager;
 public class NettyFrameworkImplTest {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
-            .trace(NettyConstants.NETTY_TRACE_STRING);
+                    .trace(NettyConstants.NETTY_TRACE_STRING);
     private List<Channel> testChannels = null;
     NettyFrameworkImpl framework = null;
     Map<String, Object> options;
@@ -101,7 +100,7 @@ public class NettyFrameworkImplTest {
 
     /**
      * Verify that a TCP boostrap can be created as expected
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -115,7 +114,7 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on a TCP channel
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -140,7 +139,7 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on a UDP channel
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -169,12 +168,12 @@ public class NettyFrameworkImplTest {
 
     /**
      * Create an outbound UDP channel
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testUDPStartOutbound() throws Exception {
-    	testUDPStart();
+        testUDPStart();
         BootstrapExtended bootstrap = framework.createUDPBootstrapOutbound(null);
         bootstrap.handler(new SimpleChannelInboundHandler<ByteBuf>() {
             @Override
@@ -199,7 +198,7 @@ public class NettyFrameworkImplTest {
     /**
      * Create an inbound TCP channel, then create a new outbound TCP channel and
      * connect to the inbound channel
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -233,7 +232,7 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on a TCP channel and verify stop()
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -267,7 +266,7 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on a TCP channel and verify stop()
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -295,7 +294,7 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on three TCP channel, then tear them down individually
-     * 
+     *
      * @throws Exception
      */
     @Test

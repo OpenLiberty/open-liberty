@@ -79,7 +79,7 @@ public interface NettyFramework {
      *         started
      */
     FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
-            ChannelFutureListener bindListener) throws NettyException;
+                                    ChannelFutureListener bindListener) throws NettyException;
 
     /**
      * Binds a Bootstrap to the given host and port, and registers the Channel with
@@ -91,8 +91,7 @@ public interface NettyFramework {
      * @return ChannelFuture for the ServerChannel, or null if the server is not yet
      *         started
      */
-    FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener)
-            throws NettyException;
+    FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException;
 
     /**
      * Binds (UDP) or connects (TCP) an outbound Bootstrap to the given host and
@@ -106,7 +105,7 @@ public interface NettyFramework {
      * @throws NettyException
      */
     FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
-            ChannelFutureListener bindListener) throws NettyException;
+                                            ChannelFutureListener bindListener) throws NettyException;
 
     /**
      * Removes a Channel from the set of active Channels. If the Channel is not
@@ -117,10 +116,10 @@ public interface NettyFramework {
      * @return ChannelFuture for the Channel close
      */
     ChannelFuture stop(Channel channel);
-    
+
     /**
      * Adds a handler to be notified on server stopping tp notify quiesce. This
-     * handler will call the quiesceTask to run when the event is fired. The 
+     * handler will call the quiesceTask to run when the event is fired. The
      * channel has to be an endpoint registered and started through the framework
      * otherwise a warning will be logged and ignored.
      * 
@@ -136,7 +135,7 @@ public interface NettyFramework {
      * 
      * @param channel
      * @param long    the amount of time in millis to wait for closure; use -1 to
-     *                get the default
+     *                    get the default
      */
     void stop(Channel channel, long time);
 

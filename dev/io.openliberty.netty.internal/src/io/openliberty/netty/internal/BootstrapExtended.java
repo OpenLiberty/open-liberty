@@ -29,6 +29,7 @@ public class BootstrapExtended extends Bootstrap {
 
     /**
      * Get the BootstrapConfiguration associated with this bootstrap
+     * 
      * @return BootstrapConfiguration
      */
     public BootstrapConfiguration getConfiguration() {
@@ -44,6 +45,7 @@ public class BootstrapExtended extends Bootstrap {
 
     /**
      * Get the base {@link ChannelInitializerWrapper} used by this bootstrap
+     * 
      * @return ChannelInitializerWrapper
      */
     public ChannelInitializerWrapper getBaseInitializer() {
