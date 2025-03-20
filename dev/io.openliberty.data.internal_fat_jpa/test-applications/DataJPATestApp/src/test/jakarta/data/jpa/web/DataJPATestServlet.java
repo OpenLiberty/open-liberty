@@ -157,6 +157,9 @@ public class DataJPATestServlet extends FATServlet {
     Orders orders;
 
     @Inject
+    Purchases purchases;
+
+    @Inject
     Rebates rebates;
 
     @Inject
@@ -294,6 +297,66 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());
         assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Tests that repository methods can query and sort based on an entity attribute
+     * that has a Converter with autoApply=true.
+     */
+    @Test
+    public void testAutoApplyConverter() {
+        PurchaseTime mondayAt6AM = new PurchaseTime( //
+                        LocalTime.of(6, 0, 0), LocalDate.of(2025, 3, 17));
+
+        PurchaseTime mondayAt3PM = new PurchaseTime( //
+                        LocalTime.of(15, 0, 0), LocalDate.of(2025, 3, 17));
+
+        PurchaseTime wednesdayAt6PM = new PurchaseTime( //
+                        LocalTime.of(18, 0, 0), LocalDate.of(2025, 3, 19));
+
+        PurchaseTime thursdayAt10PM = new PurchaseTime( //
+                        LocalTime.of(22, 0, 0), LocalDate.of(2025, 3, 20));
+
+        PurchaseTime fridayAt9AM = new PurchaseTime(//
+                        LocalTime.of(9, 0, 0), LocalDate.of(2025, 3, 21));
+
+        PurchaseTime fridayAtNoon = new PurchaseTime(//
+                        LocalTime.of(12, 0, 0), LocalDate.of(2025, 3, 21));
+
+        PurchaseTime fridayAt10PM = new PurchaseTime(//
+                        LocalTime.of(22, 0, 0), LocalDate.of(2025, 3, 21));
+
+        purchases.removeByTimeOfPurchaseBetween(mondayAt6AM, fridayAt10PM);
+
+        purchases.make(Purchase.of((short) 101,
+                                   "TestAutoApplyConverter-1",
+                                   mondayAt3PM,
+                                   17.89f));
+
+        purchases.make(Purchase.of((short) 102,
+                                   "TestAutoApplyConverter-2",
+                                   thursdayAt10PM,
+                                   22.95f));
+
+        purchases.make(Purchase.of((short) 103,
+                                   "TestAutoApplyConverter-3",
+                                   wednesdayAt6PM,
+                                   30.39f));
+
+        purchases.make(Purchase.of((short) 104,
+                                   "TestAutoApplyConverter-4",
+                                   fridayAtNoon,
+                                   14.49f));
+
+        assertEquals(List.of("TestAutoApplyConverter-1",
+                             "TestAutoApplyConverter-3",
+                             "TestAutoApplyConverter-2"),
+                     purchases.findByTimeOfPurchaseBetween(mondayAt6AM, fridayAt9AM)
+                                     .stream()
+                                     .map(p -> p.itemName)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4, purchases.removeByTimeOfPurchaseBetween(mondayAt6AM, fridayAt10PM));
     }
 
     /**
