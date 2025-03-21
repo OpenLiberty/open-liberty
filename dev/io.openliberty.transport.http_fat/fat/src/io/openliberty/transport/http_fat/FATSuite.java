@@ -20,7 +20,8 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AccessListsTests.class
+                AccessListsTests.class,
+                MaxOpenConnectionsTests.class
 })
 public class FATSuite {
 
