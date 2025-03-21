@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.transport.http_fat.accesslists;
+package io.openliberty.transport.http_fat;
 
 import java.util.logging.Logger;
 

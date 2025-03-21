@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.transport.http_fat.accesslists;
+package io.openliberty.transport.http_fat;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;

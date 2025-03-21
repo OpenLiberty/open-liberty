@@ -9,7 +9,7 @@
  * Contributors:
  *      IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.transport.http_fat.accesslists;
+package io.openliberty.transport.http_fat;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
