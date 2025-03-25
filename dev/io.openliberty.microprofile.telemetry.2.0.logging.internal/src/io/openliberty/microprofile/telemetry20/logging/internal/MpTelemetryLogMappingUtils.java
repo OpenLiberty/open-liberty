@@ -39,6 +39,10 @@ import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.logs.LogRecordBuilder;
 import io.opentelemetry.api.logs.Severity;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.TraceFlags;
+import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.semconv.SemanticAttributes;
 
@@ -343,6 +347,7 @@ public class MpTelemetryLogMappingUtils {
 
         String key = null;
         Object value = null;
+        String traceParent = null;
 
         for (Iterator<KeyValuePair> element = kvpList.iterator(); element.hasNext();) {
             KeyValuePair next = element.next();
@@ -359,13 +364,15 @@ public class MpTelemetryLogMappingUtils {
                 } else if (key.equals("datetime") || key.equals("accessLogDatetime")) {
                     builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
-                    String[] headerSplit = ((String) value).split(",");
-                    for (int i = 0; i < headerSplit.length; i++) {
-                        headerSplit[i] = headerSplit[i].trim();
+                    if (key.contains("traceparent"))
+                        traceParent = (String) value;
+                    else {
+                        String[] headerSplit = ((String) value).split(",");
+                        for (int i = 0; i < headerSplit.length; i++) {
+                            headerSplit[i] = headerSplit[i].trim();
+                        }
+                        attributes.put(formattedKey, headerSplit);
                     }
-
-                    attributes.put(formattedKey, headerSplit);
-
                 } else if (key.equals("requestPort")) {
                     attributes.put(formattedKey, Integer.parseInt((String) value));
                 } else if (key.equals("requestFirstLine")) {
@@ -393,8 +400,16 @@ public class MpTelemetryLogMappingUtils {
         // Set the Attributes to the builder.
         builder.setAllAttributes(attributes.build());
 
-        // Set the Span and Trace IDs from the current context.
-        builder.setContext(Context.current());
+        // Set the Span and Trace IDs from the current context. We're not on the same thread at the point when access logs are collected
+        // so we need to extract the trace/span ID from the 'traceparent' request header.
+        if (traceParent != null) {
+            String[] traceSplit = traceParent.split("-");
+
+            SpanContext customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], TraceFlags.getSampled(), TraceState.getDefault());
+            Span customSpan = Span.wrap(customSpanContext);
+            builder.setContext(Context.current().with(customSpan));
+        } else
+            builder.setContext(Context.current());
 
     }
 
