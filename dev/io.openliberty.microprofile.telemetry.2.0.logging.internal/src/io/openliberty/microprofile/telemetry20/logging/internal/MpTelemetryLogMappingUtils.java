@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -360,10 +359,13 @@ public class MpTelemetryLogMappingUtils {
                 } else if (key.equals("datetime") || key.equals("accessLogDatetime")) {
                     builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
-
-                    String[] headerSplit = Arrays.stream(((String) value).split(",")).map(String::trim).toArray(String[]::new);
+                    String[] headerSplit = ((String) value).split(",");
+                    for (int i = 0; i < headerSplit.length; i++) {
+                        headerSplit[i] = headerSplit[i].trim();
+                    }
 
                     attributes.put(formattedKey, headerSplit);
+
                 } else if (key.equals("requestPort")) {
                     attributes.put(formattedKey, Integer.parseInt((String) value));
                 } else if (key.equals("requestFirstLine")) {
