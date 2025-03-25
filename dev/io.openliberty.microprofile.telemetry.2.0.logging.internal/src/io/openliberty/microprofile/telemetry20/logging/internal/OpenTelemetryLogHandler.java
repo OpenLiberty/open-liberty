@@ -312,7 +312,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             return CollectorConstants.FFDC_SOURCE;
         else if (source.equalsIgnoreCase(CollectorConstants.AUDIT_CONFIG_VAL))
             return CollectorConstants.AUDIT_LOG_SOURCE;
-        else if (MpTelemetryLogMappingUtils.isBetaModeCheckAccess() && source.equalsIgnoreCase(CollectorConstants.ACCESS_CONFIG_VAL))
+        else if (source.equalsIgnoreCase(CollectorConstants.ACCESS_CONFIG_VAL))
             return CollectorConstants.ACCESS_LOG_SOURCE;
 
         return "";
@@ -333,7 +333,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             return CollectorConstants.FFDC_SOURCE;
         } else if (sourceName.contains(CollectorConstants.AUDIT_LOG_SOURCE)) {
             return CollectorConstants.AUDIT_LOG_SOURCE;
-        } else if (MpTelemetryLogMappingUtils.isBetaModeCheckAccess() && sourceName.equals(CollectorConstants.ACCESS_LOG_SOURCE)) {
+        } else if (sourceName.equals(CollectorConstants.ACCESS_LOG_SOURCE)) {
             return CollectorConstants.ACCESS_LOG_SOURCE;
         } else {
             return "";
