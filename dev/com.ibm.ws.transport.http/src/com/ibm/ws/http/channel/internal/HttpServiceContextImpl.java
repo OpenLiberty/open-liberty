@@ -3342,14 +3342,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                                                                                                             "-1")), trailers);
             }
             this.nettyContext.channel().write(lastContent);
-        } else {
-        }
+        } 
         ChannelFuture flushFuture = this.nettyContext.channel().writeAndFlush(Unpooled.EMPTY_BUFFER);
-        flushFuture.addListener(new ChannelFutureListener() {
-
-            @Override
-            public void operationComplete(ChannelFuture arg0) throws Exception {
-
+        flushFuture.addListener(f -> {
+            if (f.isSuccess()) {
                 if (nettyContext.pipeline().get(LibertyHttpRequestHandler.class) == null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "Could not verify pipelined request because of null handler on channel: " + nettyContext.channel() + " Is this HTTP2?");
@@ -3357,10 +3353,27 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 } else {
                     nettyContext.pipeline().get(LibertyHttpRequestHandler.class).processNextRequest();
                 }
+            } else {
+                // handle error
             }
         });
-        flushFuture.awaitUninterruptibly();
         setMessageSent();
+    //     flushFuture.addListener(new ChannelFutureListener() {
+
+    //         @Override
+    //         public void operationComplete(ChannelFuture arg0) throws Exception {
+
+    //             if (nettyContext.pipeline().get(LibertyHttpRequestHandler.class) == null) {
+    //                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+    //                     Tr.debug(this, tc, "Could not verify pipelined request because of null handler on channel: " + nettyContext.channel() + " Is this HTTP2?");
+    //                 }
+    //             } else {
+    //                 nettyContext.pipeline().get(LibertyHttpRequestHandler.class).processNextRequest();
+    //             }
+    //         }
+    //     });
+    //     flushFuture.awaitUninterruptibly();
+    //     setMessageSent();
     }
 
     /**
