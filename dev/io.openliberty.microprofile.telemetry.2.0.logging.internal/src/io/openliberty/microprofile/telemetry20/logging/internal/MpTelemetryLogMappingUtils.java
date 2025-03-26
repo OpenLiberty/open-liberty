@@ -347,7 +347,7 @@ public class MpTelemetryLogMappingUtils {
 
         String key = null;
         Object value = null;
-        String traceParent = null;
+        Span customSpan = null;
 
         for (Iterator<KeyValuePair> element = kvpList.iterator(); element.hasNext();) {
             KeyValuePair next = element.next();
@@ -365,7 +365,11 @@ public class MpTelemetryLogMappingUtils {
                     builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
                     if (key.contains("traceparent"))
-                        traceParent = (String) value;
+                        customSpan = createSpan((String) value, 0);
+                    else if (key.contains("b3"))
+                        customSpan = createSpan((String) value, 1);
+                    else if (key.contains("uber-trace-id"))
+                        customSpan = createSpan((String) value, 2);
                     else {
                         String[] headerSplit = ((String) value).split(",");
                         for (int i = 0; i < headerSplit.length; i++) {
@@ -402,14 +406,31 @@ public class MpTelemetryLogMappingUtils {
 
         // Set the Span and Trace IDs from the current context. We're not on the same thread at the point when access logs are collected
         // so we need to extract the trace/span ID from the 'traceparent' request header.
-        if (traceParent != null) {
-            String[] traceSplit = traceParent.split("-");
-
-            SpanContext customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], TraceFlags.getSampled(), TraceState.getDefault());
-            Span customSpan = Span.wrap(customSpanContext);
+        if (customSpan != null) {
             builder.setContext(Context.current().with(customSpan));
         } else
             builder.setContext(Context.current());
+
+    }
+
+    private static Span createSpan(String requestHeader, int propagator) {
+        SpanContext customSpanContext = null;
+        if (propagator == 0) { // Check the w3c format for the "traceparent" header
+            String[] traceSplit = requestHeader.split("-");
+            customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], TraceFlags.getSampled(), TraceState.getDefault());
+        } else if (propagator == 1) { // Check the b3 format for the "b3" header
+            String[] traceSplit = requestHeader.split("-");
+            customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
+        } else if (propagator == 2) { // Check the Jaeger format for the "uber-trace-id" header
+            String[] traceSplit = requestHeader.split(":");
+            customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
+        }
+
+        if (customSpanContext != null) {
+            Span customSpan = Span.wrap(customSpanContext);
+            return customSpan;
+        } else
+            return null;
 
     }
 
