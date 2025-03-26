@@ -364,13 +364,10 @@ public class MpTelemetryLogMappingUtils {
                 } else if (key.equals("datetime") || key.equals("accessLogDatetime")) {
                     builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
-                    if (key.contains("traceparent"))
-                        customSpan = createSpan((String) value, 0);
-                    else if (key.contains("b3"))
-                        customSpan = createSpan((String) value, 1);
-                    else if (key.contains("uber-trace-id"))
-                        customSpan = createSpan((String) value, 2);
-                    else {
+                    if (key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME) || key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)
+                        || key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) {
+                        customSpan = createSpan(key, (String) value);
+                    } else {
                         String[] headerSplit = ((String) value).split(",");
                         for (int i = 0; i < headerSplit.length; i++) {
                             headerSplit[i] = headerSplit[i].trim();
@@ -413,15 +410,16 @@ public class MpTelemetryLogMappingUtils {
 
     }
 
-    private static Span createSpan(String requestHeader, int propagator) {
+    private static Span createSpan(String key, String requestHeader) {
+
         SpanContext customSpanContext = null;
-        if (propagator == 0) { // Check the w3c format for the "traceparent" header
+        if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME)) { // Check the w3c format for the "traceparent" header. This is the default otel propagator
             String[] traceSplit = requestHeader.split("-");
             customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], TraceFlags.getSampled(), TraceState.getDefault());
-        } else if (propagator == 1) { // Check the b3 format for the "b3" header
+        } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)) { // Check the b3 format for the "b3" header
             String[] traceSplit = requestHeader.split("-");
             customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
-        } else if (propagator == 2) { // Check the Jaeger format for the "uber-trace-id" header
+        } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) { // Check the Jaeger format for the "uber-trace-id" header
             String[] traceSplit = requestHeader.split(":");
             customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
         }

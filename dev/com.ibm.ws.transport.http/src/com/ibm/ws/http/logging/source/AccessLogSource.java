@@ -594,20 +594,30 @@ public class AccessLogSource implements Source {
 
             //Include the requestFirstLine for Telemetry to be used as the body where applicable
             fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null)));
-            fieldSetters.add((ald, alrd) -> ald.setRequestHeader("traceparent", AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(), "traceparent")));
-            fieldSetters.add((ald, alrd) -> ald.setRequestHeader("b3", AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(), "b3")));
-            fieldSetters.add((ald, alrd) -> ald.setRequestHeader("uber-trace-id",
-                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(), "uber-trace-id")));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_W3C_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_W3C_HEADER_NAME)));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_B3_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_B3_HEADER_NAME)));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_JAEGER_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)));
 
         } else if (accessLogFieldsTelemetryConfig.equals("logFormat")) {
             formatters[5] = populateCustomTelemetryFormatters(fieldsToAddTelemetryLogging, CollectorConstants.KEYS_TELEMETRY_LOGGING);
 
             //Include the requestFirstLine for Telemetry to be used as the body where applicable
             fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null)));
-            fieldSetters.add((ald, alrd) -> ald.setRequestHeader("traceparent", AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(), "traceparent")));
-            fieldSetters.add((ald, alrd) -> ald.setRequestHeader("b3", AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(), "b3")));
-            fieldSetters.add((ald, alrd) -> ald.setRequestHeader("uber-trace-id",
-                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(), "uber-trace-id")));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_W3C_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_W3C_HEADER_NAME)));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_B3_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_B3_HEADER_NAME)));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_JAEGER_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)));
 
         }
 

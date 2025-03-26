@@ -152,5 +152,8 @@ public class MpTelemetryLogFieldConstants {
     public static final String ACCESS_BYTES_SENT = "bytesSent";
     public static final String ACCESS_USER_AGENT = "userAgent";
     public static final String ACCESS_BYTES_RECEIVED = "bytesReceived";
+    public static final String ACCESS_TRACE_W3C_HEADER_NAME = "traceparent";
+    public static final String ACCESS_TRACE_JAEGER_HEADER_NAME = "uber-trace-id";
+    public static final String ACCESS_TRACE_B3_HEADER_NAME = "b3";
 
 }
