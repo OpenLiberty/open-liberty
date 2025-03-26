@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -42,6 +42,5 @@ WS-TraceGroup: MPOPENAPI
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	io.openliberty.microprofile.openapi.internal.common;version=latest,\
-	io.openliberty.io.smallrye.openapi.core
+	io.openliberty.microprofile.openapi.internal.common;version=latest
 

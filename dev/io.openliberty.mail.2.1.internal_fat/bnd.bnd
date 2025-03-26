@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -32,6 +32,5 @@ fat.minimum.java.level: 11
 	io.openliberty.jakarta.mail.2.1;version=latest,\
 	io.openliberty.org.eclipse.angus.mail;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
-	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.org.slf4j.jdk14;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest

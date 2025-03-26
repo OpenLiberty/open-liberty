@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -61,9 +62,11 @@ public class SharedClassTestRule implements TestRule {
     }
 
     private ServerSetup<?> serverSetup;
+    private Function<String, Boolean> isClassModified = (s) -> Boolean.TRUE;
     private LibertyServer server;
     private String consoleLogName = "console.log";
     private ServerMode serverMode = ServerMode.storeInCache;
+    private boolean runAutoExpand = true;
 
     public ServerMode serverMode() {
         return serverMode;
@@ -92,6 +95,22 @@ public class SharedClassTestRule implements TestRule {
         return this;
     }
 
+    /**
+     * Sets if the tests should be run with autoExtract set.
+     *
+     * @param
+     * @return
+     */
+    public SharedClassTestRule setRunAutoExpand(boolean runAutoExpand) {
+        this.runAutoExpand = runAutoExpand;
+        return this;
+    }
+
+    public SharedClassTestRule setIsClassModified(Function<String, Boolean> isClassModified) {
+        this.isClassModified = isClassModified;
+        return this;
+    }
+
     @Override
     public Statement apply(Statement base, Description desc) {
         assertNotNull("Must set ServerSetup", serverSetup);
@@ -104,10 +123,10 @@ public class SharedClassTestRule implements TestRule {
             classCache = server.getFileFromLibertyInstallRoot("usr/servers/.classCache");
         } catch (Exception e) {
             // didn't find an existing cache; just return
-            Log.info(FATSuite.class, "deleteSharedClassCache", "No .classCache found to delete.");
+            log("deleteSharedClassCache", "No .classCache found to delete.");
             return;
         }
-        Log.info(FATSuite.class, "deleteSharedClassCache", "deleting " + classCache.getAbsolutePath());
+        log("deleteSharedClassCache", "deleting " + classCache.getAbsolutePath());
         classCache.delete();
     }
 
@@ -116,8 +135,8 @@ public class SharedClassTestRule implements TestRule {
         while (traceLines.hasNext()) {
             String line = traceLines.next();
             if (line.contains(expectedTraceMsg)) {
-                String storedClass = traceLines.next();
-                if (storedClass.contains(testMethod.className())) {
+                String tracedClassName = traceLines.next();
+                if (tracedClassName.contains(testMethod.className())) {
                     return;
                 }
             }
@@ -125,6 +144,15 @@ public class SharedClassTestRule implements TestRule {
         fail("Did not find the expected trace message '" + expectedTraceMsg + "' for class: " + testMethod.className());
     }
 
+    private final static String STORE_IN_CACHE_MESSAGE = "Called shared class cache to store class";
+    private final static String LOAD_FROM_CACHE_MESSAGE = "Found class in shared class cache";
+    private final static String NO_SHARE_URL_FIND = "No shared class cache URL to find class";
+    private final static String NO_SHARE_URL_STORE = "No shared class cache URL to store class";
+
+    void checkModifiedClassTrace(LibertyServer server, TestMethod testMethod) throws Exception {
+        String expectedTraceMsg = isClassModified.apply(testMethod.className()) ? STORE_IN_CACHE_MESSAGE : LOAD_FROM_CACHE_MESSAGE;
+        checkSharedClassTrace(server, testMethod, expectedTraceMsg);
+    }
     public void runSharedClassTest(String testServletPath, String testMethodName) throws Exception {
         int underscore = testMethodName.indexOf('_');
         if (underscore >= 0) {
@@ -132,19 +160,26 @@ public class SharedClassTestRule implements TestRule {
         }
         TestMethod testMethod = TestMethod.valueOf(testMethodName);
         runTest(server, SHARED_CLASSES_WAR_NAME + testServletPath, testMethod.name());
+        String expectedMessage = null;;
         switch(serverMode) {
             case storeInCache:
-                checkSharedClassTrace(server, testMethod, "Called shared class cache to store class");
+                expectedMessage = testMethod.hasShareURL() ? STORE_IN_CACHE_MESSAGE : NO_SHARE_URL_STORE;
                 break;
             case loadFromCache:
-                checkSharedClassTrace(server, testMethod, "Found class in shared class cache");
+                expectedMessage = testMethod.hasShareURL() ? LOAD_FROM_CACHE_MESSAGE : NO_SHARE_URL_FIND;
                 break;
             case modifyAppClasses:
-                checkSharedClassTrace(server, testMethod, "Called shared class cache to store class");
+                if (isClassModified.apply(testMethod.className())) {
+                    expectedMessage = testMethod.hasShareURL() ? STORE_IN_CACHE_MESSAGE : NO_SHARE_URL_STORE;
+                } else {
+                    expectedMessage = testMethod.hasShareURL() ? LOAD_FROM_CACHE_MESSAGE : NO_SHARE_URL_FIND;
+                }
                 break;
             default:
                 fail("Unknown serverMode: " + serverMode);
         }
+        assertNotNull("expectedMessage is null", expectedMessage);
+        checkSharedClassTrace(server, testMethod, expectedMessage);
     }
 
     /**
@@ -177,10 +212,12 @@ public class SharedClassTestRule implements TestRule {
             evaluate(ServerMode.loadFromCache, false);
             evaluate(ServerMode.modifyAppClasses, false);
 
-            // now run all tests again with autoExpand
-            evaluate(ServerMode.storeInCache, true);
-            evaluate(ServerMode.loadFromCache, true);
-            evaluate(ServerMode.modifyAppClasses, true);
+            // now run all tests again with autoExpand if requested to
+            if (runAutoExpand) {
+                evaluate(ServerMode.storeInCache, true);
+                evaluate(ServerMode.loadFromCache, true);
+                evaluate(ServerMode.modifyAppClasses, true);
+            }
         }
 
         private void evaluate(ServerMode mode, boolean autoExpand) throws Throwable {

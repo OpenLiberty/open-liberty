@@ -27,6 +27,7 @@ import com.ibm.ws.microprofile.health.internal.AppTracker;
 import com.ibm.ws.microprofile.health.internal.AppTrackerImpl;
 import com.ibm.wsspi.application.ApplicationState;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
 
 /**
@@ -62,19 +63,45 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
                  * interface. Ensure we are dealing with a HealthCheck40Service and above.
                  */
                 if (healthCheckService != null && healthCheckService instanceof HealthCheck40Service) {
-
+                    HealthCheck40Service hc40serv = (HealthCheck40Service) healthCheckService;
                     /*
                      * Start health check processes once the first application has started
                      */
                     if (!isOneAppStarted.getAndSet(true)) {
-                        ((HealthCheck40Service) healthCheckService).startFileHealthCheckProcesses();
+
+                        /*
+                         * Starting health check processes will invoke an immediate started, liveness and readineess checks.
+                         */
+                        CheckpointPhase.onRestore(() -> hc40serv.startFileHealthCheckProcesses());
 
                     } else {
                         /*
+                         * Do an immediate startup check after every application start (after the first application).
+                         *
                          * If we get to last application to be started, perform "started" file health check to save up to 1 second for indicating start status
-                         * of server.
+                         * of server (Depending on where in the 1 second interval the startup timer is).
+                         *
+                         * Example:
+                         * Given Applications A and B.
+                         *
+                         * Elapsed time : 100ms. App A starts.
+                         * - Health processes start which includes immediate startup check.
+                         * - Startup status DOWN (due to convoluted startup check logic).
+                         * - Next startup check would be at 1100ms elapsed time.
+                         *
+                         *
+                         * Elapsed time: 500ms.
+                         * - App A underlying logic has completed and would report UP at this moment.
+                         *
+                         * Elapsed time: 600ms. App B starts.
+                         * - App B starts.
+                         * - Immediate check for startup. App B returns UP. App A returns UP.
+                         * - Started file is created.
+                         * - Savings of (1100ms - 600ms) 500 ms.
+                         *
+                         *
                          */
-                        ((HealthCheck40Service) healthCheckService).performFileHealthCheck(HealthFileUtils.getStartFile(), HealthCheckConstants.HEALTH_CHECK_START);
+                        hc40serv.performFileHealthCheck(HealthFileUtils.getStartFile(), HealthCheckConstants.HEALTH_CHECK_START);
                     }
                 }
 

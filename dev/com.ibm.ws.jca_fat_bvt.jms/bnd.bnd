@@ -1,3 +1,13 @@
+#*******************************************************************************
+# Copyright (c) 2022, 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -13,15 +23,12 @@ tested.features:\
 	concurrent-3.0, connectors-2.1, xmlbinding-4.0, servlet-6.0
 
 -buildpath: \
-	fattest.simplicity;version=latest,\
-	com.ibm.ws.componenttest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.junit.extensions;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.javaee.jms.1.1;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest

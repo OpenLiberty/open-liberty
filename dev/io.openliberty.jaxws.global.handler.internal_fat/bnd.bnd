@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021,2024 IBM Corporation and others.
+# Copyright (c) 2021,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -103,8 +103,7 @@ tested.features=appSecurity-3.0, \
 	commons-httpclient:commons-httpclient;version='3.1',\
 	com.ibm.ws.org.apache.httpcomponents;version=latest,\
 	org.apache.wink:wink-client;version='1.4',\
-	org.apache.wink:wink-common;version='1.4',\
-	com.ibm.ws.componenttest;version=latest
+	org.apache.wink:wink-common;version='1.4'
 
 # Copy in FIPS keys
 ltpa.fips.enabled: true

@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="test-applications/sharedClassesEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/sharedClassesWarLib.jar/src"/>
 	<classpathentry kind="src" path="test-applications/sharedClassesEarLib.jar/src"/>
+	<classpathentry kind="src" path="test-applications/sharedClassesEarLib2.jar/src"/>
 	<classpathentry kind="src" path="test-applications/sharedClassesServerLib.jar/src"/>
 	<classpathentry kind="src" path="test-applications/sharedClassesResourceAdaptor.jar/src"/>
 	<classpathentry kind="src" path="test-resourceadapters/sharedClassesRar/src"/>

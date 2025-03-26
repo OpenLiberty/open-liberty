@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ fat.project: true
 tested.features: authFilter-1.0
 
 -buildpath: \
-	fattest.simplicity;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
@@ -32,8 +31,7 @@ tested.features: authFilter-1.0
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
 	org.apache.httpcomponents:httpcore;version=4.1.2,\
-	com.ibm.ws.componenttest.2.0,\
-	com.ibm.ws.componenttest
+	com.ibm.ws.componenttest.2.0
 
 # Copy in FIPS keys
 ltpa.fips.enabled: true

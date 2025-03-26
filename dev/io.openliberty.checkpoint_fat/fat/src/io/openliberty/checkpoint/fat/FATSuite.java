@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -82,6 +83,7 @@ import componenttest.topology.impl.LibertyServer;
                 MPTelemetryTest.class,
                 WebProfileEARtest.class,
                 MPHealthTest.class,
+                MPHealthTestFileBased.class, // Testing new
                 SlowAppStartTest.class,
                 JsonbTest.class,
                 JsonpTest.class,
@@ -233,6 +235,17 @@ public class FATSuite {
                                           MicroProfileActions.MP61, // rest are FULL mode
                                           MicroProfileActions.MP41,
                                           MicroProfileActions.MP50);
+    }
+
+    public static RepeatTests MPHealthFileBasedRepeat(String serverName) {
+        return MicroProfileActions.repeat(serverName,
+                                          MicroProfileActions.MP70_EE10, // First test in LITE mode
+                                          // Nothing specific for EE 11 that we should repeat for checkpoint
+                                          // MicroProfileActions.MP70_EE11,
+                                          MicroProfileActions.MP61, // rest are FULL mode
+                                          MicroProfileActions.MP50,
+                                          HealthActions.MP41_MPHEALTH40); //  mpHealth-4.0 FULL w/ MP41 EE8
+
     }
 
     public static final String MP50_MPTEL11_ID = MicroProfileActions.MP50_ID + "_MPTEL11";

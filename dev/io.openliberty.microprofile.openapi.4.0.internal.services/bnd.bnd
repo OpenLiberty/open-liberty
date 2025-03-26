@@ -62,7 +62,6 @@ WS-TraceGroup: MPOPENAPI
     io.openliberty.org.eclipse.microprofile.config.3.1, \
     org.jboss.logging:jboss-logging,\
     io.openliberty.microprofile.openapi.2.0.internal_test;version=latest,\
-    io.openliberty.microprofile.openapi.internal.common;version=latest,\
     io.openliberty.com.fasterxml.jackson;version=latest,\
     com.ibm.ws.kernel.service;version=latest,\
     com.ibm.ws.org.apache.commons.lang3;version=latest

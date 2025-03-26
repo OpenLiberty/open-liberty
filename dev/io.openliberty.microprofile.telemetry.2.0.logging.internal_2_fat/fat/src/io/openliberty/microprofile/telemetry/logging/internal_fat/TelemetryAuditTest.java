@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal_fat;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -63,6 +64,7 @@ public class TelemetryAuditTest extends FATServletClient {
     public static final String SERVER_XML_ONLY_AUDIT_SOURCE = "onlyAuditSource.xml";
     public static final String SERVER_XML_NO_AUDIT_SOURCE_FEATURE = "noAuditSourceFeature.xml";
     public static final String SERVER_XML_INVALID_AUDIT_SOURCE = "invalidAuditSource.xml";
+    public static final String SERVER_XML_AUDIT_FILE_HANDLER = "auditFileHandlerServer.xml";
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
 
@@ -404,6 +406,57 @@ public class TelemetryAuditTest extends FATServletClient {
         Log.info(c, "testTelemetryAuditLogsSpanTraceIds", "Audit log event with trace and span id : " + auditLine);
         assertNotNull("The audit event log was NOT found.", auditLine);
         assertFalse("The audit log event does NOT contain a valid trace and span id", auditLine.contains(ZERO_SPAN_TRACE_ID));
+    }
+
+    /**
+     * Tests whether only the Security Audit Management audit event is bridged over, when the auditFileHandler
+     * element is configured and filtered to log only Security Audit Management events.
+     */
+    @Test
+    public void testTelemetryAuditFileHandlerFilter() throws Exception {
+        RemoteFile messageLogFile = server.getDefaultLogFile();
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+
+        // Configure audit feature and audit source
+        setConfig(server, messageLogFile, SERVER_XML_AUDIT_FILE_HANDLER);
+
+        // Wait for the audit security management event that occurs at audit service startup to be bridged over.
+        String auditLine = server.waitForStringInLog("AuditService", consoleLogFile);
+        assertNotNull("The AuditService audit event was not found.", auditLine);
+
+        // Check if the expected key-value pair is correctly formatted and mapped to OTel.
+        Map<String, String> expectedAuditFieldsMap = new HashMap<String, String>() {
+            {
+                put("io.openliberty.type", "liberty_audit");
+                put("io.openliberty.audit.event_name", "SECURITY_AUDIT_MGMT");
+                put("io.openliberty.audit.event_sequence_number", "");
+                put("io.openliberty.audit.observer.id", "");
+                put("io.openliberty.audit.observer.name", "AuditService");
+
+                put("io.openliberty.audit.observer.type_uri", "service/server");
+
+                put("io.openliberty.audit.outcome", "success");
+
+                put("io.openliberty.audit.target.id", "");
+
+                put("io.openliberty.audit.target.type_uri", "service/audit/start");
+
+                put("thread.id", ""); // since, the thread.id can be random, have to make sure the thread.id field is still present.
+                put("io.openliberty.sequence", ""); // since, the sequence can be random, have to make sure the sequence field is still present.
+            }
+        };
+        TestUtils.checkJsonMessage(auditLine, expectedAuditFieldsMap);
+
+        // Trigger an audit event.
+        TestUtils.runApp(server, "logServlet");
+
+        // Ensure other audit events were NOT bridged over, that is generated from an app.
+        auditLine = server.waitForStringInLog("SECURITY_AUTHN", LOG_SEARCH_TIMEOUT, consoleLogFile);
+        assertNull("Application related audit logs could be found.", auditLine);
+
+        // Ensure only 2 liberty_audit events are bridged over, which should be only Security Audit Management events.
+        int numOfAuditLogs = server.waitForMultipleStringsInLog(2, "liberty_audit", LOG_SEARCH_TIMEOUT, consoleLogFile);
+        assertEquals("More than 2 audit events were bridged over.", 2, numOfAuditLogs);
     }
 
     private static void setConfig(LibertyServer server, RemoteFile logFile, String fileName) throws Exception {

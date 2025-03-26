@@ -67,17 +67,13 @@ testsrc: test/src
 
 -buildpath: \
         com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-        com.ibm.ws.kernel.boot.core;version=latest,\
-        com.ibm.ws.app.manager;version=latest,\
-        com.ibm.websphere.javaee.servlet.3.1; version=latest,\
         com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-        io.openliberty.org.eclipse.microprofile.health.3.1;version=latest,\
-        io.openliberty.microprofile.health.3.1.internal,\
+        com.ibm.websphere.javaee.servlet.3.1; version=latest,\
         com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
-        com.ibm.ws.adaptable.module;version=latest,\
         com.ibm.websphere.org.osgi.core;version=latest,\
         com.ibm.websphere.org.osgi.service.component;version=latest,\
-        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+        com.ibm.ws.adaptable.module;version=latest,\
+        com.ibm.ws.app.manager;version=latest,\
         com.ibm.ws.cdi.interfaces;version=latest,\
         com.ibm.ws.classloader.context;version=latest,\
         com.ibm.ws.classloading;version=latest,\
@@ -86,15 +82,20 @@ testsrc: test/src
         com.ibm.ws.context;version=latest,\
         com.ibm.ws.javaee.metadata.context;version=latest,\
         com.ibm.ws.javaee.version;version=latest,\
-        com.ibm.ws.kernel.service;version=latest,\
+        com.ibm.ws.kernel.boot.common,\
+        com.ibm.ws.kernel.boot.core;version=latest,\
         com.ibm.ws.kernel.security.thread;version=latest,\
+        com.ibm.ws.kernel.service;version=latest,\
         com.ibm.ws.logging;version=latest,\
+        com.ibm.ws.org.apache.commons.lang3;version=latest,\
         com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
         com.ibm.ws.threading;version=latest,\
         com.ibm.ws.webcontainer;version=latest,\
-        com.ibm.ws.org.apache.commons.lang3;version=latest,\
-        org.eclipse.osgi;version=latest,\
-        io.openliberty.microprofile.health.3.0.internal;version=latest
+        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+        io.openliberty.microprofile.health.3.0.internal;version=latest,\
+        io.openliberty.microprofile.health.3.1.internal,\
+        io.openliberty.org.eclipse.microprofile.health.3.1;version=latest,\
+        org.eclipse.osgi;version=latest
 
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

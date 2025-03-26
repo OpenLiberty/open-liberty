@@ -307,6 +307,10 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
                         Tr.debug(tc, "Did not find class in shared class cache", new Object[] {className, sharedClassCacheURL});
                     }
                 }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No shared class cache URL to find class", className);
+                }
             }
         }
         return bytes;

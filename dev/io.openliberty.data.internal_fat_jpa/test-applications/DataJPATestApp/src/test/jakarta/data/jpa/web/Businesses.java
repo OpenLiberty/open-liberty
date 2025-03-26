@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -76,19 +76,19 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     // embeddable as result type
     @OrderBy("location.address.street")
     @OrderBy("location.address.houseNum")
-    Stream<Location> findByLocationAddressZip(int zipCode);
+    Stream<Location> findByLocationAddressZip(ZipCode zipCode);
 
     // embeddable 2 levels deep
     @OrderBy(value = "location.address.city", descending = true)
     @OrderBy("location.address.zip")
     @OrderBy("location.address.houseNum")
     @OrderBy("id")
-    CursoredPage<Business> findByLocationAddressZipIn(Iterable<Integer> zipCodes, PageRequest pagination);
+    CursoredPage<Business> findByLocationAddressZipIn(Iterable<ZipCode> zipCodes, PageRequest pagination);
 
     // embeddable 3 levels deep as result type
     @OrderBy("location.address.street")
     @OrderBy("location.address.houseNum")
-    Stream<Street> findByLocationAddressZipNotAndLocationAddressCity(int excludeZipCode, String city);
+    Stream<Street> findByLocationAddressZipNotAndLocationAddressCity(ZipCode excludeZipCode, String city);
 
     @OrderBy("id")
     Business findFirstByName(String name);

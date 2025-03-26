@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -98,7 +98,6 @@ Private-Package: \
 	org.jmock:jmock;strategy=exact;version='2.5.1',\
 	com.ibm.ws.org.objenesis:objenesis;version='1.0',\
 	com.ibm.ws.kernel.boot;version=latest,\
-	com.ibm.ws.org.jose4j;version=latest,\
 	fattest.simplicity;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.test.common;version=latest,\
@@ -106,5 +105,4 @@ Private-Package: \
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
-	com.ibm.ws.org.slf4j.api;version=latest,\
-	com.ibm.ws.org.apache.httpcomponents
+	com.ibm.ws.org.slf4j.api;version=latest

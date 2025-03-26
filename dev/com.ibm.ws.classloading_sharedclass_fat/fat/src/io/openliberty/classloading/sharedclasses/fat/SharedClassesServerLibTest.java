@@ -46,6 +46,7 @@ public class SharedClassesServerLibTest extends FATServletClient {
     @ClassRule
     public static SharedClassTestRule sharedClassTestRule = new SharedClassTestRule()
                         .setConsoleLogName(SharedClassesServerLibTest.class.getSimpleName())
+                        .setRunAutoExpand(false) // no need to expand the app for this test on server libraries
                         .setServerSetup(SharedClassesServerLibTest::setupTestApp);
 
     public static LibertyServer setupTestApp(ServerMode mode) throws Exception {

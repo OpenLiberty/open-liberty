@@ -73,6 +73,8 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
      */
     private volatile int fileUpdateIntevalMilliseconds = -1;
 
+    protected volatile boolean isCheckPointFinished = false;
+
     /**
      *
      * Instead of relying on checking if fileUpdateIntevalMilliseconds is > 0,
@@ -275,6 +277,10 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
     /** {@inheritDoc} */
     @Override
     public void startFileHealthCheckProcesses() {
+        /*
+         * If we got here, that means we've been restored (or this is a normal run)
+         */
+        isCheckPointFinished = true;
 
         /*
          * Last flag in the if is the beta guard
@@ -393,6 +399,27 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
     @Override
     public Status performFileHealthCheck(File file, String healthCheckProcedure) {
+
+        /*
+         * For a checkpoint/restore environment.
+         * If an application image is ever built with more than one app,
+         * we need to make sure those immediate startup/started checks
+         * from application started don't ever get called.
+         *
+         * There may a configuration where the `started` file is created
+         * before all apps report "started".
+         *
+         * Example:
+         * Apps: A, B ,C.
+         * 1. App A starts. (async call held for starting health processes)
+         * 2. App B starts. Startup status is UP.
+         * - App C is not started, so this would traditionally return a overall DOWN Status
+         * - But if MP Config is set for default START (by accident), then overall Status is UP.
+         * - resulting in `started` file created for the checkpoint image.
+         */
+        if (!isCheckPointFinished) {
+            return null;
+        }
 
         /*
          * Entry point through AppTracker40Impl, needs to verify that system is valid, and we're enabled

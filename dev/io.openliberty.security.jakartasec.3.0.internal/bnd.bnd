@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2024 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,12 +55,9 @@ instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resource
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
-    com.ibm.ws.org.jose4j;version=latest,\
     com.ibm.ws.junit.extensions;version=latest,\
     com.ibm.ws.container.service;version=latest,\
-    com.ibm.ws.kernel.boot;version=latest,\
     io.openliberty.jakarta.cdi.4.0;version=latest,\
-    io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
     io.openliberty.org.apache.jasper.expressionLanguage.5.0;version=latest,\
     io.openliberty.org.eclipse.parsson.1.1,\
     com.ibm.ws.security.test.common;version=latest,\
@@ -70,6 +67,4 @@ instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resource
     com.ibm.ws.org.objenesis:objenesis;version=1.0,\
     cglib:cglib;version=3.3.0,\
     com.ibm.ws.org.objectweb.asm;version=latest,\
-    org.hamcrest:hamcrest-all;version=1.3,\
-    com.ibm.json4j;version=latest,\
-    io.openliberty.jakarta.security.3.0;version=latest
+    org.hamcrest:hamcrest-all;version=1.3

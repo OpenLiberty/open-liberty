@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2025 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+
+<archive>
+	<archive targetInArchive="/sharedClassesWarTest.war">
+		<archive targetInArchive="/WEB-INF/lib/sharedClassesWarLib.jar">
+			<dir sourceOnDisk="${server.config.dir}/looseContent/sharedClassesWarLib"
+				targetInArchive="/" />
+		</archive>
+		<dir sourceOnDisk="${server.config.dir}/looseContent/sharedClassesWarTest/WEB-INF/classes"
+			targetInArchive="/WEB-INF/classes" />
+		<dir sourceOnDisk="${server.config.dir}/looseContent/warPkgA"
+			targetInArchive="/WEB-INF/classes" />
+		<dir sourceOnDisk="${server.config.dir}/looseContent/warPkgB"
+			targetInArchive="/WEB-INF/classes" />
+		<dir sourceOnDisk="${server.config.dir}/looseContent/warPkgC"
+			targetInArchive="/WEB-INF/classes/io/openliberty/classloading/sharedclasses/war/c" />
+	</archive>
+	<archive targetInArchive="/sharedClassesEJB.jar">
+		<dir sourceOnDisk="${server.config.dir}/looseContent/sharedClassesEJB"
+			targetInArchive="/" />
+	</archive>
+	<archive targetInArchive="/lib/sharedClassesEarLib.jar">
+		<dir sourceOnDisk="${server.config.dir}/looseContent/sharedClassesEarLib"
+			targetInArchive="/" />
+	</archive>
+	<archive targetInArchive="/lib/sharedClassesEarLib2.jar">
+		<dir sourceOnDisk="${server.config.dir}/looseContent/earLib2PkgA"
+			targetInArchive="/io/openliberty/classloading/sharedclasses/earlib2/a" />
+		<dir sourceOnDisk="${server.config.dir}/looseContent/earLib2PkgB"
+			targetInArchive="/" />
+	</archive>
+	<archive targetInArchive="/sharedClassesRar.rar">
+		<dir sourceOnDisk="${server.config.dir}/looseContent/sharedClassesRar"
+			targetInArchive="/" />
+		<archive targetInArchive="/sharedClassesResourceAdaptor.jar">
+			<dir sourceOnDisk="${server.config.dir}/looseContent/sharedClassesResourceAdaptor"
+				targetInArchive="/" />
+		</archive>
+	</archive>
+</archive>

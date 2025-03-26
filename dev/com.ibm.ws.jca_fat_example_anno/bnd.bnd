@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,7 +31,6 @@ tested.features:\
 	servlet-6.0
 
 -buildpath: \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.connectors.2.1;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\

@@ -454,6 +454,14 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Called shared class cache to store class", new Object[] {clazz.getName(), sharedClassCacheURL});
                 }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    if (sharedClassCacheURL == null) {
+                        Tr.debug(tc, "No shared class cache URL to store class", clazz.getName());
+                    } else {
+                        Tr.debug(tc, "Did not store class because defined bytes got modified", clazz.getName());
+                    }
+                }
             }
         }
         

@@ -33,7 +33,6 @@ tested.features: \
 	com.ibm.ws.security.authorization.jacc.testprovider.jakarta;version=latest,\
 	io.openliberty.security.authorization.jacc.testprovider;version=latest,\
 	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
-	fattest.simplicity;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	io.openliberty.jakarta.authorization.2.1;version=latest,\

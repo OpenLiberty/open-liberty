@@ -37,5 +37,4 @@ tested.features:\
 	commons-httpclient:commons-httpclient;version=3.1, \
 	httpunit:httpunit;version=1.5.4, \
 	net.sf.jtidy:jtidy;version=9.3.8, \
-	com.ibm.ws.org.slf4j.api;version=latest, \
     com.ibm.ws.org.slf4j.simple;version=latest

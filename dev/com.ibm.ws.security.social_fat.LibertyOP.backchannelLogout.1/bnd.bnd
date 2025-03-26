@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,6 +51,5 @@ tested.features:  transportsecurity-1.0, appsecurity-4.0, restfulws-3.0, pages-3
 	org.glassfish:javax.json;version='1.0',\
 	com.ibm.json4j;version=latest,\
 	org.bitbucket.b_c.jose4j,\
-	com.ibm.ws.security.fat.common.social;version=latest,\
 	com.ibm.ws.security.jwt;version=latest
 

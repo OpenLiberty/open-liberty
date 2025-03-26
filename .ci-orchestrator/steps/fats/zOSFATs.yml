@@ -24,6 +24,6 @@
     runner_minimum_total: 4
     runner_max_total: 4
   includeProperties:
-  - file: jvms/dev/zOS_s390_64.properties
-  - file: steps/fats/fatCommon.properties
-  - file: fatMaxDurationOverrides.properties
+    - file: jvms/dev/zos_IBM_8.properties
+    - file: steps/fats/fatCommon.properties
+    - file: fatMaxDurationOverrides.properties

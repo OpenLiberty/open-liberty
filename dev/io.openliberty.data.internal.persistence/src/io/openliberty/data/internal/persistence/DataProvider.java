@@ -58,6 +58,8 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.metadata.ComponentMetaDataListener;
+import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
@@ -98,6 +100,7 @@ import jakarta.persistence.EntityManagerFactory;
                        DataProvider.class,
                        DeferredMetaDataFactory.class,
                        ApplicationStateListener.class,
+                       ComponentMetaDataListener.class,
                        Introspector.class },
            property = { "deferredMetaData=DATA" })
 public class DataProvider implements //
@@ -108,6 +111,7 @@ public class DataProvider implements //
                 // CDIExtensionMetadataInternal, //
                 DeferredMetaDataFactory, //
                 ApplicationStateListener, //
+                ComponentMetaDataListener, //
                 Introspector {
     private static final TraceComponent tc = Tr.register(DataProvider.class);
 
@@ -289,6 +293,47 @@ public class DataProvider implements //
 
     @Override
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+
+    }
+    //TODO Renable when  javax.naming.NameNotFoundException is fixed
+    //FutureEMBuilder: InitialContext.doLookup(dataStore)
+    /* 
+    @Override
+    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
+        String appName = event.getMetaData().getJ2EEName().getApplication();
+        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appName);
+        if (futures != null) {
+
+            Collection<FutureEMBuilder> removalFutures = new ArrayList<FutureEMBuilder>();
+            for (FutureEMBuilder futureEMBuilder : futures) {
+
+                //WEB Module EMBuilders can't complete until the application has started
+                if (!futureEMBuilder.getMetadataIdentifier().startsWith("WEB")) {
+                    removalFutures.add(futureEMBuilder);
+
+                    // This delays createEMBuilder until restore.
+                    // While this works by avoiding all connections to the data source, it does make restore much slower.
+                    // TODO figure out how to do more work on restore without having to make a connection to the data source
+                    CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+
+                    // Application is ready for DDL generation; register with DDLGen MBean.
+                    // Only those using the Persistence Service will participate, but all will
+                    // be registered since that is not known until createEMBuilder completes.
+                    // Those not participating will return a null DDL file name and be skipped.
+                    futureEMBuilder.registerDDLGenerationParticipant(appName);
+                }
+
+            }
+            futures.removeAll(removalFutures);
+
+            //Return the WEB Module EMBuilders that can't be completed here
+            futureEMBuilders.put(appName, futures);
+        }
+    }
+    */
+    
+    @Override
+    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
     }
 
     @Override
@@ -309,6 +354,11 @@ public class DataProvider implements //
                 futureEMBuilder.registerDDLGenerationParticipant(appName);
             }
         }
+    }
+
+    @Override
+    public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
+
     }
 
     @Override
@@ -852,4 +902,5 @@ public class DataProvider implements //
         if (validationService == svc)
             validationService = null;
     }
+
 }

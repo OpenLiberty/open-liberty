@@ -27,6 +27,10 @@ public class TestSharedClassesEar extends FATServlet{
         new io.openliberty.classloading.sharedclasses.war.b.B().toString();
     }
 
+    public void testWarClassesC() {
+        new io.openliberty.classloading.sharedclasses.war.c.C().toString();
+    }
+
     public void testWarLibA() {
         new io.openliberty.classloading.sharedclasses.warlib.a.A().toString();
     }
@@ -49,6 +53,14 @@ public class TestSharedClassesEar extends FATServlet{
 
     public void testEarLibB() throws Exception {
         new io.openliberty.classloading.sharedclasses.earlib.b.B().toString();
+    }
+
+    public void testEarLib2A() throws Exception {
+        new io.openliberty.classloading.sharedclasses.earlib2.a.A().toString();
+    }
+
+    public void testEarLib2B() throws Exception {
+        new io.openliberty.classloading.sharedclasses.earlib2.b.B().toString();
     }
 
     public void testResoureAdaptorClassesA() throws Exception {

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -44,9 +44,3 @@ Import-Package: \
         com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
         io.openliberty.microprofile.faulttolerance.3.0.internal.metrics;version=latest,\
         io.openliberty.microprofile.metrics.5.0.internal;version=latest
-
--testpath: \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	com.ibm.ws.junit.extensions;version=latest, \
-	org.hamcrest:hamcrest-all;version=1.3
-

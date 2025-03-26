@@ -157,6 +157,9 @@ public class DataJPATestServlet extends FATServlet {
     Orders orders;
 
     @Inject
+    Purchases purchases;
+
+    @Inject
     Rebates rebates;
 
     @Inject
@@ -635,6 +638,66 @@ public class DataJPATestServlet extends FATServlet {
         } catch (MappingException x) {
             // expected - out of range
         }
+    }
+
+    /**
+     * Tests that repository methods can query and sort based on an entity attribute
+     * that has a Converter that is specified on a MappedSuperclass.
+     */
+    @Test
+    public void testConverterOnMappedSuperclass() {
+        PurchaseTime mondayAt6AM = new PurchaseTime( //
+                        LocalTime.of(6, 0, 0), LocalDate.of(2025, 3, 17));
+
+        PurchaseTime mondayAt3PM = new PurchaseTime( //
+                        LocalTime.of(15, 0, 0), LocalDate.of(2025, 3, 17));
+
+        PurchaseTime wednesdayAt6PM = new PurchaseTime( //
+                        LocalTime.of(18, 0, 0), LocalDate.of(2025, 3, 19));
+
+        PurchaseTime thursdayAt10PM = new PurchaseTime( //
+                        LocalTime.of(22, 0, 0), LocalDate.of(2025, 3, 20));
+
+        PurchaseTime fridayAt9AM = new PurchaseTime(//
+                        LocalTime.of(9, 0, 0), LocalDate.of(2025, 3, 21));
+
+        PurchaseTime fridayAtNoon = new PurchaseTime(//
+                        LocalTime.of(12, 0, 0), LocalDate.of(2025, 3, 21));
+
+        PurchaseTime fridayAt10PM = new PurchaseTime(//
+                        LocalTime.of(22, 0, 0), LocalDate.of(2025, 3, 21));
+
+        purchases.removeByTimeOfPurchaseBetween(mondayAt6AM, fridayAt10PM);
+
+        purchases.make(Purchase.of((short) 101,
+                                   "TestAutoApplyConverter-1",
+                                   mondayAt3PM,
+                                   17.89f));
+
+        purchases.make(Purchase.of((short) 102,
+                                   "TestAutoApplyConverter-2",
+                                   thursdayAt10PM,
+                                   22.95f));
+
+        purchases.make(Purchase.of((short) 103,
+                                   "TestAutoApplyConverter-3",
+                                   wednesdayAt6PM,
+                                   30.39f));
+
+        purchases.make(Purchase.of((short) 104,
+                                   "TestAutoApplyConverter-4",
+                                   fridayAtNoon,
+                                   14.49f));
+
+        assertEquals(List.of("TestAutoApplyConverter-1",
+                             "TestAutoApplyConverter-3",
+                             "TestAutoApplyConverter-2"),
+                     purchases.findByTimeOfPurchaseBetween(mondayAt6AM, fridayAt9AM)
+                                     .stream()
+                                     .map(p -> p.itemName)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4, purchases.removeByTimeOfPurchaseBetween(mondayAt6AM, fridayAt10PM));
     }
 
     /**
@@ -1398,7 +1461,11 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testEmbeddableDepth2() {
         CursoredPage<Business> page;
-        List<Integer> zipCodes = List.of(55906, 55902, 55901, 55976, 55905);
+        List<ZipCode> zipCodes = List.of(ZipCode.of(55906),
+                                         ZipCode.of(55902),
+                                         ZipCode.of(55901),
+                                         ZipCode.of(55976),
+                                         ZipCode.of(55905));
 
         page = businesses.findByLocationAddressZipIn(zipCodes, PageRequest.ofSize(4).withoutTotal());
 
@@ -1559,7 +1626,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "NW Lakeridge Pl",
                                      "NW Members Parkway",
                                      "W Highway 14"),
-                             businesses.findByLocationAddressZip(55901)
+                             businesses.findByLocationAddressZip(ZipCode.of(55901))
                                              .map(loc -> loc.address.street.direction + " " + loc.address.street.name)
                                              .collect(Collectors.toList()));
     }
@@ -1575,7 +1642,8 @@ public class DataJPATestServlet extends FATServlet {
                                      "SW 1st St",
                                      "SW Enterprise Dr",
                                      "SW Greenview Dr"),
-                             businesses.findByLocationAddressZipNotAndLocationAddressCity(55901, "Rochester")
+                             businesses.findByLocationAddressZipNotAndLocationAddressCity(ZipCode.of(55901),
+                                                                                          "Rochester")
                                              .map(street -> street.direction + " " + street.name)
                                              .collect(Collectors.toList()));
     }
@@ -2295,7 +2363,7 @@ public class DataJPATestServlet extends FATServlet {
         o2 = orders.findById(o2.id).get();
 
         assertEquals(168.89f, o2.total, 0.01f);
-        assertEquals(o2.purchasedOn, OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT));
+        assertEquals(OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT), o2.purchasedOn);
     }
 
     /**
@@ -3559,7 +3627,11 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testParenthesisInsertionForCursorPagination() {
         PageRequest page1Request = PageRequest.ofSize(3);
-        CursoredPage<Business> page1 = mixed.withZipCodeIn(55901, 55904, page1Request, Sort.asc("name"), Sort.asc(ID));
+        CursoredPage<Business> page1 = mixed.withZipCodeIn(ZipCode.of(55901),
+                                                           ZipCode.of(55904),
+                                                           page1Request,
+                                                           Sort.asc("name"),
+                                                           Sort.asc(ID));
 
         assertEquals(List.of("Benike Construction", "Crenlo", "Home Federal Savings Bank"),
                      page1.stream()
@@ -3568,7 +3640,11 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page1.hasNext());
 
-        CursoredPage<Business> page2 = mixed.withZipCodeIn(55901, 55904, page1.nextPageRequest(), Sort.asc("name"), Sort.asc(ID));
+        CursoredPage<Business> page2 = mixed.withZipCodeIn(ZipCode.of(55901),
+                                                           ZipCode.of(55904),
+                                                           page1.nextPageRequest(),
+                                                           Sort.asc("name"),
+                                                           Sort.asc(ID));
 
         assertEquals(List.of("IBM", "Metafile", "Olmsted Medical"),
                      page2.stream()
@@ -3577,7 +3653,11 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page1.hasNext());
 
-        CursoredPage<Business> page3 = mixed.withZipCodeIn(55901, 55904, page2.nextPageRequest(), Sort.asc("name"), Sort.asc(ID));
+        CursoredPage<Business> page3 = mixed.withZipCodeIn(ZipCode.of(55901),
+                                                           ZipCode.of(55904),
+                                                           page2.nextPageRequest(),
+                                                           Sort.asc("name"),
+                                                           Sort.asc(ID));
 
         assertEquals(List.of("RAC", "Think Bank"),
                      page3.stream()
@@ -4697,7 +4777,7 @@ public class DataJPATestServlet extends FATServlet {
             assertEquals("N", ibm.location.address.street.direction);
             assertEquals("Rochester", ibm.location.address.city);
             assertEquals("MN", ibm.location.address.state);
-            assertEquals(55901, ibm.location.address.zip);
+            assertEquals(ZipCode.of(55901), ibm.location.address.zip);
         } finally {
             // restore original values
             ibm.location.latitude = originalLatitude;
@@ -4720,7 +4800,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("NW", ibm.location.address.street.direction);
         assertEquals("Rochester", ibm.location.address.city);
         assertEquals("MN", ibm.location.address.state);
-        assertEquals(55901, ibm.location.address.zip);
+        assertEquals(ZipCode.of(55901), ibm.location.address.zip);
     }
 
     /**

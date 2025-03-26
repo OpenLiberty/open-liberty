@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2024 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ fat.test.container.images: fbicodex/spnego-kdc-server:1.0
 tested.features: pages-3.0, appsecurity-4.0, cdi-3.0, spnego-1.0, expressionlanguage-5.0, appsecurity-5.0, jsonp-2.1, pages-3.1, cdi-4.0, servlet-6.0
 
 -buildpath: \
-    fattest.simplicity;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.commons.logging;version=latest,\
     org.apache.directory.server:apacheds-all;version=latest, \

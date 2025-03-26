@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2023 IBM Corporation and others.
+# Copyright (c) 2018,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -60,8 +60,6 @@ generate.replacement: true
     org.glassfish:javax.json;version=1.0
 
 -testpath: \
-    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-    com.ibm.ws.junit.extensions;version=latest, \
     org.jmock:jmock-legacy;version=2.5.0, \
     cglib:cglib;version=3.3.0, \
     com.ibm.ws.org.objectweb.asm;version=latest, \

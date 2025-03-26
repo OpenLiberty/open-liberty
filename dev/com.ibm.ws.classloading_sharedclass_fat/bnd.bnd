@@ -13,6 +13,7 @@ bVersion=1.0
 src: \
 	fat/src, \
 	test-applications/sharedClassesEarLib.jar/src, \
+	test-applications/sharedClassesEarLib2.jar/src, \
 	test-applications/sharedClassesEJB.jar/src, \
 	test-applications/sharedClassesResourceAdaptor.jar/src, \
 	test-applications/sharedClassesServerLib.jar/src, \

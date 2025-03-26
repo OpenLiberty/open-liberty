@@ -27,6 +27,10 @@ public class TestSharedClassesWar extends FATServlet{
         new io.openliberty.classloading.sharedclasses.war.b.B().toString();
     }
 
+    public void testWarClassesC() {
+        new io.openliberty.classloading.sharedclasses.war.c.C().toString();
+    }
+
     public void testWarLibA() {
         new io.openliberty.classloading.sharedclasses.warlib.a.A().toString();
     }

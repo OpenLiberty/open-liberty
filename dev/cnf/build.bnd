@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ target-dir: ${if;${driver;gradle};build/libs;generated}
 -fixupmessages.nlsprops: "Unused -privatepackage instructions , no such package\\(s\\) on the class path: \\[*.resources*\\]";is:=ignore
 -fixupmessages.fatsubbundles: "Eclipse: The Bundle Symbolic * start with the project name *_fat*, which must be the project's directory *_fat* name";is:=ignore, \
   "Eclipse: The Bundle Symbolic *_fat* starts with the project name *_fat* but then continues but lacks the separating '.'";is:ignore
+-fixupmessages.duplicateosgi: "Duplicate name osgi.*";is:ignore
 
 javac.source: 1.8
 javac.target: 1.8
