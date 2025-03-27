@@ -21,6 +21,7 @@ import org.testcontainers.utility.DockerImageName;
 import com.ibm.ws.couchdb.fat.tests.CouchDBContainer;
 import com.ibm.ws.couchdb.fat.tests.TestCouchDbWar;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 
@@ -28,11 +29,8 @@ import componenttest.containers.TestContainerSuite;
 @SuiteClasses({ TestCouchDbWar.class })
 public class FATSuite extends TestContainerSuite {
 
-    //TODO Start using ImageBuilder
-//    private static final DockerImageName COUCHDB_SSL = ImageBuilder.build("couchdb-ssl:3")
-//                    .getDockerImageName();
-
-    private static final DockerImageName COUCHDB_SSL = DockerImageName.parse("kyleaure/couchdb-ssl:1.0");
+    private static final DockerImageName COUCHDB_SSL = ImageBuilder.build("couchdb-ssl:3")
+                    .getDockerImageName();
 
     @ClassRule
     public static CouchDBContainer couchdb = new CouchDBContainer(COUCHDB_SSL)

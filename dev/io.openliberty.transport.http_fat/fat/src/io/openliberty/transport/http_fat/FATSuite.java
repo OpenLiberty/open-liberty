@@ -24,6 +24,7 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
 @SuiteClasses({
     AccessListsTests.class,
     AccessLogRolloverTest.class
+
 })
 public class FATSuite {
 
@@ -35,5 +36,3 @@ public class FATSuite {
                     .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
 }
-
-

@@ -32,6 +32,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 
 import javax.sql.DataSource;
@@ -185,17 +186,27 @@ public class DataProvider implements //
     public volatile boolean dropTables;
 
     /**
-     * EntityManagerBuilder futures per application, to complete once the
-     * application starts. After the application starts, these are kept around
-     * for the introspector. The map is cleared on application stop.
-     */
-    private final ConcurrentHashMap<String, Collection<FutureEMBuilder>> futureEMBuilders = //
-                    new ConcurrentHashMap<>();
-
-    /**
      * The Liberty thread pool.
      */
     final ExecutorService executor;
+
+    /**
+     * EntityManagerBuilder futures for repositories defined in web modules,
+     * grouped by application, to complete once the application starts.
+     * After the application starts, these are kept around for the introspector.
+     * The map is cleared on application stop.
+     */
+    private final ConcurrentHashMap<String, Set<FutureEMBuilder>> futureEMBuildersInWeb = //
+                    new ConcurrentHashMap<>();
+
+    /**
+     * EntityManagerBuilder futures for repositories defined elsewhere than
+     * web modules, grouped per application, to complete once [the first component
+     * metadata is created?]. After that, these are kept around for the
+     * introspector. The map is cleared on application stop.
+     */
+    private final ConcurrentHashMap<String, Set<FutureEMBuilder>> futureEMBuildersNonWeb = //
+                    new ConcurrentHashMap<>();
 
     /**
      * For suspending and resuming local transactions.
@@ -297,7 +308,7 @@ public class DataProvider implements //
     }
     //TODO Renable when  javax.naming.NameNotFoundException is fixed
     //FutureEMBuilder: InitialContext.doLookup(dataStore)
-    /* 
+    /*
     @Override
     public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
         String appName = event.getMetaData().getJ2EEName().getApplication();
@@ -331,7 +342,7 @@ public class DataProvider implements //
         }
     }
     */
-    
+
     @Override
     public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
     }
@@ -339,7 +350,7 @@ public class DataProvider implements //
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
         String appName = appInfo.getName();
-        Collection<FutureEMBuilder> futures = futureEMBuilders.get(appName);
+        Collection<FutureEMBuilder> futures = futureEMBuildersInWeb.get(appName);
         if (futures != null) {
             for (FutureEMBuilder futureEMBuilder : futures) {
                 // This delays createEMBuilder until restore.
@@ -384,7 +395,8 @@ public class DataProvider implements //
 
         // TODO also cancel the FutureEMBuilders if not done yet, and for those
         // that are done, also cancel each Future in its entityInfoMap ?
-        futureEMBuilders.remove(appName);
+        futureEMBuildersInWeb.remove(appName);
+        futureEMBuildersNonWeb.remove(appName);
 
         Map<String, Configuration> configurations = dbStoreConfigAllApps.remove(appName);
         if (configurations != null)
@@ -592,8 +604,19 @@ public class DataProvider implements //
         });
 
         writer.println();
-        writer.println("EntityManager builder futures:");
-        futureEMBuilders.forEach((appName, futureEMBuilders) -> {
+        writer.println("EntityManager builder futures for web modules:");
+        futureEMBuildersInWeb.forEach((appName, futureEMBuilders) -> {
+            writer.println("  for application " + appName);
+            for (FutureEMBuilder futureEMBuilder : futureEMBuilders) {
+                futureEMBuilder.introspect(writer, "    ") //
+                                .ifPresent(builders::add);
+                writer.println();
+            }
+        });
+
+        writer.println();
+        writer.println("EntityManager builder futures for other:");
+        futureEMBuildersNonWeb.forEach((appName, futureEMBuilders) -> {
             writer.println("  for application " + appName);
             for (FutureEMBuilder futureEMBuilder : futureEMBuilders) {
                 futureEMBuilder.introspect(writer, "    ") //
@@ -858,13 +881,15 @@ public class DataProvider implements //
     }
 
     /**
-     * Arrange for the specified EntityManagerBuilders to initialize once the application is started.
+     * Arrange for the specified EntityManagerBuilders to initialize once the
+     * application is started.
      *
      * @param appName  application name.
      * @param builders list of EntityManagerBuilder.
      */
-    public void onAppStarted(String appName, Collection<FutureEMBuilder> builders) {
-        Collection<FutureEMBuilder> previous = futureEMBuilders.putIfAbsent(appName, builders);
+    public void onAppStarted(String appName, Set<FutureEMBuilder> builders) {
+        Set<FutureEMBuilder> previous = futureEMBuildersInWeb //
+                        .putIfAbsent(appName, new ConcurrentSkipListSet<>(builders));
         if (previous != null)
             previous.addAll(builders);
     }

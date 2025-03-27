@@ -18,8 +18,6 @@ src: \
 
 fat.project: true
 
-fat.test.container.images: jonhawkes/postgresql-ssl:1.0
-
 tested.features: \
   cdi-3.0, cdi-4.0,\
   expressionlanguage-4.0, expressionlanguage-5.0,\

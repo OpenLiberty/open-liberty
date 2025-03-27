@@ -47,4 +47,10 @@ public class CollectorConstants {
     public static final short KEYS_JSON = 0;
     public static final short KEYS_LOGSTASH = 1;
     public static final short KEYS_TELEMETRY_LOGGING = 2;
+
+    /* mpTelemetry access log trace headers for different propagators */
+    public static final String ACCESS_TRACE_W3C_HEADER_NAME = "traceparent";
+    public static final String ACCESS_TRACE_JAEGER_HEADER_NAME = "uber-trace-id";
+    public static final String ACCESS_TRACE_B3_HEADER_NAME = "b3";
+
 }

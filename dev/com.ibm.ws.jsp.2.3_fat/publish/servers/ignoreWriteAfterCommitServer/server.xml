@@ -9,7 +9,7 @@
  -->
 <server description="Server for testing ignoreWriteAfterCommit">
 
-    <include location="../fatTestPorts.xml"/>
+    <include location="../fatTestCommon.xml"/>
 
     <featureManager>
         <feature>jsp-2.3</feature>
@@ -18,8 +18,8 @@
         <!-- httpEndpoint needed to that we an have the httpOptions included for the test  -->
     <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
-                  httpPort="${bvt.prop.HTTP_secondary}"
-                  httpsPort="${bvt.prop.HTTP_secondary.secure}">
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
         <httpOptions ignoreWriteAfterCommit="true"/>
     </httpEndpoint> 
 

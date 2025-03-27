@@ -22,6 +22,7 @@ import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
@@ -33,15 +34,10 @@ import componenttest.custom.junit.runner.FATRunner;
 })
 public class FATSuite extends TestContainerSuite {
 
-    //TODO Start using ImageBuilder
-//    private static final DockerImageName DB2_SSL = ImageBuilder
-//                    .build("db2-ssl:12.1.1.0")
-//                    .getDockerImageName()
-//                    .asCompatibleSubstituteFor("icr.io/db2_community/db2");
-
-    // Updated docker image to use TLS1.2 for secure communication
-    static final DockerImageName DB2_SSL = DockerImageName.parse("kyleaure/db2-ssl:3.0")
-                    .asCompatibleSubstituteFor("ibmcom/db2"); //TODO update .asCompatibleSubstituteFor("icr.io/db2_community/db2")
+    private static final DockerImageName DB2_SSL = ImageBuilder
+                    .build("db2-ssl:12.1.1.0")
+                    .getDockerImageName()
+                    .asCompatibleSubstituteFor("icr.io/db2_community/db2");
 
     @ClassRule
     public static Db2Container db2 = new Db2Container(DB2_SSL)

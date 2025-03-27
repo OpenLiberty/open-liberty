@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ public class FATSuite extends TestContainerSuite {
             try (Connection conn = ds.getConnection()) {
                 Statement stmt = conn.createStatement();
 
-                // Create MYTABLE for OracleTest.class and OracleTraceTest.class
+                // Create MYTABLE for OracleTest.class, OracleTraceTest.class, OracleCheckpointTest.class
                 try {
                     stmt.execute("DROP TABLE MYTABLE");
                 } catch (SQLException x) {
@@ -112,7 +112,7 @@ public class FATSuite extends TestContainerSuite {
                 ps.setString(2, "maroon");
                 ps.executeUpdate();
 
-                // Create BLOBTABLE for OracleTest.class
+                // Create BLOBTABLE for OracleTest.class and OracleCheckpointTest.class
                 try {
                     stmt.execute("DROP TABLE BLOBTABLE");
                 } catch (SQLException x) {

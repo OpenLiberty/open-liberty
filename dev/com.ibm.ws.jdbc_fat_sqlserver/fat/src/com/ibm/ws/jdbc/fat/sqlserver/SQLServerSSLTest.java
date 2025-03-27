@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -54,13 +55,9 @@ public class SQLServerSSLTest extends FATServletClient {
     @TestServlet(servlet = SQLServerTestSSLServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
 
-    //TODO Start using ImageBuilder
-//    private static final DockerImageName SQLSERVER_SSL = ImageBuilder //
-//                    .build("sqlserver-ssl:2022-latest") //
-//                    .getDockerImageName() //
-//                    .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server");
-
-    private static final DockerImageName SQLSERVER_SSL = DockerImageName.parse("kyleaure/sqlserver-ssl:2019-CU18-ubuntu-20.04")//
+    private static final DockerImageName SQLSERVER_SSL = ImageBuilder //
+                    .build("sqlserver-ssl:2022-latest") //
+                    .getDockerImageName() //
                     .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server");
 
     @ClassRule
@@ -84,10 +81,7 @@ public class SQLServerSSLTest extends FATServletClient {
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, APP_NAME, "web.ssl");
 
-        // TODO extract security files from container prior to server start
-        // TODO delete security files from git
-
-//        sqlserver.copyFileFromContainer("/tmp/truststore.p12", server.getServerRoot() + "/security/truststore.p12");
+        sqlserver.copyFileFromContainer("/tmp/truststore.p12", server.getServerRoot() + "/security/truststore.p12");
 
         server.startServer();
     }

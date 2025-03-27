@@ -26,8 +26,8 @@ task assembleTestContainerData(type: JavaExec) {
         !isAutomatedBuild
     }
     
-    // Use ArtifactoryMirrorSubstitutor to generate image names for cache/images
-    environment "TESTCONTAINERS_IMAGE_SUBSTITUTOR", "componenttest.containers.ArtifactoryMirrorSubstitutor"
+    // Use LibertyMirrorSubstitutor to generate image names for cache/images
+    environment "TESTCONTAINERS_IMAGE_SUBSTITUTOR", "componenttest.containers.substitution.LibertyMirrorSubstitutor"
     
     // Run main method of CacheFiles class
     classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)

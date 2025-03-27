@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,16 +62,13 @@ public class OracleSSLTest extends FATServletClient {
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, JEE_APP, "ssl.web");
 
-        // TODO extract security files from container prior to server start
-        // TODO delete security files from git
-
         // Copy wallet files
-//        oracle.copyFileFromContainer("/client/oracle/wallet/ewallet.p12", server.getServerRoot() + "/security/ewallet.p12");
-//        oracle.copyFileFromContainer("/client/oracle/wallet/cwallet.sso", server.getServerRoot() + "/security/cwallet.sso");
+        oracle.copyFileFromContainer("/client/oracle/wallet/ewallet.p12", server.getServerRoot() + "/security/ewallet.p12");
+        oracle.copyFileFromContainer("/client/oracle/wallet/cwallet.sso", server.getServerRoot() + "/security/cwallet.sso");
 
         // Copy keystore files
-//        oracle.copyFileFromContainer("/client/oracle/store/client-keystore.jks", server.getServerRoot() + "/store/client-keystore.jks");
-//        oracle.copyFileFromContainer("/client/oracle/store/client-truststore.jks", server.getServerRoot() + "/store/client-truststore.jks");
+        oracle.copyFileFromContainer("/client/oracle/store/client-keystore.jks", server.getServerRoot() + "/store/client-keystore.jks");
+        oracle.copyFileFromContainer("/client/oracle/store/client-truststore.jks", server.getServerRoot() + "/store/client-truststore.jks");
 
         // Start Server
         server.startServer();

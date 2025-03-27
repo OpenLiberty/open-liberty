@@ -125,7 +125,8 @@ public class DataExtension implements Extension {
         DataProvider provider = bundleContext.getService(ref);
 
         // Group entities by data access provider and class loader
-        Map<FutureEMBuilder, FutureEMBuilder> entityGroups = new HashMap<>();
+        Map<FutureEMBuilder, FutureEMBuilder> entityGroupsInWeb = new HashMap<>();
+        Map<FutureEMBuilder, FutureEMBuilder> entityGroupsNonWeb = new HashMap<>();
 
         for (Iterator<AnnotatedType<?>> it = repositoryAnnos.keySet().iterator(); it.hasNext();) {
             AnnotatedType<?> repositoryType = it.next();
@@ -153,6 +154,17 @@ public class DataExtension implements Extension {
                                       queriesPerEntityClass,
                                       primaryEntityClassReturnValue,
                                       provider)) {
+                // TODO we have the ability to easily group these by app+module instead,
+                // which would be useful if we wanted to tie them to the respective module's
+                // ModuleMetaDataListener.moduleMetaDataCreated
+                // All it would take is accessing futureEMBuilder.moduleName
+                // (although note that in the case of repositories from shared libraries,
+                // there will be no module, so those still need to be tied to the app only)
+                Map<FutureEMBuilder, FutureEMBuilder> entityGroups = //
+                                futureEMBuilder.inWebModule //
+                                                ? entityGroupsInWeb //
+                                                : entityGroupsNonWeb;
+
                 FutureEMBuilder previous = entityGroups.putIfAbsent(futureEMBuilder, futureEMBuilder);
 
                 if (previous != null) {
@@ -175,7 +187,9 @@ public class DataExtension implements Extension {
 
         String appName = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor() //
                         .getComponentMetaData().getJ2EEName().getApplication();
-        provider.onAppStarted(appName, entityGroups.values());
+        provider.onAppStarted(appName, entityGroupsInWeb.keySet());
+        // TODO switch the following to onComponentMetadataCreated or something similar
+        provider.onAppStarted(appName, entityGroupsNonWeb.keySet());
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -30,6 +31,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.fat.postgresql.web.ThreadLocalConnectionTestServlet;
@@ -49,15 +51,20 @@ public class ThreadLocalConnectionTest extends FATServletClient {
     @TestServlet(servlet = ThreadLocalConnectionTestServlet.class, contextRoot = APP_NAME, path = APP_NAME + "/ThreadLocalConnectionTestServlet")
     public static LibertyServer server;
 
-    //Need to use FixedHostPortGenericContainer because when using PostgreSQLContainer, when you stop and then
-    //restart the container, it randomly selects a different port, which causes the connections after the restart
-    //to fail because we have to inject the port number via envVar to the running liberty server, and we can't change it
-    //on the liberty server without restarting/updating the config, which would destory the connection pool and
-    //invalidate the test.
-    //This also means that we can only run this test manually because if this test were to run more than once at the same time
-    //on the same host, the ports would conflict and it would fail.
-    //But it is still useful to have in case a similar incident happens in the future.
-    public static FixedHostPortGenericContainer<?> postgre = new FixedHostPortGenericContainer<>("public.ecr.aws/docker/library/postgres:17-alpine")
+    private static final DockerImageName POSTGRE_IMAGE = DatabaseContainerType.Postgres.getImageName();
+
+    /**
+     * Need to use FixedHostPortGenericContainer because when using PostgreSQLContainer.
+     * When you stop and then restart the container, it randomly selects a different port.
+     * This causes the connections after the restart to fail, because we would have to inject the port number via a variable to the running liberty server.
+     * We cannot change the port number on the liberty server without restarting/updating the config, which would destory the connection pool and invalidate the test.
+     *
+     * This also means that we can only run this test manually because if this test were to run more than once at the same time
+     * on the same host, the ports would conflict and it would fail.
+     *
+     * But it is still useful to have in case a similar incident happens in the future.
+     */
+    public static FixedHostPortGenericContainer<?> postgre = new FixedHostPortGenericContainer<>(POSTGRE_IMAGE.asCanonicalNameString())
                     .withFixedExposedPort(POSTGRE_HOST_PORT, POSTGRE_CONTAINER_PORT)
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)

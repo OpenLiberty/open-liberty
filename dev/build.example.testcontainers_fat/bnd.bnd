@@ -40,8 +40,6 @@ fat.project: true
 # should be run in the databaseRotation build.
 tested.features: \
     databaseRotation, servlet-5.0
-	
-fat.test.container.images: kyleaure/postgres-test-table:3.0
 
 # io.openliberty.org.testcontainers bundle should have all compile time
 # dependences you need for a testcontainer enabled fat project.

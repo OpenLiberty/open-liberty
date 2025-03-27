@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +25,6 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
-import com.ibm.ws.logging.data.AccessLogConfig;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AccessLogDataFormatter;
 import com.ibm.ws.logging.data.AuditData;
@@ -41,6 +39,10 @@ import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.logs.LogRecordBuilder;
 import io.opentelemetry.api.logs.Severity;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.TraceFlags;
+import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.semconv.SemanticAttributes;
 
@@ -55,7 +57,6 @@ public class MpTelemetryLogMappingUtils {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-    private static boolean issuedBetaMessage = false;
     private static boolean issuedBetaMessageAccess = false;
 
     /**
@@ -70,7 +71,7 @@ public class MpTelemetryLogMappingUtils {
             return CollectorConstants.TRACE_LOG_EVENT_TYPE;
         } else if (source.endsWith(CollectorConstants.FFDC_SOURCE)) {
             return CollectorConstants.FFDC_EVENT_TYPE;
-        } else if (isBetaModeCheck() && source.endsWith(CollectorConstants.AUDIT_LOG_SOURCE)) {
+        } else if (source.endsWith(CollectorConstants.AUDIT_LOG_SOURCE)) {
             return CollectorConstants.AUDIT_LOG_EVENT_TYPE;
         } else if (isBetaModeCheckAccess() && source.endsWith(CollectorConstants.ACCESS_LOG_SOURCE)) {
             return CollectorConstants.ACCESS_LOG_EVENT_TYPE;
@@ -91,7 +92,7 @@ public class MpTelemetryLogMappingUtils {
             mapMessageAndTraceToOpenTelemetry(builder, eventType, event);
         } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
             mapFFDCToOpenTelemetry(builder, eventType, event);
-        } else if (isBetaModeCheck() && eventType.equals(CollectorConstants.AUDIT_LOG_EVENT_TYPE)) {
+        } else if (eventType.equals(CollectorConstants.AUDIT_LOG_EVENT_TYPE)) {
             mapAuditLogsToOpenTelemetry(builder, eventType, event);
         } else if (isBetaModeCheckAccess() && eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
             mapAccessToOpenTelemetry(builder, eventType, event);
@@ -345,6 +346,7 @@ public class MpTelemetryLogMappingUtils {
 
         String key = null;
         Object value = null;
+        Span customSpan = null;
 
         for (Iterator<KeyValuePair> element = kvpList.iterator(); element.hasNext();) {
             KeyValuePair next = element.next();
@@ -361,16 +363,20 @@ public class MpTelemetryLogMappingUtils {
                 } else if (key.equals("datetime") || key.equals("accessLogDatetime")) {
                     builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
-
-                    String[] headerSplit = Arrays.stream(((String) value).split(",")).map(String::trim).toArray(String[]::new);
-
-                    attributes.put(formattedKey, headerSplit);
+                    if (key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME) || key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)
+                        || key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) {
+                        customSpan = createSpan(key, (String) value);
+                    } else {
+                        String[] headerSplit = ((String) value).split(",");
+                        for (int i = 0; i < headerSplit.length; i++) {
+                            headerSplit[i] = headerSplit[i].trim();
+                        }
+                        attributes.put(formattedKey, headerSplit);
+                    }
                 } else if (key.equals("requestPort")) {
                     attributes.put(formattedKey, Integer.parseInt((String) value));
                 } else if (key.equals("requestFirstLine")) {
-                    if (!AccessLogConfig.accessLogFieldsTelemetryConfig.equals("default")) {
-                        attributes.put(formattedKey, (String) value);
-                    }
+                    attributes.put(formattedKey, (String) value);
 
                     String accessLogMsg = accessLogData.getRequestFirstLine();
                     // Set the body to the request first line
@@ -394,8 +400,34 @@ public class MpTelemetryLogMappingUtils {
         // Set the Attributes to the builder.
         builder.setAllAttributes(attributes.build());
 
-        // Set the Span and Trace IDs from the current context.
-        builder.setContext(Context.current());
+        // Set the Span and Trace IDs from the current context. We're not on the same thread at the point when access logs are collected
+        // so we need to extract the trace/span ID from the 'traceparent' request header.
+        if (customSpan != null) {
+            builder.setContext(Context.current().with(customSpan));
+        } else
+            builder.setContext(Context.current());
+
+    }
+
+    private static Span createSpan(String key, String requestHeader) {
+
+        SpanContext customSpanContext = null;
+        if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME)) { // Check the w3c format for the "traceparent" header. This is the default otel propagator
+            String[] traceSplit = requestHeader.split("-");
+            customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], TraceFlags.getSampled(), TraceState.getDefault());
+        } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)) { // Check the b3 format for the "b3" header
+            String[] traceSplit = requestHeader.split("-");
+            customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
+        } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) { // Check the Jaeger format for the "uber-trace-id" header
+            String[] traceSplit = requestHeader.split(":");
+            customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
+        }
+
+        if (customSpanContext != null) {
+            Span customSpan = Span.wrap(customSpanContext);
+            return customSpan;
+        } else
+            return null;
 
     }
 
@@ -485,24 +517,6 @@ public class MpTelemetryLogMappingUtils {
         return instant;
     }
 
-    public static boolean isBetaModeCheck() {
-        if (!ProductInfo.getBetaEdition()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Not running Beta Edition, the audit logs will NOT be routed to OpenTelemetry.");
-            }
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class.
-            if (!issuedBetaMessage) {
-                Tr.info(tc,
-                        "BETA: A beta method has been invoked for routing audit logs to OpenTelemetry in the class "
-                            + MpTelemetryLogMappingUtils.class.getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
-    }
-
     public static boolean isBetaModeCheckAccess() {
         if (!ProductInfo.getBetaEdition()) {
             if (tc.isDebugEnabled()) {
@@ -534,5 +548,4 @@ public class MpTelemetryLogMappingUtils {
             return value.getStringValue();
         }
     }
-
 }

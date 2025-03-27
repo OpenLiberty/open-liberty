@@ -310,7 +310,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             return CollectorConstants.TRACE_SOURCE;
         else if (source.equalsIgnoreCase(CollectorConstants.FFDC_CONFIG_VAL))
             return CollectorConstants.FFDC_SOURCE;
-        else if (MpTelemetryLogMappingUtils.isBetaModeCheck() && source.equalsIgnoreCase(CollectorConstants.AUDIT_CONFIG_VAL))
+        else if (source.equalsIgnoreCase(CollectorConstants.AUDIT_CONFIG_VAL))
             return CollectorConstants.AUDIT_LOG_SOURCE;
         else if (MpTelemetryLogMappingUtils.isBetaModeCheckAccess() && source.equalsIgnoreCase(CollectorConstants.ACCESS_CONFIG_VAL))
             return CollectorConstants.ACCESS_LOG_SOURCE;
@@ -331,7 +331,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             return CollectorConstants.TRACE_SOURCE;
         } else if (sourceName.equals(CollectorConstants.FFDC_SOURCE)) {
             return CollectorConstants.FFDC_SOURCE;
-        } else if (MpTelemetryLogMappingUtils.isBetaModeCheck() && sourceName.contains(CollectorConstants.AUDIT_LOG_SOURCE)) {
+        } else if (sourceName.contains(CollectorConstants.AUDIT_LOG_SOURCE)) {
             return CollectorConstants.AUDIT_LOG_SOURCE;
         } else if (MpTelemetryLogMappingUtils.isBetaModeCheckAccess() && sourceName.equals(CollectorConstants.ACCESS_LOG_SOURCE)) {
             return CollectorConstants.ACCESS_LOG_SOURCE;
@@ -346,8 +346,6 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
             if (accessLogField.toLowerCase().equals("default") || accessLogField.toLowerCase().equals("logformat"))
                 AccessLogConfig.accessLogFieldsTelemetryConfig = accessLogField;
             else {
-                Tr.warning(tc, "CWMOT5008.mptelemetry.unknown.access.log.field",
-                           accessLogField);
                 AccessLogConfig.accessLogFieldsTelemetryConfig = "default";
             }
         } else {

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.db2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -28,23 +29,17 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.Duration;
 import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.Db2Container;
-import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
-import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.CheckpointTest;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -55,31 +50,6 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 @CheckpointTest
 public class JPATest {
-
-    //FIXME why is this test using the SSL image when the datasource doesn't even use SSL?
-
-    //TODO Start using ImageBuilder
-//    private static final DockerImageName DB2_SSL = ImageBuilder.build("db2-ssl:12.1.1.0")
-//                    .getDockerImageName()
-//                    .asCompatibleSubstituteFor("icr.io/db2_community/db2");
-
-    // Updated docker image to use TLS1.2 for secure communication
-    static final DockerImageName DB2_SSL = DockerImageName.parse("kyleaure/db2-ssl:3.0")
-                    .asCompatibleSubstituteFor("ibmcom/db2"); //TODO update .asCompatibleSubstituteFor("icr.io/db2_community/db2")
-
-    @ClassRule
-    public static Db2Container db2 = new Db2Container(DB2_SSL)
-                    .acceptLicense()
-                    .withUsername("db2inst1") // set in Dockerfile
-                    .withPassword("password") // set in Dockerfile
-                    .withDatabaseName("testdb") // set in Dockerfile
-                    .withExposedPorts(50000, 50001) // 50k is regular 50001 is secure
-                    // Use 5m timeout for local runs, 35m timeout for remote runs (extra time since the DB2 container can be slow to start)
-                    .waitingFor(new LogMessageWaitStrategy()
-                                    .withRegEx(".*DB2 SSH SETUP DONE.*")
-                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 35)))
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "db2-ssl"))
-                    .withReuse(true);
 
     public static final String APP_NAME = "jpafat";
     public static final String SERVLET_NAME = "DB2TestServlet";
@@ -136,8 +106,8 @@ public class JPATest {
                 serverEnvWriter.println("DB2_HOSTNAME=" + db2.getHost());
                 serverEnvWriter.println("DB2_PORT=" + String.valueOf(db2.getMappedPort(50000)));
                 serverEnvWriter.println("DB2_PORT_SECURE=" + String.valueOf(db2.getMappedPort(50001)));
-                serverEnvWriter.println("DB2_USER=" + "db2inst1");
-                serverEnvWriter.println("DB2_PASS=" + "password");
+                serverEnvWriter.println("DB2_USER=" + db2.getUsername());
+                serverEnvWriter.println("DB2_PASS=" + db2.getPassword());
                 serverEnvWriter.flush();
             } catch (Exception e) {
                 throw new RuntimeException(e);

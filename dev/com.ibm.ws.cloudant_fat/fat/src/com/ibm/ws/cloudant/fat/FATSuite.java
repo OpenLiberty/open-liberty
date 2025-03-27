@@ -25,6 +25,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,10 +41,8 @@ public class FATSuite extends TestContainerSuite {
 
     private static final Class<?> c = FATSuite.class;
 
-    //TODO Start using ImageBuilder
-//    private static final DockerImageName COUCHDB_SSL = ImageBuilder.build("couchdb-ssl:3").getDockerImageName();
 
-    private static final DockerImageName COUCHDB_SSL = DockerImageName.parse("kyleaure/couchdb-ssl:1.0");
+    private static final DockerImageName COUCHDB_SSL = ImageBuilder.build("couchdb-ssl:3").getDockerImageName();
 
     @ClassRule
     public static CouchDBContainer cloudant = new CouchDBContainer(COUCHDB_SSL)

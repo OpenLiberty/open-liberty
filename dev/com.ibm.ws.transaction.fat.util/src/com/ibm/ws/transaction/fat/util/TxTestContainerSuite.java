@@ -30,6 +30,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
@@ -45,15 +46,7 @@ public class TxTestContainerSuite extends TestContainerSuite {
     public static final String POSTGRES_USER = "postgresUser";
     public static final String POSTGRES_PASS = "superSecret";
     
-    //TODO Start using ImageBuilder
-//    public static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17").getDockerImageName();
-
-    /*
-     * The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
-     * The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
-     * With the resulting image being pushed to docker hub.
-     */
-    public static final DockerImageName POSTGRES_SSL = DockerImageName.parse("jonhawkes/postgresql-ssl:1.0");
+    public static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17").getDockerImageName();
 
     private static DatabaseContainerType databaseContainerType;
     public static JdbcDatabaseContainer<?> testContainer;

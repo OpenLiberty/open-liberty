@@ -83,6 +83,11 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     final Set<Class<?>> entityTypes = new HashSet<>();
 
     /**
+     * Indicates if the repository class loader is from a web module.
+     */
+    public final boolean inWebModule;
+
+    /**
      * Module name in which the repository interface is defined.
      * If not defined in a module, only the application name part is included.
      */
@@ -148,7 +153,13 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             }
         }
 
-        this.addRepositoryInterface(repositoryInterface);
+        String clIdentifier = provider.classloaderIdSvc.getClassLoaderIdentifier(repositoryClassLoader);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "class loader identifier: " + clIdentifier);
+
+        inWebModule = clIdentifier.startsWith("WebModule:");
+
+        addRepositoryInterface(repositoryInterface);
     }
 
     /**
@@ -606,22 +617,11 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                                                           moduleName.getModule(),
                                                           null);
         } else {
-            String clIdentifier = provider.classloaderIdSvc.getClassLoaderIdentifier(repositoryClassLoader);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc,
-                         "defined in module: " + moduleName,
-                         "class loader identifier: " + clIdentifier);
-            if (clIdentifier.startsWith("WebModule:")) {
-                mdIdentifier = provider.metadataIdSvc.getMetaDataIdentifier("WEB",
-                                                                            moduleName.getApplication(),
-                                                                            moduleName.getModule(),
-                                                                            null);
-            } else {
-                mdIdentifier = provider.metadataIdSvc.getMetaDataIdentifier("EJB",
-                                                                            moduleName.getApplication(),
-                                                                            moduleName.getModule(),
-                                                                            null);
-            }
+            mdIdentifier = provider.metadataIdSvc //
+                            .getMetaDataIdentifier(inWebModule ? "WEB" : "EJB",
+                                                   moduleName.getApplication(),
+                                                   moduleName.getModule(),
+                                                   null);
         }
 
         return mdIdentifier;

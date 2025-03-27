@@ -14,46 +14,40 @@ package com.ibm.ws.jdbc.fat.oracle.containters;
 
 import java.time.Duration;
 
+import org.testcontainers.oracle.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.jdbc.fat.oracle.FATSuite;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.OracleXEContainer;
 
 /**
  * Custom Oracle SSL Container class
- * TODO replace with OracleFree (org.testcontainers.oracle.OracleContainer)
  */
-//public class OracleSSLContainer extends org.testcontainers.oracle.OracleContainer {
-public class OracleSSLContainer extends OracleXEContainer {
+public class OracleSSLContainer extends OracleContainer {
 
     private static final int TCPS_PORT = 1522;
     private static final String WALLET_PASS = "WalletPasswd123";
 
-    //TODO Start using ImageBuilder
-//    private static final DockerImageName ORACLE_KRB5 = ImageBuilder
-//                    .build("oracle-ssl:23-full-faststart")
-//                    .getDockerImageName()
-//                    .asCompatibleSubstituteFor("gvenzl/oracle-free");
-
-    private static final String IMAGE_NAME_STRING = "kyleaure/oracle-21.3.0-faststart:1.0.full.ssl";
-    private static final DockerImageName ORACLE_KRB5 = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
+    private static final DockerImageName ORACLE_SSL = ImageBuilder
+                    .build("oracle-ssl:23-full-faststart")
+                    .getDockerImageName()
+                    .asCompatibleSubstituteFor("gvenzl/oracle-free");
 
     public OracleSSLContainer() {
-        super(ORACLE_KRB5);
+        super(ORACLE_SSL);
         super.addExposedPort(TCPS_PORT);
         super.withPassword("oracle"); //Tell superclass the hardcoded password
         super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
         super.withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
-        super.withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle-SSL"));
+        super.withLogConsumer(new SimpleLogConsumer(FATSuite.class, "oracle-ssl"));
     }
 
     //Do not allow developer to use a custom password
     @Override
-//    public org.testcontainers.oracle.OracleContainer withPassword(String password) {
-    public OracleXEContainer withPassword(String password) {
+    public OracleContainer withPassword(String password) {
         throw new UnsupportedOperationException("Oracle SSL container does not support use of a customer password.");
     }
 

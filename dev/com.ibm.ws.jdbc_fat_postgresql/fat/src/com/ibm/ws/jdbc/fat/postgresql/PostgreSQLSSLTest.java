@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -58,12 +59,9 @@ public class PostgreSQLSSLTest extends FATServletClient {
     @TestServlet(servlet = PostgreSQLNativeSSLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverNativeSSL;
 
-    //TODO Start using ImageBuilder
-//    private static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17")
-//                    .getDockerImageName()
-//                    .asCompatibleSubstituteFor("postgres");
-
-    private static final DockerImageName POSTGRES_SSL = DockerImageName.parse("kyleaure/postgres-ssl:1.0").asCompatibleSubstituteFor("postgres");
+    private static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17")
+                    .getDockerImageName()
+                    .asCompatibleSubstituteFor("postgres");
 
     public static PostgreSQLContainer postgre = new PostgreSQLContainer(POSTGRES_SSL)
                     .withDatabaseName(POSTGRES_DB)
@@ -109,16 +107,13 @@ public class PostgreSQLSSLTest extends FATServletClient {
             stmt.close();
         }
 
-        // TODO extract security files from container prior to server start
-        // TODO delete security files from git
+        postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12");
+        postgre.copyFileFromContainer("/var/lib/postgresql/server.crt", serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
+        importServerCert(serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12",
+                         serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
 
-//        postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12");
-//        postgre.copyFileFromContainer("/var/lib/postgresql/server.crt", serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
-//        importServerCert(serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12",
-//                         serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
-//
-//        postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverNativeSSL.getServerRoot() + "/resources/security/outboundKeys.p12");
-//        postgre.copyFileFromContainer("/var/lib/postgresql/server.crt", serverNativeSSL.getServerRoot() + "/resources/security/server.crt");
+        postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverNativeSSL.getServerRoot() + "/resources/security/outboundKeys.p12");
+        postgre.copyFileFromContainer("/var/lib/postgresql/server.crt", serverNativeSSL.getServerRoot() + "/resources/security/server.crt");
 
         serverLibertySSL.startServer();
         serverNativeSSL.useSecondaryHTTPPort();
