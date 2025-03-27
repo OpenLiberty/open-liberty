@@ -12,7 +12,11 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.apps.spanTest;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.RequestScoped;
@@ -56,9 +60,47 @@ public class TestResource {
     @GET
     @Path("/eventAdded")
     public String eventAdded() {
+
+        System.out.println("GREP - start of debug");
+
+        AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+            System.out.println(this.getClass().getName());
+            try {
+                Method m = this.getClass().getDeclaredMethod("eventAdded");
+                System.out.println(m.toString());
+                System.out.println(m.getAnnotations()[0].toString());
+
+                System.out.println("GREP - byte string comparason");
+
+                String s = "@jakarta.ws.rs.GET()";
+                System.out.write(s.getBytes());
+                System.out.println(System.lineSeparator());
+                System.out.write(m.getAnnotations()[0].toString().getBytes());
+                System.out.println(System.lineSeparator());
+
+                System.out.println("GREP - byte hex comparason");
+                System.out.println(byteArrayToHex(s.getBytes()));
+                System.out.println(byteArrayToHex(m.getAnnotations()[0].toString().getBytes()));
+
+            } catch (NoSuchMethodException | SecurityException | IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
+        });
+
+        System.out.println("GREP - end of debug");
+
         Span span = Span.current();
         span.addEvent(TEST_EVENT_NAME);
         return span.getSpanContext().getTraceId();
+    }
+
+    public static String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for (byte b : a)
+            sb.append(String.format("%02x", b));
+        return sb.toString();
     }
 
     @GET
