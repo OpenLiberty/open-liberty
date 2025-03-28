@@ -409,18 +409,28 @@ public class MpTelemetryLogMappingUtils {
 
     }
 
+    /*
+     * Create a span using the extracted requestHeader data for the propagators w3c, b3, and jaeger.
+     */
     private static Span createSpan(String key, String requestHeader) {
 
         SpanContext customSpanContext = null;
-        if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME)) { // Check the w3c format for the "traceparent" header. This is the default otel propagator
-            String[] traceSplit = requestHeader.split("-");
-            customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], TraceFlags.getSampled(), TraceState.getDefault());
-        } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)) { // Check the b3 format for the "b3" header
-            String[] traceSplit = requestHeader.split("-");
-            customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
-        } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) { // Check the Jaeger format for the "uber-trace-id" header
-            String[] traceSplit = requestHeader.split(":");
-            customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
+        try {
+            if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME)) { // Check the w3c format for the "traceparent" header. This is the default otel propagator
+                String[] traceSplit = requestHeader.split("-");
+                customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], TraceFlags.getSampled(), TraceState.getDefault());
+            } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)) { // Check the b3 format for the "b3" header
+                String[] traceSplit = requestHeader.split("-");
+                customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
+            } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) { // Check the Jaeger format for the "uber-trace-id" header
+                String[] traceSplit = requestHeader.split(":");
+                customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
+            }
+
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught an exception when parsing trace and span ID. An invalid header value was found for header: " + key + ", header value: ", requestHeader);
+            }
         }
 
         if (customSpanContext != null) {
