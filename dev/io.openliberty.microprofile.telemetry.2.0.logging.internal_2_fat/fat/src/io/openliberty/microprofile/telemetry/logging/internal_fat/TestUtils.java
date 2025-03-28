@@ -30,7 +30,6 @@ import org.junit.Assert;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.microprofile.telemetry20.logging.internal.MpTelemetryLogFieldConstants;
 
 /**
  *
@@ -43,6 +42,9 @@ public class TestUtils {
     public static String W3C_TRACE_DATA = "00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01";
     public static String B3_TRACE_DATA = "e5fee0b8184e2a838aafe4aa959aa21c-4626864da5e71e37-1";
     public static String JAEGER_TRACE_DATA = "322b8ac131b128bcaf56c0c41b84aff5:956ff8b1abbd7993:0:1";
+    public static final String ACCESS_TRACE_W3C_HEADER_NAME = "traceparent";
+    public static final String ACCESS_TRACE_JAEGER_HEADER_NAME = "uber-trace-id";
+    public static final String ACCESS_TRACE_B3_HEADER_NAME = "b3";
 
     public static void runApp(LibertyServer server, String type) {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/MpTelemetryLogApp";
@@ -80,14 +82,17 @@ public class TestUtils {
         String requestHeader = null;
         String traceData = null;
         if (propagator.equals("w3c")) {
-            requestHeader = MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME;
+            requestHeader = ACCESS_TRACE_W3C_HEADER_NAME;
             traceData = W3C_TRACE_DATA;
         } else if (propagator.equals("b3")) {
-            requestHeader = MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME;
+            requestHeader = ACCESS_TRACE_B3_HEADER_NAME;
             traceData = B3_TRACE_DATA;
         } else if (propagator.equals("jaeger")) {
-            requestHeader = MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME;
+            requestHeader = ACCESS_TRACE_JAEGER_HEADER_NAME;
             traceData = JAEGER_TRACE_DATA;
+        } else if (propagator.equals("invalidHeaderValue")) {
+            requestHeader = ACCESS_TRACE_JAEGER_HEADER_NAME;
+            traceData = W3C_TRACE_DATA;
         }
 
         try {

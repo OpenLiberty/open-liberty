@@ -12,6 +12,7 @@ package io.openliberty.microprofile.telemetry.logging.internal_fat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -468,6 +469,44 @@ public class TelemetryAccessTest extends FATServletClient {
         // Wait for the access log message to be bridged over
         String accessLine = server.waitForStringInLog("INFO2 'GET /MpTelemetryLogApp/AccessURL HTTP/1.1'", consoleLogFile);
         assertFalse("The access log event does NOT contain a valid trace and span id", accessLine.contains(ZERO_SPAN_TRACE_ID));
+
+        // Check if the expected key-value pair is correctly formatted and mapped to OTel.
+        Map<String, String> expectedAccessFieldsMap = new HashMap<String, String>() {
+            {
+                put("http.request.method", "GET");
+                put("http.response.status_code", "200");
+                put("io.openliberty.access_log.url.path", "/MpTelemetryLogApp/AccessURL");
+                put("network.local.port", Integer.toString(server.getHttpDefaultPort()));
+                put("io.openliberty.type", "liberty_accesslog");
+                put("network.protocol.name", "HTTP");
+                put("network.protocol.version", "1.1");
+                put("io.openliberty.sequence", ""); // since, the sequence can be random, have to make sure the sequence field is still present.
+            }
+        };
+        TestUtils.checkJsonMessage(accessLine, expectedAccessFieldsMap);
+    }
+
+    /*
+     * Verify that invalid trace headers are properly handled and a debug message is logged.
+     */
+    @Test
+    public void testTelemetryAccessInvalidTraceLogs() throws Exception {
+        RemoteFile messageLogFile = server.getDefaultLogFile();
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+        RemoteFile traceLogFile = server.getDefaultTraceFile();
+
+        // Configure access feature and access source
+        setConfig(server, messageLogFile, SERVER_XML_ACCESS_SOURCE_DEFAULT);
+
+        // Trigger an access log event
+        TestUtils.runAccessApp(server, "runAccessApp", "invalidHeaderValue");
+
+        // Wait for the access log message to be bridged over
+        String accessLine = server.waitForStringInLog("INFO2 'GET /MpTelemetryLogApp/AccessURL HTTP/1.1'", consoleLogFile);
+        assertTrue("The access log contains a valid trace and span id", accessLine.contains(ZERO_SPAN_TRACE_ID));
+
+        String traceDebugLine = server.waitForStringInLog("An invalid header value was found for header", traceLogFile);
+        assertNotNull("Invalid header debug message was NOT found.", traceDebugLine);
 
         // Check if the expected key-value pair is correctly formatted and mapped to OTel.
         Map<String, String> expectedAccessFieldsMap = new HashMap<String, String>() {
