@@ -360,14 +360,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 		private CountDownLatch latch;
 
 		public StartTaskRunnable(FutureTask<ChannelFuture> task, CountDownLatch latch) {
-			// TODO Auto-generated constructor stub
     		this.task = task;
     		this.latch = latch;
 		}
 
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			task.run();
 			try {
 				task.get(getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS);
