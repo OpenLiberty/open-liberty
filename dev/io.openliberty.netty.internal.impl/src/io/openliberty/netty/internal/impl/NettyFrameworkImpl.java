@@ -481,19 +481,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         return UDPUtils.createUDPBootstrapOutbound(this, options);
     }
 
-    @Override
-    @Deprecated
-	public ServerBootstrapExtended createLocalBootstrap(ChannelInitializerWrapper initializer,
-			Map<String, Object> options) throws NettyException {
-		return LocalUtils.createLocalBootstrap(this, initializer, options);
-	}
-
-	@Override
-	@Deprecated
-	public BootstrapExtended createLocalBootstrapOutbound(ChannelInitializerWrapper initializer,
-			Map<String, Object> options) throws NettyException {
-		return LocalUtils.createLocalBootstrapOutbound(this, initializer, options);
-	}
 
     @Override
 	public ServerBootstrapExtended createLocalBootstrap(Map<String, Object> options) throws NettyException {
