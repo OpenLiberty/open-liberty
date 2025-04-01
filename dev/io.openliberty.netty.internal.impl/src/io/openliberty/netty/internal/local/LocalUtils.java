@@ -95,33 +95,6 @@ public class LocalUtils {
         return bs;
     }
 
-    /**
-     * Create a {@link BootstrapExtended} for outbound local channels TODO GDH - not
-     * found where we will use this from yet in WOLA.
-     * 
-     * @param framework
-     * @param channel   class - this is the class of the channel that is added
-     * @param options
-     * @return
-     * @throws NettyException
-     */
-    @Deprecated
-    public static BootstrapExtended createLocalBootstrapOutbound(NettyFrameworkImpl framework,
-            ChannelInitializerWrapper protocolInitializer, Map<String, Object> options) throws NettyException {
-
-        LocalConfigurationImpl config = new LocalConfigurationImpl(options, false);
-
-        BootstrapExtended bs = new BootstrapExtended();
-        bs.group(framework.getChildGroup());
-        bs.channel(LocalChannel.class);
-        bs.applyConfiguration(config);
-        bs.setBaseInitializer(protocolInitializer);
-
-        // TODO server concerns other than protocol needs?
-        // ChannelInitializerWrapper serverInitializer = new
-        // LocalChannelInitializerImpl(config, framework)
-        return bs;
-    }
 
     /**
      * Create a {@link BootstrapExtended} for outbound local channels TODO GDH - not

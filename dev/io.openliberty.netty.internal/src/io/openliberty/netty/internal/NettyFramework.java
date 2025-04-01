@@ -71,41 +71,7 @@ public interface NettyFramework {
      */
     BootstrapExtended createUDPBootstrapOutbound(Map<String, Object> options) throws NettyException;
 
-    /**
-     * Create a local bootstrap: handles registering the correct EventLoopGroups,
-     * creating a LocalChannel, and implementing and configuration properties.
-     * This method is used by protocols that are based on local addresses rather
-     * than remote host and port. It adds in the common handlers that Liberty
-     * expects to add to a pipeline. The initializer will be used to add additional
-     * protocol specifix handlers.
-     * 
-     * This is deprecated, use bootstrap.childHandler to add the protocol specific handler
-     * @param initializer - and initializer for a particular protocol channel
-     *                      that uses local addresses
-     * @param options
-     * @return BootstrapExtended
-     * @throws NettyException
-     */
-    @Deprecated
-	ServerBootstrapExtended createLocalBootstrap(ChannelInitializerWrapper initializer, Map<String, Object> options)
-			throws NettyException;
 
-    /**
-     * Create a local bootstrap from Netty outbound: handles registering the
-     * correct EventLoopGroups, creating a LocalChannel, and implementing and
-     * configuration properties.
-     * 
-     * This is deprecated, use bootstrap.childHandler to add the protocol specific handler
-     * 
-     * @param initializer - an initializer for a particular protocol channel
-     *                      that uses localAddresses
-     * @param options
-     * @return BootstrapExtended
-     * @throws NettyException
-     */
-	@Deprecated
-	BootstrapExtended createLocalBootstrapOutbound(ChannelInitializerWrapper initializer, Map<String, Object> options)
-			throws NettyException;
 
     /**
      * Create a local bootstrap: handles registering the correct EventLoopGroups,
