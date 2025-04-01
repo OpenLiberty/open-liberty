@@ -57,6 +57,15 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     private VirtualConnection vc;
     private String streamID = "-1";
 
+    private enum WriteMode {
+        CONTENT_LENGTH,
+        CHUNKED,
+        HTTP2
+    }
+
+    //TODO: use TCP configuration of write timeout for this
+    private int DEFAULT_CHANNEL_TIMEOUT = 60000;
+
     public NettyTCPWriteRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
 
         this.connectionContext = connectionContext;
@@ -67,6 +76,56 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     public TCPConnectionContext getInterface() {
         return connectionContext;
     }
+
+    private WriteMode determineMode(){
+        String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
+
+        boolean isH2 = "HTTP2".equals(protocol);
+        boolean isWsoc = "WebSocket".equals(protocol);
+        boolean isHttp10 = "HTTP10".equals(protocol);
+
+        boolean hasContentLength = 
+                        nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) &&
+                        nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get() != null;
+        
+        if(isH2){
+            return WriteMode.HTTP2;
+        } else if(isWsoc || isHttp10 || hasContentLength) {
+            return WriteMode.CONTENT_LENGTH;
+        } else {
+            return WriteMode.CHUNKED;
+        }
+    }
+
+    private ChannelFuture writeBuffer(WsByteBuffer buffer, WriteMode mode){
+        switch(mode){
+            case HTTP2: {
+                AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<>(
+                    Integer.valueOf(streamID),
+                    HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer))
+                );
+                return nettyChannel.writeAndFlush(entry);
+
+            }
+            case CONTENT_LENGTH: {
+                ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                return nettyChannel.write(nettyBuf);
+
+            }
+            case CHUNKED : {
+                ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(buffer);
+                return nettyChannel.writeAndFlush(chunkedInput);
+
+            }
+            default: {
+                return nettyChannel.newSucceededFuture();
+            }
+        }
+    }
+
+
+
+
 
     @Override
     public void clearBuffers() {
@@ -189,165 +248,265 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     @Override
     public long write(long numBytes, int timeout) throws IOException {
-        AtomicLong writtenBytes = new AtomicLong(0);
-        // Check if "Content-Length" is set for this channel
-        boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get());
 
-        //check if wsoc
-        final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
-
-        final boolean isHttp10 = "HTTP10".equals(protocol);
-
-        final boolean isWsoc = "WebSocket".equals(protocol);
-
-        final boolean isH2 = "HTTP2".equals(protocol);
-        if (!nettyChannel.isWritable()) {
-            return writtenBytes.get();
+        if(nettyChannel.eventLoop().inEventLoop()){
+            throw new IllegalStateException(
+                "Cannot perform a blocking write on the Netty event loop thread. "+
+                "Invoke this method from a Liberty thread."
+            );
         }
 
-        // Use a CountDownLatch for the flush operation
-        CountDownLatch latch = new CountDownLatch(1);
+        long totalBytesWritten = 0;
+        WriteMode mode = determineMode();
 
-        final AtomicReference<Throwable> writeFailure = new AtomicReference<>(null);
+        ChannelFuture lastWriteFuture = null;
+        for (WsByteBuffer buffer: buffers){
+            if(Objects.nonNull(buffer) && buffer.hasRemaining()){
+                lastWriteFuture = writeBuffer(buffer, mode);
+                totalBytesWritten += buffer.remaining();
+            }
+        }
 
-        try {
-            for (WsByteBuffer buffer : buffers) {
-                if (buffer != null && buffer.remaining() != 0) {
+        if (Objects.isNull(lastWriteFuture)){
+            return 0;
+        }
 
-                    if (isH2) {
-                        writtenBytes.addAndGet(buffer.remaining());
-                        AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(this.streamID), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
-                        this.nettyChannel.write(entry);
-                    }
+        if(mode == WriteMode.HTTP2 || mode == WriteMode.CONTENT_LENGTH){
+            lastWriteFuture = nettyChannel.writeAndFlush(Unpooled.EMPTY_BUFFER);
+        }
 
-                    else if (hasContentLength || isWsoc || isHttp10) {
-                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                        this.nettyChannel.write(nettyBuf); // Write data to the channel
-                        writtenBytes.addAndGet(nettyBuf.readableBytes());
-                    }
-
-                    else {
-                        ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(buffer);
-                        ChannelFuture chunkFuture = nettyChannel.writeAndFlush(chunkedInput);
-                        chunkFuture.awaitUninterruptibly();
-                        writtenBytes.addAndGet(chunkedInput.length());
-                    }
-                }
+        if(timeout == IMMED_TIMEOUT){
+            if(!lastWriteFuture.isDone()){
+                return totalBytesWritten;
             }
 
-            // Flush all pending writes
-            ChannelFuture flushFuture = this.nettyChannel.writeAndFlush(Unpooled.EMPTY_BUFFER);
+        } else {
+            try{
 
-            // Add listener to the flush operation
-            flushFuture.addListener(future -> {
-                if (!future.isSuccess()) {
-                    writeFailure.set(future.cause());
+                if(timeout == USE_CHANNEL_TIMEOUT){
+                    timeout = DEFAULT_CHANNEL_TIMEOUT;
                 }
-                // Countdown latch once flush operation completes
-                latch.countDown();
-            });
 
-            // Set default timeout to 30 seconds if USE_CHANNEL_TIMEOUT is specified
-            if (timeout == USE_CHANNEL_TIMEOUT) {
-                timeout = 60000; // 30 seconds in milliseconds
-            }
+                boolean isDone;
+                if(timeout == NO_TIMEOUT){
+                    lastWriteFuture.sync();
+                    isDone = true;
+                } else {
+                    isDone = lastWriteFuture.await(timeout, TimeUnit.MILLISECONDS);
+                }
 
-            if (timeout == IMMED_TIMEOUT) { // Check for immediate timeout
-                return 0; // Return immediately
-            } else if (timeout != NO_TIMEOUT) { // Check if a timeout value is specified
-                if (!latch.await(timeout, TimeUnit.MILLISECONDS)) {
+                if(!isDone){
                     throw new IOException("Write operation timed out");
                 }
-            }
+                if(!lastWriteFuture.isSuccess()){
+                    throw new IOException("Write operation failed", lastWriteFuture.cause());
+                }
 
-            if (writeFailure.get() != null) {
-                throw new IOException("Write operation failed", writeFailure.get());
+            } catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+                throw new IOException("Write timeout detected while waiting on write", e);
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException("Thread was interrupted while waiting for write to complete", e);
         }
 
-        return writtenBytes.get(); // Return the total written bytes
+        return totalBytesWritten;
+
+
+
+        // AtomicLong writtenBytes = new AtomicLong(0);
+        // // Check if "Content-Length" is set for this channel
+        // boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get());
+
+        // //check if wsoc
+        // final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
+
+        // final boolean isHttp10 = "HTTP10".equals(protocol);
+
+        // final boolean isWsoc = "WebSocket".equals(protocol);
+
+        // final boolean isH2 = "HTTP2".equals(protocol);
+        // if (!nettyChannel.isWritable()) {
+        //     return writtenBytes.get();
+        // }
+
+        // // Use a CountDownLatch for the flush operation
+        // CountDownLatch latch = new CountDownLatch(1);
+
+        // final AtomicReference<Throwable> writeFailure = new AtomicReference<>(null);
+
+        // try {
+        //     for (WsByteBuffer buffer : buffers) {
+        //         if (buffer != null && buffer.remaining() != 0) {
+
+        //             if (isH2) {
+        //                 writtenBytes.addAndGet(buffer.remaining());
+        //                 AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(this.streamID), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
+        //                 this.nettyChannel.write(entry);
+        //             }
+
+        //             else if (hasContentLength || isWsoc || isHttp10) {
+        //                 ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+        //                 this.nettyChannel.write(nettyBuf); // Write data to the channel
+        //                 writtenBytes.addAndGet(nettyBuf.readableBytes());
+        //             }
+
+        //             else {
+        //                 ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(buffer);
+        //                 ChannelFuture chunkFuture = nettyChannel.writeAndFlush(chunkedInput);
+        //                 chunkFuture.awaitUninterruptibly();
+        //                 writtenBytes.addAndGet(chunkedInput.length());
+        //             }
+        //         }
+        //     }
+
+        //     // Flush all pending writes
+        //     ChannelFuture flushFuture = this.nettyChannel.writeAndFlush(Unpooled.EMPTY_BUFFER);
+
+        //     // Add listener to the flush operation
+        //     flushFuture.addListener(future -> {
+        //         if (!future.isSuccess()) {
+        //             writeFailure.set(future.cause());
+        //         }
+        //         // Countdown latch once flush operation completes
+        //         latch.countDown();
+        //     });
+
+        //     // Set default timeout to 30 seconds if USE_CHANNEL_TIMEOUT is specified
+        //     if (timeout == USE_CHANNEL_TIMEOUT) {
+        //         timeout = 60000; // 30 seconds in milliseconds
+        //     }
+
+        //     if (timeout == IMMED_TIMEOUT) { // Check for immediate timeout
+        //         return 0; // Return immediately
+        //     } else if (timeout != NO_TIMEOUT) { // Check if a timeout value is specified
+        //         if (!latch.await(timeout, TimeUnit.MILLISECONDS)) {
+        //             throw new IOException("Write operation timed out");
+        //         }
+        //     }
+
+        //     if (writeFailure.get() != null) {
+        //         throw new IOException("Write operation failed", writeFailure.get());
+        //     }
+        // } catch (InterruptedException e) {
+        //     Thread.currentThread().interrupt();
+        //     throw new IOException("Thread was interrupted while waiting for write to complete", e);
+        // }
+
+        // return writtenBytes.get(); // Return the total written bytes
     }
 
     @Override
     public VirtualConnection write(long numBytes, TCPWriteCompletedCallback callback, boolean forceQueue, int timeout) {
-        boolean wasWritable = nettyChannel.isWritable();
-        long totalWrittenBytes = 0;
+        WriteMode mode = determineMode();
+
+        long totalBytesWritten = 0;
         ChannelFuture lastWriteFuture = null;
-        boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get());
-        //check if wsoc
-        final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
 
-        final boolean isHttp10 = "HTTP10".equals(protocol);
-
-        final boolean isWsoc = "WebSocket".equals(protocol);
-
-        final boolean isH2 = "HTTP2".equals(protocol);
-
-        if (Objects.isNull(buffers)) {
-            return null;
+        for(WsByteBuffer buffer: buffers){
+            if(Objects.nonNull(buffer) && buffer.hasRemaining()){
+                lastWriteFuture = writeBuffer(buffer, mode);
+                totalBytesWritten += buffer.remaining();
+            }
+        }
+        if(Objects.isNull(lastWriteFuture)){
+            callback.complete(vc, this);
+            return vc;
         }
 
-        try {
-            for (WsByteBuffer buffer : buffers) {
-                if (buffer != null && buffer.hasRemaining()) { // Check if buffer is not null and has data
-                    byte[] byteArray = WsByteBufferUtils.asByteArray(buffer);
-                    if (byteArray != null) {
-
-                        if (isH2) {
-                            totalWrittenBytes += buffer.remaining();
-                            AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(this.streamID), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
-                            this.nettyChannel.writeAndFlush(entry);
-
-                        }
-
-                        else if (hasContentLength || isWsoc || isHttp10) {
-                            ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            lastWriteFuture = this.nettyChannel.writeAndFlush(nettyBuf); // Write data to the channel
-                            totalWrittenBytes += nettyBuf.readableBytes();
-                        }
-
-                        else {
-                            ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(buffer);
-                            lastWriteFuture = nettyChannel.writeAndFlush(chunkedInput);
-                            totalWrittenBytes += chunkedInput.length();
-                        }
-
-//                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-//                        lastWriteFuture = nettyChannel.write(nettyBuf);
-//                        totalWrittenBytes += nettyBuf.readableBytes();
-                    }
-                }
-            }
-
-            boolean stillWritable = nettyChannel.isWritable();
-            //nettyChannel.flush();
-
-            if (lastWriteFuture == null && wasWritable && stillWritable && totalWrittenBytes >= numBytes) {
-                return vc;
-
-            } else {
-
-                if (lastWriteFuture != null) {
-                    // We don't have to do the callback if everything wrote properly
-                    if (lastWriteFuture.isDone()) {
-                        return vc;
-                    }
-                    lastWriteFuture.addListener((ChannelFutureListener) future -> {
-                        if (future.isSuccess()) {
-                            callback.complete(vc, this);
-                        } else {
-                            callback.error(vc, this, new IOException(future.cause()));
-                        }
-                    });
-                }
-            }
-
-        } catch (Exception e) {
-            callback.error(vc, null, new IOException(e));
+        if(mode == WriteMode.HTTP2 || mode == WriteMode.CONTENT_LENGTH){
+            lastWriteFuture = nettyChannel.writeAndFlush(Unpooled.EMPTY_BUFFER);
         }
-        return null; // Return null as the write operation is queued or forced to queue
+
+        lastWriteFuture.addListener((ChannelFutureListener) future -> {
+            if(future.isSuccess()){
+                callback.complete(vc, this);
+            } else{
+                callback.error(vc, this, new IOException("Write operation failed", future.cause()));
+            }
+        });
+
+        return vc;
     }
+    
 }
+
+
+
+
+//         boolean wasWritable = nettyChannel.isWritable();
+//         long totalWrittenBytes = 0;
+//         ChannelFuture lastWriteFuture = null;
+//         boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get());
+//         //check if wsoc
+//         final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
+
+//         final boolean isHttp10 = "HTTP10".equals(protocol);
+
+//         final boolean isWsoc = "WebSocket".equals(protocol);
+
+//         final boolean isH2 = "HTTP2".equals(protocol);
+
+//         if (Objects.isNull(buffers)) {
+//             return null;
+//         }
+
+//         try {
+//             for (WsByteBuffer buffer : buffers) {
+//                 if (buffer != null && buffer.hasRemaining()) { // Check if buffer is not null and has data
+//                     byte[] byteArray = WsByteBufferUtils.asByteArray(buffer);
+//                     if (byteArray != null) {
+
+//                         if (isH2) {
+//                             totalWrittenBytes += buffer.remaining();
+//                             AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(this.streamID), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
+//                             this.nettyChannel.writeAndFlush(entry);
+
+//                         }
+
+//                         else if (hasContentLength || isWsoc || isHttp10) {
+//                             ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+//                             lastWriteFuture = this.nettyChannel.writeAndFlush(nettyBuf); // Write data to the channel
+//                             totalWrittenBytes += nettyBuf.readableBytes();
+//                         }
+
+//                         else {
+//                             ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(buffer);
+//                             lastWriteFuture = nettyChannel.writeAndFlush(chunkedInput);
+//                             totalWrittenBytes += chunkedInput.length();
+//                         }
+
+// //                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+// //                        lastWriteFuture = nettyChannel.write(nettyBuf);
+// //                        totalWrittenBytes += nettyBuf.readableBytes();
+//                     }
+//                 }
+//             }
+
+//             boolean stillWritable = nettyChannel.isWritable();
+//             //nettyChannel.flush();
+
+//             if (lastWriteFuture == null && wasWritable && stillWritable && totalWrittenBytes >= numBytes) {
+//                 return vc;
+
+//             } else {
+
+//                 if (lastWriteFuture != null) {
+//                     // We don't have to do the callback if everything wrote properly
+//                     if (lastWriteFuture.isDone()) {
+//                         return vc;
+//                     }
+//                     lastWriteFuture.addListener((ChannelFutureListener) future -> {
+//                         if (future.isSuccess()) {
+//                             callback.complete(vc, this);
+//                         } else {
+//                             callback.error(vc, this, new IOException(future.cause()));
+//                         }
+//                     });
+//                 }
+//             }
+
+//         } catch (Exception e) {
+//             callback.error(vc, null, new IOException(e));
+//         }
+//         return null; // Return null as the write operation is queued or forced to queue
+//     }
+//}
