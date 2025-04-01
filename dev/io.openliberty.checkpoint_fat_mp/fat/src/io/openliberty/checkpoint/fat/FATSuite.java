@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.checkpoint.fat;
+package io.openliberty.checkpoint.fat.mp;
 
 import static componenttest.topology.utils.FATServletClient.getTestMethodSimpleName;
 import static org.junit.Assert.fail;
@@ -53,48 +53,15 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
-                BasicServletTest.class,
-                CheckpointFailTest.class,
-                CheckpointLauncherArgsTest.class,
-                CheckpointPhaseTest.class,
-                LogsVerificationTest.class,
-                OSGiConsoleTest.class,
-                LocalEJBTest.class,
-                CheckpointSPITest.class,
-                CheckpointSPITestConfig.class,
-                CheckpointWithSecurityManager.class,
-                SSLTest.class,
-                PasswordUtilsTest.class,
-                ValidFeaturesTest.class,
-                RESTclientTest.class,
-                JNDITest.class,
-                CRIULogLevelTest.class,
-                AppsecurityTest.class,
-                WebSocketTest.class,
-                FacesTest.class,
-                FacesBeanTest.class,
-                WebProfileJSPWithELTest.class,
-                OpenAPITest.class,
-                WebProfileEARtest.class,
-                SlowAppStartTest.class,
-                JsonbTest.class,
-                JsonpTest.class,
-                ManagedBeansTest.class,
-                BellsTest.class,
-                JaxWSVirtualHostTest.class,
-                WebAppMessageTest.class,
-                URAPIs_Federation_2LDAPsTest.class,
-                JavaInfoIsCriuSupportedTest.class,
-                RestConnectorTest.class,
-                AuditTest.class,
-                ConcurrencyTest.class,
-                MapCacheTest.class,
-                WebCacheTest.class,
-                XMLbindingsTest.class,
-                LocalConnectorTest.class,
-                WebProfileJSPtest.class,
-                LogsChangeTraceSpecTest.class
+		AlwaysPassesTest.class,
+                MPOpenTracingJaegerTraceTest.class,
+		MPFaultToleranceTimeoutTest.class,
+               	MPJWTTest.class,
+                MPMetricsTest.class,
+                MPTelemetryTest.class,
+                MPHealthTest.class,
+                MPTelemetryJaxRsIntegrationTest.class,
+		OpenAPIConfigTest.class
 })
 
 public class FATSuite {
