@@ -436,13 +436,8 @@ public class MicroProfileActions {
     public static final FeatureSet MP71_EE11 = new FeatureSet(MP71_EE11_ID, MP71_EE11_FEATURE_SET, EEVersion.EE11);
     public static final FeatureSet MP70_EE11_APP_MODE = new FeatureSet(MP70_EE11_APP_MODE_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
 
-<<<<<<< HEAD
     //All MicroProfile FeatureSets - must be descending order 
     private static final FeatureSet[] ALL_SETS_ARRAY = { MP71_EE11, MP71_EE10, MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };
-=======
-    //All MicroProfile FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = {MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };
->>>>>>> ff0ac0216a9 (Add mptelemetry 2.1 internal bundle)
     public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
 
     /**
