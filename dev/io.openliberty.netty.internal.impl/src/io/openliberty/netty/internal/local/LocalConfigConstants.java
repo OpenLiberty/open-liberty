@@ -23,7 +23,6 @@ public interface LocalConfigConstants {
     String LOCAL_LOOKUP_FAILURE = 		"CWUDP0006I";
 
     Integer LOCAL_MAX_RCV_BUFFSIZE = Integer.MAX_VALUE;
-    Integer LOCAL_MIN_RCV_BUFFSIZE = 12;
     
 }
 
