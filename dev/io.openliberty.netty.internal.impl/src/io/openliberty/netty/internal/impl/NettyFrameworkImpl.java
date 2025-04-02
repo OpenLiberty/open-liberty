@@ -483,38 +483,21 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
 
     @Override
-	public ServerBootstrapExtended createLocalBootstrap(Map<String, Object> options) throws NettyException {
-		return LocalUtils.createLocalBootstrap(this, options);
-	}
+    public ServerBootstrapExtended createLocalBootstrap(Map<String, Object> options) throws NettyException {
+	return LocalUtils.createLocalBootstrap(this, options);
+    }
 
-	@Override
-	public BootstrapExtended createLocalBootstrapOutbound(Map<String, Object> options) throws NettyException {
-		return LocalUtils.createLocalBootstrapOutbound(this, options);
-	}
+    @Override
+    public BootstrapExtended createLocalBootstrapOutbound(Map<String, Object> options) throws NettyException {
+	return LocalUtils.createLocalBootstrapOutbound(this, options);
+    }
 
-	@Override
+    @Override
     public Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
         return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
     }
-    
-    @Override
-    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, LocalAddress localAddr,
-            ChannelFutureListener bindListener) throws NettyException {
-        return LocalUtils.start(this, bootstrap, localAddr, bindListener);
-    }
 
-    @Override
-    public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, LocalAddress localAddr,
-            ChannelFutureListener bindListener) throws NettyException {
-        return LocalUtils.start(this, bootstrap, localAddr, bindListener);
-    }
-
-    @Override
-    public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, LocalAddress localAddr,
-            ChannelFutureListener bindListener) throws NettyException {
-        return LocalUtils.start(this, bootstrap, localAddr, bindListener);
-    }
 
     @Override
     public Channel start(BootstrapExtended bootstrap, String inetHost, int inetPort,
