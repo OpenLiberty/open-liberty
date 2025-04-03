@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class KeyPairs {
 
     private static boolean createdSSLStuff = false;
 
-    public synchronized static void generateSSLStuff(LibertyServer server) {
+    public synchronized static void generateSSLStuff(LibertyServer server) {    
         if (createdSSLStuff) {
             return;
         }
@@ -91,7 +91,7 @@ public class KeyPairs {
             SSLUtils.exportCertificateToFile(certificateFile, certificateObject);
             createdSSLStuff = true;
         } catch (Exception e) { //If we get an exception let the test fail and show the developer what went wrong
-            throw new RuntimeException("Exception doing SSLStuff", e);
+            throw new RuntimeException("Exception doing SSLStuff. See the exception message and search output.txt for 'The SLF4J simpleLogger is being configured with a logFile of' to find further logs", e);
         }
     }
 

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -63,6 +63,9 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: \u4e3a {0} \u5e94\u7528\u7a0b\u5e8f\u
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile \u901a\u8fc7\u4f7f\u7528\u7cfb\u7edf\u5c5e\u6027\u6216\u73af\u5883\u53d8\u91cf\uff0c\u53ef\u4ee5\u4e3a\u6574\u4e2a\u670d\u52a1\u5668\u542f\u7528\u9065\u6d4b\u529f\u80fd\u3002 \u5982\u679c\u672a\u5728\u6574\u4e2a\u670d\u52a1\u5668\u4e2d\u542f\u7528\uff0c\u5219\u53ef\u901a\u8fc7\u8bbe\u7f6e MicroProfile \u914d\u7f6e\u5c5e\u6027\u4e3a\u5e94\u7528\u7a0b\u5e8f\u542f\u7528\uff1b\u4f8b\u5982\uff0c\u5728 server.xml \u6587\u4ef6\u4e2d\u8bbe\u7f6e\u53d8\u91cf\u3002 \u5982\u679c\u6574\u4e2a\u670d\u52a1\u5668\u542f\u7528\u4e86\u9065\u6d4b\uff0c\u4f46 MicroProfile \u914d\u7f6e\u5c5e\u6027\u7981\u7528\u4e86\u5e94\u7528\u7a0b\u5e8f\u7684\u9065\u6d4b\uff0c\u5219\u4f1a\u53d1\u51fa\u6b64\u8b66\u544a\u3002 \u7531\u4e8e\u6574\u4e2a\u670d\u52a1\u5668\u90fd\u542f\u7528\u4e86\u9065\u6d4b\u529f\u80fd\uff0c\u56e0\u6b64\u8be5\u5e94\u7528\u7a0b\u5e8f\u7684\u914d\u7f6e\u5c06\u88ab\u5ffd\u7565\u3002
 CWMOT5007.tel.enabled.conflict.useraction: \u901a\u8fc7\u4f7f\u7528\u73af\u5883\u53d8\u91cf\u548c\u7cfb\u7edf\u5c5e\u6027\u6216\u5176\u4ed6 MP \u914d\u7f6e\u6e90\uff0c\u6307\u5b9a\u542f\u7528\u6216\u7981\u7528 OpenTelemetry \u5b9e\u4f8b\u7684\u8bbe\u7f6e\uff0c\u4f46\u4e0d\u80fd\u4e24\u8005\u517c\u7528\u3002
 
+CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: MicroProfile \u9065\u6d4b\u65e5\u5fd7\u529f\u80fd\u65e0\u6cd5\u8bc6\u522b [ {0} ] \u9065\u6d4b\u8bbf\u95ee\u65e5\u5fd7\u683c\u5f0f\u3002
+CWMOT5008.mptelemetry.unknown.access.log.field.explanation=Liberty \u8fd0\u884c\u73af\u5883\u4e0d\u63d0\u4f9b\u6307\u5b9a\u7684\u65e5\u5fd7\u683c\u5f0f\u3002
+CWMOT5008.mptelemetry.unknown.access.log.field.useraction=\u4e3a mpTelemetry accessLogFields \u5c5e\u6027\u6307\u5b9a\u9ed8\u8ba4\u503c\u6216 logFormat\u3002
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages

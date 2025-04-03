@@ -27,4 +27,5 @@
 	<auditFileHandler maxFiles="5" maxFileSize="20" compact="true">
 		<events name="AuditEvent_1" eventName="SECURITY_AUDIT_MGMT" outcome="SUCCESS"/>
 	</auditFileHandler>
+	<include location="serverSessionConfig.xml"/>
 </server>

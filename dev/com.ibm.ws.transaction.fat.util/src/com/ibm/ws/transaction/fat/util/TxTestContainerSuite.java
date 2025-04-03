@@ -46,7 +46,7 @@ public class TxTestContainerSuite extends TestContainerSuite {
     public static final String POSTGRES_USER = "postgresUser";
     public static final String POSTGRES_PASS = "superSecret";
     
-    public static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17").getDockerImageName();
+    public static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17.0.0.1").getDockerImageName();
 
     private static DatabaseContainerType databaseContainerType;
     public static JdbcDatabaseContainer<?> testContainer;

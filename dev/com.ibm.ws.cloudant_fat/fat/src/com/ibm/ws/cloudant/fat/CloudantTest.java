@@ -147,7 +147,8 @@ public class CloudantTest extends FATServletClient {
 
     @Test
     @AllowedFFDC({ "java.security.cert.CertPathBuilderException",
-                   "sun.security.validator.ValidatorException" })
+                   "sun.security.validator.ValidatorException",
+                   "com.ibm.security.cert.IBMCertPathBuilderException" })
     public void testInvalidSSL() throws Exception {
         runTest();
     }

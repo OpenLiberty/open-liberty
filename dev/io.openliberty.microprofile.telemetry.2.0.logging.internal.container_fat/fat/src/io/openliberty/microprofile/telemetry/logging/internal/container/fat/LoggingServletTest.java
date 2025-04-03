@@ -50,6 +50,7 @@ public class LoggingServletTest {
     public static final String SERVER_XML_TRACE_SOURCE = "traceSourceServer.xml";
     public static final String SERVER_XML_FFDC_SOURCE = "FFDCSourceServer.xml";
     public static final String SERVER_XML_AUDIT_SOURCE = "auditSourceServer.xml";
+    public static final String SERVER_XML_ACCESS_SOURCE = "accessSourceServer.xml";
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
 
@@ -245,6 +246,43 @@ public class LoggingServletTest {
         assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testAuditEventLogs", logs, "SeverityNumber: Info2(10)"));
         assertTrue("Sequence message could not be found.", TestUtils.assertLogContains("testAuditEventLogs", logs, "io.openliberty.sequence: Str"));
         assertTrue("Thread ID message could not be found.", TestUtils.assertLogContains("testAuditEventLogs", logs, "thread.id: Int"));
+
+    }
+
+    /*
+     * Ensures that an access log message from a Liberty application is bridged over to the otlp container.
+     */
+    @Test
+    public void testAccessLogs() throws Exception {
+
+        assertTrue("The server was not started successfully.", server.isStarted());
+
+        TestUtils.isContainerStarted("LogsExporter", container);
+
+        RemoteFile messageLogFile = server.getDefaultLogFile();
+        setConfig(SERVER_XML_ACCESS_SOURCE, messageLogFile, server);
+
+        TestUtils.runApp(server, "logs");
+
+        //Allow time for the collector to receive and bridge logs.
+        TimeUnit.SECONDS.sleep(WAIT_TIMEOUT);
+
+        final String logs = container.getLogs();
+
+        assertTrue("Access message log could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "Body: Str(GET /MpTelemetryLogApp/LogURL HTTP/1.1)"));
+        assertTrue("Client address could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "client.address: Str("));
+        assertTrue("Request method could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "http.request.method: Str(GET)"));
+        assertTrue("Request status code could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "http.response.status_code: Int(200)"));
+        assertTrue("Request first line message could not be found.",
+                   TestUtils.assertLogContains("testAccessLogs", logs, "io.openliberty.access_log.request_first_line: Str(GET /MpTelemetryLogApp/LogURL HTTP/1.1)"));
+        assertTrue("Request URL path could not be found.",
+                   TestUtils.assertLogContains("testAccessLogs", logs, "io.openliberty.access_log.url.path: Str(/MpTelemetryLogApp/LogURL)"));
+        assertTrue("Network local port could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "network.local.port: Int(" + server.getHttpDefaultPort()));
+        assertTrue("Network protocol name could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "network.protocol.name: Str(HTTP)"));
+        assertTrue("Server address could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "server.address: Str("));
+        assertTrue("User agent could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "user_agent.original: Str("));
+        assertTrue("Sequence message could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "io.openliberty.sequence: Str"));
+        assertTrue("Log type message could not be found.", TestUtils.assertLogContains("testAccessLogs", logs, "io.openliberty.type: Str(liberty_accesslog)"));
 
     }
 

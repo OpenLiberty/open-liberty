@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,29 +19,24 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
 
-import io.openliberty.data.internal.persistence.DataProvider;
-
 /**
  * A resource factory that delegates to a resource reference JNDI name that was
  * specified as the dataStore for a Repository.
  */
 class ResRefDelegator implements ResourceFactory {
-    private final String identifier;
     private final String jndiName;
-    private final DataProvider provider;
+    private final ComponentMetaData metadata;
 
     /**
      * Construct a new instance.
      *
      * @param jndiName resource reference JNDI name to look up.
-     * @param metadata metadata identifier for the application artifact
+     * @param metadata metadata for the application artifact
      *                     that defines the repository interface.
-     * @param provider OSGi service that provides the CDI extension.
      */
-    ResRefDelegator(String jndiName, String identifier, DataProvider provider) {
+    ResRefDelegator(String jndiName, ComponentMetaData metadata) {
         this.jndiName = jndiName;
-        this.identifier = identifier;
-        this.provider = provider;
+        this.metadata = metadata;
     }
 
     /**
@@ -54,8 +49,6 @@ class ResRefDelegator implements ResourceFactory {
      */
     @Override
     public Object createResource(ResourceInfo info) throws Exception {
-        ComponentMetaData metadata = (ComponentMetaData) provider.metadataIdSvc.getMetaData(identifier);
-
         ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
         if (metadata == null)
             accessor.beginDefaultContext();

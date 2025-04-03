@@ -88,10 +88,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     public final boolean inWebModule;
 
     /**
-     * Module name in which the repository interface is defined.
-     * If not defined in a module, only the application name part is included.
+     * Application artifact name (typically a module name) in which the repository
+     * interface is defined. If not defined in a module, only the application name
+     * part is included. If not defined in an application either, the name of the
+     * application that uses the repository is used instead.
      */
-    final J2EEName moduleName;
+    public final J2EEName jeeName;
 
     /**
      * Namespace prefix (such as java:module) of the Repository dataStore.
@@ -129,23 +131,23 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
         this.dataStore = dataStore;
-        this.moduleName = getModuleName(repositoryInterface, repositoryClassLoader, provider);
+        this.jeeName = getArtifactName(repositoryInterface, repositoryClassLoader, provider);
         this.namespace = Namespace.of(dataStore);
 
         if (Namespace.APP.isMoreGranularThan(namespace)) { // java:global or none
             application = null;
             module = null;
         } else { // java:app, java:module, or java:comp
-            application = moduleName.getApplication();
+            application = jeeName.getApplication();
             if (Namespace.MODULE.isMoreGranularThan(namespace)) { // java:app
                 module = null;
             } else { // java:module or java:comp
-                module = moduleName.getModule();
+                module = jeeName.getModule();
                 if (module == null)
                     throw exc(IllegalArgumentException.class,
                               "CWWKD1060.name.out.of.scope",
                               repositoryInterface.getName(),
-                              moduleName.getApplication(),
+                              jeeName.getApplication(),
                               dataStore,
                               "dataStore",
                               namespace,
@@ -289,12 +291,9 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
      * @return PUnitEMBuilder (for persistence unit references) or
      *         DBStoreEMBuilder (data sources, databaseStore)
      */
-    @FFDCIgnore({ NamingException.class, Throwable.class })
+    @FFDCIgnore({ NamingException.class, Throwable.class, IllegalStateException.class })
     public EntityManagerBuilder createEMBuilder() {
-        // metadata of DataExtension thread (runs from an application module)
-        ComponentMetaData extMetadata = null;
-        // metadata of the class loader of the repository interface
-        ComponentMetaData repoMetadata = null;
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
         try {
             String resourceName = dataStore;
             String metadataIdentifier = getMetadataIdentifier();
@@ -304,33 +303,73 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             // EJB#MyApp#MyEJBModule.jar#MyEJB
             // DATA#MyApp
 
-            ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl //
-                            .getComponentMetaDataAccessor();
-            extMetadata = accessor.getComponentMetaData();
-            repoMetadata = (ComponentMetaData) provider.metadataIdSvc //
-                            .getMetaData(metadataIdentifier);
-            boolean switchMetadata = repoMetadata != null && //
-                                     (extMetadata == null || //
-                                      !extMetadata.getJ2EEName().equals(repoMetadata.getJ2EEName()));
-
             if (namespace == Namespace.COMP && metadataIdentifier.startsWith("EJB#"))
                 throw exc(DataException.class,
                           "CWWKD1061.comp.name.in.ejb",
                           getClassNames(repositoryInterfaces),
-                          repoMetadata.getJ2EEName().getModule(),
-                          repoMetadata.getJ2EEName().getApplication(),
+                          jeeName.getModule(),
+                          jeeName.getApplication(),
                           resourceName,
                           "dataStore",
                           "java:comp",
                           List.of("java:app", "java:module"));
 
-            if (switchMetadata)
-                accessor.beginContext(repoMetadata);
+            // Avoid a web container deadlock (#31106) on metadataIdSvc.getMetaData
+            // by first checking for ComponentMetaData that was observed by our
+            // ComponentMetaDataListener:
+            ComponentMetaData metadata = //
+                            provider.componentMetadatasForModules.get(jeeName);
+
+            if (metadata == null) {
+                // metadata = (ComponentMetaData) provider.metadataIdSvc //
+                //            .getMetaData(metadataIdentifier);
+                // TODO use the above instead of the following
+                // and remove IllegalStateException from FFDCIgnore
+                long start = System.nanoTime();
+                do {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "keep retrying every 2 seconds until " + jeeName +
+                                           " becomes available or 30 seconds elapses");
+                    TimeUnit.SECONDS.sleep(2);
+                    try {
+                        metadata = (ComponentMetaData) provider.metadataIdSvc //
+                                        .getMetaData(metadataIdentifier);
+                    } catch (IllegalStateException x) {
+                        if (System.nanoTime() - start > TimeUnit.SECONDS.toNanos(30))
+                            throw x;
+                        // else retry because the deferred metadata is not available yet
+                    }
+                } while (metadata == null);
+            }
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "using metadata: " + metadata);
+
+            ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl //
+                            .getComponentMetaDataAccessor();
+            if (metadata == null)
+                accessor.beginDefaultContext();
+            else
+                accessor.beginContext(metadata);
             try {
                 if (namespace != null) {
-                    Object resource = InitialContext.doLookup(dataStore);
+                    //Object resource = InitialContext.doLookup(dataStore);
+                    // TODO use the above instead of the following temporary workaround
+                    Object resource = null;
+                    NamingException failure = null;
+                    for (long start = System.nanoTime(); //
+                                    resource == null && System.nanoTime() - start < TimeUnit.SECONDS.toNanos(30); //
+                                    TimeUnit.SECONDS.sleep(2))
+                        try {
+                            resource = InitialContext.doLookup(dataStore);
+                        } catch (NamingException namingX) {
+                            failure = namingX;
+                        }
+                    if (failure != null && resource == null)
+                        throw failure;
+                    // end of code to replace
 
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
 
                     if (resource instanceof EntityManagerFactory)
@@ -339,7 +378,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                                         repositoryInterfaces, //
                                         (EntityManagerFactory) resource, //
                                         resourceName, //
-                                        metadataIdentifier, //
+                                        metadata, //
                                         entityTypes);
                 } else {
                     // Check for resource references and persistence unit references where java:comp/env/ is omitted:
@@ -347,7 +386,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                     try {
                         Object resource = InitialContext.doLookup(javaCompName);
 
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, javaCompName + " is the JNDI name for " + resource);
 
                         if (resource instanceof EntityManagerFactory)
@@ -356,24 +395,22 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                                             repositoryInterfaces, //
                                             (EntityManagerFactory) resource, //
                                             javaCompName, //
-                                            metadataIdentifier, //
+                                            metadata, //
                                             entityTypes);
 
                         if (resource instanceof DataSource)
                             resourceName = javaCompName;
                     } catch (NamingException x) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, javaCompName + " is not available in JNDI, ensure dataStore = "
                                                + resourceName + " refers to a resource reference or persistence unit reference. "
                                                + "Otherwise, we will assume this property refers to a datasource.");
                     }
                 }
             } finally {
-                if (switchMetadata)
-                    accessor.endContext();
+                accessor.endContext();
             }
 
-            J2EEName jeeName = repoMetadata == null ? null : repoMetadata.getJ2EEName();
             boolean javacolon = namespace != null || // any java: namespace
                                 resourceName != dataStore; // implicit java:comp
 
@@ -382,28 +419,24 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                             repositoryInterfaces, //
                             resourceName, //
                             javacolon, //
-                            metadataIdentifier, //
-                            jeeName, //
+                            metadata, //
                             entityTypes);
         } catch (Throwable x) {
             // The error is logged to Tr.error rather than FFDC
-            ComponentMetaData metadata = repoMetadata == null //
-                            ? extMetadata //
-                            : repoMetadata;
             if (x instanceof DataException) { // already logged
                 throw (DataException) x;
             } else if (x instanceof NamingException) {
                 if (namespace == null)
-                    throw excDataStoreNotFound(metadata, x);
+                    throw excDataStoreNotFound(jeeName, x);
                 else if (DataExtension.DEFAULT_DATA_SOURCE.equals(dataStore))
-                    throw excDefaultDataSourceNotFound(metadata, x);
+                    throw excDefaultDataSourceNotFound(jeeName, x);
                 else
-                    throw excJNDINameNotFound(metadata, x);
+                    throw excJNDINameNotFound(jeeName, x);
             } else {
                 throw (DataException) exc(DataException.class,
                                           "CWWKD1080.datastore.general.err",
                                           getClassNames(repositoryInterfaces),
-                                          metadata.getJ2EEName(),
+                                          jeeName,
                                           dataStore,
                                           x).initCause(x);
             }
@@ -426,13 +459,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
      * value that is not found as an id or JNDI name, or is not accessible,
      * or the resource is misconfigured.
      *
-     * @param metadata metadata that is on the thread.
-     * @param cause    cause for the exception.
+     * @param jeeName name of the application artifact containing the repository.
+     * @param cause   cause for the exception.
      * @return DataException.
      */
     @Trivial
-    private DataException excDataStoreNotFound(ComponentMetaData metadata,
-                                               Throwable cause) {
+    private DataException excDataStoreNotFound(J2EEName jeeName, Throwable cause) {
         Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterfaces.stream().findFirst().get());
         String exampleEntityClassName = primary == null //
                         ? "org.example.MyEntity" //
@@ -472,7 +504,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
         DataException x = exc(DataException.class,
                               "CWWKD1078.datastore.not.found",
                               getClassNames(repositoryInterfaces),
-                              metadata.getJ2EEName(),
+                              jeeName,
                               dataStore,
                               dataSourceConfigExample,
                               databaseStoreConfigExample,
@@ -488,12 +520,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
      * Creates an exception for a Repository that uses java:comp/DefaultDataSource
      * (the default if unspecified) but it is not configured.
      *
-     * @param metadata metadata that is on the thread.
-     * @param cause    cause for the exception, typically NamingException.
+     * @param jeeName name of the application artifact containing the repository.
+     * @param cause   cause for the exception, typically NamingException.
      * @return DataException.
      */
     @Trivial
-    private DataException excDefaultDataSourceNotFound(ComponentMetaData metadata,
+    private DataException excDefaultDataSourceNotFound(J2EEName jeeName,
                                                        Throwable cause) {
         Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterfaces.stream().findFirst().get());
         String exampleEntityClassName = primary == null //
@@ -533,7 +565,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
 
         DataException x = exc(DataException.class,
                               "CWWKD1077.defaultds.not.found",
-                              metadata.getJ2EEName(),
+                              jeeName,
                               getClassNames(repositoryInterfaces),
                               dataStore,
                               dataSourceConfigExample,
@@ -551,13 +583,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
      * JNDI name that is not found, not accessible, or the resource is
      * misconfigured.
      *
-     * @param metadata metadata that is on the thread.
-     * @param cause    cause for the exception, typically NamingException.
+     * @param jeeName name of the application artifact containing the repository.
+     * @param cause   cause for the exception, typically NamingException.
      * @return DataException.
      */
     @Trivial
-    private DataException excJNDINameNotFound(ComponentMetaData metadata,
-                                              Throwable cause) {
+    private DataException excJNDINameNotFound(J2EEName jeeName, Throwable cause) {
         Class<?> primary = DataExtension.getPrimaryEntityType(repositoryInterfaces.stream().findFirst().get());
         String exampleEntityClassName = primary == null //
                         ? "org.example.MyEntity" //
@@ -590,7 +621,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
         DataException x = exc(DataException.class,
                               "CWWKD1079.jndi.not.found",
                               getClassNames(repositoryInterfaces),
-                              metadata.getJ2EEName(),
+                              jeeName,
                               dataStore,
                               "@Resource(name=\"java:app/env/jdbc/dsRef\",lookup=\"jdbc/ds\")",
                               "jndiName=\"jdbc/ds\"",
@@ -599,6 +630,42 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                               dataSourceConfigExample);
 
         return (DataException) x.initCause(cause);
+    }
+
+    /**
+     * Obtains the module name in which the repository interface is defined,
+     * or lacking that, the name of the application in which it is defined or used.
+     *
+     * @param repositoryInterface   the repository interface.
+     * @param repositoryClassLoader class loader of the repository interface.
+     * @param provider              OSGi service that provides the CDI extension.
+     * @return AppName[#ModuleName] with only the application name if not defined
+     *         in a module.
+     * @throws IllegalStateException if not running on an application thread.
+     */
+    private J2EEName getArtifactName(Class<?> repositoryInterface,
+                                     ClassLoader repositoryClassLoader,
+                                     DataProvider provider) {
+        J2EEName artifactName;
+
+        Optional<J2EEName> moduleNameOptional = //
+                        provider.cdiService.getModuleNameForClass(repositoryInterface);
+
+        if (moduleNameOptional.isPresent()) {
+            artifactName = moduleNameOptional.get();
+        } else {
+            // create component and module metadata based on the application metadata
+            ComponentMetaData cdata = ComponentMetaDataAccessorImpl //
+                            .getComponentMetaDataAccessor().getComponentMetaData();
+            if (cdata == null) // internal error - used outside of an application
+                throw new IllegalStateException();
+            ApplicationMetaData adata = //
+                            cdata.getModuleMetaData().getApplicationMetaData();
+            cdata = provider.createComponentMetadata(adata, repositoryClassLoader);
+            artifactName = cdata.getModuleMetaData().getJ2EEName();
+        }
+
+        return artifactName;
     }
 
     /**
@@ -612,48 +679,19 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
     private String getMetadataIdentifier() {
         String mdIdentifier;
 
-        if (moduleName.getModule() == null) {
-            mdIdentifier = provider.getMetaDataIdentifier(moduleName.getApplication(),
-                                                          moduleName.getModule(),
+        if (jeeName.getModule() == null) {
+            mdIdentifier = provider.getMetaDataIdentifier(jeeName.getApplication(),
+                                                          jeeName.getModule(),
                                                           null);
         } else {
             mdIdentifier = provider.metadataIdSvc //
                             .getMetaDataIdentifier(inWebModule ? "WEB" : "EJB",
-                                                   moduleName.getApplication(),
-                                                   moduleName.getModule(),
+                                                   jeeName.getApplication(),
+                                                   jeeName.getModule(),
                                                    null);
         }
 
         return mdIdentifier;
-    }
-
-    /**
-     * Obtains the module name in which the repository interface is defined.
-     *
-     * @param repositoryInterface   the repository interface.
-     * @param repositoryClassLoader class loader of the repository interface.
-     * @param provider              OSGi service that provides the CDI extension.
-     * @return AppName[#ModuleName] with only the application name if not defined
-     *         in a module.
-     */
-    private J2EEName getModuleName(Class<?> repositoryInterface,
-                                   ClassLoader repositoryClassLoader,
-                                   DataProvider provider) {
-        J2EEName moduleName;
-
-        Optional<J2EEName> moduleNameOptional = provider.cdiService.getModuleNameForClass(repositoryInterface);
-
-        if (moduleNameOptional.isPresent()) {
-            moduleName = moduleNameOptional.get();
-        } else {
-            // create component and module metadata based on the application metadata
-            ComponentMetaData cdata = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            ApplicationMetaData adata = cdata == null ? null : cdata.getModuleMetaData().getApplicationMetaData();
-            cdata = provider.createComponentMetadata(adata, repositoryClassLoader);
-            moduleName = cdata.getModuleMetaData().getJ2EEName();
-        }
-
-        return moduleName;
     }
 
     @Override
@@ -680,7 +718,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
         writer.println(indent + "  namespace: " + namespace);
         writer.println(indent + "    application: " + application);
         writer.println(indent + "    module: " + module);
-        writer.println(indent + "  defining artifact: " + moduleName);
+        writer.println(indent + "  defining artifact: " + jeeName);
         writer.println(indent + "  repository class loader: " + repositoryClassLoader);
 
         repositoryInterfaces.forEach(r -> {

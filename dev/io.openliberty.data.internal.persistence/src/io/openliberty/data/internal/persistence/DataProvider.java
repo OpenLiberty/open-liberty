@@ -59,12 +59,14 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.metadata.ComponentMetaDataListener;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.container.service.state.ModuleStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -102,7 +104,8 @@ import jakarta.persistence.EntityManagerFactory;
                        DeferredMetaDataFactory.class,
                        ApplicationStateListener.class,
                        ComponentMetaDataListener.class,
-                       Introspector.class },
+                       Introspector.class,
+                       ModuleStateListener.class },
            property = { "deferredMetaData=DATA" })
 public class DataProvider implements //
                 CDIExtensionMetadata, //
@@ -113,7 +116,8 @@ public class DataProvider implements //
                 DeferredMetaDataFactory, //
                 ApplicationStateListener, //
                 ComponentMetaDataListener, //
-                Introspector {
+                Introspector, //
+                ModuleStateListener {
     private static final TraceComponent tc = Tr.register(DataProvider.class);
 
     private static final Set<Class<?>> beanClasses = //
@@ -142,6 +146,14 @@ public class DataProvider implements //
      * Abstraction for code that pertains to a specific version of Jakarta Data.
      */
     public final DataVersionCompatibility compat;
+
+    /**
+     * Map of JEE name to ComponentMetaData for modules.
+     * Entries from the map are added on componentMetaDataCreated
+     * and removed on componentMetaDataDestroyed.
+     */
+    public final ConcurrentHashMap<J2EEName, ComponentMetaData> componentMetadatasForModules = //
+                    new ConcurrentHashMap<>();
 
     /**
      * For dynamically creating configuration in response to values that are
@@ -191,21 +203,23 @@ public class DataProvider implements //
     final ExecutorService executor;
 
     /**
-     * EntityManagerBuilder futures for repositories defined in web modules,
-     * grouped by application, to complete once the application starts.
+     * EntityManagerBuilder futures for repositories, grouped by application,
+     * to complete as the respective application artifact starts.
      * After the application starts, these are kept around for the introspector.
      * The map is cleared on application stop.
      */
-    private final ConcurrentHashMap<String, Set<FutureEMBuilder>> futureEMBuildersInWeb = //
+    private final ConcurrentHashMap<String, Set<FutureEMBuilder>> futureEMBuilders = //
                     new ConcurrentHashMap<>();
 
     /**
-     * EntityManagerBuilder futures for repositories defined elsewhere than
-     * web modules, grouped per application, to complete once [the first component
-     * metadata is created?]. After that, these are kept around for the
-     * introspector. The map is cleared on application stop.
+     * EntityManagerBuilder futures, grouped by application, for EJB modules
+     * that are triggered to initialize on module starting rather than waiting
+     * for application start.
+     * The Set values in this map are subsets of the Set values in futureEMBuilders.
+     * The entries are removed on application start, which uses the values to avoid
+     * duplicated initalization attempts.
      */
-    private final ConcurrentHashMap<String, Set<FutureEMBuilder>> futureEMBuildersNonWeb = //
+    private final ConcurrentHashMap<String, Set<FutureEMBuilder>> futureEMBuildersInEJB = //
                     new ConcurrentHashMap<>();
 
     /**
@@ -306,57 +320,19 @@ public class DataProvider implements //
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
 
     }
-    //TODO Renable when  javax.naming.NameNotFoundException is fixed
-    //FutureEMBuilder: InitialContext.doLookup(dataStore)
-    /*
-    @Override
-    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
-        String appName = event.getMetaData().getJ2EEName().getApplication();
-        Collection<FutureEMBuilder> futures = futureEMBuilders.remove(appName);
-        if (futures != null) {
-
-            Collection<FutureEMBuilder> removalFutures = new ArrayList<FutureEMBuilder>();
-            for (FutureEMBuilder futureEMBuilder : futures) {
-
-                //WEB Module EMBuilders can't complete until the application has started
-                if (!futureEMBuilder.getMetadataIdentifier().startsWith("WEB")) {
-                    removalFutures.add(futureEMBuilder);
-
-                    // This delays createEMBuilder until restore.
-                    // While this works by avoiding all connections to the data source, it does make restore much slower.
-                    // TODO figure out how to do more work on restore without having to make a connection to the data source
-                    CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
-
-                    // Application is ready for DDL generation; register with DDLGen MBean.
-                    // Only those using the Persistence Service will participate, but all will
-                    // be registered since that is not known until createEMBuilder completes.
-                    // Those not participating will return a null DDL file name and be skipped.
-                    futureEMBuilder.registerDDLGenerationParticipant(appName);
-                }
-
-            }
-            futures.removeAll(removalFutures);
-
-            //Return the WEB Module EMBuilders that can't be completed here
-            futureEMBuilders.put(appName, futures);
-        }
-    }
-    */
-
-    @Override
-    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
-    }
 
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
         String appName = appInfo.getName();
-        Collection<FutureEMBuilder> futures = futureEMBuildersInWeb.get(appName);
+        Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
+        Set<FutureEMBuilder> skip = futureEMBuildersInEJB.remove(appName);
         if (futures != null) {
             for (FutureEMBuilder futureEMBuilder : futures) {
-                // This delays createEMBuilder until restore.
-                // While this works by avoiding all connections to the data source, it does make restore much slower.
-                // TODO figure out how to do more work on restore without having to make a connection to the data source
-                CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+                if (skip == null || !skip.contains(futureEMBuilder))
+                    // This delays createEMBuilder until restore.
+                    // While this works by avoiding all connections to the data source, it does make restore much slower.
+                    // TODO figure out how to do more work on restore without having to make a connection to the data source
+                    CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
 
                 // Application is ready for DDL generation; register with DDLGen MBean.
                 // Only those using the Persistence Service will participate, but all will
@@ -365,11 +341,6 @@ public class DataProvider implements //
                 futureEMBuilder.registerDDLGenerationParticipant(appName);
             }
         }
-    }
-
-    @Override
-    public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
-
     }
 
     @Override
@@ -395,8 +366,7 @@ public class DataProvider implements //
 
         // TODO also cancel the FutureEMBuilders if not done yet, and for those
         // that are done, also cancel each Future in its entityInfoMap ?
-        futureEMBuildersInWeb.remove(appName);
-        futureEMBuildersNonWeb.remove(appName);
+        futureEMBuilders.remove(appName);
 
         Map<String, Configuration> configurations = dbStoreConfigAllApps.remove(appName);
         if (configurations != null)
@@ -424,6 +394,34 @@ public class DataProvider implements //
                 it.remove();
             }
         }
+    }
+
+    @Override
+    @Trivial
+    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
+        ComponentMetaData metadata = event.getMetaData();
+        J2EEName jeeName = metadata.getJ2EEName();
+
+        // Jakarta Data repositories can be in modules, applications, or libraries,
+        // but never in components.
+        if (metadata.getJ2EEName().getComponent() == null)
+            componentMetadatasForModules.put(jeeName, metadata);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "componentMetaDataCreated " + jeeName, metadata);
+    }
+
+    @Override
+    @Trivial
+    public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
+        ComponentMetaData metadata = event.getMetaData();
+        J2EEName jeeName = metadata.getJ2EEName();
+
+        if (metadata.getJ2EEName().getComponent() == null)
+            componentMetadatasForModules.remove(jeeName);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "componentMetaDataDestroyed " + jeeName, metadata);
     }
 
     /**
@@ -604,19 +602,8 @@ public class DataProvider implements //
         });
 
         writer.println();
-        writer.println("EntityManager builder futures for web modules:");
-        futureEMBuildersInWeb.forEach((appName, futureEMBuilders) -> {
-            writer.println("  for application " + appName);
-            for (FutureEMBuilder futureEMBuilder : futureEMBuilders) {
-                futureEMBuilder.introspect(writer, "    ") //
-                                .ifPresent(builders::add);
-                writer.println();
-            }
-        });
-
-        writer.println();
-        writer.println("EntityManager builder futures for other:");
-        futureEMBuildersNonWeb.forEach((appName, futureEMBuilders) -> {
+        writer.println("EntityManager builder futures:");
+        futureEMBuilders.forEach((appName, futureEMBuilders) -> {
             writer.println("  for application " + appName);
             for (FutureEMBuilder futureEMBuilder : futureEMBuilders) {
                 futureEMBuilder.introspect(writer, "    ") //
@@ -880,18 +867,98 @@ public class DataProvider implements //
         logValues = names;
     }
 
+    @Override
+    @Trivial
+    public void moduleStarted(ModuleInfo moduleInfo) throws StateChangeException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "moduleStarted " + moduleInfo);
+    }
+
+    @Override
+    @Trivial
+    public void moduleStarting(ModuleInfo moduleInfo) throws StateChangeException {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // TODO here and elsewhere: use whichever of getDeploymentName() or getName()
+        // is guaranteed to match J2EEName
+        String appName = moduleInfo.getApplicationInfo().getName();
+        String moduleName = moduleInfo.getName(); // does not include .jar at the end
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "moduleStarting " + moduleInfo, appName, moduleName);
+
+        Set<FutureEMBuilder> processed = futureEMBuildersInEJB.get(appName);
+
+        // TODO it would be more direct to map from appName+moduleName -> FutureEMBuilder,
+        // but we would need to take into account the difference in module names
+        // including or not including .jar at the end.
+        Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
+        if (futures != null)
+            for (FutureEMBuilder futureEMBuilder : futures) {
+                // The JEE name includes .jar at the end of EJB modules
+                String moduleNameWithDot = futureEMBuilder.jeeName.getModule();
+
+                if (!futureEMBuilder.inWebModule &&
+                    moduleNameWithDot != null &&
+                    moduleNameWithDot.length() == moduleName.length() + 4 &&
+                    moduleNameWithDot.startsWith(moduleName) &&
+                    moduleNameWithDot.endsWith(".jar")) {
+
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "matched with " + futureEMBuilder.jeeName);
+
+                    // This delays createEMBuilder until restore.
+                    // While this works by avoiding all connections to the data source, it does make restore much slower.
+                    // TODO figure out how to do more work on restore without having to make a connection to the data source
+                    CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+
+                    if (processed == null) {
+                        processed = new ConcurrentSkipListSet<>();
+                        Set<FutureEMBuilder> previous = futureEMBuildersInEJB //
+                                        .putIfAbsent(appName, processed);
+                        if (previous != null)
+                            processed = previous;
+                    }
+
+                    processed.add(futureEMBuilder);
+                }
+            }
+    }
+
+    @Override
+    @Trivial
+    public void moduleStopped(ModuleInfo moduleInfo) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "moduleStopped " + moduleInfo);
+    }
+
+    @Override
+    @Trivial
+    public void moduleStopping(ModuleInfo moduleInfo) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "moduleStopping " + moduleInfo);
+    }
+
     /**
      * Arrange for the specified EntityManagerBuilders to initialize once the
-     * application is started.
+     * respective application artifact that defines the repository is started.
      *
      * @param appName  application name.
      * @param builders list of EntityManagerBuilder.
      */
-    public void onAppStarted(String appName, Set<FutureEMBuilder> builders) {
-        Set<FutureEMBuilder> previous = futureEMBuildersInWeb //
-                        .putIfAbsent(appName, new ConcurrentSkipListSet<>(builders));
-        if (previous != null)
-            previous.addAll(builders);
+    public void onStart(String appName, Set<FutureEMBuilder> builders) {
+        for (Set<FutureEMBuilder> merged = builders, previous; //
+                        null != (previous = futureEMBuilders //
+                                        .putIfAbsent(appName, merged));) {
+            // In the unlikely case this is invoked twice for the same app,
+            // merge previous and new into a single set:
+            ConcurrentHashMap<FutureEMBuilder, Boolean> m = new ConcurrentHashMap<>();
+            for (FutureEMBuilder b : previous)
+                m.put(b, Boolean.TRUE);
+            for (FutureEMBuilder b : builders)
+                m.put(b, Boolean.TRUE);
+            merged = m.keySet();
+        }
     }
 
     /**

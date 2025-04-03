@@ -41,8 +41,7 @@ public class FATSuite extends TestContainerSuite {
 
     private static final Class<?> c = FATSuite.class;
 
-
-    private static final DockerImageName COUCHDB_SSL = ImageBuilder.build("couchdb-ssl:3").getDockerImageName();
+    private static final DockerImageName COUCHDB_SSL = ImageBuilder.build("couchdb-ssl:3.0.0.1").getDockerImageName();
 
     @ClassRule
     public static CouchDBContainer cloudant = new CouchDBContainer(COUCHDB_SSL)

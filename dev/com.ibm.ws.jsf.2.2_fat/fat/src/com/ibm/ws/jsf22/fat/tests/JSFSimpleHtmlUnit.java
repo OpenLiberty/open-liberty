@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
@@ -249,11 +250,12 @@ public class JSFSimpleHtmlUnit {
     /**
      * Create a testcase 169346: Port MYFACES-3949, javax.faces.ViewState autocomplete
      * 
-     * In Faces 4.1, AUTOCOMPLETE_OFF_VIEW_STATE changed to false -- see MYFACES-4659
+     * AUTOCOMPLETE_OFF_VIEW_STATE changed to false (2.3.11, 3.0,3, 4.0.3, and 4.1.0) -- see MYFACES-4659 
      *
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_OR_LATER_FEATURES) // parameter change in 2.3.11
     public void check_defaultLogging_AUTOCOMPLETE_OFF_VIEW_STATE() throws Exception {
         try (WebClient webClient = new WebClient()) {
 

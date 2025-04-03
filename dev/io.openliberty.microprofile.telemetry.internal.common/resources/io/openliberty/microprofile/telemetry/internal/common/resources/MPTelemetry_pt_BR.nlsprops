@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -63,6 +63,9 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Configura\u00e7\u00e3o conflitante pa
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile A telemetria pode ser ativada para todo o servidor usando propriedades do sistema ou vari\u00e1veis de ambiente. Se n\u00e3o estiver ativado para todo o servidor, poder\u00e1 ser ativado para um aplicativo definindo as propriedades de configura\u00e7\u00e3o do MicroProfile; por exemplo, definindo vari\u00e1veis no arquivo server.xml. Esse aviso \u00e9 dado se a Telemetria estiver ativada para todo o servidor, mas as propriedades de configura\u00e7\u00e3o do MicroProfile desativarem a Telemetria para um aplicativo. Como o Telemetry est\u00e1 ativado para todo o servidor, a configura\u00e7\u00e3o desse aplicativo \u00e9 ignorada.
 CWMOT5007.tel.enabled.conflict.useraction: Especifique as configura\u00e7\u00f5es para ativar ou desativar as inst\u00e2ncias do OpenTelemetry usando vari\u00e1veis de ambiente e propriedades do sistema ou outras fontes do MP Config, mas n\u00e3o ambas.
 
+CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: O recurso de registro de telemetria MicroProfile n\u00e3o reconhece o formato de registro de acesso de telemetria [ {0} ].
+CWMOT5008.mptelemetry.unknown.access.log.field.explanation=O ambiente de tempo de execu\u00e7\u00e3o Liberty n\u00e3o fornece o formato de registro especificado.
+CWMOT5008.mptelemetry.unknown.access.log.field.useraction=Especifique default ou logFormat para o atributo mpTelemetry accessLogFields.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages

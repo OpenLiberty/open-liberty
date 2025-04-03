@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 # Messages used by Health Impl -  range is 0000-0999
 # The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
 # The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+# The 0100-0149 range is reserved for messages that are issued by the file-based health check mechanism
 #-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,3 +56,29 @@ readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Ez a f
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: Az ind\u00edt\u00e1si \u00e1llapot ellen\u0151rz\u00e9se DOWN \u00e1tfog\u00f3 \u00e1llapotot jelentett, mert az al\u00e1bbi alkalmaz\u00e1sok m\u00e9g nem indultak el: {0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=Az ind\u00edt\u00e1si \u00e1llapot ellen\u0151rz\u00e9se DOWN \u00e1tfog\u00f3 \u00e1llapotot jelentett, mert a megadott alkalmaz\u00e1sok m\u00e9g nem indultak el, \u00e9s nem \u00e1llnak k\u00e9szen a k\u00e9r\u00e9sek feldolgoz\u00e1s\u00e1ra.
 startup.healthcheck.applications.not.started.down.CWMMH0054W.useraction=Ez a figyelmeztet\u00e9s a DOWN \u00e1llapot r\u00f6gz\u00edt\u00e9se, \u00e9s nem ig\u00e9nyel felhaszn\u00e1l\u00f3i tev\u00e9kenys\u00e9get. V\u00e1rjon, am\u00edg minden alkalmaz\u00e1s elindul. Miut\u00e1n minden alkalmaz\u00e1s elindult, a felhaszn\u00e1l\u00f3 \u00e1ltal megadott \u00e1llapotellen\u0151rz\u00e9sek feldolgoz\u00e1sra ker\u00fclnek.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# File-based health check messages
+#-----------------------------------------------------------------------------------------------------------------------------
+file.healthcheck.health.directory.create.fail.CWMMH0100W=CWMMH0100W: Nem siker\u00fclt l\u00e9trehozni a /health k\u00f6nyvt\u00e1rat a k\u00f6vetkez\u0151 el\u00e9r\u00e9si \u00fatvonalon [ {0} ]. A f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9s funkci\u00f3 ki lesz kapcsolva.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.explanation=A fut\u00e1sid\u0151 nem tudta l\u00e9trehozni a f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9sek megfelel\u0151 m\u0171k\u00f6d\u00e9s\u00e9hez sz\u00fcks\u00e9ges /health k\u00f6nyvt\u00e1rat.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.useraction=A felhaszn\u00e1l\u00f3nak azonos\u00edtania kell a gy\u00f6k\u00e9r okot, amely megakad\u00e1lyozza, hogy a fut\u00e1sid\u0151 l\u00e9trehozza a /health k\u00f6nyvt\u00e1rat.
+
+
+file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: A {0} k\u00f6nyvt\u00e1rba nem lehet \u00edrni. A f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9s funkci\u00f3 ki lesz kapcsolva.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=A fut\u00e1sid\u0151nek \u00edr\u00e1si jogosults\u00e1gokra van sz\u00fcks\u00e9ge a /health k\u00f6nyvt\u00e1rban az "live", "ready" \u00e9s "started" f\u00e1jlok l\u00e9trehoz\u00e1s\u00e1hoz, hogy a f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9sek megfelel\u0151en m\u0171k\u00f6djenek.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=A felhaszn\u00e1l\u00f3nak azonos\u00edtania kell az enged\u00e9lyez\u00e9si probl\u00e9ma kiv\u00e1lt\u00f3 ok\u00e1t.
+
+
+file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: A fut\u00e1sid\u0151 a k\u00f6vetkez\u0151 k\u00f6nyvt\u00e1r jelenl\u00e9t\u00e9t \u00e9szlelte [ {0} ]. A f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9s funkci\u00f3hoz ugyanilyen nev\u0171 f\u00e1jlra van sz\u00fcks\u00e9g ezen az el\u00e9r\u00e9si \u00faton. A f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9s funkci\u00f3 ki lesz kapcsolva.
+file.healthcheck.file.name.conflict.CWMMH0105W.explanation=A f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9sekhez a "live", "ready" \u00e9s "started" f\u00e1jlok l\u00e9trehoz\u00e1sa \u00e9s haszn\u00e1lata sz\u00fcks\u00e9ges a /health k\u00f6nyvt\u00e1rban. A /health k\u00f6nyvt\u00e1rban m\u00e1r l\u00e9tezik egy ilyen nev\u0171 k\u00f6nyvt\u00e1r, ami megakad\u00e1lyozza a sz\u00fcks\u00e9ges f\u00e1jlok l\u00e9trehoz\u00e1s\u00e1t.
+file.healthcheck.file.name.conflict.CWMMH0105W.useraction=A k\u00f6nyvt\u00e1rat nem ez a fut\u00e1sid\u0151 hozza l\u00e9tre, \u00e9s tartalmazhat a felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra fontos tartalmakat. K\u00e9rj\u00fck, t\u00e1vol\u00edtsa el vagy helyezze \u00e1t a k\u00f6nyvt\u00e1rat.
+
+file.healthcheck.file.delete.fail.CWMMH0106W=CWMMH0106W: Nem siker\u00fclt t\u00f6r\u00f6lni a [ {0} ] megl\u00e9v\u0151 f\u00e1jlt. A f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9s funkci\u00f3 ki lesz kapcsolva.
+file.healthcheck.file.delete.fail.CWMMH0106W.explanation=A f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9sekhez a "live", "ready" \u00e9s "started" f\u00e1jlok l\u00e9trehoz\u00e1sa \u00e9s haszn\u00e1lata sz\u00fcks\u00e9ges a /health k\u00f6nyvt\u00e1rban. Ahhoz, hogy a f\u00e1jlalap\u00fa \u00e1llapotellen\u0151rz\u00e9sek megfelel\u0151en m\u0171k\u00f6djenek, ezek a f\u00e1jlok nem l\u00e9tezhetnek a fut\u00e1sid\u0151 ind\u00edt\u00e1sakor. A fut\u00e1sid\u0151 megpr\u00f3b\u00e1lta t\u00f6r\u00f6lni a megl\u00e9v\u0151 f\u00e1jlt, de nem siker\u00fclt.
+file.healthcheck.file.delete.fail.CWMMH0106W.useraction=A felhaszn\u00e1l\u00f3nak azonos\u00edtania kell a gy\u00f6k\u00e9r okot, amely megakad\u00e1lyozza, hogy a fut\u00e1sid\u0151 t\u00f6r\u00f6lje a f\u00e1jlokat.
+
+file.update.interval.config.invalid.CWMMH01010W=CWMMH01010W: \u00c9rv\u00e9nytelen \u00e9rt\u00e9ket [ {0} ] adtak meg a f\u00e1jlfriss\u00edt\u00e9si id\u0151k\u00f6zh\u00f6z. A megadott \u00e9rt\u00e9knek egy sz\u00e1mb\u00f3l kell \u00e1llnia, amelyet egy v\u00e1laszthat\u00f3 id\u0151egys\u00e9g k\u00f6vet: "ms" a milliszekundumok vagy "s" a m\u00e1sodpercek eset\u00e9ben. Ha nincs id\u0151egys\u00e9g megadva, az \u00e9rt\u00e9k alap\u00e9rtelmez\u00e9s szerint m\u00e1sodpercben van megadva. A fut\u00e1si id\u0151 alap\u00e9rtelmez\u00e9s szerint 10 m\u00e1sodperc.
+file.update.interval.config.invalid.CWMMH01010W.explanation=A f\u00e1jlfriss\u00edt\u00e9si intervallum be\u00e1ll\u00edt\u00e1sa csak egy sz\u00e1mot fogad el, amelyet egy v\u00e1laszthat\u00f3 id\u0151egys\u00e9g k\u00f6vet: "ms" a milliszekundumok vagy "s" a m\u00e1sodpercek eset\u00e9ben. Ha nincs id\u0151egys\u00e9g megadva, az \u00e9rt\u00e9k alap\u00e9rtelmez\u00e9s szerint m\u00e1sodpercben van megadva.
+file.update.interval.config.invalid.CWMMH01010W.useraction=Adja meg a helyes \u00e9rt\u00e9ket a f\u00e1jlfriss\u00edt\u00e9si id\u0151k\u00f6z konfigur\u00e1ci\u00f3hoz.

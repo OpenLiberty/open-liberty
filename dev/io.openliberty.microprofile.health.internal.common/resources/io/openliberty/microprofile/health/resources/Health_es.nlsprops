@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 # Messages used by Health Impl -  range is 0000-0999
 # The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
 # The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+# The 0100-0149 range is reserved for messages that are issued by the file-based health check mechanism
 #-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,3 +56,29 @@ readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Este a
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: La comprobaci\u00f3n de estado de arranque ha informado de un estado general DOWN porque las aplicaciones siguiente a\u00fan no se han iniciado: {0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=La comprobaci\u00f3n de estado de arranque ha informado de un estado general DOWN porque las aplicaciones especificadas a\u00fan no se han iniciado y no est\u00e1n listas para procesar solicitudes.
 startup.healthcheck.applications.not.started.down.CWMMH0054W.useraction=Este aviso es un registro del estado DOWN y no se necesita ninguna acci\u00f3n del usuario. Espere a que se inicien todas las aplicaciones. Una vez iniciadas todas las aplicaciones, se procesan las comprobaciones de estado definidas por el usuario.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# File-based health check messages
+#-----------------------------------------------------------------------------------------------------------------------------
+file.healthcheck.health.directory.create.fail.CWMMH0100W=CWMMH0100W: No se ha podido crear el directorio /health en la siguiente ruta [ {0} ]. La funci\u00f3n de comprobaci\u00f3n de estado basada en archivos se desactivar\u00e1.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.explanation=El tiempo de ejecuci\u00f3n no ha podido crear el directorio /health necesario para que las comprobaciones de estado basadas en archivos funcionen correctamente.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.useraction=El usuario debe identificar la causa ra\u00edz que impide al runtime crear el directorio /health.
+
+
+file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: No se puede escribir en el directorio {0}. La funci\u00f3n de comprobaci\u00f3n de estado basada en archivos se desactivar\u00e1.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=El tiempo de ejecuci\u00f3n requiere permisos de escritura en el directorio /health para crear los archivos "live", "ready" y "started" para que las comprobaciones de salud basadas en archivos funcionen correctamente.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=El usuario debe identificar la causa ra\u00edz del problema de permisos.
+
+
+file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: El runtime ha detectado la presencia del siguiente directorio [ {0} ]. Se requiere un archivo con el mismo nombre para la funci\u00f3n de comprobaci\u00f3n de estado basada en archivos en esta ruta. La funci\u00f3n de comprobaci\u00f3n de estado basada en archivos se desactivar\u00e1.
+file.healthcheck.file.name.conflict.CWMMH0105W.explanation=Las comprobaciones de salud basadas en archivos requieren la creaci\u00f3n y el uso de los archivos "live", "ready" y "started" en el directorio /health. En el directorio /health ya existe un directorio con uno de esos nombres, lo que impide que se creen los archivos necesarios.
+file.healthcheck.file.name.conflict.CWMMH0105W.useraction=El directorio no es creado por este tiempo de ejecuci\u00f3n y puede contener contenidos importantes para el usuario. Por favor, elimine o reubique el directorio.
+
+file.healthcheck.file.delete.fail.CWMMH0106W=CWMMH0106W: No se puede eliminar el archivo existente en [ {0} ]. La funci\u00f3n de comprobaci\u00f3n de estado basada en archivos se desactivar\u00e1.
+file.healthcheck.file.delete.fail.CWMMH0106W.explanation=Las comprobaciones de salud basadas en archivos requieren la creaci\u00f3n y el uso de los archivos "live", "ready" y "started" en el directorio /health. Para que las comprobaciones de estado basadas en archivos funcionen correctamente, estos archivos no deben existir cuando se inicie el tiempo de ejecuci\u00f3n. El programa de ejecuci\u00f3n ha intentado eliminar el archivo existente, pero no ha podido.
+file.healthcheck.file.delete.fail.CWMMH0106W.useraction=El usuario debe identificar la causa ra\u00edz que impide que el tiempo de ejecuci\u00f3n elimine los archivos.
+
+file.update.interval.config.invalid.CWMMH01010W=CWMMH01010W: Se ha proporcionado un valor no v\u00e1lido [ {0} ] para el intervalo de actualizaci\u00f3n de archivos. El valor proporcionado debe consistir en un n\u00famero seguido de una unidad de tiempo opcional de "ms" para milisegundos o "s" para segundos. Si no se especifica ninguna unidad de tiempo, el valor por defecto es en segundos. El tiempo de ejecuci\u00f3n ser\u00e1 por defecto de 10 segundos.
+file.update.interval.config.invalid.CWMMH01010W.explanation=La configuraci\u00f3n del intervalo de actualizaci\u00f3n de archivos s\u00f3lo acepta un n\u00famero seguido de una unidad de tiempo opcional "ms" para milisegundos o "s" para segundos. Si no se especifica ninguna unidad de tiempo, el valor por defecto es en segundos.
+file.update.interval.config.invalid.CWMMH01010W.useraction=Introduzca un valor correcto para la configuraci\u00f3n del intervalo de actualizaci\u00f3n de archivos.

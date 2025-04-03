@@ -21,4 +21,5 @@
 	<mpTelemetry source="audt"/>
 	<include location="../fatTestPorts.xml"/>
 	<application location="MpTelemetryLogApp.war"/>
+	<include location="serverSessionConfig.xml"/>
 </server>

@@ -29,7 +29,7 @@ import componenttest.containers.TestContainerSuite;
 @SuiteClasses({ TestCouchDbWar.class })
 public class FATSuite extends TestContainerSuite {
 
-    private static final DockerImageName COUCHDB_SSL = ImageBuilder.build("couchdb-ssl:3")
+    private static final DockerImageName COUCHDB_SSL = ImageBuilder.build("couchdb-ssl:3.0.0.1")
                     .getDockerImageName();
 
     @ClassRule

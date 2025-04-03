@@ -82,7 +82,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         this.provider = provider;
         this.queriesPerEntityClass = queriesPerEntityClass;
         this.repositoryInterface = repositoryInterface;
-        provider.producerCreated(futureEMBuilder.moduleName.getApplication(), this);
+        provider.producerCreated(futureEMBuilder.jeeName.getApplication(), this);
     }
 
     @Override

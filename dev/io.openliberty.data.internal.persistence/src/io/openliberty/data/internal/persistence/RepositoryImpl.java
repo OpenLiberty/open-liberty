@@ -85,6 +85,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
         EntityManagerBuilder builder;
         try {
+            // TODO add a timeout. If it times out, determine if checkpoint is
+            // in progress and raise an error indicating that something might be
+            // incompatible with checkpoint (such as a ServletContextListener
+            // using Jakarta Data).
             builder = futureEMBuilder.join();
         } catch (CompletionException x) {
             // The CompletionException does not have the current stack. Replace it.

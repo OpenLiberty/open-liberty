@@ -89,7 +89,7 @@ public class TelemetryAuditCheckpointTest extends FATServletClient {
 
         assertEquals("Expected no audit messages on restore", 0, linesConsoleLog.size());
         // generate JMX_MBEAN_REGISTER audit message by hitting the root of the server
-        TestUtils.runGetMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort());
+        TestUtils.runGetMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort(), null, null);
         String line = server.waitForStringInLog("JMXService", server.getConsoleLogFile());
         assertNotNull("The JMXService audit event was not not found.", line);
     }

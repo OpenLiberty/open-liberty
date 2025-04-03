@@ -59,7 +59,7 @@ public class PostgreSQLSSLTest extends FATServletClient {
     @TestServlet(servlet = PostgreSQLNativeSSLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverNativeSSL;
 
-    private static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17")
+    private static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17.0.0.1")
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("postgres");
 

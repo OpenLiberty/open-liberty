@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,22 +19,30 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
-import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.ibm.ws.classloading.internal.ClassLoadingServiceImpl.ClassFileTransformerAdapter;
 import com.ibm.ws.classloading.internal.ContainerClassLoader.ByteResourceInformation;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.classloading.internal.ContainerClassLoader.ContainerURL;
+import com.ibm.ws.classloading.internal.ContainerClassLoader.UniversalContainer;
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
 import com.ibm.wsspi.classloading.ClassTransformer;
 
 import test.common.SharedOutputManager;
@@ -47,11 +55,6 @@ public class TransformerTest {
 
     @Rule
     public SharedOutputManager outputManager = SharedOutputManager.getInstance();
-
-    @After
-    public void removeBetaFlag() {
-        System.getProperties().remove(ProductInfo.BETA_EDITION_JVM_PROPERTY);
-    }
 
     @Test
     public void testTransformerRegistration() throws Exception {
@@ -69,6 +72,52 @@ public class TransformerTest {
         assertFalse("Should not be able to remove newly added transformer adapter twice", loader.removeTransformer(transformer1));
     }
 
+    private static UniversalContainer testContainer = new UniversalContainer() {
+
+        private final URL url;
+
+        {
+            URL urlToSet;
+            try {
+                urlToSet = new File(System.getProperty("user.dir")).toURI().toURL();
+            } catch (MalformedURLException e) {
+                urlToSet = null;
+            }
+            url = urlToSet;
+        }
+
+        @Override
+        public UniversalResource getResource(String name) {
+            return null;
+        }
+
+        @Override
+        public void updatePackageMap(Map<Integer, List<UniversalContainer>> map) {
+
+        }
+
+        @Override
+        public Collection<URL> getContainerURLs() {
+            return null;
+        }
+
+        @Override
+        public void definePackage(String packageName, LibertyLoader loader, ContainerURL sealBase) {
+
+        }
+
+        @Override
+        public ContainerURL getContainerURL(UniversalResource resource) {
+            return new ContainerURL(url);
+        }
+
+        @Override
+        public URL getSharedClassCacheURL(UniversalResource resource) {
+            return url;
+        }
+
+    };
+
     @Test
     public void testTransformerReturnsNull() throws Exception {
         doTestTransformerReturnsNull(false);
@@ -80,10 +129,6 @@ public class TransformerTest {
     }
 
     private void doTestTransformerReturnsNull(boolean systemTransformer) throws Exception {
-        if (systemTransformer) {
-            System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, Boolean.TRUE.toString());
-        }
-
         final AtomicBoolean transformerInvoked = new AtomicBoolean(false);
         ClassFileTransformer transformer = new ClassFileTransformer() {
 
@@ -97,7 +142,7 @@ public class TransformerTest {
         AppClassLoader loader = createAppClassloaderTransformer(transformer, systemTransformer);
 
         byte[] originalBytes = "Hello!".getBytes();
-        ByteResourceInformation toTransform = new ByteResourceInformation(originalBytes, null, null, null, false, () -> originalBytes);
+        ByteResourceInformation toTransform = new ByteResourceInformation(testContainer, null, null, () -> originalBytes, null);
         byte[] transformedBytes = loader.transformClassBytes("hello", toTransform);
 
         assertTrue(transformerInvoked.get());
@@ -125,10 +170,6 @@ public class TransformerTest {
     }
 
     private void doTestTransformerReturnsSameBytes(boolean systemTransformer) throws Exception {
-        if (systemTransformer) {
-            System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, Boolean.TRUE.toString());
-        }
-
         final AtomicBoolean transformerInvoked = new AtomicBoolean(false);
         ClassFileTransformer transformer = new ClassFileTransformer() {
 
@@ -143,7 +184,7 @@ public class TransformerTest {
         AppClassLoader loader = createAppClassloaderTransformer(transformer, systemTransformer);
 
         byte[] originalBytes = "Goodbye!".getBytes();
-        ByteResourceInformation toTransform = new ByteResourceInformation(originalBytes, null, null, null, false, () -> originalBytes);
+        ByteResourceInformation toTransform = new ByteResourceInformation(testContainer, null, null, () -> originalBytes, null);
         byte[] transformedBytes = loader.transformClassBytes("goodbye", toTransform);
 
         assertTrue(transformerInvoked.get());
@@ -162,10 +203,6 @@ public class TransformerTest {
     }
 
     private void doTestTransformerReturnsTransformedBytes(boolean systemTransformer) throws Exception {
-        if (systemTransformer) {
-            System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, Boolean.TRUE.toString());
-        }
-
         final AtomicBoolean transformerInvoked = new AtomicBoolean(false);
         ClassFileTransformer transformer = new ClassFileTransformer() {
 
@@ -181,7 +218,7 @@ public class TransformerTest {
         AppClassLoader loader = createAppClassloaderTransformer(transformer, systemTransformer);
 
         byte[] originalBytes = "Greetings".getBytes();
-        ByteResourceInformation toTransform = new ByteResourceInformation(originalBytes, null, null, null, false, () -> originalBytes);
+        ByteResourceInformation toTransform = new ByteResourceInformation(testContainer, null, null, () -> originalBytes, null);
         byte[] transformedBytes = loader.transformClassBytes("greetings", toTransform);
 
         assertTrue(transformerInvoked.get());
@@ -214,25 +251,42 @@ public class TransformerTest {
         };
         AppClassLoader loader = createAppClassloaderTransformer(transformer, systemTransformer);
 
+        final AtomicBoolean hookLoadClassInvoked = new AtomicBoolean(false);
         byte[] originalBytes = "Greetings".getBytes();
-        final boolean fromCached = true;
-        ByteResourceInformation toTransform = new ByteResourceInformation(originalBytes, null, null, null, fromCached, () -> originalBytes);
+        ClassLoaderHook hook = new ClassLoaderHook() {
+
+            @Override
+            public byte[] loadClass(URL arg0, String arg1) {
+                hookLoadClassInvoked.set(true);
+                return originalBytes;
+            }
+
+            @Override
+            public void storeClass(URL arg0, Class<?> arg1) {
+                // do nothing
+            }
+
+        };
+        AtomicInteger supplierCalled = new AtomicInteger(0);
+        Supplier<byte[]> supplier = new Supplier<byte[]>() {
+
+            @Override
+            public byte[] get() {
+                supplierCalled.incrementAndGet();
+                return originalBytes;
+            }
+
+        };
+
+        ByteResourceInformation toTransform = new ByteResourceInformation(testContainer, null, null, supplier, hook);
+        assertTrue(hookLoadClassInvoked.get());
+        assertTrue(toTransform.foundInClassCache());
         byte[] transformedBytes = loader.transformClassBytes("greetings", toTransform);
 
-        if (systemTransformer) {
-            // System transformers invoke in beta-editions, only
-            assertTrue(transformerInvoked.get());
-            assertFalse(Arrays.equals(originalBytes, transformedBytes));
-            assertEquals("Greetings and salutations!", new String(transformedBytes));
-        } else if (systemTransformer) {
-            assertFalse(transformerInvoked.get());
-            assertTrue(Arrays.equals(originalBytes, transformedBytes));
-            assertEquals("Greetings", new String(transformedBytes));
-        } else {
-            // Transformers invoke
-            assertTrue(transformerInvoked.get());
-            assertFalse(Arrays.equals(originalBytes, transformedBytes));
-            assertEquals("Greetings and salutations!", new String(transformedBytes));
-        }
+        assertTrue(transformerInvoked.get());
+        assertFalse(Arrays.equals(originalBytes, transformedBytes));
+        assertEquals("Greetings and salutations!", new String(transformedBytes));
+        // If supplier is called twice it means we did not use hook to get the bytes.
+        assertEquals(1, supplierCalled.get());
     }
 }

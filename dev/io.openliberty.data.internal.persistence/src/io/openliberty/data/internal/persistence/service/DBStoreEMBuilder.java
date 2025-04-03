@@ -60,6 +60,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 import com.ibm.wsspi.persistence.DatabaseStore;
@@ -130,9 +131,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
      * @param repositoryInterfaces  repository interfaces that use the entities.
      * @param dataStore             dataStore value from the Repository annotation,
      *                                  or the value with java:comp/env added.
-     * @param isJNDIName            indicates if the dataStore name is a JNDI name (begins with java: or is inferred to be java:comp/env/...)
-     * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
-     * @param jeeName               application/module/component in which the repository interface is defined.
+     * @param isJNDIName            indicates if the dataStore name is a JNDI name
+     *                                  (begins with java: or is inferred to be java:comp/env/...)
+     * @param metadata              metadata of the application artifact that
+     *                                  contains the repository interface.
      *                                  Module and component might be null or absent.
      * @param entityTypes           entity classes as known by the user, not generated.
      * @throws Exception if an error occurs.
@@ -142,14 +144,14 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                             Set<Class<?>> repositoryInterfaces,
                             String dataStore,
                             boolean isJNDIName,
-                            String metadataIdentifier,
-                            J2EEName jeeName,
+                            ComponentMetaData metadata,
                             Set<Class<?>> entityTypes) throws Exception {
         super(provider, repositoryClassLoader, repositoryInterfaces, dataStore);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String qualifiedName = null;
         boolean javaApp = false, javaModule = false, javaComp = false;
+        J2EEName jeeName = metadata.getJ2EEName();
         String application = jeeName == null ? null : jeeName.getApplication();
         String module = jeeName == null ? null : jeeName.getModule();
 
@@ -222,7 +224,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             }
             if (dbStoreId == null) {
                 // Create a ResourceFactory that can delegate back to a resource reference lookup
-                ResourceFactory delegator = new ResRefDelegator(dataStore, metadataIdentifier, provider);
+                ResourceFactory delegator = new ResRefDelegator(dataStore, metadata);
                 Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
                 dbStoreId = isJNDIName ? qualifiedName : ("application[" + application + "]/databaseStore[" + dataStore + ']');
                 String id = dbStoreId + "/ResourceFactory";

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 # Messages used by Health Impl -  range is 0000-0999
 # The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
 # The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+# The 0100-0149 range is reserved for messages that are issued by the file-based health check mechanism
 #-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,3 +56,29 @@ readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Toto v
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: Kontrola stavu spu\u0161t\u011bn\u00ed nahl\u00e1sila celkov\u00fd stav DOWN, proto\u017ee n\u00e1sleduj\u00edc\u00ed aplikace je\u0161t\u011b nejsou spu\u0161t\u011bny: {0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=Kontrola stavu spu\u0161t\u011bn\u00ed nahl\u00e1sila celkov\u00fd stav DOWN, proto\u017ee ur\u010den\u00e9 aplikace je\u0161t\u011b nejsou spu\u0161t\u011bny a nejsou p\u0159ipraveny ke zpracov\u00e1n\u00ed po\u017eadavk\u016f.
 startup.healthcheck.applications.not.started.down.CWMMH0054W.useraction=Toto varov\u00e1n\u00ed je z\u00e1znamem stavu DOWN a nen\u00ed zapot\u0159eb\u00ed \u017e\u00e1dn\u00e1 akce u\u017eivatele. Po\u010dkejte, a\u017e se spust\u00ed v\u0161echny aplikace. Po spu\u0161t\u011bn\u00ed v\u0161ech aplikac\u00ed jsou zpracov\u00e1ny kontroly stavu definovan\u00e9 u\u017eivatelem.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# File-based health check messages
+#-----------------------------------------------------------------------------------------------------------------------------
+file.healthcheck.health.directory.create.fail.CWMMH0100W=CWMMH0100W: Nepoda\u0159ilo se vytvo\u0159it adres\u00e1\u0159 /health na n\u00e1sleduj\u00edc\u00ed cest\u011b [ {0} ]. Funkce kontroly stavu na z\u00e1klad\u011b soubor\u016f bude zak\u00e1z\u00e1na.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.explanation=Spou\u0161t\u011bc\u00edmu prost\u0159ed\u00ed se nepoda\u0159ilo vytvo\u0159it adres\u00e1\u0159 /health, kter\u00fd je vy\u017eadov\u00e1n pro spr\u00e1vnou funkci kontrol stavu zalo\u017een\u00fdch na souborech.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.useraction=U\u017eivatel mus\u00ed identifikovat hlavn\u00ed p\u0159\u00ed\u010dinu, kter\u00e1 br\u00e1n\u00ed runtime ve vytvo\u0159en\u00ed adres\u00e1\u0159e /health.
+
+
+file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Nelze zapisovat do adres\u00e1\u0159e {0}. Funkce kontroly stavu na z\u00e1klad\u011b soubor\u016f bude zak\u00e1z\u00e1na.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=Pro spr\u00e1vnou funkci kontrol stavu zalo\u017een\u00fdch na souborech vy\u017eaduje runtime opr\u00e1vn\u011bn\u00ed k z\u00e1pisu do adres\u00e1\u0159e /health, aby bylo mo\u017en\u00e9 vytvo\u0159it soubory "live", "ready" a "started".
+file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=U\u017eivatel mus\u00ed ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu s opr\u00e1vn\u011bn\u00edm.
+
+
+file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: B\u011bhov\u00e9 prost\u0159ed\u00ed zjistilo p\u0159\u00edtomnost n\u00e1sleduj\u00edc\u00edho adres\u00e1\u0159e [ {0} ]. Soubor se stejn\u00fdm n\u00e1zvem je vy\u017eadov\u00e1n pro funkci kontroly stavu zalo\u017eenou na souborech v t\u00e9to cest\u011b. Funkce kontroly stavu na z\u00e1klad\u011b soubor\u016f bude zak\u00e1z\u00e1na.
+file.healthcheck.file.name.conflict.CWMMH0105W.explanation=Souborov\u00e9 kontroly stavu vy\u017eaduj\u00ed vytvo\u0159en\u00ed a pou\u017eit\u00ed soubor\u016f "live", "ready" a "started" v adres\u00e1\u0159i /health. V adres\u00e1\u0159i /health se ji\u017e nach\u00e1z\u00ed adres\u00e1\u0159 s jedn\u00edm z t\u011bchto n\u00e1zv\u016f, co\u017e br\u00e1n\u00ed vytvo\u0159en\u00ed po\u017eadovan\u00fdch soubor\u016f.
+file.healthcheck.file.name.conflict.CWMMH0105W.useraction=Adres\u00e1\u0159 nen\u00ed vytvo\u0159en t\u00edmto runtime a m\u016f\u017ee obsahovat obsah, kter\u00fd je pro u\u017eivatele d\u016fle\u017eit\u00fd. Adres\u00e1\u0159 odstra\u0148te nebo p\u0159em\u00edst\u011bte.
+
+file.healthcheck.file.delete.fail.CWMMH0106W=CWMMH0106W: Nelze odstranit existuj\u00edc\u00ed soubor na adrese [ {0} ]. Funkce kontroly stavu na z\u00e1klad\u011b soubor\u016f bude zak\u00e1z\u00e1na.
+file.healthcheck.file.delete.fail.CWMMH0106W.explanation=Souborov\u00e9 kontroly stavu vy\u017eaduj\u00ed vytvo\u0159en\u00ed a pou\u017eit\u00ed soubor\u016f "live", "ready" a "started" v adres\u00e1\u0159i /health. Aby kontroly stavu zalo\u017een\u00e9 na souborech fungovaly spr\u00e1vn\u011b, nesm\u00ed tyto soubory p\u0159i spu\u0161t\u011bn\u00ed runtime existovat. Runtime se pokusil odstranit existuj\u00edc\u00ed soubor, ale nepoda\u0159ilo se mu to.
+file.healthcheck.file.delete.fail.CWMMH0106W.useraction=U\u017eivatel mus\u00ed identifikovat hlavn\u00ed p\u0159\u00ed\u010dinu, kter\u00e1 br\u00e1n\u00ed spu\u0161t\u011bn\u00ed v odstran\u011bn\u00ed soubor\u016f.
+
+file.update.interval.config.invalid.CWMMH01010W=CWMMH01010W: Pro interval aktualizace souboru byla zad\u00e1na neplatn\u00e1 hodnota [ {0} ]. Zadan\u00e1 hodnota se mus\u00ed skl\u00e1dat z \u010d\u00edsla n\u00e1sledovan\u00e9ho nepovinnou jednotkou \u010dasu "ms" pro milisekundy nebo "s" pro sekundy. Pokud nen\u00ed zad\u00e1na \u017e\u00e1dn\u00e1 jednotka \u010dasu, je v\u00fdchoz\u00ed hodnota v sekund\u00e1ch. Doba b\u011bhu je ve v\u00fdchoz\u00edm nastaven\u00ed 10 sekund.
+file.update.interval.config.invalid.CWMMH01010W.explanation=Konfigurace intervalu aktualizace souboru p\u0159ij\u00edm\u00e1 pouze \u010d\u00edslo n\u00e1sledovan\u00e9 volitelnou \u010dasovou jednotkou "ms" pro milisekundy nebo "s" pro sekundy. Pokud nen\u00ed zad\u00e1na \u017e\u00e1dn\u00e1 jednotka \u010dasu, je v\u00fdchoz\u00ed hodnota v sekund\u00e1ch.
+file.update.interval.config.invalid.CWMMH01010W.useraction=Zadejte spr\u00e1vnou hodnotu pro konfiguraci intervalu aktualizace souboru.

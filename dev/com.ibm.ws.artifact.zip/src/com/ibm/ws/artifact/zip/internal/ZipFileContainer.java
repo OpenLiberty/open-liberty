@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2024 IBM Corporation and others.
+ * Copyright (c) 2011,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1271,27 +1271,36 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
         if ( (location < 0) && !normalized ) {
             // Try again after forcing the path to be normalized.
+            String normalizedPath = PathUtils.normalizeUnixStylePath(entryPath);
 
-            entryPath = PathUtils.normalizeUnixStylePath(entryPath);
-            pathLen = entryPath.length();
-
-            if ( (pathLen == 0) || (pathLen == 1) && (entryPath.charAt(0) == '/') ) {
-                return null; // "" and "/" reach the root; the root container has no entry.
-            }
-
-            if ( !PathUtils.isNormalizedPathAbsolute(entryPath) ) {
-                return null; // Leading ".." or "/.."; the path reaches outside of this container.
-            }
-
-            if ( entryPath.charAt(0) == '/' ) {
-                a_entryPath = entryPath;
-                r_entryPath = entryPath.substring(1); // The entries table uses relative paths.
+            // If the entryPath was already normalized we only have to do the one check.
+            // All other state remains the same and we do not need to do locatePath again since the entryPath is exactly the same
+            if (normalizedPath == entryPath) {
+                if ( !PathUtils.isNormalizedPathAbsolute(entryPath) ) {
+                    return null; // Leading ".." or "/.."; the path reaches outside of this container.
+                }
             } else {
-                a_entryPath = null; // Maybe won't need it.
-                r_entryPath = entryPath; // The path is already relative.
-            }
+                entryPath = normalizedPath;
+                pathLen = entryPath.length();
 
-            location = locatePath(r_entryPath);
+                if ( (pathLen == 0) || (pathLen == 1) && (entryPath.charAt(0) == '/') ) {
+                    return null; // "" and "/" reach the root; the root container has no entry.
+                }
+
+                if ( !PathUtils.isNormalizedPathAbsolute(entryPath) ) {
+                    return null; // Leading ".." or "/.."; the path reaches outside of this container.
+                }
+
+                if ( entryPath.charAt(0) == '/' ) {
+                    a_entryPath = entryPath;
+                    r_entryPath = entryPath.substring(1); // The entries table uses relative paths.
+                } else {
+                    a_entryPath = null; // Maybe won't need it.
+                    r_entryPath = entryPath; // The path is already relative.
+                }
+
+                location = locatePath(r_entryPath);
+            }
         }
 
         ZipEntryData useZipEntryData;
