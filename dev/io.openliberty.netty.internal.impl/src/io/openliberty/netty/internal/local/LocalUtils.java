@@ -18,7 +18,6 @@ import io.netty.channel.local.LocalAddress;
 import io.netty.channel.local.LocalChannel;
 import io.netty.channel.local.LocalServerChannel;
 import io.openliberty.netty.internal.BootstrapExtended;
-import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
@@ -28,31 +27,6 @@ public class LocalUtils {
 
     private static final TraceComponent tc = Tr.register(LocalUtils.class, NettyConstants.NETTY_TRACE_NAME, null);
             //NettyConstants.BASE_BUNDLE);
-
-    /**
-     * Create a {@link ServerBootstrapExtended} for local channels that are not
-     * based on host address/port addressing
-     * 
-     * @param framework
-     * @param channel   class - this is the class of the channel that is added
-     * @param options
-     * @return
-     * @throws NettyException
-     */
-    @Deprecated
-    public static ServerBootstrapExtended createLocalBootstrap(NettyFrameworkImpl framework,
-            ChannelInitializerWrapper protocolInitializer, Map<String, Object> options) throws NettyException {
-
-        LocalConfigurationImpl config = new LocalConfigurationImpl(options, true);
-
-        ServerBootstrapExtended bs = new ServerBootstrapExtended();
-        bs.group(framework.getParentGroup(), framework.getChildGroup());
-        bs.channel(LocalServerChannel.class);
-        bs.applyConfiguration(config);
-        bs.setBaseInitializer(protocolInitializer);
-
-        return bs;
-    }
 
     /**
      * Create a {@link ServerBootstrapExtended} for local channels that are not
@@ -74,9 +48,6 @@ public class LocalUtils {
         bs.group(framework.getParentGroup(), framework.getChildGroup());
         bs.channel(LocalServerChannel.class);
         bs.applyConfiguration(config);
-        ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerWrapper(config, framework);
-        bs.setBaseInitializer(serverInitializer);
-
         return bs;
     }
 
@@ -100,8 +71,6 @@ public class LocalUtils {
         bs.group(framework.getChildGroup());
         bs.channel(LocalChannel.class);
         bs.applyConfiguration(config);
-        ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerWrapper(config, framework);
-        bs.setBaseInitializer(serverInitializer);
         return bs;
     }
 

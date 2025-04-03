@@ -30,8 +30,5 @@ public interface NettyConstants {
     public final String ACCESSLIST_HANDLER_NAME = "accessListHandler";
 	/** Netty enablement */
     String USE_NETTY = "useNettyTransport";
-    /** Logging for Channels that are based on LocalAddress rather than Host:Port  */
-    public final String LOCAL_LOGGING_HANDLER_NAME = "localLoggingHander";
-
 
 }
