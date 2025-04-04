@@ -12,9 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
 
@@ -36,7 +33,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -75,15 +71,8 @@ public class DataTestCheckpoint extends FATServletClient {
                         .addAsLibrary(providerJar);
         ShrinkHelper.exportAppToServer(server, providerWar);
 
-        Map<String, String> envVars = new HashMap<>();
-        envVars.put("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
-
-        //Server started, application started, checkpoint taken, server is now stopped.
-        //Configure environment variable used by servlet
-        server.addEnvVarsForCheckpoint(envVars);
 
         server.checkpointRestore();
     }
