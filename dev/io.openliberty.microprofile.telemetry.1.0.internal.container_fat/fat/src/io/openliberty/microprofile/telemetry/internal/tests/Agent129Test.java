@@ -81,7 +81,7 @@ public class Agent129Test {
 
     private static KeyPairs keyPairs = new KeyPairs(server);
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(),keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(Agent129Test.class,
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(), keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(Agent129Test.class,
                                                                                                                                                             "jaeger"));
     public static RepeatTests repeat = TelemetryActions.telemetry11Repeats(SERVER_NAME);
 
@@ -97,7 +97,11 @@ public class Agent129Test {
     public static void setUp() throws Exception {
         client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
-        server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
+//        server.copyFileToLibertyServerRoot("opentelemetry-javaagent-not-hacked.jar");
+//        server.renameLibertyServerRootFile("opentelemetry-javaagent-not-hacked.jar", "opentelemetry-javaagent.jar");
+        server.copyFileToLibertyServerRoot("opentelemetry-javaagent-hacked.jar");
+        server.renameLibertyServerRootFile("opentelemetry-javaagent-hacked.jar", "opentelemetry-javaagent.jar");
+        //server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());

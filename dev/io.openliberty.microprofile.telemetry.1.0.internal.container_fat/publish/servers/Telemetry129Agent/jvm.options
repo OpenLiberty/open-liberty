@@ -1,1 +1,3 @@
 -javaagent:opentelemetry-javaagent.jar
+-Xtrace:print=mt,methods=io/opentelemetry/javaagent/instrumentation/jaxrs/v2_0/JaxrsAnnotationsInstrumentation.transform(),trigger=method{io/opentelemetry/javaagent/instrumentation/jaxrs/v2_0/JaxrsAnnotationsInstrumentation.transform,jstacktrace}
+-Xtrace:print=mt,methods=io/opentelemetry/javaagent/instrumentation/jaxrs/v2_0/SysoutMatcher.<init>(),trigger=method{io/opentelemetry/javaagent/instrumentation/jaxrs/v2_0/SysoutMatcher.<init>,jstacktrace}
