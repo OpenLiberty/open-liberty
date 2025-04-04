@@ -330,11 +330,14 @@ public class DataProvider implements //
             for (FutureEMBuilder futureEMBuilder : futures) {
                 if (skip == null || !skip.contains(futureEMBuilder)) {
                     if (CheckpointPhase.getPhase().restored()) { // No checkpoint or during restore
+                        System.out.println("KJA1017 on restore calling completeAysnc on: " + futureEMBuilder.toString());
                         futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor);
                     } else { // Before checkpoint
                         try {
+                            System.out.println("KJA1017 on checkpoint calling complete on: " + futureEMBuilder.toString());
                             futureEMBuilder.complete(futureEMBuilder.createEMBuilder());
                         } catch (Throwable x) {
+                            System.out.println("KJA1017 on checkpoint calling completeExceptionally on: " + futureEMBuilder.toString());
                             futureEMBuilder.completeExceptionally(x);
                         }
                     }
