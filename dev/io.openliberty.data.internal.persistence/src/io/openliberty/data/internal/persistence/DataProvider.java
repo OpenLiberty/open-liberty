@@ -328,11 +328,17 @@ public class DataProvider implements //
         Set<FutureEMBuilder> skip = futureEMBuildersInEJB.remove(appName);
         if (futures != null) {
             for (FutureEMBuilder futureEMBuilder : futures) {
-                if (skip == null || !skip.contains(futureEMBuilder))
-                    // This delays createEMBuilder until restore.
-                    // While this works by avoiding all connections to the data source, it does make restore much slower.
-                    // TODO figure out how to do more work on restore without having to make a connection to the data source
-                    CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+                if (skip == null || !skip.contains(futureEMBuilder)) {
+                    if (CheckpointPhase.getPhase().restored()) { // No checkpoint or during restore
+                        futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor);
+                    } else { // Before checkpoint
+                        try {
+                            futureEMBuilder.complete(futureEMBuilder.createEMBuilder());
+                        } catch (Throwable x) {
+                            futureEMBuilder.completeExceptionally(x);
+                        }
+                    }
+                }
 
                 // Application is ready for DDL generation; register with DDLGen MBean.
                 // Only those using the Persistence Service will participate, but all will
