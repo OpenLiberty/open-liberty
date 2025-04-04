@@ -473,7 +473,7 @@ public class HttpConfigConstants {
             this.name = name;
         }
 
-        private final String name;
+        private String name;
 
         public String getName() {
             return this.name;
@@ -492,7 +492,7 @@ public class HttpConfigConstants {
             this.name = name;
         }
 
-        private final String name;
+        private String name;
 
         public String getName() {
             return this.name;
