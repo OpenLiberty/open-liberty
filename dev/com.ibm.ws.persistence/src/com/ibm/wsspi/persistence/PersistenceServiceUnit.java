@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,13 +15,14 @@ package com.ibm.wsspi.persistence;
 import java.io.Writer;
 
 import javax.persistence.EntityManager;
+import javax.persistence.metamodel.Metamodel;
 
 /**
  * Interface used to :
  * <ul>
  * <li>create EntityManagers based off PersistenceServiceUnitConfig.</li>
  * <li>drive schema / table operations.</li>
- * 
+ *
  * </P> <b>Note:</b> When a user has finished using the unit, .close() must be invoked. Once a
  * PersistenceServiceUnit has been closed, all of its EntityManagers are considered to be closed.
  */
@@ -30,10 +31,12 @@ public interface PersistenceServiceUnit {
       * Returns a non-thread safe EntityManager. It is expected that the provided EntityManager is
       * short lived. An EntityManager should be created on a per request basis. When work is
       * complete, the EntityManager needs to be closed.
-      * 
+      *
       * @return An EntityManager for this unit.
       */
      public EntityManager createEntityManager();
+
+     public Metamodel createMetamodel();
 
      /**
       * DataSource precedence : privileged, nonJta, jta
@@ -65,7 +68,7 @@ public interface PersistenceServiceUnit {
       * <p>
       * Only valid to be invoked via a client script. Cannot be invoked multiple times. TODO --
       * 154030
-      * 
+      *
       * @param out
       *             a Writer where DDL will be written to.
       */
@@ -76,7 +79,7 @@ public interface PersistenceServiceUnit {
       * consumer of this service is shutting down.
       */
      public void close();
-     
+
      /**
       * Returns the termination token of SQL statements based on the Database platform.
       */

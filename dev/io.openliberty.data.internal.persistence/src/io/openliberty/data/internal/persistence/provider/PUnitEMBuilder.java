@@ -31,6 +31,7 @@ import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.metamodel.Metamodel;
 
 /**
  * This builder is used when a persistence unit reference JNDI name is configured as the repository dataStore.
@@ -78,6 +79,16 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "createEntityManager: " + em);
         return em;
+    }
+
+    @Override
+    @Trivial
+    public Metamodel createMetamodel() {
+        Metamodel mm = emf.getMetamodel();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "createMetamodel: " + mm);
+        return mm;
     }
 
     @FFDCIgnore(PersistenceException.class)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.metamodel.Metamodel;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
 
@@ -104,6 +105,11 @@ public final class PersistenceServiceUnitImpl implements PersistenceServiceUnit 
     public EntityManager createEntityManager() {
         // TODO(151457) -- could keep track of these -- wrapper - yes! pool
         return _emf.createEntityManager();
+    }
+
+    @Override
+    public Metamodel createMetamodel() {
+        return _emf.getMetamodel();
     }
 
     @Override

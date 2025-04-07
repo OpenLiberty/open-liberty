@@ -82,6 +82,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Table;
+import jakarta.persistence.metamodel.Metamodel;
 
 /**
  * This builder is used when a data source JNDI name, id, resource reference,
@@ -516,6 +517,16 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "createEntityManager: " + em);
         return em;
+    }
+
+    @Override
+    @Trivial
+    public Metamodel createMetamodel() {
+        Metamodel mm = persistenceServiceUnit.createMetamodel();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "createMetamodel: " + mm);
+        return mm;
     }
 
     /**
