@@ -72,6 +72,7 @@ public class DataTestCheckpoint extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, providerWar);
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server.startServer();
 
         // This test has expected errors during server start, but we need to ignore them in order to take a checkpoint
         server.addCheckpointRegexIgnoreMessages(DataTest.EXPECTED_ERROR_MESSAGES);
