@@ -71,8 +71,8 @@ import com.ibm.websphere.channelfw.EndPointMgr;
         ServerQuiesceListener.class }, property = { "service.vendor=IBM" })
 public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework {
 
-    private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyConstants.NETTY_TRACE_NAME, null);
-           // NettyConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyConstants.NETTY_TRACE_NAME,
+            NettyConstants.BASE_BUNDLE);
 
     /** Reference to the executor service -- required */
     private ExecutorService executorService = null;
