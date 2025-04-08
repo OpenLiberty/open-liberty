@@ -43,7 +43,8 @@
   <!-- For all other repositories: -->
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="JDBCLibrary"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+    <!-- createDatabase="create" -->
+    <properties.derby.embedded databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
   </dataSource>
 
   <library id="JDBCLibrary">
