@@ -89,7 +89,9 @@ public final class PersistenceServiceUnitImpl implements PersistenceServiceUnit 
         // Remaps String -> NVARCHAR (or equivalent)
         _serviceProperties.put(TARGET_DATABASE_PROPERTIES, "UseNationalCharacterVaryingTypeForString=true");
 
-        _emf = _provider.createContainerEntityManagerFactory(_pui, _serviceProperties);
+//        _emf = _provider.createContainerEntityManagerFactory(_pui, _serviceProperties);
+        _emf = _provider.createContainerEMF(_pui, _serviceProperties, false);
+
         dbManager.processUnicodeSettings(_emf, conf);
 
         _schemaMgr = new SchemaManager(_serviceProperties, _pui, _provider, dbManager);
