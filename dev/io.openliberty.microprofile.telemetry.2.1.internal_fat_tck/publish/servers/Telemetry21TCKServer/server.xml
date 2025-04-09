@@ -15,7 +15,6 @@
         <feature>cdi-4.0</feature>
         <feature>restfulWS-3.1</feature>
         <feature>jsonb-3.0</feature>
-        <feature>mpConfig-3.1</feature>
         <feature>mpRestClient-4.0</feature>
         <feature>arquillian-support-jakarta-2.1</feature>
         <feature>ssl-1.0</feature>
