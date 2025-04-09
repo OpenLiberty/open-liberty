@@ -94,11 +94,11 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     private CHFWBundle chfw;
     private volatile boolean isActive = false;
 
-	private ScheduledExecutorService scheduledExecutorService = null;
+    private ScheduledExecutorService scheduledExecutorService = null;
 
 
-	@Activate
-	public void activate(ComponentContext context, Map<String, Object> config) {
+    @Activate
+    protected void activate(ComponentContext context, Map<String, Object> config) {
 		// Ideally use the executor service provided by Liberty
 		// Compared to channelfw, quiesce is hit every time because
 		// connections are lazy cleaned on deactivate
@@ -106,19 +106,19 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 		// specify 0 for the "default" number of threads,
 		// (java.lang.Runtime.availableProcessors() * 2)
 		childGroup = new NioEventLoopGroup(0);
-	}
+    }
 
-	@Deactivate
-	public void deactivate(ComponentContext context, Map<String, Object> properties) {
+    @Deactivate
+    protected void deactivate(ComponentContext context, Map<String, Object> properties) {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
 			Tr.event(this, tc, "Deactivate called", new Object[] {context, properties});
 		}
 		EndPointMgrImpl.destroyEndpoints();
 		stopEventLoops();
-	}
+    }
 
     @Modified
-    public void modified(ComponentContext context, Map<String, Object> config) {
+    protected void modified(ComponentContext context, Map<String, Object> config) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Processing config", config);
         }
@@ -153,7 +153,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      *                        queue work to.
      */
     @Reference(service = ExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
-    public void setExecutorService(ExecutorService executorService) {
+    protected void setExecutorService(ExecutorService executorService) {
     	this.executorService = executorService;
     }
 
@@ -312,7 +312,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      * @param ref reference to the ServerStarted service
      */
     @Reference(service = ServerStarted.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
-    public void setServerStarted(ServiceReference<ServerStarted> ref) {
+    protected void setServerStarted(ServiceReference<ServerStarted> ref) {
         // set will be called when the ServerStarted service has been registered (by the
         // FeatureManager as of 9/2015). This is a signal that
         // the server is fully started, but before the "smarter planet" message has been
