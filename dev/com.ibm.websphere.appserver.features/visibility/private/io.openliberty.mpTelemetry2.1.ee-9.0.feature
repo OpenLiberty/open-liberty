@@ -7,7 +7,8 @@ singleton=true
   io.openliberty.mpCompatible-5.0,\
   io.openliberty.restfulWS-3.0, \
   io.openliberty.org.eclipse.microprofile.rest.client-3.0,\
-  com.ibm.websphere.appserver.eeCompatible-9.0
+  com.ibm.websphere.appserver.eeCompatible-9.0,\
+  io.openliberty.noShip-1.0
 -bundles=\
   com.ibm.ws.collector.jakarta, \
   com.ibm.ws.cdi.interfaces.jakarta, \
