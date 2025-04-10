@@ -65,5 +65,4 @@ Include-Resource: \
 	io.openliberty.io.opentelemetry.2.0;version=latest,\
 	com.ibm.ws.kernel.boot.common;version=latest,\
 	io.openliberty.org.eclipse.microprofile.config.3.0,\
-	org.osgi.service.component.annotations,\
-	io.openliberty.io.opentelemetry
+	org.osgi.service.component.annotations

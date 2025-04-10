@@ -12,8 +12,8 @@ singleton=true
 -bundles=\
   com.ibm.ws.collector.jakarta, \
   com.ibm.ws.cdi.interfaces.jakarta, \
-  io.openliberty.microprofile.telemetry.2.0.internal.jakarta,\
-  io.openliberty.microprofile.telemetry.2.0.logging.internal.jakarta, \
+  io.openliberty.microprofile.telemetry.2.1.internal.jakarta,\
+  io.openliberty.microprofile.telemetry.2.1.logging.internal.jakarta, \
   io.openliberty.io.opentelemetry.2.1.jakarta,\
   io.openliberty.microprofile.telemetry.internal.common.jakarta
 kind=noship
