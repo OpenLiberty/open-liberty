@@ -44,12 +44,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -70,7 +68,7 @@ import io.opentelemetry.semconv.SemanticAttributes;
  * Test mpTelemetry running with the OpenTelemetry Java Agent enabled
  */
 @RunWith(FATRunner.class)
-@MaximumJavaLevel(javaLevel = 20)
+//@MaximumJavaLevel(javaLevel = 20)
 public class Agent250Test {
 
     private static final Class<Agent250Test> c = Agent250Test.class;
@@ -98,7 +96,10 @@ public class Agent250Test {
     public static void setUp() throws Exception {
         client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
-        server.copyFileToLibertyServerRoot("agent-250/opentelemetry-javaagent.jar");
+        //server.copyFileToLibertyServerRoot("agent-250/opentelemetry-javaagent.jar");
+
+        server.copyFileToLibertyServerRoot("opentelemetry-javaagent-hacked.jar");
+        server.renameLibertyServerRootFile("opentelemetry-javaagent-hacked.jar", "opentelemetry-javaagent.jar");
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
@@ -171,7 +172,7 @@ public class Agent250Test {
         Span span = findOneFrom(spans, hasNoParent());
 
         if (TelemetryActions.mpTelemetry20EE7orEE8IsActive()) {
-                        assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
+            assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
                                               .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest")
                                               .withAttribute(SemanticAttributes.HTTP_REQUEST_METHOD, "GET"));
         } else {
