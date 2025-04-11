@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry20.logging.internal;
+package io.openliberty.microprofile.telemetry21.logging.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryLogHandler.class, "TELEMETRY", "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry");
 
-    public static final String COMPONENT_NAME = "io.openliberty.microprofile.telemetry20.logging.internal.OpenTelemetryLogHandler";
+    public static final String COMPONENT_NAME = "io.openliberty.microprofile.telemetry21.logging.internal.OpenTelemetryLogHandler";
 
     protected static volatile boolean isInit = false;
 

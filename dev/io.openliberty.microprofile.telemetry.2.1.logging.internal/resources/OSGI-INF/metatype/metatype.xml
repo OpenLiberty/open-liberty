@@ -4,12 +4,12 @@
                    xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
-<Designate pid="io.openliberty.microprofile.telemetry20.logging.internal.OpenTelemetryLogHandler">
-	<Object ocdref="io.openliberty.microprofile.telemetry20.logging.internal.config" />
+<Designate pid="io.openliberty.microprofile.telemetry21.logging.internal.OpenTelemetryLogHandler">
+	<Object ocdref="io.openliberty.microprofile.telemetry21.logging.internal.config" />
 </Designate>  
 
 <OCD name="%mpTelemetryLogging" description="%mpTelemetryLogging.desc" 
-			id="io.openliberty.microprofile.telemetry20.logging.internal.config" ibm:alias="mpTelemetry">
+			id="io.openliberty.microprofile.telemetry21.logging.internal.config" ibm:alias="mpTelemetry">
 	<AD name="%source" description="%source.desc" id="source" required="false" type="String" default="message" cardinality="1024"/>
 	
 	<AD name="%accessLogFields" description="%accessLogFields.desc" id="accessLogFields" required="false" type="String" default="default" ibm:beta="true">

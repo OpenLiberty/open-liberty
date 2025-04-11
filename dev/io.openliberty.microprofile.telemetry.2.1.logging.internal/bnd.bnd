@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2024, 2025 IBM Corporation and others.
+# Copyright (c) 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ WS-TraceGroup: TELEMETRY
 
 -dsannotations-inherit: true
 
-Export-Package: io.openliberty.microprofile.telemetry20.logging.internal;provide:=true
+Export-Package: io.openliberty.microprofile.telemetry21.logging.internal;provide:=true
 
 Import-Package: \
     org.osgi.framework,\
@@ -46,7 +46,7 @@ Include-Resource: \
         OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
-        io.openliberty.microprofile.telemetry20.logging.internal.OpenTelemetryLogHandler	
+        io.openliberty.microprofile.telemetry21.logging.internal.OpenTelemetryLogHandler	
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

@@ -38,9 +38,6 @@ public class Telemetry21TCKLauncher {
 
     private static final String SERVER_NAME = "Telemetry21TCKServer";
 
-    @ClassRule
-    public static RepeatTests r = FATSuite.allMPTel21Repeats(SERVER_NAME);
-
     @Server(SERVER_NAME)
     public static LibertyServer server;
 

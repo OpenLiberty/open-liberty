@@ -389,8 +389,6 @@ public class MicroProfileActions {
     private static final Set<String> MP61_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP61_FEATURES_ARRAY)));
     private static final Set<String> MP70_EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP70_EE10_FEATURES_ARRAY)));
     private static final Set<String> MP70_EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP70_EE11_FEATURES_ARRAY)));
-    private static final Set<String> MP71_EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP71_EE10_FEATURES_ARRAY)));
-    private static final Set<String> MP71_EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP71_EE11_FEATURES_ARRAY)));
 
     //The FeatureSet IDs. Since these will be used as the RepeatAction IDs, they can also be used in annotations such as @SkipForRepeat
     public static final String MP10_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_10";
@@ -410,8 +408,6 @@ public class MicroProfileActions {
     public static final String MP61_ID = JakartaEE10Action.ID + "_MicroProfile_61";
     public static final String MP70_EE10_ID = JakartaEE10Action.ID + "_MicroProfile_70";
     public static final String MP70_EE11_ID = JakartaEE11Action.ID + "_MicroProfile_70";
-    public static final String MP71_EE10_ID = JakartaEE10Action.ID + "_MicroProfile_71";
-    public static final String MP71_EE11_ID = JakartaEE11Action.ID + "_MicroProfile_71";
     public static final String MP70_EE11_APP_MODE_ID = MP70_EE11_ID + "_App_Mode";
 
     //The MicroProfile FeatureSets
