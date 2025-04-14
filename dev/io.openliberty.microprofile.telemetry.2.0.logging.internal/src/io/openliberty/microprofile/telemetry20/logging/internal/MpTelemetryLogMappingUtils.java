@@ -468,7 +468,7 @@ public class MpTelemetryLogMappingUtils {
     }
 
     /*
-     * Checks to see if the sampling value is enabled.
+     * Checks to see if the sampling value is enabled. Trace propagators will pass either 1 or 01 to indicate true.
      */
     private static boolean isSampledValue(String sampledValue) {
         return "1".equals(sampledValue) || "01".equals(sampledValue);
