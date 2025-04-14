@@ -34,7 +34,8 @@ Import-Package: \
 # reuse the existing translated messages from the TCP Channel
 Private-Package: \
   com.ibm.ws.tcpchannel.internal.resources, \
-  com.ibm.ws.udpchannel.internal.resources
+  com.ibm.ws.udpchannel.internal.resources, \
+  com.ibm.ws.channelfw.internal.resources
 
 -dsannotations: \
   io.openliberty.netty.internal.impl.NettyFrameworkImpl
