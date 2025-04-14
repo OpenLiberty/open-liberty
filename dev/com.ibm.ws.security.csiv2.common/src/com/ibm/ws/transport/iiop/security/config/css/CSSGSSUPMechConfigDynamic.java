@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@
  * Some of the code was derived from code supplied by the Apache Software Foundation licensed under the Apache License, Version 2.0.
  */
 package com.ibm.ws.transport.iiop.security.config.css;
+
+import java.nio.charset.StandardCharsets;
 
 import javax.security.auth.Subject;
 
@@ -144,7 +146,7 @@ public class CSSGSSUPMechConfigDynamic implements CSSASMechConfig {
         // There must be a WSCredential in the subject, but check for null to satisfy findbugs
         if (wsCredential != null && wsCredential.isBasicAuth()) {
             try {
-                encoding = commonEncode(codec, wsCredential.getSecurityName(), new String(wsCredential.getCredentialToken(), "UTF-8"), targetName);
+                encoding = commonEncode(codec, wsCredential.getSecurityName(), new String(wsCredential.getCredentialToken(), StandardCharsets.UTF_8), targetName);
             } catch (Exception e) {
                 // This should never happen since a basic auth credential never expires and it is never in a destroyed state, but this exception needs to be caught.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

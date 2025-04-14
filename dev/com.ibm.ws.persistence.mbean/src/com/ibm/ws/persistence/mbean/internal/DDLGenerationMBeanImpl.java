@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -208,7 +209,7 @@ public class DDLGenerationMBeanImpl extends StandardMBean implements DDLGenerati
             try {
                 TextFileOutputStreamFactory f = TrConfigurator.getFileOutputStreamFactory();
                 OutputStream os = f.createOutputStream(ddlOutputResource.asFile(), false);
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
                 DDLGenerationWriter out = new DDLGenerationWriter(bw);
 
                 // Iterate over treeset in natural order (ascending)

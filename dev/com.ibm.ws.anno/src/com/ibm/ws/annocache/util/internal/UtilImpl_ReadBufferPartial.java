@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,17 +52,16 @@ public final class UtilImpl_ReadBufferPartial implements UtilImpl_ReadBuffer {
     private int bufferPos;
     private int bufferAvail;
 
-    private final String encoding;
     private final Charset charset;
 
     @Trivial
     public String getEncoding() {
-        return encoding;
+        return charset.name();
     }
 
     //
 
-    public static final String UTF_8 = UtilImpl_WriteBuffer.UTF_8;
+    public static final Charset UTF_8 = UtilImpl_WriteBuffer.UTF_8;
 
     public UtilImpl_ReadBufferPartial(String path, int bufferSize)
         throws IOException {
@@ -74,13 +73,13 @@ public final class UtilImpl_ReadBufferPartial implements UtilImpl_ReadBuffer {
         this(path, file, bufferSize, UTF_8);
     }
 
-    public UtilImpl_ReadBufferPartial(String path, int bufferSize, String encoding)
+    public UtilImpl_ReadBufferPartial(String path, int bufferSize, Charset charset)
         throws IOException {
 
         this( path,
               new RandomAccessFile(path, "r"), // throws IOException
               bufferSize,
-              encoding);
+              charset);
     }
 
     /**
@@ -97,7 +96,7 @@ public final class UtilImpl_ReadBufferPartial implements UtilImpl_ReadBuffer {
      */
     public UtilImpl_ReadBufferPartial(
         String path, RandomAccessFile file, int bufferSize,
-        String encoding) throws IOException {
+        Charset charset) throws IOException {
 
         this.path = path;
         this.file = file;
@@ -111,8 +110,7 @@ public final class UtilImpl_ReadBufferPartial implements UtilImpl_ReadBuffer {
         }
         this.fileLength = (int) rawFileLength; 
 
-        this.encoding = encoding;
-        this.charset = Charset.forName(encoding);
+        this.charset = charset;
 
         if ( this.fileLength < bufferSize ) {
             this.bufferFill = this.fileLength;

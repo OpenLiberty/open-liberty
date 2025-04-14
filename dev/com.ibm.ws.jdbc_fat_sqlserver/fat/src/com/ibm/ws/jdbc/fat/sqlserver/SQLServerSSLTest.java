@@ -56,7 +56,7 @@ public class SQLServerSSLTest extends FATServletClient {
     public static LibertyServer server;
 
     private static final DockerImageName SQLSERVER_SSL = ImageBuilder //
-                    .build("sqlserver-ssl:2022-latest") //
+                    .build("sqlserver-ssl:2022.0.0.1-latest") //
                     .getDockerImageName() //
                     .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server");
 

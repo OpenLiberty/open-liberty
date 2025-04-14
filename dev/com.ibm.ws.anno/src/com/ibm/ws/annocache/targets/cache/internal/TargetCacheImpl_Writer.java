@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 // import java.util.ConcurrentModificationException;
 import java.util.Collection;
 import java.util.IdentityHashMap;
@@ -99,7 +99,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     public TargetCacheImpl_Writer(TargetCacheImpl_Factory factory,
                                   String path,
                                   OutputStream stream,
-                                  String encoding) throws UnsupportedEncodingException {
+                                  Charset charset) {
         super();
 
         this.factory = factory;
@@ -107,8 +107,8 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         this.path = path;
         this.stream = stream;
 
-        this.encoding = encoding;
-        this.writer = new OutputStreamWriter(stream, encoding); // throws UnsupportedEncodingException
+        this.charset = charset;
+        this.writer = new OutputStreamWriter(stream, charset);
         this.bufferedWriter = new BufferedWriter(writer);
     }
 
@@ -126,7 +126,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     protected final String path;
     protected final OutputStream stream;
 
-    protected final String encoding;
+    protected final Charset charset;
     protected final OutputStreamWriter writer;
     protected final BufferedWriter bufferedWriter;
 
@@ -142,7 +142,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
 
     @Trivial
     public String getEncoding() {
-        return encoding;
+        return charset.name();
     }
 
     @Trivial

@@ -31,37 +31,37 @@ The Program includes some or all of the following that IBM obtained
 under the Apache License, Version 2.0:
 
 @carbon/telemetry [telemetry-0.0.0-alpha.6.tgz],
-@swagger-api/apidom-ast [apidom-ast-1.0.0-beta.12.tgz],
-@swagger-api/apidom-core [apidom-core-1.0.0-beta.12.tgz],
-@swagger-api/apidom-error [apidom-error-1.0.0-beta.12.tgz],
-@swagger-api/apidom-json-pointer [apidom-json-pointer-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi-2-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-json-schema-2019-09 [apidom-ns-json-schema-2019-09-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-json-schema-2020-12 [apidom-ns-json-schema-2020-12-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft-4-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft-6-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft-7-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi-2-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi-3-0-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi-3-1-1.0.0-beta.12.tgz],
-@swagger-api/apidom-ns-workflows-1 [apidom-ns-workflows-1-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json-2-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml-2-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json-2-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json-3-0-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json-3-1-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml-2-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml-3-0-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml-3-1-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-workflows-json-1 [apidom-parser-adapter-workflows-json-1-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-workflows-yaml-1 [apidom-parser-adapter-workflows-yaml-1-1.0.0-beta.12.tgz],
-@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml-1-2-1.0.0-beta.12.tgz],
-@swagger-api/apidom-reference [apidom-reference-1.0.0-beta.12.tgz],
-@swaggerexpert/cookie [cookie-1.4.1.tgz], Apache Ant Core [ant],
+@swagger-api/apidom-ast [apidom-ast-1.0.0-beta.29.tgz],
+@swagger-api/apidom-core [apidom-core-1.0.0-beta.29.tgz],
+@swagger-api/apidom-error [apidom-error-1.0.0-beta.29.tgz],
+@swagger-api/apidom-json-pointer [apidom-json-pointer-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi-2-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-json-schema-2019-09 [apidom-ns-json-schema-2019-09-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-json-schema-2020-12 [apidom-ns-json-schema-2020-12-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft-4-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft-6-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft-7-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi-2-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi-3-0-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi-3-1-1.0.0-beta.29.tgz],
+@swagger-api/apidom-ns-workflows-1 [apidom-ns-workflows-1-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json-2-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml-2-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json-2-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json-3-0-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json-3-1-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml-2-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml-3-0-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml-3-1-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-workflows-json-1 [apidom-parser-adapter-workflows-json-1-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-workflows-yaml-1 [apidom-parser-adapter-workflows-yaml-1-1.0.0-beta.29.tgz],
+@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml-1-2-1.0.0-beta.29.tgz],
+@swagger-api/apidom-reference [apidom-reference-1.0.0-beta.29.tgz],
+@swaggerexpert/cookie [cookie-2.0.2.tgz], Apache Ant Core [ant],
 Apache Ant Launcher [ant-launcher],
 Apache Aries JMX API [org.apache.aries.jmx.api],
 Apache Aries JMX Core [org.apache.aries.jmx.core],
@@ -368,7 +368,7 @@ micrometer-registry-prometheus, microprofile-fault-tolerance-api,
 microprofile-metrics-api, microprofile-opentracing-api,
 microprofile-rest-client-api, nekohtml, okhttp, okio [okio-jvm], okio,
 okio [okio-jvm], okio,
-openapi-path-templating [openapi-path-templating-2.1.0.tgz],
+openapi-path-templating [openapi-path-templating-2.2.1.tgz],
 openapi-server-url-templating [openapi-server-url-templating-1.3.0.tgz],
 org.apache.aries.blueprint, org.apache.aries.jndi.core, org.apache.bval.bundle,
 org.osgi:org.osgi.annotation.versioning [org.osgi.annotation.versioning],
@@ -389,8 +389,8 @@ org.osgi:osgi.annotation [osgi.annotation], org.osgi:osgi.core [osgi.core],
 perfmark:perfmark-api [perfmark-api], proto-google-common-protos, resolver,
 short-unique-id [short-unique-id-5.2.0.tgz], smallrye-reactive-converter-api,
 smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
-snappy-java, swagger-client [swagger-client-3.34.0.tgz],
-swagger-ui [swagger-ui-5.18.3.tgz], tomcat-el-api, tomcat-jasper-el,
+snappy-java, swagger-client [swagger-client-3.34.3.tgz],
+swagger-ui [swagger-ui-5.20.1.tgz], tomcat-el-api, tomcat-jasper-el,
 ts-toolbelt [ts-toolbelt-9.6.0.tgz], vertx-codegen, yoko-core, yoko-osgi,
 yoko-rmi-impl, yoko-rmi-spec, yoko-spec-corba, yoko-util
 
@@ -652,7 +652,7 @@ Codemodel Core [codemodel] (Copyright 2010-2023 Oracle and/or its affiliates) (C
 DTD Parser [dtd-parser] (Copyright 1998-2018 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017-2018 Oracle and/or its affiliates)
 DTD Parser [dtd-parser] (Copyright 1998-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates)
 DTD Parser [dtd-parser] (Copyright 1998-2022 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates)
-EclipseLink Core [org.eclipse.persistence.core] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2019-2024 Oracle and/or its affiliates) (Copyright Oracle and/or its affiliates)
+EclipseLink Core [org.eclipse.persistence.core] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2019-2024 Oracle and/or its affiliates) (Copyright Oracle and/or its affiliates) (Eclipse.org - EclipseLink Project)
 Extended StAX API [stax-ex] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates)
 Extended StAX API [stax-ex] (Copyright 1997-2021 Oracle and) (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
 Extended StAX API [stax-ex] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
@@ -947,7 +947,6 @@ EclipseLink Core [org.eclipse.persistence.core] http://www.eclipse.org/eclipseli
 EclipseLink Hermes JPQL Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink Hermes Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
 EclipseLink JPA [org.eclipse.persistence.jpa] http://www.eclipse.org/eclipselink
-EclipseLink JPA [org.eclipse.persistence.jpa] https://repo.maven.apache.org/maven2/org/eclipse/persistence/org.eclipse.persistence.jpa/5.0.0-B06
 Expression Language 3.0 API [jboss-el-api_3.0_spec] http://www.jboss.org
 GlassFish High Availability APIs and SPI [ha-api] https://www.eclipse.org
 JBoss Jakarta Annotations API [jboss-annotations-api_1.3_spec] http://www.jboss.org
@@ -1002,7 +1001,7 @@ javax.ws.rs-api [jakarta.ws.rs-api] https://www.eclipse.org/org/foundation/
 javax.ws.rs-api https://www.eclipse.org/org/foundation/
 jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] http://www.jboss.org
 jboss-jakarta-jaxrs-api_spec [jboss-jaxrs-api_2.1_spec] http://www.jboss.org
-OSGi System Bundle [org.eclipse.osgi] https://projects.eclipse.org/projects/eclipse.equinox
+org.eclipse.osgi***FIXME Source URL missing for org.eclipse.osgi v:3.23.0.v20250201-1235***
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
 org.eclipse.yasson [yasson] http://www.oracle.com/
 
@@ -1535,12 +1534,11 @@ under the MIT license:
 @babel/helper-string-parser [helper-string-parser-7.25.9.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
 @babel/helper-validator-identifier [helper-validator-identifier-7.25.9.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
 @babel/parser [parser-7.26.8.tgz] (Copyright 2012-2014 by various contributors)
-@babel/runtime [runtime-7.26.9.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/runtime-corejs3 [runtime-corejs3-7.26.9.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/runtime [runtime-7.26.10.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/runtime-corejs3 [runtime-corejs3-7.26.10.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
 @babel/template [template-7.26.8.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
 @babel/traverse [traverse-7.26.8.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
 @babel/types [types-7.26.8.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@braintree/sanitize-url [sanitize-url-7.0.4.tgz] (Copyright 2017 Braintree)
 @colors/colors [colors-1.6.0.tgz] (Copyright DABH (https://github.com/DABH)) (Copyright Marak Squires) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
 @dabh/diagnostics [diagnostics-2.0.3.tgz] (Copyright 2015 Arnout Kazemier, Martijn Swaagman, the Contributors)
 @jridgewell/gen-mapping [gen-mapping-0.3.8.tgz] (Copyright 2022 Justin Ridgewell <jridgewell@google.com>)
@@ -1617,8 +1615,8 @@ comma-separated-tokens [comma-separated-tokens-1.0.8.tgz] (Copyright 2016 Titus 
 concat-map [concat-map-0.0.1.tgz] (Copyright James Halliday)
 convert-source-map [convert-source-map-1.9.0.tgz] (Copyright 2013 Thorsten Lorenz)
 copy-to-clipboard [copy-to-clipboard-3.3.3.tgz] (Copyright 2017 sudodoki <smd.deluzion@gmail.com>)
-core-js [core-js-3.40.0.tgz] (Copyright 2014-2025 Denis Pushkarev)
-core-js-pure [core-js-pure-3.40.0.tgz] (Copyright 2014-2025 Denis Pushkarev)
+core-js [core-js-3.41.0.tgz] (Copyright 2014-2025 Denis Pushkarev)
+core-js-pure [core-js-pure-3.41.0.tgz] (Copyright 2014-2025 Denis Pushkarev)
 core-util-is [core-util-is-1.0.3.tgz] (Copyright Node.js contributors)
 crypto-js [enc-base64-min-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 crypto-js [sha256-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
@@ -1755,8 +1753,8 @@ ms [ms-2.1.3.tgz] (Copyright 2020 Vercel, Inc)
 multipipe [multipipe-0.1.2.tgz] (Copyright 2014 Julian Gruber <julian@juliangruber.com>) (Copyright 2014 Segment.io Inc)
 neotraverse [neotraverse-0.6.18.tgz] (Copyright 2010 James Halliday and contributors)
 node-abort-controller [node-abort-controller-3.1.1.tgz] (Copyright 2019 Steve Faulkner)
-node-addon-api [node-addon-api-8.3.0.tgz] (Copyright 2017 Node.js API collaborators" (https://github.com/nodejs/node-addon-api#collaborators))
-node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy Wärting)
+node-addon-api [node-addon-api-8.3.1.tgz] (Copyright 2017 Node.js API collaborators" (https://github.com/nodejs/node-addon-api#collaborators))
+node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy WÃ¤rting)
 node-fetch-commonjs [node-fetch-commonjs-3.3.2.tgz] (Copyright 2016-2020 Node Fetch Team)
 node-gyp-build [node-gyp-build-4.8.4.tgz] (Copyright 2017 Mathias Buus)
 normalize-path [normalize-path-2.1.1.tgz] (Copyright 2014-2017 Jon Schlinkert) (Copyright 2017 Jon Schlinkert" (https://github.com/jonschlinkert)) (Copyright 2017 [Jon Schlinkert](https://github.com/jonschlinkert))
@@ -1826,7 +1824,7 @@ sha.js [sha.js-2.4.11.tgz] (Copyright 1998-2009 Paul Johnston) (Copyright 1998-2
 simple-swizzle [simple-swizzle-0.2.2.tgz] (Copyright 2015 Josh Junon)
 space-separated-tokens [space-separated-tokens-1.1.5.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 sparkles [sparkles-1.0.1.tgz] (Copyright 2014 Blaine Bublitz <blaine.bublitz@gmail.com> and Eric Schoffstall <yo@contra.io>)
-stack-trace [stack-trace-0.0.10.tgz] (Copyright 2011 Felix Geisendörfer (felix@debuggable.com))
+stack-trace [stack-trace-0.0.10.tgz] (Copyright 2011 Felix GeisendÃ¶rfer (felix@debuggable.com))
 stream-browserify [stream-browserify-3.0.0.tgz] (Copyright James Halliday)
 stream-shift [stream-shift-1.0.3.tgz] (Copyright 2016 Mathias Buus)
 string-width [string-width-4.2.3.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))

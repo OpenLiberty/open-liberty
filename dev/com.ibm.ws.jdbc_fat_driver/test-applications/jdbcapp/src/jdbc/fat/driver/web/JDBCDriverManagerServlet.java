@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -262,6 +262,38 @@ public class JDBCDriverManagerServlet extends FATServlet {
             con.createStatement().executeUpdate("insert into address values ('Quarry Hill Nature Center', 701, 'Silver Creek Road NE', 'Rochester', 'MN', 55906)");
         } finally {
             con.close();
+        }
+    }
+
+    /**
+     * Verify that the content of a JDBC driver JAR file can be expanded into a
+     * folder and the shared library can point at the folder name, and the library
+     * can be used to configure a jdbcDriver/dataSource.
+     */
+    @Test
+    public void testDriverArtifactExpandedIntoFolder() throws Exception {
+        // Using folder dir={folder}
+        DataSource ds = InitialContext.doLookup("jdbc/folderds");
+        try (Connection con = ds.getConnection("dbuser1", "dbpwd1")) {
+            DatabaseMetaData mdata = con.getMetaData();
+            assertEquals("FolderJDBC", mdata.getDriverName());
+            assertEquals("dbuser1", mdata.getUserName());
+
+            // Properties configured in server.xml:
+            assertEquals("folderdb", con.getCatalog());
+            assertEquals("folderschema1", con.getSchema());
+        }
+
+        // Using path name={folder}
+        ds = InitialContext.doLookup("jdbc/folderpoolds");
+        try (Connection con = ds.getConnection("dbuser1", "dbpwd1")) {
+            DatabaseMetaData mdata = con.getMetaData();
+            assertEquals("FolderJDBC", mdata.getDriverName());
+            assertEquals("dbuser1", mdata.getUserName());
+
+            // Properties configured in server.xml:
+            assertEquals("folderdb", con.getCatalog());
+            assertEquals("folderschema2", con.getSchema());
         }
     }
 

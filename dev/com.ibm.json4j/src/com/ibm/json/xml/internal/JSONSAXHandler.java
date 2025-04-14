@@ -1,7 +1,7 @@
 package com.ibm.json.xml.internal;
 
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.StringTokenizer;
 import java.util.Properties;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 
 
@@ -72,7 +73,7 @@ public class JSONSAXHandler extends DefaultHandler
     {
         if (logger.isLoggable(Level.FINER)) logger.entering(className, "JSONHander(OutputStream) <constructor>");
         
-        this.osWriter = new OutputStreamWriter(os,"UTF-8");
+        this.osWriter = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         this.compact  = true;
         
         if (logger.isLoggable(Level.FINER)) logger.exiting(className, "JSONHander(OutputStream) <constructor>");
@@ -89,7 +90,7 @@ public class JSONSAXHandler extends DefaultHandler
     {
         if (logger.isLoggable(Level.FINER)) logger.entering(className, "JSONHander(OutputStream, boolean) <constructor>");
         
-        this.osWriter = new OutputStreamWriter(os,"UTF-8");
+        this.osWriter = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         this.compact  = !verbose;
         
         if (logger.isLoggable(Level.FINER)) logger.exiting(className, "JSONHander(OutputStream, boolean) <constructor>");

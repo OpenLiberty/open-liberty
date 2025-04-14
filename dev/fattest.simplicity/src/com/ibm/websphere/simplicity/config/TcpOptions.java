@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.websphere.simplicity.config;
 
@@ -27,6 +24,7 @@ public class TcpOptions extends ConfigElement {
     private String addressExcludeList;
     private String hostNameIncludeList;
     private String hostNameExcludeList;
+    private Integer maxOpenConnections;
 
     public Boolean isSoReuseAddr() {
         return this.soReuseAddr;
@@ -46,6 +44,10 @@ public class TcpOptions extends ConfigElement {
 
     public String getHostNameExcludeList() {
         return hostNameExcludeList;
+    }
+
+    public Integer getMaxOpenConnections() {
+        return maxOpenConnections;
     }
 
     @XmlAttribute
@@ -73,6 +75,11 @@ public class TcpOptions extends ConfigElement {
         this.hostNameExcludeList = hostNameExcludeList;
     }
 
+    @XmlAttribute
+    public void setMaxOpenConnections(Integer maxOpenConnections) {
+        this.maxOpenConnections = maxOpenConnections;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("TcpOptions{");
@@ -88,6 +95,8 @@ public class TcpOptions extends ConfigElement {
             buf.append("hostNameIncludeList=\"" + hostNameIncludeList + "\" ");
         if (getHostNameExcludeList() != null)
             buf.append("hostNameExcludeList=\"" + hostNameExcludeList + "\" ");
+        if (getMaxOpenConnections() != null)
+            buf.append("maxOpenConnections=\"" + maxOpenConnections + "\" ");
         buf.append("}");
         return buf.toString();
     }

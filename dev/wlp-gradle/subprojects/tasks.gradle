@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -157,11 +157,8 @@ compileJava {
 
   options.warnings = false
   options.fork = true
-}
-
-if (!bnd.project.isNoBundles() && !parseBoolean(bnd.get('instrument.disabled', 'false'))) {
-  task instrument {
-    dependsOn compileJava
+  
+  if (!bnd.project.isNoBundles() && !parseBoolean(bnd.get('instrument.disabled', 'false'))) {
     inputs.files { rasInstrumentationInputFiles() }
     outputs.dir compileJava.destinationDir
     def instrument = fileTree(dir: compileJava.destinationDir, include: bnd.get('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd.get('instrument.classesExcludes').split("\\s*,\\s*"))
@@ -174,8 +171,6 @@ if (!bnd.project.isNoBundles() && !parseBoolean(bnd.get('instrument.disabled', '
       }
     }
   }
-  compileTestJava.dependsOn(instrument)
-  jar.dependsOn(instrument)
 }
 
 tasks.withType(Test) configureEach {

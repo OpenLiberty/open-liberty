@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -168,7 +169,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         // Set response body for GET requests
         if (request.getMethod().equalsIgnoreCase(HTTP_METHOD_GET)) {
             decodeClientName(client);
-            byte[] b = GSON.toJson(client).toString().getBytes("UTF-8");
+            byte[] b = GSON.toJson(client).toString().getBytes(StandardCharsets.UTF_8);
             response.getOutputStream().write(b);
         }
 
@@ -213,7 +214,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
 
             responseBody.add("data", GSON.toJsonTree(clientsAsJSON));
             // Write out in UTF-8 bytes format
-            response.getOutputStream().write(responseBody.toString().getBytes("UTF-8"));
+            response.getOutputStream().write(responseBody.toString().getBytes(StandardCharsets.UTF_8));
         }
 
         response.flushBuffer();
@@ -277,7 +278,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         );
 
         // Write out in UTF-8 bytes format
-        byte[] b = OidcOAuth20Util.GSON_RAW.toJson(savedClientWithDefaults).toString().getBytes("UTF-8");
+        byte[] b = OidcOAuth20Util.GSON_RAW.toJson(savedClientWithDefaults).toString().getBytes(StandardCharsets.UTF_8);
         response.getOutputStream().write(b);
         response.setStatus(HttpServletResponse.SC_CREATED);
         response.flushBuffer();
@@ -358,13 +359,13 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
 
             if (clientSecretAction == ClientSecretAction.RETAIN && !OidcOAuth20Util.isNullEmpty(savedClientWithDefaults.getClientSecret())) {
                 // Mask client_secret with (*) because no new secret was generated
-                byte[] b = GSON.toJson(savedClientWithDefaults).toString().getBytes("UTF-8");
+                byte[] b = GSON.toJson(savedClientWithDefaults).toString().getBytes(StandardCharsets.UTF_8);
                 response.getOutputStream().write(b);
             } else {
                 // If 'NEW' client secret was generated or 'CLEAR', send unhashed secret back
                 savedClientWithDefaults.setClientSecret(tmpNewSecret);
 
-                byte[] b = OidcOAuth20Util.GSON_RAW.toJson(savedClientWithDefaults).toString().getBytes("UTF-8");
+                byte[] b = OidcOAuth20Util.GSON_RAW.toJson(savedClientWithDefaults).toString().getBytes(StandardCharsets.UTF_8);
                 response.getOutputStream().write(b);
             }
 

@@ -86,7 +86,7 @@ public class SQLNonTransactionalDataSource {
         // Retrieve the data source factory from the CustomLogProperties. This Factory should be set in the JTMConfigurationProvider
         // by the jdbc component using DeclarativeServices. TxRecoveryAgentImpl gets the factory from the ConfigurationProvider and
         // then sets it into CustomLogProperties.
-        ResourceFactory dataSourceFactory = _customLogProperties.resourceFactory();
+        final ResourceFactory dataSourceFactory = _customLogProperties.resourceFactory();
 
         if (dataSourceFactory != null) {
             if (tc.isDebugEnabled())
@@ -100,54 +100,13 @@ public class SQLNonTransactionalDataSource {
         try {
             nonTranDataSource = (DataSource) dataSourceFactory.createResource(null);
         } catch (Exception e) {
-            //e.printStackTrace();
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "getDataSource", "Caught exception " + e + "throw InternalLogException");
-            throw new InternalLogException("Failed to locate DataSource, caught exception ", null);
+                Tr.exit(tc, "getDataSource", "Caught exception " + e + ", throw InternalLogException");
+            throw new InternalLogException("Failed to locate DataSource, caught exception", e);
         }
-
-/*
- * TEMPORARY This is waiting on fixes to DeclarativeServices which impact the jdbc component. At present it is
- * possible that the DataSource will have been set but that its associated jdbc driver service will still be initialising
- */
-//        boolean refSet = false;
-//        while (!refSet)
-//        {
-//            if (tc.isDebugEnabled())
-//                Tr.debug(tc, "getDataSource after sleep");
-//            try {
-//
-//                nonTranDataSource = (DataSource) dataSourceFactory.createResource(null);
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Non Tran dataSource is " + nonTranDataSource);
-//                Connection conn = nonTranDataSource.getConnection();
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Established connection " + conn);
-//
-//                DatabaseMetaData mdata = conn.getMetaData();
-//
-//                String dbName = mdata.getDatabaseProductName();
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Database name " + dbName);
-//
-//                String dbVersion = mdata.getDatabaseProductVersion();
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Database version " + dbVersion);
-//                refSet = true;
-//            } catch (Exception e) {
-//                // We will catch an exception if the DataSource is not yet fully formed
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Caught exception: " + e);
-//            }
-//
-//            if (!refSet)
-//                Thread.sleep(200);
-//        }
-// eof TEMPORARY
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getDataSource", nonTranDataSource);
         return nonTranDataSource;
     }
-
 }

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -63,6 +63,9 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Conflicting configuration for the ote
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile \u900f\u904e\u7cfb\u7d71\u5c6c\u6027\u6216\u74b0\u5883\u8b8a\u6578\uff0c\u53ef\u4ee5\u70ba\u6574\u500b\u4f3a\u670d\u5668\u555f\u7528\u9059\u6e2c\u529f\u80fd\u3002 If it isn't enabled for the whole server, it can be enabled for an application by setting MicroProfile Config properties; for example, by setting variables in the server.xml file. \u5982\u679c\u6574\u500b\u4f3a\u670d\u5668\u555f\u7528\u4e86 Telemetry\uff0c\u4f46 MicroProfile \u914d\u7f6e\u5c6c\u6027\u505c\u7528\u4e86\u61c9\u7528\u7a0b\u5f0f\u7684 Telemetry\uff0c\u5247\u6703\u767c\u51fa\u6b64\u8b66\u544a\u3002 \u56e0\u70ba\u6574\u500b\u4f3a\u670d\u5668\u90fd\u555f\u7528\u4e86 Telemetry\uff0c\u6240\u4ee5\u8a72\u61c9\u7528\u7a0b\u5f0f\u7684\u8a2d\u5b9a\u6703\u88ab\u5ffd\u7565\u3002
 CWMOT5007.tel.enabled.conflict.useraction: \u4f7f\u7528\u74b0\u5883\u8b8a\u6578\u548c\u7cfb\u7d71\u5c6c\u6027\u6216\u5176\u4ed6 MP Config \u4f86\u6e90\uff0c\u6307\u5b9a\u555f\u7528\u6216\u505c\u7528 OpenTelemetry \u5be6\u4f8b\u7684\u8a2d\u5b9a\uff0c\u4f46\u4e0d\u80fd\u540c\u6642\u4f7f\u7528\u5169\u8005\u3002
 
+CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: MicroProfile \u9059\u6e2c\u8a18\u9304\u529f\u80fd\u7121\u6cd5\u8b58\u5225 [ {0} ] \u9059\u6e2c\u5b58\u53d6\u8a18\u9304\u683c\u5f0f\u3002
+CWMOT5008.mptelemetry.unknown.access.log.field.explanation=Liberty \u904b\u884c\u74b0\u5883\u4e0d\u63d0\u4f9b\u6307\u5b9a\u7684\u65e5\u8a8c\u683c\u5f0f\u3002
+CWMOT5008.mptelemetry.unknown.access.log.field.useraction=\u70ba mpTelemetry accessLogFields \u5c6c\u6027\u6307\u5b9a default \u6216 logFormat\u3002
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -63,6 +63,9 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Wykryto konflikt konfiguracji w\u0142
 CWMOT5007.tel.enabled.conflict.explanation: Telemetri\u0119 MicroProfile mo\u017cna w\u0142\u0105czy\u0107 dla ca\u0142ego serwera za pomoc\u0105 w\u0142a\u015bciwo\u015bci systemu lub zmiennych \u015brodowiskowych. Je\u017celi opcja ta nie jest w\u0142\u0105czona dla ca\u0142ego serwera, mo\u017cna j\u0105 w\u0142\u0105czy\u0107 dla aplikacji, ustawiaj\u0105c w\u0142a\u015bciwo\u015bci konfiguracji MicroProfile , na przyk\u0142ad ustawiaj\u0105c zmienne w pliku server.xml . To ostrze\u017cenie jest wy\u015bwietlane, gdy telemetria jest w\u0142\u0105czona dla ca\u0142ego serwera, ale w\u0142a\u015bciwo\u015bci konfiguracji MicroProfile wy\u0142\u0105czaj\u0105 telemetri\u0119 dla aplikacji. Poniewa\u017c telemetria jest w\u0142\u0105czona dla ca\u0142ego serwera, konfiguracja dla tej aplikacji jest ignorowana.
 CWMOT5007.tel.enabled.conflict.useraction: Okre\u015bl ustawienia w\u0142\u0105czania lub wy\u0142\u0105czania wyst\u0105pie\u0144 OpenTelemetry za pomoc\u0105 zmiennych \u015brodowiskowych i w\u0142a\u015bciwo\u015bci systemu lub innych \u017ar\u00f3de\u0142 MP Config, ale nie obu naraz.
 
+CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: Funkcja rejestrowania telemetrii MicroProfile nie rozpoznaje formatu dziennika dost\u0119pu do telemetrii [ {0} ].
+CWMOT5008.mptelemetry.unknown.access.log.field.explanation=\u015arodowisko uruchomieniowe Liberty nie udost\u0119pnia okre\u015blonego formatu dziennika.
+CWMOT5008.mptelemetry.unknown.access.log.field.useraction=Dla atrybutu mpTelemetry accessLogFields nale\u017cy poda\u0107 warto\u015b\u0107 domy\u015bln\u0105 lub logFormat.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages

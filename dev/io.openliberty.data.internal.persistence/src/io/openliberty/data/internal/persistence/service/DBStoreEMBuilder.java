@@ -21,6 +21,7 @@ import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -60,6 +61,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 import com.ibm.wsspi.persistence.DatabaseStore;
@@ -130,9 +132,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
      * @param repositoryInterfaces  repository interfaces that use the entities.
      * @param dataStore             dataStore value from the Repository annotation,
      *                                  or the value with java:comp/env added.
-     * @param isJNDIName            indicates if the dataStore name is a JNDI name (begins with java: or is inferred to be java:comp/env/...)
-     * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
-     * @param jeeName               application/module/component in which the repository interface is defined.
+     * @param isJNDIName            indicates if the dataStore name is a JNDI name
+     *                                  (begins with java: or is inferred to be java:comp/env/...)
+     * @param metadata              metadata of the application artifact that
+     *                                  contains the repository interface.
      *                                  Module and component might be null or absent.
      * @param entityTypes           entity classes as known by the user, not generated.
      * @throws Exception if an error occurs.
@@ -142,14 +145,14 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                             Set<Class<?>> repositoryInterfaces,
                             String dataStore,
                             boolean isJNDIName,
-                            String metadataIdentifier,
-                            J2EEName jeeName,
+                            ComponentMetaData metadata,
                             Set<Class<?>> entityTypes) throws Exception {
         super(provider, repositoryClassLoader, repositoryInterfaces, dataStore);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String qualifiedName = null;
         boolean javaApp = false, javaModule = false, javaComp = false;
+        J2EEName jeeName = metadata.getJ2EEName();
         String application = jeeName == null ? null : jeeName.getApplication();
         String module = jeeName == null ? null : jeeName.getModule();
 
@@ -222,7 +225,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             }
             if (dbStoreId == null) {
                 // Create a ResourceFactory that can delegate back to a resource reference lookup
-                ResourceFactory delegator = new ResRefDelegator(dataStore, metadataIdentifier, provider);
+                ResourceFactory delegator = new ResRefDelegator(dataStore, metadata);
                 Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
                 dbStoreId = isJNDIName ? qualifiedName : ("application[" + application + "]/databaseStore[" + dataStore + ']');
                 String id = dbStoreId + "/ResourceFactory";
@@ -345,9 +348,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 // record that is specified by the user, not from the generated
                 // entity class that is used internally in place of a record.
                 String tableName = c.getSimpleName();
-
                 Class<?> ec = c;
                 if (c.isRecord()) {
+                    disallowPersistenceAnnos(c, true);
+
                     // an entity class is generated for the record
                     String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX;
                     byte[] generatedEntityBytes = RecordTransformer //
@@ -361,6 +365,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                                                               entityClassName,
                                                               generatedEntityBytes);
                     generatedToRecordClass.put(ec, c);
+                } else {
+                    disallowPersistenceAnnos(c, false);
                 }
 
                 StringBuilder xml = new StringBuilder(500);
@@ -514,6 +520,47 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "createEntityManager: " + em);
         return em;
+    }
+
+    /**
+     * Raises an error if any method (or field if not a Java record) is annotated
+     * with an annotation from Jakarta Persistence.
+     *
+     * @param c        class that does not have the Entity annotation.
+     * @param isRecord true if the entity class is a Java record, otherwise false.
+     */
+    @Trivial
+    private void disallowPersistenceAnnos(Class<?> c, boolean isRecord) {
+
+        if (!isRecord)
+            for (Field field : c.getDeclaredFields())
+                for (Annotation anno : field.getAnnotations())
+                    if (anno.annotationType().getPackageName() //
+                                    .startsWith("jakarta.persistence"))
+                        throw exc(MappingException.class,
+                                  "CWWKD1108.missing.entity.anno",
+                                  c.getName(),
+                                  Entity.class.getName(),
+                                  anno.annotationType().getName(),
+                                  field.getName());
+
+        for (Method method : c.getDeclaredMethods())
+            for (Annotation anno : method.getAnnotations())
+                if (anno.annotationType().getPackageName() //
+                                .startsWith("jakarta.persistence"))
+                    if (isRecord)
+                        throw exc(MappingException.class,
+                                  "CWWKD1109.jpa.anno.on.record",
+                                  anno.annotationType().getName(),
+                                  method.getName(),
+                                  c.getName());
+                    else
+                        throw exc(MappingException.class,
+                                  "CWWKD1108.missing.entity.anno",
+                                  c.getName(),
+                                  Entity.class.getName(),
+                                  anno.annotationType().getName(),
+                                  method.getName());
     }
 
     /**

@@ -12,9 +12,9 @@
 <%
     StringBuilder sb = new StringBuilder("");
     //32768 bytes is enough for the jsp/webcontainer buffer to commit the response
-	for(int i=0; i<32768; i++){
-		sb.append("0");
-	}
+    for(int i=0; i<32768; i++){
+        sb.append("0");
+    }
 %>
 <p>Hello <%= sb.toString() %>!</p>
 <% System.out.println("DEBUG: END OF FOOTER"); %>

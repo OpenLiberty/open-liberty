@@ -56,8 +56,8 @@ import jakarta.enterprise.concurrent.ContextServiceDefinition;
 /**
  * Creates, modifies, and removes ContextService resource factories that are defined via ContextServiceDefinition.
  */
-public class ContextServiceResourceFactoryBuilder implements //
-                ConcurrencyResourceFactoryBuilder, ResourceFactoryBuilder {
+public class ContextServiceResourceFactoryBuilder //
+                extends ConcurrencyResourceFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ContextServiceResourceFactoryBuilder.class);
 
     private static final String CONTEXT_PID_ZOS_WLM = "com.ibm.ws.zos.wlm.context";
@@ -241,6 +241,11 @@ public class ContextServiceResourceFactoryBuilder implements //
         // Convert qualifier array to list attribute if present
         List<String> qualifierNames = null;
         if (qualifiers != null && qualifiers.length > 0) {
+            if (jndiName.startsWith("java:global"))
+                throw excJavaGlobalWithQualifiers(jndiName,
+                                                  qualifiers,
+                                                  declaringApplication,
+                                                  declaringMetadata);
             qualifierNames = Arrays.asList(qualifiers);
             contextSvcProps.put("qualifiers", qualifierNames);
         }

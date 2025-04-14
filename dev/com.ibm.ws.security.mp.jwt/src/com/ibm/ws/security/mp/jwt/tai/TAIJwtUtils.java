@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.tai;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class TAIJwtUtils {
 
     public static boolean isJwtPreviouslyLoggedOut(String rawToken) {
         if (loggedOutJwts.isEmpty()) {
-          return false;
+            return false;
         }
         boolean result = loggedOutJwts.get(getSha256Digest(rawToken)) != null;
         return result;
@@ -90,7 +90,7 @@ public class TAIJwtUtils {
         } catch (NoSuchAlgorithmException e) {
             return null; // and emit ffdc
         }
-        byte[] digest = md.digest(in.getBytes(Charset.forName("UTF-8")));
+        byte[] digest = md.digest(in.getBytes(StandardCharsets.UTF_8));
         return new String(digest);
     }
 

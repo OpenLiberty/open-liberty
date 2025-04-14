@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 # Messages used by Health Impl -  range is 0000-0999
 # The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
 # The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+# The 0100-0149 range is reserved for messages that are issued by the file-based health check mechanism
 #-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,3 +56,29 @@ readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Questa
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: Il controllo dello stato di avvio ha riportato uno stato generale DOWN perch\u00e9 le seguenti applicazioni sono sono ancora avviate: {0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=Il controllo dello stato di avvio ha riportato uno stato generale DOWN perch\u00e9 le applicazioni specificate sono sono ancora avviate e non sono pronte ad elaborare le richieste.
 startup.healthcheck.applications.not.started.down.CWMMH0054W.useraction=Questa avvertenza \u00e8 una registrazione dello stato DOWN e non \u00e8 necessaria alcuna azione da parte dell'utente. Attendere l'avvio di tutte le applicazioni. Una volta avviate tutte le applicazioni, i controlli dello stato definiti dall'utente vengono elaborati.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# File-based health check messages
+#-----------------------------------------------------------------------------------------------------------------------------
+file.healthcheck.health.directory.create.fail.CWMMH0100W=CWMMH0100W: Impossibile creare la directory /health nel seguente percorso [ {0} ]. La funzione di controllo dello stato di salute basata su file sar\u00e0 disattivata.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.explanation=Il runtime non era in grado di creare la directory /health necessaria per il corretto funzionamento dei controlli sanitari basati sui file.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.useraction=L'utente deve identificare la causa principale che impedisce al runtime di creare la directory /health.
+
+
+file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Impossibile scrivere nella directory {0}. La funzione di controllo dello stato di salute basata su file sar\u00e0 disattivata.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=Il runtime richiede i permessi di scrittura alla directory /health per creare i file "live", "ready" e "started" affinch\u00e9 i controlli di salute basati sui file funzionino correttamente.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=L'utente deve identificare la causa principale del problema di autorizzazione.
+
+
+file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: Il runtime ha rilevato la presenza della seguente directory [ {0} ]. Per la funzione di controllo dello stato di salute basata su file \u00e8 necessario un file con lo stesso nome in questo percorso. La funzione di controllo dello stato di salute basata su file sar\u00e0 disattivata.
+file.healthcheck.file.name.conflict.CWMMH0105W.explanation=I controlli dello stato di salute basati su file richiedono la creazione e l'uso dei file "live", "ready" e "started" nella directory /health. Nella directory /health \u00e8 gi\u00e0 presente una directory con uno di questi nomi, che impedisce la creazione dei file necessari.
+file.healthcheck.file.name.conflict.CWMMH0105W.useraction=La directory non viene creata da questo runtime e pu\u00f2 contenere contenuti importanti per l'utente. Si prega di rimuovere o riposizionare la directory.
+
+file.healthcheck.file.delete.fail.CWMMH0106W=CWMMH0106W: Impossibile eliminare il file esistente a [ {0} ]. La funzione di controllo dello stato di salute basata su file sar\u00e0 disattivata.
+file.healthcheck.file.delete.fail.CWMMH0106W.explanation=I controlli dello stato di salute basati su file richiedono la creazione e l'uso dei file "live", "ready" e "started" nella directory /health. Affinch\u00e9 i controlli sanitari basati sui file funzionino correttamente, questi file non devono esistere all'avvio del runtime. Il runtime ha tentato di eliminare il file esistente, ma non ci \u00e8 riuscito.
+file.healthcheck.file.delete.fail.CWMMH0106W.useraction=L'utente deve identificare la causa principale che impedisce al runtime di eliminare i file.
+
+file.update.interval.config.invalid.CWMMH01010W=CWMMH01010W: \u00c8 stato fornito un valore non valido [ {0} ] per l''intervallo di aggiornamento del file. Il valore fornito deve essere costituito da un numero seguito da un''unit\u00e0 di tempo opzionale, "ms" per i millisecondi o "s" per i secondi. Se non viene specificata alcuna unit\u00e0 di tempo, il valore predefinito \u00e8 in secondi. Il tempo di esecuzione \u00e8 impostato su 10 secondi.
+file.update.interval.config.invalid.CWMMH01010W.explanation=La configurazione dell'intervallo di aggiornamento dei file accetta solo un numero seguito da un'unit\u00e0 di tempo opzionale, "ms" per i millisecondi o "s" per i secondi. Se non viene specificata alcuna unit\u00e0 di tempo, il valore predefinito \u00e8 in secondi.
+file.update.interval.config.invalid.CWMMH01010W.useraction=Immettere un valore corretto per la configurazione dell'intervallo di aggiornamento del file.

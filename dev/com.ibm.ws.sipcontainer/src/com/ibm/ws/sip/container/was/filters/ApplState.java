@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.was.filters;
 
@@ -31,7 +28,6 @@ public class ApplState implements ApplicationStateListener{
 	 private static final LogMgr c_logger =
              Log.get(ApplState.class);
 	public ApplState()  {
-		// TODO Auto-generated constructor stub
 	}
 
 	
@@ -59,20 +55,14 @@ public class ApplState implements ApplicationStateListener{
 	@Override
 	public void applicationStarted(ApplicationInfo appInfo)
 			throws StateChangeException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void applicationStopping(ApplicationInfo appInfo) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void applicationStopped(ApplicationInfo appInfo) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

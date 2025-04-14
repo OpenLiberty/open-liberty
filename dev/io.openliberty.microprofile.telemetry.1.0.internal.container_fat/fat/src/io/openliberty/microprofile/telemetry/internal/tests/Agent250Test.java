@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient.convertByteString;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
@@ -49,6 +50,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -69,6 +71,7 @@ import io.opentelemetry.semconv.SemanticAttributes;
  */
 @RunWith(FATRunner.class)
 //@MaximumJavaLevel(javaLevel = 20)
+//@SkipIfSysProp(OS_ZOS) //Agent250 crashes on ZOS because it tries to read /proc as UTF-8
 public class Agent250Test {
 
     private static final Class<Agent250Test> c = Agent250Test.class;

@@ -13,6 +13,7 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestConstants.NULL_TRACE_ID;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
@@ -47,6 +48,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -74,6 +76,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 @MaximumJavaLevel(javaLevel = 20)
+@SkipIfSysProp(OS_ZOS) //Agent119, 129, and 250 crashes on ZOS because it tries to read /proc as UTF-8
 public class AgentConfigTest {
 
     private static final String SERVER_NAME = "TelemetryAgentConfig";

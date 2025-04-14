@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -283,7 +284,7 @@ public class HttpUtils {
     String extractResponseAsString(HttpResponse result, String url) throws IOException, AbstractHttpResponseException {
         StatusLine statusLine = result.getStatusLine();
         int iStatusCode = statusLine.getStatusCode();
-        String response = EntityUtils.toString(result.getEntity(), "UTF-8");
+        String response = EntityUtils.toString(result.getEntity(), StandardCharsets.UTF_8);
         if (iStatusCode == 200) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Response: ", response);
@@ -338,7 +339,7 @@ public class HttpUtils {
         if (responseStream == null) {
             return null;
         }
-        BufferedReader in = new BufferedReader(new InputStreamReader(responseStream, "UTF-8"));
+        BufferedReader in = new BufferedReader(new InputStreamReader(responseStream, StandardCharsets.UTF_8));
         String line;
         String response = "";
         while ((line = in.readLine()) != null) {

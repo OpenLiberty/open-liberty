@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
@@ -3230,16 +3231,6 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     }
 
     // LIDB1234.6 - added method below
-    /**
-     * Overrides the name of the character encoding used in the body of this request.  This
-     * method must be called prior to reading request parameters or reading input using
-     * getReader().
-     * 
-     * @param encoding a String containing the name of the character encoding
-     * 
-     * @throws java.io.UnsupportedEncodingException if this is not a valid encoding
-     */
-
     public byte[] getSSLId()
     {
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
@@ -4185,7 +4176,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
      */
     @SuppressWarnings("rawtypes")
     @Override
-    public byte[][] serializeInputStreamData(Map isd) throws IOException, UnsupportedEncodingException, IllegalStateException {
+    public byte[][] serializeInputStreamData(Map isd) throws IOException, IllegalStateException {
         validateInputStreamData(isd);
 
         String type = (String)isd.get(INPUT_STREAM_CONTENT_TYPE);
@@ -4200,7 +4191,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         output[OFFSET_CONTENT_DATA_LENGTH] = longToBytes((long)length.intValue());
         if (type != null) {
             output[OFFSET_CONTENT_TYPE_LEN] = intToBytes(type.length());
-            output[OFFSET_CONTENT_TYPE_DATA] = type.getBytes("UTF-8"); 
+            output[OFFSET_CONTENT_TYPE_DATA] = type.getBytes(StandardCharsets.UTF_8);
         } else {
             output[OFFSET_CONTENT_TYPE_LEN] = intToBytes(0);
             output[OFFSET_CONTENT_TYPE_DATA] = new byte[1];
@@ -4218,7 +4209,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
     @SuppressWarnings("rawtypes")
     @Override
-    public HashMap deserializeInputStreamData(byte[][] input) throws UnsupportedEncodingException, IllegalStateException {
+    public HashMap deserializeInputStreamData(byte[][] input) throws IllegalStateException {
         if (input == null || input.length < 2) {
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
                 logger.logp(Level.FINE, CLASS_NAME,"deseriallizeInputStreamData", "The input data is null or fewer items than the expected. ");
@@ -4229,7 +4220,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         output.put(INPUT_STREAM_CONTENT_DATA_LENGTH, Integer.valueOf((int)(length & 0xFFFF)));
         int typeLen = bytesToInt(input[OFFSET_CONTENT_TYPE_LEN]);
         if (typeLen > 0) {
-            output.put(INPUT_STREAM_CONTENT_TYPE, new String(input[OFFSET_CONTENT_TYPE_DATA], "UTF-8"));
+            output.put(INPUT_STREAM_CONTENT_TYPE, new String(input[OFFSET_CONTENT_TYPE_DATA], StandardCharsets.UTF_8));
         } else {
             output.put(INPUT_STREAM_CONTENT_TYPE, null);
         }
@@ -4248,13 +4239,13 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
      */
     @SuppressWarnings("rawtypes")
     @Override
-    public long sizeInputStreamData(Map isd) throws UnsupportedEncodingException, IllegalStateException {
+    public long sizeInputStreamData(Map isd) throws IllegalStateException {
         validateInputStreamData(isd);
         // The length of IMPUT_STREAM_CONTENT_TYPE won't exceed Integer.MAX_VALUE
         long size = LENGTH_INT + LENGTH_LONG;
         String type = (String)isd.get(INPUT_STREAM_CONTENT_TYPE);
         if (type != null) {
-            size += type.getBytes("UTF-8").length;
+            size += type.getBytes(StandardCharsets.UTF_8).length;
         } else {
             size +=1; // if the size is zero, one byte data will be used for placeholder.
         }

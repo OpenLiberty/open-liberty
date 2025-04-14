@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,19 +43,18 @@ public final class UtilImpl_ReadBufferFull implements UtilImpl_ReadBuffer {
 
     //
 
-    private final String encoding;
     private final Charset charset;
 
     @Trivial
     public String getEncoding() {
-        return encoding;
+        return charset.name();
     }
 
     //
 
-    public static final String UTF_8 = UtilImpl_WriteBuffer.UTF_8;
+    public static final Charset UTF_8 = UtilImpl_WriteBuffer.UTF_8;
 
-    public UtilImpl_ReadBufferFull(String path, String encoding)
+    public UtilImpl_ReadBufferFull(String path, Charset charset)
         throws IOException {
 
         this.file = new File(path);
@@ -63,8 +62,7 @@ public final class UtilImpl_ReadBufferFull implements UtilImpl_ReadBuffer {
         this.buffer = UtilImpl_FileUtils.readFully(this.file);
         this.bufferFill = this.buffer.length;
 
-        this.encoding = encoding;
-        this.charset = Charset.forName(encoding);
+        this.charset = charset;
 
         this.bufferPos = 0;
         this.bufferAvail = this.bufferFill;

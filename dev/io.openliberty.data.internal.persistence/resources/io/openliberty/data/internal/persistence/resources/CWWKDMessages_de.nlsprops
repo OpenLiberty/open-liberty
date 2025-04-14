@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ CWWKD1004.general.rtrn.err=CWWKD1004E: Der {0} R\u00fcckgabetyp der {1} Methode 
 CWWKD1004.general.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr den Typ der Repository-Methode.
 CWWKD1004.general.rtrn.err.useraction=Eine Liste der g\u00fcltigen R\u00fcckgabetypen f\u00fcr den Typ der Repository-Methode finden Sie in der Javadoc-Information zu Jakarta Data.
 
-CWWKD1005.find.rtrn.err=CWWKD1005E: {0} {1} ist ung\u00fcltig. Die Methode gibt {2} R\u00fcckgabetyp an, der nicht vom {3} konvertierbar ist. Der Ergebnistyp einer Suchoperation muss der Entit\u00e4tstyp, ein Typ einer Entit\u00e4tseigenschaft, ein Java-Datensatz, der aus Entit\u00e4tseigenschaften besteht, oder ein Typ sein, der durch die Abfrage erstellt wurde, die der Abfrageanmerkung bereitgestellt wird. Der R\u00fcckgabetyp der Repository-Suchmethode kann der Ergebnistyp, ein Array des Ergebnistyps oder einer der folgenden Typen sein, die mit dem Ergebnistyp parametrisiert sind: {4}
+CWWKD1005.find.rtrn.err=CWWKD1005E: Die {0} -Methode der {1} -Repository-Schnittstelle ist ung\u00fcltig. Die Methode gibt einen R\u00fcckgabetyp {2} an, der nicht vom Entit\u00e4tstyp {3} konvertierbar ist. Der Ergebnistyp einer Suchoperation muss der Entit\u00e4tstyp, ein Typ eines Entit\u00e4tsattributs, ein Java-Datensatz, der aus Entit\u00e4tsattributen besteht, oder ein Typ sein, der durch die Abfrage erstellt wurde, die der Abfrageanmerkung bereitgestellt wird. Der R\u00fcckgabetyp der Repository-Suchmethode kann der Ergebnistyp, ein Array des Ergebnistyps oder einer der folgenden Typen sein, die mit dem Ergebnistyp parametrisiert sind: {4}.
 CWWKD1005.find.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr Repository-Findmethoden.
 CWWKD1005.find.rtrn.err.useraction=Eine Liste der g\u00fcltigen R\u00fcckgabetypen f\u00fcr Repository-Suchmethoden finden Sie in der Javadoc-Information zu Jakarta Data.
 
@@ -58,33 +58,33 @@ CWWKD1007.updel.rtrn.err=CWWKD1007E: Der {0} R\u00fcckgabetyp der {1} Methode de
 CWWKD1007.updel.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr einen Aktualisierungs- oder L\u00f6schvorgang.
 CWWKD1007.updel.rtrn.err.useraction=Aktualisieren Sie die Repository-Methode, um einen der unterst\u00fctzten R\u00fcckgabetypen zu verwenden.
 
-CWWKD1008.ambig.rtrn.err=CWWKD1008E: {0} {1} {2} ist als R\u00fcckgabetyp nicht eindeutig, da er mehreren Entit\u00e4tseigenschaften entspricht: {3} Die Repository-Methode muss zur Anmerkung "Query" wechseln und eine Abfrage mit einer SELECT-Klausel verwenden, die angibt, welche Entit\u00e4tseigenschaft zur\u00fcckgegeben werden soll.
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: Der R\u00fcckgabetyp {0} der Methode {1} der Repository-Schnittstelle {2} ist als R\u00fcckgabetyp nicht eindeutig, da er mehreren Entit\u00e4tsattributen entspricht: {3}. Die Repository-Methode muss zur Query-Annotation wechseln und eine Abfrage mit einer SELECT-Klausel verwenden, die angibt, welches Entit\u00e4tsattribut zur\u00fcckgegeben werden soll.
 CWWKD1008.ambig.rtrn.err.explanation=Der R\u00fcckgabetyp der Methode geh\u00f6rt nicht zu den unterst\u00fctzten R\u00fcckgabetypen f\u00fcr eine L\u00f6schmethode.
-CWWKD1008.ambig.rtrn.err.useraction=Aktualisieren Sie die Repository-Methode, um die Abfrage-Anmerkung zur Auswahl der Entit\u00e4tseigenschaft zu verwenden.
+CWWKD1008.ambig.rtrn.err.useraction=Aktualisieren Sie die Repository-Methode, um die Query-Annotation zur Auswahl des Entit\u00e4tsattributs zu verwenden.
 
 CWWKD1009.lifecycle.param.err=CWWKD1009E: Die {0}-Methode der {1}-Repository-Schnittstelle kann keine {2}-Parameter haben, da die Methode mit der {3}-Lebenszyklus-Anmerkung versehen ist. Repository-Methoden, die mit einer Lifecycle-Annotation versehen sind, m\u00fcssen genau einen Parameter haben, der die Entit\u00e4t oder ein Array oder eine Liste der Entit\u00e4t sein muss.
 CWWKD1009.lifecycle.param.err.explanation=Lebenszyklusmethoden m\u00fcssen einen einzigen Entit\u00e4tsparameter haben.
 CWWKD1009.lifecycle.param.err.useraction=Aktualisieren Sie die Repository-Methode so, dass sie einen einzigen Parameter hat, der eine Entit\u00e4t oder ein Array von List of the entity ist.
 
-CWWKD1010.unknown.entity.prop=CWWKD1010E: Eine Entit\u00e4tseigenschaft namens {0} wird in der Entit\u00e4tsklasse {1} f\u00fcr die Methode {2} der Repository-Schnittstelle {3} nicht gefunden. G\u00fcltige Eigenschaftsnamen f\u00fcr die Entit\u00e4t sind: {4}.
-CWWKD1010.unknown.entity.prop.explanation=Die Repository-Methode versucht, eine Entit\u00e4tseigenschaft zu verwenden, die nicht vorhanden ist.
-CWWKD1010.unknown.entity.prop.useraction=Aktualisieren Sie die Repository-Methode, damit sie mit einer g\u00fcltigen Eigenschaft \u00fcbereinstimmt, die durch die Entit\u00e4t definiert ist.
+CWWKD1010.unknown.entity.attr=CWWKD1010E: Ein Entit\u00e4tsattribut mit dem Namen {0} wurde nicht in der Entit\u00e4tsklasse {1} f\u00fcr die Methode {2} der Repository-Schnittstelle {3} gefunden. G\u00fcltige Attributnamen f\u00fcr die Entit\u00e4t sind: {4}.
+CWWKD1010.unknown.entity.attr.explanation=Die Repository-Methode versucht, ein nicht vorhandenes Entit\u00e4tsattribut zu verwenden.
+CWWKD1010.unknown.entity.attr.useraction=Aktualisieren Sie die Repository-Methode, um sie an ein g\u00fcltiges Attribut anzupassen, das von der Entit\u00e4t definiert wird.
 
 CWWKD1011.unknown.method.pattern=CWWKD1011E: Die Methode {0} der {1} Repository-Schnittstelle entspricht keinem der von Jakarta Data definierten Muster. Eine Repository-Methode muss entweder Anmerkungen verwenden, eine Ressourcenzugriffsmethode sein oder nach dem Muster Query by Method Name benannt sein. Anmerkungen wie {2} werden zur Definition von Operationen verwendet. Eine Ressourcenzugriffsmethode darf keine Parameter und keinen der {3} R\u00fcckgabetypen enthalten. Das Muster Abfrage nach Methodenname muss mit einem der Schl\u00fcsselw\u00f6rter {4} beginnen, gefolgt von 0 oder mehr Zeichen. Methodennamen k\u00f6nnen auch das Schl\u00fcsselwort By und eine oder mehrere begrenzte Bedingungen enthalten. Beispiele f\u00fcr g\u00fcltige Repository-Methodennamen sind: {5}.
 CWWKD1011.unknown.method.pattern.explanation=Repository-Methoden m\u00fcssen den in Jakarta Data definierten Mustern folgen.
 CWWKD1011.unknown.method.pattern.useraction=Aktualisieren Sie die Repository-Methode, damit sie einem der Muster von Jakarta Data entspricht.
 
-CWWKD1012.fd.missing.param.anno=CWWKD1012E: Der Parameter {0} der Methode {1} der Repository-Schnittstelle {2} stimmt nicht mit einer Entity-Eigenschaft \u00fcberein. Parameter, die nicht mit einer Entit\u00e4tseigenschaft \u00fcbereinstimmen, m\u00fcssen mit der Anmerkung By versehen sein oder einen der speziellen Parametertypen aufweisen: {3}. Um eine Bedingung f\u00fcr die Einschr\u00e4nkung von Abfrageergebnissen zu definieren, muss der Parameter mit der By-Anmerkung versehen werden und der Wert der By-Anmerkung muss dem Namen der Entit\u00e4tseigenschaft zugewiesen werden. Alternativ k\u00f6nnen Sie die Kompilieroption -parameters aktivieren und dem Parameter denselben Namen wie der Entit\u00e4tseigenschaft geben.
-CWWKD1012.fd.missing.param.anno.explanation=Die Parameter der Repository-Such- und L\u00f6schmethoden m\u00fcssen den Entit\u00e4tseigenschaften entsprechen oder spezielle, von Jakarta Data definierte Parametertypen sein.
-CWWKD1012.fd.missing.param.anno.useraction=Aktualisieren Sie die Repository-Methode so, dass alle Parameter den Entit\u00e4tseigenschaften entsprechen oder einen der speziellen Parametertypen von Jakarta Data haben.
+CWWKD1012.fd.missing.param.anno=CWWKD1012E: Der Parameter {0} der Methode {1} der Repository-Schnittstelle {2} stimmt nicht mit einem Entit\u00e4tsattribut \u00fcberein. Parameter, die nicht mit einem Entit\u00e4tsattribut \u00fcbereinstimmen, m\u00fcssen mit der Anmerkung "Von" versehen werden oder einen der speziellen Parametertypen aufweisen: {3}. Um eine Bedingung f\u00fcr die Einschr\u00e4nkung von Abfrageergebnissen zu definieren, muss der Parameter mit der Anmerkung "Nach" versehen werden und der Wert der Anmerkung "Nach" muss dem Namen des Entit\u00e4tsattributs zugewiesen werden. Alternativ k\u00f6nnen Sie die Kompilierungsoption "-parameters" aktivieren und dem Parameter denselben Namen wie dem Entit\u00e4tsattribut geben.
+CWWKD1012.fd.missing.param.anno.explanation=Die Parameter der Methoden zum Suchen und L\u00f6schen von Repositorys m\u00fcssen den Entit\u00e4tsattributen entsprechen oder spezielle, von Jakarta Data definierte Parametertypen sein.
+CWWKD1012.fd.missing.param.anno.useraction=Aktualisieren Sie die Repository-Methode so, dass alle Parameter den Entit\u00e4tsattributen entsprechen oder einen der speziellen Parameter-Typen von Jakarta Data haben.
 
-CWWKD1013.cde.missing.param.anno=CWWKD1013E: Der Parameter {0} der Methode {1} der Repository-Schnittstelle {2} stimmt nicht mit einer Entity-Eigenschaft \u00fcberein. Parameter, die nicht mit einer Entit\u00e4tseigenschaft \u00fcbereinstimmen, m\u00fcssen mit der By-Anmerkung versehen werden, und der Wert der By-Anmerkung muss dem Namen der Entit\u00e4tseigenschaft zugewiesen werden. Alternativ k\u00f6nnen Sie die Kompilieroption -parameters aktivieren und dem Parameter denselben Namen wie der Entit\u00e4tseigenschaft geben.
-CWWKD1013.cde.missing.param.anno.explanation=Die Parameter der Repository-Methoden count, delete und exists m\u00fcssen den Entit\u00e4tseigenschaften entsprechen.
-CWWKD1013.cde.missing.param.anno.useraction=Aktualisieren Sie die Repository-Methode so, dass alle Parameter den Entit\u00e4tseigenschaften entsprechen.
+CWWKD1013.cde.missing.param.anno=CWWKD1013E: Der Parameter {0} der Methode {1} der Repository-Schnittstelle {2} stimmt nicht mit einem Entit\u00e4tsattribut \u00fcberein. Parameter, die nicht mit einem Entit\u00e4tsattribut \u00fcbereinstimmen, m\u00fcssen mit der Anmerkung "Von" versehen werden, und der Anmerkungswert "Von" muss dem Namen des Entit\u00e4tsattributs zugewiesen werden. Alternativ k\u00f6nnen Sie die Kompilierungsoption "-parameters" aktivieren und dem Parameter denselben Namen wie dem Entit\u00e4tsattribut geben.
+CWWKD1013.cde.missing.param.anno.explanation=Die Parameter der Methoden zum Z\u00e4hlen, L\u00f6schen und Vorhandensein von Repositorys m\u00fcssen den Entit\u00e4tsattributen entsprechen.
+CWWKD1013.cde.missing.param.anno.useraction=Aktualisieren Sie die Repository-Methode so, dass alle Parameter den Entit\u00e4tsattributen entsprechen.
 
-CWWKD1014.upd.missing.param.anno=CWWKD1014E: Der Parameter {0} der Methode {1} der Repository-Schnittstelle {2} stimmt nicht mit einer Entity-Eigenschaft \u00fcberein. Parameter, die nicht mit einer Entit\u00e4tseigenschaft \u00fcbereinstimmen, m\u00fcssen eine der Parameterannotationen haben: {3}. Um eine Bedingung f\u00fcr die Einschr\u00e4nkung von Abfrageergebnissen zu definieren, muss der Parameter mit der Anmerkung By versehen werden und der Wert der Anmerkung By muss dem Namen der Entit\u00e4tseigenschaft zugewiesen werden. Alternativ k\u00f6nnen Sie die Kompilieroption -parameters aktivieren und dem Parameter denselben Namen wie der Entit\u00e4tseigenschaft geben.
-CWWKD1014.upd.missing.param.anno.explanation=Die Parameter der Repository-Aktualisierungsmethoden m\u00fcssen den Entit\u00e4tseigenschaften entsprechen.
-CWWKD1014.upd.missing.param.anno.useraction=Aktualisieren Sie die Repository-Methode so, dass alle Parameter den Entit\u00e4tseigenschaften entsprechen.
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: Der Parameter {0} der Methode {1} der Repository-Schnittstelle {2} stimmt nicht mit einem Entit\u00e4tsattribut \u00fcberein. Parameter, die nicht mit einem Entit\u00e4tsattribut \u00fcbereinstimmen, m\u00fcssen eine der folgenden Parameteranmerkungen aufweisen: {3}. Um eine Bedingung f\u00fcr die Einschr\u00e4nkung von Abfrageergebnissen zu definieren, muss der Parameter mit der Anmerkung "Nach" versehen werden und der Anmerkungswert "Nach" muss dem Namen des Entit\u00e4tsattributs zugewiesen werden. Alternativ k\u00f6nnen Sie die Kompilierungsoption "-parameters" aktivieren und dem Parameter denselben Namen wie dem Entit\u00e4tsattribut geben.
+CWWKD1014.upd.missing.param.anno.explanation=Die Parameter der Methoden zur Aktualisierung des Repositorys m\u00fcssen den Entit\u00e4tsattributen entsprechen.
+CWWKD1014.upd.missing.param.anno.useraction=Aktualisieren Sie die Repository-Methode so, dass alle Parameter den Entit\u00e4tsattributen entsprechen.
 
 CWWKD1015.null.entity.param=CWWKD1015E: Die {0} Methode der {1} Repository-Schnittstelle kann keine Null-Entit\u00e4t akzeptieren.
 CWWKD1015.null.entity.param.explanation=Lebenszyklusmethoden erfordern eine Entit\u00e4tsinstanz, die nicht null ist.
@@ -123,21 +123,21 @@ CWWKD1023.extra.param=CWWKD1023E: Die Abfragebedingungen der {0} -Methode der {1
 CWWKD1023.extra.param.explanation=Abfragebedingungen, die Vergleiche von Werten definieren, erfordern eine entsprechende Anzahl von Repository-Methodenparametern, um die Werte zu liefern. Zus\u00e4tzliche Parameter sind nicht erlaubt.
 CWWKD1023.extra.param.useraction=Aktualisieren Sie die Signatur der Repository-Methode, um zus\u00e4tzliche Parameter zu entfernen, die nicht den angegebenen Bedingungen entsprechen.
 
-CWWKD1024.missing.entity.prop=CWWKD1024E: Der {0}-Methode der {1}-Repository-Schnittstelle fehlt ein Entit\u00e4tseigenschaftsname oder wurde mit einem Parameter \u00fcbergeben, dem ein Entit\u00e4tseigenschaftsname fehlt. G\u00fcltige Eigenschaftsnamen f\u00fcr die Entit\u00e4tsklasse {2} sind: {3}.
-CWWKD1024.missing.entity.prop.explanation=Die Abfragebedingungen und Sortierkriterien f\u00fcr eine Repository-Methode m\u00fcssen einen Entit\u00e4tseigenschaftsnamen enthalten.
-CWWKD1024.missing.entity.prop.useraction=\u00dcberpr\u00fcfen Sie die Deklaration und Verwendung der Repository-Methode, um sicherzustellen, dass f\u00fcr jede Abfragebedingung und jedes Sortierkriterium ein Entit\u00e4tseigenschaftsname angegeben wird.
+CWWKD1024.missing.entity.attr=CWWKD1024E: Bei der {0} -Methode der {1} -Repository-Schnittstelle fehlt ein Entit\u00e4tsattributname oder es wurde ein Parameter mit einem fehlenden Entit\u00e4tsattributnamen bereitgestellt. G\u00fcltige Attributnamen f\u00fcr die Entit\u00e4tsklasse {2} sind: {3}.
+CWWKD1024.missing.entity.attr.explanation=Die Abfragebedingungen und Sortierkriterien f\u00fcr eine Repository-Methode m\u00fcssen einen Entit\u00e4tsattributnamen enthalten.
+CWWKD1024.missing.entity.attr.useraction=\u00dcberpr\u00fcfen Sie die Deklaration und Verwendung der Repository-Methode, um sicherzustellen, dass f\u00fcr jede Abfragebedingung und jedes Sortierkriterium ein Entit\u00e4tsattributname angegeben wird.
 
-CWWKD1025.missing.id.prop=CWWKD1025E: Die {0} Entit\u00e4tsklasse, die von der {1} Methode der {2} Repository-Schnittstelle verwendet wird, hat keine ID-Eigenschaft oder Accessor-Methode.
-CWWKD1025.missing.id.prop.explanation=Repository-Methoden, die eine Entit\u00e4t l\u00f6schen und zur\u00fcckgeben, m\u00fcssen eine ID-Eigenschaft haben.
-CWWKD1025.missing.id.prop.useraction=Wenn die Entit\u00e4t keine einzelne Eigenschaft f\u00fcr die ID hat, definieren Sie separate Repository-Methoden, die nach der Entit\u00e4t suchen und die Entit\u00e4t l\u00f6schen.
+CWWKD1025.missing.id.attr=CWWKD1025E: Die Entit\u00e4tsklasse {0}, die von der Methode {1} der Repository-Schnittstelle {2} verwendet wird, hat kein ID-Attribut.
+CWWKD1025.missing.id.attr.explanation=Repository-Methoden, die eine Entit\u00e4t l\u00f6schen und zur\u00fcckgeben, m\u00fcssen \u00fcber ein ID-Attribut verf\u00fcgen.
+CWWKD1025.missing.id.attr.useraction=Wenn die Entit\u00e4t nicht \u00fcber ein einzelnes Attribut f\u00fcr die ID verf\u00fcgt, definieren Sie separate Repository-Methoden, die die Entit\u00e4t abfragen und l\u00f6schen.
 
-CWWKD1026.ignore.case.not.text=CWWKD1026E: Die {0}-Eigenschaft der {1}-Entit\u00e4t ist kein Zeichen oder eine Zeichenfolge; daher darf das {2}-Sortierkriterium nicht angeben, dass Gro\u00df- und Kleinschreibung ignoriert wird. Der Typ der Eigenschaft ist {3}, und sie wurde der Methode {4} der {5} Repository-Schnittstelle \u00fcbergeben.
-CWWKD1026.ignore.case.not.text.explanation=Das Sortieren ohne Ber\u00fccksichtigung der Gro\u00df-/Kleinschreibung ist nur bei Entit\u00e4tseigenschaften m\u00f6glich, die Text darstellen.
-CWWKD1026.ignore.case.not.text.useraction=Stellen Sie sicher, dass das Sortierkriterium auf die richtige Entit\u00e4tseigenschaft angewendet wird, und entfernen Sie die Anweisung, Gro\u00df- und Kleinschreibung zu ignorieren, wenn die Entit\u00e4tseigenschaft keinen Text darstellt.
+CWWKD1026.ignore.case.not.text=CWWKD1026E: Das Attribut {0} der Entit\u00e4t {1} ist kein Zeichen oder eine Zeichenfolge; daher darf das Sortierkriterium {2} nicht angeben, dass die Gro\u00df-/Kleinschreibung ignoriert werden soll. Der Typ des Attributs ist {3} und es wurde der {4} -Methode der {5} -Repository-Schnittstelle bereitgestellt.
+CWWKD1026.ignore.case.not.text.explanation=Das Sortieren mit ignoriertem Fall ist nur bei Entit\u00e4tsattributen m\u00f6glich, die Text darstellen.
+CWWKD1026.ignore.case.not.text.useraction=Stellen Sie sicher, dass das Sortierkriterium auf das richtige Entit\u00e4tsattribut angewendet wird, und entfernen Sie die Anweisung, die Gro\u00df-/Kleinschreibung zu ignorieren, wenn das Entit\u00e4tsattribut keinen Text darstellt.
 
-CWWKD1027.anno.missing.prop.name=CWWKD1027E: Der Parameter {0} der Methode {1} der {2} Repository-Schnittstelle ist mit einer {3}-Anmerkung versehen, die keinen Namen einer Entit\u00e4tseigenschaft als Wert angibt. Die Anmerkung muss entweder den Namen der Entit\u00e4tseigenschaft als Wert angeben, oder die Kompilieroption -parameters muss aktiviert sein und der Parameter muss denselben Namen wie die Entit\u00e4tseigenschaft haben.
-CWWKD1027.anno.missing.prop.name.explanation=Die Parameter der Repository-Aktualisierungsmethoden m\u00fcssen den Entit\u00e4tseigenschaften entsprechen.
-CWWKD1027.anno.missing.prop.name.useraction=Aktualisieren Sie die Repository-Methode, um die Entit\u00e4tseigenschaft anzugeben, auf die sich der Parameter bezieht.
+CWWKD1027.anno.missing.attr.name=CWWKD1027E: Der Parameter {0} der Methode {1} der Repository-Schnittstelle {2} ist mit einer {3} -Anmerkung versehen, die keinen Entit\u00e4tsattributnamen als Wert angibt. Die Anmerkung muss entweder den Namen des Entit\u00e4tsattributs als Wert angeben oder die Kompilierungsoption -parameters muss aktiviert sein und der Parameter muss denselben Namen wie das Entit\u00e4tsattribut haben.
+CWWKD1027.anno.missing.attr.name.explanation=Die Parameter der Methoden zur Aktualisierung des Repositorys m\u00fcssen den Entit\u00e4tsattributen entsprechen.
+CWWKD1027.anno.missing.attr.name.useraction=Aktualisieren Sie die Repository-Methode, um das Entit\u00e4tsattribut anzugeben, auf das sich der Parameter bezieht.
 
 CWWKD1028.first.exceeds.max=CWWKD1028E: Die {0}-Methode der {1}-Repository-Schnittstelle fordert die ersten {2}-Ergebnisse an, was die maximal zul\u00e4ssige Anzahl von Ergebnissen \u00fcberschreitet: {3}.
 CWWKD1028.first.exceeds.max.explanation=Die maximale Anzahl von Abfrageergebnissen ist durch Systemeinschr\u00e4nkungen und den angegebenen Wert begrenzt.
@@ -227,7 +227,7 @@ CWWKD1049.count.convert.err=CWWKD1049E: Der Z\u00e4hlwert {0} aus der Methode {1
 CWWKD1049.count.convert.err.explanation=Der Z\u00e4hlwert ist nicht mit dem R\u00fcckgabetyp der Repository-Methode kompatibel.
 CWWKD1049.count.convert.err.useraction=Passen Sie den R\u00fcckgabetyp der Repository-Methode an, damit der Wert zur\u00fcckgegeben werden kann.
 
-CWWKD1050.opt.lock.exc=CWWKD1050E: Die {0} der {1} hat keine {2} gefunden, die den Entit\u00e4tseigenschaften entspricht: {3}. \u00dcberpr\u00fcfen Sie, ob die Entit\u00e4tsinstanz, die der Methode {0} \u00fcbergeben wird, auf der neuesten Version der Entit\u00e4t basiert. Die aktuellste Version der Entit\u00e4t kann durch eine Find-Methode oder durch den Ergebniswert einer der folgenden Lifecycle-Methoden ermittelt werden: {4}.
+CWWKD1050.opt.lock.exc=CWWKD1050E: Die {0} -Methode der {1} -Repository-Schnittstelle hat keine {2} -Entit\u00e4t gefunden, die mit den Entit\u00e4tsattributen \u00fcbereinstimmt: {3}. \u00dcberpr\u00fcfen Sie, ob die Entit\u00e4tsinstanz, die der {0} -Methode bereitgestellt wird, auf der neuesten Version der Entit\u00e4t basiert. Die neueste Version der Entit\u00e4t kann \u00fcber eine Suchmethode oder den Ergebniswert einer der folgenden Lebenszyklusmethoden abgerufen werden: {4}.
 CWWKD1050.opt.lock.exc.explanation=Eine passende Entit\u00e4t wurde nicht gefunden.
 CWWKD1050.opt.lock.exc.useraction=Wenn zu erwarten ist, dass die Entit\u00e4t nicht in der Datenbank gefunden wird, sind keine Ma\u00dfnahmen erforderlich. Andernfalls m\u00fcssen Sie sicherstellen, dass die neueste Version der Entit\u00e4t verwendet wird.
 
@@ -247,9 +247,9 @@ CWWKD1054.non.unique.result=CWWKD1054E: Die {0} der {1} hat den {2}, der nicht i
 CWWKD1054.non.unique.result.explanation=Der R\u00fcckgabetyp der Repository-Methode erlaubt es nicht, mehrere Ergebnisse zur\u00fcckzugeben.
 CWWKD1054.non.unique.result.useraction=Aktualisieren Sie die Repository-Methode, um entweder einen R\u00fcckgabetyp zu verwenden, der mehrere Ergebnisse unterst\u00fctzt, oder aktualisieren Sie die Repository-Methode, um nicht mehr als ein einziges Ergebnis zur\u00fcckzugeben.
 
-CWWKD1055.unsupported.entity.prop=CWWKD1055E: Die Eigenschaft {0} der Entit\u00e4t {1} hat einen nicht unterst\u00fctzten Typ: {2}. Jakarta Data unterst\u00fctzt Java Aufz\u00e4hlungstypen, die {3} temporalen Typen und die folgenden Basistypen: {4}. Der eingebaute Jakarta Data Provider unterst\u00fctzt auch einige Jakarta Persistence-Typen, wie z.B. Embeddables.
-CWWKD1055.unsupported.entity.prop.explanation=Jakarta Data unterst\u00fctzt den von der Entit\u00e4tseigenschaft verwendeten Typ nicht.
-CWWKD1055.unsupported.entity.prop.useraction=Aktualisieren Sie die Entit\u00e4tseigenschaft, um einen der unterst\u00fctzten Typen zu verwenden.
+CWWKD1055.unsupported.entity.attr=CWWKD1055E: Das Attribut " {0} " der Entit\u00e4t " {1} " hat einen nicht unterst\u00fctzten Typ: " {2} ". Jakarta Data unterst\u00fctzt Java-Aufz\u00e4hlungstypen, die temporalen Typen {3} und die folgenden Basistypen: {4}. Der integrierte Jakarta-Datenprovider unterst\u00fctzt auch einige Jakarta-Persistenztypen, wie z. B. Einbettungen.
+CWWKD1055.unsupported.entity.attr.explanation=Jakarta Data unterst\u00fctzt den vom Entit\u00e4tsattribut verwendeten Typ nicht.
+CWWKD1055.unsupported.entity.attr.useraction=Aktualisieren Sie das Entit\u00e4tsattribut, um einen der unterst\u00fctzten Typen zu verwenden.
 
 CWWKD1056.unsupported.keyword=CWWKD1056E: Die Methode {0} der Repository-Schnittstelle {1} hat einen Namen, der das Schl\u00fcsselwort {2} enth\u00e4lt, das kein unterst\u00fctztes Schl\u00fcsselwort des Musters Jakarta Data Query by Method Name ist.
 CWWKD1056.unsupported.keyword.explanation=Der Methodenname enth\u00e4lt ein Schl\u00fcsselwort, das nicht als Teil des unterst\u00fctzten Jakarta Data Query by Method Name-Musters erkannt wird.
@@ -263,9 +263,9 @@ CWWKD1058.no.args.constr.err=CWWKD1058E: Der {0} R\u00fcckgabetyp der {1} Method
 CWWKD1058.no.args.constr.err.explanation=Der \u00f6ffentliche Konstruktor ohne Parameter ist aufgrund eines Fehlers fehlgeschlagen.
 CWWKD1058.no.args.constr.err.useraction=Beheben Sie den Fehler im Konstruktor, oder aktualisieren Sie die Repository-Methode, um einen anderen R\u00fcckgabetyp zu verwenden.
 
-CWWKD1059.prop.cast.err=CWWKD1059E: Die {0} Methode der {1} Repository-Schnittstelle kann nicht auf die {2} Eigenschaft der {3} Entit\u00e4t zugreifen, da das {4} Feld oder die Methode der {5} Klasse mit einem {6} Wert nicht kompatibel ist.
-CWWKD1059.prop.cast.err.explanation=Eine Entit\u00e4tseigenschaft oder eine verwandte Eigenschaft aus ihrer Hierarchie ist nicht mit dem erwarteten Typ kompatibel.
-CWWKD1059.prop.cast.err.useraction=\u00dcberpr\u00fcfen Sie das Entit\u00e4tsmodell und stellen Sie sicher, dass die richtigen Typen f\u00fcr jede Eigenschaft verwendet werden.
+CWWKD1059.attr.cast.err=CWWKD1059E: Die {0} -Methode der {1} -Repository-Schnittstelle kann nicht auf das {2} -Attribut der {3} -Entit\u00e4t zugreifen, da das {4} -Feld oder die {5} -Methode der -Klasse nicht mit einem {6} -Wert kompatibel ist.
+CWWKD1059.attr.cast.err.explanation=Ein Entit\u00e4tsattribut oder ein zugeh\u00f6riges Attribut aus seiner Hierarchie ist nicht mit dem erwarteten Typ kompatibel.
+CWWKD1059.attr.cast.err.useraction=\u00dcberpr\u00fcfen Sie das Entit\u00e4tsmodell und stellen Sie sicher, dass f\u00fcr jedes Attribut die richtigen Typen verwendet werden.
 
 CWWKD1060.name.out.of.scope=CWWKD1060E: Die {0} Repository-Schnittstelle in der {1} Anwendung konfiguriert einen {2} Wert f\u00fcr das {3} Attribut, aber {3} Namen sind f\u00fcr das Artefakt, das die Repository-Schnittstelle bereitstellt, nicht zug\u00e4nglich. Verwenden Sie stattdessen einen {4}.
 CWWKD1060.name.out.of.scope.explanation=Der angegebene Namespace ist von dem Artefakt, in dem die Repository-Schnittstelle definiert ist, nicht zug\u00e4nglich.
@@ -315,8 +315,8 @@ CWWKD1071.record.with.type.var=CWWKD1071E: Der {0} wird von einer oder mehreren 
 CWWKD1071.record.with.type.var.explanation=Entit\u00e4tsklassen k\u00f6nnen keine generischen Typvariablen haben.
 CWWKD1071.record.with.type.var.useraction=Entfernen Sie die Typvariablen aus dem Datensatz.
 
-CWWKD1072.record.comp.conflict=CWWKD1072E: Der {0} wird von einer oder mehreren der Repository-Schnittstellen{1}) im {2} als Entit\u00e4t verwendet, aber der Datensatz kann keine Entit\u00e4t sein, weil seine {3} und {4} beide auf denselben Entit\u00e4tseigenschaftsnamen aufgel\u00f6st werden.
-CWWKD1072.record.comp.conflict.explanation=Die Namen der Entit\u00e4tseigenschaften m\u00fcssen eindeutig sein und Gro\u00df- und Kleinschreibung ignorieren.
+CWWKD1072.record.comp.conflict=CWWKD1072E: Der Datensatz " {0} " wird von einer oder mehreren Repository-Schnittstellen ( {1} ) im Anwendungsartefakt " {2} " als Entit\u00e4t verwendet, aber der Datensatz kann keine Entit\u00e4t sein, da seine {3} -Komponente und {4} -Komponente beide auf denselben Entit\u00e4tsattributnamen verweisen.
+CWWKD1072.record.comp.conflict.explanation=Die Namen der Entit\u00e4tsattribute m\u00fcssen eindeutig sein, wobei die Gro\u00df-/Kleinschreibung ignoriert wird.
 CWWKD1072.record.comp.conflict.useraction=Benennen Sie eine der Datensatzkomponenten um, um den Konflikt zu vermeiden.
 
 CWWKD1073.offset.exceeds.max=CWWKD1073E: Der {0} Startpunkt des {1} Limits, das an die {2} Methode der {3} Repository-Schnittstelle geliefert wird, \u00fcberschreitet den maximal zul\u00e4ssigen Wert von {4}.
@@ -327,9 +327,9 @@ CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: Die {0} der {1} darf das {2} nicht 
 CWWKD1074.qbmn.incompat.keywords.explanation=Die angegebenen Schl\u00fcsselw\u00f6rter Query by Method Name sind nicht miteinander kompatibel.
 CWWKD1074.qbmn.incompat.keywords.useraction=Benennen Sie die Methode um, damit die Schl\u00fcsselw\u00f6rter nicht mit der gleichen Bedingung kombiniert werden.
 
-CWWKD1075.entity.prop.conflict=CWWKD1075E: Die Entit\u00e4t {0} kann keine Eigenschaft mit dem Namen {1} und eine Eigenschaft mit dem Namen {2} haben, da die Jakarta-Data-Spezifikation diese Namen als Aliasnamen f\u00fcr dieselbe Entit\u00e4tseigenschaft betrachtet.
-CWWKD1075.entity.prop.conflict.explanation=Es gibt eine Kollision zwischen den Namen von zwei Entit\u00e4tseigenschaften aufgrund des Unterstrichs.
-CWWKD1075.entity.prop.conflict.useraction=Verwenden Sie keine Unterstriche in Namen von Entit\u00e4tseigenschaften.
+CWWKD1075.entity.attr.conflict=CWWKD1075E: Die Entit\u00e4t {0} kann nicht \u00fcber ein Attribut mit dem Namen {1} und ein Attribut mit dem Namen {2} verf\u00fcgen, da diese Namen in der Jakarta-Datenspezifikation als Aliasnamen f\u00fcr dasselbe Entit\u00e4tsattribut gelten.
+CWWKD1075.entity.attr.conflict.explanation=Aufgrund des Unterstrichs kommt es zu einer Kollision zwischen den Namen zweier Entit\u00e4tsattribute.
+CWWKD1075.entity.attr.conflict.useraction=Verwenden Sie in Namen von Entit\u00e4tsattributen keinen Unterstrich.
 
 CWWKD1076.repo.disposed=CWWKD1076E: Die Methode {0} der Repository-Schnittstelle {1} kann nicht aufgerufen werden, da die Anwendung, die das Repository definiert, angehalten wurde. Die Repository-Instanz ist {2}.
 CWWKD1076.repo.disposed.explanation=Repository-Methoden d\u00fcrfen nicht au\u00dferhalb des Lebenszyklus der Anwendung, die das Repository definiert, verwendet werden.
@@ -393,7 +393,7 @@ CWWKD1090.orderby.conflict=CWWKD1090E: Die Methode {0} der Repository-Schnittste
 CWWKD1090.orderby.conflict.explanation=Die Annotation OrderBy ist nicht mit dem Schl\u00fcsselwort OrderBy kompatibel.
 CWWKD1090.orderby.conflict.useraction=Verwenden Sie nur die OrderBy oder das Schl\u00fcsselwort OrderBy.
 
-CWWKD1091.method.name.parse.err=CWWKD1091E: Eine Entit\u00e4tseigenschaft namens {0} wird in der Entit\u00e4tsklasse {1} f\u00fcr die Methode {2} der Repository-Schnittstelle {3} nicht gefunden. Best\u00e4tigen Sie, dass die Repository-Methode entweder einen Namen hat, der dem Muster "Query by Method Name" entspricht, oder mit einem der folgenden Vermerke versehen ist: {4}. G\u00fcltige Eigenschaftsnamen f\u00fcr die Entit\u00e4t sind: {5}.
+CWWKD1091.method.name.parse.err=CWWKD1091E: Ein Entit\u00e4tsattribut mit dem Namen {0} wurde nicht in der Entit\u00e4tsklasse {1} f\u00fcr die Methode {2} der Repository-Schnittstelle {3} gefunden. Vergewissern Sie sich, dass die Repository-Methode entweder einen Namen hat, der dem Muster "Abfrage nach Methodenname" entspricht, oder mit einem der folgenden Elemente versehen ist: {4}. G\u00fcltige Attributnamen f\u00fcr die Entit\u00e4t sind: {5}.
 CWWKD1091.method.name.parse.err.explanation=Der Name der Repository-Methode wurde nach dem Muster Abfrage nach Methodenname geparst, da die Repository-Methode keine Jakarta Data-Annotation hat, die den Typ der Operation angibt.
 CWWKD1091.method.name.parse.err.useraction=Korrigieren Sie den Namen der Repository-Methode oder versehen Sie die Repository-Methode mit einem Hinweis auf eine Jakarta Data-Operation wie Abfrage, Suchen oder Speichern.
 
@@ -402,8 +402,8 @@ CWWKD1092.lifecycle.arg.empty.explanation=Methoden Einf\u00fcgen, Aktualisieren,
  require mindestens eine Entit\u00e4t.
 CWWKD1092.lifecycle.arg.empty.useraction=Stellen Sie sicher, dass das Array, die Liste oder der Stream, das/die der Methode \u00fcbergeben wird, mindestens eine Entit\u00e4t enth\u00e4lt.
 
-CWWKD1093.fn.not.applicable=CWWKD1093E: Die Funktion {0} kann nicht f\u00fcr die Entit\u00e4t {1} ausgewertet werden, die von der Methode {2} der Repository-Schnittstelle {3} verwendet wird. Die Entit\u00e4t hat keine Eigenschaft, die mit {4} vermerkt ist oder aus der {0} abgeleitet werden kann.
-CWWKD1093.fn.not.applicable.explanation=Die Funktion kann nicht auf die Entit\u00e4t angewendet werden, da der Entit\u00e4t eine ID- oder Versions-Eigenschaft fehlt.
+CWWKD1093.fn.not.applicable=CWWKD1093E: Die Funktion {0} kann nicht f\u00fcr die Entit\u00e4t {1} ausgewertet werden, die von der Methode {2} der Repository-Schnittstelle {3} verwendet wird. Die Entit\u00e4t hat kein Attribut, das mit {4} annotiert ist oder aus dem {0} abgeleitet werden kann.
+CWWKD1093.fn.not.applicable.explanation=Die Funktion kann nicht auf die Entit\u00e4t angewendet werden, da der Entit\u00e4t eine ID oder ein Versionsattribut fehlt.
 CWWKD1093.fn.not.applicable.useraction=Verwenden Sie die Funktion nicht in der Abfragesprache oder in den Parametern f\u00fcr die Repository-Methode.
 
 CWWKD1094.return.mismatch=CWWKD1094E: Die Methode {0} der Repository-Schnittstelle {1} hat den R\u00fcckgabetyp {2}, der nicht in der Lage ist, die Anzahl der Entit\u00e4ten {3} zur\u00fcckzugeben, die die Repository-Methode als Parameter akzeptiert. G\u00fcltige R\u00fcckgabetypen f\u00fcr eine {4}, die mehrere Entit\u00e4ten akzeptiert, sind unter anderem: {5}.
@@ -433,3 +433,23 @@ CWWKD1099.first.keyword.incompat.useraction=Entfernen Sie das erste Schl\u00fcss
 CWWKD1100.cursor.requires.sort=CWWKD1100E: {0} {1} gibt {2} zur\u00fcck, verf\u00fcgt jedoch nicht \u00fcber OrderBy oder einen der folgenden Parameter zur Angabe von Sortierkriterien: {3} Sortierkriterien sind f\u00fcr die cursorbasierte Seitennummerierung erforderlich und k\u00f6nnen nicht innerhalb einer ORDER BY-Klausel eines Anmerkungswerts f\u00fcr eine Abfrage angegeben werden.
 CWWKD1100.cursor.requires.sort.explanation=Die seitenbasierte Paginierung erfordert Sortierkriterien.
 CWWKD1100.cursor.requires.sort.useraction=Entfernen Sie die "ORDER BY"-Klausel aus dem Wert der Anmerkungsabfrage, falls eine vorhanden ist. F\u00fcgen Sie OrderBy oder einen Repository-Methodenparameter hinzu, um die Sortierkriterien anzugeben.
+
+CWWKD1101.attr.subset.mismatch=CWWKD1101E: Der R\u00fcckgabetyp {0} der Methode {1} des Repositorys {2} verwendet den Java-Datensatztyp {3}, um die Ergebnisse als Teilmenge von Entit\u00e4tsattributen zu definieren: {4}. Allerdings ist mindestens einer der angeforderten Attributnamen nicht in der {5} -Entit\u00e4t vorhanden. Um eine Teilmenge von Entit\u00e4tsattributen als Java-Datensatz zur\u00fcckzugeben, stellen Sie sicher, dass die Namen der Datensatzkomponenten innerhalb der folgenden Menge g\u00fcltiger Attributnamen f\u00fcr die Entit\u00e4t {5} liegen: {6}. Alternativ k\u00f6nnen Sie die Anmerkung "Ausw\u00e4hlen" verwenden, um g\u00fcltige Entit\u00e4tsattributnamen zuzuweisen. Um ein einzelnes Entit\u00e4tsattribut mit einem Java-Datensatztyp zur\u00fcckzugeben, versehen Sie die {1} -Methode mit einer Select-Annotation und weisen Sie ihren Mitgliedswert dem Namen des Entit\u00e4tsattributs zu.
+CWWKD1101.attr.subset.mismatch.explanation=Wenn Java-Datens\u00e4tze verwendet werden, um eine Teilmenge von Entit\u00e4tsattributen abzurufen, m\u00fcssen alle Datensatzkomponenten g\u00fcltigen Entit\u00e4tsattributen entsprechen.
+CWWKD1101.attr.subset.mismatch.useraction=Benennen Sie die Datensatzkomponenten so um, dass sie mit g\u00fcltigen Entit\u00e4tsattributnamen \u00fcbereinstimmen, oder verwenden Sie die Anmerkung "Ausw\u00e4hlen", um Entit\u00e4tsattribute explizit anhand ihres Namens anzufordern.
+
+CWWKD1102.incompat.query.result=CWWKD1102E: Die {0} -Methode des {1} -Repository hat den R\u00fcckgabetyp {2}, aber der Jakarta-Persistenzanbieter hat eine Abfrage mit Ergebnissen vom Typ {3} durchgef\u00fchrt. \u00dcberpr\u00fcfen Sie, ob der Jakarta Persistence Provider die Abfrage der Entit\u00e4tstypen zul\u00e4sst, die von der {0} -Methode ausgew\u00e4hlt werden. \u00dcberpr\u00fcfen Sie, ob andere Ursachen f\u00fcr die Inkompatibilit\u00e4t vorliegen, wenn der Anbieter in Jakarta die Abfrage der Entit\u00e4tstypen zul\u00e4sst, die von der {0} -Methode ausgew\u00e4hlt werden.
+CWWKD1102.incompat.query.result.explanation=Jakarta Persistence-Anbieter erlauben nicht die R\u00fcckgabe aller Arten von Entit\u00e4tsattributen. Wenn der Anbieter in Jakarta die Art von Entit\u00e4tsattributen zur\u00fcckgibt, die die ausgew\u00e4hlte Methode erfordert, liegt eine andere Ursache f\u00fcr die Inkompatibilit\u00e4t vor. Zum Beispiel k\u00f6nnte der Jakarta-Persistence-Anbieter einen Fehler aufweisen oder die Signatur der Repository-Methode k\u00f6nnte fehlerhaft sein.
+CWWKD1102.incompat.query.result.useraction=Wenn die Art der Entit\u00e4tsattribute, die die Methode ausw\u00e4hlt, nicht zul\u00e4ssig ist, \u00e4ndern Sie die Abfrage, um die gesamte Entit\u00e4t oder eine andere Gruppe von Entit\u00e4tsattributen abzurufen, die der Jakarta-Persistenzanbieter zul\u00e4sst. Wenn die Art der Entit\u00e4tsattribute, die die Methode ausw\u00e4hlt, zul\u00e4ssig ist, \u00fcberpr\u00fcfen Sie, ob andere Ursachen f\u00fcr die Inkompatibilit\u00e4t vorliegen.
+
+CWWKD1103.incompat.query.result=CWWKD1103E: Die {0} -Methode des {1} -Repository hat den R\u00fcckgabetyp {2}, aber der Jakarta-Persistenzanbieter hat eine {3} -Abfrage mit Ergebnissen vom Typ {4} durchgef\u00fchrt. \u00dcberpr\u00fcfen Sie, ob der Jakarta Persistence Provider die Abfrage der Entit\u00e4tstypen zul\u00e4sst, die von der {0} -Methode ausgew\u00e4hlt werden. \u00dcberpr\u00fcfen Sie, ob andere Ursachen f\u00fcr die Inkompatibilit\u00e4t vorliegen, wenn der Anbieter in Jakarta die Abfrage der Entit\u00e4tstypen zul\u00e4sst, die von der {0} -Methode ausgew\u00e4hlt werden.
+CWWKD1103.incompat.query.result.explanation=Jakarta Persistence-Anbieter erlauben nicht die R\u00fcckgabe aller Arten von Entit\u00e4tsattributen. Wenn der Anbieter in Jakarta die Art von Entit\u00e4tsattributen zur\u00fcckgibt, die die ausgew\u00e4hlte Methode erfordert, liegt eine andere Ursache f\u00fcr die Inkompatibilit\u00e4t vor. Zum Beispiel k\u00f6nnte der Jakarta-Persistence-Anbieter einen Fehler aufweisen oder die Signatur der Repository-Methode k\u00f6nnte fehlerhaft sein.
+CWWKD1103.incompat.query.result.useraction=Wenn die Art der Entit\u00e4tsattribute, die die Methode ausw\u00e4hlt, nicht zul\u00e4ssig ist, \u00e4ndern Sie die Abfrage, um die gesamte Entit\u00e4t oder eine andere Gruppe von Entit\u00e4tsattributen abzurufen, die der Jakarta-Persistenzanbieter zul\u00e4sst. Wenn die Art der Entit\u00e4tsattribute, die die Methode ausw\u00e4hlt, zul\u00e4ssig ist, \u00fcberpr\u00fcfen Sie, ob andere Ursachen f\u00fcr die Inkompatibilit\u00e4t vorliegen.
+
+CWWKD1104.empty.anno.value=CWWKD1104E: Der leere Wert f\u00fcr die String-Klasse ist kein g\u00fcltiger Wert f\u00fcr die {0} -Anmerkung, die f\u00fcr die {1} -Methode des {2} -Repositorys verwendet wird.
+CWWKD1104.empty.anno.value.explanation=Der leere Wert f\u00fcr die Klasse String ist kein unterst\u00fctzter Wert. Welcher Wert unterst\u00fctzt wird, h\u00e4ngt von der Art der Anmerkung ab. Handelt es sich bei der Anmerkung beispielsweise um eine Param-Anmerkung, dann sind die benannten Parameternamen, die im Abfrage-Anmerkungswert verwendet werden, g\u00fcltige Werte.
+CWWKD1104.empty.anno.value.useraction=Wenn der Vermerk nicht ben\u00f6tigt wird, entfernen Sie ihn aus der Repository-Methode. Andernfalls geben Sie einen g\u00fcltigen Wert f\u00fcr die Bemerkung an.
+
+CWWKD1105.keyword.in.orderby=CWWKD1105E: Die OrderBy -Klausel der {0} -Methode des {1} -Repository kann nicht analysiert werden, da das {2} -Entit\u00e4tsattribut der {3} -Entit\u00e4t das {4} -Schl\u00fcsselwort des Jakarta Data Query by Method Name-Musters enth\u00e4lt. Entfernen Sie die Klausel OrderBy aus dem Namen der Methode {0} und verwenden Sie stattdessen den Vermerk OrderBy.
+CWWKD1105.keyword.in.orderby.explanation=Entit\u00e4tsattributnamen, die Jakarta Data-Schl\u00fcsselw\u00f6rter enthalten, k\u00f6nnen nicht in den Namen von Repository-Methoden verwendet werden, die dem Muster Jakarta Data Query by Method Name folgen.
+CWWKD1105.keyword.in.orderby.useraction=Benennen Sie das Entit\u00e4tsattribut um oder wechseln Sie zur Anmerkung OrderBy, um die Reihenfolge festzulegen.

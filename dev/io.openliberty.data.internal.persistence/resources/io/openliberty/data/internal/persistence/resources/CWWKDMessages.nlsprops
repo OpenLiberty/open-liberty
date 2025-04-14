@@ -1073,3 +1073,42 @@ CWWKD1105.keyword.in.orderby.explanation=Entity attribute names that contain \
  follow the Jakarta Data Query by Method Name pattern.
 CWWKD1105.keyword.in.orderby.useraction=Rename the entity attribute or switch \
  to the OrderBy annotation to specify the ordering.
+
+CWWKD1106.init.timed.out=CWWKD1106E: The {0} repository that requires the \
+ {1} data store and is provided or used by the {2} application artifact did not \
+ become available within {3} seconds. Confirm that the {2} application artifact \
+ starts and that the {1} data store resource that is specified as the dataStore \
+ value of the Repository annotation is configured correctly and is accessible to \
+ the application artifact at the point when the {0} repository is first accessed.
+CWWKD1106.init.timed.out.explanation=A repository did not become available \
+ within the allotted amount of time.
+CWWKD1106.init.timed.out.useraction=Check the configuration of the dataStore \
+ and confirm that it is accessible to application artifacts that define and use \
+ the repository. Also confirm that the application and all of its modules start \
+ successfully.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: The {0} application artifact \
+ accessed the {1} repository before a checkpoint of the application completed. \
+ Update the {0} application to avoid using the repository before a checkpoint.
+CWWKD1107.init.timed.out.checkpoint.explanation=Applications cannot use \
+ repositories before completion of a checkpoint.
+CWWKD1107.init.timed.out.checkpoint.useraction=Avoid using the repository \
+ until after the checkpoint completes.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: The {0} entity class requires the \
+ {1} annotation because the {2} annotation is applied to the {3} member of \
+ the entity class.
+CWWKD1108.missing.entity.anno.explanation=Entity classes that use annotations
+ from the jakarta.persistence package must also be annotated with the Entity
+ annotation from the Jakarta Persistence specification.
+CWWKD1108.missing.entity.anno.useraction=Apply the Entity annotation to the
+ entity class or remove the Jakarta Persistence annotations from its members.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: The {0} annotation is not allowed \
+ on the {1} method of the {2} entity class because the {2} entity class is \
+ a Java record.
+CWWKD1109.jpa.anno.on.record.explanation=Jakarta Persistence annotations \
+ are not allowed on Java records.
+CWWKD1109.jpa.anno.on.record.useraction=Switch to a Jakarta Persistence \
+ entity class or remove the Jakarta Persistence annotation from the \
+ Java record.

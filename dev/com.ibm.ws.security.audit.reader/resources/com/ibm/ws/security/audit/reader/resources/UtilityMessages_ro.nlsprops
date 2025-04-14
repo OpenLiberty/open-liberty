@@ -1,5 +1,5 @@
 #/*******************************************************************************
-# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * Copyright (c) 2018, 2025 IBM Corporation and others.
 # * All rights reserved. This program and the accompanying materials
 # * are made available under the terms of the Eclipse Public License 2.0
 # * which accompanies this distribution, and is available at
@@ -63,3 +63,7 @@ security.audit.ErrorLoadingKeystore=Eroare \u00eenc\u0103rcarea depozitului de c
 security.audit.MismatchingEncKeystores=Valoarea de intrare, {0}, pentru depozitul de chei specificat s\u0103 con\u0163in\u0103 certificatul utilizat pentru a decripta \u00eenregistr\u0103rile de auditare nu se potrive\u015fte cu depozitul de chei, {1}, specificat \u00een istoricul de auditare.
 security.audit.MismatchingSigningKeystores=Valoarea de intrare, {0}, pentru depozitul de chei specificat s\u0103 con\u0163in\u0103 certificatul utilizat pentru a anula semn\u0103tura pe \u00eenregistr\u0103rile de auditare nu se potrive\u015fte cu depozitul de chei, {1}, specificat \u00een istoricul de auditare.
 security.audit.CannotFindCertificate=Aliasul certificatului {0} nu exist\u0103 \u00een depozitul de chei {1}.
+
+# Do not translate "auditRecord"
+security.audit.FailedToValidateSignature=Validarea semn\u0103turii auditRecord a e\u0219uat la indexul [ {0} ].
+security.audit.FailedToDecryptAuditRecord=Decriptarea auditRecord a e\u0219uat la indexul [ {0} ].

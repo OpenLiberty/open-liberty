@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,14 +13,15 @@
 
 package com.ibm.json.java;
 
+import java.io.BufferedReader;
+import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.io.PushbackReader;
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.PushbackReader;
+import java.io.Reader;
 import java.io.StringReader;
-import java.io.CharArrayReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Helper class that does generic parsing of a JSON stream and returns the appropriate 
@@ -130,7 +131,7 @@ public class JSON {
         if (is != null) {
             BufferedReader reader = null;
             try {
-                reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             } catch (Exception ex) {
                 IOException iox = new IOException("Could not construct UTF-8 character reader for the InputStream");
                 iox.initCause(ex);

@@ -404,4 +404,19 @@ public class DataStoreTestServlet extends FATServlet {
     public void testDataSourceDefinitionInWARModuleFromEJB() throws SQLException {
         testEJB.testDataSourceDefinitionInWARModuleFromEJB();
     }
+
+    /**
+     * Verify that ServletContextListener can inject a Jakarta Data repository
+     * and use it to initialize data.
+     */
+    @Test
+    public void testServletContextListenerPopulatesDatabase() {
+        ServerDSEntity one = serverDSResRefRepo.read("DSSCL-one").orElseThrow();
+        assertEquals("DSSCL-one", one.id);
+        assertEquals(1, one.value);
+
+        ServerDSEntity two = serverDSResRefRepo.read("DSSCL-two").orElseThrow();
+        assertEquals("DSSCL-two", two.id);
+        assertEquals(2, two.value);
+    }
 }

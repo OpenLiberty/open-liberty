@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -63,6 +63,9 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Widerspr\u00fcchliche Konfiguration f
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile Die Telemetrie kann f\u00fcr den gesamten Server mit Hilfe von Systemeigenschaften oder Umgebungsvariablen aktiviert werden. Wenn es nicht f\u00fcr den gesamten Server aktiviert ist, kann es f\u00fcr eine Anwendung durch Setzen der MicroProfile Config-Eigenschaften aktiviert werden; zum Beispiel durch Setzen von Variablen in der server.xml-Datei. Diese Warnung wird ausgegeben, wenn Telemetrie f\u00fcr den gesamten Server aktiviert ist, aber die MicroProfile Config-Eigenschaften Telemetrie f\u00fcr eine Anwendung deaktivieren. Da Telemetrie f\u00fcr den gesamten Server aktiviert ist, wird die Konfiguration f\u00fcr diese Anwendung ignoriert.
 CWMOT5007.tel.enabled.conflict.useraction: Geben Sie die Einstellungen zum Aktivieren oder Deaktivieren von OpenTelemetry-Instanzen an, indem Sie entweder Umgebungsvariablen und Systemeigenschaften oder andere MP Config-Quellen verwenden, aber nicht beides.
 
+CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: Die MicroProfile Telemetrieprotokollierungsfunktion erkennt das [ {0} ] Telemetriezugriffsprotokollformat nicht.
+CWMOT5008.mptelemetry.unknown.access.log.field.explanation=Die Laufzeitumgebung Liberty stellt das angegebene Protokollformat nicht zur Verf\u00fcgung.
+CWMOT5008.mptelemetry.unknown.access.log.field.useraction=Geben Sie entweder Standard oder logFormat f\u00fcr das Attribut mpTelemetry accessLogFields an.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ CWWKD1004.general.rtrn.err=CWWKD1004E: El tipo de retorno {0} del m\u00e9todo {1
 CWWKD1004.general.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno admitidos para el tipo de m\u00e9todo del repositorio.
 CWWKD1004.general.rtrn.err.useraction=Consulte la informaci\u00f3n de Jakarta Data Javadoc para obtener una lista de tipos de retorno v\u00e1lidos para el tipo de m\u00e9todo de repositorio.
 
-CWWKD1005.find.rtrn.err=CWWKD1005E: El m\u00e9todo {0} de la interfaz del repositorio {1} no es v\u00e1lido. El m\u00e9todo especifica un tipo de retorno {2} que no es convertible desde el tipo de entidad {3}. El tipo de resultado de una operaci\u00f3n de b\u00fasqueda debe ser el tipo de entidad, un tipo de una propiedad de entidad, un registro Java compuesto de propiedades de entidad o un tipo construido por la consulta que se proporciona a la anotaci\u00f3n Consulta. El tipo de retorno del m\u00e9todo find del repositorio puede ser el tipo de resultado, un array del tipo de resultado, o cualquiera de los siguientes tipos parametrizados con el tipo de resultado: {4}.
+CWWKD1005.find.rtrn.err=CWWKD1005E: El m\u00e9todo {0} de la interfaz del repositorio {1} no es v\u00e1lido. El m\u00e9todo especifica un tipo de retorno e {2}, que no es convertible desde el tipo de entidad e {3}. El tipo de resultado de una operaci\u00f3n de b\u00fasqueda debe ser el tipo de entidad, un tipo de atributo de entidad, un registro Java compuesto por atributos de entidad o un tipo construido por la consulta que se suministra a la anotaci\u00f3n Query. El tipo de retorno del m\u00e9todo find del repositorio puede ser el tipo de resultado, una matriz del tipo de resultado o cualquiera de los siguientes tipos parametrizados con el tipo de resultado: {4}.
 CWWKD1005.find.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno soportados para los m\u00e9todos de b\u00fasqueda de repositorios.
 CWWKD1005.find.rtrn.err.useraction=Consulte la informaci\u00f3n de Jakarta Data Javadoc para obtener una lista de tipos de retorno v\u00e1lidos para los m\u00e9todos de b\u00fasqueda de repositorios.
 
@@ -58,33 +58,33 @@ CWWKD1007.updel.rtrn.err=CWWKD1007E: El tipo de retorno {0} del m\u00e9todo {1} 
 CWWKD1007.updel.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno admitidos para una operaci\u00f3n de actualizaci\u00f3n o eliminaci\u00f3n.
 CWWKD1007.updel.rtrn.err.useraction=Actualiza el m\u00e9todo del repositorio para utilizar uno de los tipos de retorno soportados.
 
-CWWKD1008.ambig.rtrn.err=CWWKD1008E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz del repositorio {2} es ambiguo como tipo de retorno porque corresponde a m\u00faltiples propiedades de la entidad: {3}. El m\u00e9todo de repositorio debe cambiar a la anotaci\u00f3n Query y utilizar una consulta con una cl\u00e1usula SELECT que especifique qu\u00e9 propiedad de entidad devolver.
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: El tipo de retorno {0} del m\u00e9todo {1} de la interfaz del repositorio {2} es ambiguo como tipo de retorno porque corresponde a m\u00faltiples atributos de entidad: {3}. El m\u00e9todo de repositorio debe cambiar a la anotaci\u00f3n Query y utilizar una consulta con una cl\u00e1usula SELECT que especifique qu\u00e9 atributo de entidad se debe devolver.
 CWWKD1008.ambig.rtrn.err.explanation=El tipo de retorno del m\u00e9todo no es uno de los tipos de retorno admitidos para un m\u00e9todo de eliminaci\u00f3n.
-CWWKD1008.ambig.rtrn.err.useraction=Actualice el m\u00e9todo del repositorio para utilizar la anotaci\u00f3n Query para seleccionar la propiedad de la entidad.
+CWWKD1008.ambig.rtrn.err.useraction=Actualizar el m\u00e9todo del repositorio para utilizar la anotaci\u00f3n Query para seleccionar el atributo de la entidad.
 
 CWWKD1009.lifecycle.param.err=CWWKD1009E: El m\u00e9todo {0} de la interfaz de repositorio {1} no puede tener par\u00e1metros {2} porque el m\u00e9todo est\u00e1 anotado con la anotaci\u00f3n de ciclo de vida {3}. Los m\u00e9todos de repositorio anotados con una anotaci\u00f3n de ciclo de vida deben tener exactamente 1 par\u00e1metro, que debe ser la entidad o una matriz o lista de la entidad.
 CWWKD1009.lifecycle.param.err.explanation=Los m\u00e9todos del ciclo de vida deben tener un \u00fanico par\u00e1metro de entidad.
 CWWKD1009.lifecycle.param.err.useraction=Actualiza el m\u00e9todo de repositorio para que tenga un \u00fanico par\u00e1metro que sea una entidad o un array de List de la entidad.
 
-CWWKD1010.unknown.entity.prop=CWWKD1010E: No se encuentra una propiedad de entidad llamada {0} en la clase de entidad {1} para el m\u00e9todo {2} de la interfaz de repositorio {3}. Los nombres de propiedad v\u00e1lidos para la entidad son: {4}.
-CWWKD1010.unknown.entity.prop.explanation=El m\u00e9todo de repositorio est\u00e1 intentando utilizar una propiedad de entidad que no existe.
-CWWKD1010.unknown.entity.prop.useraction=Actualiza el m\u00e9todo del repositorio para que coincida con una propiedad v\u00e1lida definida por la entidad.
+CWWKD1010.unknown.entity.attr=CWWKD1010E: No se encuentra un atributo de entidad llamado " {0} " en la clase de entidad " {1} " para el m\u00e9todo " {2} " de la interfaz de repositorio " {3} ". Los nombres de atributos v\u00e1lidos para la entidad son: {4}.
+CWWKD1010.unknown.entity.attr.explanation=El m\u00e9todo de repositorio est\u00e1 intentando utilizar un atributo de entidad que no existe.
+CWWKD1010.unknown.entity.attr.useraction=Actualizar el m\u00e9todo de repositorio para que coincida con un atributo v\u00e1lido definido por la entidad.
 
 CWWKD1011.unknown.method.pattern=CWWKD1011E: El m\u00e9todo {0} de la interfaz del repositorio {1} no coincide con ninguno de los patrones definidos por Jakarta Data. Un m\u00e9todo de repositorio debe utilizar anotaciones, ser un m\u00e9todo de acceso a recursos o estar nombrado seg\u00fan el patr\u00f3n Query by Method Name. Las anotaciones como {2} se utilizan para definir operaciones. Un m\u00e9todo de acceso a recursos no debe contener par\u00e1metros y cualquiera de los tipos de retorno {3}. El patr\u00f3n Query by Method Name debe comenzar con una de las palabras clave {4}, seguida de 0 o m\u00e1s caracteres. Los nombres de m\u00e9todos tambi\u00e9n pueden incluir la palabra clave By y una o varias condiciones delimitadas. Ejemplos de nombres de m\u00e9todo de repositorio v\u00e1lidos son: {5}.
 CWWKD1011.unknown.method.pattern.explanation=Los m\u00e9todos de repositorio deben seguir los patrones definidos por Jakarta Data.
 CWWKD1011.unknown.method.pattern.useraction=Actualizar el m\u00e9todo de repositorio para que se adhiera a uno de los patrones de Jakarta Data.
 
-CWWKD1012.fd.missing.param.anno=CWWKD1012E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz de repositorio {2} no coincide con una propiedad de entidad. Los par\u00e1metros que no coincidan con una propiedad de entidad deben estar anotados con la anotaci\u00f3n By o tener uno de los tipos de par\u00e1metros especiales: {3}. Para definir una condici\u00f3n para la restricci\u00f3n de los resultados de la consulta, el par\u00e1metro debe estar anotado con la anotaci\u00f3n By y se debe asignar al valor de la anotaci\u00f3n By el nombre de la propiedad de la entidad. Como alternativa, active la opci\u00f3n de compilaci\u00f3n -parameters y d\u00e9 al par\u00e1metro el mismo nombre que a la propiedad de la entidad.
-CWWKD1012.fd.missing.param.anno.explanation=Los par\u00e1metros de los m\u00e9todos de b\u00fasqueda y eliminaci\u00f3n de repositorios deben corresponder a propiedades de la entidad o ser tipos de par\u00e1metros especiales definidos por Jakarta Data.
-CWWKD1012.fd.missing.param.anno.useraction=Actualiza el m\u00e9todo del repositorio de forma que todos los par\u00e1metros correspondan a propiedades de la entidad o tengan uno de los tipos de par\u00e1metros especiales de Jakarta Data.
+CWWKD1012.fd.missing.param.anno=CWWKD1012E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz del repositorio {2} no coincide con un atributo de entidad. Los par\u00e1metros que no coincidan con un atributo de entidad deben anotarse con la anotaci\u00f3n By o tener uno de los tipos de par\u00e1metros especiales: {3}. Para definir una condici\u00f3n para la restricci\u00f3n de los resultados de la consulta, el par\u00e1metro debe anotarse con la anotaci\u00f3n By y el valor de la anotaci\u00f3n By debe asignarse como el nombre del atributo de la entidad. Como alternativa, habilite la opci\u00f3n -parameters compile y asigne al par\u00e1metro el mismo nombre que el atributo de la entidad.
+CWWKD1012.fd.missing.param.anno.explanation=Los par\u00e1metros de los m\u00e9todos de b\u00fasqueda y eliminaci\u00f3n del repositorio deben corresponder a los atributos de la entidad o ser tipos de par\u00e1metros especiales definidos por Jakarta Data.
+CWWKD1012.fd.missing.param.anno.useraction=Actualizar el m\u00e9todo de repositorio de manera que todos los par\u00e1metros correspondan a atributos de entidad o tengan uno de los tipos de par\u00e1metros especiales de Jakarta Data.
 
-CWWKD1013.cde.missing.param.anno=CWWKD1013E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz de repositorio {2} no coincide con una propiedad de entidad. Los par\u00e1metros que no coincidan con una propiedad de entidad deben anotarse con la anotaci\u00f3n By y debe asignarse al valor de la anotaci\u00f3n By el nombre de la propiedad de entidad. Como alternativa, active la opci\u00f3n de compilaci\u00f3n -parameters y d\u00e9 al par\u00e1metro el mismo nombre que a la propiedad de la entidad.
-CWWKD1013.cde.missing.param.anno.explanation=Los par\u00e1metros de los m\u00e9todos count, delete y exists del repositorio deben corresponder a propiedades de la entidad.
-CWWKD1013.cde.missing.param.anno.useraction=Actualiza el m\u00e9todo del repositorio de forma que todos los par\u00e1metros correspondan a propiedades de la entidad.
+CWWKD1013.cde.missing.param.anno=CWWKD1013E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz del repositorio {2} no coincide con un atributo de entidad. Los par\u00e1metros que no coincidan con un atributo de entidad deben anotarse con la anotaci\u00f3n Por y el valor de la anotaci\u00f3n Por debe asignarse como el nombre del atributo de entidad. Como alternativa, habilite la opci\u00f3n -parameters compile y asigne al par\u00e1metro el mismo nombre que el atributo de la entidad.
+CWWKD1013.cde.missing.param.anno.explanation=Los par\u00e1metros de los m\u00e9todos de recuento, eliminaci\u00f3n y existencia del repositorio deben corresponderse con los atributos de la entidad.
+CWWKD1013.cde.missing.param.anno.useraction=Actualizar el m\u00e9todo de repositorio de manera que todos los par\u00e1metros correspondan a los atributos de la entidad.
 
-CWWKD1014.upd.missing.param.anno=CWWKD1014E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz de repositorio {2} no coincide con una propiedad de entidad. Los par\u00e1metros que no coincidan con una propiedad de entidad deben tener una de las anotaciones de par\u00e1metro: {3}. Para definir una condici\u00f3n para la restricci\u00f3n de los resultados de la consulta, el par\u00e1metro debe estar anotado con la anotaci\u00f3n By y se debe asignar al valor de la anotaci\u00f3n By el nombre de la propiedad de la entidad. Como alternativa, active la opci\u00f3n de compilaci\u00f3n -parameters y d\u00e9 al par\u00e1metro el mismo nombre que a la propiedad de la entidad.
-CWWKD1014.upd.missing.param.anno.explanation=Los par\u00e1metros de los m\u00e9todos de actualizaci\u00f3n del repositorio deben corresponder a propiedades de la entidad.
-CWWKD1014.upd.missing.param.anno.useraction=Actualiza el m\u00e9todo del repositorio de forma que todos los par\u00e1metros correspondan a propiedades de la entidad.
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz del repositorio {2} no coincide con un atributo de entidad. Los par\u00e1metros que no coincidan con un atributo de entidad deben tener una de las anotaciones de par\u00e1metro: {3}. Para definir una condici\u00f3n para la restricci\u00f3n de los resultados de la consulta, el par\u00e1metro debe anotarse con la anotaci\u00f3n By y el valor de la anotaci\u00f3n By debe asignarse como nombre del atributo de la entidad. Como alternativa, habilite la opci\u00f3n -parameters compile y asigne al par\u00e1metro el mismo nombre que el atributo de la entidad.
+CWWKD1014.upd.missing.param.anno.explanation=Los par\u00e1metros de los m\u00e9todos de actualizaci\u00f3n del repositorio deben corresponderse con los atributos de la entidad.
+CWWKD1014.upd.missing.param.anno.useraction=Actualizar el m\u00e9todo de repositorio de manera que todos los par\u00e1metros correspondan a los atributos de la entidad.
 
 CWWKD1015.null.entity.param=CWWKD1015E: El m\u00e9todo {0} de la interfaz de repositorio {1} no puede aceptar una entidad nula.
 CWWKD1015.null.entity.param.explanation=Los m\u00e9todos del ciclo de vida requieren una instancia de entidad no nula.
@@ -123,21 +123,21 @@ CWWKD1023.extra.param=CWWKD1023E: Las condiciones de consulta del m\u00e9todo {0
 CWWKD1023.extra.param.explanation=Las condiciones de consulta que definen comparaciones de valores requieren un n\u00famero correspondiente de par\u00e1metros de m\u00e9todo de repositorio para suministrar los valores. No se permiten par\u00e1metros adicionales.
 CWWKD1023.extra.param.useraction=Actualice la firma del m\u00e9todo del repositorio para eliminar los par\u00e1metros adicionales que no corresponden a las condiciones declaradas.
 
-CWWKD1024.missing.entity.prop=CWWKD1024E: Al m\u00e9todo {0} de la interfaz de repositorio {1} le falta un nombre de propiedad de entidad o se ha suministrado con un par\u00e1metro al que le falta un nombre de propiedad de entidad. Los nombres de propiedad v\u00e1lidos para la clase de entidad {2} son: {3}.
-CWWKD1024.missing.entity.prop.explanation=Las condiciones de consulta y los criterios de ordenaci\u00f3n de un m\u00e9todo de repositorio deben incluir un nombre de propiedad de entidad.
-CWWKD1024.missing.entity.prop.useraction=Inspeccione la declaraci\u00f3n y el uso del m\u00e9todo de repositorio para asegurarse de que se proporciona un nombre de propiedad de entidad para cada condici\u00f3n de consulta y criterio de ordenaci\u00f3n.
+CWWKD1024.missing.entity.attr=CWWKD1024E: Al m\u00e9todo {0} de la interfaz del repositorio {1} le falta un nombre de atributo de entidad o se le ha proporcionado un par\u00e1metro al que le falta un nombre de atributo de entidad. Los nombres de atributos v\u00e1lidos para la clase de entidad {2} son: {3}.
+CWWKD1024.missing.entity.attr.explanation=Las condiciones de consulta y los criterios de clasificaci\u00f3n de un m\u00e9todo de repositorio deben incluir un nombre de atributo de entidad.
+CWWKD1024.missing.entity.attr.useraction=Inspeccionar la declaraci\u00f3n y el uso del m\u00e9todo de repositorio para garantizar que se proporcione un nombre de atributo de entidad para cada condici\u00f3n de consulta y criterio de clasificaci\u00f3n.
 
-CWWKD1025.missing.id.prop=CWWKD1025E: La clase de entidad {0} que utiliza el m\u00e9todo {1} de la interfaz de repositorio {2} no tiene propiedad ID ni m\u00e9todo accessor.
-CWWKD1025.missing.id.prop.explanation=Los m\u00e9todos del repositorio que borran y devuelven una entidad deben tener una propiedad ID.
-CWWKD1025.missing.id.prop.useraction=Si la entidad no tiene una \u00fanica propiedad para el ID, defina m\u00e9todos de repositorio separados que consulten la entidad y eliminen la entidad.
+CWWKD1025.missing.id.attr=CWWKD1025E: La clase de entidad {0} que utiliza el m\u00e9todo {1} de la interfaz de repositorio {2} no tiene un atributo ID.
+CWWKD1025.missing.id.attr.explanation=Los m\u00e9todos de repositorio que eliminan y devuelven una entidad deben tener un atributo ID.
+CWWKD1025.missing.id.attr.useraction=Si la entidad no tiene un \u00fanico atributo para el ID, defina m\u00e9todos de repositorio independientes que consulten la entidad y eliminen la entidad.
 
-CWWKD1026.ignore.case.not.text=CWWKD1026E: La propiedad {0} de la entidad {1} no es un car\u00e1cter ni una secuencia de caracteres; por lo tanto, el criterio de ordenaci\u00f3n {2} no debe especificar ignorar may\u00fasculas y min\u00fasculas. El tipo de la propiedad es {3}, y se suministr\u00f3 al m\u00e9todo {4} de la interfaz del repositorio {5}.
-CWWKD1026.ignore.case.not.text.explanation=La ordenaci\u00f3n ignorando may\u00fasculas y min\u00fasculas s\u00f3lo es posible con propiedades de entidad que representen texto.
-CWWKD1026.ignore.case.not.text.useraction=Aseg\u00farese de que el criterio de ordenaci\u00f3n se aplica a la propiedad de entidad correcta y elimine la instrucci\u00f3n de ignorar may\u00fasculas y min\u00fasculas si la propiedad de entidad no representa texto.
+CWWKD1026.ignore.case.not.text=CWWKD1026E: El atributo {0} de la entidad {1} no es un car\u00e1cter o una secuencia de caracteres; por lo tanto, el criterio de clasificaci\u00f3n {2} no debe especificar que se ignore el uso de may\u00fasculas y min\u00fasculas. El tipo del atributo es {3} y se suministr\u00f3 al m\u00e9todo {4} de la interfaz del repositorio {5}.
+CWWKD1026.ignore.case.not.text.explanation=La clasificaci\u00f3n sin tener en cuenta el caso solo es posible con atributos de entidad que representan texto.
+CWWKD1026.ignore.case.not.text.useraction=Aseg\u00farese de que el criterio de ordenaci\u00f3n se aplica al atributo de entidad correcto y elimine la instrucci\u00f3n de ignorar may\u00fasculas y min\u00fasculas si el atributo de entidad no representa texto.
 
-CWWKD1027.anno.missing.prop.name=CWWKD1027E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz de repositorio {2} est\u00e1 anotado con una anotaci\u00f3n {3} que no especifica un nombre de propiedad de entidad como valor. La anotaci\u00f3n debe especificar el nombre de la propiedad de la entidad como su valor, o la opci\u00f3n de compilaci\u00f3n -parameters debe estar activada y el par\u00e1metro debe tener el mismo nombre que la propiedad de la entidad.
-CWWKD1027.anno.missing.prop.name.explanation=Los par\u00e1metros de los m\u00e9todos de actualizaci\u00f3n del repositorio deben corresponder a propiedades de la entidad.
-CWWKD1027.anno.missing.prop.name.useraction=Actualice el m\u00e9todo del repositorio para indicar la propiedad de la entidad a la que pertenece el par\u00e1metro.
+CWWKD1027.anno.missing.attr.name=CWWKD1027E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz del repositorio {2} est\u00e1 anotado con una anotaci\u00f3n {3} que no especifica un nombre de atributo de entidad como su valor. La anotaci\u00f3n debe especificar el nombre del atributo de entidad como su valor, o bien debe estar habilitada la opci\u00f3n -parameters compile y el par\u00e1metro debe tener el mismo nombre que el atributo de entidad.
+CWWKD1027.anno.missing.attr.name.explanation=Los par\u00e1metros de los m\u00e9todos de actualizaci\u00f3n del repositorio deben corresponderse con los atributos de la entidad.
+CWWKD1027.anno.missing.attr.name.useraction=Actualizar el m\u00e9todo de repositorio para indicar el atributo de entidad al que pertenece el par\u00e1metro.
 
 CWWKD1028.first.exceeds.max=CWWKD1028E: El m\u00e9todo {0} de la interfaz del repositorio {1} solicita los primeros resultados {2}, lo que excede el n\u00famero m\u00e1ximo de resultados permitido: {3}.
 CWWKD1028.first.exceeds.max.explanation=El n\u00famero m\u00e1ximo de resultados de la consulta est\u00e1 limitado por las restricciones del sistema y el valor especificado.
@@ -227,7 +227,7 @@ CWWKD1049.count.convert.err=CWWKD1049E: El valor de recuento, {0}, del m\u00e9to
 CWWKD1049.count.convert.err.explanation=El valor de recuento no es compatible con el tipo de retorno del m\u00e9todo de repositorio.
 CWWKD1049.count.convert.err.useraction=Ajuste el tipo de retorno del m\u00e9todo de repositorio para permitir que se devuelva el valor.
 
-CWWKD1050.opt.lock.exc=CWWKD1050E: El m\u00e9todo {0} de la interfaz del repositorio {1} no ha encontrado una entidad {2} que coincida con las propiedades de la entidad: {3}. Verificar que la instancia de entidad que se suministra al m\u00e9todo {0} se basa en la versi\u00f3n m\u00e1s reciente de la entidad. La versi\u00f3n m\u00e1s reciente de la entidad puede obtenerse a partir de un m\u00e9todo find o del valor resultante de uno de los siguientes m\u00e9todos del ciclo de vida: {4}.
+CWWKD1050.opt.lock.exc=CWWKD1050E: El m\u00e9todo {0} de la interfaz del repositorio {1} no encontr\u00f3 una entidad {2} que coincida con los atributos de la entidad: {3}. Verifique que la instancia de entidad que se suministra al m\u00e9todo {0} se basa en la versi\u00f3n m\u00e1s reciente de la entidad. La versi\u00f3n m\u00e1s reciente de la entidad puede obtenerse a partir de un m\u00e9todo find o del valor resultante de uno de los siguientes m\u00e9todos de ciclo de vida: {4}.
 CWWKD1050.opt.lock.exc.explanation=No se ha encontrado una entidad coincidente.
 CWWKD1050.opt.lock.exc.useraction=Si se espera que la entidad no se encuentre en la base de datos, no es necesario realizar ninguna acci\u00f3n. En caso contrario, aseg\u00farese de que se utiliza la versi\u00f3n m\u00e1s reciente de la entidad.
 
@@ -247,9 +247,9 @@ CWWKD1054.non.unique.result=CWWKD1054E: El m\u00e9todo {0} de la interfaz del re
 CWWKD1054.non.unique.result.explanation=El tipo de retorno del m\u00e9todo repositorio no permite devolver m\u00faltiples resultados.
 CWWKD1054.non.unique.result.useraction=Actualice el m\u00e9todo de repositorio para utilizar un tipo de devoluci\u00f3n que admita m\u00faltiples resultados o actualice el m\u00e9todo de repositorio para que no devuelva m\u00e1s que un \u00fanico resultado.
 
-CWWKD1055.unsupported.entity.prop=CWWKD1055E: La propiedad {0} de la entidad {1} tiene un tipo no soportado: {2}. Jakarta Data soporta los tipos de enumeraci\u00f3n de Java, los tipos temporales {3} y los siguientes tipos b\u00e1sicos: {4}. El proveedor de Jakarta Data incorporado tambi\u00e9n soporta algunos tipos de Jakarta Persistence, como los embeddables.
-CWWKD1055.unsupported.entity.prop.explanation=Jakarta Data no soporta el tipo utilizado por la propiedad entidad.
-CWWKD1055.unsupported.entity.prop.useraction=Actualice la propiedad de la entidad para utilizar uno de los tipos admitidos.
+CWWKD1055.unsupported.entity.attr=CWWKD1055E: El atributo {0} de la entidad {1} tiene un tipo no admitido: {2}. Jakarta Data admite tipos de enumeraci\u00f3n Java, los tipos temporales de la especificaci\u00f3n de tipos de datos de Java ( {3} ) y los siguientes tipos b\u00e1sicos: {4}. El proveedor de datos de Jakarta integrado tambi\u00e9n admite algunos tipos de persistencia de Jakarta, como los incrustables.
+CWWKD1055.unsupported.entity.attr.explanation=Yakarta Los datos no son compatibles con el tipo utilizado por el atributo de entidad.
+CWWKD1055.unsupported.entity.attr.useraction=Actualice el atributo de entidad para utilizar uno de los tipos admitidos.
 
 CWWKD1056.unsupported.keyword=CWWKD1056E: El m\u00e9todo {0} de la interfaz del repositorio {1} tiene un nombre que incluye una palabra clave {2}, que no es una palabra clave soportada por el patr\u00f3n Jakarta Data Query by Method Name.
 CWWKD1056.unsupported.keyword.explanation=El nombre del m\u00e9todo incluye una palabra clave que no se reconoce como parte del patr\u00f3n soportado Jakarta Data Query by Method Name.
@@ -263,9 +263,9 @@ CWWKD1058.no.args.constr.err=CWWKD1058E: El tipo de retorno {0} del m\u00e9todo 
 CWWKD1058.no.args.constr.err.explanation=El constructor p\u00fablico sin par\u00e1metros ha fallado debido a un error.
 CWWKD1058.no.args.constr.err.useraction=Corrige el error en el constructor, o actualiza el m\u00e9todo de repositorio para utilizar un tipo de retorno diferente.
 
-CWWKD1059.prop.cast.err=CWWKD1059E: El m\u00e9todo {0} de la interfaz del repositorio {1} no puede acceder a la propiedad {2} de la entidad {3} porque el campo o m\u00e9todo {4} de la clase {5} es incompatible con un valor {6}.
-CWWKD1059.prop.cast.err.explanation=Una propiedad de la entidad o una propiedad relacionada de su jerarqu\u00eda no es compatible con el tipo esperado.
-CWWKD1059.prop.cast.err.useraction=Revise el modelo de entidad y verifique que se utilizan los tipos correctos para cada propiedad.
+CWWKD1059.attr.cast.err=CWWKD1059E: El m\u00e9todo {0} de la interfaz del repositorio {1} no puede acceder al atributo {2} de la entidad {3} porque el campo {4} o el m\u00e9todo de la clase {5} es incompatible con un valor {6}.
+CWWKD1059.attr.cast.err.explanation=Un atributo de entidad o un atributo relacionado de su jerarqu\u00eda no es compatible con el tipo esperado.
+CWWKD1059.attr.cast.err.useraction=Revise el modelo de entidad y verifique que se utilicen los tipos correctos para cada atributo.
 
 CWWKD1060.name.out.of.scope=CWWKD1060E: La interfaz {0} del repositorio en la aplicaci\u00f3n {1} configura un valor {2} para el atributo {3}, pero los nombres {3} no son accesibles para el artefacto que proporciona la interfaz del repositorio. Utiliza un nombre {4} en su lugar.
 CWWKD1060.name.out.of.scope.explanation=El espacio de nombres especificado no es accesible desde el artefacto donde est\u00e1 definida la interfaz del repositorio.
@@ -315,8 +315,8 @@ CWWKD1071.record.with.type.var=CWWKD1071E: El registro {0} es utilizado como una
 CWWKD1071.record.with.type.var.explanation=Las clases de entidad no pueden tener variables de tipo gen\u00e9rico.
 CWWKD1071.record.with.type.var.useraction=Elimina las variables de tipo del registro.
 
-CWWKD1072.record.comp.conflict=CWWKD1072E: El registro {0} es utilizado como una entidad por una o m\u00e1s de las interfaces de repositorio{1}) en el artefacto de aplicaci\u00f3n {2}, pero el registro no puede ser una entidad porque sus componentes {3} y {4} resuelven al mismo nombre de propiedad de entidad.
-CWWKD1072.record.comp.conflict.explanation=Los nombres de las propiedades de las entidades deben ser \u00fanicos ignorando may\u00fasculas y min\u00fasculas.
+CWWKD1072.record.comp.conflict=CWWKD1072E: El registro {0} se utiliza como entidad por una o m\u00e1s de las interfaces de repositorio ( {1} ) en el artefacto de aplicaci\u00f3n {2}, pero el registro no puede ser una entidad porque su componente {3} y su componente {4} resuelven ambos el mismo nombre de atributo de entidad.
+CWWKD1072.record.comp.conflict.explanation=Los nombres de atributos de entidad deben ser \u00fanicos, sin importar may\u00fasculas y min\u00fasculas.
 CWWKD1072.record.comp.conflict.useraction=Cambie el nombre de uno de los componentes del registro para evitar el conflicto.
 
 CWWKD1073.offset.exceeds.max=CWWKD1073E: El punto de inicio {0} del l\u00edmite {1} que se suministra al m\u00e9todo {2} de la interfaz de repositorio {3} supera el valor m\u00e1ximo permitido de {4}.
@@ -327,9 +327,9 @@ CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: El m\u00e9todo {0} de la interfaz d
 CWWKD1074.qbmn.incompat.keywords.explanation=Las palabras clave Query by Method Name especificadas no son compatibles entre s\u00ed.
 CWWKD1074.qbmn.incompat.keywords.useraction=Cambiar el nombre del m\u00e9todo para no combinar las palabras clave en la misma condici\u00f3n.
 
-CWWKD1075.entity.prop.conflict=CWWKD1075E: La entidad {0} no puede tener una propiedad llamada {1} y otra llamada {2} porque la especificaci\u00f3n Jakarta Data considera que estos nombres son alias para la misma propiedad de entidad.
-CWWKD1075.entity.prop.conflict.explanation=Hay una colisi\u00f3n entre los nombres de dos propiedades de entidad debido al car\u00e1cter de subrayado.
-CWWKD1075.entity.prop.conflict.useraction=No utilice el car\u00e1cter de subrayado en los nombres de propiedades de entidad.
+CWWKD1075.entity.attr.conflict=CWWKD1075E: La entidad {0} no puede tener un atributo llamado {1} y un atributo llamado {2} porque la especificaci\u00f3n de Jakarta Data considera que estos nombres son alias del mismo atributo de entidad.
+CWWKD1075.entity.attr.conflict.explanation=Hay una colisi\u00f3n entre los nombres de dos atributos de entidad debido al car\u00e1cter de subrayado.
+CWWKD1075.entity.attr.conflict.useraction=No utilice el car\u00e1cter de subrayado en los nombres de atributos de entidad.
 
 CWWKD1076.repo.disposed=CWWKD1076E: El m\u00e9todo {0} de la interfaz del repositorio {1} no puede ser invocado porque la aplicaci\u00f3n que define el repositorio se ha detenido. La instancia del repositorio es {2}.
 CWWKD1076.repo.disposed.explanation=Los m\u00e9todos del repositorio no deben utilizarse fuera del ciclo de vida de la aplicaci\u00f3n que define el repositorio.
@@ -393,7 +393,7 @@ CWWKD1090.orderby.conflict=CWWKD1090E: El m\u00e9todo {0} de la interfaz de repo
 CWWKD1090.orderby.conflict.explanation=La anotaci\u00f3n OrderBy no es compatible con la palabra clave OrderBy.
 CWWKD1090.orderby.conflict.useraction=Utilice \u00fanicamente la anotaci\u00f3n OrderBy o la palabra clave OrderBy.
 
-CWWKD1091.method.name.parse.err=CWWKD1091E: No se encuentra una propiedad de entidad llamada {0} en la clase de entidad {1} para el m\u00e9todo {2} de la interfaz de repositorio {3}. Confirme que el m\u00e9todo del repositorio tiene un nombre que se ajusta al patr\u00f3n Query by Method Name o est\u00e1 anotado con uno de los siguientes: {4}. Los nombres de propiedad v\u00e1lidos para la entidad son: {5}.
+CWWKD1091.method.name.parse.err=CWWKD1091E: No se encuentra un atributo de entidad llamado " {0} " en la clase de entidad " {1} " para el m\u00e9todo " {2} " de la interfaz de repositorio " {3} ". Confirme que el m\u00e9todo de repositorio tiene un nombre que se ajusta al patr\u00f3n de consulta por nombre de m\u00e9todo o est\u00e1 anotado con uno de los siguientes: {4}. Los nombres de atributos v\u00e1lidos para la entidad son: {5}.
 CWWKD1091.method.name.parse.err.explanation=El nombre del m\u00e9todo del repositorio se analiz\u00f3 seg\u00fan el patr\u00f3n Consulta por nombre de m\u00e9todo porque el m\u00e9todo del repositorio no tiene una anotaci\u00f3n de Jakarta Data que indique el tipo de operaci\u00f3n.
 CWWKD1091.method.name.parse.err.useraction=Corrija el nombre del m\u00e9todo del repositorio o anote el m\u00e9todo del repositorio para indicar una operaci\u00f3n de Jakarta Data como Consultar, Buscar o Guardar.
 
@@ -402,8 +402,8 @@ CWWKD1092.lifecycle.arg.empty.explanation=M\u00e9todos de inserci\u00f3n, actual
  require al menos una entidad.
 CWWKD1092.lifecycle.arg.empty.useraction=Aseg\u00farese de que la matriz, lista o flujo que se proporciona al m\u00e9todo contiene al menos una entidad.
 
-CWWKD1093.fn.not.applicable=CWWKD1093E: La funci\u00f3n {0} no puede ser evaluada para la entidad {1} que es utilizada por el m\u00e9todo {2} de la interfaz del repositorio {3}. La entidad no tiene una propiedad anotada con {4} o de la que pueda inferirse {0}.
-CWWKD1093.fn.not.applicable.explanation=La funci\u00f3n no puede utilizarse en la entidad porque \u00e9sta carece de una propiedad ID o versi\u00f3n.
+CWWKD1093.fn.not.applicable=CWWKD1093E: La funci\u00f3n {0} no se puede evaluar para la entidad {1} que utiliza el m\u00e9todo {2} de la interfaz de repositorio {3}. La entidad no tiene un atributo que est\u00e9 anotado con {4} o del que se pueda inferir {0}.
+CWWKD1093.fn.not.applicable.explanation=La funci\u00f3n no se puede utilizar en la entidad porque la entidad carece de un atributo de ID o versi\u00f3n.
 CWWKD1093.fn.not.applicable.useraction=No utilice la funci\u00f3n en lenguaje de consulta o par\u00e1metros para el m\u00e9todo de repositorio.
 
 CWWKD1094.return.mismatch=CWWKD1094E: El m\u00e9todo {0} de la interfaz de repositorio {1} tiene el tipo de retorno {2}, que no es capaz de devolver el n\u00famero de entidades, {3}, que el m\u00e9todo de repositorio acepta como par\u00e1metro. Los tipos de retorno v\u00e1lidos para un m\u00e9todo {4} que acepta m\u00faltiples entidades incluyen: {5}.
@@ -433,3 +433,23 @@ CWWKD1099.first.keyword.incompat.useraction=Elimina la palabra clave First del n
 CWWKD1100.cursor.requires.sort=CWWKD1100E: El m\u00e9todo {0} del repositorio {1} devuelve {2} pero no tiene una anotaci\u00f3n OrderBy ni ninguno de los siguientes par\u00e1metros para especificar criterios de ordenaci\u00f3n: {3}. Los criterios de ordenaci\u00f3n son necesarios para la paginaci\u00f3n basada en cursor y no pueden especificarse dentro de una cl\u00e1usula ORDER BY de un valor de anotaci\u00f3n de consulta.
 CWWKD1100.cursor.requires.sort.explanation=La paginaci\u00f3n basada en cursores requiere criterios de ordenaci\u00f3n.
 CWWKD1100.cursor.requires.sort.useraction=Elimina la cl\u00e1usula ORDER BY del valor de la anotaci\u00f3n Query si se encuentra una all\u00ed. A\u00f1ada una anotaci\u00f3n OrderBy o un par\u00e1metro de m\u00e9todo de repositorio para especificar los criterios de ordenaci\u00f3n.
+
+CWWKD1101.attr.subset.mismatch=CWWKD1101E: El tipo de devoluci\u00f3n {0} del m\u00e9todo {1} del repositorio {2} utiliza el tipo de registro Java {3} para definir los resultados como un subconjunto de atributos de entidad: {4}. Sin embargo, al menos uno de los nombres de atributos solicitados no est\u00e1 presente en la entidad {5}. Para devolver un subconjunto de atributos de entidad como un registro Java, aseg\u00farese de que los nombres de los componentes del registro est\u00e9n dentro del siguiente conjunto de nombres de atributos v\u00e1lidos para la entidad {5} : {6}. Tambi\u00e9n puede utilizar la opci\u00f3n Seleccionar anotaci\u00f3n para asignar nombres de atributos de entidad v\u00e1lidos. Para devolver un atributo de entidad \u00fanico que tiene un tipo de registro Java, anote el m\u00e9todo {1} para que tenga una anotaci\u00f3n Select y asigne su valor de miembro al nombre del atributo de entidad.
+CWWKD1101.attr.subset.mismatch.explanation=Cuando se utilizan registros Java para recuperar un subconjunto de atributos de entidad, todos los componentes del registro deben corresponder a atributos de entidad v\u00e1lidos.
+CWWKD1101.attr.subset.mismatch.useraction=Cambie el nombre de los componentes del registro para que coincidan con nombres de atributos de entidad v\u00e1lidos, o utilice la anotaci\u00f3n Seleccionar para solicitar expl\u00edcitamente atributos de entidad por su nombre.
+
+CWWKD1102.incompat.query.result=CWWKD1102E: El m\u00e9todo {0} del repositorio {1} tiene el tipo de retorno {2}, pero el proveedor Jakarta Persistence realiz\u00f3 una consulta con resultados del tipo {3}. Compruebe si el proveedor Jakarta Persistence permite consultar los tipos de atributos de entidad que selecciona el m\u00e9todo {0}. Compruebe si hay otras causas de incompatibilidad si el proveedor de Jakarta permite consultar los tipos de atributos de entidad que selecciona el m\u00e9todo {0}.
+CWWKD1102.incompat.query.result.explanation=Los proveedores de Jakarta Persistence no permiten devolver todo tipo de atributos de entidad. Si el proveedor de Yakarta devuelve el tipo de atributos de entidad que el m\u00e9todo seleccionado, existe otra causa de incompatibilidad. Por ejemplo, el proveedor de Jakarta Persistence podr\u00eda tener un error o la firma del m\u00e9todo del repositorio podr\u00eda tener un error.
+CWWKD1102.incompat.query.result.useraction=Si el tipo de atributos de entidad que selecciona el m\u00e9todo no est\u00e1 permitido, modifique la consulta para recuperar toda la entidad o un conjunto diferente de atributos de entidad que permita el proveedor de persistencia de Jakarta. Si el tipo de atributos de entidad que selecciona el m\u00e9todo est\u00e1 permitido, compruebe si hay otras causas de incompatibilidad.
+
+CWWKD1103.incompat.query.result=CWWKD1103E: El m\u00e9todo {0} del repositorio {1} tiene el tipo de retorno {2}, pero el proveedor Jakarta Persistence realiz\u00f3 una consulta {3} con resultados del tipo {4}. Compruebe si el proveedor Jakarta Persistence permite consultar los tipos de atributos de entidad que selecciona el m\u00e9todo {0}. Compruebe si hay otras causas de incompatibilidad si el proveedor de Jakarta permite consultar los tipos de atributos de entidad que selecciona el m\u00e9todo {0}.
+CWWKD1103.incompat.query.result.explanation=Los proveedores de Jakarta Persistence no permiten devolver todo tipo de atributos de entidad. Si el proveedor de Yakarta devuelve el tipo de atributos de entidad que el m\u00e9todo seleccionado, existe otra causa de incompatibilidad. Por ejemplo, el proveedor de Jakarta Persistence podr\u00eda tener un error o la firma del m\u00e9todo del repositorio podr\u00eda tener un error.
+CWWKD1103.incompat.query.result.useraction=Si el tipo de atributos de entidad que selecciona el m\u00e9todo no est\u00e1 permitido, modifique la consulta para recuperar toda la entidad o un conjunto diferente de atributos de entidad que permita el proveedor de persistencia de Jakarta. Si el tipo de atributos de entidad que selecciona el m\u00e9todo est\u00e1 permitido, compruebe si hay otras causas de incompatibilidad.
+
+CWWKD1104.empty.anno.value=CWWKD1104E: El valor vac\u00edo de la clase String no es un valor v\u00e1lido para la anotaci\u00f3n {0} que se utiliza en el m\u00e9todo {1} del repositorio {2}.
+CWWKD1104.empty.anno.value.explanation=El valor vac\u00edo para la clase String no es un valor admitido. El valor admitido depende del tipo de anotaci\u00f3n. Por ejemplo, si la anotaci\u00f3n es una anotaci\u00f3n Param, los valores v\u00e1lidos son los nombres de los par\u00e1metros con nombre que se utilizan dentro del valor de la anotaci\u00f3n Query.
+CWWKD1104.empty.anno.value.useraction=Si la anotaci\u00f3n no es necesaria, elim\u00ednela del m\u00e9todo del repositorio. En caso contrario, especifique un valor v\u00e1lido para la anotaci\u00f3n.
+
+CWWKD1105.keyword.in.orderby=CWWKD1105E: La cl\u00e1usula OrderBy del m\u00e9todo {0} del repositorio {1} no se puede analizar porque el atributo de entidad {2} de la entidad {3} contiene la palabra clave {4} del patr\u00f3n Jakarta Data Query by Method Name. Elimine la cl\u00e1usula OrderBy del nombre del m\u00e9todo {0} y utilice en su lugar la anotaci\u00f3n OrderBy.
+CWWKD1105.keyword.in.orderby.explanation=Los nombres de atributos de entidades que contengan palabras clave de Jakarta Data no pueden utilizarse en los nombres de m\u00e9todos de repositorio que sigan el patr\u00f3n de consulta de Jakarta Data por nombre de m\u00e9todo.
+CWWKD1105.keyword.in.orderby.useraction=Cambie el nombre del atributo de entidad o pase a la anotaci\u00f3n OrderBy para especificar la ordenaci\u00f3n.

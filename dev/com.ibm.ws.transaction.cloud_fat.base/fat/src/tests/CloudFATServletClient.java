@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -166,7 +166,7 @@ public abstract class CloudFATServletClient extends CloudTestBase {
             }
 
             // wait for 1st server to have gone away
-            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+            assertNotNull(longLeaseCompeteServer1.getServerName() + " should have crashed", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
             longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
@@ -176,22 +176,24 @@ public abstract class CloudFATServletClient extends CloudTestBase {
             server2fastcheck.setHttpDefaultPort(Integer.getInteger("HTTP_secondary"));
             FATUtils.startServers(_runner, server2fastcheck);
 
-            // Wait for 10 seconds for server1's logs to go stale
-            Thread.sleep(10000);
+            // Wait till server2 has started peer recovering server1
+            server2fastcheck.resetLogMarks();
+            assertNotNull(server2fastcheck.getServerName() + " should have initiated recovery for " + longLeaseCompeteServer1.getServerName(),
+                          server2fastcheck.waitForStringInLog("WTRN0108I: Recovery initiated for server cloud0011"));
 
-            // Now start server1
+            // Server2 will now be sleeping in recover(). Start server1
             FATUtils.startServers(_runner, longLeaseCompeteServer1);
 
             // Check it recovered successfully
             longLeaseCompeteServer1.resetLogMarks();
-            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not recover its own logs",
+            assertNotNull(longLeaseCompeteServer1.getServerName() + " should have recovered its own logs",
                           longLeaseCompeteServer1.waitForStringInLog("WTRN0133I: Transaction recovery processing for this server is complete"));
 
             // Wake up server2 which will be sleeping in recover
             Log.info(getClass(), "testAggressiveTakeover1", "Wake up " + server2fastcheck.getServerName());
             XAResourceImpl.wakeUp();
 
-            assertNotNull(server2fastcheck.getServerName() + " did not fail to recover for " + longLeaseCompeteServer1.getServerName(),
+            assertNotNull(server2fastcheck.getServerName() + " should have failed to recover for " + longLeaseCompeteServer1.getServerName(),
                           server2fastcheck.waitForStringInTrace("WTRN0107W: Server with identity cloud0021 attempted but failed to recover the logs of peer server cloud0011",
                                                                 FATUtils.LOG_SEARCH_TIMEOUT));
 

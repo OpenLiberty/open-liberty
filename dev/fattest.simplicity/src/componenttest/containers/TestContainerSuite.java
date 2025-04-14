@@ -12,6 +12,7 @@
  *******************************************************************************/
 package componenttest.containers;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,10 +23,15 @@ import java.util.Properties;
 import org.junit.ClassRule;
 import org.junit.rules.ExternalResource;
 import org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonParseException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonMappingException;
+import org.testcontainers.shaded.com.github.dockerjava.core.DockerClientConfig;
+import org.testcontainers.shaded.com.github.dockerjava.core.DockerConfigFile;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.Props;
 
+import componenttest.containers.registry.Registry;
 import componenttest.containers.substitution.LibertyImageNameSubstitutor;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.ExternalTestService;
@@ -65,6 +71,7 @@ public class TestContainerSuite {
     static {
         Log.info(TestContainerSuite.class, "<init>", "Setting up testcontainers");
         configureLogging();
+        verifyDockerConfig();
         generateConfig();
     }
 
@@ -109,7 +116,56 @@ public class TestContainerSuite {
         System.setProperty("org.slf4j.simpleLogger.log.tc", "debug");
         System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava", "warn");
         System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire", "off");
+    }
 
+    /**
+     * Verify that if an existing docker config file exists that the file
+     * is well-formed (json) and can be parsed.
+     *
+     * If the file is not well-formed, an error will be thrown when run locally,
+     * or deleted when running in a build.
+     */
+    private static void verifyDockerConfig() {
+        final String m = "verifyDockerConfig";
+
+        final File configFile = new File(Registry.DEFAULT_CONFIG_DIR, "config.json");
+
+        if (!configFile.exists()) {
+            Log.info(c, m, "Docker config file did not exist, nothing to verify: " + configFile.getAbsolutePath());
+            return;
+        }
+
+        try {
+            DockerConfigFile.loadConfig(DockerClientConfig.getDefaultObjectMapper(),
+                                        Registry.DEFAULT_CONFIG_DIR.getAbsolutePath());
+            Log.info(c, m, "The docker config file is well-formed and parsable: " + configFile.getAbsolutePath());
+        } catch (IOException e) {
+            // NOTE JsonMappingException/JsonParseException are shaded classes,
+            // if Testcontainers unshades these classes switch to the version from fasterxml
+            if (e.getCause() == null || !(e.getCause() instanceof JsonMappingException || e.getCause() instanceof JsonParseException)) {
+                Log.error(c, m, e);
+                throw new RuntimeException("Failed to load docker config file: " + configFile.getAbsolutePath(), e);
+            }
+
+            String content = null;
+            try {
+                content = new String(Files.readAllBytes(configFile.toPath()));
+            } catch (IOException e1) {
+                // ignore - only attempting to read config file for debug purposes
+            }
+
+            String message = "Failed to parse docker config file because it was malformed: " + configFile.getAbsolutePath() +
+                             (content == null ? "" : System.lineSeparator() + "Content was: " +
+                                                     System.lineSeparator() + content);
+
+            if (FATRunner.FAT_TEST_LOCALRUN) {
+                Log.error(c, m, e);
+                throw new RuntimeException(message, e);
+            } else {
+                Log.warning(c, message);
+                Log.info(c, m, "Delete docker config file: " + configFile.getAbsolutePath() + " successfully deleted: " + configFile.delete());
+            }
+        }
     }
 
     /**

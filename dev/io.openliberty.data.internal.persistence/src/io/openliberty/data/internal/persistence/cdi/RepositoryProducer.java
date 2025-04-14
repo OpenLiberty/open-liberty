@@ -12,8 +12,11 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.cdi;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -23,14 +26,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.data.internal.persistence.DataProvider;
+import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
 import io.openliberty.data.internal.persistence.Util;
@@ -58,7 +69,14 @@ import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, BeanAttributes<R> {
     private final static TraceComponent tc = Tr.register(RepositoryProducer.class);
 
-    private static final Set<Annotation> QUALIFIERS = Set.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
+    /**
+     * Amount of time in seconds to wait for an EntityManagerBuilder to become
+     * available.
+     */
+    private static final long INIT_TIMEOUT_SEC = TimeUnit.MINUTES.toSeconds(5);
+
+    private static final Set<Annotation> QUALIFIERS = //
+                    Set.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
 
     private final BeanManager beanMgr;
     private final Set<Type> beanTypes;
@@ -82,7 +100,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         this.provider = provider;
         this.queriesPerEntityClass = queriesPerEntityClass;
         this.repositoryInterface = repositoryInterface;
-        provider.producerCreated(futureEMBuilder.moduleName.getApplication(), this);
+        provider.producerCreated(futureEMBuilder.jeeName.getApplication(), this);
     }
 
     @Override
@@ -101,6 +119,43 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         RepositoryImpl<?> handler = (RepositoryImpl<?>) Proxy.getInvocationHandler(repository);
         repositoryImplRef.compareAndSet(handler, null);
         handler.beanDisposed();
+    }
+
+    /**
+     * Error handling for a timeout that occurs when attempting to obtain an
+     * EntityManagerBuilder.
+     *
+     * @param repositoryInterface the repository interface.
+     * @param cause               the TimeoutException.
+     * @return DataException with an appropriate error message.
+     */
+    @Trivial
+    private DataException excTimedOut(Class<?> repositoryInterface,
+                                      Throwable cause) {
+        DataException x;
+        if (CheckpointPhase.getPhase().restored()) {
+            // No checkpoint in progress
+            x = exc(DataException.class,
+                    "CWWKD1106.init.timed.out",
+                    repositoryInterface.getName(),
+                    futureEMBuilder.dataStore,
+                    futureEMBuilder.jeeName,
+                    INIT_TIMEOUT_SEC);
+        } else { // during checkpoint
+            ComponentMetaData metadata = ComponentMetaDataAccessorImpl //
+                            .getComponentMetaDataAccessor() //
+                            .getComponentMetaData();
+            J2EEName jeeName = metadata == null //
+                            ? futureEMBuilder.jeeName //
+                            : metadata.getJ2EEName();
+
+            x = exc(DataException.class,
+                    "CWWKD1107.init.timed.out.checkpoint",
+                    jeeName,
+                    repositoryInterface.getName());
+        }
+        x.initCause(cause);
+        return x;
     }
 
     @Override
@@ -231,7 +286,10 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                             Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                     }
 
-            RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, futureEMBuilder, //
+            EntityManagerBuilder builder = futureEMBuilder.get(INIT_TIMEOUT_SEC, //
+                                                               TimeUnit.SECONDS);
+
+            RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, builder, //
                             repositoryInterface, primaryEntityClass, queriesPerEntityClass);
 
             R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
@@ -258,9 +316,61 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                          repositoryInterface.getAnnotation(Repository.class),
                          primaryEntityClass == null ? null : primaryEntityClass.getName(),
                          x);
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "produce", x);
-            throw x;
+
+            if (x instanceof TimeoutException) {
+                DataException dx = excTimedOut(repositoryInterface, x);
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "produce", DataException.class);
+                throw dx;
+            } else {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "produce", x);
+                if (x instanceof RuntimeException)
+                    throw (RuntimeException) x;
+                else if (x instanceof Error)
+                    throw (Error) x;
+                else if (x instanceof ExecutionException)
+                    throw toRuntimeException((ExecutionException) x);
+                else // InterruptedException
+                    throw new DataException(x);
+            }
         }
+    }
+
+    /**
+     * Converts an ExecutionException and its cause into a RuntimeException of the
+     * same type as the cause exception, or DataException if the cause is not a
+     * subtype of RuntimeException that has a constructor with arguments
+     * (String, Throwable).
+     *
+     * @param xx ExecutionException with a cause indicating a failure that occurred
+     *               during asynchronous initialization.
+     * @return DataException with the same cause.
+     */
+    @FFDCIgnore(Throwable.class)
+    @Trivial
+    private RuntimeException toRuntimeException(ExecutionException xx) {
+        RuntimeException x = null;
+        Throwable cause = xx.getCause();
+        if (cause instanceof RuntimeException)
+            try {
+                @SuppressWarnings("unchecked")
+                Class<RuntimeException> cl = (Class<RuntimeException>) cause.getClass();
+                // All known DataException subtypes and many other runtime exceptions
+                // such as UnsupportedOperationException have a constructor of the form,
+                Constructor<RuntimeException> cons = cl.getConstructor(String.class,
+                                                                       Throwable.class);
+                x = cons.newInstance(cause.getMessage(), cause);
+            } catch (Throwable t) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "no matching constructor for " +
+                                       cause.getClass());
+            }
+
+        if (x == null)
+            x = new DataException(cause.getMessage(), cause);
+
+        x.setStackTrace(xx.getStackTrace());
+        return x;
     }
 }

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.servlets;
 
@@ -124,7 +121,7 @@ public class SipSessionSeqLog extends SequenceLogger {
      * @see com.ibm.sip.util.seqlog.SequenceLogger#dumpStateDesc(int, java.lang.StringBuffer)
      */
     public void dumpStateDesc(int state, StringBuffer buf) {
-        switch(state)// TODO Auto-generated method stub
+        switch(state)
         {
         	case INIT:
         	    buf.append("Init");

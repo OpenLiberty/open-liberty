@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 # Messages used by Health Impl -  range is 0000-0999
 # The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
 # The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+# The 0100-0149 range is reserved for messages that are issued by the file-based health check mechanism
 #-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,3 +56,29 @@ readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Este a
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: A verifica\u00e7\u00e3o de funcionamento de inicializa\u00e7\u00e3o relatou um status geral de DOWN porque os aplicativos a seguir ainda n\u00e3o foram iniciados: {0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=A verifica\u00e7\u00e3o de funcionamento de inicializa\u00e7\u00e3o relatou um status geral de DOWN porque os aplicativos especificados n\u00e3o foram iniciados ainda e n\u00e3o est\u00e3o prontos para processar solicita\u00e7\u00f5es.
 startup.healthcheck.applications.not.started.down.CWMMH0054W.useraction=Este aviso \u00e9 um registro do status DOWN e nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria. Espere at\u00e9 que todos os aplicativos sejam iniciados. Ap\u00f3s todos os aplicativos serem iniciados, as verifica\u00e7\u00f5es de funcionamento definidas pelo usu\u00e1rio ser\u00e3o processadas.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# File-based health check messages
+#-----------------------------------------------------------------------------------------------------------------------------
+file.healthcheck.health.directory.create.fail.CWMMH0100W=CWMMH0100W: N\u00e3o foi poss\u00edvel criar o diret\u00f3rio /health no seguinte caminho [ {0} ]. A fun\u00e7\u00e3o de verifica\u00e7\u00e3o de integridade baseada em arquivo ser\u00e1 desativada.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.explanation=O tempo de execu\u00e7\u00e3o n\u00e3o conseguiu criar o diret\u00f3rio /health necess\u00e1rio para que as verifica\u00e7\u00f5es de integridade baseadas em arquivo funcionassem corretamente.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.useraction=O usu\u00e1rio deve identificar a causa raiz que impede o tempo de execu\u00e7\u00e3o de criar o diret\u00f3rio /health.
+
+
+file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: N\u00e3o \u00e9 poss\u00edvel gravar no diret\u00f3rio {0}. A fun\u00e7\u00e3o de verifica\u00e7\u00e3o de integridade baseada em arquivo ser\u00e1 desativada.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=O tempo de execu\u00e7\u00e3o requer permiss\u00f5es de grava\u00e7\u00e3o no diret\u00f3rio /health para criar os arquivos "live", "ready" e "started" para que as verifica\u00e7\u00f5es de integridade baseadas em arquivos funcionem corretamente.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=O usu\u00e1rio deve identificar a causa principal do problema de permiss\u00e3o.
+
+
+file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: O tempo de execu\u00e7\u00e3o detectou a presen\u00e7a do seguinte diret\u00f3rio [ {0} ]. Um arquivo com o mesmo nome \u00e9 necess\u00e1rio para a fun\u00e7\u00e3o de verifica\u00e7\u00e3o de integridade baseada em arquivo nesse caminho. A fun\u00e7\u00e3o de verifica\u00e7\u00e3o de integridade baseada em arquivo ser\u00e1 desativada.
+file.healthcheck.file.name.conflict.CWMMH0105W.explanation=As verifica\u00e7\u00f5es de integridade baseadas em arquivos exigem a cria\u00e7\u00e3o e o uso dos arquivos "live", "ready" e "started" no diret\u00f3rio /health. Um diret\u00f3rio existente com um desses nomes j\u00e1 est\u00e1 presente no diret\u00f3rio /health, o que impede a cria\u00e7\u00e3o dos arquivos necess\u00e1rios.
+file.healthcheck.file.name.conflict.CWMMH0105W.useraction=O diret\u00f3rio n\u00e3o \u00e9 criado por esse tempo de execu\u00e7\u00e3o e pode conter conte\u00fado importante para o usu\u00e1rio. Remova ou reposicione o diret\u00f3rio.
+
+file.healthcheck.file.delete.fail.CWMMH0106W=CWMMH0106W: N\u00e3o \u00e9 poss\u00edvel excluir o arquivo existente em [ {0} ]. A fun\u00e7\u00e3o de verifica\u00e7\u00e3o de integridade baseada em arquivo ser\u00e1 desativada.
+file.healthcheck.file.delete.fail.CWMMH0106W.explanation=As verifica\u00e7\u00f5es de integridade baseadas em arquivos exigem a cria\u00e7\u00e3o e o uso dos arquivos "live", "ready" e "started" no diret\u00f3rio /health. Para que as verifica\u00e7\u00f5es de integridade baseadas em arquivos funcionem corretamente, esses arquivos n\u00e3o devem existir quando o tempo de execu\u00e7\u00e3o for iniciado. O tempo de execu\u00e7\u00e3o tentou excluir o arquivo existente, mas n\u00e3o conseguiu.
+file.healthcheck.file.delete.fail.CWMMH0106W.useraction=O usu\u00e1rio deve identificar a causa raiz que impede que o tempo de execu\u00e7\u00e3o exclua os arquivos.
+
+file.update.interval.config.invalid.CWMMH01010W=CWMMH01010W: Um valor inv\u00e1lido [ {0} ] foi fornecido para o intervalo de atualiza\u00e7\u00e3o do arquivo. O valor fornecido deve consistir em um n\u00famero seguido de uma unidade de tempo opcional de "ms" para milissegundos ou "s" para segundos. Se nenhuma unidade de tempo for especificada, o valor ser\u00e1 em segundos por padr\u00e3o. O tempo de execu\u00e7\u00e3o ser\u00e1 padronizado para 10 segundos.
+file.update.interval.config.invalid.CWMMH01010W.explanation=A configura\u00e7\u00e3o do intervalo de atualiza\u00e7\u00e3o do arquivo aceita apenas um n\u00famero seguido de uma unidade de tempo opcional de "ms" para milissegundos ou "s" para segundos. Se nenhuma unidade de tempo for especificada, o valor ser\u00e1 em segundos por padr\u00e3o.
+file.update.interval.config.invalid.CWMMH01010W.useraction=Insira um valor correto para a configura\u00e7\u00e3o do intervalo de atualiza\u00e7\u00e3o do arquivo.

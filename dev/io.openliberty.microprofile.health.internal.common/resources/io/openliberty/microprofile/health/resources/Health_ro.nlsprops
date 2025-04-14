@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 # Messages used by Health Impl -  range is 0000-0999
 # The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
 # The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+# The 0100-0149 range is reserved for messages that are issued by the file-based health check mechanism
 #-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,3 +56,29 @@ readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Acest 
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: Starea de s\u0103n\u0103tate legat\u0103 de pornire a raportat o stare general\u0103 DOWN deoarece urm\u0103toarele aplica\u0163ii nu sunt \u00eenc\u0103 pornite: {0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=Starea de s\u0103n\u0103tate legat\u0103 de pornire a raportat o stare general\u0103 DOWN deoarece aplica\u0163iile specificate nu sunt \u00eenc\u0103 pornite \u015fi nu sunt preg\u0103tite s\u0103 proceseze cererile.
 startup.healthcheck.applications.not.started.down.CWMMH0054W.useraction=Acest avertisment este o \u00eenregistrare a st\u0103rii DOWN \u015fi nu este necesar\u0103 nicio ac\u0163iune a utilizatorului. Wait until all the applications are started. After all the applications are started, the user-defined health checks are processed.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# File-based health check messages
+#-----------------------------------------------------------------------------------------------------------------------------
+file.healthcheck.health.directory.create.fail.CWMMH0100W=CWMMH0100W: Nu s-a putut crea directorul /health la urm\u0103toarea adres\u0103 [ {0} ]. Func\u021bia de verificare a st\u0103rii de s\u0103n\u0103tate pe baz\u0103 de fi\u0219ier va fi dezactivat\u0103.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.explanation=Runtime-ul nu a reu\u0219it s\u0103 creeze directorul /health necesar pentru ca verific\u0103rile de s\u0103n\u0103tate bazate pe fi\u0219iere s\u0103 func\u021bioneze corect.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.useraction=Utilizatorul trebuie s\u0103 identifice cauza principal\u0103 care \u00eempiedic\u0103 runtime-ul s\u0103 creeze directorul /health.
+
+
+file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Nu se poate scrie \u00een directorul {0}. Func\u021bia de verificare a st\u0103rii de s\u0103n\u0103tate pe baz\u0103 de fi\u0219ier va fi dezactivat\u0103.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=Runtime-ul necesit\u0103 permisiuni de scriere la directorul /health pentru a crea fi\u0219ierele "live", "ready" \u0219i "started" pentru ca verific\u0103rile de s\u0103n\u0103tate bazate pe fi\u0219iere s\u0103 func\u021bioneze corect.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=Utilizatorul trebuie s\u0103 identifice cauza principal\u0103 a problemei de autorizare.
+
+
+file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: Runtime-ul a detectat prezen\u021ba urm\u0103torului director [ {0} ]. Un fi\u0219ier cu acela\u0219i nume este necesar pentru func\u021bia de verificare a st\u0103rii de s\u0103n\u0103tate pe baz\u0103 de fi\u0219ier la aceast\u0103 cale. Func\u021bia de verificare a st\u0103rii de s\u0103n\u0103tate pe baz\u0103 de fi\u0219ier va fi dezactivat\u0103.
+file.healthcheck.file.name.conflict.CWMMH0105W.explanation=Verific\u0103rile de s\u0103n\u0103tate bazate pe fi\u0219iere necesit\u0103 crearea \u0219i utilizarea fi\u0219ierelor "live", "ready" \u0219i "started" \u00een directorul /health. Un director existent cu unul dintre aceste nume este deja prezent \u00een directorul /health, ceea ce \u00eempiedic\u0103 crearea fi\u0219ierelor necesare.
+file.healthcheck.file.name.conflict.CWMMH0105W.useraction=Directorul nu este creat de acest runtime \u0219i poate con\u021bine informa\u021bii importante pentru utilizator. V\u0103 rug\u0103m s\u0103 elimina\u021bi sau s\u0103 relocaliza\u021bi directorul.
+
+file.healthcheck.file.delete.fail.CWMMH0106W=CWMMH0106W: Nu se poate \u0219terge fi\u0219ierul existent la [ {0} ]. Func\u021bia de verificare a st\u0103rii de s\u0103n\u0103tate pe baz\u0103 de fi\u0219ier va fi dezactivat\u0103.
+file.healthcheck.file.delete.fail.CWMMH0106W.explanation=Verific\u0103rile de s\u0103n\u0103tate bazate pe fi\u0219iere necesit\u0103 crearea \u0219i utilizarea fi\u0219ierelor "live", "ready" \u0219i "started" \u00een directorul /health. Pentru ca verific\u0103rile de s\u0103n\u0103tate bazate pe fi\u0219iere s\u0103 func\u021bioneze corect, aceste fi\u0219iere nu trebuie s\u0103 existe la pornirea runtime-ului. Runtime-ul a \u00eencercat s\u0103 \u0219tearg\u0103 fi\u0219ierul existent, dar nu a reu\u0219it.
+file.healthcheck.file.delete.fail.CWMMH0106W.useraction=Utilizatorul trebuie s\u0103 identifice cauza principal\u0103 care \u00eempiedic\u0103 runtime-ul s\u0103 \u0219tearg\u0103 fi\u0219ierele.
+
+file.update.interval.config.invalid.CWMMH01010W=CWMMH01010W: A fost furnizat\u0103 o valoare invalid\u0103 [ {0} ] pentru intervalul de actualizare a fi\u0219ierelor. Valoarea furnizat\u0103 trebuie s\u0103 constea \u00eentr-un num\u0103r urmat de o unitate de timp op\u021bional\u0103 "ms" pentru milisecunde sau "s" pentru secunde. Dac\u0103 nu este specificat\u0103 nicio unitate de timp, valoarea implicit\u0103 este \u00een secunde. Timpul de execu\u021bie va fi implicit de 10 secunde.
+file.update.interval.config.invalid.CWMMH01010W.explanation=Configurarea intervalului de actualizare a fi\u0219ierelor accept\u0103 doar un num\u0103r urmat de o unitate de timp op\u021bional\u0103 "ms" pentru milisecunde sau "s" pentru secunde. Dac\u0103 nu este specificat\u0103 nicio unitate de timp, valoarea implicit\u0103 este \u00een secunde.
+file.update.interval.config.invalid.CWMMH01010W.useraction=Introduce\u021bi o valoare corect\u0103 pentru configurarea intervalului de actualizare a fi\u0219ierelor.

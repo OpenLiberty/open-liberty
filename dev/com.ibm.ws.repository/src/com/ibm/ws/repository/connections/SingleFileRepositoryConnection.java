@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import com.ibm.ws.repository.connections.internal.AbstractRepositoryConnection;
 import com.ibm.ws.repository.transport.client.RepositoryReadableClient;
@@ -62,7 +63,7 @@ public class SingleFileRepositoryConnection extends AbstractRepositoryConnection
 
         OutputStreamWriter writer = null;
         try {
-            writer = new OutputStreamWriter(new FileOutputStream(jsonFile), "UTF-8");
+            writer = new OutputStreamWriter(new FileOutputStream(jsonFile), StandardCharsets.UTF_8);
             writer.write("[]");
         } finally {
             if (writer != null) {

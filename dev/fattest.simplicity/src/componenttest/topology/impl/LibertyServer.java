@@ -669,7 +669,7 @@ public class LibertyServer implements LogMonitorClient {
          */
         private boolean criuRestoreDisableRecovery = true;
 
-        private Properties checkpointEnv = null;
+        private Properties checkpointEnv = new Properties();
 
         /**
          * Set of regular expressions to match against lines to ignore in the post checkpoint log files. Error / Warning messages found

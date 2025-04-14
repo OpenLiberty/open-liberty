@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -63,6 +63,9 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Configurazione conflittuale per la pr
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile La telemetria pu\u00f2 essere attivata per l'intero server utilizzando le propriet\u00e0 di sistema o le variabili d'ambiente. Se non \u00e8 abilitato per l'intero server, pu\u00f2 essere abilitato per un'applicazione impostando le propriet\u00e0 di configurazione MicroProfile; ad esempio, impostando le variabili nel file server.xml. Questo avviso viene dato se la telemetria \u00e8 abilitata per l'intero server, ma le propriet\u00e0 di configurazione MicroProfile disabilitano la telemetria per un'applicazione. Poich\u00e9 la telemetria \u00e8 abilitata per l'intero server, la configurazione di questa applicazione viene ignorata.
 CWMOT5007.tel.enabled.conflict.useraction: Specificare le impostazioni per abilitare o disabilitare le istanze di OpenTelemetry utilizzando le variabili d'ambiente e le propriet\u00e0 del sistema o altre fonti di MP Config, ma non entrambe.
 
+CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: La funzione di registrazione della telemetria MicroProfile non riconosce il formato del registro di accesso alla telemetria [ {0} ].
+CWMOT5008.mptelemetry.unknown.access.log.field.explanation=L'ambiente di runtime Liberty non fornisce il formato di log specificato.
+CWMOT5008.mptelemetry.unknown.access.log.field.useraction=Specificare default o logFormat per l'attributo mpTelemetry accessLogFields.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages

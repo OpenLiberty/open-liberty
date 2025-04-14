@@ -47,7 +47,6 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
 import io.openliberty.data.internal.persistence.QueryInfo.Type;
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
-import io.openliberty.data.internal.persistence.cdi.FutureEMBuilder;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
@@ -76,23 +75,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
     final Class<R> repositoryInterface;
     final EntityValidator validator;
 
-    @FFDCIgnore(CompletionException.class)
     public RepositoryImpl(DataProvider provider,
                           DataExtension extension,
-                          FutureEMBuilder futureEMBuilder,
+                          EntityManagerBuilder builder,
                           Class<R> repositoryInterface,
                           Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
-        EntityManagerBuilder builder;
-        try {
-            builder = futureEMBuilder.join();
-        } catch (CompletionException x) {
-            // The CompletionException does not have the current stack. Replace it.
-            Throwable cause = x.getCause();
-            if (cause != null)
-                x = new CompletionException(cause.getMessage(), cause);
-            throw x;
-        }
 
         // EntityManagerBuilder implementations guarantee that the future
         // in the following map will be completed even if an error occurs

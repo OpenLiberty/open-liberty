@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 //package com.ibm.ws.sip.container.was;
 //
@@ -357,7 +354,6 @@
 ////        }
 ////        catch (ParserConfigurationException e)
 ////        {
-////            // TODO Auto-generated catch block
 ////            e.printStackTrace();
 ////        }
 ////    }

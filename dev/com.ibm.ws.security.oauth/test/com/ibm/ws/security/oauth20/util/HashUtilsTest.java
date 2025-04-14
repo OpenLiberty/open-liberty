@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.security.oauth20.util;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -80,7 +81,7 @@ public class HashUtilsTest {
         String code_verifier = getEncoded(code);
         String code_challenge = getDigest(code_verifier, "nourlsafe");
 
-        String challenge = HashUtils.encodedDigest(code_verifier, "SHA-256", "US-ASCII");
+        String challenge = HashUtils.encodedDigest(code_verifier, "SHA-256", StandardCharsets.US_ASCII);
 
         org.junit.Assert.assertNotSame("code verifier is encoded non url safe", challenge, code_challenge);
 
@@ -95,7 +96,7 @@ public class HashUtilsTest {
         String code_verifier = getEncodedUsingLocalEncoder(code);
         String code_challenge = getDigest(code_verifier, "local");
 
-        String challenge = HashUtils.encodedDigest(code_verifier, "SHA-256", "US-ASCII");
+        String challenge = HashUtils.encodedDigest(code_verifier, "SHA-256", StandardCharsets.US_ASCII);
 
         org.junit.Assert.assertNotSame("code verifier is encoded using local", challenge, code_challenge);
 
@@ -110,7 +111,7 @@ public class HashUtilsTest {
         String code_verifier = getUrlSafeEncoded(code);
         String code_challenge = getDigest(code_verifier, "urlsafe");
 
-        String challenge = HashUtils.encodedDigest(code_verifier, "SHA-256", "US-ASCII");
+        String challenge = HashUtils.encodedDigest(code_verifier, "SHA-256", StandardCharsets.US_ASCII);
 
         org.junit.Assert.assertEquals("code verifier is encoded and url safe and should be same", challenge, code_challenge);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@ package io.openliberty.webcontainer61.osgi.webapp;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,7 +72,7 @@ public class WebAppDispatcherContext61 extends WebAppDispatcherContext40 {
 
                 try {
                     ServletOutputStream out = response.getOutputStream();
-                    out.write(hyperText.getBytes("UTF-8"));
+                    out.write(hyperText.getBytes(StandardCharsets.UTF_8));
                 } catch (IllegalStateException ise) {
                     PrintWriter writer = response.getWriter();
                     writer.print(hyperText);

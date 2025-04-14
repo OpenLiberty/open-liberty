@@ -187,12 +187,18 @@ public class DataTestServlet extends FATServlet {
                        new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
                        new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
                        new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
-                       new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
-                       new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
-                       new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
-                       new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
-                       new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"), // empty list of romanNumeralSymbols
-                       new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one ")); // extra blank space at beginning and end
+                       // romanNumeralSymbols null:
+                       new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"),
+                       // romanNumeralSymbols null:
+                       new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"),
+                       // romanNumeralSymbols null:
+                       new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"),
+                       // empty list of romanNumeralSymbols:
+                       new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"),
+                       // empty list of romanNumeralSymbols:
+                       new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"),
+                       // extra blank space at beginning and end:
+                       new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one "));
     }
 
     /**
@@ -475,17 +481,6 @@ public class DataTestServlet extends FATServlet {
                              primes.findByEvenNotFalseAndNumberIdLessThan(10L)
                                              .stream()
                                              .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
-    }
-
-    /**
-     * Test the CharCount keyword to query based on string length.
-     */
-    @Test
-    public void testCharCountKeyword() {
-        assertIterableEquals(List.of("eleven", "nineteen", "seven", "thirteen", "three"),
-                             primes.findByNameCharCountBetween(5, 8)
-                                             .map(p -> p.name)
                                              .collect(Collectors.toList()));
     }
 
@@ -2442,6 +2437,10 @@ public class DataTestServlet extends FATServlet {
         // Equals
         assertEquals("twenty-nine", primes.findByNameIgnoreCase("Twenty-Nine").name);
 
+        Prime prime = primes.findByNameIgnoreCase(" Four Thousand Twenty-One ");
+        assertEquals(4021L, prime.numberId);
+        assertEquals(" Four thousand twenty-one ", prime.name);
+
         // Not
         assertIterableEquals(List.of("two", "five", "seven"),
                              primes.findByNameIgnoreCaseNotAndNumberIdLessThanOrderByNumberIdAsc("Three", 10)
@@ -3462,6 +3461,21 @@ public class DataTestServlet extends FATServlet {
     public void testLeftFunction() {
         assertEquals(List.of("seven", "seventeen"),
                      primes.matchLeftSideOfName("seven"));
+    }
+
+    /**
+     * Test the LENGTH JDQL function to query based on string length.
+     */
+    @Test
+    public void testLengthFunction() {
+        assertIterableEquals(List.of("eleven",
+                                     "nineteen",
+                                     "seven",
+                                     "thirteen",
+                                     "three"),
+                             primes.findByLengthOfNameBetween(5, 8)
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -4914,7 +4928,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Use repository methods with Rounded, RoundedUp, and RoundedDown keywords.
+     * Use repository methods with ROUND, CEILING, and FLOOR functions in a Query.
      */
     @Test
     public void testRounding() {
@@ -6031,19 +6045,16 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Test the Trimmed keyword by querying against data that has leading and trailing blank space.
+     * Test the TRIM function by querying against data that has leading and trailing
+     * blank space.
      */
     @Test
-    public void testTrimmedKeyword() {
-        List<Prime> found = primes.findByNameTrimmedCharCountAndNumberIdBetween(24, 4000L, 4025L);
+    public void testTrimFunction() {
+        List<Prime> found = primes.withTrimmedNameLengthAndNumBetween(24, 4000L, 4025L);
         assertNotNull(found);
         assertEquals("Found: " + found, 1, found.size());
         assertEquals(4021L, found.get(0).numberId);
         assertEquals(" Four thousand twenty-one ", found.get(0).name);
-
-        Prime prime = primes.findByNameTrimmedIgnoreCase("FOUR THOUSAND TWENTY-ONE").orElseThrow();
-        assertEquals(4021L, prime.numberId);
-        assertEquals(" Four thousand twenty-one ", prime.name);
     }
 
     /**

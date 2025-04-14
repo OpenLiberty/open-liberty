@@ -15,6 +15,7 @@ package com.ibm.ws.security.audit.file;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -959,7 +960,7 @@ public class AuditFileHandler implements SynchronousHandler {
 
                             byte[] er = null;
                             byte[] encryptedAuditRecord = null;
-                            byte[] eventBytes = jsonEvent.getBytes("UTF-8");
+                            byte[] eventBytes = jsonEvent.getBytes(StandardCharsets.UTF_8);
                             String z = new String(eventBytes);
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "eventBytes: " + z + "eventBytes.length: " + eventBytes.length);
@@ -1064,7 +1065,7 @@ public class AuditFileHandler implements SynchronousHandler {
 
                             String jsonEvent = mapToJSONString(event.getMap());
 
-                            byte[] eventBytes = jsonEvent.getBytes("UTF-8");
+                            byte[] eventBytes = jsonEvent.getBytes(StandardCharsets.UTF_8);
 
                             signedAuditRecord = as.sign(eventBytes, signedSharedKey);
 

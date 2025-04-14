@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,7 +47,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
      */
     @Override
     public void close() throws IOException {
-        // TODO Auto-generated method stub
         super.close();
     }
 

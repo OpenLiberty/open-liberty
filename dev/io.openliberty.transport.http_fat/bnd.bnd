@@ -11,30 +11,30 @@
 bVersion=1.0
 
 src: \
-	fat/src,\
-	test-applications/app1/src
-	
+    fat/src,\
+    test-applications/app1/src
+
 fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, Java EE 8 features are added programmatically at runtime by the RepeatTests rule.
 tested.features:\
-	servlet-3.0, \
-	servlet-4.0, \
-	servlet-5.0, \
-	servlet-6.0, \
-	servlet-6.1
+    servlet-3.0, \
+    servlet-4.0, \
+    servlet-5.0, \
+    servlet-6.0, \
+    servlet-6.1
 
 -buildpath:\
-	io.openliberty.org.apache.commons.logging;version=latest, \
-	io.openliberty.org.apache.commons.codec;version=latest, \
-	com.ibm.websphere.javaee.servlet.4.0;version=latest, \
-	com.ibm.ws.transport.http;version=latest, \
-	com.ibm.ws.channelfw;version=latest, \
-	org.apache.httpcomponents.client5:httpclient5;version=5.0.2, \
-	org.apache.httpcomponents.core5:httpcore5;version=5.0.2, \
-	org.apache.httpcomponents.core5:httpcore5-h2;version=5.0.2, \
-	commons-httpclient:commons-httpclient;version=3.1, \
-	httpunit:httpunit;version=1.5.4, \
-	net.sf.jtidy:jtidy;version=9.3.8, \
+    io.openliberty.org.apache.commons.logging;version=latest, \
+    io.openliberty.org.apache.commons.codec;version=latest, \
+    com.ibm.websphere.javaee.servlet.4.0;version=latest, \
+    com.ibm.ws.transport.http;version=latest, \
+    com.ibm.ws.channelfw;version=latest, \
+    org.apache.httpcomponents.client5:httpclient5;version=5.0.2, \
+    org.apache.httpcomponents.core5:httpcore5;version=5.0.2, \
+    org.apache.httpcomponents.core5:httpcore5-h2;version=5.0.2, \
+    commons-httpclient:commons-httpclient;version=3.1, \
+    httpunit:httpunit;version=1.5.4, \
+    net.sf.jtidy:jtidy;version=9.3.8, \
     com.ibm.ws.org.slf4j.simple;version=latest

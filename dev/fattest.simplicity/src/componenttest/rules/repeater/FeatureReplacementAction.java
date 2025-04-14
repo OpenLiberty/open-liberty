@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,36 +108,42 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
-     * Replaces any Java EE 8 features with the Java EE 7 equivalent feature.
+     * Replaces any Java / Jakarta EE features with the Java EE 6 equivalent feature.
+     */
+    public static FeatureReplacementAction EE6_FEATURES() {
+        return new EE6FeatureReplacementAction();
+    }
+
+    /**
+     * Replaces any Java / Jakarta EE features with the Java EE 7 equivalent feature.
      */
     public static FeatureReplacementAction EE7_FEATURES() {
         return new EE7FeatureReplacementAction();
     }
 
     /**
-     * Replaces any Java EE 7 features with the Java EE 8 equivalent feature.
-     * Will automatically skip if running below Java 8.
+     * Replaces any Java / Jakarta EE features with the Java EE 8 equivalent feature.
      */
     public static FeatureReplacementAction EE8_FEATURES() {
         return new EE8FeatureReplacementAction();
     }
 
     /**
-     * Remove the EE7 and EE8 features; replace them with the EE9 features
+     * Replaces any Java / Jakarta EE features with the Jakarta EE 9 equivalent feature.
      */
     public static JakartaEEAction EE9_FEATURES() {
         return new JakartaEE9Action();
     }
 
     /**
-     * Remove the EE7, EE8, and EE9 features; replace them with the EE10 features
+     * Replaces any Java / Jakarta EE features with the Jakarta EE 10 equivalent feature.
      */
     public static JakartaEEAction EE10_FEATURES() {
         return new JakartaEE10Action();
     }
 
     /**
-     * Remove the EE7, EE8, EE9, and EE10 features; replace them with the EE11 features
+     * Replaces any Java / Jakarta EE features with the Jakarta EE 11 equivalent feature.
      */
     public static JakartaEEAction EE11_FEATURES() {
         return new JakartaEE11Action();

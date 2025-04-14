@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -276,7 +277,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
         ByteArrayOutputStream startOutputStream = new ByteArrayOutputStream();
 
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(startOutputStream, Charset.forName("UTF-8"));
+            OutputStreamWriter writer = new OutputStreamWriter(startOutputStream, StandardCharsets.UTF_8);
             writer.write("--" + boundary + NEWLINE);
             writer.write("Content-Disposition: form-data; name=\"attachmentInfo\"" + NEWLINE);
             writer.write("Content-Type: application/json" + NEWLINE);
@@ -319,7 +320,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
         ByteArrayOutputStream endOutputStream = new ByteArrayOutputStream();
         // Data to stream after file is uploaded
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(endOutputStream, Charset.forName("UTF-8"));
+            OutputStreamWriter writer = new OutputStreamWriter(endOutputStream, StandardCharsets.UTF_8);
             writer.write(NEWLINE);
             writer.write("--" + boundary + "--" + NEWLINE);
             writer.close();
@@ -482,7 +483,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
         if (attachment.getLinkType() == AttachmentLinkType.DIRECT) {
             if ((loginInfo.getAttachmentBasicAuthUserId() != null) && (loginInfo.getAttachmentBasicAuthPassword() != null)) {
                 String userpass = loginInfo.getAttachmentBasicAuthUserId() + ":" + loginInfo.getAttachmentBasicAuthPassword();
-                String basicAuth = "Basic " + encode(userpass.getBytes(Charset.forName("UTF-8")));
+                String basicAuth = "Basic " + encode(userpass.getBytes(StandardCharsets.UTF_8));
                 connection.setRequestProperty("Authorization", basicAuth);
             }
         }
@@ -742,7 +743,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
         }
 
         if (basicAuthUserPass != null) {
-            String basicAuth = "Basic " + encode(basicAuthUserPass.getBytes(Charset.forName("UTF-8")));
+            String basicAuth = "Basic " + encode(basicAuthUserPass.getBytes(StandardCharsets.UTF_8));
             connection.setRequestProperty("Authorization", basicAuth);
         }
 
@@ -1037,7 +1038,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
         }
         try {
             // Just use JsonObject parse directly instead of DataModelSerializer as we only want one attribute
-            InputStream inputStream = new ByteArrayInputStream(errorObject.getBytes(Charset.forName("UTF-8")));
+            InputStream inputStream = new ByteArrayInputStream(errorObject.getBytes(StandardCharsets.UTF_8));
             JsonReader jsonReader = Json.createReader(inputStream);
             JsonObject parsedObject = jsonReader.readObject();
             jsonReader.close();

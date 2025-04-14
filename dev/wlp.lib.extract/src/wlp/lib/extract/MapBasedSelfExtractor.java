@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,8 +14,8 @@ package wlp.lib.extract;
 
 import java.io.File;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -137,6 +137,7 @@ public class MapBasedSelfExtractor implements Map {
         private List downloadSizeMonitor;
         private boolean canceled;
 
+        @Override
         public void downloadingFile(URL sourceUrl, File targetFile) {
             if (downloadedFiles != null) {
                 Map downloadInformation = new HashMap();
@@ -146,28 +147,38 @@ public class MapBasedSelfExtractor implements Map {
             }
         }
 
+        @Override
         public void dataDownloaded(int numBytes) {
             if (downloadSizeMonitor != null) {
                 downloadSizeMonitor.add(Integer.valueOf(numBytes));
             }
         }
 
+        @Override
         public void extractedFile(String f) {
             if (extractedFiles != null) {
                 canceled = !!!extractedFiles.add(f);
             }
         }
 
-        public void setFilesToExtract(int count) {}
+        @Override
+        public void setFilesToExtract(int count) {
+        }
 
-        public void commandRun(List args) {}
+        @Override
+        public void commandRun(List args) {
+        }
 
-        public void commandsToRun(int count) {}
+        @Override
+        public void commandsToRun(int count) {
+        }
 
+        @Override
         public boolean isCanceled() {
             return canceled;
         }
 
+        @Override
         public void skippedFile() {
             if (extractedFiles != null) {
                 canceled = !!!extractedFiles.add(INSTALL_VERSION_ONE);
@@ -194,6 +205,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#clear()
      */
+    @Override
     public void clear() {
         throw new UnsupportedOperationException();
     }
@@ -203,6 +215,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#containsKey(java.lang.Object)
      */
+    @Override
     public boolean containsKey(Object arg0) {
         return data.containsKey(arg0);
     }
@@ -212,6 +225,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#containsValue(java.lang.Object)
      */
+    @Override
     public boolean containsValue(Object arg0) {
         throw new UnsupportedOperationException();
     }
@@ -221,6 +235,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#entrySet()
      */
+    @Override
     public Set entrySet() {
         throw new UnsupportedOperationException();
     }
@@ -230,6 +245,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#get(java.lang.Object)
      */
+    @Override
     public Object get(Object arg0) {
         if (INSTALL_CODE.equals(arg0) && extract != null && installDir != null && (!extract.hasLicense() || licenseAccepted.booleanValue())) {
             ReturnCode rc = extract.validate(installDir);
@@ -239,17 +255,9 @@ public class MapBasedSelfExtractor implements Map {
             data.put(INSTALL_CODE, new Integer(rc.getCode()));
             data.put(INSTALL_ERROR_MESSAGE, rc.getErrorMessage());
         } else if (LICENSE_AGREEMENT.equals(arg0)) {
-            try {
-                return extract.hasLicense() ? new InputStreamReader(extract.getLicenseAgreement(), "UTF-16") : null;
-            } catch (UnsupportedEncodingException e) {
-                return null;
-            }
+            return extract.hasLicense() ? new InputStreamReader(extract.getLicenseAgreement(), StandardCharsets.UTF_16) : null;
         } else if (LICENSE_INFO.equals(arg0)) {
-            try {
-                return extract.hasLicense() ? new InputStreamReader(extract.getLicenseInformation(), "UTF-16") : null;
-            } catch (UnsupportedEncodingException e) {
-                return null;
-            }
+            return extract.hasLicense() ? new InputStreamReader(extract.getLicenseInformation(), StandardCharsets.UTF_16) : null;
         } else if (LICENSE_PRESENT.equals(arg0)) {
             return Boolean.valueOf(extract.hasLicense());
         } else if (HAS_EXTERNAL_DEPS.equals(arg0)) {
@@ -283,6 +291,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#isEmpty()
      */
+    @Override
     public boolean isEmpty() {
         return false;
     }
@@ -292,6 +301,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#keySet()
      */
+    @Override
     public Set keySet() {
         throw new UnsupportedOperationException();
     }
@@ -301,6 +311,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#put(java.lang.Object, java.lang.Object)
      */
+    @Override
     public Object put(Object arg0, Object arg1) {
         Object old = null;
         if (INSTALL_DIR.equals(arg0)) {
@@ -400,6 +411,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#putAll(java.util.Map)
      */
+    @Override
     public void putAll(Map arg0) {
         throw new UnsupportedOperationException();
     }
@@ -409,6 +421,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#remove(java.lang.Object)
      */
+    @Override
     public Object remove(Object arg0) {
         throw new UnsupportedOperationException();
     }
@@ -418,6 +431,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#size()
      */
+    @Override
     public int size() {
         throw new UnsupportedOperationException();
     }
@@ -427,6 +441,7 @@ public class MapBasedSelfExtractor implements Map {
      *
      * @see java.util.Map#values()
      */
+    @Override
     public Collection values() {
         throw new UnsupportedOperationException();
     }

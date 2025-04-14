@@ -31,6 +31,7 @@ When available, add links to required feature documents. Use "N/A" to mark parti
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## Process Overview
 
+- [Sizing](#sizing)
 - [Prioritization](#prioritization)
 - [Design](#design)
 - [Implementation](#implementation)
@@ -51,6 +52,28 @@ Unless otherwise indicated, the tasks are the responsibility of the feature owne
 If you need assistance, reach out to the [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 
 **Important: Labels are used to trigger particular steps and must be added as indicated.**
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## **Sizing** (Complete Before Development Starts)
+
+Add a sizing to the feature. Sizing features helps inform prioritization decisions by telling us how much investment a given feature will require.
+
+To add a size to a feature:
+- Find the **Projects** section in the right sidebar of the issue.
+- Add the issue to the **Open Liberty Roadmap** project (if not already done).
+- Expand the dropdown for the project.
+- Find the "T-Shirt Size" field and select the appropriate value, or work with the [Open Liberty Project Manager](https://github.com/orgs/OpenLiberty/teams/project-manager) or [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) to have them add the size for you.
+
+Consider this as the scale to use to gauge sizes:
+| Size | Guide |
+| ---- | ----- |
+| XS   | <= 1 person week's (PW) worth of work |
+| S    | 2-3 PW |
+| M    | 4-5 PW |
+| L    | 6-9 PW |
+| XL   | 10-15 PW |
+| 2XL  | 16-20 PW |
+| 3XL  | 21+ PW |
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Prioritization** (Complete Before Development Starts)

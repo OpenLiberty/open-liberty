@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 # Messages used by Health Impl -  range is 0000-0999
 # The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
 # The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+# The 0100-0149 range is reserved for messages that are issued by the file-based health check mechanism
 #-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,3 +56,29 @@ readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=To ost
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: Kontrola poprawno\u015bci uruchamiania zg\u0142osi\u0142a og\u00f3lny status WY\u0141\u0104CZONE, poniewa\u017c nast\u0119puj\u0105ce aplikacje nie zosta\u0142y jeszcze uruchomione: {0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=Kontrola poprawno\u015bci uruchamiania zg\u0142osi\u0142a og\u00f3lny status WY\u0141\u0104CZONE, poniewa\u017c okre\u015blone aplikacje nie s\u0105 jeszcze uruchomione i nie s\u0105 gotowe do przetwarzania \u017c\u0105da\u0144.
 startup.healthcheck.applications.not.started.down.CWMMH0054W.useraction=To ostrze\u017cenie dokumentuje status WY\u0141\u0104CZONE i nie jest wymagane \u017cadne dzia\u0142anie u\u017cytkownika. Poczekaj na uruchomienie wszystkich aplikacji. Po uruchomieniu wszystkich aplikacji realizowane s\u0105 kontrole poprawno\u015bci zdefiniowane przez u\u017cytkownika.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# File-based health check messages
+#-----------------------------------------------------------------------------------------------------------------------------
+file.healthcheck.health.directory.create.fail.CWMMH0100W=CWMMH0100W: Nie mo\u017cna utworzy\u0107 katalogu /health w nast\u0119puj\u0105cej \u015bcie\u017cce [ {0} ]. Funkcja sprawdzania kondycji oparta na plikach zostanie wy\u0142\u0105czona.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.explanation=\u015arodowisko wykonawcze nie by\u0142o w stanie utworzy\u0107 wymaganego katalogu /health, aby kontrole kondycji oparte na plikach dzia\u0142a\u0142y poprawnie.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.useraction=U\u017cytkownik musi zidentyfikowa\u0107 g\u0142\u00f3wn\u0105 przyczyn\u0119 uniemo\u017cliwiaj\u0105c\u0105 \u015brodowisku uruchomieniowemu utworzenie katalogu /health.
+
+
+file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Nie mo\u017cna zapisa\u0107 do katalogu {0}. Funkcja sprawdzania kondycji oparta na plikach zostanie wy\u0142\u0105czona.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=\u015arodowisko wykonawcze wymaga uprawnie\u0144 zapisu do katalogu /health w celu utworzenia plik\u00f3w "live", "ready" i "started", aby kontrole kondycji oparte na plikach dzia\u0142a\u0142y prawid\u0142owo.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=U\u017cytkownik musi zidentyfikowa\u0107 g\u0142\u00f3wn\u0105 przyczyn\u0119 problemu z uprawnieniami.
+
+
+file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: \u015arodowisko wykonawcze wykry\u0142o obecno\u015b\u0107 nast\u0119puj\u0105cego katalogu [ {0} ]. Plik o tej samej nazwie jest wymagany dla funkcji sprawdzania kondycji opartej na plikach w tej \u015bcie\u017cce. Funkcja sprawdzania kondycji oparta na plikach zostanie wy\u0142\u0105czona.
+file.healthcheck.file.name.conflict.CWMMH0105W.explanation=Kontrole stanu oparte na plikach wymagaj\u0105 utworzenia i u\u017cycia plik\u00f3w "live", "ready" i "started" w katalogu /health. Istniej\u0105cy katalog o jednej z tych nazw jest ju\u017c obecny w katalogu /health, co uniemo\u017cliwia utworzenie wymaganych plik\u00f3w.
+file.healthcheck.file.name.conflict.CWMMH0105W.useraction=Katalog nie jest tworzony przez to \u015brodowisko uruchomieniowe i mo\u017ce zawiera\u0107 zawarto\u015b\u0107 wa\u017cn\u0105 dla u\u017cytkownika. Prosimy o usuni\u0119cie lub przeniesienie katalogu.
+
+file.healthcheck.file.delete.fail.CWMMH0106W=CWMMH0106W: Nie mo\u017cna usun\u0105\u0107 istniej\u0105cego pliku pod adresem [ {0} ]. Funkcja sprawdzania kondycji oparta na plikach zostanie wy\u0142\u0105czona.
+file.healthcheck.file.delete.fail.CWMMH0106W.explanation=Kontrole stanu oparte na plikach wymagaj\u0105 utworzenia i u\u017cycia plik\u00f3w "live", "ready" i "started" w katalogu /health. Aby kontrole kondycji oparte na plikach dzia\u0142a\u0142y poprawnie, pliki te nie mog\u0105 istnie\u0107 podczas uruchamiania \u015brodowiska wykonawczego. Runtime pr\u00f3bowa\u0142 usun\u0105\u0107 istniej\u0105cy plik, ale nie by\u0142 w stanie.
+file.healthcheck.file.delete.fail.CWMMH0106W.useraction=U\u017cytkownik musi zidentyfikowa\u0107 g\u0142\u00f3wn\u0105 przyczyn\u0119 uniemo\u017cliwiaj\u0105c\u0105 usuni\u0119cie plik\u00f3w przez runtime.
+
+file.update.interval.config.invalid.CWMMH01010W=CWMMH01010W: Podano nieprawid\u0142ow\u0105 warto\u015b\u0107 [ {0} ] dla interwa\u0142u aktualizacji pliku. Podana warto\u015b\u0107 musi sk\u0142ada\u0107 si\u0119 z liczby, po kt\u00f3rej nast\u0119puje opcjonalna jednostka czasu "ms" dla milisekund lub "s" dla sekund. Je\u015bli nie okre\u015blono jednostki czasu, warto\u015b\u0107 domy\u015blnie podawana jest w sekundach. Domy\u015blny czas dzia\u0142ania wynosi 10 sekund.
+file.update.interval.config.invalid.CWMMH01010W.explanation=Konfiguracja interwa\u0142u aktualizacji plik\u00f3w akceptuje tylko liczb\u0119, po kt\u00f3rej nast\u0119puje opcjonalna jednostka czasu "ms" dla milisekund lub "s" dla sekund. Je\u015bli nie okre\u015blono jednostki czasu, warto\u015b\u0107 domy\u015blnie podawana jest w sekundach.
+file.update.interval.config.invalid.CWMMH01010W.useraction=Wprowad\u017a poprawn\u0105 warto\u015b\u0107 dla konfiguracji interwa\u0142u aktualizacji pliku.

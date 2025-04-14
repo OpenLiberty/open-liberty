@@ -59,15 +59,17 @@ public class Dockerfile implements Comparable<Dockerfile> {
      * @return The DockerImageName for this Dockerfile
      */
     private static DockerImageName constructImageName(Path location) {
+        
+        final String SEPARATOR = "/";
 
         // io.openliberty.org.testcontainers/resources/openliberty/testcontainers/[repository]/[version]/Dockerfile
-        final String fullPath = location.toString();
+        final String fullPath = location.toString().replace("\\", SEPARATOR);
         
         System.out.println("Full path to dockerfile is: " + fullPath);
 
         // Find version (between the last two separator characters)
-        int end = fullPath.lastIndexOf(File.separator);
-        int start = fullPath.substring(0, end).lastIndexOf(File.separator) + 1;
+        int end = fullPath.lastIndexOf(SEPARATOR);
+        int start = fullPath.substring(0, end).lastIndexOf(SEPARATOR) + 1;
         final String version = fullPath.substring(start, end);
 
         // Find repository (between "resources/" and version)

@@ -35,7 +35,9 @@ fat.minimum.java.level: 17
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
     com.ibm.ws.jpa_testframework;version=latest,\
+    com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common;version=latest,\
     com.ibm.ws.jpa.tests.beanvalidation_fat.common;version=latest,\
+    fattest.simplicity;version=latest,\
     io.openliberty.jakarta.annotation.3.0;version=latest,\
     io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
     io.openliberty.jakarta.servlet.6.1;version=latest,\

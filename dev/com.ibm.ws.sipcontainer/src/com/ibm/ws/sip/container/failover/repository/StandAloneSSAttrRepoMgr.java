@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.failover.repository;
 
@@ -126,17 +123,14 @@ public class StandAloneSSAttrRepoMgr implements SSAttrRepository {
 	}
 
 	public Object beginTx() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public Object commitTx(Object txKey) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public Object rollback(Object txKey) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

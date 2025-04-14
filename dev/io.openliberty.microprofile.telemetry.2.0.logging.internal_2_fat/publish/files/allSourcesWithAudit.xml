@@ -23,4 +23,5 @@
 	<mpTelemetry source="message, trace, ffdc, audit"/>
 	<logging traceSpecification="io.openliberty.microprofile.telemetry.logging.internal.fat.MpTelemetryLogApp.*=all"/>
 	<application location="MpTelemetryLogApp.war"/>
+	<include location="serverSessionConfig.xml"/>
 </server>

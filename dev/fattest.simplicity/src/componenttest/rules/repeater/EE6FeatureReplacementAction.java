@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2024 IBM Corporation and others.
+ * Copyright (c) 2018,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,13 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import componenttest.common.apiservices.Bootstrap;
 
 public class EE6FeatureReplacementAction extends FeatureReplacementAction {
 
@@ -51,6 +54,26 @@ public class EE6FeatureReplacementAction extends FeatureReplacementAction {
         removeFeatures(JakartaEE11Action.EE11_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
+    }
+
+    @Override
+    /**
+     * In an Open Liberty installation environment, EE 6 features will not exist. As such this action should not be enabled.
+     * When testing against a WebSphere Liberty installation environment, this action can be enabled.
+     */
+    public boolean isEnabled() {
+        if (!super.isEnabled()) {
+            return false;
+        }
+        try {
+            Bootstrap b = Bootstrap.getInstance();
+            String installRoot = b.getValue("libertyInstallPath");
+            // Check for servlet-3.0 feature existing
+            File servlet30Feature = new File(installRoot + "/lib/features/com.ibm.websphere.appserver.servlet-3.0.mf");
+            return servlet30Feature.exists();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

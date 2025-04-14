@@ -373,8 +373,6 @@ public abstract class SipConnLink extends BaseConnection implements ChannelFutur
 
 	@Override
 	public void operationComplete(ChannelFuture arg0) throws Exception {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/*

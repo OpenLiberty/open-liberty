@@ -38,6 +38,14 @@ public class TestUtils {
 
     private static Class<?> c = TestUtils.class;
 
+    //Sample trace headers for each propagator.
+    public static String W3C_TRACE_DATA = "00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01";
+    public static String B3_TRACE_DATA = "e5fee0b8184e2a838aafe4aa959aa21c-4626864da5e71e37-1";
+    public static String JAEGER_TRACE_DATA = "322b8ac131b128bcaf56c0c41b84aff5:956ff8b1abbd7993:0:1";
+    public static final String ACCESS_TRACE_W3C_HEADER_NAME = "traceparent";
+    public static final String ACCESS_TRACE_JAEGER_HEADER_NAME = "uber-trace-id";
+    public static final String ACCESS_TRACE_B3_HEADER_NAME = "b3";
+
     public static void runApp(LibertyServer server, String type) {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/MpTelemetryLogApp";
         if (type.equals("access")) {
@@ -61,13 +69,43 @@ public class TestUtils {
         Log.info(c, "runApp", "---> Running the application with url : " + url);
 
         try {
-            runGetMethod(url);
+            runGetMethod(url, null, null);
         } catch (Exception e) {
             Log.info(c, "runApp", " ---> Exception : " + e.getMessage());
         }
     }
 
-    static String runGetMethod(String urlStr) throws Exception {
+    public static void runAccessApp(LibertyServer server, String type, String propagator) {
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/MpTelemetryLogApp/AccessURL";
+        Log.info(c, "runApp", "---> Running the application with url : " + url);
+
+        String requestHeader = null;
+        String traceData = null;
+        if (propagator.equals("w3c")) {
+            requestHeader = ACCESS_TRACE_W3C_HEADER_NAME;
+            traceData = W3C_TRACE_DATA;
+        } else if (propagator.equals("b3")) {
+            requestHeader = ACCESS_TRACE_B3_HEADER_NAME;
+            traceData = B3_TRACE_DATA;
+        } else if (propagator.equals("jaeger")) {
+            requestHeader = ACCESS_TRACE_JAEGER_HEADER_NAME;
+            traceData = JAEGER_TRACE_DATA;
+        } else if (propagator.equals("invalidHeaderValue")) {
+            requestHeader = ACCESS_TRACE_JAEGER_HEADER_NAME;
+            traceData = W3C_TRACE_DATA;
+        }
+
+        try {
+            if (requestHeader != null)
+                runGetMethod(url, requestHeader, traceData);
+            else
+                runGetMethod(url, null, null);
+        } catch (Exception e) {
+            Log.info(c, "runApp", " ---> Exception : " + e.getMessage());
+        }
+    }
+
+    static String runGetMethod(String urlStr, String requestHeader, String requestValue) throws Exception {
         Log.info(c, "runGetMethod", "URL = " + urlStr);
         URL url = new URL(urlStr);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -76,6 +114,10 @@ public class TestUtils {
             con.setDoOutput(true);
             con.setUseCaches(false);
             con.setRequestMethod("GET");
+
+            if (requestHeader != null) {
+                con.setRequestProperty(requestHeader, requestValue);
+            }
 
             InputStream is = con.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);

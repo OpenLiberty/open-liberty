@@ -2371,87 +2371,8 @@ public class QueryInfo {
         boolean negated = endsWith("Not", methodName, start, endBefore);
         endBefore -= (negated ? 3 : 0);
 
-        String function = null;
-        boolean ignoreCase = false;
-        boolean rounded = false;
-
-        switch (methodName.charAt(endBefore - 1)) {
-            case 'e':
-                if (ignoreCase = endsWith("IgnoreCas", methodName, start, endBefore - 1)) {
-                    function = "LOWER(";
-                    endBefore -= 10;
-                } else if (endsWith("WithMinut", methodName, start, endBefore - 1)) {
-                    function = "EXTRACT (MINUTE FROM ";
-                    endBefore -= 10;
-                } else if (endsWith("AbsoluteValu", methodName, start, endBefore - 1)) {
-                    function = "ABS(";
-                    endBefore -= 13;
-                }
-                break;
-            case 'd':
-                if (rounded = endsWith("Rounde", methodName, start, endBefore - 1)) {
-                    function = "ROUND(";
-                    endBefore -= 7;
-                } else if (endsWith("WithSecon", methodName, start, endBefore - 1)) {
-                    function = "EXTRACT (SECOND FROM ";
-                    endBefore -= 10;
-                }
-                break;
-            case 'n':
-                if (endsWith("RoundedDow", methodName, start, endBefore - 1)) {
-                    function = "FLOOR(";
-                    endBefore -= 11;
-                }
-                break;
-            case 'p':
-                if (endsWith("RoundedU", methodName, start, endBefore - 1)) {
-                    function = "CEILING(";
-                    endBefore -= 9;
-                }
-                break;
-            case 'r':
-                if (endsWith("WithYea", methodName, start, endBefore - 1)) {
-                    function = "EXTRACT (YEAR FROM ";
-                    endBefore -= 8;
-                } else if (endsWith("WithHou", methodName, start, endBefore - 1)) {
-                    function = "EXTRACT (HOUR FROM ";
-                    endBefore -= 8;
-                } else if (endsWith("WithQuarte", methodName, start, endBefore - 1)) {
-                    function = "EXTRACT (QUARTER FROM ";
-                    endBefore -= 11;
-                }
-                break;
-            case 't':
-                if (endsWith("CharCoun", methodName, start, endBefore - 1)) {
-                    function = "LENGTH(";
-                    endBefore -= 9;
-                } else if (endsWith("ElementCoun", methodName, start, endBefore - 1)) {
-                    function = "SIZE(";
-                    endBefore -= 12;
-                }
-                break;
-            case 'y':
-                if (endsWith("WithDa", methodName, start, endBefore - 1)) {
-                    function = "EXTRACT (DAY FROM ";
-                    endBefore -= 7;
-                }
-                break;
-            case 'h':
-                if (endsWith("WithMont", methodName, start, endBefore - 1)) {
-                    function = "EXTRACT (MONTH FROM ";
-                    endBefore -= 9;
-                }
-                break;
-            case 'k':
-                if (endsWith("WithWee", methodName, start, endBefore - 1)) {
-                    function = "EXTRACT (WEEK FROM ";
-                    endBefore -= 8;
-                }
-                break;
-        }
-
-        boolean trimmed = endsWith("Trimmed", methodName, start, endBefore);
-        endBefore -= (trimmed ? 7 : 0);
+        boolean ignoreCase = endsWith("IgnoreCase", methodName, start, endBefore);
+        endBefore -= (ignoreCase ? 10 : 0);
 
         String attribute = methodName.substring(start, endBefore);
 
@@ -2461,20 +2382,13 @@ public class QueryInfo {
         String name = getAttributeName(attribute, true);
 
         StringBuilder attributeExpr = new StringBuilder();
-        if (function != null)
-            attributeExpr.append(function); // such as LOWER(  or  ROUND(
-        if (trimmed)
-            attributeExpr.append("TRIM(");
+        if (ignoreCase)
+            attributeExpr.append("LOWER(");
 
         appendAttributeName(name, attributeExpr);
 
-        if (trimmed)
+        if (ignoreCase)
             attributeExpr.append(')');
-        if (function != null)
-            if (rounded)
-                attributeExpr.append(", 0)"); // round to zero digits beyond the decimal
-            else
-                attributeExpr.append(')');
 
         if (negated) {
             Condition negatedCondition = condition.negate();

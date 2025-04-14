@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,8 +15,8 @@ package com.ibm.ws.http.internal;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -65,12 +65,7 @@ public class DefaultWelcomePage implements WelcomePage {
         }
         versionJs.append("\"\r\n");
         versionJs.append("}");
-        try {
-          return new ByteArrayInputStream(versionJs.toString().getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-          // This should never happen because UTF-8 is required in Java. #famouslastwords
-          return null;
-        }
+        return new ByteArrayInputStream(versionJs.toString().getBytes(StandardCharsets.UTF_8));
     } else {
       return safeOpen("/OSGI-INF/welcome" + url);
     }

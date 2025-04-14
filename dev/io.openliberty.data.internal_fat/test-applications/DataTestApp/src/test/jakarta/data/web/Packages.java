@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.jakarta.data.web;
+
+import static jakarta.data.repository.By.ID;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -80,13 +82,16 @@ public interface Packages extends BasicRepository<Package, Integer> {
                                                                   Order<Package> order,
                                                                   PageRequest pagination);
 
-    @OrderBy(value = "id")
+    @Query("SELECT id WHERE FLOOR(height) = :height")
+    @OrderBy(ID)
     List<Integer> findIdByHeightRoundedDown(int height);
 
-    @OrderBy(value = "id")
+    @Query("SELECT id WHERE CEILING(length) = :length")
+    @OrderBy(ID)
     List<Integer> findIdByLengthRoundedUp(int length);
 
-    @OrderBy(value = "id")
+    @Query("SELECT id WHERE ROUND(width, 0) = :width")
+    @OrderBy(ID)
     List<Integer> findIdByWidthRounded(int width);
 
     @Delete

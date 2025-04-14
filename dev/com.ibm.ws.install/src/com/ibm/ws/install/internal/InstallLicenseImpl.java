@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,7 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -124,7 +124,7 @@ public class InstallLicenseImpl implements InstallLicense {
         StringBuffer sb = new StringBuffer();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(in, "UTF-16"));
+            reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_16));
             int i = 0;
             for (String line; (line = reader.readLine()) != null;) {
                 if (isAgreement) {
@@ -144,9 +144,6 @@ public class InstallLicenseImpl implements InstallLicense {
             }
             sb.append("\n");
             return sb.toString();
-        } catch (UnsupportedEncodingException e) {
-            logger.log(Level.FINEST, "InstallLicenseImpl.getLicense failed", e);
-            return "";
         } catch (IOException e) {
             logger.log(Level.FINEST, "InstallLicenseImpl.getLicense failed", e);
             return "";
@@ -158,7 +155,7 @@ public class InstallLicenseImpl implements InstallLicense {
     private void getProgramName(InputStream in) {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(in, "UTF-16"));
+            reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_16));
             int i = 0;
             for (String line; (line = reader.readLine()) != null;) {
                 if (i < 6 && line.startsWith(PROGRAM_NAME)) {
@@ -167,8 +164,6 @@ public class InstallLicenseImpl implements InstallLicense {
                 }
                 i++;
             }
-        } catch (UnsupportedEncodingException e) {
-            logger.log(Level.FINEST, "InstallLicenseImpl.getProgramName failed", e);
         } catch (IOException e) {
             logger.log(Level.FINEST, "InstallLicenseImpl.getProgramName failed", e);
         } finally {
@@ -185,7 +180,7 @@ public class InstallLicenseImpl implements InstallLicense {
         StringBuffer sb = new StringBuffer();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(is, "UTF-16"));
+            reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_16));
             for (String line; (line = reader.readLine()) != null;) {
                 sb.append(line + "\n");
             }

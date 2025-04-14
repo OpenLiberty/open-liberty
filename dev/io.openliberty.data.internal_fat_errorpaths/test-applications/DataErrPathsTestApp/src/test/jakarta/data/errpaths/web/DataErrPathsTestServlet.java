@@ -16,13 +16,14 @@ import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
@@ -78,6 +79,10 @@ import test.jakarta.data.errpaths.web.Voters.NameAndZipCode;
 // a different entity type that is not in the persistence unit.
 @PersistenceUnit(name = "java:app/env/WrongPersistenceUnitRef",
                  unitName = "VoterPersistenceUnit")
+@Resource(name = "java:app/jdbc/env/DSForInvalidEntityRecordWithJPAAnnoRef",
+          lookup = "java:module/jdbc/DataSourceForInvalidEntity")
+@Resource(name = "java:comp/jdbc/env/DSForInvalidEntityClassWithoutAnnoRef",
+          lookup = "java:module/jdbc/DataSourceForInvalidEntity")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataErrPathsTestServlet extends FATServlet {
@@ -89,13 +94,19 @@ public class DataErrPathsTestServlet extends FATServlet {
     RepoWithoutDataStore errDefaultDataSourceNotConfigured;
 
     @Inject
+    Invitations errEntityClassMissingAnnoRepo;
+
+    @Inject
+    Inventions errEntityMissingIdRepo;
+
+    @Inject
     InvalidNonJNDIRepo errIncorrectDataStoreName;
 
     @Inject
     InvalidJNDIRepo errIncorrectJNDIName;
 
     @Inject
-    Inventions errInvalidEntityRepo;
+    Investments errRecordEnityWithJPAAnnoRepo;
 
     @Inject
     WrongPersistenceUnitRefRepo errWrongPersistenceUnitRef;
@@ -738,6 +749,33 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1092E:") ||
                 !x.getMessage().contains("changeAll"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when an entity class has Jakarta Persistence
+     * annotations on its members but lacks the Entity annotation on the
+     * entity class.
+     */
+    @Test
+    public void testEntityClassMissingAnno() {
+        Invitation inv = new Invitation();
+        inv.id = 50006;
+        inv.place = "Rochester, MN";
+        inv.time = LocalDateTime.now().plusHours(5);
+        inv.invitees = Set.of("invitee1@openliberty.io",
+                              "invitee2@openliberty.io");
+
+        try {
+            errEntityClassMissingAnnoRepo.invite(inv);
+
+            fail("Used an entity that has Jakarta Persistence annotations on" +
+                 " members, but lacks the Entity annotation.");
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1108E:") ||
+                !x.getMessage().contains("jakarta.persistence.Entity"))
                 throw x;
         }
     }
@@ -1772,6 +1810,28 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an error is raised when an entity class has Jakarta Persistence
+     * annotations on its members but lacks the Entity annotation on the
+     * entity class.
+     */
+    @Test
+    public void testRecordEntityWithJakartaPersistenceAnno() {
+        Investment ibm = new Investment(1, 232.64f, "IBM");
+
+        try {
+            errRecordEnityWithJPAAnnoRepo.invest(ibm);
+
+            fail("Used a record entity that has a Jakarta Persistence annotation" +
+                 " on a record component.");
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1109E:") ||
+                !x.getMessage().contains("jakarta.persistence.Column"))
+                throw x;
+        }
+    }
+
+    /**
      * Tests an error path where a repository method attempts to remove an entity
      * but return it as a record instead.
      */
@@ -1800,7 +1860,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                             .bornOn(LocalDate.of(1977, Month.SEPTEMBER, 26));
             fail("Should not be able to use repository that sets the dataStore " +
                  "to a JNDI name that does not exist. Found: " + found);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1079E:") ||
                 !x.getMessage().contains("<persistence-unit name=\"MyPersistenceUnit\">"))
@@ -1822,7 +1882,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                                             "5455 W River Rd NW, Rochester, MN 55901"));
             fail("Should not be able to use repository that sets the dataStore " +
                  "to a name that does not exist. Added: " + added);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1078E:") ||
                 !x.getMessage().contains("<dataSource id=\"MyDataSource\" jndiName=\"jdbc/ds\""))
@@ -1842,7 +1902,7 @@ public class DataErrPathsTestServlet extends FATServlet {
             fail("Should not be able to use repository that sets the dataStore" +
                  " to a DataSource that is configured to use a database that does" +
                  " not exist. Found: " + found);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1080E:") ||
                 !x.getMessage().contains(InvalidDatabaseRepo.class.getName()))
@@ -1857,11 +1917,11 @@ public class DataErrPathsTestServlet extends FATServlet {
     @Test
     public void testRepositoryWithInvalidEntity() {
         try {
-            Invention i = errInvalidEntityRepo //
+            Invention i = errEntityMissingIdRepo //
                             .save(new Invention(1, 2, "Perpetual Motion Machine"));
             fail("Should not be able to use a repository operation for an entity" +
                  " that is not valid because it has no Id attribute. Saved: " + i);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1080E:") ||
                 !x.getMessage().contains(Invention.class.getName()))
@@ -1882,7 +1942,7 @@ public class DataErrPathsTestServlet extends FATServlet {
             found = errDefaultDataSourceNotConfigured.findById(123445678);
             fail("Should not be able to use repository without DefaultDataSource " +
                  "being configured. Found: " + found);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1077E:") ||
                 !x.getMessage().contains("<dataSource id=\"DefaultDataSource\""))

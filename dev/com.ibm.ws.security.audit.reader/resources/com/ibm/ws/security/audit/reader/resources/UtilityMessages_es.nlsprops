@@ -1,5 +1,5 @@
 #/*******************************************************************************
-# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * Copyright (c) 2018, 2025 IBM Corporation and others.
 # * All rights reserved. This program and the accompanying materials
 # * are made available under the terms of the Eclipse Public License 2.0
 # * which accompanies this distribution, and is available at
@@ -63,3 +63,7 @@ security.audit.ErrorLoadingKeystore=Error al cargar el almac\u00e9n de claves {0
 security.audit.MismatchingEncKeystores=El valor de entrada, {0}, para el almac\u00e9n de claves especificado para contener el certificado utilizado para descifrar los registros de auditor\u00eda no coincide con el almac\u00e9n de claves, {1}, especificado en el registro de auditor\u00eda.
 security.audit.MismatchingSigningKeystores=El valor de entrada, {0}, para el almac\u00e9n de claves especificado para contener el certificado utilizado para eliminar la firma de los registros de auditor\u00eda no coincide con el almac\u00e9n de claves, {1}, especificado en el registro de auditor\u00eda.
 security.audit.CannotFindCertificate=El alias de certificado {0} no existe en el almac\u00e9n de claves {1}.
+
+# Do not translate "auditRecord"
+security.audit.FailedToValidateSignature=La validaci\u00f3n de la firma auditRecord fall\u00f3 en el \u00edndice [ {0} ].
+security.audit.FailedToDecryptAuditRecord=La desencriptaci\u00f3n de auditRecord ha fallado en el \u00edndice [ {0} ].

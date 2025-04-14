@@ -27,7 +27,7 @@ Export-Package: \
     io.smallrye.openapi.model.*;version=4.0
 
 -buildpath: \
-    io.smallrye:smallrye-open-api-model;version=4.0.6,\
+    io.smallrye:smallrye-open-api-model;version=4.0.9,\
     io.openliberty.org.eclipse.microprofile.openapi.4.0;version=latest,\
     io.openliberty.io.smallrye.jandex3;version=latest,\
     com.ibm.ws.org.jboss.logging;version=latest

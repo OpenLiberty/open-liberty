@@ -71,8 +71,6 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     // embeddable 3 levels deep where @Column resolves name conflict
     Business[] findByLocation_Address_Street_NameIgnoreCaseEndsWithOrderByLocation_Address_Street_DirectionIgnoreCaseAscNameAsc(String streetName);
 
-    List<Business> findByLocationLongitudeAbsoluteValueBetween(float min, float max);
-
     // embeddable as result type
     @OrderBy("location.address.street")
     @OrderBy("location.address.houseNum")
@@ -107,6 +105,9 @@ public interface Businesses extends BasicRepository<Business, Integer> {
                         String streetName,
                         String streetDir,
                         String businessName);
+
+    @Query("WHERE ABS(location.longitude) BETWEEN ?1 AND ?2")
+    List<Business> longitudeAbsoluteValueBetween(float min, float max);
 
     @Find
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name

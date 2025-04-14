@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,7 @@
 package com.ibm.ws.security.wim.adapter.urbridge;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -992,13 +992,7 @@ public class URBridge implements Repository {
                         throw new PasswordCheckFailedException(WIMMessageKey.MISSING_OR_EMPTY_PASSWORD, Tr.formatMessage(tc, WIMMessageKey.MISSING_OR_EMPTY_PASSWORD));
                     }
 
-                    String passwordStr;
-                    try {
-                        passwordStr = new String(pwd, "UTF-8");
-                    } catch (UnsupportedEncodingException e1) {
-                        throw new WIMApplicationException(WIMMessageKey.CUSTOM_REGISTRY_EXCEPTION, Tr.formatMessage(tc, WIMMessageKey.CUSTOM_REGISTRY_EXCEPTION,
-                                                                                                                    WIMMessageHelper.generateMsgParms(reposId)));
-                    }
+                    String passwordStr = new String(pwd, StandardCharsets.UTF_8);
 
                     // first need to check if valid user or not
                     boolean isValidUser = false;
