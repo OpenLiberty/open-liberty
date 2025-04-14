@@ -155,5 +155,8 @@ public class MpTelemetryLogFieldConstants {
     public static final String ACCESS_TRACE_W3C_HEADER_NAME = "traceparent";
     public static final String ACCESS_TRACE_JAEGER_HEADER_NAME = "uber-trace-id";
     public static final String ACCESS_TRACE_B3_HEADER_NAME = "b3";
+    public static final String ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME = "X-B3-TraceId";
+    public static final String ACCESS_TRACE_B3_MULTI_SPAN_HEADER_NAME = "X-B3-SpanId";
+    public static final String ACCESS_TRACE_B3_MULTI_SAMPLING_HEADER_NAME = "X-B3-Sampled";
 
 }

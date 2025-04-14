@@ -603,6 +603,15 @@ public class AccessLogSource implements Source {
             fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_JAEGER_HEADER_NAME,
                                                                  AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
                                                                                                             CollectorConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME)));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_B3_MULTI_SPAN_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_B3_MULTI_SPAN_HEADER_NAME)));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_B3_MULTI_SAMPLING_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_B3_MULTI_SAMPLING_HEADER_NAME)));
 
         } else if (accessLogFieldsTelemetryConfig.equals("logFormat")) {
             formatters[5] = populateCustomTelemetryFormatters(fieldsToAddTelemetryLogging, CollectorConstants.KEYS_TELEMETRY_LOGGING);
@@ -618,7 +627,15 @@ public class AccessLogSource implements Source {
             fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_JAEGER_HEADER_NAME,
                                                                  AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
                                                                                                             CollectorConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)));
-
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME)));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_B3_MULTI_SPAN_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_B3_MULTI_SPAN_HEADER_NAME)));
+            fieldSetters.add((ald, alrd) -> ald.setRequestHeader(CollectorConstants.ACCESS_TRACE_B3_MULTI_SAMPLING_HEADER_NAME,
+                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                            CollectorConstants.ACCESS_TRACE_B3_MULTI_SAMPLING_HEADER_NAME)));
         }
 
         newSF.setSettersAndFormatters(fieldSetters, formatters);

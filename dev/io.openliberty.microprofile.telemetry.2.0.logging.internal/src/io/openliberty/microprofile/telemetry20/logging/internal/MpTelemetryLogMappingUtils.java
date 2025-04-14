@@ -348,6 +348,10 @@ public class MpTelemetryLogMappingUtils {
         Object value = null;
         Span customSpan = null;
 
+        String b3MultiTrace = null;
+        String b3MultiSpan = null;
+        String b3MultiSampling = null;
+
         for (Iterator<KeyValuePair> element = kvpList.iterator(); element.hasNext();) {
             KeyValuePair next = element.next();
             key = next.getKey();
@@ -366,6 +370,12 @@ public class MpTelemetryLogMappingUtils {
                     if (key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME) || key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)
                         || key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) {
                         customSpan = createSpan(key, (String) value);
+                    } else if (key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_MULTI_SPAN_HEADER_NAME)) {
+                        b3MultiSpan = (String) value;
+                    } else if (key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME)) {
+                        b3MultiTrace = (String) value;
+                    } else if (key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_MULTI_SAMPLING_HEADER_NAME)) {
+                        b3MultiSampling = (String) value;
                     } else {
                         String[] headerSplit = ((String) value).split(",");
                         for (int i = 0; i < headerSplit.length; i++) {
@@ -400,8 +410,13 @@ public class MpTelemetryLogMappingUtils {
         // Set the Attributes to the builder.
         builder.setAllAttributes(attributes.build());
 
+        if (customSpan == null && b3MultiSpan != null && b3MultiTrace != null) {
+            customSpan = createSpan(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME,
+                                    b3MultiTrace + "-" + b3MultiSpan + "-" + b3MultiSampling);
+        }
+
         // Set the Span and Trace IDs from the current context. We're not on the same thread at the point when access logs are collected
-        // so we need to extract the trace/span ID from the 'traceparent' request header.
+        // so we need to extract the trace/span ID from each propagators' respective request headers.
         if (customSpan != null) {
             builder.setContext(Context.current().with(customSpan));
         } else
@@ -410,7 +425,7 @@ public class MpTelemetryLogMappingUtils {
     }
 
     /*
-     * Create a span using the extracted requestHeader data for the propagators w3c, b3, and jaeger.
+     * Create a span using the extracted requestHeader data for the propagators w3c, b3, b3multi, and jaeger.
      */
     private static Span createSpan(String key, String requestHeader) {
 
@@ -418,13 +433,24 @@ public class MpTelemetryLogMappingUtils {
         try {
             if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME)) { // Check the w3c format for the "traceparent" header. This is the default otel propagator
                 String[] traceSplit = requestHeader.split("-");
-                customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], TraceFlags.getSampled(), TraceState.getDefault());
+                TraceFlags sampling = isSampledValue(traceSplit[3]) ? TraceFlags.getSampled() : TraceFlags.getDefault();
+
+                customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], sampling, TraceState.getDefault());
             } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)) { // Check the b3 format for the "b3" header
                 String[] traceSplit = requestHeader.split("-");
-                customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
+                TraceFlags sampling = isSampledValue(traceSplit[2]) ? TraceFlags.getSampled() : TraceFlags.getDefault();
+
+                customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], sampling, TraceState.getDefault());
             } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) { // Check the Jaeger format for the "uber-trace-id" header
                 String[] traceSplit = requestHeader.split(":");
-                customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
+                TraceFlags sampling = isSampledValue(traceSplit[3]) ? TraceFlags.getSampled() : TraceFlags.getDefault();
+
+                customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], sampling, TraceState.getDefault());
+            } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME)) { // Check the Jaeger format for the "uber-trace-id" header
+                String[] traceSplit = requestHeader.split("-");
+                TraceFlags sampling = isSampledValue(traceSplit[2]) ? TraceFlags.getSampled() : TraceFlags.getDefault();
+
+                customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], sampling, TraceState.getDefault());
             }
 
         } catch (Exception e) {
@@ -439,6 +465,13 @@ public class MpTelemetryLogMappingUtils {
         } else
             return null;
 
+    }
+
+    /*
+     * Checks to see if the sampling value is enabled.
+     */
+    private static boolean isSampledValue(String sampledValue) {
+        return "1".equals(sampledValue) || "01".equals(sampledValue);
     }
 
     /**

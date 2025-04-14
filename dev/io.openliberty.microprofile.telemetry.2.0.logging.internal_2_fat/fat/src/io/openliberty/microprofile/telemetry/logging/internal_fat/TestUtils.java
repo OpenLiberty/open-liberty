@@ -42,9 +42,15 @@ public class TestUtils {
     public static String W3C_TRACE_DATA = "00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01";
     public static String B3_TRACE_DATA = "e5fee0b8184e2a838aafe4aa959aa21c-4626864da5e71e37-1";
     public static String JAEGER_TRACE_DATA = "322b8ac131b128bcaf56c0c41b84aff5:956ff8b1abbd7993:0:1";
+    public static String B3_MULTI_TRACE_DATA = "0af7651916cd43dd8448eb211c80319c";
+    public static String B3_MULTI_SPAN_DATA = "b9c7c989f97918e1";
+    public static String B3_MULTI_SAMPLING_DATA = "1";
     public static final String ACCESS_TRACE_W3C_HEADER_NAME = "traceparent";
     public static final String ACCESS_TRACE_JAEGER_HEADER_NAME = "uber-trace-id";
     public static final String ACCESS_TRACE_B3_HEADER_NAME = "b3";
+    public static final String ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME = "X-B3-TraceId";
+    public static final String ACCESS_TRACE_B3_MULTI_SPAN_HEADER_NAME = "X-B3-SpanId";
+    public static final String ACCESS_TRACE_B3_MULTI_SAMPLING_HEADER_NAME = "X-B3-Sampled";
 
     public static void runApp(LibertyServer server, String type) {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/MpTelemetryLogApp";
@@ -79,25 +85,33 @@ public class TestUtils {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/MpTelemetryLogApp/AccessURL";
         Log.info(c, "runApp", "---> Running the application with url : " + url);
 
-        String requestHeader = null;
-        String traceData = null;
+        ArrayList<String> requestHeaders = new ArrayList<String>();
+        ArrayList<String> requestValues = new ArrayList<String>();
+
         if (propagator.equals("w3c")) {
-            requestHeader = ACCESS_TRACE_W3C_HEADER_NAME;
-            traceData = W3C_TRACE_DATA;
+            requestHeaders.add(ACCESS_TRACE_W3C_HEADER_NAME);
+            requestValues.add(W3C_TRACE_DATA);
         } else if (propagator.equals("b3")) {
-            requestHeader = ACCESS_TRACE_B3_HEADER_NAME;
-            traceData = B3_TRACE_DATA;
+            requestHeaders.add(ACCESS_TRACE_B3_HEADER_NAME);
+            requestValues.add(B3_TRACE_DATA);
         } else if (propagator.equals("jaeger")) {
-            requestHeader = ACCESS_TRACE_JAEGER_HEADER_NAME;
-            traceData = JAEGER_TRACE_DATA;
+            requestHeaders.add(ACCESS_TRACE_JAEGER_HEADER_NAME);
+            requestValues.add(JAEGER_TRACE_DATA);
+        } else if (propagator.equals("b3multi")) {
+            requestHeaders.add(ACCESS_TRACE_B3_MULTI_TRACE_HEADER_NAME);
+            requestValues.add(B3_MULTI_TRACE_DATA);
+            requestHeaders.add(ACCESS_TRACE_B3_MULTI_SPAN_HEADER_NAME);
+            requestValues.add(B3_MULTI_SPAN_DATA);
+            requestHeaders.add(ACCESS_TRACE_B3_MULTI_SAMPLING_HEADER_NAME);
+            requestValues.add(B3_MULTI_SAMPLING_DATA);
         } else if (propagator.equals("invalidHeaderValue")) {
-            requestHeader = ACCESS_TRACE_JAEGER_HEADER_NAME;
-            traceData = W3C_TRACE_DATA;
+            requestHeaders.add(ACCESS_TRACE_JAEGER_HEADER_NAME);
+            requestValues.add(W3C_TRACE_DATA);
         }
 
         try {
-            if (requestHeader != null)
-                runGetMethod(url, requestHeader, traceData);
+            if (!requestHeaders.isEmpty())
+                runGetMethod(url, requestHeaders, requestValues);
             else
                 runGetMethod(url, null, null);
         } catch (Exception e) {
@@ -105,7 +119,7 @@ public class TestUtils {
         }
     }
 
-    static String runGetMethod(String urlStr, String requestHeader, String requestValue) throws Exception {
+    static String runGetMethod(String urlStr, ArrayList<String> requestHeaders, ArrayList<String> requestValues) throws Exception {
         Log.info(c, "runGetMethod", "URL = " + urlStr);
         URL url = new URL(urlStr);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -115,8 +129,11 @@ public class TestUtils {
             con.setUseCaches(false);
             con.setRequestMethod("GET");
 
-            if (requestHeader != null) {
-                con.setRequestProperty(requestHeader, requestValue);
+            if (requestHeaders != null) {
+                for (int i = 0; i < requestHeaders.size(); i++) {
+                    con.setRequestProperty(requestHeaders.get(i), requestValues.get(i));
+                    Log.info(c, "settingRequestHeaders", requestHeaders.get(i) + " -- " + requestValues.get(i));
+                }
             }
 
             InputStream is = con.getInputStream();

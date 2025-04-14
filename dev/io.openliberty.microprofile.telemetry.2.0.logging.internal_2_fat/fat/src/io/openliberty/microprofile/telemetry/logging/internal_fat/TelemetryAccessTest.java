@@ -487,6 +487,40 @@ public class TelemetryAccessTest extends FATServletClient {
     }
 
     /*
+     * Verify that the b3 multi propagator is properly associating traces and spans with the access log
+     */
+    @Test
+    public void testTelemetryAccessB3MultiTraceLogs() throws Exception {
+        RemoteFile messageLogFile = server.getDefaultLogFile();
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+
+        // Configure access feature and access source
+        setConfig(server, messageLogFile, SERVER_XML_ACCESS_SOURCE_DEFAULT);
+
+        // Trigger an access log event
+        TestUtils.runAccessApp(server, "runAccessApp", "b3multi");
+
+        // Wait for the access log message to be bridged over
+        String accessLine = server.waitForStringInLog("INFO2 'GET /MpTelemetryLogApp/AccessURL HTTP/1.1'", consoleLogFile);
+        assertFalse("The access log event does NOT contain a valid trace and span id", accessLine.contains(ZERO_SPAN_TRACE_ID));
+
+        // Check if the expected key-value pair is correctly formatted and mapped to OTel.
+        Map<String, String> expectedAccessFieldsMap = new HashMap<String, String>() {
+            {
+                put("http.request.method", "GET");
+                put("http.response.status_code", "200");
+                put("io.openliberty.access_log.url.path", "/MpTelemetryLogApp/AccessURL");
+                put("network.local.port", Integer.toString(server.getHttpDefaultPort()));
+                put("io.openliberty.type", "liberty_accesslog");
+                put("network.protocol.name", "HTTP");
+                put("network.protocol.version", "1.1");
+                put("io.openliberty.sequence", ""); // since, the sequence can be random, have to make sure the sequence field is still present.
+            }
+        };
+        TestUtils.checkJsonMessage(accessLine, expectedAccessFieldsMap);
+    }
+
+    /*
      * Verify that invalid trace headers are properly handled and a debug message is logged.
      */
     @Test
