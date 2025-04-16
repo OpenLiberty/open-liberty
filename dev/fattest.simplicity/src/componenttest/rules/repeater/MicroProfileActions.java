@@ -326,7 +326,7 @@ public class MicroProfileActions {
                                                                "mpHealth-4.0",
                                                                "mpJwt-2.1",
                                                                "mpOpenAPI-4.0", //TODO : update to 4.1
-                                                               "mpTelemetry-2.0", //TODO : update to 2.1
+                                                               "mpTelemetry-2.1",
                                                                "mpRestClient-4.0",
                                                                "mpMetrics-5.1", //standalone
                                                                "mpContextPropagation-1.3", //standalone
