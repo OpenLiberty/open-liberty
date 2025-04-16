@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2024 IBM Corporation and others.
+ * Copyright (c) 2018,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -73,6 +73,7 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_20_APP_WEBANNO = "com.ibm.ws.springboot.fat20.webanno.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX = "com.ibm.ws.springboot.fat20.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBSOCKET = "com.ibm.ws.springboot.fat20.websocket.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_MBEAN = "com.ibm.ws.springboot.fat20.mbean.app-0.0.1-SNAPSHOT.jar";
 
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
