@@ -9,7 +9,7 @@
     ebcShortlist: jenkins-child.yml
 
     # Product to be tested.
-    product_image_type_under_test: openliberty
+    product_image_type_under_test: openliberty-dev
     # asyncArchive.zip is 6 directories up from the openliberty image.
     dependenciesRelativePath: ../../../../../..
 
