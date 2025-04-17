@@ -17,15 +17,9 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.classloading.ClassLoaderIdentifierService;
-import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
@@ -84,19 +78,7 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     ManagedThreadFactoryBean(ComponentMetaData cmd, ConcurrencyExtensionMetadata extSvc, Set<Annotation> qualifiers) {
         this.factory = extSvc.defaultManagedThreadFactoryFactory;
         this.qualifiers = qualifiers;
-
-        // TODO find out how to get the class loader for the application.
-        // It is not correct to use whichever application component's classloader happens to be on the thread.
-        if (cmd instanceof IdentifiableComponentMetaData) {
-            String identifier = ((IdentifiableComponentMetaData) cmd).getPersistentIdentifier();
-
-            BundleContext bc = FrameworkUtil.getBundle(ClassLoaderIdentifierService.class).getBundleContext();
-            ServiceReference<ClassLoaderIdentifierService> ref = bc.getServiceReference(ClassLoaderIdentifierService.class);
-            ClassLoaderIdentifierService classloaderIdSvc = bc.getService(ref);
-            this.declaringClassLoader = classloaderIdSvc.getClassLoader(identifier);
-        } else {
-            throw new IllegalArgumentException(cmd.toString()); // internal error
-        }
+        this.declaringClassLoader = null;
 
         // The Concurrency extension could be running under any module/component of the application.
         ApplicationMetaData amd = cmd.getModuleMetaData().getApplicationMetaData();
