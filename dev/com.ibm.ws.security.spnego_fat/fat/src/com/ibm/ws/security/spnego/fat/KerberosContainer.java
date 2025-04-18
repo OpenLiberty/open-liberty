@@ -54,9 +54,9 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         withNetwork(network);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void configure() {
+        withExposedPorts(99, 464, 749);
         withNetworkAliases(KRB5_KDC);
         withCreateContainerCmdModifier(cmd -> {
             cmd.withHostName(KRB5_KDC);
@@ -71,27 +71,16 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                         .withStartupTimeout(Duration.ofSeconds(FATRunner.FAT_TEST_LOCALRUN ? 15 : 300)));
         withCreateContainerCmdModifier(cmd -> {
             //Add previously exposed ports and UDP port
-
-            List<ExposedPort> exposedPorts = new ArrayList<ExposedPort>();
+            List<ExposedPort> exposedPorts = new ArrayList<>();
             for (ExposedPort p : cmd.getExposedPorts()) {
-                Log.info(c, "configure", "ExposedPort=" + p.getPort());
                 exposedPorts.add(p);
             }
             exposedPorts.add(ExposedPort.udp(99));
             cmd.withExposedPorts(exposedPorts);
 
-            // Add previous port bindings and UDP port binding
+            //Add previous port bindings and UDP port binding
             Ports ports = cmd.getPortBindings();
-            int containerPort = 99;
-            int hostPort = 88;
-
-            String kdcPortMapping = String.format("%d:%d/%s", hostPort, containerPort, InternetProtocol.UDP);
-            Log.info(c, "configure", "adding KDC port mapping: " + kdcPortMapping);
-
-            Log.info(c, "configure", "PortBinding.parse(kdcPortMapping): " + PortBinding.parse(kdcPortMapping));
-            ports.add(PortBinding.parse(kdcPortMapping));
-
-            Log.info(c, "configure", "ports: " + ports);
+            ports.bind(ExposedPort.udp(99), Ports.Binding.empty());
             cmd.withPortBindings(ports);
             cmd.withHostName(KRB5_KDC);
         });
