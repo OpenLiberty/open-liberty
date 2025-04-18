@@ -41,12 +41,9 @@ public class LocalUtils {
     public static ServerBootstrapExtended createLocalBootstrap(NettyFrameworkImpl framework,
             Map<String, Object> options) throws NettyException {
 
-        LocalConfigurationImpl config = new LocalConfigurationImpl(options, true);
-
         ServerBootstrapExtended bs = new ServerBootstrapExtended();
         bs.group(framework.getParentGroup(), framework.getChildGroup());
         bs.channel(LocalServerChannel.class);
-        bs.applyConfiguration(config);
         return bs;
     }
 
@@ -64,12 +61,9 @@ public class LocalUtils {
     public static BootstrapExtended createLocalBootstrapOutbound(NettyFrameworkImpl framework,
             Map<String, Object> options) throws NettyException {
 
-        LocalConfigurationImpl config = new LocalConfigurationImpl(options, false);
-
         BootstrapExtended bs = new BootstrapExtended();
         bs.group(framework.getChildGroup());
         bs.channel(LocalChannel.class);
-        bs.applyConfiguration(config);
         return bs;
     }
 
