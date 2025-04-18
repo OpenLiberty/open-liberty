@@ -54,6 +54,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
@@ -62,6 +63,7 @@ import io.openliberty.netty.internal.tcp.TCPConfigConstants;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
+
 import com.ibm.websphere.channelfw.EndPointMgr;
 
 /**
@@ -486,10 +488,19 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Override
     public Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
+        
+        BootstrapConfiguration config = bootstrap.getConfiguration();
+        // TODO: clean this up, theoretically we should always have an externalName.
+        // Bootstrap class doesnt have a non-null default either. For now setting it to NOT_DEFINED.
+        String externalName = "NOT_DEFINED";
+        if(config!= null && config instanceof TCPConfigurationImpl){
+            externalName = ((TCPConfigurationImpl)config).getExternalName();
+        }
+
         try{
             return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
         }catch(NettyException e){
-            Tr.error(tc, "chain.initialization.error", new Object[] { tcpOptions.get("ExternalName"), e.toString() });
+            Tr.error(tc, "chain.initialization.error", new Object[] { externalName, e.toString() });
             throw e;
         }        
     }
