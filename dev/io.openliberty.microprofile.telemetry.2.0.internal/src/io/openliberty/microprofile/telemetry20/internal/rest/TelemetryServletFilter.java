@@ -142,18 +142,15 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
                 request.setAttribute(SPAN_PARENT_CONTEXT, parentContext);
                 request.setAttribute(SPAN_SCOPE, scope);
 
+                ((HttpServletResponse) response)
+                                .setHeader(ACCESS_TRACE_HEADER_NAME,
+                                           Span.fromContext(spanContext).getSpanContext().getTraceId() + ":" + Span.fromContext(spanContext).getSpanContext().getSpanId());
+
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Span traceId=" + Span.current().getSpanContext().getTraceId() + ", spanId=" + Span.current().getSpanContext().getSpanId());
                 }
             }
         }
-
-        Context spanContext = (Context) request.getAttribute(SPAN_CONTEXT);
-
-        //Set trace and span information in a response header.
-        ((HttpServletResponse) response)
-                        .setHeader("spanTraceKey",
-                                   Span.fromContext(spanContext).getSpanContext().getTraceId() + ":" + Span.fromContext(spanContext).getSpanContext().getSpanId());
 
         chain.doFilter(request, response);
 

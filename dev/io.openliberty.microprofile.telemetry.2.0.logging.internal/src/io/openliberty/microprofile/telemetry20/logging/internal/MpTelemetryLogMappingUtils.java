@@ -363,7 +363,7 @@ public class MpTelemetryLogMappingUtils {
                 } else if (key.equals("datetime") || key.equals("accessLogDatetime")) {
                     builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
-                    if (key.toLowerCase().equals("requestheader_spantracekey")) {
+                    if (key.equals(MpTelemetryLogFieldConstants.ACCESS_RESPONSE_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_HEADER_NAME)) {
                         customSpan = createSpan(key, (String) value);
                     } else {
                         String[] headerSplit = ((String) value).split(",");
@@ -415,7 +415,7 @@ public class MpTelemetryLogMappingUtils {
 
         SpanContext customSpanContext = null;
         try {
-            if (key.toLowerCase().equals("requestheader_spantracekey")) {
+            if (key.equals(MpTelemetryLogFieldConstants.ACCESS_RESPONSE_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_HEADER_NAME)) {
                 String[] traceSplit = requestHeader.split(":");
                 customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
             }

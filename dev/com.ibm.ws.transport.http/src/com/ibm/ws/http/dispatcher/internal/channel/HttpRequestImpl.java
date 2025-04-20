@@ -128,13 +128,6 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
     }
 
     /*
-     * Set requestHeader for later use in access logs
-     */
-    public void setHeader(String string, String value) {
-        this.message.setHeader(string, value);
-    }
-
-    /*
      * @see com.ibm.websphere.http.HttpRequest#getHeaders(java.lang.String)
      */
     @Override

@@ -499,8 +499,7 @@ public class AccessLogSource implements Source {
         //@formatter:off
         builder.add(addDatetimeFieldTelemetry(format))  // Datetime, present in all access logs
                .add(addSequenceFieldTelemetry(format)) // Sequence, present in all access logs
-               .add(addRequestHeaderFieldTelemetry(format))
-               .add(addResponseHeaderFieldTelemetry(format)); // Adding the 'traceparent' request header field which contains trace/span in order to correlate access logs via trace/spans
+               .add(addResponseHeaderFieldTelemetry(format)); // Adding the 'io.openliberty.trace' response header field which contains trace/span in order to correlate access logs via trace/spans
         //@formatter:on
 
         return builder.build();
@@ -549,8 +548,7 @@ public class AccessLogSource implements Source {
         .add(addDatetimeFieldTelemetry         (format))  // Datetime, present in all access logs
         .add(addSequenceFieldTelemetry         (format))  // Sequence, present in all access logs
         .add(addRequestFirstLineFieldTelemetry (format))  // Adding requestFirstLine by default only to be used in the OTel logs body
-        .add(addRequestHeaderFieldTelemetry    (format))
-        .add(addResponseHeaderFieldTelemetry   (format)); // Adding the 'traceparent' request header field which contains trace/span in order to correlate access logs via trace/spans
+        .add(addResponseHeaderFieldTelemetry    (format)); // Adding the 'io.openliberty.trace' response header field which contains trace/span in order to correlate access logs via trace/spans
         return builder.build();
         //@formatter:on
     }
@@ -596,18 +594,18 @@ public class AccessLogSource implements Source {
 
             //Include the requestFirstLine for Telemetry to be used as the body where applicable
             fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null)));
-            fieldSetters.add((ald, alrd) -> ald.setRequestHeader("spanTraceKey",
-                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
-                                                                                                            "spanTraceKey")));
+            fieldSetters.add((ald, alrd) -> ald.setResponseHeader(CollectorConstants.ACCESS_TRACE_HEADER_NAME,
+                                                                  AccessLogResponseHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                              CollectorConstants.ACCESS_TRACE_HEADER_NAME)));
 
         } else if (accessLogFieldsTelemetryConfig.equals("logFormat")) {
             formatters[5] = populateCustomTelemetryFormatters(fieldsToAddTelemetryLogging, CollectorConstants.KEYS_TELEMETRY_LOGGING);
 
             //Include the requestFirstLine for Telemetry to be used as the body where applicable
             fieldSetters.add((ald, alrd) -> ald.setRequestFirstLine(AccessLogFirstLine.getFirstLineAsString(alrd.getResponse(), alrd.getRequest(), null)));
-            fieldSetters.add((ald, alrd) -> ald.setRequestHeader("spanTraceKey",
-                                                                 AccessLogRequestHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
-                                                                                                            "spanTraceKey")));
+            fieldSetters.add((ald, alrd) -> ald.setResponseHeader(CollectorConstants.ACCESS_TRACE_HEADER_NAME,
+                                                                  AccessLogResponseHeaderValue.getHeaderValue(alrd.getResponse(), alrd.getRequest(),
+                                                                                                              CollectorConstants.ACCESS_TRACE_HEADER_NAME)));
 
         }
 

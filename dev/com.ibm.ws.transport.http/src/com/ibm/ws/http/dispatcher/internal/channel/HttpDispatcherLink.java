@@ -1225,12 +1225,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         final HttpRequestImpl finalRequest = this.request;
         final HttpResponseImpl finalResponse = this.response;
 
-        String spanTraceHeader = finalResponse.getHeader("spanTraceKey");
-        if (spanTraceHeader != null) {
-            finalRequest.setHeader("spanTraceKey", spanTraceHeader);
-            finalResponse.removeHeader("spanTraceKey");
-        }
-
         Exception error = null;
 
         if (finalRequest != null) {
