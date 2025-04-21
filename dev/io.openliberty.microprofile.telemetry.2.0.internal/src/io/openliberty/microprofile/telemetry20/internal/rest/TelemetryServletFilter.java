@@ -144,7 +144,7 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
 
                 ((HttpServletResponse) response)
                                 .setHeader(ACCESS_TRACE_HEADER_NAME,
-                                           Span.fromContext(spanContext).getSpanContext().getTraceId() + ":" + Span.fromContext(spanContext).getSpanContext().getSpanId());
+                                           Span.current().getSpanContext().getTraceId() + ":" + Span.current().getSpanContext().getSpanId());
 
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Span traceId=" + Span.current().getSpanContext().getTraceId() + ", spanId=" + Span.current().getSpanContext().getSpanId());
