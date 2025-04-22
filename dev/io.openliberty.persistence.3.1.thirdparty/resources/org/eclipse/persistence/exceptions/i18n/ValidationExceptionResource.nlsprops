@@ -179,6 +179,8 @@
 
 7107=Error encountered during string decryption.
 
+7360=Database password was encrypted by deprecated algorithm. Reencrypt it by `passwordUpdate.sh` from eclipselink.zip bundle
+
 7108=This operation is not supported for non-relational platforms.
 
 7109=The login in the project used to create the session is null, it must be a valid login.
@@ -638,6 +640,4 @@
 7358=Incorrect ASM service name provided.
 
 7359=No any ASM service available.
-
-7360=Database password was encrypted by deprecated algorithm. Reencrypt it by `passwordUpdate.sh` from eclipselink.zip bundle
 
