@@ -13,9 +13,11 @@
 package concurrent.cdi.ejb;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 
 public interface Invoker {
 
     public <T> T runInEJB(Callable<T> testCode) throws Exception;
 
+    public void testDefaultManagedThreadFactoryClassloader(CompletableFuture<String> future);
 }

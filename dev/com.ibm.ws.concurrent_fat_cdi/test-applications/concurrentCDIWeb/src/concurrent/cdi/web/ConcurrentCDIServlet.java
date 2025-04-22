@@ -18,6 +18,7 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -235,6 +236,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     @Inject
     TestBean testBean;
+
+    @Inject
+    AppBean appBean;
 
     @Resource
     UserTransaction tx;
@@ -680,6 +684,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     /**
      * Inject an instance of the default ManagedThreadFactory resource and use it.
+     * Ensure that the default ManagedThreadFactory is configured with the application's context.
      */
     public void testInjectManagedThreadFactoryDefaultInstance() throws Exception {
         assertNotNull(defaultManagedThreadFactory);
@@ -702,6 +707,86 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertEquals("value1", result);
+    }
+
+    /**
+     * Inject an instance of the default ManagedThreadFactory resource and use it.
+     * Ensure that the default ManagedThreadFactory is configured with the application's classloader.
+     * As opposed to the module/container?
+     */
+    public void testInjectManagedThreadFactoryDefaultInstanceClassloader() throws Exception {
+        assertNotNull(defaultManagedThreadFactory);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        // Requires the application's classloader (to access application scoped classes)
+        Runnable task = () -> {
+            try {
+                Class.forName("java.lang.Integer"); //Exists as part of JVM
+                Class.forName("concurrent.cdi.web.MyAsync"); //Exists inside Web Module
+                Class.forName("concurrent.cdi.ext.ConcurrentCDIExtension"); // Exists outside Web Module
+                future.complete("SUCCESS");
+            } catch (ClassNotFoundException e) {
+                future.completeExceptionally(e);
+            }
+        };
+
+        Thread thread = defaultManagedThreadFactory.newThread(task);
+        thread.start();
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
+    public void testInjectManagedThreadFactoryDefaultInstanceClassloaderFromBean() throws Exception {
+        assertNotNull(appBean);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        appBean.testDefaultManagedThreadFactoryClassloader(future);
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
+    public void testInjectManagedThreadFactoryDefaultInstanceClassloaderFromEJB() throws Exception {
+        assertNotNull(ejb);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        ejb.testDefaultManagedThreadFactoryClassloader(future);
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
+    public void testInjectManagedThreadFactoryDefaultInstanceClassloaderFromLookup() throws Exception {
+        Instance<ManagedThreadFactory> defaultManagedThreadFactoryInstance = CDI.current().select(ManagedThreadFactory.class, new Annotation[] { Default.Literal.INSTANCE });
+
+        assertTrue("ManagedTheadFactoryBean should have been avaialble with default qualifier",
+                   defaultManagedThreadFactoryInstance.isResolvable());
+
+        ManagedThreadFactory defaultManagedThreadFactoryLookup = defaultManagedThreadFactoryInstance.get();
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        // Requires the application's classloader (to access application scoped classes)
+        Runnable task = () -> {
+            try {
+                Class.forName("java.lang.Integer"); //Exists as part of JVM
+                Class.forName("concurrent.cdi.web.MyAsync"); //Exists inside Web Module
+                Class.forName("concurrent.cdi.ext.ConcurrentCDIExtension"); // Exists outside Web Module
+                future.complete("SUCCESS");
+            } catch (ClassNotFoundException e) {
+                future.completeExceptionally(e);
+            }
+        };
+
+        Thread thread = defaultManagedThreadFactoryLookup.newThread(task);
+        thread.start();
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
     }
 
     /**

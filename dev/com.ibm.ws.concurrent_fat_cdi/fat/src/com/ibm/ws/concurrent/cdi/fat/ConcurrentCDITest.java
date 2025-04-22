@@ -170,6 +170,26 @@ public class ConcurrentCDITest extends FATServletClient {
     }
 
     @Test
+    public void testInjectManagedThreadFactoryDefaultInstanceClassloader() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInjectManagedThreadFactoryDefaultInstanceClassloaderFromBean() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInjectManagedThreadFactoryDefaultInstanceClassloaderFromEJB() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInjectManagedThreadFactoryDefaultInstanceClassloaderFromLookup() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
     public void testInjectManagedThreadFactoryQualifiedFromAnno() throws Exception {
         runTest(server, APP_NAME, testName);
     }
