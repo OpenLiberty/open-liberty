@@ -64,6 +64,8 @@ public class TestUtils {
             url = url + "/ExtURL";
         } else if (type.equals("exception")) {
             url = url + "/ExceptionURL";
+        } else if (type.equals("landingPage")) {
+            url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
         }
 
         Log.info(c, "runApp", "---> Running the application with url : " + url);
@@ -90,9 +92,6 @@ public class TestUtils {
         } else if (propagator.equals("jaeger")) {
             requestHeader = ACCESS_TRACE_JAEGER_HEADER_NAME;
             traceData = JAEGER_TRACE_DATA;
-        } else if (propagator.equals("invalidHeaderValue")) {
-            requestHeader = ACCESS_TRACE_JAEGER_HEADER_NAME;
-            traceData = W3C_TRACE_DATA;
         }
 
         try {

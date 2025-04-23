@@ -16,5 +16,4 @@
 
     <!-- https://github.com/OpenLiberty/open-liberty/pull/30732 -->
   <display-name>TestIgnoreWriteAfterCommit</display-name>
-    
 </web-app>

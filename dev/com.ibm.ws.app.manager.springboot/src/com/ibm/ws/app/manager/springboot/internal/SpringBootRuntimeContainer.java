@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -27,31 +29,34 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.springboot.container.ApplicationError;
+import com.ibm.ws.app.manager.springboot.internal.SpringBootRuntimeContainer.SpringModuleMetaData.SpringBootComponentMetaData;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer;
 import com.ibm.ws.container.service.metadata.MetaDataException;
+import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
+import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataImpl;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.FutureMonitor;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "type:String=spring" })
-public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "type:String=spring", "deferredMetaData=SPRING" })
+public class SpringBootRuntimeContainer implements ModuleRuntimeContainer, DeferredMetaDataFactory {
     private static final TraceComponent tc = Tr.register(SpringBootRuntimeContainer.class);
 
     static class SpringModuleMetaData extends MetaDataImpl implements ModuleMetaData {
         private final SpringBootModuleInfo moduleInfo;
+        private final SpringBootComponentMetaData componentMetaData;
 
-        /**
-         * @param slotCnt
-         */
         public SpringModuleMetaData(SpringBootModuleInfo moduleInfo) {
             super(0);
             this.moduleInfo = moduleInfo;
+            this.componentMetaData = new SpringBootComponentMetaData();
         }
 
         @Override
@@ -66,7 +71,11 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
 
         @Override
         public ComponentMetaData[] getComponentMetaDatas() {
-            return null;
+            return new ComponentMetaData[] { componentMetaData };
+        }
+
+        SpringBootComponentMetaData getComponentMetaData() {
+            return componentMetaData;
         }
 
         @Override
@@ -74,6 +83,35 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
             return ((ExtendedApplicationInfo) moduleInfo.getApplicationInfo()).getMetaData().getJ2EEName();
         }
 
+        class SpringBootComponentMetaData extends MetaDataImpl implements ComponentMetaData, IdentifiableComponentMetaData {
+            public SpringBootComponentMetaData() {
+                super(0);
+            }
+
+            @Override
+            public String getName() {
+                return SpringModuleMetaData.this.getName();
+            }
+
+            @Override
+            public J2EEName getJ2EEName() {
+                return SpringModuleMetaData.this.getJ2EEName();
+            }
+
+            @Override
+            public ModuleMetaData getModuleMetaData() {
+                return SpringModuleMetaData.this;
+            }
+
+            @Override
+            public String getPersistentIdentifier() {
+                return "SPRING#" + getName();
+            }
+
+            ClassLoader getClassLoader() {
+                return moduleInfo.getClassLoader();
+            }
+        }
     }
 
     @Reference
@@ -84,6 +122,8 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     @Reference
     private LibertyProcess libertyProcess;
 
+    private final Map<String, ComponentMetaData> components = new ConcurrentHashMap<>();
+
     @Override
     public ModuleMetaData createModuleMetaData(ExtendedModuleInfo moduleInfo) throws MetaDataException {
         return new SpringModuleMetaData((SpringBootModuleInfo) moduleInfo);
@@ -92,6 +132,8 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     @Override
     public Future<Boolean> startModule(ExtendedModuleInfo moduleInfo) throws StateChangeException {
         SpringBootModuleInfo springBootModuleInfo = (SpringBootModuleInfo) moduleInfo;
+        SpringBootComponentMetaData springBootComponentMetaData = ((SpringModuleMetaData) springBootModuleInfo.getMetaData()).getComponentMetaData();
+        components.put(springBootComponentMetaData.getPersistentIdentifier(), springBootComponentMetaData);
         Future<Boolean> result = futureMonitor.createFuture(Boolean.class);
         invokeSpringMain(result, springBootModuleInfo);
         return result;
@@ -100,13 +142,23 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     private void invokeSpringMain(Future<Boolean> mainInvokeResult, SpringBootModuleInfo springBootModuleInfo) {
         final SpringBootApplicationImpl springBootApplication = springBootModuleInfo.getSpringBootApplication();
         final Method main;
+
+        SpringBootComponentMetaData springBootComponentMetaData = ((SpringModuleMetaData) springBootModuleInfo.getMetaData()).getComponentMetaData();
+
+        ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
+        ComponentMetaData currentCmd = accessor.getComponentMetaData();
+
         ClassLoader newTccl = springBootModuleInfo.getThreadContextClassLoader();
         ClassLoader previousTccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
             Thread.currentThread().setContextClassLoader(newTccl);
             return null;
         });
+
         try {
+            if (currentCmd == null) {
+                accessor.beginContext(springBootComponentMetaData);
+            }
             springBootApplication.registerSpringConfigFactory();
             Class<?> springApplicationClass = springBootModuleInfo.getClassLoader().loadClass(springBootApplication.getSpringBootManifest().getSpringStartClass());
             main = springApplicationClass.getMethod("main", String[].class);
@@ -120,6 +172,9 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
                 Thread.currentThread().setContextClassLoader(previousTccl);
                 return null;
             });
+            if (currentCmd == null) {
+                accessor.endContext();
+            }
         }
 
         // Execute the main method asynchronously.
@@ -131,6 +186,9 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
                 return null;
             });
             try {
+                if (currentCmd == null) {
+                    accessor.beginContext(springBootComponentMetaData);
+                }
                 // get the application args to pass from the springBootApplication
                 String[] appArgs = libertyProcess.getArgs();
                 if (appArgs.length == 0) {
@@ -157,6 +215,9 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
                     Thread.currentThread().setContextClassLoader(execPreviousTccl);
                     return null;
                 });
+                if (currentCmd == null) {
+                    accessor.endContext();
+                }
             }
         });
     }
@@ -169,9 +230,34 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     @Override
     public void stopModule(ExtendedModuleInfo moduleInfo) {
         SpringBootModuleInfo springBootModuleInfo = (SpringBootModuleInfo) moduleInfo;
+        SpringBootComponentMetaData springBootComponentMetaData = ((SpringModuleMetaData) springBootModuleInfo.getMetaData()).getComponentMetaData();
+        components.remove(springBootComponentMetaData.getPersistentIdentifier());
         springBootModuleInfo.getSpringBootApplication().unregisterSpringConfigFactory();
         springBootModuleInfo.getSpringBootApplication().callShutdownHooks();
         springBootModuleInfo.destroyThreadContextClassLoader();
     }
 
+    @Override
+    public ComponentMetaData createComponentMetaData(String identifier) {
+        ComponentMetaData cmd = components.get(identifier);
+        if (cmd == null) {
+            throw new IllegalStateException("Could not find ComponentMetaData");
+        }
+        return cmd;
+    }
+
+    @Override
+    public void initialize(ComponentMetaData metadata) throws IllegalStateException {
+        // nothing to do
+    }
+
+    @Override
+    public String getMetaDataIdentifier(String appName, String moduleName, String componentName) {
+        return appName + "#" + moduleName + "#" + componentName;
+    }
+
+    @Override
+    public ClassLoader getClassLoader(ComponentMetaData metadata) {
+        return ((SpringBootComponentMetaData) metadata).getClassLoader();
+    }
 }

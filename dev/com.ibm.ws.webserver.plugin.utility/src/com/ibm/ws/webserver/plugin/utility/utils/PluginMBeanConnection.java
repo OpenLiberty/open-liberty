@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
@@ -119,7 +120,7 @@ public class PluginMBeanConnection extends CommonMBeanConnection {
 	            String connectorAddr = null;
 	            BufferedReader br = null;
 	            try {
-	                br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+	                br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 	                connectorAddr = br.readLine();
 	            } catch (IOException e) {
 	                throw new IOException(CommandUtils.getMessage("jmx.local.connector.file.invalid", file.getAbsolutePath()));

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.internal;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -45,10 +45,7 @@ public class LoggedOutJwtSsoCookieCache {
     // store as digests to save space
     public static String toDigest(String input) {
         MessageDigest md = getMessageDigest();
-        try {
-            md.update(input.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-        }
+        md.update(input.getBytes(StandardCharsets.UTF_8));
         String result = com.ibm.ws.common.encoder.Base64Coder.base64EncodeToString(md.digest());
         return result;
     }

@@ -150,7 +150,8 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
      * @throws Exception
      */
 
-    @Test
+     @Test
+     @SkipIfSysProp(SkipIfSysProp.OS_ZOS) // Skip on z/OS due to configuration error
     public void testSpnegoUsingRawKerberosTokenSuccessful() throws Exception {
         setDefaultSpnegoServerConfig();
         String targetSpn = "HTTP/" + TARGET_SERVER;

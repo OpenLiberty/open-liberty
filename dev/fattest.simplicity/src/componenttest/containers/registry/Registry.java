@@ -39,6 +39,8 @@ import com.ibm.websphere.simplicity.log.Log;
  */
 public abstract class Registry {
 
+    public static final File DEFAULT_CONFIG_DIR = new File(System.getProperty("user.home"), ".docker");
+
     private static final Class<?> c = Registry.class;
 
     /**

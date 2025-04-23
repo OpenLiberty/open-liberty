@@ -13,7 +13,7 @@
 package com.ibm.ws.security.token.ltpa.internal;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
@@ -473,15 +473,7 @@ public class LTPAToken2 implements Token, Serializable {
      * @return The UTF-8 String form
      */
     private static final String toUTF8String(byte[] b) {
-        String ns = null;
-        try {
-            ns = new String(b, "UTF8");
-        } catch (UnsupportedEncodingException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Error converting to string; " + e);
-            }
-        }
-        return ns;
+        return new String(b, StandardCharsets.UTF_8);
     }
 
     /**

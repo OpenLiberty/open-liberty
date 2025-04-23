@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -744,8 +744,9 @@ public class PasswordUtil {
                     }
                 }
             }
-
-            buffer.append(crypto_algorithm);
+            // if "aes-128" or "aes-256" is used we want to make the tag "aes" instead so it will be usable on Liberty servers older than 25.0.0.4
+            String normalizedCryptoAlgorithm = crypto_algorithm.contains("aes") ? "aes" : crypto_algorithm;
+            buffer.append(normalizedCryptoAlgorithm);
             String alias = (null == info) ? null : info.getKeyAlias();
             if (alias != null && 0 < alias.length()) {
                 buffer.append(':').append(alias);

@@ -49,8 +49,6 @@ public class LibertyMirrorSubstitutor extends ImageNameSubstitutor {
 
     private static final Class<?> c = LibertyMirrorSubstitutor.class;
 
-    private static final String MIRROR_PREFIX = "wasliberty-";
-
     @Override
     public DockerImageName apply(final DockerImageName original) {
         final String m = "apply";
@@ -58,13 +56,13 @@ public class LibertyMirrorSubstitutor extends ImageNameSubstitutor {
         final String repository;
         final String reason;
 
-        // Docker image was already defined in a mirror (only valid for WebSphere Liberty tests)
-        if (original.getRepository().startsWith(MIRROR_PREFIX)) {
-            return original; // Already in a mirror, return original
-        }
-
         Registry artifactory = ArtifactoryRegistry.instance();
         Registry internal = InternalRegistry.instance();
+
+        // Docker image was already defined in an internal mirror (only valid for WebSphere Liberty tests)
+        if (internal.supportsRepository(original)) {
+            return original; // Already in a mirror, return original
+        }
 
         if (artifactory.supportsRegistry(original)) {
             repository = artifactory.getMirrorRepository(original) + "/" + original.getRepository();

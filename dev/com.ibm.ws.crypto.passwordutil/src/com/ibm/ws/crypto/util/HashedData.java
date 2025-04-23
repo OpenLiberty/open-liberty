@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,6 @@ package com.ibm.ws.crypto.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -226,7 +225,7 @@ public class HashedData {
         return output;
     }
 
-    private String readString(ByteArrayInputStream input) throws InvalidPasswordCipherException, UnsupportedEncodingException {
+    private String readString(ByteArrayInputStream input) throws InvalidPasswordCipherException {
         String output = null;
         if (input != null) {
             int length = readInt(input);
@@ -264,7 +263,7 @@ public class HashedData {
         }
     }
 
-    private void writeString(ByteArrayOutputStream output, String value) throws InvalidPasswordCipherException, UnsupportedEncodingException {
+    private void writeString(ByteArrayOutputStream output, String value) throws InvalidPasswordCipherException {
         if (output != null && value != null) {
             byte[] b = toByte(value.length());
             output.write(b, 0, b.length);

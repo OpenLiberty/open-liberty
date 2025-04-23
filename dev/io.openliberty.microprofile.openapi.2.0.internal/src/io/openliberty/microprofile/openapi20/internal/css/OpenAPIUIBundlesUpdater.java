@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -66,7 +65,7 @@ public class OpenAPIUIBundlesUpdater {
 
         //Retrieve all OpenAPI-UI Bundles from the BundleContext
         final Set<Bundle> allOpenAPIUIBundles = getOpenAPIUIBundles();
-        if(allOpenAPIUIBundles.isEmpty()){
+        if (allOpenAPIUIBundles.isEmpty()) {
             return;
         }
 
@@ -212,10 +211,10 @@ public class OpenAPIUIBundlesUpdater {
         return new ByteArrayInputStream(bytesOut.toByteArray());
     }
 
-    private static void processResource(String resourcePath, Object resourceContents, ZipOutputStream zos) throws UnsupportedEncodingException, IOException {
+    private static void processResource(String resourcePath, Object resourceContents, ZipOutputStream zos) throws IOException {
         if (resourceContents != null) {
             if (resourceContents instanceof String) {
-                zos.write(((String) resourceContents).getBytes(StandardCharsets.UTF_8.name()));
+                zos.write(((String) resourceContents).getBytes(StandardCharsets.UTF_8));
                 if (LoggingUtils.isDebugEnabled(tc)) {
                     Tr.debug(tc, "Processed (String) resource at " + resourcePath);
                 }
@@ -260,7 +259,7 @@ public class OpenAPIUIBundlesUpdater {
         if (bundleResource != null) {
             BufferedReader br = null;
             try { // read the requested resource from the bundle
-                br = new BufferedReader(new InputStreamReader(bundleResource.openConnection().getInputStream(), StandardCharsets.UTF_8.name()));
+                br = new BufferedReader(new InputStreamReader(bundleResource.openConnection().getInputStream(), StandardCharsets.UTF_8));
                 while (br.ready()) {
                     responseString.append(br.readLine());
                 }
@@ -301,7 +300,7 @@ public class OpenAPIUIBundlesUpdater {
             BundleContext bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
             // If the bundle context null, then the bundle is in a STOPPED state and we should not be waiting for other
             // bundles if this is STOPPED. Returning false, means we stop any unnecessary processing
-            if(bundleContext != null){
+            if (bundleContext != null) {
                 new OpenAPIUIBundlesListener(openAPIUIBundles, bundleContext).await();
             } else {
                 return false;

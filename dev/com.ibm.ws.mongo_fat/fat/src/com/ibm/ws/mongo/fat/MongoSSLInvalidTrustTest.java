@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,6 +32,7 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@Ignore //Turning off the test cases to prevent build failures due to docker image - Defect 303550
 public class MongoSSLInvalidTrustTest extends FATServletClient {
     @Server("mongo.fat.server.ssl")
     public static LibertyServer server;

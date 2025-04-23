@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2021 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package io.openliberty.accesslists.filterlist;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -207,21 +207,11 @@ public class FilterListFastStr implements FilterListStr {
      * @return the Entry object created from this address.
      */
     private Entry convertToEntries(String newAddress) {
-        byte[] ba = null;
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "convertToEntries");
         }
 
-        try {
-            ba = newAddress.getBytes("ISO-8859-1");
-        } catch (UnsupportedEncodingException x) {
-            // should never happen, log a message and use default encoding
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "ISO-8859-1 encoding not supported.  Exception: " + x);
-            }
-            ba = newAddress.getBytes();
-        }
+        byte[] ba = newAddress.getBytes(StandardCharsets.ISO_8859_1);
         int baLength = ba.length;
         int hashValue = 0;
         int hashLength = 0;

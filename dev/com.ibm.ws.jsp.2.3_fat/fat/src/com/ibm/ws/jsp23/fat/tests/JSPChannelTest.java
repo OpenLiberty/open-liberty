@@ -31,6 +31,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -65,7 +66,8 @@ public class JSPChannelTest {
     //Deploy the app at the very start of the test
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war",
+                                      "com.ibm.ws.jsp23.fat.writeafterredirect.servlets");
         server.startServer(JSPChannelTest.class.getSimpleName() + ".log");
         server.waitForStringInLog("CWWKT0016I:.*WriteAfterRedirect.*"); // ensure app has started. 
     }
@@ -73,7 +75,11 @@ public class JSPChannelTest {
     @AfterClass
     public static void cleanup() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+
+            //SRVE0777E - Exception thrown from application class 
+            //SRVE8115W: WARNING: Cannot set status. Response already committed.
+            //SRVE8094W: WARNING: Cannot set header. Response already committed
+            server.stopServer("SRVE8115W", "SRVE8094W", "SRVE0777E"); 
         }
     }
 
@@ -84,7 +90,7 @@ public class JSPChannelTest {
      *
      * @throws Exception if something goes horribly wrong
      */
-    @ExpectedFFDC("com.ibm.wsspi.genericbnf.exception.MessageSentException")
+    
     @Test
     public void testIgnoreWriteAfterCommitTrue() throws Exception {
         Socket socket = null;
@@ -196,6 +202,117 @@ public class JSPChannelTest {
             LOG.info("SocketException occurred! -> " + e.getMessage());
             socketExceptionOccurred = true;
             Assert.assertTrue("Expected SocketException did not occur", socketExceptionOccurred);
+        } finally {
+            if (socket != null) {
+                socket.close();
+            }
+        }
+    }
+
+    /**
+     * Tests that ignoreWriteAfterCommit=true does NOT prevent connection closure
+     * for plain IOExceptions.
+     * 
+     * This test verifies that ignoreWriteAfterCommit is specific to
+     * MessageSentException
+     * and doesn't apply to general IOExceptions.
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "java.io.IOException" })
+    public void testIgnoreWriteAfterCommitTrueWithIOException() throws Exception {
+        Socket socket = null;
+        boolean socketExceptionOccurred = false;
+
+        try {
+            updateHTTPOptions(true); // Set ignoreWriteAfterCommit=true
+
+            String address = server.getHostname() + ":" + server.getHttpDefaultPort();
+
+            // Create a persistent connection
+            socket = new Socket(server.getHostname(), server.getHttpDefaultPort());
+            socket.setSoTimeout(10000); // 10 seconds timeout
+            socket.setKeepAlive(true);
+
+            // Send a request for a slow responding JSP
+            String abruptRequest = "GET /" + APP_NAME + "/slow-response HTTP/1.1\r\n" +
+                    "Host: " + address + "\r\n" +
+                    "Connection: keep-alive\r\n" +
+                    "\r\n";
+            OutputStream os = socket.getOutputStream();
+            os.write(abruptRequest.getBytes());
+            os.flush();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            String line;
+            boolean foundStartMarker = false;
+            while ((line = reader.readLine()) != null) {
+                LOG.info("< " + line);
+                if (line.contains("Beginning slow response...")) {
+                    foundStartMarker = true;
+                    break;
+                }
+            }
+
+            // Check to see if the response has been started
+            Assert.assertTrue("Should find start marker in response", foundStartMarker);
+
+            // Now read a small portion of the body to ensure the response is in progress
+            char[] buffer = new char[1024];
+            int charsRead = reader.read(buffer, 0, buffer.length);
+            LOG.info("Read " + charsRead + " chars of response body: " +
+                    new String(buffer, 0, charsRead));
+
+            // Wait a bit to ensure the server is in the middle of sending data
+            LOG.info("Waiting 2 seconds before triggering broken pipe...");
+            Thread.sleep(2000);
+
+            // Now shutdown the stream, but keep the socket open to cause the server's write
+            // operations to fail
+            LOG.info("Shutting down stream to trigger broken pipe");
+            socket.shutdownInput();
+
+            socket.shutdownOutput();
+
+            // Let the server continue to write while the client is not reading
+            // This will eventually cause an IOException on the server side during write
+            LOG.info("Waiting 3 seconds for server to process broken pipe...");
+            Thread.sleep(3000);
+
+            // Now try to send a second request on the same socket
+            LOG.info("Sending second request on same socket...");
+            String secondRequest = "GET /" + APP_NAME + "/page2.jsp HTTP/1.1\r\n" +
+                    "Host: " + address + "\r\n" +
+                    "Connection: close\r\n" +
+                    "\r\n";
+
+            os.write(secondRequest.getBytes());
+            os.flush();
+            LOG.info("Sent second request");
+
+            // Try to read the response
+            boolean foundSuccessMessage = false;
+            while ((line = reader.readLine()) != null) {
+                LOG.info(line);
+                if (line.contains("Successfully redirected!")) {
+                    foundSuccessMessage = true;
+                    break;
+                }
+            }
+
+            // If the test gets here without an exception, the test may fail
+            // We expected the connection to be closed even with ignoreWriteAfterCommit=true
+            Assert.assertFalse("Connection should be closed after IOException, even with ignoreWriteAfterCommit=true",
+                    foundSuccessMessage);
+
+        } catch (SocketException e) {
+            // We expect a SocketException since the connection should be closed
+            LOG.info("Expected SocketException: " + e.getMessage());
+            socketExceptionOccurred = true;
+            // Verify that the connection was closed (we got a SocketException)
+            Assert.assertTrue(
+                    "Expected SocketException: ignoreWriteAfterCommit should not prevent connection closure for IOExceptions",
+                    socketExceptionOccurred);
         } finally {
             if (socket != null) {
                 socket.close();

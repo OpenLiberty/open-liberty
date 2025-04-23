@@ -37,7 +37,7 @@ IBM-API-Package: \
 -features=io.openliberty.mpConfig-3.1, \
   io.openliberty.webBundle.internal-1.0,\
   io.openliberty.restfulWS-3.1; ibm.tolerates:="4.0", \
-  io.openliberty.mpCompatible-7.0, \
+  io.openliberty.mpCompatible-7.0; ibm.tolerates:="7.1",\
   io.openliberty.org.eclipse.microprofile.openapi-4.0,\
   io.openliberty.jandex.internal-3.0
 -bundles=\
@@ -55,4 +55,4 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: microProfile-7.0
+WLP-Platform: microProfile-7.0,microProfile-7.1

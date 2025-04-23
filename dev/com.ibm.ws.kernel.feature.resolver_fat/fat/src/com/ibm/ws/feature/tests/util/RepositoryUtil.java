@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -476,6 +476,7 @@ public class RepositoryUtil {
      *
      * @param featureName Name of a versionless feature. This is NOT simply a versioned feature name
      *            minus the version. The "package" name should be "io.openliberty.versionless."
+     *            or "com.ibm.websphere.appserver.versionless."
      *            <br>Example: io.openliberty.versionless.appClientSupport
      * @return feature definition of the versionless feature associated with the input featureName
      */
@@ -524,7 +525,9 @@ public class RepositoryUtil {
      * @param featureName the symbolic feature name
      */
     public static String asVersionlessFeatureName(String featureName) {
-        return "io.openliberty.versionless." + asShortName(featureName);
+        String shortName = asShortName(featureName);
+        // wmqJmsClient and wmqMessagingClient versionless features are WebSphere Liberty versionless features and have a different prefix
+        return (shortName.startsWith("wmq") ? "com.ibm.websphere.appserver.versionless." : "io.openliberty.versionless.") + shortName;
     }
 
     /**
@@ -538,7 +541,10 @@ public class RepositoryUtil {
      * @param featureName the symbolic feature name
      */
     public static String asInternalVersionlessFeatureName(String featureName) {
-        return "io.openliberty.internal.versionless." + asShortNameWithVersion(featureName);
+        String shortNameWithVersion = asShortNameWithVersion(featureName);
+        // wmqJmsClient and wmqMessagingClient versionless features are WebSphere Liberty versionless features and have a different prefix
+        return (shortNameWithVersion.startsWith("wmq") ? "com.ibm.ws.internal.versionless." : "io.openliberty.internal.versionless.")
+               + shortNameWithVersion;
     }
 
     /**
@@ -719,7 +725,7 @@ public class RepositoryUtil {
     }
 
     public static boolean isVersionless(String featureName) {
-        return (featureName.startsWith("io.openliberty.versionless"));
+        return (featureName.startsWith("io.openliberty.versionless") || featureName.startsWith("com.ibm.websphere.appserver.versionless"));
     }
 
     private static List<String> versionlessFeatures;

@@ -109,25 +109,20 @@ public class SipInboundChannelFactoryWs extends SipChannelFactory {
 
 	@Override
 	public Channel findOrCreateChannel(ChannelData config) throws ChannelException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void updateProperties(Map<Object, Object> properties) throws ChannelFactoryPropertyIgnoredException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public Map<Object, Object> getProperties() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public OutboundChannelDefinition getOutboundChannelDefinition(Map<Object, Object> props) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

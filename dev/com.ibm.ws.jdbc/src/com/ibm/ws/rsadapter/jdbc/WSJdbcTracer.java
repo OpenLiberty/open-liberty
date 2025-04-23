@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,13 +17,13 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor; 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.CallableStatement;
@@ -248,13 +248,7 @@ public class WSJdbcTracer implements InvocationHandler
         if (obj instanceof String) {
             String str = (String) obj;
             StringBuilder sb = new StringBuilder(str.length()).append('\"');
-            byte[] bytes;
-
-            try {
-                bytes = str.getBytes("UTF-16BE");
-            } catch (UnsupportedEncodingException x) {// No FFDC code needed
-                return new String(sb.append(str).append('\"'));
-            }
+            byte[] bytes = str.getBytes(StandardCharsets.UTF_16BE);
 
             for (int i = 0; i < bytes.length; i += 2) {
                 if (bytes[i] == 0 && (bytes[i + 1] & 0x80) == 0)

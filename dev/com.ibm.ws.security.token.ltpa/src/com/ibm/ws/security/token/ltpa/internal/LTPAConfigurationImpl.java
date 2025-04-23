@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -237,14 +238,15 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      */
     private void debugLTPAConfig() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "primaryKeyImportFile: " + primaryKeyImportFile);
-            //Tr.debug(tc, "primaryKeyPassword: " + primaryKeyPassword);
-            Tr.debug(tc, "keyTokenExpiration: " + keyTokenExpiration);
-            Tr.debug(tc, "monitorInterval: " + monitorInterval);
-            Tr.debug(tc, "authFilterRef: " + authFilterRef);
-            Tr.debug(tc, "monitorValidationKeysDir: " + monitorValidationKeysDir);
-            Tr.debug(tc, "updateTrigger: " + updateTrigger);
-            Tr.debug(tc, "validationKeys: " + (validationKeys == null ? "Null" : maskKeysPasswords(validationKeys)));
+            StringJoiner sj = new StringJoiner(", ", "debugLTPAConfig[", "]");
+            sj.add("primaryKeyImportFile: " + primaryKeyImportFile);
+            sj.add("keyTokenExpiration: " + keyTokenExpiration);
+            sj.add("monitorInterval: " + monitorInterval);
+            sj.add("authFilterRef: " + authFilterRef);
+            sj.add("monitorValidationKeysDir: " + monitorValidationKeysDir);
+            sj.add("updateTrigger: " + updateTrigger);
+            sj.add("validationKeys: " + (validationKeys == null ? "Null" : maskKeysPasswords(validationKeys)));
+            Tr.debug(tc, sj.toString());
         }
     }
 
@@ -319,8 +321,15 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
                     return validationKeysInDirectory;
                 }
 
+                /*
+                 * Use the canonical path when comparing primaryKeyImportFile to fullFileName because fullFileName is
+                 * derived primaryKeyImportDir which is a canonical path. If we don't compare with a canonical path then the
+                 * comparison fails on windows when '/' are used in server.xml instead of '\'.
+                 */
+                String canonicalPrimaryKeyImportFile = getCanonicalPathWithDefault(primaryKeyImportFile, primaryKeyImportFile);
+
                 // Skip the primary LTPA keys file or validationKeys file configured in the valicationKeys element
-                if (primaryKeyImportFile.equals(fullFileName) || isConfiguredValidationKeys(fullFileName)) {
+                if (canonicalPrimaryKeyImportFile.equals(fullFileName) || isConfiguredValidationKeys(fullFileName)) {
                     continue;
                 }
 
@@ -337,6 +346,24 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         return validationKeysInDirectory;
+    }
+
+    /**
+     * @param defaultValue
+     * @param pathToResolve
+     * @return
+     */
+    private String getCanonicalPathWithDefault(String pathToResolve, String defaultValue) {
+        String canonicalPrimaryKeyImportFile;
+        try {
+            canonicalPrimaryKeyImportFile = new File(pathToResolve).getCanonicalPath();
+
+        } catch (IOException ioe) {
+            Tr.debug(tc, "Could not resolve canonical path to " + pathToResolve +
+                         ", returning default '" + defaultValue + "'. Failure info: " + ioe.getMessage());
+            canonicalPrimaryKeyImportFile = defaultValue;
+        }
+        return canonicalPrimaryKeyImportFile;
     }
 
     /**
@@ -367,7 +394,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         if (monitorValidationKeysDir || isValidationKeysFileConfigured) {
             try {
-                // primaryKeyImportFile has already been resolved when the server loads the config, this includes variable and .. being resolved.
                 // primaryKeyImportDir is required to be set to load any validation keys.
                 primaryKeyImportDir = new File(primaryKeyImportFile).getCanonicalFile().getParent() + File.separator;
                 Tr.debug(tc, "primaryKeyImportDir: " + primaryKeyImportDir);

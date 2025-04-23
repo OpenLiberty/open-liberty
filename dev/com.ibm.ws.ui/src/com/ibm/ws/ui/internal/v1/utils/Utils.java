@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,17 +12,18 @@
  *******************************************************************************/
 package com.ibm.ws.ui.internal.v1.utils;
 
-import com.google.gson.Gson;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
+import com.google.gson.Gson;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -120,12 +121,11 @@ public class Utils {
      *
      * @param str The input string
      * @return The MD5 checksum of the given string.
-     * @throws UnsupportedEncodingException
      */
     public synchronized static String getMD5String(String str) {
         byte[] hash;
         try {
-            hash = messagedigest.digest(str.getBytes("UTF-8"));
+            hash = messagedigest.digest(str.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             // Let this FFDC because we should never get here
             if (tc.isEventEnabled()) {
@@ -140,25 +140,24 @@ public class Utils {
         return sb.toString();
     }
 
-    
-
     /**
      * This method validates whether the input string is a valid JSON or not.
+     *
      * @param inputString, Input string
-     * @param prefix, Prefix string to be trimmed from input string
+     * @param prefix,      Prefix string to be trimmed from input string
      * @return Boolean, true if input string is valid JSON.
      */
     public static boolean isValidJsonString(String inputString, String prefix) {
-        if(!prefix.equals("")) {
+        if (!prefix.equals("")) {
             inputString = inputString.replace(prefix, "");
         }
 
         return isValidJsonString(inputString);
     }
-    
 
     /**
      * This method validates whether the input string is a valid JSON or not
+     *
      * @param inputString The input string
      * @return Boolean, true if input string is valid JSON.
      */

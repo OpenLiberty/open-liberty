@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.common.encoder;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -177,7 +178,7 @@ public final class Base64Coder {
      * Encode a byte array into a Base64-encoded String. The String is not
      * broken into 72 character lines.
      *
-     * @param data Byte data to be encoded
+     * @param data   Byte data to be encoded
      * @param offset Starting index within the byte data to be encoded
      * @param length Number of bytes to encode
      * @return Base64-encoded string.
@@ -278,6 +279,23 @@ public final class Base64Coder {
     }
 
     /**
+     * Converts a String with the given encoding Charset to a base64 encoded String.
+     *
+     * @param str
+     * @param charset
+     * @return
+     */
+    public static final String base64Decode(String str, Charset charset) {
+        if (str == null) {
+            return null;
+        } else {
+            byte data[] = getBytes(str);
+            return base64Decode(new String(data, charset));
+        }
+
+    }
+
+    /**
      * Converts a base64 encoded String to a decoded String.
      *
      * @param str String, may be {@code null}.
@@ -324,7 +342,7 @@ public final class Base64Coder {
      * Converts a String to a byte array by using UTF-8 character sets.
      * This code is needed even converting US-ASCII characters since there are some character sets which are not compatible with US-ASCII code area.
      * For example, CP-1399, which is z/OS Japanese EBCDIC character sets, is one.
-     * 
+     *
      * @param input String, may be {@code null}.
      * @return byte array representing the String or {@code null} if the String was null or contained non ASCII character.
      */

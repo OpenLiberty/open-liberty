@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.security.social.tai;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
@@ -143,7 +144,7 @@ public class TAIEncryptionUtils {
         PublicKey publicKey = clientConfig.getPublicKey();
         if (publicKey != null) {
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[] encryptedBytes = getBytes(cipher, accessToken.getBytes("UTF-8"), 53); // RSA takes 53 bytes max for encrypting.
+            byte[] encryptedBytes = getBytes(cipher, accessToken.getBytes(StandardCharsets.UTF_8), 53); // RSA takes 53 bytes max for encrypting.
             encryptedAccessToken = encodingUtils.bytesToHexString(encryptedBytes);
         }
         return encryptedAccessToken;
@@ -161,7 +162,7 @@ public class TAIEncryptionUtils {
         PrivateKey privateKey = clientConfig.getPrivateKey();
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         byte[] decryptedBytes = getBytes(cipher, hexStringToBytes(encryptedToken), 64); // RSA takes 64 bytes max for decrypting
-        return new String(decryptedBytes, "UTF-8");
+        return new String(decryptedBytes, StandardCharsets.UTF_8);
     }
 
     @Trivial
@@ -210,7 +211,7 @@ public class TAIEncryptionUtils {
             IvParameterSpec ivSpec = getIvSpec(clientConfig);
             Cipher cipher = Cipher.getInstance(TRANSFORMATION_AES);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
-            byte[] encryptedBytes = cipher.doFinal(accessToken.getBytes("UTF-8"));
+            byte[] encryptedBytes = cipher.doFinal(accessToken.getBytes(StandardCharsets.UTF_8));
             encryptedAccessToken = encodingUtils.bytesToHexString(encryptedBytes);
         }
         return encryptedAccessToken;
@@ -229,7 +230,7 @@ public class TAIEncryptionUtils {
         Cipher cipher = Cipher.getInstance(TRANSFORMATION_AES);
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
         byte[] decryptedBytes = cipher.doFinal(hexStringToBytes(encryptedToken));
-        return new String(decryptedBytes, "UTF-8");
+        return new String(decryptedBytes, StandardCharsets.UTF_8);
     }
 
     Key getSecretKey(SocialLoginConfig config) throws Exception {
@@ -253,7 +254,7 @@ public class TAIEncryptionUtils {
             }
             return null;
         }
-        return md.digest(clientSecret.getBytes(Charset.forName("UTF-8")));
+        return md.digest(clientSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     @FFDCIgnore(Exception.class)

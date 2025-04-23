@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,7 @@ package com.ibm.ws.security.sso.common.saml.propagation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPOutputStream;
 
 import javax.security.auth.Subject;
@@ -58,14 +58,7 @@ public class PropagationHelperImpl {
                 byte[] compressedTokenBytes = compressSamlToken(samlString);
                 base64Saml = Base64Coder.base64EncodeToString(compressedTokenBytes);
             } else {
-                byte output[] = null;
-                try {
-                    output = samlString.getBytes("UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    // This should not happen.
-                    // If it happens, it would be some runtime or operating system issue, so just give up and return null.
-                    // ffdc data will be logged automatically.
-                }
+                byte output[] = samlString.getBytes(StandardCharsets.UTF_8);
                 if (output != null) {
                     base64Saml = Base64Coder.base64EncodeToString(output);
                 } else {
@@ -87,14 +80,8 @@ public class PropagationHelperImpl {
         try {
             gzip = new GZIPOutputStream(out);
             byte output[] = null;
-            try {
-                if (tokenString != null) {
-                    output = tokenString.getBytes("UTF-8");
-                }
-            } catch (UnsupportedEncodingException e) {
-                // This should not happen.
-                // If it happens, it would be some runtime or operating system issue, so just give up and return null.
-                // ffdc data will be logged automatically.
+            if (tokenString != null) {
+                output = tokenString.getBytes(StandardCharsets.UTF_8);
             }
             if (output != null) {
                 gzip.write(output);

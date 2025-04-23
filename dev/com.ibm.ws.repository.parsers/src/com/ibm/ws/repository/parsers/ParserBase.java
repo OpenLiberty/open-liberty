@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -149,7 +150,7 @@ public abstract class ParserBase {
         Open("Open"),
         Open_Web("Open_Web");
 
-        private String _productEdition;
+        private final String _productEdition;
 
         private Edition(String productEdition) {
             _productEdition = productEdition;
@@ -992,7 +993,7 @@ public abstract class ParserBase {
 
                 // Now read in the long description
                 if (descriptionFile != null) {
-                    descriptionReader = new InputStreamReader(new FileInputStream(descriptionFile), "UTF-8");
+                    descriptionReader = new InputStreamReader(new FileInputStream(descriptionFile), StandardCharsets.UTF_8);
                     char[] buf = new char[1024];
                     StringBuilder builder = new StringBuilder();
                     int chars;

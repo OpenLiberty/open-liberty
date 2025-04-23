@@ -94,7 +94,7 @@ public class GenerateEsas extends DownloadXmlGenerator {
             File englishLI = new File(licenseRoot, "LI_en");
             BufferedReader licenseReader = null;
             try {
-                licenseReader = new BufferedReader(new InputStreamReader(new FileInputStream(englishLI), "UTF-16"));
+                licenseReader = new BufferedReader(new InputStreamReader(new FileInputStream(englishLI), StandardCharsets.UTF_16));
                 String line = null;
                 while ((line = licenseReader.readLine()) != null) {
                     if (line.startsWith("L/N:")) {

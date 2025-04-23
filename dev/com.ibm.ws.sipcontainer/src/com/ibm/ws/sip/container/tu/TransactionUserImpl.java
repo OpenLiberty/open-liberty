@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.tu;
 
@@ -1172,7 +1169,6 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 	 * @param invite
 	 */
 	private void terminateUndelyingClientTransactions(SipServletRequest invite) {
-		// TODO Auto-generated method stub
 		// terminate the outbound INVITE with a CANCEL request
 		if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "terminateUndelyingClientTransactions",
@@ -1271,7 +1267,6 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 						cancel.send(transaction.getListener());
 						
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						if (c_logger.isTraceDebugEnabled()) {
 							c_logger.traceDebug(this, "terminateUnderlyingProxyTransactions",
 									"IllegalStateException... " + e.toString());

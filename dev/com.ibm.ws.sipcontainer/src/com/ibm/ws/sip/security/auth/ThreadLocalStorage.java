@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.security.auth;
 
@@ -37,7 +34,6 @@ public class ThreadLocalStorage
 			digester = MessageDigest.getInstance("MD5");
 			_msgDigest.set( digester);
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	    return digester;

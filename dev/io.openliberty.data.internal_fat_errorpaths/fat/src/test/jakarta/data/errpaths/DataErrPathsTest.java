@@ -116,7 +116,11 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1100E.*selectByLastName", // CursoredPage with ORDER BY clause
                                    "CWWKD1101E.*nameAndZipCode", // Record return type with invalid attribute name
                                    "CWWKD1104E.*inWard", // @Param with empty string value
-                                   "CWWKD1105E.*findByNameNotNullOrderByDescriptionAsc" // keyword in OrderBy
+                                   "CWWKD1105E.*findByNameNotNullOrderByDescriptionAsc", // keyword in OrderBy
+                                   "CWWKD1108E.*Invitation", // JPA entity lacks @Entity
+                                   "CWWKD1109E.*Investment", // Record entity has JPA anno
+                                   "CWWKD1110E.*findByEmailAddressesGreaterThanEqual", // collection >=
+                                   "CWWKD1110E.*findByEmailAddressesIgnoreCaseContains" // collection IgnoreCase
                     };
 
     @Server("io.openliberty.data.internal.fat.errpaths")

@@ -13,9 +13,13 @@
 package test.jakarta.data.errpaths.web;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 
 /**
@@ -34,6 +38,9 @@ public class Voter {
 
     public String description;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    public Set<String> emailAddresses = new HashSet<>();
+
     @Id
     @Column(nullable = false)
     public int ssn;
@@ -41,12 +48,18 @@ public class Voter {
     public Voter() {
     }
 
-    public Voter(int ssn, String name, LocalDate birthday, String address) {
+    public Voter(int ssn,
+                 String name,
+                 LocalDate birthday,
+                 String address,
+                 String... emailAddresses) {
         this.ssn = ssn;
         this.name = name;
         this.birthday = birthday;
         this.address = address;
         this.description = name + " born on " + birthday + " and living at " + address;
+        for (String email : emailAddresses)
+            this.emailAddresses.add(email);
     }
 
     @Override
@@ -56,6 +69,7 @@ public class Voter {
 
     @Override
     public String toString() {
-        return "Voter#" + ssn + " " + birthday + " " + name + " @" + address;
+        return "Voter#" + ssn + " " + birthday + " " + name +
+               " @" + address + " " + emailAddresses;
     }
 }

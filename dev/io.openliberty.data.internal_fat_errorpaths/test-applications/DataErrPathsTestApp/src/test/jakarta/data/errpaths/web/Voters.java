@@ -232,6 +232,17 @@ public interface Voters extends BasicRepository<Voter, Integer> {
                                                    PageRequest pageReq);
 
     /**
+     * This invalid method tries to apply the GreaterThanEqual keyword to a
+     * collection of values.
+     */
+    List<Voter> findByEmailAddressesGreaterThanEqual(int minEmailAddresses);
+
+    /**
+     * This invalid method tries to apply the IgnoreCase keyword to a collection.
+     */
+    List<Voter> findByEmailAddressesIgnoreCaseContains(String email);
+
+    /**
      * This invalid method omits the entity attribute name from findBy in the
      * method name.
      */

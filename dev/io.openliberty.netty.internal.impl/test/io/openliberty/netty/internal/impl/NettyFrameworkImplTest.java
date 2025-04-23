@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -97,6 +97,7 @@ public class NettyFrameworkImplTest {
     private void setTCPConfig() {
         options.put(TCPConfigurationImpl.PORT_OPEN_RETRIES, 14);
         options.put(TCPConfigurationImpl.REUSE_ADDR, "true");
+        options.put(TCPConfigurationImpl.LINGER, 10);
     }
 
     /**
@@ -109,6 +110,7 @@ public class NettyFrameworkImplTest {
         setTCPConfig();
         ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
         Assert.assertTrue((boolean) bootstrap.config().options().get(ChannelOption.SO_REUSEADDR));
+        Assert.assertEquals(10, bootstrap.config().options().get(ChannelOption.SO_LINGER));
         Assert.assertTrue(bootstrap.getBaseInitializer() instanceof TCPChannelInitializerImpl);
         framework.deactivate(null, null);
     }

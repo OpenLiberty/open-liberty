@@ -296,7 +296,6 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public boolean isPushSupported() {
-        // TODO Auto-generated method stub
         return message.isPushSupported();
     }
 }

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.servlets;
 
@@ -2336,37 +2333,31 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
 
 	@Override
 	public AsyncContext getAsyncContext() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public DispatcherType getDispatcherType() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ServletContext getServletContext() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean isAsyncStarted() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public AsyncContext startAsync() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

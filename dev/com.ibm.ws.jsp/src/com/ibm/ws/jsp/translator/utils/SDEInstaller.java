@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class SDEInstaller {
     private static final boolean verbose = false;
@@ -51,7 +52,7 @@ public class SDEInstaller {
 
         // get the bytes
         orig = readWhole(inClassFile);
-        sdeAttr = smapGenerator.toString().getBytes("UTF-8");
+        sdeAttr = smapGenerator.toString().getBytes(StandardCharsets.UTF_8);
         gen = new byte[orig.length + sdeAttr.length + 100];
 
         // do it
@@ -287,7 +288,7 @@ public class SDEInstaller {
                     int len = readU2();
                     writeU2(len);
                     byte[] utf8 = readBytes(len);
-                    String str = new String(utf8, "UTF-8");
+                    String str = new String(utf8, StandardCharsets.UTF_8);
                     if (verbose) {
                         System.out.println(i + " read class attr -- '" + str + "'");
                     }

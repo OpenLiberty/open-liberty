@@ -15,5 +15,9 @@
     <logging traceSpecification="*=info:HEALTH=all:logservice=all=enabled:io.openliberty.org.eclipse.microprofile.health.3.1.*=all=enabled"/>
 
     <webContainer deferServletLoad="false"/> 
+    
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions portOpenRetries="60" />                   
+    </httpEndpoint>
 	
 </server>

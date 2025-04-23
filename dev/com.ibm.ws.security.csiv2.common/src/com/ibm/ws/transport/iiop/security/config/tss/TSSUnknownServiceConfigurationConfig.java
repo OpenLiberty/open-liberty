@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.security.config.tss;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.omg.CSIIOP.ServiceConfiguration;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.transport.iiop.security.config.ConfigException;
 
 /**
@@ -50,16 +49,12 @@ public class TSSUnknownServiceConfigurationConfig extends TSSServiceConfiguratio
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore(UnsupportedEncodingException.class)
     void toString(String spaces, StringBuilder buf) {
         String moreSpaces = spaces + "  ";
         buf.append(spaces).append("TSSUnknownServiceConfigurationConfig: [\n");
         buf.append(moreSpaces).append("syntax VMCID : ").append(Integer.toHexString(syntax >> 12)).append("\n");
         buf.append(moreSpaces).append("syntax organization-scoped syntax identifier : ").append(Integer.toHexString(syntax & 0XFFF)).append("\n");
-        try {
-            buf.append(moreSpaces).append("name: ").append(Arrays.asList(name)).append(" (").append(new String(name, "ISO-8859-1")).append(")\n");
-        } catch (UnsupportedEncodingException e) {
-        }
+        buf.append(moreSpaces).append("name: ").append(Arrays.asList(name)).append(" (").append(new String(name, StandardCharsets.ISO_8859_1)).append(")\n");
         buf.append(spaces).append("]\n");
     }
 

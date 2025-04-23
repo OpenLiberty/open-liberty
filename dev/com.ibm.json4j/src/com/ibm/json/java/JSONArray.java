@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,19 +13,18 @@
 
 package com.ibm.json.java;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.Reader;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Writer;
 import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -124,7 +123,7 @@ public class JSONArray extends ArrayList implements JSONArtifact
         InputStreamReader isr = null;
         try
         {
-            isr = new InputStreamReader(is, "UTF-8");
+            isr = new InputStreamReader(is, StandardCharsets.UTF_8);
         }
         catch (Exception ex)
         {
@@ -197,17 +196,7 @@ public class JSONArray extends ArrayList implements JSONArtifact
      * @throws IOException Thrown on IO errors during serialization.
      */
     public void serialize(OutputStream os, boolean verbose) throws IOException {
-        Writer writer = null;
-        try
-        {
-            writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-        }
-        catch (UnsupportedEncodingException uex)
-        {
-            IOException iox = new IOException(uex.toString());
-            iox.initCause(uex);
-            throw iox;
-        }
+        Writer writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
         serialize(writer, verbose);
     }
 

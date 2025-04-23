@@ -265,8 +265,9 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
-     * Test the ElementCount keyword by querying against a collection attribute with different sizes.
-     * Also covers WithMinute and WithSecond.
+     * Test the ElementCount function by querying for a collection attribute of
+     * different sizes. Also covers EXTRACT MINUTE and EXTRACT SECOND in a JPQL
+     * query.
      */
     @Test
     public void testElementCountAndExtract() throws Exception {
@@ -312,37 +313,37 @@ public class DataExperimentalServlet extends FATServlet {
 
         reservations.saveAll(List.of(r1, r2, r3, r4));
 
-        // ElementCount keyword
+        // ElementCount Function
 
         assertEquals(List.of("host1@openliberty.io", "host4@openliberty.io"),
-                     reservations.findByInviteesElementCount(2)
+                     reservations.withInviteeCount(2)
                                      .map(r -> r.host)
                                      .collect(Collectors.toList()));
 
         assertEquals(Collections.EMPTY_LIST,
-                     reservations.findByInviteesElementCount(0)
+                     reservations.withInviteeCount(0)
                                      .map(r -> r.host)
                                      .collect(Collectors.toList()));
-
-        // ElementCount Function
 
         assertEquals(List.of("host3@openliberty.io"),
                      reservations.withInviteeCount(3)
                                      .map(r -> r.host)
                                      .collect(Collectors.toList()));
 
-        // WithHour, WithMinute. We cannot compare the hour without knowing which time zone the database stores it in.
+        // EXTRACT HOUR, EXTRACT MINUTE.
+        // We cannot compare the hour without knowing which time zone the database
+        // stores it in. The range of 0 to 23 includes all hours.
 
         assertEquals(List.of(113001L, 213002L),
-                     reservations.findMeetingIdByStartWithHourBetweenAndStartWithMinute(0, 23, 15));
+                     reservations.startingWithin(0, 23, 15));
 
         assertEquals(List.of(313003L),
                      reservations.startsWithinHoursWithMinute(0, 23, 35));
 
-        // WithSecond
+        // EXTRACT SECOND
 
         assertEquals(List.of(313003L),
-                     reservations.findMeetingIdByStopWithSecond(30));
+                     reservations.findMeetingIdStoppingAtSecond(30));
 
         assertEquals(List.of(113001L, 213002L, 413004L),
                      reservations.endsAtSecond(0));

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.Session;
 import jakarta.websocket.WebSocketContainer;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,6 +87,28 @@ public class WebSocketTests30 extends AbstractSpringTests {
         assertEquals("Expected message from server not found", "Did you say: Hello World", clientEndpoint.getMessageFromServer());
     }
 
+    /**
+     * Test websocket using a custom websocket configurer.
+     *
+     * The application registers a custom websocket handler and a abstract handshake handler.
+     * The org.springframework.web.socket.server.support.AbstractHandshakeHandler looksup websphere websocket code which is now being removed in spring framework 7.x.
+     * This test should fail for future Spring Boot versions using spring framework 7.x, we might have to use the websocket-2.2 feature and do some implementation changes if
+     * required.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEchoWithCustomWebsocketHandler() throws Exception {
+        Log.info(getClass(), "testEchoWithCustomWebsocketHandler", wsContainer.toString());
+        Session session = wsContainer.connectToServer(clientEndpoint, new URI("ws://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/customHandler"));
+        assertNotNull("Session cannot be null", session);
+        assertTrue("Session is not open", session.isOpen());
+        CountDownLatch latch = new CountDownLatch(1);
+        clientEndpoint.sendMessage("Hello Websocket", latch);
+        assertTrue(latch.await(5, TimeUnit.SECONDS));
+        assertEquals("Expected message from server not found", "Did you say: Hello Websocket", clientEndpoint.getMessageFromServer());
+    }
+
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0", "websocket-2.1"));
@@ -94,6 +117,13 @@ public class WebSocketTests30 extends AbstractSpringTests {
     @Override
     public String getApplication() {
         return SPRING_BOOT_30_APP_WEBSOCKET;
+    }
+
+    @AfterClass
+    public static void stopTestServer() throws Exception {
+        //[WARNING ] SRVE8094W: WARNING: Cannot set header. Response already committed.  Stack trace of errant attempt to set header:
+        //at com.ibm.ws.webcontainer.srt.SRTServletResponse.setHeader(SRTServletResponse.java:1845)
+        server.stopServer(true, "SRVE8094W");
     }
 
 }

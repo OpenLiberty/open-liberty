@@ -45,11 +45,12 @@ public class InternalRegistry extends Registry {
     static {
         REGISTRY_MIRRORS.put("NONE", "wasliberty-infrastructure-docker"); // images we cache (from sources like dockerhub)
 //        REGISTRY_MIRRORS.put("NONE", "wasliberty-internal-docker-remote"); //TODO replace with a more standard naming scheme
-        REGISTRY_MIRRORS.put("UNSUPPORTED", "wasliberty-intops-docker-local"); // TODO drop support for this local repository
-        REGISTRY_MIRRORS.put("localhost", "wasliberty-internal-docker-local"); // images we build
+        REGISTRY_MIRRORS.put("UNSUPPORTED_INTOPS", "wasliberty-intops-docker-local"); // TODO drop support for this local repository
+        REGISTRY_MIRRORS.put("UNSUPPORTED_AUTOMA", "websphere-automation"); // Images built from external projects (unsupported by liberty dev)
+        REGISTRY_MIRRORS.put("localhost", "wasliberty-internal-docker-local"); // Images we build from Dockerfiles
     }
 
-    private static File configDir = new File(System.getProperty("user.home"), ".docker");
+    private static File CONFIG_DIR = DEFAULT_CONFIG_DIR;
 
     private String registry;
     private Optional<File> configFile;
@@ -126,7 +127,7 @@ public class InternalRegistry extends Registry {
         // -- Create it by persisting the generated auth token
         if (Objects.isNull(foundAuthToken)) {
             try {
-                configFile = persistAuthToken(registry, generatedAuthToken, configDir);
+                configFile = persistAuthToken(registry, generatedAuthToken, CONFIG_DIR);
                 isRegistryAvailable = true;
                 return;
             } catch (Throwable t) {
@@ -142,7 +143,7 @@ public class InternalRegistry extends Registry {
 
         // -- Attempt to persist auth token.
         try {
-            configFile = persistAuthToken(registry, generatedAuthToken, configDir);
+            configFile = persistAuthToken(registry, generatedAuthToken, CONFIG_DIR);
             isRegistryAvailable = true;
             return;
         } catch (Throwable t) {

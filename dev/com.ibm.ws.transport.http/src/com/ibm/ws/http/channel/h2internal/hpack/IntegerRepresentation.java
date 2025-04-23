@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,6 @@
 package com.ibm.ws.http.channel.h2internal.hpack;
 
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
 
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.ByteFormatType;
@@ -67,7 +66,7 @@ public class IntegerRepresentation {
      * based on implementation constraints.
      */
 
-    protected static byte[] encode(int I, LiteralIndexType type) throws CompressionException, UnsupportedEncodingException {
+    protected static byte[] encode(int I, LiteralIndexType type) throws CompressionException {
 
         ByteFormatType formatType;
         switch (type) {
@@ -90,7 +89,7 @@ public class IntegerRepresentation {
         return encode(I, formatType);
     }
 
-    protected static byte[] encode(int I, ByteFormatType type) throws CompressionException, UnsupportedEncodingException {
+    protected static byte[] encode(int I, ByteFormatType type) throws CompressionException {
         //First byte needs to have a special format. If it's the first byte
         //for a header, it will specify literal indexing type. If it is the
         //first byte for determining a header's key/value String length,
@@ -130,7 +129,7 @@ public class IntegerRepresentation {
 
     }
 
-    public static byte[] encode(int I, byte format, int N) throws UnsupportedEncodingException {
+    public static byte[] encode(int I, byte format, int N) {
         ByteArrayOutputStream ba = new ByteArrayOutputStream();
         if (I < (HpackUtils.ipow(2, N) - 1)) {
             //Integer fits within the bits reserved for integer representation for

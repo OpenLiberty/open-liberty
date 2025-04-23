@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.utils;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyStoreException;
 import java.security.PublicKey;
@@ -160,14 +160,14 @@ public class JwtData {
         }
     }
 
-    void initSigningKeyUsingHSAlgorithm(JwtDataConfig config) throws UnsupportedEncodingException {
+    void initSigningKeyUsingHSAlgorithm(JwtDataConfig config) {
         String keyType = Constants.SIGNING_KEY_SECRET;
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "hs256 Signing key type is " + keyType);
         }
         String sharedKey = config.sharedKey;
         if (!(sharedKey == null || sharedKey.isEmpty())) {
-            _signingKey = new HmacKey(sharedKey.getBytes("UTF-8"));
+            _signingKey = new HmacKey(sharedKey.getBytes(StandardCharsets.UTF_8));
         } else {
             _signingKey = null;
         }

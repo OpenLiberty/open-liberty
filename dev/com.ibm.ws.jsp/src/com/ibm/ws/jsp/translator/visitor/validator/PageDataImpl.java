@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -146,7 +147,7 @@ public class PageDataImpl extends PageData {
 	            StringWriter writer = new StringWriter();
 	            Result result = new StreamResult(writer);
 	            serializer.transform(new DOMSource(jspDocument), result);
-	            is = new ByteArrayInputStream(writer.toString().getBytes("UTF-8"));
+	            is = new ByteArrayInputStream(writer.toString().getBytes(StandardCharsets.UTF_8));
         	}finally {
                 ThreadContextHelper.setClassLoader(oldLoader);		//PK26233
 			}
@@ -156,9 +157,6 @@ public class PageDataImpl extends PageData {
         }     
         catch (TransformerException e) {
 			logger.logp(Level.WARNING, CLASS_NAME, "_getInputStream", "failed to transform jspDocument", e);
-        }     
-        catch (IOException e) {
-			logger.logp(Level.WARNING, CLASS_NAME, "_getInputStream", "Failed to convert document to inputstream", e);
         }
 
         return (is);

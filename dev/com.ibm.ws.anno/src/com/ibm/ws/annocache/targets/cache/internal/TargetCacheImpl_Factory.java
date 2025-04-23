@@ -17,7 +17,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -314,22 +313,13 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
     }
 
     protected TargetCacheImpl_Reader createReader(String path, InputStream stream) {
-        try {
-            return new TargetCacheImpl_Reader(this, path, stream, TargetCache_InternalConstants.SERIALIZATION_ENCODING);
-        } catch ( UnsupportedEncodingException e ) {
-            return null; // FFDC
-        }
+        return new TargetCacheImpl_Reader(this, path, stream, TargetCache_InternalConstants.SERIALIZATION_ENCODING);
     }
 
     protected TargetCacheImpl_Writer createWriter(String path, OutputStream stream) {
-        try {
-            return new TargetCacheImpl_Writer(this,
-                path, stream,
-                TargetCache_InternalConstants.SERIALIZATION_ENCODING);
-
-        } catch ( UnsupportedEncodingException e ) {
-            return null; // FFDC
-        }
+        return new TargetCacheImpl_Writer(this,
+            path, stream,
+            TargetCache_InternalConstants.SERIALIZATION_ENCODING);
     }
 
 

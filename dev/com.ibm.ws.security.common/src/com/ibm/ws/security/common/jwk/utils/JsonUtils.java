@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016,2023 IBM Corporation and others.
+ * Copyright (c) 2016,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.utils;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.text.SimpleDateFormat;
@@ -119,13 +119,7 @@ public class JsonUtils {
         if (source == null) {
             return null;
         }
-        try {
-            return StringUtils.newStringUtf8(source.getBytes("UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            // e.printStackTrace();
-        }
-        return null;
+        return StringUtils.newStringUtf8(source.getBytes(StandardCharsets.UTF_8));
     }
 
     public static boolean isNullEmpty(String value) {

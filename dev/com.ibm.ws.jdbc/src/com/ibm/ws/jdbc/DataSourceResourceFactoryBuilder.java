@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -585,7 +585,8 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                                  : DataSource.class.isAssignableFrom(cl) ? DataSource.class.getName()
                                  : Driver.class.getName();
                         } else {
-                            searchedLibraryFiles.addAll(JDBCDriverService.getClasspath(library, false));
+                            searchedLibraryFiles.addAll(
+                                JDBCDriverService.getAbsolutePaths(library));
                             if (dsTypeSearchOrder == null) {
                                 type = Driver.class.getName();
                                 for (Iterator<Driver> it = ServiceLoader.load(Driver.class, loader).iterator(); it.hasNext(); ) {
@@ -634,12 +635,14 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                     } catch (ClassNotFoundException x) {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(tc, className + " not found in", libraryPid);
-                        searchedLibraryFiles.addAll(JDBCDriverService.getClasspath(library, false));
+                        searchedLibraryFiles.addAll(
+                            JDBCDriverService.getAbsolutePaths(library));
                     } catch (Exception x) {
                         FFDCFilter.processException(x, DataSourceResourceFactoryBuilder.class.getName(), "444", new Object[] { libraryRef });
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(tc, libraryRef.toString(), x);
-                        searchedLibraryFiles.addAll(JDBCDriverService.getClasspath(library, false));
+                        searchedLibraryFiles.addAll(
+                            JDBCDriverService.getAbsolutePaths(library));
                         // Continue to try other libraryRefs
                     }
                 }

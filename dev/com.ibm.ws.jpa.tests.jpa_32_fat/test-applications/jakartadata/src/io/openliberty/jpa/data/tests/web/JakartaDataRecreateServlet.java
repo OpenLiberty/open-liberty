@@ -508,7 +508,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test //Original Issue: https://github.com/OpenLiberty/open-liberty/issues/29457"
     @SkipIfSysProp(DB_Oracle) //Additional Issue: https://github.com/OpenLiberty/open-liberty/issues/29440
     public void testOLGH29457() throws Exception {
-
+        deleteAllEntities(DemographicInfo.class);
         // Create a DemographicInfo instance
         DemographicInfo demographicInfo = DemographicInfo.of(2023, 8, 21, 500, 200000.00, 1000000.00);
 

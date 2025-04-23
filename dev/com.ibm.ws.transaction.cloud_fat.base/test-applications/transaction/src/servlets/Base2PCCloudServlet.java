@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1304,6 +1304,7 @@ public class Base2PCCloudServlet extends FATServlet {
     public void setupRecForAggressiveTakeover1(HttpServletRequest request,
                                                HttpServletResponse response) throws Exception {
 
+        final int MAX_RECOVERY_SLEEP = 600; // 10 minutes
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
         XAResourceImpl.clear();
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo();
@@ -1315,7 +1316,7 @@ public class Base2PCCloudServlet extends FATServlet {
                             .getXAResourceImpl(xaResInfo1)
                             .setCommitAction(XAResourceImpl.DIE)
                             .setRecoverAction(XAResourceImpl.SLEEP_RECOVER)
-                            .setRecoverDelay(240);
+                            .setRecoverDelay(MAX_RECOVERY_SLEEP);
             final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 

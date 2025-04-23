@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.parser;
 
@@ -1796,7 +1793,6 @@ public class SipAppDesc extends GenericAppDesc {
 	 * @param wasInitialized
 	 */
 	public boolean wasInitialized() {
-		// TODO Auto-generated method stub
 		return m_wasInitialized;
 	}
 	

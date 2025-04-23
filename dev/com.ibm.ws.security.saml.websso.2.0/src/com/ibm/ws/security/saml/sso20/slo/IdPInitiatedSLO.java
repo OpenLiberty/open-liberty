@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2023 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.slo;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -36,8 +36,8 @@ import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.core.impl.IssuerBuilder;
-import org.opensaml.saml.saml2.core.impl.LogoutResponseMarshaller;
 import org.opensaml.saml.saml2.core.impl.LogoutResponseBuilder;
+import org.opensaml.saml.saml2.core.impl.LogoutResponseMarshaller;
 import org.opensaml.saml.saml2.core.impl.StatusBuilder;
 import org.opensaml.saml.saml2.core.impl.StatusCodeBuilder;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -331,15 +331,7 @@ public class IdPInitiatedSLO {
                  String relayState,
                  String idpUrl) throws SamlException {
 
-        byte[] logoutResBytes = null;
-        try {
-            logoutResBytes = logoutResponse.getBytes(Constants.UTF8);
-        } catch (UnsupportedEncodingException e1) {
-            // error handling, UTF8 should not have errors
-            SamlException samlException = new SamlException(e1); // let the SamlException to handle the Exception
-
-            throw samlException;
-        }
+        byte[] logoutResBytes = logoutResponse.getBytes(StandardCharsets.UTF_8);
 
         String samlResponse = Base64Support.encode(logoutResBytes, Base64Support.UNCHUNKED); //v3
 

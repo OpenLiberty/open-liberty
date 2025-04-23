@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,8 @@
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -148,7 +148,7 @@ public class OidcClientUtil {
             // Tr.error(tc, "SSL_PORT_IS_NULL");
             int port = req.getServerPort();
             // return whatever in the req
-            String httpSchema = ((javax.servlet.ServletRequest) req).getScheme();
+            String httpSchema = req.getScheme();
             return httpSchema + "://" + hostName + (port > 0 && port != 443 ? ":" + port : "") + entryPoint;
         } else {
             return "https://" + hostName + (httpsPort == null ? "" : ":" + httpsPort) + entryPoint;
@@ -255,15 +255,7 @@ public class OidcClientUtil {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "requestParameters:" + requestParameters);
         }
-        String encodedReqParams = null;
-        try {
-            encodedReqParams = Base64Coder.toString(Base64Coder.base64Encode(requestParameters.getBytes(ClientConstants.CHARSET)));
-        } catch (UnsupportedEncodingException e) {
-            //This should not happen, we are using UTF-8
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "get unexpected exception", e);
-            }
-        }
+        String encodedReqParams = Base64Coder.toString(Base64Coder.base64Encode(requestParameters.getBytes(StandardCharsets.UTF_8)));
 
         String encodedHash = null;
         if (encodedReqParams != null) {

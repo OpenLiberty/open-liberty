@@ -14,12 +14,13 @@ package com.ibm.ws.kernel.feature.internal.generator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -613,7 +614,7 @@ public class FeatureList {
             public Object run() {
                 try {
                     final File version = new File(getInstallDir(), "lib/versions/WebSphereApplicationServer.properties");
-                    Reader r = new InputStreamReader(new FileInputStream(version), "UTF-8");
+                    Reader r = new InputStreamReader(new FileInputStream(version), StandardCharsets.UTF_8);
                     props.load(r);
                     r.close();
                 } catch (IOException e) {

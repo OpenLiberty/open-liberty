@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.security.wim.adapter.ldap;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.SoftReference;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -708,7 +709,7 @@ public class LdapHelper {
      */
     public static byte[] encodePassword(String password) throws WIMSystemException {
         try {
-            return ("\"" + password + "\"").getBytes("UTF-16LE");
+            return ("\"" + password + "\"").getBytes(StandardCharsets.UTF_16LE);
         } catch (Exception e) {
             String msg = Tr.formatMessage(tc, WIMMessageKey.GENERIC, WIMMessageHelper.generateMsgParms(e.getMessage()));
             throw new WIMSystemException(WIMMessageKey.GENERIC, msg, e);

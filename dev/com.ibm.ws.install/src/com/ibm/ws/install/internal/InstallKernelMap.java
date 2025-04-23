@@ -1958,7 +1958,7 @@ public class InstallKernelMap implements Map {
         Map<String, Object> envMapRet = new HashMap<String, Object>();
         //parse through httpProxy env variables
         String proxyEnvVarHttp = System.getenv("http_proxy");
-        if (proxyEnvVarHttp != null) {
+        if (proxyEnvVarHttp != null && !proxyEnvVarHttp.isEmpty()) {
             Map<String, String> httpProxyVariables;
             try {
                 httpProxyVariables = getProxyVariables(proxyEnvVarHttp, "http");
@@ -1975,7 +1975,7 @@ public class InstallKernelMap implements Map {
         }
 
         String proxyEnvVarHttps = System.getenv("https_proxy");
-        if (proxyEnvVarHttps != null) {
+        if (proxyEnvVarHttps != null && !proxyEnvVarHttps.isEmpty()) {
             Map<String, String> httpsProxyVariables;
             try {
                 httpsProxyVariables = getProxyVariables(proxyEnvVarHttps, "https");

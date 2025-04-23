@@ -30,11 +30,11 @@ import org.testcontainers.utility.ImageNameSubstitutor;
 
 public class CacheFiles {
 	
-	/**
-	 * Always maintain generated files with a new line separator to avoid git 
-	 * from complaining about carriage returns on windows. 
-	 */
-	private static final String LINE_SEPERATOR = "\n";
+    /**
+     * Always maintain generated files with a new line separator to avoid git 
+     * from complaining about carriage returns on windows. 
+     */
+    private static final String LINE_SEPERATOR = "\n";
     
     public static void main(String[] args) {
         long start = System.currentTimeMillis();

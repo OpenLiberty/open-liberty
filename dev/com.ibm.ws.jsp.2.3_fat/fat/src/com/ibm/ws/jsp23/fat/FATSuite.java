@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat;
 
-
 import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
@@ -24,11 +23,12 @@ import com.ibm.ws.jsp23.fat.tests.JSPCdiTest;
 import com.ibm.ws.jsp23.fat.tests.JSPChannelTest;
 import com.ibm.ws.jsp23.fat.tests.JSPDebugSupport;
 import com.ibm.ws.jsp23.fat.tests.JSPExceptionTests;
+import com.ibm.ws.jsp23.fat.tests.JSPExpressionLanguageTests;
+import com.ibm.ws.jsp23.fat.tests.JSPGlobalTLDTest;
 import com.ibm.ws.jsp23.fat.tests.JSPJava11Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava17Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava21Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava7Test;
-import com.ibm.ws.jsp23.fat.tests.JSPGlobalTLDTest;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountNonDefaultValueTests;
@@ -39,7 +39,6 @@ import com.ibm.ws.jsp23.fat.tests.JSTLTests;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -65,7 +64,8 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JSTLTests.class,
                 JSPGlobalTLDTest.class,
                 JSPChannelTest.class,
-                JSPDebugSupport.class
+                JSPDebugSupport.class,
+                JSPExpressionLanguageTests.class
 })
 
 public class FATSuite {
@@ -86,7 +86,7 @@ public class FATSuite {
 
     //Server used for setup
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("globalTLDServer");
-    
+
     public static final String USER_FEATURE_PATH = "usr/extension/lib/features/";
     public static final String USER_BUNDLE_PATH = "usr/extension/lib/";
     public static final String USER_FEATURE_MF_FAT_PATH = "features/globaltld-1.0.mf";
@@ -100,7 +100,7 @@ public class FATSuite {
     @BeforeClass
     public static void setup() throws Exception {
 
-        // Install user feature 
+        // Install user feature
         // TODO: Transform the jar to work with EE9+ features or recreate this test in the other Pages FATs
         // https://github.com/OpenLiberty/open-liberty/issues/27345
         server.copyFileToLibertyInstallRoot(USER_FEATURE_PATH, USER_FEATURE_MF_FAT_PATH);

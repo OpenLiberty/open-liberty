@@ -21,6 +21,7 @@ import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -347,9 +348,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 // record that is specified by the user, not from the generated
                 // entity class that is used internally in place of a record.
                 String tableName = c.getSimpleName();
-
                 Class<?> ec = c;
                 if (c.isRecord()) {
+                    disallowPersistenceAnnos(c, true);
+
                     // an entity class is generated for the record
                     String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX;
                     byte[] generatedEntityBytes = RecordTransformer //
@@ -363,6 +365,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                                                               entityClassName,
                                                               generatedEntityBytes);
                     generatedToRecordClass.put(ec, c);
+                } else {
+                    disallowPersistenceAnnos(c, false);
                 }
 
                 StringBuilder xml = new StringBuilder(500);
@@ -516,6 +520,47 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "createEntityManager: " + em);
         return em;
+    }
+
+    /**
+     * Raises an error if any method (or field if not a Java record) is annotated
+     * with an annotation from Jakarta Persistence.
+     *
+     * @param c        class that does not have the Entity annotation.
+     * @param isRecord true if the entity class is a Java record, otherwise false.
+     */
+    @Trivial
+    private void disallowPersistenceAnnos(Class<?> c, boolean isRecord) {
+
+        if (!isRecord)
+            for (Field field : c.getDeclaredFields())
+                for (Annotation anno : field.getAnnotations())
+                    if (anno.annotationType().getPackageName() //
+                                    .startsWith("jakarta.persistence"))
+                        throw exc(MappingException.class,
+                                  "CWWKD1108.missing.entity.anno",
+                                  c.getName(),
+                                  Entity.class.getName(),
+                                  anno.annotationType().getName(),
+                                  field.getName());
+
+        for (Method method : c.getDeclaredMethods())
+            for (Annotation anno : method.getAnnotations())
+                if (anno.annotationType().getPackageName() //
+                                .startsWith("jakarta.persistence"))
+                    if (isRecord)
+                        throw exc(MappingException.class,
+                                  "CWWKD1109.jpa.anno.on.record",
+                                  anno.annotationType().getName(),
+                                  method.getName(),
+                                  c.getName());
+                    else
+                        throw exc(MappingException.class,
+                                  "CWWKD1108.missing.entity.anno",
+                                  c.getName(),
+                                  Entity.class.getName(),
+                                  anno.annotationType().getName(),
+                                  method.getName());
     }
 
     /**

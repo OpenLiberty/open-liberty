@@ -27,6 +27,8 @@ import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
+import componenttest.containers.KeystoreBuilder;
+import componenttest.containers.KeystoreBuilder.STORE_TYPE;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -57,8 +59,13 @@ public class CloudantTestOutboundSSL extends FATServletClient {
 
         cloudant.createDb(DB_NAME);
 
-        cloudant.copyFileFromContainer("/etc/couchdb/cert/server.crt", server.getServerRoot() + "/security/server.crt");
-        FATSuite.createKeystore(server.getServerRoot() + "/security/keystore.jks", server.getServerRoot() + "/security/server.crt");
+        KeystoreBuilder.of(server, cloudant)
+                        .withCertificate("server", "/etc/couchdb/cert/server.crt")
+                        .withDirectory(server.getServerRoot() + "/security")
+                        .withFilename("keystore")
+                        .withStoreType(STORE_TYPE.JKS)
+                        .withPassword("liberty")
+                        .export();
 
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, JEE_APP, "cloudant.web");

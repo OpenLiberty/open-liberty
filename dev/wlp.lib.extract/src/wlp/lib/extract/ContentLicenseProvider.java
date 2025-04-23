@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import wlp.lib.extract.Content.Entry;
 
@@ -97,7 +98,7 @@ public class ContentLicenseProvider implements LicenseProvider {
         BufferedReader r = null;
         try {
             // The license name is the sixth line in the LA file
-            r = new BufferedReader(new InputStreamReader(laEntry.getInputStream(), "UTF-16"));
+            r = new BufferedReader(new InputStreamReader(laEntry.getInputStream(), StandardCharsets.UTF_16));
             //read the first line
             String line = r.readLine();
             String sixTh_line = "";
@@ -132,7 +133,7 @@ public class ContentLicenseProvider implements LicenseProvider {
         try {
             // Look for the product name in the LI file -- within the first few lines
             int i = 0;
-            r = new BufferedReader(new InputStreamReader(liEnglishEntry.getInputStream(), "UTF-16"));
+            r = new BufferedReader(new InputStreamReader(liEnglishEntry.getInputStream(), StandardCharsets.UTF_16));
             do {
                 line = r.readLine();
                 if (line != null) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -75,7 +76,7 @@ public class ImageReader {
         List<String> features = new ArrayList<>();
 
         try (InputStream inputStream = new FileInputStream(imageFile);
-                        InputStreamReader baseReader = new InputStreamReader(inputStream, "UTF-8");
+                        InputStreamReader baseReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
                         BufferedReader reader = new BufferedReader(baseReader)) {
 
             String nextLine;

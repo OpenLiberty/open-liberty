@@ -10,6 +10,9 @@
 package io.openliberty.classloading.lib.path.test.app;
 
 import static io.openliberty.classloading.classpath.util.TestUtils.TEST_LOAD_RESULT.success_fromLIBLoader;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ResourceBundle;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -46,5 +49,17 @@ public class LibPathTestServlet extends FATServlet{
     @Test
     public void testLoadLibrary9Class() {
         runTest(success_fromLIBLoader);
+    }
+
+    @Test
+    public void testResourceBundle7Properties() {
+        ResourceBundle myBundle = ResourceBundle.getBundle("io.openliberty.classloading.test.resources.MyResource7");
+        assertEquals("Wrong resource bundle value", "testvalue7", myBundle.getString("key7"));
+    }
+
+    @Test
+    public void testResourceBundle9Properties() {
+        ResourceBundle myBundle = ResourceBundle.getBundle("io.openliberty.classloading.test.resources.MyResource9");
+        assertEquals("Wrong resource bundle value", "testvalue9", myBundle.getString("key9"));
     }
 }

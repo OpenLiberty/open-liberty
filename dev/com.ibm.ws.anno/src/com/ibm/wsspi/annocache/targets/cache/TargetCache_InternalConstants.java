@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.wsspi.annocache.targets.cache;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 // Save Format:
 //
@@ -153,7 +156,7 @@ public interface TargetCache_InternalConstants {
 
     // Common encoding:
 
-    String SERIALIZATION_ENCODING = "UTF-8";
+    Charset SERIALIZATION_ENCODING = StandardCharsets.UTF_8;
 
     // Common formatting tags:
 

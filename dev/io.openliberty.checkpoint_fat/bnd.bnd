@@ -15,11 +15,8 @@ src: \
 	test-applications/app1/src,\
 	test-applications/app2/src,\
 	test-applications/ejbapp1/src,\
-	test-applications/inventory/src/java,\
-	test-applications/system/src/java,\
 	test-applications/startupcode/src,\
 	test-bundles/test.checkpoint.config.bundle/src,\
-	test-applications/timeoutTest/src,\
 	test-applications/restClient/src,\
 	test-applications/jndiTest/src,\
 	test-applications/appsecurity/src,\
@@ -27,16 +24,13 @@ src: \
 	test-applications/eventMgr/frontendUI/src/java,\
 	test-applications/eventMgr/backendServices/src/java,\
 	test-applications/openAPItest/src,\
-	test-applications/mpjwt/src,\
 	test-applications/EJBearApp/src,\
 	test-applications/ServletEARapp/src,\
 	test-applications/webEARapp/src,\
-	test-applications/mphealth/src,\
 	test-applications/facesApp/src,\
 	test-applications/jsonb/src,\
 	test-applications/jsonp/src,\
 	test-applications/managedBeans/src,\
-	test-applications/mpTelemetry/src,\
 	test-bundles/test.checkpoint.bells.bundle/src,\
 	test-applications/bells/src,\
 	test-applications/virtualhost/src,\
@@ -46,9 +40,7 @@ src: \
 	test-applications/mapCache/src,\
 	test-applications/webCacheApp/src,\
 	test-applications/xmlBindings/src,\
-	test-bundles/test-mbeans/src,\
-	test-applications/jaxrspropagation/src,\
-	test-applications/mpOpenAPIConfig/src
+	test-bundles/test-mbeans/src
 
 fat.project: true
 

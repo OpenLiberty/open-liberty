@@ -326,6 +326,7 @@ public class VersionlessTest {
         featureToPlatformMapping.get("io.openliberty.xmlBinding-4.0").add("jakartaee-11.0");
         featureToPlatformMapping.get("io.openliberty.xmlWS-4.0").add("jakartaee-11.0");
         featureToPlatformMapping.get("io.openliberty.mpMetrics-5.1").add("microProfile-7.0");
+        featureToPlatformMapping.get("io.openliberty.mpMetrics-5.1").add("microProfile-7.1");
 
         // jdbc is special
         featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.1").remove("javaee-8.0");
@@ -503,6 +504,7 @@ public class VersionlessTest {
         });
 
         versionlessFeatures.get("mpMetrics").addFeaturePlatformAndKind("mpMetrics-5.1", "microProfile-7.0", "io.openliberty.mpMetrics-5.1", "ga");
+        versionlessFeatures.get("mpMetrics").addFeaturePlatformAndKind("mpMetrics-5.1", "microProfile-7.1", "io.openliberty.mpMetrics-5.1", "ga");
 
         VersionlessFeatureCreator creator = new VersionlessFeatureCreator(featureRepo);
 

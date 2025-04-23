@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.jose4j.util;
 
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.Key;
 import java.security.PrivilegedAction;
@@ -42,7 +43,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
@@ -103,7 +103,7 @@ public class Jose4jUtil {
         String[] parts = accessTokenStr.split(Pattern.quote(".")); // split out the "parts" (header, payload and signature)
 
         if (parts.length > 1) {
-            String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), "UTF-8");
+            String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), StandardCharsets.UTF_8);
             jwtClaims = JwtClaims.parse(claimsAsJsonString);
         } else {
             // do nothing
@@ -400,7 +400,7 @@ public class Jose4jUtil {
         }
         if (signatureAlgorithm.startsWith(SIGNATURE_ALG_HS)) {
             //keyValue = Base64Coder.getBytes(clientConfig.getSharedKey());
-            keyValue = new HmacKey(clientConfig.getSharedKey().getBytes(ClientConstants.CHARSET));
+            keyValue = new HmacKey(clientConfig.getSharedKey().getBytes(StandardCharsets.UTF_8));
         } else if (signatureAlgorithm.startsWith(SIGNATURE_ALG_RS) || signatureAlgorithm.startsWith(SIGNATURE_ALG_ES)) {
             if (clientConfig.getJwkEndpointUrl() != null || clientConfig.getJsonWebKey() != null) {
                 JwKRetriever retriever = createJwkRetriever(clientConfig);

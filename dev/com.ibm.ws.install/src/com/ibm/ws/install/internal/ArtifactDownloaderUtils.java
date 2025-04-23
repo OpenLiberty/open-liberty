@@ -19,11 +19,11 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -307,11 +307,7 @@ public class ArtifactDownloaderUtils {
     }
 
     private static String base64Encode(String userInfo) {
-        try {
-            return Base64.getEncoder().encodeToString(userInfo.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException encodingException) {
-            throw new RuntimeException("Failed to get bytes for user info using UTF-8.", encodingException);
-        }
+        return Base64.getEncoder().encodeToString(userInfo.getBytes(StandardCharsets.UTF_8));
     }
 
     /**

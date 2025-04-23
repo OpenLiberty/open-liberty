@@ -389,7 +389,5 @@ abstract public class GenericChain extends GenericChainBase {
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        
     }
 }

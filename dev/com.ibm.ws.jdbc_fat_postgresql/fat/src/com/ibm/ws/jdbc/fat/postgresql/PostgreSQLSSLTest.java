@@ -12,13 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.postgresql;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Arrays;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,6 +27,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.containers.ImageBuilder;
+import componenttest.containers.KeystoreBuilder;
+import componenttest.containers.KeystoreBuilder.STORE_TYPE;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -108,9 +106,13 @@ public class PostgreSQLSSLTest extends FATServletClient {
         }
 
         postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12");
-        postgre.copyFileFromContainer("/var/lib/postgresql/server.crt", serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
-        importServerCert(serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12",
-                         serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
+        KeystoreBuilder.of(serverLibertySSL, postgre)
+                        .withCertificate("server", "/var/lib/postgresql/server.crt")
+                        .withDirectory(serverLibertySSL.getServerRoot() + "/resources/security/")
+                        .withFilename("outboundKeys")
+                        .withStoreType(STORE_TYPE.PKCS12)
+                        .withPassword("liberty")
+                        .export();
 
         postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverNativeSSL.getServerRoot() + "/resources/security/outboundKeys.p12");
         postgre.copyFileFromContainer("/var/lib/postgresql/server.crt", serverNativeSSL.getServerRoot() + "/resources/security/server.crt");
@@ -118,51 +120,6 @@ public class PostgreSQLSSLTest extends FATServletClient {
         serverLibertySSL.startServer();
         serverNativeSSL.useSecondaryHTTPPort();
         serverNativeSSL.startServer();
-    }
-
-    private static void importServerCert(String source, String serverCert) {
-        final String m = "importServerCert";
-
-        String[] command = new String[] {
-                                          "keytool", "-import", //
-                                          "-alias", "server", //
-                                          "-file", serverCert, //
-                                          "-keystore", source, //
-                                          "-storetype", "pkcs12", //
-                                          "-storepass", "liberty", //
-                                          "-noprompt"
-        };
-
-        String errorPrelude = "Could not import server certificate into client keystore: " + source;
-        try {
-            Process p = Runtime.getRuntime().exec(command);
-            if (!p.waitFor(FATRunner.FAT_TEST_LOCALRUN ? 10 : 20, TimeUnit.SECONDS)) {
-                p.destroyForcibly();
-                dumpOutput(m, "Keytool process timed out", p);
-                throw new RuntimeException(errorPrelude + " timed out waiting for process to finish.");
-            }
-            if (p.exitValue() != 0) {
-                dumpOutput(m, "Non 0 exit code from keytool", p);
-                throw new RuntimeException(errorPrelude + " see logs for details");
-            }
-            dumpOutput(m, "Keytool command completed successfully", p);
-        } catch (InterruptedException | IOException e) {
-            throw new RuntimeException(errorPrelude, e);
-        }
-    }
-
-    private static void dumpOutput(String method, String message, Process p) {
-        String out = "stdOut:" + System.lineSeparator() + readInputStream(p.getInputStream());
-        String err = "stdErr:" + System.lineSeparator() + readInputStream(p.getErrorStream());
-        Log.info(c, method, message + //
-                            System.lineSeparator() + out + //
-                            System.lineSeparator() + err);
-    }
-
-    private static String readInputStream(InputStream is) {
-        @SuppressWarnings("resource")
-        Scanner s = new Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
     }
 
     @AfterClass

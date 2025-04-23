@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.was.extension;
 
@@ -347,31 +344,26 @@ public class SipServletConfig extends ServletConfigWrapper implements IServletCo
 
 	@Override
 	public Set<String> setServletSecurity(ServletSecurityElement arg0) {
-		// TODO Auto-generated method stub
 		return _servletConfig.setServletSecurity(arg0);
 	}
 
 	@Override
 	public String getRunAsRole() {
-		// TODO Auto-generated method stub
 		return _servletConfig.getRunAsRole();
 	}
 	
 	@Override
 	public MultipartConfigElement getMultipartConfig() {
-	    // TODO Auto-generated method stub
 	    return _servletConfig.getMultipartConfig();
 	}
 	
 	@Override
 	public void setMultipartBaseLocation(File arg0) {
-	    // TODO Auto-generated method stub
 	    _servletConfig.setMultipartBaseLocation(arg0);
 	}
 
 	@Override
 	public File getMultipartBaseLocation() {
-	    // TODO Auto-generated method stub
 	    return _servletConfig.getMultipartBaseLocation();
 	}
 
@@ -382,13 +374,11 @@ public class SipServletConfig extends ServletConfigWrapper implements IServletCo
 
 	@Override
 	public ServletSecurityElement getServletSecurity() {
-		// TODO Auto-generated method stub
 		return _servletConfig.getServletSecurity();
 	}
 
 	@Override
 	public boolean isClassDefined() {
-		// TODO Auto-generated method stub
 		return _servletConfig.isClassDefined();
 	}
 

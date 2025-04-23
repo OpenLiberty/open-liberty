@@ -77,11 +77,13 @@ public class PasswordCipherUtil {
     private static final String CUSTOM_COLON = "custom:";
     private static final String XOR = "xor";
     private static final String AES = "aes";
+    private static final String AES_128 = "aes-128";
+    private static final String AES_256 = "aes-256";
     private static final String HASH = "hash";
 
     private static final byte XOR_MASK = 0x5F;
 
-    private static final String[] SUPPORTED_CRYPTO_ALGORITHMS_DEFAULT = new String[] { XOR, AES, HASH };
+    private static final String[] SUPPORTED_CRYPTO_ALGORITHMS_DEFAULT = new String[] { XOR, AES, AES_128, AES_256, HASH };
     private static final String[] SUPPORTED_CRYPTO_ALGORITHMS_CUSTOM = new String[] { XOR, AES, HASH, CUSTOM };
     private static String[] SUPPORTED_CRYPTO_ALGORITHMS = SUPPORTED_CRYPTO_ALGORITHMS_DEFAULT;
     private static String[] SUPPORTED_HASH_ALGORITHMS = new String[] { HASH };
@@ -216,7 +218,7 @@ public class PasswordCipherUtil {
 
         byte[] decrypted_bytes = null;
 
-        if (AES.equalsIgnoreCase(crypto_algorithm)) {
+        if (AES.equalsIgnoreCase(crypto_algorithm) || AES_128.equalsIgnoreCase(crypto_algorithm) || AES_256.equalsIgnoreCase(crypto_algorithm)) {
             decrypted_bytes = aesDecipher(encrypted_bytes);
         } else if (XOR.equalsIgnoreCase(crypto_algorithm)) {
             decrypted_bytes = xor(encrypted_bytes);
@@ -370,13 +372,19 @@ public class PasswordCipherUtil {
         EncryptedInfo info = null;
         byte[] encrypted_bytes = null;
 
-        if (AES.equalsIgnoreCase(crypto_algorithm)) {
+        if (AES.equalsIgnoreCase(crypto_algorithm) || AES_256.equalsIgnoreCase(crypto_algorithm)) {
             String cryptoKey = null;
             if (properties != null) {
                 cryptoKey = properties.get(PasswordUtil.PROPERTY_CRYPTO_KEY);
             }
             info = aesEncipherV1(decrypted_bytes, cryptoKey);
 
+        } else if (AES_128.equalsIgnoreCase(crypto_algorithm)) {
+            String cryptoKey = null;
+            if (properties != null) {
+                cryptoKey = properties.get(PasswordUtil.PROPERTY_CRYPTO_KEY);
+            }
+            info = aesEncipherV0(decrypted_bytes, cryptoKey, info, encrypted_bytes);
         } else if (XOR.equalsIgnoreCase(crypto_algorithm)) {
             encrypted_bytes = xor(decrypted_bytes);
             if (encrypted_bytes != null)

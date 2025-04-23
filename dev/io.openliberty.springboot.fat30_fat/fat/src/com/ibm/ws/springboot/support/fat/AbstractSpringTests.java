@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.springboot.support.fat;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,6 +43,7 @@ import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
+import com.ibm.websphere.simplicity.config.WebApplication;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -59,6 +61,7 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_30_APP_WEBFLUX = "io.openliberty.springboot.fat30.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_30_APP_WEBSOCKET = "io.openliberty.springboot.fat30.websocket.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_30_APP_SECURITY = "io.openliberty.springboot.fat30.security.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_TRANSACTIONS = "io.openliberty.springboot.fat30.transactions.app-0.0.1-SNAPSHOT.war";
 
     // Various spring configuration property fragments.
 
@@ -359,7 +362,16 @@ public abstract class AbstractSpringTests {
                 }
                 break;
             }
-
+            case DROPINS_ROOT_WAR: {
+                dropinsTest = true;
+                useDropinsFile.mkdirs();
+                String appName = appFile.getName();
+                if (!appName.endsWith(".war")) {
+                    fail("Wrong application type for WAR dropins test: " + appName);
+                }
+                addDropinFile(appFile, useDropinsFile, appName);
+                break;
+            }
             case SPRING_BOOT_APP_TAG: {
                 SpringBootApplication app = new SpringBootApplication();
                 app.setLocation(appFile.getName());
@@ -369,6 +381,14 @@ public abstract class AbstractSpringTests {
                     app.getApplicationArguments().add("--" + LIBERTY_USE_DEFAULT_HOST + "=false");
                 }
                 config.getSpringBootApplications().add(app);
+                break;
+            }
+            case WEB_APP_TAG: {
+                WebApplication app = new WebApplication();
+                app.setLocation(appFile.getName());
+                app.setName("testName");
+                modifyAppConfiguration(app);
+                config.getWebApplications().add(app);
                 break;
             }
         }
@@ -566,7 +586,11 @@ public abstract class AbstractSpringTests {
         /** Drop the application in the root "dropins" folder. */
         DROPINS_ROOT,
         /** Use the application as-is in the "apps" folder. */
-        SPRING_BOOT_APP_TAG
+        SPRING_BOOT_APP_TAG,
+        /** Drop the application in the root dropins folder, as a war app */
+        DROPINS_ROOT_WAR,
+        /** Use the application as a WAR in the "apps" folder. */
+        WEB_APP_TAG
     }
 
     /**
@@ -630,6 +654,10 @@ public abstract class AbstractSpringTests {
     }
 
     public void modifyAppConfiguration(SpringBootApplication appConfig) {
+        // do nothing by default
+    }
+
+    public void modifyAppConfiguration(WebApplication appConfig) {
         // do nothing by default
     }
 

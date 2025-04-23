@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.pkce;
 
+import java.nio.charset.StandardCharsets;
+
 import com.ibm.oauth.core.api.error.oauth20.InvalidGrantException;
-import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.oauth20.util.HashUtils;
@@ -32,7 +33,7 @@ public class PkceMethodS256 extends ProofKeyForCodeExchangeMethod {
 
     @Override
     public String generateCodeChallenge(String codeVerifier) {
-        return HashUtils.encodedDigest(codeVerifier, CODE_CHALLENGE_ALG_METHOD, OAuth20Constants.CODE_VERIFIER_ASCCI);
+        return HashUtils.encodedDigest(codeVerifier, CODE_CHALLENGE_ALG_METHOD, StandardCharsets.US_ASCII);
     }
 
     @Override

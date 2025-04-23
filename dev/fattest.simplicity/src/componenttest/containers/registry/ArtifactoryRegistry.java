@@ -54,7 +54,7 @@ public class ArtifactoryRegistry extends Registry {
         REGISTRY_MIRRORS.put("quay.io", "wasliberty-quay-docker-remote");
     }
 
-    private static File configDir = new File(System.getProperty("user.home"), ".docker");
+    private static File CONFIG_DIR = DEFAULT_CONFIG_DIR;
 
     private String registry = ""; //Blank registry is the default setting
     private String authToken; // TODO remove
@@ -144,7 +144,7 @@ public class ArtifactoryRegistry extends Registry {
         // -- Create it by persisting the generated auth token
         if (Objects.isNull(foundAuthToken)) {
             try {
-                configFile = persistAuthToken(registry, generatedAuthToken, configDir);
+                configFile = persistAuthToken(registry, generatedAuthToken, CONFIG_DIR);
                 authToken = generatedAuthToken;
                 isArtifactoryAvailable = true;
                 return;
@@ -162,7 +162,7 @@ public class ArtifactoryRegistry extends Registry {
         // -- Attempt to persist auth token.
         // the persist method will check for matching tokens
         try {
-            configFile = persistAuthToken(registry, generatedAuthToken, configDir);
+            configFile = persistAuthToken(registry, generatedAuthToken, CONFIG_DIR);
             authToken = generatedAuthToken;
             isArtifactoryAvailable = true;
             return;

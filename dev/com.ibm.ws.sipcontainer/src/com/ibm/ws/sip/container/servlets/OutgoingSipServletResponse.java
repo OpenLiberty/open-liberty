@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.servlets;
 
@@ -266,10 +263,8 @@ public class OutgoingSipServletResponse extends SipServletResponseImpl
 				}
 			}       
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SipParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

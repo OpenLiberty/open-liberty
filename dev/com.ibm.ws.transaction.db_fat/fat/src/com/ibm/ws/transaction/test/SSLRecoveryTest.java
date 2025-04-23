@@ -37,6 +37,8 @@ import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.containers.KeystoreBuilder;
+import componenttest.containers.KeystoreBuilder.STORE_TYPE;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.PostgreSQLContainer;
@@ -67,9 +69,13 @@ public class SSLRecoveryTest extends FATServletClient {
                         .start();
 
         testContainer.copyFileFromContainer("/tmp/clientKeystore.p12", serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12");
-        testContainer.copyFileFromContainer("/var/lib/postgresql/server.crt", serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
-        TxTestContainerSuite.importServerCert(serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12",
-                                              serverLibertySSL.getServerRoot() + "/resources/security/server.crt");
+        KeystoreBuilder.of(serverLibertySSL, testContainer)
+                        .withCertificate("server", "/var/lib/postgresql/server.crt")
+                        .withDirectory(serverLibertySSL.getServerRoot() + "/resources/security/")
+                        .withFilename("outboundKeys")
+                        .withStoreType(STORE_TYPE.PKCS12)
+                        .withPassword("liberty")
+                        .export();
 
         setUp();
 

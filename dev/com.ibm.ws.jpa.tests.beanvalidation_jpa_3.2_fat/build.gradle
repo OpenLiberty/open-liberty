@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ configurations {
 dependencies {
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
   requiredLibs project(":com.ibm.ws.jpa.tests.beanvalidation_fat.common")
+  requiredLibs project(":com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common")
 
   hibernateJPA31 'com.fasterxml:classmate:1.5.1'
   hibernateJPA31 'net.bytebuddy:byte-buddy:1.12.8'
@@ -53,6 +54,11 @@ task copyFAT {
       from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
       into new File('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
     }
+    dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common:build'
+    copy {
+      from project(':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common').file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests/jpa32')
+      into new File('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests/jpa32')
+    }
 }
 
 task copyCommonFiles {
@@ -71,6 +77,24 @@ task copyCommonFiles {
      */
     copy {
       from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('publish')
+      into new File('publish')
+    }
+  }
+  dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common:build'
+  doLast {
+    /*
+     * Copy test application resources.
+     */
+    copy {
+      from project(':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common').file('test-applications')
+      into new File('test-applications')
+    }
+    
+    /*
+     * Copy common publish files.
+     */
+    copy {
+      from project(':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common').file('publish')
       into new File('publish')
     }
   }

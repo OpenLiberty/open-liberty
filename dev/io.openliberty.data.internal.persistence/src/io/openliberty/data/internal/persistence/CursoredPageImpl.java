@@ -47,13 +47,47 @@ import jakarta.persistence.TypedQuery;
 public class CursoredPageImpl<T> implements CursoredPage<T> {
     private static final TraceComponent tc = Tr.register(CursoredPageImpl.class);
 
+    /**
+     * Values that are supplied when invoking the repository method that
+     * requests the cursored page.
+     */
     private final Object[] args;
+
+    /**
+     * Indicates the direction of pagination relative to a cursor.
+     * In the case of a first page requested with offset pagination,
+     * where there is no cursor, the direction is forward.
+     */
     private final boolean isForward;
+
+    /**
+     * The request for this page.
+     */
     private final PageRequest pageRequest;
+
+    /**
+     * Query information.
+     */
     private final QueryInfo queryInfo;
+
+    /**
+     * Results of the query for this page.
+     */
     private final List<T> results;
+
+    /**
+     * Total number of elements across all pages. This value is computed lazily,
+     * with -1 indicating it has not been computed yet.
+     */
     private long totalElements = -1;
 
+    /**
+     * Construct a new CursoredPage.
+     *
+     * @param queryInfo   query information.
+     * @param pageRequest the request for this page.
+     * @param args        values that are supplied to the repository method.
+     */
     @FFDCIgnore(Exception.class)
     @Trivial // avoid tracing customer data
     CursoredPageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {

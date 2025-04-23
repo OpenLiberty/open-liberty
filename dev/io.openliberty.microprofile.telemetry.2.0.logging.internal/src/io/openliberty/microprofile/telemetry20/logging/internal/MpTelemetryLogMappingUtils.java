@@ -363,8 +363,7 @@ public class MpTelemetryLogMappingUtils {
                 } else if (key.equals("datetime") || key.equals("accessLogDatetime")) {
                     builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
-                    if (key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME) || key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)
-                        || key.contains(MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) {
+                    if (key.equals(MpTelemetryLogFieldConstants.ACCESS_RESPONSE_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_HEADER_NAME)) {
                         customSpan = createSpan(key, (String) value);
                     } else {
                         String[] headerSplit = ((String) value).split(",");
@@ -416,13 +415,7 @@ public class MpTelemetryLogMappingUtils {
 
         SpanContext customSpanContext = null;
         try {
-            if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_W3C_HEADER_NAME)) { // Check the w3c format for the "traceparent" header. This is the default otel propagator
-                String[] traceSplit = requestHeader.split("-");
-                customSpanContext = SpanContext.create(traceSplit[1], traceSplit[2], TraceFlags.getSampled(), TraceState.getDefault());
-            } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_B3_HEADER_NAME)) { // Check the b3 format for the "b3" header
-                String[] traceSplit = requestHeader.split("-");
-                customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
-            } else if (key.equals(MpTelemetryLogFieldConstants.ACCESS_REQUEST_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_JAEGER_HEADER_NAME)) { // Check the Jaeger format for the "uber-trace-id" header
+            if (key.equals(MpTelemetryLogFieldConstants.ACCESS_RESPONSE_HEADER_PREFIX + MpTelemetryLogFieldConstants.ACCESS_TRACE_HEADER_NAME)) {
                 String[] traceSplit = requestHeader.split(":");
                 customSpanContext = SpanContext.create(traceSplit[0], traceSplit[1], TraceFlags.getSampled(), TraceState.getDefault());
             }

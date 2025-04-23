@@ -1,23 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-
-/*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
- * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,6 +13,7 @@
 package com.ibm.ws.security.oauth20.web;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -935,7 +923,7 @@ public class TokenExchange {
         response.setStatus(HttpServletResponse.SC_OK);
         try {
             // write out in UTF-8 bytes format
-            byte[] b = responseJson.getBytes("UTF-8");
+            byte[] b = responseJson.getBytes(StandardCharsets.UTF_8);
             response.getOutputStream().write(b);
             response.flushBuffer();
         } catch (IOException e) {

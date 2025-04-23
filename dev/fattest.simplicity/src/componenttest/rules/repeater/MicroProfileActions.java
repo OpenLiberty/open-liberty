@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -315,6 +315,25 @@ public class MicroProfileActions {
                                                                "mpReactiveMessaging-3.0", //standalone
                                                                "mpReactiveStreams-3.0" };//standalone
 
+    private static final String[] MP71_EE10_FEATURES_ARRAY = { "microProfile-7.1",
+                                                               "cdi-4.0", //ee10
+                                                               "restfulWS-3.1", //ee10
+                                                               "restfulWSClient-3.1", //ee10
+                                                               "jsonb-3.0", //ee10
+                                                               "jsonp-2.1", //ee10
+                                                               "mpConfig-3.1",
+                                                               "mpFaultTolerance-4.1",
+                                                               "mpHealth-4.0",
+                                                               "mpJwt-2.1",
+                                                               "mpOpenAPI-4.0", //TODO : update to 4.1
+                                                               "mpTelemetry-2.0", //TODO : update to 2.1
+                                                               "mpRestClient-4.0",
+                                                               "mpMetrics-5.1", //standalone
+                                                               "mpContextPropagation-1.3", //standalone
+                                                               "mpGraphQL-2.0", //standalone
+                                                               "mpReactiveMessaging-3.0", //standalone
+                                                               "mpReactiveStreams-3.0" };//standalone
+
     private static final String[] MP70_EE11_FEATURES_ARRAY = { "microProfile-7.0",
                                                                "cdi-4.1", //ee11
                                                                "restfulWS-4.0", //ee11
@@ -327,6 +346,25 @@ public class MicroProfileActions {
                                                                "mpJwt-2.1",
                                                                "mpOpenAPI-4.0",
                                                                "mpTelemetry-2.0",
+                                                               "mpRestClient-4.0",
+                                                               "mpMetrics-5.1", //standalone
+                                                               "mpContextPropagation-1.3", //standalone
+                                                               "mpGraphQL-2.0", //standalone
+                                                               "mpReactiveMessaging-3.0", //standalone
+                                                               "mpReactiveStreams-3.0" };//standalone
+
+    private static final String[] MP71_EE11_FEATURES_ARRAY = { "microProfile-7.1",
+                                                               "cdi-4.1", //ee11
+                                                               "restfulWS-4.0", //ee11
+                                                               "restfulWSClient-4.0", //ee11
+                                                               "jsonb-3.0", //ee11
+                                                               "jsonp-2.1", //ee11
+                                                               "mpConfig-3.1",
+                                                               "mpFaultTolerance-4.1",
+                                                               "mpHealth-4.0",
+                                                               "mpJwt-2.1",
+                                                               "mpOpenAPI-4.0", //TODO : update to 4.1
+                                                               "mpTelemetry-2.0", //TODO : update to 2.1
                                                                "mpRestClient-4.0",
                                                                "mpMetrics-5.1", //standalone
                                                                "mpContextPropagation-1.3", //standalone
@@ -351,6 +389,8 @@ public class MicroProfileActions {
     private static final Set<String> MP61_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP61_FEATURES_ARRAY)));
     private static final Set<String> MP70_EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP70_EE10_FEATURES_ARRAY)));
     private static final Set<String> MP70_EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP70_EE11_FEATURES_ARRAY)));
+    private static final Set<String> MP71_EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP71_EE10_FEATURES_ARRAY)));
+    private static final Set<String> MP71_EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP71_EE11_FEATURES_ARRAY)));
 
     //The FeatureSet IDs. Since these will be used as the RepeatAction IDs, they can also be used in annotations such as @SkipForRepeat
     public static final String MP10_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_10";
@@ -370,6 +410,8 @@ public class MicroProfileActions {
     public static final String MP61_ID = JakartaEE10Action.ID + "_MicroProfile_61";
     public static final String MP70_EE10_ID = JakartaEE10Action.ID + "_MicroProfile_70";
     public static final String MP70_EE11_ID = JakartaEE11Action.ID + "_MicroProfile_70";
+    public static final String MP71_EE10_ID = JakartaEE10Action.ID + "_MicroProfile_71";
+    public static final String MP71_EE11_ID = JakartaEE11Action.ID + "_MicroProfile_71";
     public static final String MP70_EE11_APP_MODE_ID = MP70_EE11_ID + "_App_Mode";
 
     //The MicroProfile FeatureSets
@@ -390,10 +432,12 @@ public class MicroProfileActions {
     public static final FeatureSet MP61 = new FeatureSet(MP61_ID, MP61_FEATURE_SET, EEVersion.EE10);
     public static final FeatureSet MP70_EE10 = new FeatureSet(MP70_EE10_ID, MP70_EE10_FEATURE_SET, EEVersion.EE10);
     public static final FeatureSet MP70_EE11 = new FeatureSet(MP70_EE11_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
+    public static final FeatureSet MP71_EE10 = new FeatureSet(MP71_EE10_ID, MP71_EE10_FEATURE_SET, EEVersion.EE10);
+    public static final FeatureSet MP71_EE11 = new FeatureSet(MP71_EE11_ID, MP71_EE11_FEATURE_SET, EEVersion.EE11);
     public static final FeatureSet MP70_EE11_APP_MODE = new FeatureSet(MP70_EE11_APP_MODE_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
 
-    //All MicroProfile FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = { MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };
+    //All MicroProfile FeatureSets - must be descending order 
+    private static final FeatureSet[] ALL_SETS_ARRAY = { MP71_EE11, MP71_EE10, MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };
     public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
 
     /**

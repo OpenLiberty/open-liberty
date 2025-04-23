@@ -75,7 +75,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
      * or that value prefixed with java:comp,
      * or if unspecified, then java:comp/DefaultDataSource.
      */
-    private final String dataStore;
+    final String dataStore;
 
     /**
      * Entity classes as seen by the user, not generated entity classes for records.

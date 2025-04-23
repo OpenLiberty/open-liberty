@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.annotation;
 
@@ -39,7 +36,6 @@ public class SipXmlNameSpace implements NamespaceContext {
 	 * Dummy implementation not in use
 	 */
 	public Iterator getPrefixes(String s) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

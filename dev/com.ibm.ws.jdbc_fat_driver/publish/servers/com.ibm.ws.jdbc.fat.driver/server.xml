@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2018, 2023 IBM Corporation and others.
+    Copyright (c) 2018, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -25,6 +25,14 @@
  
     <library id="FATDriverLib">
         <file name="${server.config.dir}/derby/FATDriver.jar"/>
+    </library>
+
+    <library id="FolderJDBCLib">
+        <folder dir="libs/folderjdbc"/>
+    </library>
+
+    <library id="PathJDBCLib">
+        <path name="${server.config.dir}/libs/folderjdbc"/>
     </library>
 
     <library id="ProxyDriverLib">
@@ -61,6 +69,18 @@
     <dataSource id="fatDriverInvalidURLLoginTimeout" jndiName="jdbc/fatDriverInvalidURLLoginTimeout">
       <jdbcDriver libraryRef="FATDriverLib"/>
       <properties url="jdbc:fatdriver:memory:jdbcdriver1;create=true;LoginTimeout=10"/>
+    </dataSource>
+
+    <dataSource id="folderds" jndiName="jdbc/folderds">
+      <jdbcDriver libraryRef="FolderJDBCLib"
+                  javax.sql.DataSource="jdbc.fat.folder.driver.FolderDataSource"/>
+      <properties catalog="folderdb" schema="folderschema1"/>
+    </dataSource>
+
+    <dataSource id="folderpoolds" jndiName="jdbc/folderpoolds">
+      <jdbcDriver libraryRef="PathJDBCLib"
+                  javax.sql.ConnectionPoolDataSource="jdbc.fat.folder.driver.pool.FolderPoolDataSource"/>
+      <properties catalog="folderdb" schema="folderschema2"/>
     </dataSource>
 
     <dataSource id="proxydriver" jndiName="jdbc/proxydriver">

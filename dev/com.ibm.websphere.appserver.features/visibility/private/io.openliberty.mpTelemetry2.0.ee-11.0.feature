@@ -5,7 +5,7 @@ singleton=true
   io.openliberty.restfulWS-4.0, \
   io.openliberty.mpConfig-3.1, \
   io.openliberty.cdi-4.1, \
-  io.openliberty.mpCompatible-7.0,\
+  io.openliberty.mpCompatible-7.0; ibm.tolerates:="7.1", \
   io.openliberty.org.eclipse.microprofile.rest.client-4.0,\
   com.ibm.websphere.appserver.eeCompatible-11.0
 -bundles=\

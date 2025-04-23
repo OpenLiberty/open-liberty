@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -91,9 +91,10 @@ public class RepoXML extends BaseXML {
     };
 
     public static final String VERSIONLESS_PREFIX = "io.openliberty.versionless.";
+    public static final String VERSIONLESS_PREFIX2 = "com.ibm.websphere.appserver.versionless.";
 
     public static boolean isVersionless(ProvisioningFeatureDefinition def) {
-        return def.getSymbolicName().startsWith(VERSIONLESS_PREFIX);
+        return def.getSymbolicName().startsWith(VERSIONLESS_PREFIX) || def.getSymbolicName().startsWith(VERSIONLESS_PREFIX2);
     }
 
     public static boolean isPublic(ProvisioningFeatureDefinition def) {

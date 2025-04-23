@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.jmx.connector.server.rest;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -162,12 +163,12 @@ public class RESTAppListener implements VirtualHostListener {
     /**
      * Called to create the work area resource. Only re-generate the file
      * if this is the first time or something in the url has changed.
-     * 
+     *
      * @param appPath standard url path received from the virtual host
      */
     private synchronized void createJMXWorkAreaResourceIfChanged(VirtualHost vhost) {
 
-        // Make sure our context root has been registered... 
+        // Make sure our context root has been registered...
         String contextRoot = registeredContextRoot;
         if (contextRoot != null) {
             // Make sure that we are dealing with the secure port before writing the file...
@@ -230,7 +231,7 @@ public class RESTAppListener implements VirtualHostListener {
      * Set the dynamic reference to the WsLocationAdmin service.
      * If the service is replaced, the new service will be set before
      * the old is removed.
-     * 
+     *
      * @param locationService
      */
     @Reference(service = WsLocationAdmin.class,
@@ -277,7 +278,7 @@ public class RESTAppListener implements VirtualHostListener {
                     resource.create();
                 }
                 OutputStream os = resource.putStream();
-                os.write(appURL.getBytes("UTF-8"));
+                os.write(appURL.getBytes(StandardCharsets.UTF_8));
                 os.flush();
                 os.close();
 

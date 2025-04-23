@@ -122,35 +122,33 @@
 				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="20"  arg2="${java.specification.version}"/> </and>
 		    </or>
 		</condition>
-		
+
 		<!-- Output java level info -->
 		<echo message="fat.minimum.java.level=${fat.minimum.java.level}" />
 		<echo message="java.specification.version=${java.specification.version}" />
 		<echo message="micro.version=${micro.version}" />
-		
+
 		<iff>
 			<istrue value="${skip.java.level}" />
 			<then>
-				<var name="test.bucket.class" unset="true" />
-				<var name="test.bucket.name" unset="true" />
-				
-				<property name="test.bucket.class" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
-				<property name="test.bucket.name" value="${test.bucket.class}" />
+				<property name="test.bucket.class.to.run" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
+				<property name="test.bucket.name.to.run" value="${test.bucket.class.to.run}" />
 
 				<echo message="FAT bucket WILL NOT run tests, due to the following properties:" />
 				<echo message="     This bucket uses java level:         ${fat.minimum.java.level}" />
 			</then>
 		</iff>
-		
+
+		<property name="test.bucket.class.to.run" value="${test.bucket.class}" />
+		<property name="test.bucket.name.to.run" value="${test.bucket.name}" />
+
 		<!-- What will our entry point be? -->
-		<echo message="FAT entry point will be: ${test.bucket.class}" />
-		
+		<echo message="FAT entry point will be: ${test.bucket.class.to.run}" />
 	</target>
 
-	<!-- Properties used: test.bucket.name, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class -->
+	<!-- Properties used: test.bucket.name.to.run, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class.to.run -->
 	<target name="runTests" depends="initProperties">
 		<condition property="do.debug">
 			<isset property="FAT_DEBUGGING" />
@@ -357,7 +355,7 @@
 		<mkdir dir="${dir.log.xml}" />
 		<mkdir dir="${dir.log.tmp}" />
 		<copy file="${logging.properties}" tofile="${gen.logging.properties}" />
-		<propertyfile file="${gen.logging.properties}" comment="Logging file used by ${test.bucket.name}">
+		<propertyfile file="${gen.logging.properties}" comment="Logging file used by ${test.bucket.name.to.run}">
 			<entry key="java.util.logging.FileHandler.pattern" value="${dir.log}/output.txt" />
 		</propertyfile>
 
@@ -432,7 +430,7 @@
 			</and>
 		</condition>
 
-		<echo>Running ${test.bucket.name}</echo>
+		<echo>Running ${test.bucket.name.to.run}</echo>
 		<echo>Timeout: ${fattest.timeout}</echo>
 		<iff if="env.debug.framework">
 			<then>
@@ -587,7 +585,7 @@
 					<!-- report will be generated as xml -->
 					<formatter type="xml" />
 					<!-- Invoke JUnit TestSuite -->
-					<test todir="${dir.log.xml}" name="${test.bucket.class}" />
+					<test todir="${dir.log.xml}" name="${test.bucket.class.to.run}" />
 					<!-- need the file.encoding for running on z/os -->
 					<jvmarg value="-Dfile.encoding=${ascii.file.encoding}" />
 					<!-- conditional JVM args and properties follow
@@ -623,7 +621,7 @@
 				<!-- Obtain the set of mark files again, in case any servers stopped during above wait -->
 				<fileset dir="${basedir}/output" includes="*.mrk" id="markfiles" />
 				<foreach param="serverFile" in="markfiles">
-					<echo>Failure running ${test.bucket.name}, attempting to stop servers that did not stop properly : ${serverFile}</echo>
+					<echo>Failure running ${test.bucket.name.to.run}, attempting to stop servers that did not stop properly : ${serverFile}</echo>
 					<local name="serverDir" />
 					<basename property="serverDir" file="${serverFile}" suffix=".mrk" />
 					<condition property="script.exec" value="cmd" else="sh">
@@ -640,7 +638,7 @@
 						<arg line="${serverDir}" />
 					</exec>
 
-					<echo>Failure running ${test.bucket.name}, attempting to copy logs from servers that did not stop properly : ${serverFile}</echo>
+					<echo>Failure running ${test.bucket.name.to.run}, attempting to copy logs from servers that did not stop properly : ${serverFile}</echo>
 					<tstamp>
 						<format property="copyTime" pattern="dd-MM-yyyy-HH-mm-ss" />
 					</tstamp>
@@ -655,7 +653,7 @@
 
 			</finally>
 		</try>
-		<echo>Finished running ${test.bucket.name}</echo>
+		<echo>Finished running ${test.bucket.name.to.run}</echo>
 		<echo>XML report is available at ${dir.log.xml}</echo>
 		<iff if="is.running.automated.build">
 			<then>
