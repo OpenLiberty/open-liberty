@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,7 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
      */
     @Override
     public void applyConfiguration(Bootstrap bootstrap) {
-        bootstrap.option(ChannelOption.SO_REUSEADDR, true);
+        bootstrap.option(ChannelOption.SO_REUSEADDR, false);
         int receiveBufferSize = getReceiveBufferSize();
         if ((receiveBufferSize >= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
                 && (receiveBufferSize <= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {
