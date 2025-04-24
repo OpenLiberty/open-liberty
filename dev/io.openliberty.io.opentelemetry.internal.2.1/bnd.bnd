@@ -14,10 +14,10 @@
 
 bVersion=1.0
 
-openTelemetryVersion=1.48.0
-alphaOpenTelemetryVersion=1.48.0.alpha
-openTelemetryInstrumentationVersion=2.14.0
-alphaOpenTelemetryInstrumentationVersion=2.14.0.alpha
+openTelemetryVersion=1.49.0
+alphaOpenTelemetryVersion=1.49.0.alpha
+openTelemetryInstrumentationVersion=2.15.0
+alphaOpenTelemetryInstrumentationVersion=2.15.0.alpha
 semconvOpenTelemetryVersion=1.32.0
 alphaSemconvOpenTelemetryVersion=1.32.0.alpha
 
