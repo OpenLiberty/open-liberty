@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+    xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence/orm
+                        https://jakarta.ee/xml/ns/persistence/orm_3_2.xsd"
+    version="3.2">
+
+    <!-- Entity: Participant -->
+    <entity class="io.openliberty.jpa.data.tests.models.ParticipantOrm" access="FIELD">
+        <table name="PARTICIPANTORM"/>
+
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+                <column name="id"/>
+            </id>
+
+            <embedded name="name"/>
+        </attributes>
+    </entity>
+
+    <!-- Embeddable: Participant.Name (record) -->
+    <embeddable class="io.openliberty.jpa.data.tests.models.ParticipantOrm$NameOrm" access="FIELD">
+        <attributes>
+            <basic name="first">
+                <column name="FIRSTNAME"/>
+            </basic>
+            <basic name="last">
+                <column name="LASTNAME"/>
+            </basic>
+        </attributes>
+    </embeddable>
+
+</entity-mappings>
