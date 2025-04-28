@@ -34,12 +34,6 @@ public class ParticipantOrm {
     }
 
     public static record NameOrm(String first, String last) {
-//        public String getFirst() {
-//            return first;
-//        }
-//
-//        public String getLast() {
-//            return last;
-//        }
+
     }
 }
