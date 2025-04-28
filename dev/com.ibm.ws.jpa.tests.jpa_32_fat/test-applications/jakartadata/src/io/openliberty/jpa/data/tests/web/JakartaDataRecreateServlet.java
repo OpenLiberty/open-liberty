@@ -77,6 +77,7 @@ import io.openliberty.jpa.data.tests.models.Segment;
 import io.openliberty.jpa.data.tests.models.Store;
 import io.openliberty.jpa.data.tests.models.Triangle;
 import io.openliberty.jpa.data.tests.models.Vehicle;
+import io.openliberty.jpa.data.tests.models.ParticipantOrm;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;

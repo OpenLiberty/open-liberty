@@ -19,6 +19,7 @@
         version="3.2">
 
     <persistence-unit name="RecreatePersistenceUnit">
+    	<mapping-file>META-INF/orm.xml</mapping-file>
     	<properties>
 			<!-- EclipseLink should create the database schema automatically -->
 			<property name="jakarta.persistence.schema-generation.database.action" value="create" />
