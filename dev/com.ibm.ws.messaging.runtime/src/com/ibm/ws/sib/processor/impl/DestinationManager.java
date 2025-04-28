@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+/*
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package com.ibm.ws.sib.processor.impl;
 
 import java.util.ArrayList;
@@ -5014,7 +5014,7 @@ public final class DestinationManager extends SIMPItemStream
 
         if (asyncUpdateThread == null)
         {
-            asyncUpdateThread = new AsyncUpdateThread(messageProcessor, messageProcessor.getTXManager(),
+            asyncUpdateThread = AsyncUpdateThread.create(messageProcessor, messageProcessor.getTXManager(),
                             messageProcessor.getCustomProperties().get_anycast_batch_size(),
                             messageProcessor.getCustomProperties().get_anycast_batch_timeout());
         }
@@ -5031,7 +5031,7 @@ public final class DestinationManager extends SIMPItemStream
 
         if (persistLockThread == null)
         {
-            persistLockThread = new AsyncUpdateThread(messageProcessor, messageProcessor.getTXManager(),
+            persistLockThread = AsyncUpdateThread.create(messageProcessor, messageProcessor.getTXManager(),
                             messageProcessor.getCustomProperties().get_anycast_lock_batch_size(),
                             messageProcessor.getCustomProperties().get_anycast_lock_batch_timeout());
         }

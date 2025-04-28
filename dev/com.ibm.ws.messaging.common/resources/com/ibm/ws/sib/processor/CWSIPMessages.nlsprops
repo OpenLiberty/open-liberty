@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@
 #   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
 #   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
 #   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
-#
+#   - Msgs in the range CWSIP0351-CWSIP0360 belong to class com.ibm.ws.sib.processor.runtime.AsyncUpdateThread
 #   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
 #   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
 #   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
@@ -1005,6 +1005,13 @@ DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=The named destination is unkno
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction==Check that the destination name is correct.  If the destination exists on another messaging engine, ensure that communication with the other messaging engine is working.
 
 # -------------------------------------------------------------------------------------------------
+# {0} the specified batch size
+# {1} the specified batch interval
+IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: The batch size setting of {0} is incompatible with the batch timeout setting of {1}, so a batch size of zero will be used.
+IGNORING_BATCH_SIZE_CWSIP0351.explanation=To enable asynchronous batch processing, both the batch size and batch timeout must be set to positive values.
+IGNORING_BATCH_SIZE_CWSIP0351.useraction=To enable asynchronous batch processing, set both the batch size and batch timeout to positive values.
+
+# -------------------------------------------------------------------------------------------------
 # {0} The message id.
 # {1} The destination name
 MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: The message with id {0} can not be deleted as the transaction used to add it to destination {1} has not been committed.
@@ -1153,6 +1160,12 @@ PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=The consumer should discon
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: A stream to communicate with the localisation messaging engine {1} for destination {0} is not available.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=A stream to communicate with the localisation messaging engine for the destination is not available. This may be because the stream is still being initialized, or due to a network partition.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Verify that it is possible to communicate with the localisation messaging engine, and then try again.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The ProtocolItemStream object
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: A malformed ProtocolItemStream {0} has been found. The creation of the stream will be deferred so that it may be properly formed.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=A malformed ProtocolItemStream has been found which does not contain a CompletedPrefix item. Deferring creation of the stream may allow it to be properly formed.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.useraction=None.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The name of the destination

@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+/*
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,20 +9,22 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 
 package com.ibm.ws.sib.processor.impl.store;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+import static com.ibm.ws.sib.processor.SIMPConstants.MP_TRACE_GROUP;
+import static com.ibm.ws.sib.processor.SIMPConstants.RESOURCE_BUNDLE;
 
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ejs.ras.TraceNLS;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.ibm.ejs.util.am.AlarmListener;
-import com.ibm.websphere.sib.exception.SIErrorException;
-import com.ibm.websphere.sib.exception.SIException;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.sib.processor.SIMPConstants;
 import com.ibm.ws.sib.processor.impl.MessageProcessor;
 import com.ibm.ws.sib.processor.impl.exceptions.ClosedException;
 import com.ibm.ws.sib.transactions.LocalTransaction;
@@ -32,515 +34,332 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * This class executed operations on the Message Store asynchronously.
  * Operations are encapsulated as AsyncUpdates and enqueued on this object.
  * Periodically, this class will take all the enqueued AsyncUpdates,
- * get a thread, and execute all these updates on the thread using a single
+ * get a thread, and execute each update on the thread in its own
  * local transaction. The AsyncUpdates are informed if the transaction
  * commits or rolls back.
  * The conditions that trigger the execution of AsyncUpdates are:
  * (1) The previous thread executing AsyncUpdates is finished (either has committed or
  *     rolledback), so this class behaves in a single threaded manner.
  *   AND
- * (2) either (a) or (b) is true
+ * (2) either (a), (b), or (c) is true
  *    (a) the number of enqueued AsyncUpdates has exceeded the batchThreshold.
  *    (b) an interval greater than maxCommitInterval has elapsed since the start
  *        of the previous transaction.
+ *    (c) the AsyncUpdateThread has been closed.
  */
-public class AsyncUpdateThread implements AlarmListener
-{
-  private static final TraceComponent tc =
-    SibTr.register(
-      AsyncUpdateThread.class,
-      SIMPConstants.MP_TRACE_GROUP,
-      SIMPConstants.RESOURCE_BUNDLE);
+public class AsyncUpdateThread {
+    private static final TraceComponent tc =
+            SibTr.register(AsyncUpdateThread.class, MP_TRACE_GROUP, RESOURCE_BUNDLE);
 
-  private final SIMPTransactionManager tranManager;
-  private final MessageProcessor mp;
+    private final SIMPTransactionManager tranManager;
+    private final MessageProcessor mp;
 
-  /** AsyncUpdates that have been enqueued */
-  private ArrayList enqueuedUnits;
+    /** AsyncUpdates that have been enqueued */
+    private final Queue<AsyncUpdate> enqueuedItems = new LinkedList<AsyncUpdate>();
+    private int enqueuedCount = 0;
+    private boolean executing = false;
+    private boolean executeSinceExpiry = false;
+    private CloseCallerInfo closeCallerInfo = null;
 
-  /** true if an execution thread has been scheduled and has not finished */
-  private boolean executing;
-  /** the AsyncUpdates to execute */
-  private ArrayList executingUnits;
+    private final int batchThreshold;
 
-  private final int batchThreshold;
 
-  private final long maxCommitInterval;
-  private boolean executeSinceExpiry;
-
-  private boolean closed;
-
-  /**
-   * NLS for component
-   */
-  private static final TraceNLS nls = TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
-
-  // this object is no longer providing service since it is closed
-  /**
-   * Constructor
-   * @param mp The MessageProcessor, used to get an execution thread.
-   * @param tranManager The transaction manager, to get a local transaction
-   * @param batchThreshold When the number of enqueued AsyncUpdates exceeds this threshold,
-   *        their execution is scheduled
-   * @param maxCommitInterval Execution will be scheduled at an interval that does not
-   *        exceed the range [maxCommitInterval, 2*maxCommitInterval]. A value < 0 disables periodic commit.
-   *
-   */
-  public AsyncUpdateThread(
-    MessageProcessor mp,
-    SIMPTransactionManager tranManager,
-    int batchThreshold,
-    long maxCommitInterval)
-  {
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.entry(
-        tc,
-        "AsyncUpdateThread",
-        new Object[] {
-          mp,
-          tranManager,
-          Integer.valueOf(batchThreshold),
-          Long.valueOf(maxCommitInterval)});
-
-    this.mp = mp;
-    this.tranManager = tranManager;
-    this.batchThreshold = batchThreshold;
-    this.maxCommitInterval = maxCommitInterval;
-    this.closed = false;
-
-    enqueuedUnits = new ArrayList(10);
-    executingUnits = new ArrayList(10);
-    executing = false;
-
-    executeSinceExpiry = false;
-
-    if (maxCommitInterval > 0)
-    {
-      mp.getAlarmManager().create(maxCommitInterval, this);
+    public static AsyncUpdateThread create(MessageProcessor mp, SIMPTransactionManager tm, int batchThreshold, long maxCommitInterval) {
+        final AsyncUpdateThread asyncUpdateThread = new AsyncUpdateThread(mp, tm, consideredThreshold(batchThreshold, maxCommitInterval));
+        asyncUpdateThread.startTimer(consideredMaxInterval(maxCommitInterval, batchThreshold));
+        return asyncUpdateThread;
     }
 
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.exit(tc, "AsyncUpdateThread", this);
+    private static int consideredThreshold(int threshold, long maxCommitInterval) {
+        if (threshold < 1) return 0;
+        if (maxCommitInterval > 0L) return threshold;
+        SibTr.warning(tc, "IGNORING_BATCH_SIZE_CWSIP0351", new Object[] { threshold, maxCommitInterval });
+        return 0;
+    }
 
-  }
+    private static long consideredMaxInterval(long maxCommitInterval, int threshold) {
+        if (maxCommitInterval < 1L) return 0L;
+        if (threshold > 0) return maxCommitInterval;
+        // As the threshold is at (or below) zero, there is no need (or point) in using the timer, so return zero to disable it.
+        return 0L;
+    }
 
-  /**
-   * Enqueue an AsyncUpdate
-   * @param unit the AsyncUpdate
-   */
-  public void enqueueWork(AsyncUpdate unit) throws ClosedException
-  {
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.entry(tc, "enqueueWork", unit);
+    /**
+     * Constructor
+     * @param mp The MessageProcessor, used to get an execution thread.
+     * @param tranManager The transaction manager, to get a local transaction
+     * @param batchThreshold When the number of enqueued AsyncUpdates exceeds this threshold,
+     *        their execution is scheduled
+     */
+    private AsyncUpdateThread(MessageProcessor mp, SIMPTransactionManager tranManager, int batchThreshold) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "AsyncUpdateThread",
+                    new Object[] { tranManager, batchThreshold });
+        this.mp = mp;
+        this.tranManager = tranManager;
+        this.batchThreshold = batchThreshold;
 
-    synchronized (this)
-    {
-      if (closed)
-      {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-          SibTr.exit(tc, "enqueueWork", "ClosedException");
-        throw new ClosedException();
-      }
-      
-      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-        SibTr.debug(tc, "Enqueueing update: " + unit);
-      
-      enqueuedUnits.add(unit);
-      if (executing)
-      {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-          SibTr.exit(tc, "enqueueWork", "AsyncUpdateThread executing");
-        return;
-      }
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "AsyncUpdateThread", this);
+    }
 
-      // not executing enqueued updates
-      if (enqueuedUnits.size() > batchThreshold)
-      {
-        executeSinceExpiry = true;
-        try
-        {
-          startExecutingUpdates();
+    private void startTimer(long maxCommitInterval) {
+        if (0L == maxCommitInterval) return;
+        new Timer(maxCommitInterval).schedule();
+    }
+
+    private final class Timer implements AlarmListener {
+        private final long maxCommitInterval;
+
+        Timer(long maxCommitInterval) {
+            this.maxCommitInterval = maxCommitInterval;
         }
-        catch (ClosedException e)
-        {
-          // No FFDC code needed
-          if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "enqueueWork", e);
-          throw e;
+
+        public void alarm(Object thandle) {
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.entry(tc, "alarm",
+                        new Object[] {this, mp.getMessagingEngineUuid()});
+
+            considerScheduleExecution(false);
+            schedule();
+
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, "alarm");
         }
-      }
+
+        void schedule() {
+            mp.getAlarmManager().create(maxCommitInterval, this);
+        }
     }
 
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.exit(tc, "enqueueWork");
-  }
+    /**
+     * Enqueue an AsyncUpdate
+     * @param item the AsyncUpdate
+     */
+    public void enqueueWork(AsyncUpdate item) throws ClosedException {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "enqueueWork", item);
+        if (null == item) {
+            if (isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, "enqueueWork", "No work given");
+            return;
+        }
 
-  /**
-   * Internal method. Should be called from within a synchronized block.
-   */
-  private void startExecutingUpdates() throws ClosedException
-  {
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.entry(tc, "startExecutingUpdates");
+        synchronized (this) {
+            if (isClosed()) {
+                ClosedException e = new ClosedException(closeCallerInfo);
+                if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exception(tc, e);
+                throw e;
+            }
 
-    // swap the enqueuedUnits and executingUnits.
-    ArrayList temp = executingUnits;
-    executingUnits = enqueuedUnits;
-    enqueuedUnits = temp;
-    enqueuedUnits.clear();
-    // enqueuedUnits is now ready to accept AsyncUpdates in enqueueWork()
+            if (isAnyTracingEnabled() && tc.isDebugEnabled())
+                SibTr.debug(tc, "Enqueueing update: " + item);
 
-    executing = true;
-    try
-    {
-      LocalTransaction tran = tranManager.createLocalTransaction(false);
-      ExecutionThread thread = new ExecutionThread(executingUnits, tran);
-      mp.startNewSystemThread(thread);
-    }
-    catch (InterruptedException e)
-    {
-      // this object cannot recover from this exception since we don't know how much work the ExecutionThread
-      // has done. should not occur!
-      FFDCFilter.processException(
-        e,
-        "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.startExecutingUpdates",
-        "1:222:1.28",
-        this);
-      SibTr.exception(tc, e);
+            addItem(item);
+            if (executing) {
+                if (isAnyTracingEnabled() && tc.isEntryEnabled())
+                    SibTr.exit(tc, "enqueueWork", "AsyncUpdateThread executing");
+                return;
+            }
 
-      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-        SibTr.exit(tc, "startExecutingUpdates", e);
+            considerScheduleExecution(true);
+        }
 
-      closed = true;
-      throw new ClosedException(e.getMessage());
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "enqueueWork");
     }
 
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.exit(tc, "startExecutingUpdates");
-
-  }
-
-  class ExecutionThread implements Runnable
-  {
-    private List _list;
-    private LocalTransaction _tran;
-
-    ExecutionThread(List list, LocalTransaction tran)
-    {
-      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-        SibTr.entry(tc, "ExecutionThread", new Object[] {list, tran});
-      
-      _list = list;
-      _tran = tran;
-
-      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-        SibTr.exit(tc, "ExecutionThread", this);
+    private synchronized void addItem(AsyncUpdate item) {
+        enqueuedItems.add(item);
+        enqueuedCount++;
     }
 
-    public void run()
-    {
-      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-        SibTr.entry(tc, "run", this);
+    private synchronized Iterable<AsyncUpdate> drainItems() {
+        final Queue<AsyncUpdate> copy = new LinkedList<AsyncUpdate>();
+        for (AsyncUpdate item = enqueuedItems.poll(); null != item; item = enqueuedItems.poll()) copy.add(item);
+        enqueuedCount = enqueuedItems.size();
+        return copy;
+    }
 
-      try
-      {
-        Throwable ex = null;
+    private synchronized void considerScheduleExecution(boolean batch) {
+        if (isClosed() || executing) return;
+        if (!batch && executeSinceExpiry) {
+            executeSinceExpiry = false;
+            return;
+        }
+        final int threshold = batch ? batchThreshold : 0;
+        if (enqueuedCount <= threshold) return;
+        try {
+            executing = true;
+            mp.startNewSystemThread(new ExecutionThread(threshold));
+        } catch (InterruptedException e) {
+            FFDCFilter.processException(e,
+                    this.getClass().getName() + ".considerScheduleExecution", "1:211:1.30", this);
+            SibTr.exception(tc, e);
+            close(e);
+        }
+    }
 
-        // Keep running around the do-while until we decide otherwise
-        boolean keepRunning = true;
+    private synchronized Iterable<AsyncUpdate> getNextBatch() {
+        return getNextBatch(batchThreshold);
+    }
 
-        do
-        {
-          int length = _list.size();
-          for (int i = 0; i < length; i++)
-          {
-            AsyncUpdate unit = (AsyncUpdate) _list.get(i);
-            
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-              SibTr.debug(tc, "Executing update: " + unit);
-            
-            try
-            {
-              unit.execute(_tran);
+    private synchronized Iterable<AsyncUpdate> getNextBatch(int batchSize) {
+        final int threshold = isClosed() ? 0 : batchSize;
+        if (enqueuedCount <= threshold) {
+            executing = false;
+            if (0 < batchThreshold) executeSinceExpiry = true;
+            notifyAll();
+            return null;
+        }
+        return drainItems();
+    }
+
+    private enum AsyncUpdateProcessing {
+        ;
+
+        private static final class CommitFailedException extends Exception {
+            private static final long serialVersionUID = 1L;
+            CommitFailedException(Throwable t) {
+                super("", t);
             }
-            catch (Throwable e)
-            {
-              FFDCFilter.processException(
-                  e,
-                  "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run",
-                  "1:286:1.28",
-                  this);
-              
-              ex = e;
-              break; // break out of the for loop
-            }
-          }
+        }
 
-          if (ex == null)
-          {
-            // commit
-            try
-            {
-              _tran.commit();
-            }
-            catch (SIException x)
-            {
-              // apparently the transaction has already committed. This is a serious bug!!
-              FFDCFilter.processException(
-                x,
-                "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run",
-                "1:307:1.28",
-                this);
-              SibTr.exception(tc, x);
-
-              ex = x;
-            }
-            catch (SIErrorException x)
-            {
-              // this is probably a serious problem
-              FFDCFilter.processException(
-                x,
-                "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run",
-                "1:319:1.28",
-                this);
-              SibTr.exception(tc, x);
-
-              ex = x;
-            }
-            catch (Throwable x)
-            {
-              // this is probably a serious problem
-              FFDCFilter.processException(
-                x,
-                "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run",
-                "1:331:1.28",
-                this);
-              SibTr.exception(tc, x);
-
-              ex = x;
-
-            }
-          } // end if (ex == null)
-          else
-          { // one of the execute() methods threw an exception
-            // so rollback this transaction
-            try
-            {
-              _tran.rollback();
-            }
-            catch (SIException x)
-            {
-              // apparently the transaction has already committed. This is a serious bug!!
-              FFDCFilter.processException(
-                x,
-                "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run",
-                "1:352:1.28",
-                this);
-              SibTr.exception(tc, x);
-            }
-            catch (SIErrorException x)
-            {
-              // may be a serious problem
-              FFDCFilter.processException(
-                x,
-                "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run",
-                "1:362:1.28",
-                this);
-              SibTr.exception(tc, x);
-            }
-            catch (Throwable x)
-            {
-              // this is probably a serious problem
-              FFDCFilter.processException(
-                x,
-                "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run",
-                "1:372:1.28",
-                this);
-              SibTr.exception(tc, x);
-            }
-          }
-
-          // notify
-          for (int i = 0; i < length; i++)
-          {
-            AsyncUpdate unit = (AsyncUpdate) _list.get(i);
-            if (ex == null)
-              try
-              {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                  SibTr.debug(tc, "Committing update: " + unit);
-                
-                unit.committed();
-              }
-              catch (SIException e)
-              {
-                // FFDC
-                FFDCFilter.processException(
-                  e,
-                  "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run",
-                  "1:396:1.28",
-                  this);
-
-                SibTr.exception(tc, e);
-              }
-            else
-            {
-              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(tc, "Rolling back update: " + unit);
-              
-              unit.rolledback(ex);
-            }
-          }
-
-          // now indicate that done executing, and schedule another execution if batchThreshold exceeded
-          synchronized (AsyncUpdateThread.this)
-          {
-            if (!closed)
-            {
-              executing = false;
-
-              if (ex == null) // If tran could not commit - Wait for the alarm to pop before retrying
-              {
-                // not executing enqueued updates
-                if (enqueuedUnits.size() > batchThreshold)
-                {
-                  executeSinceExpiry = true;
-
-                  ArrayList temp = executingUnits;
-                  executingUnits = enqueuedUnits;
-                  enqueuedUnits = temp;
-                  enqueuedUnits.clear();
-                  // enqueuedUnits is now ready to accept AsyncUpdates in enqueueWork()
-
-                  executing = true;
-
-                  _list = executingUnits;
-                  _tran = tranManager.createLocalTransaction(false);
+        static void processItems(Iterable<AsyncUpdate> items, SIMPTransactionManager tranMgr) {
+            for (AsyncUpdate item: items) {
+                try {
+                    processItem(item, tranMgr);
+                } catch (Throwable t) {
+                    FFDCFilter.processException(
+                            t,
+                            AsyncUpdateProcessing.class.getName() + ".processItems",
+                            "1:250:1.30",
+                            AsyncUpdateProcessing.class,
+                            new Object[] {items});
+                    SibTr.exception(tc, t);
                 }
-              }
             }
-            AsyncUpdateThread.this.notify();
-
-            // In order to avoid holding the 'AsyncUpdateThread.this' all the way around
-            // do while loop, we need to have a local copy of the updated executing flag
-            keepRunning = executing; // Ensure we stop if we're about to tell the world we're stopping
-          }
-        } while (keepRunning);  // New work on queue while we were running and no errors so far
-      }
-      catch (RuntimeException e)
-      {
-
-        // FFDC
-        FFDCFilter.processException(e,
-                                    "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run",
-                                    "1:451:1.28",
-                                    this);
-
-        synchronized(AsyncUpdateThread.this)
-        {
-          closed = true;
         }
 
-        SibTr.error(tc,
-          nls.getFormattedMessage(
-            "INTERNAL_MESSAGING_ERROR_CWSIP0002",
-            new Object[] { "com.ibm.ws.sib.processor.impl.store.AsyncUpdateThread.ExecutionThread.run", "1:462:1.28", e },
-            null));
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-        {
-          SibTr.exception(tc, e);
-          SibTr.exit(tc, "run", e);
+        private static void processItem(AsyncUpdate item, SIMPTransactionManager tranMgr) throws Throwable {
+            LocalTransaction tran = tranMgr.createLocalTransaction(false);
+            try {
+                processItemTran(item, tran);
+            } catch (Throwable t) {
+                notifyRollbackThenThrow(item, t);
+            }
+            item.committed();
         }
-        throw e;
-      }
 
-      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-        SibTr.exit(tc, "run");
-    } // end public void run()
-
-  } // end class ExecutionThread ...
-
-  public void alarm(Object thandle)
-  {
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.entry(tc, "alarm", new Object[] {this, mp.getMessagingEngineUuid()});
-
-    synchronized (this)
-    {
-      if (!closed)
-      {
-        if ((executeSinceExpiry) || executing)
-        { // has committed recently
-          executeSinceExpiry = false;
+        private static void processItemTran(AsyncUpdate item, LocalTransaction tran) throws Throwable {
+            try {
+                executeThenCommit(item, tran);
+            } catch (CommitFailedException cfe) {
+                throw cfe.getCause();
+            } catch (Throwable t) {
+                rollbackThenThrow(tran, t);
+            }
         }
-        else
-        { // has not committed recently
-          try
-          {
-            if (enqueuedUnits.size() > 0)
-              startExecutingUpdates();
-          }
-          catch (ClosedException e)
-          {
-            // No FFDC code needed
-            // do nothing as error already logged by startExecutingUpdates
-          }
-        }
-      }
-    } // end synchronized (this)
 
-    if (maxCommitInterval > 0)
-    {
-      mp.getAlarmManager().create(maxCommitInterval, this);
+        private static void notifyRollbackThenThrow(AsyncUpdate item, Throwable t) throws Throwable {
+            try {
+                item.rolledback(t);
+            } catch (Throwable t2) {
+                t.addSuppressed(t2);
+            }
+            throw t;
+        }
+
+        private static void rollbackThenThrow(LocalTransaction tran, Throwable t) throws Throwable {
+            try {
+                tran.rollback();
+            } catch (Throwable t2) {
+                t.addSuppressed(t2);
+            }
+            throw t;
+        }
+
+        private static void executeThenCommit(AsyncUpdate item, LocalTransaction tran) throws Throwable, CommitFailedException {
+            item.execute(tran);
+            try {
+                tran.commit();
+            } catch (Throwable t) {
+                throw new CommitFailedException(t);
+            }
+        }
     }
 
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.exit(tc, "alarm");
-  }
-
-  /**
-   * Close this. Note that committed(),rolledback(),execute() callbacks can occur after this is closed.
-   */
-  public void close()
-  {
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.entry(tc, "close");
-    synchronized (this)
-    {
-      closed = true;
+    private void processItems(int initialBatchSize) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(tc, "run", this);
+        for (Iterable<AsyncUpdate> items = getNextBatch(initialBatchSize); null != items; items = getNextBatch()) AsyncUpdateProcessing.processItems(items, tranManager);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "run");
     }
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.exit(tc, "close");
-  }
 
-  /**
-   * This method blocks till there are 0 enqueued updates and 0 executing updates.
-   * Useful for unit testing.
-   */
-  public void waitTillAllUpdatesExecuted() throws InterruptedException
-  {
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.entry(tc, "waitTillAllUpdatesExecuted");
-    synchronized (this)
-    {
-      while (enqueuedUnits.size() > 0 || executing)
-      {
-        try
-        {
-          this.wait();
+    private class ExecutionThread implements Runnable {
+        final int initialBatchSize;
+        ExecutionThread(int initialBatchSize) {
+            this.initialBatchSize = initialBatchSize;
         }
-        catch (InterruptedException e)
-        {
-          // No FFDC code needed
-          if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "waitTillAllUpdatesExecuted", e);
-          throw e;
+        public void run() {
+            processItems(initialBatchSize);
         }
-      }
     }
-    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-      SibTr.exit(tc, "waitTillAllUpdatesExecuted");
-  }
 
+    private synchronized boolean isClosed() {
+        return (null != closeCallerInfo);
+    }
+
+    private static final class CloseCallerInfo extends Throwable {
+        private static final long serialVersionUID = 1L;
+        private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yy.MM.dd_HH.mm.ss.SSS_Z");
+
+        CloseCallerInfo(Throwable reason) {
+            super("Close called at " + DATE_FORMATTER.format(OffsetDateTime.now()), reason);
+        }
+    }
+
+    /**
+     * Close this. Note that committed(),rolledback(),execute() callbacks can occur after this is closed.
+     */
+    public void close() {
+        close(null);
+    }
+
+    public void close(Throwable reason) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "close");
+
+        synchronized (this) {
+            if (isClosed()) return;
+            closeCallerInfo = new CloseCallerInfo(reason);
+            if (executing) return;
+        }
+        processItems(0);
+
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "close");
+    }
+
+    /**
+     * This method blocks till there are 0 enqueued updates and 0 executing updates.
+     * Useful for unit testing.
+     */
+    public void waitTillAllUpdatesExecuted() throws InterruptedException {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "waitTillAllUpdatesExecuted");
+        synchronized (this) {
+            while (!enqueuedItems.isEmpty() || executing) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    // No FFDC code needed
+                    if (isAnyTracingEnabled() && tc.isEntryEnabled())
+                        SibTr.exit(tc, "waitTillAllUpdatesExecuted", e);
+                    throw e;
+                }
+            }
+        }
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "waitTillAllUpdatesExecuted");
+    }
 }

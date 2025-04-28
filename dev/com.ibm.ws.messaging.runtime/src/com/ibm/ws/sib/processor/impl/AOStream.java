@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+/*
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 
 package com.ibm.ws.sib.processor.impl;
 
@@ -2895,7 +2895,7 @@ public final class AOStream extends ControllableStream implements BatchedTimeout
         SibTr.exception(tc, e);
 
         aock = null;
-        ClosedException e2 = new ClosedException(e.getMessage());
+        ClosedException e2 = new ClosedException(e);
         // just using the ClosedException as a convenience
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
           SibTr.exit(tc, "findOrCreateJSRemoteConsumerPoint", e2);
