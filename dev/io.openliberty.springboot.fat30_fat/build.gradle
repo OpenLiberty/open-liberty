@@ -99,7 +99,9 @@ def appDefs =
     [ 'io.openliberty.springboot.fat30.security.app', '.jar' ],
     [ 'io.openliberty.springboot.fat30.transactions.app', '.war' ],
     [ 'io.openliberty.springboot.fat30.data.app', '.war' ],
-    [ 'io.openliberty.springboot.fat30.jms.app', '.war' ]  ]
+    [ 'io.openliberty.springboot.fat30.jms.app', '.war' ],
+    [ 'io.openliberty.springboot.fat30.data.app', '.war' ], 
+    [ 'io.openliberty.springboot.fat30.concurrency.app', '.war'] ]
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
 appDefs.each { appDef ->

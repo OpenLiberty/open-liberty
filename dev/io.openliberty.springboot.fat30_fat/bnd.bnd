@@ -104,3 +104,4 @@ src: \
   io.openliberty.springboot.fat30.transactions.app;version=latest,\
   io.openliberty.springboot.fat30.jms.app;version=latest,\
   io.openliberty.org.testcontainers;version=latest
+  io.openliberty.springboot.fat30.concurrency.app;version=latest

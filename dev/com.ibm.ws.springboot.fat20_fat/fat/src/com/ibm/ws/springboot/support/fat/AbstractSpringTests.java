@@ -81,6 +81,8 @@ public abstract class AbstractSpringTests extends TestContainerSuite {
     public static final String SPRING_BOOT_20_APP_TRANSACTIONS = "com.ibm.ws.springboot.fat20.transactions.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_20_APP_DATA = "com.ibm.ws.springboot.fat20.data.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_20_APP_JMS = "com.ibm.ws.springboot.fat20.jms.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_CONCURRENCY = "com.ibm.ws.springboot.fat20.concurrency.app-0.0.1-SNAPSHOT.war";
+
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";
