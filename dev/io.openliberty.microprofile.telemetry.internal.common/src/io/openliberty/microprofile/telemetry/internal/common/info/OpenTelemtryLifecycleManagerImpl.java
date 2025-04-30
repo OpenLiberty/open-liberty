@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
 package io.openliberty.microprofile.telemetry.internal.common.info;
 
 import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang3.concurrent.LazyInitializer;
@@ -43,6 +45,9 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     private final MetaDataSlot slotForOpenTelemetryInfoHolder;
     private final OpenTelemetryInfoFactory openTelemetryInfoFactory;
+
+    private final Set<String> warningsEmittedForInternalApps = ConcurrentHashMap.newKeySet();
+
     boolean telemetry2OrLater;
 
     //These three are set during activation, and refreshed on checkpoint restore. (runtimeInstance is only set if we need one)
@@ -236,8 +241,13 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
             if (atomicRef == null) {
                 //If this is triggered by a WAB or internal code that doesn't have an associated app, and we're in app mode, return a no-op
                 //(in runtime mode we do want to have OpenTelemetry enabled for internal code, e.g., for tracing)
+                //Issue CWMOT5100 only once for WAB or internal code.
                 String j2EEName = metaData.getJ2EEName().toString();
-                Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
+
+                if (j2EEName != null && warningsEmittedForInternalApps.add(j2EEName)) {
+                    Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
+                }
+
                 return new DisabledOpenTelemetryInfo();
 
             }

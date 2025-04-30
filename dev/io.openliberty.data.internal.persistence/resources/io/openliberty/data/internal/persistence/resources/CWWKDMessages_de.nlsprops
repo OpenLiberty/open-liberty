@@ -453,3 +453,22 @@ CWWKD1104.empty.anno.value.useraction=Wenn der Vermerk nicht ben\u00f6tigt wird,
 CWWKD1105.keyword.in.orderby=CWWKD1105E: Die OrderBy -Klausel der {0} -Methode des {1} -Repository kann nicht analysiert werden, da das {2} -Entit\u00e4tsattribut der {3} -Entit\u00e4t das {4} -Schl\u00fcsselwort des Jakarta Data Query by Method Name-Musters enth\u00e4lt. Entfernen Sie die Klausel OrderBy aus dem Namen der Methode {0} und verwenden Sie stattdessen den Vermerk OrderBy.
 CWWKD1105.keyword.in.orderby.explanation=Entit\u00e4tsattributnamen, die Jakarta Data-Schl\u00fcsselw\u00f6rter enthalten, k\u00f6nnen nicht in den Namen von Repository-Methoden verwendet werden, die dem Muster Jakarta Data Query by Method Name folgen.
 CWWKD1105.keyword.in.orderby.useraction=Benennen Sie das Entit\u00e4tsattribut um oder wechseln Sie zur Anmerkung OrderBy, um die Reihenfolge festzulegen.
+
+CWWKD1106.init.timed.out=CWWKD1106E: Das {0} Repository, das den {1} Datenspeicher ben\u00f6tigt und vom {2} Anwendungsartefakt bereitgestellt oder verwendet wird, wurde nicht innerhalb von {3} Sekunden verf\u00fcgbar. Stellen Sie sicher, dass das Anwendungsartefakt {2} gestartet wird und dass die Datenspeicherressource {1}, die als Wert dataStore der Repository-Annotation angegeben ist, korrekt konfiguriert ist und dem Anwendungsartefakt beim ersten Zugriff auf das Repository {0} zug\u00e4nglich ist.
+CWWKD1106.init.timed.out.explanation=Ein Repositorium wurde nicht innerhalb der vorgesehenen Zeitspanne verf\u00fcgbar.
+CWWKD1106.init.timed.out.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration von dataStore und stellen Sie sicher, dass die Anwendungsartefakte, die das Repository definieren und verwenden, darauf zugreifen k\u00f6nnen. Vergewissern Sie sich auch, dass die Anwendung und alle ihre Module erfolgreich starten.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: Das Artefakt der Anwendung {0} hat auf das Repository {1} zugegriffen, bevor ein Checkpoint der Anwendung abgeschlossen wurde. Aktualisieren Sie die Anwendung {0}, um die Verwendung des Repository vor einem Pr\u00fcfpunkt zu vermeiden.
+CWWKD1107.init.timed.out.checkpoint.explanation=Anwendungen k\u00f6nnen keine Repositories verwenden, bevor ein Checkpoint abgeschlossen ist.
+CWWKD1107.init.timed.out.checkpoint.useraction=Vermeiden Sie die Verwendung des Repositorys, bis der Checkpoint abgeschlossen ist.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: Die Entit\u00e4tsklasse {0} erfordert die Anmerkung {1}, da die Anmerkung {2} auf das Mitglied {3} der Entit\u00e4tsklasse angewendet wird.
+CWWKD1108.missing.entity.anno.explanation=Entit\u00e4tsklassen, die Annotationen verwenden
+ from muss das Paket jakarta.persistence auch mit dem Entity-Kommentar
+ annotation aus der Jakarta-Persistenz-Spezifikation.
+CWWKD1108.missing.entity.anno.useraction=Wenden Sie die Entity-Anmerkung auf die
+ entity klasse oder entfernen Sie die Jakarta-Persistenz-Anmerkungen aus ihren Mitgliedern.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: Die Annotation {0} ist f\u00fcr die Methode {1} der Entit\u00e4tsklasse {2} nicht zul\u00e4ssig, da die Entit\u00e4tsklasse {2} ein Java-Datensatz ist.
+CWWKD1109.jpa.anno.on.record.explanation=Jakarta Persistence-Anmerkungen sind f\u00fcr Java-Datens\u00e4tze nicht zul\u00e4ssig.
+CWWKD1109.jpa.anno.on.record.useraction=Wechseln Sie zu einer Jakarta Persistence-Entit\u00e4tsklasse oder entfernen Sie die Jakarta Persistence-Annotation aus dem Java-Datensatz.

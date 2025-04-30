@@ -12,6 +12,10 @@
 	<classpathentry kind="src" path="test-applications/LooseConfig/LooseServlet1.jar/src"/>
 	<classpathentry kind="src" path="test-applications/LooseConfig/LooseServlet2.jar/src"/>
 	<classpathentry kind="src" path="test-applications/LooseConfig/LooseServlet3.jar/src"/>
+	<classpathentry kind="src" path="test-applications/SpringAnnoTest/SpringAnnoTest.war/src"/>
+	<classpathentry kind="src" path="test-applications/SpringAnnoTest/SpringAnnoTest.jar/src"/>
+	<classpathentry kind="src" path="test-applications/SpringAnnoTest/SpringAnnoTestSharedLib.jar/src"/>
+	<classpathentry kind="src" path="test-applications/SpringAnnoTest/SpringAnnoTestManifestLib.jar/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>

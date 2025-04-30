@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,8 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 /**
  * Creates, modifies, and removes ManagedExecutorService resource factories that are defined via ManagedExecutorDefinition.
  */
-public class ManagedExecutorResourceFactoryBuilder implements //
-                ConcurrencyResourceFactoryBuilder, ResourceFactoryBuilder {
+public class ManagedExecutorResourceFactoryBuilder //
+                extends ConcurrencyResourceFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ManagedExecutorResourceFactoryBuilder.class);
 
     /**
@@ -165,6 +165,11 @@ public class ManagedExecutorResourceFactoryBuilder implements //
         // Convert qualifier array to list attribute if present
         List<String> qualifierNames = null;
         if (qualifiers != null && qualifiers.length > 0) {
+            if (jndiName.startsWith("java:global"))
+                throw excJavaGlobalWithQualifiers(jndiName,
+                                                  qualifiers,
+                                                  declaringApplication,
+                                                  declaringMetadata);
             qualifierNames = Arrays.asList(qualifiers);
             execSvcProps.put("qualifiers", qualifierNames);
         }

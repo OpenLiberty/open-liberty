@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -186,6 +186,8 @@ public class FeatureResolverBaseline {
     private static final String VERSIONLESS_PREFIX = "io.openliberty.versionless.";
     /** Prefix of public microprofile versionless features. */
     private static final String VERSIONLESS_MP_PREFIX = "io.openliberty.versionless.mp";
+    /** Common prefix of public WebSphere Liberty versionless features. */
+    private static final String VERSIONLESS_PREFIX2 = "com.ibm.websphere.appserver.versionless.";
 
     private static final boolean INCLUDE_EE = true;
     private static final boolean INCLUDE_MP = true;
@@ -198,7 +200,7 @@ public class FeatureResolverBaseline {
         List<String> versionlessFeatures = new ArrayList<>();
         for ( ProvisioningFeatureDefinition featureDef : repository.getFeatures() ) {
             String featureName = featureDef.getSymbolicName();
-            if ( !featureName.startsWith(VERSIONLESS_PREFIX) ) {
+            if ( !featureName.startsWith(VERSIONLESS_PREFIX) && !featureName.startsWith(VERSIONLESS_PREFIX2) ) {
 //                System.out.println("Skip: Missing prefix [ " + featureName + " ]");
                 continue;
             }

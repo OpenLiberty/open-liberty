@@ -150,7 +150,8 @@ public class HealthCheck40CDIBeanInvokerImpl implements HealthCheck40CDIBeanInvo
         return healthCheckBeans;
     }
 
-    private BeanManager getBeanManager(String appName, String moduleName) {
+    private synchronized BeanManager getBeanManager(String appName, String moduleName) {
+
         String key = appName + "#" + moduleName;
         beanManagers.entrySet().forEach(bm -> {
             Tr.event(tc, "BeanManager  : " + bm.getKey() + " " + bm.getValue());

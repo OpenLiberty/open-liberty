@@ -140,8 +140,9 @@ public interface Primes {
     @OrderBy(value = "romanNumeral", descending = true)
     List<Prime> findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndNumberIdLessThan(String hexAbove, String maxNumeral, long numBelow);
 
+    @Query("WHERE LENGTH(name) BETWEEN ?1 AND ?2")
     @OrderBy("name")
-    Stream<Prime> findByNameCharCountBetween(int minLength, int maxLength);
+    Stream<Prime> findByLengthOfNameBetween(int minLength, int maxLength);
 
     Prime findByNameIgnoreCase(String name);
 
@@ -160,10 +161,6 @@ public interface Primes {
     @OrderBy(ID)
     Iterator<Prime> findByNameStartsWithAndNumberIdLessThanOrNameContainsAndNumberIdLessThan(String prefix, long max1, String contains, long max2,
                                                                                              PageRequest pagination);
-
-    List<Prime> findByNameTrimmedCharCountAndNumberIdBetween(int length, long min, long max);
-
-    Optional<Prime> findByNameTrimmedIgnoreCase(String name);
 
     Prime findByNumberIdBetween(long min, long max);
 
@@ -482,4 +479,6 @@ public interface Primes {
                                                  @Param("max") long maximum,
                                                  PageRequest pageRequest);
 
+    @Query("WHERE (LENGTH(TRIM(name))=?1 AND numberId BETWEEN ?2 AND ?3)")
+    List<Prime> withTrimmedNameLengthAndNumBetween(int length, long min, long max);
 }

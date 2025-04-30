@@ -38,7 +38,7 @@
         ibm:reference="com.ibm.ws.kernel.metatype.helper.fileset"
     />
 
-     <AD name="%library.folder.ref" description="%library.folder.ref.desc"
+     <AD name="%library.folder.ref" description="%folder.name.desc"
         id="folderRef"
         required="false"
         type="String"
@@ -47,7 +47,7 @@
         ibm:reference="com.ibm.ws.classloading.sharedlibrary.folder"
     />
 
-     <AD name="%library.file.ref" description="%library.file.ref.desc"
+     <AD name="%library.file.ref" description="%file.desc"
         id="fileRef"
         required="false"
         type="String"
@@ -56,7 +56,7 @@
         ibm:reference="com.ibm.ws.classloading.sharedlibrary.file"
     />
 
-     <AD name="%library.path.ref" description="%library.path.ref.desc"
+     <AD name="%library.path.ref" description="%path.desc"
         id="pathRef"
         required="false"
         type="String"

@@ -25,6 +25,8 @@ public class TcpOptions extends ConfigElement {
     private String hostNameIncludeList;
     private String hostNameExcludeList;
     private Integer maxOpenConnections;
+    private Integer portOpenRetries;
+    private Integer soLinger;
 
     public Boolean isSoReuseAddr() {
         return this.soReuseAddr;
@@ -48,6 +50,14 @@ public class TcpOptions extends ConfigElement {
 
     public Integer getMaxOpenConnections() {
         return maxOpenConnections;
+    }
+
+    public Integer getPortOpenRetries() {
+        return portOpenRetries;
+    }
+
+    public Integer getSoLinger() {
+        return soLinger;
     }
 
     @XmlAttribute
@@ -80,6 +90,15 @@ public class TcpOptions extends ConfigElement {
         this.maxOpenConnections = maxOpenConnections;
     }
 
+    @XmlAttribute
+    public void setPortOpenRetries(Integer portOpenRetries) {
+        this.portOpenRetries = portOpenRetries;
+    }
+
+    public void setSoLinger(Integer soLinger) {
+        this.soLinger = soLinger;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("TcpOptions{");
@@ -97,6 +116,10 @@ public class TcpOptions extends ConfigElement {
             buf.append("hostNameExcludeList=\"" + hostNameExcludeList + "\" ");
         if (getMaxOpenConnections() != null)
             buf.append("maxOpenConnections=\"" + maxOpenConnections + "\" ");
+        if (getPortOpenRetries() != null)
+            buf.append("portOpenRetries=\"" + portOpenRetries + "\" ");
+        if (getSoLinger() != null)
+            buf.append("soLinger=\"" + soLinger + "\" ");
         buf.append("}");
         return buf.toString();
     }

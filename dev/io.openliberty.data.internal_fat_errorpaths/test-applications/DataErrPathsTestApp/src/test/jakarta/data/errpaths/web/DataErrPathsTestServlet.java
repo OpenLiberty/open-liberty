@@ -146,11 +146,14 @@ public class DataErrPathsTestServlet extends FATServlet {
 
                 em.persist(new Voter(987665432, "Vivian", //
                                 LocalDate.of(1971, Month.OCTOBER, 1), //
-                                "701 Silver Creek Rd NE, Rochester, MN 55906"));
+                                "701 Silver Creek Rd NE, Rochester, MN 55906", //
+                                "vivian@openliberty.io", //
+                                "vivian.voter@openliberty.io"));
 
                 em.persist(new Voter(789001234, "Vincent", //
                                 LocalDate.of(1977, Month.SEPTEMBER, 26), //
-                                "770 W Silver Lake Dr NE, Rochester, MN 55906"));
+                                "770 W Silver Lake Dr NE, Rochester, MN 55906", //
+                                "vincent@openliberty.io"));
             } finally {
                 tx.commit();
             }
@@ -177,6 +180,44 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1019E:") ||
                 !x.getMessage().contains("livingAt"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when the GreaterThanEqual keyword is applied to a
+     * collection of values.
+     */
+    @Test
+    public void testCollectionGreaterThanEqual() {
+        try {
+            List<Voter> found = voters.findByEmailAddressesGreaterThanEqual(1);
+            fail("Should not be able to compare a collection to a number." +
+                 " Found " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1110E:") ||
+                !x.getMessage().contains("GreaterThanEqual"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when the IgnoreCase keyword is applied to a
+     * collection of values.
+     */
+    @Test
+    public void testCollectionIgnoreCase() {
+        List<Voter> found;
+        try {
+            String mixedCaseEmail = "Vivian@OpenLiberty.io";
+            found = voters.findByEmailAddressesIgnoreCaseContains(mixedCaseEmail);
+            fail("Should not be able to compare a collection ignoring case." +
+                 " Found " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1110E:") ||
+                !x.getMessage().contains("IgnoreCase"))
                 throw x;
         }
     }
@@ -991,10 +1032,12 @@ public class DataErrPathsTestServlet extends FATServlet {
     public void testInsertMultipleEntitiesButOnlyReturnOne() {
         Voter v1 = new Voter(100200300, "Valerie", //
                         LocalDate.of(1947, Month.NOVEMBER, 7), //
-                        "88 23rd Ave SW, Rochester, MN 55902");
+                        "88 23rd Ave SW, Rochester, MN 55902", //
+                        "valerie@openliberty.io");
         Voter v2 = new Voter(400500600, "Vinny", //
                         LocalDate.of(1988, Month.NOVEMBER, 8), //
-                        "2016 45th St SE, Rochester, MN 55904");
+                        "2016 45th St SE, Rochester, MN 55904", //
+                        "vinny@openliberty.io");
         try {
             Voter inserted = voters.register(v1, v2);
             fail("Insert method with singular return type should not be able to " +
@@ -1161,11 +1204,13 @@ public class DataErrPathsTestServlet extends FATServlet {
         List<Voter> list = List //
                         .of(new Voter(999887777, "New Voter 1", //
                                         LocalDate.of(1999, Month.DECEMBER, 9), //
-                                        "213 13th Ave NW, Rochester, MN 55901"),
+                                        "213 13th Ave NW, Rochester, MN 55901", //
+                                        "voter1@openliberty.io"),
 
                             new Voter(777665555, "New Voter 2", //
                                             LocalDate.of(1987, Month.NOVEMBER, 7), //
-                                            "300 7th St SW, Rochester, MN 55902"));
+                                            "300 7th St SW, Rochester, MN 55902", //
+                                            "voter2@openliberty.io"));
 
         try {
             list = voters.addSome(list, Limit.of(1));

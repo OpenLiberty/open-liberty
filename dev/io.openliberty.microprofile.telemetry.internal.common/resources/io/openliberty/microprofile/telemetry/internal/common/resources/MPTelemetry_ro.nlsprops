@@ -63,10 +63,6 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Configura\u021bie conflictual\u0103 p
 CWMOT5007.tel.enabled.conflict.explanation: Telemetria MicroProfile poate fi activat\u0103 pentru \u00eentregul server utiliz\u00e2nd propriet\u0103\u021bile sistemului sau variabilele de mediu. Dac\u0103 nu este activat pentru \u00eentregul server, poate fi activat pentru o aplica\u021bie prin setarea propriet\u0103\u021bilor MicroProfile Config; de exemplu, prin setarea variabilelor \u00een fi\u0219ierul server.xml . Acest avertisment este dat dac\u0103 Telemetria este activat\u0103 pentru \u00eentregul server, dar propriet\u0103\u021bile MicroProfile Config dezactiveaz\u0103 Telemetria pentru o aplica\u021bie. Deoarece Telemetria este activat\u0103 pentru \u00eentregul server, configura\u021bia pentru aplica\u021bia respectiv\u0103 este ignorat\u0103.
 CWMOT5007.tel.enabled.conflict.useraction: Specifica\u021bi set\u0103rile pentru a activa sau dezactiva instan\u021bele OpenTelemetry utiliz\u00e2nd fie variabilele de mediu \u0219i propriet\u0103\u021bile sistemului, fie alte surse MP Config, dar nu ambele.
 
-CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: Func\u021bia de \u00eenregistrare a telemetriei MicroProfile nu recunoa\u0219te formatul de \u00eenregistrare a accesului la telemetrie [ {0} ].
-CWMOT5008.mptelemetry.unknown.access.log.field.explanation=Mediul de execu\u021bie Liberty nu ofer\u0103 formatul de jurnal specificat.
-CWMOT5008.mptelemetry.unknown.access.log.field.useraction=Specifica\u021bi fie implicit, fie logFormat pentru atributul mpTelemetry accessLogFields.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

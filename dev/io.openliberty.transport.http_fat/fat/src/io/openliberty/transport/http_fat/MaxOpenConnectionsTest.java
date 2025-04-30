@@ -60,9 +60,7 @@ public class MaxOpenConnectionsTest {
     }
 
     /**
-     * The test will first check the default value of maxOpenConnections by searching the trace file.
-     *
-     * Next the server will set maxOpenConnections to 2 and validate the value by searching the trace file.
+     * The test will set maxOpenConnections to 2 and validate the value by searching the trace file.
      *
      * Three connections are then created. Since the number of connections is 1 greater than maxOpenConnections
      * the following exception should be found in the logs:
@@ -75,9 +73,6 @@ public class MaxOpenConnectionsTest {
     @Test
     public void testMaxOpenConnections() throws Exception {
         URL url = HttpUtils.createURL(server, "/");
-
-        // Validate that maxOpenConnections default is 128000.
-        assertNotNull("The default value of maxOpenConnections was not 128000!", server.waitForStringInTrace("maxOpenConnections: 128000"));
 
         // Set maxOpenConnections to 2.
         server.saveServerConfiguration();

@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.org.eclipse.microprofile.reactive.streams.operators-3.0
 visibility=private
 singleton=true
--features=io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1,7.0", \
+-features=io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1,7.0,7.1", \
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0
 -bundles=\

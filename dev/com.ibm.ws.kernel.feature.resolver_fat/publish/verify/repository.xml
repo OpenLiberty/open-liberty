@@ -3379,42 +3379,6 @@
         </constituent>
     </feature>
     <feature>
-        <file>com.ibm.websphere.appserver.componenttest-1.0.mf</file>
-        <name>componenttest-1.0</name>
-        <symbolic-name>com.ibm.websphere.appserver.componenttest-1.0</symbolic-name>
-        <short-name>componenttest-1.0</short-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>com.ibm.ws.componenttest</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>com.ibm.websphere.appserver.componenttest-2.0.mf</file>
-        <name>componenttest-2.0</name>
-        <symbolic-name>com.ibm.websphere.appserver.componenttest-2.0</symbolic-name>
-        <short-name>componenttest-2.0</short-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>com.ibm.ws.componenttest.2.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
         <file>com.ibm.websphere.appserver.concurrencyPolicy-1.0.mf</file>
         <name>com.ibm.websphere.appserver.concurrencyPolicy-1.0</name>
         <symbolic-name>com.ibm.websphere.appserver.concurrencyPolicy-1.0</symbolic-name>
@@ -5070,24 +5034,6 @@
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=jar</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>com.ibm.websphere.appserver.http2clienttest-1.0.mf</file>
-        <name>http2clienttest-1.0</name>
-        <symbolic-name>com.ibm.websphere.appserver.http2clienttest-1.0</symbolic-name>
-        <short-name>http2clienttest-1.0</short-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>com.ibm.ws.http2.client</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
     </feature>
@@ -24397,24 +24343,6 @@
         </constituent>
     </feature>
     <feature>
-        <file>com.ibm.websphere.appserver.timedexit-1.0.mf</file>
-        <name>timedexit-1.0</name>
-        <symbolic-name>com.ibm.websphere.appserver.timedexit-1.0</symbolic-name>
-        <short-name>timedexit-1.0</short-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>com.ibm.ws.timedexit.internal</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
         <file>com.ibm.websphere.appserver.transaction-1.1.mf</file>
         <name>com.ibm.websphere.appserver.transaction-1.1</name>
         <symbolic-name>com.ibm.websphere.appserver.transaction-1.1</symbolic-name>
@@ -28002,65 +27930,6 @@
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
             <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>arquillian-liberty-support.mf</file>
-        <name>arquillian-support-1.0</name>
-        <symbolic-name>io.openliberty.arquillian.arquillian-support-1.0</symbolic-name>
-        <short-name>arquillian-support-1.0</short-name>
-        <version>1.0.8</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>arquillian-liberty-support</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>1.0.8</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.wsspi.appserver.webBundle-1.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.websphere.appserver.servlet-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-            <tolerate>3.1</tolerate>
-            <tolerate>4.0</tolerate>
-        </constituent>
-    </feature>
-    <feature>
-        <file>arquillian-liberty-support-jakarta-2.1.mf</file>
-        <name>arquillian-support-jakarta-2.1</name>
-        <symbolic-name>io.openliberty.arquillian.arquillian-support-jakarta-2.1</symbolic-name>
-        <short-name>arquillian-support-jakarta-2.1</short-name>
-        <version>2.1.1</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>arquillian-liberty-support-jakarta</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>2.1.1</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.websphere.appserver.localConnector-1.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
         </constituent>
     </feature>
     <feature>
@@ -57710,72 +57579,6 @@
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
             <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>txtest-1.0.mf</file>
-        <name>txtest-1.0</name>
-        <symbolic-name>txtest-1.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>com.ibm.ws.transaction.test.util</symbolic-name>
-            <location>lib/com.ibm.ws.transaction.test.util.jar</location>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.websphere.javaee.transaction.1.2</symbolic-name>
-            <location>dev/api/spec/,lib/</location>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.ws.tx.embeddable</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.2.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>txtest-2.0.mf</file>
-        <name>txtest-2.0</name>
-        <symbolic-name>txtest-2.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>com.ibm.ws.transaction.test.util.jakarta</symbolic-name>
-            <location>lib/com.ibm.ws.transaction.test.util.jakarta.jar</location>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.jakarta.transaction.2.0</symbolic-name>
-            <location>dev/api/spec/,lib/</location>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.ws.tx.embeddable.jakarta</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.2.0)</version-range>
         </constituent>
     </feature>
 </repository>

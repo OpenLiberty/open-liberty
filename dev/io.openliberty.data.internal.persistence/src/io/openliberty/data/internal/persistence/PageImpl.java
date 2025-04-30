@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,12 +39,40 @@ import jakarta.persistence.TypedQuery;
 public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
 
+    /**
+     * Values that are supplied when invoking the repository method that
+     * requests the page.
+     */
     private final Object[] args;
+
+    /**
+     * The request for this page.
+     */
     private final PageRequest pageRequest;
+
+    /**
+     * Query information.
+     */
     private final QueryInfo queryInfo;
+
+    /**
+     * Results of the query for this page.
+     */
     private final List<T> results;
+
+    /**
+     * Total number of elements across all pages. This value is computed lazily,
+     * with -1 indicating it has not been computed yet.
+     */
     private long totalElements = -1;
 
+    /**
+     * Construct a new Page.
+     *
+     * @param queryInfo   query information.
+     * @param pageRequest the request for this page.
+     * @param args        values that are supplied to the repository method.
+     */
     @FFDCIgnore(Exception.class)
     @Trivial
     PageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {

@@ -16,7 +16,6 @@ import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -63,18 +62,68 @@ import jakarta.persistence.PersistenceException;
 import jakarta.persistence.Table;
 import jakarta.transaction.Status;
 
+/**
+ * Provides implementation of the methods of a repository interface.
+ *
+ * @param <R> repository interface.
+ */
 public class RepositoryImpl<R> implements InvocationHandler {
     private static final TraceComponent tc = Tr.register(RepositoryImpl.class);
 
-    private static final ThreadLocal<Deque<AutoCloseable>> defaultMethodResources = new ThreadLocal<>();
+    /**
+     * Keeps track of resources that were obtained via resource accessor methods
+     * from a repository default method, so that when the default method ends,
+     * the resources can be automatically closed if they implement AutoCloseable.
+     */
+    private static final ThreadLocal<Deque<AutoCloseable>> defaultMethodResources = //
+                    new ThreadLocal<>();
 
+    /**
+     * Indicates if the bean for the repository has been disposed.
+     */
     private final AtomicBoolean isDisposed = new AtomicBoolean();
+
+    /**
+     * Entity information for the primary entity type of the repository.
+     * Null if the repository does not have a primary entity type.
+     */
     final CompletableFuture<EntityInfo> primaryEntityInfoFuture;
+
+    /**
+     * OSGi service for the built-in Jakarta Data provider for EclipseLink.
+     */
     final DataProvider provider;
-    final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
+
+    /**
+     * Mapping of repository interface method to a future for the initialized
+     * state of the information that is needed to perform the query.
+     */
+    private final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
+
+    /**
+     * The repository interface that implementation is provided for.
+     */
     final Class<R> repositoryInterface;
+
+    /**
+     * Abstraction for a Jakarta Validation Validator.
+     */
     final EntityValidator validator;
 
+    /**
+     * Construct a new instance.
+     *
+     * @param provider              OSGi service for the built-in Jakarta Data
+     *                                  provider for EclipseLink.
+     * @param extension             CDI extension for the Jakarta Data provider.
+     * @param builder               Builder of EntityManager instances.
+     * @param repositoryInterface   The repository interface.
+     * @param primaryEntityClass    The primary entity class for the repository.
+     *                                  Null if the repository does not have one.
+     * @param queriesPerEntityClass Map of entity class to a list of the query
+     *                                  information for each repository method
+     *                                  that operates on the entity.
+     */
     public RepositoryImpl(DataProvider provider,
                           DataExtension extension,
                           EntityManagerBuilder builder,
@@ -325,20 +374,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Return a name for the parameter, suitable for display in an NLS message.
-     *
-     * @param param parameter
-     * @param index zero-based method index.
-     * @return parameter name.
-     */
-    @Trivial
-    private static final String getName(Parameter param, int index) {
-        return param.isNamePresent() //
-                        ? param.getName() //
-                        : ("(" + (index + 1) + ")");
-    }
-
-    /**
      * Used during introspection to report errors that occurred when processing
      * repository methods.
      *
@@ -413,6 +448,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
         return t;
     }
 
+    /**
+     * Provides the implementation of repository interface methods.
+     *
+     * @param proxy  instance upon which the method is invoked.
+     * @param method repository interface method to implement.
+     * @param args   arguments that are supplied to the repository method.
+     * @throws Throwable if an error occurs. Typically this will be a DataException,
+     *                       a subclass of DataException, or a subclass of
+     *                       RuntimeException, as determined by the Jakarta Data
+     *                       specification and API.
+     */
     @FFDCIgnore(Throwable.class)
     @Override
     @Trivial
@@ -425,12 +471,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (method.isDefault()) {
                 isDefaultMethod = true;
             } else {
+                // Special case handling of various methods from java.lang.Object:
                 String methodName = method.getName();
                 if (args == null) {
                     if ("hashCode".equals(methodName))
                         return System.identityHashCode(proxy);
                     else if ("toString".equals(methodName))
-                        return repositoryInterface.getName() + "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy));
+                        return repositoryInterface.getName() + "(Proxy)@" +
+                               Integer.toHexString(System.identityHashCode(proxy));
                 } else if (args.length == 1) {
                     if ("equals".equals(methodName))
                         return proxy == args[0];
@@ -440,7 +488,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(),
+            Tr.entry(this, tc, "invoke " + repositoryInterface.getSimpleName() +
+                               '.' + method.getName(),
                      provider.loggable(repositoryInterface, method, args));
 
         EntityInfo entityInfo = null;
@@ -466,7 +515,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 try {
                     Object returnValue = InvocationHandler.invokeDefault(proxy, method, args);
                     if (trace && tc.isEntryEnabled())
-                        Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
+                        Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() +
+                                          '.' + method.getName(),
+                                returnValue);
                     return returnValue;
                 } finally {
                     for (AutoCloseable resource; (resource = resourceStack.pollLast()) != null;)
@@ -558,7 +609,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 Object valueToLog = hideValue //
                                 ? provider.loggable(repositoryInterface, method, returnValue) //
                                 : returnValue;
-                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(),
+                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() +
+                                  '.' + method.getName(),
                         valueToLog);
             }
             return returnValue;
@@ -566,7 +618,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (!isDefaultMethod && x instanceof Exception)
                 x = failure((Exception) x, entityInfo == null ? null : entityInfo.builder);
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
+                Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() +
+                                  '.' + method.getName(),
+                        x);
             throw x;
         }
     }

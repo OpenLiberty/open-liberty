@@ -453,3 +453,22 @@ CWWKD1104.empty.anno.value.useraction=Se a anota\u00e7\u00e3o n\u00e3o for neces
 CWWKD1105.keyword.in.orderby=CWWKD1105E: A cl\u00e1usula OrderBy do m\u00e9todo {0} do reposit\u00f3rio {1} n\u00e3o pode ser analisada porque o atributo {2} entity da entidade {3} cont\u00e9m a palavra-chave {4} do padr\u00e3o Jakarta Data Query by Method Name. Remova a cl\u00e1usula OrderBy do nome do m\u00e9todo {0} e use a anota\u00e7\u00e3o OrderBy em seu lugar.
 CWWKD1105.keyword.in.orderby.explanation=Os nomes de atributos de entidades que cont\u00eam palavras-chave de Jakarta Data n\u00e3o podem ser usados nos nomes de m\u00e9todos de reposit\u00f3rio que seguem o padr\u00e3o Jakarta Data Query by Method Name.
 CWWKD1105.keyword.in.orderby.useraction=Renomeie o atributo da entidade ou mude para a anota\u00e7\u00e3o OrderBy para especificar a ordem.
+
+CWWKD1106.init.timed.out=CWWKD1106E: O reposit\u00f3rio {0} que requer o armazenamento de dados {1} e \u00e9 fornecido ou usado pelo artefato do aplicativo {2} n\u00e3o ficou dispon\u00edvel em {3} segundos. Confirme se o artefato do aplicativo {2} \u00e9 iniciado e se o recurso de armazenamento de dados {1}, especificado como o valor dataStore da anota\u00e7\u00e3o Repository, est\u00e1 configurado corretamente e \u00e9 acess\u00edvel ao artefato do aplicativo no momento em que o reposit\u00f3rio {0} \u00e9 acessado pela primeira vez.
+CWWKD1106.init.timed.out.explanation=Um reposit\u00f3rio n\u00e3o ficou dispon\u00edvel dentro do per\u00edodo de tempo alocado.
+CWWKD1106.init.timed.out.useraction=Verifique a configura\u00e7\u00e3o do site dataStore e confirme se ele est\u00e1 acess\u00edvel aos artefatos de aplicativos que definem e usam o reposit\u00f3rio. Confirme tamb\u00e9m se o aplicativo e todos os seus m\u00f3dulos foram iniciados com \u00eaxito.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: O artefato do aplicativo {0} acessou o reposit\u00f3rio {1} antes da conclus\u00e3o de um ponto de verifica\u00e7\u00e3o do aplicativo. Atualize o aplicativo {0} para evitar o uso do reposit\u00f3rio antes de um ponto de verifica\u00e7\u00e3o.
+CWWKD1107.init.timed.out.checkpoint.explanation=Os aplicativos n\u00e3o podem usar reposit\u00f3rios antes da conclus\u00e3o de um ponto de verifica\u00e7\u00e3o.
+CWWKD1107.init.timed.out.checkpoint.useraction=Evite usar o reposit\u00f3rio at\u00e9 que o ponto de verifica\u00e7\u00e3o seja conclu\u00eddo.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: A classe de entidade {0} requer a anota\u00e7\u00e3o {1} porque a anota\u00e7\u00e3o {2} \u00e9 aplicada ao membro {3} da classe de entidade.
+CWWKD1108.missing.entity.anno.explanation=Classes de entidades que usam anota\u00e7\u00f5es
+ from o pacote jakarta.persistence tamb\u00e9m deve ser anotado com a Entidade
+ annotation da especifica\u00e7\u00e3o do Jakarta Persistence.
+CWWKD1108.missing.entity.anno.useraction=Aplique a anota\u00e7\u00e3o Entity ao
+ entity ou remover as anota\u00e7\u00f5es da Jakarta Persistence de seus membros.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: A anota\u00e7\u00e3o {0} n\u00e3o \u00e9 permitida no m\u00e9todo {1} da classe de entidade {2} porque a classe de entidade {2} \u00e9 um registro Java.
+CWWKD1109.jpa.anno.on.record.explanation=As anota\u00e7\u00f5es do Jakarta Persistence n\u00e3o s\u00e3o permitidas em registros Java.
+CWWKD1109.jpa.anno.on.record.useraction=Mude para uma classe de entidade Jakarta Persistence ou remova a anota\u00e7\u00e3o Jakarta Persistence do registro Java.

@@ -161,7 +161,7 @@ public class InternalRegistryTest {
         Map<DockerImageName, Boolean> testMap = new HashMap<>();
         // Supported repositories
         testMap.put(DockerImageName.parse("wasliberty-infrastructure-docker/arch:6.6"), Boolean.TRUE);
-        testMap.put(DockerImageName.parse("wasliberty-intops-docker-local/centos:5.4"), Boolean.TRUE);
+        testMap.put(DockerImageName.parse("websphere-automation/centos:5.4"), Boolean.TRUE);
         testMap.put(DockerImageName.parse("wasliberty-internal-docker-local/mint:4.12"), Boolean.TRUE);
 
         // Unsupported repositories

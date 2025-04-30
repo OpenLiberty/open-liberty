@@ -138,51 +138,6 @@ public class TxTestContainerSuite extends TestContainerSuite {
         	Log.error(TxTestContainerSuite.class, "dropTables", e);
 		}
     }
-    
-    public static void importServerCert(String source, String serverCert) {
-        final String m = "importServerCert";
-
-        String[] command = new String[] {
-                                          "keytool", "-import", //
-                                          "-alias", "server", //
-                                          "-file", serverCert, //
-                                          "-keystore", source, //
-                                          "-storetype", "pkcs12", //
-                                          "-storepass", "liberty", //
-                                          "-noprompt"
-        };
-
-        String errorPrelude = "Could not import server certificate into client keystore: " + source;
-        try {
-            Process p = Runtime.getRuntime().exec(command);
-            if (!p.waitFor(FATRunner.FAT_TEST_LOCALRUN ? 10 : 20, TimeUnit.SECONDS)) {
-                p.destroyForcibly();
-                dumpOutput(m, "Keytool process timed out", p);
-                throw new RuntimeException(errorPrelude + " timed out waiting for process to finish.");
-            }
-            if (p.exitValue() != 0) {
-                dumpOutput(m, "Non 0 exit code from keytool", p);
-                throw new RuntimeException(errorPrelude + " see logs for details");
-            }
-            dumpOutput(m, "Keytool command completed successfully", p);
-        } catch (InterruptedException | IOException e) {
-            throw new RuntimeException(errorPrelude, e);
-        }
-    }
-
-    private static void dumpOutput(String method, String message, Process p) {
-        String out = "stdOut:" + System.lineSeparator() + readInputStream(p.getInputStream());
-        String err = "stdErr:" + System.lineSeparator() + readInputStream(p.getErrorStream());
-        Log.info(c, method, message + //
-                            System.lineSeparator() + out + //
-                            System.lineSeparator() + err);
-    }
-
-    private static String readInputStream(InputStream is) {
-        @SuppressWarnings("resource")
-        Scanner s = new Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
 
 	public static boolean isDerby() {
 		return databaseContainerType == DatabaseContainerType.Derby;

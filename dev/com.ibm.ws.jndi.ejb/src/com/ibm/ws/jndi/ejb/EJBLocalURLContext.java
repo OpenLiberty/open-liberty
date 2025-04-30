@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jndi.ejb;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import javax.naming.OperationNotSupportedException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.naming.EJBLocalNamingHelper;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jndi.WSContextBase;
 import com.ibm.ws.jndi.WSName;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
@@ -50,22 +52,34 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
     private final Map<String, Object> environment = new ConcurrentHashMap<String, Object>();
     private final ConcurrentServiceReferenceSet<EJBLocalNamingHelper> helperServices;
 
+    // The sub-context, if this context represents a sub-context of ejblocal:
+    private final String subContext;
+
     /**
      * Constructor for use by the EJBLocalURLContextFactory.
      *
      * @param env
-     *            Map<String,Object> of environment parameters for this Context
+     *                Map<String,Object> of environment parameters for this Context
      */
     @SuppressWarnings("unchecked")
     public EJBLocalURLContext(Hashtable<?, ?> environment, ConcurrentServiceReferenceSet<EJBLocalNamingHelper> helperServices) {
         this.environment.putAll((Map<? extends String, ? extends Object>) environment);
         this.helperServices = helperServices;
+        this.subContext = "";
     }
 
     // Copy constructor for when the lookup string is blank or just ejblocal namespace
     public EJBLocalURLContext(EJBLocalURLContext copy) {
         this.environment.putAll(copy.environment);
         this.helperServices = copy.helperServices;
+        this.subContext = copy.subContext;
+    }
+
+    // Copy constructor for when the lookup string is a sub-context of the ejblocal namespace
+    public EJBLocalURLContext(EJBLocalURLContext copy, String subContext) {
+        this.environment.putAll(copy.environment);
+        this.helperServices = copy.helperServices;
+        this.subContext = subContext;
     }
 
     /**
@@ -99,7 +113,7 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
      */
     @Override
     public String getNameInNamespace() throws NamingException {
-        return "ejblocal:";
+        return "ejblocal:" + subContext;
     }
 
     /**
@@ -122,11 +136,12 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
      * Throws NameNotFoundException if no matching Object is found.
      *
      * @param n
-     *            {@inheritDoc}
+     *              {@inheritDoc}
      * @return {@inheritDoc}
      * @throws NamingException {@inheritDoc}
      */
     @Override
+    @FFDCIgnore({ NameNotFoundException.class })
     protected Object lookup(WSName name) throws NamingException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
@@ -158,6 +173,12 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
             return new InitialContext().lookup(lookup);
         }
 
+        if (lookup.equals("/")) {
+            // avoid message text with double slash at end
+            String nameStr = "ejblocal:" + subContext + lookup;
+            throw new NameNotFoundException(NameNotFoundException.class.getName() + ": " + nameStr);
+        }
+
         Object toReturn = null;
 
         /**
@@ -165,10 +186,18 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
          * ejblocal: in front, but they can also look us up from the initial context
          * with ejblocal: in front. Our helper service stores the binding without
          * the namespace context in front so just remove it if present.
+         *
+         * otherwise if ejblocal: is not in front and this context represents a
+         * sub-context of ejblocal, then prepend the sub-context.
          */
+        String listModified = lookup;
         String lookupModified = lookup;
-        if (lookupModified.startsWith("ejblocal:"))
+        if (lookupModified.startsWith("ejblocal:")) {
             lookupModified = lookupModified.substring(9);
+            listModified = lookupModified;
+        } else if (!subContext.isEmpty()) {
+            lookupModified = subContext + "/" + lookupModified;
+        }
 
         for (Iterator<EJBLocalNamingHelper> it = helperServices.getServices(); it.hasNext();) {
             EJBLocalNamingHelper helperService = it.next();
@@ -182,8 +211,29 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
             }
         }
 
+        /**
+         * if they are doing a lookup of a sub-context, then just look for any instances
+         * bound under that sub-contex; if found, return a new context for that sub-context.
+         */
         if (toReturn == null) {
-            throw new NameNotFoundException(NameNotFoundException.class.getName() + ": " + name.toString());
+            try {
+                if (list(listModified).hasMore()) {
+                    toReturn = new EJBLocalURLContext(this, lookupModified);
+                    if (isTraceOn && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "NamingHelper found sub-contexts: " + lookupModified + ", " + toReturn);
+                    }
+                }
+            } catch (NameNotFoundException ex) {
+                // normal when a sub-context is not found; ignore and report meaningful exception below
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "NamingHelper failed to find sub-contexts: " + ex);
+                }
+            }
+        }
+
+        if (toReturn == null) {
+            String nameStr = "ejblocal:" + lookupModified;
+            throw new NameNotFoundException(nameStr);
         }
 
         return toReturn;
@@ -211,7 +261,26 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
 
     @Override
     protected NamingEnumeration<NameClassPair> list(WSName name) throws NamingException {
-        throw new OperationNotSupportedException();
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        HashSet<NameClassPair> allInstances = new HashSet<NameClassPair>();
+        for (Iterator<EJBLocalNamingHelper> it = helperServices.getServices(); it.hasNext();) {
+            EJBLocalNamingHelper helperService = it.next();
+            Collection<NameClassPair> instances = helperService.listInstances(subContext, name.toString());
+
+            if (instances != null) {
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "NamingHelper found instances: " + instances);
+                }
+                allInstances.addAll(instances);
+            }
+        }
+
+        // If nothing found, report name not found, unless listing the root context
+        if (allInstances.isEmpty() && !(subContext.isEmpty() && name.isEmpty())) {
+            throw new NameNotFoundException(name.toString());
+        }
+
+        return new EJBNamingEnumeration<NameClassPair>(allInstances);
     }
 
     @Override

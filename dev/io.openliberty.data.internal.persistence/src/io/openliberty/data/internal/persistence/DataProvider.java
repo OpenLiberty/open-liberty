@@ -323,7 +323,8 @@ public class DataProvider implements //
 
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-        String appName = appInfo.getName();
+        //Use deployment name but fall back to generated name
+        String appName = appInfo.getDeploymentName() == null ? appInfo.getName() : appInfo.getDeploymentName();
         Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
         Set<FutureEMBuilder> skip = futureEMBuildersInEJB.remove(appName);
         if (futures != null) {

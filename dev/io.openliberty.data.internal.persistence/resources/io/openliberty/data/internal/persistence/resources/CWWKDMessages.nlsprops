@@ -1112,3 +1112,13 @@ CWWKD1109.jpa.anno.on.record.explanation=Jakarta Persistence annotations \
 CWWKD1109.jpa.anno.on.record.useraction=Switch to a Jakarta Persistence \
  entity class or remove the Jakarta Persistence annotation from the \
  Java record.
+
+CWWKD1110.incompat.with.collection=CWWKD1110E: The {0} method of the \
+ {1} repository interface has a name that includes the {2} keyword, which is \
+ incompatible with the {3} attribute of the {4} entity because the attribute \
+ has a collection type. The following Query by Method Name keywords can be \
+ used with entity attributes that have a collection type: {5}.
+CWWKD1110.incompat.with.collection.explanation=Some of the Query by Method Name \
+ keywords are not compatible with entity attributes that have a collection type.
+CWWKD1110.incompat.with.collection.useraction=Update the repository method \
+ to avoid using the keyword that is not compatible with the collection type.

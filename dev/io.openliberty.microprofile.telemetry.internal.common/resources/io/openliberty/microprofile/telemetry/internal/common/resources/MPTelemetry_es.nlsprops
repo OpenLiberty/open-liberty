@@ -63,10 +63,6 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Configuraci\u00f3n conflictiva para l
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile La telemetr\u00eda puede habilitarse para todo el servidor mediante propiedades del sistema o variables de entorno. Si no est\u00e1 habilitado para todo el servidor, se puede habilitar para una aplicaci\u00f3n configurando las propiedades de MicroProfile Config; por ejemplo, configurando variables en el archivo server.xml. Este aviso se produce si Telemetr\u00eda est\u00e1 habilitada para todo el servidor, pero las propiedades MicroProfile Config deshabilitan Telemetr\u00eda para una aplicaci\u00f3n. Como la telemetr\u00eda est\u00e1 activada para todo el servidor, la configuraci\u00f3n para esa aplicaci\u00f3n se ignora.
 CWMOT5007.tel.enabled.conflict.useraction: Especifique la configuraci\u00f3n para activar o desactivar las instancias de OpenTelemetry utilizando variables de entorno y propiedades del sistema u otras fuentes de MP Config, pero no ambas.
 
-CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: La funci\u00f3n de registro de telemetr\u00eda de MicroProfile no reconoce el formato de registro de acceso de telemetr\u00eda de [ {0} ].
-CWMOT5008.mptelemetry.unknown.access.log.field.explanation=El entorno de ejecuci\u00f3n Liberty no proporciona el formato de registro especificado.
-CWMOT5008.mptelemetry.unknown.access.log.field.useraction=Especifique por defecto o logFormat para el atributo mpTelemetry accessLogFields.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

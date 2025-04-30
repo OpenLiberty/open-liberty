@@ -6,8 +6,8 @@ singleton=true
 # CDI is optionally required by the JCache libraries.
 #
 -features=\
-  com.ibm.websphere.appserver.eeCompatible-8.0; ibm.tolerates:="6.0,7.0"
-#  com.ibm.websphere.appserver.javax.cdi-1.0; ibm.tolerates:="1.2,2.0"
+  com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0"
+#  com.ibm.websphere.appserver.javax.cdi-1.0; ibm.tolerates:="1.2"
 -bundles=\
   com.ibm.websphere.javaee.jcache.1.1.core
 kind=ga

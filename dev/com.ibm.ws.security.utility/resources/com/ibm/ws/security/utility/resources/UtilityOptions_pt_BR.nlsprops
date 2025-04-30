@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2024 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ encode.usage.options=\t{0} encode [options]
 encode.option-key.text=\ \ \ \ textToEncode
 encode.option-desc.text=\tSe nenhum argumento for especificado, a ferramenta entrar\u00e1 no\n\tmodo interativo; caso contr\u00e1rio, o texto fornecido ser\u00e1 codificado.\n\tTexto com espa\u00e7os deve estar totalmente entre aspas se especificado como um argumento.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
-encode.option-desc.encoding=\tEspecifique como codificar a senha. As codifica\u00e7\u00f5es suportadas s\u00e3o xor, aes\n\te hash. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. {2}
+encode.option-desc.encoding=\tEspecifique como codificar a senha. As codifica\u00e7\u00f5es compat\u00edveis s\u00e3o xor, aes, aes-128, e hash. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. O Aes criptografa usando uma chave de aes-256 bits.\n\taes-128 pode ser usado para compatibilidade com vers\u00f5es do servidor anteriores a 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[chave]
 encode.option-desc.key=\tEspecifique uma chave a ser usada ao codificar usando AES. Ser\u00e1 feito hash dessa\n\tsequ\u00eancia para produzir uma chave de criptografia que ser\u00e1 usada para criptografar\n\te decriptografar a senha. A chave pode ser fornecida ao servidor\n\tdefinindo-se a vari\u00e1vel wlp.password.encryption.key cujo valor \u00e9 a\n\tchave. Se esta op\u00e7\u00e3o n\u00e3o for fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
 encode.option-key.notrim=\ \ \ \ --notrim

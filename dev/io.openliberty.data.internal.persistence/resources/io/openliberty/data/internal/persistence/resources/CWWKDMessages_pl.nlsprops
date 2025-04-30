@@ -453,3 +453,22 @@ CWWKD1104.empty.anno.value.useraction=Je\u015bli adnotacja nie jest potrzebna, n
 CWWKD1105.keyword.in.orderby=CWWKD1105E: Klauzula OrderBy metody {0} repozytorium {1} nie mo\u017ce zosta\u0107 przeanalizowana, poniewa\u017c atrybut encji {2} encji {3} zawiera s\u0142owo kluczowe {4} wzorca Jakarta Data Query by Method Name. Usuni\u0119cie klauzuli OrderBy z nazwy metody {0} i u\u017cycie zamiast niej adnotacji OrderBy.
 CWWKD1105.keyword.in.orderby.explanation=Nazwy atrybut\u00f3w jednostki, kt\u00f3re zawieraj\u0105 s\u0142owa kluczowe Jakarta Data, nie mog\u0105 by\u0107 u\u017cywane w nazwach metod repozytorium, kt\u00f3re s\u0105 zgodne z wzorcem Jakarta Data Query by Method Name.
 CWWKD1105.keyword.in.orderby.useraction=Zmie\u0144 nazw\u0119 atrybutu encji lub przejd\u017a do adnotacji OrderBy, aby okre\u015bli\u0107 kolejno\u015b\u0107.
+
+CWWKD1106.init.timed.out=CWWKD1106E: Repozytorium {0}, kt\u00f3re wymaga magazynu danych {1} i jest dostarczane lub u\u017cywane przez artefakt aplikacji {2}, nie sta\u0142o si\u0119 dost\u0119pne w ci\u0105gu {3} sekund. Upewnij si\u0119, \u017ce artefakt aplikacji {2} zosta\u0142 uruchomiony, a zas\u00f3b magazynu danych {1} okre\u015blony jako warto\u015b\u0107 dataStore adnotacji Repository zosta\u0142 poprawnie skonfigurowany i jest dost\u0119pny dla artefaktu aplikacji w momencie pierwszego dost\u0119pu do repozytorium {0}.
+CWWKD1106.init.timed.out.explanation=Repozytorium nie zosta\u0142o udost\u0119pnione w wyznaczonym czasie.
+CWWKD1106.init.timed.out.useraction=Sprawd\u017a konfiguracj\u0119 strony dataStore i potwierd\u017a, \u017ce jest ona dost\u0119pna dla artefakt\u00f3w aplikacji, kt\u00f3re definiuj\u0105 i u\u017cywaj\u0105 repozytorium. Potwierd\u017a r\u00f3wnie\u017c, \u017ce aplikacja i wszystkie jej modu\u0142y uruchamiaj\u0105 si\u0119 pomy\u015blnie.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: Artefakt aplikacji {0} uzyska\u0142 dost\u0119p do repozytorium {1} przed zako\u0144czeniem punktu kontrolnego aplikacji. Zaktualizuj aplikacj\u0119 {0}, aby unikn\u0105\u0107 korzystania z repozytorium przed punktem kontrolnym.
+CWWKD1107.init.timed.out.checkpoint.explanation=Aplikacje nie mog\u0105 korzysta\u0107 z repozytori\u00f3w przed uko\u0144czeniem punktu kontrolnego.
+CWWKD1107.init.timed.out.checkpoint.useraction=Nale\u017cy unika\u0107 korzystania z repozytorium do czasu uko\u0144czenia punktu kontrolnego.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: Klasa encji {0} wymaga adnotacji {1}, poniewa\u017c adnotacja {2} jest stosowana do cz\u0142onka {3} klasy encji.
+CWWKD1108.missing.entity.anno.explanation=Klasy jednostek korzystaj\u0105ce z adnotacji
+ from pakiet jakarta.persistence musi by\u0107 r\u00f3wnie\u017c opatrzony adnotacj\u0105 Entity
+ annotation ze specyfikacji Jakarta Persistence.
+CWWKD1108.missing.entity.anno.useraction=Zastosuj adnotacj\u0119 Entity do
+ entity lub usun\u0105\u0107 adnotacje Jakarta Persistence z jej cz\u0142onk\u00f3w.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: Adnotacja {0} nie jest dozwolona w metodzie {1} klasy encji {2}, poniewa\u017c klasa encji {2} jest rekordem Java.
+CWWKD1109.jpa.anno.on.record.explanation=Adnotacje Jakarta Persistence nie s\u0105 dozwolone w rekordach Java.
+CWWKD1109.jpa.anno.on.record.useraction=Prze\u0142\u0105cz si\u0119 na klas\u0119 encji Jakarta Persistence lub usu\u0144 adnotacj\u0119 Jakarta Persistence z rekordu Java.

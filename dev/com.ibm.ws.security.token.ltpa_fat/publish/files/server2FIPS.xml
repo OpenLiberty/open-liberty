@@ -23,7 +23,7 @@
     <httpEndpoint id="defaultHttpEndpoint"
         host="*"
         httpPort="${bvt.prop.HTTP_secondary}"
-        httpsPort="${bvt.prop.HTTP_secondary.secure}"/>s
+        httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 

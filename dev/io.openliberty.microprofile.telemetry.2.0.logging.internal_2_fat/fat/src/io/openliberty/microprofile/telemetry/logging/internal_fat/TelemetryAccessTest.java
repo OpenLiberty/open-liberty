@@ -487,10 +487,10 @@ public class TelemetryAccessTest extends FATServletClient {
     }
 
     /*
-     * Verify that invalid trace headers are properly handled and a debug message is logged.
+     * Verify that the landing page of OpenLiberty doesn't contain any traces/spans
      */
     @Test
-    public void testTelemetryAccessInvalidTraceLogs() throws Exception {
+    public void testTelemetryAccessEmptyTrace() throws Exception {
         RemoteFile messageLogFile = server.getDefaultLogFile();
         RemoteFile consoleLogFile = server.getConsoleLogFile();
         RemoteFile traceLogFile = server.getDefaultTraceFile();
@@ -499,21 +499,18 @@ public class TelemetryAccessTest extends FATServletClient {
         setConfig(server, messageLogFile, SERVER_XML_ACCESS_SOURCE_DEFAULT);
 
         // Trigger an access log event
-        TestUtils.runAccessApp(server, "runAccessApp", "invalidHeaderValue");
+        TestUtils.runApp(server, "landingPage");
 
         // Wait for the access log message to be bridged over
-        String accessLine = server.waitForStringInLog("INFO2 'GET /MpTelemetryLogApp/AccessURL HTTP/1.1'", consoleLogFile);
+        String accessLine = server.waitForStringInLog("INFO2 'GET / HTTP/1.1", consoleLogFile);
         assertTrue("The access log contains a valid trace and span id", accessLine.contains(ZERO_SPAN_TRACE_ID));
-
-        String traceDebugLine = server.waitForStringInLog("An invalid header value was found for header", traceLogFile);
-        assertNotNull("Invalid header debug message was NOT found.", traceDebugLine);
 
         // Check if the expected key-value pair is correctly formatted and mapped to OTel.
         Map<String, String> expectedAccessFieldsMap = new HashMap<String, String>() {
             {
                 put("http.request.method", "GET");
                 put("http.response.status_code", "200");
-                put("io.openliberty.access_log.url.path", "/MpTelemetryLogApp/AccessURL");
+                put("io.openliberty.access_log.url.path", "/");
                 put("network.local.port", Integer.toString(server.getHttpDefaultPort()));
                 put("io.openliberty.type", "liberty_accesslog");
                 put("network.protocol.name", "HTTP");

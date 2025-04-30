@@ -99,7 +99,9 @@ public class OpenAPIValidationTestOne {
         MicroProfileActions.MP60_ID,
         MicroProfileActions.MP61_ID,
         MicroProfileActions.MP70_EE10_ID,
-        MicroProfileActions.MP70_EE11_ID
+        MicroProfileActions.MP70_EE11_ID,
+        MicroProfileActions.MP71_EE10_ID,
+        MicroProfileActions.MP71_EE11_ID,
     })
     public void testInfoValidation() throws Exception {
 

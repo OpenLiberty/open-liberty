@@ -453,3 +453,22 @@ CWWKD1104.empty.anno.value.useraction=Si l'annotation n'est pas n\u00e9cessaire,
 CWWKD1105.keyword.in.orderby=CWWKD1105E: La clause OrderBy de la m\u00e9thode {0} du r\u00e9f\u00e9rentiel {1} ne peut pas \u00eatre analys\u00e9e car l''attribut {2} de l''entit\u00e9 {3} contient le mot-cl\u00e9 {4} du mod\u00e8le Jakarta Data Query by Method Name. Supprimer la clause OrderBy du nom de la m\u00e9thode {0} et utiliser l''annotation OrderBy \u00e0 la place.
 CWWKD1105.keyword.in.orderby.explanation=Les noms d'attributs d'entit\u00e9s qui contiennent des mots-cl\u00e9s Jakarta Data ne peuvent pas \u00eatre utilis\u00e9s dans les noms des m\u00e9thodes du r\u00e9f\u00e9rentiel qui suivent le mod\u00e8le d'interrogation des donn\u00e9es Jakarta par nom de m\u00e9thode.
 CWWKD1105.keyword.in.orderby.useraction=Renommez l'attribut de l'entit\u00e9 ou passez \u00e0 l'annotation OrderBy pour sp\u00e9cifier l'ordre.
+
+CWWKD1106.init.timed.out=CWWKD1106E: Le r\u00e9f\u00e9rentiel {0} qui n\u00e9cessite le magasin de donn\u00e9es {1} et qui est fourni ou utilis\u00e9 par l''artefact d''application {2} n''est pas devenu disponible dans les {3} secondes. Confirmez que l''artefact d''application {2} d\u00e9marre et que la ressource de magasin de donn\u00e9es {1} sp\u00e9cifi\u00e9e comme valeur dataStore de l''annotation Repository est configur\u00e9e correctement et est accessible \u00e0 l''artefact d''application au moment o\u00f9 l''on acc\u00e8de pour la premi\u00e8re fois au r\u00e9f\u00e9rentiel {0}.
+CWWKD1106.init.timed.out.explanation=Un d\u00e9p\u00f4t n'a pas \u00e9t\u00e9 disponible dans le d\u00e9lai imparti.
+CWWKD1106.init.timed.out.useraction=V\u00e9rifier la configuration du site dataStore et confirmer qu'il est accessible aux artefacts d'application qui d\u00e9finissent et utilisent le r\u00e9f\u00e9rentiel. Confirmez \u00e9galement que l'application et tous ses modules d\u00e9marrent correctement.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: L''artefact de l''application {0} a acc\u00e9d\u00e9 au r\u00e9f\u00e9rentiel {1} avant qu''un point de contr\u00f4le de l''application ne soit termin\u00e9. Mettre \u00e0 jour l''application {0} pour \u00e9viter d''utiliser le r\u00e9f\u00e9rentiel avant un point de contr\u00f4le.
+CWWKD1107.init.timed.out.checkpoint.explanation=Les applications ne peuvent pas utiliser les r\u00e9f\u00e9rentiels avant l'ach\u00e8vement d'un point de contr\u00f4le.
+CWWKD1107.init.timed.out.checkpoint.useraction=\u00c9vitez d'utiliser le r\u00e9f\u00e9rentiel jusqu'\u00e0 ce que le point de contr\u00f4le soit termin\u00e9.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: La classe d''entit\u00e9s {0} n\u00e9cessite l''annotation {1} car l''annotation {2} est appliqu\u00e9e au membre {3} de la classe d''entit\u00e9s.
+CWWKD1108.missing.entity.anno.explanation=Classes d'entit\u00e9s utilisant des annotations
+ from le paquet jakarta.persistence doit \u00e9galement \u00eatre annot\u00e9 avec l'\u00e9l\u00e9ment Entity
+ annotation de la sp\u00e9cification Jakarta Persistence.
+CWWKD1108.missing.entity.anno.useraction=Appliquer l'annotation Entit\u00e9 \u00e0 l'\u00e9l\u00e9ment
+ entity ou supprimer les annotations Jakarta Persistence de ses membres.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: L''annotation {0} n''est pas autoris\u00e9e sur la m\u00e9thode {1} de la classe d''entit\u00e9 {2} car la classe d''entit\u00e9 {2} est un enregistrement Java.
+CWWKD1109.jpa.anno.on.record.explanation=Les annotations Jakarta Persistence ne sont pas autoris\u00e9es sur les enregistrements Java.
+CWWKD1109.jpa.anno.on.record.useraction=Passez \u00e0 une classe d'entit\u00e9 Jakarta Persistence ou supprimez l'annotation Jakarta Persistence de l'enregistrement Java.

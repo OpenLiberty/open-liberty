@@ -453,3 +453,22 @@ CWWKD1104.empty.anno.value.useraction=Se l'annotazione non \u00e8 necessaria, ri
 CWWKD1105.keyword.in.orderby=CWWKD1105E: La clausola OrderBy del metodo {0} del repository {1} non pu\u00f2 essere analizzata perch\u00e9 l''attributo {2} dell''entit\u00e0 {3} contiene la parola chiave {4} dello schema Jakarta Data Query by Method Name. Eliminare la clausola OrderBy dal nome del metodo {0} e utilizzare invece l''annotazione OrderBy.
 CWWKD1105.keyword.in.orderby.explanation=I nomi degli attributi delle entit\u00e0 che contengono parole chiave di Jakarta Data non possono essere usati nei nomi dei metodi del repository che seguono lo schema Jakarta Data Query by Method Name.
 CWWKD1105.keyword.in.orderby.useraction=Rinominare l'attributo dell'entit\u00e0 o passare all'annotazione OrderBy per specificare l'ordinamento.
+
+CWWKD1106.init.timed.out=CWWKD1106E: Il repository {0} che richiede l''archivio dati {1} ed \u00e8 fornito o utilizzato dall''artefatto applicativo {2} non \u00e8 diventato disponibile entro {3} secondi. Confermare che l''artefatto applicativo {2} si avvii e che la risorsa dell''archivio dati {1} specificata come valore dataStore dell''annotazione Repository sia configurata correttamente e sia accessibile all''artefatto applicativo nel momento in cui si accede per la prima volta al repository {0}.
+CWWKD1106.init.timed.out.explanation=Un deposito non si \u00e8 reso disponibile entro il tempo previsto.
+CWWKD1106.init.timed.out.useraction=Controllare la configurazione di dataStore e verificare che sia accessibile agli artefatti applicativi che definiscono e utilizzano il repository. Confermate anche che l'applicazione e tutti i suoi moduli si avviano correttamente.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: L''artefatto dell''applicazione {0} accedeva al repository {1} prima del completamento di un checkpoint dell''applicazione. Aggiornare l''applicazione {0} per evitare di usare il repository prima di un checkpoint.
+CWWKD1107.init.timed.out.checkpoint.explanation=Le applicazioni non possono utilizzare i repository prima del completamento di un checkpoint.
+CWWKD1107.init.timed.out.checkpoint.useraction=Evitare di usare il repository fino al completamento del checkpoint.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: La classe di entit\u00e0 {0} richiede l''annotazione {1} perch\u00e9 l''annotazione {2} \u00e8 applicata al membro {3} della classe di entit\u00e0.
+CWWKD1108.missing.entity.anno.explanation=Classi di entit\u00e0 che utilizzano le annotazioni
+ from il pacchetto jakarta.persistence deve essere annotato anche con l'Entity
+ annotation dalle specifiche di Jakarta Persistence.
+CWWKD1108.missing.entity.anno.useraction=Applicare l'annotazione Entity all'oggetto
+ entity o rimuovere le annotazioni di Jakarta Persistence dai suoi membri.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: L''annotazione {0} non \u00e8 consentita sul metodo {1} della classe entit\u00e0 {2}, perch\u00e9 la classe entit\u00e0 {2} \u00e8 un record Java.
+CWWKD1109.jpa.anno.on.record.explanation=Le annotazioni di Jakarta Persistence non sono consentite nei record Java.
+CWWKD1109.jpa.anno.on.record.useraction=Passare a una classe di entit\u00e0 Jakarta Persistence o rimuovere l'annotazione Jakarta Persistence dal record Java.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.genericbnf.exception.MessageSentException;
 import com.ibm.wsspi.http.channel.exception.WriteBeyondContentLengthException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 
 /**
  * HTTP transport output stream that wraps the bytebuffer usage and the HTTP
@@ -546,13 +547,9 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                 this.isc.sendResponseBody(content);
             }
         } catch (MessageSentException mse) {
-            FFDCFilter.processException(mse, getClass().getName(),
-                                        "flushBuffers", new Object[] { this, this.isc });
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Invalid state, message-sent-exception received; " + this.isc);
-            }
-            this.error = new IOException("Invalid state");
-            throw this.error;
+
+            handleMessageSentException(mse);
+
         } catch (IOException ioe) {
             // no FFDC required
             this.error = ioe;
@@ -740,4 +737,38 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
     }
 
+    /**
+     * Handles MessageSentException based on ignoreWriteAfterCommit configuration
+     * 
+     * @param mse The MessageSentException that was caught
+     * @throws IOException If the exception should be propagated
+     */
+    private void handleMessageSentException(MessageSentException mse) throws IOException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Handling: MessageSentException " + this);
+        }
+
+        boolean ignoreWriteAfterCommit = false;
+
+        if (this.isc instanceof HttpInboundServiceContextImpl) {
+            final HttpChannelConfig config = ((HttpInboundServiceContextImpl) this.isc).getHttpConfig();
+            ignoreWriteAfterCommit = config.ignoreWriteAfterCommit();
+        }
+
+        if (ignoreWriteAfterCommit) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Wrote buffer after commit. Not a good idea; Ignoring write after commit; ", mse);
+            }
+        } else {
+            FFDCFilter.processException(mse, getClass().getName(), "flushBuffers", new Object[] { this, this.isc });
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Invalid state, message-sent-exception received; " + this.isc);
+            }
+            this.error = new IOException("Invalid state");
+            throw this.error;
+        }
+
+    }
+    
 }

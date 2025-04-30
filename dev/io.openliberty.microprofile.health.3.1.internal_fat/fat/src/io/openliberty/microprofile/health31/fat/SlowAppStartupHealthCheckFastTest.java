@@ -28,6 +28,7 @@ import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -104,6 +105,13 @@ public class SlowAppStartupHealthCheckFastTest {
 
         boolean flag = server1.removeDropinsApplications(APP_NAME + ".war");
         log("cleanUp", " - Removed the app? [" + flag + "]");
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        // Once the tests and repeated tests are completed, ensure the server
+        // is fully stopped, in order to avoid conflicts with succeeding tests.
+        server1.stopServer(EXPECTED_FAILURES);
     }
 
     /*

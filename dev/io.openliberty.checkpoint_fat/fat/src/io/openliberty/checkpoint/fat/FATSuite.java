@@ -66,8 +66,6 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
                 CheckpointWithSecurityManager.class,
                 SSLTest.class,
                 PasswordUtilsTest.class,
-                MPOpenTracingJaegerTraceTest.class,
-                MPFaultToleranceTimeoutTest.class,
                 ValidFeaturesTest.class,
                 RESTclientTest.class,
                 JNDITest.class,
@@ -78,12 +76,7 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
                 FacesBeanTest.class,
                 WebProfileJSPWithELTest.class,
                 OpenAPITest.class,
-                MPJWTTest.class,
-                MPMetricsTest.class,
-                MPTelemetryTest.class,
                 WebProfileEARtest.class,
-                MPHealthTest.class,
-                MPHealthTestFileBased.class, // Testing new
                 SlowAppStartTest.class,
                 JsonbTest.class,
                 JsonpTest.class,
@@ -101,9 +94,7 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
                 XMLbindingsTest.class,
                 LocalConnectorTest.class,
                 WebProfileJSPtest.class,
-                MPTelemetryJaxRsIntegrationTest.class,
-                LogsChangeTraceSpecTest.class,
-                OpenAPIConfigTest.class
+                LogsChangeTraceSpecTest.class
 })
 
 public class FATSuite {

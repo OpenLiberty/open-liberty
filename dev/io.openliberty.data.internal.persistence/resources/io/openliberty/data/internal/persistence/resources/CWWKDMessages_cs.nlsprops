@@ -455,3 +455,22 @@ CWWKD1104.empty.anno.value.useraction=Pokud anotace nen\u00ed pot\u0159eba, odst
 CWWKD1105.keyword.in.orderby=CWWKD1105E: Klauzuli OrderBy metody {0} \u00falo\u017ei\u0161t\u011b {1} nelze analyzovat, proto\u017ee atribut {2} entity {3} obsahuje kl\u00ed\u010dov\u00e9 slovo {4} vzoru Jakarta Data Query by Method Name. Z n\u00e1zvu metody {0} odstra\u0148te klauzuli OrderBy a m\u00edsto n\u00ed pou\u017eijte anotaci OrderBy.
 CWWKD1105.keyword.in.orderby.explanation=N\u00e1zvy atribut\u016f entit, kter\u00e9 obsahuj\u00ed kl\u00ed\u010dov\u00e1 slova Jakarta Data, nelze pou\u017e\u00edt v n\u00e1zvech metod \u00falo\u017ei\u0161t\u011b, kter\u00e9 se \u0159\u00edd\u00ed vzorem dotazov\u00e1n\u00ed podle n\u00e1zvu metody Jakarta Data.
 CWWKD1105.keyword.in.orderby.useraction=P\u0159ejmenujte atribut entity nebo p\u0159ejd\u011bte na anotaci OrderBy a ur\u010dete po\u0159ad\u00ed.
+
+CWWKD1106.init.timed.out=CWWKD1106E: \u00dalo\u017ei\u0161t\u011b {0}, kter\u00e9 vy\u017eaduje datov\u00e9 \u00falo\u017ei\u0161t\u011b {1} a je poskytov\u00e1no nebo pou\u017e\u00edv\u00e1no artefaktem aplikace {2}, nebylo dostupn\u00e9 b\u011bhem {3} sekund. Ov\u011b\u0159te, zda se spust\u00ed artefakt aplikace {2} a zda je prost\u0159edek \u00falo\u017ei\u0161t\u011b dat {1}, kter\u00fd je zad\u00e1n jako hodnota dataStore anotace \u00dalo\u017ei\u0161t\u011b, spr\u00e1vn\u011b nakonfigurov\u00e1n a je p\u0159\u00edstupn\u00fd artefaktu aplikace v okam\u017eiku, kdy je poprv\u00e9 p\u0159istupov\u00e1no k \u00falo\u017ei\u0161ti {0}.
+CWWKD1106.init.timed.out.explanation=\u00dalo\u017ei\u0161t\u011b nebylo ve stanoven\u00e9 lh\u016ft\u011b k dispozici.
+CWWKD1106.init.timed.out.useraction=Zkontrolujte konfiguraci serveru dataStore a ov\u011b\u0159te, zda je p\u0159\u00edstupn\u00fd pro artefakty aplikace, kter\u00e9 definuj\u00ed a pou\u017e\u00edvaj\u00ed \u00falo\u017ei\u0161t\u011b. Ov\u011b\u0159te tak\u00e9, zda se aplikace a v\u0161echny jej\u00ed moduly \u00fasp\u011b\u0161n\u011b spustily.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: Artefakt aplikace {0} p\u0159istupoval k \u00falo\u017ei\u0161ti {1} p\u0159ed dokon\u010den\u00edm kontroln\u00edho bodu aplikace. Aktualizujte aplikaci {0} tak, aby nepou\u017e\u00edvala \u00falo\u017ei\u0161t\u011b p\u0159ed kontroln\u00edm bodem.
+CWWKD1107.init.timed.out.checkpoint.explanation=Aplikace nemohou pou\u017e\u00edvat \u00falo\u017ei\u0161t\u011b p\u0159ed dokon\u010den\u00edm kontroln\u00edho bodu.
+CWWKD1107.init.timed.out.checkpoint.useraction=\u00dalo\u017ei\u0161t\u011b nepou\u017e\u00edvejte, dokud nebude kontroln\u00ed bod dokon\u010den.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: T\u0159\u00edda entit {0} vy\u017eaduje anotaci {1}, proto\u017ee anotace {2} je pou\u017eita na \u010dlen {3} t\u0159\u00eddy entit.
+CWWKD1108.missing.entity.anno.explanation=T\u0159\u00eddy entit, kter\u00e9 pou\u017e\u00edvaj\u00ed anotace
+ from bal\u00ed\u010dek jakarta.persistence mus\u00ed b\u00fdt tak\u00e9 opat\u0159en anotac\u00ed Entity
+ annotation ze specifikace Jakarta Persistence.
+CWWKD1108.missing.entity.anno.useraction=Pou\u017eijte anotaci Entity na
+ entity nebo odstranit anotace Jakarta Persistence z jej\u00edch \u010dlen\u016f.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: Anotace {0} nen\u00ed povolena pro metodu {1} t\u0159\u00eddy entit {2}, proto\u017ee t\u0159\u00edda entit {2} je z\u00e1znam v jazyce Java.
+CWWKD1109.jpa.anno.on.record.explanation=Anotace Jakarta Persistence nejsou v z\u00e1znamech Java povoleny.
+CWWKD1109.jpa.anno.on.record.useraction=P\u0159epn\u011bte na t\u0159\u00eddu entit Jakarta Persistence nebo odstra\u0148te anotaci Jakarta Persistence ze z\u00e1znamu v jazyce Java.

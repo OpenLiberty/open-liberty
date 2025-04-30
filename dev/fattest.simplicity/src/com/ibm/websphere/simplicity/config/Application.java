@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,6 +26,7 @@ public class Application extends ConfigElement {
     private String name;
     private String type;
     private String location;
+    private String startAfter;
     @XmlElement(name = "classloader")
     private ConfigElementList<ClassloaderElement> classloaders;
     @XmlElement(name = "application-bnd")
@@ -82,8 +83,23 @@ public class Application extends ConfigElement {
     }
 
     /**
+     * @return the startAfter of the application
+     */
+    public String getStartAfter() {
+        return this.startAfter;
+    }
+
+    /**
+     * @param startAfter the startAfter of the application
+     */
+    @XmlAttribute
+    public void setStartAfter(String startAfter) {
+        this.startAfter = ConfigElement.getValue(startAfter);
+    }
+
+    /**
      * @deprecated do not use for new code. Use getClassloaders instead. This method exists only for legacy purposes. It does not follow proper conventions for simplicity config.
-     * @return gets the first configured class loader if one exists, otherwise creates a new ClassloaderElement as the first configured classloader.
+     * @return     gets the first configured class loader if one exists, otherwise creates a new ClassloaderElement as the first configured classloader.
      */
     @Deprecated
     public ClassloaderElement getClassloader() {

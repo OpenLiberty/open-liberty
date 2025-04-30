@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Liberty server">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>componentTest-1.0</feature>
+        <feature>servlet-6.0</feature>
+    </featureManager>
+    
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+    
+    <library id="sharedlib">
+        <fileset dir="${server.config.dir}/libs" includes="*.jar" />
+    </library>
+
+    <enterpriseApplication location="springTest.ear">
+        <classloader commonLibraryRef="sharedlib" />
+    </enterpriseApplication>
+
+    <logging traceSpecification="com.ibm.ws.library.internal.SharedLibraryImpl=all"/>
+
+    
+</server>

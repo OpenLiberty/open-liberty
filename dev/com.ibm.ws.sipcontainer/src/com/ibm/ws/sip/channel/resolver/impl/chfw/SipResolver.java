@@ -470,11 +470,12 @@ public class SipResolver implements SipResolverTransportListener {
                     listener.handleSipResolverEvent(event);
                     break;
 
-                    
-        case Dns.FORM_ERROR:
-        case Dns.NOT_IMPL:
+		    case Dns.FORM_ERROR:
+		    case Dns.SERVER_FAIL:
+		    case Dns.NOT_IMPL:
         case Dns.REFUSED:
-        case Dns.NOT_AUTH:
+	case Dns.XRRSET:
+	case Dns.NOT_AUTH:
         case Dns.NOT_ZONE:
                     event = new SipResolverEvent();
                     

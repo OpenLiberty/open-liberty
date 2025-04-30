@@ -753,11 +753,15 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 x.getMessage().startsWith("CWWKD"))
                 throw (RuntimeException) x;
 
+            String datastore = dsFactory instanceof ResRefDelegator //
+                            ? ((ResRefDelegator) dsFactory).jndiName //
+                            : databaseStoreId;
+
             throw (DataException) exc(DataException.class,
                                       "CWWKD1064.datastore.error",
                                       repoMethod.getName(),
                                       repoInterface.getName(),
-                                      databaseStoreId,
+                                      datastore,
                                       x.getMessage()).initCause(x);
         }
     }

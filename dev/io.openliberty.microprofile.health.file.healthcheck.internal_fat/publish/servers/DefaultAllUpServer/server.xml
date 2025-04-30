@@ -8,10 +8,10 @@
         <feature>mpConfig-3.0</feature>
         <feature>servlet-4.0</feature>
     </featureManager>
-	
-	<mpHealth fileUpdateInterval="5s"/>
-	
-	<logging traceSpecification="*=info:HEALTH=all:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
+    
+    <mpHealth startupCheckInterval="1s" checkInterval="5s" />
+    
+	<logging traceSpecification="*=info:HEALTH=all"/>
 	
     <webContainer deferServletLoad="false"/>
 

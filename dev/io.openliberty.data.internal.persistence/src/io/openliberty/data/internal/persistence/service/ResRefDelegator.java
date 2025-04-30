@@ -24,7 +24,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
  * specified as the dataStore for a Repository.
  */
 class ResRefDelegator implements ResourceFactory {
-    private final String jndiName;
+    final String jndiName;
     private final ComponentMetaData metadata;
 
     /**

@@ -168,7 +168,7 @@ public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
      * @throws Exception if the test fails for some unforeseen reason.
      */
     @Test
-    @SkipIfSysProp(SkipIfSysProp.OS_ZOS) // Skip on z/OS due to connection refusal by kerberos client
+    @SkipIfSysProp({SkipIfSysProp.OS_ZOS,SkipIfSysProp.OS_IBMI}) // Skip on z/OS due to configuration error
     @CheckForLeakedPasswords(USER1_PASSWORD)
     public void authCache_spnego() throws Exception {
         /*
@@ -237,7 +237,7 @@ public class JCacheSpnegoAuthenticationCacheTest extends BaseTestCase {
      * @throws Exception if the test fails for some unforeseen reason.
      */
     @Test
-    @SkipIfSysProp(SkipIfSysProp.OS_ZOS) // Skip on z/OS due to connection refusal by kerberos client
+    @SkipIfSysProp({SkipIfSysProp.OS_ZOS,SkipIfSysProp.OS_IBMI}) // Skip on z/OS due to configuration error
     @CheckForLeakedPasswords(USER1_PASSWORD)
     public void authCache_spnego_excludeGssCred() throws Exception {
         /*

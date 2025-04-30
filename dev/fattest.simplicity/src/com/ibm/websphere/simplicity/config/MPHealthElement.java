@@ -16,21 +16,33 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class MPHealthElement {
 
-    private String fileUpdateInterval;
+    private String checkInterval;
 
-    public String getFileUpdateInterval() {
-        return fileUpdateInterval;
+    private String startupCheckInterval;
+
+    public String getCheckInterval() {
+        return checkInterval;
     }
 
-    @XmlAttribute(name = "fileUpdateInterval")
-    public void setFileUpdateInterval(String fileUpdateInterval) {
-        this.fileUpdateInterval = fileUpdateInterval;
+    public String getStartupCheckInterval() {
+        return startupCheckInterval;
+    }
+
+    @XmlAttribute(name = "checkInterval")
+    public void setCheckInterval(String checkInterval) {
+        this.checkInterval = checkInterval;
+    }
+
+    @XmlAttribute(name = "startupCheckInterval")
+    public void setStartupCheckInterval(String startupCheckInterval) {
+        this.startupCheckInterval = startupCheckInterval;
     }
 
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("mpHealthElement [");
-        sb.append("fileUpdateInterval=").append(fileUpdateInterval);
+        sb.append("checkInterval=").append(checkInterval);
+        sb.append("startupCheckInterval=").append(startupCheckInterval);
         sb.append("]");
         return sb.toString();
     }

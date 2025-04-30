@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
+ * http://www.eclipse.org/legal/epl-2.0/ 
  * 
  * SPDX-License-Identifier: EPL-2.0
  *
@@ -23,6 +23,7 @@ import com.ibm.ws.jsf.shared.JSFConstants;
 import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
 import com.ibm.wsspi.webcontainer.annotation.AnnotationHelperManager;
 
+import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.component.FacesComponent;
@@ -51,6 +52,7 @@ import jakarta.servlet.annotation.HandlesTypes;
         FacesBehavior.class,
         FacesBehaviorRenderer.class,
         FacesComponent.class,
+        FacesConfig.class, // MYFACES-4709
         FacesConverter.class,
         FacesRenderer.class,
         FacesValidator.class,

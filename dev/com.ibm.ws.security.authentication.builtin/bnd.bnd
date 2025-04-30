@@ -67,6 +67,7 @@ Service-Component: \
     implementation:=com.ibm.ws.security.authentication.internal.cache.AuthCacheServiceImpl; \
     provide:='com.ibm.ws.security.authentication.cache.AuthCacheService,com.ibm.ws.security.registry.UserRegistryChangeListener,com.ibm.ws.security.notifications.SecurityChangeListener'; \
     modified:='modified'; \
+    configuration-policy:='require'; \
     cacheKeyProvider=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
     cacheEvictionListener=com.ibm.ws.security.authentication.cache.CacheEvictionListener; \
     cacheService=io.openliberty.jcache.CacheService; \

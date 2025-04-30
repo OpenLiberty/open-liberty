@@ -33,6 +33,7 @@ tested.features=\
   mpOpenAPI-3.0,\
   mpOpenAPI-3.1,\
   mpOpenAPI-4.0,\
+  mpOpenAPI-4.1,\
   restfulws-3.0,\
   restfulws-3.1,\
   restfulws-4.0,\

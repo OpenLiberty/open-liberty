@@ -128,6 +128,16 @@ Design preliminaries determine whether a formal design, which will be provided b
   - Approver adds label `Product Management Approved` ([OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management))
   - Note: For stabilized, superseded, and discontinued feature/capability, skip the [Beta](#beta) section of the template (you may delete it).  Otherwise, proceed as normal.
 
+### Design Approval Request
+
+Request design approval no later than **4 weeks before the Feature Complete date** for the release.
+
+Ideally, submit UFOs for design approval from the [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) as soon as possible after addressing any feedback from the socialization. But that should be no later than 4 weeks before Feature Complete.
+
+That gives the [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) time to review the design and have developers make any necessary updates before the Feature Complete date hits for the release you’re trying to go out in.
+
+See the [WebSphere Dates Monday.com board](https://ibm.monday.com/boards/7779679996) or [Current Liberty Release Schedule](https://github.ibm.com/websphere/WS-CD-Open/wiki/Current-Liberty-Release-Schedule) for relevant dates.
+
 ### **FAT Documentation**
 - [ ] "Feature Test Summary" child task created
   - Use the [Feature Test Summary Template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=06_feature_test_summary.md&title=)

@@ -58,6 +58,10 @@ CWWKC1207.lacks.qualifier.anno=CWWKC1207E: L''artefact d''application {0} sp\u00
 CWWKC1207.lacks.qualifier.anno.explanation=L'annotation Qualifier indique que l'annotation est un qualificatif. L'annotation Retention contr\u00f4le la disponibilit\u00e9 des annotations.
 CWWKC1207.lacks.qualifier.anno.useraction=Ajoutez les annotations @Qualifier et @Retention(RUNTIME) \u00e0 la classe qualifier.
 
+CWWKC1208.global.with.qualifiers=CWWKC1208E: L''artefact d''application {0} sp\u00e9cifie une annotation {1} ou un \u00e9l\u00e9ment de descripteur de d\u00e9ploiement {2} qui poss\u00e8de le nom {3} et la liste de qualificatifs {4}. Vous ne pouvez pas configurer une ressource Jakarta Concurrency pour qu''elle ait \u00e0 la fois des qualificateurs et un espace de noms java:global. Supprimez les qualificateurs de la configuration de la ressource Jakarta Concurrency qui porte le nom {3} ou passez \u00e0 l''espace de noms java:app.
+CWWKC1208.global.with.qualifiers.explanation=La configuration de la ressource Jakarta Concurrency ne peut pas comporter \u00e0 la fois des qualificateurs et un espace de noms java:global.
+CWWKC1208.global.with.qualifiers.useraction=Mettez \u00e0 jour la configuration de la ressource Jakarta Concurrency d\u00e9finie par l'application en omettant les qualificatifs ou en utilisant un espace de noms diff\u00e9rent, tel que l'espace de noms java:app.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: La sp\u00e9cification Concurrency exige que virtual=true soit ignor\u00e9 dans l''annotation {1} de l''artefact d''application {0} ou dans l''\u00e9l\u00e9ment du descripteur de d\u00e9ploiement {2} avec le nom {3} parce que Java {4} ne prend pas en charge les threads virtuels.
 CWWKC1217.no.virtual.threads.explanation=Les threads virtuels ne sont disponibles qu'\u00e0 partir de Java 21.
 CWWKC1217.no.virtual.threads.useraction=Mise \u00e0 jour vers Java 21 ou une version plus r\u00e9cente pour permettre l'utilisation de threads virtuels.

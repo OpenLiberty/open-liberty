@@ -1,0 +1,109 @@
+/*******************************************************************************
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+configurations {
+    jaegerClient
+    requiredLibs.extendsFrom jaegerClient
+    yasson
+    jsonbapi
+}
+
+task copyBundles {
+  dependsOn jar
+  enabled project.file('test-bundles').exists()
+  doFirst {
+    new File(project.buildDir, 'buildfiles').eachLine { String line ->
+      if (!line.contains(project.name + '.jar')) {
+        copy {
+          from line
+          into new File(autoFvtDir, 'publish/bundles')
+        }
+      }
+    }
+  }
+}
+
+task addYasson(type: Copy) {
+  from configurations.yasson
+  into "${buildDir}/autoFVT/publish/shared/resources/yasson/"
+}
+
+task addJsonBApi(type: Copy) {
+  from configurations.jsonbapi
+  into "${buildDir}/autoFVT/publish/files/jsonbapi/"
+}
+
+addRequiredLibraries {
+    dependsOn addJakartaTransformer
+    dependsOn addDerby
+    dependsOn copyBundles
+    dependsOn addYasson
+    dependsOn addJsonBApi
+}
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.security.fat.common.jwt')
+  requiredLibs project(':io.openliberty.mpTelemetry.1.0.thirdparty')
+  requiredLibs 'org.glassfish:javax.json:1.1'
+  requiredLibs 'org.glassfish.jersey.core:jersey-client:2.30.1'
+  requiredLibs 'org.glassfish.jersey.inject:jersey-hk2:2.30.1'
+  jaegerClient 'io.opentracing:opentracing-util:0.33.0'
+  jaegerClient 'io.opentracing:opentracing-noop:0.33.0'
+  jaegerClient 'io.jaegertracing:jaeger-core:1.6.0'
+  jaegerClient 'io.jaegertracing:jaeger-thrift:1.6.0'
+  jaegerClient 'io.jaegertracing:jaeger-client:1.6.0'
+  jaegerClient 'io.jaegertracing:jaeger-tracerresolver:1.6.0'
+  jaegerClient 'org.apache.thrift:libthrift:0.14.1'
+  jaegerClient project(':com.ibm.ws.org.slf4j.api')
+  jaegerClient project(':com.ibm.ws.org.slf4j.simple')
+  jaegerClient project(':io.openliberty.com.google.gson')
+  yasson 'org.eclipse:yasson:1.0.8'
+  jsonbapi 'javax.json.bind:javax.json.bind-api:1.0',
+  project(':com.ibm.ws.security.registry_test.servlet'),
+  project(':com.ibm.ws.org.apache.directory.server')
+  requiredLibs project(':io.openliberty.com.fasterxml.jackson')
+  requiredLibs project(':com.ibm.ws.microprofile.openapi')
+  requiredLibs project(':io.openliberty.org.eclipse.microprofile')
+  requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'openapi10')
+  requiredLibs project(':io.openliberty.microprofile.health.internal_fat.common')
+}
+
+autoFVT {
+  dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
+  doLast {
+    // Manually clear out JSON-P 1.0 (automatically added to all FATs) because we want to use JSON-P 1.1
+    delete new File(buildDir, 'autoFVT/lib/com.ibm.ws.org.glassfish.json.1.0.jar')
+
+    /*
+     * Copy the local ApacheDS LDAP instances. 
+     */
+    copy {
+      from project(':com.ibm.ws.org.apache.directory.server').projectDir
+      into autoFvtDir
+      include 'apacheds-2.0.0-M15/**'
+    }
+    /*
+     * Copy the userRegistry WAR into test servers.
+     */
+    def servers = [
+      'com.ibm.ws.security.wim.adapter.ldap.fat.federation',
+    ]
+    servers.each { server ->
+      copy { 
+        from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application/userRegistry.war')
+        into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      }
+    }
+  }
+}
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'

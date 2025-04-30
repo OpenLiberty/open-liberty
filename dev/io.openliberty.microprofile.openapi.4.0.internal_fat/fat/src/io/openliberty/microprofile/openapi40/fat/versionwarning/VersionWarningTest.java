@@ -43,6 +43,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,9 +52,11 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
+import io.openliberty.microprofile.openapi40.fat.FATSuite;
 import io.openliberty.microprofile.openapi40.fat.versionwarning.app.VersionWarningApplication;
 import io.openliberty.microprofile.openapi40.fat.versionwarning.app.VersionWarningDataObject;
 
@@ -63,8 +66,13 @@ import io.openliberty.microprofile.openapi40.fat.versionwarning.app.VersionWarni
 @RunWith(FATRunner.class)
 public class VersionWarningTest extends FATServletClient {
 
-    @Server("OpenAPIVersionWarningServer")
+    private static final String SERVER_NAME = "OpenAPIVersionWarningServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {

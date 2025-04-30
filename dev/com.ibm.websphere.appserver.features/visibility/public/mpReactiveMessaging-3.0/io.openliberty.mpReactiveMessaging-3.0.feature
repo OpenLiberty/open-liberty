@@ -13,7 +13,7 @@ IBM-ShortName: mpReactiveMessaging-3.0
 Subsystem-Name: MicroProfile Reactive Messaging 3.0
 -features=io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1", \
   io.openliberty.mpReactiveStreams-3.0, \
-  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1,7.0", \
+  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1,7.0,7.1", \
   io.openliberty.org.eclipse.microprofile.reactive.messaging-3.0, \
   io.openliberty.cdi-3.0; ibm.tolerates:="4.0,4.1",  \
   io.openliberty.org.eclipse.microprofile.metrics-4.0; ibm.tolerates:="5.0,5.1"
@@ -28,4 +28,4 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: microProfile-5.0,microProfile-6.0,microProfile-6.1,microProfile-7.0
+WLP-Platform: microProfile-5.0,microProfile-6.0,microProfile-6.1,microProfile-7.0,microProfile-7.1

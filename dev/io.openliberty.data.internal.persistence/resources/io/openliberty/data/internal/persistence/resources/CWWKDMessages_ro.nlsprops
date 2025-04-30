@@ -453,3 +453,22 @@ CWWKD1104.empty.anno.value.useraction=Dac\u0103 adnotarea nu este necesar\u0103,
 CWWKD1105.keyword.in.orderby=CWWKD1105E: Clauza OrderBy a metodei {0} din depozitul {1} nu poate fi analizat\u0103 deoarece atributul {2} entity al entit\u0103\u021bii {3} con\u021bine cuv\u00e2ntul-cheie {4} al modelului Jakarta Data Query by Method Name. Elimina\u021bi clauza OrderBy din numele metodei {0} \u0219i utiliza\u021bi \u00een schimb adnotarea OrderBy.
 CWWKD1105.keyword.in.orderby.explanation=Numele atributelor entit\u0103\u021bilor care con\u021bin cuvinte-cheie Jakarta Data nu pot fi utilizate \u00een numele metodelor de depozit care urmeaz\u0103 modelul Jakarta Data Query by Method Name.
 CWWKD1105.keyword.in.orderby.useraction=Redenumi\u021bi atributul entit\u0103\u021bii sau trece\u021bi la adnotarea OrderBy pentru a specifica ordinea.
+
+CWWKD1106.init.timed.out=CWWKD1106E: Depozitul {0} care necesit\u0103 depozitul de date {1} \u0219i care este furnizat sau utilizat de artifactul de aplica\u021bie {2} nu a devenit disponibil \u00een termen de {3} secunde. Confirma\u021bi c\u0103 artifactul de aplica\u021bie {2} porne\u0219te \u0219i c\u0103 resursa depozitului de date {1} care este specificat\u0103 ca valoare dataStore a adnot\u0103rii Repository este configurat\u0103 corect \u0219i este accesibil\u0103 pentru artifactul de aplica\u021bie \u00een momentul \u00een care depozitul {0} este accesat pentru prima dat\u0103.
+CWWKD1106.init.timed.out.explanation=Un depozit nu a devenit disponibil \u00een intervalul de timp alocat.
+CWWKD1106.init.timed.out.useraction=Verifica\u021bi configura\u021bia depozitului dataStore \u0219i confirma\u021bi c\u0103 acesta este accesibil artefactelor de aplica\u021bie care definesc \u0219i utilizeaz\u0103 depozitul. De asemenea, confirma\u021bi c\u0103 aplica\u021bia \u0219i toate modulele sale pornesc cu succes.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: Artifactul aplica\u021biei {0} a accesat depozitul {1} \u00eenainte de finalizarea unui punct de control al aplica\u021biei. Actualiza\u021bi aplica\u021bia {0} pentru a evita utilizarea depozitului \u00eenainte de un punct de control.
+CWWKD1107.init.timed.out.checkpoint.explanation=Aplica\u021biile nu pot utiliza depozitele \u00eenainte de finalizarea unui punct de control.
+CWWKD1107.init.timed.out.checkpoint.useraction=Evita\u021bi utilizarea depozitului p\u00e2n\u0103 dup\u0103 finalizarea punctului de control.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: Clasa entitate {0} necesit\u0103 adnotarea {1} deoarece adnotarea {2} este aplicat\u0103 membrului {3} al clasei entitate.
+CWWKD1108.missing.entity.anno.explanation=Clase de entit\u0103\u021bi care utilizeaz\u0103 adnot\u0103ri
+ from pachetul jakarta.persistence trebuie, de asemenea, s\u0103 fie adnotat cu entitatea
+ annotation din specifica\u021biile Jakarta Persistence.
+CWWKD1108.missing.entity.anno.useraction=Aplica\u021bi adnotarea Entity la
+ entity sau elimina\u021bi adnot\u0103rile Jakarta Persistence de pe membrii acesteia.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: Anotarea {0} nu este permis\u0103 pentru metoda {1} a clasei de entit\u0103\u021bi {2} deoarece clasa de entit\u0103\u021bi {2} este o \u00eenregistrare Java.
+CWWKD1109.jpa.anno.on.record.explanation=Adnot\u0103rile Jakarta Persistence nu sunt permise pe \u00eenregistr\u0103rile Java.
+CWWKD1109.jpa.anno.on.record.useraction=Trece\u021bi la o clas\u0103 de entitate Jakarta Persistence sau elimina\u021bi adnotarea Jakarta Persistence din \u00eenregistrarea Java.

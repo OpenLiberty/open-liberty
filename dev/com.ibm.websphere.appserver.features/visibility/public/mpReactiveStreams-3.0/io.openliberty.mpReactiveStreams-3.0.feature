@@ -11,7 +11,7 @@ IBM-API-Package: \
   org.eclipse.microprofile.reactive.streams.operators.spi; type="stable", \
   org.eclipse.microprofile.reactive.streams.operators.core; type="stable", \
   org.reactivestreams; type="stable";
--features=io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1,7.0", \
+-features=io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1,7.0,7.1", \
   io.openliberty.jakarta.cdi-3.0; ibm.tolerates:="4.0,4.1", \
   io.openliberty.org.eclipse.microprofile.reactive.streams.operators-3.0
 -bundles=\
@@ -24,4 +24,4 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: microProfile-5.0,microProfile-6.0,microProfile-6.1,microProfile-7.0
+WLP-Platform: microProfile-5.0,microProfile-6.0,microProfile-6.1,microProfile-7.0,microProfile-7.1

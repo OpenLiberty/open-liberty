@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,7 +72,9 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 TemplateTests.class,
                 NonZipExtensionFilesInBootInfLibTests20.class,
                 MultiModuleProjectTests20.class,
-                ApplicationStartedEventTests.class
+                ApplicationStartedEventTests.class,
+                JTAAppTests20.class,
+                JTAAppTests20War.class
 })
 
 public class FATSuite {

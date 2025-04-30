@@ -63,10 +63,6 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Conflit de configuration pour la prop
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile La t\u00e9l\u00e9m\u00e9trie peut \u00eatre activ\u00e9e pour l'ensemble du serveur en utilisant les propri\u00e9t\u00e9s du syst\u00e8me ou les variables d'environnement. S'il n'est pas activ\u00e9 pour l'ensemble du serveur, il peut l'\u00eatre pour une application en d\u00e9finissant les propri\u00e9t\u00e9s de configuration MicroProfile ; par exemple, en d\u00e9finissant des variables dans le fichier server.xml. Cet avertissement est donn\u00e9 si la t\u00e9l\u00e9m\u00e9trie est activ\u00e9e pour l'ensemble du serveur, mais que les propri\u00e9t\u00e9s de configuration MicroProfile d\u00e9sactivent la t\u00e9l\u00e9m\u00e9trie pour une application. La t\u00e9l\u00e9m\u00e9trie \u00e9tant activ\u00e9e pour l'ensemble du serveur, la configuration de cette application est ignor\u00e9e.
 CWMOT5007.tel.enabled.conflict.useraction: Sp\u00e9cifiez les param\u00e8tres pour activer ou d\u00e9sactiver les instances OpenTelemetry en utilisant soit les variables d'environnement et les propri\u00e9t\u00e9s du syst\u00e8me, soit d'autres sources MP Config, mais pas les deux.
 
-CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: La fonction d'enregistrement de t\u00e9l\u00e9m\u00e9trie de MicroProfile ne reconna\u00eet pas le format d'enregistrement d'acc\u00e8s de t\u00e9l\u00e9m\u00e9trie de [ {0} ].
-CWMOT5008.mptelemetry.unknown.access.log.field.explanation=L'environnement d'ex\u00e9cution Liberty ne fournit pas le format de journal sp\u00e9cifi\u00e9.
-CWMOT5008.mptelemetry.unknown.access.log.field.useraction=Sp\u00e9cifiez soit default soit logFormat pour l'attribut mpTelemetry accessLogFields.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

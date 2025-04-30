@@ -12,87 +12,115 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
-import com.ibm.websphere.ras.annotation.Trivial;
-
-import jakarta.data.exceptions.MappingException;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
+ * Represents Query by Method Name condition keywords.
  */
 enum Condition {
-    BETWEEN(null, 7, false),
-    CONTAINS(null, 8, true),
-    EMPTY(" IS EMPTY", 5, true),
-    ENDS_WITH(null, 8, false),
-    EQUALS("=", 0, true),
-    FALSE("=FALSE", 5, false),
-    GREATER_THAN(">", 11, false),
-    GREATER_THAN_EQUAL(">=", 16, false),
-    IN(" IN ", 2, false),
-    LESS_THAN("<", 8, false),
-    LESS_THAN_EQUAL("<=", 13, false),
-    LIKE(null, 4, false),
-    NOT_EMPTY(" IS NOT EMPTY", 8, true),
-    NOT_EQUALS("<>", 3, true),
-    NOT_NULL(" IS NOT NULL", 7, false),
-    NULL(" IS NULL", 4, false),
-    STARTS_WITH(null, 10, false),
-    TRUE("=TRUE", 4, false);
+    Between(null, false),
+    Contains(null, true),
+    Empty(" IS EMPTY", true),
+    EndsWith(null, false),
+    Equal("=", true),
+    False("=FALSE", false),
+    GreaterThan(">", false),
+    GreaterThanEqual(">=", false),
+    IgnoreCase(null, false),
+    In(" IN ", false),
+    LessThan("<", false),
+    LessThanEqual("<=", false),
+    Like(null, false),
+    Not("<>", true),
+    NotEmpty(" IS NOT EMPTY", true),
+    NotNull(" IS NOT NULL", false),
+    Null(" IS NULL", false),
+    StartsWith(null, false),
+    True("=TRUE", false);
 
+    /**
+     * Length of the Query by Method Name keyword.
+     */
     final int length;
+
+    /**
+     * Representation of the operator in query language.
+     */
     final String operator;
+
+    /**
+     * Indicates if this type of condition is supported on collections.
+     */
     final boolean supportsCollections;
 
-    Condition(String operator, int length, boolean supportsCollections) {
+    /**
+     * Internal constructor for enumeration constants.
+     *
+     * @param operator            Representation of the operator in query language.
+     * @param supportsCollections Indicates if this type of comparison is supported
+     *                                on collections.
+     */
+    private Condition(String operator, boolean supportsCollections) {
+        int len = name().length();
         this.operator = operator;
-        this.length = length;
+        this.length = len == 5 && name().equals("Equal") ? 0 : len;
         this.supportsCollections = supportsCollections;
     }
 
+    /**
+     * Returns the negated condition if possible.
+     *
+     * @return the negated comparison if possible. Otherwise null.
+     */
     Condition negate() {
         switch (this) {
-            case EQUALS:
-                return NOT_EQUALS;
-            case GREATER_THAN:
-                return LESS_THAN_EQUAL;
-            case GREATER_THAN_EQUAL:
-                return LESS_THAN;
-            case LESS_THAN:
-                return GREATER_THAN_EQUAL;
-            case LESS_THAN_EQUAL:
-                return GREATER_THAN;
-            case NULL:
-                return NOT_NULL;
-            case TRUE:
-                return FALSE;
-            case FALSE:
-                return TRUE;
-            case EMPTY:
-                return NOT_EMPTY;
-            case NOT_EMPTY:
-                return EMPTY;
-            case NOT_EQUALS:
-                return EQUALS;
-            case NOT_NULL:
-                return NULL;
+            case Equal:
+                return Not;
+            case GreaterThan:
+                return LessThanEqual;
+            case GreaterThanEqual:
+                return LessThan;
+            case LessThan:
+                return GreaterThanEqual;
+            case LessThanEqual:
+                return GreaterThan;
+            case Null:
+                return NotNull;
+            case True:
+                return False;
+            case False:
+                return True;
+            case Empty:
+                return NotEmpty;
+            case Not:
+                return Equal;
+            case NotEmpty:
+                return Empty;
+            case NotNull:
+                return Null;
             default:
                 return null;
         }
     }
 
     /**
-     * Confirm that collections are supported for this condition,
-     * based on whether case insensitive comparison is requested.
+     * Returns names of all conditions that are supported for collection attributes.
+     * This is used in error reporting to display which keywords are valid.
      *
-     * @param attributeName entity attribute to which the condition is to be applied.
-     * @param ignoreCase    indicates if the condition is to be performed ignoring case.
-     * @throws MappingException with chained UnsupportedOperationException if not supported.
+     * @return names of all conditions that are supported for collection attributes.
      */
-    @Trivial
-    void verifyCollectionsSupported(String attributeName, boolean ignoreCase) {
-        if (!supportsCollections || ignoreCase)
-            throw new MappingException(new UnsupportedOperationException("Repository keyword " +
-                                                                         (ignoreCase ? "IgnoreCase" : name()) +
-                                                                         " which is applied to entity attribute " + attributeName +
-                                                                         " is not supported for collection attributes.")); // TODO
+    static Set<String> supportedForCollections() {
+        Set<String> supported = new TreeSet<>();
+        for (Condition c : Condition.values())
+            if (c.supportsCollections && c.length > 0) {
+                String name = c.name();
+                supported.add(name);
+                // Some negated forms of keywords do not have constants in this
+                // enumeration, but they can be formed by combining with Not:
+                if (c.negate() == null && !name.startsWith(Not.name()))
+                    supported.add(Not.name() + name);
+            }
+        return supported;
     }
 }

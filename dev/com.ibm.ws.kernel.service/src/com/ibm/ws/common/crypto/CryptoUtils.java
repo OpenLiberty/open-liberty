@@ -341,7 +341,7 @@ public class CryptoUtils {
         if (fips140_3Checked)
             return fips140_3Enabled;
         else {
-            boolean enabled = "140-3".equals(FIPSLevel) || "true".equals(getPropertyLowerCase("global.fips_140-3", "false")) || isSemeruFips();
+            boolean enabled = "140-3".equals(FIPSLevel);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isFips140_3Enabled: " + enabled);
             }
@@ -395,15 +395,9 @@ public class CryptoUtils {
     public static byte[] generateRandomBytes(int length) {
         byte[] seed = null;
         SecureRandom rand = new SecureRandom();
+        seed = new byte[length];
+        rand.nextBytes(seed);
 
-        // TODO: Investigate hardware Crypto
-        //String hardwareCryptoProvider = "IBMJCECCA";
-        //Provider provider = rand.getProvider();
-        //if (hardwareCryptoProvider.equals(provider.getName())) {
-        //    seed = new byte[length];
-        //    rand.nextBytes(seed);
-        //} else {
-        seed = rand.generateSeed(length);
         return seed;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.test.tests.BadLogTest;
 import com.ibm.ws.transaction.test.tests.CorruptLogTest;
+import com.ibm.ws.transaction.test.tests.JndiTest;
 import com.ibm.ws.transaction.test.tests.SimpleTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -29,6 +30,7 @@ import componenttest.rules.repeater.RepeatTests;
                 CorruptLogTest.class,
                 BadLogTest.class,
                 SimpleTest.class,
+                JndiTest.class
 })
 public class FATSuite {
 

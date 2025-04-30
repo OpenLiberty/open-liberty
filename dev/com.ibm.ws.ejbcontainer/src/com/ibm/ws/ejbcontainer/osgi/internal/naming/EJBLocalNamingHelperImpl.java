@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,12 +12,17 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.osgi.internal.naming;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.naming.Context;
+import javax.naming.NameClassPair;
 import javax.naming.NamingException;
+import javax.naming.NotContextException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
@@ -44,6 +49,7 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
     private static final TraceComponent tc = Tr.register(EJBLocalNamingHelperImpl.class, "EJBContainer", "com.ibm.ejs.container.container");
 
     private final HashMap<String, EJBBinding> EJBLocalBindings = new HashMap<String, EJBBinding>();
+    private HashMap<String, Collection<NameClassPair>> EJBLocalContextsCache = null;
 
     private final ReentrantReadWriteLock javaColonLock = new ReentrantReadWriteLock();
 
@@ -65,6 +71,58 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
         }
 
         return initializeEJB(binding, "ejblocal:" + name);
+    }
+
+    @Override
+    public Collection<? extends NameClassPair> listInstances(String context, String name) throws NamingException {
+        String contextName = context.isEmpty() ? name : (context + "/" + name);
+        // append a "/" to ensure search is over a context; unless searching root
+        String contextKey = contextName + (name.isEmpty() ? "" : "/");
+        boolean root = contextKey.isEmpty();
+        int contextIndex = root ? 0 : contextKey.lastIndexOf("/") + 1;
+
+        Lock readLock = javaColonLock.readLock();
+        readLock.lock();
+
+        Collection<NameClassPair> instances = null;
+        try {
+            instances = EJBLocalContextsCache != null ? EJBLocalContextsCache.get(contextName) : null;
+            if (instances != null) {
+                return instances;
+            }
+
+            String instanceName = null;
+            String instanceType = null;
+
+            Map<String, NameClassPair> allInstances = new HashMap<String, NameClassPair>();
+            for (Map.Entry<String, EJBBinding> entry : EJBLocalBindings.entrySet()) {
+                String key = entry.getKey();
+                if (root || key.startsWith(contextKey)) {
+                    int instanceIndex = key.indexOf("/", contextIndex + 1);
+                    if (instanceIndex == -1) {
+                        instanceName = key.substring(contextIndex);
+                        instanceType = entry.getValue().interfaceName;
+                    } else {
+                        instanceName = key.substring(contextIndex, instanceIndex);
+                        instanceType = Context.class.getName();
+                    }
+                    allInstances.put(instanceName, new NameClassPair(instanceName, instanceType));
+                } else if (key.equals(contextName)) {
+                    throw new NotContextException("ejblocal:" + contextName);
+                }
+            }
+            instances = allInstances.values();
+            if (instances.size() > 0) {
+                if (EJBLocalContextsCache == null) {
+                    EJBLocalContextsCache = new HashMap<String, Collection<NameClassPair>>();
+                }
+                EJBLocalContextsCache.put(contextName, instances);
+            }
+        } finally {
+            readLock.unlock();
+        }
+
+        return instances;
     }
 
     @Reference(service = EJBHomeRuntime.class,
@@ -167,6 +225,9 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
         writeLock.lock();
 
         try {
+            if (EJBLocalContextsCache != null) {
+                EJBLocalContextsCache.clear();
+            }
             EJBLocalBindings.remove(name);
         } finally {
             writeLock.unlock();
@@ -185,6 +246,9 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
         writeLock.lock();
 
         try {
+            if (EJBLocalContextsCache != null) {
+                EJBLocalContextsCache.clear();
+            }
             for (String name : names) {
                 if (isTraceOn && tc.isDebugEnabled()) {
                     Tr.debug(tc, "unbinding: " + name);

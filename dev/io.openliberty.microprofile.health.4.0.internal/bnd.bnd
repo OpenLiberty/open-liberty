@@ -95,7 +95,8 @@ testsrc: test/src
         io.openliberty.microprofile.health.3.0.internal;version=latest,\
         io.openliberty.microprofile.health.3.1.internal,\
         io.openliberty.org.eclipse.microprofile.health.3.1;version=latest,\
-        org.eclipse.osgi;version=latest
+        org.eclipse.osgi;version=latest,\
+        com.ibm.ws.microprofile.health;version=latest
 
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

@@ -14,8 +14,6 @@ com.ibm.websphere.appserver.bells-1.0_SERVER 0.003554700 s
 com.ibm.websphere.appserver.cdi-1.2_SERVER 0.014690300 s
 com.ibm.websphere.appserver.cdi-2.0_SERVER 0.016625800 s
 com.ibm.websphere.appserver.cloudant-1.0_SERVER 0.004248800 s
-com.ibm.websphere.appserver.componenttest-1.0_SERVER 0.001112200 s
-com.ibm.websphere.appserver.componenttest-2.0_SERVER 0.000769100 s
 com.ibm.websphere.appserver.concurrent-1.0_SERVER 0.005101100 s
 com.ibm.websphere.appserver.constrainedDelegation-1.0_SERVER 0.014541900 s
 com.ibm.websphere.appserver.couchdb-1.0_SERVER 0.004244900 s
@@ -28,7 +26,6 @@ com.ibm.websphere.appserver.ejbRemote-3.2_SERVER 0.028295000 s
 com.ibm.websphere.appserver.el-3.0_SERVER 0.001529500 s
 com.ibm.websphere.appserver.eventLogging-1.0_SERVER 0.001598200 s
 com.ibm.websphere.appserver.federatedRegistry-1.0_SERVER 0.010026500 s
-com.ibm.websphere.appserver.http2clienttest-1.0_SERVER 0.000773500 s
 com.ibm.websphere.appserver.j2eeManagement-1.1_SERVER 0.012835400 s
 com.ibm.websphere.appserver.jacc-1.5_SERVER 0.017110100 s
 com.ibm.websphere.appserver.jakartaee-8.0_SERVER 1.837915700 s
@@ -165,7 +162,6 @@ com.ibm.websphere.appserver.spnego-1.0_SERVER 0.037485400 s
 com.ibm.websphere.appserver.springBoot-1.5_SERVER 0.003394900 s
 com.ibm.websphere.appserver.springBoot-2.0_SERVER 0.003195500 s
 com.ibm.websphere.appserver.ssl-1.0_SERVER 0.000693800 s
-com.ibm.websphere.appserver.timedexit-1.0_SERVER 0.000325700 s
 com.ibm.websphere.appserver.transportSecurity-1.0_SERVER 0.000859000 s
 com.ibm.websphere.appserver.wasJmsClient-2.0_SERVER 0.046254100 s
 com.ibm.websphere.appserver.wasJmsSecurity-1.0_SERVER 0.018065500 s
@@ -188,8 +184,6 @@ io.openliberty.appClientSupport-2.0_SERVER 0.013656700 s
 io.openliberty.appSecurity-4.0_SERVER 0.096785800 s
 io.openliberty.appSecurity-5.0_SERVER 0.129644000 s
 io.openliberty.appSecurity-6.0_SERVER 0.121950700 s
-io.openliberty.arquillian.arquillian-support-1.0_SERVER 0.016922000 s
-io.openliberty.arquillian.arquillian-support-jakarta-2.1_SERVER 0.000665300 s
 io.openliberty.batch-2.0_SERVER 0.244823600 s
 io.openliberty.batch-2.1_SERVER 0.504041000 s
 io.openliberty.beanValidation-3.0_SERVER 0.015285300 s
@@ -305,6 +299,5 @@ com.ibm.websphere.appserver.jaxb-2.2_CLIENT 0.002902300 s
 com.ibm.websphere.appserver.jndi-1.0_CLIENT 0.002547300 s
 com.ibm.websphere.appserver.osgiConsole-1.0_CLIENT 0.000348300 s
 com.ibm.websphere.appserver.ssl-1.0_CLIENT 0.000655700 s
-com.ibm.websphere.appserver.timedexit-1.0_CLIENT 0.000680800 s
 io.openliberty.xmlBinding-3.0_CLIENT 0.003295800 s
 io.openliberty.xmlBinding-4.0_CLIENT 0.004895400 s

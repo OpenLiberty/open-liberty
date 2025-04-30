@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -142,7 +142,8 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     // Multi-app default behaviour is different from 4.0 onwards
     @SkipForRepeat({
-        MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID
+        MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID,
+        MicroProfileActions.MP71_EE10_ID, MicroProfileActions.MP71_EE11_ID,
     })
     public void testApplicationProcessor() throws Exception {
         // Validate the app is deployed
@@ -392,7 +393,9 @@ public class ApplicationProcessorTest extends FATServletClient {
         MicroProfileActions.MP60_ID,
         MicroProfileActions.MP61_ID,
         MicroProfileActions.MP70_EE10_ID,
-        MicroProfileActions.MP70_EE11_ID
+        MicroProfileActions.MP70_EE11_ID,
+        MicroProfileActions.MP71_EE10_ID,
+        MicroProfileActions.MP71_EE11_ID,
     })
     public void testCompleteFlow() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_11);
