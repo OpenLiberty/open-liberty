@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -90,10 +90,10 @@ public class ServerCommandClient extends ServerCommand {
     /**
      * Write a command to the server process.
      *
-     * @param command the command to write
+     * @param command      the command to write
      * @param notStartedRC the return code if the server could not be reached
-     * @param errorRC the return code if an error occurred while communicating
-     *            with the server
+     * @param errorRC      the return code if an error occurred while communicating
+     *                         with the server
      * @return {@link ReturnCode#OK} if the command was sent, notStartedRC if
      *         the server could not be reached, timeoutRC if the client timed
      *         out reading a response from the server, {@link ReturnCode#SERVER_COMMAND_PORT_DISABLED_STATUS} if the
@@ -104,40 +104,52 @@ public class ServerCommandClient extends ServerCommand {
         SocketChannel channel = null;
         try {
             ServerCommandID commandID = createServerCommand(command);
-            if (commandID.getPort() > 0) {
-                // Use InetAddress.getByName(null) to get loopback address
-                // The JVM will honor java.net.preferIPv4Stack property if set
-                channel = SelectorProvider.provider().openSocketChannel();
-                channel.connect(new InetSocketAddress(InetAddress.getByName(null), commandID.getPort()));
+            int port = commandID.getPort();
+            if (port > 0) {
+                String cmdResponse = null;
+                do {
+                    // Use InetAddress.getByName(null) to get loopback address
+                    // The JVM will honor java.net.preferIPv4Stack property if set
+                    channel = SelectorProvider.provider().openSocketChannel();
+                    channel.connect(new InetSocketAddress(InetAddress.getByName(null), port));
 
-                // Write command.
-                write(channel, commandID.getCommandString());
+                    // Write command.
+                    write(channel, commandID.getCommandString());
 
-                // Receive authorization challenge.
-                String authID = read(channel);
+                    // Receive authorization challenge.  If the connection is closed, read() will return null
+                    String authID = read(channel);
+                    if (authID == null) {
+                        continue;
+                    }
 
-                // Respond to authorization challenge.
-                File authFile = new File(commandAuthDir, authID);
-                // Delete a file created by the server (check for write access)
-                if (!authFile.delete()) {
-                    Debug.println("The command " + command + " could not be completed because the client could not delete the file " + authFile.getAbsolutePath());
-                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandAuthFailure"), command, authFile.getAbsolutePath()));
-                    return errorRC;
-                }
+                    // Respond to authorization challenge.
+                    File authFile = new File(commandAuthDir, authID);
+                    // Delete a file created by the server (check for write access)
+                    if (!authFile.delete()) {
+                        Debug.println("The command " + command + " could not be completed because the client could not delete the file " + authFile.getAbsolutePath());
+                        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandAuthFailure"), command, authFile.getAbsolutePath()));
+                        return errorRC;
+                    }
 
-                // respond to the server to indicate the delete has happened.
-                write(channel, authID);
+                    // respond to the server to indicate the delete has happened.
+                    write(channel, authID);
 
-                // Read command response.
-                String cmdResponse = read(channel), targetServerUUID = null, responseCode = null;
+                    // Read command response.  If the connection is closed, read() will return null
+                    cmdResponse = read(channel);
+                    if (cmdResponse == null) {
+                        cmdResponse = "";
+                    }
+                } while (cmdResponse == null);
+
                 if (cmdResponse.isEmpty()) {
-                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
+                    System.out.println("empty " + MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
 
                     // Something went wrong on the server side causing it to send an empty response
                     Debug.println("The server returned an empty response to the " + command + " command.");
                     return errorRC;
                 }
 
+                String targetServerUUID = null, responseCode = null;
                 if (cmdResponse.indexOf(DELIM) != -1) {
                     targetServerUUID = cmdResponse.substring(0, cmdResponse.indexOf(DELIM));
                     responseCode = cmdResponse.substring(cmdResponse.indexOf(DELIM) + 1);
@@ -145,7 +157,8 @@ public class ServerCommandClient extends ServerCommand {
                     targetServerUUID = cmdResponse;
                 }
                 if (!commandID.validateTarget(targetServerUUID)) {
-                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
+                    System.out.println(commandID.getUUID() + " " + targetServerUUID + " " + cmdResponse + " "
+                                       + MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
                     Debug.println("The command can't be completed because the client and server UUID values do not match: " + commandID.getUUID() + ", " + targetServerUUID);
                     return errorRC;
                 }
@@ -190,7 +203,7 @@ public class ServerCommandClient extends ServerCommand {
      * Waits for the server to be fully started.
      *
      * @param lock the server lock, which must be held by the server process
-     *            before this method is called
+     *                 before this method is called
      */
     public ReturnCode startStatus(ServerLock lock) {
         // The server process might not have created the command file yet.
@@ -208,7 +221,7 @@ public class ServerCommandClient extends ServerCommand {
             // socket yet.
             ReturnCode rc = write(STATUS_START_COMMAND,
                                   ReturnCode.START_STATUS_ACTION,
-                                  ReturnCode.ERROR_SERVER_START);
+                                  ReturnCode.ERROR_SERVER_START7);
             if (rc != ReturnCode.START_STATUS_ACTION) {
                 return rc;
             }
@@ -221,8 +234,8 @@ public class ServerCommandClient extends ServerCommand {
         }
 
         return write(STATUS_START_COMMAND,
-                     ReturnCode.ERROR_SERVER_START,
-                     ReturnCode.ERROR_SERVER_START);
+                     ReturnCode.ERROR_SERVER_START8,
+                     ReturnCode.ERROR_SERVER_START9);
     }
 
     /**
@@ -238,14 +251,14 @@ public class ServerCommandClient extends ServerCommand {
             Thread.sleep(BootstrapConstants.POLL_INTERVAL_MS);
         } catch (InterruptedException ex) {
             Debug.printStackTrace(ex);
-            return ReturnCode.ERROR_SERVER_START;
+            return ReturnCode.ERROR_SERVER_START10;
         }
 
         // This method is only called if the server process was holding
         // the server lock.  If this process is suddenly able to obtain the
         // lock, then the server process didn't finish starting.
         if (!lock.testServerRunning()) {
-            return ReturnCode.ERROR_SERVER_START;
+            return ReturnCode.ERROR_SERVER_START11;
         }
 
         return ReturnCode.START_STATUS_ACTION;

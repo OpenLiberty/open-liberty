@@ -477,7 +477,7 @@ public class ServerLock {
                             fileObtained = tryServerLock();
                         } catch (IOException e) {
                             Debug.printStackTrace(e);
-                            return ReturnCode.ERROR_SERVER_START;
+                            return ReturnCode.ERROR_SERVER_START2;
                         }
                     }
                 } catch (InterruptedException ie) {
@@ -492,7 +492,7 @@ public class ServerLock {
                 State possiblyRunning = ps.isPossiblyRunning();
                 if (fileObtained && (possiblyRunning == State.NO)) {
                     Debug.println("Server start error: file lock obtained, and server process is not running.");
-                    return ReturnCode.ERROR_SERVER_START;
+                    return ReturnCode.ERROR_SERVER_START3;
                 }
 
                 // WSL does not gaurantee exclusive file access on file channels,
@@ -505,7 +505,7 @@ public class ServerLock {
             if (fileObtained) {
                 Debug.println("Server start error: file lock obtained, and server process is running.");
                 // Server did not start
-                return ReturnCode.ERROR_SERVER_START;
+                return ReturnCode.ERROR_SERVER_START4;
             }
         } finally {
             releaseServerLock();

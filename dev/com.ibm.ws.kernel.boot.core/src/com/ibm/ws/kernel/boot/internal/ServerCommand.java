@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,12 +14,16 @@ package com.ibm.ws.kernel.boot.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 
@@ -62,6 +66,17 @@ public abstract class ServerCommand {
         commandAuthDir = bootProps.getWorkareaFile(BootstrapConstants.S_COMMAND_AUTH_DIR);
     }
 
+    private static final String pattern = "HH:mm.ss:SSS z";
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(pattern);
+
+    private static final ZoneId ZONE_ID = ZoneId.systemDefault();
+
+    public static final String traceTime() {
+        long timestamp = Instant.now().toEpochMilli();
+        return Instant.ofEpochMilli(timestamp).atZone(ZONE_ID).format(DATE_TIME_FORMATTER);
+    }
+
     /**
      * Reads a command or command response from a socket channel.
      *
@@ -71,14 +86,29 @@ public abstract class ServerCommand {
      * @return the command or command response
      */
     protected String read(SocketChannel sc) throws IOException {
-        sc.read(buffer);
+        System.out.println(traceTime() + " JHA: byteBuffer = " + buffer.toString());
+        int bytesRead = sc.read(buffer);
+        System.out.println(traceTime() + " JHA: socket channel class " + sc.getClass().getName());
+        System.out.println(traceTime() + " JHA: bytes read " + bytesRead);
+        System.out.println(traceTime() + " JHA: isConnected  " + sc.isConnected());
+        System.out.println(traceTime() + " JHA: isOpen  " + sc.isOpen());
+        System.out.println(traceTime() + " JHA: isKeepAlive  " + sc.getOption(StandardSocketOptions.SO_KEEPALIVE));
+        System.out.println(traceTime() + " JHA: isLinger  " + sc.getOption(StandardSocketOptions.SO_LINGER));
+        System.out.println(traceTime() + " JHA: isReuseAddress  " + sc.getOption(StandardSocketOptions.SO_REUSEADDR));
+        if (bytesRead == -1) {
+            return null;
+        }
+        System.out.println(traceTime() + " JHA: byteBuffer = " + buffer.toString());
         buffer.flip();
+        System.out.println(traceTime() + " JHA: byteBuffer = " + buffer.toString());
 
         decoder.decode(buffer, charBuffer, true);
+        System.out.println(traceTime() + " JHA: charBuffer = " + charBuffer.toString());
         charBuffer.flip();
 
         String result = charBuffer.toString();
 
+        System.out.println(traceTime() + " JHA: charBuffer = " + charBuffer.toString());
         // Clear out buffers
         buffer.clear();
         charBuffer.clear();
@@ -93,7 +123,7 @@ public abstract class ServerCommand {
      * <p>This method is not safe for use by multiple concurrent threads.
      *
      * @param sc the socket channel
-     * @param s the command or command response
+     * @param s  the command or command response
      */
     protected void write(SocketChannel sc, String s) throws IOException {
         sc.write(encoder.encode(CharBuffer.wrap(s)));

@@ -1965,6 +1965,9 @@ public class LibertyServer implements LogMonitorClient {
             }
             boolean shouldFail = doCheckpoint() ? checkpointInfo.expectCheckpointFailure : expectStartFailure;
             int rc = output.getReturnCode();
+            Log.info(c, methodName, "Response from script is: " + output.getStdout());
+            Log.info(c, methodName, "Error output from script is: " + output.getStderr());
+            Log.info(c, methodName, "Return code from script is: " + rc);
             if (rc != 0) {
                 if (shouldFail) {
                     Log.info(c, methodName, "EXPECTED: Server didn't start");
@@ -1972,9 +1975,9 @@ public class LibertyServer implements LogMonitorClient {
                     Log.exiting(c, methodName);
                     return output;
                 } else {
-                    Log.info(c, methodName, "Response from script is: " + output.getStdout());
-                    Log.info(c, methodName, "Error output from script is: " + output.getStderr());
-                    Log.info(c, methodName, "Return code from script is: " + rc);
+                    // Log.info(c, methodName, "Response from script is: " + output.getStdout());
+                    // Log.info(c, methodName, "Error output from script is: " + output.getStderr());
+                    // Log.info(c, methodName, "Return code from script is: " + rc);
                 }
             } else {
                 if (shouldFail && doCheckpoint()) {

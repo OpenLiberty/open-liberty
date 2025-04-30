@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -302,6 +302,9 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
             }
 
             if (bindError == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "ServerSocket timeout is " + serverSocketChannel.socket().getSoTimeout());
+                }
                 // if we requested an ephemeral port, find out what port we ended up with
                 if (port == 0) {
                     port = serverSocketChannel.socket().getLocalPort();

@@ -314,11 +314,14 @@ public class ProcessControlHelper {
             if (rc == ReturnCode.OK) {
                 ServerCommandClient scc = new ServerCommandClient(bootProps);
                 rc = scc.startStatus(serverLock);
+            } else {
+                System.out.println("waitForStart returned " + rc.getValue() + " pid = " + pid + " consoleLogFile = " + consoleLogFile);
             }
         } else {
+            System.out.println("serverLock lockFileExists returned false");
             // we have no server lock file, despite the fact that we're supposed to be looking
             // for a server in the process of starting...
-            rc = ReturnCode.ERROR_SERVER_START;
+            rc = ReturnCode.ERROR_SERVER_START5;
         }
 
         displayWarningIfBeta();
@@ -337,8 +340,8 @@ public class ProcessControlHelper {
             }
             rc = ReturnCode.SERVER_UNKNOWN_STATUS;
         } else {
-            rc = ReturnCode.ERROR_SERVER_START;
-            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverStartException"), serverName));
+            System.out.println(rc.getValue() + MessageFormat.format(BootstrapConstants.messages.getString("info.serverStartException"), serverName));
+            rc = ReturnCode.ERROR_SERVER_START6;
         }
 
         return rc;

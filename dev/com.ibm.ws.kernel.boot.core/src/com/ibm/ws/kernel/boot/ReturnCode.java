@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -58,6 +58,17 @@ public enum ReturnCode implements ExitCode {
     CLIENT_RUNNER_EXCEPTION(35),
     ERROR_SERVER_PAUSE(36),
     ERROR_SERVER_RESUME(37),
+    ERROR_SERVER_START1(38),
+    ERROR_SERVER_START2(39),
+    ERROR_SERVER_START3(40),
+    ERROR_SERVER_START4(41),
+    ERROR_SERVER_START5(42),
+    ERROR_SERVER_START6(43),
+    ERROR_SERVER_START7(44),
+    ERROR_SERVER_START8(45),
+    ERROR_SERVER_START9(46),
+    ERROR_SERVER_START10(47),
+    ERROR_SERVER_START11(48),
 
     // All "actions" should be < 0, these are not returned externally
     MESSAGE_ACTION(-1),

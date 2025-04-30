@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -399,7 +399,7 @@ public class EmbeddedServerImpl implements Server {
                         return new ServerResult(true, ReturnCode.OK, null);
                     } else {
                         fireEvent(Type.FAILED, null);
-                        return new ServerResult(false, ReturnCode.ERROR_SERVER_START, null);
+                        return new ServerResult(false, ReturnCode.ERROR_SERVER_START1, null);
                     }
                 } catch (InterruptedException e) {
                     return new ServerResult(false, ReturnCode.SERVER_UNKNOWN_STATUS, null);
