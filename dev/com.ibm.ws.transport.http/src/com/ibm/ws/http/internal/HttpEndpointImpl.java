@@ -53,10 +53,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.logging.internal.AccessLogger;
 import com.ibm.ws.http.logging.internal.DisabledLogger;
-import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponentException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
@@ -76,6 +74,10 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.http.channel.Chain;
+import io.openliberty.http.channel.ChainState;
+import io.openliberty.http.channel.LegacyHttpChain;
+import io.openliberty.http.netty.channel.NettyHttpChain;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.impl.NettyConstants;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
@@ -174,10 +176,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      */
     protected volatile OnError onError = OnError.WARN;
 
-    private final HttpChain httpChain = new HttpChain(this, false);
-    private final HttpChain httpSecureChain = new HttpChain(this, true);
-    private final NettyChain nettyChain = new NettyChain(this, false);
-    private final NettyChain nettySecureChain = new NettyChain(this, true);
+    private final LegacyHttpChain httpChain = new LegacyHttpChain(this, false);
+    private final LegacyHttpChain httpSecureChain = new LegacyHttpChain(this, true);
+    private final NettyHttpChain nettyChain = new NettyHttpChain(this, false);
+    private final NettyHttpChain nettySecureChain = new NettyHttpChain(this, true);
 
     private final AtomicReference<AccessLog> accessLogger = new AtomicReference<AccessLog>(DisabledLogger.getRef());
 
@@ -213,7 +215,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             synchronized (actionLock) {
                 // Always allow stops.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "EndpointAction: stopping chains " + HttpEndpointImpl.this, httpChain, httpSecureChain);
+                    Tr.debug(this, tc, "EndpointAction: stopping chains " + HttpEndpointImpl.this, getCurrentHttpChain(), getCurrentHttpsChain());
 
                 getCurrentHttpChain().stop();
                 getCurrentHttpsChain().stop();
@@ -228,7 +230,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             synchronized (actionLock) {
                 // Always allow stops.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "EndpointAction: stopping https chain " + HttpEndpointImpl.this, httpSecureChain);
+                    Tr.debug(this, tc, "EndpointAction: stopping https chain " + HttpEndpointImpl.this, getCurrentHttpsChain());
 
                 getCurrentHttpsChain().stop();
             }
@@ -312,22 +314,21 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
                    MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
     
 
+        useNetty = false; //FORCE for testing legacy chains
 
         initializeChains();
-
-
         modified(config);
         
     }
     
     private void initializeChains() {
         if(useNetty) {
-            nettyChain.initNettyChain(name, netty);
-            nettySecureChain.initNettyChain(name, netty);
+            nettyChain.init(name, netty);
+            nettySecureChain.init(name, netty);
             
         }else {
-            httpChain.init(name, cid, chfw);
-            httpSecureChain.init(name, cid, chfw);
+            httpChain.init(name, chfw);
+            httpSecureChain.init(name, chfw);
         }
     }
     
@@ -490,12 +491,12 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         
         
         if(switchToNetty) {
-            nettyChain.initNettyChain(name, netty);
-            nettySecureChain.initNettyChain(name, netty);
+            nettyChain.init(name, netty);
+            nettySecureChain.init(name, netty);
             
         } else {
-            httpChain.init(name, cid, chfw);
-            httpSecureChain.init(name, cid, chfw);
+            httpChain.init(name, chfw);
+            httpSecureChain.init(name, chfw);
         }
         
         if(httpPort >=0) {
@@ -588,11 +589,11 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     private void logChainStates(){
         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-            HttpChain httpChain = getCurrentHttpChain();
-            HttpChain httpsChain = getCurrentHttpsChain();
+            Chain httpChain = getCurrentHttpChain();
+            Chain httpsChain = getCurrentHttpsChain();
 
-            Tr.debug(this, tc, "Chain states after resume - HTTP: " + ChainState.printState(httpChain.getChainState())
-                + ", HTTPS: " + ChainState.printState(httpsChain.getChainState()));
+            Tr.debug(this, tc, "Chain states after resume - HTTP: " + httpChain.state()
+                + ", HTTPS: " + httpsChain.state());
         }
     }
 
@@ -600,7 +601,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return topicString;
     }
 
-    OnError onError() {
+    public OnError onError() {
         return onError;
     }
 
@@ -611,7 +612,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      * OSGi framework.
      */
     @FFDCIgnore(Exception.class)
-    final void shutdownFramework() {
+    public final void shutdownFramework() {
         Tr.audit(tc, "httpChain.error.shutdown", name);
 
         try {
@@ -664,7 +665,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      *         or not yet listening
      */
     public int getListeningHttpPort() {
-        return useNetty ? nettyChain.getActivePort(): httpChain.getActivePort();
+        return useNetty ? nettyChain.activePort(): httpChain.activePort();
     }
 
     /**
@@ -672,7 +673,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      *         or not yet listening
      */
     public int getListeningSecureHttpPort() {
-        return useNetty ? nettySecureChain.getActivePort(): httpSecureChain.getActivePort();
+        return useNetty ? nettySecureChain.activePort(): httpSecureChain.activePort();
     }
 
     public String getProtocolVersion() {
@@ -1335,7 +1336,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
             // Check the state of the HTTP chains. The expectation is that the HTTP chains' states are NOT STARTED
             // (UNITIALIZED, DESTROYED, QUIESCED or STOPPED).
-            if (getCurrentHttpChain().getChainState() == ChainState.STARTED.val || getCurrentHttpsChain().getChainState() == ChainState.STARTED.val) {
+            if (getCurrentHttpChain().state().get() == ChainState.STARTED || getCurrentHttpsChain().state().get() == ChainState.STARTED) {
                 throw new PauseableComponentException("The request to pause HTTP endpoint " + name + " did not complete successfully.");
             }
         } catch (Throwable t) {
@@ -1378,28 +1379,28 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             Tr.entry(this, tc, "verifyResumedChainStates");
         }
 
-        HttpChain httpChain = getCurrentHttpChain();
-        HttpChain httpsChain = getCurrentHttpsChain();
+        Chain httpChain = getCurrentHttpChain();
+        Chain httpsChain = getCurrentHttpsChain();
 
-        int httpChainState = ChainState.UNINITIALIZED.val;
-        int httpsChainState = ChainState.UNINITIALIZED.val;
+        ChainState httpChainState = ChainState.INITIALIZED;
+        ChainState httpsChainState = ChainState.UNINITIALIZED;
 
         long startTime = System.currentTimeMillis();
         long timeout = 10000; // TODO - testing with ten seconds, but probably want this to be more aggressive
 
         while (System.currentTimeMillis() - startTime < timeout) {
-            httpChainState = httpChain.getChainState();
-            httpsChainState = httpsChain.getChainState();
+            httpChainState = httpChain.state().get();
+            httpsChainState = httpsChain.state().get();
 
             boolean isValid = 
-                (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.UNINITIALIZED.val) ||
-                (httpChainState == ChainState.UNINITIALIZED.val && httpsChainState == ChainState.STARTED.val) ||
-                (httpChainState == ChainState.STARTED.val && httpsChainState == ChainState.STARTED.val);
+                (httpChainState == ChainState.STARTED && httpsChainState == ChainState.UNINITIALIZED) ||
+                (httpChainState == ChainState.UNINITIALIZED && httpsChainState == ChainState.STARTED) ||
+                (httpChainState == ChainState.STARTED && httpsChainState == ChainState.STARTED);
 
             if (isValid) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Chain states verified successfully - HTTP: " + ChainState.printState(httpChainState) 
-                        + ", HTTPS: " + ChainState.printState(httpsChainState));
+                    Tr.debug(this, tc, "Chain states verified successfully - HTTP: " + httpChainState 
+                        + ", HTTPS: " + httpsChainState);
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                     Tr.exit(this, tc, "verifyResumedChainStates");
@@ -1424,8 +1425,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             ". HTTPSChain: " + httpsChain.toString());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Chain states after resume - HTTP: " + ChainState.printState(httpChainState) 
-                 + ", HTTPS: " + ChainState.printState(httpsChainState));
+            Tr.debug(this, tc, "Chain states after resume - HTTP: " + httpChainState 
+                 + ", HTTPS: " + httpsChainState);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1481,11 +1482,11 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "endpoint and chain data: " + HttpEndpointImpl.this, httpChain, httpSecureChain);
         
-        int httpChainState = getCurrentHttpChain().getChainState();
-        int httpsChainState = getCurrentHttpsChain().getChainState();
+        ChainState httpChainState = getCurrentHttpChain().state().get();
+        ChainState httpsChainState = getCurrentHttpsChain().state().get();
 
         // Return true if any of these states apply: UNITIALIZED, DESTROYED, QUIESCED or STOPPED.
-        return (httpChainState != ChainState.STARTED.val && httpsChainState != ChainState.STARTED.val);
+        return (httpChainState != ChainState.STARTED && httpsChainState != ChainState.STARTED);
     }
 
     /** {@inheritDoc} */
@@ -1499,10 +1500,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return info;
     }
     
-    private synchronized HttpChain getCurrentHttpChain() {
+    private synchronized Chain getCurrentHttpChain() {
         return useNetty ? nettyChain: httpChain;
     }
-    private synchronized HttpChain getCurrentHttpsChain() {
+    private synchronized Chain getCurrentHttpsChain() {
         return useNetty ? nettySecureChain: httpSecureChain;
     }
 
