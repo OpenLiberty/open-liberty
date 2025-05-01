@@ -57,7 +57,7 @@ public class MpTelemetryLogMappingUtils {
     }
 
     private static final TraceComponent tc = Tr.register(MpTelemetryLogMappingUtils.class, "TELEMETRY",
-                                                         "io.openliberty.microprofile.telemetry.internal.common.resources.MPTelemetry");
+                                                         "io.openliberty.microprofile.telemetry20.internal.common.resources.MPTelemetry");
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
