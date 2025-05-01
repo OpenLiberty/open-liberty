@@ -43,6 +43,8 @@ public class InvokerEJB implements Invoker {
 
         // Requires the application's classloader (to access application scoped classes)
         Runnable task = () -> {
+            System.out.println("KJA1017 Thread classloader is: " + Thread.currentThread().getContextClassLoader());
+            System.out.println("KJA1017 Invoker classloader is: " + Invoker.class.getClassLoader());
             try {
                 Class.forName("java.lang.Integer"); //Exists as part of JVM
                 Class.forName("concurrent.cdi.ejb.Invoker"); //Exists inside EJB Module

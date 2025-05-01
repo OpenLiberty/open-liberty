@@ -78,7 +78,7 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     ManagedThreadFactoryBean(ComponentMetaData cmd, ConcurrencyExtensionMetadata extSvc, Set<Annotation> qualifiers) {
         this.factory = extSvc.defaultManagedThreadFactoryFactory;
         this.qualifiers = qualifiers;
-        this.declaringClassLoader = null;
+        this.declaringClassLoader = extSvc.applicationClassLoader; //Could be null - in which case defer the classloader decision until later
 
         // The Concurrency extension could be running under any module/component of the application.
         ApplicationMetaData amd = cmd.getModuleMetaData().getApplicationMetaData();
@@ -96,6 +96,8 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
         this.factory = factory;
         this.qualifiers = factory.getQualifiers();
         this.declaringClassLoader = factory.getDeclaringClassLoader();
+
+        System.out.println("KJA1017 declaring classloader: " + declaringClassLoader);
 
         MetaData mdata = factory.getDeclaringMetadata();
         if (mdata instanceof ApplicationMetaData amd) {

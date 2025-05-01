@@ -31,7 +31,11 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
+import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.EARApplicationInfo;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
+import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.resource.ResourceFactory;
 
@@ -45,8 +49,8 @@ import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.inject.spi.Extension;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           service = { CDIExtensionMetadata.class, QualifiedResourceFactories.class })
-public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIExtensionMetadataInternal, QualifiedResourceFactories {
+           service = { ApplicationStateListener.class, CDIExtensionMetadata.class, QualifiedResourceFactories.class })
+public class ConcurrencyExtensionMetadata implements ApplicationStateListener, CDIExtensionMetadata, CDIExtensionMetadataInternal, QualifiedResourceFactories {
     private static final TraceComponent tc = Tr.register(ConcurrencyExtensionMetadata.class);
 
     private static final Set<Class<?>> beanClasses = Set.of(ContextService.class,
@@ -85,6 +89,8 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected volatile ResourceFactory defaultManagedThreadFactoryFactory;
+
+    protected volatile ClassLoader applicationClassLoader;
 
     /**
      * Jakarta EE version.
@@ -209,5 +215,28 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
     }
 
     protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+    }
+
+    @Override
+    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
+        System.out.println("KJA1017 applicationStarting: " + appInfo.toString());
+        if (appInfo instanceof EARApplicationInfo) {
+            System.out.println("KJA1017 is EARApplicationInfo");
+            applicationClassLoader = ((EARApplicationInfo) appInfo).getApplicationClassLoader();
+            System.out.println("KJA1017 applicationClassLoader is: " + applicationClassLoader.toString());
+        }
+    }
+
+    @Override
+    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+    }
+
+    @Override
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
+
+    @Override
+    public void applicationStopped(ApplicationInfo appInfo) {
+        applicationClassLoader = null; //TODO is this necessary?
     }
 }

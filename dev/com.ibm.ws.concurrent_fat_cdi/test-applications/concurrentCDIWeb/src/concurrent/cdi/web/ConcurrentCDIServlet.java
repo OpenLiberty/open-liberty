@@ -721,6 +721,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         // Requires the application's classloader (to access application scoped classes)
         Runnable task = () -> {
+            System.out.println("KJA1017 Thread classloader is: " + Thread.currentThread().getContextClassLoader());
+            System.out.println("KJA1017 MyAsync classloader is: " + MyAsync.class.getClassLoader());
+
             try {
                 Class.forName("java.lang.Integer"); //Exists as part of JVM
                 Class.forName("concurrent.cdi.web.MyAsync"); //Exists inside Web Module
@@ -772,6 +775,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         // Requires the application's classloader (to access application scoped classes)
         Runnable task = () -> {
+            System.out.println("KJA1017 Thread classloader is: " + Thread.currentThread().getContextClassLoader());
+            System.out.println("KJA1017 MyAsync classloader is: " + MyAsync.class.getClassLoader());
+
             try {
                 Class.forName("java.lang.Integer"); //Exists as part of JVM
                 Class.forName("concurrent.cdi.web.MyAsync"); //Exists inside Web Module
