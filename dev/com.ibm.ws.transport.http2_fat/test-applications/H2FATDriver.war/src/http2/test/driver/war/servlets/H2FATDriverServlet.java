@@ -92,7 +92,7 @@ public class H2FATDriverServlet extends FATServlet {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, this.getClass().getName(), "setUsingNetty", "Setting Netty Usage for tests!!");
         }
-        USING_NETTY = true;
+        USING_NETTY = false;
     }
 
     public void testUpgradeHeader(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
