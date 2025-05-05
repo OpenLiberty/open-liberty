@@ -1,8 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test" output="bin_test"/>
+	<classpathentry kind="src" output="bin_test" path="test"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="/com.ibm.ws.logging.core"/>
+	<classpathentry kind="lib" path="/Users/gordon/.m2/repository/io/netty/netty-transport/4.1.100.Final/netty-transport-4.1.100.Final.jar" sourcepath="/Users/gordon/.m2/repository/io/netty/netty-transport/4.1.100.Final/netty-transport-4.1.100.Final-sources.jar">
+		<attributes>
+			<attribute name="bsn" value="io.netty:netty-transport"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.grpc_fat"/>
+			<attribute name="version" value="4.1.100.Final"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="io/netty/bootstrap/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/embedded/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/group/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/internal/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/local/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/nio/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/oio/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/pool/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/socket/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/socket/nio/*"/>
+			<accessrule kind="accessible" pattern="io/netty/channel/socket/oio/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/gordon/.m2/repository/biz/aQute/bnd/biz.aQute.bnd/6.3.0/biz.aQute.bnd-6.3.0.jar" sourcepath="/Users/gordon/.m2/repository/biz/aQute/bnd/biz.aQute.bnd/6.3.0/biz.aQute.bnd-6.3.0.jar">
+		<attributes>
+			<attribute name="bsn" value="biz.aQute.bnd:biz.aQute.bnd"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.websphere.appserver.features"/>
+			<attribute name="version" value="6.3.0"/>
+			<attribute name="packages" value="**"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="**/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/gordon/.m2/repository/org/osgi/org.osgi.service.component.annotations/1.4.0/org.osgi.service.component.annotations-1.4.0.jar" sourcepath="/Users/gordon/.m2/repository/org/osgi/org.osgi.service.component.annotations/1.4.0/org.osgi.service.component.annotations-1.4.0.jar">
+		<attributes>
+			<attribute name="bsn" value="org.osgi.service.component.annotations"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.concurrent.persistent_fat_failover1serv"/>
+			<attribute name="version" value="latest"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/annotations/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/gordon/.m2/repository/org/osgi/org.osgi.service.component/1.4.0/org.osgi.service.component-1.4.0.jar" sourcepath="/Users/gordon/.m2/repository/org/osgi/org.osgi.service.component/1.4.0/org.osgi.service.component-1.4.0.jar">
+		<attributes>
+			<attribute name="bsn" value="org.osgi:org.osgi.service.component"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.websphere.org.osgi.service.component"/>
+			<attribute name="version" value="1.4.0"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/propertytypes/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/dto/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/gordon/.m2/repository/io/netty/netty-common/4.1.100.Final/netty-common-4.1.100.Final.jar" sourcepath="/Users/gordon/.m2/repository/io/netty/netty-common/4.1.100.Final/netty-common-4.1.100.Final-sources.jar">
+		<attributes>
+			<attribute name="bsn" value="io.netty:netty-common"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.grpc_fat"/>
+			<attribute name="version" value="4.1.100.Final"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="io/netty/util/*"/>
+			<accessrule kind="accessible" pattern="io/netty/util/collection/*"/>
+			<accessrule kind="accessible" pattern="io/netty/util/concurrent/*"/>
+			<accessrule kind="accessible" pattern="io/netty/util/internal/*"/>
+			<accessrule kind="accessible" pattern="io/netty/util/internal/logging/*"/>
+			<accessrule kind="accessible" pattern="io/netty/util/internal/svm/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/gordon/.m2/repository/io/netty/netty-handler/4.1.100.Final/netty-handler-4.1.100.Final.jar" sourcepath="/Users/gordon/.m2/repository/io/netty/netty-handler/4.1.100.Final/netty-handler-4.1.100.Final-sources.jar">
+		<attributes>
+			<attribute name="bsn" value="io.netty:netty-handler"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.grpc_fat"/>
+			<attribute name="version" value="4.1.100.Final"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="io/netty/handler/address/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/flow/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/flush/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/ipfilter/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/logging/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/pcap/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/ssl/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/ssl/ocsp/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/ssl/util/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/stream/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/timeout/*"/>
+			<accessrule kind="accessible" pattern="io/netty/handler/traffic/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
