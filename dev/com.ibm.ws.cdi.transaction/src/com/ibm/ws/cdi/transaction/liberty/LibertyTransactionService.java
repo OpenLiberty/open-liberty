@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi.transaction.liberty;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
@@ -188,11 +191,22 @@ public class LibertyTransactionService implements TransactionService {
     @Override
     public void registerSynchronization(Synchronization sync) {
 
+        final int syncTier = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+            @Override
+            public Integer run() {
+                if (Boolean.getBoolean("enableBuggyOldBehavior")) {
+                    return RegisteredSyncs.SYNC_TIER_OUTER;
+                }
+
+                return RegisteredSyncs.SYNC_TIER_RRS;
+            }
+        });
+
         TransactionManager transactionManager = this.getTransactionManager();
         try {
             Transaction tran = transactionManager.getTransaction();
             if (tran instanceof TransactionImpl) {
-                ((TransactionImpl) tran).registerSynchronization(sync, RegisteredSyncs.SYNC_TIER_OUTER);
+                ((TransactionImpl) tran).registerSynchronization(sync, syncTier);
             } else {
                 tran.registerSynchronization(sync);
             }
