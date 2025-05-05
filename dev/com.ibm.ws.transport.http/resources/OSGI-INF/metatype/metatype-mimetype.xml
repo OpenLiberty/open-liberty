@@ -71,6 +71,7 @@
               htm=text/html,
               html=text/html,
               htmls=text/x-ssi-html,
+              ico=image/x-icon,
               ief=image/ief,
               iges=application/iges,
               IGES=application/iges,
