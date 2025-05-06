@@ -1007,9 +1007,9 @@ DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction==Check that the destination nam
 # -------------------------------------------------------------------------------------------------
 # {0} the specified batch size
 # {1} the specified batch interval
-IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: The batch size setting of {0} is incompatible with the batch timeout setting of {1}, so a batch size of zero will be used.
+IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: The batch size setting of {0} is incompatible with the batch timeout setting of {1}, so a batch size of zero is used.
 IGNORING_BATCH_SIZE_CWSIP0351.explanation=To enable asynchronous batch processing, both the batch size and batch timeout must be set to positive values.
-IGNORING_BATCH_SIZE_CWSIP0351.useraction=To enable asynchronous batch processing, set both the batch size and batch timeout to positive values.
+IGNORING_BATCH_SIZE_CWSIP0351.useraction=Set both the batch size and batch timeout to positive values.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The message id.
@@ -1163,8 +1163,8 @@ ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Verify that it is possible to co
 
 # -------------------------------------------------------------------------------------------------
 # {0} The ProtocolItemStream object
-MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: A malformed ProtocolItemStream {0} has been found. The creation of the stream will be deferred so that it may be properly formed.
-MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=A malformed ProtocolItemStream has been found which does not contain a CompletedPrefix item. Deferring creation of the stream may allow it to be properly formed.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: A malformed ProtocolItemStream {0} was found. The creation of the stream is deferred so that it can be properly formed.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=A malformed ProtocolItemStream was found that does not contain a CompletedPrefix item. The creation of the stream is deferred so that it can be properly formed.
 MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.useraction=None.
 
 # -------------------------------------------------------------------------------------------------
