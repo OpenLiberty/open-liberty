@@ -92,20 +92,23 @@ public class AsyncUpdateThread {
      *        their execution is scheduled
      */
     private AsyncUpdateThread(MessageProcessor mp, SIMPTransactionManager tranManager, int batchThreshold) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "AsyncUpdateThread",
-                    new Object[] { tranManager, batchThreshold });
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(tc, "AsyncUpdateThread.<init>",
+                    new Object[] { mp, tranManager, batchThreshold });
         this.mp = mp;
         this.tranManager = tranManager;
         this.batchThreshold = batchThreshold;
 
-        if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "AsyncUpdateThread", this);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "AsyncUpdateThread.<init>", this);
     }
 
     private void startTimer(long maxCommitInterval) {
-        if (0L == maxCommitInterval) return;
-        new Timer(maxCommitInterval).schedule();
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "startTimer", maxCommitInterval);
+        try {
+            if (0L == maxCommitInterval) return;
+            new Timer(maxCommitInterval).schedule();
+        } finally {
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "startTimer");
+        }
     }
 
     private final class Timer implements AlarmListener {
@@ -115,20 +118,19 @@ public class AsyncUpdateThread {
             this.maxCommitInterval = maxCommitInterval;
         }
 
-        public void alarm(Object thandle) {
-            if (isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.entry(tc, "alarm",
-                        new Object[] {this, mp.getMessagingEngineUuid()});
+        public void alarm(Object ignored) {
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "alarm", mp.getMessagingEngineUuid());
 
             considerScheduleExecution(false);
             schedule();
 
-            if (isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.exit(tc, "alarm");
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "alarm");
         }
 
         void schedule() {
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "schedule", maxCommitInterval);
             mp.getAlarmManager().create(maxCommitInterval, this);
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "schedule");
         }
     }
 
@@ -137,36 +139,32 @@ public class AsyncUpdateThread {
      * @param item the AsyncUpdate
      */
     public void enqueueWork(AsyncUpdate item) throws ClosedException {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "enqueueWork", item);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "enqueueWork", item);
         if (null == item) {
-            if (isAnyTracingEnabled() && tc.isEntryEnabled())
-                SibTr.exit(tc, "enqueueWork", "No work given");
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "enqueueWork", "No work given");
             return;
         }
 
         synchronized (this) {
             if (isClosed()) {
                 ClosedException e = new ClosedException(closeCallerInfo);
-                if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exception(tc, e);
+                if (tc.isEventEnabled()) SibTr.exception(this, tc, e);
+                if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "enqueueWork", "already closed - throwing ClosedException");
                 throw e;
             }
 
-            if (isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(tc, "Enqueueing update: " + item);
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Enqueueing update: " + item);
 
             addItem(item);
             if (executing) {
-                if (isAnyTracingEnabled() && tc.isEntryEnabled())
-                    SibTr.exit(tc, "enqueueWork", "AsyncUpdateThread executing");
+                if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "enqueueWork", "AsyncUpdateThread executing");
                 return;
             }
 
             considerScheduleExecution(true);
         }
 
-        if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "enqueueWork");
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "enqueueWork");
     }
 
     private synchronized void addItem(AsyncUpdate item) {
@@ -195,7 +193,7 @@ public class AsyncUpdateThread {
         } catch (InterruptedException e) {
             FFDCFilter.processException(e,
                     this.getClass().getName() + ".considerScheduleExecution", "1:211:1.30", this);
-            SibTr.exception(tc, e);
+            SibTr.exception(this, tc, e);
             close(e);
         }
     }
@@ -205,14 +203,21 @@ public class AsyncUpdateThread {
     }
 
     private synchronized Iterable<AsyncUpdate> getNextBatch(int batchSize) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getNextBatch", batchSize);
         final int threshold = isClosed() ? 0 : batchSize;
-        if (enqueuedCount <= threshold) {
-            executing = false;
-            if (0 < batchThreshold) executeSinceExpiry = true;
-            notifyAll();
-            return null;
+        Iterable<AsyncUpdate> nextBatch = null;
+        try {
+            if (enqueuedCount > threshold) {
+                nextBatch = drainItems();
+            } else {
+                executing = false;
+                if (0 < batchThreshold) executeSinceExpiry = true;
+                notifyAll();
+            }
+            return nextBatch;
+        } finally {
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getNextBatch", nextBatch);
         }
-        return drainItems();
     }
 
     private enum AsyncUpdateProcessing {
@@ -248,6 +253,7 @@ public class AsyncUpdateThread {
             } catch (Throwable t) {
                 notifyRollbackThenThrow(item, t);
             }
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "Calling committed on " + item);
             item.committed();
         }
 
@@ -263,6 +269,7 @@ public class AsyncUpdateThread {
 
         private static void notifyRollbackThenThrow(AsyncUpdate item, Throwable t) throws Throwable {
             try {
+                if (isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "Calling rolledback on " + item);
                 item.rolledback(t);
             } catch (Throwable t2) {
                 t.addSuppressed(t2);
@@ -272,6 +279,7 @@ public class AsyncUpdateThread {
 
         private static void rollbackThenThrow(LocalTransaction tran, Throwable t) throws Throwable {
             try {
+                if (isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "Calling rollback on " + tran);
                 tran.rollback();
             } catch (Throwable t2) {
                 t.addSuppressed(t2);
@@ -280,8 +288,10 @@ public class AsyncUpdateThread {
         }
 
         private static void executeThenCommit(AsyncUpdate item, LocalTransaction tran) throws Throwable, CommitFailedException {
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "Calling execute on " + item + " with tran " + tran);
             item.execute(tran);
             try {
+                if (isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc, "Calling commit on " + tran);
                 tran.commit();
             } catch (Throwable t) {
                 throw new CommitFailedException(t);
@@ -290,9 +300,9 @@ public class AsyncUpdateThread {
     }
 
     private void processItems(int initialBatchSize) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(tc, "run", this);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "processItems", initialBatchSize);
         for (Iterable<AsyncUpdate> items = getNextBatch(initialBatchSize); null != items; items = getNextBatch()) AsyncUpdateProcessing.processItems(items, tranManager);
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "run");
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "processItems");
     }
 
     private class ExecutionThread implements Runnable {
@@ -326,18 +336,17 @@ public class AsyncUpdateThread {
     }
 
     public void close(Throwable reason) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "close");
-
-        synchronized (this) {
-            if (isClosed()) return;
-            closeCallerInfo = new CloseCallerInfo(reason);
-            if (executing) return;
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "close", reason);
+        try {
+            synchronized (this) {
+                if (isClosed()) return;
+                closeCallerInfo = new CloseCallerInfo(reason);
+                if (executing) return;
+            }
+            processItems(0);
+        } finally {
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "close");
         }
-        processItems(0);
-
-        if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "close");
     }
 
     /**
@@ -345,21 +354,18 @@ public class AsyncUpdateThread {
      * Useful for unit testing.
      */
     public void waitTillAllUpdatesExecuted() throws InterruptedException {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "waitTillAllUpdatesExecuted");
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "waitTillAllUpdatesExecuted");
         synchronized (this) {
             while (!enqueuedItems.isEmpty() || executing) {
                 try {
                     wait();
                 } catch (InterruptedException e) {
                     // No FFDC code needed
-                    if (isAnyTracingEnabled() && tc.isEntryEnabled())
-                        SibTr.exit(tc, "waitTillAllUpdatesExecuted", e);
+                    if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "waitTillAllUpdatesExecuted", e);
                     throw e;
                 }
             }
         }
-        if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "waitTillAllUpdatesExecuted");
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "waitTillAllUpdatesExecuted");
     }
 }

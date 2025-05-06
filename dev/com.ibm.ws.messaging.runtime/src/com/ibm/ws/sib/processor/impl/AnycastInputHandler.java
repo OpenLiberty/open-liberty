@@ -488,7 +488,6 @@ public class AnycastInputHandler implements InputHandler, ControlHandler
         // regardless of consumer cardinality
         cursor = containerItemStream.newNonLockingItemStreamCursor(null);
         _persistentStreamState = (AIProtocolItemStream) cursor.next();
-        // if (containerItemStream.getStatistics().getAvailableItemCount() > 0)
         if (isAIProtocolItemStreamValid(_persistentStreamState))
         {
           // Instantiate stream and initialize with persistent state
