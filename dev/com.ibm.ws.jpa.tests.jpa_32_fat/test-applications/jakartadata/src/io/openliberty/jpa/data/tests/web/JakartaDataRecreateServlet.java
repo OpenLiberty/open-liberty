@@ -36,6 +36,7 @@ import java.time.temporal.ChronoField;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -2031,66 +2032,91 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
     
     @Test // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460
-    //Checks that the query does not fail if no matching records exist and the ORDER BY clause doesn't cause issues when results are empty
     public void testOLGH29460_NoMatchAndOrdering() throws Exception {
+        // Clean up any existing data
+        tx.begin();
+        em.createQuery("DELETE FROM Participant").executeUpdate();
+        tx.commit();
+
         // Setup test data
         Participant p1 = Participant.of("Anna", "Brown", 4);
         Participant p2 = Participant.of("Zach", "Taylor", 5);
         Participant p3 = Participant.of("Mark", "Lee", 6);
 
-        // Persist the participants
         tx.begin();
         em.persist(p1);
         em.persist(p2);
         em.persist(p3);
         tx.commit();
 
+        List<Participant> results = Collections.emptyList(); // Ensure it's never null
+
         // Query with a last name that doesn't exist
-        List<Participant> results;
         tx.begin();
         try {
-            results = em.createQuery("SELECT o FROM Participant o WHERE (o.name.last = ?1) ORDER BY o.name.first, o.id", Participant.class)
+            results = em.createQuery(
+                                     "SELECT o FROM Participant o WHERE o.name.last = ?1 ORDER BY o.name.first, o.id",
+                                     Participant.class)
                             .setParameter(1, "Doe")
                             .getResultList();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
-            throw e;
+            throw new RuntimeException("Query failed unexpectedly", e);
         }
 
-        // Verify that no results are returned
-        assertNotNull(results);
-        assertTrue(results.isEmpty());
+        // Debugging output for test failures
+        if (!results.isEmpty()) {
+            System.out.println("Unexpected results found:");
+            for (Participant p : results) {
+                System.out.println("  -> " + p);
+            }
+        }
+
+        // Assertions
+        assertNotNull("Results list should not be null", results);
+        assertTrue("Expected empty results for non-matching last name", results.isEmpty());
     }
 
     @Test // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460
     public void testOLGH29460_NullEdgeCaseAndOrdering() throws Exception {
         // Setup test data with null, empty, and edge case values
-        Participant p1 = Participant.of("Anna", null, 13); // Null last name
-        Participant p2 = Participant.of("Mike", "Green", 14);
-        Participant p3 = Participant.of("Laura", "Blue", 15);
-        Participant p4 = Participant.of("Zoe", "Green", 16); // Same last name, different first name for ordering test
-        Participant p5 = Participant.of("Mike", null, 17); // Null first name
-        Participant p6 = Participant.of("John", "Green", 18); // Same last name as others, different first name
-        Participant p7 = Participant.of("", "Green", 19); // Empty first name (edge case)
+        Participant p1 = Participant.of("Anna", null, 13); // Null last name (should be excluded)
+        Participant p2 = Participant.of("Mike", "Green", 14); // Valid
+        Participant p3 = Participant.of("Laura", "Blue", 15); // Different last name (excluded)
+        Participant p4 = Participant.of("Zoe", "Green", 16); // Valid
+        Participant p5 = Participant.of(null, "Green", 17); // Null first name
+        Participant p6 = Participant.of("John", "Green", 18); // Valid
+        Participant p7 = Participant.of("", "Green", 19); // Empty first name
 
-        // Persisting the participants
+        // Persist participants
         tx.begin();
-        em.persist(p1);
-        em.persist(p2);
-        em.persist(p3);
-        em.persist(p4);
-        em.persist(p5);
-        em.persist(p6);
-        em.persist(p7);
-        tx.commit();
+        try {
+            em.persist(p1);
+            em.persist(p2);
+            em.persist(p3);
+            em.persist(p4);
+            em.persist(p5);
+            em.persist(p6);
+            em.persist(p7);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
 
         // Query for participants with the last name 'Green'
         List<Participant> results;
         tx.begin();
         try {
-            results = em.createQuery("SELECT o FROM Participant o WHERE (o.name.last = ?1) ORDER BY o.name.first, o.id", Participant.class)
-                            .setParameter(1, "Green")
+            results = em.createQuery(
+                                     "SELECT o FROM Participant o WHERE o.name.last = :lastName " +
+                                     "ORDER BY " +
+                                     "CASE WHEN o.name.first IS NULL THEN 1 ELSE 0 END, " +
+                                     "CASE WHEN o.name.first = '' THEN 1 ELSE 0 END, " +
+                                     "o.name.first, o.id",
+                                     Participant.class)
+                            .setParameter("lastName", "Green")
                             .getResultList();
             tx.commit();
         } catch (Exception e) {
@@ -2098,26 +2124,23 @@ public class JakartaDataRecreateServlet extends FATServlet {
             throw e;
         }
 
-        // Verify that the results are ordered correctly by first name and then by id
+        // Validate results
         assertNotNull(results);
-        assertEquals(4, results.size()); // There are 4 participants with the last name "Green"
+        assertEquals(5, results.size()); // 5 participants with last name "Green"
 
-        // Verify ordering by first name (alphabetical), then by id if first names are the same
-        assertEquals("John", results.get(0).getName().getFirst()); // First name 'John' comes first alphabetically
-        assertEquals("Mike", results.get(1).getName().getFirst()); // First name 'Mike' comes after 'John'
-        assertEquals("Mike", results.get(2).getName().getFirst()); // Second 'Mike', but order by id (17 < 14)
-        assertEquals("Zoe", results.get(3).getName().getFirst()); // 'Zoe' comes last by first name
+        // Expected order: John (18), Mike (14), Zoe (16), "" (19), null (17)
+        assertEquals("John", results.get(0).getName().getFirst());
+        assertEquals("Mike", results.get(1).getName().getFirst());
+        assertEquals("Zoe", results.get(2).getName().getFirst());
+        assertEquals("", results.get(3).getName().getFirst());
+        assertNull(results.get(4).getName().getFirst());
 
-        // Verify edge case with empty first name
-        assertEquals("", p7.getName().getFirst()); // Ensure empty string is correctly handled
-
-        // Verify null first name participant
-        assertNull(p5.getName().getFirst()); // Ensure null first name is correctly handled
-
-        // Verify null last name participant
-        assertNull(p1.getName().getLast()); // Ensure null last name is correctly handled
+        // Additional validation for excluded/edge cases
+        assertNull(p1.getName().getLast()); // Null last name should be excluded from query
+        assertEquals("", p7.getName().getFirst()); // Empty first name correctly stored
+        assertNull(p5.getName().getFirst()); // Null first name correctly stored
     }
-
+    
     @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30534")
     public void testOLGH30534() throws Exception {
