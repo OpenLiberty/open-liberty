@@ -2029,6 +2029,94 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals("John", results.get(1).getName().getFirst());
 
     }
+    
+    @Test // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460
+    //Checks that the query does not fail if no matching records exist and the ORDER BY clause doesn't cause issues when results are empty
+    public void testOLGH29460_NoMatchAndOrdering() throws Exception {
+        // Setup test data
+        Participant p1 = Participant.of("Anna", "Brown", 4);
+        Participant p2 = Participant.of("Zach", "Taylor", 5);
+        Participant p3 = Participant.of("Mark", "Lee", 6);
+
+        // Persist the participants
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        em.persist(p3);
+        tx.commit();
+
+        // Query with a last name that doesn't exist
+        List<Participant> results;
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT o FROM Participant o WHERE (o.name.last = ?1) ORDER BY o.name.first, o.id", Participant.class)
+                            .setParameter(1, "Doe")
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        // Verify that no results are returned
+        assertNotNull(results);
+        assertTrue(results.isEmpty());
+    }
+
+    @Test // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460
+    public void testOLGH29460_NullEdgeCaseAndOrdering() throws Exception {
+        // Setup test data with null, empty, and edge case values
+        Participant p1 = Participant.of("Anna", null, 13); // Null last name
+        Participant p2 = Participant.of("Mike", "Green", 14);
+        Participant p3 = Participant.of("Laura", "Blue", 15);
+        Participant p4 = Participant.of("Zoe", "Green", 16); // Same last name, different first name for ordering test
+        Participant p5 = Participant.of("Mike", null, 17); // Null first name
+        Participant p6 = Participant.of("John", "Green", 18); // Same last name as others, different first name
+        Participant p7 = Participant.of("", "Green", 19); // Empty first name (edge case)
+
+        // Persisting the participants
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        em.persist(p3);
+        em.persist(p4);
+        em.persist(p5);
+        em.persist(p6);
+        em.persist(p7);
+        tx.commit();
+
+        // Query for participants with the last name 'Green'
+        List<Participant> results;
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT o FROM Participant o WHERE (o.name.last = ?1) ORDER BY o.name.first, o.id", Participant.class)
+                            .setParameter(1, "Green")
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        // Verify that the results are ordered correctly by first name and then by id
+        assertNotNull(results);
+        assertEquals(4, results.size()); // There are 4 participants with the last name "Green"
+
+        // Verify ordering by first name (alphabetical), then by id if first names are the same
+        assertEquals("John", results.get(0).getName().getFirst()); // First name 'John' comes first alphabetically
+        assertEquals("Mike", results.get(1).getName().getFirst()); // First name 'Mike' comes after 'John'
+        assertEquals("Mike", results.get(2).getName().getFirst()); // Second 'Mike', but order by id (17 < 14)
+        assertEquals("Zoe", results.get(3).getName().getFirst()); // 'Zoe' comes last by first name
+
+        // Verify edge case with empty first name
+        assertEquals("", p7.getName().getFirst()); // Ensure empty string is correctly handled
+
+        // Verify null first name participant
+        assertNull(p5.getName().getFirst()); // Ensure null first name is correctly handled
+
+        // Verify null last name participant
+        assertNull(p1.getName().getLast()); // Ensure null last name is correctly handled
+    }
 
     @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30534")
