@@ -1,6 +1,6 @@
 
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,9 @@ package io.openliberty.jpa.data.tests.models;
 
 public class ParticipantOrm {
 
-    private Integer id;
+    public Integer id;
 
-    private NameOrm name;
+    public NameOrm name;
 
     public static ParticipantOrm of(String firstName, String lastName, int id) {
 
@@ -23,14 +23,6 @@ public class ParticipantOrm {
         p.id = id;
         p.name = new NameOrm(firstName, lastName);
         return p;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public NameOrm getName() {
-        return name;
     }
 
     public static record NameOrm(String first, String last) {

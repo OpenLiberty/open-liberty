@@ -2097,10 +2097,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         // Verify the results
         assertEquals(2, results.size());
-        assertEquals("Doe", results.get(0).getName().last());
-        assertEquals("Emily", results.get(0).getName().first());
-        assertEquals("Doe", results.get(1).getName().last());
-        assertEquals("John", results.get(1).getName().first());
+        assertEquals("Doe", results.get(0).name.last());
+        assertEquals("Emily", results.get(0).name.first());
+        assertEquals("Doe", results.get(1).name.last());
+        assertEquals("John", results.get(1).name.first());
     }
 
     @Test
