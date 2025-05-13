@@ -468,6 +468,17 @@ public class TCKRunner {
         stringArrayList.add("-DcomponentRootDir=" + getComponentRootDir());
         stringArrayList.add("-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT);
 
+        //Set the argline.
+        StringBuilder sb = new StringBuilder();
+        sb.append("-Dfat.framework.args\"");
+        sb.append("-Dproject.build.sourceEncoding=UTF-8"); //Becuase arquillian calls string.getBtytes() it can fail on ZOS if it defaults to a ZOS charset.
+        sb.append(" -Dcom.ibm.tools.attach.enable=yes"); //Needed becuase because arquillian uses com.sun.tools.attach to find VMs.
+        if (this.server.isIBMJVM()) {
+            sb.append(" -Xdump:directory=${project.basedir}/../../../results/"); //This means that if MVN creates dumpfiles they will go into a directory that gets uploaded into the build break report
+        }
+        sb.append("\"");
+        stringArrayList.add(sb.toString());
+
         stringArrayList.addAll(getJarCliProperties());
 
         // The cmd below is a base for running the TCK as a whole for this project.
