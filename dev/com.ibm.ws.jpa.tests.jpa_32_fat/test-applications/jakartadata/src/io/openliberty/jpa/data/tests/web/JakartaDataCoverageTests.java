@@ -84,7 +84,7 @@ public class JakartaDataCoverageTests extends FATServlet {
         assertTrue("Expected hexadecimal value not found in results", results.contains(character.getHexadecimal()));
     }
 
-    @Test
+    @Test //Verifies that querying a non-existent field in AsciiCharacter throws a runtime exception
     public void testAsciiCharacterInvalidFieldAccessWithoutAlias() {
         try {
             em.createQuery("SELECT nonExistentField FROM AsciiCharacter", String.class)
@@ -97,7 +97,7 @@ public class JakartaDataCoverageTests extends FATServlet {
         }
     }
 
-    @Test
+    @Test // Verifies that multiple persisted AsciiCharacter entries return correct hexadecimal values via JPQL query
     public void testAsciiCharacterMultipleResultsQuery() {
         try {
             tx.begin();
