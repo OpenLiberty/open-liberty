@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -115,8 +115,7 @@ public class InterceptorChain implements InvocationContext {
         //if there are more interceptors left in the chain, call the next one
         if (nextInterceptor < interceptors.size()) {
             rc = invokeNextInterceptor();
-        }
-        else {
+        } else {
             //otherwise call proceed on the delegate InvocationContext
             rc = delegateInvocationContext.proceed();
         }
@@ -126,6 +125,8 @@ public class InterceptorChain implements InvocationContext {
 
     private <S> Object invokeNextInterceptor() throws Exception {
         Object rc = null;
+
+        rc.toString();
 
         //find the next interceptor in the chain
         Interceptor<S> interceptor = (Interceptor<S>) interceptors.get(nextInterceptor);
