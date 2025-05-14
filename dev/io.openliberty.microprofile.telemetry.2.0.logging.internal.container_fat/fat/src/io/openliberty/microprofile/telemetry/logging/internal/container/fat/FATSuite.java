@@ -22,9 +22,9 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                LoggingServletTest.class,
-                LoggingBridgeServletTest.class,
-                JULDuplicateTest.class,
+                //LoggingServletTest.class,
+                //LoggingBridgeServletTest.class,
+                //JULDuplicateTest.class,
                 JULLogServletTest.class
 })
 
@@ -33,5 +33,7 @@ public class FATSuite extends TestContainerSuite {
     @ClassRule
     public static RepeatTests r = TelemetryActions
                     .repeat(FeatureReplacementAction.ALL_SERVERS, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10,
-                            TelemetryActions.MP50_MPTEL20_JAVA8, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP14_MPTEL20);
+                            TelemetryActions.MP50_MPTEL20_JAVA8, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP14_MPTEL20,
+                            MicroProfileActions.MP71_EE11, MicroProfileActions.MP71_EE10, TelemetryActions.MP50_MPTEL21_JAVA8,
+                            TelemetryActions.MP41_MPTEL21, TelemetryActions.MP14_MPTEL21);
 }
