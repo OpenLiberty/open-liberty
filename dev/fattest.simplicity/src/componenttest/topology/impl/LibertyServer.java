@@ -1931,7 +1931,11 @@ public class LibertyServer implements LogMonitorClient {
                             assertCheckpointDirAsExpected(true);
                             Log.warning(c, "There are some expected checkpoint files in the checkpoint directory.");
                         } catch (AssertionError ae) {
-                            Log.debug(c, "Got an expected assertion error: " + ae);
+                            Log.warning(c, "Got an expected assertion error: " + ae);
+                            // no checkpoint files found try looking at the logs
+                            Log.info(c, method, "Content of messages.log:");
+                            RemoteFile messagesLog = machine.getFile(messageAbsPath);
+                            LibertyFileManager.findStringsInFile(".*", messagesLog).stream().forEach(l -> Log.info(c, method, l));
                         }
                     }
                 }
@@ -1941,7 +1945,7 @@ public class LibertyServer implements LogMonitorClient {
                 output = machine.execute(cmd, parameters, useEnvVars);
             }
             boolean shouldFail = doCheckpoint() ? checkpointInfo.expectCheckpointFailure : expectStartFailure;
-            int rc = output.getReturnCode();
+            int rc = output != null ? output.getReturnCode() : -1;
             if (rc != 0) {
                 if (shouldFail) {
                     Log.info(c, method, "EXPECTED: Server didn't start");
@@ -1949,8 +1953,11 @@ public class LibertyServer implements LogMonitorClient {
                     Log.exiting(c, method);
                     return output;
                 } else {
-                    Log.info(c, method, "Response from script is: " + output.getStdout());
+                    Log.info(c, method, "Response from script is: " + output != null ? output.getStdout() : "null");
                     Log.info(c, method, "Return code from script is: " + rc);
+                    Exception fail = new Exception("Unexpected server failed.");
+                    Log.error(c, fail.getMessage(), fail);
+                    throw fail;
                 }
             } else {
                 if (shouldFail && doCheckpoint()) {
