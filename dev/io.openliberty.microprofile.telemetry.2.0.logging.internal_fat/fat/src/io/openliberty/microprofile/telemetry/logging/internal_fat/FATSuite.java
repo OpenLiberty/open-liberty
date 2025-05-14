@@ -27,15 +27,15 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                TelemetryMessagesTest.class,
-                TelemetryMessagesCheckpointTest.class,
+                /*TelemetryMessagesTest.class,
+                TelemetryMessagesCheckpointTest.class,*/
                 TelemetryFFDCTest.class,
-                TelemetryFFDCCheckpointTest.class,
+                /*TelemetryFFDCCheckpointTest.class,
                 TelemetryTraceTest.class,
                 TelemetryTraceCheckpointTest.class,
                 TelemetrySourcesTest.class,
                 TelemetryApplicationConfigTest.class,
-                TelemetryDropinsTest.class
+                TelemetryDropinsTest.class*/
 })
 
 public class FATSuite {

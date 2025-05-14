@@ -42,7 +42,7 @@ public class TelemetryTraceCheckpointTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = TelemetryActions.latestTelemetry20Repeats();
+    public static RepeatTests rt = TelemetryActions.latestTelemetry20and21Repeats();
 
     @BeforeClass
     public static void initialSetup() throws Exception {

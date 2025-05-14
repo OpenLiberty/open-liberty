@@ -45,7 +45,7 @@ public class TelemetryApplicationConfigTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = TelemetryActions.latestTelemetry20Repeats();
+    public static RepeatTests rt = TelemetryActions.latestTelemetry20and21Repeats();
 
     @Before
     public void testSetup() throws Exception {
