@@ -22,7 +22,7 @@ kyleaure/db2-krb5:2.0
 letsencrypt/pebble-challtestsrv:v2.3.1
 letsencrypt/pebble:v2.3.1
 localhost/openliberty/testcontainers/couchdb-ssl:3.0.0.1
-localhost/openliberty/testcontainers/db2-krb5:12.1.1.0
+localhost/openliberty/testcontainers/db2-krb5:12.1.1.1
 localhost/openliberty/testcontainers/db2-ssl:12.1.1.0
 localhost/openliberty/testcontainers/kdc-jdbc-server:3.0.0.1
 localhost/openliberty/testcontainers/kdc-security-server:3.17

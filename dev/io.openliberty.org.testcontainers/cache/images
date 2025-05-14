@@ -36,7 +36,7 @@ wasliberty-infrastructure-docker/ryanesch/acme-boulder:1.2
 wasliberty-infrastructure-docker/seleniarm/standalone-chromium:4.8.3
 wasliberty-infrastructure-docker/selenium/standalone-chrome:4.8.3
 wasliberty-internal-docker-local/openliberty/testcontainers/couchdb-ssl:3.0.0.1
-wasliberty-internal-docker-local/openliberty/testcontainers/db2-krb5:12.1.1.0
+wasliberty-internal-docker-local/openliberty/testcontainers/db2-krb5:12.1.1.1
 wasliberty-internal-docker-local/openliberty/testcontainers/db2-ssl:12.1.1.0
 wasliberty-internal-docker-local/openliberty/testcontainers/kdc-jdbc-server:3.0.0.1
 wasliberty-internal-docker-local/openliberty/testcontainers/kdc-security-server:3.17

@@ -77,34 +77,32 @@ public class DB2KerberosTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Generate krb5.conf in server/security directory
         krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
-
-        //TODO switch
-        krbKeytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab");
-//        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
-
         FATSuite.krb5.generateConf(krbConfPath);
 
+        // Generate krb5.keytab in KDC container, and then copy it to server/security directory
+        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
+        FATSuite.krb5.copyFileFromContainer(FATSuite.requestKeyTable("dbuser"), krbKeytabPath.toAbsolutePath().toString());
+
+        // Dropin application
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.db2.web");
 
+        // Setup environment variables
         server.addEnvVar("DB2_DBNAME", db2.getDatabaseName());
         server.addEnvVar("DB2_HOSTNAME", db2.getHost());
         server.addEnvVar("DB2_PORT", "" + db2.getMappedPort(50000));
         server.addEnvVar("DB2_USER", db2.getUsername());
         server.addEnvVar("DB2_PASS", db2.getPassword());
         server.addEnvVar("KRB5_USER", KRB5_USER);
-        server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
         server.addEnvVar("KRB5_KEYTAB", krbKeytabPath.toAbsolutePath().toString());
+        server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
+
+        // Add JVM properties
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
         jvmOpts.add("-Dsun.security.jgss.debug=true"); // Hotspot/OpenJ9
-
-        // TODO extract security files from container prior to server start
-        // TODO delete security files from git
-
-        // Extract keytab from container
-//        db2.copyFileFromContainer("/tmp/krb5.keytab", krbKeytabPath.toAbsolutePath().toString());
 
         server.setJvmOptions(jvmOpts);
 

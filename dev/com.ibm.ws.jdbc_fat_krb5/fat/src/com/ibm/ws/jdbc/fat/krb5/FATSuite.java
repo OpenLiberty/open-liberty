@@ -12,11 +12,14 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import java.util.HashMap;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -74,4 +77,32 @@ public class FATSuite extends TestContainerSuite {
         if (firstError != null)
             throw firstError;
     }
+
+    /**
+     * Requests the KDC to generate a keytable for this user.
+     * Then returns the location the keytable was saved in the container.
+     *
+     * @param user the user to create the keytable for
+     * @return the container location for the keytable
+     * @throws Exception if generating the keytable failed
+     */
+    public static String requestKeyTable(String user) throws Exception {
+        if (EXTERNAL_KEY_TABLE.containsKey(user)) {
+            return EXTERNAL_KEY_TABLE.get(user);
+        }
+
+        String containerLocation = "/tmp/client_" + user + "_krb5.keytab";
+
+        ExecResult result = krb5.execInContainer("kadmin.local", "-q", "ktadd -k " + containerLocation + " " + user);
+        if (result.getExitCode() != 0) {
+            Log.info(c, "setup", "STDOUT: " + result.getStdout());
+            Log.info(c, "setup", "STDERR: " + result.getStderr());
+            throw new IllegalStateException("Could not generate keytab file because exit code was: " + result.getExitCode() + " see logs for details.");
+        } else {
+            EXTERNAL_KEY_TABLE.put(user, containerLocation);
+        }
+
+        return containerLocation;
+    }
+
 }
