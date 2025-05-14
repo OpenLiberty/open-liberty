@@ -20,7 +20,8 @@ Bundle-SymbolicName: io.openliberty.com.sun.xml.messaging.saaj.2.0; singleton:=t
   @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPFactory, \
   @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPConnectionFactory, \
   @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.SAAJMetaFactory, \
-  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.MessageFactory
+  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.MessageFactory, \
+  com/sun/xml/messaging/saaj=${bin}/com/sun/xml/messaging/saaj
 
 -maven-dependencies: \
    dep1;groupId=com.sun.xml.messaging.saaj;artifactId=saaj-impl;version=2.0.1;scope=runtime

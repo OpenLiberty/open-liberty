@@ -15,7 +15,6 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.com.sun.xml.messaging.saaj.3.0; singleton:=true
 
-
 Export-Package: com.sun.xml.messaging.saaj.*;version="3.0.0";thread-context=true
 
 javac.source: 11
@@ -34,7 +33,8 @@ Import-Package: \
   @${repo;com.sun.xml.messaging.saaj:saaj-impl;3.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPFactory, \
   @${repo;com.sun.xml.messaging.saaj:saaj-impl;3.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPConnectionFactory, \
   @${repo;com.sun.xml.messaging.saaj:saaj-impl;3.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.SAAJMetaFactory, \
-  @${repo;com.sun.xml.messaging.saaj:saaj-impl;3.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.MessageFactory
+  @${repo;com.sun.xml.messaging.saaj:saaj-impl;3.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.MessageFactory, \
+  com/sun/xml/messaging/saaj=${bin}/com/sun/xml/messaging/saaj
 
 -maven-dependencies: \
    dep1;groupId=com.sun.xml.messaging.saaj;artifactId=saaj-impl;version=3.0.0;scope=runtime
@@ -51,4 +51,3 @@ Service-Component: \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
     properties:="resources=${app-resources}"
-

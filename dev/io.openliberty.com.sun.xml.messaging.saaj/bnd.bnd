@@ -13,6 +13,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+# Change to src20 to test the 2.0 source.
+src: src30
+
 -sub: *.bnd
 
 # All of the sub bundles inherit the following settings.  The gradle logic
@@ -23,4 +26,7 @@ bVersion=1.0
 
 instrument.disabled: true
 
--buildpath:
+# Change to 2.0.1 and 2.0 to test the 2.0 source.
+-buildpath: \
+    com.sun.xml.messaging.saaj:saaj-impl;version=3.0.0, \
+    io.openliberty.jakarta.soap.3.0;version=latest
