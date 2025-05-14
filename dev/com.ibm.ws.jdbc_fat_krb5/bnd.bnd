@@ -24,8 +24,6 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
-fat.test.container.images: kyleaure/db2-krb5:2.0
-
 tested.features:\
     connectors-2.0,\
     servlet-5.0,\
