@@ -485,8 +485,7 @@ class HttpSOAPConnection extends SOAPConnection {
                 //(or skipped over) from this input stream without blocking
                 //or 0 when it reaches the end of the input stream.
                 if ((httpIn == null )
-                        || (httpConnection.getContentLength() == 0)
-                        || (httpIn.available() == 0)) {
+                        || (httpConnection.getContentLength() == 0)) {
                     response = null;
                     log.warning("SAAJ0014.p2p.content.zero");
                 } else {
