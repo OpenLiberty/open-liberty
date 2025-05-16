@@ -597,7 +597,7 @@ goto:eof
     set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
   )
 
-  set SERVER_IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS! -Djdk.nativePBKDF2=true
+  set SERVER_IBM_JAVA_OPTIONS=-Djdk.nativePBKDF2=true !SERVER_IBM_JAVA_OPTIONS!
 
   @REM Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
   @REM shared classes cache created for client operations.
