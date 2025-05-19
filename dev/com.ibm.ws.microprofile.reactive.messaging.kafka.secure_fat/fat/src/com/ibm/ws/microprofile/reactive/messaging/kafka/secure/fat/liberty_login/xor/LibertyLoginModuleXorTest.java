@@ -19,7 +19,6 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaU
 import java.util.Map;
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.secure.fat.suite.SaslPlainTests;
-import componenttest.annotation.MaximumJavaLevel;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -49,7 +48,6 @@ import componenttest.topology.impl.LibertyServer;
  * Test the login module with xor encoded password
  */
 @RunWith(FATRunner.class)
-@MaximumJavaLevel(javaLevel = 22)
 @Mode(TestMode.FULL)
 public class LibertyLoginModuleXorTest {
 

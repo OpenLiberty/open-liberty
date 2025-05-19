@@ -22,7 +22,6 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKa
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
 import componenttest.annotation.CheckpointTest;
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -59,7 +58,6 @@ import static org.junit.Assert.assertNotNull;
  * Basic test using a kafka broker with TLS enabled
  */
 @RunWith(FATRunner.class)
-@MaximumJavaLevel(javaLevel = 22)
 @CheckpointTest
 public class CheckpointKafkaSaslPlainTest {
 
