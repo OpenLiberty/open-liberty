@@ -93,7 +93,7 @@ EOT
     kadmin.local -q "addprinc -pw ${KRB5_PASS} db2srvc@${KRB5_REALM}"
 
     echo "Creating db2inst1 Account"
-    kadmin.local -q "addprinc -pw ${KRB5_PASS} db2inst1@${KRB5_REALM}"
+    kadmin.local -q "addprinc -pw ${KRB5_PASS} db2inst1/db2@${KRB5_REALM}"
 
     echo "Creating dbuser Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} dbuser@${KRB5_REALM}"

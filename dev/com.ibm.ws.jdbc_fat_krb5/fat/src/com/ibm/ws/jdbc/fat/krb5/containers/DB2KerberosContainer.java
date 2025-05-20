@@ -38,34 +38,36 @@ public class DB2KerberosContainer extends Db2Container {
     public DB2KerberosContainer(Network network) {
         super(DB2_KRB5);
         withNetwork(network);
+        withNetworkAliases("db2");
     }
 
     @Override
     protected void configure() {
         acceptLicense();
-        withExposedPorts(50000);
+
+        // Superclass settings
+        super.withUsername("db2inst1");
+        super.withPassword("password");
+        super.withDatabaseName("testdb");
+
+        // Run as privilaged
+        setPrivilegedMode(true);
+
+        // Additional environment variables
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", KRB5_KDC_EXTERNAL);
         withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
+        withEnv("KRB5_TRACE", "/dev/stdout");
+
+        // Wait strategy
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")
                         .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 10 : 35)));
+
+        // Logger
         withLogConsumer(new SimpleLogConsumer(c, "DB2-KRB5"));
-    }
 
-    @Override
-    public String getUsername() {
-        return "db2inst1";
-    }
-
-    @Override
-    public String getPassword() {
-        return "password";
-    }
-
-    @Override
-    public String getDatabaseName() {
-        return "testdb";
+        super.configure();
     }
 
     @Override

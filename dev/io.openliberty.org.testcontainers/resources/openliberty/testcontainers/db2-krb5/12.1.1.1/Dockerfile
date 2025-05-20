@@ -5,13 +5,6 @@ ARG BASE_IMAGE="icr.io/db2_community/db2:12.1.1.0"
 
 FROM ${BASE_IMAGE}
 
-ENV LICENSE=accept
-ENV DB2INSTANCE=db2inst1
-ENV DB2INST1_PASSWORD=password
-ENV DBNAME=testdb
-ENV AUTOCONFIG=false
-ENV ARCHIVE_LOGS=false
-
 # This variable tends to change with major updates.
 # Update this variable when updating to DB2 v13
 ENV DB2_ADMIN=/opt/ibm/db2/V12.1
@@ -28,9 +21,11 @@ RUN chmod 777 /docker-entrypoint.sh
 # that are configured on DB2 image. If needed download directly.
 RUN yum -y install krb5-workstation krb5-libs
 
+# Create key table for service and user accounts
+# As of DB2 12 the default users have a principle of <username>/<external-hostname>@EXAMPLE.COM
 RUN mkdir /etc/krb5
 RUN printf 'add_entry -password -p db2srvc@EXAMPLE.COM -k 1 -e aes256-cts\npassword\nwkt /etc/krb5.keytab' | ktutil
-RUN printf 'add_entry -password -p db2inst1@EXAMPLE.COM -k 1 -e aes256-cts\npassword\nwkt /etc/krb5.keytab' | ktutil
+RUN printf 'add_entry -password -p db2inst1/db2@EXAMPLE.COM -k 1 -e aes256-cts\npassword\nwkt /etc/krb5.keytab' | ktutil
 
 RUN chmod 777 /etc/krb5.keytab
 RUN chmod 777 ${DB2_ADMIN}/adm/db2start

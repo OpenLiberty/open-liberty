@@ -38,5 +38,7 @@ cat <<EOT > /etc/krb5.conf
  }
 EOT
 
+cat /etc/krb5.conf
+
 echo "(*) Running setup_db2_instance.sh"
 /bin/sh -c /var/db2_setup/lib/setup_db2_instance.sh

@@ -83,7 +83,10 @@ public class DB2KerberosTest extends FATServletClient {
 
         // Generate krb5.keytab in KDC container, and then copy it to server/security directory
         krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
-        FATSuite.krb5.copyFileFromContainer(FATSuite.requestKeyTable("dbuser"), krbKeytabPath.toAbsolutePath().toString());
+        FATSuite.krb5.copyFileFromContainer(FATSuite.requestKeyTable(KRB5_USER), krbKeytabPath.toAbsolutePath().toString());
+
+        // Uncomment to download db2restart debug file when debug is enabled
+//        db2.copyFileFromContainer("/tmp/db2restart.txt", "/path/to/a/directory/db2restart.txt");
 
         // Dropin application
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.db2.web");
@@ -105,7 +108,6 @@ public class DB2KerberosTest extends FATServletClient {
         jvmOpts.add("-Dsun.security.jgss.debug=true"); // Hotspot/OpenJ9
 
         server.setJvmOptions(jvmOpts);
-
         server.startServer();
     }
 

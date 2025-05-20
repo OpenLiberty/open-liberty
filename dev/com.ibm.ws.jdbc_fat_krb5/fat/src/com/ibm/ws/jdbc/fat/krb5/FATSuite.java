@@ -86,19 +86,21 @@ public class FATSuite extends TestContainerSuite {
      * @return the container location for the keytable
      * @throws Exception if generating the keytable failed
      */
-    public static String requestKeyTable(String user) throws Exception {
+    public static String requestKeyTable(final String user) throws Exception {
         if (EXTERNAL_KEY_TABLE.containsKey(user)) {
             return EXTERNAL_KEY_TABLE.get(user);
         }
 
+        final String m = "requestKeyTable";
         String containerLocation = "/tmp/client_" + user + "_krb5.keytab";
 
         ExecResult result = krb5.execInContainer("kadmin.local", "-q", "ktadd -k " + containerLocation + " " + user);
         if (result.getExitCode() != 0) {
-            Log.info(c, "setup", "STDOUT: " + result.getStdout());
-            Log.info(c, "setup", "STDERR: " + result.getStderr());
+            Log.info(c, m, "STDOUT: " + result.getStdout());
+            Log.info(c, m, "STDERR: " + result.getStderr());
             throw new IllegalStateException("Could not generate keytab file because exit code was: " + result.getExitCode() + " see logs for details.");
         } else {
+            Log.info(c, m, "Keytab file for user: " + user + " has been generated in-container at: " + krb5.getContainerId() + ":" + containerLocation);
             EXTERNAL_KEY_TABLE.put(user, containerLocation);
         }
 
