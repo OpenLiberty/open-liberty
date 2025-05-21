@@ -2130,6 +2130,62 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(27.97f, totals.get(0), 0.01);
 
     }
+    
+    /**
+     * Specifies the precedence of null values within query result sets.
+     * https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a5587
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNullPrecedenceWithJPQL() throws Exception {
+        deleteAllEntities(Product.class);
+        Product product1 = Product.of("testSnapshot", "product1", 10.50f);
+        Product product2 = Product.of(null, "product2", 20.50f);
+        Product product3 = Product.of("sample products", "product3", 30.50f);
+        tx.begin();
+        em.persist(product1);
+        em.persist(product2);
+        em.persist(product3);
+        tx.commit();
+
+        /*
+         * Specifies the precedence of null values within query result sets.
+         */
+        List<Product> productsNullFirst;
+        try {
+
+            tx.begin();
+            productsNullFirst = em.createQuery("FROM Product ORDER BY description DESC NULLS FIRST",
+                                               Product.class)
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        assertEquals(3, productsNullFirst.size());
+        assertEquals("product2", productsNullFirst.get(0).name);
+
+        /*
+         * Null values occur at the end of the result set.
+         */
+        List<Product> productsNullLast;
+        try {
+
+            tx.begin();
+            productsNullLast = em.createQuery("FROM Product ORDER BY description DESC NULLS LAST",
+                                              Product.class)
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        assertEquals(3, productsNullLast.size());
+        assertEquals("product2", productsNullLast.get(2).name);
+    }
+    
 
     /**
      * Utility method to drop all entities from table.
