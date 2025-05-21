@@ -83,6 +83,10 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Nulls;
+import jakarta.persistence.criteria.Root;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.UserTransaction;
@@ -2186,7 +2190,65 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals("product2", productsNullLast.get(2).name);
     }
     
+	 /**
+     * Specifies the precedence of null values within query result sets.
+     * https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#nulls
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNullPrecedenceWithCriteriaBilder() throws Exception {
+        deleteAllEntities(Product.class);
+        Product p1 = Product.of("testSnapshot", "product1", 10.50f);
+        Product p2 = Product.of(null, "product2", 20.50f);
+        Product p3 = Product.of("sample products", "product3", 30.50f);
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        em.persist(p3);
+        tx.commit();
 
+        /*
+         * Null values occur at the beginning of the result set.
+         */
+        List<Product> productsNullFirst;
+        try {
+            tx.begin();
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+            CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+            Root<Product> from = criteriaQuery.from(Product.class);
+            CriteriaQuery<Product> select = criteriaQuery.select(from);
+            criteriaQuery.orderBy(criteriaBuilder.desc(from.get("description"), Nulls.FIRST));
+            productsNullFirst = em.createQuery(criteriaQuery).getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        assertEquals(3, productsNullFirst.size());
+        assertEquals("product2", productsNullFirst.get(0).name);
+
+        /*
+         * Null values occur at the end of the result set.
+         */
+        List<Product> productsNullLast;
+        try {
+
+            tx.begin();
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+            CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+            Root<Product> from = criteriaQuery.from(Product.class);
+            CriteriaQuery<Product> select = criteriaQuery.select(from);
+            criteriaQuery.orderBy(criteriaBuilder.desc(from.get("description"), Nulls.LAST));
+            productsNullLast = em.createQuery(criteriaQuery).getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        assertEquals(3, productsNullLast.size());
+        assertEquals("product2", productsNullLast.get(2).name);
+    }
     /**
      * Utility method to drop all entities from table.
      *
