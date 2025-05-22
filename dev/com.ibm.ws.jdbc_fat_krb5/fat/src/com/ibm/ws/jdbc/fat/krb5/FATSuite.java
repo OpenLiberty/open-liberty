@@ -79,29 +79,54 @@ public class FATSuite extends TestContainerSuite {
     }
 
     /**
-     * Requests the KDC to generate a keytable for this user.
-     * Then returns the location the keytable was saved in the container.
+     * Requests the KDC to export a keytab file for this user.
+     * Then returns the location the keytab file was saved in the container.
      *
-     * @param user the user to create the keytable for
-     * @return the container location for the keytable
-     * @throws Exception if generating the keytable failed
+     * @param user to export to the keytab file
+     * @return the container location for the keytab file
+     * @throws Exception if generating the keytab failed
      */
     public static String requestKeyTable(final String user) throws Exception {
+        final String m = "requestKeyTable";
+        String containerLocation;
+
+        // Try to find cached key table
         if (EXTERNAL_KEY_TABLE.containsKey(user)) {
-            return EXTERNAL_KEY_TABLE.get(user);
+            containerLocation = EXTERNAL_KEY_TABLE.get(user);
+            Log.info(c, m, "Returning cached external key table from: " + krb5.getContainerId() + ":" + containerLocation);
+            return containerLocation;
+        } else {
+            containerLocation = "/tmp/client_" + user + "_krb5.keytab";
         }
 
-        final String m = "requestKeyTable";
-        String containerLocation = "/tmp/client_" + user + "_krb5.keytab";
+        // Queries
+        final String[] ktadd = new String[] { "kadmin.local", "-q", "ktadd -k " + containerLocation + " " + user };
+        final String[] klist = new String[] { "klist", "-e", "-k", "-t", containerLocation };
 
-        ExecResult result = krb5.execInContainer("kadmin.local", "-q", "ktadd -k " + containerLocation + " " + user);
+        // Export principle to new keytab file
+        Log.info(c, m, "Execute in container " + krb5.getContainerName() + " : " + Arrays.toString(ktadd));
+        ExecResult result = krb5.execInContainer(ktadd);
         if (result.getExitCode() != 0) {
-            Log.info(c, m, "STDOUT: " + result.getStdout());
-            Log.info(c, m, "STDERR: " + result.getStderr());
+            Log.info(c, m, "\tSTDOUT: " + result.getStdout());
+            Log.info(c, m, "\tSTDERR: " + result.getStderr());
             throw new IllegalStateException("Could not generate keytab file because exit code was: " + result.getExitCode() + " see logs for details.");
         } else {
-            Log.info(c, m, "Keytab file for user: " + user + " has been generated in-container at: " + krb5.getContainerId() + ":" + containerLocation);
-            EXTERNAL_KEY_TABLE.put(user, containerLocation);
+            Log.info(c, m, "\tSTDOUT: " + result.getStdout());
+        }
+
+        // Cache location
+        EXTERNAL_KEY_TABLE.put(user, containerLocation);
+
+        // Debug contents of generated keytab file
+        Log.info(c, m, "Execute in container " + krb5.getContainerName() + " : " + Arrays.toString(klist));
+        result = krb5.execInContainer(klist);
+        if (result.getExitCode() != 0) {
+            Log.info(c, m, "Could not list keytab contents from " + krb5.getContainerName() + ":" + containerLocation);
+            Log.info(c, m, "\tSTDOUT: " + result.getStdout());
+            Log.info(c, m, "\tSTDERR: " + result.getStderr());
+        } else {
+            Log.info(c, m, "Keytab file for user: " + user + " has been generated in-container at: " + krb5.getContainerName() + ":" + containerLocation);
+            Log.info(c, m, "\tSTDOUT: " + result.getStdout());
         }
 
         return containerLocation;

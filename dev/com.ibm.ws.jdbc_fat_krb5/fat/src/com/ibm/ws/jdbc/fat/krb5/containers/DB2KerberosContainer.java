@@ -17,10 +17,13 @@ import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 
 import java.time.Duration;
 
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
@@ -65,7 +68,7 @@ public class DB2KerberosContainer extends Db2Container {
                         .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 10 : 35)));
 
         // Logger
-        withLogConsumer(new SimpleLogConsumer(c, "DB2-KRB5"));
+        withLogConsumer(new SimpleLogConsumer(c, "db2-krb5"));
 
         super.configure();
     }

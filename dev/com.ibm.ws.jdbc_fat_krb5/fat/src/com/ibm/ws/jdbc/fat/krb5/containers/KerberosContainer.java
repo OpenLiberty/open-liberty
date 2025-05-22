@@ -72,7 +72,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         withEnv("KRB5_KDC", KRB5_KDC_INTERNAL);
         withEnv("KRB5_PASS", KRB5_PASS);
 
-        withLogConsumer(new SimpleLogConsumer(c, "krb5"));
+        withLogConsumer(new SimpleLogConsumer(c, "krb5-kdc"));
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*KERB SETUP COMPLETE.*$")
                         .withStartupTimeout(Duration.ofSeconds(FATRunner.FAT_TEST_LOCALRUN ? 15 : 300)));
