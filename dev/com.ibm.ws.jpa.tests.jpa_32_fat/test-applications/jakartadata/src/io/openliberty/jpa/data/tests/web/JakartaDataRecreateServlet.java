@@ -2230,10 +2230,11 @@ public class JakartaDataRecreateServlet extends FATServlet {
 		root.get("lastName"));
 		
 		cquery.select(cb.concat(concatExpression));
+		cquery.orderBy(cb.desc(root.get("firstName")));
 		
 		List<String> fullname = em.createQuery(cquery).getResultList();
-		assertEquals("Expected full name 'John Jacobs' for first record", "John Jacobs", fullname.get(0));
-		assertEquals("Expected full name 'Steve Smith' for second record", "Steve Smith", fullname.get(1));
+		assertEquals("Expected full name 'John Jacobs' for first record", "John Jacobs", fullname.get(1));
+		assertEquals("Expected full name 'Steve Smith' for second record", "Steve Smith", fullname.get(0));
     }
 	
     /**
