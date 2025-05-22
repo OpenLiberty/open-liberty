@@ -2188,6 +2188,53 @@ public class JakartaDataRecreateServlet extends FATServlet {
 		assertEquals("Expected 0 record that matches full name 'John Jacob'", 0, personNoMatch.size());
         tx.commit();
     }
+    
+     /** In previous version, the usages of Concat method is specified as below:
+	 * 
+	 *		concat(Expression<String> x, Expression<String> y)
+	 *		concat(Expression<String> x, String y) 
+     *      concat(String x, Expression<String> y)
+	 * 
+	 * Jakarta 3.2 version supports concat(List<Expression<String>> expressions)
+	 * 
+	 * https://jakarta.ee/specifications/persistence/3.2/apidocs/jakarta.persistence/jakarta/persistence/criteria/criteriabuilder
+	 * https://jakarta.ee/specifications/persistence/3.2/apidocs/jakarta.persistence/jakarta/persistence/criteria/criteriabuilder#concat(java.util.List)
+	 */
+	@Test
+    public void testConcatCriteriaQuery() throws Exception {
+        deleteAllEntities(Person.class);
+
+        Person person1 = new Person();
+        person1.firstName = "John";
+        person1.lastName = "Jacobs";
+        person1.ssn_id = 1L;
+        
+        Person person2 = new Person();
+        person2.firstName = "Steve";
+        person2.lastName = "Smith";
+        person2.ssn_id = 2L;
+        
+        
+        tx.begin();
+        em.persist(person1);
+        em.persist(person2);
+        tx.commit();
+
+        tx.begin();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cquery = cb.createQuery(String.class);
+		Root<Person> root = cquery.from(Person.class);
+		
+		List<Expression<String>> concatExpression = List.of(root.get("firstName"),
+		cb.literal(" "),
+		root.get("lastName"));
+		
+		cquery.select(cb.concat(concatExpression));
+		
+		List<String> fullname = em.createQuery(cquery).getResultList();
+		assertEquals("Expected full name 'John Jacobs' for first record", "John Jacobs", fullname.get(0));
+		assertEquals("Expected full name 'Steve Smith' for second record", "Steve Smith", fullname.get(1));
+    }
 	
     /**
      * Utility method to drop all entities from table.
