@@ -86,6 +86,7 @@ import jakarta.persistence.Query;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.UserTransaction;
+import jakarta.persistence.criteria.*;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JakartaDataRecreate")
@@ -2131,6 +2132,63 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     }
 
+	/**
+	 * In previous version, the usages of Concat method is specified as below:
+	 * 
+	 *		concat(Expression<String> x, Expression<String> y)
+	 *		concat(Expression<String> x, String y) 
+     *      concat(String x, Expression<String> y)
+	 * 
+	 * Jakarta 3.2 version supports concat(List<Expression<String>> expressions)
+	 * 
+	 * https://jakarta.ee/specifications/persistence/3.2/apidocs/jakarta.persistence/jakarta/persistence/criteria/criteriabuilder
+	 * https://jakarta.ee/specifications/persistence/3.2/apidocs/jakarta.persistence/jakarta/persistence/criteria/criteriabuilder#concat(java.util.List)
+	 */
+	@Test
+    public void testConcatInWhereCriteriaQuery() throws Exception {
+        deleteAllEntities(Person.class);
+
+        Person person1 = new Person();
+        person1.firstName = "John";
+        person1.lastName = "Jacobs";
+        person1.ssn_id = 1L;
+        
+        Person person2 = new Person();
+        person2.firstName = "Steve";
+        person2.lastName = "Smith";
+        person2.ssn_id = 2L;
+        
+        tx.begin();
+        em.persist(person1);
+        em.persist(person2);
+        tx.commit();
+
+        tx.begin();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Person> cquery = cb.createQuery(Person.class);
+		Root<Person> root = cquery.from(Person.class);
+		ParameterExpression<String> strParam1 = cb.parameter(String.class);
+		
+		List<Expression<String>> concatExpression = new ArrayList<>();
+		concatExpression.add(root.get("firstName"));
+		concatExpression.add(cb.literal(" "));
+		concatExpression.add(root.get("lastName"));
+		
+		cquery.select(root)
+		.where(cb.equal(cb.concat(concatExpression), strParam1));
+
+		List<Person> person = em.createQuery(cquery)
+		.setParameter(strParam1, "John Jacobs")
+		.getResultList();
+		assertEquals("Expected 1 record that matches full name 'John Jacobs'", 1, person.size());
+		
+		List<Person> personNoMatch = em.createQuery(cquery)
+		.setParameter(strParam1, "John Jacob")
+		.getResultList();
+		assertEquals("Expected 0 record that matches full name 'John Jacob'", 0, personNoMatch.size());
+        tx.commit();
+    }
+	
     /**
      * Utility method to drop all entities from table.
      *
