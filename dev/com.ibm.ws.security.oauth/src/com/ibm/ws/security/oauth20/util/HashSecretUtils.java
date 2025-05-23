@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 
 /**
@@ -30,15 +31,17 @@ import com.ibm.ws.common.encoder.Base64Coder;
 public class HashSecretUtils {
     private static final TraceComponent tc = Tr.register(HashSecretUtils.class);
 
+    private static boolean fips140_3Enabled = CryptoUtils.isFips140_3EnabledWithBetaGuard();
+
     /*
      * Hash information for client secret
      */
     public final static String PBKDF2WithHmacSHA512 = "PBKDF2WithHmacSHA512";
     public final static String DEFAULT_HASH = PBKDF2WithHmacSHA512;
 
-    public static final int DEFAULT_SALTSIZE = 32;
-    public static final int DEFAULT_ITERATIONS = 2048;
-    public static final int DEFAULT_KEYSIZE = 32;
+    public static final int DEFAULT_SALTSIZE = fips140_3Enabled ? 128 : 32;
+    public static final int DEFAULT_ITERATIONS = fips140_3Enabled ? 210000 : 2048;
+    public static final int DEFAULT_KEYSIZE = fips140_3Enabled ? 256 : 32;
 
     private static final int generateSaltSize = DEFAULT_SALTSIZE;
 

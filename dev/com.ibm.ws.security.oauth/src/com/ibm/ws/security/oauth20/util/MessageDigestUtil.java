@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 
 public class MessageDigestUtil {
@@ -32,7 +33,7 @@ public class MessageDigestUtil {
 
     static {
         try {
-            md = MessageDigest.getInstance("SHA-1");
+            md = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance("SHA-256") : MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Internal error initializing message digest", e);
