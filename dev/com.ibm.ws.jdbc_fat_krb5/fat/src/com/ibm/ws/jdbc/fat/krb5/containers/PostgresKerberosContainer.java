@@ -28,7 +28,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 
-public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerberosContainer> {
+public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerberosContainer> implements KerberosAuthContainer {
 
     private static final Class<?> c = PostgresKerberosContainer.class;
 
@@ -36,6 +36,9 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
                     .build("postgres-krb5:17.0.0.1")
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("postgres");
+
+    public static final String KRB5_USER = "pguser";
+    public static final String KRB5_PASS = "password";
 
     public static final int PG_PORT = 5432;
 
@@ -124,11 +127,13 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
         return self();
     }
 
+    @Override
     public String getKerberosUsername() {
-        return "pguser@" + KerberosContainer.KRB5_REALM;
+        return KRB5_USER + "@" + KerberosContainer.KRB5_REALM;
     }
 
+    @Override
     public String getKerberosPassword() {
-        return "password";
+        return KRB5_PASS;
     }
 }

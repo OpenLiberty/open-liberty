@@ -12,7 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,6 +40,10 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 ErrorPathTest.class
 })
 public class FATSuite extends TestContainerSuite {
+
+    private static final Class<?> c = FATSuite.class;
+
+    private static final Map<String, String> EXTERNAL_KEY_TABLE = new HashMap<>();
 
     static {
         Log.info(FATSuite.class, "<init>", "Setting overrideDefaultTLS to true, needed for IBM JDK 8 support.");

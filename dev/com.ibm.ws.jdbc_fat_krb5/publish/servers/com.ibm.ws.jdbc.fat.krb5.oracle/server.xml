@@ -24,7 +24,7 @@
   <dataSource jndiName="jdbc/krb/userpass">
     <jdbcDriver libraryRef="OracleLib"/>
     <properties.oracle URL="${oracle.url}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}" password="password"/>
+    <containerAuthData krb5Principal="${KRB5_USER}" password="${KRB5_PASS}"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource">

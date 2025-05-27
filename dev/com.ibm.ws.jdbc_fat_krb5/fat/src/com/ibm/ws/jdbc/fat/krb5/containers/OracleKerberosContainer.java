@@ -28,7 +28,7 @@ import componenttest.custom.junit.runner.FATRunner;
 /**
  * Custom Oracle Kerberos Container class
  */
-public class OracleKerberosContainer extends OracleContainer {
+public class OracleKerberosContainer extends OracleContainer implements KerberosAuthContainer {
 
     private static final Class<?> c = OracleKerberosContainer.class;
 
@@ -41,6 +41,9 @@ public class OracleKerberosContainer extends OracleContainer {
                     .build("oracle-krb5:23.0.0.1-full-faststart")
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("gvenzl/oracle-free");
+
+    public static final String KRB5_USER = "ORACLEUSR";
+    public static final String KRB5_PASS = "password";
 
     public OracleKerberosContainer(Network network) {
         super(ORACLE_KRB5);
@@ -74,10 +77,6 @@ public class OracleKerberosContainer extends OracleContainer {
         return "system";
     }
 
-    public String getKerberosUsername() {
-        return "ORACLEUSR@" + KerberosContainer.KRB5_REALM;
-    }
-
     @Override
     public OracleContainer withUsername(String username) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
@@ -101,5 +100,15 @@ public class OracleKerberosContainer extends OracleContainer {
     @Override
     public OracleContainer withDatabaseName(String dbName) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
+    }
+
+    @Override
+    public String getKerberosUsername() {
+        return KRB5_USER + "@" + KerberosContainer.KRB5_REALM;
+    }
+
+    @Override
+    public String getKerberosPassword() {
+        return KRB5_PASS;
     }
 }

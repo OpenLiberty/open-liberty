@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo "(*) Checking environment"
+
 if [ -z ${KRB5_REALM} ]; then
     echo "No KRB5_REALM Provided. Exiting ..."
     exit 1

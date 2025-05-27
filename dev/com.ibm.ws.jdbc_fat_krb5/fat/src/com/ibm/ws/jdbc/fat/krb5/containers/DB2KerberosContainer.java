@@ -16,20 +16,18 @@ import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC_EXT
 import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 
 import java.time.Duration;
+import java.util.TimeZone;
 
-import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
-import com.ibm.websphere.simplicity.log.Log;
-
 import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 
-public class DB2KerberosContainer extends Db2Container {
+public class DB2KerberosContainer extends Db2Container implements KerberosAuthContainer {
 
     private static final Class<?> c = DB2KerberosContainer.class;
 
@@ -37,6 +35,9 @@ public class DB2KerberosContainer extends Db2Container {
                     .build("db2-krb5:12.1.1.1")
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("icr.io/db2_community/db2");
+
+    public static final String KRB5_USER = "dbuser";
+    public static final String KRB5_PASS = "password";
 
     public DB2KerberosContainer(Network network) {
         super(DB2_KRB5);
@@ -61,6 +62,7 @@ public class DB2KerberosContainer extends Db2Container {
         withEnv("KRB5_KDC", KRB5_KDC_EXTERNAL);
         withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
         withEnv("KRB5_TRACE", "/dev/stdout");
+        withEnv("TZ", TimeZone.getDefault().getID());
 
         // Wait strategy
         waitingFor(new LogMessageWaitStrategy()
@@ -86,5 +88,15 @@ public class DB2KerberosContainer extends Db2Container {
     @Override
     public Db2Container withDatabaseName(String dbName) {
         throw new UnsupportedOperationException("DB name is hardcoded in container");
+    }
+
+    @Override
+    public String getKerberosUsername() {
+        return KRB5_USER + "@" + KerberosContainer.KRB5_REALM;
+    }
+
+    @Override
+    public String getKerberosPassword() {
+        return KRB5_PASS;
     }
 }

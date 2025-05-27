@@ -72,7 +72,7 @@ public class ErrorPathTest extends FATServletClient {
 
         // Generate krb5.keytab in KDC container, and then copy it to server/security directory
         Path krb5KeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
-        FATSuite.krb5.copyFileFromContainer(FATSuite.requestKeyTable(DB2KerberosTest.KRB5_USER), krb5KeytabPath.toAbsolutePath().toString());
+        FATSuite.krb5.copyFileFromContainer(FATSuite.requestKeyTable(DB2KerberosContainer.KRB5_USER), krb5KeytabPath.toAbsolutePath().toString());
 
         // Dropin application
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.db2.web");
@@ -83,7 +83,8 @@ public class ErrorPathTest extends FATServletClient {
         server.addEnvVar("DB2_PORT", "" + db2.getMappedPort(50000));
         server.addEnvVar("DB2_USER", db2.getUsername());
         server.addEnvVar("DB2_PASS", db2.getPassword());
-        server.addEnvVar("KRB5_USER", DB2KerberosTest.KRB5_USER);
+        server.addEnvVar("KRB5_USER", db2.getKerberosUsername());
+        server.addEnvVar("KRB5_PASS", db2.getKerberosPassword());
         server.addEnvVar("KRB5_KEYTAB", krb5KeytabPath.toAbsolutePath().toString());
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
 

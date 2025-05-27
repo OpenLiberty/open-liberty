@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.testcontainers.DockerClientFactory;
@@ -71,6 +72,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", KRB5_KDC_INTERNAL);
         withEnv("KRB5_PASS", KRB5_PASS);
+        withEnv("TZ", TimeZone.getDefault().getID());
 
         withLogConsumer(new SimpleLogConsumer(c, "krb5-kdc"));
         waitingFor(new LogMessageWaitStrategy()

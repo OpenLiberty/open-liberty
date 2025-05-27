@@ -73,7 +73,7 @@ public class OracleKerberosTest extends FATServletClient {
 
         // Generate krb5.keytab in KDC container, and then copy it to server/security directory
         Path krb5KeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
-        FATSuite.krb5.copyFileFromContainer(FATSuite.requestKeyTable("ORACLEUSR"), krb5KeytabPath.toAbsolutePath().toString());
+        FATSuite.krb5.copyFileFromContainer(FATSuite.requestKeyTable(OracleKerberosContainer.KRB5_USER), krb5KeytabPath.toAbsolutePath().toString());
 
         // Dropin application
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.oracle.web");
@@ -86,6 +86,7 @@ public class OracleKerberosTest extends FATServletClient {
         server.addEnvVar("ORACLE_USER", oracle.getUsername());
         server.addEnvVar("ORACLE_PASS", oracle.getPassword());
         server.addEnvVar("KRB5_USER", oracle.getKerberosUsername());
+        server.addEnvVar("KRB5_PASS", oracle.getKerberosPassword());
         server.addEnvVar("KRB5_KEYTAB", krb5KeytabPath.toAbsolutePath().toString());
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
 

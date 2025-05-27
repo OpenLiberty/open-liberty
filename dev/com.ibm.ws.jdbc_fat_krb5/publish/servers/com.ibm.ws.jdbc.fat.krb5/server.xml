@@ -17,7 +17,10 @@
   
   <dataSource jndiName="jdbc/krb/basic" containerAuthDataRef="krb5Auth">
     <jdbcDriver libraryRef="DB2JCCLib"/>
-    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"
+        traceLevel="-1" traceDirectory="${server.output.dir}/logs/" traceFile="jcc.trace"
+    	traceFileAppend="true" traceOption="0"
+    />
   </dataSource>
   
   <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource" containerAuthDataRef="krb5Auth">
@@ -43,7 +46,7 @@
   <dataSource jndiName="jdbc/krb/basicPassword">
     <jdbcDriver libraryRef="DB2JCCLib"/>
     <properties.db2.jcc databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}" password="password"/>
+    <containerAuthData krb5Principal="${KRB5_USER}" password="${KRB5_PASS}"/>
   </dataSource>
   
   <!-- Mis-configured datasource: no auth -->
