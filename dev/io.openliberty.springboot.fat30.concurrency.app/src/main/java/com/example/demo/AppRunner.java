@@ -18,9 +18,9 @@ class AppRunner implements CommandLineRunner {
 
 	private final static Logger logger = LoggerFactory.getLogger(AppRunner.class);
 
-	private final ConcurrencyApplicationConfig concurrencyApplicationConfig;
+	private final ConcurrencyTasks concurrencyApplicationConfig;
 
-	public AppRunner(ConcurrencyApplicationConfig concurrencyApplicationConfig) {
+	public AppRunner(ConcurrencyTasks concurrencyApplicationConfig) {
 		this.concurrencyApplicationConfig = concurrencyApplicationConfig;
 	}
 
@@ -47,5 +47,20 @@ class AppRunner implements CommandLineRunner {
 		}
 		logger.info(message + ": MANAGED THREAD VERIFICATION PASSED");
 	}
+	
+	//Call a new static method assertAsyncMethod, it will call Task 1 and 2, takes a String message as arg
+	//Verifies the result of the CompletableFuture, assert on the string value returned by the tasks
+    //Log the message based on success on failure
+    public static void assertAsyncMethod(String message) throws Exception {
+    	
+    	try {	
+    		assertNotNull("Async Task 1 failed", concurrencyApplicationConfig.task1("Assert Async Method").get());
+    		assertNotNull("Async Task 2 failed", concurrencyApplicationConfig.task2("Assert Async Method").get());
+    	}catch (Exception e){
+    		logger.error(message + ": ASYNC TASK FAILED", e);
+			fail("Async Task failed: " + e.getMessage());
+    	}  	
+    	logger.info(message + ": ASSERT ASYNC METHOD VERIFICATION PASSED");
+    }
 
 }

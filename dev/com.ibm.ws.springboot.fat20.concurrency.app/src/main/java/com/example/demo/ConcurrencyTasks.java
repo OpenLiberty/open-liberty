@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.naming.NamingException;
@@ -18,25 +19,18 @@ import org.springframework.scheduling.concurrent.DefaultManagedTaskExecutor;
 import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.stereotype.Service;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @EnableAsync
-public class ConcurrencyApplicationConfig {
+public class ConcurrencyTasks {
 	
-	private final static Logger logger = LoggerFactory.getLogger(ConcurrencyApplicationConfig.class);
+	private final static Logger logger = LoggerFactory.getLogger(ConcurrencyTasks.class);
+	
+	private static MyScheduledTask scheduled_task;
+
+	public ConcurrencyTasks(MyScheduledTask scheduled_task) {
+		this.scheduled_task = scheduled_task;
+	}
    
-    @Bean
-    public DefaultManagedTaskScheduler defaultManagedTaskScheduler() throws InterruptedException {
-    	DefaultManagedTaskScheduler scheduler = new DefaultManagedTaskScheduler();
-    	scheduler.setConcurrentExecutor(taskExecutor());
-        return scheduler;
-    }
-    
-    @Bean
-    public DefaultManagedTaskExecutor taskExecutor() throws InterruptedException {
-    	DefaultManagedTaskExecutor executor = new DefaultManagedTaskExecutor();
-        return executor;
-    }
-    
    @Async
    public CompletableFuture<String> task1(String message) throws Exception {
         System.out.println("Async Task 1: " + Thread.currentThread().getName());
@@ -51,20 +45,15 @@ public class ConcurrencyApplicationConfig {
         AppRunner.assertManagedThread(message + ": Async Task 2");
         return CompletableFuture.completedFuture("Async Task 2 passed");
     }
-    
-	//Call a new static method assertAsyncMethod, it will call Task 1 and 2, takes a String message as arg
-	//Verifies the result of the CompletableFuture, assert on the string value returned by the tasks
-    //Log the message based on success on failure
-    public void assertAsyncMethod(String message) throws Exception {
-    	
-    	try {	
-    		assertNotNull("Async Task 1 failed", task1("Assert Async Method").get());
-    		assertNotNull("Async Task 2 failed", task2("Assert Async Method").get());
-    	}catch (NamingException e){
-    		logger.error(message + ": ASYNC TASK FAILED", e);
-			fail("Async Task failed: " + e.getMessage());
-    	}  	
-    	logger.info(message + ": ASSERT ASYNC METHOD VERIFICATION PASSED");
+
+    @Async
+    public static void verifyScheduledTaskRepetition() throws Exception {
+    	// Wait for the latch to be released within the specified timeout
+    	if(scheduled_task.verifyLatchValue() == false) {
+    		logger.error("The scheduled task did not execute within the specified timeout");
+    	} 
+    	// The task has completed within the timeout
+		logger.info("VERIFY SCHEDULED TASK METHOD PASSED");
     }
 }
     
