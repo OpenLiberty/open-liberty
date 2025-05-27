@@ -10,12 +10,18 @@
 package io.openliberty.jpa.persistence.tests.web;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.jpa.persistence.tests.models.IdentityIdEntity;
+import io.openliberty.jpa.persistence.tests.models.SequenceIdEntity;
+import io.openliberty.jpa.persistence.tests.models.TableIdEntity;
+import io.openliberty.jpa.persistence.tests.models.UUIDIdEntity;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -57,4 +63,106 @@ public class JakartaPersistenceServlet extends FATServlet {
                         .getResultList();
         assertNotNull(exceptResult);
     }
+
+    /**
+     *
+     * https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a2202
+     * Primary key values generated using the SEQUENCE, TABLE, or UUID strategy are
+     * available in the PrePersist method. Primary key values generated using the
+     * IDENTITY strategy are not available in the PrePersist method
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPrimaryKeyAvailabilityInUUIDGenerationType() throws Exception {
+        UUIDIdEntity uuiIdEntity = UUIDIdEntity.of("uuid entity 1");
+        try {
+            tx.begin();
+            em.persist(uuiIdEntity);
+            tx.commit();
+        } catch (IllegalStateException e) {
+            System.out.println("testPrimaryKeyAvailabilityInUUIDGenerationType: Exception occured while persisting: " + e.getMessage());
+            fail("ID not available in PrePersist method. Primary key values generated using the UUID strategy are expected to be available in the PrePersist method");
+        } catch (Exception e) {
+            System.out.println("testPrimaryKeyAvailabilityInUUIDGenerationType: Unexpected Exception occured while persisting: " + e.getMessage());
+            fail("Unexpected Exception occured while persisting uuiIdEntity");
+        }
+    }
+
+    /**
+     *
+     * https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a2202
+     * Primary key values generated using the SEQUENCE, TABLE, or UUID strategy are
+     * available in the PrePersist method. Primary key values generated using the
+     * IDENTITY strategy are not available in the PrePersist method
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPrimaryKeyAvailabilityInSequenceIdGenerationType() throws Exception {
+        SequenceIdEntity sequenceIdEntity = SequenceIdEntity.of("SequenceIdEntity 1");
+        try {
+            tx.begin();
+            em.persist(sequenceIdEntity);
+            tx.commit();
+        } catch (IllegalStateException e) {
+            System.out.println("testPrimaryKeyAvailabilityInSequenceIdGenerationType: Exception occured while persisting: " + e.getMessage());
+            fail("SEQUENCE ID not available in PrePersist method. Primary key values generated using the SEQUENCE strategy are expected to be available in the PrePersist method");
+        } catch (Exception e) {
+            System.out.println("testPrimaryKeyAvailabilityInSequenceIdGenerationType: Unexpected Exception occured while persisting: " + e.getMessage());
+            fail("Unexpected Exception occured while persisting sequenceIdEntity");
+        }
+    }
+
+    /**
+     *
+     * https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a2202
+     * Primary key values generated using the SEQUENCE, TABLE, or UUID strategy are
+     * available in the PrePersist method. Primary key values generated using the
+     * IDENTITY strategy are not available in the PrePersist method
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPrimaryKeyAvailabilityInTableIdGenerationType() throws Exception {
+        TableIdEntity tableIdEntity = TableIdEntity.of("tableIdEntity 1");
+        try {
+            tx.begin();
+            em.persist(tableIdEntity);
+            tx.commit();
+        } catch (IllegalStateException e) {
+            System.out.println("testPrimaryKeyAvailabilityInTableIdGenerationType: Exception occured while persisting: " + e.getMessage());
+            fail("TABLE ID not available in PrePersist method. Primary key values generated using the TABLE strategy are expected to be available in the PrePersist method");
+        } catch (Exception e) {
+            System.out.println("testPrimaryKeyAvailabilityInTableIdGenerationType: Unexpected Exception occured while persisting: " + e.getMessage());
+            fail("Unexpected Exception occured while persisting tableIdEntity");
+        }
+    }
+
+    /**
+     *
+     * https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a2202
+     * Primary key values generated using the SEQUENCE, TABLE, or UUID strategy are
+     * available in the PrePersist method. Primary key values generated using the
+     * IDENTITY strategy are not available in the PrePersist method
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPrimaryKeyAvailabilityInIdentityIdGenerationType() throws Exception {
+        IdentityIdEntity identityIdEntity = IdentityIdEntity.of("identityIdEntity 1");
+        try {
+            tx.begin();
+            em.persist(identityIdEntity);
+            tx.commit();
+            fail("IDENTITY ID available in PrePersist method. Primary key values generated using the IDENTITY strategy are expected not to be available in the PrePersist method");
+        } catch (IllegalStateException e) {
+            System.out.println("testPrimaryKeyAvailabilityInIdentityIdGenerationType: Exception occured while persisting: " + e.getMessage());
+            assertTrue("Inside '@PrePersist', 'ID' is null".equals(e.getMessage()));
+        } catch (Exception e) {
+            System.out.println("testPrimaryKeyAvailabilityInIdentityIdGenerationType: Unexpected Exception occured while persisting: " + e.getMessage());
+            fail("Unexpected Exception occured while persisting identityIdEntity");
+        }
+    }
+
 }
