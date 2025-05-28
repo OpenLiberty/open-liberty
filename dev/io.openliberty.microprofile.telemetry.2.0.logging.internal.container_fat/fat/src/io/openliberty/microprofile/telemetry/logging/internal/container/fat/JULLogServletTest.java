@@ -28,7 +28,6 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
@@ -50,8 +49,6 @@ public class JULLogServletTest {
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
 
-    private static final ThreadLocal<Integer> lastLogLength = ThreadLocal.withInitial(() -> 0);
-
     //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
     //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
@@ -64,8 +61,6 @@ public class JULLogServletTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        lastLogLength.set(container.getLogs().length());
-
         TestUtils.trustAll();
         WebArchive telemetryLogApp = ShrinkWrap
                         .create(WebArchive.class, "MpTelemetryLogApp.war")
@@ -102,8 +97,6 @@ public class JULLogServletTest {
 
         final String logs = container.getLogs();
 
-        Log.info(c, "Container logs", logs);
-
         List<String> linesMessagesLog = server.findStringsInLogs("^(?!.*scopeInfo).*\\[.*$", server.getDefaultLogFile());
         int bridgedLogsCount = logs.split("LogRecord #").length - 1;
 
@@ -117,17 +110,5 @@ public class JULLogServletTest {
         if (server != null && server.isStarted()) {
             server.stopServer(EXPECTED_FAILURES);
         }
-    }
-
-    private static String getNewLogs() {
-        String fullLogs = container.getLogs();
-        int lastLength = lastLogLength.get();
-
-        if (lastLength > fullLogs.length()) {
-            lastLength = 0;
-        }
-        String newLogs = fullLogs.substring(lastLength); // Get new logs only
-        lastLogLength.set(fullLogs.length());
-        return newLogs;
     }
 }

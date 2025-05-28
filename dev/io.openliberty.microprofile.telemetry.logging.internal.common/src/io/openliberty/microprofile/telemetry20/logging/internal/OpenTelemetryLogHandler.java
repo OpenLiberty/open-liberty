@@ -196,7 +196,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler {
                 }
 
                 // Check to see if the OpenTelemetry agent is active and if the received event is a Tr event or not.
-                if (!isTrEvent(event) && AgentDetection.isAgentActive()) {
+                if (AgentDetection.isAgentActive() && !isTrEvent(event)) {
                     // If the agent and the event is NOT from Tr (mostly using JUL or another logging framework),
                     // skip the mapping, since we do not want duplicate JUL messages/traces, from the agent and OpenLiberty.
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

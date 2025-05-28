@@ -28,7 +28,6 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
@@ -45,14 +44,12 @@ public class JULDuplicateTest {
 
     private static Class<?> c = JULDuplicateTest.class;
 
-    @Server("SecondTelemetryAgentJULMessages")
+    @Server("TelemetryAgentJULMessages")
     public static LibertyServer server;
 
     public static final String SERVER_XML_ALL_SOURCES = "allJULSources.xml";
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
-
-    private static final ThreadLocal<Integer> lastLogLength = ThreadLocal.withInitial(() -> 0);
 
     //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
     //TODO remove withDockerfileFromBuilder and instead create a dockerfile
@@ -66,8 +63,6 @@ public class JULDuplicateTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-
-        lastLogLength.set(container.getLogs().length());
         TestUtils.trustAll();
         WebArchive telemetryLogApp = ShrinkWrap
                         .create(WebArchive.class, "MpTelemetryLogApp.war")
@@ -113,7 +108,6 @@ public class JULDuplicateTest {
         TimeUnit.SECONDS.sleep(5);
 
         final String logs = container.getLogs();
-        Log.info(c, "Container logs", logs);
 
         String[] agentMappedJulMsg = logs.split("SRVE0250I");
 
@@ -146,17 +140,5 @@ public class JULDuplicateTest {
         server.setMarkToEndOfLog(logFile);
         server.setServerConfigurationFile(fileName);
         return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
-    }
-
-    private static String getNewLogs() {
-        String fullLogs = container.getLogs();
-        int lastLength = lastLogLength.get();
-
-        if (lastLength > fullLogs.length()) {
-            lastLength = 0;
-        }
-        String newLogs = fullLogs.substring(lastLength); // Get new logs only
-        lastLogLength.set(fullLogs.length());
-        return newLogs;
     }
 }
