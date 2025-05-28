@@ -20,6 +20,7 @@ fat.project: true
 
 tested.features:\
 	mpTelemetry-2.0,\
+	mpTelemetry-2.1,\
 	cdi-4.0,\
 	cdi-3.0,\
 	cdi-2.0,\

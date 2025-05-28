@@ -34,6 +34,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
+
 @RunWith(FATRunner.class)
 public class SessionMetricsTest extends BaseTestClass {
 
@@ -45,7 +47,7 @@ public class SessionMetricsTest extends BaseTestClass {
 	public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests rt = FATSuite.testRepeatMPTel20(SERVER_NAME);
+    public static RepeatTests rt = TelemetryActions.telemetry20and21Repeats(SERVER_NAME);
 	
     //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
     //TODO remove withDockerfileFromBuilder and instead create a dockerfile
