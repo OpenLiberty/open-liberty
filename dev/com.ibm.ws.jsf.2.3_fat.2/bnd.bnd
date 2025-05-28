@@ -49,7 +49,8 @@ src: \
     test-applications/JSF23Spec217.war/src,\
     test-applications/JSF23Spec790.war/src,\
     test-applications/JSF23Spec1433.jar/src,\
-    test-applications/ResourceRendering.war/src
+    test-applications/ResourceRendering.war/src,\
+    test-applications/MYFACES-4709.war/src
 
 fat.project: true
 

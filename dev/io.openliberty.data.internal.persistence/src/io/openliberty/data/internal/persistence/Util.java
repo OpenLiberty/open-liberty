@@ -21,7 +21,9 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -36,6 +38,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.util.UUID;
 
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -45,11 +48,18 @@ import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.persistence.AttributeConverter;
 
 /**
  * A location for helper methods that do not require any state.
  */
 public class Util {
+    /**
+     * Class name of the Jakarta Persistence AttributeConverter
+     */
+    public static final String ATTR_CONVERTER_CLASS_NAME = //
+                    AttributeConverter.class.getName();
+
     /**
      * End of line character(s).
      */
@@ -98,6 +108,33 @@ public class Util {
                     Set.of(Order.class, Sort.class, Sort[].class);
 
     /**
+     * Basic types that are supported by Jakarta Data for entity attributes.
+     */
+    public static final List<String> SUPPORTED_BASIC_TYPES = //
+                    List.of(BigDecimal.class.getSimpleName(),
+                            BigInteger.class.getSimpleName(),
+                            Boolean.class.getSimpleName(), "boolean",
+                            Byte.class.getSimpleName(), "byte",
+                            "byte[]",
+                            Character.class.getSimpleName(), "char",
+                            Double.class.getSimpleName(), "double",
+                            Float.class.getSimpleName(), "float",
+                            Integer.class.getSimpleName(), "int",
+                            Long.class.getSimpleName(), "long",
+                            Short.class.getSimpleName(), "short",
+                            String.class.getSimpleName(),
+                            UUID.class.getSimpleName());
+
+    /**
+     * Temporal types that are supported by Jakarta Data for entity attributes.
+     */
+    public static final List<String> SUPPORTED_TEMPORAL_TYPES = //
+                    List.of(Instant.class.getSimpleName(),
+                            LocalDate.class.getSimpleName(),
+                            LocalDateTime.class.getSimpleName(),
+                            LocalTime.class.getSimpleName());
+
+    /**
      * These types are never supported for entity attributes.
      *
      * ZonedDateTime is not one of the supported Temporal types of Jakarta Data
@@ -106,7 +143,7 @@ public class Util {
      * than was persisted. If proper support is added for it in the future,
      * then this restriction against using it can be made version dependent.
      */
-    static final Set<Class<?>> UNSUPPORTED_ATTR_TYPES = //
+    public static final Set<Class<?>> UNSUPPORTED_ATTR_TYPES = //
                     Set.of(Byte[].class, // deprecated in JPA 3.2
                            Character[].class, // deprecated in JPA 3.2
                            java.sql.Date.class, // deprecated in JPA 3.2

@@ -104,7 +104,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
     private static class JarCacheDisabler {
         static {
             try {
-                URLConnection connection = new URL("jar:file://something.jar!/").openConnection();
+                URLConnection connection = new URL("jar:file:///something.jar!/").openConnection();
                 connection.setDefaultUseCaches(false);
             } catch (MalformedURLException e) {
                 Tr.warning(tc, "WARN_JARS_STILL_CACHED");

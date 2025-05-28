@@ -408,16 +408,17 @@ public class TargetCacheImpl_WriterBinary implements TargetCache_BinaryConstants
         bufOutput.writeLargeInt( containerNames.size() );
 
         for ( String name : containerNames ) {
-            ScanPolicy policy = containerTable.getPolicy(name);
-
-            String writeName;
+            String useName;
             if ( name.equals(TargetCache_ExternalConstants.CANONICAL_ROOT_CONTAINER_NAME) ) {
-                writeName = TargetCache_ExternalConstants.ROOT_CONTAINER_NAME;
+                useName = TargetCache_ExternalConstants.ROOT_CONTAINER_NAME;
             } else {
-                writeName = name;
+                useName = name;
             }
-
-            writeCompact(NAME_BYTE, writeName);
+            String signature = containerTable.getSignature(name);
+            ScanPolicy policy = containerTable.getPolicy(name);
+            
+            writeCompact(NAME_BYTE, useName);
+            writeCompact(SIGNATURE_BYTE, signature);
             writeCompact(POLICY_BYTE, policy.toString());
         }
     }

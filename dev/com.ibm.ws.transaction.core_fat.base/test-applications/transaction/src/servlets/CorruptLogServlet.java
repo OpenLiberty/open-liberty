@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.junit.Test;
 import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
@@ -36,6 +37,7 @@ public class CorruptLogServlet extends FATServlet {
     private UserTransaction ut;
 
     @Test
+    @AllowedFFDC(value = { "java.lang.IllegalStateException" })
     @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException" })
     public void testBasicCorruptLog() throws Exception {
         ut.begin();

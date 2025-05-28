@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -153,7 +154,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testFSBaseRecovery() throws Exception {
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         // Start Server1
         FATUtils.startServers(_runner, server1);
@@ -175,7 +176,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         final String method = "testFSRecoveryTakeover";
         StringBuilder sb = null;
         String id = "Core";
-        serversToCleanup = new LibertyServer[] { server1, server2 };
+        serversToCleanup = Arrays.asList(server1, server2);
 
         // Start Server1
         FATUtils.startServers(_runner, server1);
@@ -233,7 +234,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         StringBuilder sb = null;
         String id = "Core";
 
-        serversToCleanup = new LibertyServer[] { server1, longLeaseCompeteServer1, server2 };
+        serversToCleanup = Arrays.asList(server1, longLeaseCompeteServer1, server2);
 
         // Start Server1
         FATUtils.startServers(_runner, server1);
@@ -287,7 +288,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
 
         final String defaultBackendURL = "\nhttp://localhost:9080";
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         // Edit the lease files
         setupV1LeaseLogs(server1, server2);
@@ -328,7 +329,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
      */
     @Test
     public void testPeerTakeoverFailure() throws Exception {
-        serversToCleanup = new LibertyServer[] { longLeaseLengthFSFail, server2lease10 };
+        serversToCleanup = Arrays.asList(longLeaseLengthFSFail, server2lease10);
 
         longLeaseLengthFSFail.setFFDCChecking(false);
         server2lease10.setHttpDefaultPort(FScloud2ServerPort);
@@ -358,7 +359,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
     public void testMultiPeerTakeoverFailure() throws Exception {
         final String method = "testMultiPeerTakeoverFailure";
 
-        serversToCleanup = new LibertyServer[] { longLeaseLengthFSFail, server2lease10, longLeaseLengthFSFailA, longLeaseLengthFSFailB };
+        serversToCleanup = Arrays.asList(longLeaseLengthFSFail, server2lease10, longLeaseLengthFSFailA, longLeaseLengthFSFailB);
 
         longLeaseLengthFSFail.setFFDCChecking(false);
         server2lease10.setHttpDefaultPort(FScloud2ServerPort);
@@ -395,7 +396,7 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
      */
     @Test
     public void testMultiPeerTakeover() throws Exception {
-        serversToCleanup = new LibertyServer[] { longLeaseLengthFSFail, server2lease10, longLeaseLengthFSFailA, longLeaseLengthFSFailB };
+        serversToCleanup = Arrays.asList(longLeaseLengthFSFail, server2lease10, longLeaseLengthFSFailA, longLeaseLengthFSFailB);
 
         longLeaseLengthFSFail.setFFDCChecking(false);
         server2lease10.setHttpDefaultPort(FScloud2ServerPort);

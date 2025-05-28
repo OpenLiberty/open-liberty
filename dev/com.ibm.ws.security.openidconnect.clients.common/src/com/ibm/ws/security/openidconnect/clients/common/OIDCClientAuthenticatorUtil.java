@@ -48,7 +48,6 @@ public class OIDCClientAuthenticatorUtil {
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
     private static int badStateCount = 0;
-    public static ThreadLocal<String> threadClientID = new ThreadLocal<String>();
     public static final String[] OIDC_COOKIES = { OidcClientStorageConstants.WAS_OIDC_STATE_KEY, OidcClientStorageConstants.WAS_REQ_URL_OIDC,
             ClientConstants.WAS_OIDC_CODE, OidcClientStorageConstants.WAS_OIDC_NONCE };
 
@@ -89,8 +88,6 @@ public class OIDCClientAuthenticatorUtil {
             Tr.error(tc, "OIDC_CLIENT_NULL_AUTH_ENDPOINT", clientConfig.getClientId());
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
-
-        setThreadClientId(clientConfig.getClientId());
 
         boolean isImplicit = Constants.IMPLICIT.equals(clientConfig.getGrantType());
 
@@ -487,14 +484,6 @@ public class OIDCClientAuthenticatorUtil {
             }
         }
         return issuer;
-    }
-
-    private void setThreadClientId(String clientID) {
-        threadClientID.set(clientID);
-    }
-
-    public static String getThreadClientId() {
-        return threadClientID.get();
     }
 
 }

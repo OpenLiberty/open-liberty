@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ package com.ibm.ws.recoverylog.spi;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.osgi.service.component.ComponentContext;
 
@@ -37,6 +39,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 public class RecLogServiceImpl {
     private static TraceComponent tc = Tr.register(RecLogServiceImpl.class,
                                                    TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
+
+    private final Set<String> _recoveryIds = new HashSet<String>();
 
     public RecLogServiceImpl() {
         if (tc.isDebugEnabled())
@@ -174,8 +178,9 @@ public class RecLogServiceImpl {
     /**
      * @param isPeerRecoverySupported the _isPeerRecoverySupported to set
      */
-    public void setPeerRecoverySupported(boolean isPeerRecoverySupported) {
-        Configuration.HAEnabled(isPeerRecoverySupported);
+    public void setPeerRecoverySupported(String recoveryIdentity) {
+        addRecoveryId(recoveryIdentity);
+        Configuration.HAEnabled(true);
     }
 
     /**
@@ -208,5 +213,17 @@ public class RecLogServiceImpl {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "checkPeersAtStartup", checkAtStartup);
         return checkAtStartup;
+    }
+
+    public Set<String> getRecoveryIds() {
+        return _recoveryIds;
+    }
+
+    public void addRecoveryId(String peerRecoveryIdentity) {
+        _recoveryIds.add(peerRecoveryIdentity);
+    }
+
+    public void removeRecoveryId(String peerRecoveryIdentity) {
+        _recoveryIds.remove(peerRecoveryIdentity);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package servlets;
+
+import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -482,15 +484,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
-            DatabaseMetaData mdata = con.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
-            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
-            boolean isOracle = dbName.toLowerCase().contains("oracle");
-            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
-            Statement stmt = null;
-            // Statement used to drop table
-            try {
-                stmt = con.createStatement();
+            try (Statement stmt = con.createStatement()) {
                 String dropTableString = "DROP TABLE WAS_TRAN_LOGCLOUD0021";
                 System.out.println("dropServer2Tables: Drop table using: " + dropTableString);
                 int dropReturn = stmt.executeUpdate(dropTableString);
@@ -501,17 +495,18 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             } catch (Exception ex) {
                 System.out.println("dropServer2Tables: caught exception in testSetup: " + ex);
             }
-
         }
     }
 
-    public void twoTrans(HttpServletRequest request,
-                         HttpServletResponse response) throws Exception {
+    // Run a tran that is expected to fail
+    public void doomedTran(HttpServletRequest request,
+                           HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
         XAResourceImpl.clear();
         final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
         final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
 
+        boolean tranFailed = false;
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1);
@@ -523,19 +518,13 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             tm.enlist(xaRes2, recoveryId2);
 
             tm.commit();
-
-            tm.begin();
-
-            recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
-            tm.enlist(xaRes1, recoveryId1);
-
-            recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
-            tm.enlist(xaRes2, recoveryId2);
-
-            tm.commit();
         } catch (Exception e) {
+            // This is what we expect
             e.printStackTrace();
+            tranFailed = true;
         }
+
+        assertTrue("Transaction should have failed", tranFailed);
     }
 
     public void modifyLeaseOwnerAndDie(HttpServletRequest request,

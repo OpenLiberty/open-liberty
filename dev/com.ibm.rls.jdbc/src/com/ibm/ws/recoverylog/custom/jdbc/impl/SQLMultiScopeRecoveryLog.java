@@ -2995,7 +2995,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         boolean newFailure = false;
         synchronized (this) {
             if (!_failed) {
-                if (tc.isDebugEnabled()) Tr.debug(tc, "markFailed: RecoveryLog has been marked as failed. [" + this + "]");
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "markFailed: RecoveryLog has been marked as failed. [" + this + "]");
                 newFailure = true;
                 _failed = true;
             }
@@ -3848,12 +3849,17 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "The underlying table may have been deleted");
                     if (isTableDeleted(sqlex)) {
-                        // The underlying table has been deleted
-                        Tr.audit(tc, "WTRN0107W: " +
-                                     "Underlying SQL tables missing when heartbeating SQL RecoveryLog " + _logName + " for server " + _serverName);
-                        // Set exception variables to NOT retry
+                        // Set exception variables to NOT retry. Regular heartbeat will keep going
                         currentSqlEx = null;
                         nonTransientException = sqlex;
+                        if (conn != null) {
+                            // At this point we know we can contact the database and we know our log table has disappeared. A peer server must have recovered our logs.
+                            // We'll mark the log failed so the server will go down unless configured not to.
+                            markFailed(sqlex, true, false);
+                        } else {
+                            Tr.audit(tc, "WTRN0107W: " +
+                                         "Underlying SQL tables missing when heartbeating SQL RecoveryLog " + _logName + " for server " + _serverName);
+                        }
                     } else
                         Tr.audit(tc, "WTRN0107W: " +
                                      "Peer locking heartbeat failed with SQL exception: " + sqlex);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,6 @@ package com.ibm.ws.anno.test.cases;
 
 import java.io.PrintWriter;
 import java.util.Set;
-
-import javax.servlet.annotation.ServletSecurity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -92,7 +90,7 @@ public class SecFVT_Servlet30_Inherit_war_Test extends AnnotationTest_BaseClass 
                     new PrintWriter(System.out, true));
     }
 
-    public static final String SERVLET_SECURITY_CLASS_NAME = ServletSecurity.class.getName();
+    public static final String SERVLET_SECURITY_CLASS_NAME = "javax.servlet.annotation.ServletSecurity";
 
     @Override
     protected void verifyInfoStore(PrintWriter writer,

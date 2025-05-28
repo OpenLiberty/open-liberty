@@ -63,10 +63,6 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: Pro aplikaci {0} byla zji\u0161t\u011
 CWMOT5007.tel.enabled.conflict.explanation: Telemetrii MicroProfile lze aktivovat pro cel\u00fd server pomoc\u00ed syst\u00e9mov\u00fdch vlastnost\u00ed nebo prom\u011bnn\u00fdch prost\u0159ed\u00ed. Pokud nen\u00ed povolena pro cel\u00fd server, lze ji povolit pro aplikaci nastaven\u00edm vlastnost\u00ed MicroProfile Config; nap\u0159\u00edklad nastaven\u00edm prom\u011bnn\u00fdch v souboru server.xml . Toto varov\u00e1n\u00ed se zobraz\u00ed, pokud je telemetrie povolena pro cel\u00fd server, ale vlastnosti MicroProfile Config zakazuj\u00ed telemetrii pro aplikaci. Proto\u017ee je telemetrie povolena pro cel\u00fd server, konfigurace pro tuto aplikaci je ignorov\u00e1na.
 CWMOT5007.tel.enabled.conflict.useraction: Zadejte nastaven\u00ed pro povolen\u00ed nebo zak\u00e1z\u00e1n\u00ed instanc\u00ed OpenTelemetry pomoc\u00ed bu\u010f prom\u011bnn\u00fdch prost\u0159ed\u00ed a syst\u00e9mov\u00fdch vlastnost\u00ed nebo jin\u00fdch zdroj\u016f MP Config, ale ne oboj\u00edho.
 
-CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: Funkce MicroProfile Telemetrick\u00e9 protokolov\u00e1n\u00ed nerozpozn\u00e1v\u00e1 form\u00e1t [ {0} ] protokolu telemetrick\u00e9ho p\u0159\u00edstupu.
-CWMOT5008.mptelemetry.unknown.access.log.field.explanation=Prost\u0159ed\u00ed runtime Liberty neposkytuje zadan\u00fd form\u00e1t protokolu.
-CWMOT5008.mptelemetry.unknown.access.log.field.useraction=Pro atribut mpTelemetry accessLogFields zadejte bu\u010f v\u00fdchoz\u00ed, nebo logFormat.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

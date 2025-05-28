@@ -118,6 +118,10 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
         this.channelProperties = options;
 
         if (this.channelProperties != null) {
+            // Set the name of the channel before setting the values of the other properties. This ensures it is available
+            // if a validation error occurs.
+            this.externalName = (String) this.channelProperties.get(ConfigConstants.EXTERNAL_NAME);
+
             // read in values now, to save time reading them in each time
             // they are requested
             setValues();
@@ -141,7 +145,7 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
      */
     public void applyConfiguration(ServerBootstrap bootstrap) {
         bootstrap.option(ChannelOption.SO_REUSEADDR, getSoReuseAddress());
-        bootstrap.option(ChannelOption.SO_LINGER, getSoLinger());
+        bootstrap.childOption(ChannelOption.SO_LINGER, getSoLinger());
     }
 
     /**
@@ -162,7 +166,10 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
 
     //@formatter:off
     private boolean skipKey(String key) {
-        return key.equals("id") ||
+        // We set externalName in the constructor. If we don't skip it while processing the rest of the properties the below error occurs:
+        // CWWKO0212W: TCP Channel defaultHttpEndpoint has been constructed with an incorrect configuration property. Property Name: ExternalName  Value: defaultHttpEndpoint
+        return key.equals(ConfigConstants.EXTERNAL_NAME) ||
+               key.equals("id") ||
                key.equals("type") ||
                key.startsWith("service.") ||
                key.startsWith("component.") ||
@@ -201,13 +208,7 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
             value = entry.getValue();
 
             if (skipKey(key)) {
-                // skip osgi standard properties
-                continue;
-            }
-
-            // add the name for the channel
-            if (key.equalsIgnoreCase(ConfigConstants.EXTERNAL_NAME)) {
-                this.externalName = (String) value;
+                // skip osgi standard properties and ExternalName
                 continue;
             }
 

@@ -325,8 +325,8 @@ public class MicroProfileActions {
                                                                "mpFaultTolerance-4.1",
                                                                "mpHealth-4.0",
                                                                "mpJwt-2.1",
-                                                               "mpOpenAPI-4.0", //TODO : update to 4.1
-                                                               "mpTelemetry-2.0", //TODO : update to 2.1
+                                                               "mpOpenAPI-4.1",
+                                                               "mpTelemetry-2.1",
                                                                "mpRestClient-4.0",
                                                                "mpMetrics-5.1", //standalone
                                                                "mpContextPropagation-1.3", //standalone
@@ -363,8 +363,8 @@ public class MicroProfileActions {
                                                                "mpFaultTolerance-4.1",
                                                                "mpHealth-4.0",
                                                                "mpJwt-2.1",
-                                                               "mpOpenAPI-4.0", //TODO : update to 4.1
-                                                               "mpTelemetry-2.0", //TODO : update to 2.1
+                                                               "mpOpenAPI-4.1",
+                                                               "mpTelemetry-2.1",
                                                                "mpRestClient-4.0",
                                                                "mpMetrics-5.1", //standalone
                                                                "mpContextPropagation-1.3", //standalone
@@ -436,8 +436,10 @@ public class MicroProfileActions {
     public static final FeatureSet MP71_EE11 = new FeatureSet(MP71_EE11_ID, MP71_EE11_FEATURE_SET, EEVersion.EE11);
     public static final FeatureSet MP70_EE11_APP_MODE = new FeatureSet(MP70_EE11_APP_MODE_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
 
-    //All MicroProfile FeatureSets - must be descending order 
-    private static final FeatureSet[] ALL_SETS_ARRAY = { MP71_EE11, MP71_EE10, MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };
+    //All MicroProfile FeatureSets - must be descending order
+    private static final FeatureSet[] ALL_SETS_ARRAY = { MP71_EE11, MP71_EE10, MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13,
+                                                         MP12, MP10 };
+
     public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
 
     /**

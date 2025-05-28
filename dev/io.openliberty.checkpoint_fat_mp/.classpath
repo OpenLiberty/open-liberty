@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="test-applications/system/src/java"/>
 	<classpathentry kind="src" path="test-bundles/test.checkpoint.config.bundle/src"/>
 	<classpathentry kind="src" path="test-applications/timeoutTest/src"/>
-	<classpathentry kind="src" path="test-applications/openAPItest/src"/>
 	<classpathentry kind="src" path="test-applications/mpjwt/src"/>
 	<classpathentry kind="src" path="test-applications/mphealth/src"/>
 	<classpathentry kind="src" path="test-applications/mpTelemetry/src"/>

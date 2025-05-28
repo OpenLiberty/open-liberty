@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2023, 2025 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License 2.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0 
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <properties>
+        <arquillian.version>1.7.0.Alpha13</arquillian.version>
+		<arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+		<testng.version>7.5.1</testng.version>
+		<slf4j.version>2.0.6</slf4j.version>
+
+        <opentelemetry.version>1.35.0</opentelemetry.version>
+        <mptelemetry.version>2.1-RC1</mptelemetry.version>
+
+        <!-- the below is used in arquillian.xml -->
+        <wlp>${wlp}</wlp>
+        <!-- <wlp>${project.basedir}/../../../../build.image/wlp/</wlp> -->
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
+        <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
+        <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
+        <targetDirectory>${project.basedir}/target</targetDirectory>
+        
+    </properties>
+
+    <groupId>io.openliberty.microprofile.telemetry</groupId>
+    <artifactId>tck.runner.tck</artifactId>
+    <version>1.0</version>
+    <name>MicroProfile Telemetry ${mptelemetry.version} TCK Runner TCK Module</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>fattest.simplicity</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.microprofile.telemetry</groupId>
+            <artifactId>microprofile-telemetry-tracing-tck</artifactId>
+            <version>${mptelemetry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.telemetry</groupId>
+            <artifactId>microprofile-telemetry-metrics-tck</artifactId>
+            <version>${mptelemetry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.telemetry</groupId>
+            <artifactId>microprofile-telemetry-logs-tck</artifactId>
+            <version>${mptelemetry.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.microprofile.rest.client</groupId>
+            <artifactId>microprofile-rest-client-api</artifactId>
+            <version>3.0</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.eclipse.microprofile.rest.client.4.0_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>io.openliberty.org.jboss.resteasy</groupId>
+            <artifactId>common</artifactId>
+            <version>6.2.3.Final</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.resteasy.common.ee10_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>io.openliberty.org.jboss.resteasy</groupId>
+            <artifactId>jaxb.provider</artifactId>
+            <version>6.2.3.Final</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider.ee10_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>io.openliberty.org.jboss</groupId>
+            <artifactId>logging35</artifactId>
+            <version>3.5.0.Final</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.logging35_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>logging</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.logging_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
+            <version>2.1.0</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.mail.2.1_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+            <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.activation.2.1_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.restfulWS.3.1_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.xmlBinding.4.0_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
+            <version>${arquillian.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed-jakarta</artifactId>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcomponents</artifactId>
+            <version>4.5</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.httpcomponents_}</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>logging</artifactId>
+            <version>1.2</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.apache.commons.logging_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/> <!-- Default forkNode has encoding issues on ZOS -->
+                    <systemPropertyVariables>
+                        <wlp>${wlp}</wlp>
+                        <tck_server>${tck_server}</tck_server>
+                        <tck_port>${tck_port}</tck_port>
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
+                    </systemPropertyVariables>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.tx.jta.impl.TransactionImpl;
+import com.ibm.tx.jta.util.TxTMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -211,13 +212,13 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
     @Override
     public TxCollaboratorConfig preInvoke(final HttpServletRequest request, final boolean isServlet23) throws ServletException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Calling preInvoke. Request=" + request + " | isServlet23=" + isServlet23);
+            Tr.debug(tc, "preInvoke", new Exception("TM state=" + TxTMHelper.getState()));
         }
 
         //First we check if there's a global transaction
         try {
             final EmbeddableWebSphereTransactionManager tranManager = getTranMgr();
-            if (tranManager != null) {
+            if (tranManager != null && TxTMHelper.ready()) {
                 final Transaction incumbentTx = tranManager.getTransaction();
 
                 if (incumbentTx != null) {
@@ -305,7 +306,7 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
     public void postInvoke(HttpServletRequest request, Object txConfig,
                            boolean isServlet23) throws ServletException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Calling postInvoke. Request=" + request + " | isServlet23=" + isServlet23);
+            Tr.debug(tc, "postInvoke", new Exception("TM state=" + TxTMHelper.getState()));
         }
 
         LocalTransactionCurrent ltCurrent = getLtCurrent();
@@ -357,7 +358,7 @@ public class WebAppTransactionCollaboratorImpl implements IWebAppTransactionColl
             // new transaction
             // and it needs to be checked for possible rollback
             final EmbeddableWebSphereTransactionManager tranManager = getTranMgr();
-            if (tranManager != null) {
+            if (tranManager != null && TxTMHelper.ready()) {
                 try {
                     final Transaction tx = tranManager.getTransaction();
 

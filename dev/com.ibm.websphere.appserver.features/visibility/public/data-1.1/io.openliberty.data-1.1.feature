@@ -2,6 +2,7 @@
 symbolicName=io.openliberty.data-1.1
 visibility=public
 singleton=true
+IBM-App-ForceRestart: install, uninstall
 IBM-ShortName: data-1.1
 # This feature temporarily serves as a place to keep around some function that
 # did not make it into the Jakarta Data 1.0 specification, but could be added in

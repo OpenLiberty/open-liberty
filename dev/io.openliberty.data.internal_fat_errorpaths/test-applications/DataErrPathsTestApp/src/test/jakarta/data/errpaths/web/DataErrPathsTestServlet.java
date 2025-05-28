@@ -39,6 +39,7 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
+import jakarta.data.page.PageRequest.Mode;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -1601,11 +1602,11 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
-     * Supply a PageRequest that has a Cursor to a repository method that returns
-     * an offset-based Page rather than a CursoredPage. Expect an error.
+     * Supply a PageRequest that requires CURSOR_NEXT to a repository method that
+     * returns an offset-based Page rather than a CursoredPage. Expect an error.
      */
     @Test
-    public void testOffsetPageRequestedWithCursor() {
+    public void testOffsetPageRequestedWithCursorNext() {
         Order<Voter> nameAsc = Order.by(Sort.asc("name"), Sort.asc("ssn"));
         PageRequest after123456789 = PageRequest.ofSize(4) //
                         .afterCursor(Cursor.forKey("Voter Name", 123456789));
@@ -1619,7 +1620,30 @@ public class DataErrPathsTestServlet extends FATServlet {
         } catch (IllegalArgumentException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1035E:") ||
+                !x.getMessage().contains(Mode.CURSOR_NEXT.toString()) ||
                 !x.getMessage().contains("atAddress"))
+                throw x;
+        }
+    }
+
+    /**
+     * Supply a PageRequest that requires CURSOR_PREVIOUS to a repository method that
+     * returns an offset-based Page rather than a CursoredPage. Expect an error.
+     */
+    @Test
+    public void testOffsetPageRequestedWithCursorPrevious() {
+        Order<Voter> nameAsc = Order.by(Sort.asc("name"), Sort.asc("ssn"));
+        PageRequest before987654321 = PageRequest.ofSize(5) //
+                        .beforeCursor(Cursor.forKey("Voter Name", 987654321));
+        try {
+            Page<Voter> page = voters.findAll(before987654321, nameAsc);
+            fail("Obtained an offset page from a PageRequest that contains a" +
+                 " Cursor: " + page);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1035E:") ||
+                !x.getMessage().contains(Mode.CURSOR_PREVIOUS.toString()) ||
+                !x.getMessage().contains("findAll"))
                 throw x;
         }
     }

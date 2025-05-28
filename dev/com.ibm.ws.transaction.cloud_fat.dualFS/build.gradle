@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ dependencies {
                project(":com.ibm.ws.transaction.fat.util")
 }
 
-
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
 
 task addDerbyToSharedDir(type: Copy) {
@@ -34,31 +33,10 @@ task addDerbyToSharedDir(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
-task copyCommonFiles {
-  doLast {
-    /*
-     * Copy common publish files.
-     */
-    copy {
-      from project(':com.ibm.ws.transaction.cloud_fat.base').file('publish')
-      into new File('publish')
-    }
-  }
-}
-
 addRequiredLibraries.dependsOn addDerbyToSharedDir
 addRequiredLibraries.dependsOn addJakartaTransformer
 
-jar {
-  dependsOn copyCommonFiles
-}
-
-autoFVT.dependsOn copyCommonFiles
-
 clean.doLast {
-  if (file('publish').exists()){
-    file('publish').deleteDir()
-  }
   if (file('build').exists()){
     file('build').deleteDir()
   }

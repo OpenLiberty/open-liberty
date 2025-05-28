@@ -38,7 +38,6 @@ import javax.net.ssl.X509TrustManager;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
 
 public abstract class SSLCommonTests extends AbstractSpringTests {

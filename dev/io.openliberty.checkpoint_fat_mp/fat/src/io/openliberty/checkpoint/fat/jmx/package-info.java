@@ -1,1 +1,0 @@
-package io.openliberty.checkpoint.fat.jmx;

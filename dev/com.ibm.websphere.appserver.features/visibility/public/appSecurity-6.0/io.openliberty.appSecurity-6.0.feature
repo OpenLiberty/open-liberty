@@ -25,8 +25,7 @@ Subsystem-Name: Application Security 6.0 (Jakarta Security 4.0)
   io.openliberty.jakarta.authentication-3.1, \
   com.ibm.websphere.appserver.servlet-6.1, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
-  com.ibm.websphere.appserver.security-1.0, \
-  io.openliberty.securityAPI.jakarta-1.0, \
+  com.ibm.websphere.appserver.security-2.0, \
   io.openliberty.jakarta.security.enterprise-4.0, \
   io.openliberty.expressionLanguage-6.0, \
   io.openliberty.jsonp-2.1, \

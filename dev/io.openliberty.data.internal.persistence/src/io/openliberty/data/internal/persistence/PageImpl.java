@@ -86,7 +86,7 @@ public class PageImpl<T> implements Page<T> {
         if (pageRequest.mode() != Mode.OFFSET)
             throw exc(IllegalArgumentException.class,
                       "CWWKD1035.incompat.page.mode",
-                      Mode.OFFSET,
+                      pageRequest.mode(),
                       queryInfo.method.getName(),
                       queryInfo.repositoryInterface.getName(),
                       queryInfo.method.getGenericReturnType().getTypeName(),

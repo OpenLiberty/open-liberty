@@ -58,6 +58,10 @@ CWWKC1207.lacks.qualifier.anno=CWWKC1207E: O artefato de aplicativo {0} especifi
 CWWKC1207.lacks.qualifier.anno.explanation=A anota\u00e7\u00e3o Qualifier indica que a anota\u00e7\u00e3o \u00e9 um qualificador. A anota\u00e7\u00e3o Retention controla a disponibilidade das anota\u00e7\u00f5es.
 CWWKC1207.lacks.qualifier.anno.useraction=Adicione as anota\u00e7\u00f5es @Qualifier e @Retention(RUNTIME) \u00e0 classe do qualificador.
 
+CWWKC1208.global.with.qualifiers=CWWKC1208E: O artefato do aplicativo {0} especifica uma anota\u00e7\u00e3o {1} ou um elemento descritor de implanta\u00e7\u00e3o {2} que tem o nome {3} e a lista de qualificadores {4}. N\u00e3o \u00e9 poss\u00edvel configurar um recurso do Jakarta Concurrency para ter qualificadores e um namespace java:global ao mesmo tempo. Remova os qualificadores da configura\u00e7\u00e3o do recurso Jakarta Concurrency que tem o nome {3} ou mude para o namespace java:app.
+CWWKC1208.global.with.qualifiers.explanation=A configura\u00e7\u00e3o do recurso Jakarta Concurrency n\u00e3o pode ter qualificadores e um namespace java:global ao mesmo tempo.
+CWWKC1208.global.with.qualifiers.useraction=Atualize a configura\u00e7\u00e3o do recurso Jakarta Concurrency definido pelo aplicativo para omitir os qualificadores ou usar um namespace diferente, como o namespace java:app.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: A especifica\u00e7\u00e3o Concurrency exige que virtual=true seja ignorado na anota\u00e7\u00e3o {1} do artefato do aplicativo {0} ou no elemento descritor de implanta\u00e7\u00e3o {2} com o nome {3} porque o Java {4} n\u00e3o oferece suporte a threads virtuais.
 CWWKC1217.no.virtual.threads.explanation=Os threads virtuais est\u00e3o dispon\u00edveis somente no Java 21 e posterior.
 CWWKC1217.no.virtual.threads.useraction=Atualize para o Java 21 ou posterior para permitir o uso de threads virtuais.

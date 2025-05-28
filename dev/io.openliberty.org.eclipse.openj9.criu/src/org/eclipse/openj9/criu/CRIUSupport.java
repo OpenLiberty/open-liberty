@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -77,6 +77,17 @@ public final class CRIUSupport {
 	 */
 	public static String getErrorMessage() {
 		return null;
+	}
+	/**
+	 * Returns the singleton CRIUSupport object.
+	 *
+	 * Most methods of class {@code CRIUSupport} are instance methods and must be
+	 * invoked via this object.
+	 *
+	 * @return the singleton {@code CRIUSupport} object
+	 */
+	public static CRIUSupport getCRIUSupport() {
+		return new CRIUSupport(null);
 	}
 
 	/**

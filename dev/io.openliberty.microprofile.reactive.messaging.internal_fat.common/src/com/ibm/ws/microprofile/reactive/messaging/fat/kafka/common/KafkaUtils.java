@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common;
 
@@ -19,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +34,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedK
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 
+import componenttest.app.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -50,8 +49,20 @@ public class KafkaUtils {
     private final static String KAFKA_REGEX = "E Error.*kafka";
 
     public static File[] kafkaClientLibs() {
-        File libsDir = new File("lib/LibertyFATTestFiles/libs");
-        return libsDir.listFiles();
+        ArrayList<File> result = new ArrayList<>();
+
+        File commonDir = new File("publish/kafka-client-common");
+        result.addAll(Arrays.asList(commonDir.listFiles()));
+
+        if (JavaInfo.majorVersion() <= 8) {
+            File clientDir = new File("publish/kafka-client-3");
+            result.addAll(Arrays.asList(clientDir.listFiles()));
+        } else {
+            File clientDir = new File("lib/LibertyFATTestFiles/kafka-client");
+            result.addAll(Arrays.asList(clientDir.listFiles()));
+        }
+
+        return result.toArray(new File[0]);
     }
 
     public static URL kafkaPermissions() {

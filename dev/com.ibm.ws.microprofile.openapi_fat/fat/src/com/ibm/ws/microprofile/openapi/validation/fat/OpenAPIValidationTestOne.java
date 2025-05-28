@@ -1,30 +1,35 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.validation.fat;
 
+import static com.ibm.ws.microprofile.openapi.validation.fat.ValidationSuite.server;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.microprofile.openapi.fat.FATSuite;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-import componenttest.topology.utils.HttpUtils;
 
 /**
  * Tests to ensure that OpenAPI model validation works,
@@ -54,42 +59,29 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class OpenAPIValidationTestOne {
 
-    private static final String SERVER_NAME = "validationServerOne";
-
-    @Server(SERVER_NAME)
-    public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
-
-    private static final String OPENAPI_VALIDATION_YAML = "openapi_validation";
-
     @BeforeClass
     public static void setUpTest() throws Exception {
-        HttpUtils.trustAllCertificates();
-
-        server.startServer("OpenAPIValidationTestOne.log", true);
-
-        server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
-
-        assertNotNull("Web application is not available at /openapi_validation/",
-            server.waitForStringInLog("CWWKT0016I.*/openapi_validation/")); // wait for endpoint to become available
-        assertNotNull("CWWKF0011I.* not received on relationServer",
-            server.waitForStringInLog("CWWKF0011I.*")); // wait for server is ready to run a smarter planet message
-        assertNotNull("The application openapi_validation was processed and an OpenAPI document was produced.",
-            server.waitForStringInLog("CWWKO1660I.*and an OpenAPI document was produced.")); // wait for application to
-                                                                                             // be processed
-        assertThat("Validation errors were reported", server.findStringsInLogs("CWWKO1650E"), not(empty()));
-        assertThat("Validation warnings were reported", server.findStringsInLogs("CWWKO1651W"), not(empty()));
+        // set mark
+        ValidationSuite.server.setMarkToEndOfLog();
+        // deploy app and wait for start
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "validationOne.war")
+            .addAsManifestResource(OpenAPIValidationTestOne.class.getPackage(),
+                "validationTestOne.yaml",
+                "openapi.yaml");
+        ValidationSuite.deployApp(war);
+        // Log OpenAPI doc
         String openApiDoc = new HttpRequest(server, "/openapi").run(String.class);
         Log.info(OpenAPIValidationTestOne.class, "setUpTest", "OpenAPI doc:\n" + openApiDoc);
+
+        assertThat("Validation errors were reported",
+            server.findStringsInLogsUsingMark("CWWKO1650E", server.getDefaultLogFile()), not(empty()));
+        assertThat("Validation warnings were reported",
+            server.findStringsInLogsUsingMark("CWWKO1651W", server.getDefaultLogFile()), not(empty()));
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
-        if (server.isStarted()) {
-            server.stopServer("CWWKO1650E", "CWWKO1651W");
-        }
+    public static void tearDownTest() throws Exception {
+        ValidationSuite.removeApp("validationOne.war");
     }
 
     @Test
@@ -99,19 +91,24 @@ public class OpenAPIValidationTestOne {
         MicroProfileActions.MP60_ID,
         MicroProfileActions.MP61_ID,
         MicroProfileActions.MP70_EE10_ID,
-        MicroProfileActions.MP70_EE11_ID
+        MicroProfileActions.MP70_EE11_ID,
+        MicroProfileActions.MP71_EE10_ID,
+        MicroProfileActions.MP71_EE11_ID,
     })
     public void testInfoValidation() throws Exception {
 
         assertNotEmpty("The Info Validator should have been triggered by invalid URL",
-            server.findStringsInLogs(
-                "Message: The Info Object must contain a valid URL. The \"not in URL format\" value specified for \"termsOfService\"*"));
+            server.findStringsInLogsUsingMark(
+                "Message: The Info Object must contain a valid URL. The \"not in URL format\" value specified for \"termsOfService\"*",
+                server.getDefaultLogFile()));
         assertNotEmpty("The Info Validator should have been triggered by missing \"version\" field",
-            server.findStringsInLogs(
-                "Message: Required \"version\" field is missing or is set to an invalid value, Location: #/info"));
+            server.findStringsInLogsUsingMark(
+                "Message: Required \"version\" field is missing or is set to an invalid value, Location: #/info",
+                server.getDefaultLogFile()));
         assertNotEmpty("The Info Validator should have been triggered by missing \"title\" field",
-            server.findStringsInLogs(
-                "Message: Required \"title\" field is missing or is set to an invalid value, Location: #/info"));
+            server.findStringsInLogsUsingMark(
+                "Message: Required \"title\" field is missing or is set to an invalid value, Location: #/info",
+                server.getDefaultLogFile()));
     }
 
     @Test
@@ -126,122 +123,150 @@ public class OpenAPIValidationTestOne {
          * mpOpenAPI-2.0 feature
          */
         assertNotEmpty("The Info Validator should have been triggered by invalid URL",
-            server.findStringsInLogs(
-                "Message: The Info Object must contain a valid URL. The \"not in URL format\" value specified for \"termsOfService\"*"));
+            server.findStringsInLogsUsingMark(
+                "Message: The Info Object must contain a valid URL. The \"not in URL format\" value specified for \"termsOfService\"*",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testContactValidation() throws Exception {
         assertNotEmpty("The Contact Validator should have been triggered by invalid URL",
-            server.findStringsInLogs(
-                "Message: The Contact Object must contain a valid URL. The \"not in URL Format\" value specified*"));
+            server.findStringsInLogsUsingMark(
+                "Message: The Contact Object must contain a valid URL. The \"not in URL Format\" value specified*",
+                server.getDefaultLogFile()));
         assertNotEmpty("The Contact Validator should have been triggered by invalid email",
-            server.findStringsInLogs(
-                "Message: The Contact Object must contain a valid email address. The \"not an email\" value*"));
+            server.findStringsInLogsUsingMark(
+                "Message: The Contact Object must contain a valid email address. The \"not an email\" value*",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testLicenseValidation() throws Exception {
         assertNotEmpty("The License Validator should have been triggered by missing \"name\" field",
-            server.findStringsInLogs("Message: Required \"name\" field is missing or is set to an invalid value"));
+            server.findStringsInLogsUsingMark(
+                "Message: Required \"name\" field is missing or is set to an invalid value",
+                server.getDefaultLogFile()));
         assertNotEmpty("The License Validator should have been triggered by invalid URL",
-            server.findStringsInLogs("The License Object must contain a valid URL. The \"not in URL format\" value"));
+            server.findStringsInLogsUsingMark(
+                "The License Object must contain a valid URL. The \"not in URL format\" value",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testServerValidation() throws Exception {
         assertThat("The Server Validator should have been triggered by invalid URL",
-            server.findStringsInLogs("Message: The Server Object must contain a valid URL*"),
+            server.findStringsInLogsUsingMark("Message: The Server Object must contain a valid URL*",
+                server.getDefaultLogFile()),
             hasSize(4));
         assertNotEmpty("The Server Validator should have been triggered by missing \"url\" field",
-            server.findStringsInLogs(
-                "Message: Required \"url\" field is missing or is set to an invalid value, Location: #/paths/~1reviews/get/servers"));
+            server.findStringsInLogsUsingMark(
+                "Message: Required \"url\" field is missing or is set to an invalid value, Location: #/paths/~1reviews/get/servers",
+                server.getDefaultLogFile()));
         assertNotEmpty("The Server Validator should have been triggered by undefined variable",
-            server.findStringsInLogs("The \"extraVariable\" variable in the Server Object is not defined*"));
+            server.findStringsInLogsUsingMark("The \"extraVariable\" variable in the Server Object is not defined*",
+                server.getDefaultLogFile()));
         assertNotEmpty("The Server Validator should have been triggered by undefined variable",
-            server.findStringsInLogs("Message: The \"id\" variable in the Server Object is not defined*"));
+            server.findStringsInLogsUsingMark("Message: The \"id\" variable in the Server Object is not defined*",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testServerVariableValidation() throws Exception {
         assertNotEmpty("The Server Variable Validator should have been triggered by a missing \"default\" field",
-            server.findStringsInLogs("Message: Required \"default\" field is missing or is set to an invalid value*"));
+            server.findStringsInLogsUsingMark(
+                "Message: Required \"default\" field is missing or is set to an invalid value*",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testPathItemValidation() throws Exception {
         assertNotEmpty(
             "The PathItem Validator should have been triggered by teh missing \"required\" field in a path parameter",
-            server.findStringsInLogs(
-                "The \"id\" path parameter from the \"GET\" operation of the path \"/bookings/\\{id\\}\" does not contain the \"required\" field or its value is not \"true\""));
+            server.findStringsInLogsUsingMark(
+                "The \"id\" path parameter from the \"GET\" operation of the path \"/bookings/\\{id\\}\" does not contain the \"required\" field or its value is not \"true\"",
+                server.getDefaultLogFile()));
         assertNotEmpty("The PathItem Validator should have been triggered by an undeclared path parameter",
-            server.findStringsInLogs(
-                "The \"GET\" operation of the \"/reviews/\\{id\\}\" path does not define a path parameter that is declared: \"id\""));
+            server.findStringsInLogsUsingMark(
+                "The \"GET\" operation of the \"/reviews/\\{id\\}\" path does not define a path parameter that is declared: \"id\"",
+                server.getDefaultLogFile()));
         assertNotEmpty("The PathItem Validator should have been triggered by an invalid path",
-            server.findStringsInLogs(
-                "The Path Item Object must contain a valid path. The \"GET\" operation from the \"/reviews/\\{airline\\}\" path defines a duplicated \"path\" parameter: \"airline\""));
+            server.findStringsInLogsUsingMark(
+                "The Path Item Object must contain a valid path. The \"GET\" operation from the \"/reviews/\\{airline\\}\" path defines a duplicated \"path\" parameter: \"airline\"",
+                server.getDefaultLogFile()));
         assertNotEmpty("The PathItem Validator should have been triggered by an invalid path",
-            server.findStringsInLogs(
-                "The Paths Object contains an invalid path. The \"noSlashPath\" path value does not begin with a slash*"));
+            server.findStringsInLogsUsingMark(
+                "The Paths Object contains an invalid path. The \"noSlashPath\" path value does not begin with a slash*",
+                server.getDefaultLogFile()));
         assertNotEmpty("The PathItem Validator should have been triggered by an invalid path",
-            server.findStringsInLogs(
-                "The Path Item Object must contain a valid path. The format of the \"/availability/\"*"));
+            server.findStringsInLogsUsingMark(
+                "The Path Item Object must contain a valid path. The format of the \"/availability/\"*",
+                server.getDefaultLogFile()));
         assertNotEmpty(
             "The PathItem Validator should have been triggered by teh missing \"required\" field in a path parameter",
-            server.findStringsInLogs(
-                " The \"userFirstName\" path parameter from the \"GET\" operation of the path \"/operationWithParam\" does not contain the \"required\" field"));
+            server.findStringsInLogsUsingMark(
+                " The \"userFirstName\" path parameter from the \"GET\" operation of the path \"/operationWithParam\" does not contain the \"required\" field",
+                server.getDefaultLogFile()));
         assertNotEmpty("The PathItem Validator should have been triggered by an invalid path",
-            server.findStringsInLogs(
-                "The Path Item Object must contain a valid path. The \"/\\{username\\}\" path defines \"3\" path parameters that are not declared: \"\\[pathWithUndeclaredParams, usernameParam, accountNumber\\]\"*"));
+            server.findStringsInLogsUsingMark(
+                "The Path Item Object must contain a valid path. The \"/\\{username\\}\" path defines \"3\" path parameters that are not declared: \"\\[pathWithUndeclaredParams, usernameParam, accountNumber\\]\"*",
+                server.getDefaultLogFile()));
         assertNotEmpty("The PathItem Validator should have been triggered by an undeclared path parameter",
-            server.findStringsInLogs(
-                "The \"GET\" operation from the \"/operationWithParam\" path defines one path parameter that is not declared: \"\\[userFirstName\\]\""));
+            server.findStringsInLogsUsingMark(
+                "The \"GET\" operation from the \"/operationWithParam\" path defines one path parameter that is not declared: \"\\[userFirstName\\]\"",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testOperationValidation() throws Exception {
         assertNotEmpty("The Operation Validator should have been triggered by the missing \"responses\" field",
-            server.findStringsInLogs(
-                "Message: Required \"responses\" field is missing or is set to an invalid value, Location: #/paths/~1/get"));
+            server.findStringsInLogsUsingMark(
+                "Message: Required \"responses\" field is missing or is set to an invalid value, Location: #/paths/~1/get",
+                server.getDefaultLogFile()));
         assertNotEmpty("The Operation Validator should have been triggered by non-unique operationIDs",
-            server.findStringsInLogs(
-                "Message: More than one Operation Objects with \"getReviewById\" value for \"operationId\" field was found. The \"operationId\" must be unique"));
+            server.findStringsInLogsUsingMark(
+                "Message: More than one Operation Objects with \"getReviewById\" value for \"operationId\" field was found. The \"operationId\" must be unique",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testExternalDocsValidation() throws Exception {
         assertNotEmpty("The ExternalDocumentation Validator should have been triggered by an invalid URL",
-            server.findStringsInLogs(
-                "Message: The External Documentation Object must contain a valid URL. The \"not a URL\" value"));
+            server.findStringsInLogsUsingMark(
+                "Message: The External Documentation Object must contain a valid URL. The \"not a URL\" value",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testSecurityRequirementValidation() throws Exception {
         assertNotEmpty("The Security Requirement Validator should have been triggered by undeclared Security Scheme",
-            server.findStringsInLogs(
-                "The \"reviewoauth2\" name provided for the Security Requirement Object does not correspond to a declared security scheme"));
+            server.findStringsInLogsUsingMark(
+                "The \"reviewoauth2\" name provided for the Security Requirement Object does not correspond to a declared security scheme",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testRequestBodyValidation() throws Exception {
         assertNotEmpty("The RequestBody Validator should have been triggered by the missing \"content\" field",
-            server.findStringsInLogs(
-                "Message: Required \"content\" field is missing or is set to an invalid value, Location: #/paths/~1reviews/post/requestBody"));
+            server.findStringsInLogsUsingMark(
+                "Message: Required \"content\" field is missing or is set to an invalid value, Location: #/paths/~1reviews/post/requestBody",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testResponseValidation() throws Exception {
         assertNotEmpty("The Response Validator should have been triggered by the missing \"description\" field",
-            server.findStringsInLogs(
-                "Message: Required \"description\" field is missing or is set to an invalid value*"));
+            server.findStringsInLogsUsingMark(
+                "Message: Required \"description\" field is missing or is set to an invalid value*",
+                server.getDefaultLogFile()));
     }
 
     @Test
     public void testResponsesValidation() throws Exception {
         assertNotEmpty(
             "The Responses Validator should have been triggered by missing response code for successful operation",
-            server.findStringsInLogs(
-                "Message: The Responses Object should contain at least one response code for a successful operation"));
+            server.findStringsInLogsUsingMark(
+                "Message: The Responses Object should contain at least one response code for a successful operation",
+                server.getDefaultLogFile()));
     }
 
     private void assertNotEmpty(String message,

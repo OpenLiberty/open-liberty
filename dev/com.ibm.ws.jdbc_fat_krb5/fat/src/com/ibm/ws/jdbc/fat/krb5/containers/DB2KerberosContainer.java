@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5.containers;
 
-import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC;
+import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC_EXTERNAL;
 import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 
 import java.time.Duration;
@@ -22,7 +22,6 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
-import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 
@@ -51,7 +50,7 @@ public class DB2KerberosContainer extends Db2Container {
         acceptLicense();
         withExposedPorts(50000);
         withEnv("KRB5_REALM", KRB5_REALM);
-        withEnv("KRB5_KDC", KRB5_KDC);
+        withEnv("KRB5_KDC", KRB5_KDC_EXTERNAL);
         withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")

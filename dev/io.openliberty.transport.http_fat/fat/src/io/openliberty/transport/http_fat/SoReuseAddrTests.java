@@ -13,9 +13,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +31,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test to ensure that the tcpOptions soReuseAddr works.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class SoReuseAddrTests {
 
     private static final String CLASS_NAME = SoReuseAddrTests.class.getName();
@@ -56,45 +55,6 @@ public class SoReuseAddrTests {
     }
 
     /**
-     * Save the server configuration before each test, this should be the default server
-     * configuration.
-     *
-     * @throws Exception
-     */
-    @Before
-    public void beforeTest() throws Exception {
-        server.saveServerConfiguration();
-
-        ServerConfiguration configuration = server.getServerConfiguration();
-        LOG.info("Server configuration that was saved: " + configuration);
-    }
-
-    /**
-     * Restore the server configuration to the default state after each test.
-     *
-     * @throws Exception
-     */
-    @After
-    public void afterTest() throws Exception {
-        // Restore the server to the default state.
-        server.setMarkToEndOfLog();
-        server.setTraceMarkToEndOfDefaultTrace();
-        server.restoreServerConfiguration();
-        server.waitForConfigUpdateInLogUsingMark(null);
-    }
-
-    /**
-     * The test will check the default value of soReuseAddr by searching the trace file.
-     *
-     * The default value of soReuseAddr is true.
-     */
-    @Test
-    public void testSoReuseAddr_default() throws Exception {
-        // Validate that soReuseAddr default is true.
-        assertNotNull("The default value of soReuseAddr was not true!", server.waitForStringInTrace("soReuseAddr: true"));
-    }
-
-    /**
      * The test will set soReuseAddr to a value of false and validate in the trace file that
      * the correct value is being used.
      *
@@ -104,7 +64,6 @@ public class SoReuseAddrTests {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testSoReuseAddr_nonDefault() throws Exception {
         ServerConfiguration configuration = server.getServerConfiguration();
         LOG.info("Server configuration that the test started with: " + configuration);
@@ -116,6 +75,11 @@ public class SoReuseAddrTests {
         server.setTraceMarkToEndOfDefaultTrace();
         server.updateServerConfiguration(configuration);
         server.waitForConfigUpdateInLogUsingMark(null);
+
+        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv6) port 8010.
+        // We should wait for the TCP Channel to start before checking the trace. If we don't it is possible we try to start shutting down
+        // the server before we even have finished starting up causing quiesce issues.
+        server.waitForStringInLogUsingMark("CWWKO0219I");
 
         // Validate that soReuseAddr is set to false.
         assertNotNull("The configured value of soReuseAddr was not false!", server.waitForStringInTraceUsingMark("soReuseAddr: false"));

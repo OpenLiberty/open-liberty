@@ -15,6 +15,7 @@ bVersion=1.0
 
 src: \
   fat/src,\
+  test-applications/DataStoreEJBApp/src,\
   test-applications/DataStoreTestApp/src,\
   test-applications/DataStoreWebApp/src,\
   test-libraries/DataRepoGlobalLib/src

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,15 +49,6 @@ public class ArrayClassInfo extends ClassInfoImpl {
             Tr.debug(tc, MessageFormat.format("[ {0} ] Created on element [ {1} ]",
                                               getHashText(), getElementClass().getHashText()));
         }
-    }
-
-    // Changed to pass in the type class name.  That centralizes
-    // the calls to obtain the name for a particular class info to
-    // the ClassInfoCache.
-
-    @Deprecated
-    public ArrayClassInfo(ClassInfoImpl elementClass) {
-        this(elementClass.getName() + "[]", elementClass);
     }
 
     //

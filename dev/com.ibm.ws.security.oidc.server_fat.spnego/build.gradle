@@ -34,7 +34,7 @@ dependencies {
                'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
                'org.apache.httpcomponents:httpclient:4.5.13',
                'org.apache.httpcomponents:httpmime:4.5.13',
-               'org.apache.sshd:sshd-scp:2.9.2',
+               'org.apache.sshd:sshd-scp:2.12.1',
                'org.brotli:dec:0.1.2',
                'rhino:js:1.6R5',
                'xalan:xalan:2.7.2',

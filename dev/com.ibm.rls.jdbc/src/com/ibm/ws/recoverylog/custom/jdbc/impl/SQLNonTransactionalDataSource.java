@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.TraceConstants;
+import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 //------------------------------------------------------------------------------
@@ -98,7 +99,13 @@ public class SQLNonTransactionalDataSource {
         }
 
         try {
-            nonTranDataSource = (DataSource) dataSourceFactory.createResource(null);
+            // Retrieve the resourceConfig from the custom log properties. This may be null, in which case the "old"
+            // behaviour will pertain with application authentication. A non-null resourceConfig will have been
+            // configured if container authentication has been specified.
+            ResourceConfig resourceConfig = _customLogProperties.resourceConfig();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "create resource with ResourceConfig ", resourceConfig);
+            nonTranDataSource = (DataSource) dataSourceFactory.createResource(resourceConfig);
         } catch (Exception e) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "getDataSource", "Caught exception " + e + ", throw InternalLogException");

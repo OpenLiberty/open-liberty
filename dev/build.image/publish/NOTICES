@@ -338,8 +338,8 @@ Woodstox [woodstox-core-asl], Woodstox [woodstox-core],
 XML Commons Resolver Component [xml-resolver], XmlSchema Core [xmlschema-core],
 Zipkin Core Library [zipkin], Zipkin Reporter: Core [zipkin-reporter],
 Zipkin Sender: OkHttp 3 [zipkin-sender-okhttp3], acme4j Client [acme4j-client],
-acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asyncutil,
-carbon-components [carbon-components-10.50.0-rc.0.min.js],
+acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asm-util,
+asyncutil, carbon-components [carbon-components-10.50.0-rc.0.min.js],
 carbon-components [carbon-components-10.44.0.tgz],
 classfilewriter [jboss-classfilewriter], dompurify [dompurify-3.2.4.tgz],
 error-prone annotations [error_prone_annotations], fastinfoset [FastInfoset],
@@ -726,8 +726,6 @@ XSOM [xsom] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 O
 XSOM [xsom] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2022 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
-asm (Copyright 2000-2011 INRIA) (Copyright 2011-2012 Bull S.A.S) (OW2)
-asm-util (Copyright 2000-2011 INRIA) (Copyright 2011-2012 Bull S.A.S) (OW2)
 dojo [dojo-1.12.11.tgz] (Copyright 2003-2004 Lawrence E. Rosen) (Copyright 2005-2016 The JS Foundation) (Copyright 2005-2017 The JS Foundation)
 duplexer2 [duplexer2-0.0.2.tgz] (Copyright 2013 Deoxxa Development)
 highlight.js [highlight.js-10.7.3.tgz] (Copyright 2006 Ivan Sagalaev)

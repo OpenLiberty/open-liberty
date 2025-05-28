@@ -58,6 +58,10 @@ CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Artefakt aplikace {0} ur\u010duje ano
 CWWKC1207.lacks.qualifier.anno.explanation=Anotace kvalifik\u00e1toru ozna\u010duje, \u017ee anotace je kvalifik\u00e1tor. Anotace Zachov\u00e1n\u00ed \u0159\u00edd\u00ed dostupnost anotac\u00ed.
 CWWKC1207.lacks.qualifier.anno.useraction=P\u0159idejte do t\u0159\u00eddy kvalifik\u00e1toru anotace @Qualifier a @Retention(RUNTIME).
 
+CWWKC1208.global.with.qualifiers=CWWKC1208E: Artefakt aplikace {0} ur\u010duje anotaci {1} nebo prvek popisova\u010de nasazen\u00ed {2}, kter\u00fd m\u00e1 n\u00e1zev {3} a seznam kvalifik\u00e1tor\u016f {4}. Prost\u0159edek Jakarta Concurrency nelze nakonfigurovat tak, aby m\u011bl sou\u010dasn\u011b kvalifik\u00e1tory a jmenn\u00fd prostor java:global. Odstra\u0148te kvalifik\u00e1tory z konfigurace prost\u0159edku Jakarta Concurrency, kter\u00fd m\u00e1 n\u00e1zev {3}, nebo p\u0159ejd\u011bte na jmenn\u00fd prostor java:app.
+CWWKC1208.global.with.qualifiers.explanation=Konfigurace prost\u0159edku Jakarta Concurrency nem\u016f\u017ee m\u00edt sou\u010dasn\u011b kvalifik\u00e1tory a jmenn\u00fd prostor java:global.
+CWWKC1208.global.with.qualifiers.useraction=Aktualizujte konfiguraci prost\u0159edku Jakarta Concurrency definovan\u00e9ho aplikac\u00ed tak, abyste vynechali kvalifik\u00e1tory nebo pou\u017eili jin\u00fd jmenn\u00fd prostor, nap\u0159\u00edklad jmenn\u00fd prostor java:app.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: Specifikace Concurrency vy\u017eaduje, aby byl virtual=true ignorov\u00e1n v anotaci {1} artefaktu aplikace {0} nebo prvku deskriptoru nasazen\u00ed {2} s n\u00e1zvem {3} , proto\u017ee Java {4} nepodporuje virtu\u00e1ln\u00ed vl\u00e1kna.
 CWWKC1217.no.virtual.threads.explanation=Virtu\u00e1ln\u00ed vl\u00e1kna jsou k dispozici pouze v Jav\u011b 21 a nov\u011bj\u0161\u00edch.
 CWWKC1217.no.virtual.threads.useraction=Aktualizujte na Java 21 nebo nov\u011bj\u0161\u00ed, abyste umo\u017enili pou\u017e\u00edv\u00e1n\u00ed virtu\u00e1ln\u00edch vl\u00e1ken.

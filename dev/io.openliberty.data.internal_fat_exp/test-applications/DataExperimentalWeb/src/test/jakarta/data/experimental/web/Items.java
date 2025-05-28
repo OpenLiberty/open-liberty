@@ -13,6 +13,7 @@
 package test.jakarta.data.experimental.web;
 
 import static io.openliberty.data.repository.Is.Op.GreaterThanEqual;
+import static io.openliberty.data.repository.Is.Op.In;
 import static io.openliberty.data.repository.Is.Op.Substringed;
 import static io.openliberty.data.repository.function.Rounded.Direction.DOWN;
 import static io.openliberty.data.repository.function.Rounded.Direction.UP;
@@ -105,12 +106,14 @@ public interface Items {
     @Query("SELECT SUM(DISTINCT price) FROM Item")
     double totalOfDistinctPrices();
 
-    @Query("UPDATE Item SET price=price/?2, version=version-1 WHERE (pk IN ?1)")
-    // TODO switch to annotated parameters once available for conditions
-    //@Filter(by = "pk", op = Compare.In)
-    //@Update(attr = "price", op = Operation.Divide)
-    //@Update(attr = "version", op = Operation.Subtract, value = "1")
-    long undoPriceIncrease(Iterable<UUID> productIds, float divisor);
+    default long undoPriceIncrease(Iterable<UUID> productIds, float divisor) {
+        return undoPriceIncrease(productIds, divisor, 1);
+    }
+
+    @Update
+    long undoPriceIncrease(@By(ID) @Is(In) Iterable<UUID> productIds,
+                           @Divide("price") float divisor,
+                           @SubtractFrom("version") int decrement);
 
     @Find
     @OrderBy("price")

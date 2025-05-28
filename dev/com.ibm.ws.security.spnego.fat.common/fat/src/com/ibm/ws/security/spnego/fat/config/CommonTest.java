@@ -391,6 +391,7 @@ public class CommonTest {
         FileOutputStream out = new FileOutputStream(testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
         // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
         // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
+        // Additionally, for this update to work the allowed skew also needs to be updated on the KDC machine
         InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
         if (InitClass.KRB5_CONF.contains("clockskew  = 600")) {
             Log.info(c, thisMethod, "Replaced clockskew  = 300 with clockskew  = 600");

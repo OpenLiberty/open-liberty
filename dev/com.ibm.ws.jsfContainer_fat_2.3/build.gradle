@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -107,8 +107,8 @@ dependencies {
     requiredLibs 'xml-apis:xml-apis:1.4.01'
     mojarra 'org.glassfish:javax.faces:2.3.9',
       'javax.faces:javax.faces-api:2.3'
-    myfaces 'org.apache.myfaces.core:myfaces-api:2.3.10',
-      'org.apache.myfaces.core:myfaces-impl:2.3.10'
+    myfaces 'org.apache.myfaces.core:myfaces-api:2.3.11',
+      'org.apache.myfaces.core:myfaces-impl:2.3.11'
     myfacesLibs 'commons-digester:commons-digester:1.8',
       'commons-collections:commons-collections:3.2.1',
       project(':io.openliberty.org.apache.commons.logging'),
@@ -120,11 +120,11 @@ dependencies {
       'org.apache.myfaces.core:myfaces-impl:3.0.2'
     mojarra40 'org.glassfish:jakarta.faces:4.0.0'
     // Do not update since newer JS (in MyFaces 4.0.0-RC5+) is not supported 
-    myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.1',
-      'org.apache.myfaces.core:myfaces-impl:4.0.1'
+    myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.3',
+      'org.apache.myfaces.core:myfaces-impl:4.0.3'
     mojarra41 'org.glassfish:jakarta.faces:4.1.0'
-    myfaces41 'org.apache.myfaces.core:myfaces-api:4.1.0-RC2',
-      'org.apache.myfaces.core:myfaces-impl:4.1.0-RC2'
+    myfaces41 'org.apache.myfaces.core:myfaces-api:4.1.1',
+      'org.apache.myfaces.core:myfaces-impl:4.1.1'
     }
     
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -84,6 +84,10 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
 
     public Set<String> getVersionedFeatures() {
         return ee11Features.getVersionedFeatures(openLibertyOnly());
+    }
+
+    public Set<String> getVersionlessFeatures() {
+        return ee11Features.getVersionlessFeatures(openLibertyOnly());
     }
 
     public Set<String> getCompatibleFeatures() {
@@ -248,6 +252,42 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
         }
     }
 
+    @Test
+    public void testVersionlessFeaturesMP70() {
+        testVersionlessFeatures("microProfile-7.0");
+    }
+
+    @Test
+    public void testVersionlessFeaturesMP71() {
+        testVersionlessFeatures("microProfile-7.1");
+    }
+
+    private void testVersionlessFeatures(String mpPlatform) {
+        Set<String> versionlessFeatures = getVersionlessFeatures();
+        List<String> errors = FATFeatureTester.testVersionlessFeatures(versionlessFeatures, ee11Features.getIncompatibleVersionlessFeatures(), mpPlatform);
+
+        if (!errors.isEmpty()) {
+            FATLogger.dumpErrors(c, "testVersionlessFeatures", "EE11: Versionless feature errors:", errors);
+            Assert.fail("EE11 versionless feature errors. " + errors);
+        }
+    }
+
+    /**
+     * Verify that SSL transport (ssl-1.0) resolves correctly for EE11 compatible
+     * features.
+     *
+     * Verify that compatible features which enable SSL resolve as singletons
+     * without conflicts.
+     *
+     * Verify that compatible features which do not enable SSL resolve successfully
+     * with SSL added to the root features.
+     *
+     * Verify that compatible features which do not enable SSL resolve successfully
+     * when either jsonp-2.0 or jsonb-2.0 is added to the root features.
+     *
+     * Successful resolution means that no conflicts occur, and SSL security
+     * (transport-security-1.0) is a resolved feature.
+     */
     @Test
     public void testTransportResolution() {
         String method = "testTransportResolution";

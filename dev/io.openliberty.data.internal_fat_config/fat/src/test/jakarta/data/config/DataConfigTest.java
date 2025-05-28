@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,6 +30,7 @@ import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DatabaseStore;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -41,6 +44,12 @@ import test.jakarta.data.config.web.DataConfigTestServlet;
 public class DataConfigTest extends FATServletClient {
 
     private static final String APP_NAME = "DataConfigTestApp";
+
+    /**
+     * Error messages to ignore. This is populated by tests when they introduce an
+     * expected error and used and cleared by the next test to stop the server.
+     */
+    private static final List<String> ERRORS_TO_IGNORE = new ArrayList<String>();
 
     private static ServerConfiguration savedConfig;
 
@@ -58,7 +67,44 @@ public class DataConfigTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        String[] expectedErrors = new String[ERRORS_TO_IGNORE.size()];
+        expectedErrors = ERRORS_TO_IGNORE.toArray(expectedErrors);
+        ERRORS_TO_IGNORE.clear();
+        server.stopServer(expectedErrors);
+    }
+
+    /**
+     * Adds the Jakarta Data feature while the server is running, after the
+     * application has already been used. This needs to force a restart of the
+     * application for Jakarta Data repositories to be processed and injected.
+     */
+    @AllowedFFDC("java.lang.NoClassDefFoundError")
+    @Test
+    public void testAddJakartaDataFeature() throws Exception {
+        // remove the data-1.0 feature
+        ServerConfiguration config = server.getServerConfiguration();
+        config.getFeatureManager().getFeatures().remove("data-1.0");
+
+        String[] expectedErrors = new String[ERRORS_TO_IGNORE.size()];
+        expectedErrors = ERRORS_TO_IGNORE.toArray(expectedErrors);
+        ERRORS_TO_IGNORE.clear();
+        server.stopServer(expectedErrors);
+
+        server.updateServerConfiguration(config);
+
+        server.startServer();
+        ERRORS_TO_IGNORE.add("CWNEN0047W.*NoClassDefFoundError");
+
+        runTest(server, APP_NAME,
+                "testDoNotUseJakartaData&invokedBy=testAddJakartaDataFeature_1");
+
+        // add the data-1.0 feature
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(savedConfig);
+        server.waitForConfigUpdateInLogUsingMark(Set.of(APP_NAME));
+
+        runTest(server, APP_NAME,
+                "testEntitiesNotFound&invokedBy=testAddJakartaDataFeature_2");
     }
 
     /**

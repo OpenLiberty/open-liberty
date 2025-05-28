@@ -91,13 +91,13 @@
     <dataSource id="ds-replay" jndiName="jdbc/ds-replay" type="javax.sql.DataSource">
         <jdbcDriver libraryRef="UCPDBLib"/>
         <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"
-                               connectionFactoryClassName="oracle.jdbc.replay.OracleDataSourceImpl" />
+                               connectionFactoryClassName="oracle.jdbc.replay.OracleDataSourceImpl" connectionWaitTimeout="30" />
     </dataSource>
     
     <dataSource id="ds-replay-xa" jndiName="jdbc/ds-replay-xa" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="UCPDBLib"/>
         <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"
-                               connectionFactoryClassName="oracle.jdbc.replay.OracleXADataSourceImpl" />
+                               connectionFactoryClassName="oracle.jdbc.replay.OracleXADataSourceImpl" connectionWaitTimeout="30" />
     </dataSource>
     
     <!-- 
@@ -105,12 +105,12 @@
     -->
     <dataSource id="ds-autocommit-ltc" jndiName="jdbc/ds-autocommit-ltc" type="javax.sql.DataSource">
         <jdbcDriver libraryRef="UCPDBLib"/>
-        <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" />
+        <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" connectionWaitTimeout="30" />
     </dataSource>
     
     <dataSource id="ds-autocommit-global" jndiName="jdbc/ds-autocommit-global" type="javax.sql.DataSource">
         <jdbcDriver libraryRef="UCPDBLib"/>
-        <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" />
+        <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" connectionWaitTimeout="30" />
     </dataSource>
     
     <javaPermission codebase="${shared.resource.dir}/ucp/ojdbc8.jar" className="java.security.AllPermission"/>

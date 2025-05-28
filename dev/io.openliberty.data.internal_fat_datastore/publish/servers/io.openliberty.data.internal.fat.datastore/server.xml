@@ -41,6 +41,9 @@
     <!-- implicitly has access to libraries in lib/global -->
   </application>
 
+  <ejbApplication location="DataStoreEJBApp.jar">
+  </ejbApplication>
+
   <library id="DerbyLib">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
   </library>

@@ -184,4 +184,8 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
         }
         return sb.toString();
     }
+
+    public WSATParticipantState getState() {
+        return state;
+    }
 }

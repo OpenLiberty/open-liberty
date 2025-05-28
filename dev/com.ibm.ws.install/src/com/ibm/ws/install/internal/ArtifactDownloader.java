@@ -19,8 +19,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -44,7 +42,6 @@ import java.util.concurrent.Future;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -326,6 +323,7 @@ public class ArtifactDownloader implements AutoCloseable {
     protected boolean testConnection(MavenRepository repository) {
         try {
             ArtifactDownloaderUtils.verifyPassword(repository.getPassword());
+            ArtifactDownloaderUtils.setProxyAuthenticator(envMap);
             int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap, repository);
             logger.fine("Response code - " + repository.getRepositoryUrl() + ":" + responseCode);
             return ArtifactDownloaderUtils.checkResponseCode(responseCode);
@@ -338,15 +336,6 @@ public class ArtifactDownloader implements AutoCloseable {
 
     private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
         URL url = address.toURL();
-        logger.fine("non Proxy Hosts: " + System.getProperty("http.nonProxyHosts"));
-        logger.fine("downloadInternal url host: " + url.getHost());
-        String proxyEncodedAuth = "";
-        if (url.getProtocol().equals("https") && envMap.get("https.proxyHost") != null) {
-            proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
-        } else if (envMap.get("http.proxyHost") != null) {
-            proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
-        }
-
         URLConnection conn = url.openConnection();
 
         final String userAgentValue = calculateUserAgent();
@@ -354,9 +343,6 @@ public class ArtifactDownloader implements AutoCloseable {
         conn.setRequestProperty("User-Agent", userAgentValue);
         if (!repoEncodedAuth.isEmpty()) {
             conn.setRequestProperty("Authorization", repoEncodedAuth);
-        }
-        if (!proxyEncodedAuth.isEmpty()) {
-            conn.setRequestProperty("Proxy-Authorization", proxyEncodedAuth);
         }
 
         conn.connect();
@@ -395,20 +381,6 @@ public class ArtifactDownloader implements AutoCloseable {
         String osVersion = System.getProperty("os.version");
         String osArch = System.getProperty("os.arch");
         return String.format("%s/%s (%s;%s;%s) (%s;%s;%s)", appName, appVersion, osName, osVersion, osArch, javaVendor, javaVersion, javaVendorVersion);
-    }
-
-    private static class SystemPropertiesProxyAuthenticator extends Authenticator {
-        @Override
-        protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication((String) envMap.get("https.proxyUser"), PasswordUtil.passwordDecode((String) envMap.get("https.proxyPassword")).toCharArray());
-        }
-    }
-
-    private static class SystemPropertiesProxyHttpAuthenticator extends Authenticator {
-        @Override
-        protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication((String) envMap.get("http.proxyUser"), PasswordUtil.passwordDecode((String) envMap.get("http.proxyPassword")).toCharArray());
-        }
     }
 
     /*

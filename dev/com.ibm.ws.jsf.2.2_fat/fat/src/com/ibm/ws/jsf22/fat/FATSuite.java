@@ -65,7 +65,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JSF22MiscLifecycleTests.class,
                 JSFHtml5Tests.class,
                 JSF22FlashEventsTests.class,
-                JSFSimpleHtmlUnit.class,
+                JSFSimpleHtmlUnit.class, // CheckPoint Enabled
                 JSF22ViewActionAndPhaseIdTests.class,
 
                 //jsfServer2
@@ -74,7 +74,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JSFHtmlUnit.class,
                 JSFCompELTests.class,
                 JSF22AppConfigPopTests.class,
-                JSF22ComponentRendererTests.class,
+                JSF22ComponentRendererTests.class, // CheckPoint Enabled
                 JSF22InputFileTests.class,
                 JSF22LocalizationTesterTests.class,
                 JSF22ClientWindowTests.class,

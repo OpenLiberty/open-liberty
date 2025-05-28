@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -76,12 +76,14 @@ public class RecoveryDirectorFactory {
     /**
      * Create a RecoveryDirector singleton
      *
+     * @param recLogService
+     *
      * @return RecoveryDirector instance
      */
-    public static RecoveryDirector createRecoveryDirector() {
+    public static RecoveryDirector createRecoveryDirector(RecLogServiceImpl recLogService) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "createRecoveryDirector");
-        _recoveryDirector = RecoveryDirectorImpl.instance();
+            Tr.entry(tc, "createRecoveryDirector", recLogService);
+        _recoveryDirector = RecoveryDirectorImpl.instance(recLogService);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "createRecoveryDirector", _recoveryDirector);

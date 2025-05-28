@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.global.rest;
 
+import java.util.List;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -28,6 +30,15 @@ import jakarta.ws.rs.core.MediaType;
 public class DataGlobalRestResource {
     @Inject
     Reminders reminders;
+
+    @GET
+    @Path("/created/month/{month}/day/{day}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<String> createdOn(@PathParam("month") int month,
+                                  @PathParam("day") int day) {
+
+        return reminders.createdOn(month, day);
+    }
 
     @GET
     @Path("/id/{id}")

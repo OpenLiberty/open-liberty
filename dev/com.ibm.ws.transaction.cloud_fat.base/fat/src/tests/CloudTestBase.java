@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,18 +12,20 @@
  *******************************************************************************/
 package tests;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.TxFATServletClient;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
-public class CloudTestBase extends FATServletClient {
+public class CloudTestBase extends TxFATServletClient {
 
     public static LibertyServer server1;
     public static LibertyServer server2;
@@ -41,7 +43,7 @@ public class CloudTestBase extends FATServletClient {
         TxTestContainerSuite.dropTables(testRecoveryTables);
     }
 
-    protected LibertyServer[] serversToCleanup;
+    protected List<LibertyServer> serversToCleanup;
     protected String[] toleratedMsgs = new String[] { ".*" };
 
     @After
@@ -49,14 +51,8 @@ public class CloudTestBase extends FATServletClient {
         try {
             // If any servers have been added to the serversToCleanup array, we'll stop them now
             // test is long gone so we don't care about messages & warnings anymore
-            if (serversToCleanup != null && serversToCleanup.length > 0) {
-                final String serverNames[] = new String[serversToCleanup.length];
-                int i = 0;
-                for (LibertyServer s : serversToCleanup) {
-                    serverNames[i++] = s.getServerName();
-                }
-                Log.info(CloudTestBase.class, "cleanup", "Cleaning " + String.join(", ", serverNames));
-                FATUtils.stopServers(toleratedMsgs, serversToCleanup);
+            if (serversToCleanup != null) {
+                FATUtils.stopServers(toleratedMsgs, serversToCleanup.stream().toArray(LibertyServer[]::new));
             } else {
                 Log.info(CloudTestBase.class, "cleanup", "No servers to stop");
             }

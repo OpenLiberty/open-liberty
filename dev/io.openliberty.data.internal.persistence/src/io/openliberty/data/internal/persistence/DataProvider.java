@@ -64,6 +64,7 @@ import com.ibm.ws.container.service.metadata.ComponentMetaDataListener;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
+import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.ModuleStateListener;
@@ -323,17 +324,22 @@ public class DataProvider implements //
 
     @Override
     public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-        String appName = appInfo.getName();
+        //Use deployment name but fall back to generated name
+        String appName = appInfo.getDeploymentName() == null ? appInfo.getName() : appInfo.getDeploymentName();
         Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
         Set<FutureEMBuilder> skip = futureEMBuildersInEJB.remove(appName);
         if (futures != null) {
             for (FutureEMBuilder futureEMBuilder : futures) {
-                if (skip == null || !skip.contains(futureEMBuilder))
+                if (skip == null || !skip.contains(futureEMBuilder)) {
                     // This delays createEMBuilder until restore.
                     // While this works by avoiding all connections to the data source, it does make restore much slower.
                     // TODO figure out how to do more work on restore without having to make a connection to the data source
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "completing futureEMBuilder " + futureEMBuilder, futureEMBuilder.jeeName);
+
                     CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
 
+                }
                 // Application is ready for DDL generation; register with DDLGen MBean.
                 // Only those using the Persistence Service will participate, but all will
                 // be registered since that is not known until createEMBuilder completes.
@@ -402,6 +408,9 @@ public class DataProvider implements //
         ComponentMetaData metadata = event.getMetaData();
         J2EEName jeeName = metadata.getJ2EEName();
 
+        boolean isEJBmetadata = metadata instanceof IdentifiableComponentMetaData i &&
+                                i.getPersistentIdentifier().startsWith("EJB");
+
         // Jakarta Data repositories can be in modules, applications, or libraries,
         // but never in components.
         if (metadata.getJ2EEName().getComponent() == null)
@@ -409,6 +418,42 @@ public class DataProvider implements //
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "componentMetaDataCreated " + jeeName, metadata);
+
+        String appName = jeeName.getApplication();
+
+        Set<FutureEMBuilder> processed = futureEMBuildersInEJB.get(appName);
+
+        // TODO it would be more direct to map from appName+moduleName -> FutureEMBuilder,
+        // but we would need to take into account the difference in module names
+        // including or not including .jar at the end.
+        Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
+
+        if (futures != null && isEJBmetadata)
+            for (FutureEMBuilder futureEMBuilder : futures) {
+                // only complete the future here if the module matches, since an EJB may be in a separate module
+                if (futureEMBuilder.jeeName.getModule() != null && futureEMBuilder.jeeName.getModule().equals(jeeName.getModule())) {
+                    // This delays createEMBuilder until restore.
+                    // While this works by avoiding all connections to the data source, it does make restore much slower.
+                    // TODO figure out how to do more work on restore without having to make a connection to the data source
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "completing futureEMBuilder " + futureEMBuilder, futureEMBuilder.jeeName, metadata);
+
+                    CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+
+                    if (processed == null) {
+                        processed = new ConcurrentSkipListSet<>();
+                        Set<FutureEMBuilder> previous = futureEMBuildersInEJB //
+                                        .putIfAbsent(appName, processed);
+                        if (previous != null)
+                            processed = previous;
+                    }
+
+                    processed.add(futureEMBuilder);
+                }
+
+            }
+
     }
 
     @Override
@@ -877,52 +922,10 @@ public class DataProvider implements //
     @Override
     @Trivial
     public void moduleStarting(ModuleInfo moduleInfo) throws StateChangeException {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        // TODO get rid of ModuleStateListener entirely. It appears we don't need it anymore
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "moduleStarting " + moduleInfo);
 
-        // TODO here and elsewhere: use whichever of getDeploymentName() or getName()
-        // is guaranteed to match J2EEName
-        String appName = moduleInfo.getApplicationInfo().getName();
-        String moduleName = moduleInfo.getName(); // does not include .jar at the end
-
-        if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "moduleStarting " + moduleInfo, appName, moduleName);
-
-        Set<FutureEMBuilder> processed = futureEMBuildersInEJB.get(appName);
-
-        // TODO it would be more direct to map from appName+moduleName -> FutureEMBuilder,
-        // but we would need to take into account the difference in module names
-        // including or not including .jar at the end.
-        Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
-        if (futures != null)
-            for (FutureEMBuilder futureEMBuilder : futures) {
-                // The JEE name includes .jar at the end of EJB modules
-                String moduleNameWithDot = futureEMBuilder.jeeName.getModule();
-
-                if (!futureEMBuilder.inWebModule &&
-                    moduleNameWithDot != null &&
-                    moduleNameWithDot.length() == moduleName.length() + 4 &&
-                    moduleNameWithDot.startsWith(moduleName) &&
-                    moduleNameWithDot.endsWith(".jar")) {
-
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "matched with " + futureEMBuilder.jeeName);
-
-                    // This delays createEMBuilder until restore.
-                    // While this works by avoiding all connections to the data source, it does make restore much slower.
-                    // TODO figure out how to do more work on restore without having to make a connection to the data source
-                    CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
-
-                    if (processed == null) {
-                        processed = new ConcurrentSkipListSet<>();
-                        Set<FutureEMBuilder> previous = futureEMBuildersInEJB //
-                                        .putIfAbsent(appName, processed);
-                        if (previous != null)
-                            processed = previous;
-                    }
-
-                    processed.add(futureEMBuilder);
-                }
-            }
     }
 
     @Override

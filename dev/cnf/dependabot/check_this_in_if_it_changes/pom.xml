@@ -738,6 +738,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry.semconv</groupId>
+      <artifactId>opentelemetry-semconv-incubating</artifactId>
+      <version>1.32.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.semconv</groupId>
       <artifactId>opentelemetry-semconv</artifactId>
       <version>1.23.1-alpha</version>
     </dependency>
@@ -750,6 +755,11 @@
       <groupId>io.opentelemetry.semconv</groupId>
       <artifactId>opentelemetry-semconv</artifactId>
       <version>1.30.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.semconv</groupId>
+      <artifactId>opentelemetry-semconv</artifactId>
+      <version>1.32.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -1122,11 +1132,6 @@
       <version>1.29.0-alpha</version>
     </dependency>
     <dependency>
-      <groupId>io.opentelemetry</groupId>
-      <artifactId>opentelemetry-semconv</artifactId>
-      <version>1.30.1-alpha</version>
-    </dependency>
-    <dependency>
       <groupId>io.opentracing</groupId>
       <artifactId>opentracing-api</artifactId>
       <version>0.30.0</version>
@@ -1368,6 +1373,11 @@
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-core</artifactId>
+      <version>4.1.0-alpha3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-jaxrs</artifactId>
       <version>3.1.1</version>
     </dependency>
@@ -1378,8 +1388,18 @@
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-jaxrs</artifactId>
+      <version>4.1.0-alpha3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-model</artifactId>
       <version>4.0.9</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-model</artifactId>
+      <version>4.1.0-alpha3</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
@@ -2504,7 +2524,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>2.3.10</version>
+      <version>2.3.11</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -2514,12 +2534,12 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>4.0.1</version>
+      <version>4.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>4.1.0</version>
+      <version>4.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -2529,7 +2549,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>2.3.10</version>
+      <version>2.3.11</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -2539,12 +2559,12 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>4.0.1</version>
+      <version>4.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>4.1.0</version>
+      <version>4.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.neethi</groupId>
@@ -2564,6 +2584,11 @@
     <dependency>
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-common</artifactId>
+      <version>2.12.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sshd</groupId>
+      <artifactId>sshd-common</artifactId>
       <version>2.5.1</version>
     </dependency>
     <dependency>
@@ -2574,12 +2599,22 @@
     <dependency>
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-core</artifactId>
+      <version>2.12.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sshd</groupId>
+      <artifactId>sshd-core</artifactId>
       <version>2.5.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-core</artifactId>
       <version>2.9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sshd</groupId>
+      <artifactId>sshd-scp</artifactId>
+      <version>2.12.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.sshd</groupId>
@@ -2619,7 +2654,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>11.0.3</version>
+      <version>11.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2634,7 +2669,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>11.0.3</version>
+      <version>11.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
@@ -3197,6 +3232,11 @@
       <version>4.0.2</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.openapi</groupId>
+      <artifactId>microprofile-openapi-api</artifactId>
+      <version>4.1-RC1</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>
       <artifactId>microprofile-opentracing-api</artifactId>
       <version>1.0.1</version>
@@ -3309,7 +3349,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.asm</artifactId>
-      <version>9.7.1</version>
+      <version>9.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3400,6 +3440,11 @@
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
       <version>5.0.0-B07</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>3.23.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.transformer</groupId>
@@ -4634,7 +4679,27 @@
     <dependency>
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-commons</artifactId>
+      <version>2.7.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-commons</artifactId>
       <version>3.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-commons</artifactId>
+      <version>3.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jpa</artifactId>
+      <version>2.7.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jpa</artifactId>
+      <version>3.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -4814,6 +4879,16 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
+      <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>5.3.39</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
       <version>6.1.14</version>
     </dependency>
     <dependency>

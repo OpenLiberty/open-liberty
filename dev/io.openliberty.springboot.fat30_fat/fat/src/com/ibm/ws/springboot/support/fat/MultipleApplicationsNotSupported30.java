@@ -110,7 +110,7 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
             removeDropinApps(appName);
             restoreDropinApps(appName);
 
-            String newShortAppName = checkOneInstalledApp();
+            checkOneInstalledApp();
 
         } finally {
             stopServer(true, "CWWKC0255E", "CWWKZ0002E", "CWWKZ0014W");
@@ -119,7 +119,7 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
 
     private String checkOneInstalledApp() throws Exception {
         String[] shortAppNames = getShortApplicationNames();
-        RemoteFile dropins = getDropinsFile();
+        getDropinsFile();
 
         Set<String> installedAppNames = server.getInstalledAppNames(shortAppNames);
         assertEquals("Count of installed applications", 1, installedAppNames.size());

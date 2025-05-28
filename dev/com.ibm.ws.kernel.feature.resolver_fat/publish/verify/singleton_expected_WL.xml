@@ -1164,23 +1164,6 @@
         </output>
     </case>
     <case>
-        <name>com.ibm.websphere.appserver.httpservice-2.2</name>
-        <description>Singleton [ com.ibm.websphere.appserver.httpservice-2.2 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.httpservice-2.2</root>
-        </input>
-        <output>
-            <resolved-feature>com.ibm.websphere.appserver.eeCompatible-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.api-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.channelfw-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.httptransport-1.0</resolved-feature>
-            <resolved-feature>httpservice-2.2</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>com.ibm.websphere.appserver.mqtt-3.1</name>
         <description>Singleton [ com.ibm.websphere.appserver.mqtt-3.1 ]</description>
         <input>
@@ -1333,18 +1316,6 @@
             <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.appserver.fileinstall-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.fileinstall-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.fileinstall-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>fileinstall-1.0</resolved-feature>
         </output>
     </case>
     <case>
@@ -1833,18 +1804,6 @@
             <resolved-feature>com.ibm.websphere.appserver.certificateCreator-1.0</resolved-feature>
             <resolved-feature>ssl-1.0</resolved-feature>
             <resolved-feature>transportSecurity-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.appserver.featureverifier-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.featureverifier-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.featureverifier-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>featureverifier-1.0</resolved-feature>
         </output>
     </case>
     <case>
@@ -6210,18 +6169,6 @@
         </output>
     </case>
     <case>
-        <name>com.ibm.websphere.appserver.componenttest-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.componenttest-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.componenttest-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>componenttest-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>com.ibm.websphere.appserver.servlet-4.0</name>
         <description>Singleton [ com.ibm.websphere.appserver.servlet-4.0 ]</description>
         <input>
@@ -8614,80 +8561,6 @@
             <resolved-feature>com.ibm.websphere.appserver.orbJ2eeManagement-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.jaccWeb-1.5</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.jaxwsSecurity-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.appserver.repositoryConnection-2.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.repositoryConnection-2.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.repositoryConnection-2.0</root>
-        </input>
-        <output>
-            <resolved-feature>com.ibm.websphere.appserver.appLifecycle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.artifact-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeedd-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.eeCompatible-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakarta.annotation-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.anno-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.containerServices-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.classloading-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.appmanager-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved-feature>
-            <resolved-feature>io.openliberty.jakartaeePlatform-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.api-5.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.injection-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet-servletSpi2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.channelfw-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.httptransport-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.requestProbes-1.0</resolved-feature>
-            <resolved-feature>servlet-5.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.internal-5.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundle.internal.ee-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundle.internal-1.0</resolved-feature>
-            <resolved-feature>com.ibm.wsspi.appserver.webBundle-1.0</resolved-feature>
-            <resolved-feature>json-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved-feature>
-            <resolved-feature>jndi-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.distributedMapInternal-2.0</resolved-feature>
-            <resolved-feature>distributedMap-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.basicRegistry-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.certificateCreator-1.0</resolved-feature>
-            <resolved-feature>ssl-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.ltpa-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcache.internal1.1.ee-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcache.internal-1.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.builtinAuthentication-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.securityAPI.jakarta-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.security.internal.ee-9.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.security-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.authFilter1.0.internal.ee-9.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.authFilter-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundleSecurity1.0.internal.ee-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundleSecurity.internal-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.adminSecurity-2.0</resolved-feature>
-            <resolved-feature>io.openliberty.restHandler1.0.internal.ee-9.0</resolved-feature>
-            <resolved-feature>io.openliberty.restHandler.internal-1.0</resolved-feature>
-            <resolved-feature>com.ibm.wsspi.appserver.webBundleSecurity-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.securityAPI.javaee-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.restHandler-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.restConnector2.0.internal.ee-9.0</resolved-feature>
-            <resolved-feature>restConnector-2.0</resolved-feature>
-            <resolved-feature>repositoryConnection-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.autoRestConnector-2.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved-feature>
-            <resolved-feature>transportSecurity-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.transportSecurity1.0.jakarta</resolved-feature>
         </output>
     </case>
     <case>
@@ -11409,41 +11282,6 @@
         </output>
     </case>
     <case>
-        <name>io.openliberty.arquillian.arquillian-support-1.0</name>
-        <description>Singleton [ io.openliberty.arquillian.arquillian-support-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>io.openliberty.arquillian.arquillian-support-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>com.ibm.websphere.appserver.eeCompatible-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.api-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.channelfw-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.httptransport-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.requestProbes-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.artifact-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeedd-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javax.annotation-1.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.anno-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.containerServices-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.injection-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.appLifecycle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.classloading-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.appmanager-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved-feature>
-            <resolved-feature>servlet-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.internal-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundle.internal.ee-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundle.internal-1.0</resolved-feature>
-            <resolved-feature>com.ibm.wsspi.appserver.webBundle-1.0</resolved-feature>
-            <resolved-feature>arquillian-support-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>com.ibm.websphere.appserver.ejbRemote-3.2</name>
         <description>Singleton [ com.ibm.websphere.appserver.ejbRemote-3.2 ]</description>
         <input>
@@ -11493,18 +11331,6 @@
             <resolved-feature>com.ibm.websphere.appserver.classloaderContext-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.iioptransport.transaction-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.appserver.sampleHandler-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.sampleHandler-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.sampleHandler-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>sampleHandler-1.0</resolved-feature>
         </output>
     </case>
     <case>
@@ -11629,20 +11455,6 @@
             <resolved-feature>com.ibm.websphere.appserver.classloaderContext-1.0</resolved-feature>
             <resolved-feature>io.openliberty.iioptransport.transaction-2.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.scaling.testScalingAPIPlugin-1.0</name>
-        <description>Singleton [ com.ibm.websphere.scaling.testScalingAPIPlugin-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.scaling.testScalingAPIPlugin-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>json-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.imf-1.0</resolved-feature>
-            <resolved-feature>testScalingAPIPlugin-1.0</resolved-feature>
         </output>
     </case>
     <case>
@@ -11839,19 +11651,6 @@
         </output>
     </case>
     <case>
-        <name>io.openliberty.arquillian.arquillian-support-jakarta-2.1</name>
-        <description>Singleton [ io.openliberty.arquillian.arquillian-support-jakarta-2.1 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>io.openliberty.arquillian.arquillian-support-jakarta-2.1</root>
-        </input>
-        <output>
-            <resolved-feature>localConnector-1.0</resolved-feature>
-            <resolved-feature>arquillian-support-jakarta-2.1</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>com.ibm.websphere.appserver.collectiveController-1.0</name>
         <description>Singleton [ com.ibm.websphere.appserver.collectiveController-1.0 ]</description>
         <input>
@@ -11928,19 +11727,6 @@
             <resolved-feature>com.ibm.websphere.appserver.optional.jaxb-2.2</resolved-feature>
             <resolved-feature>jaxrs-1.1</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.restConnectorjaxrs-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.appserver.ejbTest-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.ejbTest-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.ejbTest-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>componenttest-1.0</resolved-feature>
-            <resolved-feature>ejbTest-1.0</resolved-feature>
         </output>
     </case>
     <case>
@@ -14529,18 +14315,6 @@
         </output>
     </case>
     <case>
-        <name>com.ibm.websphere.appserver.sampleSource-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.sampleSource-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.sampleSource-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>sampleSource-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>com.ibm.websphere.appserver.jndi-1.0</name>
         <description>Singleton [ com.ibm.websphere.appserver.jndi-1.0 ]</description>
         <input>
@@ -15397,20 +15171,6 @@
         </output>
     </case>
     <case>
-        <name>com.ibm.websphere.health.testConditionPlugin-1.0</name>
-        <description>Singleton [ com.ibm.websphere.health.testConditionPlugin-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.health.testConditionPlugin-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>json-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.imf-1.0</resolved-feature>
-            <resolved-feature>testConditionPlugin-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>io.openliberty.mpReactiveStreams-3.0</name>
         <description>Singleton [ io.openliberty.mpReactiveStreams-3.0 ]</description>
         <input>
@@ -15751,93 +15511,6 @@
         </output>
     </case>
     <case>
-        <name>com.ibm.websphere.appserver.componenttest-2.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.componenttest-2.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.componenttest-2.0</root>
-        </input>
-        <output>
-            <resolved-feature>componenttest-2.0</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.appserver.repositoryConnection-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.repositoryConnection-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.repositoryConnection-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>com.ibm.websphere.appserver.eeCompatible-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.api-3.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.channelfw-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.httptransport-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.requestProbes-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.artifact-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeedd-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javax.annotation-1.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.anno-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.containerServices-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.injection-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.appLifecycle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.classloading-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.appmanager-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved-feature>
-            <resolved-feature>servlet-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.servlet.internal-3.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundle.internal.ee-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundle.internal-1.0</resolved-feature>
-            <resolved-feature>com.ibm.wsspi.appserver.webBundle-1.0</resolved-feature>
-            <resolved-feature>json-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.internal.slf4j-1.7</resolved-feature>
-            <resolved-feature>jndi-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.distributedMapInternal-1.0</resolved-feature>
-            <resolved-feature>distributedMap-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.basicRegistry-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.builtinAuthorization-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.certificateCreator-1.0</resolved-feature>
-            <resolved-feature>ssl-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.ltpa-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcache.internal1.1.ee-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.jcache.internal-1.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.builtinAuthentication-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.securityAPI.javaee-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.security.internal.ee-6.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.security-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.authFilter1.0.internal.ee-6.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.authFilter-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundleSecurity1.0.internal.ee-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.webBundleSecurity.internal-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.adminSecurity-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.restHandler1.0.internal.ee-6.0</resolved-feature>
-            <resolved-feature>io.openliberty.restHandler.internal-1.0</resolved-feature>
-            <resolved-feature>com.ibm.wsspi.appserver.webBundleSecurity-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.securityAPI.jakarta-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.restHandler-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.internal.optional.jaxb-2.2</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.jta-1.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.httpcommons-1.0</resolved-feature>
-            <resolved-feature>io.openliberty.globalhandler1.0.internal.ee-6.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.globalhandler-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.jaxrsApiStub-1.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.internal.jaxrs-1.1</resolved-feature>
-            <resolved-feature>restConnector-1.0</resolved-feature>
-            <resolved-feature>repositoryConnection-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.optional.jaxb-2.2</resolved-feature>
-            <resolved-feature>jaxrs-1.1</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.restConnectorjaxrs-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>io.openliberty.jsonb-2.0</name>
         <description>Singleton [ io.openliberty.jsonb-2.0 ]</description>
         <input>
@@ -16145,18 +15818,6 @@
             <resolved-feature>io.openliberty.jakarta.interceptor-2.2</resolved-feature>
             <resolved-feature>io.openliberty.jakarta.cdi-4.1</resolved-feature>
             <resolved-feature>validation-3.1</resolved-feature>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.appserver.http2clienttest-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.http2clienttest-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.http2clienttest-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>http2clienttest-1.0</resolved-feature>
         </output>
     </case>
     <case>
@@ -18224,18 +17885,6 @@
         </output>
     </case>
     <case>
-        <name>com.ibm.websphere.appserver.timedexit-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.timedexit-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.timedexit-1.0</root>
-        </input>
-        <output>
-            <resolved-feature>timedexit-1.0</resolved-feature>
-        </output>
-    </case>
-    <case>
         <name>io.openliberty.cdi-3.0</name>
         <description>Singleton [ io.openliberty.cdi-3.0 ]</description>
         <input>
@@ -19729,7 +19378,6 @@
             <resolved-feature>restConnector-1.0</resolved-feature>
             <resolved-feature>jsp-2.2</resolved-feature>
             <resolved-feature>io.openliberty.adminCenter1.0.javaee</resolved-feature>
-            <resolved-feature>com.ibm.websphere.appserver.adminCenter.ExampleTool-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
             <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved-feature>

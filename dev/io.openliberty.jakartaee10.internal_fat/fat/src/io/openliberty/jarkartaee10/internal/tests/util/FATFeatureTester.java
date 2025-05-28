@@ -1,10 +1,17 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package io.openliberty.jarkartaee10.internal.tests.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -154,6 +161,90 @@ public class FATFeatureTester {
             }
             FATLogger.info(c, method, prefix + resultText);
         }
+    }
+
+    public static List<String> testVersionlessFeatures(Set<String> versionlessFeatures, Set<String> incompatibleVersionlessFeatures, String mpPlatform) {
+        List<String> errors = new ArrayList<>();
+        String method = "testVersionlessFeature";
+
+        List<String> platforms = new ArrayList<>(2);
+        platforms.add("jakartaee-10.0");
+        platforms.add(mpPlatform);
+
+        for (String feature : versionlessFeatures) {
+            String prefix = "resolving [ " + feature + " ] ...";
+            FATLogger.info(c, method, prefix);
+
+            Result result = FATFeatureResolver.resolve(Collections.singleton(feature), platforms);
+
+            boolean hasErrors = result.hasErrors();
+            boolean expectsIncompatible = incompatibleVersionlessFeatures.contains(feature);
+
+            StringBuilder sb = new StringBuilder();
+            // If this versionless feature is suppose to not be valid for EE 10, but we didn't get
+            // any errors when calling resolve, that is a test failure
+            if (!hasErrors && expectsIncompatible) {
+                sb.append(feature);
+                sb.append(" expected to be incompatible with EE 10 / MP 6.0+, but resolve did not find any errors");
+            } else if (hasErrors && !expectsIncompatible) {
+                Set<String> missingPlatforms = result.getMissingPlatforms();
+                Map<String, Set<String>> missingBasePlatforms = result.getNoPlatformVersionless();
+                Set<String> missingFeatures = result.getMissing();
+                Map<String, Collection<Chain>> conflicts = result.getConflicts();
+                String resolvedFeature = result.getVersionlessFeatures().get(feature);
+                if (resolvedFeature == null) {
+                    sb.append(feature);
+                    sb.append(" did not resolve to a versioned feature");
+                }
+                if (!conflicts.isEmpty()) {
+                    if (sb.length() == 0) {
+                        sb.append(feature);
+                        sb.append(" failed due to");
+                    } else {
+                        sb.append(',');
+                    }
+                    sb.append(" conflicts ").append(conflicts);
+                }
+                if (!missingPlatforms.isEmpty()) {
+                    if (sb.length() == 0) {
+                        sb.append(feature);
+                        sb.append(" failed due to");
+                    } else {
+                        sb.append(',');
+                    }
+                    sb.append(" missing platforms ").append(missingPlatforms);
+                }
+                if (!missingBasePlatforms.isEmpty()) {
+                    if (sb.length() == 0) {
+                        sb.append(feature);
+                        sb.append(" failed due to");
+                    } else {
+                        sb.append(',');
+                    }
+                    sb.append(" missing base platforms ").append(missingBasePlatforms);
+                }
+                if (!missingFeatures.isEmpty()) {
+                    if (sb.length() == 0) {
+                        sb.append(feature);
+                        sb.append(" failed due to");
+                    } else {
+                        sb.append(',');
+                    }
+                    sb.append(" missing features ").append(missingFeatures);
+                }
+            }
+
+            String resultText;
+            if (sb.length() != 0) {
+                resultText = " failed";
+                errors.add(sb.toString());
+            } else {
+                resultText = " passed";
+            }
+            FATLogger.info(c, method, prefix + resultText);
+        }
+
+        return errors;
     }
 
     /**

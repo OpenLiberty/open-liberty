@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2024 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ encode.usage.options=\t{0} encode [options]
 encode.option-key.text=\ \ \ \ textToEncode
 encode.option-desc.text=\tSans aucun argument sp\u00e9cifi\u00e9, passage en mode   \n\tinteractif ; sinon, le texte fourni sera cod\u00e9.\n\tUn texte incluant des espaces doit \u00eatre plac\u00e9 entre guillemets s''il est sp\u00e9cifi\u00e9 en tant qu''argument.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
-encode.option-desc.encoding=\tIndiquez le mode de codage du mot de passe. Les codages pris en charge sont xor, aes\n\tet hash. Le codage par d\u00e9faut est xor. {2}
+encode.option-desc.encoding=\tIndiquez comment coder le mot de passe. Les encodages pris en charge sont xor, aes, aes-128, et hash. Le codage par d\u00e9faut est xor. Le cryptage Aes s''effectue \u00e0 l''aide d''une cl\u00e9 de aes-256 bits.\n\taes-128 peut \u00eatre utilis\u00e9 pour assurer la compatibilit\u00e9 avec les versions du serveur ant\u00e9rieures \u00e0 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[key]
 encode.option-desc.key=\tIndiquez une cl\u00e9 \u00e0 utiliser lors du codage utilisant la norme AES (Advanced Encryption Standard).\n \tCette cha\u00eene sera hach\u00e9e afin de produire une cl\u00e9 de chiffrement qui sera utilis\u00e9e\n\tpour le chiffrement et le d\u00e9chiffrement du mot de passe. \n\t La cl\u00e9 peut \u00eatre fournie au serveur en\n\td\u00e9finissant la variable wlp.password.encryption.key dont la valeur est la\n\tcl\u00e9. Sans cette option fournie, une cl\u00e9 par d\u00e9faut est utilis\u00e9e.
 encode.option-key.notrim=\ \ \ \ --notrim

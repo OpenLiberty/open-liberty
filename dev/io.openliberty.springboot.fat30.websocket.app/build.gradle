@@ -16,6 +16,7 @@ plugins {
   id 'org.springframework.boot' version '3.4.4'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
+apply plugin: 'war'
 def sv = springVersions[ '3.0' ]
 
 apply plugin: 'java'
@@ -29,4 +30,5 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
   implementation('org.springframework.boot:spring-boot-starter-websocket')
+  providedCompile('org.springframework.boot:spring-boot-starter-tomcat')
 }

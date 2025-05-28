@@ -11,6 +11,8 @@ package com.ibm.ws.jsp23.fat;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -36,6 +38,7 @@ import com.ibm.ws.jsp23.fat.tests.JSPSkipMetaInfTests;
 import com.ibm.ws.jsp23.fat.tests.JSPTests;
 import com.ibm.ws.jsp23.fat.tests.JSTLTests;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -75,14 +78,34 @@ public class FATSuite {
      * using @SkipForRepeat("CDI-2.0").
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                    .withID("CDI-2.0")
-                                    .forceAddFeatures(false)
-                                    .fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+    public static RepeatTests repeat;
+
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
+    static {
+        if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
+            // Repeating the full fat for all features may exceed the 3 hour limit on Fyre Windows and causes random build breaks.
+            // Skip EE9 on the windows platform when not running locally.
+            // If we are running with a Java version less than 11, have EE7 (EmptyAction) be the lite mode test to run.
+            repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
+                                            .withID("CDI-2.0")
+                                            .forceAddFeatures(false)
+                                            .fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                            .andWith(FeatureReplacementAction.EE11_FEATURES());
+        } else {
+            // If we are running with a Java version less than 11, have EE9 be the lite mode test to run.
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
+                                            .withID("CDI-2.0")
+                                            .forceAddFeatures(false)
+                                            .fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                            .andWith(FeatureReplacementAction.EE11_FEATURES());
+        }
+    }
 
     //Server used for setup
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("globalTLDServer");

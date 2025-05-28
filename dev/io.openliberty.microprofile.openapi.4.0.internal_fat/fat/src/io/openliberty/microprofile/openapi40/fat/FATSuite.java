@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.microprofile.openapi40.fat.validation.ValidationTestCrossVersion;
 import io.openliberty.microprofile.openapi40.fat.validation.ValidationTestFive;
 import io.openliberty.microprofile.openapi40.fat.validation.ValidationTestFour;
@@ -33,4 +35,14 @@ import io.openliberty.microprofile.openapi40.fat.versionwarning.VersionWarningTe
                 VersionWarningTest.class,
 })
 @RunWith(Suite.class)
-public class FATSuite {}
+public class FATSuite {
+
+    public static RepeatTests defaultRepeat(String serverName) {
+        return MicroProfileActions.repeat(serverName,
+                                          MicroProfileActions.MP71_EE10, // mpOpenAPI-4.1 + EE10 , LITE
+                                          MicroProfileActions.MP71_EE11, // mpOpenAPI-4.1 + EE11 , FULL
+                                          MicroProfileActions.MP70_EE10, // mpOpenAPI-4.0 + EE10 , FULL
+                                          MicroProfileActions.MP70_EE11 // mpOpenAPI-4.0 + EE11 , FULL
+        );
+    }
+}

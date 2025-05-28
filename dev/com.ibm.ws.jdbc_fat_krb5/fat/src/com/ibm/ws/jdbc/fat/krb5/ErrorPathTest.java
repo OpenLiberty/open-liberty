@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import com.ibm.websphere.simplicity.config.Kerberos;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.DB2KerberosContainer;
-import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -49,12 +48,10 @@ public class ErrorPathTest extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.krb5")
     public static LibertyServer server;
 
-    private static final DB2KerberosContainer db2 = DB2KerberosTest.db2;
+    @ClassRule
+    public static final DB2KerberosContainer db2 = DB2KerberosTest.db2;
 
     private static final String APP_NAME = DB2KerberosTest.APP_NAME;
-
-    @ClassRule
-    public static KerberosPlatformRule skipRule = new KerberosPlatformRule();
 
     private static ServerConfiguration originalConfig;
 
@@ -66,8 +63,6 @@ public class ErrorPathTest extends FATServletClient {
         //TODO switch
         Path krbKeytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab");
 //        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
-
-        db2.start();
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.db2.web");
 
@@ -92,24 +87,7 @@ public class ErrorPathTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        Exception firstError = null;
-
-        try {
-            server.stopServer("CWWKS4345E: .*bogus.conf"); // expected by testConfigFileInvalid
-        } catch (Exception e) {
-            firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-        try {
-            db2.stop();
-        } catch (Exception e) {
-            if (firstError == null)
-                firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-
-        if (firstError != null)
-            throw firstError;
+        server.stopServer("CWWKS4345E: .*bogus.conf"); // expected by testConfigFileInvalid
     }
 
     /**

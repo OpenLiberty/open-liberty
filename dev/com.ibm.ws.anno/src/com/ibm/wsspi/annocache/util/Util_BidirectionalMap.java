@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,19 +31,10 @@ public interface Util_BidirectionalMap extends com.ibm.wsspi.anno.util.Util_Bidi
 
     //
 
-    @Deprecated
-    boolean IS_ENABLED = true;
-
-    @Deprecated
-    boolean IS_NOT_ENABLED = false;
-
-    @Deprecated
-    boolean getEnabled();
-
-    //
-
     Util_Factory getFactory();
 
+    boolean getIsEnabled();
+    
     //
 
     Util_InternMap getHolderInternMap();

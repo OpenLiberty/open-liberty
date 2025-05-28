@@ -56,4 +56,4 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: microProfile-7.0,microProfile-7.1
+WLP-Platform: microProfile-7.0

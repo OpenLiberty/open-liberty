@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,14 +15,11 @@ package com.ibm.ws.cdi.proxy;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ReflectPermission;
-
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
 
-import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.osgi.container.ModuleLoader;
 import org.eclipse.osgi.container.ModuleWiring;
 import org.eclipse.osgi.util.ManifestElement;
@@ -33,6 +30,8 @@ import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
 import org.osgi.framework.wiring.BundleWiring;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIRuntimeException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -42,6 +41,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  */
 //These classes do not extend a common abstract because it resulted in a circular dependency.
 public class ProxyServicesImpl implements ProxyServices {
+
+    private static final TraceComponent tc = Tr.register(ProxyServicesImpl.class);
 
     private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission("suppressAccessChecks");
     private static final RuntimePermission DECLARED_MEMBERS_PERMISSION = new RuntimePermission("accessDeclaredMembers");
@@ -132,12 +133,16 @@ public class ProxyServicesImpl implements ProxyServices {
             Bundle b = ((BundleReference) cl).getBundle();
             addWeldDynamicImports(b, WELD_PACKAGES);
         }
-        return cl;            
+        return cl;
     }
 
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
     public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len, ProtectionDomain protectionDomain) throws ClassFormatError {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "defineClass", originalClass, className, protectionDomain);
+        }
 
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -159,17 +164,17 @@ public class ProxyServicesImpl implements ProxyServices {
                 //First check we haven't defined this in another thread.
                 return loadClass(className, loader);
             } catch (ClassNotFoundException e) {
-                //Do nothing, move on to defining the class. 
+                //Do nothing, move on to defining the class.
             }
             try {
                 java.lang.reflect.Method method;
                 Object[] args;
                 if (protectionDomain == null) {
                     method = ClassLoaderMethods.defineClass1;
-                    args = new Object[]{className, classBytes, off, len};
+                    args = new Object[] { className, classBytes, off, len };
                 } else {
                     method = ClassLoaderMethods.defineClass2;
-                    args = new Object[]{className, classBytes, off, len, protectionDomain};
+                    args = new Object[] { className, classBytes, off, len, protectionDomain };
                 }
                 Class<?> clazz = (Class) method.invoke(loader, args); //This is the line that actually puts a new class into a ClassLoader.
                 return clazz;
@@ -186,7 +191,8 @@ public class ProxyServicesImpl implements ProxyServices {
     @Override
     public Class<?> loadClass(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null) sm.checkPermission(GET_CLASS_LOADER_PERMISSION);
+        if (sm != null)
+            sm.checkPermission(GET_CLASS_LOADER_PERMISSION);
 
         ClassLoader cl = loaderMap.get(originalClass);
         return loadClass(classBinaryName, cl);
@@ -196,6 +202,7 @@ public class ProxyServicesImpl implements ProxyServices {
         return Class.forName(classBinaryName, true, cl);
     }
 
+    @Override
     public boolean supportsClassDefining() {
         return true;
     }
@@ -232,9 +239,9 @@ public class ProxyServicesImpl implements ProxyServices {
     }
 
     private final ClassValue<ClassLoader> loaderMap = new ClassValue<ClassLoader>() {
+        @Override
         public ClassLoader computeValue(Class<?> type) {
             return getClassLoader(type);
         }
     };
 }
-

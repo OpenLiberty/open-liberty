@@ -69,7 +69,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JSF23MapSupportTests.class,
                 JSF23IterableSupportTests.class,
                 JSF23ComponentSearchTests.class,
-                JSF23UIRepeatConditionTests.class,
+                JSF23UIRepeatConditionTests.class, // CheckPoint Enabled
                 JSF23FacesDataModelTests.class,
                 JSF23ClassLevelBeanValidationTests.class,
                 JSF23ExternalContextStartupShutdownTests.class,

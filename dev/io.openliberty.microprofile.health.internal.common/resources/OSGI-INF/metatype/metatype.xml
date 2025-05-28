@@ -17,7 +17,8 @@
                    localization="OSGI-INF/l10n/metatype">
 
     <OCD id="io.openliberty.microprofile.health" name="%mpHealth" description="%mpHealth.desc" ibm:alias="mpHealth" ibm:beta="true">
-        <AD id="fileUpdateInterval" name="%fileUpdateInterval" description="%fileUpdateInterval.desc" required="false" type="String" ibm:beta="true"/>
+        <AD id="checkInterval" name="%checkInterval" description="%checkInterval.desc" required="false" type="String" ibm:beta="true"/>
+        <AD id="startupCheckInterval" name="%startupCheckInterval" description="%startupCheckInterval.desc" required="false" type="String" ibm:beta="true"/>
     </OCD>
 
     <Designate pid="io.openliberty.microprofile.health">

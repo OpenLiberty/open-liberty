@@ -222,6 +222,13 @@ OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api],
 OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-incubator],
 OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations-support],
 OpenTelemetry Instrumentation for Java [opentelemetry-resources],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api],
+OpenTelemetry Instrumentation for Java [opentelemetry-resources],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations-support],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations],
+OpenTelemetry Instrumentation for Java [opentelemetry-runtime-telemetry-java8],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-semconv],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-incubator],
 OpenTelemetry Java [opentelemetry-exporter-otlp-common],
 OpenTelemetry Java [opentelemetry-exporter-jaeger],
 OpenTelemetry Java [opentelemetry-context],
@@ -280,8 +287,26 @@ OpenTelemetry Java [opentelemetry-exporter-otlp],
 OpenTelemetry Java [opentelemetry-exporter-zipkin],
 OpenTelemetry Java [opentelemetry-exporter-otlp-common],
 OpenTelemetry Java [opentelemetry-extension-trace-propagators],
+OpenTelemetry Java [opentelemetry-api],
+OpenTelemetry Java [opentelemetry-sdk-logs],
+OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure],
+OpenTelemetry Java [opentelemetry-context],
+OpenTelemetry Java [opentelemetry-exporter-common],
+OpenTelemetry Java [opentelemetry-sdk-trace],
+OpenTelemetry Java [opentelemetry-sdk-common],
+OpenTelemetry Java [opentelemetry-exporter-otlp-common],
+OpenTelemetry Java [opentelemetry-sdk-metrics],
+OpenTelemetry Java [opentelemetry-exporter-sender-okhttp],
+OpenTelemetry Java [opentelemetry-sdk],
+OpenTelemetry Java [opentelemetry-exporter-otlp],
+OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure-spi],
+OpenTelemetry Java [opentelemetry-exporter-logging],
+OpenTelemetry Java [opentelemetry-api-incubator],
+OpenTelemetry Java [opentelemetry-exporter-zipkin],
+OpenTelemetry Java [opentelemetry-extension-trace-propagators],
 OpenTelemetry Semantic Conventions Java [opentelemetry-semconv-incubating],
 OpenTelemetry Semantic Conventions Java [opentelemetry-semconv],
+OpenTelemetry Semantic Conventions Java [opentelemetry-semconv-incubating],
 OpenTracing API [opentracing-api], OpenTracing-noop [opentracing-noop],
 OpenTracing-util [opentracing-util], Prometheus Java Simpleclient [simpleclient],
 Prometheus Java Simpleclient Common [simpleclient_common],
@@ -347,8 +372,8 @@ Woodstox [woodstox-core-asl], Woodstox [woodstox-core],
 XML Commons Resolver Component [xml-resolver], XmlSchema Core [xmlschema-core],
 Zipkin Core Library [zipkin], Zipkin Reporter: Core [zipkin-reporter],
 Zipkin Sender: OkHttp 3 [zipkin-sender-okhttp3], acme4j Client [acme4j-client],
-acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asyncutil,
-carbon-components [carbon-components-10.50.0-rc.0.min.js],
+acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asm-util,
+asyncutil, carbon-components [carbon-components-10.50.0-rc.0.min.js],
 carbon-components [carbon-components-10.44.0.tgz],
 classfilewriter [jboss-classfilewriter], dompurify [dompurify-3.2.4.tgz],
 error-prone annotations [error_prone_annotations], fastinfoset [FastInfoset],
@@ -737,8 +762,6 @@ XSOM [xsom] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 O
 XSOM [xsom] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2022 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
-asm (Copyright 2000-2011 INRIA) (Copyright 2011-2012 Bull S.A.S) (OW2)
-asm-util (Copyright 2000-2011 INRIA) (Copyright 2011-2012 Bull S.A.S) (OW2)
 dojo [dojo-1.12.11.tgz] (Copyright 2003-2004 Lawrence E. Rosen) (Copyright 2005-2016 The JS Foundation) (Copyright 2005-2017 The JS Foundation)
 duplexer2 [duplexer2-0.0.2.tgz] (Copyright 2013 Deoxxa Development)
 highlight.js [highlight.js-10.7.3.tgz] (Copyright 2006 Ivan Sagalaev)
@@ -1001,7 +1024,6 @@ javax.ws.rs-api [jakarta.ws.rs-api] https://www.eclipse.org/org/foundation/
 javax.ws.rs-api https://www.eclipse.org/org/foundation/
 jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] http://www.jboss.org
 jboss-jakarta-jaxrs-api_spec [jboss-jaxrs-api_2.1_spec] http://www.jboss.org
-org.eclipse.osgi***FIXME Source URL missing for org.eclipse.osgi v:3.23.0.v20250201-1235***
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
 org.eclipse.yasson [yasson] http://www.oracle.com/
 

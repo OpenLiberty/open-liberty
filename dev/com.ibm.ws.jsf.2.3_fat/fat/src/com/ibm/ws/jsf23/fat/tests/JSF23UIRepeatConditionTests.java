@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,10 +9,12 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.CHECKPOINT_RULE;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 import java.util.Arrays;
+import org.junit.ClassRule;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,6 +37,10 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
+import componenttest.rules.repeater.CheckpointRule;
+import componenttest.rules.repeater.CheckpointRule.ServerMode;
+import componenttest.topology.impl.LibertyServer;
+
 /**
  * These test are to test the functionality of the <ui:repeat> begin and end attributes
  * new to JSF 2.3.
@@ -51,17 +57,27 @@ public class JSF23UIRepeatConditionTests {
     @Server("jsf23UIRepeatConditionServer")
     public static LibertyServer server;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, "UIRepeatConditionCheck.war", "com.ibm.ws.jsf23.fat.uirepeat");
+    @ClassRule
+    public static CheckpointRule checkpointRule = new CheckpointRule()
+                                                      .setConsoleLogName(JSF23UIRepeatConditionTests.class.getSimpleName()+ ".log")
+                                                      .setServerSetup(JSF23UIRepeatConditionTests::serverSetUp)
+                                                      .setServerStart(JSF23UIRepeatConditionTests::serverStart)
+                                                      .setServerTearDown(JSF23UIRepeatConditionTests::serverTearDown);
 
+    public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
+        ShrinkHelper.defaultDropinApp(server, "UIRepeatConditionCheck.war", "com.ibm.ws.jsf23.fat.uirepeat");
+        return server;
+
+    }
+
+        public static void serverStart(ServerMode mode, LibertyServer server) throws Exception {
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
         server.startServer(c.getSimpleName() + ".log");
-    }
+        } 
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+
+     public static void serverTearDown(ServerMode mode, LibertyServer server) throws Exception {
         // Stop the server
         if (server != null && server.isStarted()) {
             server.stopServer();

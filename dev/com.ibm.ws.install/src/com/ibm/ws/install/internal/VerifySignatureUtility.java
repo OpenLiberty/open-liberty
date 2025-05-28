@@ -145,20 +145,10 @@ public class VerifySignatureUtility {
             try {
                 logger.fine("Downloading key... " + key.getValue());
                 URL keyUrl = new URL(key.getValue());
-                String proxyEncodedAuth = "";
-                if (keyUrl.getProtocol().equals("https") && envMap.get("https.proxyHost") != null) {
-                    proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
-                } else if (envMap.get("http.proxyHost") != null) {
-                    proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
-                }
+                ArtifactDownloaderUtils.setProxyAuthenticator(envMap);
 
                 conn = keyUrl.openConnection();
                 conn.setConnectTimeout(10000);
-
-                if (!proxyEncodedAuth.isEmpty()) {
-                    logger.fine("encoded proxy auth: " + proxyEncodedAuth);
-                    conn.setRequestProperty("Proxy-Authorization", proxyEncodedAuth);
-                }
 
                 try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream())) {
                     File tempFile = File.createTempFile("signature", ".asc", Utils.getInstallDir());

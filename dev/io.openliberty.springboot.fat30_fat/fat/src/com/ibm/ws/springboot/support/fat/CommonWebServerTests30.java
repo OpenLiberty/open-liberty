@@ -14,10 +14,6 @@ package com.ibm.ws.springboot.support.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +30,7 @@ public class CommonWebServerTests30 extends CommonWebServerTests {
     @After
     public void stopTestServer() throws Exception {
         String methodName = testName.getMethodName();
-        if ( (methodName != null) && methodName.contains(DEFAULT_HOST_WITH_APP_PORT) ) {
+        if ((methodName != null) && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
             super.stopServer(true, "CWWKT0015W");
         } else {
             super.stopServer();

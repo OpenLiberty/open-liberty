@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
 
 import jakarta.annotation.Resource;
-import jakarta.data.exceptions.DataException;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -84,6 +83,13 @@ public class DataConfigTestServlet extends FATServlet {
     }
 
     /**
+     * A servlet operation that doesn't do anything. It can be used when the
+     * Jakarta Data feature is not enabled.
+     */
+    public void testDoNotUseJakartaData(HttpServletRequest request, PrintWriter response) {
+    }
+
+    /**
      * Adds new data to tables. The data must not already exist.
      */
     public void testEntitiesCanBeAdded(HttpServletRequest request, PrintWriter response) {
@@ -101,7 +107,10 @@ public class DataConfigTestServlet extends FATServlet {
         try {
             Employee found = employees.findById(111222).orElseGet(() -> null);
             assertEquals("Employee table should not be found.", null, found);
-        } catch (DataException x) {
+        } catch (RuntimeException x) {
+            // Allow other methods of the servlet to be used without Jakarta Data enabled
+            if (!x.getClass().getName().startsWith("jakarta.data.exceptions."))
+                throw x;
             boolean expectedException = false;
             for (Throwable cause = x.getCause(); cause != null && !expectedException; cause = cause.getCause())
                 expectedException = cause instanceof SQLSyntaxErrorException;
@@ -112,7 +121,10 @@ public class DataConfigTestServlet extends FATServlet {
         try {
             Student found = students.findById(1234).orElseGet(() -> null);
             assertEquals("Student table should not be found", null, found);
-        } catch (DataException x) {
+        } catch (RuntimeException x) {
+            // Allow other methods of the servlet to be used without Jakarta Data enabled
+            if (!x.getClass().getName().startsWith("jakarta.data.exceptions."))
+                throw x;
             boolean expectedException = false;
             for (Throwable cause = x.getCause(); cause != null && !expectedException; cause = cause.getCause())
                 expectedException = cause instanceof SQLSyntaxErrorException;
@@ -145,7 +157,10 @@ public class DataConfigTestServlet extends FATServlet {
         employees.save(new Employee(222333, null, "TestMappedSuperclass", 25));
         try {
             employees.save(new Employee(333444, "TestMappedSuperclass", null, 35));
-        } catch (DataException x) {
+        } catch (RuntimeException x) {
+            // Allow other methods of the servlet to be used without Jakarta Data enabled
+            if (!x.getClass().getName().startsWith("jakarta.data.exceptions."))
+                throw x;
             boolean expectedException = false;
             for (Throwable cause = x.getCause(); cause != null && !expectedException; cause = cause.getCause())
                 expectedException = cause instanceof SQLIntegrityConstraintViolationException;

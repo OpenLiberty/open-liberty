@@ -460,6 +460,9 @@ serverEnvDefaults()
     fi
   esac
 
+  # Add JDK property to improve encryption performance for password utilities
+  SERVER_IBM_JAVA_OPTIONS="-Djdk.nativePBKDF2=true ${SERVER_IBM_JAVA_OPTIONS}"
+
   # Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
   # shared classes cache created for client operations.
   # Add -Dcom.ibm.tools.attach.enable=yes to allow self-attach

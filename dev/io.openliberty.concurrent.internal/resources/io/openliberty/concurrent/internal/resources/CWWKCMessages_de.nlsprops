@@ -58,6 +58,10 @@ CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Das {0} Anwendungsartefakt spezifizie
 CWWKC1207.lacks.qualifier.anno.explanation=Die Anmerkung Qualifier zeigt an, dass die Anmerkung ein Qualifier ist. Die Anmerkung Retention steuert die Verf\u00fcgbarkeit von Anmerkungen.
 CWWKC1207.lacks.qualifier.anno.useraction=F\u00fcgen Sie die Anmerkungen @Qualifier und @Retention(RUNTIME) zur Qualifier-Klasse hinzu.
 
+CWWKC1208.global.with.qualifiers=CWWKC1208E: Das Anwendungsartefakt {0} spezifiziert ein {1} Annotation- oder {2} Deployment Descriptor-Element, das den {3} Namen und die {4} Qualifier-Liste enth\u00e4lt. Sie k\u00f6nnen eine Jakarta Concurrency-Ressource nicht so konfigurieren, dass sie gleichzeitig Qualifier und einen java:global-Namespace hat. Entfernen Sie die Qualifier aus der Konfiguration der Jakarta Concurrency-Ressource, die den Namen {3} tr\u00e4gt, oder wechseln Sie zum Namensraum java:app.
+CWWKC1208.global.with.qualifiers.explanation=Die Jakarta Concurrency-Ressourcenkonfiguration kann nicht gleichzeitig Qualifier und einen java:global-Namespace enthalten.
+CWWKC1208.global.with.qualifiers.useraction=Aktualisieren Sie die Konfiguration der anwendungsdefinierten Jakarta Concurrency-Ressource, um die Qualifier wegzulassen oder einen anderen Namespace wie den java:app-Namespace zu verwenden.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: Die Concurrency-Spezifikation verlangt, dass virtual=true in der {1} Annotation des {0} Anwendungsartefakts oder dem {2} Deployment-Deskriptor-Element mit dem {3} Namen ignoriert wird, da Java {4} keine virtuellen Threads unterst\u00fctzt.
 CWWKC1217.no.virtual.threads.explanation=Virtuelle Threads sind nur in Java 21 und h\u00f6her verf\u00fcgbar.
 CWWKC1217.no.virtual.threads.useraction=Aktualisieren Sie auf Java 21 oder h\u00f6her, um die Verwendung von virtuellen Threads zu erm\u00f6glichen.

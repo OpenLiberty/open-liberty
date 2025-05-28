@@ -103,6 +103,20 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
                          */
                         hc40serv.performFileHealthCheck(HealthFileUtils.getStartFile(), HealthCheckConstants.HEALTH_CHECK_START);
                     }
+
+                    /*
+                     *
+                     * Temp solution to app shutting down and a performFileHealthCheck running at the same time.
+                     * This leads to scenario where the application is completely shut down while the Health Check
+                     * process is underway. Specifically when a Contextual Proxy is created right before app stops,
+                     * followed by the app stopping and then the invocation of the contextual proxy. This causes an
+                     * ISE due to the app metadata no longer existing during the proxy invocation.
+                     *
+                     * Due to the applicationStopping set. We create a barrier for preventing HC calls on that "app".
+                     * But if the app is added back in, we need to remove that barrier. Hence this.
+                     */
+                    HealthCheck40ServiceImpl h40impl = (HealthCheck40ServiceImpl) healthCheckService;
+                    h40impl.startedApplication(appName);
                 }
 
             }
@@ -134,4 +148,23 @@ public class AppTracker40Impl extends AppTrackerImpl implements AppTracker, Appl
         return state;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void applicationStopping(ApplicationInfo appInfo) {
+        /*
+         *
+         * Temp solution to app shutting down and a performFileHealthCheck running at the same time.
+         * This leads to scenario where the application is completely shut down while the Health Check
+         * process is underway. Specifically when a Contextual Proxy is created right before app stops,
+         * followed by the app stopping and then the invocation of the contextual proxy. This causes an
+         * ISE due to the app metadata no longer existing during the proxy invocation.
+         *
+         * This adds the app to the "stopped" list.
+         * Any in flux calls hopefully get turned away during the runHealthChecks() call.
+         */
+        if (healthCheckService != null && healthCheckService instanceof HealthCheck40Service) {
+            HealthCheck40ServiceImpl h40impl = (HealthCheck40ServiceImpl) healthCheckService;
+            h40impl.stoppingApplication(appInfo.getDeploymentName());
+        }
+    }
 }

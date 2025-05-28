@@ -39,8 +39,17 @@ public class HealthCheckConstants {
     // Default Overall Startup Status MP Config property name
     public static final String DEFAULT_OVERALL_STARTUP_STATUS = "mp.health.default.startup.empty.response";
 
-    public static final String HEALTH_SERVER_CONFIG_FILE_UPDATE_INTERVAL = "fileUpdateInterval";
+    public static final String HEALTH_SERVER_CONFIG_CHECK_INTERVAL = "checkInterval";
 
-    public static final String HEALTH_ENV_CONFIG_FILE_UPDATE_INTERVAL = "MP_HEALTH_FILE_UPDATE_INTERVAL";
+    public static final String HEALTH_ENV_CONFIG_CHECK_INTERVAL = "MP_HEALTH_CHECK_INTERVAL";
+
+    public static final String HEALTH_SERVER_CONFIG_STARTUP_CHECK_INTERVAL = "startupCheckInterval";
+
+    public static final String HEALTH_ENV_CONFIG_STARTUP_CHECK_INTERVAL = "MP_HEALTH_STARTUP_CHECK_INTERVAL";
+
+    public static final int DEFAULT_STARTUP_CHECK_INTERVAL_MILLI = 100; //100 milliseconds
+    public static final int DEFAULT_CHECK_INTERVAL_MILLI = 10000; //10 seconds
+
+    public static final int CONFIG_NOT_SET = -1;
 
 }

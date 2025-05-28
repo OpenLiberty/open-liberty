@@ -193,16 +193,18 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         writeComment(CONTAINERS_SECTION);
 
         for ( String name : containerTable.getNames() ) {
-            ScanPolicy policy = containerTable.getPolicy(name);
-
-            String writeName;
+            String useName;
             if ( name.equals(TargetCache_ExternalConstants.CANONICAL_ROOT_CONTAINER_NAME) ) {
-                writeName = TargetCache_ExternalConstants.ROOT_CONTAINER_NAME;
+                useName = TargetCache_ExternalConstants.ROOT_CONTAINER_NAME;
             } else {
-                writeName = name;
+                useName = name;
             }
 
-            writeValue(NAME_TAG, writeName);
+            String signature = containerTable.getSignature(name);
+            ScanPolicy policy = containerTable.getPolicy(name);
+
+            writeValue(NAME_TAG, useName);
+            writeValue(SIGNATURE_TAG, signature);
             writeValue(POLICY_TAG, policy.toString());
         }
 

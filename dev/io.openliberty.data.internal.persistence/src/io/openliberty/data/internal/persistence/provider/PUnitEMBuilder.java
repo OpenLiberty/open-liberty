@@ -67,7 +67,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
               persistenceUnitRef);
         this.emf = emf;
 
-        collectEntityInfo(entityTypes);
+        collectEntityInfo(entityTypes, null);
     }
 
     @Override

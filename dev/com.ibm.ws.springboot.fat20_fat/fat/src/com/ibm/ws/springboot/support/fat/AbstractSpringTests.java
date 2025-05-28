@@ -78,7 +78,7 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_20_APP_WEBFLUX = "com.ibm.ws.springboot.fat20.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBSOCKET = "com.ibm.ws.springboot.fat20.websocket.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_TRANSACTIONS = "com.ibm.ws.springboot.fat20.transactions.app-0.0.1-SNAPSHOT.war";
-
+    public static final String SPRING_BOOT_20_APP_DATA = "com.ibm.ws.springboot.fat20.data.app-0.0.1-SNAPSHOT.war";
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";
@@ -383,10 +383,13 @@ public abstract class AbstractSpringTests {
 
     protected ServerConfiguration getServerConfiguration() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
-
+        server.removeAllInstalledAppsForValidation();
         // START CLEAR out configs from previous tests
         List<SpringBootApplication> applications = config.getSpringBootApplications();
         applications.clear();
+        List<WebApplication> webApps = config.getWebApplications();
+        webApps.clear();
+
         Set<String> features = config.getFeatureManager().getFeatures();
         features.clear();
         features.addAll(getFeatures());

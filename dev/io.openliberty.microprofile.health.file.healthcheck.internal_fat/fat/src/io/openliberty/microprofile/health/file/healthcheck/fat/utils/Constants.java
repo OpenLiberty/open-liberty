@@ -21,6 +21,7 @@ public class Constants {
     public static final String SHOULD_NOT_HAVE_UPDATED = " should not have been updated.";
 
     public static final String HEALTH_DIR_SHOULD_HAVE_CREATED = "/health" + SHOULD_HAVE_CREATED;
+    public static final String HEALTH_DIR_SHOULD_NOT_HAVE_CREATED = "/health" + SHOULD_NOT_HAVE_CREATED;
 
     public static final String LIVE_SHOULD_HAVE_CREATED = "/health/live" + SHOULD_HAVE_CREATED;
     public static final String LIVE_SHOULD_NOT_HAVE_CREATED = "/health/live" + SHOULD_NOT_HAVE_CREATED;

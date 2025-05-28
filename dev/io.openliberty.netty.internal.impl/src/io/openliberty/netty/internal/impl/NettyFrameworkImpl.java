@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,13 +53,17 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tcp.TCPConfigConstants;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
+
 import com.ibm.websphere.channelfw.EndPointMgr;
 
 /**
@@ -70,7 +74,7 @@ import com.ibm.websphere.channelfw.EndPointMgr;
 public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework {
 
     private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyConstants.NETTY_TRACE_NAME,
-            NettyConstants.BASE_BUNDLE);
+            NettyConstants.CF_BUNDLE);
 
     /** Reference to the executor service -- required */
     private ExecutorService executorService = null;
@@ -408,9 +412,16 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         serverCompletelyStarted.set(false);
     }
 
+    @FFDCIgnore({NettyException.class})
     @Override
     public ServerBootstrapExtended createTCPBootstrap(Map<String, Object> tcpOptions) throws NettyException {
-        return TCPUtils.createTCPBootstrap(this, tcpOptions);
+        try{
+            return TCPUtils.createTCPBootstrap(this, tcpOptions);
+        } catch (NettyException e){
+            Tr.error(tc, "chain.initialization.error", new Object[] { tcpOptions.get(ConfigConstants.EXTERNAL_NAME), e.toString() });
+            throw e;
+        }
+        
     }
 
     @Override
@@ -429,9 +440,22 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
+    @FFDCIgnore({ NettyException.class })
     public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
-        return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
+        
+        BootstrapConfiguration config = bootstrap.getConfiguration();
+        String externalName = "NOT_DEFINED";
+        if(config!= null && config instanceof TCPConfigurationImpl){
+            externalName = ((TCPConfigurationImpl)config).getExternalName();
+        }
+
+        try{
+            return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
+        }catch(NettyException e){
+            Tr.error(tc, "chain.initialization.error", new Object[] { externalName, e.toString() });
+            throw e;
+        }        
     }
 
     @Override

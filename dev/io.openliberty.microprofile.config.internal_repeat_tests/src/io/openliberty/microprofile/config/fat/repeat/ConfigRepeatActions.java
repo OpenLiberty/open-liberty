@@ -129,6 +129,24 @@ public class ConfigRepeatActions {
     }
 
     /**
+     * Return a rule to repeat tests for MicroProfile 7.0 with both EE10 and EE11.
+     * This translates to the latest MicroProfile versions which contain Config 3.1.
+     *
+     * Covers only Config 3.1. May wish to add newer versions in future.
+     *
+     * @param server the server name
+     * @return the RepeatTests rule
+     */
+    public static RepeatTests repeatMp70(String server) {
+        return MicroProfileActions.repeatIf(server,
+                                            TCKUtilities::areAllFeaturesPresent,
+                                            TestMode.FULL,
+                                            false,
+                                            MicroProfileActions.MP70_EE10, //Config 3.1
+                                            MicroProfileActions.MP70_EE11); //Config 3.1
+    }
+
+    /**
      * Return a rule to repeat tests for all MP versions which contain Config
      * <p>
      * We run a few tests using this rule so that we have some coverage of all implementations and all MP versions.

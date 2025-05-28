@@ -10,6 +10,7 @@
 package com.ibm.ws.jsp23.fat.tests;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -154,7 +155,9 @@ public class JSPChannelTest {
     @Test
     public void testIgnoreWriteAfterCommitFalse() throws Exception {
         Socket socket = null;
-        boolean socketExceptionOccurred = false;
+        boolean containsSuccessMessage = false;
+        boolean connectionClosedAsExpected = false;
+        boolean connectionIsOpen = false;
         try {
             updateHTTPOptions(false);
 
@@ -164,14 +167,14 @@ public class JSPChannelTest {
             String page = JakartaEEAction.isEE11OrLaterActive() ? "indexEE11.jsp" : "index.jsp";
 
             String request = "GET /" + APP_NAME + "/" + page + " HTTP/1.1\r\n" +
-                             "Host: " + address + "\r\n" +
-                             "Keep-Alive: timeout=5, max=200\r\n" +
-                             "\r\n";
+                    "Host: " + address + "\r\n" +
+                    "Keep-Alive: timeout=5, max=200\r\n" +
+                    "\r\n";
 
             String redirect_request = "GET /" + APP_NAME + "/page2.jsp " + "HTTP/1.1\r\n" +
-                                      "Host: " + address + "\r\n" +
-                                      "Connection: close\r\n" +
-                                      "\r\n";
+                    "Host: " + address + "\r\n" +
+                    "Connection: close\r\n" +
+                    "\r\n";
 
             socket = new Socket(server.getHostname(), server.getHttpDefaultPort());
             socket.setKeepAlive(true);
@@ -183,30 +186,67 @@ public class JSPChannelTest {
             Thread.sleep(500); // time in-between requests
             os.write(redirect_request.getBytes());
 
+            LOG.info(
+                    "Waiting 3 seconds for server to potentially close connection due to error on first response attempt...");
             // Wait a few seconds to let the connection close if an error occurs
             Thread.sleep(3000);
 
             // Read the responses:
+            LOG.info("Attempting to read responses (expecting SocketException)...");
             String line;
-            boolean containsMessage = false;
+
             while ((line = bReader.readLine()) != null) {
                 LOG.info(line);
                 if (line.contains("Successfully redirected!")) {
-                    containsMessage = true;
+                    containsSuccessMessage = true;
                 }
             }
-            // If Successfully redirected! is not read, then connection was closed.
-            Assert.assertFalse("The redirect was successful when it should not have been!", containsMessage);
+            LOG.info("readLine() returned null (EOF). Checking outcome.");
+
+            // If we get here, readLine() returned null (EOF) without a preceding
+            // SocketException.
+            // This means the connection closed, but maybe not via the expected exception
+            // mechanism.
+            // OR worse, the connection stayed open and the second request completed.
+
+            // --- Evaluate outcome if no exception was thrown ---
+            if (!containsSuccessMessage) {
+                // Scenario: No exception AND no success message found.
+                // Verify closure by attempting a write.
+                LOG.info("EOF reached without success message. Verifying closure via test write...");
+                try {
+                    os.write("PING\r\n".getBytes()); // Attempt minimal write
+                    os.flush();
+                    // If write succeeds, connection didn't close properly. FAILURE.
+                    LOG.info("FAILURE: Test write succeeded unexpectedly after EOF.");
+                    connectionIsOpen = true;
+
+                } catch (IOException writeEx) {
+                    // IOException on write confirms the connection is closed. SUCCESS.
+                    LOG.info("Caught expected IOException on test write, confirming closure: " + writeEx.getMessage());
+                    connectionClosedAsExpected = true;
+                }
+            } else {
+                // Scenario: No exception BUT success message WAS found. FAILURE.
+                LOG.info("EOF reached BUT success message was found.");
+                connectionIsOpen = true;
+            }
+
         } catch (SocketException e) {
-            // If the connection was reset that means the server closed it. 
+            // If the connection was reset that means the server closed it.
             LOG.info("SocketException occurred! -> " + e.getMessage());
-            socketExceptionOccurred = true;
-            Assert.assertTrue("Expected SocketException did not occur", socketExceptionOccurred);
+            connectionClosedAsExpected = true;
         } finally {
             if (socket != null) {
                 socket.close();
             }
         }
+        Assert.assertTrue(
+                "Test Failed: Expected a SocketException (or similar IOException indicating closure) " +
+                        "because ignoreWriteAfterCommit=false should cause connection closure on MessageSentException" +
+                        " Instead, The connection remained open - connectionIsOpen: " + connectionIsOpen
+                        + ", (Was the success message found?: " + containsSuccessMessage + " )",
+                connectionClosedAsExpected);
     }
 
     /**
@@ -221,7 +261,9 @@ public class JSPChannelTest {
     @AllowedFFDC({ "java.lang.IllegalStateException", "java.io.IOException" })
     public void testIgnoreWriteAfterCommitTrueWithIOException() throws Exception {
         Socket socket = null;
-        boolean socketExceptionOccurred = false;
+        boolean foundSuccessMessage = false;
+        boolean connectionClosedAsExpected = false;
+        boolean connectionIsOpen = false;
 
         try {
             updateHTTPOptions(true); // Set ignoreWriteAfterCommit=true
@@ -291,7 +333,6 @@ public class JSPChannelTest {
             LOG.info("Sent second request");
 
             // Try to read the response
-            boolean foundSuccessMessage = false;
             while ((line = reader.readLine()) != null) {
                 LOG.info(line);
                 if (line.contains("Successfully redirected!")) {
@@ -300,24 +341,52 @@ public class JSPChannelTest {
                 }
             }
 
-            // If the test gets here without an exception, the test may fail
-            // We expected the connection to be closed even with ignoreWriteAfterCommit=true
-            Assert.assertFalse("Connection should be closed after IOException, even with ignoreWriteAfterCommit=true",
-                    foundSuccessMessage);
+            LOG.info("readLine() returned null (EOF). Checking outcome.");
+
+            // If we get here, readLine() returned null (EOF) without a preceding
+            // SocketException.
+            // This means the connection closed, but maybe not via the expected exception
+            // mechanism.
+            // OR worse, the connection stayed open and the second request completed.
+
+            // Evaluate outcome if no exception was thrown
+            if (!foundSuccessMessage) {
+                // Scenario: No exception AND no success message found.
+                // Verify closure by attempting a write.
+                LOG.info("EOF reached without success message. Verifying closure via test write...");
+                try {
+                    os.write("PING\r\n".getBytes()); // Attempt minimal write
+                    os.flush();
+                    // If write succeeds, connection didn't close properly. FAILURE.
+                    LOG.info("FAILURE: Test write succeeded unexpectedly after EOF.");
+                    connectionIsOpen = true;
+
+                } catch (IOException writeEx) {
+                    // IOException on write confirms the connection is closed. SUCCESS.
+                    LOG.info("Caught expected IOException on test write, confirming closure: " + writeEx.getMessage());
+                    connectionClosedAsExpected = true;
+                }
+            } else {
+                // Scenario: No exception BUT success message WAS found. FAILURE.
+                LOG.info("EOF reached BUT success message was found.");
+                connectionIsOpen = true;
+            }
 
         } catch (SocketException e) {
             // We expect a SocketException since the connection should be closed
             LOG.info("Expected SocketException: " + e.getMessage());
-            socketExceptionOccurred = true;
-            // Verify that the connection was closed (we got a SocketException)
-            Assert.assertTrue(
-                    "Expected SocketException: ignoreWriteAfterCommit should not prevent connection closure for IOExceptions",
-                    socketExceptionOccurred);
+            connectionClosedAsExpected = true;
         } finally {
             if (socket != null) {
                 socket.close();
             }
         }
+        Assert.assertTrue(
+                "Test Failed: Expected a SocketException (or similar IOException indicating closure) " +
+                        "because ignoreWriteAfterCommit=true should cause connection closure on a IOException" +
+                        " Instead, The connection remained open - connectionIsOpen: " + connectionIsOpen
+                        + ", (Was the success message found?: " + foundSuccessMessage + " )",
+                connectionClosedAsExpected);
     }
 
     private void updateHTTPOptions(Boolean persistValue) throws Exception {

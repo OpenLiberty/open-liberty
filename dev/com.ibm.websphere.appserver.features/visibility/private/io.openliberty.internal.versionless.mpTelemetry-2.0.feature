@@ -3,7 +3,7 @@ symbolicName=io.openliberty.internal.versionless.mpTelemetry-2.0
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.internal.mpVersion-7.0; ibm.tolerates:="7.1", \
+    io.openliberty.internal.mpVersion-7.0, \
     io.openliberty.mpTelemetry-2.0
 kind=ga
 edition=core

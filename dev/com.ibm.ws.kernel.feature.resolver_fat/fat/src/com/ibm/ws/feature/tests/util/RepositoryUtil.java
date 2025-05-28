@@ -714,7 +714,7 @@ public class RepositoryUtil {
             for (ProvisioningFeatureDefinition featureDef : getFeatureDefs()) {
                 if (isPublic(featureDef)) {
                     String symbolicName = featureDef.getSymbolicName();
-                    if (!isTest(symbolicName)) {
+                    if (!isTest(symbolicName, featureDef)) {
                         usePublicFeatures.add(symbolicName);
                     }
                 }

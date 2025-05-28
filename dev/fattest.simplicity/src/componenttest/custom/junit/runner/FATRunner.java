@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -221,7 +223,9 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     throw new AssumptionViolatedException("Test skipped for current RepeatAction");
                 }
                 Map<String, Long> tmpDirFilesBeforeTest = createDirectorySnapshot("/tmp");
+                final Instant startTime = Instant.now();
                 try {
+
                     Log.info(c, m, "***********************************");
                     Log.info(c, m, "");
                     Log.info(c, m, "entering " + getTestClass().getName() + "." + method.getName());
@@ -336,7 +340,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     compareDirectorySnapshots("/tmp", tmpDirFilesBeforeTest, tmpDirFilesAfterTest);
                     Log.info(c, m, "***********************************");
                     Log.info(c, m, "");
-                    Log.info(c, m, "exiting " + getTestClass().getName() + "." + method.getName());
+                    Log.info(c, m, "exiting " + getTestClass().getName() + "." + method.getName() + " (" + Duration.between(startTime, Instant.now()) + ")");
                     Log.info(c, m, "");
                     Log.info(c, m, "***********************************");
                 }

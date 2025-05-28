@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,13 +34,18 @@ public class TCPChannelInitializerImpl extends ChannelInitializerWrapper {
 			TCPMessageConstants.TCP_BUNDLE, TCPChannelInitializerImpl.class.getName());
 
     TCPConfigurationImpl config;
-
 	NettyFrameworkImpl bundle;
-    
+	MaxOpenConnectionsHandler maxHandler;
+	AccessListHandler includeHandler;
     
     public TCPChannelInitializerImpl(BootstrapConfiguration config, NettyFrameworkImpl bundle) {
     	this.bundle = bundle;
         this.config = (TCPConfigurationImpl) config;
+        maxHandler = new MaxOpenConnectionsHandler(this.config.getMaxOpenConnections());
+
+       if (this.config.getAccessLists() != null) {
+           includeHandler = new AccessListHandler(this.config.getAccessLists());
+       }
     }
 
     @Override
@@ -59,9 +64,7 @@ public class TCPChannelInitializerImpl extends ChannelInitializerWrapper {
         if (config.getInactivityTimeout() > 0) {
             channel.pipeline().addLast(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME, new InactivityTimeoutHandler(0, 0, config.getInactivityTimeout(), TimeUnit.MILLISECONDS));
         }
-        MaxOpenConnectionsHandler maxHandler = new MaxOpenConnectionsHandler(config.getMaxOpenConnections());
         if (config.getAccessLists() != null) {
-            AccessListHandler includeHandler = new AccessListHandler(config.getAccessLists());
             channel.pipeline().addLast(NettyConstants.ACCESSLIST_HANDLER_NAME, includeHandler);
         }
         channel.pipeline().addLast(NettyConstants.MAX_OPEN_CONNECTIONS_HANDLER_NAME, maxHandler);

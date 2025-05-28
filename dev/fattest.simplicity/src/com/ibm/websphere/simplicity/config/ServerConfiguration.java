@@ -105,6 +105,9 @@ public abstract class ServerConfiguration implements Cloneable {
     @XmlElement(name = "webApplication")
     private ConfigElementList<WebApplication> webApplications;
 
+    @XmlElement(name = "enterpriseApplication")
+    private ConfigElementList<EnterpriseApplication> enterpriseApplications;
+
     @XmlElement(name = "springBootApplication")
     private ConfigElementList<SpringBootApplication> springBootApplications;
 
@@ -904,6 +907,16 @@ public abstract class ServerConfiguration implements Cloneable {
             this.webApplications = new ConfigElementList<WebApplication>();
         }
         return this.webApplications;
+    }
+
+    /**
+     * @return explicitly installed enterprise applications
+     */
+    public ConfigElementList<EnterpriseApplication> getEnterpriseApplications() {
+        if (this.enterpriseApplications == null) {
+            this.enterpriseApplications = new ConfigElementList<EnterpriseApplication>();
+        }
+        return this.enterpriseApplications;
     }
 
     /**

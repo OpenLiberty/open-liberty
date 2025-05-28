@@ -61,6 +61,7 @@ src: \
   com.ibm.ws.springboot.fat20.webanno.app;version=latest,\
   com.ibm.ws.springboot.fat20.webflux.app;version=latest,\
   com.ibm.ws.springboot.fat20.transactions.app;version=latest,\
+  com.ibm.ws.springboot.fat20.data.app;version=latest,\
   com.ibm.ws.kernel.boot.core;version=latest, \
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.kernel.security.thread;version=latest,\

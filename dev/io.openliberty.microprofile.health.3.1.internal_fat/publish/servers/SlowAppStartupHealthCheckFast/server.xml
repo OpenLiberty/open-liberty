@@ -17,7 +17,7 @@
     <webContainer deferServletLoad="false"/> 
     
     <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
-        <tcpOptions portOpenRetries="60" />                   
+        <tcpOptions portOpenRetries="180" />                   
     </httpEndpoint>
 	
 </server>

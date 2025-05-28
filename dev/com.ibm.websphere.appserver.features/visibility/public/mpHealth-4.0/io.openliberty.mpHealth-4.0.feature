@@ -14,7 +14,8 @@ Subsystem-Name: MicroProfile Health 4.0
  io.openliberty.mpHealth.4.0.ee-9.0; ibm.tolerates:= "10.0, 11.0, 8.0, 7.0",\
  com.ibm.websphere.appserver.jndi-1.0,\
  com.ibm.websphere.appserver.json-1.0,\
- io.openliberty.webBundle.internal-1.0
+ io.openliberty.webBundle.internal-1.0,\
+ io.openliberty.mpHealthCompatible-4.0
 -bundles= \
  com.ibm.ws.org.joda.time.1.6.2,\
  io.openliberty.microprofile.health.internal.common

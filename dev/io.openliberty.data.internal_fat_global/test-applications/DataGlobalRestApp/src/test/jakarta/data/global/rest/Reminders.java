@@ -12,10 +12,18 @@
  *******************************************************************************/
 package test.jakarta.data.global.rest;
 
+import java.util.List;
+
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
+/**
+ * A repository that relies on a DataSource with a java:global JNDI name
+ * that is defined in this application.
+ */
 @DataSourceDefinition(name = "java:global/jdbc/RestResourceDataSource",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource",
                       databaseName = "memory:testdb",
@@ -24,4 +32,9 @@ import jakarta.data.repository.Repository;
                       properties = "createDatabase=create")
 @Repository(dataStore = "java:global/jdbc/RestResourceDataSource")
 public interface Reminders extends CrudRepository<Reminder, Long> {
+
+    @Query("SELECT message WHERE EXTRACT (MONTH FROM monthDayCreated) = ?1" +
+           "                 AND EXTRACT (DAY FROM monthDayCreated) = ?2")
+    @OrderBy("forDayOfWeek")
+    List<String> createdOn(int month, int day);
 }

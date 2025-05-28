@@ -88,6 +88,7 @@ src: \
 \
   io.openliberty.springboot.fat30.actuator.app;version=latest,\
   io.openliberty.springboot.fat30.app;version=latest,\
+  io.openliberty.springboot.fat30.data.app;version=latest,\
   io.openliberty.springboot.fat30.java.app;version=latest,\
   io.openliberty.springboot.fat30.multicontext.app;version=latest,\
   io.openliberty.springboot.fat30.war.app;version=latest,\

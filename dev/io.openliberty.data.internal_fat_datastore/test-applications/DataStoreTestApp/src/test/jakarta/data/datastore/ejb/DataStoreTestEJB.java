@@ -22,6 +22,8 @@ import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.ejb.EJBException;
 import jakarta.ejb.Stateless;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 
 import javax.sql.DataSource;
@@ -51,6 +53,15 @@ public class DataStoreTestEJB {
 
     @Inject
     DSDRepoEJB dsdRepoEJB;
+
+    /**
+     * Populate the database before running the test.
+     */
+    public void setup(@Observes Startup event) {
+        System.out.println("DataStoreTestEJB observed Startup");
+
+        dsdRepo.store(EJBModuleDSDEntity.of(1, "startup has been observed"));
+    }
 
     /**
      * Use a repository, defined in an EJB, that specifies the JNDI name of a
@@ -134,4 +145,14 @@ public class DataStoreTestEJB {
         }
     }
 
+    /**
+     * Verify that code in an EJB module can access a Jakarta Data repository from
+     * a CDI Startup event.
+     */
+    public void testStartupEventObserverInEJBModuleUsesRepository() {
+
+        EJBModuleDSDEntity found = dsdRepo.acquire(1).orElseThrow();
+        assertEquals(1, found.id);
+        assertEquals("startup has been observed", found.value);
+    }
 }

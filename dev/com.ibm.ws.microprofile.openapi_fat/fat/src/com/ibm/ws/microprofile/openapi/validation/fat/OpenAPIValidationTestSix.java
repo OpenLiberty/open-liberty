@@ -1,19 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.validation.fat;
 
-import static org.junit.Assert.assertNotNull;
+import static com.ibm.ws.microprofile.openapi.validation.fat.ValidationSuite.server;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.microprofile.openapi.fat.FATSuite;
+import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.topology.utils.HttpRequest;
 
 /**
  * A class to test an app with no validation errors.
@@ -22,35 +33,30 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class OpenAPIValidationTestSix {
 
-    private static final String SERVER_NAME = "validationServerSix";
-
-    @Server(SERVER_NAME)
-    public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
-
-    private static final String OPENAPI_VALIDATION_YAML = "Validation";
-
     @BeforeClass
     public static void setUpTest() throws Exception {
-        HttpUtils.trustAllCertificates();
-
-        server.startServer("OpenAPIValidationTestSix.log", true);
-
-        server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
-
-        assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
-        // wait for endpoint to become available
-        assertNotNull("Web application is not available at /Validation/",
-            server.waitForStringInLog("CWWKT0016I.*/Validation/"));
-        // wait for server is ready to run a smarter planet message
-        assertNotNull("CWWKF0011I.* not received on relationServer",
-            server.waitForStringInLog("CWWKF0011I.*"));
+        // set mark
+        ValidationSuite.server.setMarkToEndOfLog();
+        // deploy app and wait for start
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "validationSix.war")
+            .addAsManifestResource(OpenAPIValidationTestSix.class.getPackage(),
+                "validationTestSix.yaml",
+                "openapi.yaml");
+        ValidationSuite.deployApp(war);
+        // Log OpenAPI doc
+        String openApiDoc = new HttpRequest(server, "/openapi").run(String.class);
+        Log.info(OpenAPIValidationTestSix.class, "setUpTest", "OpenAPI doc:\n" + openApiDoc);
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
-        server.stopServer();
+    public static void tearDownTest() throws Exception {
+        ValidationSuite.removeApp("validationSix.war");
+    }
+
+    @Test
+    public void testNoValidationErrors() throws Exception {
+        assertThat("Unexpected validation errors or warnings were reported",
+            server.findStringsInLogsUsingMark("CWWKO1650E|CWWKO1651W", server.getDefaultLogFile()),
+            is(empty()));
     }
 }

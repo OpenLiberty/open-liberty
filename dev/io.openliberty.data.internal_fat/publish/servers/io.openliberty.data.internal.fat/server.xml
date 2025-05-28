@@ -25,10 +25,12 @@
 
   <include location="../fatTestPorts.xml"/>
 
-  <application location="DataTestApp.war">
+<!-- Test using an application name set in server.xml -->
+  <application name="DifferentAppName" location="DataTestApp.war">
     <classloader commonLibraryRef="DerbyLib"/>
   </application>
 
+  
   <application location="ProviderTestApp.war"/>
 
   <authData id="auth1" user="user1" password="pwd1"/>

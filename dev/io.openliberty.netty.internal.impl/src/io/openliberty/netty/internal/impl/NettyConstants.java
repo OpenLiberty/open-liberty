@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ public interface NettyConstants {
 
     /** RAS trace bundle for NLS */
     String BASE_BUNDLE = "io.openliberty.netty.internal.impl.resources.NettyFrameworkMessages";
+    String CF_BUNDLE = "com.ibm.ws.channelfw.internal.resources.ChannelfwMessages";
     /** RAS trace group name */
     String NETTY_TRACE_NAME = "Netty";
     /** default trace string */

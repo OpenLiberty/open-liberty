@@ -291,7 +291,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
      * @return PUnitEMBuilder (for persistence unit references) or
      *         DBStoreEMBuilder (data sources, databaseStore)
      */
-    @FFDCIgnore({ NamingException.class, Throwable.class, IllegalStateException.class })
+    @FFDCIgnore({ NamingException.class, Throwable.class })
     public EntityManagerBuilder createEMBuilder() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         try {
@@ -321,25 +321,16 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                             provider.componentMetadatasForModules.get(jeeName);
 
             if (metadata == null) {
-                // metadata = (ComponentMetaData) provider.metadataIdSvc //
-                //            .getMetaData(metadataIdentifier);
-                // TODO use the above instead of the following
-                // and remove IllegalStateException from FFDCIgnore
-                long start = System.nanoTime();
-                do {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "keep retrying every 2 seconds until " + jeeName +
-                                           " becomes available or 30 seconds elapses");
-                    TimeUnit.SECONDS.sleep(2);
-                    try {
-                        metadata = (ComponentMetaData) provider.metadataIdSvc //
-                                        .getMetaData(metadataIdentifier);
-                    } catch (IllegalStateException x) {
-                        if (System.nanoTime() - start > TimeUnit.SECONDS.toNanos(30))
-                            throw x;
-                        // else retry because the deferred metadata is not available yet
-                    }
-                } while (metadata == null);
+                if (provider.metadataIdSvc.isMetaDataAvailable(metadataIdentifier)) {
+                    metadata = (ComponentMetaData) provider.metadataIdSvc //
+                                    .getMetaData(metadataIdentifier);
+
+                } else {
+                    String ejbMetaDataId = provider.metadataIdSvc.getMetaDataIdentifier("EJB", jeeName.getApplication(),
+                                                                                        jeeName.getModule(), null);
+                    metadata = (ComponentMetaData) provider.metadataIdSvc.getMetaData(ejbMetaDataId);
+
+                }
             }
 
             if (trace && tc.isDebugEnabled())
@@ -690,7 +681,6 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                                                    jeeName.getModule(),
                                                    null);
         }
-
         return mdIdentifier;
     }
 

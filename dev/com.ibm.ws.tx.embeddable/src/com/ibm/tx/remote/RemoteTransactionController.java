@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.tx.remote;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.transaction.HeuristicCommitException;
 import javax.transaction.HeuristicMixedException;
@@ -59,4 +60,6 @@ public interface RemoteTransactionController {
     public String getAddress(String recoveryId);
 
     public DistributableTransaction getTransactionForID(String globalId);
+
+    public Set<String> getRecoveryIds();
 }

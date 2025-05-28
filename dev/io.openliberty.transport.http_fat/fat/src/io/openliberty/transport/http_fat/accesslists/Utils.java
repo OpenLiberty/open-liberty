@@ -4,10 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * Contributors:
- *      IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.transport.http_fat.accesslists;
 
@@ -162,7 +160,7 @@ public class Utils {
     }
 
     /**
-     * Set server.xml to the tests customised config,
+     * Set server.xml to the test's customized config,
      * for example, publish/files/AccessListsTests_testA11_server.xml
      *
      * @param server

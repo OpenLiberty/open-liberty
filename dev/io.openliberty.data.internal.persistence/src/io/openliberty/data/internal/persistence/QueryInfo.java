@@ -5399,13 +5399,16 @@ public class QueryInfo {
      */
     private void setType(Class<? extends Annotation> annoClass, Type operationType) {
         type = operationType;
-        if (entityParamType == null)
+        if (entityParamType == null) {
+            int paramCount = method.getParameterCount();
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1009.lifecycle.param.err",
                       method.getName(),
                       repositoryInterface.getName(),
-                      method.getParameterCount(),
+                      paramCount == 1 ? method.getGenericParameterTypes()[0] //
+                                      : paramCount,
                       annoClass.getSimpleName());
+        }
     }
 
     /**

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tck;
 
@@ -21,11 +18,12 @@ import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.junit.BeforeClass;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.tck.PublisherVerification;
 import org.reactivestreams.tck.TestEnvironment;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
@@ -64,6 +62,7 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         asyncProvider = new MockAsyncProvider();
     }
 
+    @AfterClass
     public static void cleanupClass() {
         if (asyncProvider != null) {
             asyncProvider.close();

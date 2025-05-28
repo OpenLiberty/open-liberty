@@ -31,6 +31,7 @@
   </application>
 
   <application location="DataGlobalWebApp.war">
+    <classloader commonLibraryRef="DerbyLib"/>
   </application>
 
   <library id="DerbyLib">

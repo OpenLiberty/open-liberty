@@ -31,13 +31,13 @@ public class JTAAppTests20War extends JTAAppAbstractTests {
     }
 
     @Test
-    public void testTransactionsWebContext() throws Exception {
+    public void testTransactionsWebContextWar() throws Exception {
         HttpUtils.findStringInUrl(server, "testName/testTransactions", "TESTED TRANSACTIONS");
         assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("WebContext: TRANSACTION TESTS PASSED"));
     }
 
     @Test
-    public void testJNDIWebContext() throws Exception {
+    public void testJNDIWebContextWar() throws Exception {
         HttpUtils.findStringInUrl(server, "testName/testJNDI", "TESTED JNDI");
         assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("WebContext: JNDI TESTS PASSED"));
     }

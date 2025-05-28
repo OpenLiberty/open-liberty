@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,8 @@ package com.ibm.ws.annocache.test.scan.basic;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Resource;
-import javax.persistence.Id;
+// import javax.annotation.Resource;
+// import javax.persistence.Id;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -72,7 +72,8 @@ public class Test_AnnoBasic_Test extends Test_Base {
 
     @Test
     public void testOverrideWithAnnotation() {
-        String resourceAnnoName = Resource.class.getName();
+        String resourceAnnoName = "javax.annotation.Resource";
+        // String resourceAnnoName = Resource.class.getName(); // Avoid resource import.
 
         String i_bClassName = i_getClassName(TargetSubInherited_1.class);
 
@@ -113,7 +114,8 @@ public class Test_AnnoBasic_Test extends Test_Base {
     @Test
     public void testMethodAnnotations() {
         String testAnnoName = Test.class.getName();
-        String resourceAnnoName = Resource.class.getName();
+        String resourceAnnoName = "javax.annotation.Resource";        
+        // String resourceAnnoName = Resource.class.getName(); // Avoid resource import.
 
         String i_subClassName = i_getClassName(TargetInherited.class);
         String i_bClassName = i_getClassName(TargetSubInherited_1.class);
@@ -131,8 +133,8 @@ public class Test_AnnoBasic_Test extends Test_Base {
 
     @Test
     public void testFieldAnnotations() {
-        String idAnnoName = Id.class.getName();
-
+        String idAnnoName = "javax.persistence.Id";
+        // String idAnnoName = Id.class.getName(); // Avoid resource import.
         String i_subClassName = i_getClassName(TargetInherited.class);
 
         Set<String> idTargetNames = filter( getBaseTargets().getClassesWithFieldAnnotation(idAnnoName) );
@@ -142,7 +144,8 @@ public class Test_AnnoBasic_Test extends Test_Base {
 
     @Test
     public void testNoInheritAnnos() {
-        String resourceAnnoName = Resource.class.getName();
+        String resourceAnnoName = "javax.annotation.Resource";        
+        // String resourceAnnoName = Resource.class.getName(); // Avoid resource import.
 
         String i_derivedNoInherit = i_getClassName(TargetSubNonInherited.class);
 

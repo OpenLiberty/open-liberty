@@ -40,7 +40,8 @@ tested.features: \
     websocket-2.2,\
     validation-3.1,\
     persistence-3.2,\
-    persistencecontainer-3.2
+    persistencecontainer-3.2,\
+    checkpoint
 
 src: \
     fat/src,\

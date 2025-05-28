@@ -45,8 +45,7 @@ public class InternalRegistry extends Registry {
     static {
         REGISTRY_MIRRORS.put("NONE", "wasliberty-infrastructure-docker"); // images we cache (from sources like dockerhub)
 //        REGISTRY_MIRRORS.put("NONE", "wasliberty-internal-docker-remote"); //TODO replace with a more standard naming scheme
-        REGISTRY_MIRRORS.put("UNSUPPORTED_INTOPS", "wasliberty-intops-docker-local"); // TODO drop support for this local repository
-        REGISTRY_MIRRORS.put("UNSUPPORTED_AUTOMA", "websphere-automation"); // Images built from external projects (unsupported by liberty dev)
+        REGISTRY_MIRRORS.put("UNSUPPORTED", "websphere-automation"); // Images built from external projects (unsupported by liberty dev)
         REGISTRY_MIRRORS.put("localhost", "wasliberty-internal-docker-local"); // Images we build from Dockerfiles
     }
 

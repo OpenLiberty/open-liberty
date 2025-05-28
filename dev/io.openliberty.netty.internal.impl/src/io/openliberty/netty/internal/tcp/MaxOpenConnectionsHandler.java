@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -47,6 +48,15 @@ public class MaxOpenConnectionsHandler extends ChannelInboundHandlerAdapter {
             long currentTime = System.currentTimeMillis();
             if (currentTime > (lastConnExceededTime + 600000L)) {
                 String channelName = ctx.channel().attr(ConfigConstants.NAME_KEY).get();
+
+                // If the channelName is null check the parent for a name.
+                if (channelName == null) {
+                    Channel parentChannel = ctx.channel().parent();
+                    if (parentChannel != null) {
+                        channelName = parentChannel.attr(ConfigConstants.NAME_KEY).get();
+                    }
+                }
+
                 Tr.warning(tc, TCPMessageConstants.MAX_CONNS_EXCEEDED, channelName, maxConnections);
                 lastConnExceededTime = currentTime;
             }

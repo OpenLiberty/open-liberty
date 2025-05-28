@@ -11,7 +11,7 @@
     <fileset dir="${shared.resource.dir}/jdbc" includes="${env.ORACLE_DRIVER}"/>
   </library>
   
-  <kerberos keytab="${server.config.dir}security/oracle_client.keytab" configFile="${KRB5_CONF}"/>
+  <kerberos keytab="${KRB5_KEYTAB}" configFile="${KRB5_CONF}"/>
   
   <variable name="oracle.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=${ORACLE_HOSTNAME})(PORT=${ORACLE_PORT}))(CONNECT_DATA=(SERVICE_NAME=${ORACLE_DBNAME})))"/>
   

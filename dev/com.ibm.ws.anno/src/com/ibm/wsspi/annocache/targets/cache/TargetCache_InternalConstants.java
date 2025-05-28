@@ -185,6 +185,15 @@ public interface TargetCache_InternalConstants {
 
     // Common constants:
 
+    String VERSION_10 = "1.0";
+    String VERSION_20 = "2.0";
+
+    int VERSION_VALUE_UNKNOWN = -1;    
+    int VERSION_VALUE_10 = 10;
+    int VERSION_VALUE_20 = 20;
+
+    //
+    
     String NAME_TAG  = "Name";
 
     // Containers table constants:
@@ -192,26 +201,33 @@ public interface TargetCache_InternalConstants {
     String CONTAINERS_SECTION = "Containers:";
 
     String CONTAINER_TABLE_TAG     = "Container";
-    String CONTAINER_TABLE_VERSION = "1.0";
+    
+    String CONTAINER_TABLE_VERSION_10 = VERSION_10;
+    String CONTAINER_TABLE_VERSION_20 = VERSION_20;
 
+    String[] CONTAINER_TABLE_VERSIONS = { CONTAINER_TABLE_VERSION_10, CONTAINER_TABLE_VERSION_20 };
+
+    String CONTAINER_TABLE_VERSION = CONTAINER_TABLE_VERSION_20;
+
+    String SIGNATURE_TAG = "Signature";
     String POLICY_TAG    = "Policy";
 
     // Refs constants:
 
     String RESOLVED_REFS_TAG = "Resolved References";
-    String RESOLVED_REFS_VERSION = "1.0";
+    String RESOLVED_REFS_VERSION = VERSION_10;
 
     String RESOLVED_REFS_SECTION = "Resolved class references:";
 
     String UNRESOLVED_REFS_TAG = "Unresolved References";
-    String UNRESOLVED_REFS_VERSION = "1.0";
+    String UNRESOLVED_REFS_VERSION = VERSION_10;
 
     String UNRESOLVED_REFS_SECTION = "Unresolved class references:";
 
     // Stamp table constants:
 
     String STAMP_TABLE_TAG     = "Stamp";
-    String STAMP_TABLE_VERSION = "1.0";
+    String STAMP_TABLE_VERSION = VERSION_10;
 
     String STAMP_TAG = "Stamp";
 
@@ -227,7 +243,7 @@ public interface TargetCache_InternalConstants {
     // Classes table constants:
 
     String CLASSES_TABLE_TAG     = "Classes";
-    String CLASSES_TABLE_VERSION = "1.0";
+    String CLASSES_TABLE_VERSION = VERSION_10;
 
     String PACKAGES_SECTION      = "Packages:";
 
@@ -239,7 +255,7 @@ public interface TargetCache_InternalConstants {
     // Targets table constants:
 
     String TARGETS_TABLE_TAG       = "Annotation Targets";
-    String TARGETS_TABLE_VERSION   = "1.0";
+    String TARGETS_TABLE_VERSION   = VERSION_10;
 
     String PACKAGE_TARGETS_SECTION = "Package Annotation Targets:";
     String PACKAGE_ANNOTATION_TAG  = "Package Annotation";
@@ -252,7 +268,7 @@ public interface TargetCache_InternalConstants {
     // Details table constants:
 
     String DETAILS_TABLE_TAG       = "Annotation Details";
-    String DETAILS_TABLE_VERSION   = "1.0";
+    String DETAILS_TABLE_VERSION   = VERSION_10;
 
     String PACKAGE_DETAILS_SECTION = "Package Annotation Details:";
     String CLASS_DETAILS_SECTION   = "Class Annotation Details:";
@@ -283,7 +299,7 @@ public interface TargetCache_InternalConstants {
     // Result: <result class>
 
     String QUERIES_TABLE_TAG = "Annotation Queries";
-    String QUERIES_TABLE_VERSION = "1.0";
+    String QUERIES_TABLE_VERSION = VERSION_10;
 
     String QUERY_TAG = "Query";
     String QUERY_CLASS_NAME_TAG     = "Query Class";

@@ -83,6 +83,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     private WebProviderAuthenticatorHelper authHelper;
     private ReferrerURLCookieHandler referrerURLCookieHandler = null;
     private WebAppSecurityConfig webAppSecurityConfig = null;
+    public static ThreadLocal<String> threadOidcProvider = new ThreadLocal<String>();
 
     protected final ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef;
 
@@ -602,11 +603,14 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         if (provider == null) {
             return new AuthenticationResult(AuthResult.CONTINUE, "not an OpenID Connect client request, skipping OpenID Connect client...");
         }
+
         ProviderAuthenticationResult oidcResult = oidcClient.authenticate(req, res, provider, referrerURLCookieHandler, firstCall);
 
         if (oidcResult.getStatus() == AuthResult.CONTINUE) {
             return OIDC_CLIENT_CONT;
         }
+
+        setThreadOidcProvider(provider);
 
         if (oidcResult.getStatus() == AuthResult.REDIRECT_TO_PROVIDER) {
             return new AuthenticationResult(AuthResult.REDIRECT, oidcResult.getRedirectUrl());
@@ -823,5 +827,13 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
             cookieHelper = new SSOCookieHelperImpl(webAppSecurityConfig);
         }
         return new SSOAuthenticator(securityService.getAuthenticationService(), securityMetadata, webAppSecurityConfig, cookieHelper, ssoAuthFilterRef);
+    }
+
+    private void setThreadOidcProvider(String oidcProvider) {
+        threadOidcProvider.set(oidcProvider);
+    }
+
+    public static String getThreadOidcProvider() {
+        return threadOidcProvider.get();
     }
 }

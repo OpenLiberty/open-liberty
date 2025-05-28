@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -376,25 +376,34 @@ public class FeatureUtilities {
         return isAutoFeature && isTestFeature;
     }
 
+    /**
+     * Removes any test auto features left around from earlier test runs.
+     * Mostly this removing test auto features from when com.ibm.ws.ui_rest_fat times out.
+     *
+     * @param installRoot
+     */
     public static void removeTestAutoFeatures(File installRoot) {
 
-        // If there was a problem building projects before this test runs,
-        // "lib/features" may not exist.
-
-        File featureDir = new File(installRoot, "lib/features");
-        if (!featureDir.exists()) {
-            return;
-        }
-
-        try {
-            for (File featureFile : featureDir.listFiles()) {
-                if (isTestAutoFeature(featureFile)) {
-                    featureFile.delete();
-                    continue;
-                }
+        // Include Liberty install location and product extension locations
+        File installParent = installRoot.getParentFile();
+        File[] productDirs = installParent.listFiles((file) -> file.isDirectory());
+        for (File productDir : productDirs) {
+            // If there was a problem building projects before this test runs
+            // or if a product extension doesn't have features, "lib/features" may not exist.
+            File featureDir = new File(productDir, "lib/features");
+            if (!featureDir.exists()) {
+                continue;
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+
+            try {
+                for (File featureFile : featureDir.listFiles()) {
+                    if (isTestAutoFeature(featureFile)) {
+                        featureFile.delete();
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

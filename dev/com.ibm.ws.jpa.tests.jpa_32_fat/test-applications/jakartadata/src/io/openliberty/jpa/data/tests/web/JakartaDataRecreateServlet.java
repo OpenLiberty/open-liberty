@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -74,7 +75,9 @@ import io.openliberty.jpa.data.tests.models.Rebate.Status;
 import io.openliberty.jpa.data.tests.models.Reciept;
 import io.openliberty.jpa.data.tests.models.RomanNumeral;
 import io.openliberty.jpa.data.tests.models.Segment;
+import io.openliberty.jpa.data.tests.models.ShippingAddress;
 import io.openliberty.jpa.data.tests.models.Store;
+import io.openliberty.jpa.data.tests.models.StreetAddress;
 import io.openliberty.jpa.data.tests.models.Triangle;
 import io.openliberty.jpa.data.tests.models.Vehicle;
 import jakarta.annotation.Resource;
@@ -483,6 +486,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @Test //Reference issue: https://github.com/eclipse-ee4j/eclipselink/issues/2234
     public void testELGH2234() throws Exception {
+        deleteAllEntities(Product.class);
 
         Product p = Product.of("testSnapshot", "product", 10.50f);
         tx.begin();
@@ -2128,6 +2132,68 @@ public class JakartaDataRecreateServlet extends FATServlet {
         // EclipseLink should handle this case by adding in additional escapes to the bound parameters where PostgreSQL uses the default escape character `\`
         assertEquals(27.97f, totals.get(0), 0.01);
 
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31559")
+    public void testOLGH31559() throws Exception {
+        deleteAllEntities(ShippingAddress.class);
+
+        ShippingAddress a1 = new ShippingAddress();
+        a1.id = 1001L;
+        a1.city = "Rochester";
+        a1.state = "Minnesota";
+        a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
+        a1.zipCode = 55901;
+
+        ShippingAddress a2 = new ShippingAddress();
+        a2.id = 1002L;
+        a2.city = "Rochester";
+        a2.state = "Minnesota";
+        a2.streetAddress = new StreetAddress(201, "4th St SE");
+        a2.zipCode = 55904;
+
+        ShippingAddress a3 = new ShippingAddress();
+        a3.id = 1003L;
+        a3.city = "Rochester";
+        a3.state = "Minnesota";
+        a3.streetAddress = new StreetAddress(200, "1st Ave SW");
+        a3.zipCode = 55902;
+
+        ShippingAddress a4 = new ShippingAddress();
+        a4.id = 1004L;
+        a4.city = "Rochester";
+        a4.state = "Minnesota";
+        a4.streetAddress = new StreetAddress(151, "4th St SE");
+        a4.zipCode = 55904;
+
+        tx.begin();
+        em.persist(a1);
+        em.persist(a2);
+        em.persist(a3);
+        em.persist(a4);
+        tx.commit();
+
+        tx.begin();
+        try {
+            List<StreetAddress> addresses = em.createQuery(
+                                                "SELECT o.streetAddress FROM ShippingAddress o " +
+                                                "WHERE o.streetAddress.houseNumber BETWEEN ?1 AND ?2 " +
+                                                "ORDER BY o.streetAddress.streetName, o.streetAddress.houseNumber",
+                                StreetAddress.class).setParameter(1, 150).setParameter(2, 250)
+                                .getResultList();
+            tx.commit();
+            List<String> expected = List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE");
+
+            List<String> actual = addresses.stream()
+                                    .map(a -> a.houseNumber + " " + a.streetName)
+                                    .collect(Collectors.toList());
+            assertEquals(expected, actual);
+
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     /**

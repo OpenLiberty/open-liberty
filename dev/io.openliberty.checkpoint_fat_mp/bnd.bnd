@@ -16,7 +16,6 @@ src: \
 	test-applications/system/src/java,\
 	test-bundles/test.checkpoint.config.bundle/src,\
 	test-applications/timeoutTest/src,\
-	test-applications/openAPItest/src,\
 	test-applications/mpjwt/src,\
 	test-applications/mphealth/src,\
 	test-applications/mpTelemetry/src,\

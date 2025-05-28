@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,10 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
     public Set<String> getVersionedFeatures() {
         return ee9Features.getVersionedFeatures(openLibertyOnly());
+    }
+
+    public Set<String> getVersionlessFeatures() {
+        return ee9Features.getVersionlessFeatures(openLibertyOnly());
     }
 
     public Set<String> getCompatibleFeatures() {
@@ -255,6 +259,17 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE9: Feature compatibility errors:", errors);
             Assert.fail("EE9 compatibility errors. " + errors);
+        }
+    }
+
+    @Test
+    public void testVersionlessFeatures() {
+        Set<String> versionlessFeatures = getVersionlessFeatures();
+        List<String> errors = FATFeatureTester.testVersionlessFeatures(versionlessFeatures, ee9Features.getIncompatibleVersionlessFeatures());
+
+        if (!errors.isEmpty()) {
+            FATLogger.dumpErrors(c, "testVersionlessFeatures", "EE9: Versionless feature errors:", errors);
+            Assert.fail("EE9 versionless feature errors. " + errors);
         }
     }
 

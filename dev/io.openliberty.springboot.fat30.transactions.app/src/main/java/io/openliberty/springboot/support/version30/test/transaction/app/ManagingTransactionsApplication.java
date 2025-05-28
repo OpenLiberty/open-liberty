@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
-import org.springframework.transaction.config.JtaTransactionManagerFactoryBean;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 @SpringBootApplication
@@ -34,8 +33,7 @@ public class ManagingTransactionsApplication extends SpringBootServletInitialize
 
 	@Bean
 	JtaTransactionManager transactionManager() {
-		JtaTransactionManager transactionManager = new JtaTransactionManagerFactoryBean().getObject();
-		return transactionManager;
+		return new JtaTransactionManager();
 	}
 
 	public static void main(String[] args) {

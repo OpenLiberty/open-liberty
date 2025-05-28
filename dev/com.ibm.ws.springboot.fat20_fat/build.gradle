@@ -47,7 +47,8 @@ def appDefs =
     [ 'com.ibm.ws.springboot.fat20.actuator.app', '.jar' ],
     [ 'com.ibm.ws.springboot.fat20.webflux.app', '.jar' ],
     [ 'com.ibm.ws.springboot.fat20.multicontext.app', '.jar' ],
-    [ 'com.ibm.ws.springboot.fat20.transactions.app', '.war' ] ]
+    [ 'com.ibm.ws.springboot.fat20.transactions.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.data.app', '.war' ] ]
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
 appDefs.each { appDef ->

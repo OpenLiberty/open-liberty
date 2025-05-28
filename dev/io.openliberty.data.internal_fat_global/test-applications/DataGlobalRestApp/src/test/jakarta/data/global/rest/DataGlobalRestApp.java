@@ -12,9 +12,23 @@
  *******************************************************************************/
 package test.jakarta.data.global.rest;
 
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 
 @ApplicationPath("/data")
-public class DataGlobalRestApp extends Application {   
+public class DataGlobalRestApp extends Application {
+    @Inject
+    Referrals referrals;
+
+    /**
+     * Set up some data before tests run.
+     */
+    public void startup(@Observes Startup event) {
+        referrals.save(Referral.of("startup@openliberty.io",
+                                   "Startup Event",
+                                   5075556789L));
+    }
 }

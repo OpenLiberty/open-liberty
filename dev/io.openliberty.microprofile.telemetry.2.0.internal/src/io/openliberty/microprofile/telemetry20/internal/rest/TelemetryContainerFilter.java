@@ -29,12 +29,16 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Provider;
 
+import com.ibm.ws.kernel.service.util.ServiceCaller;
+
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.AgentDetection;
 import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTelemetryContainerFilter;
 import io.openliberty.microprofile.telemetry.internal.common.rest.RestRouteCache;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemcovConstantsAccessor;
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
@@ -45,10 +49,16 @@ import io.opentelemetry.instrumentation.api.semconv.http.HttpServerAttributesExt
 import io.opentelemetry.instrumentation.api.semconv.http.HttpServerAttributesGetter;
 import io.opentelemetry.instrumentation.api.semconv.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.semconv.http.HttpSpanStatusExtractor;
-import io.opentelemetry.semconv.SemanticAttributes;
 
 @Provider
 public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
+
+    private static final ServiceCaller<SemcovConstantsAccessor> semcovConstantsAccessorCaller;
+    private static final AttributeKey<String> SEMCOV_HTTP_ROUTE;
+    static {
+        semcovConstantsAccessorCaller = new ServiceCaller<SemcovConstantsAccessor>(TelemetryContainerFilter.class, SemcovConstantsAccessor.class);
+        SEMCOV_HTTP_ROUTE = semcovConstantsAccessorCaller.run(SemcovConstantsAccessor::httpRoute).get();
+    }
 
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
 
@@ -148,7 +158,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                 String route = getRoute(request, resourceClass, resourceMethod);
 
                 if (route != null) {
-                    currentSpan.setAttribute(SemanticAttributes.HTTP_ROUTE, route);
+                    currentSpan.setAttribute(SEMCOV_HTTP_ROUTE, route);
                     currentSpan.updateName(request.getMethod() + " " + route);
                 }
             }

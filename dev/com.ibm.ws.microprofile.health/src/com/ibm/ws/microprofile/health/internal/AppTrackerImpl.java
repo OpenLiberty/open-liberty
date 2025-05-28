@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -84,7 +83,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     /**
      * Tracks the state of starting/started applications.
      */
-    protected final Map<String, ApplicationState> appStateMap = new ConcurrentHashMap<String, ApplicationState>();
+    protected final Map<String, ApplicationState> appStateMap = new HashMap<String, ApplicationState>();
 
     protected final Map<String, ApplicationState> configAdminMap = new HashMap<String, ApplicationState>();
 
@@ -163,7 +162,13 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
     @Override
     public Set<String> getAllConfigAppNames() {
-        return configAdminMap.keySet();
+        lock.readLock().lock();
+        try {
+            return configAdminMap.keySet();
+        } finally {
+            lock.readLock().unlock();
+        }
+
     }
 
     @Override
@@ -414,6 +419,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
                 appStateMap.replace(appName, ApplicationState.INSTALLED);
             } else {
                 appStateMap.remove(appName);
+                configAdminMap.remove(appName);
             }
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "applicationStopped(): stopped app removed from appStateMap = " + appStateMap.toString() + " for app: " + appName);

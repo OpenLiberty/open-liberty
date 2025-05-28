@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -339,7 +339,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
     /**
      * A destroy state of true for a connection will result in the connection being
-     * destoryed when returned to the free pool. In addition, ANY connection pool requests
+     * destroyed when returned to the free pool. In addition, ANY connection pool requests
      * for this connection will result in a ResourceException.
      */
     private boolean destroyState = false;
@@ -542,7 +542,6 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
     @Override
     public Object getUnSharedPoolCoordinator() {
-        // TODO Auto-generated method stub
         return unSharedPoolCoordinator;
     }
 
@@ -819,7 +818,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
     /**
      * Returns its <code>UOWCoordinator</code> instance..
-     * If it doesn't have a current instace it will return null.
+     * If it doesn't have a current instance it will return null.
      *
      * @return UOWCoordinator
      *
@@ -1282,7 +1281,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     }
 
     /**
-     * Called by the Connection manager during reassociate to check if an unshared connection
+     * Called by the Connection manager during re-associate to check if an unshared connection
      * is currently involved in a transaction.
      */
     protected boolean involvedInTransaction() {
@@ -1371,7 +1370,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                  * If the resource adapter throws a resource exception with the skip logging text,
                  * log this path only when debug is enabled.
                  *
-                 * The resource apdater does not want normal logging of this failed managed connection.
+                 * The resource adapter does not want normal logging of this failed managed connection.
                  */
                 if (tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Connection failed, resource adapter requested skipping failure logging");
@@ -1380,7 +1379,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             } else {
                 com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.cleanup", "706", this);
                 /*
-                 * We are here means there is an error occured during MC cleanup.
+                 * We are here means there is an error occurred during MC cleanup.
                  * Lets not log a error message, when we clearly know we are attempting to
                  * cleanup a bad connection. At this stage the error message could be misleading.
                  */
@@ -1467,8 +1466,8 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             uowCoord = null;
             holdTimeStart = 0;
             holdStartTimeSet = false;
-            // threadId = null; //  keep the thead info for tls connections
-            // threadName = null; //  keep the thread name info for tls connections
+            // threadId = null; //  keep the thread info for TLS connections
+            // threadName = null; //  keep the thread name info for TLS connections
             totalUseTime = 0;
             currentUseStartTime = 0;
             useStartTimeSet = false;
@@ -1488,7 +1487,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * Calls <code>cleanup()</code> on the wrappered <code>ManagedConnection<code>.
      * Also reinitializes its own state such that it may be placed in the PoolManagers
      * pool for reuse. All objects will be retained. <code>cleanup()</code> will
-     * as be propogated to all associated objects, such as the transaction wrappers,
+     * as be propagated to all associated objects, such as the transaction wrappers,
      * so that they may reset their state for reuse.
      * <br> This should only be called by the PoolManager.
      * <br><br>
@@ -1560,7 +1559,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                  * If the resource adapter throws a resource exception with the skip logging text,
                  * log this path only when debug is enabled.
                  *
-                 * The resource apdater does not want normal logging of this failed managed connection.
+                 * The resource adapter does not want normal logging of this failed managed connection.
                  */
                 if (tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Connection failed, resource adapter requested skipping failure logging");
@@ -1569,7 +1568,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             } else {
                 com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.cleanup", "706", this);
                 /*
-                 * We are here means there is an error occured during MC cleanup.
+                 * We are here means there is an error occurred during MC cleanup.
                  * Lets not log a error message, when we clearly know we are attempting to
                  * cleanup a bad connection. At this stage the error message could be misleading.
                  */
@@ -1701,7 +1700,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * Calls <code>destroy()</code> on the wrappered <code>ManagedConnection<code>.
      * Also nulls out its reference to the ManagedConnection and any other connection
      * related variable and resets internal state. <code>destroy()</code> will
-     * as be propogated to all associated objects, such as the transaction wrappers,
+     * as be propagated to all associated objects, such as the transaction wrappers,
      * so that they may release any connection related resources.
      * <br><br> This should only be called by the PoolManager.
      * <br><br>
@@ -1768,14 +1767,12 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                 pmiName = gConfigProps.cfName;
             }
             if (!stale && !do_not_reuse_mcw) {
-                Object[] parms = new Object[] { "destroy", "destroy", mc, e, pmiName };
-                Tr.error(tc, "MCERROR_J2CA0081", parms);
+                Tr.debug(this, tc, "ResourceException caught trying to destroy managed connection during pool maintenance, { mc, e, pmiName} is: ",
+                         new Object[] { mc, e, pmiName });
             } else {
-
                 if (isTracingEnabled && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "got a SCE when doing destroy on the mc, { mc, e, pmiName}; is:", new Object[] { mc, e, pmiName });
                 }
-
             }
 
             throw e;
@@ -1933,7 +1930,21 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         // Get the a Connection from the ManagedConnection to return to our caller, and increment the
         // number of open connections for this ManagedConnection.
         try {
-            connection = mc.getConnection(subj, cri);
+            if (!aborted && !do_not_reuse_mcw) {
+                connection = mc.getConnection(subj, cri);
+            } else {
+                if (do_not_reuse_mcw) {
+                    if (isTracingEnabled && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Connection error occurred for this mcw " + this + ", mcw will not be reused");
+                    }
+                    markStale();
+                    ResourceException e = new ResourceException("Resource adapter called connection error event during getConnection " +
+                                                                "processing and did not throw a resource exception.  The reason for " +
+                                                                "this failure may have been logged during the connection error event " +
+                                                                "logging.");
+                    throw e;
+                }
+            }
             if (isValidating.get() != null && Boolean.FALSE.equals(testConnection()))
                 throw new ResourceAllocationException("ManagedConnection.testConnection() indicates connection is not valid.");
             if (_supportsReAuth) {
@@ -1942,12 +1953,12 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                  * to set the current userData to the userDataPending
                  * value. Right now we are doing this for every
                  * matchManagedConnection (MMC), since we do not know which
-                 * resource adapters support reauthentication. The MMC
-                 * does not reauthenticate, the reauthentication is done
+                 * resource adapters support re-authentication. The MMC
+                 * does not re-authenticate, the re-authentication is done
                  * on the mc.getConnection. This is the reason for doing
                  * the update after the the mc.getConnection is successful.
                  * If the mc.getConnection fails, we have a better chance
-                 * to recover corrently with the current userData values
+                 * to recover correctly with the current userData values
                  * in the PoolManager code.
                  */
                 _subject = subj;
@@ -1958,7 +1969,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             // Need PMI Call here.
         } catch (SharingViolationException e) {
             // If there is a sharing violation, it means that there is already at LEAST one connection
-            // handle out.  Therefore we can't release the ManagedConnection yet.  Just log and rethrow.
+            // handle out.  Therefore we can't release the ManagedConnection yet.  Just log and re-throw.
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.MCWrapper.getConnection", "1677", this);
             String cfName = "No longer available";
             if (cm != null) {
@@ -1977,7 +1988,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
              * If the Resource Adapter throws a ResourceException and we are not in a
              * transaction and there are no other connections open on the ManagedConnection,
              * return the ManagedConnection to the pool before
-             * rethrowing the exception. The ManagedConnection is probably OK - the exception
+             * re-throwing the exception. The ManagedConnection is probably OK - the exception
              * may only be a logon failure or similar so the MC shouldn't be 'lost'.
              *
              * If we are in a transaction, just throw the exception. Assume we will cleanup during
@@ -1988,7 +1999,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
              * try {
              * pm.release(this, uowCoord);
              * }
-             * catch ( Exception exp ) { // don't rethrow, already on exception path
+             * catch ( Exception exp ) { // don't re-throw, already on exception path
              * com.ibm.ws.ffdc.FFDCFilter.processException(exp, "com.ibm.ejs.j2c.MCWrapper.getConnection", "893", this);
              * // add pmiName to message
              * Tr.error(tc,"FAILED_CONNECTION_RELEASE_J2CA0022", new Object[] {exp, pmiName});
@@ -2007,7 +2018,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
              * If the Resource Adapter throws an Exception and we are not in a
              * transaction and there are no other connections open on the ManagedConnection,
              * return the ManagedConnection to the pool before
-             * rethrowing the exception. The ManagedConnection is probably OK - the exception
+             * re-throwing the exception. The ManagedConnection is probably OK - the exception
              * may only be a logon failure or similar so the MC shouldn't be 'lost'.
              *
              * If we are in a transaction, just throw the exception. Assume we will cleanup during
@@ -2018,7 +2029,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
              * try {
              * pm.release(this, uowCoord);
              * }
-             * catch ( Exception exp ) { // don't rethrow, already on exception path
+             * catch ( Exception exp ) { // don't re-throw, already on exception path
              * com.ibm.ws.ffdc.FFDCFilter.processException(exp, "com.ibm.ejs.j2c.MCWrapper.getConnection", "921", this);
              * //add pmiName to message
              * Tr.error(tc,"FAILED_CONNECTION_RELEASE_J2CA0022", new Object[] {exp, pmiName});
@@ -2067,7 +2078,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * the decrement during the parkHandle processing.
      * <p>
      * It is expected that this method will be used by the ConnectionManager
-     * in processing a reassociate call or an associateConnection call.
+     * in processing a re-associate call or an associateConnection call.
      *
      * @param handle      Connection handle to associate with this wrappers ManagedConnection.
      * @param fromWrapper MCWrapper which this handle is currently associated with.
@@ -2240,7 +2251,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
              *
              * We can cleanup the connection if it has never been used in a transaction,
              * wrapperId == MCWrapper.NONE. This can only happen if the connection has been accessed from
-             * a user created thread, and this is a common occurance for JMS so we have enabled this optimization.
+             * a user created thread, and this is a common occurrence for JMS so we have enabled this optimization.
              * if a connection error occurs before the tran wrapper is used, then we need
              * to cleanup the connection right away, we'll never be notified by the transaction service.
              * So, if the state is not TRAN_WRAPPER_INUSE or INACTIVE the connection will be cleaned up. (there
@@ -2349,7 +2360,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
         // This update must be thread safe.  I'm assuming here that a boolean assignment
         //  is atomic.  If that's incorrect, then we'll need to add a synchronize(stale)
-        //  gaurd here and on the isStale method.
+        //  guard here and on the isStale method.
 
         stale = true;
 
@@ -2415,9 +2426,9 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * Aged Timeout
      * Aged Timeout is the approximate interval (or age of a ManagedConnection), in seconds, before
      * a ManagedConnection is discarded. The default value is 0 which will allow active ManagedConnections
-     * to remain in the pool indefinitely. The recommended way to disable the pool maintenence thread is to
+     * to remain in the pool indefinitely. The recommended way to disable the pool maintenance thread is to
      * set Reap Time to 0, in which case Aged Timeout and Unused Timeout will be ignored. However if Aged
-     * Timeout or Unused Timeout are set to 0, the pool maintenence thread will run, but only
+     * Timeout or Unused Timeout are set to 0, the pool maintenance thread will run, but only
      * ManagedConnections which timeout due to non-zero Connection Timeout values will be discarded.
      * Aged Timeout should be set higher than Reap Timeout for optimal performance.
      *
@@ -2446,7 +2457,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     /*
      * We need to reset the idle time out value to keep
      * this connection in the pool when
-     * the prepopulate feature is enabled.
+     * the pre-populate feature is enabled.
      */
     public void resetIdleTimeOut() {
         unusedTimeStamp = java.lang.System.currentTimeMillis();
@@ -2456,13 +2467,13 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * Unused Timeout
      * Unused Timeout is the approximate interval in seconds after which an unused,or idle, connection
      * is discarded. The default value is 0 which allows unused connections to remain in the pool
-     * indefinitely. The recommended way to disable the pool maintenence thread is to set Reap Time
+     * indefinitely. The recommended way to disable the pool maintenance thread is to set Reap Time
      * to 0, in which case Unused Timeout and Aged Timeout will be ignored. However if Unused Timeout
-     * and Aged Timeout are set to 0, the pool maintenence thread will run, but only ManagedConnections
+     * and Aged Timeout are set to 0, the pool maintenance thread will run, but only ManagedConnections
      * which timeout due to non-zero timeout values will be discarded. Unused Timeout should be set higher
      * than Reap Timeout for optimal performance. In addition, unused ManagedConnections will only be
      * discarded if the current number of connection not in use exceeds the Min Connections setting.
-     * For example if unused timeout is set to 120, and the pool maintenence thread is enabled (Reap
+     * For example if unused timeout is set to 120, and the pool maintenance thread is enabled (Reap
      * Time is not 0), any managed connection that has been unused for two minutes will be discarded
      *
      * Note that accuracy of this timeout, as well as performance, is affect by the Reap Time. See
@@ -2740,7 +2751,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     /**
      * This method is used for marking a connection to destroy.
      * The connection state does not matter. The connection still
-     * can be useable. When the connection is returned to the
+     * can be usable. When the connection is returned to the
      * free pool, this connection will be cleaned up and destroyed.
      *
      * This method may be called when total connection count is being
@@ -2799,7 +2810,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
     /**
      * A destroy state of true for a connection will result in the connection being
-     * destoryed when returned to the free pool. In addition, ANY connection pool requests
+     * destroyed when returned to the free pool. In addition, ANY connection pool requests
      * for this connection will result in a ResourceException.
      *
      * @return
@@ -2811,7 +2822,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
     /**
      * A destroy state of true for a connection will result in the connection being
-     * destoryed when returned to the free pool. In addition, ANY connection pool requests
+     * destroyed when returned to the free pool. In addition, ANY connection pool requests
      * for this connection will result in a ResourceException.
      *
      * The destroyState is set to true when this method is used.
@@ -2948,7 +2959,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     }
 
     /**
-     * @param handle and its handlelist
+     * @param handle and its handleList
      */
     public void addToHandleList(Object h, HandleList HL) {
 
@@ -2977,7 +2988,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     }
 
     /**
-     * @param handle and its handlelist
+     * @param handle and its handleList
      */
     public HandleList removeFromHandleList(Object h) {
 
@@ -3019,7 +3030,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         }
 
         // Handles are closed outside of the iterator just in case a resource adapter's implementation
-        // of close sends another connectionClosed event, the inline processing of which would otherwise
+        // of close sends another connectionClosed event, the in-line processing of which would otherwise
         // interfere with the iterator.
         for (HandleDetails h : handlesToClose)
             h.close(false);

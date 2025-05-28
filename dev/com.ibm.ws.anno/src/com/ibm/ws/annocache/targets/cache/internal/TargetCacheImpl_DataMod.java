@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -167,6 +167,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         if ( getUseBinaryFormat() ) {
             Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
                 new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
                         reader.readEntire(containerTable);
                     }
@@ -192,6 +193,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeAction = null;
             writeActionBinary =
                 new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_WriterBinary writer) throws IOException {
                         writer.writeEntire(containerTable);
                     }
@@ -199,6 +201,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         } else {
             writeAction =
                 new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_Writer writer) throws IOException {
                         writer.write(containerTable);
                     }
@@ -213,7 +216,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
     //
 
-    private class ConsLock {
+    protected static class ConsLock {
         // EMPTY
     }
     private final ConsLock consLock;
@@ -387,6 +390,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         if ( getUseBinaryFormat() ) {
             Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
                 new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
                         reader.readEntireUnresolvedRefs(i_unresolvedClassNames, classNameInternMap);
                     }
@@ -440,6 +444,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeAction = null;
             writeActionBinary =
                 new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_WriterBinary writer) throws IOException {
                         writer.writeUnresolvedRefsEntire(useClassNames);
                     }
@@ -447,6 +452,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         } else {
             writeAction =
                 new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_Writer writer) throws IOException {
                         writer.writeUnresolvedRefs(useClassNames);
                     }
@@ -494,6 +500,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         if ( getUseBinaryFormat() ) {
             Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
                 new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
                         reader.readEntireResolvedRefs(i_resolvedClassNames, classNameInternMap);
                     }
@@ -546,6 +553,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeAction = null;
             writeActionBinary =
                 new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_WriterBinary writer) throws IOException {
                         writer.writeResolvedRefsEntire(useClassNames);
                     }
@@ -553,6 +561,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         } else {
             writeAction =
                 new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_Writer writer) throws IOException {
                         writer.writeResolvedRefs(useClassNames);
                     }
@@ -585,6 +594,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         if ( getUseBinaryFormat() ) {
             Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
                 new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
                         reader.readEntire(classesTable);
                     }
@@ -612,6 +622,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeAction = null;
             writeActionBinary =
                 new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    @Override
                     public void accept (TargetCacheImpl_WriterBinary writer) throws IOException {
                         // See the comment on 'mergeClasses': This must be synchronized
                         // with updates to the class table which occur in 
@@ -624,6 +635,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         } else {
             writeAction =
                 new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_Writer writer) throws IOException {
                         // See the comment on 'mergeClasses': This must be synchronized
                         // with updates to the class table which occur in 

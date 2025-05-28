@@ -58,6 +58,10 @@ CWWKC1207.lacks.qualifier.anno=CWWKC1207E: El artefacto de aplicaci\u00f3n {0} e
 CWWKC1207.lacks.qualifier.anno.explanation=La anotaci\u00f3n Qualifier indica que la anotaci\u00f3n es un calificador. La anotaci\u00f3n Retenci\u00f3n controla la disponibilidad de las anotaciones.
 CWWKC1207.lacks.qualifier.anno.useraction=A\u00f1ade las anotaciones @Qualifier y @Retention(RUNTIME) a la clase qualifier.
 
+CWWKC1208.global.with.qualifiers=CWWKC1208E: El artefacto de aplicaci\u00f3n {0} especifica una anotaci\u00f3n {1} o un elemento descriptor de despliegue {2} que tiene el nombre {3} y la lista de calificadores {4}. No se puede configurar un recurso de Jakarta Concurrency para que tenga calificadores y un espacio de nombres java:global al mismo tiempo. Elimine los calificadores de la configuraci\u00f3n del recurso Jakarta Concurrency que tiene el nombre {3} o cambie al espacio de nombres java:app.
+CWWKC1208.global.with.qualifiers.explanation=La configuraci\u00f3n del recurso Jakarta Concurrency no puede tener calificadores y un espacio de nombres java:global al mismo tiempo.
+CWWKC1208.global.with.qualifiers.useraction=Actualiza la configuraci\u00f3n del recurso Jakarta Concurrency definido por la aplicaci\u00f3n para omitir los calificadores o utilizar un espacio de nombres diferente, como el espacio de nombres java:app.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: La especificaci\u00f3n Concurrency requiere que virtual=true sea ignorado en la anotaci\u00f3n {1} del artefacto de aplicaci\u00f3n {0} o en el elemento descriptor de despliegue {2} con el nombre {3} porque Java {4} no soporta hilos virtuales.
 CWWKC1217.no.virtual.threads.explanation=Los hilos virtuales s\u00f3lo est\u00e1n disponibles en Java 21 y versiones posteriores.
 CWWKC1217.no.virtual.threads.useraction=Actualice a Java 21 o posterior para permitir el uso de hilos virtuales.

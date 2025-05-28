@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2024 IBM Corporation and others.
+# Copyright (c) 2024, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Bundle-SymbolicName: io.openliberty.jakarta.faces.4.1; singleton:=true
 Bundle-Description:  Jakarta Faces, MyFaces 4.1 API
-Implementation-Version: 4.1.0
+Implementation-Version: 4.1.1
 
 Export-Package: \
     jakarta.faces.*; version=${Implementation-Version}
@@ -29,16 +29,14 @@ DynamicImport-Package: \
     org.apache.myfaces.cdi.util, \
     org.apache.myfaces.spi
 
-# Use this format (4.1.0.RC#)  once we have an official release and not an RC Version
 #  Use META-INF=@src/META-INF for JS overlays
 -includeresource: \
-    @${repo;org.apache.myfaces.core:myfaces-api;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+    @${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
-# Use this format (4.1.0.RC#) once we have an official release and not an RC Version
 -buildpath: \
     org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest

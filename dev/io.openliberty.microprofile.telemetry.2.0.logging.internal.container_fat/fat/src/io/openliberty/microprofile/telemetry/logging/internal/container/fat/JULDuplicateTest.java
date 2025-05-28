@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.container.fat;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -30,6 +31,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -85,6 +87,7 @@ public class JULDuplicateTest {
      * Ensure JUL message logs are not duplicated when the OpenTelemetry Java agent is active with mpTelemetry-2.0.
      */
     @Test
+    @SkipIfSysProp(OS_ZOS)
     public void testNoDuplicateJULMessageLogsWithOpenTelemetryAgent() throws Exception {
         // Wait for the JUL message (SRVE0250I) to appear in the logs.
         server.waitForStringInLog("SRVE0250I");

@@ -544,6 +544,7 @@
 						<propertyref prefix="env.fat.test." />
 						<propertyref prefix="env.fat.bucket." />
 						<propertyref prefix="env.ldap." />
+						<propertyref prefix="env.debug.server." />
 						<mapper type="glob" from="env.*" to="*" />
 					</syspropertyset>
 					<syspropertyset>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.function.Consumer;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
@@ -65,6 +66,9 @@ public class DataStoreTestServlet extends FATServlet {
 
     @Inject
     DSAccessorMethodQualifiedRepo dsAccessorQualifiedRepo;
+
+    @EJB(lookup = "java:global/DataStoreEJBApp/DataEJBAppBean!java.util.function.Consumer")
+    Consumer<String> ejbApp;
 
     @Inject
     EMAccessorMethodQualifiedRepo emAccessorQualifiedRepo;
@@ -187,6 +191,14 @@ public class DataStoreTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository that is defined within an EJB application.
+     */
+    @Test
+    public void testEJBAppDefinesAndUsesRepository() {
+        ejbApp.accept("testEJBAppDefinesAndUsesRepository");
+    }
+
+    /**
      * Verify that a qualified resource accessor method can also be used by the
      * application to obtain an EntityManager. The qualifier is ignored.
      */
@@ -241,14 +253,14 @@ public class DataStoreTestServlet extends FATServlet {
 
         try {
             persistenceUnitRepo.connection();
-            fail("TODO write better test if EclipseLink ever adds this capability.");
+            fail("write better test if EclipseLink ever adds this capability.");
         } catch (UnsupportedOperationException x) {
             // expected - EclipseLink does not allow unwrap as Connection
         }
 
         try {
             persistenceUnitRepo.dataSource();
-            fail("TODO write better test if EclipseLink ever adds this capability.");
+            fail("write better test if EclipseLink ever adds this capability.");
         } catch (UnsupportedOperationException x) {
             // expected - EclipseLink does not allow unwrap as DataSource
         }
@@ -403,6 +415,24 @@ public class DataStoreTestServlet extends FATServlet {
     @Test
     public void testDataSourceDefinitionInWARModuleFromEJB() throws SQLException {
         testEJB.testDataSourceDefinitionInWARModuleFromEJB();
+    }
+
+    /**
+     * Verify that code in an EJB application can access a Jakarta Data repository
+     * from a CDI Startup event.
+     */
+    @Test
+    public void testStartupEventObserverInEJBApplicationUsesRepository() {
+        ejbApp.accept("testStartupEventObserverInEJBApplicationUsesRepository");
+    }
+
+    /**
+     * Verify that code in an EJB module can access a Jakarta Data repository from
+     * a CDI Startup event.
+     */
+    @Test
+    public void testStartupEventObserverInEJBModuleUsesRepository() {
+        testEJB.testStartupEventObserverInEJBModuleUsesRepository();
     }
 
     /**

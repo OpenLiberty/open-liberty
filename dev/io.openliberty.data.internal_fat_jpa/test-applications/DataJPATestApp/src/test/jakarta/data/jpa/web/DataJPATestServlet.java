@@ -12,7 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
@@ -504,9 +503,6 @@ public class DataJPATestServlet extends FATServlet {
      * Use repository methods that convert a BigInteger value to other
      * numeric types.
      */
-    @SkipIfSysProp({
-                     DB_DB2, //TODO Failing on DB2 due to eclipselink issue. https://github.com/OpenLiberty/open-liberty/issues/29443
-    })
     @Test
     public void testConvertBigDecimalValue() {
         ZoneId ET = ZoneId.of("America/New_York");
@@ -516,15 +512,11 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(27480960216618.32,
                      demographics.publicDebtAsBigDecimal(when)
                                      .doubleValue(),
-                     1.0);
+                     0.01);
 
         try {
             Optional<BigInteger> i = demographics.publicDebtAsBigInteger(when);
-            // TODO is BigDecimal.toBigIntegerExact() broken?
-            // or are the fractional digits not being included?
-            //fail("Should not convert BigDecimal 27480960216618.32 to BigInteger " + i);
-            assertEquals(27480960216618L,
-                         i.orElseThrow().longValue());
+            fail("Should not convert BigDecimal 27480960216618.32 to BigInteger " + i);
         } catch (MappingException x) {
             if (x.getCause() instanceof ArithmeticException)
                 ; // expected - out of range
@@ -565,11 +557,7 @@ public class DataJPATestServlet extends FATServlet {
 
         try {
             Long l = demographics.publicDebtAsLong(when);
-            // TODO is BigDecimal.longValueExact() broken?
-            // or are the fractional digits not being included?
-            //fail("Should not convert BigDecimal 27480960216618.32 to Long " + l);
-            assertEquals(Long.valueOf(27480960216618L),
-                         l);
+            fail("Should not convert BigDecimal 27480960216618.32 to Long " + l);
         } catch (MappingException x) {
             // expected - out of range
         }
@@ -586,9 +574,6 @@ public class DataJPATestServlet extends FATServlet {
      * Use repository methods that convert a BigInteger value to other
      * numeric types.
      */
-    @SkipIfSysProp({
-                     DB_DB2, //TODO Failing on DB2 due to eclipselink issue. https://github.com/OpenLiberty/open-liberty/issues/29443
-    })
     @Test
     public void testConvertBigIntegerValue() {
         ZoneId ET = ZoneId.of("America/New_York");
@@ -1326,11 +1311,9 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
-        // [EclipseLink-6002] Aggregated objects cannot be written/deleted/queried independently from their owners.
-        //                    Descriptor: [RelationalDescriptor(test.jakarta.data.web.StreetAddress --> [])]
-        //                    Query: ReportQuery(referenceClass=StreetAddress )
-        // TODO uncomment the following to reproduce the above error:
-        // List<ShippingAddress> found = shippingAddresses.findByRecipientInfoNotEmpty();
+        // TODO Enable once EclipseLink bug #31558 is fixed:
+        // List<ShippingAddress> found = shippingAddresses
+        //                .findByStreetAddressRecipientInfoNotEmpty();
         // assertEquals(1, found.size());
         // ShippingAddress a = found.get(0);
         // assertEquals(a1.id, a.id);
@@ -2396,7 +2379,8 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(c -> c.name)
                                              .collect(Collectors.toList()));
 
-        // TODO JPA doesn't allow querying by IdClass. This would need to be interpreted as (c.name=?1 AND c.state=?2)
+        // TODO enable once EclipseLink #29073 is fixed
+        // JPA doesn't allow querying by IdClass. This would need to be interpreted as (c.name=?1 AND c.state=?2)
         // The current error is confusing: You have attempted to set a value of type class test.jakarta.data.jpa.web.CityId
         // for parameter 1 with expected type of class java.lang.String from query string SELECT o FROM City o WHERE (o.state=?1)
         //cities.findById(CityId.of("Rochester", "Minnesota"));
@@ -4709,7 +4693,8 @@ public class DataJPATestServlet extends FATServlet {
 
         long mnVer = cities.currentVersion(mnId.name, mnId.getStateName());
         long nyVer = cities.currentVersion(nyId.name, nyId.getStateName());
-        // TODO
+
+        // TODO enable once EclipseLink #29073 is fixed, and maybe remove the above
         //long mnVer = cities.currentVersion(mnId);
         //long nyVer = cities.currentVersion(nyId);
 

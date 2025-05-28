@@ -2,6 +2,7 @@
 symbolicName=io.openliberty.data-1.0
 visibility=public
 singleton=true
+IBM-App-ForceRestart: install, uninstall
 IBM-ShortName: data-1.0
 IBM-API-Package: \
   jakarta.data; type="spec",\

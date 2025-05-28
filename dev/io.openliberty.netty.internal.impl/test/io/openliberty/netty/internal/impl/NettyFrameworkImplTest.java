@@ -110,7 +110,7 @@ public class NettyFrameworkImplTest {
         setTCPConfig();
         ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
         Assert.assertTrue((boolean) bootstrap.config().options().get(ChannelOption.SO_REUSEADDR));
-        Assert.assertEquals(10, bootstrap.config().options().get(ChannelOption.SO_LINGER));
+        Assert.assertEquals(10, bootstrap.config().childOptions().get(ChannelOption.SO_LINGER));
         Assert.assertTrue(bootstrap.getBaseInitializer() instanceof TCPChannelInitializerImpl);
         framework.deactivate(null, null);
     }

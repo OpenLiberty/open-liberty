@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,21 +26,4 @@ public interface AnnotationCacheService_Logging {
     String ANNO_LOGGER_STATE_NAME = ANNO_LOGGER_NAME + ".state";
     /** Functional logger: Log JANDEX activity. */
     String ANNO_LOGGER_JANDEX_NAME = ANNO_LOGGER_NAME + ".jandex";
-
-    //
-
-    @Deprecated
-    String ANNO_LOGGER_SERVICE = ANNO_LOGGER_NAME + ".service";
-    @Deprecated
-    String ANNO_LOGGER_TARGETS = ANNO_LOGGER_NAME + ".target";
-    @Deprecated
-    String ANNO_LOGGER_TARGETS_VISITOR = ANNO_LOGGER_TARGETS + ".visitor";
-    @Deprecated
-    String ANNO_LOGGER_INFO = ANNO_LOGGER_NAME + ".info";
-    @Deprecated
-    String ANNO_LOGGER_UTIL = ANNO_LOGGER_NAME + ".util";
-    @Deprecated
-    String ANNO_LOGGER_SOURCE = ANNO_LOGGER_NAME + ".source";
-    @Deprecated
-    String ANNO_LOGGER_SCAN = ANNO_LOGGER_NAME + ".scan";
 }

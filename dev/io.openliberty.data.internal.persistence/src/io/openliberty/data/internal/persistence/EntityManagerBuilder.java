@@ -66,6 +66,12 @@ public abstract class EntityManagerBuilder {
     private static final TraceComponent tc = Tr.register(EntityManagerBuilder.class);
 
     /**
+     * Entity attribute types that have an AttributeConverter.
+     * Only available when invoked by DBStoreEMBuilder. Otherwise null.
+     */
+    Set<Class<?>> convertibleTypes;
+
+    /**
      * The dataStore value of the Repository annotation,
      * or that value prefixed with java:comp/env,
      * or if unspecified, then java:comp/DefaultDataSource
@@ -117,14 +123,18 @@ public abstract class EntityManagerBuilder {
      * Invoked by subclass constructors to obtain the EntityInfo for each entity type.
      * After this method completes successfully, the entityInfoMap is populated.
      *
-     * @param entityTypes entity classes as known by the user, not generated.
+     * @param entityTypes      entity classes as known by the user, not generated.
+     * @param convertibleTypes types that have an AttributeConverter. Only available
+     *                             when invoked by DBStoreEMBuilder. Otherwise null.
      * @throws Exception if an error occurs.
      */
     // FFDC is not needed because exceptions are logged to Tr.error
     // and also re-thrown upon CompletableFuture<EntityInfo>.get()
     @FFDCIgnore(Throwable.class)
-    protected void collectEntityInfo(Set<Class<?>> entityTypes) throws Exception {
+    protected void collectEntityInfo(Set<Class<?>> entityTypes,
+                                     Set<Class<?>> convertibleTypes) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+        this.convertibleTypes = convertibleTypes;
         EntityManager em = createEntityManager();
         try {
             Set<Class<?>> missingEntityTypes = new HashSet<>(entityTypes);

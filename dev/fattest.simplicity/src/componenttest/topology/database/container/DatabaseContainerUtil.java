@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.config.Fileset;
 import com.ibm.websphere.simplicity.config.JavaPermission;
 import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -119,7 +120,13 @@ public final class DatabaseContainerUtil {
         for (DatabaseStore dbs : serverClone.getDatabaseStores()) {
             dsSet.addAll(dbs.getDataSources());
         }
-        
+
+        //Get datasources that are nested under transactions
+        Transaction tx = serverClone.getTransaction();
+        if (tx != null) {
+            dsSet.addAll(tx.getDataSources());
+        }
+
         this.datasources = dsSet.stream()
                         .filter(ds -> ds.getFatModify() != null)
                         .filter(ds -> ds.getFatModify().equalsIgnoreCase("true"))

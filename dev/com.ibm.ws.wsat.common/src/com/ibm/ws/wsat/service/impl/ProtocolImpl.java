@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,12 +51,18 @@ public class ProtocolImpl {
 
     private EndpointReferenceType coordinatorEndpoint;
     private EndpointReferenceType participantEndpoint;
+    private static boolean reroutable = false;
 
     private static String recoveryId;
 
     public static ProtocolImpl getInstance() {
         if (recoveryId == null) {
             recoveryId = tranService.getRecoveryId();
+        }
+
+        reroutable = recoveryId != null && !recoveryId.isEmpty();
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "recoveryId={0}, reroutable={1}", recoveryId, reroutable);
         }
         return INSTANCE;
     }
@@ -125,6 +131,19 @@ public class ProtocolImpl {
         return eprCopy;
     }
 
+    private boolean needToReroute(ProtocolServiceWrapper wrapper) {
+        if (recoveryId == null || recoveryId.isEmpty())
+            return false;
+
+        if (recoveryId.equals(wrapper.getRecoveryID()))
+            return false;
+
+        if (tranService.getRecoveryIds().contains(wrapper.getRecoveryID()))
+            return false;
+
+        return true;
+    }
+
     /*
      * Participant services. These services are invoked by the coordinator
      * during 2PC. We need to invoke the appropriate method on our local
@@ -145,7 +164,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "prepare: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.PREPARE);
             return;
         } else {
@@ -238,7 +257,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "commit: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.COMMIT);
             return;
         }
@@ -273,7 +292,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "rollback: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.ROLLBACK);
             return;
         }
@@ -352,11 +371,11 @@ public class ProtocolImpl {
             Tr.debug(TC, "prepared: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.PREPARED);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
-            if (participant != null) {
+            if (participant != null && participant.getState() == WSATParticipantState.PREPARE) {
                 participant.setResponse(WSATParticipantState.PREPARED);
             } else {
                 // During participant recovery we might receive an unexpected 'prepared' if the participant
@@ -382,7 +401,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "readOnly: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.READONLY);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
@@ -455,7 +474,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "aborted: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.ABORTED);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
@@ -470,7 +489,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "committed: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.COMMITTED);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());

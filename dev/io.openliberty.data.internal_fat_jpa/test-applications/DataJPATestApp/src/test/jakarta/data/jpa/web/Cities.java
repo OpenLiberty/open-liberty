@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,8 @@ import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 
 /**
- *
+ * Repository for the City entity, which uses IdClass to define a composite id
+ * across the City name and stateName.
  */
 @Repository
 public interface Cities {
@@ -44,11 +45,11 @@ public interface Cities {
     @OrderBy("name")
     Stream<AreaInfo> areaInfo(String stateName);
 
+    @Query("SELECT VERSION(THIS) WHERE ID(THIS) = ?1")
+    long currentVersion(CityId id);
+
     @Query("SELECT VERSION(THIS) WHERE name = ?1 AND stateName = ?2")
     long currentVersion(String city, String state);
-    // TODO: IdClass as query parameter
-    //@Query("SELECT VERSION(THIS) WHERE ID(THIS) = ?1")
-    //long currentVersion(CityId id);
 
     @Delete
     void delete(City city); // copied from BasicRepository

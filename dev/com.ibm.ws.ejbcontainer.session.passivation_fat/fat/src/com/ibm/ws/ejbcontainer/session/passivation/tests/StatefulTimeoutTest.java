@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.web.StatefulTimeoutServlet;
@@ -66,6 +67,11 @@ public class StatefulTimeoutTest extends AbstractTest {
         StatefulTimeoutTestApp.addAsModule(StatefulTimeoutEJBJar).addAsModule(StatefulTimeoutWeb);
 
         ShrinkHelper.exportDropinAppToServer(server, StatefulTimeoutTestApp, DeployOptions.SERVER_ONLY);
+
+        if (server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS)) {
+            // On Z, sleep before starting the server to allow time for the ports to free up after prior server stop.
+            Thread.sleep(5 * 1000);
+        }
 
         server.startServer();
     }

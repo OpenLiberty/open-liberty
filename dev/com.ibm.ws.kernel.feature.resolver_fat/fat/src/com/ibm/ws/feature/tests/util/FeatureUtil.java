@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -222,15 +222,14 @@ public class FeatureUtil {
      * <li>test.InterimFixesManagerTest-1.0.mf</li>
      * <li>test.TestFixManagerTest-1.0.mf</li>
      * <li>test.featurefixmanager-1.0.mf</li>
-     * <li>txtest-1.0.mf</li>
-     * <li>txtest-2.0.mf</li>
+     * <li>features with IBM-Test-Feature:true set</li>
      * </ul>
      *
      * @param featureName A feature name.
      *
      * @return True or false telling if the named feature is a test feature.
      */
-    public static boolean isTest(String featureName) {
-        return featureName.startsWith("test.") || featureName.startsWith("txtest-");
+    public static boolean isTest(String featureName, ProvisioningFeatureDefinition featureDef) {
+        return featureName.startsWith("test.") || "true".equals(featureDef.getHeader("IBM-Test-Feature"));
     }
 }

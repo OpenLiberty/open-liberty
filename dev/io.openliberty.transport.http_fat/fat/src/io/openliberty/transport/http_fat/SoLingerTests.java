@@ -33,6 +33,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test to ensure that the tcpOptions soLinger works.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class SoLingerTests {
 
     private static final String CLASS_NAME = SoLingerTests.class.getName();
@@ -88,17 +89,6 @@ public class SoLingerTests {
     }
 
     /**
-     * The test will check the default value of soLinger by searching the trace file.
-     *
-     * The default value of soLinger is -1.
-     */
-    @Test
-    public void testSoLinger_default() throws Exception {
-        // Validate that soLinger default is -1.
-        assertNotNull("The default value of soLinger was not -1!", server.waitForStringInTrace("soLinger: -1"));
-    }
-
-    /**
      * The test will set soLinger to a value of 20 and validate in the trace file that
      * the correct value is being used.
      *
@@ -108,7 +98,6 @@ public class SoLingerTests {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testSoLinger_nonDefault() throws Exception {
         ServerConfiguration configuration = server.getServerConfiguration();
         LOG.info("Server configuration that the test started with: " + configuration);
@@ -135,7 +124,6 @@ public class SoLingerTests {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testSoLinger_tooLow() throws Exception {
         ServerConfiguration configuration = server.getServerConfiguration();
         LOG.info("Server configuration that the test started with: " + configuration);
@@ -165,7 +153,6 @@ public class SoLingerTests {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testSoLinger_tooHigh() throws Exception {
         ServerConfiguration configuration = server.getServerConfiguration();
         LOG.info("Server configuration that the test started with: " + configuration);

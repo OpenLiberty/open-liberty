@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -85,6 +85,10 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
 
     public Set<String> getVersionedFeatures() {
         return ee10Features.getVersionedFeatures(openLibertyOnly());
+    }
+
+    public Set<String> getVersionlessFeatures() {
+        return ee10Features.getVersionlessFeatures(openLibertyOnly());
     }
 
     public Set<String> getCompatibleFeatures() {
@@ -246,6 +250,36 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE10: Feature compatibility errors:", errors);
             Assert.fail("EE10 compatibility errors");
+        }
+    }
+
+    @Test
+    public void testVersionlessFeaturesMP60() {
+        testVersionlessFeatures("microProfile-6.0");
+    }
+
+    @Test
+    public void testVersionlessFeaturesMP61() {
+        testVersionlessFeatures("microProfile-6.1");
+    }
+
+    @Test
+    public void testVersionlessFeaturesMP70() {
+        testVersionlessFeatures("microProfile-7.0");
+    }
+
+    @Test
+    public void testVersionlessFeaturesMP71() {
+        testVersionlessFeatures("microProfile-7.1");
+    }
+
+    private void testVersionlessFeatures(String mpPlatform) {
+        Set<String> versionlessFeatures = getVersionlessFeatures();
+        List<String> errors = FATFeatureTester.testVersionlessFeatures(versionlessFeatures, ee10Features.getIncompatibleVersionlessFeatures(), mpPlatform);
+
+        if (!errors.isEmpty()) {
+            FATLogger.dumpErrors(c, "testVersionlessFeatures", "EE10: Versionless feature errors:", errors);
+            Assert.fail("EE10 versionless feature errors. " + errors);
         }
     }
 

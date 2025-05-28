@@ -31,6 +31,8 @@ public class HealthAppServlet extends HttpServlet {
     static boolean isLive = true;
     static boolean isReady = true;
 
+    static long startTime;
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -40,6 +42,11 @@ public class HealthAppServlet extends HttpServlet {
 
     @Override
     public void init() {
+        startTime = System.currentTimeMillis();
+    }
+
+    public static boolean isFiveSeconds() {
+        return (System.currentTimeMillis() - startTime >= 5000);
 
     }
 

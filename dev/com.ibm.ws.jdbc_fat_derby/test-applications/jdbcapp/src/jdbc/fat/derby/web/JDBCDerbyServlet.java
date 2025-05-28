@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
@@ -216,7 +217,7 @@ public class JDBCDerbyServlet extends FATServlet {
                 result.close();
                 dropTable(con, CITYTABLE);
                 con.close();
-	    }
+            }
         }
     }
 
@@ -414,5 +415,22 @@ public class JDBCDerbyServlet extends FATServlet {
         try (Connection con = driver_url_preferred.getConnection(); Statement stmt = con.createStatement();) {
             stmt.executeUpdate("create table " + CITYTABLE + " (" + CITYSCHEMA + ")");
         }
+    }
+
+    /**
+     * Ensure that when con.createNClob() throws a SQLFeatureNotSupportedException
+     * we do not create an FFDC because calling the method is the only way to determine
+     * if the driver supports the feature and third party libraries could be making such
+     * calls outside of the users control. For example: Hibernate
+     */
+    @Test
+    public void testNClobUnsupportedFFDCSupression() throws SQLException {
+        try (Connection con = ds1.getConnection()) {
+            con.createNClob();
+            fail("Behavior change - createNClob is now supported by this JDBC driver, test refactor is necessary.");
+        } catch (SQLFeatureNotSupportedException noSupportX) {
+            //expected
+        }
+        // Throw any other uncaught exceptions
     }
 }

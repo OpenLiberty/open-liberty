@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2024 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ eclVersion=2.7.15
 eclHash=53511fd
 eclFullVersion=${eclVersion}
 eclPackageVersion=2.0.16
-asmFullVersion=9.7.1
+asmFullVersion=9.8.0
 
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink.2.7
 Bundle-Description: EclipseLink JPA

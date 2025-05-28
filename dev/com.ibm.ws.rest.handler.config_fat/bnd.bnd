@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ tested.features: componenttest-2.0,\
                  messaging-3.1,\
                  enterprisebeanslite-4.0,\
                  messagingclient-3.0,\
+                 mpOpenApi-4.1,\
                  mpOpenApi-4.0,\
                  mpOpenApi-3.1,\
                  mpOpenApi-3.0,\
@@ -58,10 +59,12 @@ tested.features: componenttest-2.0,\
                  servlet-4.0,\
                  servlet-5.0,\
                  servlet-6.0,\
+                 servlet-6.1,\
                  mpConfig-2.0,\
                  jsonp-1.1,\
                  jaxrsclient-2.1,\
                  jaxrs-2.1,\
                  restfulws-3.1,\
+                 restfulws-4.0,\
                  audit-2.0,\
                  restconnector-2.0 

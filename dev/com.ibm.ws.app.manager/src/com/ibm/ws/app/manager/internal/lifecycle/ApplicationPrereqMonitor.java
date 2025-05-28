@@ -61,11 +61,7 @@ import com.ibm.wsspi.logging.Introspector;
            immediate = true,
            configurationPid = "com.ibm.ws.app.prereqs",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = {
-                        "osgi.command.scope=app",
-                        "osgi.command.function=prereqs",
-                        "service.vendor=IBM"
-           })
+           property = "service.vendor=IBM")
 public class ApplicationPrereqMonitor implements Introspector {
     public static final TraceComponent tc = Tr.register(ApplicationPrereqMonitor.class);
     private static final String PREREQ_ID_PROP = "application.prereq.id";
@@ -262,13 +258,5 @@ public class ApplicationPrereqMonitor implements Introspector {
         errors.forEach(out::println);
         if (errors.isEmpty())
             out.println("No errors recorded.");
-    }
-
-    public void prereqs() throws Exception {
-        System.out.println(getIntrospectorName());
-        System.out.println(getIntrospectorDescription());
-        try (PrintWriter pw = new PrintWriter(System.out)) {
-            introspect(pw);
-        }
     }
 }

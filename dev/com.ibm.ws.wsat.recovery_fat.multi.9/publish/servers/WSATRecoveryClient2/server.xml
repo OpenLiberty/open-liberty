@@ -1,10 +1,7 @@
 <server>
   <featureManager>
-    <feature>cdi-2.0</feature>
     <feature>componenttest-1.0</feature>
     <feature>jdbc-4.2</feature>
-    <feature>jndi-1.0</feature>
-    <feature>jsp-2.3</feature>
     <feature>servlet-4.0</feature>
     <feature>timedexit-1.0</feature>
     <feature>txtest-1.0</feature>
@@ -22,13 +19,16 @@
 
   <transaction
     backendURL="http://localhost:${bvt.prop.HTTP_quaternary}"
+    clientInactivityTimeout="15m"
+    heuristicRetryInterval="10s"
     leaseLength="2m"
-    heuristicRetryInterval="10"
     recoverOnStartup="true"
     recoveryGroup="client-group"
     recoveryIdentity="WSATRecoveryClient2"
-    waitForRecovery="false"
+    totalTranLifetimeTimeout="15m"
   />
+
+  <wsAtomicTransaction asyncResponseTimeout="5m"/>
 
   <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
 </server>

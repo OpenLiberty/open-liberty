@@ -25,9 +25,15 @@ src: \
     test-applications/LooseConfig/LooseWeb2.war/src, \
     test-applications/LooseConfig/LooseServlet1.jar/src, \
     test-applications/LooseConfig/LooseServlet2.jar/src, \
-    test-applications/LooseConfig/LooseServlet3.jar/src
+    test-applications/LooseConfig/LooseServlet3.jar/src, \
+    test-applications/SpringAnnoTest/SpringAnnoTest.war/src, \
+    test-applications/SpringAnnoTest/SpringAnnoTest.jar/src, \
+    test-applications/SpringAnnoTest/SpringAnnoTestSharedLib.jar/src, \
+    test-applications/SpringAnnoTest/SpringAnnoTestManifestLib.jar/src
 
 fat.project: true
+
+tested.features: persistencecontainer-3.1, enterprisebeanslite-4.0, cdi-4.0, servlet-6.0, servlet-6.1
 
 -buildpath: \
     io.openliberty.org.apache.commons.logging;version=latest, \
@@ -35,8 +41,13 @@ fat.project: true
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \
     com.ibm.websphere.javaee.jsp.2.2;version=latest, \
     com.ibm.websphere.javaee.ejb.3.2;version=latest, \
-    commons-httpclient:commons-httpclient;version=3.1, \
-    httpunit:httpunit;version=1.5.4, \
-    net.sf.jtidy:jtidy;version=9.3.8, \
-    org.apache.httpcomponents.client5:httpclient5;version=5.0.2, \
-    org.apache.httpcomponents.core5:httpcore5;version=5.0.2
+    commons-httpclient:commons-httpclient;version='3.1', \
+    httpunit:httpunit;version='1.5.4', \
+    net.sf.jtidy:jtidy;version='9.3.8', \
+    org.apache.httpcomponents.client5:httpclient5;version='5.0.2', \
+    org.apache.httpcomponents.core5:httpcore5;version='5.0.2', \
+    org.springframework:spring-beans;version='6.1.14', \
+    org.springframework:spring-context;version='6.1.14', \
+    org.springframework:spring-web;version='6.1.14', \
+    org.springframework:spring-webmvc;version='6.1.14', \
+    io.openliberty.jakarta.servlet.6.1

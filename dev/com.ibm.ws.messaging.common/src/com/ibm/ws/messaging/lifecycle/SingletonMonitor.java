@@ -61,11 +61,7 @@ import com.ibm.wsspi.logging.Introspector;
         immediate = true, 
         configurationPolicy = ConfigurationPolicy.REQUIRE,
         configurationPid = "com.ibm.ws.messaging.lifecycle.singletons",
-        property = {
-                "osgi.command.scope=sib",
-                "osgi.command.function=singletons",
-                "service.vendor=IBM"
-        })
+        property = "service.vendor=IBM")
 public class SingletonMonitor implements Introspector {
     public static final TraceComponent tc = Tr.register(SingletonMonitor.class);
     private static final AtomicInteger counter = new AtomicInteger(0);
@@ -283,13 +279,5 @@ public class SingletonMonitor implements Introspector {
         out.println("=Errors=");
         errors.forEach(out::println);
         if (errors.isEmpty()) out.println("No errors recorded.");
-    }
-
-    public void singletons() throws Exception {
-        System.out.println(getIntrospectorName());
-        System.out.println(getIntrospectorDescription());
-        try (PrintWriter pw = new PrintWriter(System.out)) {
-            introspect(pw);
-        }
     }
 }

@@ -1,0 +1,22 @@
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>jaxrs-2.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <!-- Server SSL configuration -->
+    <ssl id="defaultSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" />
+
+    <keyStore id="clientKeyStore" location="defaultkey.p12" type="PKCS12" password="Passw0rd" />
+    <keyStore id="clientTrustStore" location="defaulttrust.p12" type="PKCS12" password="Passw0rd" />
+
+    <quickStartSecurity userName="test" userPassword="testpwd" />
+
+    <include location="../fatTestPorts.xml"/>
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default.secure" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_secondary" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_secondary.secure" actions="read"/>
+    <javaPermission className="java.security.AllPermission"/>
+</server>

@@ -59,9 +59,10 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_30_APP_WAR = "io.openliberty.springboot.fat30.war.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_30_APP_WEBANNO = "io.openliberty.springboot.fat30.webanno.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_30_APP_WEBFLUX = "io.openliberty.springboot.fat30.webflux.app-0.0.1-SNAPSHOT.jar";
-    public static final String SPRING_BOOT_30_APP_WEBSOCKET = "io.openliberty.springboot.fat30.websocket.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_30_APP_WEBSOCKET = "io.openliberty.springboot.fat30.websocket.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_30_APP_SECURITY = "io.openliberty.springboot.fat30.security.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_30_APP_TRANSACTIONS = "io.openliberty.springboot.fat30.transactions.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_30_APP_DATA = "io.openliberty.springboot.fat30.data.app-0.0.1-SNAPSHOT.war";
 
     // Various spring configuration property fragments.
 
@@ -694,8 +695,13 @@ public abstract class AbstractSpringTests {
     protected ServerConfiguration getServerConfiguration() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
 
+        server.removeAllInstalledAppsForValidation();
+
         List<SpringBootApplication> applications = config.getSpringBootApplications();
         applications.clear();
+
+        List<WebApplication> webApplications = config.getWebApplications();
+        webApplications.clear();
 
         Set<String> features = config.getFeatureManager().getFeatures();
         features.clear();

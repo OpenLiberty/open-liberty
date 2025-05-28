@@ -1,0 +1,60 @@
+// Includable gradle to package the Kafka client into the locations within the autoFVT.zip expected
+// by KafkaUtils.kafkaClientLibs.
+// 
+// Places the Kafka 3.x client (compatible with Java 8) on the classpath and the Kafka 4.x client
+// within LibertyFATTestFiles.
+//
+// Usage:
+// apply from: '../io.openliberty.microprofile.reactive.messaging.internal_fat.common/include-kafka-client.gradle'
+
+
+// New dependency configurations
+configurations {
+    kafkaClientCommon {
+      transitive = false
+    }
+    kafkaClient3 {
+      transitive = false
+    }
+    kafkaClient {
+      transitive = false
+    }
+}
+
+// Dependency specifications
+dependencies {
+    kafkaClientCommon 'org.lz4:lz4-java:1.8.0'
+    kafkaClientCommon 'com.github.luben:zstd-jni:1.5.6-6'
+    kafkaClientCommon 'org.xerial.snappy:snappy-java:1.1.10.5'
+    kafkaClientCommon project(':com.ibm.ws.org.slf4j.api')
+    kafkaClientCommon project(':com.ibm.ws.org.slf4j.jdk14')
+    
+    // Runs on Java 8
+    kafkaClient3 'org.apache.kafka:kafka-clients:3.5.1'
+
+    // Requires Java 11
+    kafkaClient 'org.apache.kafka:kafka-clients:4.0.0'
+}
+
+// Tasks which copy the dependencies to the AutoFVT directory
+task addKafkaClientCommonLibs (type: Copy) {
+    into new File(autoFvtDir, 'publish/kafka-client-common')
+    from configurations.kafkaClientCommon
+    shouldRunAfter autoFVT
+}
+
+task addKafkaClient3Libs (type: Copy) {
+    into new File(autoFvtDir, 'publish/kafka-client-3')
+    from configurations.kafkaClient3
+    shouldRunAfter autoFVT
+}
+
+task addKafkaClientLibs (type: Copy) {
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/kafka-client')
+    from configurations.kafkaClient
+    shouldRunAfter autoFVT
+}
+
+zipAutoFVT.dependsOn addKafkaClientCommonLibs
+zipAutoFVT.dependsOn addKafkaClient3Libs
+zipAutoFVT.dependsOn addKafkaClientLibs

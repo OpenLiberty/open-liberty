@@ -42,6 +42,6 @@ test.project: true
     com.ibm.ws.webcontainer.security;version=latest,\
     com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
     org.apache.httpcomponents:httpcore;version=4.1.2,\
-    org.apache.sshd:sshd-common;version=2.9.2,\
-    org.apache.sshd:sshd-core;version=2.9.2,\
-    org.apache.sshd:sshd-scp;version=2.9.2
+    org.apache.sshd:sshd-common;version=2.12.1,\
+    org.apache.sshd:sshd-core;version=2.12.1,\
+    org.apache.sshd:sshd-scp;version=2.12.1

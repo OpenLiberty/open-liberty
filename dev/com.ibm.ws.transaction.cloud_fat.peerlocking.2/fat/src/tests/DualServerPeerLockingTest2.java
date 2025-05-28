@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +28,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
@@ -49,7 +49,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         boolean testFailed = false;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { s1 };
+        serversToCleanup = Arrays.asList(s1);
 
         // Start Server1
         FATUtils.startServers(s1);
@@ -135,7 +135,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         final int attempts = 2;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { s1, longPeerStaleTimeServer2 };
+        serversToCleanup = Arrays.asList(s1, longPeerStaleTimeServer2);
 
         // Start Server1
         FATUtils.startServers(s1);
@@ -208,7 +208,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         boolean testFailed = false;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { s2, longPeerStaleTimeServer1 };
+        serversToCleanup = Arrays.asList(s2, longPeerStaleTimeServer1);
 
         // Start Server2
         s2.setHttpDefaultPort(s2.getHttpSecondaryPort());
@@ -256,7 +256,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         boolean testFailed = false;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { peerLockingDisabledServer1, peerLockingEnabledServer1 };
+        serversToCleanup = Arrays.asList(peerLockingDisabledServer1, peerLockingEnabledServer1);
 
         // switch to configuration with HADB peer locking disabled
         // Start Server1
@@ -343,7 +343,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         boolean testFailed = false;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { peerLockingDisabledServer1, s2 };
+        serversToCleanup = Arrays.asList(peerLockingDisabledServer1, s2);
 
         // switch to configuration with HADB peer locking disabled
         // Start Server1

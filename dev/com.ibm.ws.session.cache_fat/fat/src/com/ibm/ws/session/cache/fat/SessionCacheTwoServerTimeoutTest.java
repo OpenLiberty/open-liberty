@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -85,6 +86,10 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
 
         serverA.startServer();
 
+        // z/OS and OS/390 often need extra time
+        Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "OS name = " + osName);
+        TimeUnit.SECONDS.sleep(10);
+
         // Use HTTP session on serverA before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests. Invoking this before starting
         // serverB, also ensures the JCache provider cluster in serverA is ready to accept a node from
@@ -94,6 +99,9 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appA.invalidateSession(sessionA);
 
         serverB.startServer();
+
+        // Wait 10 seconds
+        TimeUnit.SECONDS.sleep(10);
 
         // Use HTTP session on serverB before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests.

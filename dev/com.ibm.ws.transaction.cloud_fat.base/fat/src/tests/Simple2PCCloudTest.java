@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.ListIterator;
 
@@ -88,7 +89,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     @Test
     public void testLeaseTableAccess() throws Exception {
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
         toleratedMsgs = new String[] { "CWWKE0701E" };
 
         // Start Server1
@@ -109,7 +110,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testDBBaseRecovery() throws Exception {
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         FATUtils.startServers(server1);
 
@@ -148,7 +149,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     @Test
     public void testDBRecoveryTakeover() throws Exception {
 
-        serversToCleanup = new LibertyServer[] { server1, server2 };
+        serversToCleanup = Arrays.asList(server1, server2);
 
         FATUtils.startServers(server1);
 
@@ -198,7 +199,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     public void testDBRecoveryCompeteForLogPeerPrecedence() throws Exception {
         final String method = "testDBRecoveryCompeteForLogPeerPrecedence";
 
-        serversToCleanup = new LibertyServer[] { peerPrecedenceServer1 };
+        serversToCleanup = Arrays.asList(peerPrecedenceServer1);
 
         // Start peerPrecedenceServer1
         FATUtils.startServers(peerPrecedenceServer1);
@@ -253,7 +254,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testDBRecoveryCompeteForLog() throws Exception {
 
-        serversToCleanup = new LibertyServer[] { server1, longLeaseLengthServer1 };
+        serversToCleanup = Arrays.asList(server1, longLeaseLengthServer1);
         toleratedMsgs = new String[] { "CWWKE0701E" };
 
         // Start peerPrecedenceServer1
@@ -282,7 +283,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     public void datasourceChangeTest() throws Exception {
         final String method = "datasourceChangeTest";
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         // Start Server1
         FATUtils.startServers(server1);
@@ -328,7 +329,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     public void datasourceChangeTest2() throws Exception {
         final String method = "datasourceChangeTest2";
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         // Start Server1
         FATUtils.startServers(server1);
@@ -393,7 +394,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     public void datasourceChangeTest3() throws Exception {
         final String method = "datasourceChangeTest2";
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         // Start Server1
         FATUtils.startServers(server1);

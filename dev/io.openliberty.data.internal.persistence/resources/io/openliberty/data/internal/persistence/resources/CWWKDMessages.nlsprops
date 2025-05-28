@@ -558,7 +558,10 @@ CWWKD1055.unsupported.entity.attr=CWWKD1055E: The {0} attribute of the {1} entit
  has an unsupported type: {2}. Jakarta Data supports Java enumeration types, \
  the {3} temporal types, and the following basic types: {4}. The built-in \
  Jakarta Data provider also supports some Jakarta Persistence types, such as \
- embeddables.
+ embeddables. Alternatively, if you are using a Jakarta Persistence entity, \
+ you can add the {5} annotation to the {0} attribute to provide an \
+ AttributeConverter implementation that converts an unsupported type to a \
+ supported type.
 CWWKD1055.unsupported.entity.attr.explanation=Jakarta Data does not support the \
  type used by the entity attribute.
 CWWKD1055.unsupported.entity.attr.useraction=Update the entity attribute to use \
@@ -1122,3 +1125,15 @@ CWWKD1110.incompat.with.collection.explanation=Some of the Query by Method Name 
  keywords are not compatible with entity attributes that have a collection type.
 CWWKD1110.incompat.with.collection.useraction=Update the repository method \
  to avoid using the keyword that is not compatible with the collection type.
+
+CWWKD1111.unsupported.convert=CWWKD1111E: The {0} AttributeConverter \
+ implementation converts {1} values to the {2} type, which is not supported \
+ by the Jakarta Data specification. The Jakarta Data specification supports \
+ Java enumeration types, the {3} temporal types, and the following basic \
+ types: {4}. The built-in Jakarta Data provider also supports some Jakarta \
+ Persistence types.
+CWWKD1111.unsupported.convert.explanation=The AttributeConverter implementation \
+ cannot be used with the built-in Jakarta Data provider because it converts \
+ values to an unsupported type.
+CWWKD1111.unsupported.convert.useraction=Update the AttributeConverter \
+ implementation to convert values to one of the supported types.

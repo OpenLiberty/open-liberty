@@ -14,8 +14,9 @@ package com.ibm.ws.annocache.targets.cache.internal;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
@@ -54,22 +55,20 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
 
     //
     
-    private final Map<String,AppKey> appNamesToKeys = new HashMap<String,AppKey>();
-
-	/**
-	 * Create new root cache data.
-	 *
-	 * Options of the cache data are obtained from the factory.
-	 * See {@link TargetCacheImpl_Factory#getCacheOptions()}.
-	 * 
-	 * In particular, the parent folder of the cache data is obtained
-	 * from the options.  See {@link TargetCache_Options#getDir()}.
-	 * 
-	 * @param factory The factory which created the cache data.
-	 * @param cacheName The name of the cache data.  Usually "anno".
-	 * @param e_cacheName The encoded name of the cache data.  Used
-	 *     to name the root cache data folder.
-	 */
+    /**
+     * Create new root cache data.
+     *
+     * Options of the cache data are obtained from the factory.
+     * See {@link TargetCacheImpl_Factory#getCacheOptions()}.
+     * 
+     * In particular, the parent folder of the cache data is obtained
+     * from the options.  See {@link TargetCache_Options#getDir()}.
+     * 
+     * @param factory The factory which created the cache data.
+     * @param cacheName The name of the cache data.  Usually "anno".
+     * @param e_cacheName The encoded name of the cache data.  Used
+     *     to name the root cache data folder.
+     */
     public TargetCacheImpl_DataApps(
         TargetCacheImpl_Factory factory,
         String cacheName, String e_cacheName) {
@@ -78,11 +77,14 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
                cacheName, e_cacheName,
                new File( factory.getCacheOptions().getDir() ) );
 
+		// Manage apps as a strong collection.  There is an explicit
+		// API which must be used to release application data.
+
         this.appsLock = new AppsLock();
-        this.apps = new HashMap<AppKey, TargetCacheImpl_DataApp>();
+        this.apps = new HashMap<String, TargetCacheImpl_DataApp>();
 
         this.queriesLock = new QueriesLock();
-        this.queries = new WeakHashMap<String, TargetCacheImpl_DataQueries>();
+        this.queries = new HashMap<String, TargetCacheImpl_DataQueries>();
     }
 
     //
@@ -153,11 +155,11 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
 
     // Application cache data storage ...
 
-    private class AppsLock {
+    protected static class AppsLock {
         // EMPTY
     }
     private final AppsLock appsLock;
-    private final HashMap<AppKey, TargetCacheImpl_DataApp> apps;
+    private final Map<String, TargetCacheImpl_DataApp> apps;
 
     /**
      * Obtain cache data for an application.
@@ -178,13 +180,9 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
         }
 
         synchronized( appsLock ) {
-            AppKey key = appNamesToKeys.computeIfAbsent(appName, AppKey::new);
-            TargetCacheImpl_DataApp app = apps.get(key);
-            if ( app == null ) {
-                app = createAppData(appName);
-                apps.put(key, app);
-            }
-            return app;
+            // getFactory().logStack("Forcing app [ " + appName + " ]"); // 30315
+
+            return apps.computeIfAbsent(appName, this::createAppData);
         }
     }
 
@@ -194,18 +192,11 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
      * @param appName The name of the application.
      */
     public boolean release(String appName) {
-        return false;
-        // by commenting out this code and just returning false,
-        // the code reverts back to its old behavior where the apps object keeps
-        // a reference onto the application specific data.  The cleaning up of the app data
-        // from the apps object caused a regression which need to be worked out before this can be re-enabled.
-        /*synchronized( appsLock ) {
-            if (appNamesToKeys.containsKey(appName)) {
-                AppKey key = appNamesToKeys.remove(appName);
-                return apps.remove(key) != null;
-            }
-            return false;
-        }*/
+        synchronized ( appsLock ) {
+			releaseQueries(appName);
+
+			return ( apps.remove(appName) != null );
+        }
     }
 
     //
@@ -276,11 +267,11 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
 
     // TODO: Put the query data as weakly held data of module data.
 
-    private class QueriesLock {
+    protected static class QueriesLock {
         // EMPTY
     }
     private final QueriesLock queriesLock;
-    private final WeakHashMap<String, TargetCacheImpl_DataQueries> queries;
+    private final Map<String, TargetCacheImpl_DataQueries> queries;
 
     /**
      * Obtain query cache data for an module.
@@ -305,52 +296,35 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
         String queryKey = appName + '!' + modName;
 
         synchronized( queriesLock ) {
-            TargetCacheImpl_DataQueries queriesData = queries.get(queryKey);
-            if ( queriesData == null ) {
-                queriesData = createQueriesData(appName, modName);
-                queries.put(queryKey, queriesData);
-            }
-            return queriesData;
-        }
-    }
-    
-
-    private static final class AppKey {
-        private final String deploymentName;
-
-        public AppKey(String deploymentName) {
-            this.deploymentName = deploymentName;
-        }
-
-        public String getDeploymentName() {
-            return deploymentName;
-        }
-
-        @Override
-        public int hashCode() {
-            if (deploymentName == null) {
-                return 0;
-            }
-            
-            return deploymentName.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            AppKey other = (AppKey) obj;
-            
-            if (deploymentName == null) {
-                return other.getDeploymentName() == null;
-            }
-
-            return deploymentName.equals(other.getDeploymentName());
+            return queries.computeIfAbsent(queryKey, (useQueryKey) -> createQueriesData(appName, modName) );
         }
     }
 
+    /**
+     * Release queries data for an application.
+     * 
+     * @param appName The name of the application.
+     */
+    public void releaseQueries(String appName) {
+        synchronized ( queriesLock ) {
+			Set<String> queryKeys = null;
+
+			String appPrefix = appName + '!';
+			for ( Map.Entry<String, TargetCacheImpl_DataQueries> queryEntry : queries.entrySet() ) {
+				String queryKey = queryEntry.getKey();
+				if ( queryKey.startsWith(appPrefix) ) {
+					if ( queryKeys == null ) {
+						queryKeys = new HashSet<>(1);
+					}
+					queryKeys.add(queryKey);
+				}
+			}
+
+			if ( queryKeys != null ) {
+				for ( String queryKey : queryKeys ) {
+					queries.remove(queryKey);
+				}
+			}
+		}
+	}
 }

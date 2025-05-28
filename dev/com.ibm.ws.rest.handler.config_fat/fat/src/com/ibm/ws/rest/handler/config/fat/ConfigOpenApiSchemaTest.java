@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,8 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+                                                             MicroProfileActions.MP71_EE11,
+                                                             MicroProfileActions.MP71_EE10,
                                                              MicroProfileActions.MP70_EE11,
                                                              MicroProfileActions.MP70_EE10,
                                                              MicroProfileActions.MP61, // EE10

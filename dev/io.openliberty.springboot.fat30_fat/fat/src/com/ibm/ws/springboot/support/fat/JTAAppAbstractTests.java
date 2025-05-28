@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.WebApplication;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_embedded;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import ejbapp1.EJBEvent;
 import ejbapp1.LocalEJBServlet;
@@ -37,6 +38,7 @@ import ejbapp1.LocalInterface;
 import ejbapp1.TestObserver;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public abstract class JTAAppAbstractTests extends AbstractSpringTests {
     @Override
     public void modifyAppConfiguration(SpringBootApplication appConfig) {

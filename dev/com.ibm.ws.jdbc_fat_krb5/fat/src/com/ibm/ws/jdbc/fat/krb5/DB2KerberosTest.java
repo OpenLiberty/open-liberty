@@ -36,7 +36,6 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.DB2KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer;
-import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -58,6 +57,7 @@ public class DB2KerberosTest extends FATServletClient {
 
     public static final String APP_NAME = "krb5-db2-app";
 
+    @ClassRule
     public static final DB2KerberosContainer db2 = new DB2KerberosContainer(FATSuite.network);
 
     @Server("com.ibm.ws.jdbc.fat.krb5")
@@ -66,9 +66,6 @@ public class DB2KerberosTest extends FATServletClient {
 
     private static Path krbConfPath;
     private static Path krbKeytabPath;
-
-    @ClassRule
-    public static KerberosPlatformRule skipRule = new KerberosPlatformRule();
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -79,8 +76,6 @@ public class DB2KerberosTest extends FATServletClient {
 //        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
 
         FATSuite.krb5.generateConf(krbConfPath);
-
-        db2.start();
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.db2.web");
 
@@ -109,25 +104,8 @@ public class DB2KerberosTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        Exception firstError = null;
-
-        try {
-            server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB", // expected by testBasicPassword
-                              "DSRA0304E", "DSRA0302E", "WTRN0048W"); // expected by testXARecovery
-        } catch (Exception e) {
-            firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-        try {
-            db2.stop();
-        } catch (Exception e) {
-            if (firstError == null)
-                firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-
-        if (firstError != null)
-            throw firstError;
+        server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB", // expected by testBasicPassword
+                          "DSRA0304E", "DSRA0302E", "WTRN0048W"); // expected by testXARecovery
     }
 
     /**

@@ -63,10 +63,6 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: \u00dctk\u00f6z\u0151 konfigur\u00e1c
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile Telemetry rendszertulajdons\u00e1gok vagy k\u00f6rnyezeti v\u00e1ltoz\u00f3k haszn\u00e1lat\u00e1val enged\u00e9lyezhet\u0151 az eg\u00e9sz szerverre. Ha nincs enged\u00e9lyezve a teljes szerverre, akkor MicroProfile Config tulajdons\u00e1gainak be\u00e1ll\u00edt\u00e1s\u00e1val enged\u00e9lyezhet\u0151 egy alkalmaz\u00e1s sz\u00e1m\u00e1ra; p\u00e9ld\u00e1ul v\u00e1ltoz\u00f3k be\u00e1ll\u00edt\u00e1s\u00e1val a server.xml f\u00e1jlban. Ez a figyelmeztet\u00e9s akkor jelenik meg, ha a telemetria enged\u00e9lyezve van a teljes kiszolg\u00e1l\u00f3n, de a MicroProfile Config tulajdons\u00e1gai letiltj\u00e1k a telemetri\u00e1t egy alkalmaz\u00e1sn\u00e1l. Mivel a telemetria a teljes kiszolg\u00e1l\u00f3n enged\u00e9lyezve van, az adott alkalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1t figyelmen k\u00edv\u00fcl hagyja.
 CWMOT5007.tel.enabled.conflict.useraction: Adja meg az OpenTelemetry p\u00e9ld\u00e1nyok enged\u00e9lyez\u00e9s\u00e9re vagy letilt\u00e1s\u00e1ra vonatkoz\u00f3 be\u00e1ll\u00edt\u00e1sokat k\u00f6rnyezeti v\u00e1ltoz\u00f3k \u00e9s rendszertulajdons\u00e1gok vagy m\u00e1s MP Config-forr\u00e1sok haszn\u00e1lat\u00e1val, de mindkett\u0151vel nem.
 
-CWMOT5008.mptelemetry.unknown.access.log.field=CWMOT5008W: A MicroProfile Telemetria napl\u00f3z\u00e1si funkci\u00f3 nem ismeri a [ {0} ] telemetriai hozz\u00e1f\u00e9r\u00e9si napl\u00f3 form\u00e1tum\u00e1t.
-CWMOT5008.mptelemetry.unknown.access.log.field.explanation=A Liberty futtat\u00e1si k\u00f6rnyezet nem biztos\u00edtja a megadott napl\u00f3form\u00e1tumot.
-CWMOT5008.mptelemetry.unknown.access.log.field.useraction=A mpTelemetry accessLogFields attrib\u00fatumhoz adja meg az alap\u00e9rtelmezettet vagy a logFormat c\u00edmet.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------

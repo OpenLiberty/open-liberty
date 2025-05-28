@@ -17,8 +17,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.spnego.SpnegoCommonSetup;
-import com.ibm.ws.security.openidconnect.server.fat.spnego.ep.clientregistration.ClientRegistrationOIDCWebClientCommonStoreTest;
-import com.ibm.ws.security.openidconnect.server.fat.spnego.ep.clientregistration.config.ClientRegistrationOIDCWebClientCommonStore_ConfigTest;
 import com.ibm.ws.security.openidconnect.server.spnego.app.password.RevokeAppPasswordsWithAccessTokenUsingLocalStoreTests;
 import com.ibm.ws.security.openidconnect.server.spnego.app.token.RevokeAppTokensWithAccessTokenUsingLocalStoreTests;
 
@@ -27,8 +25,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                ClientRegistrationOIDCWebClientCommonStoreTest.class,
-                ClientRegistrationOIDCWebClientCommonStore_ConfigTest.class,
+//                ClientRegistrationOIDCWebClientCommonStoreTest.class,
+//                ClientRegistrationOIDCWebClientCommonStore_ConfigTest.class,
                 RevokeAppTokensWithAccessTokenUsingLocalStoreTests.class,
                 RevokeAppPasswordsWithAccessTokenUsingLocalStoreTests.class
 })

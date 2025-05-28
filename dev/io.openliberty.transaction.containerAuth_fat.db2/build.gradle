@@ -1,0 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../io.openliberty.transaction.containerAuth_fat.derby/common.gradle'
+apply from: '../io.openliberty.transaction.containerAuth_fat.derby/copy.gradle'
+
+dependencies  {
+  requiredLibs project(":com.ibm.ws.transaction.fat.util"),
+               project(":com.ibm.ws.tx.embeddable"),
+               project(":io.openliberty.transaction.containerAuth_fat.derby"),
+               project(':io.openliberty.org.apache.commons.logging')
+}

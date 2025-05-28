@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -187,6 +187,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
 
     private boolean _isSQLRecoveryLog;
 
+    private final RecLogServiceImpl _recLogService;
+
     //------------------------------------------------------------------------------
     // Method: RecoveryDirectorImpl.RecoveryDirectorImpl
     //------------------------------------------------------------------------------
@@ -196,10 +198,14 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * Internal code may access this instance via the RecoveryDirectorImpl.instance()
      * method. Client services may access this instance via the RecoveryDirectorFactory.
      * recoveryDirector() method.
+     *
+     * @param recLogService
      */
-    protected RecoveryDirectorImpl() {
+    protected RecoveryDirectorImpl(RecLogServiceImpl recLogService) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "RecoveryDirectorImpl");
+            Tr.entry(tc, "RecoveryDirectorImpl", recLogService);
+
+        _recLogService = recLogService;
 
         // Allocate the map which will contain all registered service managers
         _registeredRecoveryAgents = new TreeMap<Integer, ArrayList<RecoveryAgent>>();
@@ -244,18 +250,26 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * method is intended for internal use only. Client services should access this
      * instance via the RecoveryDirectorFactory.recoveryDirector() method.
      *
+     * @param recLogService
+     *
      * @return The singleton instance of the RecoveryDirectorImpl class.
      */
-    public static synchronized RecoveryDirector instance() {
+    public static synchronized RecoveryDirector instance(RecLogServiceImpl recLogService) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "instance");
+            Tr.entry(tc, "instance", recLogService);
 
         if (_instance == null) {
-            _instance = new RecoveryDirectorImpl();
+            _instance = new RecoveryDirectorImpl(recLogService);
         }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "instance", _instance);
+        return _instance;
+    }
+
+    public static RecoveryDirector instance() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "instance", _instance);
         return _instance;
     }
 
@@ -1698,6 +1712,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                 if (leaseClaimed) {
                     FileFailureScope peerFFS = new FileFailureScope(peerRecoveryIdentity, leaseInfo);
 
+                    _recLogService.addRecoveryId(peerRecoveryIdentity);
+
                     directInitialization(peerFFS);
                 } else {
                     Tr.audit(tc, "WTRN0108I: " +
@@ -1723,6 +1739,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     Tr.exit(tc, "peerRecoverServers", exc);
                 throw new RecoveryFailedException(exc);
             } finally {
+                _recLogService.removeRecoveryId(peerRecoveryIdentity);
+
                 // Release the peer lease if it was claimed
                 if (leaseClaimed) {
                     try {

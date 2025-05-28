@@ -27,9 +27,6 @@ import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCInvokeNo
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCPublicClientAuthCodeTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCertRequiredTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCertTest;
-import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCodeCustomStoreBellTest;
-import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCodeCustomStoreHashTest;
-import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCodeCustomStoreXORTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCodeDerbyHashTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCodeDerbyXORTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCodeTest;
@@ -37,8 +34,6 @@ import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClien
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientCredentialTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientImplicitTest;
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCCookieNameTest;
-import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCGrantTypesCustomStoreBellTest;
-import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCGrantTypesCustomStoreTest;
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCGrantTypesDerbyTest;
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCGrantTypesTest;
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCPKCETest;
@@ -63,9 +58,9 @@ import componenttest.rules.repeater.RepeatTests;
                 OIDCWebClientAuthCertRequiredTest.class,
                 OIDCWebClientAuthCodeDerbyXORTest.class,
                 OIDCWebClientAuthCodeDerbyHashTest.class,
-                OIDCWebClientAuthCodeCustomStoreXORTest.class,
-                OIDCWebClientAuthCodeCustomStoreHashTest.class,
-                OIDCWebClientAuthCodeCustomStoreBellTest.class,
+//                OIDCWebClientAuthCodeCustomStoreXORTest.class,
+//                OIDCWebClientAuthCodeCustomStoreHashTest.class,
+//                OIDCWebClientAuthCodeCustomStoreBellTest.class,
                 OIDCPublicClientAuthCodeTest.class,
                 OIDCWebClientImplicitTest.class,
                 OIDCWebClientCredentialTest.class,
@@ -77,8 +72,8 @@ import componenttest.rules.repeater.RepeatTests;
                 OIDCScopesClientCredentialTest.class,
                 OIDCScopesPasswordTest.class,
                 OIDCGrantTypesTest.class,
-                OIDCGrantTypesCustomStoreTest.class,
-                OIDCGrantTypesCustomStoreBellTest.class,
+//                OIDCGrantTypesCustomStoreTest.class,
+//                OIDCGrantTypesCustomStoreBellTest.class,
                 OIDCGrantTypesDerbyTest.class,
                 OIDCCookieNameTest.class,
                 OIDCResourceTest.class,

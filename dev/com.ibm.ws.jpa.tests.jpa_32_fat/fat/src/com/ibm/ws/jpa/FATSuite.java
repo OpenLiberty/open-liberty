@@ -21,6 +21,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.ws.jpa.jpa32.JPABootstrapTest;
 import com.ibm.ws.jpa.jpa32.JakartaDataRecreateTest;
+import com.ibm.ws.jpa.jpa32.JakartaPersistenceTest;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.RepeatTests;
@@ -30,6 +31,7 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @SuiteClasses({
                 JPABootstrapTest.class,
                 JakartaDataRecreateTest.class,
+                JakartaPersistenceTest.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 

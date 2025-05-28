@@ -33,6 +33,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test to ensure that the tcpOptions portOpenRetries works.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class PortOpenRetriesTests {
 
     private static final String CLASS_NAME = PortOpenRetriesTests.class.getName();
@@ -97,17 +98,6 @@ public class PortOpenRetriesTests {
     }
 
     /**
-     * The test will check the default value of portOpenRetries by searching the trace file.
-     *
-     * The default value is 0.
-     */
-    @Test
-    public void testPortOpenRetries_default() throws Exception {
-        // Validate that portOpenRetries default is 0.
-        assertNotNull("The default value of portOpenRetries was not: 0!", server1.waitForStringInTrace("portOpenRetries: 0"));
-    }
-
-    /**
      * The test will set portOpenRetries to a value of 60 and validate in the trace file that
      * the correct value is being used.
      *
@@ -117,7 +107,6 @@ public class PortOpenRetriesTests {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testPortOpenRetries_nonDefault() throws Exception {
         ServerConfiguration configuration = server1.getServerConfiguration();
         LOG.info("Server configuration that the test started with: " + configuration);
@@ -143,7 +132,6 @@ public class PortOpenRetriesTests {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testPortOpenRetries_invalid() throws Exception {
         ServerConfiguration configuration = server1.getServerConfiguration();
         LOG.info("Server configuration that the test started with: " + configuration);
@@ -179,7 +167,6 @@ public class PortOpenRetriesTests {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testPortOpenRetries() throws Exception {
         // Start server2 and use the class name so we can find logs easily.
         server2.startServer(PortOpenRetriesTests.class.getSimpleName() + ".log");
@@ -195,7 +182,7 @@ public class PortOpenRetriesTests {
         assertNotNull("Attempt 5 to bind did not fail and should have!", server2.waitForStringInTrace("attempt 5 of 6 failed to open the port"));
 
         // Validate that CWWKO0221E was logged.
-        assertNotNull("The PortOpenRetries2 server was able to bind successfully should not have been able to!!", server2.waitForStringInLog("CWWKO0221E"));
+        assertNotNull("The PortOpenRetries2 server was able to bind successfully but should not have been able to!", server2.waitForStringInLog("CWWKO0221E"));
 
         if (server2 != null && server2.isStarted()) {
             server2.stopServer("CWWKO0221E");

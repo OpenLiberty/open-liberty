@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Set;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -48,6 +49,7 @@ public class DataJavaGlobalTest extends FATServletClient {
      */
     private static final String[] EXPECTED_ERROR_MESSAGES = //
                     new String[] {
+                                   "CWWKD1064E.*getDataSource" // other app stopped
                     };
 
     @Server("io.openliberty.data.internal.fat.global")
@@ -77,7 +79,11 @@ public class DataJavaGlobalTest extends FATServletClient {
                         .jsonBody("""
                                         {
                                           "id": 1,
-                                          "message": "Do this first."
+                                          "expiresAt": "2025-10-01T13:30:00.133-05:00[America/Chicago]",
+                                          "forDayOfWeek": "MONDAY",
+                                          "message": "Do this first.",
+                                          "monthDayCreated": "--04-25",
+                                          "yearCreated": 2025
                                         }""")
                         .run(JsonObject.class);
 
@@ -86,7 +92,11 @@ public class DataJavaGlobalTest extends FATServletClient {
                         .jsonBody("""
                                         {
                                           "id": 2,
-                                          "message": "Do this second."
+                                          "expiresAt": "2025-12-01T12:24:15.000-07:00[America/Los_Angeles]",
+                                          "forDayOfWeek": "TUESDAY",
+                                          "message": "Do this second.",
+                                          "monthDayCreated": "--12-31",
+                                          "yearCreated": 2024
                                         }""")
                         .run(JsonObject.class);
 
@@ -95,7 +105,11 @@ public class DataJavaGlobalTest extends FATServletClient {
                         .jsonBody("""
                                         {
                                           "id": 3,
-                                          "message": "Do this third."
+                                          "expiresAt": "2026-12-31T15:45:59.999-06:00[America/Phoenix]",
+                                          "forDayOfWeek": "WEDNESDAY",
+                                          "message": "Do this third.",
+                                          "monthDayCreated": "--04-25",
+                                          "yearCreated": 2025
                                         }""")
                         .run(JsonObject.class);
 
@@ -127,23 +141,124 @@ public class DataJavaGlobalTest extends FATServletClient {
             String found = "found: " + json;
             assertEquals(found, 3, json.getInt("id"));
             assertEquals(found, "Do this third.", json.getString("message"));
+
+            // Attempt to access a repository that depends on resource reference and
+            // DataSource in java:global from the other application which has already
+            // been stopped.
+            path = "/DataGlobalRestApp/data/referral/datasource";
+            try {
+                json = new HttpRequest(server, path).run(JsonObject.class);
+                fail("Should not find " + json);
+            } catch (Exception x) {
+                if (x.getMessage() != null && x.getMessage().contains("500"))
+                    ; // expected
+                else
+                    throw x;
+            }
         } finally {
             server.stopServer(EXPECTED_ERROR_MESSAGES);
         }
     }
 
+    @Test
+    public void testExtractMonthAndDayFromMonthDay() throws Exception {
+        String path = "/DataGlobalRestApp/data/reminder/created/month/4/day/25";
+        JsonArray array = new HttpRequest(server, path).run(JsonArray.class);
+
+        String found = "found: " + array;
+
+        assertEquals(found, 2, array.size());
+        assertEquals(found, "Do this first.", array.getString(0));
+        assertEquals(found, "Do this third.", array.getString(1));
+    }
+
     /**
      * Verify that an entity can be found in the database by querying on its Id.
+     * The DataSource used by the repository has a java:global name and is located
+     * in the same application as the repository.
      */
     @Test
-    public void testFindById() throws Exception {
+    public void testFindByIdGlobalDataSourceSameApp() throws Exception {
         String path = "/DataGlobalRestApp/data/reminder/id/1";
         JsonObject json = new HttpRequest(server, path).run(JsonObject.class);
 
         String found = "found: " + json;
 
         assertEquals(found, 1, json.getInt("id"));
+        assertEquals(found, "2025-10-01T13:30:00.133-05:00[America/Chicago]",
+                     json.getString("expiresAt"));
+        assertEquals(found, "MONDAY", json.getString("forDayOfWeek"));
         assertEquals(found, "Do this first.", json.getString("message"));
+        assertEquals(found, "--04-25", json.getString("monthDayCreated"));
+        assertEquals(found, 2025, json.getInt("yearCreated"));
+    }
+
+    /**
+     * Verify that an entity can be found in the database by querying on its Id.
+     * The DataSource resource reference used by the repository has a
+     * java:global/env name and is located in a different application than the
+     * repository.
+     */
+    @Test
+    public void testGlobalResRefFromDifferentApp() throws Exception {
+        JsonObject saved = new HttpRequest(server, "/DataGlobalRestApp/data/referral/save")
+                        .method("POST")
+                        .jsonBody("""
+                                        {
+                                          "email": "testGlobalResRef1@openliberty.io",
+                                          "name": "TestGlobalResRefFromDifferentApp",
+                                          "phone": 5075554321
+                                        }""")
+                        .run(JsonObject.class);
+
+        String response = saved.toString();
+
+        assertEquals(response,
+                     "testGlobalResRef1@openliberty.io",
+                     saved.getString("email"));
+
+        assertEquals(response,
+                     "TestGlobalResRefFromDifferentApp",
+                     saved.getString("name"));
+
+        assertEquals(response,
+                     5075554321L,
+                     saved.getJsonNumber("phone").longValue());
+
+        String path = "/DataGlobalRestApp/data/referral/email/" +
+                      "testGlobalResRef1@openliberty.io";
+        JsonObject json = new HttpRequest(server, path).run(JsonObject.class);
+
+        String found = "found: " + json;
+
+        assertEquals(found,
+                     "testGlobalResRef1@openliberty.io",
+                     json.getString("email"));
+
+        assertEquals(found,
+                     "TestGlobalResRefFromDifferentApp",
+                     json.getString("name"));
+
+        assertEquals(found,
+                     5075554321L,
+                     json.getJsonNumber("phone").longValue());
+
+        path = "/DataGlobalRestApp/data/referral/datasource";
+        json = new HttpRequest(server, path).run(JsonObject.class);
+
+        found = "found: " + json;
+
+        assertEquals(found,
+                     "Apache Derby",
+                     json.getString("DatabaseProductName"));
+
+        assertEquals(found,
+                     "Apache Derby Embedded JDBC Driver",
+                     json.getString("DriverName"));
+
+        assertEquals(found,
+                     "dbuser2",
+                     json.getString("UserName"));
     }
 
     /**
@@ -151,7 +266,7 @@ public class DataJavaGlobalTest extends FATServletClient {
      * entity is not found in the database.
      */
     @Test
-    public void testNotFound() throws Exception {
+    public void testNotFoundGlobalDataSourceSameApp() throws Exception {
         String path = "/DataGlobalRestApp/data/reminder/id/97531";
         try {
             JsonObject json = new HttpRequest(server, path).run(JsonObject.class);
@@ -162,5 +277,30 @@ public class DataJavaGlobalTest extends FATServletClient {
             else
                 throw x;
         }
+    }
+
+    /**
+     * Verify that a REST Application method that observes the CDI Startup event
+     * has access to a Jakarta Data repository and can use it to populate data.
+     */
+    @Test
+    public void testStartupEventInRestApplication() throws Exception {
+        String path = "/DataGlobalRestApp/data/referral/email/" +
+                      "startup@openliberty.io";
+        JsonObject json = new HttpRequest(server, path).run(JsonObject.class);
+
+        String found = "found: " + json;
+
+        assertEquals(found,
+                     "startup@openliberty.io",
+                     json.getString("email"));
+
+        assertEquals(found,
+                     "Startup Event",
+                     json.getString("name"));
+
+        assertEquals(found,
+                     5075556789L,
+                     json.getJsonNumber("phone").longValue());
     }
 }

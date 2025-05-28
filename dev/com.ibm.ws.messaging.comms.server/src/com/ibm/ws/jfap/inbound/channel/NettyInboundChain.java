@@ -9,9 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.jfap.inbound.channel;
 
-import java.net.Inet6Address;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -25,7 +22,6 @@ import com.ibm.websphere.channelfw.EndPointMgr;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.jfap.inbound.channel.CommsInboundChain.ChainState;
 import com.ibm.ws.sib.admin.JsConstants;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.server.impl.NettyJMSServerHandler;
@@ -38,27 +34,16 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.ConfigConstants;
-import io.openliberty.netty.internal.tcp.InactivityTimeoutHandler;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
-import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleUserEventChannelHandler;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.util.concurrent.Future;
 import io.openliberty.netty.internal.impl.NettyConstants;
-import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
-import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 
 public class NettyInboundChain implements InboundChain{

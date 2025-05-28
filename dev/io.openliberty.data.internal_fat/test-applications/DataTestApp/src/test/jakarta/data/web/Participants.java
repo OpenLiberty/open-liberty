@@ -37,7 +37,7 @@ public interface Participants extends DataRepository<Participant, Integer> {
     void add(Participant... p);
 
     // Using Query by Method Name would require @Select("name"),
-    // which is not available in Data 1.0 // TODO move to 1.1 tests
+    // which is not available until Data 1.1
     @Query("SELECT name WHERE pID = ?1")
     Optional<Name> findNameById(int id);
 

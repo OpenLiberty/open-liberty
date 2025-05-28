@@ -105,6 +105,11 @@ public class DataStoreTest extends FATServletClient {
         //ShrinkHelper.addDirectory(DataStoreTestApp, "test-applications/DataStoreTestApp/resources");
         ShrinkHelper.exportAppToServer(server, DataStoreTestApp);
 
+        JavaArchive DataStoreEJBApp = ShrinkWrap.create(JavaArchive.class,
+                                                        "DataStoreEJBApp.jar")
+                        .addPackage("test.jakarta.data.datastore.ejbapp");
+        ShrinkHelper.exportAppToServer(server, DataStoreEJBApp);
+
         server.startServer();
     }
 

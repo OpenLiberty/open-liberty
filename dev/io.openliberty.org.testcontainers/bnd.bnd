@@ -68,7 +68,6 @@ generate.replacement: true
 	org.testcontainers:mongodb;version=${testContainerVersion},\
 	org.testcontainers:mssqlserver;version=${testContainerVersion},\
 	org.testcontainers:oracle-free;version=${testContainerVersion},\
-	org.testcontainers:oracle-xe;version=${testContainerVersion},\
 	org.testcontainers:postgresql;version=${testContainerVersion},\
 	org.testcontainers:selenium;version=${testContainerVersion},\
 	org.rnorth.duct-tape:duct-tape;version=1.0.8,\

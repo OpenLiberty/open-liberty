@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2024 IBM Corporation and others.
+ * Copyright (c) 2017,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -741,7 +741,12 @@ public class SessionCacheTestServlet extends FATServlet {
             System.out.println("Session was null and was expecting null value.");
             return;
         } else if (session == null) {
-            fail("Was expecting to get " + key + '=' + expectedValue + ", but instead got a null session.");
+            // Retry getSession() as session may need time to replicate to server B
+            TimeUnit.SECONDS.sleep(5);
+            session = request.getSession(false);
+            if (session == null) {
+                fail("Was expecting to get " + key + '=' + expectedValue + ", but instead got a null session.");
+            }
         }
         Object actualValue = session.getAttribute(key);
         System.out.println("Got entry: " + key + '=' + actualValue + " from sessionID=" + session.getId());

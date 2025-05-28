@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2024 IBM Corporation and others.
+ * Copyright (c) 2002, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -311,7 +311,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 }
 
                 // Create the Recovery Director
-                _recoveryDirector = RecoveryDirectorFactory.createRecoveryDirector();
+                _recoveryDirector = RecoveryDirectorFactory.createRecoveryDirector(_recLogService);
 
                 // For cloud support, retrieve recovery identity from the configuration if it is defined.
                 if (cp != null) {
@@ -366,7 +366,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                     // We will do peer recovery if the recovery identity and group are set
                     if (_recoveryIdentity != null && !_recoveryIdentity.isEmpty()) {
-                        _recLogService.setPeerRecoverySupported(true);
+                        _recLogService.setPeerRecoverySupported(_recoveryIdentity);
                         txAgent.setPeerRecoverySupported(true);
                         // Override the disable2PC property if it has been set
                         TransactionImpl.setDisable2PCDefault(false);
@@ -464,7 +464,8 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                             Thread.sleep(1000);
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Waited " + ++timeSlept + " seconds for transactions to finish");
-                        } catch (InterruptedException e) {}
+                        } catch (InterruptedException e) {
+                        }
                     } else {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Gave up waiting for transactions to finish after " + ++timeSlept + " seconds");

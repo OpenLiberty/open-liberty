@@ -17,12 +17,6 @@ test.project: true
 publish.wlp.jar.disabled: true
 instrument.disabled: true
 
-src: \
-    fat/src,\
-    test-applications/beanvalidation/src,\
-    test-applications/beanvalidation20/src,\
-    test-applications/helpers/DatabaseManagement/src
-
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \

@@ -790,7 +790,13 @@ public class XAResourceImpl implements XAResource, Serializable {
             if (dumpState) {
                 dumpState();
             }
-            Runtime.getRuntime().halt(DIE);
+
+            try {
+            	Runtime.getRuntime().halt(DIE);
+            } catch (Throwable t) {
+                System.out.println("Runtime.getRuntime().halt() threw a Throwable:");
+            	t.printStackTrace();
+            }
         }
     }
 
