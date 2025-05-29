@@ -71,7 +71,8 @@ public class OracleKerberosTest extends FATServletClient {
     public static void setUp() throws Exception {
         // Generate krb5.conf in server/security directory
         Path krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
-        FATSuite.krb5.generateConf(krbConfPath);
+        // Avoid service principle canonicalization on systems where kerberos version is >= 1.18
+        FATSuite.krb5.generateConf(krbConfPath, "dns_canonicalize_hostname = false", "qualify_shortname = \"\"");
 
         // Generate krb5.keytab in KDC container, and then copy it to server/security directory
         Path krb5KeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");

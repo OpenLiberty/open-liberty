@@ -117,34 +117,51 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         }
     }
 
-    public void generateConf(Path outputPath) throws IOException {
-        String conf = "[libdefaults]\n" +
-                      "        rdns = false\n" +
-                      "        renew_lifetime = 7d\n" +
-                      "        ticket_lifetime = 24h\n" +
-                      "        dns_lookup_realm = false\n" +
-                      "        default_realm = " + KRB5_REALM.toUpperCase() + "\n" +
-                      "\n" +
-                      "# The following krb5.conf variables are only for MIT Kerberos.\n" +
-                      "        kdc_timesync = 1\n" +
-                      "        ccache_type = 4\n" +
-                      "        forwardable = true\n" +
-                      "        proxiable = true\n" +
-                      "\n" +
-                      "# The following libdefaults parameters are only for Heimdal Kerberos.\n" +
-                      "        fcc-mit-ticketflags = true\n" +
-                      "\n" +
-                      "[realms]\n" +
-                      "        " + KRB5_REALM.toUpperCase() + " = {\n" +
-                      "                kdc = " + getHost() + ":" + getMappedPort(99) + "\n" +
-                      "                admin_server = " + getHost() + "\n" +
-                      "        }\n" +
-                      "\n" +
-                      "[domain_realm]\n" +
-                      "        ." + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n" +
-                      "        " + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n";
+    public void generateConf(Path outputPath, String... additionalLibDefaults) throws IOException {
+        String nl = "\n";
+        String tab = "\t";
+
+        StringBuilder conf = new StringBuilder();
+        conf.append("[libdefaults]").append(nl);
+        conf.append(tab).append("rdns = false").append(nl);
+        conf.append(tab).append("renew_lifetime = 7d").append(nl);
+        conf.append(tab).append("ticket_lifetime = 24h").append(nl);
+        conf.append(tab).append("dns_lookup_realm = false").append(nl);
+        conf.append(tab).append("default_realm = " + KRB5_REALM.toUpperCase()).append(nl);
+        conf.append(nl);
+
+        conf.append("# The following krb5.conf variables are only for MIT Kerberos.").append(nl);
+        conf.append(tab).append("kdc_timesync = 1").append(nl);
+        conf.append(tab).append("ccache_type = 4").append(nl);
+        conf.append(tab).append("forwardable = true").append(nl);
+        conf.append(tab).append("proxiable = true").append(nl);
+        conf.append(nl);
+
+        conf.append("# The following libdefaults parameters are only for Heimdal Kerberos.").append(nl);
+        conf.append(tab).append("fcc-mit-ticketflags = true").append(nl);
+        conf.append(nl);
+
+        if (additionalLibDefaults != null && additionalLibDefaults.length > 0) {
+            conf.append("# Additional configurations for this test case.").append(nl);
+            for (String config : additionalLibDefaults) {
+                conf.append(tab).append(config).append(nl);
+            }
+            conf.append(nl);
+        }
+
+        conf.append("[realms]").append(nl);
+        conf.append(tab).append(KRB5_REALM.toUpperCase() + " = {").append(nl);
+        conf.append(tab).append(tab).append("kdc = " + getHost() + ":" + getMappedPort(99)).append(nl);
+        conf.append(tab).append(tab).append("admin_server = " + getHost()).append(nl);
+        conf.append(tab).append("}").append(nl);
+        conf.append(nl);
+
+        conf.append("[domain_realm]").append(nl);
+        conf.append(tab).append("." + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase()).append(nl);
+        conf.append(tab).append(KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase()).append(nl);
+
         outputPath.getParent().toFile().mkdirs();
-        Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
+        Files.write(outputPath, conf.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     /**
