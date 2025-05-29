@@ -50,6 +50,13 @@ public interface CompressionHandler {
     List<WsByteBuffer> compress(WsByteBuffer[] buffers);
 
     /**
+     * Flushes any buffered data without finishing the compression stream.
+     * 
+     * @return List of buffers with flushed compressed data
+     */
+    public List<WsByteBuffer> flush();
+
+    /**
      * Called when the input data is complete, this will trigger any final
      * compression output and return any remaining data to write out. It is
      * the caller's responsibility to release these buffers.

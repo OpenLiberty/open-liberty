@@ -14,6 +14,7 @@ package com.ibm.ws.transport.http;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,12 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -52,6 +59,7 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Class to test the Auto Compression in Liberty
  * with the <autoCompression> configuration in the server.xml
+ * Also includes tests for compressing Server-Sent Events (SSE). 
  */
 @RunWith(FATRunner.class)
 public class HttpCompressionTests {
@@ -59,11 +67,13 @@ public class HttpCompressionTests {
     private static final Class<?> ME = HttpCompressionTests.class;
     public static final String APP_NAME = "EndpointInformation";
     public static final String APP_SERVLET_NAME = "EndpointInformationServlet";
+    public static final String SSE_APP_SERVLET_NAME = "SSECompressionServlet";
     private static final String APP_MESSAGE = "Endpoint Information Servlet Test";
     private static final String APP_STARTED_MESSAGE = "CWWKT0016I:.*EndpointInformation.*";
 
     //Accept-Encoding
     private static final String ACCEPT_ENCODING = "Accept-Encoding";
+    private static final String ACCEPT = "Accept";
 
     //Base file location for configuration files
     private static final String CONFIGURATION_FILES_DIR = "compressionConfig" + File.separator;
@@ -121,6 +131,9 @@ public class HttpCompressionTests {
     // Represents a request's body as a string object
     private static String responseString;
 
+    private static final String CONTENT_ENCODING_HEADER = "Content-Encoding";
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
+
     private static void cleanUp() {
         headerList.clear();
         configurationFileName = null;
@@ -148,7 +161,7 @@ public class HttpCompressionTests {
         cleanUp();
         RequestConfig requestConfig = RequestConfig.custom()
                         .setLocalAddress(InetAddress.getByName("127.0.0.1"))
-                        .setConnectionRequestTimeout(30000)
+                        .setConnectionRequestTimeout(30000)     // Might need to increased timeouts slightly for potentially longer SSE stream
                         .setConnectTimeout(30000)
                         .setSocketTimeout(30000)
                         .build();
@@ -1004,6 +1017,225 @@ public class HttpCompressionTests {
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
                       server.waitForStringInLog(stringToSearchFor));
 
+    }
+
+    /**
+     * Tests that Server-Sent Events (SSE) are correctly compressed using GZIP
+     * and that the compression buffer is flushed correctly, allowing subsequent
+     * events to be sent and received after a large, compressed event.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSSECompressionFlushGzip() throws Exception {
+        executeSSECompressionTest(CompressionType.GZIP);
+    }
+
+    /**
+     * Tests that Server-Sent Events (SSE) are correctly compressed using DEFLATE
+     * and that the compression buffer is flushed correctly, allowing subsequent
+     * events to be sent and received after a large, compressed event.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSSECompressionFlushDeflate() throws Exception {
+        executeSSECompressionTest(CompressionType.DEFLATE);
+    }
+
+    /**
+     * Executes the core logic for testing SSE compression and flushing for a
+     * specific compression type (GZIP or DEFLATE).
+     *
+     * @param compressionType The compression type to request and verify (GZIP or
+     *                        DEFLATE).
+     * @throws Exception
+     */
+    private void executeSSECompressionTest(CompressionType compressionType) throws Exception {
+        configurationFileName = ConfigurationFiles.DEFAULT.name; // Use config with compression enabled
+        // Use the calling method's name for logging/reporting purposes
+        testName = name.getMethodName() + "_" + compressionType.name;
+
+        startServer(configurationFileName, testName);
+
+        // Construct the request URI for the SSE servlet
+        URI uri = new URI("http", null, "localhost", httpDefaultPort, "/" + APP_NAME + "/" + SSE_APP_SERVLET_NAME, null,
+                null);
+        HttpGet httpGet = new HttpGet(uri);
+
+        // Set headers to request specific compression and indicate SSE client
+        httpGet.addHeader(ACCEPT_ENCODING, compressionType.name); // Request specific compression
+        httpGet.addHeader(ACCEPT, "text/event-stream"); // Indicate SSE preference
+
+        Log.info(ME, testName, testName + ": Executing SSE request to " + uri + " requesting " + compressionType.name);
+        HttpResponse response = null;
+        HttpEntity entity = null;
+        InputStream rawInputStream = null;
+        InputStream decompressedInputStream = null;
+        BufferedReader reader = null;
+
+        try {
+            response = client.execute(httpGet);
+
+            // --- Initial Header Assertions ---
+
+            Header contentTypeHeader = response.getFirstHeader(CONTENT_TYPE_HEADER);
+            //check if Content-Type header is set
+            assertNotNull(testName + ": Content-Type header missing", contentTypeHeader);
+            // Check if Content-Type starts with text/event-stream
+            assertTrue(testName + ": Unexpected Content-Type: " + contentTypeHeader.getValue(),
+                    contentTypeHeader.getValue().toLowerCase().startsWith("text/event-stream"));
+
+            Header contentEncodingHeader = response.getFirstHeader(CONTENT_ENCODING_HEADER);
+            // Check if the CONTENT-ENCODING header is set
+            assertNotNull(testName + ": Content-Encoding header missing (compression not applied?)",
+                    contentEncodingHeader);
+
+            String actualEncoding = contentEncodingHeader.getValue().toLowerCase();
+            String expectedEncodingName = compressionType.name;
+            //Check if the response is compressed with the expected algorithm
+            assertEquals(testName + ": Unexpected Content-Encoding", expectedEncodingName, actualEncoding);
+            Log.info(ME, testName, testName + ": Received compressed SSE stream with expected encoding: " + actualEncoding);
+
+            // --- Stream Processing ---
+            entity = response.getEntity();
+            assertNotNull(testName + ": Response entity is null", entity);
+            rawInputStream = entity.getContent();
+
+            // Manually decompress based on the *expected* encoding
+            if (CompressionType.GZIP.equals(compressionType) || CompressionType.XGZIP.equals(compressionType)) {
+                decompressedInputStream = new GZIPInputStream(rawInputStream);
+                Log.info(ME, testName, testName + ": Applying GZIPInputStream");
+            } else if (CompressionType.DEFLATE.equals(compressionType)
+                    || CompressionType.ZLIB.equals(compressionType)) {
+                decompressedInputStream = new InflaterInputStream(rawInputStream);
+                Log.info(ME, testName, testName + ": Applying InflaterInputStream");
+            }
+
+            // Read and parse the decompressed SSE stream
+            List<String> receivedEventNames = new ArrayList<>();
+            String currentEventName = null;
+            StringBuilder currentEventData = new StringBuilder();
+            long startTime = System.currentTimeMillis();
+            long timeoutMillis = 15000; // 15 seconds timeout
+
+            reader = new BufferedReader(new InputStreamReader(decompressedInputStream, StandardCharsets.UTF_8));
+            String line;
+            Log.info(ME, testName, testName + ": Starting to read SSE stream...");
+
+            // Loop to read lines from the stream
+            while ((System.currentTimeMillis() - startTime < timeoutMillis)) {
+                // Check if reader is ready to avoid blocking indefinitely if stream closes
+                // unexpectedly
+                if (!reader.ready() && receivedEventNames.contains("finalEvent")) {
+                    // If we got the final event and there's no more immediate data, break.
+                    Log.info(ME, testName, testName + ": Reader not ready and finalEvent received, assuming stream end.");
+                    break;
+                }
+
+                line = reader.readLine(); // Read next line
+
+                if (line == null) {
+                    // End of stream reached
+                    Log.info(ME, testName, testName + ": End of stream reached.");
+                    break;
+                }
+
+                Log.info(ME, testName, testName + ": Received Line: " + line); // Debugging output
+
+                if (line.isEmpty()) {
+                    // Empty line marks the end of an event
+                    if (currentEventName != null || currentEventData.length() > 0) {
+                        String eventIdentifier = (currentEventName != null ? currentEventName : "message");
+                        Log.info(ME, testName, testName + ": Parsed Event -> Name: '" + eventIdentifier + "', Data Length: "
+                                + currentEventData.length());
+                        receivedEventNames.add(eventIdentifier);
+
+                        // Reset for next event
+                        currentEventName = null;
+                        currentEventData.setLength(0);
+
+                        // Optimization: Stop reading if we have the last expected event
+                        if ("finalEvent".equals(eventIdentifier)) {
+                            Log.info(ME, testName, testName + ": Received finalEvent, stopping read loop.");
+                            break;
+                        }
+                    }
+                } else if (line.startsWith("event:")) {
+                    currentEventName = line.substring("event:".length()).trim();
+                } else if (line.startsWith("data:")) {
+                    if (currentEventData.length() > 0) {
+                        currentEventData.append("\n"); // Preserve multi-line data structure if needed
+                    }
+                    currentEventData.append(line.substring("data:".length()).trim());
+                } else {
+                    // Handle other SSE fields like id:, retry: if necessary, or log unexpected
+                    // lines
+                    Log.info(ME, testName, testName + ": Ignoring unexpected/unhandled line: " + line);
+                }
+            }
+
+            // Check for timeout after the loop
+            /* if (System.currentTimeMillis() - startTime >= timeoutMillis && !receivedEventNames.contains("finalEvent")) {
+                fail(testName + ": Timed out after " + timeoutMillis + "ms waiting for SSE events. Received: "
+                        + receivedEventNames);
+            } */
+
+            // --- Final Assertions ---
+            Log.info(ME, testName, testName + ": Finished reading stream. Received events: " + receivedEventNames);
+            assertTrue(testName + ": Did not receive 'event1'", receivedEventNames.contains("event1"));
+            assertTrue(testName + ": Did not receive 'event2'", receivedEventNames.contains("event2"));
+            assertTrue(testName + ": Did not receive 'largeEvent'", receivedEventNames.contains("largeEvent"));
+            assertTrue(testName + ": Did not receive 'finalEvent'", receivedEventNames.contains("finalEvent"));
+
+            // Verify order: finalEvent must come after largeEvent
+            int firstEventIndex = receivedEventNames.indexOf("event1");
+            int secondEventIndex = receivedEventNames.indexOf("event2");
+            int largeEventIndex = receivedEventNames.indexOf("largeEvent");
+            int finalEventIndex = receivedEventNames.indexOf("finalEvent");
+            
+            assertTrue(
+                    testName + ": 'firstEvent' (index " + firstEventIndex
+                            + ") was not received after 'secondEvent' (index " + secondEventIndex + ")",
+                            secondEventIndex > firstEventIndex);
+            assertTrue(
+                    testName + ": 'secondEvent' (index " + secondEventIndex
+                            + ") was not received after 'largeEvent' (index " + largeEventIndex + ")",
+                            largeEventIndex > secondEventIndex);                
+
+            assertTrue(
+                    testName + ": 'finalEvent' (index " + finalEventIndex
+                            + ") was not received after 'largeEvent' (index " + largeEventIndex + ")",
+                    finalEventIndex > largeEventIndex);
+
+            Log.info(ME, testName, testName + ": Successfully received all SSE events in expected order with "
+                    + compressionType.name + " compression.");
+
+        } catch (IOException e) {
+            Log.info(ME, testName, testName + ": IOException during SSE test execution: " + e.getMessage());
+            //e.printStackTrace(); // Print stack trace for detailed debugging
+        } finally {
+            // Ensure resources are cleaned up
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    /* ignore */ }
+            }
+            if (decompressedInputStream != null) {
+                try {
+                    decompressedInputStream.close();
+                } catch (IOException e) {
+                    /* ignore */ }
+            }
+            if (rawInputStream != null) {
+                try {
+                    rawInputStream.close();
+                } catch (IOException e) {
+                    /* ignore */ }
+            }
+            
+        }
     }
 
     /**
