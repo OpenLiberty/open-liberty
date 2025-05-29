@@ -69,7 +69,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     protected final static String CERTUSER2_KEYFILE = "certuser2.jks";
     protected final static String CERTUSER3_KEYFILE = "certuser3.jks";
     protected final static String CERTUSER4_KEYFILE = "certuser4.jks";
-    protected final static String KEYSTORE_PASSWORD = "s3cur1ty";
+    protected final static String KEYSTORE_SAMPLE_DATA = "s3cur1ty";
     protected final static String LDAP_UR_REALM_NAME = "MyLdapRealm";
     protected final static String LDAP_UR_GROUPS = "group:MyLdapRealm/cn=certgroup1,ou=groups,o=ibm,c=us";
 
@@ -431,7 +431,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
 
     private void setupClient(String certFile) {
         String ksFile = myServer.pathToAutoFVTTestFiles + "/clientcert/" + certFile;
-        SSLHelper.establishSSLContext(httpclient, myServer.getHttpDefaultSecurePort(), myServer, ksFile, KEYSTORE_PASSWORD, null, null);
+        SSLHelper.establishSSLContext(httpclient, myServer.getHttpDefaultSecurePort(), myServer, ksFile, KEYSTORE_SAMPLE_DATA, null, null);
     }
 
 }

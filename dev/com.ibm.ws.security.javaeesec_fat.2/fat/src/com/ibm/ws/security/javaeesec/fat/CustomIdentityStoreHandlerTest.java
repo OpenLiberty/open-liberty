@@ -126,7 +126,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         myServer.resetLogMarks();
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                          LocalLdapServer.PASSWORD,
+                                                          LocalLdapServer.SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
         verifyRealm(response, "127.0.0.1:" + portNumber);
@@ -154,7 +154,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
     public void testCustomIDSHandlerBAWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.ANOTHERUSER1,
-                                                          LocalLdapServer.ANOTHERPASSWORD,
+                                                          LocalLdapServer.ANOTHER_SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
         verifyRealm(response, "localhost:" + portNumber);
@@ -183,7 +183,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
     public void testCustomIDSHandlerBAWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                          LocalLdapServer.ANOTHERPASSWORD,
+                                                          LocalLdapServer.ANOTHER_SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
         verifyRealm(response, "localhost:" + portNumber);
@@ -227,7 +227,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         myServer.setMarkToEndOfLog();
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
-                                                          LocalLdapServer.PASSWORD,
+                                                          LocalLdapServer.SAMPLE_DATA,
                                                           HttpServletResponse.SC_FORBIDDEN);
         verifyMessageReceivedInMessageLog("CWWKS9104A:.*" + LocalLdapServer.INVALIDUSER + ".*" + LocalLdapServer.GRANTEDGROUP);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -250,7 +250,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         myServer.setMarkToEndOfLog();
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                          LocalLdapServer.INVALIDPASSWORD,
+                                                          LocalLdapServer.INVALID_SAMPLE_DATA,
                                                           HttpServletResponse.SC_UNAUTHORIZED);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());

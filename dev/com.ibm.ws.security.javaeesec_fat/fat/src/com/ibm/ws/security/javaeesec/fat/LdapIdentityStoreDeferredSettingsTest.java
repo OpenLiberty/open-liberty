@@ -82,13 +82,13 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
     // LDAP Users
     private static final String LDAP_USER1_UID = "ldapuser1";
-    private static final String LDAP_USER1_PASSWORD = LDAP_USER1_UID + "pass";
+    private static final String LDAP_USER1_SAMPLE_DATA = LDAP_USER1_UID + "pass";
     private static final String LDAP_USER2_UID = "ldapuser2";
-    private static final String LDAP_USER2_PASSWORD = LDAP_USER2_UID + "pass";
+    private static final String LDAP_USER2_SAMPLE_DATA = LDAP_USER2_UID + "pass";
     private static final String LDAP_USER3_UID = "ldapuser3";
-    private static final String LDAP_USER3_PASSWORD = LDAP_USER3_UID + "pass";
+    private static final String LDAP_USER3_SAMPLE_DATA = LDAP_USER3_UID + "pass";
     private static final String LDAP_USER4_UID = "ldapuser4";
-    private static final String LDAP_USER4_PASSWORD = LDAP_USER4_UID + "pass";
+    private static final String LDAP_USER4_SAMPLE_DATA = LDAP_USER4_UID + "pass";
 
     //LDAP bind pass
     private final String password = "ldapuser1pass";
@@ -171,7 +171,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         entry.addAttribute("uid", LDAP_USER1_UID);
         entry.addAttribute("sn", LDAP_USER1_UID + "sn");
         entry.addAttribute("cn", LDAP_USER1_UID + "cn");
-        entry.addAttribute("userPassword", LDAP_USER1_PASSWORD);
+        entry.addAttribute("userPassword", LDAP_USER1_SAMPLE_DATA);
         ldapServer.add(entry);
 
         entry = new Entry(LDAP_USER2_DN);
@@ -183,7 +183,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         entry.addAttribute("sn", LDAP_USER2_UID + "sn");
         entry.addAttribute("cn", LDAP_USER2_UID + "cn");
         entry.addAttribute("memberOf", LDAP_GROUP1_DN);
-        entry.addAttribute("userPassword", LDAP_USER2_PASSWORD);
+        entry.addAttribute("userPassword", LDAP_USER2_SAMPLE_DATA);
         ldapServer.add(entry);
 
         entry = new Entry(LDAP_USER3_DN);
@@ -192,7 +192,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         entry.addAttribute("uid", LDAP_USER3_UID);
         entry.addAttribute("sn", LDAP_USER3_UID + "sn");
         entry.addAttribute("cn", LDAP_USER3_UID + "cn");
-        entry.addAttribute("userPassword", LDAP_USER3_PASSWORD);
+        entry.addAttribute("userPassword", LDAP_USER3_SAMPLE_DATA);
         ldapServer.add(entry);
 
         entry = new Entry(LDAP_USER4_DN);
@@ -204,7 +204,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         entry.addAttribute("sn", LDAP_USER4_UID + "sn");
         entry.addAttribute("cn", LDAP_USER4_UID + "cn");
         entry.addAttribute("memberOf", LDAP_GROUP2_DN);
-        entry.addAttribute("userPassword", LDAP_USER4_PASSWORD);
+        entry.addAttribute("userPassword", LDAP_USER4_SAMPLE_DATA);
         ldapServer.add(entry);
 
         entry = new Entry("cn=ldapgroup1," + LDAP_ROOT_PARTITION);
@@ -259,44 +259,44 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         /* ldapuser1 */
         if (code1 != null) {
-            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER1_UID, LDAP_USER1_PASSWORD, code1);
+            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER1_UID, LDAP_USER1_SAMPLE_DATA, code1);
             if (code1 == SC_OK) {
                 verifyUserResponse(response, getUserPrincipalFound + LDAP_USER1_UID, getRemoteUserFound + LDAP_USER1_UID);
             }
-//        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER1_PASSWORD); TODO Uncomment when ApacheDS logs are clean
+//        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER1_SAMPLE_DATA); TODO Uncomment when ApacheDS logs are clean
 
             resetConnection();
         }
 
         /* ldapuser2 */
         if (code2 != null) {
-            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER2_UID, LDAP_USER2_PASSWORD, code2);
+            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER2_UID, LDAP_USER2_SAMPLE_DATA, code2);
             if (code2 == SC_OK) {
                 verifyUserResponse(response, getUserPrincipalFound + LDAP_USER2_UID, getRemoteUserFound + LDAP_USER2_UID);
             }
-//        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER2_PASSWORD); TODO Uncomment when ApacheDS logs are clean
+//        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER2_SAMPLE_DATA); TODO Uncomment when ApacheDS logs are clean
 
             resetConnection();
         }
 
         /* ldapuser3 */
         if (code3 != null) {
-            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER3_UID, LDAP_USER3_PASSWORD, code3);
+            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER3_UID, LDAP_USER3_SAMPLE_DATA, code3);
             if (code3 == SC_OK) {
                 verifyUserResponse(response, getUserPrincipalFound + LDAP_USER3_UID, getRemoteUserFound + LDAP_USER3_UID);
             }
-//        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER3_PASSWORD); TODO Uncomment when ApacheDS logs are clean
+//        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER3_SAMPLE_DATA); TODO Uncomment when ApacheDS logs are clean
 
             resetConnection();
         }
 
         /* ldapuser4 */
         if (code4 != null) {
-            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER4_UID, LDAP_USER4_PASSWORD, code4);
+            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER4_UID, LDAP_USER4_SAMPLE_DATA, code4);
             if (code4 == SC_OK) {
                 verifyUserResponse(response, getUserPrincipalFound + LDAP_USER4_UID, getRemoteUserFound + LDAP_USER4_UID);
             }
-//        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER4_PASSWORD); TODO Uncomment when ApacheDS logs are clean
+//        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER4_SAMPLE_DATA); TODO Uncomment when ApacheDS logs are clean
 
             resetConnection();
         }
@@ -835,7 +835,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         Properties props = new Properties();
         props.put("bindDn", "uid=" + LDAP_USER1_UID + "," + LDAP_ROOT_PARTITION);
-        props.put("bindDnPassword", LDAP_USER1_PASSWORD);
+        props.put("bindDnPassword", LDAP_USER1_SAMPLE_DATA);
         props.put("callerBaseDn", "");
         props.put("callerNameAttribute", "uid");
         props.put("callerSearchBase", LDAP_ROOT_PARTITION);

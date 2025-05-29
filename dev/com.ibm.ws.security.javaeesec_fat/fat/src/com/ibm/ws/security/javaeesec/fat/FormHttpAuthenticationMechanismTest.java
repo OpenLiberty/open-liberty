@@ -141,7 +141,7 @@ public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
         myServer.setMarkToEndOfLog();
         String response = executeGetRequestFormCreds(httpclient, urlHttp + Constants.DEFAULT_FORM_LOGIN_PAGE, false, urlHttp + "/JavaEEsecFormAuth/login.jsp",
                                                      "login page for the form login test", urlHttp + "/JavaEEsecFormAuth/j_security_check",
-                                                     LocalLdapServer.USER1, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
+                                                     LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
     }
 
@@ -164,7 +164,7 @@ public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
         myServer.setMarkToEndOfLog();
         String response = executeGetRequestFormCreds(httpclient, urlHttp + Constants.DEFAULT_REDIRECT_FORM_LOGIN_PAGE, true, urlHttp + "/JavaEEsecFormAuthRedirect/login.jsp",
                                                      "login page for the form login test", urlHttp + "/JavaEEsecFormAuthRedirect/j_security_check",
-                                                     LocalLdapServer.USER1, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
+                                                     LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
     }
 }

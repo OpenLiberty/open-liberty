@@ -61,7 +61,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
     private static String GROUP1 = "group1";
     private static String USER2 = "user2";
     private static String INVALIDUSER1 = "invaliduser1";
-    private static String PASSWORD = "s3cur1ty";
+    private static String SAMPLE_DATA = "s3cur1ty";
 
     protected DefaultHttpClient httpclient;
 
@@ -133,7 +133,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + queryString);
@@ -165,7 +165,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, USER2, PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + loginformUri, USER2, SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns 403 due to authorization failure.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_FORBIDDEN, urlBase + queryString);
@@ -197,7 +197,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, INVALIDUSER1, PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + loginformUri, INVALIDUSER1, SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, TITLE_ERROR_PAGE);

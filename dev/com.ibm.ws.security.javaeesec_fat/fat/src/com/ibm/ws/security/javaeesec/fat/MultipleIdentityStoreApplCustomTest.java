@@ -122,7 +122,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISApplCustomWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.USER1 + ":" + LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
+        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.USER1 + ":" + LocalLdapServer.SAMPLE_DATA, HttpServletResponse.SC_OK);
 
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
         verifyRealm(response, "127.0.0.1:" + portNumber);
@@ -148,7 +148,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISApplCustomWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.ANOTHERUSER1 + ":" + LocalLdapServer.ANOTHERPASSWORD,
+        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.ANOTHERUSER1 + ":" + LocalLdapServer.ANOTHER_SAMPLE_DATA,
                                                  HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
         verifyRealm(response, "localhost:" + portNumber);
@@ -176,7 +176,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISApplCustomWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.USER1 + ":" + LocalLdapServer.ANOTHERPASSWORD,
+        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.USER1 + ":" + LocalLdapServer.ANOTHER_SAMPLE_DATA,
                                                  HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
         verifyRealm(response, "localhost:" + portNumber);
@@ -219,7 +219,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     public void testMultipleISApplCustomWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         myServer.setMarkToEndOfLog();
-        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.INVALIDUSER + ":" + LocalLdapServer.PASSWORD,
+        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.INVALIDUSER + ":" + LocalLdapServer.SAMPLE_DATA,
                                                  HttpServletResponse.SC_FORBIDDEN);
         verifyMessageReceivedInMessageLog("CWWKS9104A:.*" + LocalLdapServer.INVALIDUSER + ".*" + LocalLdapServer.GRANTEDGROUP);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -241,7 +241,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     public void testMultipleISApplCustomWith1st2ndFail_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         myServer.setMarkToEndOfLog();
-        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.USER1 + ":" + LocalLdapServer.INVALIDPASSWORD,
+        String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.USER1 + ":" + LocalLdapServer.INVALID_SAMPLE_DATA,
                                                  HttpServletResponse.SC_FORBIDDEN);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());

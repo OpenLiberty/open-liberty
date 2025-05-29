@@ -174,7 +174,7 @@ public class FeatureTest extends JavaEESecTestBase {
             queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
             Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
             response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                       LocalLdapServer.PASSWORD,
+                                                       LocalLdapServer.SAMPLE_DATA,
                                                        HttpServletResponse.SC_OK);
             Log.info(logClass, getCurrentTestName(), "-------------End of Response");
             Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");

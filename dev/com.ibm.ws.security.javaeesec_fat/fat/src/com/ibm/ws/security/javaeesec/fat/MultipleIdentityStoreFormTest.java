@@ -150,7 +150,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, REDIRECT, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + redirectQueryString);
@@ -184,7 +184,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
 
         // Execute Form login and get redirect location.
         String[] sessionCookie = { "LtpaToken2" };
-        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true, null, sessionCookie);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHER_SAMPLE_DATA, true, null, sessionCookie);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         String[] wasReqURLCookie = { "WASReqURL" };
@@ -221,7 +221,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, REDIRECT, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.ANOTHER_SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + redirectQueryString);
@@ -254,7 +254,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, REDIRECT, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.INVALIDUSER, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.INVALIDUSER, LocalLdapServer.SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns 403 due to authorization failure.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_FORBIDDEN, urlBase + redirectQueryString);
@@ -284,7 +284,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, REDIRECT, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.INVALIDPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.INVALID_SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, TITLE_ERROR_PAGE);
@@ -314,7 +314,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + forwardQueryString, FORWARD, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + forwardQueryString);
@@ -346,7 +346,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + forwardQueryString, FORWARD, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHER_SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + forwardQueryString);
@@ -382,7 +382,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + forwardQueryString, FORWARD, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.USER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.USER1, LocalLdapServer.ANOTHER_SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + forwardQueryString);
@@ -415,7 +415,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + forwardQueryString, FORWARD, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.INVALIDUSER, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.INVALIDUSER, LocalLdapServer.SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns 403 due to authorization failure.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_FORBIDDEN, urlBase + forwardQueryString);
@@ -445,7 +445,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + forwardQueryString, FORWARD, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.USER1, LocalLdapServer.INVALIDPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.USER1, LocalLdapServer.INVALID_SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, TITLE_ERROR_PAGE);

@@ -89,8 +89,8 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
     protected static String SETTING_MESSAGE = "ServletName: LoginToContinueTest";
 
     protected static String USERID = "jaspiuser1";
-    protected static String PASSWORD = "s3cur1ty";
-    protected static String INVALIDPASSWORD = "invalid";
+    protected static String SAMPLE_DATA = "s3cur1ty";
+    protected static String INVALID_SAMPLE_DATA = "invalid";
 
     protected DefaultHttpClient httpclient;
 
@@ -153,14 +153,14 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
         accessPageNoChallenge(httpclient, urlBase + INVALID_IMMEDIATE_SETTING, HttpServletResponse.SC_OK, SETTING_MESSAGE);
         // 1st call.
         String response = getFormLoginPage(httpclient, urlBase + IMMEDIATE_SERVLET_NAME, true, urlBase + "/" + APP_IMMEDIATE_NAME + ORIGINAL_LOGIN, ORIGINAL_TITLE_LOGIN_PAGE);
-        String location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_IMMEDIATE_URI, USERID, PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_IMMEDIATE_URI, USERID, SAMPLE_DATA, true);
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + IMMEDIATE_SERVLET_NAME);
         // restart the client.
         httpclient.getConnectionManager().shutdown();
         // invoke second time, and make sure that the original setting is still in effect.
         setupConnection();
         response = getFormLoginPage(httpclient, urlBase + IMMEDIATE_SERVLET_NAME, true, urlBase + "/" + APP_IMMEDIATE_NAME + ORIGINAL_LOGIN, ORIGINAL_TITLE_LOGIN_PAGE);
-        location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_IMMEDIATE_URI, USERID, PASSWORD, true);
+        location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_IMMEDIATE_URI, USERID, SAMPLE_DATA, true);
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + IMMEDIATE_SERVLET_NAME);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -179,7 +179,7 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
         accessPageNoChallenge(httpclient, urlBase + ORIGINAL_DEFERRED_SETTING, HttpServletResponse.SC_OK, SETTING_MESSAGE);
         // 1st call.
         String response = getFormLoginPage(httpclient, urlBase + DEFERRED_SERVLET_NAME, true, urlBase + "/" + APP_DEFERRED_NAME + ORIGINAL_LOGIN, ORIGINAL_TITLE_LOGIN_PAGE);
-        String location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_DEFERRED_URI, USERID, PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_DEFERRED_URI, USERID, SAMPLE_DATA, true);
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + DEFERRED_SERVLET_NAME);
         // restart the client.
         httpclient.getConnectionManager().shutdown();
@@ -189,7 +189,7 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
         accessPageNoChallenge(httpclient, urlBase + ALTERNATIVE_DEFERRED_SETTING, HttpServletResponse.SC_OK, SETTING_MESSAGE);
         // invoke 2nd time based on the config change.
         response = getFormLoginPage(httpclient, urlBase + DEFERRED_SERVLET_NAME, false, urlBase + "/" + APP_DEFERRED_NAME + ALTERNATIVE_LOGIN, ALTERNATIVE_TITLE_LOGIN_PAGE);
-        location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_DEFERRED_URI, USERID, PASSWORD, true);
+        location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_DEFERRED_URI, USERID, SAMPLE_DATA, true);
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + DEFERRED_SERVLET_NAME);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -209,7 +209,7 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
         accessPageNoChallenge(httpclient, urlBase + ORIGINAL_DEFERRED_SETTING, HttpServletResponse.SC_OK, SETTING_MESSAGE);
         // 1st call.
         String response = getFormLoginPage(httpclient, urlBase + DEFERRED_SERVLET_NAME, true, urlBase + "/" + APP_DEFERRED_NAME + ORIGINAL_LOGIN, ORIGINAL_TITLE_LOGIN_PAGE);
-        String location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_DEFERRED_URI, USERID, INVALIDPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_DEFERRED_URI, USERID, INVALID_SAMPLE_DATA, true);
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, ORIGINAL_TITLE_ERROR_PAGE);
         // restart the client.
         httpclient.getConnectionManager().shutdown();
@@ -219,7 +219,7 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
         accessPageNoChallenge(httpclient, urlBase + ALTERNATIVE_DEFERRED_SETTING, HttpServletResponse.SC_OK, SETTING_MESSAGE);
         // invoke 2nd time based on the config change.
         response = getFormLoginPage(httpclient, urlBase + DEFERRED_SERVLET_NAME, false, urlBase + "/" + APP_DEFERRED_NAME + ALTERNATIVE_LOGIN, ALTERNATIVE_TITLE_LOGIN_PAGE);
-        location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_DEFERRED_URI, USERID, INVALIDPASSWORD, true);
+        location = executeFormLogin(httpclient, urlBase + LOGIN_FORM_DEFERRED_URI, USERID, INVALID_SAMPLE_DATA, true);
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, ALTERNATIVE_TITLE_ERROR_PAGE);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());

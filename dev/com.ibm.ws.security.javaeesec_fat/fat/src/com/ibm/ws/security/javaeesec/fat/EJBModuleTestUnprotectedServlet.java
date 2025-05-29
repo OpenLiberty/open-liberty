@@ -159,7 +159,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         String queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                          LocalLdapServer.PASSWORD,
+                                                          LocalLdapServer.SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
@@ -190,7 +190,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         String queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                          LocalLdapServer.PASSWORD,
+                                                          LocalLdapServer.SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
@@ -224,7 +224,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         String queryString = EJB_WAR_PATH + RUNAS_SERVLET + "?testInstance=ejb01&testMethod=runAsSpecified";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER2,
-                                                          LocalLdapServer.PASSWORD,
+                                                          LocalLdapServer.SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
@@ -255,7 +255,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         String queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
-                                                          LocalLdapServer.PASSWORD,
+                                                          LocalLdapServer.SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
@@ -285,7 +285,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         String queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
-                                                          LocalLdapServer.PASSWORD,
+                                                          LocalLdapServer.SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
@@ -315,7 +315,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         String queryString = EJB_WAR_PATH + RUNAS_SERVLET + "?testInstance=ejb01&testMethod=runAsSpecified";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
-                                                          LocalLdapServer.PASSWORD,
+                                                          LocalLdapServer.SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");

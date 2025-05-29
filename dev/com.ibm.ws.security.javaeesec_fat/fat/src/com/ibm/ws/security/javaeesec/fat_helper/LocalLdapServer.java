@@ -35,9 +35,9 @@ public class LocalLdapServer {
     public static final String ANOTHERRUNASUSER1 = "anotherrunasuser1";
     public static final String CERTUSER1 = "certuser1";
     public static final String CERTUSER2 = "certuser2";
-    public static final String PASSWORD = "s3cur1ty";
-    public static final String ANOTHERPASSWORD = "an0thers3cur1ty";
-    public static final String INVALIDPASSWORD = "invalid";
+    public static final String SAMPLE_DATA = "s3cur1ty";
+    public static final String ANOTHER_SAMPLE_DATA = "an0thers3cur1ty";
+    public static final String INVALID_SAMPLE_DATA = "invalid";
     public static final String GROUP1 = "group1";
     public static final String GROUP2 = "group2";
     public static final String RUNASGROUP1 = "runasgroup1";
@@ -66,14 +66,14 @@ public class LocalLdapServer {
         }
 
         String USERS_BASE = "ou=" + USERS + "," + BASE_DN;
-        addUser(USERS_BASE, ADMINUSER, PASSWORD);
-        addUser(USERS_BASE, USER1, PASSWORD);
-        addUser(USERS_BASE, USER2, PASSWORD);
-        addUser(USERS_BASE, USER3, PASSWORD);
-        addUser(USERS_BASE, INVALIDUSER, PASSWORD);
-        addUser(USERS_BASE, RUNASUSER1, PASSWORD);
-        addUser(USERS_BASE, CERTUSER1, PASSWORD);
-        addUser(USERS_BASE, CERTUSER2, PASSWORD);
+        addUser(USERS_BASE, ADMINUSER, SAMPLE_DATA);
+        addUser(USERS_BASE, USER1, SAMPLE_DATA);
+        addUser(USERS_BASE, USER2, SAMPLE_DATA);
+        addUser(USERS_BASE, USER3, SAMPLE_DATA);
+        addUser(USERS_BASE, INVALIDUSER, SAMPLE_DATA);
+        addUser(USERS_BASE, RUNASUSER1, SAMPLE_DATA);
+        addUser(USERS_BASE, CERTUSER1, SAMPLE_DATA);
+        addUser(USERS_BASE, CERTUSER2, SAMPLE_DATA);
 
         String GROUPS_BASE = "ou=" + GROUPS + "," + BASE_DN;
         String[] GROUP1_MEMBERS = { "uid=" + USER1 + "," + USERS_BASE, "uid=" + USER2 + "," + USERS_BASE };
@@ -86,12 +86,12 @@ public class LocalLdapServer {
         addGroup(GROUPS_BASE, CERTGROUP1, CERTGROUP1_MEMBERS);
 
         String ANOTHERUSERS_BASE = "ou=" + ANOTHERUSERS + "," + BASE_DN;
-        addUser(ANOTHERUSERS_BASE, ADMINUSER, ANOTHERPASSWORD);
-        addUser(ANOTHERUSERS_BASE, USER1, ANOTHERPASSWORD);
-        addUser(ANOTHERUSERS_BASE, USER2, ANOTHERPASSWORD);
-        addUser(ANOTHERUSERS_BASE, ANOTHERUSER1, ANOTHERPASSWORD);
-        addUser(ANOTHERUSERS_BASE, INVALIDUSER, ANOTHERPASSWORD);
-        addUser(ANOTHERUSERS_BASE, ANOTHERRUNASUSER1, ANOTHERPASSWORD);
+        addUser(ANOTHERUSERS_BASE, ADMINUSER, ANOTHER_SAMPLE_DATA);
+        addUser(ANOTHERUSERS_BASE, USER1, ANOTHER_SAMPLE_DATA);
+        addUser(ANOTHERUSERS_BASE, USER2, ANOTHER_SAMPLE_DATA);
+        addUser(ANOTHERUSERS_BASE, ANOTHERUSER1, ANOTHER_SAMPLE_DATA);
+        addUser(ANOTHERUSERS_BASE, INVALIDUSER, ANOTHER_SAMPLE_DATA);
+        addUser(ANOTHERUSERS_BASE, ANOTHERRUNASUSER1, ANOTHER_SAMPLE_DATA);
 
         String ANOTHERGROUPS_BASE = "ou=" + ANOTHERGROUPS + "," + BASE_DN;
         String[] ANOTHERGROUP1_MEMBERS = { "uid=" + USER1 + "," + ANOTHERUSERS_BASE, "uid=" + USER2 + "," + ANOTHERUSERS_BASE, "uid=" + ANOTHERUSER1 + "," + ANOTHERUSERS_BASE,

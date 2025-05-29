@@ -108,7 +108,7 @@ public class NoIdentityStoreTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         myServer.setMarkToEndOfLog();
         String response = executeGetRequestBasicAuthCredsPreemptive(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                                    LocalLdapServer.PASSWORD,
+                                                                    LocalLdapServer.SAMPLE_DATA,
                                                                     HttpServletResponse.SC_OK);
         verifyMessageReceivedInMessageLog("CustomIdentityStoreHandler is being used.");
         verifyMessageReceivedInMessageLog("Number of identityStore : 0");

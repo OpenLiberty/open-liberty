@@ -169,7 +169,7 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         queryString = EJB_REALM1_WAR_PATH + SIMPLE_SERVLET_REALM1 + "?testInstance=ejb03&testMethod=manager";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                   LocalLdapServer.PASSWORD,
+                                                   LocalLdapServer.SAMPLE_DATA,
                                                    HttpServletResponse.SC_OK);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
@@ -186,7 +186,7 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         queryString = EJB_REALM2_WAR_PATH + SIMPLE_SERVLET_REALM2 + "?testInstance=ejb03&testMethod=manager";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                   LocalLdapServer.ANOTHERPASSWORD,
+                                                   LocalLdapServer.ANOTHER_SAMPLE_DATA,
                                                    HttpServletResponse.SC_OK);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
@@ -252,7 +252,7 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         queryString = EJB_REALM1_WAR_PATH + SIMPLE_SERVLET_REALM1 + "?testInstance=ejb03&testMethod=manager";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                   LocalLdapServer.PASSWORD,
+                                                   LocalLdapServer.SAMPLE_DATA,
                                                    HttpServletResponse.SC_FORBIDDEN);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
@@ -268,7 +268,7 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         queryString = EJB_REALM2_WAR_PATH + SIMPLE_SERVLET_REALM2 + "?testInstance=ejb03&testMethod=manager";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-                                                   LocalLdapServer.ANOTHERPASSWORD,
+                                                   LocalLdapServer.ANOTHER_SAMPLE_DATA,
                                                    HttpServletResponse.SC_FORBIDDEN);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");

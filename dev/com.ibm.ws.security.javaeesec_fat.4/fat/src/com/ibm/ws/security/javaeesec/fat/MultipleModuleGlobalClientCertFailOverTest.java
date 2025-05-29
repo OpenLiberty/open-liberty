@@ -90,7 +90,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
 
     protected final static String CERTUSER1_KEYFILE = "certuser1.jks";
     protected final static String CERTUSER4_KEYFILE = "certuser4.jks";
-    protected final static String KEYSTORE_PASSWORD = "s3cur1ty";
+    protected final static String KEYSTORE_SAMPLE_DATA = "s3cur1ty";
     protected final static String LDAP_UR_REALM_NAME = "MyLdapRealm";
     protected final static String LDAP_UR_GROUPS = "group:MyLdapRealm/cn=certgroup1,ou=groups,o=ibm,c=us";
 
@@ -269,7 +269,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         // ------------- accessing module1 ---------------
         // since the certificate won't be sent, fallback to the specified BasicAuth.
         setupClient(CERTUSER4_KEYFILE);
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP1_SERVLET, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP1_SERVLET, LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, HttpServletResponse.SC_OK);
         verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
         httpclient.getConnectionManager().shutdown();
         // ------------- accessing module2 ---------------
@@ -277,7 +277,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         setupConnection();
         setupClient(CERTUSER4_KEYFILE);
         // since the certificate won't be sent, fallback to the specified BasicAuth.
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP2_SERVLET, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, HttpServletResponse.SC_OK);
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP2_SERVLET, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHER_SAMPLE_DATA, HttpServletResponse.SC_OK);
         verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -336,7 +336,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         // ------------- accessing module1 ---------------
         // since the certificate won't be sent, fallback to the specified BasicAuth.
         setupClient(CERTUSER4_KEYFILE);
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + NOJAVAEESEC_SERVLET_FORM, LocalLdapServer.USER3, LocalLdapServer.PASSWORD,
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + NOJAVAEESEC_SERVLET_FORM, LocalLdapServer.USER3, LocalLdapServer.SAMPLE_DATA,
                                                           HttpServletResponse.SC_OK);
         verifyResponse(response, LocalLdapServer.USER3, LDAP_UR_REALM_NAME, IS2_GROUP_REALM_NAME, LDAP_UR_GROUPS);
         httpclient.getConnectionManager().shutdown();
@@ -345,7 +345,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         setupConnection();
         setupClient(CERTUSER4_KEYFILE);
         // since the certificate won't be sent, fallback to the specified BasicAuth.
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + NOJAVAEESEC_SERVLET_BASIC, LocalLdapServer.USER3, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + NOJAVAEESEC_SERVLET_BASIC, LocalLdapServer.USER3, LocalLdapServer.SAMPLE_DATA, HttpServletResponse.SC_OK);
         verifyResponse(response, LocalLdapServer.USER3, LDAP_UR_REALM_NAME, IS1_GROUP_REALM_NAME, LDAP_UR_GROUPS);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -410,7 +410,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         setupClient(CERTUSER4_KEYFILE);
         String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, false, urlBase + GLOBAL_LOGIN_PAGE, GLOBAL_TITLE_LOGIN_PAGE);
-        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, true);
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
         verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
@@ -422,7 +422,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         // since the certificate won't be sent, custom form login and get redirect location with a user which exists in ldapidentitystore definision in this module.
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + GLOBAL_LOGIN_PAGE, GLOBAL_TITLE_LOGIN_PAGE);
-        location = executeFormLogin(httpclient, urlBase + MODULE2_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        location = executeFormLogin(httpclient, urlBase + MODULE2_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHER_SAMPLE_DATA, true);
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
         verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
@@ -486,7 +486,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         // since the certificate won't be sent, fallback to the specified Form Login.
         setupClient(CERTUSER4_KEYFILE);
         String response = getFormLoginPage(httpclient, urlBase + NOJAVAEESEC_SERVLET_FORM, true, urlBase + GLOBAL_LOGIN_PAGE, GLOBAL_TITLE_LOGIN_PAGE);
-        String location = executeFormLogin(httpclient, urlBase + GLOBAL_LOGIN_FORM, LocalLdapServer.USER3, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + GLOBAL_LOGIN_FORM, LocalLdapServer.USER3, LocalLdapServer.SAMPLE_DATA, true);
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + NOJAVAEESEC_SERVLET_FORM);
         verifyResponse(response, LocalLdapServer.USER3, LDAP_UR_REALM_NAME, IS2_GROUP_REALM_NAME, LDAP_UR_GROUPS);
@@ -497,7 +497,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         setupClient(CERTUSER4_KEYFILE);
         // since the certificate won't be sent, fallback to the specified Form login.
         response = getFormLoginPage(httpclient, urlBase + NOJAVAEESEC_SERVLET_BASIC, true, urlBase + GLOBAL_LOGIN_PAGE, GLOBAL_TITLE_LOGIN_PAGE);
-        location = executeFormLogin(httpclient, urlBase + GLOBAL_LOGIN_FORM, LocalLdapServer.USER3, LocalLdapServer.PASSWORD, true);
+        location = executeFormLogin(httpclient, urlBase + GLOBAL_LOGIN_FORM, LocalLdapServer.USER3, LocalLdapServer.SAMPLE_DATA, true);
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + NOJAVAEESEC_SERVLET_BASIC);
         verifyResponse(response, LocalLdapServer.USER3, LDAP_UR_REALM_NAME, IS1_GROUP_REALM_NAME, LDAP_UR_GROUPS);
@@ -563,7 +563,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         setupClient(CERTUSER4_KEYFILE);
         String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, true);
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
         verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
@@ -575,7 +575,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         // since the certificate won't be sent, custom form login and get redirect location with a user which exists in ldapidentitystore definision in this module.
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
-        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, getViewState(response));
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHER_SAMPLE_DATA, getViewState(response));
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
         verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
@@ -638,7 +638,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         // since the certificate won't be sent, fallback to the specified BasicAuth.
         setupClient(CERTUSER4_KEYFILE);
         String response = getFormLoginPage(httpclient, urlBase + NOJAVAEESEC_SERVLET_FORM, true, urlBase + NOJAVAEESEC_LOGIN_PAGE, NOJAVAEESEC_TITLE_LOGIN_PAGE);
-        String location = executeFormLogin(httpclient, urlBase + NOJAVAEESEC_LOGIN_FORM, LocalLdapServer.USER3, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + NOJAVAEESEC_LOGIN_FORM, LocalLdapServer.USER3, LocalLdapServer.SAMPLE_DATA, true);
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + NOJAVAEESEC_SERVLET_FORM);
         verifyResponse(response, LocalLdapServer.USER3, LDAP_UR_REALM_NAME, IS2_GROUP_REALM_NAME, LDAP_UR_GROUPS);
@@ -648,7 +648,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         setupConnection();
         setupClient(CERTUSER4_KEYFILE);
         // since the certificate won't be sent, fallback to the specified BasicAuth.
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + NOJAVAEESEC_SERVLET_BASIC, LocalLdapServer.USER3, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + NOJAVAEESEC_SERVLET_BASIC, LocalLdapServer.USER3, LocalLdapServer.SAMPLE_DATA, HttpServletResponse.SC_OK);
         verifyResponse(response, LocalLdapServer.USER3, LDAP_UR_REALM_NAME, IS1_GROUP_REALM_NAME, LDAP_UR_GROUPS);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -675,7 +675,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
 
     private void setupClient(String certFile) {
         String ksFile = myServer.pathToAutoFVTTestFiles + "/clientcert/" + certFile;
-        SSLHelper.establishSSLContext(httpclient, myServer.getHttpDefaultSecurePort(), myServer, ksFile, KEYSTORE_PASSWORD, null, null);
+        SSLHelper.establishSSLContext(httpclient, myServer.getHttpDefaultSecurePort(), myServer, ksFile, KEYSTORE_SAMPLE_DATA, null, null);
     }
 
 }

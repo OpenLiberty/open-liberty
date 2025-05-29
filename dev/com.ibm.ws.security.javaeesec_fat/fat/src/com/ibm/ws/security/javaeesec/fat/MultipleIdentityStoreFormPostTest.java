@@ -165,7 +165,7 @@ public class MultipleIdentityStoreFormPostTest extends JavaEESecTestBase {
         String response = postFormLoginPage(httpclient, urlBase + redirectQueryString, params, true, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, SERVLET_NAME);
@@ -199,13 +199,13 @@ public class MultipleIdentityStoreFormPostTest extends JavaEESecTestBase {
         String response = postFormLoginPage(httpclient, urlBase + redirectQueryString, params, true, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute form login for failure.
-        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.INVALIDPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.INVALID_SAMPLE_DATA, true);
         // Redirect to the error page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, TITLE_ERROR_PAGE);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
 
         // Execute form login for retry
-        location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHER_SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, SERVLET_NAME);
@@ -237,7 +237,7 @@ public class MultipleIdentityStoreFormPostTest extends JavaEESecTestBase {
         String response = postFormLoginPage(httpclient, urlBase + forwardQueryString, params, false, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.USER1, LocalLdapServer.SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, SERVLET_NAME);
@@ -271,13 +271,13 @@ public class MultipleIdentityStoreFormPostTest extends JavaEESecTestBase {
         String response = postFormLoginPage(httpclient, urlBase + forwardQueryString, params, false, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute form login for failure.
-        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.INVALIDPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.INVALID_SAMPLE_DATA, true);
         // Redirect to the error page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, TITLE_ERROR_PAGE);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
 
         // Execute form login for retry
-        location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHER_SAMPLE_DATA, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, SERVLET_NAME);

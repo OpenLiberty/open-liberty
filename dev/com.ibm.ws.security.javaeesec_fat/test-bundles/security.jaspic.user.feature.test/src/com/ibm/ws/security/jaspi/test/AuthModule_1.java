@@ -48,7 +48,7 @@ public class AuthModule_1 implements ServerAuthModule {
     private static Class[] supportedMessageTypes = new Class[] { HttpServletRequest.class, HttpServletResponse.class };
     private static final String IS_MANDATORY_POLICY = "javax.security.auth.message.MessagePolicy.isMandatory";
     private static final String JASPI_USER = "com.ibm.websphere.jaspi.user";
-    private static final String JASPI_PASSWORD = "com.ibm.websphere.jaspi.password";
+    private static final String JASPI_SAMPLE_DATA = "com.ibm.websphere.jaspi.password";
     private static final String JASPI_WEB_REQUEST = "com.ibm.websphere.jaspi.request";
     private MessagePolicy requestPolicy;
     private MessagePolicy responsePolicy;
@@ -127,7 +127,7 @@ public class AuthModule_1 implements ServerAuthModule {
         if (isLogin) {
             log.info("request is for method login()");
             String username = msgMap.get(JASPI_USER);
-            String password = msgMap.get(JASPI_PASSWORD);
+            String password = msgMap.get(JASPI_SAMPLE_DATA);
             status = handleUserPassword(username, password, rsp, msgMap, clientSubject, useCallbacks, cacheKey);
 
         } else if (isAuthenticate) {

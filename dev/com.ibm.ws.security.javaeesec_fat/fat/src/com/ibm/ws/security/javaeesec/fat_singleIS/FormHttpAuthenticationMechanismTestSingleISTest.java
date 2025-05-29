@@ -47,7 +47,7 @@ public class FormHttpAuthenticationMechanismTestSingleISTest extends JavaEESecTe
     private static final String BASE_DN = "o=ibm,c=us";
     private static final String USER = "jaspildapuser1";
     private static final String USER_DN = "uid=" + USER + "," + BASE_DN;
-    private static final String PASSWORD = "s3cur1ty";
+    private static final String SAMPLE_DATA = "s3cur1ty";
 
     public FormHttpAuthenticationMechanismTestSingleISTest() {
         super(myServer, logClass);
