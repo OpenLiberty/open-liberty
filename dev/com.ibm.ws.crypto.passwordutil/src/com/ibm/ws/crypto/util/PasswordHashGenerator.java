@@ -25,9 +25,9 @@
  public class PasswordHashGenerator {
      final private static String DEFAULT_ALGORITHM = "PBKDF2WithHmacSHA1";
      final public static String LATEST_DEFAULT_ALGORITHM = "PBKDF2WithHmacSHA512";
-     final private static int DEFAULT_ITERATION = 6384;
+     final private static int DEFAULT_ITERATION = 210000;
      final private static int DEFAULT_OUTPUT_LENGTH = 256;
-     final private static int SALT_LENGTH = 32;
+     final private static int SALT_LENGTH = 128;
      private static final Class<?> CLASS_NAME = PasswordHashGenerator.class;
      private final static Logger logger = Logger.getLogger(CLASS_NAME.getCanonicalName());
  
