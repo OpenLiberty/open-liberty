@@ -79,18 +79,31 @@ public class PasswordHashGeneratorTest {
     }
 
     /**
-     * Test default values
+     * Test create default values.
      */
     @Test
-    public void testDefaultValues() {
+    public void testCreateDefaultValues() {
         // check iteration
-        assertEquals(6384, PasswordHashGenerator.getDefaultIteration());
+        assertEquals(210000, PasswordHashGenerator.getDefaultIteration());
         // check algorithm
-        assertTrue("default algorithm should be PBKDF2WithHmacSHA1", "PBKDF2WithHmacSHA1".equals(PasswordHashGenerator.getDefaultAlgorithm()));
+        assertTrue("default algorithm should be PBKDF2WithHmacSHA512", "PBKDF2WithHmacSHA512".equals(PasswordHashGenerator.getDefaultAlgorithm()));
         // check output length
         assertEquals(256, PasswordHashGenerator.getDefaultOutputLength());
     }
 
+    /**
+     * Test parse default values
+     */
+    @Test
+    public void testParseDefaultValues() {
+        // check iteration
+        assertEquals(210000, PasswordHashGenerator.getDefaultIteration());
+        // check algorithm
+        assertTrue("default algorithm should be PBKDF2WithHmacSHA512", "PBKDF2WithHmacSHA512".equals(PasswordHashGenerator.getDefaultAlgorithm()));
+        // check output length
+        assertEquals(256, PasswordHashGenerator.getDefaultOutputLength());
+    }
+    
     /**
      * Test digest with hashed data
      */

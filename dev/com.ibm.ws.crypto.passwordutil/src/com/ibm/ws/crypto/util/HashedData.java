@@ -20,11 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HashedData {
-    private final static String DEFAULT_ALGORITHM = PasswordHashGenerator.getDefaultAlgorithm();
-    private final static int DEFAULT_ITERATION = PasswordHashGenerator.getDefaultIteration();
+    private final static String DEFAULT_ALGORITHM = PasswordHashGenerator.getParseDefaultAlgorithm();
+    private final static int DEFAULT_ITERATION = PasswordHashGenerator.getParseDefaultIteration();
     private final static int DEFAULT_OUTPUT_LENGTH = PasswordHashGenerator.getDefaultOutputLength();
     private final static int LR_LENGTH = 4; // length of length field in byte array.
-    private final static int TAG_LENGTH = 1; // length of tag field in byte array.
     private final static byte TAG_VERSION_V1 = (byte) 0x01;
     private final static byte TAG_ALGORITHM = (byte) 0x10;
     private final static byte TAG_ITERATION = (byte) 0x20;
@@ -140,18 +139,16 @@ public class HashedData {
             }
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             buffer.write(TAG_VERSION_V1);
-            if (!DEFAULT_ALGORITHM.equals(algorithm)) {
-                buffer.write(TAG_ALGORITHM);
-                writeString(buffer, algorithm);
-            }
-            if (iteration != DEFAULT_ITERATION) {
-                buffer.write(TAG_ITERATION);
-                writeInt(buffer, iteration);
-            }
+
             if (length != DEFAULT_OUTPUT_LENGTH) {
                 buffer.write(TAG_OUTPUT_LENGTH);
                 writeInt(buffer, length);
             }
+
+            buffer.write(TAG_ALGORITHM);
+            writeString(buffer, algorithm);
+            buffer.write(TAG_ITERATION);
+            writeInt(buffer, iteration);
             buffer.write(TAG_SALT);
             writeByte(buffer, salt);
             buffer.write(TAG_DIGEST);

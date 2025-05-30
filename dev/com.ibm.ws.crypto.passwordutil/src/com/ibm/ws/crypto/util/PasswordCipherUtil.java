@@ -486,7 +486,7 @@ public class PasswordCipherUtil {
 
         // LATEST_DEFAULT_ALGORITHM will be used for generating new hashed passwords
         if (algorithm == null) {
-            algorithm = PasswordHashGenerator.LATEST_DEFAULT_ALGORITHM;
+            algorithm = PasswordHashGenerator.getDefaultAlgorithm();
         }
 
         if (!saltSet) {
@@ -501,7 +501,7 @@ public class PasswordCipherUtil {
             length = PasswordHashGenerator.getDefaultOutputLength();
         }
 
-        boolean usingSHA1 = PasswordHashGenerator.getDefaultAlgorithm().equals(algorithm);
+        boolean usingSHA1 = PasswordHashGenerator.SHA_1_ALGORITHM.equals(algorithm);
         //Throw error if older algorithm is used when FIPS is enabled
         if (CryptoUtils.isFips140_3Enabled() && usingSHA1) {
             logger.logp(Level.SEVERE, PasswordUtil.class.getName(), "decode_password",
@@ -511,7 +511,7 @@ public class PasswordCipherUtil {
         //Print warning if older algorithm is being used.
         else if (!!!alreadyLoggedHASHWeakPasswordAlgoWarning && usingSHA1) {
             logger.logp(Level.WARNING, PasswordUtil.class.getName(), "generateHash", "PASSWORDUTIL_WEAK_ALGORITHM_WARNING",
-                        new Object[] { "{hash}", ": " + algorithm, ": " + PasswordHashGenerator.LATEST_DEFAULT_ALGORITHM });
+                        new Object[] { "{hash}", ": " + algorithm, ": " + PasswordHashGenerator.CREATE_DEFAULT_ALGORITHM });
             alreadyLoggedHASHWeakPasswordAlgoWarning = true;
         }
 

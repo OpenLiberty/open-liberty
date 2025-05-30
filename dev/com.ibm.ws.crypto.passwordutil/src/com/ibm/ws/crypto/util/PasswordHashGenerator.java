@@ -23,11 +23,13 @@
  import javax.crypto.spec.PBEKeySpec;
  
  public class PasswordHashGenerator {
-     final private static String DEFAULT_ALGORITHM = "PBKDF2WithHmacSHA1";
-     final public static String LATEST_DEFAULT_ALGORITHM = "PBKDF2WithHmacSHA512";
-     final private static int DEFAULT_ITERATION = 210000;
-     final private static int DEFAULT_OUTPUT_LENGTH = 256;
-     final private static int SALT_LENGTH = 128;
+     protected final static String SHA_1_ALGORITHM = "PBKDF2WithHmacSHA1";
+     protected final static String PARSE_DEFAULT_ALGORITHM = SHA_1_ALGORITHM;
+     protected final static String CREATE_DEFAULT_ALGORITHM = "PBKDF2WithHmacSHA512";
+     protected final static int PARSE_DEFAULT_ITERATION = 6384;
+     protected final static int CREATE_DEFAULT_ITERATION = 210000;
+     private final static int DEFAULT_OUTPUT_LENGTH = 256;
+     private final static int SALT_LENGTH = 128;
      private static final Class<?> CLASS_NAME = PasswordHashGenerator.class;
      private final static Logger logger = Logger.getLogger(CLASS_NAME.getCanonicalName());
  
@@ -49,19 +51,42 @@
          }
          return output;
      }
- 
+     
+     /**
+      * 
+      * @return the default iteration value when generating a new hash
+      */
      public static int getDefaultIteration() {
-         return DEFAULT_ITERATION;
+         return CREATE_DEFAULT_ITERATION;
      }
- 
+
+     /**
+      * 
+      * @return the default algorithm when generating a new hash
+      */
      public static String getDefaultAlgorithm() {
-         return DEFAULT_ALGORITHM;
+         return CREATE_DEFAULT_ALGORITHM;
      }
- 
+
+     /**
+      * 
+      * @return the assumed algorithm when not found while parsing {@link HashedData}
+      */
+     public static String getParseDefaultAlgorithm() {
+         return PARSE_DEFAULT_ALGORITHM;
+     }
+     /**
+      * 
+      * @return the assumed iteration count when not found while parsing {@link HashedData}
+      */
+     public static int getParseDefaultIteration() {
+         return PARSE_DEFAULT_ITERATION;
+     }
+
      public static int getDefaultOutputLength() {
          return DEFAULT_OUTPUT_LENGTH;
      }
- 
+
      public static byte[] digest(HashedData input) throws InvalidPasswordCipherException {
          if (input != null) {
              return digest(input.getPlain(), input.getSalt(), input.getAlgorithm(), input.getIteration(), input.getOutputLength());
@@ -71,7 +96,7 @@
      }
  
      public static byte[] digest(char[] plainBytes) throws InvalidPasswordCipherException {
-         return digest(plainBytes, generateSalt(null), DEFAULT_ALGORITHM, DEFAULT_ITERATION, DEFAULT_OUTPUT_LENGTH);
+         return digest(plainBytes, generateSalt(null), CREATE_DEFAULT_ALGORITHM, CREATE_DEFAULT_ITERATION, DEFAULT_OUTPUT_LENGTH);
      }
  
      /**
