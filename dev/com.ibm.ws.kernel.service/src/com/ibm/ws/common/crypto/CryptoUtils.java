@@ -25,10 +25,13 @@ import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 
 public class CryptoUtils {
     private static final TraceComponent tc = Tr.register(CryptoUtils.class);
+
+    private static boolean issuedBetaMessage = false;
 
     public final static String MESSAGE_DIGEST_ALGORITHM_SHA256 = "SHA-256";
     public final static String MESSAGE_DIGEST_ALGORITHM_SHA384 = "SHA-384";
@@ -337,6 +340,23 @@ public class CryptoUtils {
 
     public static boolean isSemeruFips() {
         return "true".equals(getPropertyLowerCase("semeru.fips", "false"));
+    }
+
+    public static boolean isFips140_3EnabledWithBetaGuard() {
+        return isRunningBetaMode() && isFips140_3Enabled();
+    }
+
+    private static boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class CryptoUtils for the first time.");
+                issuedBetaMessage = true;
+            }
+            return true;
+        }
     }
 
     public static boolean isFips140_3Enabled() {
