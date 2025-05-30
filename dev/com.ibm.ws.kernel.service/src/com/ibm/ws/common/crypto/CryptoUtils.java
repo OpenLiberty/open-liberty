@@ -9,6 +9,8 @@
 *******************************************************************************/
 package com.ibm.ws.common.crypto;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.AccessController;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -90,6 +92,7 @@ public class CryptoUtils {
     public static final int AES_256_KEY_LENGTH_BYTES = 32;
 
     public static final int DESEDE_KEY_LENGTH_BYTES = 24;
+    public static final int FIPS_SALT_BYTE_LENGTH_MINIMUM = 32;
 
     private static boolean fips140_3Enabled = isFips140_3Enabled();
     private static boolean fipsEnabled = fips140_3Enabled;
@@ -357,6 +360,54 @@ public class CryptoUtils {
             fips140_3Checked = true;
             return fips140_3Enabled;
         }
+    }
+
+    /**
+     *
+     * @param saltString a salt value that is intended to be used to generate a hash via the property PasswordUtil.PROPERTY_HASH_SALT.
+     * @return if FIPS 140-3 is enabled and saltsString.length() < 32, the string is repeated until it's length is 32 or over.
+     *         For example, if saltString is 'discombobulated' the output string would be 'discombobulateddiscombobulateddiscombobulated'
+     */
+    public static String getFipsCompatibleSalt(String saltString) {
+        if (!checkFipsCompatibleSalt(saltString, false)) {
+            StringBuilder builder = new StringBuilder(saltString);
+            while (builder.length() < FIPS_SALT_BYTE_LENGTH_MINIMUM) {
+                builder.append(saltString);
+            }
+            saltString = builder.toString();
+        }
+        return saltString;
+    }
+
+    /**
+     *
+     * @param saltString                  a salt value that is intended to be used to generate a hash via the property PasswordUtil.PROPERTY_HASH_SALT.
+     *                                        null or empty strings are valid here because PasswordUtil will generate salt if that is the case.
+     * @param throwExceptionIfSaltInvalid if true, an exception is thrown if saltString is not compatible with FIPS140-3.
+     * @return true if compatible, false otherwise, exception if false and throwExceptionIfSaltInvalid is true.
+     */
+    public static boolean checkFipsCompatibleSalt(String saltString, boolean logIfIncompatible) {
+        boolean isCompatible = true;
+        if (CryptoUtils.isFips140_3Enabled() && saltString != null && !saltString.isEmpty() && saltString.length() < FIPS_SALT_BYTE_LENGTH_MINIMUM) {
+            isCompatible = false;
+        }
+        // TODO delete this logging
+        if (!isCompatible && logIfIncompatible) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                try {
+                    throw new Exception("checkFipsCompatibleSalt failed!");
+                } catch (Exception e) {
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    e.printStackTrace(pw);
+                    Tr.debug(tc, "isCompatible: false, saltString: " + saltString + "\n" + sw.toString());
+                }
+
+            }
+        }
+        // TODO delete this logging
+
+        return isCompatible;
     }
 
     /**

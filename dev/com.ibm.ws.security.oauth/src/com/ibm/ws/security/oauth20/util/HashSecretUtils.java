@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 
 /**
@@ -98,6 +99,7 @@ public class HashSecretUtils {
             if (secretType == null || !secretType.equals(OAuth20Constants.HASH)) {
                 Map<String, String> hashProps = new HashMap<String, String>();
                 hashProps.put(PasswordUtil.PROPERTY_HASH_ALGORITHM, algorithm == null ? DEFAULT_HASH : algorithm);
+                CryptoUtils.checkFipsCompatibleSalt(salt, true);
                 hashProps.put(PasswordUtil.PROPERTY_HASH_SALT, salt);
                 hashProps.put(PasswordUtil.PROPERTY_HASH_ITERATION, iteration == 0 ? String.valueOf(DEFAULT_ITERATIONS) : String.valueOf(iteration));
                 hashProps.put(PasswordUtil.PROPERTY_HASH_LENGTH, length == 0 ? String.valueOf(DEFAULT_KEYSIZE) : String.valueOf(length));
