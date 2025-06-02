@@ -103,7 +103,6 @@ public class HashSecretUtils {
                 hashProps.put(PasswordUtil.PROPERTY_HASH_SALT, salt);
                 hashProps.put(PasswordUtil.PROPERTY_HASH_ITERATION, iteration == 0 ? String.valueOf(DEFAULT_ITERATIONS) : String.valueOf(iteration));
                 hashProps.put(PasswordUtil.PROPERTY_HASH_LENGTH, length == 0 ? String.valueOf(DEFAULT_KEYSIZE) : String.valueOf(length));
-                System.out.println("JAKE: " + length);
 
                 return PasswordUtil.encode_password(secretToHash, OAuth20Constants.HASH, hashProps);
             } else {
