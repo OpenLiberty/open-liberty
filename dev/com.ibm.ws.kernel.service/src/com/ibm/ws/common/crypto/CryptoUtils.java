@@ -96,6 +96,7 @@ public class CryptoUtils {
 
     public static final int DESEDE_KEY_LENGTH_BYTES = 24;
     public static final int FIPS_SALT_BYTE_LENGTH_MINIMUM = 32;
+    public static final int FIPS_HASH_BIT_LENGTH_MINIMUM = 112;
 
     private static boolean fips140_3Enabled = isFips140_3Enabled();
     private static boolean fipsEnabled = fips140_3Enabled;
@@ -408,7 +409,7 @@ public class CryptoUtils {
      */
     public static boolean checkFipsCompatibleSalt(String saltString, boolean logIfIncompatible) {
         boolean isCompatible = true;
-        if (CryptoUtils.isFips140_3Enabled() && saltString != null && !saltString.isEmpty() && saltString.length() < FIPS_SALT_BYTE_LENGTH_MINIMUM) {
+        if (CryptoUtils.isFips140_3EnabledWithBetaGuard() && saltString != null && !saltString.isEmpty() && saltString.length() < FIPS_SALT_BYTE_LENGTH_MINIMUM) {
             isCompatible = false;
         }
         // TODO delete this logging

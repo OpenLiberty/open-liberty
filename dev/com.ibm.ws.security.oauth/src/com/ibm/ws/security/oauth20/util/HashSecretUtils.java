@@ -39,7 +39,7 @@ public class HashSecretUtils {
 
     public static final int DEFAULT_SALTSIZE = 32;
     public static final int DEFAULT_ITERATIONS = 2048;
-    public static final int DEFAULT_KEYSIZE = 32;
+    public static final int DEFAULT_KEYSIZE = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? CryptoUtils.FIPS_HASH_BIT_LENGTH_MINIMUM : 32;
 
     private static final int generateSaltSize = DEFAULT_SALTSIZE;
 
@@ -103,6 +103,7 @@ public class HashSecretUtils {
                 hashProps.put(PasswordUtil.PROPERTY_HASH_SALT, salt);
                 hashProps.put(PasswordUtil.PROPERTY_HASH_ITERATION, iteration == 0 ? String.valueOf(DEFAULT_ITERATIONS) : String.valueOf(iteration));
                 hashProps.put(PasswordUtil.PROPERTY_HASH_LENGTH, length == 0 ? String.valueOf(DEFAULT_KEYSIZE) : String.valueOf(length));
+                System.out.println("JAKE: " + length);
 
                 return PasswordUtil.encode_password(secretToHash, OAuth20Constants.HASH, hashProps);
             } else {
