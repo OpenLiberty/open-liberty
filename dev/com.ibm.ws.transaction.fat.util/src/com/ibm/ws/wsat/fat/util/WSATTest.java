@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,8 +37,6 @@ public abstract class WSATTest extends FATServletClient {
 	public static String FINISH_TWOWAY_MESSAGE = "Finish Twoway message";
 	public static String WSAT_DETECTED = "Detected WS-AT policy, however there is no active transaction in current thread";
 
-	@Rule public TestName testName = new TestName();
-	
 	// Normal number of seconds it takes a server to start up
 	// Transaction timeouts will be adjusted if actual startup
 	// time varies from this
