@@ -23,7 +23,7 @@ public class ConcurrencyApplication extends SpringBootServletInitializer{
         SpringApplication.run(ConcurrencyApplication.class, args);
     }
 	
-  @Bean
+	@Bean
     public DefaultManagedTaskScheduler defaultManagedTaskScheduler() throws InterruptedException {
     	DefaultManagedTaskScheduler scheduler = new DefaultManagedTaskScheduler();
     	scheduler.setConcurrentExecutor(taskExecutor());
@@ -35,5 +35,6 @@ public class ConcurrencyApplication extends SpringBootServletInitializer{
     	DefaultManagedTaskExecutor executor = new DefaultManagedTaskExecutor();
         return executor;
     }
+    
 
 }

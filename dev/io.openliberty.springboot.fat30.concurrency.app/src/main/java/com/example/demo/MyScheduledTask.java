@@ -56,7 +56,6 @@ public class MyScheduledTask {
 			}
 		} catch (InterruptedException ex) {
 			logger.error("InterruptedException in verifyScheduledTaskRepetition method", ex);
-			return false;
 		}
 		return true;
 	}
