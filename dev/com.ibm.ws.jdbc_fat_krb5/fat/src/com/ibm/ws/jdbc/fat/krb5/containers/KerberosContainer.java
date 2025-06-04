@@ -97,6 +97,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     protected void containerIsStarted(InspectContainerResponse containerInfo) {
         String udp99 = containerInfo.getNetworkSettings().getPorts().getBindings().get(new ExposedPort(99, InternetProtocol.UDP))[0].getHostPortSpec();
         udp_99 = Integer.valueOf(udp99);
+        debugKerberosVersion();
     }
 
     @Override
@@ -208,6 +209,36 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
             krbConf = krbConf.replace("[" + section + "]", "[" + section + "]\n\t" + key + " = " + value);
         }
         return krbConf;
+    }
+
+    private void debugKerberosVersion() {
+        final String m = "debugKerberosVersion";
+        final String nl = "\n";
+
+        ProcessBuilder builder = new ProcessBuilder("ktutil", "--version");
+        StringBuilder output = new StringBuilder().append(nl);
+        try {
+            Process proc = builder.start();
+            if (!proc.waitFor(15, TimeUnit.SECONDS)) {
+                Log.info(c, m, "Proc timed out... destroying forcibly");
+                proc.destroyForcibly();
+            }
+
+            output.append("STDOUT:").append(nl);
+            output.append(readInputStream(proc.getInputStream())).append(nl);
+            output.append("STDERR:").append(nl);
+            output.append(readInputStream(proc.getErrorStream())).append(nl);
+
+            Log.info(c, m, "Process output:");
+            Log.info(c, m, output.toString());
+
+            if (proc.exitValue() != 0) {
+                Log.info(c, m, "Execution failed with exit code: " + proc.exitValue());
+            }
+        } catch (Exception e) {
+            Log.info(c, m, "Execution of command failed with message: " + e.getMessage());
+        }
+
     }
 
     /**
