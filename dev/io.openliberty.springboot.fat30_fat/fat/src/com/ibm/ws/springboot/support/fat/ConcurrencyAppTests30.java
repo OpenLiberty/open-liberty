@@ -25,18 +25,23 @@ import componenttest.custom.junit.runner.FATRunner;
 public class ConcurrencyAppTests30 extends ConcurrencyAppAbstractTests {
 
     @Test
-    public void testConcurrencyAppRunner() throws Exception {
-        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("AppRunner: MANAGED THREAD VERIFICATION PASSED"));
-    }
-
-    @Test
     public void testConcurrencyScheduledTask1() throws Exception {
         assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("ScheduledTask: MANAGED THREAD VERIFICATION PASSED"));
     }
 
     @Test
     public void testConcurrencyScheduledTask2() throws Exception {
-        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("ScheduledTask: ASSERT ASYNC METHOD VERIFICATION PASSED"));
+        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("AppRunner: VERIFY SCHEDULED TASK REPETITION METHOD PASSED"));
+    }
+
+    @Test
+    public void testConcurrencyScheduledTask3() throws Exception {
+        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("ScheduledTask Async task 1: ASSERT ASYNC METHOD VERIFICATION PASSED"));
+    }
+
+    @Test
+    public void testConcurrencyScheduledTask4() throws Exception {
+        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("ScheduledTask Async task 2: ASSERT ASYNC METHOD VERIFICATION PASSED"));
     }
 
     @Test
