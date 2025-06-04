@@ -32,6 +32,8 @@ import javax.xml.validation.Schema;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * XMLSecurityConstants for global use
  *
@@ -50,7 +52,7 @@ public class XMLSecurityConstants {
 
     static {
         try {
-            SECURE_RANDOM = SecureRandom.getInstance("SHA1PRNG");
+            SECURE_RANDOM = CryptoUtils.isFips140_3Enabled() ? new SecureRandom() : SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
