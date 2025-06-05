@@ -14,13 +14,15 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelHandler.Sharable;
 
-import io.netty.util.Attribute;
-import io.netty.util.AttributeKey;
-
+@Sharable
 public class CRLFValidationHandler extends ChannelInboundHandlerAdapter {
 
     private static final int MAX_CRLF_ALLOWED = 2;
+    public static final CRLFValidationHandler INSTANCE = new CRLFValidationHandler();
+
+    private CRLFValidationHandler() {}
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
