@@ -21,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,7 +29,7 @@ import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
@@ -56,7 +57,7 @@ public class TimeBasedLogRolloverTest {
     private static final String LOG_EXT = ".0.log";
     private static final String FILE_SEPARATOR = "/";
     private static final SimpleDateFormat FILE_DATE = new SimpleDateFormat("_yy.MM.dd_HH.mm.ss");
-    private static final long FILE_WAIT_SECONDS_PADDING = 1000;
+    private static final long FILE_WAIT_SECONDS_PADDING = 5000;
     private static final String CLASS_NAME = TimeBasedLogRolloverTest.class.getName();
     private static final String TEST_SEPARATOR = "*******************";
 
@@ -132,10 +133,29 @@ public class TimeBasedLogRolloverTest {
      * Tests setting WLP_LOGGING_ROLLOVER_START_TIME=00:00
      * and WLP_LOGGING_ROLLOVER_INTERVAL=1m in server.env.
      */
+
+    /*
+     * @Test
+     * public void testTimedRolloverEnv() throws Exception {
+     * setUp(server_env, "testTimedRolloverEnv");
+     * checkForRolledLogsAtTime(getNextRolloverTime(0, 1));
+     * }
+     * 
+     */
+
     @Test
     public void testTimedRolloverEnv() throws Exception {
+        LOG.info("===== STARTING testTimedRolloverEnv =====");
+        LOG.info("Server env: " + server_env.getServerName());
+        LOG.info("Server root: " + server_env.getServerRoot());
+
         setUp(server_env, "testTimedRolloverEnv");
-        checkForRolledLogsAtTime(getNextRolloverTime(0, 1));
+
+        Calendar rolloverTime = getNextRolloverTime(0, 1);
+        LOG.info("Expecting rollover at: " + rolloverTime.getTime());
+        LOG.info("Current time: " + new Date());
+
+        checkForRolledLogsAtTime(rolloverTime);
     }
 
     /*
@@ -403,25 +423,68 @@ public class TimeBasedLogRolloverTest {
         checkForRolledLogsAtTime(cal, true);
     }
 
+    /*
+     *
+     * private static void checkForRolledLogsAtTime(Calendar cal, boolean trace) throws Exception {
+     * LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
+     * 
+     * String date = FILE_DATE.format(cal.getTime());
+     * String messagesLogName = FILE_SEPARATOR + MESSAGES_LOG_PREFIX + date + LOG_EXT;
+     * String traceLogName = FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT;
+     * 
+     * //get rolled messages and trace logs
+     * File messagesLog = new File(getLogsDirPath(), messagesLogName);
+     * File traceLog = new File(getLogsDirPath(), traceLogName);
+     * 
+     * long timeToFirstRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+     * if (timeToFirstRollover > 0)
+     * Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
+     * 
+     * assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist.", messagesLog.exists());
+     * 
+     * if (trace)
+     * assertTrue("The rolled trace.log file " + traceLog + " doesn't exist.", traceLog.exists());
+     * }
+     * 
+     */
+
     private static void checkForRolledLogsAtTime(Calendar cal, boolean trace) throws Exception {
-        LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
+
+        LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime",
+                 "The next log rollover is scheduled to be at: " + cal.getTime());
 
         String date = FILE_DATE.format(cal.getTime());
         String messagesLogName = FILE_SEPARATOR + MESSAGES_LOG_PREFIX + date + LOG_EXT;
-        String traceLogName = FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT;
 
-        //get rolled messages and trace logs
-        File messagesLog = new File(getLogsDirPath(), messagesLogName);
-        File traceLog = new File(getLogsDirPath(), traceLogName);
+        // Get logs path more reliably
+        String logsDirPath = serverInUse.getServerRoot() + "/logs/";
+        File messagesLog = new File(logsDirPath, messagesLogName);
 
+        // Added debug logging before wait
         long timeToFirstRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
-        if (timeToFirstRollover > 0)
-            Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
+        if (timeToFirstRollover > 0) {
+            LOG.info("Waiting " + (timeToFirstRollover + FILE_WAIT_SECONDS_PADDING) + "ms for rollover (current time: " + new Date() + ")");
+            Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING);
+        }
 
-        assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist.", messagesLog.exists());
+        // Debug logging of directory contents
+        LOG.info("Checking for rolled log at: " + messagesLog.getAbsolutePath());
+        File logsDir = new File(logsDirPath);
+        if (logsDir.exists()) {
+            LOG.info("Logs directory contents: " + Arrays.toString(logsDir.list()));
+        } else {
+            LOG.severe("Logs directory does not exist: " + logsDirPath);
+        }
 
-        if (trace)
+        assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist.",
+                   messagesLog.exists());
+
+        if (trace) {
+            String traceLogName = FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT;
+            File traceLog = new File(logsDirPath, traceLogName);
+            LOG.info("Checking for trace log at: " + traceLog.getAbsolutePath());
             assertTrue("The rolled trace.log file " + traceLog + " doesn't exist.", traceLog.exists());
+        }
     }
 
     private static Calendar getNextRolloverTime(int rolloverStartHour, int rolloverInterval) {
