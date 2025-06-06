@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package io.openliberty.http.netty.channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.ChannelHandler.Sharable;
 
 /**
  * A handler that, when added to the pipeline, checks if the current channel's
@@ -19,13 +20,16 @@ import io.netty.channel.RecvByteBufAllocator;
  * and sets the {@link ChannelHandlerContext} so the allocator can log
  * read requests with contextual information.
  */
+@Sharable
 public class AllocatorContextSetter extends ChannelInboundHandlerAdapter {
+
+    public static final AllocatorContextSetter INSTANCE = new AllocatorContextSetter();
 
     /**
      * Constructs a new context setter for the specified logging allocator.
      *
      */
-    public AllocatorContextSetter() {}
+    private AllocatorContextSetter() {}
 
     /**
      * Called when the handler is added to the pipeline. Checks the current
@@ -37,7 +41,6 @@ public class AllocatorContextSetter extends ChannelInboundHandlerAdapter {
     @Override
     @SuppressWarnings("deprecation")
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        super.handlerAdded(ctx);
 
         // Netty doesn't have an non-deprecated approach, so for now
         // suppress the warnings.
