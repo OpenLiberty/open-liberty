@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelHandler.Sharable;
 
+/**
+ * Utility handler to validate that a request is not preceeded by more than two consecutive CRLF characters. 
+ */
 @Sharable
 public class CRLFValidationHandler extends ChannelInboundHandlerAdapter {
 
@@ -26,45 +29,29 @@ public class CRLFValidationHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if(msg instanceof ByteBuf){
-            ByteBuf buffer = (ByteBuf) msg;
-            buffer.markReaderIndex();
-
-            int leadingCRFLCount = 0;
-            boolean nonCRLFFound = false;
-            byte b;
-            byte nextByte;
-
-            while(buffer.isReadable() && !nonCRLFFound){
-                b = buffer.readByte();
-
-                if(b == '\r'){
-                    if(buffer.isReadable()){
-                        nextByte = buffer.readByte();
-                        if(nextByte == '\n'){
-                            leadingCRFLCount++;
-                            if (leadingCRFLCount > MAX_CRLF_ALLOWED){
-                                ctx.channel().attr(NettyHttpConstants.THROW_FFDC).set(true);
-                                throw new IllegalArgumentException("Too many leading CRLF characters");
-                            }
-                        } else {
-                            nonCRLFFound = true;
-                            buffer.readerIndex(buffer.readerIndex() -1);
-                        }
-                    } else{
-                        nonCRLFFound = true;
-                    }
-                } else{
-                    nonCRLFFound = true;
-                }
-            }
-
-            buffer.resetReaderIndex();
-            super.channelRead(ctx, msg);
-        } else {
-            super.channelRead(ctx, msg);
+        if(!(msg instanceof ByteBuf)){
+            ctx.fireChannelRead(msg);
+            return;
         }
+
+        ByteBuf buffer = (ByteBuf) msg;
+        buffer.markReaderIndex();
+
+        int leadingCRLFCount = 0;
+        while (buffer.isReadable()) {
+            byte b = buffer.readByte();
+            if (b != '\r')
+                break;
+            if (!buffer.isReadable() || buffer.readByte() != '\n')
+                break;
+
+            if (++leadingCRLFCount > MAX_CRLF_ALLOWED) {
+                ctx.channel().attr(NettyHttpConstants.THROW_FFDC).set(true);
+                throw new IllegalArgumentException("Too many leading CRLF characters");
+            }
+        }
+
+        buffer.resetReaderIndex();
+        ctx.fireChannelRead(msg);
     }
-
-
 }
