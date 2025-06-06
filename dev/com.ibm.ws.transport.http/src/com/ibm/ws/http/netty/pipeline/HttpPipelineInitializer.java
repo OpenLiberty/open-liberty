@@ -32,8 +32,6 @@ import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
-import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
-import com.ibm.ws.http.netty.pipeline.TransportOutboundHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,7 +41,6 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -55,6 +52,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.channel.AllocatorContextSetter;
 import io.openliberty.http.netty.channel.LoggingRecvByteBufAllocator;
+import io.openliberty.http.netty.channel.TransportHandler;
 import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
@@ -305,8 +303,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkWriteHandler", new ChunkedWriteHandler());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "byteBufferCodec", ByteBufferCodec.INSTANCE);
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportInboundHandler(httpConfig));
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportOutboundHandler(httpConfig));
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME,"transportHandler", TransportHandler.INSTANCE);
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new RemoteIpHandler(httpConfig));
         }
