@@ -433,6 +433,32 @@ public class JakartaPersistenceServlet extends FATServlet {
         }
        
     }
+     /**
+     * Testing version function added to Jakarta Persistence QL
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testVersion() throws Exception {
+        deleteAllEntities(User.class);
+
+        User user1 = User.of(1, "John", "Doe");
+        
+        tx.begin();
+        em.persist(user1);
+        tx.commit();
+        try {
+            
+	        Long versionVal =  em.createQuery("SELECT version(u) FROM User u where u.lastName = ?1",Long.class)
+                                .setParameter(1, "Doe")
+	            				.getSingleResult();
+
+            assertEquals(0L, versionVal);
+       
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
     /**
      * Utility method to drop all entities from table.

@@ -12,6 +12,7 @@ package io.openliberty.jpa.persistence.tests.models;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "PersistenceUser")
@@ -23,6 +24,12 @@ public class User {
     public String firstName;
 
     public String lastName;
+
+	/**
+ 	* Make sure the version value in JakartaPersistenceServlet.testVersion() gets updated whenever this entity changes
+ 	*/
+	@Version
+    private Long version;
 
     public static User of(int userId, String firstName, String lastName) {
         User user = new User();
@@ -55,5 +62,9 @@ public class User {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
+	public Long getVersion() {
+    return version;
+}
 
 }
