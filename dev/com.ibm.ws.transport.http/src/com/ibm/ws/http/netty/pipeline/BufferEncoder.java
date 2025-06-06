@@ -32,8 +32,6 @@ import io.openliberty.http.netty.stream.WsByteBufferChunkedInput;
  */
 public class BufferEncoder extends MessageToMessageEncoder<AbstractMap.SimpleEntry<Integer, WsByteBuffer>> {
 
-    private long bytesWritten = 0;
-
     /**
      * Encodes message data into HTTP responses.
      *
@@ -47,19 +45,13 @@ public class BufferEncoder extends MessageToMessageEncoder<AbstractMap.SimpleEnt
         Integer streamId = pair.getKey();
         WsByteBuffer message = pair.getValue();
 
-        // Check if "Content-Length" is set for this channel
-        boolean hasContentLength = context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH);
-
-        bytesWritten += message.remaining();
-
-
-
-            if (isHttp2(context)) {
-                out.add(new StreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
-            } else {
-                ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(message);
-                context.writeAndFlush(chunkedInput);   
-            }
+        if (isHttp2(context)) {
+            out.add(new StreamSpecificHttpContent(streamId, Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
+        } else {
+            // ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(message);
+            // context.writeAndFlush(chunkedInput);
+        out.add(new WsByteBufferChunkedInput(message));   
+        }
     }
 
     /**
@@ -70,8 +62,6 @@ public class BufferEncoder extends MessageToMessageEncoder<AbstractMap.SimpleEnt
      */
 
     private boolean isHttp2(ChannelHandlerContext context) {
-        HttpToHttp2ConnectionHandler http2Handler = context.pipeline().get(HttpToHttp2ConnectionHandler.class);
-
-        return (http2Handler != null) ? true : false;
+        return context.pipeline().get(HttpToHttp2ConnectionHandler.class) != null;
     }
 }

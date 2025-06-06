@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,9 +24,12 @@ public class BufferDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf in, List<Object> out) throws Exception {
-        ByteBuf temp = in.readBytes((in.readableBytes()));
-        out.add(ChannelFrameworkFactory.getBufferManager().wrap(temp.nioBuffer()).position(in.readerIndex()));
-        temp.release();
+        int readable = in.readableBytes();
+        if(readable == 0){
+            return;
+        }
+        out.add(ChannelFrameworkFactory.getBufferManager().wrap(in.nioBuffer(in.readerIndex(), readable)));
+        in.skipBytes(readable);
     }
 
     @Override
