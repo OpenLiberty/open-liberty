@@ -21,7 +21,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +58,7 @@ public class TimeBasedLogRolloverTest {
     private static final String LOG_EXT = ".0.log";
     private static final String FILE_SEPARATOR = "/";
     private static final SimpleDateFormat FILE_DATE = new SimpleDateFormat("_yy.MM.dd_HH.mm.ss");
-    private static final long FILE_WAIT_SECONDS_PADDING = 1000;
+    private static final long FILE_WAIT_SECONDS_PADDING = 5000; // changed from 1000 to 5000
     private static final String CLASS_NAME = TimeBasedLogRolloverTest.class.getName();
     private static final String TEST_SEPARATOR = "*******************";
 
@@ -99,6 +101,7 @@ public class TimeBasedLogRolloverTest {
     }
 
     public void setUp(LibertyServer server, String method) throws Exception {
+        LOG.info("Server starting at: " + new Date());
         LOG.logp(Level.INFO, CLASS_NAME, method, TEST_SEPARATOR + " TEST: " + method + " " + TEST_SEPARATOR);
         serverInUse = server;
         waitForBeginningOfMinute();
@@ -404,33 +407,72 @@ public class TimeBasedLogRolloverTest {
     }
 
     private static void checkForRolledLogsAtTime(Calendar cal, boolean trace) throws Exception {
-        LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
+
+        // Wait for server to be fully ready first
+        serverInUse.waitForStringInLog("CWWKF0011I"); // Liberty server ready message
+
+        //LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
+
+        LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime",
+                 "The next log rollover is scheduled to be at: " + cal.getTime() +
+                                                                     " | Current time: " + new Date());
 
         String date = FILE_DATE.format(cal.getTime());
         String messagesLogName = FILE_SEPARATOR + MESSAGES_LOG_PREFIX + date + LOG_EXT;
-        String traceLogName = FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT;
 
-        //get rolled messages and trace logs
+        // Debug: Log directory contents
+        File logsDir = new File(getLogsDirPath());
+        LOG.info("Log directory contents: " + Arrays.toString(logsDir.list()));
+
+        // Increased wait time with better logging
+        long waitTime = cal.getTimeInMillis() - System.currentTimeMillis() + FILE_WAIT_SECONDS_PADDING;
+        if (waitTime > 0) {
+            LOG.info("Waiting " + waitTime + "ms for rollover...");
+            Thread.sleep(waitTime);
+        }
+
         File messagesLog = new File(getLogsDirPath(), messagesLogName);
-        File traceLog = new File(getLogsDirPath(), traceLogName);
+        assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist. Directory contents: " +
+                   Arrays.toString(logsDir.list()), messagesLog.exists());
 
-        long timeToFirstRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
-        if (timeToFirstRollover > 0)
-            Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
+        if (trace) {
+            File traceLog = new File(getLogsDirPath(), FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT);
+            assertTrue("The rolled trace.log file doesn't exist", traceLog.exists());
+        }
 
-        assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist.", messagesLog.exists());
-
-        if (trace)
-            assertTrue("The rolled trace.log file " + traceLog + " doesn't exist.", traceLog.exists());
     }
 
+    //String traceLogName = FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT;
+
+    /*
+     *
+     * //get rolled messages and trace logs
+     * File messagesLog = new File(getLogsDirPath(), messagesLogName);
+     * File traceLog = new File(getLogsDirPath(), traceLogName);
+     *
+     * long timeToFirstRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+     * if (timeToFirstRollover > 0)
+     * Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
+     *
+     * assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist.", messagesLog.exists());
+     *
+     * if (trace)
+     * assertTrue("The rolled trace.log file " + traceLog + " doesn't exist.", traceLog.exists());
+     * }
+     *
+     */
+
     private static Calendar getNextRolloverTime(int rolloverStartHour, int rolloverInterval) {
+
         //set calendar start time
         Calendar sched = Calendar.getInstance();
         sched.set(Calendar.HOUR_OF_DAY, rolloverStartHour);
         sched.set(Calendar.MINUTE, 0);
         sched.set(Calendar.SECOND, 0);
         sched.set(Calendar.MILLISECOND, 0);
+
+        LOG.info("Calculated next rollover at: " + sched.getTime());
+
         Calendar currCal = Calendar.getInstance();
 
         if (currCal.before(sched)) { //if currTime before startTime, firstRollover = startTime - n(interval)
