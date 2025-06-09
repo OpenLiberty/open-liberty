@@ -129,7 +129,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         } else {
             setupUnsecurePipeline(pipeline);
         }
-        pipeline.remove(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME);
 
         Tr.exit(tc, "initChannel");
     }
