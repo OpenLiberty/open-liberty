@@ -205,17 +205,27 @@ public class AccessLogRolloverTest {
         return serverInUse.getDefaultLogFile().getParentFile().getAbsolutePath();
     }
     
-    
-    private static void checkForRolledLogsAtTime(Calendar cal) throws Exception {
+        private static void checkForRolledLogsAtTime(Calendar cal) throws Exception {
         LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
-        String date = FILE_DATE.format(cal.getTime());
-        String accessLogName = FILE_SEPARATOR + ACCESS_LOG_PREFIX + date + LOG_EXT;
-        //get rolled messages and trace logs
-        File accessLog = new File(getLogsDirPath(), accessLogName);
+
+        // Format date prefix without seconds for regex matching
+        String datePrefix = FILE_DATE_NO_SECONDS.format(cal.getTime());
+
+        // Regex pattern to match any seconds (two digits) in the log filename
+        String regexPattern = ACCESS_LOG_PREFIX + datePrefix + "\\.\\d{2}" + LOG_EXT;
+
         long timeToFirstRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
         if (timeToFirstRollover > 0)
             Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
-        assertTrue("The rolled access log file " + accessLogName + " doesn't exist.", accessLog.exists());
+
+        File logsDir = new File(getLogsDirPath());
+        File[] matchingLogs = logsDir.listFiles((dir, name) -> {
+            boolean matches = name.matches(regexPattern);
+            LOG.info("Checking file: " + name + " matches: " + matches);
+            return matches;
+        });
+
+        assertTrue("No rolled access log file matching pattern: " + regexPattern,matchingLogs.length == 1);
     }
 
     private static Calendar getNextRolloverTime(int rolloverStartHour, int rolloverInterval) {
