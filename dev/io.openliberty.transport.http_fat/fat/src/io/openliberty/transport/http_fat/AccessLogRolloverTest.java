@@ -41,7 +41,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class AccessLogRolloverTest {
 
     private static final String ACCESS_LOG_PREFIX = "http_access";
-    private static final SimpleDateFormat FILE_DATE = new SimpleDateFormat("_yy.MM.dd_HH.mm.ss");
+    private static final SimpleDateFormat FILE_DATE_NO_SECONDS = new SimpleDateFormat("_yy.MM.dd_HH.mm");
     private static final String CLASS_NAME = AccessLogRolloverTest.class.getName();
     private static final String TEST_SEPARATOR = "*******************";
     private static final String FILE_SEPARATOR = "/";
@@ -205,7 +205,7 @@ public class AccessLogRolloverTest {
         return serverInUse.getDefaultLogFile().getParentFile().getAbsolutePath();
     }
     
-        private static void checkForRolledLogsAtTime(Calendar cal) throws Exception {
+    private static void checkForRolledLogsAtTime(Calendar cal) throws Exception {
         LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
 
         // Format date prefix without seconds for regex matching
