@@ -30,6 +30,9 @@
         <AD id="useDisplayNameForSecurityName" name="%useDisplayNameForSecurityName" description="%useDisplayNameForSecurityName.desc"
             required="false" type="Boolean"
             default="false" />
+        <AD id="webChallengeIfCustomSubjectNotFound" name="%webChallengeIfCustomSubjectNotFound" description="%webChallengeIfCustomSubjectNotFound.desc" 
+            required="false" type="Boolean" 
+            default="true"/>    
         <AD id="fillInGroupInformationForHashtableLogin" name="internal" description="internal use only"
             required="false" type="Boolean"
             default="false" />

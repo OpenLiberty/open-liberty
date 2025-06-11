@@ -101,5 +101,12 @@ public interface AuthenticationService {
      */
     public Boolean isUseDisplayNameForSecurityName();
 
+     /**
+     * Returns false if authentication should proceed even if no custom Subject is found in the authentication cache.
+     *
+     * @return
+     *
+     */
+    public Boolean webChallengeIfCustomSubjectNotFound();
 
 }

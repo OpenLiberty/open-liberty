@@ -65,6 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     static final String CFG_ALLOW_HASHTABLE_LOGIN_WITH_ID_ONLY = "allowHashtableLoginWithIdOnly";
     static final String CFG_CACHE_ENABLED = "cacheEnabled";
     static final String CFG_USE_DISPLAYNAME_FOR_SECURITYNAME = "useDisplayNameForSecurityName";
+    static final String CFG_WEB_CHALLENGE_IF_CUSTOM_SUBJECT_NOT_FOUND = "webChallengeIfCustomSubjectNotFound";
     static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
     static final String KEY_USER_REGISTRY_SERVICE = "userRegistryService";
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
@@ -82,6 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private ComponentContext cc;
     private boolean cacheEnabled = true;
     private boolean allowHashtableLoginWithIdOnly = false;
+    private boolean webChallengeIfCustomSubjectNotFound = true;
     private boolean useDisplayNameForSecurityName = false;
     private String invalidDelegationUser = "";
 
@@ -174,8 +176,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (useDisplayNameForSecurityNameState != null) {
             useDisplayNameForSecurityName = useDisplayNameForSecurityNameState;
         }
+	
+	Boolean webChallengeIfCustomSubjectNotFoundState = (Boolean) props.get(CFG_WEB_CHALLENGE_IF_CUSTOM_SUBJECT_NOT_FOUND);
+        if (webChallengeIfCustomSubjectNotFoundState != null) {
+            webChallengeIfCustomSubjectNotFound = webChallengeIfCustomSubjectNotFoundState;
+        }
     }
-
+    
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         this.cc = cc;
         authCacheServiceRef.activate(cc);
@@ -443,7 +450,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (customCacheKey != null) {
                 subject = authCacheService.getSubject(customCacheKey);
                 if (subject == null) {
-                    throw new AuthenticationException("Custom cache key missed authentication cache. Need to re-challenge the user to login again.");
+                    if (!webChallengeIfCustomSubjectNotFound()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc,"webChallengeIfCustomSubjectNotFound is set to false. Continue authentication without re-challenging");
+                        }
+                    } else {
+                        throw new AuthenticationException(
+                                "Custom cache key missed authentication cache. Need to re-challenge the user to login again.");
+                    }
                 }
             }
         }
@@ -670,4 +684,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return useDisplayNameForSecurityName;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Boolean webChallengeIfCustomSubjectNotFound() {
+        return webChallengeIfCustomSubjectNotFound;
+    }
 }
