@@ -44,6 +44,13 @@ public class ExternalPackageProcessor implements AnalyzerPlugin, Plugin {
                 addAttribute(API_ATTRIBUTE_NAME, new Parameters(apiString), exports);
                 //set the new string with the modified attributes
                 analyzer.setExportPackage(exports.toString());
+                
+                String bcp = manifestEntries.get("Bundle-Classpath");
+                if (bcp != null) {
+                    System.out.println("Adding attribute: Bundle-Classpath = " + bcp);
+                    analyzer.setBundleClasspath(bcp);
+                }
+                
             }
         }
         //return false, there is no need to recalc the classpath
