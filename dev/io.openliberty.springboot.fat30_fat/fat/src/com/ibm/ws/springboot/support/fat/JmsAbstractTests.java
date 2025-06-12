@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.util.Map;
 
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -29,6 +30,7 @@ import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.config.IncludeElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.containers.SimpleLogConsumer;
@@ -42,6 +44,9 @@ public abstract class JmsAbstractTests extends AbstractSpringTests {
 
     private static final String mqVersion = "9.3.2.0-r2";
     private static final int MQ_LISTENER_PORT = 1414;
+    private static String os = "";
+    private static boolean runTest = true;
+    private static Class<?> c = JmsAbstractTests.class;
 
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>("icr.io/ibm-messaging/mq:" + mqVersion)
@@ -58,6 +63,18 @@ public abstract class JmsAbstractTests extends AbstractSpringTests {
 
     @BeforeClass
     public static void setupJms() throws Exception {
+        os = System.getProperty("os.name").toLowerCase();
+        //Skipping on OS which does not support MQ to be run in a container (another machine)
+        // Defect = https://wasrtc.hursley.ibm.com:9443/jazz/web/projects/WS-CD#action=com.ibm.team.workitem.viewWorkItem&id=305038
+        if (os != null && (os.contains("os/390") || os.contains("z/os") || os.contains("zos"))) {
+            runTest = false;
+        }
+            
+        Log.info(c, "setupJms", "os.name = " + os);
+        Log.info(c, "setupJms", "runTest = " + runTest);
+
+        Assume.assumeTrue(runTest); // runTest must be true to run test
+
         ServerConfiguration config = server.getServerConfiguration();
         IncludeElement includeJms = new IncludeElement();
         includeJms.setLocation("${server.config.dir}/includeJms.xml");
