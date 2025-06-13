@@ -949,6 +949,42 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     /**
+     * this test extract The second of the minute, numbered from 0 to 59, including a fractional part representing fractions of a second java.time.LocalTime
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExtractSecondFromLocalTime() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(00, 0), LocalDateTime.of(2020, 01, 01, 00, 0));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 0), LocalDateTime.of(2120, 01, 01, 00, 0));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Double> criteriaQuery = criteriaBuilder.createQuery(Double.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalTimeField<Double> secondLocalTimeField = jakarta.persistence.criteria.LocalTimeField.SECOND;
+        Expression<Double> secondExpression = criteriaBuilder.extract(secondLocalTimeField, from.get("localTimeData"));
+        criteriaQuery.select(secondExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Double> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        assertEquals(null, result.get(0));
+        assertEquals(Double.valueOf(0), result.get(1));
+        assertEquals(Double.valueOf(0), result.get(2));
+        assertEquals(Double.valueOf(0), result.get(3));
+
+    }
+
+    /**
      * Utility method to drop all entities from table.
      *
      * Order to tests is not guaranteed and thus we should be pessimistic and
