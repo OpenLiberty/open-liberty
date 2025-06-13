@@ -302,7 +302,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkWriteHandler", new ChunkedWriteHandler());
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "byteBufferCodec", ByteBufferCodec.INSTANCE);
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME,"transportHandler", TransportHandler.INSTANCE);
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new RemoteIpHandler(httpConfig));
