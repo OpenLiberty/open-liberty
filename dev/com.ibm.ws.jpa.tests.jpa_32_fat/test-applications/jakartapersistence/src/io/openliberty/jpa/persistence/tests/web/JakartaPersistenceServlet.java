@@ -702,7 +702,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testExtractYearFromLocalData() throws Exception {
+    public void testExtractYearFromLocalDate() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
         DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
@@ -738,7 +738,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testExtractQuarterFromLocalData() throws Exception {
+    public void testExtractQuarterFromLocalDate() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
         DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
@@ -774,7 +774,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testExtractMonthFromLocalData() throws Exception {
+    public void testExtractMonthFromLocalDate() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
         DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
@@ -810,7 +810,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testExtractDayFromLocalData() throws Exception {
+    public void testExtractDayFromLocalDate() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
         DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
@@ -846,7 +846,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testExtractWeekFromLocalData() throws Exception {
+    public void testExtractWeekFromLocalDate() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
         DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
