@@ -15,6 +15,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +26,7 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.persistence.tests.models.AsciiCharacter;
+import io.openliberty.jpa.persistence.tests.models.DateTimeEntity;
 import io.openliberty.jpa.persistence.tests.models.Organization;
 import io.openliberty.jpa.persistence.tests.models.Participant;
 import io.openliberty.jpa.persistence.tests.models.Person;
@@ -38,6 +42,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.LocalDateField;
 import jakarta.persistence.criteria.Nulls;
 import jakarta.persistence.criteria.Root;
 import jakarta.servlet.annotation.WebServlet;
@@ -58,7 +64,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     private UserTransaction tx;
 
     @Test
-    public void testSetOperationsJPQL() throws Exception{
+    public void testSetOperationsJPQL() throws Exception {
         deleteAllEntities(Person.class);
         deleteAllEntities(Organization.class);
 
@@ -80,27 +86,27 @@ public class JakartaPersistenceServlet extends FATServlet {
         try {
             // UNION
             unionResult = em.createQuery(
-                                            "SELECT p.name FROM Person p " +
-                                            "UNION " +
-                                            "SELECT o.name FROM Organization o", String.class)
+                                         "SELECT p.name FROM Person p " +
+                                         "UNION " +
+                                         "SELECT o.name FROM Organization o", String.class)
                             .getResultList();
 
             // INTERSECT
             intersectResult = em.createQuery(
-                                            "SELECT p.name FROM Person p " +
-                                            "INTERSECT " +
-                                            "SELECT o.name FROM Organization o", String.class)
+                                             "SELECT p.name FROM Person p " +
+                                             "INTERSECT " +
+                                             "SELECT o.name FROM Organization o", String.class)
                             .getResultList();
-            
+
             // EXCEPT
             exceptResult = em.createQuery(
-                                            "SELECT p.name FROM Person p " +
-                                            "EXCEPT " +
-                                            "SELECT o.name FROM Organization o", String.class)
+                                          "SELECT p.name FROM Person p " +
+                                          "EXCEPT " +
+                                          "SELECT o.name FROM Organization o", String.class)
                             .getResultList();
         }
-        
-        catch(Exception e) {
+
+        catch (Exception e) {
             throw e;
         }
         Collections.sort(unionResult);
@@ -109,8 +115,9 @@ public class JakartaPersistenceServlet extends FATServlet {
         assertEquals(Arrays.asList("AAA"), exceptResult);
     }
 
-     /**
+    /**
      * Method for testing || in JPQL queries.
+     *
      * @throws Exception
      */
     @Test
@@ -120,29 +127,32 @@ public class JakartaPersistenceServlet extends FATServlet {
         User user1 = User.of(1, "John", "Doe");
         User user2 = User.of(2, "Harry", "Potter");
         User user3 = User.of(3, "Hermione", "Granger");
-        
+
         tx.begin();
         em.persist(user1);
         em.persist(user2);
         em.persist(user3);
         tx.commit();
 
-        try{
-            String concatJPQL = "SELECT u.firstName || ' ' || u.lastName FROM User u where u.lastName = ?1" ;
-	        String fullName = em.createQuery(concatJPQL,String.class).setParameter(1, "Doe")
-	            					.getSingleResult();
+        try {
+            String concatJPQL = "SELECT u.firstName || ' ' || u.lastName FROM User u where u.lastName = ?1";
+            String fullName = em.createQuery(concatJPQL, String.class)
+                            .setParameter(1, "Doe")
+                            .getSingleResult();
 
-            String concatJPQLFrom = "SELECT u.firstName FROM User u where u.firstName || ' ' || u.lastName = ?1" ;
-	        String firstName= em.createQuery(concatJPQLFrom,String.class).setParameter(1, "Harry Potter")
-	            					.getSingleResult();
+            String concatJPQLFrom = "SELECT u.firstName FROM User u where u.firstName || ' ' || u.lastName = ?1";
+            String firstName = em.createQuery(concatJPQLFrom, String.class)
+                            .setParameter(1, "Harry Potter")
+                            .getSingleResult();
 
             assertEquals("John Doe", fullName);
             assertEquals("Harry", firstName);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw e;
         }
     }
+
     /**
      * In previous version, Enumerated annotations were used for mapping Java Enum types to database column values.
      *
@@ -171,7 +181,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(ticket3);
         tx.commit();
 
-         /*
+        /*
          * The INSERT statements present in the log is missing value mapping:
          * INSERT INTO TICKET (ID, NAME, PRIORITY, STATUS) VALUES (?, ?, ?, ?)
          * bind => [1, ticket1, HIGH, 0]
@@ -210,7 +220,7 @@ public class JakartaPersistenceServlet extends FATServlet {
 
     }
 
-     /**
+    /**
      * Specifies the precedence of null values within query result sets.
      * https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a5587
      *
@@ -342,7 +352,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         User user5 = User.of(5, "John", "Philip");
         User user6 = User.of(6, "Ron", "Weasley");
         User user7 = User.of(7, "Nervile", "Longbottom");
-        
+
         tx.begin();
         em.persist(user1);
         em.persist(user2);
@@ -352,29 +362,31 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(user6);
         em.persist(user7);
         tx.commit();
-       
+
         List<User> result;
         List<User> resultNew;
         try {
             tx.begin();
-            /** Using old method - While using Criteria API to build queries, comparison for not equal to was done using
-                method -  CriteriaBuilder.notEqual()
-            */
+            /**
+             * Using old method - While using Criteria API to build queries, comparison for not equal to was done using
+             * method - CriteriaBuilder.notEqual()
+             */
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
             CriteriaQuery<User> criteriaQueryOld = criteriaBuilder.createQuery(User.class);
             Root<User> userOld = criteriaQueryOld.from(User.class);
             criteriaQueryOld.select(userOld).where(criteriaBuilder.notEqual(userOld.get("firstName"), "John"));
-	        result = em.createQuery(criteriaQueryOld).getResultList();
+            result = em.createQuery(criteriaQueryOld).getResultList();
             assertEquals(4, result.size());
 
-             /** In JPA 3.2, new default method was added to the jakarta.persistence.criteria.Expression 
-                interface:Predicate notEqualTo(Expression<?> other);
-            */
-            CriteriaQuery<User> criteriaQueryNew= criteriaBuilder.createQuery(User.class);
+            /**
+             * In JPA 3.2, new default method was added to the jakarta.persistence.criteria.Expression
+             * interface:Predicate notEqualTo(Expression<?> other);
+             */
+            CriteriaQuery<User> criteriaQueryNew = criteriaBuilder.createQuery(User.class);
             Root<User> userNew = criteriaQueryNew.from(User.class);
             criteriaQueryNew.where(userNew.get("firstName").notEqualTo("John"));
-	        resultNew = em.createQuery(criteriaQueryNew).getResultList();
-            
+            resultNew = em.createQuery(criteriaQueryNew).getResultList();
+
             assertEquals(4, resultNew.size());
             assertEquals(result, resultNew);
             tx.commit();
@@ -384,7 +396,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         }
     }
 
-     /**
+    /**
      * Usage of equalTo() expression in queries built using criteria api
      *
      * @throws Exception
@@ -400,7 +412,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         User user5 = User.of(5, "John", "Philip");
         User user6 = User.of(6, "Ron", "Weasley");
         User user7 = User.of(7, "Nervile", "Longbottom");
-        
+
         tx.begin();
         em.persist(user1);
         em.persist(user2);
@@ -410,28 +422,30 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(user6);
         em.persist(user7);
         tx.commit();
-       
+
         List<User> result;
         List<User> resultNew;
         try {
             tx.begin();
-            /** Using old method - While using Criteria API to build queries, comparison for equal to was done using
-                method  - CriteriaBuilder.equal()
-            */
+            /**
+             * Using old method - While using Criteria API to build queries, comparison for equal to was done using
+             * method - CriteriaBuilder.equal()
+             */
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-            CriteriaQuery<User> criteriaQueryOld= criteriaBuilder.createQuery(User.class);
+            CriteriaQuery<User> criteriaQueryOld = criteriaBuilder.createQuery(User.class);
             Root<User> user = criteriaQueryOld.from(User.class);
             criteriaQueryOld.select(user).where(criteriaBuilder.equal(user.get("firstName"), "John"));
-	        result = em.createQuery(criteriaQueryOld).getResultList();
+            result = em.createQuery(criteriaQueryOld).getResultList();
 
-            /** In JPA 3.2, new default method was added to the jakarta.persistence.criteria.Expression 
-                interface:Predicate equalTo(Expression<?> other);
-            */
-            CriteriaQuery<User> criteriaQueryNew= criteriaBuilder.createQuery(User.class);
+            /**
+             * In JPA 3.2, new default method was added to the jakarta.persistence.criteria.Expression
+             * interface:Predicate equalTo(Expression<?> other);
+             */
+            CriteriaQuery<User> criteriaQueryNew = criteriaBuilder.createQuery(User.class);
             Root<User> userNew = criteriaQueryNew.from(User.class);
             criteriaQueryNew.where(userNew.get("firstName").equalTo("John"));
-	        resultNew = em.createQuery(criteriaQueryNew).getResultList();
-            
+            resultNew = em.createQuery(criteriaQueryNew).getResultList();
+
             assertEquals(3, resultNew.size());
             assertEquals(result, resultNew);
             tx.commit();
@@ -439,9 +453,9 @@ public class JakartaPersistenceServlet extends FATServlet {
             tx.rollback();
             throw e;
         }
-       
+
     }
-  
+
     @Test
     public void testRecordAsEmbeddable_NoMatchAndOrdering() throws Exception {
         // Clean up any existing data
@@ -680,6 +694,78 @@ public class JakartaPersistenceServlet extends FATServlet {
             throw e;
         }
         assertNull(result);
+    }
+
+    /**
+     * this test extract the calendar YEAR from java.time.LocalDate
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExtractYearFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalDateField<Integer> yearLocalDateField = LocalDateField.YEAR;
+        Expression<Integer> yearExpression = criteriaBuilder.extract(yearLocalDateField, from.get("localDateData"));
+        criteriaQuery.select(yearExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Integer> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        assertEquals(null, result.get(0));
+        assertEquals("Extracted Year should be 2021", Integer.valueOf(2021), result.get(1));
+        assertEquals("Extracted Year should be 2020", Integer.valueOf(2020), result.get(2));
+        assertEquals("Extracted Year should be 2022", Integer.valueOf(2022), result.get(3));
+
+    }
+
+    /**
+     * this test extract the QUARTER of the year numbered from 1 to 4 from java.time.LocalDate
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExtractQuarterFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalDateField<Integer> quarterLocalDateField = LocalDateField.QUARTER;
+        Expression<Integer> quarterExpression = criteriaBuilder.extract(quarterLocalDateField, from.get("localDateData"));
+        criteriaQuery.select(quarterExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Integer> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        assertEquals(null, result.get(0));
+        assertEquals("Extracted Quarter should be 1", Integer.valueOf(1), result.get(1));
+        assertEquals("Extracted Quarter should be 4", Integer.valueOf(4), result.get(2));
+        assertEquals("Extracted Quarter should be 2", Integer.valueOf(2), result.get(3));
+
     }
 
     /**
