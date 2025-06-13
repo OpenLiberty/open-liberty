@@ -914,6 +914,41 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     /**
+     * this test extract The minute of the hour, numbered from 0 to 59 from java.time.LocalTime
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExtractMinuteFromLocalTime() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalTimeField<Integer> minuteLocalTimeField = LocalTimeField.MINUTE;
+        Expression<Integer> minuteExpression = criteriaBuilder.extract(minuteLocalTimeField, from.get("localTimeData"));
+        criteriaQuery.select(minuteExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Integer> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        assertEquals(null, result.get(0));
+        assertEquals(Integer.valueOf(30), result.get(1));
+        assertEquals(Integer.valueOf(59), result.get(2));
+        assertEquals(Integer.valueOf(0), result.get(3));
+    }
+
+    /**
      * Utility method to drop all entities from table.
      *
      * Order to tests is not guaranteed and thus we should be pessimistic and
