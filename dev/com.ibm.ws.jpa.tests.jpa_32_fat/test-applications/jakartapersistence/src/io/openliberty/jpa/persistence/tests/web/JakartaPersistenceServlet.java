@@ -841,6 +841,42 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     /**
+     * this test extract ISO-8601 week number java.time.LocalDate
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExtractWeekFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Number> criteriaQuery = criteriaBuilder.createQuery(Number.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalDateField<Integer> weekLocalDateField = LocalDateField.WEEK;
+        Expression<Integer> weekExpression = criteriaBuilder.extract(weekLocalDateField, from.get("localDateData"));
+        criteriaQuery.select(weekExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Number> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        System.out.println("***** testExtractWeekFromLocalData **** results: " + result);
+        assertEquals(null, result.get(0));
+        assertEquals("Extracted Week should be 0", Long.valueOf(0), Long.valueOf(result.get(1).longValue()));
+        assertEquals("Extracted Week should be 53", Long.valueOf(53), Long.valueOf(result.get(2).longValue()));
+        assertEquals("Extracted week should be 23", Long.valueOf(23), Long.valueOf(result.get(3).longValue()));
+    }
+
+    /**
      * Utility method to drop all entities from table.
      *
      * Order to tests is not guaranteed and thus we should be pessimistic and
