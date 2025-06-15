@@ -1275,12 +1275,11 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     /**
-     * Jakarta Persistence 3.2 adds extract() to CriteriaBuilder
      * Extracts LocalTime part of a DateTime
      *
      * @throws Exception
      */
-    @Ignore("Throws exceptions with message 'Unknown EXTRACT function datetime_field: TIME'")
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31802")
     @Test
     public void testExtractTimeFromLocalDateTime() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
@@ -1305,7 +1304,6 @@ public class JakartaPersistenceServlet extends FATServlet {
         criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
         List<LocalTime> result = em.createQuery(criteriaQuery).getResultList();
         assertEquals(4, result.size());
-        System.out.println("***** testExtractWeekFromLocalData **** results: " + result);
         assertEquals(null, result.get(0));
         assertEquals(LocalTime.of(00, 30), result.get(1));
         assertEquals(LocalTime.of(01, 59), result.get(2));
@@ -1313,12 +1311,11 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     /**
-     * Jakarta Persistence 3.2 adds extract() to CriteriaBuilder
      * Extracts LocalDate part of a DateTime
      *
      * @throws Exception
      */
-    @Ignore("Throws exceptions with message 'Unknown EXTRACT function datetime_field: DATE'")
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31802")
     @Test
     public void testExtractDateFromLocalDateTime() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
@@ -1343,7 +1340,6 @@ public class JakartaPersistenceServlet extends FATServlet {
         criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
         List<LocalDate> result = em.createQuery(criteriaQuery).getResultList();
         assertEquals(4, result.size());
-        System.out.println("***** testExtractWeekFromLocalData **** results: " + result);
         assertEquals(null, result.get(0));
         assertEquals(LocalDate.of(2021, 01, 01), result.get(1));
         assertEquals(LocalDate.of(2020, 12, 31), result.get(2));
