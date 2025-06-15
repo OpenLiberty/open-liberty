@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -1167,7 +1168,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     /**
-     * this test extract the The hour of the day in 24-hour time, numbered from 0 to 23 from java.time.LocalTime
+     * this test extract the The hour of the day in 24-hour time, numbered from 0 to 23 from java.time.LocalDateTime
      *
      * @throws Exception
      */
@@ -1190,7 +1191,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
         Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
         LocalDateTimeField<Integer> hourLocalTimeField = LocalDateTimeField.HOUR;
-        Expression<Integer> hourExpression = criteriaBuilder.extract(hourLocalTimeField, from.get("localTimeData"));
+        Expression<Integer> hourExpression = criteriaBuilder.extract(hourLocalTimeField, from.get("localDateTimeData"));
         criteriaQuery.select(hourExpression);
         criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
         List<Integer> result = em.createQuery(criteriaQuery).getResultList();
@@ -1203,7 +1204,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     /**
-     * this test extract The minute of the hour, numbered from 0 to 59 from java.time.LocalTime
+     * this test extract The minute of the hour, numbered from 0 to 59 from java.time.LocalDateTime
      *
      * @throws Exception
      */
@@ -1226,7 +1227,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
         Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
         LocalDateTimeField<Integer> minuteLocalTimeField = LocalDateTimeField.MINUTE;
-        Expression<Integer> minuteExpression = criteriaBuilder.extract(minuteLocalTimeField, from.get("localTimeData"));
+        Expression<Integer> minuteExpression = criteriaBuilder.extract(minuteLocalTimeField, from.get("localDateTimeData"));
         criteriaQuery.select(minuteExpression);
         criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
         List<Integer> result = em.createQuery(criteriaQuery).getResultList();
@@ -1238,7 +1239,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     /**
-     * this test extract The second of the minute, numbered from 0 to 59, including a fractional part representing fractions of a second java.time.LocalTime
+     * this test extract The second of the minute, numbered from 0 to 59, including a fractional part representing fractions of a second java.time.LocalDateTime
      *
      * @throws Exception
      */
@@ -1261,7 +1262,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         CriteriaQuery<Double> criteriaQuery = criteriaBuilder.createQuery(Double.class);
         Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
         LocalDateTimeField<Double> secondLocalTimeField = LocalDateTimeField.SECOND;
-        Expression<Double> secondExpression = criteriaBuilder.extract(secondLocalTimeField, from.get("localTimeData"));
+        Expression<Double> secondExpression = criteriaBuilder.extract(secondLocalTimeField, from.get("localDateTimeData"));
         criteriaQuery.select(secondExpression);
         criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
         List<Double> result = em.createQuery(criteriaQuery).getResultList();
@@ -1271,6 +1272,82 @@ public class JakartaPersistenceServlet extends FATServlet {
         assertEquals(Double.valueOf(0), result.get(2));
         assertEquals(Double.valueOf(0), result.get(3));
 
+    }
+
+    /**
+     * Jakarta Persistence 3.2 adds extract() to CriteriaBuilder
+     * Extracts LocalTime part of a DateTime
+     *
+     * @throws Exception
+     */
+    @Ignore("Throws exceptions with message 'Unknown EXTRACT function datetime_field: TIME'")
+    @Test
+    public void testExtractTimeFromLocalDateTime() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<LocalTime> criteriaQuery = criteriaBuilder.createQuery(LocalTime.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        jakarta.persistence.criteria.LocalDateTimeField<LocalTime> timeLocalDateField = jakarta.persistence.criteria.LocalDateTimeField.TIME;
+        jakarta.persistence.criteria.Expression<LocalTime> timeExpression = criteriaBuilder.extract(timeLocalDateField, from.get("localDateTimeData"));
+        criteriaQuery.select(timeExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<LocalTime> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        System.out.println("***** testExtractWeekFromLocalData **** results: " + result);
+        assertEquals(null, result.get(0));
+        assertEquals(LocalTime.of(00, 30), result.get(1));
+        assertEquals(LocalTime.of(01, 59), result.get(2));
+        assertEquals(LocalTime.of(12, 0), result.get(3));
+    }
+
+    /**
+     * Jakarta Persistence 3.2 adds extract() to CriteriaBuilder
+     * Extracts LocalDate part of a DateTime
+     *
+     * @throws Exception
+     */
+    @Ignore("Throws exceptions with message 'Unknown EXTRACT function datetime_field: DATE'")
+    @Test
+    public void testExtractDateFromLocalDateTime() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<LocalDate> criteriaQuery = criteriaBuilder.createQuery(LocalDate.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        jakarta.persistence.criteria.LocalDateTimeField<LocalDate> dateLocalDateField = jakarta.persistence.criteria.LocalDateTimeField.DATE;
+        jakarta.persistence.criteria.Expression<LocalDate> dateExpression = criteriaBuilder.extract(dateLocalDateField, from.get("localDateTimeData"));
+        criteriaQuery.select(dateExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<LocalDate> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        System.out.println("***** testExtractWeekFromLocalData **** results: " + result);
+        assertEquals(null, result.get(0));
+        assertEquals(LocalDate.of(2021, 01, 01), result.get(1));
+        assertEquals(LocalDate.of(2020, 12, 31), result.get(2));
+        assertEquals(LocalDate.of(2022, 06, 07), result.get(3));
     }
 
     /**
