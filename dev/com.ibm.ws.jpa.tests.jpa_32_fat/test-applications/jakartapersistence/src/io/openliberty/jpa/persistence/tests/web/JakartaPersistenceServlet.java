@@ -974,7 +974,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Double> criteriaQuery = criteriaBuilder.createQuery(Double.class);
         Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
-        LocalTimeField<Double> secondLocalTimeField = jakarta.persistence.criteria.LocalTimeField.SECOND;
+        LocalTimeField<Double> secondLocalTimeField = LocalTimeField.SECOND;
         Expression<Double> secondExpression = criteriaBuilder.extract(secondLocalTimeField, from.get("localTimeData"));
         criteriaQuery.select(secondExpression);
         criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
@@ -1163,6 +1163,113 @@ public class JakartaPersistenceServlet extends FATServlet {
         assertEquals("Extracted Month should be 1", Integer.valueOf(1), result.get(1));
         assertEquals("Extracted Month should be 31", Integer.valueOf(31), result.get(2));
         assertEquals("Extracted Month should be 7", Integer.valueOf(7), result.get(3));
+
+    }
+
+    /**
+     * this test extract the The hour of the day in 24-hour time, numbered from 0 to 23 from java.time.LocalTime
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExtractHourFromLocalDateTimeField() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalDateTimeField<Integer> hourLocalTimeField = LocalDateTimeField.HOUR;
+        Expression<Integer> hourExpression = criteriaBuilder.extract(hourLocalTimeField, from.get("localTimeData"));
+        criteriaQuery.select(hourExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Integer> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        assertEquals(null, result.get(0));
+        assertEquals(Integer.valueOf(0), result.get(1));
+        assertEquals(Integer.valueOf(1), result.get(2));
+        assertEquals(Integer.valueOf(12), result.get(3));
+
+    }
+
+    /**
+     * this test extract The minute of the hour, numbered from 0 to 59 from java.time.LocalTime
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExtractMinuteFromLocalDateTimeField() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalDateTimeField<Integer> minuteLocalTimeField = LocalDateTimeField.MINUTE;
+        Expression<Integer> minuteExpression = criteriaBuilder.extract(minuteLocalTimeField, from.get("localTimeData"));
+        criteriaQuery.select(minuteExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Integer> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        assertEquals(null, result.get(0));
+        assertEquals(Integer.valueOf(30), result.get(1));
+        assertEquals(Integer.valueOf(59), result.get(2));
+        assertEquals(Integer.valueOf(0), result.get(3));
+    }
+
+    /**
+     * this test extract The second of the minute, numbered from 0 to 59, including a fractional part representing fractions of a second java.time.LocalTime
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExtractSecondFromLocalDateTimeField() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(00, 0), LocalDateTime.of(2020, 01, 01, 00, 0));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 0), LocalDateTime.of(2120, 01, 01, 00, 0));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Double> criteriaQuery = criteriaBuilder.createQuery(Double.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalDateTimeField<Double> secondLocalTimeField = LocalDateTimeField.SECOND;
+        Expression<Double> secondExpression = criteriaBuilder.extract(secondLocalTimeField, from.get("localTimeData"));
+        criteriaQuery.select(secondExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Double> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        assertEquals(null, result.get(0));
+        assertEquals(Double.valueOf(0), result.get(1));
+        assertEquals(Double.valueOf(0), result.get(2));
+        assertEquals(Double.valueOf(0), result.get(3));
 
     }
 
