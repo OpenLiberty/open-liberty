@@ -9,30 +9,30 @@
 	<keyStore
 		id="myKeyStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonBasicKeyStore.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonBasicKeyStore.p12" />
 	<keyStore
 		id="myTrustStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonTrustStore.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonTrustStore.p12" />
 
 	<keyStore
 		id="configServerDefault"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/commonConfigServerDefault.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonConfigServerDefault.p12" />
 
 	<keyStore
 		id="rsa_key"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/rsa_key.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_key.p12" />
 
 	<keyStore
 		id="rsa_trust"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/rsa_trust.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_trust.p12" />
 
 </server>        

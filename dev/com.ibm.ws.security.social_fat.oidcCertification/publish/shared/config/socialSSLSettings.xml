@@ -21,12 +21,12 @@
     <keyStore
         id="rsa_key"
         password="Liberty"
-        type="jks"
-        location="${server.config.dir}/keystores/rsa_key.jks" />
+        type="PKCS12"
+        location="${server.config.dir}/keystores/rsa_key.p12" />
     <keyStore
         id="rsa_trust"
         password="LibertyServer"
-        type="jks"
-        location="${server.config.dir}/keystores/rsa_trust_for_LibertyOP.jks" />
+        type="PKCS12"
+        location="${server.config.dir}/keystores/rsa_trust_for_LibertyOP.p12" />
 
 </server>

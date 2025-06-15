@@ -24,14 +24,14 @@
 	<ssl id="DefaultSSLSettings" keyStoreRef="DefaultKeyStore" trustStoreRef="DefaultTrustStore" 
 	     securityLevel="CUSTOM" enabledCiphers="TLS_RSA_WITH_AES_128_CBC_SHA TLS_RSA_WITH_AES_128_CBC_SHA256 TLS_DHE_RSA_WITH_AES_128_CBC_SHA">
     </ssl>     
-	<keyStore id="DefaultKeyStore" location="${server.config.dir}/DefaultServerKeyFile.jks" type="JKS" password="Liberty" />
-	<keyStore id="DefaultTrustStore" location="${server.config.dir}/DefaultServerTrustFile.jks" type="JKS" password="Liberty" />
+	<keyStore id="DefaultKeyStore" location="${server.config.dir}/DefaultServerKeyFile.p12" type="PKCS12" password="Liberty" />
+	<keyStore id="DefaultTrustStore" location="${server.config.dir}/DefaultServerTrustFile.p12" type="PKCS12" password="Liberty" />
 
 	<!-- AlternateSSLSettings contains the trust needed to access the LDAP server -->
 	<ssl id="AlternateSSLSettings" keyStoreRef="AlternateKeyStore" trustStoreRef="AlternateTrustStore" sslProtocol="TLSv1.2" >
     </ssl>
-	<keyStore id="AlternateKeyStore" location="${server.config.dir}/AlternateServerKeyFile.jks" type="JKS" password="ytrebiL" />
-	<keyStore id="AlternateTrustStore" location="${server.config.dir}/AlternateServerTrustFile.jks" type="JKS" password="ytrebiL" />
+	<keyStore id="AlternateKeyStore" location="${server.config.dir}/AlternateServerKeyFile.p12" type="PKCS12" password="ytrebiL" />
+	<keyStore id="AlternateTrustStore" location="${server.config.dir}/AlternateServerTrustFile.p12" type="PKCS12" password="ytrebiL" />
 
 	<!--  mixSSLSetting does not have trust required to access the LDAP server -->
 	<ssl id="mixSSLSettings" keyStoreRef="AlternateKeyStore" trustStoreRef="DefaultTrustStore" clientAuthentication="true" >

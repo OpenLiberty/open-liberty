@@ -22,7 +22,7 @@
 
   <ssl id="CustomSslOptions" keyStoreRef="defaultKeyStore"/>
 
-  <keyStore id="defaultKeyStore" location="WJOClient.jks" type="JKS" password="{xor}Lz4sLCgwLTs="/>
+  <keyStore id="defaultKeyStore" location="WJOClient.p12" type="PKCS12" password="{xor}Lz4sLCgwLTs="/>
 
   <wasJmsOutbound id="jmsSecureCustomChain" useSSL="true">
     <sslOptions sslRef="CustomSslOptions"/>

@@ -91,16 +91,16 @@
          trustStoreRef will use the keystore referenced by keyStoreRef. -->
     <ssl id="MySSLConfig" keyStoreRef="MyKeyStore" />
     <keyStore id="MyKeyStore"
-              location="${server.config.dir}/MyServerKeyFile.jks"
-              type="JKS" password="123456" />
+              location="${server.config.dir}/MyServerKeyFile.p12"
+              type="PKCS12" password="123456" />
 
     <ssl id="AlternateSSLConfig"
          keyStoreRef="AlternateKeyStore" trustStoreRef="AlternateTrustStore" />
     <keyStore id="AlternateKeyStore"
-              location="${server.config.dir}/AlternateServerKeyFile.jks"
-              type="JKS" password="123456" />
+              location="${server.config.dir}/AlternateServerKeyFile.p12"
+              type="PKCS12" password="123456" />
     <keyStore id="AlternateTrustStore"
-              location="${server.config.dir}/AlternateServerTrustFile.jks"
-              type="JKS" password="123456" />
+              location="${server.config.dir}/AlternateServerTrustFile.p12"
+              type="PKCS12" password="123456" />
 
 </server>

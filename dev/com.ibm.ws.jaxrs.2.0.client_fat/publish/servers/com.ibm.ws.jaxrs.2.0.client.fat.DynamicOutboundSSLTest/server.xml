@@ -15,8 +15,8 @@
           <outboundConnection host="localhost" port="${bvt.prop.HTTP_default.secure}"/>
 	</ssl>
 
-    <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
-    <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+    <keyStore id="clientKeyStore" location="key.p12" type="PKCS12" password="passw0rd" />
+    <keyStore id="clientTrustStore" location="trust.p12" type="PKCS12" password="passw0rd" />
 
     <quickStartSecurity userName="test" userPassword="testpwd" />
 

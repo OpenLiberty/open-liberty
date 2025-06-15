@@ -57,7 +57,7 @@
 	     
 		<signatureProperties
 			signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="server"
 			org.apache.ws.security.crypto.merlin.keystore.alias="soapprovider"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-receiver.ks" />
@@ -73,7 +73,7 @@
                 <!-- issue 30353 -->
 		<signatureProperties
 		    signatureAlgorithm="sha512"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="client"
 			org.apache.ws.security.crypto.merlin.keystore.alias="soaprequester"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-sender.ks" />

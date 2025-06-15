@@ -401,7 +401,7 @@
         <TGT>sealer</TGT>
         <echo>Creating cookie encryption key files...</echo>
         <mkdir dir="${idp.target.dir}/credentials"/>
-        <keystorestrategy keystoreFile="${idp.target.dir}/credentials/sealer.jks" versionFile="${idp.target.dir}/credentials/sealer.kver" keyAlias="${idp.sealer.alias}" keystorePassword="${idp.sealer.password}" />
+        <keystorestrategy keystoreFile="${idp.target.dir}/credentials/sealer.p12" versionFile="${idp.target.dir}/credentials/sealer.kver" keyAlias="${idp.sealer.alias}" keystorePassword="${idp.sealer.password}" />
         <echo>...done</echo>
     </target>
 

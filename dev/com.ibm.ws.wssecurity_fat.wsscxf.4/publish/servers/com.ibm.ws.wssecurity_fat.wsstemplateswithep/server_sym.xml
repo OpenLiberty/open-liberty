@@ -31,13 +31,13 @@
 	<keyStore
 		id="myKeyStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/key.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/key.p12" />
 	<keyStore
 		id="myTrustStore"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/sslServerTrust.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/sslServerTrust.p12" />
 
 
 	<include location="../fatTestPorts.xml" />
@@ -67,14 +67,14 @@
                 <!-- issue 30353 -->
 		<signatureProperties
                         signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.p12" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.truststore.type="jks"
+			org.apache.ws.security.crypto.merlin.truststore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.truststore.password="LibertyX509Client2"
-			org.apache.ws.security.crypto.merlin.truststore.file="${server.config.dir}/x509ClientSecond.jks" />
+			org.apache.ws.security.crypto.merlin.truststore.file="${server.config.dir}/x509ClientSecond.p12" />
 		<!-- ** This works too, in case ws-security.encryption.username is not 
 			specified org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecondCert" -->
 	</wsSecurityClient>
@@ -89,15 +89,15 @@
                 <!-- issue 30353 -->
 		<signatureProperties
                         signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefaultCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.p12" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server2"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecond"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.p12" />
 	</wsSecurityProvider>
 
     <include location="imports/java2Permissions.xml" />

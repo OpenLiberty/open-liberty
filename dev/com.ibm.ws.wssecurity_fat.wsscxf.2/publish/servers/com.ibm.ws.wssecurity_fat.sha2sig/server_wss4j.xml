@@ -56,7 +56,7 @@
 	     
 		<signatureProperties
 			signatureAlgorithm="sha256"
-			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.type="PKCS12"
 			org.apache.wss4j.crypto.merlin.keystore.password="server"
 			org.apache.wss4j.crypto.merlin.keystore.alias="soapprovider"
 			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/dsig-receiver.ks" />
@@ -71,7 +71,7 @@
 	>
 		<signatureProperties
 			signatureAlgorithm="sha256"
-			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.type="PKCS12"
 			org.apache.wss4j.crypto.merlin.keystore.password="client"
 			org.apache.wss4j.crypto.merlin.keystore.alias="soaprequester"
 			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/dsig-sender.ks" />

@@ -25,7 +25,7 @@
 
     <jwtBuilder id="builder_signWithUniqueKey" keyStoreRef="separateKeyStore" />
 
-    <keyStore id="separateKeyStore" password="Liberty" type="jks" location="${server.config.dir}/separateKeyStore.jks" />/>
+    <keyStore id="separateKeyStore" password="Liberty" type="PKCS12" location="${server.config.dir}/separateKeyStore.p12" />/>
 
     <jwtSso setCookieSecureFlag="false" />
 

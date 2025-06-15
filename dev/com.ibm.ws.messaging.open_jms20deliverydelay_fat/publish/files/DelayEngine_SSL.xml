@@ -43,7 +43,7 @@
 
   <!-- -->
 
-  <keyStore location="${server.output.dir}/resources/security/mykey.jks" password="{xor}NDombm1s" id="defaultKeyStore"/>
+  <keyStore location="${server.output.dir}/resources/security/mykey.p12" password="{xor}NDombm1s" id="defaultKeyStore"/>
 
   <basicRegistry id="basic" realm="customRealm">
     <user name="user1" password="user1pwd"/>

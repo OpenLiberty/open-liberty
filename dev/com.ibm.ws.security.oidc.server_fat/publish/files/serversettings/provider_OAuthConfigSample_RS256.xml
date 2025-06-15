@@ -13,8 +13,8 @@
 <server>
 	<keyStore
 		id="opTestKeyStore"
-		location="${server.config.dir}/commonOpKeyStore.jks"
-		type="JKS"
+		location="${server.config.dir}/commonOpKeyStore.p12"
+		type="PKCS12"
 		password="WebASpwd" />
 
 	<openidConnectProvider

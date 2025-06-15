@@ -235,23 +235,23 @@
 	<keyStore
 		id="altKeyStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonMultiKeyBasicKeyStore.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonMultiKeyBasicKeyStore.p12" />
 	<keyStore
 		id="opKeyStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonBasicKeyStore.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonBasicKeyStore.p12" />
 	<keyStore
 		id="rsaKeyStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/rsaKeys.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsaKeys.p12" />
 	<keyStore
 		id="ecKeyStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/ec.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/ec.p12" />
 		
 	<ssl
 		id="BadKeySSLSettings"
@@ -261,8 +261,8 @@
 	<keyStore
 		id="badKeyStore"
 		password="WebAS"
-		type="jks"
-		location="${server.config.dir}/commonDummyServerKeyFile.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonDummyServerKeyFile.p12" />
 
 	<openidConnectProvider
 		id="OidcConfigSample_RS256_BadKeyStoreRef"

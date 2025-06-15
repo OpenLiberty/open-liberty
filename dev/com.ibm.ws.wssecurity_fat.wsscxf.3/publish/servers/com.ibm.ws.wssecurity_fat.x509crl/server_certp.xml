@@ -55,7 +55,7 @@
 	        <!--issue 30353 -->
 		<signatureProperties
                         signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="myx509"
 			org.apache.ws.security.crypto.merlin.keystore.alias="myx509certp"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/myx509.ks"
@@ -73,7 +73,7 @@
 	>       <!--issue 30353 -->
 		<signatureProperties
                         signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="myx509"
 			org.apache.ws.security.crypto.merlin.keystore.alias="myx509certp"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/myx509.ks" />

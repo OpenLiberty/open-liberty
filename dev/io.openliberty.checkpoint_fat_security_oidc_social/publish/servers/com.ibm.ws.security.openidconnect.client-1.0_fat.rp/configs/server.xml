@@ -35,8 +35,8 @@
     
     <sslDefault sslRef="DefaultSSLSettings"/>
     <ssl clientAuthenticationSupported="true" id="DefaultSSLSettings" keyStoreRef="myKeyStore" trustStoreRef="myTrustStore"/>
-    <keyStore id="myKeyStore" location="${server.config.dir}/commonBasicKeyStore.jks" password="Liberty" type="jks"/>
-    <keyStore id="myTrustStore" location="${server.config.dir}/commonTrustStore.jks" password="Liberty" type="jks"/>
+    <keyStore id="myKeyStore" location="${server.config.dir}/commonBasicKeyStore.p12" password="Liberty" type="PKCS12"/>
+    <keyStore id="myTrustStore" location="${server.config.dir}/commonTrustStore.p12" password="Liberty" type="PKCS12"/>
     <SSLDefault sslRef="DefaultSSLSettings"/>
 
     <application id="formlogin" location="${server.config.dir}/test-apps/formlogin.war" name="formlogin" type="war">

@@ -22,14 +22,14 @@
 	<keyStore
 		id="rsa_key"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/rsa_key.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_key.p12" />
 
 	<keyStore
 		id="rsa_trust_for_all"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/rsa_trust_for_all.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_trust_for_all.p12" />
 
 
 	<ssl
@@ -42,7 +42,7 @@
 	<keyStore
 		id="rsa_trust"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/rsa_trust.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_trust.p12" />
 
 </server>        

@@ -27,8 +27,8 @@
      
     <!-- Server SSL configuration -->
     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" /> 
-    <keyStore id="defaultKeyStore" location="defaultKey.jks" type="JKS" password="passw0rd" /> 
-    <keyStore id="defaultTrustStore" location="defaultTrust.jks" type="JKS" password="passw0rd" /> 
+    <keyStore id="defaultKeyStore" location="defaultKey.p12" type="PKCS12" password="passw0rd" /> 
+    <keyStore id="defaultTrustStore" location="defaultTrust.p12" type="PKCS12" password="passw0rd" /> 
 
     <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
     <library id="DerbyLib" filesetRef="DerbyFileset" />

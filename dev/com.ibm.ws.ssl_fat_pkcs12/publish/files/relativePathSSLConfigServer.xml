@@ -11,8 +11,8 @@
 	<sslDefault sslRef="AlternateSSLSettings" />
 
 	<ssl id="AlternateSSLSettings" keyStoreRef="AlternateKeyStore" trustStoreRef="AlternateTrustStore" />
-	<keyStore id="AlternateKeyStore" location="AlternateServerKeyFile.jks" type="JKS" password="ytrebiL" />
-	<keyStore id="AlternateTrustStore" location="AlternateServerTrustFile.jks" type="JKS" password="ytrebiL" />
+	<keyStore id="AlternateKeyStore" location="AlternateServerKeyFile.p12" type="PKCS12" password="ytrebiL" />
+	<keyStore id="AlternateTrustStore" location="AlternateServerTrustFile.p12" type="PKCS12" password="ytrebiL" />
 
 	<application type="war" id="basicauth"
 				 name="basicauth"

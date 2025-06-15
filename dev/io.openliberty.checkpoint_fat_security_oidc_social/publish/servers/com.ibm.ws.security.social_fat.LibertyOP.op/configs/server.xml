@@ -35,11 +35,11 @@
     <config monitorInterval="100ms"/>
     <sslDefault sslRef="DefaultSSLSettings"/>
     <ssl clientAuthenticationSupported="true" keyStoreRef="rsa_key" trustStoreRef="rsa_trust" id="DefaultSSLSettings"/>
-    <keyStore location="${server.config.dir}/commonBasicKeyStore.jks" password="Liberty" type="jks" id="myKeyStore"/>
-    <keyStore location="${server.config.dir}/commonTrustStore.jks" password="Liberty" type="jks" id="myTrustStore"/>
-    <keyStore location="${server.config.dir}/commonConfigServerDefault.jks" password="LibertyServer" type="jks" id="configServerDefault"/>
-    <keyStore location="${server.config.dir}/rsa_key.jks" password="Liberty" type="jks" id="rsa_key"/>
-    <keyStore location="${server.config.dir}/rsa_trust.jks" password="LibertyServer" type="jks" id="rsa_trust"/>
+    <keyStore location="${server.config.dir}/commonBasicKeyStore.p12" password="Liberty" type="PKCS12" id="myKeyStore"/>
+    <keyStore location="${server.config.dir}/commonTrustStore.p12" password="Liberty" type="PKCS12" id="myTrustStore"/>
+    <keyStore location="${server.config.dir}/commonConfigServerDefault.p12" password="LibertyServer" type="PKCS12" id="configServerDefault"/>
+    <keyStore location="${server.config.dir}/rsa_key.p12" password="Liberty" type="PKCS12" id="rsa_key"/>
+    <keyStore location="${server.config.dir}/rsa_trust.p12" password="LibertyServer" type="PKCS12" id="rsa_trust"/>
     <webAppSecurity allowFailOverToBasicAuth="true" httpOnlyCookies="false"/>
     <openidConnectProvider id="OidcConfigSample" keyAliasName="rsacert" keyStoreRef="rsa_key" oauthProviderRef="OAuthConfigSample" requireOpenidScopeForUserInfo="false" signatureAlgorithm="RS256"/>
     <oauthProvider autoAuthorize="true" id="OAuthConfigSample" jwtAccessToken="${oidcCreateJWTToken}">

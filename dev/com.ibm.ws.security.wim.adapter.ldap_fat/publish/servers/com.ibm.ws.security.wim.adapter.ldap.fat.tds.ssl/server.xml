@@ -83,9 +83,9 @@
     
     <sslDefault sslRef="DefaultSSLSettings" />
 	<ssl id="LDAPSSLSettings" keyStoreRef="LDAPKeyStore" trustStoreRef="LDAPTrustStore" />
-	<keyStore id="LDAPKeyStore" location="${server.config.dir}/LdapSSLKeyStore.jks" type="JKS" password="{xor}CDo9Hgw=" />
+	<keyStore id="LDAPKeyStore" location="${server.config.dir}/LdapSSLKeyStore.p12" type="PKCS12" password="{xor}CDo9Hgw=" />
 	<keyStore id="LDAPTrustStore" location="${server.config.dir}/truststore.p12" type="PKCS12" password="LDAPpassword" />
 
 	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" />
-	<keyStore id="defaultKeyStore" location="key.jks" type="JKS" password="default" />
+	<keyStore id="defaultKeyStore" location="key.p12" type="PKCS12" password="default" />
 </server>

@@ -7,7 +7,7 @@
 		
 	</featureManager>
 
-	<keyStore id="defaultKeyStore" type="JKS" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty -->
+	<keyStore id="defaultKeyStore" type="PKCS12" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty -->
 
 	<application type="war" id="basicauth"
 				 name="basicauth"

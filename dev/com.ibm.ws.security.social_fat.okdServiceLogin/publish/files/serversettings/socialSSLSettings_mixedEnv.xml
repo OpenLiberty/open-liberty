@@ -30,20 +30,20 @@
 	<keyStore
 		id="rsa_key"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/rsa_key.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_key.p12" />
 
 	<keyStore
 		id="rsa_trust"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/rsa_trust.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_trust.p12" />
 		
 	<keyStore
 		id="rsa_trust_for_OpenShift"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/rsa_trust_for_OpenShift.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_trust_for_OpenShift.p12" />
 
 
 	<ssl
@@ -55,14 +55,14 @@
 	<keyStore
 		id="bad_key"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonKeyStore.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonKeyStore.p12" />
 
 	<keyStore
 		id="bad_trust"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonTrustStore.jks" />		
+		type="PKCS12"
+		location="${server.config.dir}/commonTrustStore.p12" />		
 <!--
 	<ssl
 		id="BadTrustSSLSettings"
@@ -79,7 +79,7 @@
 	<keyStore
 		id="rsa_trust"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/rsa_trust.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_trust.p12" />
 		-->
 </server>        

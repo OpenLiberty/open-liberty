@@ -169,7 +169,7 @@
 	<keyStore
 		id="multiKeyTrust"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonMultiKeyTrustStore.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonMultiKeyTrustStore.p12" />
 
 </server>

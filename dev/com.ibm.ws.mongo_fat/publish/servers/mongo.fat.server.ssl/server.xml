@@ -21,7 +21,7 @@
         <classloader commonLibraryRef="mongo-lib" />
     </application>
     
-    <keyStore password="passw0rd" id="myTrustStore" location="${server.output.dir}/resources/mongo-encrypted/security/truststore.jks"></keyStore>
+    <keyStore password="passw0rd" id="myTrustStore" location="${server.output.dir}/resources/mongo-encrypted/security/truststore.p12"></keyStore>
     <ssl id="mySSLConfig" keyStoreRef="myTrustStore" />
     
     <mongoDB jndiName="mongo/testdb" databaseName="default" >
@@ -47,7 +47,7 @@
     <mongo id="mongo-sslEnabled-false-sslref" libraryRef="mongo-lib" hostNames="mongo-auth" ports="0" user="user" password="password" sslEnabled="false" sslRef="mySSLConfig"/>
     <mongoDB jndiName="mongo/testdb-sslEnabled-false-sslref" mongoRef="mongo-sslEnabled-false-sslref" databaseName="default" />
     
-    <keyStore password="passw0rd" id="differentTrustStore" location="${server.output.dir}/resources/mongo-different-ssl/security/truststore.jks"></keyStore>
+    <keyStore password="passw0rd" id="differentTrustStore" location="${server.output.dir}/resources/mongo-different-ssl/security/truststore.p12"></keyStore>
     <ssl id="differentSSLConfig" keyStoreRef="differentTrustStore" />
     <mongo id="mongo-different-sslref" libraryRef="mongo-lib" hostNames="mongo-different-ssl" ports="0" user="user" password="password" sslEnabled="true" sslRef="differentSSLConfig" connectTimeout="20000"/>
     <mongoDB jndiName="mongo/testdb-different-sslref" mongoRef="mongo-different-sslref" databaseName="default" />
@@ -58,11 +58,11 @@
 
     <!-- Certificate authentication tests below -->
 
-    <keyStore password="passw0rd" id="validCertAuthMultiKeyKeyStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/client_all_keystore.jks"></keyStore>
-    <keyStore password="passw0rd" id="validCertAuthSingleKeyKeyStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/client_good_keystore.jks"></keyStore>
+    <keyStore password="passw0rd" id="validCertAuthMultiKeyKeyStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/client_all_keystore.p12"></keyStore>
+    <keyStore password="passw0rd" id="validCertAuthSingleKeyKeyStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/client_good_keystore.p12"></keyStore>
     
-    <keyStore password="passw0rd" id="validCertAuthTrustStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/truststore.jks"></keyStore>
-    <keyStore password="passw0rd" id="invalidCertAuthTrustStore" location="${server.output.dir}/resources/security/invalidCertAuthTrustStore.jks"></keyStore>
+    <keyStore password="passw0rd" id="validCertAuthTrustStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/truststore.p12"></keyStore>
+    <keyStore password="passw0rd" id="invalidCertAuthTrustStore" location="${server.output.dir}/resources/security/invalidCertAuthTrustStore.p12"></keyStore>
     
     <ssl id="validCertAuthNoAliasReqd" keyStoreRef="validCertAuthSingleKeyKeyStore" trustStoreRef="validCertAuthTrustStore"></ssl>
     <ssl id="validCertAuthValidAlias" keyStoreRef="validCertAuthMultiKeyKeyStore" trustStoreRef="validCertAuthTrustStore" clientKeyAlias="client_good"></ssl>

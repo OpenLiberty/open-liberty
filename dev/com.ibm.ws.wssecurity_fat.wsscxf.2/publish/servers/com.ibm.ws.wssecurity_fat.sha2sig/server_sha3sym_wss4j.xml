@@ -38,15 +38,15 @@
 			EndorsingSupportingToken BAX35 -->
 		<signatureProperties
 			signatureAlgorithm="sha384"
-			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.type="PKCS12"
 			org.apache.wss4j.crypto.merlin.keystore.password="LibertyX509Client"
 			org.apache.wss4j.crypto.merlin.keystore.alias="x509ClientDefault"
 			org.apache.wss4j.crypto.merlin.truststore.alias="x509ServerDefaultCert"
-			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ClientDefault.p12" />
 		<encryptionProperties
-			org.apache.wss4j.crypto.merlin.truststore.type="jks"
+			org.apache.wss4j.crypto.merlin.truststore.type="PKCS12"
 			org.apache.wss4j.crypto.merlin.truststore.password="LibertyX509Client2"
-			org.apache.wss4j.crypto.merlin.truststore.file="${server.config.dir}/x509ClientSecond.jks" />
+			org.apache.wss4j.crypto.merlin.truststore.file="${server.config.dir}/x509ClientSecond.p12" />
 		<!-- ** This works too, in case ws-security.encryption.username is not 
 			specified org.apache.wss4j.crypto.merlin.keystore.alias="x509ServerSecondCert" -->
 	</wsSecurityClient>
@@ -60,16 +60,16 @@
 			EndorsingSupportingToken BAX35 -->
 		<signatureProperties
 			signatureAlgorithm="sha384"
-			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.type="PKCS12"
 			org.apache.wss4j.crypto.merlin.keystore.password="LibertyX509Server"
 			org.apache.wss4j.crypto.merlin.keystore.alias="x509ServerDefault"
 			org.apache.wss4j.crypto.merlin.truststore.alias="x509ClientDefaultCert"
-			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ServerDefault.p12" />
 		<encryptionProperties
-			org.apache.wss4j.crypto.merlin.keystore.type="jks"
+			org.apache.wss4j.crypto.merlin.keystore.type="PKCS12"
 			org.apache.wss4j.crypto.merlin.keystore.password="LibertyX509Server2"
 			org.apache.wss4j.crypto.merlin.keystore.alias="x509ServerSecond"
-			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
+			org.apache.wss4j.crypto.merlin.file="${server.config.dir}/x509ServerSecond.p12" />
 	</wsSecurityProvider>
 
     <include location="imports/java2Permissions.xml" />

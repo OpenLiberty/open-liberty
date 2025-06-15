@@ -22,7 +22,7 @@
   traceSpecification="*=info:logservice=all:SIBMessageTrace=all"
  maxFileSize="200"
     />
-    	<keyStore id="defaultKeyStore" location="mykey.jks" type="JKS" password="key123"/>
+    	<keyStore id="defaultKeyStore" location="mykey.p12" type="PKCS12" password="key123"/>
     
   
 	
