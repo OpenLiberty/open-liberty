@@ -829,6 +829,19 @@ public class JakartaPersistenceServlet extends FATServlet {
                         .setParameter("id", uuidEntity.getId())
                         .getSingleResult();
         assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type String & GenerationType UUID
+        StringUUIDIdEntity stringUUIDIdEntity = StringUUIDIdEntity.of(actualName);
+        tx.begin();
+        em.persist(stringUUIDIdEntity);
+        tx.commit();
+        assertNotNull(stringUUIDIdEntity.getId());
+
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT u.name FROM StringUUIDIdEntity u WHERE u.id = :id", String.class)
+                        .setParameter("id", stringUUIDIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
     }
 
     /**
