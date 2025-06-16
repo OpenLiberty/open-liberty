@@ -849,7 +849,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    public void testIntegerIDWithIdentityIdGenerationType() throws Exception {
+    public void testIdentityGenerationType() throws Exception {
         final String actualName = "Identity Generation Entity 1";
         // test persist with primary key type Integer & GenerationType IDENTITY
         IntegerIdentityIdEntity integerIdentityIdEntity = IntegerIdentityIdEntity.of(actualName);
