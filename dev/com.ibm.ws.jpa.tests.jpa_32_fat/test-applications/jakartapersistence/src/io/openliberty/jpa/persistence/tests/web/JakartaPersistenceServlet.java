@@ -39,6 +39,8 @@ import io.openliberty.jpa.persistence.tests.models.table.IntegerPrimitiveTableId
 import io.openliberty.jpa.persistence.tests.models.table.IntegerTableIdEntity;
 import io.openliberty.jpa.persistence.tests.models.table.LongPrimitiveTableIdEntity;
 import io.openliberty.jpa.persistence.tests.models.table.LongTableIdEntity;
+import io.openliberty.jpa.persistence.tests.models.uuid.StringUUIDIdEntity;
+import io.openliberty.jpa.persistence.tests.models.uuid.UUIDUUIDIdEntity;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -801,6 +803,30 @@ public class JakartaPersistenceServlet extends FATServlet {
         // Query with ID and validate the result
         queriedNameById = em.createQuery("SELECT t.name FROM LongPrimitiveSequenceIdEntity t WHERE t.id = :id", String.class)
                         .setParameter("id", longPrimitiveSequenceIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+    }
+
+     /**
+     * Confirms the use of primary key of type 'java.lang.String' With GenerationType.UUID
+     * The UUID value indicates that the persistence provider should assign an RFC 4122 Universally Unique IDentifier.
+     * A UUID generator may be used to generate values for a primary key property or field of type java.util.UUID or java.lang.String.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testUUIDGenerationType() throws Exception {
+        final String actualName = "UUID Test Entity 1";
+        // test persist with primary key type UUID & GenerationType UUID
+        UUIDUUIDIdEntity uuidEntity = UUIDUUIDIdEntity.of(actualName);
+        tx.begin();
+        em.persist(uuidEntity);
+        tx.commit();
+        assertNotNull(uuidEntity.getId());
+
+        // Query with ID and validate the result
+        String queriedNameById = em.createQuery("SELECT u.name FROM UUIDUUIDIdEntity u WHERE u.id = :id", String.class)
+                        .setParameter("id", uuidEntity.getId())
                         .getSingleResult();
         assertEquals(actualName, queriedNameById);
     }
