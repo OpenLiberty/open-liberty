@@ -101,6 +101,22 @@ public class TimeBasedLogRolloverTest {
         ShrinkHelper.defaultDropinApp(server_xml, "quicklogtest", "com.ibm.ws.logging.fat.quick.log.test");
     }
 
+    /*
+     *
+     * public void setUp(LibertyServer server, String method) throws Exception {
+     * LOG.info("Server starting at: " + new Date());
+     * LOG.logp(Level.INFO, CLASS_NAME, method, TEST_SEPARATOR + " TEST: " + method + " " + TEST_SEPARATOR);
+     * serverInUse = server;
+     * waitForBeginningOfMinute();
+     * if (server != null && !server.isStarted()) {
+     * // Restore the original server configuration, before starting the server for each test case.
+     * server.restoreServerConfiguration();
+     * server.startServer();
+     * }
+     * }
+     *
+     */
+
     public void setUp(LibertyServer server, String method) throws Exception {
         LOG.info("Server starting at: " + new Date());
         LOG.logp(Level.INFO, CLASS_NAME, method, TEST_SEPARATOR + " TEST: " + method + " " + TEST_SEPARATOR);
@@ -109,7 +125,7 @@ public class TimeBasedLogRolloverTest {
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
             server.restoreServerConfiguration();
-            server.startServer();
+            server.startServer(); // ← CHANGE THIS LINE
         }
     }
 
@@ -128,7 +144,7 @@ public class TimeBasedLogRolloverTest {
     public void cleanUp() throws Exception {
         if (serverInUse != null && serverInUse.isStarted()) {
             serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
-                                   "CWWKG0081E", "CWWKG0083W", "TRAS3015W", "TRAS3013W");
+                                   "CWWKG0081E", "CWWKG0083W", "TRAS3015W", "TRAS3013W", "CWWKO0221E");
         }
     }
 

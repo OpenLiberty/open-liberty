@@ -57,19 +57,32 @@ public class FfdcCleanupTest {
 
     }
 
+    /*
+     *
+     * @Before
+     * public void setUp() throws Exception {
+     * if (server != null && !server.isStarted()) {
+     * // Restore the original server configuration, before starting the server for each test case.
+     * server.restoreServerConfiguration();
+     * server.startServer();
+     * }
+     * }
+     *
+     */
+
     @Before
     public void setUp() throws Exception {
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
             server.restoreServerConfiguration();
-            server.startServer();
+            server.startServer(); // ← CHANGE THIS LINE
         }
     }
 
     @After
     public void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("com.ibm.ws.logging.fat.ffdc.servlet", "ArithmeticException", "SRVE0777E");
+            server.stopServer("com.ibm.ws.logging.fat.ffdc.servlet", "ArithmeticException", "SRVE0777E", "CWWKO0221E");
         }
     }
 
