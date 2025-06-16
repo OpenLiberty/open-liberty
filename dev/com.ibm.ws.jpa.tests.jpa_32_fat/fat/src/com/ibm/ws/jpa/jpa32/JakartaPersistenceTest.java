@@ -70,6 +70,7 @@ public class JakartaPersistenceTest {
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + "_" + specLevel + ".war");
         app.addPackage("io.openliberty.jpa.persistence.tests.models");
+        app.addPackage("io.openliberty.jpa.persistence.tests.models.table");
         app.addPackage("io.openliberty.jpa.persistence.tests.web");
         app.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(resPath).as(GenericArchive.class),
                   "/",

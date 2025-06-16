@@ -31,6 +31,7 @@ import io.openliberty.jpa.persistence.tests.models.Product;
 import io.openliberty.jpa.persistence.tests.models.Ticket;
 import io.openliberty.jpa.persistence.tests.models.TicketStatus;
 import io.openliberty.jpa.persistence.tests.models.User;
+import io.openliberty.jpa.persistence.tests.models.table.IntegerTableIdEntity;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -58,7 +59,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     private UserTransaction tx;
 
     @Test
-    public void testSetOperationsJPQL() throws Exception{
+    public void testSetOperationsJPQL() throws Exception {
         deleteAllEntities(Person.class);
         deleteAllEntities(Organization.class);
 
@@ -352,7 +353,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(user6);
         em.persist(user7);
         tx.commit();
-       
+
         List<User> result;
         List<User> resultNew;
         try {
@@ -373,8 +374,8 @@ public class JakartaPersistenceServlet extends FATServlet {
             CriteriaQuery<User> criteriaQueryNew= criteriaBuilder.createQuery(User.class);
             Root<User> userNew = criteriaQueryNew.from(User.class);
             criteriaQueryNew.where(userNew.get("firstName").notEqualTo("John"));
-	        resultNew = em.createQuery(criteriaQueryNew).getResultList();
-            
+            resultNew = em.createQuery(criteriaQueryNew).getResultList();
+
             assertEquals(4, resultNew.size());
             assertEquals(result, resultNew);
             tx.commit();
@@ -680,6 +681,28 @@ public class JakartaPersistenceServlet extends FATServlet {
             throw e;
         }
         assertNull(result);
+    }
+
+    /**
+     * tests the use of primary key of type type java.lang.Long, java.lang.Integer, long, or int with GenerationType.TABLE
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testIntegerIDWithTableIdGenerationType() throws Exception {
+        final String actualName = "Test Entity 1";
+
+        // test persist with primary key type Integer & GenerationType TABLE
+        IntegerTableIdEntity integerTableIdEntity = IntegerTableIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerTableIdEntity);
+        tx.commit();
+        assertNotNull(integerTableIdEntity.getId());
+        // Query with ID and validate the result
+        String queriedNameById = em.createQuery("SELECT t.name FROM IntegerTableIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerTableIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
     }
 
     /**
