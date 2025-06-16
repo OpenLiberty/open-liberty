@@ -33,6 +33,8 @@ import io.openliberty.jpa.persistence.tests.models.TicketStatus;
 import io.openliberty.jpa.persistence.tests.models.User;
 import io.openliberty.jpa.persistence.tests.models.sequence.IntegerPrimitiveSequenceIdEntity;
 import io.openliberty.jpa.persistence.tests.models.sequence.IntegerSequenceIdEntity;
+import io.openliberty.jpa.persistence.tests.models.sequence.LongPrimitiveSequenceIdEntity;
+import io.openliberty.jpa.persistence.tests.models.sequence.LongSequenceIdEntity;
 import io.openliberty.jpa.persistence.tests.models.table.IntegerPrimitiveTableIdEntity;
 import io.openliberty.jpa.persistence.tests.models.table.IntegerTableIdEntity;
 import io.openliberty.jpa.persistence.tests.models.table.LongPrimitiveTableIdEntity;
@@ -775,6 +777,30 @@ public class JakartaPersistenceServlet extends FATServlet {
         // Query with ID and validate the result
         queriedNameById = em.createQuery("SELECT t.name FROM IntegerPrimitiveSequenceIdEntity t WHERE t.id = :id", String.class)
                         .setParameter("id", integerPrimitiveSequenceIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type Long & GenerationType Sequence
+        LongSequenceIdEntity longSequenceIdEntity = LongSequenceIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longSequenceIdEntity);
+        tx.commit();
+        assertNotNull(longSequenceIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongSequenceIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longSequenceIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type long & GenerationType Sequence
+        LongPrimitiveSequenceIdEntity longPrimitiveSequenceIdEntity = LongPrimitiveSequenceIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longPrimitiveSequenceIdEntity);
+        tx.commit();
+        assertNotNull(longPrimitiveSequenceIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongPrimitiveSequenceIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longPrimitiveSequenceIdEntity.getId())
                         .getSingleResult();
         assertEquals(actualName, queriedNameById);
     }
