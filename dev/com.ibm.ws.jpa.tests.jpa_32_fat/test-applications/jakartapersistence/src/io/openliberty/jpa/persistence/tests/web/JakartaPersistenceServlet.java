@@ -33,6 +33,8 @@ import io.openliberty.jpa.persistence.tests.models.TicketStatus;
 import io.openliberty.jpa.persistence.tests.models.User;
 import io.openliberty.jpa.persistence.tests.models.auto.IntegerAutoIdEntity;
 import io.openliberty.jpa.persistence.tests.models.auto.IntegerPrimitiveAutoIdEntity;
+import io.openliberty.jpa.persistence.tests.models.auto.LongAutoIdEntity;
+import io.openliberty.jpa.persistence.tests.models.auto.LongPrimitiveAutoIdEntity;
 import io.openliberty.jpa.persistence.tests.models.identity.IntegerIdentityIdEntity;
 import io.openliberty.jpa.persistence.tests.models.identity.IntegerPrimitiveIdentityIdEntity;
 import io.openliberty.jpa.persistence.tests.models.identity.LongIdentityIdEntity;
@@ -933,6 +935,30 @@ public class JakartaPersistenceServlet extends FATServlet {
         // Query with ID and validate the result
         queriedNameById = em.createQuery("SELECT t.name FROM IntegerPrimitiveAutoIdEntity t WHERE t.id = :id", String.class)
                         .setParameter("id", integerPrimitiveAutoIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type Long & GenerationType IDENTITY
+        LongAutoIdEntity longAutoIdEntity = LongAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longAutoIdEntity);
+        tx.commit();
+        assertNotNull(longAutoIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongAutoIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longAutoIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type long & GenerationType IDENTITY
+        LongPrimitiveAutoIdEntity longPrimitiveAutoIdEntity = LongPrimitiveAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longPrimitiveAutoIdEntity);
+        tx.commit();
+        assertNotNull(longPrimitiveAutoIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongPrimitiveAutoIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longPrimitiveAutoIdEntity.getId())
                         .getSingleResult();
         assertEquals(actualName, queriedNameById);
     }
