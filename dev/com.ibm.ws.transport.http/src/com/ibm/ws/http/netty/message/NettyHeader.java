@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.message;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -20,49 +21,44 @@ import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.util.AsciiString;
 
 /**
  * Wrapper for HeaderField compatibility within the transport
  */
 public class NettyHeader implements HeaderField {
 
-    HttpHeaders nettyHeaders;
-    String name;
-    String value;
-    HeaderKeys key;
+    private final HttpHeaders nettyHeaders;
+    private final HeaderKeys key;
+    private final AsciiString keyAscii;
+    private final String cachedValue;
 
-    public NettyHeader(String name, HttpHeaders nettyHeaders) {
+    public NettyHeader(String name, HttpHeaders headers) {
 
-        Objects.nonNull(name);
-        this.name = name;
-
-        Objects.nonNull(nettyHeaders);
-        this.nettyHeaders = nettyHeaders;
-
-        this.key = HttpHeaderKeys.find(name, Boolean.TRUE);
+        this(HttpHeaderKeys.find(name, true), Objects.requireNonNull(headers),null);
     }
 
     public NettyHeader(HeaderKeys key, HttpHeaders headers) {
-        Objects.nonNull(key);
-        this.key = key;
-        this.name = key.getName();
-
-        Objects.nonNull(headers);
-        this.nettyHeaders = headers;
-
+        this(key, Objects.requireNonNull(headers), null);
     }
 
     public NettyHeader(String name, String value) {
-        Objects.nonNull(name);
-        this.name = name;
-
-        this.value = Objects.isNull(value) ? "" : value;
-        this.key = HttpHeaderKeys.find(name, Boolean.TRUE);
+        this(HttpHeaderKeys.find(name, true), 
+                null, 
+                value == null? "":value);
     }
+
+    private NettyHeader(HeaderKeys key, HttpHeaders headers, String value){
+        this.key = Objects.requireNonNull(key, "key");
+        this.keyAscii = AsciiString.cached(key.getName());
+        this.nettyHeaders = headers;
+        this.cachedValue = value;
+    }
+
 
     @Override
     public String getName() {
-        return name;
+        return key.getName();
     }
 
     @Override
@@ -72,17 +68,16 @@ public class NettyHeader implements HeaderField {
 
     @Override
     public String asString() {
-
-        return (Objects.nonNull(value)) ? this.value : nettyHeaders.get(name);
+        if(cachedValue != null){
+            return cachedValue;
+        }
+        return nettyHeaders != null ? nettyHeaders.get(keyAscii) : null;
     }
 
     @Override
     public byte[] asBytes() {
         String header = asString();
-        if (Objects.nonNull(header)) {
-            return header.getBytes();
-        }
-        return null;
+        return header != null ? header.getBytes(StandardCharsets.US_ASCII): null;
     }
 
     @Override
@@ -94,7 +89,24 @@ public class NettyHeader implements HeaderField {
 
     @Override
     public int asInteger() throws NumberFormatException {
-        return nettyHeaders.getInt(name);
+        
+        CharSequence sequence;
+        if(cachedValue != null){
+            sequence = cachedValue;
+        } else if(nettyHeaders != null){
+            sequence = nettyHeaders.get(keyAscii);
+        } else{
+            sequence = null;
+        }
+        if(sequence == null || sequence.length() == 0){
+            throw new NumberFormatException("Header value is null or empty");
+        }
+        if(sequence instanceof AsciiString){
+            AsciiString asciiValue = (AsciiString) sequence;
+
+            return asciiValue.parseInt(0, asciiValue.length(),10);
+        }
+        return Integer.parseInt(sequence.toString().trim());
     }
 
     @Override
