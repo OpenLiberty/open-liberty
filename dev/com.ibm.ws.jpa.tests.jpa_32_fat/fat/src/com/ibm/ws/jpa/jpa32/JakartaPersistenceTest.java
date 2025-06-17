@@ -74,6 +74,7 @@ public class JakartaPersistenceTest {
         app.addPackage("io.openliberty.jpa.persistence.tests.models.sequence");
         app.addPackage("io.openliberty.jpa.persistence.tests.models.uuid");
         app.addPackage("io.openliberty.jpa.persistence.tests.models.identity");
+        app.addPackage("io.openliberty.jpa.persistence.tests.models.auto");
         app.addPackage("io.openliberty.jpa.persistence.tests.web");
         app.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(resPath).as(GenericArchive.class),
                   "/",

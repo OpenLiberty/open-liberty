@@ -31,6 +31,8 @@ import io.openliberty.jpa.persistence.tests.models.Product;
 import io.openliberty.jpa.persistence.tests.models.Ticket;
 import io.openliberty.jpa.persistence.tests.models.TicketStatus;
 import io.openliberty.jpa.persistence.tests.models.User;
+import io.openliberty.jpa.persistence.tests.models.auto.IntegerAutoIdEntity;
+import io.openliberty.jpa.persistence.tests.models.auto.IntegerPrimitiveAutoIdEntity;
 import io.openliberty.jpa.persistence.tests.models.identity.IntegerIdentityIdEntity;
 import io.openliberty.jpa.persistence.tests.models.identity.IntegerPrimitiveIdentityIdEntity;
 import io.openliberty.jpa.persistence.tests.models.identity.LongIdentityIdEntity;
@@ -896,6 +898,41 @@ public class JakartaPersistenceServlet extends FATServlet {
         // Query with ID and validate the result
         queriedNameById = em.createQuery("SELECT t.name FROM LongPrimitiveIdentityIdEntity t WHERE t.id = :id", String.class)
                         .setParameter("id", longPrimitiveIdentityIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+    }
+
+    /**
+     * Tests the use of primary key With GenerationType.AUTO
+     * In the case of a field or property of type java.lang.Long, java.lang.Integer, long, or int, the AUTO strategy may select between TABLE, SEQUENCE, or IDENTITY.
+     * In the case of a field or property of type java.util.UUID or java.lang.String, the AUTO strategy is equivalent to UUID.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testWithAutoGenerationType() throws Exception {
+        final String actualName = "integer Auto Id Generation Type Entity 1";
+        // test persist with primary key type Integer & GenerationType IDENTITY
+        IntegerAutoIdEntity integerAutoIdEntity = IntegerAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerAutoIdEntity);
+        tx.commit();
+        assertNotNull(integerAutoIdEntity.getId());
+        // Query with ID and validate the result
+        String queriedNameById = em.createQuery("SELECT t.name FROM IntegerAutoIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerAutoIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type int & GenerationType IDENTITY
+        IntegerPrimitiveAutoIdEntity integerPrimitiveAutoIdEntity = IntegerPrimitiveAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerPrimitiveAutoIdEntity);
+        tx.commit();
+        assertNotNull(integerPrimitiveAutoIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM IntegerPrimitiveAutoIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerPrimitiveAutoIdEntity.getId())
                         .getSingleResult();
         assertEquals(actualName, queriedNameById);
     }
