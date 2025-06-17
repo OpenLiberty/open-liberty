@@ -425,9 +425,6 @@ public class TimeBasedLogRolloverTest {
 
     private static void checkForRolledLogsAtTime(Calendar cal, boolean trace) throws Exception {
 
-        // Wait for server to be fully ready first
-        serverInUse.waitForStringInLog("CWWKF0011I"); // Liberty server ready message
-
         //LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
 
         LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime",
