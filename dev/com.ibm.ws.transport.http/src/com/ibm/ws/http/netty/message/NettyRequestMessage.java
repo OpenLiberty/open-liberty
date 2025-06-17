@@ -132,8 +132,8 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         this.headers = request.headers();
         this.nettyContext = nettyContext;
 
-        parameters = new HashMap<String, String[]>();
-        processQuery();
+        this.query = null;
+        this.parameters = null;
 
         HttpChannelConfig config = isc instanceof HttpInboundServiceContextImpl ? ((HttpInboundServiceContextImpl) isc).getHttpConfig() : null;
 
@@ -280,7 +280,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         scheme = null;
 
         query = null;
-        parameters.clear();
+        parameters = null;
 
         super.clear();
 
@@ -366,6 +366,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             // If it works it means we have an absolute URI and not a path
             return requestUri.getRawPath();
         } catch (URISyntaxException e) {
+            ensureQueryParsed();
             try {
                 return query.path();
             } catch (IllegalArgumentException e2) {
@@ -386,18 +387,21 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public StringBuffer getRequestURL() {
+        if(url == null){
+            InetSocketAddress local = (InetSocketAddress) nettyContext.channel().localAddress();
+            String host = local.getHostString();
+            int port = context.getLocalPort();
+            url = getScheme() + "://" + host + ':' + port + request.uri();
+        }
 
-        String host = context.getLocalAddr().getCanonicalHostName();
-        int port = context.getLocalPort();
-
-        return new StringBuffer(getScheme() + "://" + host + ":" + port + "/" + getRequestURI());
+        return new StringBuffer(url);
 
     }
 
     @Override
     public String getRequestURLAsString() {
-        if (Objects.isNull(url)) {
-            url = getRequestURL().toString();
+        if(url == null){
+            getRequestURL();
         }
         return url;
     }
@@ -409,35 +413,39 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getQueryString() {
-
+        ensureQueryParsed();
         return Objects.isNull(parameters) || parameters.isEmpty() ? null : query.rawQuery();
 
     }
 
     @Override
     public byte[] getQueryStringAsByteArray() {
+        ensureQueryParsed();
         return Objects.isNull(parameters) || parameters.isEmpty() ? null : GenericUtils.getBytes(getQueryString());
     }
 
     @Override
     public String getParameter(String name) {
-
+        ensureQueryParsed();
         return parameters.containsKey(name) ? parameters.get(name)[0] : null;
 
     }
 
     @Override
     public Map<String, String[]> getParameterMap() {
+        ensureQueryParsed();
         return parameters;
     }
 
     @Override
     public Enumeration<String> getParameterNames() {
+        ensureQueryParsed();
         return Collections.enumeration(parameters.keySet());
     }
 
     @Override
     public String[] getParameterValues(String name) {
+        ensureQueryParsed();
         return parameters.containsKey(name) ? parameters.get(name) : null;
     }
 
@@ -966,17 +974,13 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         return System.nanoTime();
     }
 
-    private void processQuery() {
-        if (Objects.isNull(query)) {
-            query = new QueryStringDecoder(request.uri());
-
-            for (Map.Entry<String, List<String>> entry : query.parameters().entrySet()) {
-
-                List<String> value = entry.getValue();
-                this.parameters.put(entry.getKey(), value.toArray(new String[value.size()]));
-            }
-
+    private void ensureQueryParsed(){
+        if(query != null && parameters != null){
+            return;
         }
+        query = new QueryStringDecoder(request.uri());
+        parameters = new HashMap<>(query.parameters().size());
+        query.parameters().forEach((k,v) -> parameters.put(k, v.toArray(new String[0])));
     }
 
 }
