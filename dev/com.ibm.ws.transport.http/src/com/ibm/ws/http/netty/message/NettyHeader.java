@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.ibm.io.async.IAsyncProvider.AsyncIOHelper;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
@@ -30,35 +31,33 @@ public class NettyHeader implements HeaderField {
 
     private final HttpHeaders nettyHeaders;
     private final HeaderKeys key;
-    private final AsciiString keyAscii;
-    private final String cachedValue;
+    private final AsciiString name;
+    private volatile CharSequence value;
 
     public NettyHeader(String name, HttpHeaders headers) {
 
-        this(HttpHeaderKeys.find(name, true), Objects.requireNonNull(headers),null);
+        this(HttpHeaderKeys.find(name, true), headers,null);
     }
 
     public NettyHeader(HeaderKeys key, HttpHeaders headers) {
-        this(key, Objects.requireNonNull(headers), null);
+        this(key, headers, null);
     }
 
     public NettyHeader(String name, String value) {
-        this(HttpHeaderKeys.find(name, true), 
-                null, 
-                value == null? "":value);
+        this(HttpHeaderKeys.find(name, true), null, value);
     }
 
     private NettyHeader(HeaderKeys key, HttpHeaders headers, String value){
         this.key = Objects.requireNonNull(key, "key");
-        this.keyAscii = AsciiString.cached(key.getName());
+        this.name = AsciiString.cached(key.getName());
         this.nettyHeaders = headers;
-        this.cachedValue = value;
+        this.value = value;
     }
 
 
     @Override
     public String getName() {
-        return key.getName();
+        return key.toString();
     }
 
     @Override
@@ -68,16 +67,19 @@ public class NettyHeader implements HeaderField {
 
     @Override
     public String asString() {
-        if(cachedValue != null){
-            return cachedValue;
-        }
-        return nettyHeaders != null ? nettyHeaders.get(keyAscii) : null;
+        CharSequence value = lazyValue();
+        return value == null ? null : value.toString();
     }
 
     @Override
     public byte[] asBytes() {
-        String header = asString();
-        return header != null ? header.getBytes(StandardCharsets.US_ASCII): null;
+        CharSequence value = lazyValue();
+        if(value == null) return null;
+
+        if(value instanceof AsciiString){
+            return ((AsciiString)value).array();
+        }
+        return value.toString().getBytes(StandardCharsets.US_ASCII);
     }
 
     @Override
@@ -90,29 +92,33 @@ public class NettyHeader implements HeaderField {
     @Override
     public int asInteger() throws NumberFormatException {
         
-        CharSequence sequence;
-        if(cachedValue != null){
-            sequence = cachedValue;
-        } else if(nettyHeaders != null){
-            sequence = nettyHeaders.get(keyAscii);
-        } else{
-            sequence = null;
-        }
-        if(sequence == null || sequence.length() == 0){
+        CharSequence value = lazyValue();
+        if(value == null || value.length() == 0){
             throw new NumberFormatException("Header value is null or empty");
         }
-        if(sequence instanceof AsciiString){
-            AsciiString asciiValue = (AsciiString) sequence;
-
-            return asciiValue.parseInt(0, asciiValue.length(),10);
+        if (value instanceof AsciiString) {
+            AsciiString v = (AsciiString) value;
+            return v.parseInt(0, v.length(), 10);
         }
-        return Integer.parseInt(sequence.toString().trim());
+        return Integer.parseInt(value.toString().trim());
     }
 
     @Override
     public List<byte[]> asTokens(byte delimiter) {
         throw new UnsupportedOperationException("Unused in Netty Context");
 
+    }
+
+    /**
+     * Cache the value only after the first time it is requested
+     */
+    private CharSequence lazyValue() {
+        CharSequence v = value;
+        if (v == null && nettyHeaders != null) {
+            v = nettyHeaders.get(name);
+            value = v; 
+        }
+        return v;
     }
 
 }
