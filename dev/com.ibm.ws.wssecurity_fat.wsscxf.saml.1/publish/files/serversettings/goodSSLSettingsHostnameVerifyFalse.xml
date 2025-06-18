@@ -26,6 +26,6 @@
 		id="samlPrivKeyStore"
 		password="Liberty"
 		type="PKCS12"
-		location="${server.config.dir}/samlKeyPrivPass.p12" />
+		location="${server.config.dir}/samlKeyPrivPass.jks" />
 
 </server>

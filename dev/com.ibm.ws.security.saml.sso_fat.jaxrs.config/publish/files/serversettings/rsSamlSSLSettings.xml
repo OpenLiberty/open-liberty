@@ -41,8 +41,8 @@
 	<keyStore
 		id="samlPrivKeyStore"
 		password="Liberty"
-		type="PKCS12"
-		location="${server.config.dir}/samlKeyPrivPass.p12" />
+		type="JKS"
+		location="${server.config.dir}/samlKeyPrivPass.jks" />
 	<keyStore
 		id="mergedKeyAndTrustStore"
 		password="LibertyServer"
