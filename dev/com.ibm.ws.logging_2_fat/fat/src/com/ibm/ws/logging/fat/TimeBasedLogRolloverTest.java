@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * retrigger
+ *
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -101,31 +101,15 @@ public class TimeBasedLogRolloverTest {
         ShrinkHelper.defaultDropinApp(server_xml, "quicklogtest", "com.ibm.ws.logging.fat.quick.log.test");
     }
 
-    /*
-     *
-     * public void setUp(LibertyServer server, String method) throws Exception {
-     * LOG.info("Server starting at: " + new Date());
-     * LOG.logp(Level.INFO, CLASS_NAME, method, TEST_SEPARATOR + " TEST: " + method + " " + TEST_SEPARATOR);
-     * serverInUse = server;
-     * waitForBeginningOfMinute();
-     * if (server != null && !server.isStarted()) {
-     * // Restore the original server configuration, before starting the server for each test case.
-     * server.restoreServerConfiguration();
-     * server.startServer();
-     * }
-     * }
-     *
-     */
-
     public void setUp(LibertyServer server, String method) throws Exception {
-        LOG.info("Server starting at: " + new Date());
         LOG.logp(Level.INFO, CLASS_NAME, method, TEST_SEPARATOR + " TEST: " + method + " " + TEST_SEPARATOR);
         serverInUse = server;
         waitForBeginningOfMinute();
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
             server.restoreServerConfiguration();
-            server.startServer(); // ← CHANGE THIS LINE
+            LOG.info("Server starting at: " + new Date());
+            server.startServer();
         }
     }
 
@@ -144,7 +128,7 @@ public class TimeBasedLogRolloverTest {
     public void cleanUp() throws Exception {
         if (serverInUse != null && serverInUse.isStarted()) {
             serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
-                                   "CWWKG0081E", "CWWKG0083W", "TRAS3015W", "TRAS3013W", "CWWKO0221E");
+                                   "CWWKG0081E", "CWWKG0083W", "TRAS3015W", "TRAS3013W");
         }
     }
 
@@ -425,8 +409,6 @@ public class TimeBasedLogRolloverTest {
 
     private static void checkForRolledLogsAtTime(Calendar cal, boolean trace) throws Exception {
 
-        //LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
-
         LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime",
                  "The next log rollover is scheduled to be at: " + cal.getTime() +
                                                                      " | Current time: " + new Date());
@@ -455,26 +437,6 @@ public class TimeBasedLogRolloverTest {
         }
 
     }
-
-    //String traceLogName = FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT;
-
-    /*
-     *
-     * //get rolled messages and trace logs
-     * File messagesLog = new File(getLogsDirPath(), messagesLogName);
-     * File traceLog = new File(getLogsDirPath(), traceLogName);
-     *
-     * long timeToFirstRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
-     * if (timeToFirstRollover > 0)
-     * Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
-     *
-     * assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist.", messagesLog.exists());
-     *
-     * if (trace)
-     * assertTrue("The rolled trace.log file " + traceLog + " doesn't exist.", traceLog.exists());
-     * }
-     *
-     */
 
     private static Calendar getNextRolloverTime(int rolloverStartHour, int rolloverInterval) {
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,32 +57,19 @@ public class FfdcCleanupTest {
 
     }
 
-    /*
-     *
-     * @Before
-     * public void setUp() throws Exception {
-     * if (server != null && !server.isStarted()) {
-     * // Restore the original server configuration, before starting the server for each test case.
-     * server.restoreServerConfiguration();
-     * server.startServer();
-     * }
-     * }
-     *
-     */
-
     @Before
     public void setUp() throws Exception {
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
             server.restoreServerConfiguration();
-            server.startServer(); // ← CHANGE THIS LINE
+            server.startServer();
         }
     }
 
     @After
     public void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("com.ibm.ws.logging.fat.ffdc.servlet", "ArithmeticException", "SRVE0777E", "CWWKO0221E");
+            server.stopServer("com.ibm.ws.logging.fat.ffdc.servlet", "ArithmeticException", "SRVE0777E");
         }
     }
 
