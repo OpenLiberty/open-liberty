@@ -824,7 +824,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait to send onCompleted for now
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (Exception x) {
             // do nothing
         }
