@@ -50,7 +50,7 @@
 	<keyStore
 		id="serverStoreTfim_badRef"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/sslServerTrustTfim_badRef.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/sslServerTrustTfim_badRef.p12" />
 
 </server>    

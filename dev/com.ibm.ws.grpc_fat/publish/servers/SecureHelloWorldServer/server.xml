@@ -36,13 +36,13 @@
     <keyStore
         id="rsa_key"
         password="passw0rd"
-        type="jks"
-        location="${server.config.dir}/key.jks" />
+        type="PKCS12"
+        location="${server.config.dir}/key.p12" />
     <keyStore
         id="rsa_trust"
         password="passw0rd"
-        type="jks"
-        location="${server.config.dir}/trust.jks" />
+        type="PKCS12"
+        location="${server.config.dir}/trust.p12" />
 	<logging
 		traceSpecification="*=info=enabled:io.openliberty.grpc*=all"
 		maxFileSize="40" maxFiles="1" traceFormat="BASIC" />

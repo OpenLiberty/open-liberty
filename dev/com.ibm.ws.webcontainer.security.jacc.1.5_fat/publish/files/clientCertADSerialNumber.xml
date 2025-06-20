@@ -22,11 +22,11 @@
 		 trustStoreRef="defaultTrustStore"
 		 clientAuthenticationSupported="true" />
 	<keyStore id="defaultKeyStore"
-			  location="${server.config.dir}/resources/security/DummyServerKeyFile.jks"
-			  type="JKS" password="WebAS" />
+			  location="${server.config.dir}/resources/security/DummyServerKeyFile.p12"
+			  type="PKCS12" password="WebAS" />
 	<keyStore id="defaultTrustStore"
-			  location="${server.config.dir}/resources/security/DummyServerTrustFile.jks"
-			  type="JKS" password="WebAS" />
+			  location="${server.config.dir}/resources/security/DummyServerTrustFile.p12"
+			  type="PKCS12" password="WebAS" />
 			  		  
 	<ldapRegistry id="LDAP" realm="SampleLdapADRealm" host="${ldap.server.2.name}" port="${ldap.server.2.port}" ignoreCase="true"
 		baseDN="cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"

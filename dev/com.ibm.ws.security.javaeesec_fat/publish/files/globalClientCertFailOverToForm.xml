@@ -9,7 +9,7 @@
     <webAppSecurity overrideHttpAuthMethod="CLIENT_CERT" allowAuthenticationFailOverToAuthMethod="FORM"  loginFormURL="globalLogin/globalLogin.jsp" loginErrorURL="globalLogin/globalLoginError.jsp"/>
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
-    <keyStore id="defaultTrustStore" location="${server.config.dir}/resources/security/trust.jks" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 4/12/2038 -->
+    <keyStore id="defaultTrustStore" location="${server.config.dir}/resources/security/trust.p12" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 4/12/2038 -->
     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" clientAuthenticationSupported="true" />
 
     <ldapRegistry id="LDAP" realm="MyLdapRealm" host="localhost" port="${ldap.1.port}" ignoreCase="true"

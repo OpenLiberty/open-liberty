@@ -16,7 +16,7 @@
 
   <variable name="onError" value="FAIL"/>
 
-  <keyStore id="defaultKeyStore" location="client.jks" password="{xor}Lz4sLCgwLTs="/>
+  <keyStore id="defaultKeyStore" location="client.p12" password="{xor}Lz4sLCgwLTs="/>
 
   <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr1">
     <properties.wasJms userName="user1"

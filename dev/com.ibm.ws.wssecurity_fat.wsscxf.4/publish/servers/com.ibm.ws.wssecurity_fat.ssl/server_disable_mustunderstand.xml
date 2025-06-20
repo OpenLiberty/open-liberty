@@ -30,13 +30,13 @@
 	<keyStore
 		id="myKeyStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/key.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/key.p12" />
 	<keyStore
 		id="myTrustStore"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/sslServerTrust.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/sslServerTrust.p12" />
 
 	<include location="../fatTestPorts.xml" />
 

@@ -10,8 +10,8 @@
     
     <!-- default SSL Configuration -->
     <ssl id="defaultSSLConfig" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" />
-    <keyStore id="serverKeyStore" location="key.jks" type="JKS" password="passw0rd" />
-    <keyStore id="serverTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+    <keyStore id="serverKeyStore" location="key.p12" type="PKCS12" password="passw0rd" />
+    <keyStore id="serverTrustStore" location="trust.p12" type="PKCS12" password="passw0rd" />
     
     <application id="TransportSecurityClient" name="TransportSecurityClient" location="TransportSecurityClient.war"
         context="TransportSecurityClient" type="war" />

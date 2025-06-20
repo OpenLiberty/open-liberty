@@ -9,7 +9,7 @@
     <include location="../fatTestPorts.xml"/>
     
     <!-- use the default SSL configuration -->
-    <keyStore id="defaultKeyStore" password="passw0rd" location="serverKey.jks"/>
+    <keyStore id="defaultKeyStore" password="passw0rd" location="serverKey.p12"/>
      
     <application id="TransportSecurityProvider" name="TransportSecurityProvider" location="TransportSecurityProvider.ear" type="ear">
         <application-bnd>

@@ -24,7 +24,7 @@
 
   <wasJmsOutbound id="BootstrapSecureMessaging" useSSL="true"/>
 
-  <keyStore id="defaultKeyStore" location="mykey.jks" type="JKS" password="key123"/>
+  <keyStore id="defaultKeyStore" location="mykey.p12" type="PKCS12" password="key123"/>
 
   <basicRegistry id="basic" realm="customRealm">
     <user name="user1" password="user1pwd"/>

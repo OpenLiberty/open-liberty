@@ -52,10 +52,10 @@
     <sslDefault sslRef="DefaultSSLSettings"/>
     <ssl clientAuthenticationSupported="true" id="DefaultSSLSettings" keyStoreRef="rsa_key" trustStoreRef="rsa_trust"/>
     <ssl clientAuthenticationSupported="true" id="BadTrustSSLSettings" keyStoreRef="rsa_key" trustStoreRef="bad_trust"/>
-    <keyStore id="rsa_key" location="${server.config.dir}/rsa_key.jks" password="Liberty" type="jks"/>
-    <keyStore id="rsa_trust_for_LibertyOP" location="${server.config.dir}/rsa_trust_for_LibertyOP.jks" password="LibertyServer" type="jks"/>
-    <keyStore id="rsa_trust" location="${server.config.dir}/rsa_trust.jks" password="LibertyServer" type="jks"/>
-    <keyStore id="bad_trust" location="${server.config.dir}/rsa_badTrust.jks" password="LibertyServer" type="jks"/>
+    <keyStore id="rsa_key" location="${server.config.dir}/rsa_key.p12" password="Liberty" type="PKCS12"/>
+    <keyStore id="rsa_trust_for_LibertyOP" location="${server.config.dir}/rsa_trust_for_LibertyOP.p12" password="LibertyServer" type="PKCS12"/>
+    <keyStore id="rsa_trust" location="${server.config.dir}/rsa_trust.p12" password="LibertyServer" type="PKCS12"/>
+    <keyStore id="bad_trust" location="${server.config.dir}/rsa_badTrust.p12" password="LibertyServer" type="PKCS12"/>
     <SSLDefault sslRef="DefaultSSLSettings"/>
 
 

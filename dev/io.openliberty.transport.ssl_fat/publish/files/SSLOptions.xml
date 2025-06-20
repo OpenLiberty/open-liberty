@@ -36,13 +36,13 @@
 
 	 <!-- inbound (HTTPS) keystore -->
 	 <keyStore id="defaultKeyStore" password="Liberty"
-	           location="${server.config.dir}/resources/security/sslOptions.jks" />
+	           location="${server.config.dir}/resources/security/sslOptions.p12" />
 	
 	 <keyStore id="defaultTrustStore" password="Liberty"
-	           location="${server.config.dir}/resources/security/trust.jks" />
+	           location="${server.config.dir}/resources/security/trust.p12" />
 	           
 	 <keyStore id="alternateTrustStore" password="Liberty"
-	           location="${server.config.dir}/resources/security/optionsTrust.jks" />
+	           location="${server.config.dir}/resources/security/optionsTrust.p12" />
 	
     <application type="war" id="basicauth" name="basicauth"
 	             location="${server.config.dir}/apps/basicauth.war" />

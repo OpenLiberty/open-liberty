@@ -29,7 +29,7 @@
 	<keyStore
 		id="rsa_trust_for_openshift"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/rsa_trust_for_OpenShift.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_trust_for_OpenShift.p12" />
 
 </server>

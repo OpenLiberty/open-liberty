@@ -52,13 +52,13 @@
 	<keyStore
 		id="rsa_key"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/rsa_key.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_key.p12" />
 	<keyStore
 		id="rsa_trust"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/rsa_trust.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_trust.p12" />
 	
 	
 	<!-- The security setup in this server will apply on grpc services -->

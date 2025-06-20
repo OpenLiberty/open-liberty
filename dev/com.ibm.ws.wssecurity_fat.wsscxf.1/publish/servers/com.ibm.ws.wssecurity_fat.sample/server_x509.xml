@@ -37,13 +37,13 @@
 	<keyStore
 		id="myKeyStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/key.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/key.p12" />
 	<keyStore
 		id="myTrustStore"
 		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/sslServerTrust.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/sslServerTrust.p12" />
 
 	<include location="../fatTestPorts.xml" />
 
@@ -101,15 +101,15 @@
                 <!--issue 30353 -->
 		<signatureProperties
                         signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="sampleapp"
 			org.apache.ws.security.crypto.merlin.keystore.alias="alice"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/sender.jks" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/sender.p12" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="sampleapp"
 			org.apache.ws.security.crypto.merlin.keystore.alias="bob"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/sender.jks" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/sender.p12" />
 	</wsSecurityClient>
 
 	<wsSecurityProvider
@@ -119,15 +119,15 @@
                 <!--issue 30353 -->
 		<signatureProperties
                         signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="sampleapp"
 			org.apache.ws.security.crypto.merlin.keystore.alias="bob"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/receiver.jks" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/receiver.p12" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="sampleapp"
 			org.apache.ws.security.crypto.merlin.keystore.alias="alice"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/receiver.jks" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/receiver.p12" />
 	</wsSecurityProvider>
   
     <include location="imports/java2Permissions.xml" />

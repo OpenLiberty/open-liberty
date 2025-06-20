@@ -21,17 +21,17 @@
 	<keyStore
 		id="myKeyStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonBasicKeyStore.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonBasicKeyStore.p12" />
 	<keyStore
 		id="myTrustStore"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonBadTrustStore.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonBadTrustStore.p12" />
     <keyStore
          id="anotherTrustStore"
          password="Liberty"
-         type="jks"
-         location="${server.config.dir}/commonBadTrustStore.jks" />
+         type="PKCS12"
+         location="${server.config.dir}/commonBadTrustStore.p12" />
 
 </server>        

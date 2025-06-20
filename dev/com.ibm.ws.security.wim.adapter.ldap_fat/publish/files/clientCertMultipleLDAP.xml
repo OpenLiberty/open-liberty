@@ -23,11 +23,11 @@
 		 trustStoreRef="defaultTrustStore"
 		 clientAuthenticationSupported="true" />
 	<keyStore id="defaultKeyStore"
-			  location="${server.config.dir}/resources/security/DummyServerKeyFile.jks"
-			  type="JKS" password="security" />
+			  location="${server.config.dir}/resources/security/DummyServerKeyFile.p12"
+			  type="PKCS12" password="security" />
 	<keyStore id="defaultTrustStore"
-			  location="${server.config.dir}/resources/security/DummyServerTrustFile.jks"
-			  type="JKS" password="security" />
+			  location="${server.config.dir}/resources/security/DummyServerTrustFile.p12"
+			  type="PKCS12" password="security" />
 
 	<ldapRegistry id="TDS_LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.1.name}" port="${ldap.server.1.port}" ignoreCase="true"
 		baseDN="o=ibm,c=us"

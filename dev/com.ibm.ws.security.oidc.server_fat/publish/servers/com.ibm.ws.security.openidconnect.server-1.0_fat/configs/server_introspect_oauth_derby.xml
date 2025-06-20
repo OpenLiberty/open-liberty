@@ -68,13 +68,13 @@
 		clientAuthenticationSupported="true" />
 	<keyStore
 		id="LDAPKeyStore"
-		location="${server.config.dir}/commonLdapSSLKeyStore.jks"
-		type="JKS"
+		location="${server.config.dir}/commonLdapSSLKeyStore.p12"
+		type="PKCS12"
 		password="{xor}CDo9Hgw=" />
 	<keyStore
 		id="LDAPTrustStore"
-		location="${server.config.dir}/commonLdapSSLTrustStore.jks"
-		type="JKS"
+		location="${server.config.dir}/commonLdapSSLTrustStore.p12"
+		type="PKCS12"
 		password="{xor}CDo9Hgw=" />
 
 	<oauth-roles>

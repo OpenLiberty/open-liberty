@@ -35,7 +35,7 @@
   </cloudant>
   <sslDefault httpHostNameVerification="false" />
   <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" verifyHostname="false"/>
-  <keyStore id="defaultKeyStore" location="${server.config.dir}/security/keystore.jks" type="JKS" password="liberty" />
+  <keyStore id="defaultKeyStore" location="${server.config.dir}/security/keystore.p12" type="PKCS12" password="liberty" />
   
   <cloudant id="nestedSSL" jndiName="cloudant/nestedSSL" libraryRef="CloudantLib" url="${cloudant_url_secure}">
   	<containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>
@@ -50,7 +50,7 @@
   	<containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>
   </cloudant>
   <ssl id="invalidSSLConfig" keyStoreRef="invalidKeyStore" verifyHostname="false"/>
-  <keyStore id="invalidKeyStore" location="${server.config.dir}/security/invalid_keystore.jks" type="JKS" password="liberty" />
+  <keyStore id="invalidKeyStore" location="${server.config.dir}/security/invalid_keystore.p12" type="PKCS12" password="liberty" />
   
   <cloudant id="noExistSSLRef" jndiName="cloudant/noExistSSLRef" sslRef="does_not_exist" libraryRef="CloudantLib" url="${cloudant_url_secure}">
   	<containerAuthData user="${cloudant_username}" password="${cloudant_password}"/>

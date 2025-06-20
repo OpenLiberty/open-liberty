@@ -9,13 +9,13 @@
      <include location="../fatTestPorts.xml" />
 
      <!-- Server SSL configuration -->
-     <keyStore id="defaultKeyStore" location="serverKey.jks"
+     <keyStore id="defaultKeyStore" location="serverKey.p12"
           password="passw0rd" />
 
      <!-- customize SSL configuration -->
      <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
-     <keyStore id="clientKeyStore" location="clientKey.jks" type="JKS" password="passw0rd" /> 
-     <keyStore id="clientTrustStore" location="clientInvalidTrust.jks" type="JKS" password="passw0rd" /> 
+     <keyStore id="clientKeyStore" location="clientKey.p12" type="PKCS12" password="passw0rd" /> 
+     <keyStore id="clientTrustStore" location="clientInvalidTrust.p12" type="PKCS12" password="passw0rd" /> 
      
      <application id="TransportSecurityClient" name="TransportSecurityClient"
           location="TransportSecurityClient.war" context="TransportSecurityClient"

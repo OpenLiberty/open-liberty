@@ -94,14 +94,14 @@
 	<keyStore
 		id="rsa_trust"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/rsa_trust.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/rsa_trust.p12" />
 
 	<keyStore
 		id="multiKeyTrust"
 		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/commonMultiKeyTrustStore.jks" />
+		type="PKCS12"
+		location="${server.config.dir}/commonMultiKeyTrustStore.p12" />
 
 	<jwtConsumer
 		id="audienceBlank"

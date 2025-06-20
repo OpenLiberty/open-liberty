@@ -42,13 +42,13 @@
     <target name="properties">
         <property file="${jetty.property.file}" />
         <available property="idp.ini.present" file="${idp.target.dir}/jetty-base/start.d/idp.ini" />
-        <available property="idp.jks.present" file="${idp.target.dir}/credentials/idp.jks" />
+        <available property="idp.p12.present" file="${idp.target.dir}/credentials/idp.p12" />
         <available property="idp.userfacing.p12.present" file="${idp.target.dir}/credentials/idp-userfacing.p12" />
         <condition property="generate.userfacing.p12">
             <!-- Generate the pkcs12 keystore if neither the JKS nor the P12 exist -->
             <not>
                 <or>
-                    <istrue value="${idp.jks.present}" />
+                    <istrue value="${idp.p12.present}" />
                     <istrue value="${idp.userfacing.p12.present}" />
                 </or>
             </not>
@@ -58,15 +58,15 @@
     <!-- Handle keystores -->
     <target name="keystores" depends="jks, gen-userfacing" />
 
-    <target name="jks" if="idp.jks.present">
+    <target name="jks" if="idp.p12.present">
       	<!-- Note that this password is the old default for QI.  This will overwrite what we may have put in when the merge file was created. -->
       	<echo file="${jetty.merge.properties}" append="yes">
         	jetty.backchannel.keystore.type=JKS
         	jetty.browser.keystore.type=JKS
         	jetty.backchannel.keystore.password= SeCrEt
         	jetty.browser.keystore.password= SeCrEt
-        	jetty.backchannel.keystore.path= ${idp.target.dir}/credentials/idp.jks
-        	jetty.browser.keystore.path= ${idp.target.dir}/credentials/idp.jks
+        	jetty.backchannel.keystore.path= ${idp.target.dir}/credentials/idp.p12
+        	jetty.browser.keystore.path= ${idp.target.dir}/credentials/idp.p12
         </echo>
     </target>
 

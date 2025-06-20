@@ -53,7 +53,7 @@
     </adminObject>
 
     <ssl id="mySSLConfig" keyStoreRef="defaultKeyStore" />
-    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.jks" password="Liberty"/>
+    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" password="Liberty"/>
 
     <resourceAdapter location="${server.config.dir}/resourceadapters/JCARAR1.rar">
       <classloader commonLibraryRef="DerbyLib"/>

@@ -44,10 +44,10 @@
 
     <!-- inbound (HTTPS) keystore -->
     <keyStore id="defaultKeyStore" password="Liberty"
-              location="${server.config.dir}/resources/security/key.jks" />
+              location="${server.config.dir}/resources/security/key.p12" />
 
     <!-- inbound (HTTPS) truststore -->
     <keyStore id="defaultTrustStore" password="Liberty"
-              location="${server.config.dir}/resources/security/trust.jks" />
+              location="${server.config.dir}/resources/security/trust.p12" />
               
 </server>
