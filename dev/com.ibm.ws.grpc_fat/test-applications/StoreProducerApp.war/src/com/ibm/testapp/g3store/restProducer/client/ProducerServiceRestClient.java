@@ -64,5 +64,4 @@ public interface ProducerServiceRestClient {
     @POST
     @Path("/streamingA/twoWay")
     public Response twoWayStreamApp(boolean asyncThread) throws Exception;
-
 }
