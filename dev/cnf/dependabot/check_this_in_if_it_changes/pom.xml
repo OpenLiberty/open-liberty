@@ -2582,6 +2582,11 @@
       <version>2.3.4</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.santuario</groupId>
+      <artifactId>xmlsec</artifactId>
+      <version>4.0.4</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-common</artifactId>
       <version>2.12.1</version>

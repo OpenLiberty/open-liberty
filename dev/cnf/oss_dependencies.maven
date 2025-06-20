@@ -512,6 +512,7 @@ org.apache.myfaces.core:myfaces-impl:4.1.1
 org.apache.neethi:neethi:3.1.1
 org.apache.openjpa:openjpa:3.1.2
 org.apache.santuario:xmlsec:2.3.4
+org.apache.santuario:xmlsec:4.0.4
 org.apache.sshd:sshd-common:2.12.1
 org.apache.sshd:sshd-common:2.5.1
 org.apache.sshd:sshd-common:2.9.2
