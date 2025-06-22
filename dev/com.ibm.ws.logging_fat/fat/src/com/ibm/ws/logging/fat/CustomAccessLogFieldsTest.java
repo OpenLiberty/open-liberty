@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -396,7 +396,9 @@ public class CustomAccessLogFieldsTest {
      * Test that we can change the value of jsonAccessLogFields on-the-fly.
      */
     @Test
+    // m1
     public void testChangeJsonAccessLogFieldsConfigValue() throws Exception {
+        Log.info(c, "testChangeJsonAccessLogFieldsConfigValueDebugCarl", "> testChangeJsonAccessLogFieldsConfigValues()");
         setUp(changeConfigServer);
         waitForSecurityPrerequisites(changeConfigServer, WAIT_TIMEOUT);
         waitForMetricsToStart(changeConfigServer, WAIT_TIMEOUT);
@@ -423,13 +425,16 @@ public class CustomAccessLogFieldsTest {
 
         // change back again to logFormat
         setServerConfiguration("logFormat", changeConfigServer);
+        Log.info(c, "testChangeJsonAccessLogFieldsConfigValue", "> third time");
         hitHttpsEndpointSecure("/metrics", changeConfigServer);
+        Log.info(c, "testChangeJsonAccessLogFieldsConfigValue", "< third time");
         line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
         changeConfigServer.setMarkToEndOfLog();
 
         assertTrue("There are fields missing in the output JSON log.", areFieldsPresent(line, newFields));
         assertTrue("There are unexpected fields in the output JSON log.", areFieldsNotPresent(line, defaultFields));
+        Log.info(c, "testChangeJsonAccessLogFieldsConfigValue", "< testChangeJsonAccessLogFieldsConfigValue()");
     }
 
     /*
@@ -672,6 +677,7 @@ public class CustomAccessLogFieldsTest {
 
     // The /metrics endpoint can supply us all of the possible access logging fields - but is a bit more finnicky to work with because it requires us to wait for security prerequisites
     // Only used for tests where we need to check that *all* possible access log fields show up.
+    // m2
     protected static void hitHttpsEndpointSecure(String servletName, LibertyServer server) throws MalformedURLException, IOException, ProtocolException {
         HttpsURLConnection con = null;
         try {
@@ -692,7 +698,9 @@ public class CustomAccessLogFieldsTest {
             con.setRequestProperty("cookie", "cookie=cookie");
             con.setRequestProperty("header", "headervalue");
             con.setConnectTimeout(60 * 1000); // Timeout is, by default, infinity - we don't want to waste time if the connection can't be established
+            Log.info(c, "hitHttpsEndpointSecureDebugCarl", "Just before con.getInputStream()");
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            Log.info(c, "hitHttpsEndpointSecureDebugCarl", "Just after con.getInputStream()");
             String line = null;
             StringBuilder lines = new StringBuilder();
             try {
