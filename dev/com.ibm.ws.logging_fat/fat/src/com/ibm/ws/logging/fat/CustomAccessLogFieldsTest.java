@@ -697,7 +697,7 @@ public class CustomAccessLogFieldsTest {
             con.setRequestProperty("Authorization", encoded);
             con.setRequestProperty("cookie", "cookie=cookie");
             con.setRequestProperty("header", "headervalue");
-            con.setConnectTimeout(60 * 1000); // Timeout is, by default, infinity - we don't want to waste time if the connection can't be established
+            con.setConnectTimeout(15 * 1000); // Timeout is, by default, infinity - we don't want to waste time if the connection can't be established
             Log.info(c, "hitHttpsEndpointSecureDebugCarl", "Just before con.getInputStream()");
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             Log.info(c, "hitHttpsEndpointSecureDebugCarl", "Just after con.getInputStream()");
