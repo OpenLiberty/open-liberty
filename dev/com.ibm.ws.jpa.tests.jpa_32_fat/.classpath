@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="test-applications/helpers/DatabaseManagement/src"/>
 	<classpathentry kind="src" path="test-applications/jakartadata/src"/>
    	<classpathentry kind="src" path="test-applications/jakartapersistence/src"/>
+	<classpathentry kind="src" path="test-applications/platformtck/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>
