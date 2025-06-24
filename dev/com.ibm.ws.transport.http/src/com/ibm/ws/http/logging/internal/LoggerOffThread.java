@@ -459,7 +459,7 @@ public class LoggerOffThread implements LogFile {
             /** 
              * Manage existing backups: find files matching the pattern, sort by newest first, enforce limit, and delete excess.
              * */ 
-            if( getMaximumBackupFiles()>0){
+            if (getMaximumBackupFiles()>0) {
                 File directory = new File(getFilePathName()).getParentFile();
                 if (directory != null && directory.isDirectory()) {
                     String fileinfoName = new File(this.fileinfo).getName();
@@ -477,7 +477,7 @@ public class LoggerOffThread implements LogFile {
                                 }
                         }
                     }
-            }
+                }
             }
             //Set bytesWritten from the already existing file
             try {
