@@ -310,9 +310,7 @@ public class TimeBasedLogRolloverTest {
         serverInUse.restoreServerConfiguration(); //restore disabled server config
         serverInUse.waitForStringInLogUsingMark("CWWKG0017I"); //wait for server config update
 
-        long nextRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
-        if (nextRollover > 0)
-            Thread.sleep(nextRollover + FILE_WAIT_SECONDS_PADDING); //sleep for another length of the old specified log rolloverInterval
+        Thread.sleep(10000);
 
         //check that only 2 messages*/trace* prefixed logs exist
         //aka the messages/trace logs were not rolled over again
@@ -427,24 +425,10 @@ public class TimeBasedLogRolloverTest {
 
         File messagesLog = new File(getLogsDirPath(), messagesLogName);
 
-        // If exact file doesn't exist, look for files within the same minute (30-second tolerance)
+        // Use the helper method
         if (!messagesLog.exists()) {
             LOG.info("Exact file not found, searching with tolerance...");
-            String expectedMinute = date.substring(0, date.length() - 5); // Remove ".00.0" to get minute pattern
-
-            File[] files = logsDir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    String fileName = file.getName();
-                    if (fileName.startsWith(MESSAGES_LOG_PREFIX) &&
-                        fileName.endsWith(LOG_EXT) &&
-                        fileName.contains(expectedMinute)) {
-                        LOG.info("Found matching file with tolerance: " + fileName);
-                        messagesLog = file;
-                        break;
-                    }
-                }
-            }
+            messagesLog = findFileWithTolerance(MESSAGES_LOG_PREFIX, date, LOG_EXT);
         }
 
         assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist. Directory contents: " +
@@ -453,21 +437,9 @@ public class TimeBasedLogRolloverTest {
         if (trace) {
             File traceLog = new File(getLogsDirPath(), FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT);
 
+            // Use the helper method
             if (!traceLog.exists()) {
-                String expectedMinute = date.substring(0, date.length() - 5);
-
-                File[] files = logsDir.listFiles();
-                if (files != null) {
-                    for (File file : files) {
-                        String fileName = file.getName();
-                        if (fileName.startsWith(TRACE_LOG_PREFIX) &&
-                            fileName.endsWith(LOG_EXT) &&
-                            fileName.contains(expectedMinute)) {
-                            traceLog = file;
-                            break;
-                        }
-                    }
-                }
+                traceLog = findFileWithTolerance(TRACE_LOG_PREFIX, date, LOG_EXT);
             }
 
             assertTrue("The rolled trace.log file doesn't exist", traceLog != null && traceLog.exists());
@@ -547,5 +519,23 @@ public class TimeBasedLogRolloverTest {
             if (con != null)
                 con.disconnect();
         }
+    }
+
+    private static File findFileWithTolerance(String logPrefix, String date, String logExt) throws Exception {
+        File logsDir = new File(getLogsDirPath());
+        String expectedMinute = date.substring(0, date.length() - 5); // Remove ".00.0"
+
+        File[] files = logsDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                String fileName = file.getName();
+                if (fileName.startsWith(logPrefix) && fileName.endsWith(logExt) &&
+                    fileName.contains(expectedMinute)) {
+                    LOG.info("Found matching file with tolerance: " + fileName);
+                    return file;
+                }
+            }
+        }
+        return null;
     }
 }
