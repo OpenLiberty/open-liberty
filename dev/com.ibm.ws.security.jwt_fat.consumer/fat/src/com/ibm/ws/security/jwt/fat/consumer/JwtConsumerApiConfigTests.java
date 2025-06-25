@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -97,7 +98,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     public void commonBeforeTest() {
         super.commonBeforeTest();
         try {
-            builder = consumerHelpers.createBuilderWithDefaultClaims();
+            builder = consumerHelpers.createBuilderWithDefaultClaims(consumerServer.isFIPS140_3EnabledAndSupported());
         } catch (Exception e) {
             Log.info(thisClass, "commonBeforeTest", e.toString());
             e.printStackTrace(System.out);
@@ -1808,8 +1809,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_badKeyManagementKeyAlias_goodSslRef() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS256_256" : "key_encrypt_good_RS256";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+CertificateException", currentAction, consumerServer, "bad_decrypt_RS256");
 
@@ -1828,8 +1829,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_goodKeyManagementKeyAlias_missingSslRef_refMissingFromServerwideSSL() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS256_256" : "key_encrypt_good_RS256";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+" + JwtConsumerMessageConstants.CWWKS6066E_JWE_DECRYPTION_KEY_MISSING, currentAction, consumerServer, "missing_sslRef_decrypt_RS256");
 
@@ -1848,8 +1849,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_goodKeyManagementKeyAlias_baddSslRef() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS256_256" : "key_encrypt_good_RS256";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+" + JwtConsumerMessageConstants.CWWKS6066E_JWE_DECRYPTION_KEY_MISSING, currentAction, consumerServer, "bad_sslRef_decrypt_RS256");
 
@@ -1867,8 +1868,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_decryptWithUnsupportedAlg() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS256_256" : "key_encrypt_good_RS256";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+" + "InvalidKeyException", currentAction, consumerServer, "decrypt_ES384");
 
@@ -1886,8 +1887,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptedToken_consumerDoesNotDecrypt() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS256_256" : "key_encrypt_good_RS256";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         String serverLogMsg = JwtConsumerMessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS;
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(serverLogMsg, currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
@@ -1926,8 +1927,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptRS256_decryptRS256() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS256_256" : "key_encrypt_good_RS256";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
 
@@ -1944,8 +1945,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptRS256_decryptRS384() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS256_256" : "key_encrypt_good_RS256";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+IntegrityException", currentAction, consumerServer, "good_decrypt_RS384");
 
@@ -1962,8 +1963,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptRS256_decryptRS512() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS256_256" : "key_encrypt_good_RS256";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+IntegrityException", currentAction, consumerServer, "good_decrypt_RS512");
 
@@ -1981,8 +1982,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptRS384_decryptRS384() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS384", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS384_256" : "key_encrypt_good_RS384";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
 
@@ -1999,8 +2000,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptRS384_decryptRS256() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS384", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS384_256" : "key_encrypt_good_RS384";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+IntegrityException", currentAction, consumerServer, "good_decrypt_RS256");
 
@@ -2017,8 +2018,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptRS384_decryptRS512() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS384", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS384_256" : "key_encrypt_good_RS384";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+IntegrityException", currentAction, consumerServer, "good_decrypt_RS512");
 
@@ -2036,8 +2037,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptRS512_decryptRS512() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS512", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS512_256" : "key_encrypt_good_RS512";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
 
@@ -2054,8 +2055,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptRS512_decryptRS256() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS512", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS512_256" : "key_encrypt_good_RS512";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+IntegrityException", currentAction, consumerServer, "good_decrypt_RS256");
 
@@ -2072,8 +2073,8 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptRS512_decryptRS384() throws Exception {
-
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS512", null);
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS512_256" : "key_encrypt_good_RS512";
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, null);
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+IntegrityException", currentAction, consumerServer, "good_decrypt_RS384");
 
@@ -2087,11 +2088,13 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      * after building a jwt that is encrypted with the matching public key, but using "RSA-OAEP-256" as the KeyManagementKeyAlg,
      * we can use the consumer with the matching private key to "consume" it.
      *
+     * As FIPS140-3 is RSA-OAEP-256 only, this test is not valid for it given we are now doing both sides as RSA-OAEP-256. not just one
+     *
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
     public void JwtConsumerApiConfigTests_encryptOtherKeyManagementKeyAlg() throws Exception {
-
         List<NameValuePair> otherBuilderParms = new ArrayList<NameValuePair>();
         otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_KEY_MGMT_ALG, JwtConsumerConstants.KEY_MGMT_KEY_ALG_256));
         otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)));
@@ -2114,12 +2117,14 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptOtherContentEncryptionAlg() throws Exception {
-
+        String builderId = consumerServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_RS256_256" : "key_encrypt_good_RS256";
         List<NameValuePair> otherBuilderParms = new ArrayList<NameValuePair>();
         otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConsumerConstants.CONTENT_ENCRYPT_ALG_192));
         otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)));
 
-        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", otherBuilderParms);
+        otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_KEY_MGMT_ALG, JwtConsumerConstants.KEY_MGMT_KEY_ALG_256));
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, builderId, otherBuilderParms);
 
         Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
 

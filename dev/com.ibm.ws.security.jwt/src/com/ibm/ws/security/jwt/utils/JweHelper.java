@@ -33,6 +33,7 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.KeyException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.common.jwk.impl.JwkKidBuilder;
 import com.ibm.ws.security.jwt.config.JwtConfig;
@@ -295,7 +296,8 @@ public class JweHelper {
     static String getKeyManagementKeyAlgFromConfig(JwtConfig jwtConfig) {
         String configuredKeyManagementAlg = jwtConfig.getKeyManagementKeyAlgorithm();
         if (configuredKeyManagementAlg == null) {
-            configuredKeyManagementAlg = KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+            // If FIPS140-3 is enabled, use RSA-OAEP-256 as the default, else use RSA-OAEP
+            configuredKeyManagementAlg = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? KeyManagementAlgorithmIdentifiers.RSA_OAEP_256: KeyManagementAlgorithmIdentifiers.RSA_OAEP;
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Key management algorithm not specified in server config. Defaulting to [" + configuredKeyManagementAlg + "]");
             }

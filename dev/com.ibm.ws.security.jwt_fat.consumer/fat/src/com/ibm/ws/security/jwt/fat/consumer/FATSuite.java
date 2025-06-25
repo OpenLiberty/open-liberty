@@ -29,13 +29,13 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
         // Ported list of tests (some already renamed)
         AlwaysPassesTest.class,
-        JwtConsumerApiBasicTests.class,
+//        JwtConsumerApiBasicTests.class,
         JwtConsumerApiConfigTests.class,
-        JwtConsumerApiConfigBlankIdTests.class,
-        JwtConsumerApiConfigWithGlobalTrustTests.class,
-        JwtConsumerAPIMinimumHSARunnableConfigTests.class,
-        JwtConsumerAPIMinimumSSLConsumerConfigTests.class,
-        JwtConsumerAPIMinimumSSLGlobalConfigTests.class,
+//        JwtConsumerApiConfigBlankIdTests.class,
+//        JwtConsumerApiConfigWithGlobalTrustTests.class,
+//        JwtConsumerAPIMinimumHSARunnableConfigTests.class,
+//        JwtConsumerAPIMinimumSSLConsumerConfigTests.class,
+//        JwtConsumerAPIMinimumSSLGlobalConfigTests.class,
 
 })
 

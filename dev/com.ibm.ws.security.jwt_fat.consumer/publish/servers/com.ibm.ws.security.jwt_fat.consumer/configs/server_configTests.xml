@@ -787,4 +787,37 @@
 		keyManagementKeyAlias="rs512"
         contentEncryptionAlgorithm="A256GCM" />
 
+	<jwtBuilder
+			id="key_encrypt_good_RS256_256"
+			issuer="client01"
+			signatureAlgorithm="RS256"
+			keyStoreRef="key_allSigAlg"
+			trustStoreRef="trust_allSigAlg"
+			keyAlias="rs256"
+			keyManagementKeyAlgorithm="RSA-OAEP-256"
+			keyManagementKeyAlias="rs256"
+			contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
+			id="key_encrypt_good_RS384_256"
+			issuer="client01"
+			signatureAlgorithm="RS256"
+			keyStoreRef="key_allSigAlg"
+			trustStoreRef="trust_allSigAlg"
+			keyAlias="rs256"
+			keyManagementKeyAlgorithm="RSA-OAEP-256"
+			keyManagementKeyAlias="rs384"
+			contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
+			id="key_encrypt_good_RS512_256"
+			issuer="client01"
+			signatureAlgorithm="RS256"
+			keyStoreRef="key_allSigAlg"
+			trustStoreRef="trust_allSigAlg"
+			keyAlias="rs256"
+			keyManagementKeyAlgorithm="RSA-OAEP-256"
+			keyManagementKeyAlias="rs512"
+			contentEncryptionAlgorithm="A256GCM" />
+
 </server>

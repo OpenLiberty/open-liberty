@@ -54,7 +54,16 @@ public class JwtTokenBuilderUtils {
      * @throws Exception
      */
     public JWTTokenBuilder createBuilderWithDefaultClaims() throws Exception {
+        return createBuilderWithDefaultClaims(false);
+    }
 
+    /**
+     * Create a new JWTTokenBuilder and initialize it with default test values
+     *
+     * @return - an initialized JWTTokenBuilder
+     * @throws Exception
+     */
+    public JWTTokenBuilder createBuilderWithDefaultClaims(boolean fipsEnabled) throws Exception {
         JWTTokenBuilder builder = new JWTTokenBuilder();
         builder.setIssuer("client01");
         builder.setIssuedAtToNow();
@@ -67,7 +76,11 @@ public class JwtTokenBuilderUtils {
         builder = builder.setAlorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA256);
         builder = builder.setHSAKey("mySharedKeyNowHasToBeLongerStrongerAndMoreSecure");
         //  setup for encryption - tests can override the following values
-        builder = builder.setKeyManagementKeyAlg(JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        if(fipsEnabled) {
+            builder = builder.setKeyManagementKeyAlg(JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        } else {
+            builder = builder.setKeyManagementKeyAlg(JwtConstants.KEY_MGMT_KEY_ALG_256);
+        }
         builder = builder.setContentEncryptionAlg(JwtConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
         return builder;
     }
