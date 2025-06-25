@@ -20,3 +20,7 @@ WS-TraceGroup: WSS4J
 Export-Package: \
  org.apache.wss4j.binding.*;version=${bVersion}
 
+Import-Package: \
+ org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)",\
+ org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
+ *

@@ -25,6 +25,8 @@ Export-Package: \
 Import-Package: \
  javax.xml.bind;version=!,\
  org.glassfish.jaxb.runtime.v2;resolution:=optional,\
+ org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)",\
+ org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
  *
 
 DynamicImport-Package: \

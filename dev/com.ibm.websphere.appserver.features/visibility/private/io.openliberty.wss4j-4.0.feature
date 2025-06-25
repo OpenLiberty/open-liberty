@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.wss4j-4.0
 visibility=private
 singleton=true
--bundles=com.ibm.ws.org.apache.santuario.xmlsec.4.0.4, \
+-bundles=io.openliberty.org.apache.santuario.xmlsec, \
  com.ibm.ws.com.google.guava, \
  com.ibm.ws.org.apache.wss4j.bindings.jakarta, \
  com.ibm.ws.org.apache.wss4j.policy, \

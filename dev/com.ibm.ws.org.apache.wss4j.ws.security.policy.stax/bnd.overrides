@@ -27,4 +27,6 @@ Import-Package: \
  !com.ibm.security.jgss, \
  !com.sun.security.jgss, \
  !org.bouncycastle.asn1.*, \
+ org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)",\
+ org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
  * 
