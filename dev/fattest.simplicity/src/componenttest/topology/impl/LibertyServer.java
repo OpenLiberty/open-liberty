@@ -1607,6 +1607,8 @@ public class LibertyServer implements LogMonitorClient {
         final Properties useEnvVars = new Properties();
 
         useEnvVars.putAll(envVars);
+        // Temp enable JIT performance logging
+        useEnvVars.put("OPENJ9_JAVA_OPTIONS", "\"-Xjit:verbose={compilePerformance},vlog=logs/jit.log\"");
         if (!useEnvVars.isEmpty())
             Log.info(c, method, "Adding env vars: " + useEnvVars);
         envVars.clear();
