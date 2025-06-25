@@ -401,6 +401,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         } else {
             if (upgradedListener == null) {
                 String toClose = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Close called on stream ID : "+getStreamId());
+                }
+                
+                
                 if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
                     // want to close down at least once, and only once, for this type of upgraded connection
                     WebConnCanCloseSync.lock();
@@ -489,6 +494,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // set decrementNeeded to true only for wsoc upgrade requests        
         HttpInboundLink link = getHttpInboundLink2();
         boolean isH2HttpLink = (link instanceof H2HttpInboundLinkWrap) ? true : false;
+        boolean isH2HttpLink2 = isc.isH2Connection();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isH2HttpLink: "+isH2HttpLink);
+            Tr.debug(tc, "isH2HttpLink2: "+isH2HttpLink2);
+        }
         if (upgraded != null && !isH2HttpLink) {
             if (this.decrementNeeded.compareAndSet(false, true)) { // i.e. this is called first
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

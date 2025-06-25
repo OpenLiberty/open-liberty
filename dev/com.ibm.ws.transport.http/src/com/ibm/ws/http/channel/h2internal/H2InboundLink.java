@@ -1024,11 +1024,21 @@ public class H2InboundLink extends HttpInboundLink {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpDispatcherLink found: " + hdLink);
             }
+            if(hdLink.getCloseCompletedStatus()){
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "HttpDispacherLink Close status before calling the HttpDispactcherLink close: "+ hdLink.getCloseCompletedStatus());
+                }
+            }
             try {
                 hdLink.close(initialVC, exceptionForCloseFromHere);
             } catch (Exception consume) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "closeConnectionLink: consuming exception: " + consume);
+                }
+            }
+            if(hdLink.getCloseCompletedStatus()){
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "HttpDispacherLink Close status after calling the HttpDispactcherLink close: "+ hdLink.getCloseCompletedStatus());
                 }
             }
         }
