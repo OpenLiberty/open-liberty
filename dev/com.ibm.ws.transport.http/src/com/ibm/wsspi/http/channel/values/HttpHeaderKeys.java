@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -230,6 +230,9 @@ public class HttpHeaderKeys extends HeaderKeys {
     public static final HttpHeaderKeys HDR_AUTHORIZATION_ENCODING = new HttpHeaderKeys("Authorization-Encoding");
 
     public static final HttpHeaderKeys HDR_ORIGIN = new HttpHeaderKeys("Origin");
+
+    /** Enumerated object for the HTTP header key CONTENT-SECURITY-POLICY */
+    public static final HttpHeaderKeys HDR_CONTENT_SECURITY_POLICY = new HttpHeaderKeys("Content-Security-Policy");
 
     /** Max value of header keys that will be kept in key storage */
     public static final int ORD_MAX = 1024;

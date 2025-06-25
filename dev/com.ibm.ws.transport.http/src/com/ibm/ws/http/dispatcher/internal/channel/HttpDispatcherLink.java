@@ -127,6 +127,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private boolean WebConnCanClose = true;
     private final String h2InitError = "com.ibm.ws.transport.http.http2InitError";
 
+    // OLGH31942 Adding CSP headers for the default welcome page
+    private static final String CONTENT_SECURITY_POLICY = "default-src 'self'; script-src 'self' 'unsafe-inline' https://openliberty.io https://public.dhe.ibm.com; style-src 'self' 'unsafe-inline';";
+
     private final AtomicBoolean decrementNeeded = new AtomicBoolean(false);
 
     private final AtomicBoolean closeCompleted = new AtomicBoolean(false);
@@ -576,6 +579,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         try {
             if (exists(inputStream)) {
                 String theURI = this.isc.getRequest().getRequestURI();
+                this.response.setHeader(HttpHeaderKeys.HDR_CONTENT_SECURITY_POLICY.getName(), CONTENT_SECURITY_POLICY); //OLGH31942 Adding CSP headers for the default welcome page
                 // for OK responses that are not index.html, set the cache-control header to a year
                 // If someone assigns a web-app for the root context, whatever is in that application
                 // should get picked up instead of our welcome page w/o having to clear the cache
