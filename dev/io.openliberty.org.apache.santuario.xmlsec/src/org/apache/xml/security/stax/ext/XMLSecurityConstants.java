@@ -14,16 +14,23 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations
- * under the License.
- */
+ * under the License
+
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+*/
 package org.apache.xml.security.stax.ext;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
@@ -33,6 +40,10 @@ import javax.xml.validation.Schema;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
 import com.ibm.ws.common.crypto.CryptoUtils;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
 /**
  * XMLSecurityConstants for global use
