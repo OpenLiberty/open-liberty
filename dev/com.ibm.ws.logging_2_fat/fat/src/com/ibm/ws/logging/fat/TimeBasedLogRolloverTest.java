@@ -310,7 +310,9 @@ public class TimeBasedLogRolloverTest {
         serverInUse.restoreServerConfiguration(); //restore disabled server config
         serverInUse.waitForStringInLogUsingMark("CWWKG0017I"); //wait for server config update
 
-        Thread.sleep(10000);
+        long nextRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+        if (nextRollover > 0)
+            Thread.sleep(nextRollover + FILE_WAIT_SECONDS_PADDING);
 
         //check that only 2 messages*/trace* prefixed logs exist
         //aka the messages/trace logs were not rolled over again
