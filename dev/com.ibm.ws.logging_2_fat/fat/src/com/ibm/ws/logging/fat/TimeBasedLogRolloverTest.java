@@ -312,7 +312,7 @@ public class TimeBasedLogRolloverTest {
 
         long nextRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
         if (nextRollover > 0)
-            Thread.sleep(nextRollover + FILE_WAIT_SECONDS_PADDING);
+            Thread.sleep(nextRollover + FILE_WAIT_SECONDS_PADDING); //sleep for another length of the old specified log rolloverInterval
 
         //check that only 2 messages*/trace* prefixed logs exist
         //aka the messages/trace logs were not rolled over again
