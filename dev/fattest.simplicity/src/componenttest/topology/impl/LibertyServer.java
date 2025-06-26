@@ -250,7 +250,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final boolean GLOBAL_FIPS_140_2 = Boolean.parseBoolean(PrivHelper.getProperty("global.fips_140-2", "false"));
 
     protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
-    protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
+    protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "-Dcom.ibm.ws.beta.edition=true").trim();
 
     protected static final boolean DO_COVERAGE = PrivHelper.getBoolean("test.coverage");
     protected static final String JAVA_AGENT_FOR_JACOCO = PrivHelper.getProperty("javaagent.for.jacoco");
