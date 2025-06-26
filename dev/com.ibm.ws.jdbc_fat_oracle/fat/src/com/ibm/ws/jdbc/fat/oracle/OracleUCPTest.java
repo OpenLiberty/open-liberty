@@ -16,6 +16,7 @@ import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.oracle.OracleContainer;
@@ -32,6 +33,8 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import ucp.web.OracleUCPTestServlet;
@@ -45,6 +48,9 @@ public class OracleUCPTest extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.oracle.ucp")
     @TestServlet(servlet = OracleUCPTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.oracle.ucp");
 
     public static final OracleContainer oracle = FATSuite.getSharedOracleContainer();
 

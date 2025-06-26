@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.oracle.OracleContainer;
@@ -36,6 +37,8 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import trace.web.OracleTraceTestServlet;
@@ -50,6 +53,9 @@ public class OracleTraceTest extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.oracle.trace")
     @TestServlet(servlet = OracleTraceTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.oracle.trace");
 
     private static final OracleContainer oracle = FATSuite.getSharedOracleContainer();
 

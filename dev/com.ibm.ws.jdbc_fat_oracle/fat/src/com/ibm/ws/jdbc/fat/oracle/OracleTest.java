@@ -14,6 +14,7 @@ package com.ibm.ws.jdbc.fat.oracle;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.oracle.OracleContainer;
 
@@ -22,6 +23,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.OracleTestServlet;
@@ -35,6 +38,9 @@ public class OracleTest extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.oracle")
     @TestServlet(servlet = OracleTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.oracle");
 
     public static final OracleContainer oracle = FATSuite.getSharedOracleContainer();
 
