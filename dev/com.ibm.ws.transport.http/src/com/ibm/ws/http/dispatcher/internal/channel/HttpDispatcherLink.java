@@ -506,6 +506,29 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
             }
         }
+        //Check if the close on the channel is completed before proceeding
+        if(!getCloseCompletedStatus()){
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Close not completed - waiting breifly");
+            }
+        }
+
+        //brief wait to see if close completes
+        for(int i = 0; i < 10 && !getCloseCompletedStatus(); i++){
+            try{
+                Thread.sleep(1);
+            } catch(InterruptedException ie){
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+
+        // Check if the close on the channel is completed after the wait
+        if(!getCloseCompletedStatus()){
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Close not completed during the wait period. Proceeding with the destroy");
+            }
+        }
 
         super.destroy();
         this.isc = null;

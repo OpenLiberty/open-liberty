@@ -1036,11 +1036,28 @@ public class H2InboundLink extends HttpInboundLink {
                     Tr.debug(tc, "closeConnectionLink: consuming exception: " + consume);
                 }
             }
-            if(hdLink.getCloseCompletedStatus()){
+            if(!hdLink.getCloseCompletedStatus()){
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HttpDispacherLink Close status after calling the HttpDispactcherLink close: "+ hdLink.getCloseCompletedStatus());
+                    Tr.debug(tc, "HttpDispacherLink is not closed and another thread is in charge of it. Waiting breifly to check if the other thread completes the close");
                 }
             }
+            //brief wait to see if close completes
+            for(int i = 0; i < 10 && !hdLink.getCloseCompletedStatus(); i++){
+                try{
+                    Thread.sleep(1);
+                } catch(InterruptedException ie){
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+
+            // Check if the close on the channel is completed after the wait
+            if(!hdLink.getCloseCompletedStatus()){
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Close not completed during the wait period. Proceeding with the closing the device link");
+                }
+            }
+            
         }
 
         synchronized (linkStatusSync) {
