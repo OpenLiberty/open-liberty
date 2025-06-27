@@ -26,6 +26,8 @@ import java.security.PrivilegedExceptionAction;
 import java.security.Provider;
 import java.security.Security;
 
+
+import org.apache.wss4j.common.util.FIPSUtils;
 import org.apache.wss4j.common.util.Loader;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.XMLUtils;
@@ -79,7 +81,20 @@ public final class WSProviderConfig {
                 santuarioProviderAdded = true;
                 bcProviderAdded = false;
                 tlProviderAdded = false;
+            }            
+            // Liberty Change Start: Enable FIPS support
+            if (FIPSUtils.isFIPSEnabled()) {
+                //So far the in-JDK security provider in FIPS mode
+                //doesn't support RSA-OAEP padding, try use the one 
+                //from BC-FIPS as last resort
+                AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                    public Boolean run() {
+                        addJceProvider("BCFIPS", "org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider");
+                        return true;
+                    }
+                });
             }
+            // Liberty Change End
             staticallyInitialized = true;
         }
     }
@@ -106,8 +121,23 @@ public final class WSProviderConfig {
                         return true;
                     }
                 });
-            }
+            }            
+            // Liberty Change Start: Enable FIPS support
+            if (FIPSUtils.isFIPSEnabled()) {
+                //So far the in-JDK security provider in FIPS mode
+                //doesn't support RSA-OAEP padding, try use the one 
+                //from BC-FIPS as last resort
+                
 
+                AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                    public Boolean run() {
+                        addJceProvider("BCFIPS", "org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider");
+                        return true;
+                    }
+                });
+                
+            }
+            // Liberty Change End
             tlProviderAdded = addTLProv;
             if (addTLProv) {
                 AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
