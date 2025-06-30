@@ -1024,10 +1024,9 @@ public class H2InboundLink extends HttpInboundLink {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpDispatcherLink found: " + hdLink);
             }
-            if(hdLink.getCloseCompletedStatus()){
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HttpDispacherLink Close status before calling the HttpDispactcherLink close: "+ hdLink.getCloseCompletedStatus());
-                }
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HttpDispacherLink Close status before calling the HttpDispactcherLink close: "+ hdLink.getCloseCompletedStatus());
             }
             try {
                 hdLink.close(initialVC, exceptionForCloseFromHere);
@@ -1038,7 +1037,7 @@ public class H2InboundLink extends HttpInboundLink {
             }
             if(!hdLink.getCloseCompletedStatus()){
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HttpDispacherLink is not closed and another thread is in charge of it. Waiting breifly to check if the other thread completes the close");
+                    Tr.debug(tc, "HttpDispacherLink is not closed and another thread is closing it. Waiting breifly to check if the other thread completes the close");
                 }
             }
             //brief wait to see if close completes
@@ -1054,7 +1053,7 @@ public class H2InboundLink extends HttpInboundLink {
             // Check if the close on the channel is completed after the wait
             if(!hdLink.getCloseCompletedStatus()){
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Close not completed during the wait period. Proceeding with the closing the device link");
+                    Tr.debug(tc, "Close not completed during the wait period. Proceeding with closing the device link");
                 }
             }
             
