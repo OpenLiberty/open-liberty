@@ -46,6 +46,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
@@ -249,9 +250,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn on half closure for H1
                 ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
 
-
-
-                pipeline.addBefore("chunkWriteHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                pipeline.addBefore("transportHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 //TODO: this is a very large number, check best practice
                 pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
                                   new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
@@ -302,6 +301,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkWriteHandler", new ChunkedWriteHandler());
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "byteBufferCodec", ByteBufferCodec.INSTANCE);
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME,"transportHandler", TransportHandler.INSTANCE);
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new RemoteIpHandler(httpConfig));
