@@ -22,8 +22,6 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.KeyMatcher;
 
-import io.netty.util.AsciiString;
-
 /**
  * Class representing a single HTTP header name.
  */
@@ -258,7 +256,6 @@ public class HttpHeaderKeys extends HeaderKeys {
 
             allKeys.add(this);
             myMatcher.add(this);
-            AsciiString.cached(name);
         }
     }
 
@@ -277,7 +274,6 @@ public class HttpHeaderKeys extends HeaderKeys {
 
             allKeys.add(this);
             myMatcher.add(this);
-            AsciiString.cached(name);
         }
     }
 
@@ -297,7 +293,6 @@ public class HttpHeaderKeys extends HeaderKeys {
 
             allKeys.add(this);
             myMatcher.add(this);
-            AsciiString.cached(name);
         }
     }
 
