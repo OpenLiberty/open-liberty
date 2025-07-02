@@ -28,4 +28,22 @@
   <version>${bFullVersion}</version>
   <name>WebSphere Distributed Map API</name>
   <description>WebSphere Distributed Map API, version 2.0</description>
+  <url>https://openliberty.io</url>
+  <organization>
+    <name>IBM</name>
+  </organization>
+  <scm>
+    <connection>scm:git:https://github.com/OpenLiberty/open-liberty.git</connection>
+    <developerConnection>scm:git:https://github.com:OpenLiberty/open-liberty.git</developerConnection>
+    <url>https://github.com/OpenLiberty/open-liberty/tree/release</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>contbld</id>
+      <name>contbld</name>
+      <email>contbld@uk.ibm.com</email>
+      <organization>IBM</organization>
+      <organizationUrl>https://openliberty.io</organizationUrl>
+    </developer>
+  </developers>
 </project>
