@@ -391,8 +391,7 @@ public abstract class BaseTestClass {
         Log.info(c, "validatePrometheusHTTPMetricCount", "Trying to match: " + matchString);
         
         if (vendorMetricsOutput == null) {
-            //Log.info(c, "validatePrometheusHTTPMetricCount", "vendorMetricsOutput is null - metrics endpoint may not be responding");
-        	Log.info(c, "validatePrometheusHTTPMetricSum", "vendorMetricsOutput is null - metrics endpoint may not be responding");
+        	Log.info(c, "validatePrometheusHTTPMetricCount", "vendorMetricsOutput is null - metrics endpoint may not be responding");
         	return false;
         }
         
@@ -452,7 +451,7 @@ public abstract class BaseTestClass {
         Log.info(c, "validatePrometheusHTTPMetricSum", "Trying to match: " + matchString);
         
         if (vendorMetricsOutput == null) {
-            Log.info(c, "validatePrometheusHTTPMetricCount", "vendorMetricsOutput is null - metrics endpoint may not be responding");
+            Log.info(c, "validatePrometheusHTTPMetricSum", "vendorMetricsOutput is null - metrics endpoint may not be responding");
             return false;
         }
         
