@@ -389,6 +389,13 @@ public abstract class BaseTestClass {
         matchString += expectedCount;
 
         Log.info(c, "validatePrometheusHTTPMetricCount", "Trying to match: " + matchString);
+        
+        if (vendorMetricsOutput == null) {
+            //Log.info(c, "validatePrometheusHTTPMetricCount", "vendorMetricsOutput is null - metrics endpoint may not be responding");
+        	Log.info(c, "validatePrometheusHTTPMetricSum", "vendorMetricsOutput is null - metrics endpoint may not be responding");
+        	return false;
+        }
+        
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -443,6 +450,12 @@ public abstract class BaseTestClass {
         matchString += expectedSum;
 
         Log.info(c, "validatePrometheusHTTPMetricSum", "Trying to match: " + matchString);
+        
+        if (vendorMetricsOutput == null) {
+            Log.info(c, "validatePrometheusHTTPMetricCount", "vendorMetricsOutput is null - metrics endpoint may not be responding");
+            return false;
+        }
+        
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
