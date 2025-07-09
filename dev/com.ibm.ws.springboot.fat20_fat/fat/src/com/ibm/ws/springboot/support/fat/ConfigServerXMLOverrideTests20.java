@@ -93,10 +93,10 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
             return;
         }
         if (methodName.endsWith(OVERRIDE_SSL) || methodName.endsWith(OVERRIDE_KEYSTORES)) {
-            appArgs.add("--server.ssl.key-store=classpath:server-keystore.jks");
+            appArgs.add("--server.ssl.key-store=classpath:server-keystore.p12");
             appArgs.add("--server.ssl.key-store-password=secret");
             appArgs.add("--server.ssl.key-password=secret");
-            appArgs.add("--server.ssl.trust-store=classpath:server-truststore.jks");
+            appArgs.add("--server.ssl.trust-store=classpath:server-truststore.p12");
             appArgs.add("--server.ssl.trust-store-password=secret");
         }
     }
@@ -147,13 +147,13 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
             KeyStore keyStore = new KeyStore();
             keystores.add(keyStore);
             keyStore.setId("keystore-test");
-            keyStore.setLocation("override-keystore.jks");
+            keyStore.setLocation("override-keystore.p12");
             keyStore.setPassword("secret");
 
             KeyStore trustStore = new KeyStore();
             keystores.add(trustStore);
             trustStore.setId("truststore-test");
-            trustStore.setLocation("override-truststore.jks");
+            trustStore.setLocation("override-truststore.p12");
             trustStore.setPassword("secret");
         }
 
@@ -167,13 +167,13 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
             KeyStore keyStore = new KeyStore();
             keystores.add(keyStore);
             keyStore.setId("keystore-test");
-            keyStore.setLocation("override-keystore.jks");
+            keyStore.setLocation("override-keystore.p12");
             keyStore.setPassword("secret");
 
             KeyStore trustStore = new KeyStore();
             keystores.add(trustStore);
             trustStore.setId("truststore-test");
-            trustStore.setLocation("override-truststore.jks");
+            trustStore.setLocation("override-truststore.p12");
             trustStore.setPassword("secret");
         }
 
@@ -181,13 +181,13 @@ public class ConfigServerXMLOverrideTests20 extends AbstractSpringTests {
             KeyStore keyStore = new KeyStore();
             keystores.add(keyStore);
             keyStore.setId(ID_KEY_STORE + REQUESTED_PORT);
-            keyStore.setLocation("override-keystore.jks");
+            keyStore.setLocation("override-keystore.p12");
             keyStore.setPassword("secret");
 
             KeyStore trustStore = new KeyStore();
             keystores.add(trustStore);
             trustStore.setId(ID_TRUST_STORE + REQUESTED_PORT);
-            trustStore.setLocation("override-truststore.jks");
+            trustStore.setLocation("override-truststore.p12");
             trustStore.setPassword("secret");
         }
     }

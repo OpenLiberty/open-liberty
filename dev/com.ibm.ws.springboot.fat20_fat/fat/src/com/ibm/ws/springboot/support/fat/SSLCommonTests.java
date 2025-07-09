@@ -51,10 +51,10 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
     public Map<String, String> getBootStrapProperties() {
         String methodName = testName.getMethodName();
         Map<String, String> properties = new HashMap<>();
-        properties.put("server.ssl.key-store", "classpath:server-keystore.jks");
+        properties.put("server.ssl.key-store", "classpath:server-keystore.p12");
         properties.put("server.ssl.key-store-password", "secret");
         properties.put("server.ssl.key-password", "secret");
-        properties.put("server.ssl.trust-store", "classpath:server-truststore.jks");
+        properties.put("server.ssl.trust-store", "classpath:server-truststore.p12");
         properties.put("server.ssl.trust-store-password", "secret");
         if (methodName != null) {
             if (methodName.contains("Need")) {
@@ -83,7 +83,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
     public String getKeyStorePath(String methodName) {
         if (methodName.startsWith(TEST_CLIENT_AUTH_NEED)) {
             try {
-                RemoteFile ksRemoteFile = server.getFileFromLibertyServerRoot("client-keystore.jks");
+                RemoteFile ksRemoteFile = server.getFileFromLibertyServerRoot("client-keystore.p12");
                 return ksRemoteFile.getAbsolutePath();
             } catch (Exception e) {
                 throw new IllegalStateException("Key Store file not found", e);
@@ -102,7 +102,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
     public String getTrustStorePath(String methodName) {
         if (methodName.startsWith(TEST_CLIENT_AUTH_NEED)) {
             try {
-                RemoteFile tsRemoteFile = server.getFileFromLibertyServerRoot("client-truststore.jks");
+                RemoteFile tsRemoteFile = server.getFileFromLibertyServerRoot("client-truststore.p12");
                 return tsRemoteFile.getAbsolutePath();
             } catch (Exception e) {
                 throw new IllegalStateException("Trust Store file not found", e);
@@ -179,7 +179,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
             if (ksPath != null) {
                 KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
                 File ksFile = new File(ksPath);
-                KeyStore keyStore = KeyStore.getInstance("JKS");
+                KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
                 ksStream = new FileInputStream(ksFile);
                 keyStore.load(ksStream, ksPassword.toCharArray());
@@ -192,7 +192,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
             if (tsPath != null) {
                 TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 File tsFile = new File(tsPath);
-                KeyStore trustStore = KeyStore.getInstance("JKS");
+                KeyStore trustStore = KeyStore.getInstance("PKCS12");
 
                 tsStream = new FileInputStream(tsFile);
                 trustStore.load(tsStream, tsPassword.toCharArray());
