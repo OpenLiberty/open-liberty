@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.http2;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -24,6 +26,7 @@ import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.CombinedChannelDuplexHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObjectDecoder;
@@ -76,10 +79,16 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
      * Helper method for creating H2C Upgrade handler
      */
     public static CleartextHttp2ServerUpgradeHandler createCleartextUpgradeHandler(HttpChannelConfig httpConfig, Channel channel) {
-        HttpServerCodec sourceCodec = new HttpServerCodec(8192, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
+        HttpServerCodec http1 = new HttpServerCodec(
+            8192, 
+            httpConfig.getIncomingBodyBufferSize(), 
+            httpConfig.getLimitOfFieldSize(), 
+            httpConfig.getLimitOnNumberOfHeaders());
+        
         LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, channel);
-        final HttpServerUpgradeHandler upgradeHandler = new HttpServerUpgradeHandler(sourceCodec, codec);
-        return new CleartextHttp2ServerUpgradeHandler(sourceCodec, upgradeHandler, codec.buildHttp2ConnectionHandler(httpConfig, channel));
+        HttpToHttp2ConnectionHandler h2 = codec.buildHttp2ConnectionHandler(httpConfig, channel);
+
+        return new CleartextHttp2ServerUpgradeHandler(http1, new HttpServerUpgradeHandler(http1, codec), h2);
     }
 
     public LibertyUpgradeCodec(HttpChannelConfig httpConfig, Channel channel) {
@@ -99,13 +108,15 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             }
             HttpToHttp2ConnectionHandler handler = buildHttp2ConnectionHandler(httpConfig, channel);
             return new Http2ServerUpgradeCodec(handler) {
+                
                 @Override
                 public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
                     ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
                     
-                    
                     // Call upgrade
                     super.upgradeTo(ctx, request);
+
+
                     // Set as stream 1 as defined in RFC
                     request.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 1);
                     if (Constants.SPEC_INITIAL_WINDOW_SIZE != httpConfig.getH2ConnectionWindowSize()) {

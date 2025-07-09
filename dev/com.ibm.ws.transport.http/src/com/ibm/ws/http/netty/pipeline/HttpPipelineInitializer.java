@@ -32,8 +32,6 @@ import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
-import com.ibm.ws.http.netty.pipeline.inbound.TransportInboundHandler;
-import com.ibm.ws.http.netty.pipeline.TransportOutboundHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,18 +41,19 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.channel.AllocatorContextSetter;
 import io.openliberty.http.netty.channel.LoggingRecvByteBufAllocator;
+import io.openliberty.http.netty.channel.TransportHandler;
 import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
@@ -121,7 +120,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         LoggingRecvByteBufAllocator loggingAllocator = new LoggingRecvByteBufAllocator(channelAllocator);
         channel.config().setRecvByteBufAllocator(loggingAllocator);
 
-        pipeline.addLast("AllocatorContextSetter", new AllocatorContextSetter());
+        pipeline.addLast("AllocatorContextSetter", AllocatorContextSetter.INSTANCE);
 
         if(chain.isHttps()){
             setupSecurePipeline(pipeline);
@@ -222,7 +221,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         //TODO: check for best default first line max size (changing for jwt test)
         HttpServerCodec sourceCodec = new HttpServerCodec(8192, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
-        pipeline.addLast(CRLF_VALIDATION_HANDLER, new CRLFValidationHandler());
+        pipeline.addLast(CRLF_VALIDATION_HANDLER, CRLFValidationHandler.INSTANCE);
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(HTTP_DISPATCHER_HANDLER_NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
@@ -251,9 +250,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn on half closure for H1
                 ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
 
-
-
-                pipeline.addBefore("chunkWriteHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                pipeline.addBefore("transportHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 //TODO: this is a very large number, check best practice
                 pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
                                   new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
@@ -303,11 +300,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         }
 
         
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkLoggingHandler", new ChunkSizeLoggingHandler());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "chunkWriteHandler", new ChunkedWriteHandler());
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ByteBufferCodec());
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportInboundHandler(httpConfig));
-        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportOutboundHandler(httpConfig));
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, "byteBufferCodec", ByteBufferCodec.INSTANCE);
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME,"transportHandler", TransportHandler.INSTANCE);
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new RemoteIpHandler(httpConfig));
         }

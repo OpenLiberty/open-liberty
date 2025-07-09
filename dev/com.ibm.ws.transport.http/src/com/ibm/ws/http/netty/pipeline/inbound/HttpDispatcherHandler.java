@@ -121,9 +121,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
             HttpToHttp2ConnectionHandler handler = context.pipeline().get(HttpToHttp2ConnectionHandler.class);
             Http2Connection connection = handler.connection();
 
-            if(cause.getMessage().startsWith("Maximum active streams violated for this endpoint")) {
+            if (cause.getMessage().startsWith("Maximum active streams violated for this endpoint")) {
                 // This is for the overlay to control the amount of streams we are willing to refuse on a channel
-                if(config.getH2MaxStreamsRefused() == 0) {
+                if (config.getH2MaxStreamsRefused() == 0) {
                     // Check disabled, just send a reset stream out and don't worry about the rest
                     // Reset already handled by codec so just return here
                     return;
@@ -133,8 +133,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                 if (++streamsRefused >= config.getH2MaxStreamsRefused()) {
                     // Streams refused exceeded the number of configured allowed streams so closing connection
                     // Send go away with enhance your calm
-                    handler.goAway(context, connection.remote().lastStreamCreated(), Http2Error.ENHANCE_YOUR_CALM.code(), Unpooled.wrappedBuffer(MAX_STREAMS_REFUSED_MESSAGE.getBytes()), context.channel().newPromise());
-                }else {
+                    handler.goAway(context, connection.remote().lastStreamCreated(), Http2Error.ENHANCE_YOUR_CALM.code(),
+                                   Unpooled.wrappedBuffer(MAX_STREAMS_REFUSED_MESSAGE.getBytes()), context.channel().newPromise());
+                } else {
                     // Increment streams refused attribute and let reset happen by codec
                     context.channel().attr(NettyHttpConstants.STREAMS_REFUSED).set(streamsRefused);
                     return;
@@ -216,7 +217,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
             try {
                 body = provider.accessPage(host, local.getPort(), null, null);
             } catch (Throwable t) {
-//                FFDCFilter.processException(t, getClass().getName() + ".loadErrorBody", "1");
+                //                FFDCFilter.processException(t, getClass().getName() + ".loadErrorBody", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Exception while calling into provider, t=" + t);
                 }
