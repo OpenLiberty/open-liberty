@@ -40,8 +40,10 @@ import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.cookies.CookieHeaderByteParser;
 import com.ibm.ws.http.channel.internal.cookies.CookieUtils;
 import com.ibm.ws.http.channel.internal.cookies.SameSiteCookieUtils;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
+import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpBaseMessage;
@@ -54,11 +56,17 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.netty.util.AsciiString;
 import io.openliberty.http.constants.HttpGenerics;
+import io.openliberty.http.netty.channel.utils.HeaderValidator;
+import io.openliberty.http.netty.channel.utils.HeaderValidator.FieldType;
 import io.openliberty.http.netty.cookie.CookieDecoder;
 import io.openliberty.http.netty.cookie.CookieEncoder;
 
@@ -99,11 +107,11 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     private int limitOfTokenSize;
 
-    private Map<String, String> headersMap = new HashMap<>();
-
     public enum MessageType {REQUEST, RESPONSE;}
 
     private MessageType messageType;
+
+    private final Map<String, AsciiString> headerNameCache =  new HashMap<>(32);
     
 
     public NettyBaseMessage() {
@@ -132,102 +140,30 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         return this.messageType = messageType;
     }
 
-    @Override
-    public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
-        // recreate the local header storage
-        int len = input.readInt();
-        if (SERIALIZATION_V2 == len) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Deserializing a V2 object");
-            }
-            this.deserializationVersion = SERIALIZATION_V2;
-            len = input.readInt();
-        }
-        this.headersMap = new HashMap<>();
-
-        // now read all of the headers
-        int number = input.readInt();
-        if (SERIALIZATION_V2 == this.deserializationVersion) {
-            // this is the new format
-            for (int i = 0; i < number; i++) {
-                appendHeader(readByteArray(input), readByteArray(input));
-            }
-        } else {
-            // this is the old format
-            for (int i = 0; i < number; i++) {
-                appendHeader((String) input.readObject(), (String) input.readObject());
-            }
-        }
-        // BNFHeaders reading of the headers will trigger all the parsed/temp
-        // values at this layer
-        try {
-            if (SERIALIZATION_V2 == this.deserializationVersion) {
-                setVersion(readByteArray(input));
-            } else {
-                setVersion((String) input.readObject());
-            }
-        } catch (UnsupportedProtocolVersionException exc) {
-            // no FFDC required
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unknown HTTP version");
-            }
-            // malformed version, can't make an "undefined" version
-            IOException ioe = new IOException("Failed deserialization of version");
-            ioe.initCause(exc);
-            throw ioe;
-        }
-        // V2 uses a boolean, while V1 used a byte... SHOULD be the same, but...
-        boolean isTrailer = (SERIALIZATION_V2 == this.deserializationVersion) ? input.readBoolean() : (1 == input.readByte());
-        if (isTrailer) {
-            //TODO update with Netty Trailers
-
-        }
-    }
-
-    /*
-     * @see
-     * com.ibm.ws.genericbnf.internal.GenericMessageImpl#writeExternal(java.io
-     * .ObjectOutput)
-     */
-    @Override
-    public void writeExternal(ObjectOutput output) throws IOException {
-
-        // convert any temporary Cookies into header storage
-        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_COOKIE));
-        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_COOKIE2));
-        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_SET_COOKIE));
-        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_SET_COOKIE2));
-
-        output.writeInt(SERIALIZATION_V2);
-        output.writeInt(this.headersMap.size());
-        output.writeInt(this.headersMap.size());
-
-        for (Map.Entry<String, String> entry : headersMap.entrySet()) {
-            writeByteArray(output, entry.getKey().getBytes());
-            writeByteArray(output, entry.getValue().getBytes());
-        }
-
-        writeByteArray(output, getVersionValue().getByteArray());
-
-    }
-
-    protected byte[] readByteArray(ObjectInput input) throws IOException {
-        int length = input.readInt();
-        byte[] data = new byte[length];
-        input.readFully(data);
-        return data;
-
-    }
-
-    protected void writeByteArray(ObjectOutput output, byte[] data) throws IOException {
-        output.writeInt(data.length);
-        output.write(data);
-    }
-
+    
     @Override
     public void setDebugContext(Object o) {
         throw new UnsupportedOperationException("setDebugContext unsupported in Netty context");
 
+    }
+
+    private AsciiString processHeaderName(String name){
+        String processedName = HeaderValidator.process(name, FieldType.NAME, config);
+        return headerNameCache.computeIfAbsent(processedName, n -> AsciiString.cached(processedName));
+    }
+
+    private String processHeaderValue(String value){
+        return HeaderValidator.process(value, FieldType.VALUE, config);
+    }
+
+    private void assertTotalHeaderCount(){
+        if(limitOnNumberOfHeaders > 0 && headers.size() >= limitOnNumberOfHeaders){
+            throw new IllegalStateException("Maximum header count (" + limitOnNumberOfHeaders + ") exceeded");
+        }
+    }
+
+    private AsciiString toAsciiString(byte[] bytes){
+        return new AsciiString(bytes, false);
     }
 
     @Override
@@ -237,7 +173,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public HeaderField getHeader(byte[] name) {
-        return getHeader(new String(name, StandardCharsets.UTF_8));
+        return getHeader(toAsciiString(name).toString());
     }
 
     @Override
@@ -247,7 +183,12 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public List<HeaderField> getHeaders(String name) {
-        List<String> values = headers.getAll(name);
+
+        List<String> values = headers.getAll(processHeaderName(name));
+        if (values.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<HeaderField> result = new ArrayList<HeaderField>();
         for (String value : values) {
             result.add(new NettyHeader(name, value));
@@ -287,125 +228,146 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     }
 
     @Override
-    public void appendHeader(byte[] header, byte[] value) {
-        appendHeader(new String(header, StandardCharsets.UTF_8), new String(value, StandardCharsets.UTF_8));
+    public void appendHeader(byte[] name, byte[] value) {
+        appendHeader(toAsciiString(name), toAsciiString(value));
 
     }
 
     @Override
-    public void appendHeader(byte[] header, byte[] value, int offset, int length) {
+    public void appendHeader(byte[] name, byte[] value, int offset, int length) {
         throw new UnsupportedOperationException("appendHeader(2) not supported in Netty context");
 
     }
 
     @Override
-    public void appendHeader(byte[] header, String value) {
-        appendHeader(new String(header, StandardCharsets.UTF_8), value);
+    public void appendHeader(byte[] name, String value) {
+        appendHeader(toAsciiString(name), processHeaderValue(value));
 
     }
 
     @Override
-    public void appendHeader(HeaderKeys header, byte[] value) {
-        appendHeader(header, new String(value, StandardCharsets.UTF_8));
+    public void appendHeader(HeaderKeys name, byte[] value) {
+        appendHeader(processHeaderName(name.getName()), toAsciiString(value));
 
     }
 
     @Override
-    public void appendHeader(HeaderKeys header, byte[] value, int offset, int length) {
+    public void appendHeader(HeaderKeys name, byte[] value, int offset, int length) {
         throw new UnsupportedOperationException("appendHeader(5) not supported in Netty context");
 
     }
 
     @Override
-    public void appendHeader(HeaderKeys header, String value) {
-        appendHeader(header.getName(), value);
+    public void appendHeader(HeaderKeys name, String value) {
+        appendHeader(processHeaderName(name.getName()), processHeaderValue(value));
 
     }
 
     @Override
-    public void appendHeader(String header, byte[] value) {
-        appendHeader(header, new String(value, StandardCharsets.UTF_8));
+    public void appendHeader(String name, byte[] value) {
+        appendHeader(processHeaderName(name), toAsciiString(value));
 
     }
 
     @Override
-    public void appendHeader(String header, byte[] value, int offset, int length) {
+    public void appendHeader(String name, byte[] value, int offset, int length) {
         throw new UnsupportedOperationException("appendHeader(8) not supported in Netty context");
 
     }
 
     @Override
-    public void appendHeader(String header, String value) {
-        headers.add(header, value);
+    public void appendHeader(String name, String value) {
+        appendHeader(processHeaderName(name), processHeaderValue(value));
+    }
+
+    private void appendHeader(AsciiString name, CharSequence value){
+        assertTotalHeaderCount();
+        headers.add(name, value);
+    }
+
+    @Override
+    public int getNumberOfHeaderInstances(String name) {
+
+        return headers.getAll(processHeaderName(name)).size();
+    }
+
+    @Override
+    public boolean containsHeader(byte[] name) {
+        return headers.contains(toAsciiString(name));
 
     }
 
     @Override
-    public int getNumberOfHeaderInstances(String header) {
-
-        return headers.getAll(header).size();
+    public boolean containsHeader(HeaderKeys name) {
+        return containsHeader(name.getName());
     }
 
     @Override
-    public boolean containsHeader(byte[] header) {
-        return containsHeader(new String(header, StandardCharsets.UTF_8));
-
+    public boolean containsHeader(String name) {
+        return headers.contains(processHeaderName(name));
     }
 
     @Override
-    public boolean containsHeader(HeaderKeys header) {
-        return containsHeader(header.getName());
-    }
-
-    @Override
-    public boolean containsHeader(String header) {
-        return headers.contains(header);
-    }
-
-    @Override
-    public int getNumberOfHeaderInstances(byte[] header) {
-        return this.getNumberOfHeaderInstances(new String(header, StandardCharsets.UTF_8));
+    public int getNumberOfHeaderInstances(byte[] name) {
+        return headers.getAll(toAsciiString(name)).size();
 
     }
 
     @Override
-    public int getNumberOfHeaderInstances(HeaderKeys header) {
-        return this.getNumberOfHeaderInstances(header.getName());
+    public int getNumberOfHeaderInstances(HeaderKeys name) {
+        return this.getNumberOfHeaderInstances(name.getName());
     }
 
     @Override
-    public void removeHeader(byte[] header) {
-        removeHeader(new String(header, StandardCharsets.UTF_8));
-
-    }
-
-    @Override
-    public void removeHeader(byte[] header, int instance) {
-        //TODO
+    public void removeHeader(byte[] name) {
+        headers.remove(toAsciiString(name));
 
     }
 
     @Override
-    public void removeHeader(HeaderKeys header) {
-        removeHeader(header.getName());
+    public void removeHeader(byte[] name, int instance) {
+        removeHeader(toAsciiString(name).toString(), instance);
+    }
+
+    @Override
+    public void removeHeader(HeaderKeys name) {
+        removeHeader(name.getName());
 
     }
 
     @Override
-    public void removeHeader(HeaderKeys header, int instance) {
-        // TODO Auto-generated method stub
+    public void removeHeader(HeaderKeys name, int instance) {
+        removeHeader(name.getName(), instance);
 
     }
 
     @Override
-    public void removeHeader(String header) {
-        headers.remove(header);
+    public void removeHeader(String name) {
+        headers.remove(processHeaderName(name));
 
     }
 
     @Override
-    public void removeHeader(String header, int instance) {
-        //TODO
+    public void removeHeader(String name, int instance) {
+        //Note: currently not a direct way to remove header by instance, 
+        //so we do so manually. 
+
+        if (instance < 0) {
+            return;
+        }
+
+        AsciiString headerName = processHeaderName(name);
+
+        List<String> all = headers.getAll(headerName);
+        if (instance >= all.size()) {
+            return;
+        }
+        headers.remove(headerName);
+        for (int i = 0; i < all.size(); i++) {
+            if (i != instance) {
+                headers.add(headerName, all.get(i));
+            }
+        }
 
     }
 
@@ -416,70 +378,79 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     }
 
     @Override
-    public void setHeader(byte[] header, byte[] value) {
-        // TODO Auto-generated method stub
+    public void setHeader(byte[] name, byte[] value) {
+        setHeader(toAsciiString(name), toAsciiString(value));
 
     }
 
     @Override
-    public void setHeader(byte[] header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
+    public void setHeader(byte[] name, byte[] value, int offset, int length) {
+        throw new UnsupportedOperationException("This method is unsupported in the Netty implementation");
 
     }
 
     @Override
-    public void setHeader(byte[] header, String value) {
-        // TODO Auto-generated method stub
+    public void setHeader(byte[] name, String value) {
+        setHeader(toAsciiString(name), processHeaderValue(value));
 
     }
 
     @Override
-    public void setHeader(HeaderKeys header, byte[] value) {
-        // TODO Auto-generated method stub
+    public void setHeader(HeaderKeys name, byte[] value) {
+        setHeader(processHeaderName(name.getName()), toAsciiString(value));
 
     }
 
     @Override
-    public void setHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
+    public void setHeader(HeaderKeys name, byte[] value, int offset, int length) {
+        throw new UnsupportedOperationException("This method is unsupported in the Netty implementation");
 
     }
 
     @Override
-    public void setHeader(HeaderKeys header, String value) {
-        setHeader(header.getName(), value);
+    public void setHeader(HeaderKeys name, String value) {
+        
+        setHeader(processHeaderName(name.getName()), processHeaderValue(value));
 
     }
 
     @Override
-    public HeaderField setHeaderIfAbsent(HeaderKeys header, String value) {
+    public HeaderField setHeaderIfAbsent(HeaderKeys name, String value) {
 
-        Objects.requireNonNull(header);
+        Objects.requireNonNull(name);
         Objects.requireNonNull(value);
-
-        if (!headers.contains(header.getName())) {
-            headers.set(header.getName(), value);
+        AsciiString n = processHeaderName(name.getName());
+        if (!headers.contains(n)) {
+            assertTotalHeaderCount();
+            headers.set(n, processHeaderValue(value));
         }
-        //TODO HeaderField not used for netty, can we avoid creating an object here?
         return null;
-    }
-
-    @Override
-    public void setHeader(String header, byte[] value) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void setHeader(String header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
+    public void setHeader(String name, byte[] value) {
+        setHeader(processHeaderName(name), toAsciiString(value));
 
     }
 
     @Override
-    public void setHeader(String header, String value) {
-        headers.set(header, value);
+    public void setHeader(String namer, byte[] value, int offset, int length) {
+        throw new UnsupportedOperationException("This method is unsupported in the Netty implementation");
 
+    }
+
+    @Override
+    public void setHeader(String name, String value) {
+        setHeader(processHeaderName(name), processHeaderValue(value));
+
+    }
+
+    private void setHeader(AsciiString name, CharSequence value){
+        if (!headers.contains(name)) {
+            assertTotalHeaderCount();
+        }
+        headers.set(name, value);
     }
 
     @Override
@@ -807,20 +778,27 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setConnection(ConnectionValues value) {
-        // TODO Auto-generated method stub
-
+        if (value.getName().equalsIgnoreCase(HttpHeaderValues.CLOSE.toString())){
+            message.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        }else if (value.getName().equalsIgnoreCase(HttpHeaderValues.KEEP_ALIVE.toString())){
+            message.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+        }     
     }
 
     @Override
     public void setConnection(ConnectionValues[] values) {
-        // TODO Auto-generated method stub
-
+        message.headers().set(HttpHeaderNames.CONNECTION, values);
     }
 
     @Override
     public ConnectionValues[] getConnection() {
-        // TODO Auto-generated method stub
-        return null;
+        List<String> connectionHeaders = message.headers().getAll(HttpHeaderNames.CONNECTION);
+        ConnectionValues[] values = new ConnectionValues[connectionHeaders.size()];
+        for (int i = 0; i < connectionHeaders.size(); i++) {
+            String current = connectionHeaders.get(i);
+            values[i] = ConnectionValues.match(current, 0, current.length());
+        }
+        return values;
     }
 
     @Override
@@ -835,38 +813,56 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setContentEncoding(ContentEncodingValues value) {
-        // TODO Auto-generated method stub
-
+        Objects.requireNonNull(value, "content-encoding");
+        headers.set(HttpHeaderNames.CONTENT_ENCODING, value.getName());
     }
 
     @Override
     public void setContentEncoding(ContentEncodingValues[] values) {
-        // TODO Auto-generated method stub
-
+        Objects.requireNonNull(values, "content-encoding");
+        headers.remove(HttpHeaderNames.CONTENT_ENCODING);
+        for (ContentEncodingValues value : values) {
+            headers.add(HttpHeaderNames.CONTENT_ENCODING, value.getName());
+        }
     }
 
     @Override
     public ContentEncodingValues[] getContentEncoding() {
-        // TODO Auto-generated method stub
-        return null;
+        List<String> values = headers.getAll(HttpHeaderNames.CONTENT_ENCODING);
+        ContentEncodingValues[] result = new ContentEncodingValues[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            String value = values.get(i);
+            result[i] = ContentEncodingValues.match(value, 0, value.length());
+        }
+        return result;
     }
 
     @Override
     public void setTransferEncoding(TransferEncodingValues value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Tried setting transfer encoding in Netty!");
+        Objects.requireNonNull(value, "transfer-encoding");
+        headers.set(HttpHeaderNames.TRANSFER_ENCODING, value.getName());
+
     }
 
     @Override
     public void setTransferEncoding(TransferEncodingValues[] values) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Tried setting transfer encoding in Netty!");
+        Objects.requireNonNull(values, "transfer-encoding");
+        headers.remove(HttpHeaderNames.TRANSFER_ENCODING);
+        for (TransferEncodingValues value : values) {
+            headers.add(HttpHeaderNames.TRANSFER_ENCODING, value.getName());
+        }
+
     }
 
     @Override
     public TransferEncodingValues[] getTransferEncoding() {
-        // TODO Auto-generated method stub
-        return null;
+        List<String> values = headers.getAll(HttpHeaderNames.TRANSFER_ENCODING);
+        TransferEncodingValues[] result = new TransferEncodingValues[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            String value = values.get(i);
+            result[i] = TransferEncodingValues.match(value, 0, value.length());
+        }
+        return result;
     }
 
     @Override
@@ -876,20 +872,21 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setCurrentDate() {
-        // TODO Auto-generated method stub
+         setHeader(HttpHeaderKeys.HDR_DATE, HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(this.config.getDateHeaderRange()));
 
     }
 
     @Override
     public void setExpect(ExpectValues value) {
-        // TODO Auto-generated method stub
+        Objects.requireNonNull(value, "expect");
+        headers.set(HttpHeaderNames.EXPECT, value.getName());
 
     }
 
     @Override
     public byte[] getExpect() {
-        // TODO Auto-generated method stub
-        return null;
+        String value = headers.get(HttpHeaderNames.EXPECT);
+        return value == null ? null : value.getBytes(StandardCharsets.US_ASCII);
     }
 
     @Override
@@ -904,19 +901,26 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setMIMEType(String type) {
-        // TODO Auto-generated method stub
+        Objects.requireNonNull(type, "mime type");
+        headers.set(HttpHeaderNames.CONTENT_TYPE, type);
 
     }
 
     @Override
     public Charset getCharset() {
-        // TODO Auto-generated method stub
-        return null;
+        CharSequence ct = headers.get(HttpHeaderNames.CONTENT_TYPE);
+        return HttpUtil.getCharset(ct);
     }
 
     @Override
-    public void setCharset(Charset set) {
-        // TODO Auto-generated method stub
+    public void setCharset(Charset charset) {
+       if (charset == null) {
+            return;
+        }
+        CharSequence ct = headers.get(HttpHeaderNames.CONTENT_TYPE);
+        CharSequence mime = (ct == null ? HttpHeaderValues.TEXT_PLAIN : HttpUtil.getMimeType(ct));
+        String newContentType = mime + "; charset=" + charset.name();
+        headers.set(HttpHeaderNames.CONTENT_TYPE, newContentType);
 
     }
 
@@ -944,26 +948,26 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setVersion(VersionValues version) {
-        // TODO Auto-generated method stub
+        Objects.requireNonNull(version, "version");
+        message.setProtocolVersion(HttpVersion.valueOf(version.getName()));
 
     }
 
     @Override
     public void setVersion(String version) throws UnsupportedProtocolVersionException {
-        // TODO Auto-generated method stub
+        setVersion(VersionValues.find(version));
 
     }
 
     @Override
     public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
-        // TODO Auto-generated method stub
+        setVersion(new String(version, StandardCharsets.US_ASCII));
 
     }
 
     @Override
     public HttpTrailersImpl createTrailers() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("The createTrailers() method is unused in the Netty implementation");
     }
 
     
@@ -1135,6 +1139,101 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         }
         CookieCacheData cache = getCookieCache(header);
         cache.getAllCookies(name, list);
+    }
+
+    @Override
+    public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
+        // recreate the local header storage
+        int len = input.readInt();
+        if (SERIALIZATION_V2 == len) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Deserializing a V2 object");
+            }
+            this.deserializationVersion = SERIALIZATION_V2;
+            len = input.readInt();
+        }
+
+        // now read all of the headers
+        int number = input.readInt();
+        if (SERIALIZATION_V2 == this.deserializationVersion) {
+            // this is the new format
+            for (int i = 0; i < number; i++) {
+                appendHeader(readByteArray(input), readByteArray(input));
+            }
+        } else {
+            // this is the old format
+            for (int i = 0; i < number; i++) {
+                appendHeader((String) input.readObject(), (String) input.readObject());
+            }
+        }
+        // BNFHeaders reading of the headers will trigger all the parsed/temp
+        // values at this layer
+        try {
+            if (SERIALIZATION_V2 == this.deserializationVersion) {
+                setVersion(readByteArray(input));
+            } else {
+                setVersion((String) input.readObject());
+            }
+        } catch (UnsupportedProtocolVersionException exc) {
+            // no FFDC required
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unknown HTTP version");
+            }
+            // malformed version, can't make an "undefined" version
+            IOException ioe = new IOException("Failed deserialization of version");
+            ioe.initCause(exc);
+            throw ioe;
+        }
+        // V2 uses a boolean, while V1 used a byte... SHOULD be the same, but...
+        boolean isTrailer = (SERIALIZATION_V2 == this.deserializationVersion) ? input.readBoolean() : (1 == input.readByte());
+        if (isTrailer) {
+            //TODO update with Netty Trailers
+
+        }
+    }
+
+    /*
+     * @see
+     * com.ibm.ws.genericbnf.internal.GenericMessageImpl#writeExternal(java.io
+     * .ObjectOutput)
+     */
+    @Override
+    public void writeExternal(ObjectOutput output) throws IOException {
+
+        // convert any temporary Cookies into header storage
+        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_COOKIE));
+        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_COOKIE2));
+        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_SET_COOKIE));
+        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_SET_COOKIE2));
+
+        output.writeInt(SERIALIZATION_V2);
+
+        int count = headers.size();
+        output.writeInt(count);
+        output.writeInt(count);
+
+        for (Map.Entry<String, String> e : headers) { // ← String,String
+            writeByteArray(output, e.getKey().getBytes(StandardCharsets.US_ASCII));
+            writeByteArray(output, e.getValue().getBytes(StandardCharsets.US_ASCII));
+        }
+
+        writeByteArray(output, getVersionValue().getByteArray());
+
+        //Trailers
+        output.writeBoolean(false);
+    }
+
+    protected byte[] readByteArray(ObjectInput input) throws IOException {
+        int length = input.readInt();
+        byte[] data = new byte[length];
+        input.readFully(data);
+        return data;
+
+    }
+
+    protected void writeByteArray(ObjectOutput output, byte[] data) throws IOException {
+        output.writeInt(data.length);
+        output.write(data);
     }
     
 }
