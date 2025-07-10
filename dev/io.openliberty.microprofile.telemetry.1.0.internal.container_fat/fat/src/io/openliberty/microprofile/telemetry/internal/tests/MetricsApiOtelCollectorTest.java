@@ -146,7 +146,13 @@ public class MetricsApiOtelCollectorTest {
      * For more info on the Prometheus metrics format: 
      * https://github.com/prometheus/docs/blob/main/content/docs/instrumenting/exposition_formats.md#text-format-details
      */
+    
     public void getApiMetrics(String name, String type, String value) throws Exception {
+        // Add null check for client
+        if (client == null) {
+            client = new OtelCollectorQueryClient(otelCollectorContainer);
+        }
+        
         String result = client.dumpMetrics();
         List<String> splits = Arrays.asList(result.split("((?=# HELP))"));
         for (String s : splits) {
@@ -160,3 +166,5 @@ public class MetricsApiOtelCollectorTest {
         fail(name + " not found in OpenTelemetry Collector output");
     }
 }
+
+    
