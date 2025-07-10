@@ -11,7 +11,7 @@ package io.openliberty.microprofile.telemetry21.internal.semconv;
 
 import org.osgi.service.component.annotations.Component;
 
-import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemcovConstantsAccessor;
+import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemconvConstantsAccessor;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.semconv.ClientAttributes;
 import io.opentelemetry.semconv.ErrorAttributes;
@@ -22,7 +22,7 @@ import io.opentelemetry.semconv.ServerAttributes;
 import io.opentelemetry.semconv.incubating.ThreadIncubatingAttributes;
 
 @Component
-public class SemconvConstantsAccessorImpl implements SemcovConstantsAccessor {
+public class SemconvConstantsAccessorImpl implements SemconvConstantsAccessor {
 
     @Override
     public AttributeKey<String> errorType() {

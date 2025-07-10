@@ -3,7 +3,7 @@ package io.openliberty.microprofile.telemetry20.logging.internal.semconv;
 import io.opentelemetry.api.common.AttributeKey;
 
 //TODO proper javadoc
-public interface SemcovConstantsAccessor {
+public interface SemconvConstantsAccessor {
 
     //Network Attributes
     public AttributeKey<String> errorType();

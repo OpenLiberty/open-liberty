@@ -154,7 +154,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
     protected ResourceBuilder customizeResource(Resource resource, ConfigProperties c, boolean runtimeEnabled) {
         ResourceBuilder builder = resource.toBuilder();
 
-        //Use a plain String not ResourceAttributes.SERVICE_NAME due to semcov moving the class around
+        //Use a plain String not ResourceAttributes.SERVICE_NAME due to semconv moving the class around
         builder.put(OpenTelemetryConstants.KEY_SERVICE_NAME, getServiceName(c, runtimeEnabled));
         return builder;
     }

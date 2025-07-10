@@ -47,7 +47,7 @@ import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryL
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemtryLifecycleManagerImpl;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemcovConstantsAccessor;
+import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemconvConstantsAccessor;
 import io.opentelemetry.api.logs.LogRecordBuilder;
 
 @Component(name = OpenTelemetryLogHandler.COMPONENT_NAME, service = { Handler.class }, configurationPolicy = ConfigurationPolicy.OPTIONAL, property = { "service.vendor=IBM" })
@@ -76,7 +76,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler, OpenTelemtry
     static String accessLogField = null;
 
     @Reference
-    SemcovConstantsAccessor semcovConstantsAccessor;
+    SemconvConstantsAccessor semconvConstantsAccessor;
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> configuration) {
@@ -174,7 +174,7 @@ public class OpenTelemetryLogHandler implements SynchronousHandler, OpenTelemtry
         String eventType = MpTelemetryLogMappingUtils.getLibertyEventType(source);
 
         // Map the Liberty event to the OpenTelemetry Logs Data Model
-        MpTelemetryLogMappingUtils.mapLibertyEventToOpenTelemetry(builder, eventType, event, semcovConstantsAccessor);
+        MpTelemetryLogMappingUtils.mapLibertyEventToOpenTelemetry(builder, eventType, event, semconvConstantsAccessor);
     }
 
     private final ThreadLocal<List<Object>> queuedMessages = ThreadLocal.withInitial(() -> new ArrayList<Object>());

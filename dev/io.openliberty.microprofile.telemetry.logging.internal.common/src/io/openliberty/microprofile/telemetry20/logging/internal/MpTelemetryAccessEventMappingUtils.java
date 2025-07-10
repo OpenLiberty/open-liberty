@@ -11,7 +11,7 @@ package io.openliberty.microprofile.telemetry20.logging.internal;
 
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
-import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemcovConstantsAccessor;
+import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemconvConstantsAccessor;
 import io.opentelemetry.semconv.UserAgentAttributes;
 
 /**
@@ -20,22 +20,22 @@ import io.opentelemetry.semconv.UserAgentAttributes;
  */
 public class MpTelemetryAccessEventMappingUtils {
 
-    private static final ServiceCaller<SemcovConstantsAccessor> semcovConstantsAccessorCaller;
+    private static final ServiceCaller<SemconvConstantsAccessor> semconvConstantsAccessorCaller;
 
     private final static String[][] ACCESS_ATTRIBUTE_TABLE;
 
     static {
-        semcovConstantsAccessorCaller = new ServiceCaller<SemcovConstantsAccessor>(MpTelemetryAccessEventMappingUtils.class, SemcovConstantsAccessor.class);
-        SemcovConstantsAccessor semcovConstantsAccessor = semcovConstantsAccessorCaller.current().get();
+        semconvConstantsAccessorCaller = new ServiceCaller<SemconvConstantsAccessor>(MpTelemetryAccessEventMappingUtils.class, SemconvConstantsAccessor.class);
+        SemconvConstantsAccessor semconvConstantsAccessor = semconvConstantsAccessorCaller.current().get();
 
         String[][] accessAttributeTableTemp = {
-                                                { MpTelemetryLogFieldConstants.ACCESS_REMOTE_HOST, semcovConstantsAccessor.clientAddress().toString() },
-                                                { MpTelemetryLogFieldConstants.ACCESS_REQUEST_METHOD, semcovConstantsAccessor.httpRequestMethod().toString() },
-                                                { MpTelemetryLogFieldConstants.ACCESS_REQUEST_PORT, semcovConstantsAccessor.localNetworkPort().toString() },
+                                                { MpTelemetryLogFieldConstants.ACCESS_REMOTE_HOST, semconvConstantsAccessor.clientAddress().toString() },
+                                                { MpTelemetryLogFieldConstants.ACCESS_REQUEST_METHOD, semconvConstantsAccessor.httpRequestMethod().toString() },
+                                                { MpTelemetryLogFieldConstants.ACCESS_REQUEST_PORT, semconvConstantsAccessor.localNetworkPort().toString() },
                                                 { MpTelemetryLogFieldConstants.ACCESS_REQUEST_FIRST_LINE,
                                                   MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
                                                                                                           + "request_first_line" },
-                                                { MpTelemetryLogFieldConstants.ACCESS_RESPONSE_CODE, semcovConstantsAccessor.httpResponseStatusCode().toString() },
+                                                { MpTelemetryLogFieldConstants.ACCESS_RESPONSE_CODE, semconvConstantsAccessor.httpResponseStatusCode().toString() },
                                                 { MpTelemetryLogFieldConstants.ACCESS_REQUEST_START_TIME,
                                                   MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
                                                                                                           + "request_start_time" },
@@ -48,8 +48,8 @@ public class MpTelemetryAccessEventMappingUtils {
                                                 { MpTelemetryLogFieldConstants.ACCESS_ELAPSED_TIME,
                                                   MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
                                                                                                     + "elapsed_time" },
-                                                { MpTelemetryLogFieldConstants.ACCESS_REMOTE_IP, semcovConstantsAccessor.networkPeerAddress().toString() },
-                                                { MpTelemetryLogFieldConstants.ACCESS_REQUEST_HOST, semcovConstantsAccessor.accessRequestHost().toString() },
+                                                { MpTelemetryLogFieldConstants.ACCESS_REMOTE_IP, semconvConstantsAccessor.networkPeerAddress().toString() },
+                                                { MpTelemetryLogFieldConstants.ACCESS_REQUEST_HOST, semconvConstantsAccessor.accessRequestHost().toString() },
                                                 { MpTelemetryLogFieldConstants.ACCESS_REQUEST_ELAPSED_TIME,
                                                   MpTelemetryLogFieldConstants.OPENLIBERTY_ACCESS_PREFIX
                                                                                                             + "request_elapsed_time" },

@@ -34,7 +34,7 @@ import com.ibm.ws.logging.data.KeyValuePair.ValueTypes;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 
-import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemcovConstantsAccessor;
+import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemconvConstantsAccessor;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.logs.LogRecordBuilder;
@@ -79,17 +79,17 @@ public class MpTelemetryLogMappingUtils {
      * @param event     The object originating from logging source which contains necessary fields
      * @param eventType The type of event
      */
-    public static void mapLibertyEventToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemcovConstantsAccessor semcovConstantsAccessor) {
+    public static void mapLibertyEventToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemconvConstantsAccessor semconvConstantsAccessor) {
         if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
-            mapMessageAndTraceToOpenTelemetry(builder, eventType, event, semcovConstantsAccessor);
+            mapMessageAndTraceToOpenTelemetry(builder, eventType, event, semconvConstantsAccessor);
         } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
-            mapMessageAndTraceToOpenTelemetry(builder, eventType, event, semcovConstantsAccessor);
+            mapMessageAndTraceToOpenTelemetry(builder, eventType, event, semconvConstantsAccessor);
         } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
-            mapFFDCToOpenTelemetry(builder, eventType, event, semcovConstantsAccessor);
+            mapFFDCToOpenTelemetry(builder, eventType, event, semconvConstantsAccessor);
         } else if (eventType.equals(CollectorConstants.AUDIT_LOG_EVENT_TYPE)) {
-            mapAuditLogsToOpenTelemetry(builder, eventType, event, semcovConstantsAccessor);
+            mapAuditLogsToOpenTelemetry(builder, eventType, event, semconvConstantsAccessor);
         } else if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
-            mapAccessToOpenTelemetry(builder, eventType, event, semcovConstantsAccessor);
+            mapAccessToOpenTelemetry(builder, eventType, event, semconvConstantsAccessor);
         }
     }
 
@@ -100,7 +100,7 @@ public class MpTelemetryLogMappingUtils {
      * @param eventType The object originating from logging source which contains necessary fields.
      * @param event     The type of event
      */
-    private static void mapMessageAndTraceToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemcovConstantsAccessor semcovConstantsAccessor) {
+    private static void mapMessageAndTraceToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemconvConstantsAccessor semconvConstantsAccessor) {
         LogTraceData logData = (LogTraceData) event;
 
         // Get Timestamp from LogData and set it in the LogRecordBuilder
@@ -127,15 +127,15 @@ public class MpTelemetryLogMappingUtils {
         AttributesBuilder attributes = Attributes.builder();
 
         // Add Thread information to Attributes Builder
-        attributes.put(semcovConstantsAccessor.threadName(), logData.getThreadName());
-        attributes.put(semcovConstantsAccessor.threadId(), logData.getThreadId());
+        attributes.put(semconvConstantsAccessor.threadName(), logData.getThreadName());
+        attributes.put(semconvConstantsAccessor.threadId(), logData.getThreadId());
 
         // Add Throwable information to Attribute Builder
         String exceptionName = logData.getExceptionName();
         String throwable = logData.getThrowable();
         if (exceptionName != null && throwable != null) {
-            attributes.put(semcovConstantsAccessor.exceptionType(), exceptionName);
-            attributes.put(semcovConstantsAccessor.exceptionStackTrace(), throwable);
+            attributes.put(semconvConstantsAccessor.exceptionType(), exceptionName);
+            attributes.put(semconvConstantsAccessor.exceptionStackTrace(), throwable);
         }
 
         // Add additional log information from LogData to Attributes Builder
@@ -200,7 +200,7 @@ public class MpTelemetryLogMappingUtils {
      * @param eventType The object originating from logging source which contains necessary fields
      * @param event     The type of event
      */
-    private static void mapFFDCToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemcovConstantsAccessor semcovConstantsAccessor) {
+    private static void mapFFDCToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemconvConstantsAccessor semconvConstantsAccessor) {
         FFDCData ffdcData = (FFDCData) event;
 
         // Get Timestamp from LogData and set it in the LogRecordBuilder
@@ -222,12 +222,12 @@ public class MpTelemetryLogMappingUtils {
         AttributesBuilder attributes = Attributes.builder();
 
         // Add Thread information to Attributes Builder
-        attributes.put(semcovConstantsAccessor.threadId(), ffdcData.getThreadId());
+        attributes.put(semconvConstantsAccessor.threadId(), ffdcData.getThreadId());
 
         // Add FFDC information to Semantic Convention Attributes
-        attributes.put(semcovConstantsAccessor.exceptionType(), ffdcData.getExceptionName());
-        attributes.put(semcovConstantsAccessor.exceptionStackMessage(), ffdcData.getMessage());
-        attributes.put(semcovConstantsAccessor.exceptionStackTrace(), ffdcData.getStacktrace());
+        attributes.put(semconvConstantsAccessor.exceptionType(), ffdcData.getExceptionName());
+        attributes.put(semconvConstantsAccessor.exceptionStackMessage(), ffdcData.getMessage());
+        attributes.put(semconvConstantsAccessor.exceptionStackTrace(), ffdcData.getStacktrace());
 
         // Add additional log information from FFDCData to Attributes Builder
         attributes.put(MpTelemetryLogFieldConstants.LIBERTY_TYPE, eventType)
@@ -250,7 +250,7 @@ public class MpTelemetryLogMappingUtils {
      * @param eventType The type of event
      * @param event     The object originating from logging source which contains necessary fields.
      */
-    private static void mapAuditLogsToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemcovConstantsAccessor semcovConstantsAccessor) {
+    private static void mapAuditLogsToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemconvConstantsAccessor semconvConstantsAccessor) {
         GenericData genData = (GenericData) event;
         KeyValuePair[] pairs = genData.getPairs();
         String key = null;
@@ -293,7 +293,7 @@ public class MpTelemetryLogMappingUtils {
                         attributes.put(MpTelemetryLogFieldConstants.LIBERTY_SEQUENCE, kvp.getStringValue());
                     } else if (key.equals(LogFieldConstants.IBM_THREADID) || AuditData.getThreadIDKey(0).equals(key)) {
                         // Add Thread information to Attributes Builder
-                        attributes.put(semcovConstantsAccessor.threadId(), kvp.getIntValue());
+                        attributes.put(semconvConstantsAccessor.threadId(), kvp.getIntValue());
                     } else {
                         // Format and map the other audit event fields accordingly.
                         attributes.put(MpTelemetryAuditEventMappingUtils.getOTelMappedAuditEventKeyName(key), kvp.getStringValue());
@@ -316,7 +316,7 @@ public class MpTelemetryLogMappingUtils {
      * @param eventType The type of event
      * @param event     The object originating from logging source which contains necessary fields.
      */
-    private static void mapAccessToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemcovConstantsAccessor semcovConstantsAccessor) {
+    private static void mapAccessToOpenTelemetry(LogRecordBuilder builder, String eventType, Object event, SemconvConstantsAccessor semconvConstantsAccessor) {
         AccessLogData accessLogData = (AccessLogData) event;
 
         builder.setSeverity(Severity.INFO2);
@@ -352,8 +352,8 @@ public class MpTelemetryLogMappingUtils {
             if (value != null) {
                 if (key.equals("requestProtocol")) {
                     String[] requestProtocolSplit = value.toString().split("/");
-                    attributes.put(semcovConstantsAccessor.networkProtocolName(), requestProtocolSplit[0]);
-                    attributes.put(semcovConstantsAccessor.networkProtocolVersion(), requestProtocolSplit[1]);
+                    attributes.put(semconvConstantsAccessor.networkProtocolName(), requestProtocolSplit[0]);
+                    attributes.put(semconvConstantsAccessor.networkProtocolVersion(), requestProtocolSplit[1]);
                 } else if (key.equals("datetime") || key.equals("accessLogDatetime")) {
                     builder.setTimestamp(formatDateTime((String) value));
                 } else if (key.contains("requestHeader") || key.contains("responseHeader")) {
