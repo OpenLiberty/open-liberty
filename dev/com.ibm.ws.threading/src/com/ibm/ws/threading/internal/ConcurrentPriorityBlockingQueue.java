@@ -14,8 +14,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 
 /**
  * This BlockingQueue implementation takes the concepts from the DoubleQueue and ConcurrentLinkedQueue
@@ -28,7 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @param <T>
  */
-public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> implements BlockingQueue<T> {
+public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> implements BlockingQueue<T>, AvailableProcessorsListener, ProcessorAwareQueue {
 
     private static class Node<T> extends AtomicReference<T> {
         private static final long serialVersionUID = 1L;
@@ -44,10 +49,18 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         Node<T> getFirst();
 
         boolean compareAndSetFirst(Node<T> oldFirst, Node<T> newFirst);
+
+        int getSize();
+
+        void incrementSize();
+
+        void decrementSize();
     }
 
     private static class ExpeditedHead<T> extends AtomicReference<Node<T>> implements Head<T> {
         private static final long serialVersionUID = 1L;
+
+        private final AtomicInteger size = new AtomicInteger(0);
 
         ExpeditedHead(Node<T> first) {
             set(first);
@@ -62,10 +75,27 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         public boolean compareAndSetFirst(Node<T> oldFirst, Node<T> newFirst) {
             return compareAndSet(oldFirst, newFirst);
         }
+
+        @Override
+        public int getSize() {
+            return size.get();
+        }
+
+        @Override
+        public void incrementSize() {
+            size.getAndIncrement();
+        }
+
+        @Override
+        public void decrementSize() {
+            size.getAndDecrement();
+        }
     }
 
     private static class NonExpeditedHead<T> extends Node<T> implements Head<T> {
         private static final long serialVersionUID = 1L;
+
+        private final AtomicInteger size = new AtomicInteger(0);
 
         NonExpeditedHead(Node<T> first) {
             super(null);
@@ -81,7 +111,100 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         public boolean compareAndSetFirst(Node<T> oldFirst, Node<T> newFirst) {
             return next.compareAndSet(oldFirst, newFirst);
         }
+
+        @Override
+        public int getSize() {
+            return size.get();
+        }
+
+        @Override
+        public void incrementSize() {
+            size.getAndIncrement();
+        }
+
+        @Override
+        public void decrementSize() {
+            size.getAndDecrement();
+        }
     }
+
+    // D312598 - begin
+    private static final AtomicInteger SPINS_TAKE_;
+    private static final boolean spinsTakeProp;
+    private static final boolean YIELD_TAKE_;
+
+    static {
+
+        //D638088 - modified spinning defaults to adjust to the number
+        //of physical processors on host system.
+        Integer spinsTake = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_take", null); // D371967
+        spinsTakeProp = (spinsTake != null);
+
+        SPINS_TAKE_ = new AtomicInteger(spinsTake == null ? (CpuInfo.getAvailableProcessors().get() - 1) : spinsTake.intValue());
+
+        YIELD_TAKE_ = Boolean.getBoolean("com.ibm.ws.util.BoundedBuffer.yield_take");
+    }
+
+    private static ConcurrentLinkedQueue<GetQueueLock> waitingThreadLocks = new ConcurrentLinkedQueue<GetQueueLock>();
+
+    private static final ThreadLocal<GetQueueLock> threadLocalGetLock = new ThreadLocal<GetQueueLock>() {
+        @Override
+        protected GetQueueLock initialValue() {
+            return new GetQueueLock();
+        }
+    };
+
+    // D638088: Added two fields to the getQueueLock for book keeping
+    // D371967: An easily-identified marker class used for locking
+    private static class GetQueueLock extends Object {
+        private boolean notified;
+
+        public boolean isNotified() {
+            return notified;
+        }
+
+        public void setNotified(boolean notified) {
+            this.notified = notified;
+        }
+
+    }
+
+    private void notifyGet_() {
+        // Notify a waiting thread that work has arrived on the queue.  A notification may be lost in some cases - however as none of the
+        // threads wait endlessly, a waiting thread will either be notified, or will eventually wake up.  If there are no waiting threads,
+        // the new work will be picked up when an active thread completes its task.
+        GetQueueLock lock = waitingThreadLocks.poll();
+        if (lock != null) {
+            synchronized (lock) {
+                lock.setNotified(true);
+                lock.notify();
+            }
+        }
+    }
+
+    private GetQueueLock waitGet_(GetQueueLock getQueueLock, long timeout) throws InterruptedException {
+        if (getQueueLock == null) {
+            getQueueLock = threadLocalGetLock.get();
+        }
+
+        try {
+            synchronized (getQueueLock) {
+                getQueueLock.setNotified(false);
+                waitingThreadLocks.add(getQueueLock);
+                getQueueLock.wait(timeout == -1 ? 0 : timeout);
+            }
+        } finally {
+            if (!getQueueLock.isNotified()) {
+                // we either timed out or were interrupted, so remove ourselves from the queue...  it's okay if a producer already has the
+                // lock because we're going to exit and go try to get more work anyway, so it's okay if we don't get the signal
+                waitingThreadLocks.remove(getQueueLock);
+            }
+        }
+
+        return getQueueLock;
+    }
+
+    // D312598 - end
 
     final Head<T> expeditedHead;
 
@@ -90,11 +213,6 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
     final NonExpeditedHead<T> nonExpeditedHead;
 
     final AtomicReference<Node<T>> nonExpeditedTail = new AtomicReference<>();
-
-    /**
-     * Count of items available for poll/removal.
-     */
-    final ReduceableSemaphore size = new ReduceableSemaphore(0, false);
 
     /**
      * The currentHead field is set to nonExpeditedHead initially until an expedited item is added to the queue
@@ -121,6 +239,10 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         exNode.next.set(nonExpeditedHead);
         expeditedHead = new ExpeditedHead<>(exNode);
         expeditedTail.set(exNode);
+
+        if (!spinsTakeProp) {
+            CpuInfo.addAvailableProcessorsListener(this);
+        }
     }
 
     @Override
@@ -204,7 +326,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
 
     @Override
     public boolean isEmpty() {
-        return size.availablePermits() <= 0;
+        return size() <= 0;
     }
 
     @Override
@@ -290,7 +412,11 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
             }
             T prevItem = node.get();
             if (prevItem != null && node.compareAndSet(prevItem, null)) {
-                size.reducePermits(1);
+                if (prevItem instanceof QueueItem && ((QueueItem) prevItem).isExpedited()) {
+                    expeditedHead.decrementSize();
+                } else {
+                    nonExpeditedHead.decrementSize();
+                }
             }
             // Null out unconditionally since a remove on the queue could be called at the same time
             // as remove on the iterator which would cause the above if statement to not process.
@@ -344,7 +470,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
                 // if we win the race to update the tail's next, the new item is added to the queue
                 if (currentTail.next.compareAndSet(end, newTail)) {
                     // increase the queue size
-                    size.release();
+                    head.incrementSize();
 
                     // don't update the tail each time.  update the tail on a later insert into the queue
                     if (currentTail != startingTail) {
@@ -385,32 +511,45 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
 
     @Override
     public T poll() {
-        while (size.tryAcquire()) {
-            Head<T> head = currentHead.get();
-            T first = getFirstWithAction(head, null, REMOVE_FIRST_ITEM);
-            if (first != null) {
-                return first;
-            }
-            size.release(); // another thread is removing, put the permit back
-            Thread.yield();
-        }
-        return null;
+        Head<T> head = currentHead.get();
+        return getFirstWithAction(head, null, REMOVE_FIRST_ITEM);
     }
 
     @Override
     public T poll(long timeout, TimeUnit unit) throws InterruptedException {
-        for (long start = System.nanoTime(), remain = timeout = unit.toNanos(timeout); //
-                        remain >= 0 && size.tryAcquire(remain, TimeUnit.NANOSECONDS); //
-                        remain = timeout - (System.nanoTime() - start)) {
-            Head<T> head = currentHead.get();
-            T first = getFirstWithAction(head, null, REMOVE_FIRST_ITEM);
-            if (first != null) {
-                return first;
-            }
-            size.release(); // another thread is removing, put the permit back
-            Thread.yield();
+        T first = poll();
+        if (first != null) {
+            return first;
         }
-        return null;
+
+        long timeLeftMillis = unit.toMillis(timeout);
+        long endTimeMillis = System.currentTimeMillis() + timeLeftMillis;
+        int spinctr = SPINS_TAKE_.get();
+        GetQueueLock getQueueLock = null;
+
+        while (first == null && timeLeftMillis > 0) {
+            while (size() <= 0 && timeLeftMillis > 0) {
+                if (spinctr > 0) {
+                    // busy wait
+                    if (YIELD_TAKE_)
+                        Thread.yield();
+                    spinctr--;
+                } else {
+                    // block on lock
+                    getQueueLock = waitGet_(getQueueLock, timeLeftMillis);
+
+                    // reset spinctr field back to the original value so if size() is 0 or poll returns null, we end up
+                    // doing spinning again.
+                    spinctr = SPINS_TAKE_.get();
+                }
+                timeLeftMillis = endTimeMillis - System.currentTimeMillis();
+            }
+
+            first = poll();
+            timeLeftMillis = endTimeMillis - System.currentTimeMillis();
+        }
+
+        return first;
     }
 
     @Override
@@ -471,7 +610,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
                 prev.next.compareAndSet(current, next);
             }
             if (removed) {
-                size.reducePermits(1);
+                head.decrementSize();
                 return true;
             }
         }
@@ -480,23 +619,40 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
 
     @Override
     public final int size() {
-        int s = size.availablePermits();
-        return s < 0 ? 0 : s;
+        return expeditedHead.getSize() + nonExpeditedHead.getSize();
     }
 
     @Override
     public T take() throws InterruptedException {
-        while (true) {
-            size.acquire();
+        T first = poll();
 
-            Head<T> head = currentHead.get();
-            T first = getFirstWithAction(head, null, REMOVE_FIRST_ITEM);
-            if (first != null) {
-                return first;
-            }
-            size.release(); // another thread is removing, put the permit back
-            Thread.yield();
+        if (first != null) {
+            return first;
         }
+
+        int spinctr = SPINS_TAKE_.get();
+        GetQueueLock getQueueLock = null;
+
+        while (first == null) {
+            while (size() <= 0) {
+                if (spinctr > 0) {
+                    // busy wait
+                    if (YIELD_TAKE_)
+                        Thread.yield();
+                    spinctr--;
+                } else {
+                    // block on lock
+                    getQueueLock = waitGet_(getQueueLock, -1);
+
+                    // reset spinctr field back to the original value so if size() is 0 or poll returns null, we end up
+                    // doing spinning again.
+                    spinctr = SPINS_TAKE_.get();
+                }
+            }
+            first = poll();
+        }
+
+        return first;
     }
 
     <F> F getFirstWithAction(Head<T> head, Node<T> end, FirstAction<T, F> firstAction) {
@@ -566,6 +722,9 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
                 return null;
             }
 
+            // Reduce queue size
+            head.decrementSize();
+
             if (current != currentFirst) {
                 Node<T> next = current.next.get();
                 // Must leave a valid Node for first and and tail to point to, so if next is the end
@@ -625,7 +784,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        b.append(size.availablePermits()).append(' ');
+        b.append(size()).append(' ');
         Iterator<T> it = iterator();
         if (!it.hasNext()) {
             b.append("[]");
@@ -648,5 +807,19 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         }
 
         return b.toString();
+    }
+
+    @Override
+    public void setAvailableProcessors(int availableProcessors) {
+        if (!spinsTakeProp) {
+            SPINS_TAKE_.set(availableProcessors - 1);
+        }
+    }
+
+    @Override
+    public void removeFromAvailableProcessors() {
+        if (!spinsTakeProp) {
+            CpuInfo.removeAvailableProcessorsListener(this);
+        }
     }
 }

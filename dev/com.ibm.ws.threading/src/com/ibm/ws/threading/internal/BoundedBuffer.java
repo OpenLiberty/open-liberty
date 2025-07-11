@@ -661,9 +661,29 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
     public T take() throws InterruptedException {
         T old = poll();
 
+        if (old != null) {
+            return old;
+        }
+
+        int spinctr = SPINS_TAKE_.get();
         GetQueueLock getQueueLock = null;
+
         while (old == null) {
-            getQueueLock = waitGet_(getQueueLock, -1);
+            while (size() <= 0) {
+                if (spinctr > 0) {
+                    // busy wait
+                    if (YIELD_TAKE_)
+                        Thread.yield();
+                    spinctr--;
+                } else {
+                    // block on lock
+                    getQueueLock = waitGet_(getQueueLock, -1);
+
+                    // reset spinctr field back to the original value so if size() is 0 or poll returns null, we end up
+                    // doing spinning again.
+                    spinctr = SPINS_TAKE_.get();
+                }
+            }
             old = poll();
         }
 
@@ -698,6 +718,10 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
                 } else {
                     // block on lock
                     getQueueLock = waitGet_(getQueueLock, timeLeftMillis);
+
+                    // reset spinctr field back to the original value so if size() is 0 or poll returns null, we end up
+                    // doing spinning again.
+                    spinctr = SPINS_TAKE_.get();
                 }
                 timeLeftMillis = endTimeMillis - System.currentTimeMillis();
             }
