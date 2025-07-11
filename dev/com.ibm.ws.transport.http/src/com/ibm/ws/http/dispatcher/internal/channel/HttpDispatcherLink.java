@@ -192,6 +192,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
+        boolean performCloseOnThisThread = true;
+
         // This is added for Upgrade Servlet3.1 WebConnection
         // The only API available from connectionLink are close and destroy ,
         // so we will have to use close API from SRTConnectionContext31 and call closeStreams.
@@ -268,7 +270,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (upgradedListener == null) {
                 String toClose = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
                 if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
-                    boolean shouldThisThreadClose = false;
+                     // This is the H2 path. Only one thread can perform the close.
+                    performCloseOnThisThread = false; // Assume this is not the first thread to reach here
+                    boolean isInitiator = false;
                     // want to close down at least once, and only once, for this type of upgraded connection
                     WebConnCanCloseSync.lock();
                     try {
@@ -276,7 +280,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                             // fall through to close logic after setting flag to only fall through once
                             // want to call close outside of the sync to avoid deadlocks.
                             WebConnCanClose = false;
-                            shouldThisThreadClose = true;
+                            isInitiator = true;
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "close, Upgraded Web Connection closing Dispatcher Link");
                             }
@@ -285,60 +289,54 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                         WebConnCanCloseSync.unlock();
                     }
 
-                    if (shouldThisThreadClose) {
-                        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Http2 Connection is closing");
-                        }
-                        try{
-                            if(myChannel.getStop0Called() == false) {
-                                if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "===Proceeding with the close");
-                                }
-                                super.close(conn, e);
-                            }
-                        } finally {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "close, decrement active connection count and signalling close completion");
-                            }
-                            this.myChannel.decrementActiveConns();
-                            //signal the close process is complete
-                            closeCompleteLatch.countDown();
-                        }
-                        closeCompleted.compareAndSet(false, true);
+                    if (isInitiator) {
+                        // This thread is the initiator, so it should perform the close.
+                        performCloseOnThisThread = true;
                     } else {
+                        // This thread is a follower, so it should wait for the initiator to perform the close.
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "close EXIT, Upgraded Web connection close already in progress; checking if completion is done");
+                            Tr.debug(tc, "Follower thread will now wait for close completion signal.");
                         }
-                        try{
-                            if(!closeCompleteLatch.await(5, java.util.concurrent.TimeUnit.SECONDS)){
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "Timed out waiting for close to complete");
-                                }
+                        long startTime = System.nanoTime();
+                        try {
+                            if (!closeCompleteLatch.await(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                                Tr.debug(tc, "Timed out waiting for close to complete");
+                                //throw new java.io.IOException("Timed out waiting for connection close to complete.");
+                            }
+                            long waitTimeNanos = System.nanoTime() - startTime;
+                            long waitTimeMillis = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(waitTimeNanos);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Follower thread confirmed close completion after waiting for " + waitTimeMillis + " ms. Returning.");
                             }
                         } catch (InterruptedException ie) {
                             Thread.currentThread().interrupt();
                         }
+                        // The follower's job is done after waiting.
+                        return;
                     }
-                    return;
                 }
+
             }
         }
 
-        // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
-        if (myChannel.getStop0Called() == false) {
-            try {
-                super.close(conn, e);
-            } finally {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close, decrement active connection count");
+        
+        if (performCloseOnThisThread){
+            // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
+            if (myChannel.getStop0Called() == false) {
+                try {
+                    super.close(conn, e);
+                } finally {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close, decrement active connection count");
+                    }
+                    this.myChannel.decrementActiveConns();
                 }
-                this.myChannel.decrementActiveConns();
+                closeCompleted.compareAndSet(false, true);
             }
-            closeCompleted.compareAndSet(false, true);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "close EXIT");
+    
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "close EXIT");
+            }
         }
     }
 
