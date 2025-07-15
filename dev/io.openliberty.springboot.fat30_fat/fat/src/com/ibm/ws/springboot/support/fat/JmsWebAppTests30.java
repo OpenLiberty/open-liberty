@@ -14,16 +14,22 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class JmsWebAppTests30 extends JmsAbstractTests {
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("SpringBootTests");
+
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("servlet-6.0", "messaging-3.1", "jndi-1.0", "componenttest-2.0", "jdbc-4.2"));
@@ -41,6 +47,7 @@ public class JmsWebAppTests30 extends JmsAbstractTests {
 
     @ExpectedFFDC("jakarta.servlet.ServletException")
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void testJmsWebApplicationWithTransaction() throws Exception {
         testJmsWithTransaction();
     }
