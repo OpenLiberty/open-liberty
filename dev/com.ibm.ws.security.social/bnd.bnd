@@ -142,6 +142,7 @@ Include-Resource: \
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.app.manager.wab;version=latest,\
+  com.ibm.ws.crypto.common;version=latest,\
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

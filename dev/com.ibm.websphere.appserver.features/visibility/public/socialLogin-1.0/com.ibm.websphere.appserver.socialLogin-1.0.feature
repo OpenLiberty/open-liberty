@@ -15,7 +15,8 @@ Subsystem-Name: Social Media Login 1.0
   io.openliberty.com.google.gson, \
   com.ibm.ws.org.joda.time.1.6.2, \
   io.openliberty.org.apache.commons.logging, \
-  com.ibm.ws.org.apache.commons.lang3
+  com.ibm.ws.org.apache.commons.lang3, \
+  com.ibm.ws.crypto.common
 IBM-API-Package: com.ibm.websphere.security.social; type="ibm-api"
 -jars=com.ibm.websphere.appserver.api.social; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.social_1.0-javadoc.zip
