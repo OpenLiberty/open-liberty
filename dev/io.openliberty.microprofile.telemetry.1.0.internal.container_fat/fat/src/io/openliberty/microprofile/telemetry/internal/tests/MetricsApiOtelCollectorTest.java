@@ -148,12 +148,14 @@ public class MetricsApiOtelCollectorTest {
      */
     
     public void getApiMetrics(String name, String type, String value) throws Exception {
-        // Add null check for client
-        if (client == null) {
-            client = new OtelCollectorQueryClient(otelCollectorContainer);
+        String result = client.dumpMetrics();
+        
+        // Add null check for result before using it
+        if (result == null) {
+            fail("No metrics data returned from collector");
+            return;
         }
         
-        String result = client.dumpMetrics();
         List<String> splits = Arrays.asList(result.split("((?=# HELP))"));
         for (String s : splits) {
             if (s.contains(name)) {
@@ -166,5 +168,3 @@ public class MetricsApiOtelCollectorTest {
         fail(name + " not found in OpenTelemetry Collector output");
     }
 }
-
-    
