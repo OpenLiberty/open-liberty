@@ -16,13 +16,36 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.CheckpointRule;
+import componenttest.rules.repeater.CheckpointRule.ServerMode;
+import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@CheckpointTest(alwaysRun = true)
 public class ConcurrencyAppTests30 extends ConcurrencyAppAbstractTests {
+
+    @ClassRule
+    public static CheckpointRule checkpointRule = new CheckpointRule()
+                    .setConsoleLogName(ConcurrencyAppTests30.class.getSimpleName() + ".log")
+                    .setServerSetup(ConcurrencyAppTests30::serverSetUp)
+                    .setServerStart(ConcurrencyAppTests30::serverStart)
+                    .setServerTearDown(ConcurrencyAppTests30::serverTearDown);
+
+    public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
+        return server;
+    }
+
+    public static void serverStart(ServerMode mode, LibertyServer server) throws Exception {
+    }
+
+    public static void serverTearDown(ServerMode mode, LibertyServer server) throws Exception {
+    }
 
     @Test
     public void testConcurrencyScheduledTask1() throws Exception {
