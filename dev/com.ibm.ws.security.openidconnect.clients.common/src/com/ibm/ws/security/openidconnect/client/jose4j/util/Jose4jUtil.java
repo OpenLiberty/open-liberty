@@ -42,6 +42,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.common.crypto.HashUtils;
@@ -369,7 +370,7 @@ public class Jose4jUtil {
     @FFDCIgnore({ Exception.class })
     public Key getSignatureVerificationKeyFromJsonWebStructure(JsonWebStructure jsonStruct, ConvergedClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws JWTTokenValidationFailedException {
         String kid = jsonStruct.getKeyIdHeaderValue();
-        String x5t = jsonStruct.getX509CertSha1ThumbprintHeaderValue();
+        String x5t = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? null : jsonStruct.getX509CertSha1ThumbprintHeaderValue();
         Key key = null;
         Exception caughtException = null;
         try {

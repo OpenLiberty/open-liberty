@@ -22,6 +22,7 @@ import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
@@ -123,7 +124,7 @@ public class JwtUtils {
     static Key getPublicKeyFromJsonWebStructure(JsonWebStructure jsonStruct, OidcServerConfig oidcServerConfig) {
         String alg = jsonStruct.getAlgorithmHeaderValue();
         String kid = jsonStruct.getKeyIdHeaderValue();
-        String x5t = jsonStruct.getX509CertSha1ThumbprintHeaderValue();
+        String x5t = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? null : jsonStruct.getX509CertSha1ThumbprintHeaderValue();
 
         Key publicKey = null;
         JSONWebKey jwk = oidcServerConfig.getJSONWebKey();
