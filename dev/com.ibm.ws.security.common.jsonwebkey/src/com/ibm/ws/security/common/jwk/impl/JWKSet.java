@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -121,6 +121,19 @@ public class JWKSet {
     }
 
     @Sensitive
+    private JSONWebKey getJWKByx5tS256InCollection(String x5tS256, @Sensitive Collection<JWK> jwkCollection) {
+        Iterator<JWK> it = jwkCollection.iterator();
+        JSONWebKey jwk = null;
+        while (it.hasNext()) {
+            jwk = it.next();
+            if (x5tS256.equals(jwk.getKeyX5tS256())) {
+                return jwk;
+            }
+        }
+        return null;
+    }
+
+    @Sensitive
     private JSONWebKey getJWKByUseInCollection(String use, @Sensitive Collection<JWK> jwkCollection) {
         if (use == null) {
             return null;
@@ -190,6 +203,16 @@ public class JWKSet {
     }
 
     @Sensitive
+    public Key getKeyBySetIdAndx5tS256(@Sensitive String setId, String x5tS256, JwkKeyType keyType) {
+        Key key = null;
+        JSONWebKey jwk = getJsonWebKeyBySetIdAndx5tS256(setId, x5tS256);
+        if (jwk != null) {
+            key = getKeyForJwkKeyType(jwk, keyType);
+        }
+        return key;
+    }
+
+    @Sensitive
     public Key getKeyBySetIdAndUse(@Sensitive String setId, String use, JwkKeyType keyType) {
         Key key = null;
         JSONWebKey jwk = getJsonWebKeyBySetIdAndUse(setId, use);
@@ -239,6 +262,15 @@ public class JWKSet {
         Set<JWK> jwks = jwksBySetId.get(setId);
         if (jwks != null) {
             return getJWKByx5tInCollection(x5t, jwks);
+        }
+        return null;
+    }
+
+    @Sensitive
+    JSONWebKey getJsonWebKeyBySetIdAndx5tS256(@Sensitive String setId, String x5tS256) {
+        Set<JWK> jwks = jwksBySetId.get(setId);
+        if (jwks != null) {
+            return getJWKByx5tS256InCollection(x5tS256, jwks);
         }
         return null;
     }

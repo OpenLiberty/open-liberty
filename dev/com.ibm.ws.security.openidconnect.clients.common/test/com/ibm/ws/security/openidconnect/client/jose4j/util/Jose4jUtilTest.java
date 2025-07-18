@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -373,7 +373,7 @@ public class Jose4jUtilTest extends CommonTestClass {
             }
         });
         try {
-            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t");
+            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t", "x5t#S256");
             assertNull("Expected a null key but received " + keyValue, keyValue);
         } catch (Exception e) {
             outputMgr.failWithThrowable("testGetVerifyKey", e);
@@ -395,7 +395,7 @@ public class Jose4jUtilTest extends CommonTestClass {
             }
         });
         try {
-            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t");
+            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t", "x5t#S256");
             assertEquals("Expected key:" + publicKey + " but received:" + keyValue + ".", publicKey, keyValue);
         } catch (Exception e) {
             outputMgr.failWithThrowable("testGetVerifyKey", e);
@@ -406,6 +406,7 @@ public class Jose4jUtilTest extends CommonTestClass {
     public void testGetVerifyKey_getKeyFromJwkUrl() throws Exception {
         final String KID = "kid";
         final String x5t = "x5t";
+        final String x5tS256 = "x5t#S256";
         final String use = "sig";
         mockery.checking(new Expectations() {
             {
@@ -413,14 +414,14 @@ public class Jose4jUtilTest extends CommonTestClass {
                 will(returnValue(SIGNATURE_ALG_RS256));
                 one(clientConfig).getJwkEndpointUrl();
                 will(returnValue(TEST_URL));
-                one(jwKRetriever).getPublicKeyFromJwk(KID, x5t, use, false);
+                one(jwKRetriever).getPublicKeyFromJwk(KID, x5t, x5tS256, use, false);
                 will(returnValue(publicKey));
                 one(clientConfig).getUseSystemPropertiesForHttpClientConnections();
                 will(returnValue(false));
             }
         });
         try {
-            Object keyValue = util.getVerifyKey(clientConfig, KID, x5t);
+            Object keyValue = util.getVerifyKey(clientConfig, KID, x5t, x5tS256);
             assertEquals("Expected key:" + publicKey + " but received:" + keyValue + ".", publicKey, keyValue);
         } catch (Exception e) {
             outputMgr.failWithThrowable("testGetVerifyKey", e);
@@ -466,7 +467,7 @@ public class Jose4jUtilTest extends CommonTestClass {
             outputMgr.failWithThrowable("testGetUserName_fromIdToken", e);
         }
     }
-    
+
     @Test
     public void testGetUserName_fromIdToken_usingTokenOrder() throws Exception {
         mockery.checking(new Expectations() {
@@ -482,7 +483,7 @@ public class Jose4jUtilTest extends CommonTestClass {
             outputMgr.failWithThrowable("testGetUserName_fromIdToken_usingTokenOrder", e);
         }
     }
-    
+
     @Test
     public void testGetUserName_fromIdToken_missingClaim() throws Exception {
         mockery.checking(new Expectations() {
@@ -502,7 +503,7 @@ public class Jose4jUtilTest extends CommonTestClass {
             outputMgr.failWithThrowable("testGetUserName_fromIdToken_missingClaim", e);
         }
     }
-    
+
     @Test
     public void testGetUserName_fromAllTokens_missingClaim() throws Exception {
         mockery.checking(new Expectations() {
@@ -522,7 +523,7 @@ public class Jose4jUtilTest extends CommonTestClass {
             outputMgr.failWithThrowable("testGetUserName_fromAllTokens_missingClaim", e);
         }
     }
-    
+
     @Test
     public void testGetClaim_fromAllTokens_nullClaimMap() throws Exception {
         mockery.checking(new Expectations() {
@@ -836,7 +837,7 @@ public class Jose4jUtilTest extends CommonTestClass {
 
         return claimsMap;
     }
-    
+
     private Map<String, JwtClaims> createEmptyClaimsMapAccessToken() {
         Map<String, JwtClaims> claimsMap = new HashMap<String, JwtClaims>();
         claimsMap.put(Constants.TOKEN_TYPE_ACCESS_TOKEN, createEmptyClaims());
@@ -845,7 +846,7 @@ public class Jose4jUtilTest extends CommonTestClass {
 
         return claimsMap;
     }
-    
+
     private Map<String, JwtClaims> createNullClaimsMapATAndUI() {
         Map<String, JwtClaims> claimsMap = new HashMap<String, JwtClaims>();
         claimsMap.put(Constants.TOKEN_TYPE_ACCESS_TOKEN, null);

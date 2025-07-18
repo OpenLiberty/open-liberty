@@ -1,20 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.jwk;
 
 public class KeyConstants {
     public static final String kid = "kid";
     public static final String x5t = "x5t"; //Thumprint
+    public static final String x5tS256 = "x5t#S256";
     public static final String alg = "alg";
     public static final String use = "use"; //optional
     public static final String kty = "kty"; //key type, required

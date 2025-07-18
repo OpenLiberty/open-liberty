@@ -26,6 +26,7 @@ import org.jose4j.keys.HmacKey;
 
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
@@ -106,9 +107,12 @@ public class JwsVerificationKeyHelper {
 
     Key retrievePublicKey(JsonWebStructure jws, String signatureAlgorithmFromJws) throws IOException, Exception {
         String kid = jws.getKeyIdHeaderValue();
-        String x5t = jws.getX509CertSha1ThumbprintHeaderValue();
+        // Support for 'x5t' header remains for interoperability purposes.
+        // If FIPS 140-3 is enabled, usage of the 'x5t' header for signature verification is disabled
+        String x5t = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? null : jws.getX509CertSha1ThumbprintHeaderValue();
+        String x5tS256 = jws.getX509CertSha256ThumbprintHeaderValue();
         JwKRetriever jwkRetriever = createJwkRetriever(signatureAlgorithmFromJws);
-        return jwkRetriever.getPublicKeyFromJwk(kid, x5t, "sig", false);
+        return jwkRetriever.getPublicKeyFromJwk(kid, x5t, x5tS256, "sig", false);
     }
 
     JwKRetriever createJwkRetriever(String signatureAlgorithmFromJws) throws Exception {

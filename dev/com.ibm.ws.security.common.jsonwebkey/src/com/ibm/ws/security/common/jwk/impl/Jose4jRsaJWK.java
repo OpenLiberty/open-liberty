@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -157,7 +157,13 @@ public class Jose4jRsaJWK extends RsaJsonWebKey implements JWK {
     /** {@inheritDoc} */
     @Override
     public String getKeyX5t() {
-        return getX509CertificateSha1Thumbprint(); // only x5t for now
+        return getX509CertificateSha1Thumbprint();
+    }
+
+    /** {@inheritDoc} */
+//    @Override
+    public String getKeyX5tS256() {
+        return getX509CertificateSha256Thumbprint();
     }
 
     /** {@inheritDoc} */

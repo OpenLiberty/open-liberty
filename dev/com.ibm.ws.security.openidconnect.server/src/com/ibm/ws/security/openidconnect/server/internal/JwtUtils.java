@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -124,12 +124,17 @@ public class JwtUtils {
     static Key getPublicKeyFromJsonWebStructure(JsonWebStructure jsonStruct, OidcServerConfig oidcServerConfig) {
         String alg = jsonStruct.getAlgorithmHeaderValue();
         String kid = jsonStruct.getKeyIdHeaderValue();
+        // Support for 'x5t' header remains for interoperability purposes.
+        // If FIPS 140-3 is enabled, usage of the 'x5t' header for signature verification is disabled
         String x5t = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? null : jsonStruct.getX509CertSha1ThumbprintHeaderValue();
+        String x5tS256 = jsonStruct.getX509CertSha256ThumbprintHeaderValue();
 
         Key publicKey = null;
         JSONWebKey jwk = oidcServerConfig.getJSONWebKey();
         if (jwk != null && alg.equals(jwk.getAlgorithm())) {
             if (kid != null && kid.equals(jwk.getKeyID())) {
+                publicKey = jwk.getPublicKey();
+            } else if (x5tS256 != null && x5tS256.equals(jwk.getKeyX5tS256())) {
                 publicKey = jwk.getPublicKey();
             } else if (x5t != null && x5t.equals(jwk.getKeyX5t())) {
                 publicKey = jwk.getPublicKey();
