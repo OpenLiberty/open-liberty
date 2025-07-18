@@ -147,7 +147,30 @@ public class MetricsApiOtelCollectorTest {
      * https://github.com/prometheus/docs/blob/main/content/docs/instrumenting/exposition_formats.md#text-format-details
      */
     public void getApiMetrics(String name, String type, String value) throws Exception {
-        String result = client.dumpMetrics();
+        String result = null;
+        int maxRetries = 10;
+        long waitTime = 2000; // 2 seconds
+        
+        for (int i = 0; i < maxRetries; i++) {
+            try {
+                result = client.dumpMetrics();
+                if (result != null && !result.trim().isEmpty()) {
+                    break; // Got valid response
+                }
+                Log.info(c, "getApiMetrics", "Metrics not ready, retrying... (" + (i+1) + "/" + maxRetries + ")");
+            } catch (Exception e) {
+                Log.info(c, "getApiMetrics", "HTTP request failed: " + e.getMessage() + ", retrying... (" + (i+1) + "/" + maxRetries + ")");
+            }
+            
+            Thread.sleep(waitTime);
+        }
+        
+        if (result == null || result.trim().isEmpty()) {
+            fail("No metrics data returned from collector after " + maxRetries + " retries");
+            return;
+        }
+        
+        // Previous logic
         List<String> splits = Arrays.asList(result.split("((?=# HELP))"));
         for (String s : splits) {
             if (s.contains(name)) {
