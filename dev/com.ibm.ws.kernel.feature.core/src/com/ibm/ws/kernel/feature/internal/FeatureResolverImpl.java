@@ -1110,7 +1110,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         Set<String> result = processCurrentPermutation(rootFeatures, preResolved, selectionContext);
 
         // if the first pass resulted in no conflicts return the results (optimistic)
-        if (selectionContext.getResult().getConflicts().isEmpty()) {
+        if (selectionContext.getResult().getConflicts().isEmpty() && selectionContext.getResult().getMissing().isEmpty()) {
             selectionContext.selectCurrentPermutation();
             return result;
         }
@@ -1121,7 +1121,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         // addition conflict.  That implies that a better solution may be available.
         // As long as there are more conflicts than the number of initial root conflicts
         // and there is a different permutation to try do another pass
-        while (selectionContext.currentHasMoreThanInitialBlockedCount() && selectionContext.popPermutation()) {
+        while ((selectionContext.currentHasMoreThanInitialBlockedCount() || selectionContext.currentHasMissing()) && selectionContext.popPermutation()) {
             result = processCurrentPermutation(rootFeatures, preResolved, selectionContext);
         }
 
@@ -1533,6 +1533,10 @@ public class FeatureResolverImpl implements FeatureResolver {
             return getBlockedCount() > _initialBlockedCount.get();
         }
 
+        boolean currentHasMissing() {
+            return !_current._result._missing.isEmpty();
+        }
+
         void setInitialRootBlockedCount() {
             // only set this once
             _initialBlockedCount.compareAndSet(-1, getBlockedCount());
@@ -1554,7 +1558,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         void checkForBestSolution() {
             // check if the current best (store as the last permutation) has more conflicts
             // than the current solution.
-            if (_permutations.getLast()._result.getConflicts().size() > _current._result.getConflicts().size()) {
+            if (_permutations.getLast()._result.getConflicts().size() > _current._result.getConflicts().size() || 
+                (_permutations.getLast()._result.getConflicts().size() == _current._result.getConflicts().size() && _permutations.getLast()._result.getMissing().size() > _current._result.getMissing().size())) {
                 // Replace the current best (stored as the last permutation)
                 _permutations.pollLast();
                 _permutations.addLast(_current);
