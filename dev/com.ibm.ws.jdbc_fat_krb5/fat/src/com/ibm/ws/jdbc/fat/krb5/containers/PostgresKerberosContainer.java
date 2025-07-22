@@ -33,7 +33,7 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
     private static final Class<?> c = PostgresKerberosContainer.class;
 
     private static final DockerImageName POSTGRES_KRB5 = ImageBuilder
-                    .build("postgres-krb5:17.0.0.1")
+                    .build("postgres-krb5:17.0.0.2")
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("postgres");
 
@@ -44,6 +44,7 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
     private static final String KEYTAB_FILE = "/etc/krb5.keytab";
     private static final String KERBEROS_TRACE = "/dev/stdout";
     private static final String AUTH_METHOD = "gss";
+    private static final String KERBEROS_PASSWORD = "ComplexPassword123";
 
     public PostgresKerberosContainer(Network network) {
         super(POSTGRES_KRB5);
@@ -67,6 +68,7 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
         withEnv("POSTGRES_HOST_AUTH_METHOD", AUTH_METHOD);
         withEnv("KRB5_KTNAME", KEYTAB_FILE);
         withEnv("KRB5_TRACE", KERBEROS_TRACE);
+        withEnv("KRB5_PASS", KERBEROS_PASSWORD);
 
         // Logging
         withLogConsumer(new SimpleLogConsumer(c, "postgre-krb5"));
@@ -129,6 +131,6 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
     }
 
     public String getKerberosPassword() {
-        return "password";
+        return KERBEROS_PASSWORD;
     }
 }

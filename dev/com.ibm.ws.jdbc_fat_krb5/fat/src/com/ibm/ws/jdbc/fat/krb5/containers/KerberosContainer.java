@@ -50,7 +50,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public static final String KRB5_REALM = "EXAMPLE.COM";
     public static final String KRB5_KDC_INTERNAL = "localhost";
     public static final String KRB5_KDC_EXTERNAL = "kerberos";
-    public static final String KRB5_PASS = "password";
+    public static final String KRB5_PASS = "ComplexPassword123";
 
     private static final DockerImageName KDC_JDBC_SERVER = ImageBuilder.build("kdc-jdbc-server:3.0.0.1").getDockerImageName();
 
