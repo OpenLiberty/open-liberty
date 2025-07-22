@@ -21,6 +21,8 @@
   <include location="../fatTestPorts.xml" />
   <variable name="onError" value="FAIL" />
 
+ <logging traceSpecification="*=info=enabled:io.openliberty.webcontainer*=all:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:GenericBNF=all:HTTPChannel=all:com.ibm.ws.http*=all:HTTPDispatcher=all:TCPChannel=all" maxFileSize="50" maxFiles="20" traceFormat="BASIC"/>
+
   <javaPermission className="java.lang.RuntimePermission" name="modifyThread" actions="*"/>
   <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" actions="*"/>
   <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks" actions="*"/>
