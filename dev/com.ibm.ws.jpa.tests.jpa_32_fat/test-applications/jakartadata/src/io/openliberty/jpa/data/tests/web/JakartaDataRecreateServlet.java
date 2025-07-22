@@ -52,6 +52,7 @@ import io.openliberty.jpa.data.tests.models.Annuity;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Box;
 import io.openliberty.jpa.data.tests.models.Business;
+import io.openliberty.jpa.data.tests.models.Business.Address;
 import io.openliberty.jpa.data.tests.models.City;
 import io.openliberty.jpa.data.tests.models.CityId;
 import io.openliberty.jpa.data.tests.models.Coordinate;
@@ -2372,6 +2373,54 @@ public class JakartaDataRecreateServlet extends FATServlet {
             throw e;
         }
     }
+
+    @Test
+    //@Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32185")
+    public void testOLGH32185() throws Exception {
+        deleteAllEntities(Business.class);
+
+        Business business1 = Business.of(43.1566f, -77.6109f, "Rochester", "NY", 14623, 123, "Main St", "N", "Acme Corp");
+        Business business2 = Business.of(43.1578f, -77.6110f, "Rochester", "NY", 14623, 456, "Broadway", "S", "Beta LLC");
+        Business business3 = Business.of(42.8864f, -78.8784f, "Buffalo", "NY", 14202, 789, "Elm St", "E", "Gamma Inc");
+
+        tx.begin();
+        em.persist(business1);
+        em.persist(business2);
+        em.persist(business3);
+        tx.commit();
+
+        String newName = "NewName";
+
+        /**Business.Location newLocation = new Business.Location(
+                new Business.Address("NewCity", "NS", 54321, 200, new Business.Street("NewStreet", "S")),
+                41.11111f,
+                -75.22222f
+        );**/
+
+        Address newAddress = new Address();
+        newAddress.city = "NewCity";
+        newAddress.state = "NS";
+        newAddress.zip = 54321;
+        newAddress.houseNum = 200;
+        newAddress.street = new Business.Street("NewStreet", "S");
+        newAddress.street = null;
+        Business.Location newLocation = new Business.Location(newAddress,
+                41.11111f,
+                -75.22222f
+        );
+       
+        tx.begin();
+        int updatedCount = em
+               // .createQuery("UPDATE Business b SET b.location = :location, b.name = :name WHERE b.id = :id")
+               .createQuery("UPDATE Business b SET b.location=?1, b.name=?2 WHERE b.id=?3") 
+               .setParameter(1, newLocation)
+                .setParameter(2, newName)
+                .setParameter(3, business1.id)
+                .executeUpdate();
+        tx.commit();
+        assertEquals(1, updatedCount);
+    }
+
 
     /**
      * Utility method to drop all entities from table.
