@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.KeyMatcher;
+
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Class representing a single HTTP header name.
@@ -75,7 +77,8 @@ public class HttpHeaderKeys extends HeaderKeys {
     /** Enumerated object for the HTTP header key CONTENT-LOCATION */
     public static final HttpHeaderKeys HDR_CONTENT_LOCATION = new HttpHeaderKeys("Content-Location");
     /** Enumerated object for the HTTP header key CONTENT-MD5 */
-    public static final HttpHeaderKeys HDR_CONTENT_MD5 = new HttpHeaderKeys("Content-MD5");
+    //public static final HttpHeaderKeys HDR_CONTENT_MD5 = new HttpHeaderKeys("Content-MD5");
+    public static final HttpHeaderKeys HDR_CONTENT_MD5 = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? new HttpHeaderKeys("Content-" + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256) : new HttpHeaderKeys("Content-" + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
     /** Enumerated object for the HTTP header key CONTENT-RANGE */
     public static final HttpHeaderKeys HDR_CONTENT_RANGE = new HttpHeaderKeys("Content-Range");
     /** Enumerated object for the HTTP header key DATE */
