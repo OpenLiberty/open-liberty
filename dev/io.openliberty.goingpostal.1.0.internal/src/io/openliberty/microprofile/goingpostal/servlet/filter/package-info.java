@@ -11,7 +11,7 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 @Version("1.0")
-@TraceOptions(traceGroup = "MPCLACKSOVERHEADFILTER", messageBundle = "com.ibm.ws.microprofile.goingpostal")
+@TraceOptions(traceGroup = "MPCLACKSOVERHEADFILTER", messageBundle = "com.openliberty.microprofile.goingpostal")
 package io.openliberty.microprofile.goingpostal.servlet.filter;
 
 import org.osgi.annotation.versioning.Version;
