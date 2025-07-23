@@ -3,7 +3,7 @@ symbolicName=io.openliberty.goingPostal-1.0.internal
 singleton=true
 visibility=private
 -features=io.openliberty.noShip-1.0
--bundles=io.openliberty.goingPostal.1.0.internal
+-bundles=io.openliberty.goingPostal.1.0.internal.jakarta
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
