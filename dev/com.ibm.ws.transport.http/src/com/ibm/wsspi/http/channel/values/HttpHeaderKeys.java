@@ -77,8 +77,12 @@ public class HttpHeaderKeys extends HeaderKeys {
     /** Enumerated object for the HTTP header key CONTENT-LOCATION */
     public static final HttpHeaderKeys HDR_CONTENT_LOCATION = new HttpHeaderKeys("Content-Location");
     /** Enumerated object for the HTTP header key CONTENT-MD5 */
+    //orig:
     //public static final HttpHeaderKeys HDR_CONTENT_MD5 = new HttpHeaderKeys("Content-MD5");
-    public static final HttpHeaderKeys HDR_CONTENT_MD5 = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? new HttpHeaderKeys("Content-" + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256) : new HttpHeaderKeys("Content-" + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
+    //proposal 1:
+    //public static final HttpHeaderKeys HDR_CONTENT_MD5 = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? new HttpHeaderKeys("Content-" + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256) : new HttpHeaderKeys("Content-" + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
+    //proposal 2:
+    public static final HttpHeaderKeys HDR_CONTENT_SHA256 = new HttpHeaderKeys("Content-" + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256);
     /** Enumerated object for the HTTP header key CONTENT-RANGE */
     public static final HttpHeaderKeys HDR_CONTENT_RANGE = new HttpHeaderKeys("Content-Range");
     /** Enumerated object for the HTTP header key DATE */
