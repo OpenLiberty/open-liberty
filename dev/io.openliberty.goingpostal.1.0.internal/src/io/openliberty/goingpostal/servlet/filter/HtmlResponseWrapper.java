@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,15 @@
 
 package io.openliberty.goingpostal.servlet.filter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Response Wrapper to capture the Servlet Response to allow for rewriting of the contents
@@ -35,7 +36,7 @@ public class HtmlResponseWrapper extends HttpServletResponseWrapper {
 
     @Override
     public ServletOutputStream getOutputStream() {
-        if (writer != null){
+        if (writer != null) {
             throw new IllegalStateException("Writer already exists for this response");
         }
 
@@ -45,21 +46,24 @@ public class HtmlResponseWrapper extends HttpServletResponseWrapper {
                 public void write(int b) throws IOException {
                     baos.write(b);
                 }
+
                 @Override
                 public void flush() throws IOException {
                     baos.flush();
                 }
+
                 @Override
                 public void close() throws IOException {
                     baos.close();
                 }
+
                 @Override
                 public boolean isReady() {
                     return false;
                 }
+
                 @Override
-                public void setWriteListener(WriteListener var1) {
-                }
+                public void setWriteListener(WriteListener var1) {}
             };
         }
 
@@ -68,7 +72,7 @@ public class HtmlResponseWrapper extends HttpServletResponseWrapper {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        if (outputStream != null){
+        if (outputStream != null) {
             throw new IllegalStateException("Output Stream already exists for this response.");
         }
 
