@@ -48,11 +48,15 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.data.tests.models.Account;
 import io.openliberty.jpa.data.tests.models.AccountId;
+import io.openliberty.jpa.data.tests.models.Address1;
 import io.openliberty.jpa.data.tests.models.Annuity;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Box;
 import io.openliberty.jpa.data.tests.models.Business;
 import io.openliberty.jpa.data.tests.models.Business.Address;
+import io.openliberty.jpa.data.tests.models.Business.Location;
+import io.openliberty.jpa.data.tests.models.Business.Street;
+import io.openliberty.jpa.data.tests.models.Business1;
 import io.openliberty.jpa.data.tests.models.City;
 import io.openliberty.jpa.data.tests.models.CityId;
 import io.openliberty.jpa.data.tests.models.Coordinate;
@@ -63,6 +67,7 @@ import io.openliberty.jpa.data.tests.models.ECEntity;
 import io.openliberty.jpa.data.tests.models.Item;
 import io.openliberty.jpa.data.tests.models.Line;
 import io.openliberty.jpa.data.tests.models.Line.Point;
+import io.openliberty.jpa.data.tests.models.Location1;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
 import io.openliberty.jpa.data.tests.models.Participant;
@@ -78,7 +83,9 @@ import io.openliberty.jpa.data.tests.models.RomanNumeral;
 import io.openliberty.jpa.data.tests.models.Segment;
 import io.openliberty.jpa.data.tests.models.ShippingAddress;
 import io.openliberty.jpa.data.tests.models.Store;
+import io.openliberty.jpa.data.tests.models.Street1;
 import io.openliberty.jpa.data.tests.models.StreetAddress;
+import io.openliberty.jpa.data.tests.models.TaxPayer;
 import io.openliberty.jpa.data.tests.models.Triangle;
 import io.openliberty.jpa.data.tests.models.Vehicle;
 import io.openliberty.jpa.data.tests.models.Door;
@@ -91,6 +98,7 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.UserTransaction;
@@ -2379,46 +2387,64 @@ public class JakartaDataRecreateServlet extends FATServlet {
     public void testOLGH32185() throws Exception {
         deleteAllEntities(Business.class);
 
-        Business business1 = Business.of(43.1566f, -77.6109f, "Rochester", "NY", 14623, 123, "Main St", "N", "Acme Corp");
-        Business business2 = Business.of(43.1578f, -77.6110f, "Rochester", "NY", 14623, 456, "Broadway", "S", "Beta LLC");
-        Business business3 = Business.of(42.8864f, -78.8784f, "Buffalo", "NY", 14202, 789, "Elm St", "E", "Gamma Inc");
+        //Business1 business1 = Business.of(43.1566f, -77.6109f, "Rochester", "NY", 14623, 123, "Main St", "N", "Acme Corp");
+        //Business business2 = Business.of(43.1578f, -77.6110f, "Rochester", "NY", 14623, 456, "Broadway", "S", "Beta LLC");
+        //Business business3 = Business.of(42.8864f, -78.8784f, "Buffalo", "NY", 14202, 789, "Elm St", "E", "Gamma Inc");
 
+        Business1 business = new Business1(10.12345f, 20.54321f, "OldCity", "OldState", 12345,
+                100, "OldStreet", "N", "OldName");
+
+        business.location = new Location1();
         tx.begin();
-        em.persist(business1);
-        em.persist(business2);
-        em.persist(business3);
+        em.persist(business);
         tx.commit();
-
+        
+        int businessId = business.id;
         String newName = "NewName";
 
-        /**Business.Location newLocation = new Business.Location(
-                new Business.Address("NewCity", "NS", 54321, 200, new Business.Street("NewStreet", "S")),
-                41.11111f,
-                -75.22222f
-        );**/
+        Street1 newStreet = new Street1("NewStreet", "S");
+        Address1 newAddress = new Address1("NewCity", "NewState", 54321, 200, newStreet);
+        Location1 newLocation = new Location1(newAddress, 30.11111f, 40.22222f);
 
-        Address newAddress = new Address();
-        newAddress.city = "NewCity";
-        newAddress.state = "NS";
-        newAddress.zip = 54321;
-        newAddress.houseNum = 200;
-        newAddress.street = new Business.Street("NewStreet", "S");
-        newAddress.street = null;
-        Business.Location newLocation = new Business.Location(newAddress,
-                41.11111f,
-                -75.22222f
-        );
-       
         tx.begin();
-        int updatedCount = em
-               // .createQuery("UPDATE Business b SET b.location = :location, b.name = :name WHERE b.id = :id")
-               .createQuery("UPDATE Business b SET b.location=?1, b.name=?2 WHERE b.id=?3") 
-               .setParameter(1, newLocation)
-                .setParameter(2, newName)
-                .setParameter(3, business1.id)
-                .executeUpdate();
+        Query updateQuery = em.createQuery(
+            "UPDATE Business1 b SET b.location = :loc, b.name = :name WHERE b.id = :id");
+
+        updateQuery.setParameter("loc", newLocation);
+        updateQuery.setParameter("name", newName);
+        updateQuery.setParameter("id", businessId);
+
+        int updatedCount = updateQuery.executeUpdate();
         tx.commit();
-        assertEquals(1, updatedCount);
+       
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32204")
+    public void testOLGH32204() throws Exception {
+        deleteAllEntities(TaxPayer.class);
+
+        AccountId account1 = new AccountId(123456789L, 111000000L);
+        AccountId account2 = new AccountId(987654321L, 222000000L);
+
+        TaxPayer tp1 = new TaxPayer(101L, TaxPayer.FilingStatus.Single, 0, 40000f, account1);
+        TaxPayer tp2 = new TaxPayer(102L, TaxPayer.FilingStatus.MarriedFilingJointly, 2, 60000f, account1);
+        TaxPayer tp3 = new TaxPayer(103L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 50000f, account2);
+
+        tx.begin();
+        em.persist(tp1);
+        em.persist(tp2);
+        em.persist(tp3);
+        tx.commit();
+
+        List<TaxPayer> result = em.createQuery(
+            "SELECT o FROM TaxPayer o WHERE (?1 MEMBER OF o.bankAccounts) ORDER BY o.income, o.ssn",
+            TaxPayer.class
+        ).setParameter(1, account1).getResultList();
+
+        assertEquals(2, result.size());
+        assertEquals(40000f, result.get(0).income, 0.01);
+        assertEquals(60000f, result.get(1).income, 0.01);
     }
 
 
