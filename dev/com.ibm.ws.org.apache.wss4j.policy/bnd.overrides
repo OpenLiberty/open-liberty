@@ -28,3 +28,10 @@ Import-Package: \
  org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
  * 
  
+ -includeresource: \
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/!META-INF/MANIFEST.MF,\
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/templates/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/schemas/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/*xml,\
+ org/apache/wss4j/policy=${bin}/org/apache/wss4j/policy
+ 

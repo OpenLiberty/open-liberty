@@ -32,6 +32,7 @@ import javax.xml.namespace.QName;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.security.policy.PolicyUtils;
+import org.apache.cxf.ws.security.policy.custom.DefaultAlgorithmSuiteLoader;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.principal.WSDerivedKeyTokenPrincipal;
 import org.apache.wss4j.dom.WSConstants;
@@ -71,6 +72,11 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
         for (AssertionInfo ai : ais) {
             AlgorithmSuite algorithmSuite = (AlgorithmSuite)ai.getAssertion();
             ai.setAsserted(true);
+            
+            //apply customization properties before validation
+            DefaultAlgorithmSuiteLoader.customize(algorithmSuite.getAlgorithmSuiteType(),
+                    parameters.getMessage());
+
 
             boolean valid = validatePolicy(ai, algorithmSuite, parameters.getResults().getResults());
             if (valid) {

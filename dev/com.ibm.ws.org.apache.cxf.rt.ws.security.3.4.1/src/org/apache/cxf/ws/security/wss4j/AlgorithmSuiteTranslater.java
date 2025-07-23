@@ -21,14 +21,16 @@ package org.apache.cxf.ws.security.wss4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.security.policy.PolicyUtils;
-import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.crypto.AlgorithmSuite;
 import org.apache.wss4j.common.ext.WSSecurityException;
+import org.apache.wss4j.dom.WSConstants;
 import org.apache.wss4j.dom.handler.RequestData;
 import org.apache.wss4j.policy.SPConstants;
 import org.apache.wss4j.policy.model.AbstractBinding;
@@ -46,6 +48,16 @@ import org.apache.wss4j.policy.model.SupportingTokens;
 // to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
 // If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public final class AlgorithmSuiteTranslater {
+    
+    private final Map<String, Object> customAlgSuiteProperties;
+
+    public AlgorithmSuiteTranslater() {
+        this.customAlgSuiteProperties = Collections.emptyMap();
+    }
+
+    public AlgorithmSuiteTranslater(Map<String, Object> customAlgorithmSuiteProperties) {
+        this.customAlgSuiteProperties = customAlgorithmSuiteProperties;
+    }
 
     public void translateAlgorithmSuites(AssertionInfoMap aim, RequestData data) throws WSSecurityException {
         if (aim == null) {
@@ -130,16 +142,14 @@ public final class AlgorithmSuiteTranslater {
                 algorithmSuite.addDigestAlgorithm(algorithmSuiteType.getDigest());
             }
 
-            algorithmSuite.addSignatureMethod(algorithmSuiteType.getAsymmetricSignature());
-            algorithmSuite.addSignatureMethod(algorithmSuiteType.getSymmetricSignature());
             algorithmSuite.addC14nAlgorithm(cxfAlgorithmSuite.getC14n().getValue());
 
             algorithmSuite.addTransformAlgorithm(cxfAlgorithmSuite.getC14n().getValue());
             algorithmSuite.addTransformAlgorithm(SPConstants.STRT10);
-            algorithmSuite.addTransformAlgorithm(WSS4JConstants.C14N_EXCL_OMIT_COMMENTS);
-            algorithmSuite.addTransformAlgorithm(WSS4JConstants.NS_XMLDSIG_ENVELOPED_SIGNATURE);
-            algorithmSuite.addTransformAlgorithm(WSS4JConstants.SWA_ATTACHMENT_CONTENT_SIG_TRANS);
-            algorithmSuite.addTransformAlgorithm(WSS4JConstants.SWA_ATTACHMENT_COMPLETE_SIG_TRANS);
+            algorithmSuite.addTransformAlgorithm(WSConstants.C14N_EXCL_OMIT_COMMENTS);
+            algorithmSuite.addTransformAlgorithm(WSConstants.NS_XMLDSIG_ENVELOPED_SIGNATURE);
+            algorithmSuite.addTransformAlgorithm(WSConstants.SWA_ATTACHMENT_CONTENT_SIG_TRANS);
+            algorithmSuite.addTransformAlgorithm(WSConstants.SWA_ATTACHMENT_COMPLETE_SIG_TRANS);
 
             algorithmSuite.addDerivedKeyAlgorithm(SPConstants.P_SHA1);
             algorithmSuite.addDerivedKeyAlgorithm(SPConstants.P_SHA1_L128);

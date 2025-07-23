@@ -104,6 +104,7 @@ instrument.classesIncludes: \
   com.ibm.ws.org.apache.wss4j.policy;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.dom;version=latest, \
+  com.ibm.ws.org.apache.wss4j.ws.security.policy.stax;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.stax;version=latest, \
   com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
   com.ibm.ws.org.ehcache.ehcache.107.3.8.1;version=latest, \

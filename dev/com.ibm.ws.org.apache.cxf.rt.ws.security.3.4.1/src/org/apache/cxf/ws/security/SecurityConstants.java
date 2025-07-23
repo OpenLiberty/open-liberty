@@ -202,7 +202,7 @@ public final class SecurityConstants extends org.apache.cxf.rt.security.Security
      * default instance that is used is the EHCacheReplayCache.
      */
     public static final String NONCE_CACHE_INSTANCE =
-        "ws-security.nonce.cache.instance";
+            "ws-security.nonce.cache.instance";
 
     /**
      * This holds a reference to a ReplayCache instance used to cache Timestamp Created Strings. The
@@ -406,6 +406,94 @@ public final class SecurityConstants extends org.apache.cxf.rt.security.Security
      */
     public static final String KERBEROS_CLIENT = "ws-security.kerberos.client";
 
+    /**
+     * Prefix of all constants meant to change customAlgSuite.
+     */
+    public static final String CUSTOM_ALG_SUITE_PREFIX = "ws-security.custom.alg.suite.";
+
+    /**
+     * Default value is: http://www.w3.org/2001/04/xmlenc#sha256
+     */
+    public static final String CUSTOM_ALG_SUITE_DIGEST_ALGORITHM = "ws-security.custom.alg.suite.digest.algorithm";
+
+    /**
+     * Default value is: http://www.w3.org/2009/xmlenc11#aes256-gcm
+     */
+    public static final String CUSTOM_ALG_SUITE_ENCRYPTION_ALGORITHM =
+        "ws-security.custom.alg.suite.encryption.algorithm";
+
+    /**
+     * Default value is: http://www.w3.org/2001/04/xmlenc#kw-aes256
+     */
+    public static final String CUSTOM_ALG_SUITE_SYMMETRIC_KEY_ENCRYPTION_ALGORITHM =
+        "ws-security.custom.alg.suite.symmetric.key.encryption.algorithm";
+
+    /**
+     * Default value is: http://www.w3.org/2001/04/xmlenc#rsa-1_5
+     */
+    public static final String CUSTOM_ALG_SUITE_ASYMMETRIC_KEY_ENCRYPTION_ALGORITHM =
+            "ws-security.custom.alg.suite.asymmetric.key.encryption.algorithm";
+
+    /**
+     * hDefault value is: ttp://schemas.xmlsoap.org/ws/2005/02/sc/dk/p_sha1
+     */
+    public static final String CUSTOM_ALG_SUITE_ENCRYPTION_KEY_DERIVATION =
+        "ws-security.custom.alg.suite.encryption.key.derivation";
+
+    /**
+     * Default value is: http://schemas.xmlsoap.org/ws/2005/02/sc/dk/p_sha1
+     */
+    public static final String CUSTOM_ALG_SUITE_SIGNATURE_KEY_DERIVATION =
+        "ws-security.custom.alg.suite.signature.key.derivation";
+
+    /**
+     * Default value is: http://www.w3.org/2000/09/xmldsig#hmac-sha1"
+     */
+    public static final String CUSTOM_ALG_SUITE_SYMMETRIC_SIGNATURE =
+        "ws-security.custom.alg.suite.symmetric.signature";
+
+    /**
+     * Default value is: http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+     */
+    public static final String CUSTOM_ALG_SUITE_ASYMMETRIC_SIGNATURE =
+        "ws-security.custom.alg.suite.asymmetric.signature";
+
+    /**
+     * Default value is: 256
+     */
+    public static final String CUSTOM_ALG_SUITE_ENCRYPTION_DERIVED_KEY_LENGTH =
+        "ws-security.custom.alg.suite.encryption.derived.key.length";
+
+    /**
+     * Default value is: 192
+     */
+    public static final String CUSTOM_ALG_SUITE_SIGNATURE_DERIVED_KEY_LENGTH =
+        "ws-security.custom.alg.suite.signature.derived.key.length";
+
+    /**
+     * Default value is: 256
+     */
+    public static final String CUSTOM_ALG_SUITE_MINIMUM_SYMMETRIC_KEY_LENGTH =
+        "ws-security.custom.alg.suite.minimum.symmetric.key.length";
+
+    /**
+     * Default value is: 256
+     */
+    public static final String CUSTOM_ALG_SUITE_MAXIMUM_SYMMETRIC_KEY_LENGTH =
+        "ws-security.custom.alg.suite.maximum.symmetric.key.length";
+
+    /**
+     * Default value is: 1024
+     */
+    public static final String CUSTOM_ALG_SUITE_MINIMUM_ASYMMETRIC_KEY_LENGTH =
+        "ws-security.custom.alg.suite.minimum.asymmetric.key.length";
+
+    /**
+     * Default value is: 4096
+     */
+    public static final String CUSTOM_ALG_SUITE_MAXIMUM_ASYMMETRIC_KEY_LENGTH =
+        "ws-security.custom.alg.suite.maximum.asymmetric.key.length";
+
     //
     // Internal tags
     //
@@ -432,7 +520,18 @@ public final class SecurityConstants extends org.apache.cxf.rt.security.Security
             KERBEROS_IS_USERNAME_IN_SERVICENAME_FORM, KERBEROS_REQUEST_CREDENTIAL_DELEGATION,
             POLICY_VALIDATOR_MAP, STORE_BYTES_IN_ATTACHMENT, USE_ATTACHMENT_ENCRYPTION_CONTENT_ONLY_TRANSFORM,
             SYMMETRIC_SIGNATURE_ALGORITHM, SECURITY_CONTEXT_CREATOR, SECURITY_TOKEN_LIFETIME,
-            DISABLE_REQ_CLIENT_CERT_CHECK, EXPAND_XOP_INCLUDE
+            DISABLE_REQ_CLIENT_CERT_CHECK, EXPAND_XOP_INCLUDE,
+            CUSTOM_ALG_SUITE_MAXIMUM_ASYMMETRIC_KEY_LENGTH,
+            CUSTOM_ALG_SUITE_MINIMUM_ASYMMETRIC_KEY_LENGTH,
+            CUSTOM_ALG_SUITE_MAXIMUM_SYMMETRIC_KEY_LENGTH,
+            CUSTOM_ALG_SUITE_MINIMUM_SYMMETRIC_KEY_LENGTH,
+            CUSTOM_ALG_SUITE_SIGNATURE_DERIVED_KEY_LENGTH,
+            CUSTOM_ALG_SUITE_ENCRYPTION_DERIVED_KEY_LENGTH,
+            CUSTOM_ALG_SUITE_SIGNATURE_KEY_DERIVATION,
+            CUSTOM_ALG_SUITE_ENCRYPTION_KEY_DERIVATION,
+            CUSTOM_ALG_SUITE_ASYMMETRIC_KEY_ENCRYPTION_ALGORITHM,
+            CUSTOM_ALG_SUITE_SYMMETRIC_KEY_ENCRYPTION_ALGORITHM,
+            CUSTOM_ALG_SUITE_ENCRYPTION_ALGORITHM, CUSTOM_ALG_SUITE_DIGEST_ALGORITHM
         }));
         for (String commonProperty : COMMON_PROPERTIES) {
             s.add(commonProperty);

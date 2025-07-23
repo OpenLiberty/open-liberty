@@ -36,6 +36,7 @@ import org.apache.cxf.rt.security.utils.SecurityUtils;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
+import org.apache.cxf.ws.security.tokenstore.TokenStoreException;
 import org.apache.cxf.ws.security.tokenstore.TokenStoreUtils;
 import org.apache.cxf.ws.security.wss4j.TokenStoreCallbackHandler;
 import org.apache.cxf.ws.security.wss4j.WSS4JUtils;
@@ -111,21 +112,27 @@ public class StaxSymmetricBindingHandler extends AbstractStaxBindingHandler {
         String asymSignatureAlgorithm =
             (String)getMessage().getContextualProperty(SecurityConstants.ASYMMETRIC_SIGNATURE_ALGORITHM);
         if (asymSignatureAlgorithm != null && sbinding.getAlgorithmSuite() != null) {
-            sbinding.getAlgorithmSuite().setAsymmetricSignature(asymSignatureAlgorithm);
+            sbinding.getAlgorithmSuite().getAlgorithmSuiteType().setAsymmetricSignature(asymSignatureAlgorithm);
         }
         String symSignatureAlgorithm =
             (String)getMessage().getContextualProperty(SecurityConstants.SYMMETRIC_SIGNATURE_ALGORITHM);
         if (symSignatureAlgorithm != null && sbinding.getAlgorithmSuite() != null) {
-            sbinding.getAlgorithmSuite().setSymmetricSignature(symSignatureAlgorithm);
+            sbinding.getAlgorithmSuite().getAlgorithmSuiteType().setSymmetricSignature(symSignatureAlgorithm);
         }
 
         // Set up CallbackHandler which wraps the configured Handler
         WSSSecurityProperties properties = getProperties();
-        TokenStoreCallbackHandler callbackHandler =
-            new TokenStoreCallbackHandler(
-                properties.getCallbackHandler(), TokenStoreUtils.getTokenStore(message)
-            );
-        properties.setCallbackHandler(callbackHandler);
+        // Set up CallbackHandler which wraps the configured Handler
+        try {
+            TokenStoreCallbackHandler callbackHandler =
+                new TokenStoreCallbackHandler(
+                    properties.getCallbackHandler(), TokenStoreUtils.getTokenStore(message)
+                );
+
+            properties.setCallbackHandler(callbackHandler);
+        } catch (TokenStoreException e) {
+            throw new Fault(e);
+        }
 
         if (sbinding.getProtectionOrder()
             == AbstractSymmetricAsymmetricBinding.ProtectionOrder.EncryptBeforeSigning) {
@@ -594,12 +601,11 @@ public class StaxSymmetricBindingHandler extends AbstractStaxBindingHandler {
 
         if (sigToken.getDerivedKeys() == DerivedKeys.RequireDerivedKeys) {
             properties.setSignatureAlgorithm(
-                   sbinding.getAlgorithmSuite().getSymmetricSignature());
+                   sbinding.getAlgorithmSuite().getAlgorithmSuiteType().getSymmetricSignature());
         }
     }
 
-    private String setupEncryptedKey(AbstractTokenWrapper wrapper, AbstractToken sigToken) throws WSSecurityException {
-
+    private String setupEncryptedKey(AbstractTokenWrapper wrapper, AbstractToken sigToken) throws WSSecurityException , TokenStoreException {
         Instant created = Instant.now();
         Instant expires = created.plusSeconds(WSS4JUtils.getSecurityTokenLifetime(message) / 1000L);
         SecurityToken tempTok =

@@ -88,12 +88,12 @@ public class StaxAsymmetricBindingHandler extends AbstractStaxBindingHandler {
         String asymSignatureAlgorithm =
             (String)getMessage().getContextualProperty(SecurityConstants.ASYMMETRIC_SIGNATURE_ALGORITHM);
         if (asymSignatureAlgorithm != null && abinding.getAlgorithmSuite() != null) {
-            abinding.getAlgorithmSuite().setAsymmetricSignature(asymSignatureAlgorithm);
+            abinding.getAlgorithmSuite().getAlgorithmSuiteType().setAsymmetricSignature(asymSignatureAlgorithm);
         }
         String symSignatureAlgorithm =
             (String)getMessage().getContextualProperty(SecurityConstants.SYMMETRIC_SIGNATURE_ALGORITHM);
         if (symSignatureAlgorithm != null && abinding.getAlgorithmSuite() != null) {
-            abinding.getAlgorithmSuite().setSymmetricSignature(symSignatureAlgorithm);
+            abinding.getAlgorithmSuite().getAlgorithmSuiteType().setSymmetricSignature(symSignatureAlgorithm);
         }
 
         if (abinding.getProtectionOrder()
@@ -451,7 +451,7 @@ public class StaxAsymmetricBindingHandler extends AbstractStaxBindingHandler {
 
         if (sigToken.getDerivedKeys() == DerivedKeys.RequireDerivedKeys) {
             properties.setSignatureAlgorithm(
-                   abinding.getAlgorithmSuite().getSymmetricSignature());
+                   abinding.getAlgorithmSuite().getAlgorithmSuiteType().getSymmetricSignature());
         }
     }
 

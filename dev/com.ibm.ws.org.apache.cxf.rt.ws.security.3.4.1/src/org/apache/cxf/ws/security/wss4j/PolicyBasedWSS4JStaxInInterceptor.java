@@ -55,6 +55,7 @@ import org.apache.wss4j.policy.model.AlgorithmSuite;
 import org.apache.wss4j.policy.stax.OperationPolicy;
 import org.apache.wss4j.policy.stax.enforcer.PolicyEnforcer;
 import org.apache.wss4j.policy.stax.enforcer.PolicyInputProcessor;
+import org.apache.wss4j.stax.ext.WSSConstants;
 import org.apache.wss4j.stax.ext.WSSSecurityProperties;
 import org.apache.wss4j.stax.impl.securityToken.HttpsSecurityTokenImpl;
 import org.apache.wss4j.stax.securityEvent.HttpsTokenSecurityEvent;
@@ -269,10 +270,10 @@ public class PolicyBasedWSS4JStaxInInterceptor extends WSS4JStaxInInterceptor {
                 for (AssertionInfo algorithmSuite : algorithmSuites) {
                     AlgorithmSuite algSuite = (AlgorithmSuite)algorithmSuite.getAssertion();
                     if (asymSignatureAlgorithm != null) {
-                        algSuite.setAsymmetricSignature(asymSignatureAlgorithm);
+                        algSuite.getAlgorithmSuiteType().setAsymmetricSignature(asymSignatureAlgorithm);
                     }
                     if (symSignatureAlgorithm != null) {
-                        algSuite.setSymmetricSignature(symSignatureAlgorithm);
+                        algSuite.getAlgorithmSuiteType().setSymmetricSignature(symSignatureAlgorithm);
                     }
                 }
             }
@@ -346,94 +347,94 @@ public class PolicyBasedWSS4JStaxInInterceptor extends WSS4JStaxInInterceptor {
     }
 
     private PolicyEnforcer createPolicyEnforcer(
-        EndpointInfo endpointInfo, SoapMessage msg
-    ) throws WSSPolicyException {
-        EffectivePolicy dispatchPolicy = null;
-        List<OperationPolicy> operationPolicies = new ArrayList<>();
-        Collection<BindingOperationInfo> bindingOperationInfos = endpointInfo.getBinding().getOperations();
-        for (Iterator<BindingOperationInfo> bindingOperationInfoIterator =
-                     bindingOperationInfos.iterator(); bindingOperationInfoIterator.hasNext();) {
-            BindingOperationInfo bindingOperationInfo = bindingOperationInfoIterator.next();
-            QName operationName = bindingOperationInfo.getName();
+                                                EndpointInfo endpointInfo, SoapMessage msg
+                                            ) throws WSSPolicyException {
+                                                EffectivePolicy dispatchPolicy = null;
+                                                List<OperationPolicy> operationPolicies = new ArrayList<>();
+                                                Collection<BindingOperationInfo> bindingOperationInfos = endpointInfo.getBinding().getOperations();
+                                                for (Iterator<BindingOperationInfo> bindingOperationInfoIterator =
+                                                             bindingOperationInfos.iterator(); bindingOperationInfoIterator.hasNext();) {
+                                                    BindingOperationInfo bindingOperationInfo = bindingOperationInfoIterator.next();
+                                                    QName operationName = bindingOperationInfo.getName();
 
-            // todo: I'm not sure what the effectivePolicy exactly contains,
-            // a) only the operation policy,
-            // or b) all policies for the service,
-            // or c) all policies which applies for the current operation.
-            // c) is that what we need for stax.
-            EffectivePolicy policy =
-                (EffectivePolicy)bindingOperationInfo.getProperty("policy-engine-info-serve-request");
-            //PolicyEngineImpl.POLICY_INFO_REQUEST_SERVER);
-            if (MessageUtils.isRequestor(msg)) {
-                policy =
-                    (EffectivePolicy)bindingOperationInfo.getProperty("policy-engine-info-client-response");
-                // Save the Dispatch Policy as it may be used on another BindingOperationInfo
-                if (policy != null
-                    && "http://cxf.apache.org/jaxws/dispatch".equals(operationName.getNamespaceURI())) {
-                    dispatchPolicy = policy;
-                }
-                if (bindingOperationInfo.getOutput() != null) {
-                    MessageInfo messageInfo = bindingOperationInfo.getOutput().getMessageInfo();
-                    operationName = messageInfo.getName();
-                    if (messageInfo.getMessagePartsNumber() > 0) {
-                        QName cn = messageInfo.getFirstMessagePart().getConcreteName();
-                        if (cn != null) {
-                            operationName = cn;
-                        }
-                    }
-                }
-            } else {
-                if (bindingOperationInfo.getInput() != null) {
-                    MessageInfo messageInfo = bindingOperationInfo.getInput().getMessageInfo();
-                    operationName = messageInfo.getName();
-                    if (messageInfo.getMessagePartsNumber() > 0) {
-                        QName cn = messageInfo.getFirstMessagePart().getConcreteName();
-                        if (cn != null) {
-                            operationName = cn;
-                        }
-                    }
-                }
-            }
+                                                    // todo: I'm not sure what the effectivePolicy exactly contains,
+                                                    // a) only the operation policy,
+                                                    // or b) all policies for the service,
+                                                    // or c) all policies which applies for the current operation.
+                                                    // c) is that what we need for stax.
+                                                    EffectivePolicy policy =
+                                                        (EffectivePolicy)bindingOperationInfo.getProperty("policy-engine-info-serve-request");
+                                                    //PolicyEngineImpl.POLICY_INFO_REQUEST_SERVER);
+                                                    if (MessageUtils.isRequestor(msg)) {
+                                                        policy =
+                                                            (EffectivePolicy)bindingOperationInfo.getProperty("policy-engine-info-client-response");
+                                                        // Save the Dispatch Policy as it may be used on another BindingOperationInfo
+                                                        if (policy != null
+                                                            && "http://cxf.apache.org/jaxws/dispatch".equals(operationName.getNamespaceURI())) {
+                                                            dispatchPolicy = policy;
+                                                        }
+                                                        if (bindingOperationInfo.getOutput() != null) {
+                                                            MessageInfo messageInfo = bindingOperationInfo.getOutput().getMessageInfo();
+                                                            operationName = messageInfo.getName();
+                                                            if (messageInfo.getMessagePartsNumber() > 0) {
+                                                                QName cn = messageInfo.getFirstMessagePart().getConcreteName();
+                                                                if (cn != null) {
+                                                                    operationName = cn;
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        if (bindingOperationInfo.getInput() != null) {
+                                                            MessageInfo messageInfo = bindingOperationInfo.getInput().getMessageInfo();
+                                                            operationName = messageInfo.getName();
+                                                            if (messageInfo.getMessagePartsNumber() > 0) {
+                                                                QName cn = messageInfo.getFirstMessagePart().getConcreteName();
+                                                                if (cn != null) {
+                                                                    operationName = cn;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
 
-            SoapOperationInfo soapOperationInfo = bindingOperationInfo.getExtensor(SoapOperationInfo.class);
-            if (soapOperationInfo != null && policy == null && dispatchPolicy != null) {
-                policy = dispatchPolicy;
-            }
+                                                    SoapOperationInfo soapOperationInfo = bindingOperationInfo.getExtensor(SoapOperationInfo.class);
+                                                    if (soapOperationInfo != null && policy == null && dispatchPolicy != null) {
+                                                        policy = dispatchPolicy;
+                                                    }
 
-            if (policy != null && soapOperationInfo != null) {
-                String soapNS;
-                BindingInfo bindingInfo = bindingOperationInfo.getBinding();
-                if (bindingInfo instanceof SoapBindingInfo) {
-                    soapNS = ((SoapBindingInfo)bindingInfo).getSoapVersion().getNamespace();
-                } else {
-                    //no idea what todo here...
-                    //most probably throw an exception:
-                    throw new IllegalArgumentException("BindingInfo is not an instance of SoapBindingInfo");
-                }
+                                                    if (policy != null && soapOperationInfo != null) {
+                                                        String soapNS;
+                                                        BindingInfo bindingInfo = bindingOperationInfo.getBinding();
+                                                        if (bindingInfo instanceof SoapBindingInfo) {
+                                                            soapNS = ((SoapBindingInfo)bindingInfo).getSoapVersion().getNamespace();
+                                                        } else {
+                                                            //no idea what todo here...
+                                                            //most probably throw an exception:
+                                                            throw new IllegalArgumentException("BindingInfo is not an instance of SoapBindingInfo");
+                                                        }
 
-                OperationPolicy operationPolicy = new OperationPolicy(operationName);
-                operationPolicy.setPolicy(policy.getPolicy());
-                operationPolicy.setOperationAction(soapOperationInfo.getAction());
-                operationPolicy.setSoapMessageVersionNamespace(soapNS);
+                                                        OperationPolicy operationPolicy = new OperationPolicy(operationName);
+                                                        operationPolicy.setPolicy(policy.getPolicy());
+                                                        operationPolicy.setOperationAction(soapOperationInfo.getAction());
+                                                        operationPolicy.setSoapMessageVersionNamespace(soapNS);
 
-                operationPolicies.add(operationPolicy);
-            }
-        }
+                                                        operationPolicies.add(operationPolicy);
+                                                    }
+                                                }
 
-        String soapAction = SoapActionInInterceptor.getSoapAction(msg);
-        if (soapAction == null) {
-            soapAction = "";
-        }
-
-        String actor = (String)msg.getContextualProperty(SecurityConstants.ACTOR);
-        final Collection<org.apache.cxf.message.Attachment> attachments = msg.getAttachments();
-        int attachmentCount = 0;
-        if (attachments != null && !attachments.isEmpty()) {
-            attachmentCount = attachments.size();
-        }
-        return new PolicyEnforcer(operationPolicies, soapAction, isRequestor(msg),
-                                  actor, attachmentCount,
-                                  new WSS4JPolicyAsserter(msg.get(AssertionInfoMap.class)));
-    }
+                                                String soapAction = SoapActionInInterceptor.getSoapAction(msg);
+                                                if (soapAction == null) {
+                                                    soapAction = "";
+                                                }
+                                                String actor = (String)msg.getContextualProperty(SecurityConstants.ACTOR);
+                                                final Collection<org.apache.cxf.message.Attachment> attachments = msg.getAttachments();
+                                                int attachmentCount = 0;
+                                                if (attachments != null && !attachments.isEmpty()) {
+                                                    attachmentCount = attachments.size();
+                                                }
+                                                return new PolicyEnforcer(operationPolicies, soapAction, isRequestor(msg),
+                                                                          actor, attachmentCount,
+                                                                          new WSS4JPolicyAsserter(msg.get(AssertionInfoMap.class)),
+                                                                          WSSConstants.NS_SOAP12.equals(msg.getVersion().getNamespace()));
+                                            }
 
 }
