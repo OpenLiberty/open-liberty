@@ -10,9 +10,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/transform.props
 
-Bundle-Name: GoingPostal Jakarta
-Bundle-SymbolicName: io.openliberty.goingPostal.1.0.internal.jakarta
-Bundle-Description: GoingPostal.1.0, version ${bVersion}; Jakarta Enabled
+Bundle-Name: MicroProfile OpenAPI
+Bundle-SymbolicName: io.openliberty.microprofile.openapi.2.0.internal
+Bundle-Description: MicroProfile OpenAPI 2.0, version ${bVersion}
 
