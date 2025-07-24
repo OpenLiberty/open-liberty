@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
@@ -30,6 +31,7 @@ import com.ibm.ws.jdbc.fat.krb5.rules.KerberosPlatformRule;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -43,6 +45,9 @@ public class PostgresKerberosTest extends FATServletClient {
     private static final Class<?> c = PostgresKerberosTest.class;
 
     public static final String APP_NAME = "krb5-pg-app";
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5.postgresql");
 
     @Server("com.ibm.ws.jdbc.fat.krb5.postgresql")
     @TestServlet(servlet = PgKerberosTestServlet.class, contextRoot = APP_NAME)
@@ -59,7 +64,7 @@ public class PostgresKerberosTest extends FATServletClient {
                                     .fullFATOnly());
 
     @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(postgresql).around(repeat);
+    public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(postgresql);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -79,6 +84,7 @@ public class PostgresKerberosTest extends FATServletClient {
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+        jvmOpts.add("-Dsun.security.jgss.debug=true");
 
         server.setJvmOptions(jvmOpts);
 

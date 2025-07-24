@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/PgKerberosTestServlet")
@@ -67,6 +68,7 @@ public class PgKerberosTestServlet extends FATServlet {
      * Get a connection from a javax.sql.ConnectionPoolDataSource
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void testKerberosBasicConnection() throws Exception {
         try (Connection con = krb5DataSource.getConnection()) {
             con.createStatement().execute("SELECT 1");
@@ -77,6 +79,7 @@ public class PgKerberosTestServlet extends FATServlet {
      * Get a connection from a javax.sql.XADataSource
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void testKerberosXAConnection() throws Exception {
         try (Connection con = krb5XADataSource.getConnection()) {
             con.createStatement().execute("SELECT 1");
@@ -87,6 +90,7 @@ public class PgKerberosTestServlet extends FATServlet {
      * Get a connection from a javax.sql.DataSource
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void testKerberosRegularConnection() throws Exception {
         try (Connection con = krb5RegularDs.getConnection()) {
             con.createStatement().execute("SELECT 1");
@@ -94,6 +98,7 @@ public class PgKerberosTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     @AllowedFFDC
     public void testInvalidPrincipal() throws Exception {
         try (Connection con = invalidPrincipalDs.getConnection()) {

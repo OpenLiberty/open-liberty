@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
@@ -45,6 +46,8 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.db2.web.DB2KerberosTestServlet;
@@ -60,6 +63,9 @@ public class DB2KerberosTest extends FATServletClient {
     public static final String APP_NAME = "krb5-db2-app";
 
     public static final DB2KerberosContainer db2 = new DB2KerberosContainer(FATSuite.network);
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5");
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(db2);
@@ -94,6 +100,7 @@ public class DB2KerberosTest extends FATServletClient {
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+        jvmOpts.add("-Dsun.security.jgss.debug=true"); // Hotspot/OpenJ9
 
         // TODO extract security files from container prior to server start
         // TODO delete security files from git
@@ -119,6 +126,7 @@ public class DB2KerberosTest extends FATServletClient {
      * Wait for a config update, and expect the getConnection test to work since the credential should be found in the ccache
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     @Mode(TestMode.FULL)
     public void testTicketCache() throws Exception {
         String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + KRB5_USER).toAbsolutePath().toString();
@@ -152,6 +160,7 @@ public class DB2KerberosTest extends FATServletClient {
      * Mimics testTicketCache, but using an expired cache to ensure a LoginException is thrown.
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.resource.ResourceException", "javax.security.auth.login.LoginException" })
     public void testTicketCacheExpired() throws Exception {
@@ -188,6 +197,7 @@ public class DB2KerberosTest extends FATServletClient {
      * set the keytab location to an invalid location to confirm that the supplied password actually gets used.
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     @Mode(TestMode.FULL)
     public void testBasicPassword() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
