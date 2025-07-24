@@ -36,6 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.utilities.io.Files;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * A bunch of utility functions, mainly used by {@link DefaultLocalPersistenceService} and
  * {@link FileBasedStateRepository} within this class.
@@ -153,7 +155,10 @@ final class FileUtils {
 
     private static MessageDigest getSha1Digest() {
         try {
-            return MessageDigest.getInstance("SHA-1");
+            // Liberty Change Start: Use SHA256 Message Digest giinstead of SHA-1 when FIPS 140-3 is enabled.
+            MessageDigest digest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1);
+            // Liberty Change End
+            return digest;
         } catch (NoSuchAlgorithmException e) {
             throw new AssertionError("All JDKs must have SHA-1");
         }
