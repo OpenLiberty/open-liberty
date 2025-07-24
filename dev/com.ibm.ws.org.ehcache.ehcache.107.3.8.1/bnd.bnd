@@ -19,4 +19,6 @@ ehcacheVersion=3.9.3
 -includeresource: \
  @${repo;org.ehcache:ehcache;${ehcacheVersion}}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 
--buildpath: org.ehcache:ehcache;version=${ehcacheVersion}
+-buildpath: org.ehcache:ehcache;version=${ehcacheVersion}, \
+  com.ibm.ws.org.slf4j.api;version=latest, \
+  com.ibm.ws.kernel.service;version=latest
