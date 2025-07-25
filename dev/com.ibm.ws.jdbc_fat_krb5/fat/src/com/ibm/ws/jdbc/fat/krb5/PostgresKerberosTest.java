@@ -64,7 +64,7 @@ public class PostgresKerberosTest extends FATServletClient {
                                     .fullFATOnly());
 
     @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(postgresql);
+    public static RuleChain chain = RuleChain.outerRule(skipJavaSemeruWithFipsEnabled).around(KerberosPlatformRule.instance()).around(postgresql).around(repeat);
 
     @BeforeClass
     public static void setUp() throws Exception {
