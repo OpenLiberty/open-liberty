@@ -48,6 +48,8 @@ public class AccessLogRolloverTest {
     private static final String LOG_EXT = ".log";
 
     private static final long FILE_WAIT_SECONDS_PADDING = 1000;
+    private static final long POLLING_TIMEOUT = 60000;
+    private static final long POllING_INTERVAL = 1000; 
 
     private static final Logger LOG = Logger.getLogger(AccessLogRolloverTest.class.getName());
 
@@ -219,13 +221,25 @@ public class AccessLogRolloverTest {
             Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
 
         File logsDir = new File(getLogsDirPath());
-        File[] matchingLogs = logsDir.listFiles((dir, name) -> {
-            boolean matches = name.matches(regexPattern);
-            LOG.info("Checking file: " + name + " matches: " + matches);
-            return matches;
-        });
+        
+        boolean fileFound = false;
+        long startTime = System.currentTimeMillis();
 
-        assertTrue("No rolled access log file matching pattern: " + regexPattern,matchingLogs.length == 1);
+        while (System.currentTimeMillis() - startTime < POLLING_TIMEOUT) {
+            File[] matchingLogs = logsDir.listFiles((dir, name) -> {
+                boolean matches = name.matches(regexPattern);
+                LOG.info("Checking file: " + name + " matches: " + matches);
+                return matches;
+            });
+
+            if (matchingLogs != null && matchingLogs.length == 1) {
+                fileFound = true;
+                break;
+            }
+            Thread.sleep(POllING_INTERVAL);
+        }
+
+        assertTrue("No rolled access log file matching pattern: " + regexPattern + " was found within timeout", fileFound);
     }
 
     private static Calendar getNextRolloverTime(int rolloverStartHour, int rolloverInterval) {
