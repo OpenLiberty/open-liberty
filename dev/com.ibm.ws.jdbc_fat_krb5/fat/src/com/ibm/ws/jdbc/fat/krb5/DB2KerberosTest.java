@@ -194,7 +194,6 @@ public class DB2KerberosTest extends FATServletClient {
      * set the keytab location to an invalid location to confirm that the supplied password actually gets used.
      */
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     @Mode(TestMode.FULL)
     public void testBasicPassword() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
