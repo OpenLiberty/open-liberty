@@ -23,8 +23,7 @@ Import-Package: \
     org.jboss.jandex;version="[2.4,4)",\
     *
 
-Export-Package: \
-	io.openliberty.goingpostal.servlet.filter
+Export-Package: io.openliberty.goingpostal.servlet.filter
 	
 
 -buildpath: \
