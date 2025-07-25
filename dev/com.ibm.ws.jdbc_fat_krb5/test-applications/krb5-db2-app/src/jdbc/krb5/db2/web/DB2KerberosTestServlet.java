@@ -40,7 +40,6 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/DB2KerberosTestServlet")
@@ -83,7 +82,6 @@ public class DB2KerberosTestServlet extends FATServlet {
      * should fail because the backend DB2 database has been configured to require Kerberos
      */
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     @AllowedFFDC
     public void testNonKerberosConnectionRejected() throws Exception {
         try (Connection con = noKrb5.getConnection()) {
@@ -97,7 +95,6 @@ public class DB2KerberosTestServlet extends FATServlet {
      * Get a connection with a javax.sql.ConnectionPoolDataSource
      */
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     public void testKerberosBasicConnection() throws Exception {
         try (Connection con = krb5DataSource.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
@@ -162,7 +159,6 @@ public class DB2KerberosTestServlet extends FATServlet {
      * Get a connection with a javax.sql.XADatasource
      */
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     public void testKerberosXAConnection() throws Exception {
         try (Connection con = krb5XADataSource.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
@@ -173,7 +169,6 @@ public class DB2KerberosTestServlet extends FATServlet {
      * Get a connection with a javax.sql.Datasource
      */
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     public void testKerberosRegularConnection() throws Exception {
         try (Connection con = regularDs.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
@@ -186,7 +181,6 @@ public class DB2KerberosTestServlet extends FATServlet {
      * configured in ibm-web-bnd.xml and therefore should be able to get a connection
      */
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     public void testReboundAuthAlias() throws Exception {
         try (Connection con = reboundAuth.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
@@ -233,7 +227,6 @@ public class DB2KerberosTestServlet extends FATServlet {
      * to prove that Subject reuse is working
      */
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     public void testConnectionReuse() throws Exception {
         String managedConn1 = null;
         String managedConn2 = null;
@@ -259,7 +252,6 @@ public class DB2KerberosTestServlet extends FATServlet {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipJavaSemeruWithFipsEnabledRule
     @ExpectedFFDC({ "javax.transaction.xa.XAException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testXARecovery() throws Throwable {
         initTable(xaRecoveryDs);
