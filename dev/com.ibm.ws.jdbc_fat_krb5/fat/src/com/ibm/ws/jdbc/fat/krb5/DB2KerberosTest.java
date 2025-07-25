@@ -64,11 +64,10 @@ public class DB2KerberosTest extends FATServletClient {
 
     public static final DB2KerberosContainer db2 = new DB2KerberosContainer(FATSuite.network);
 
-    @Rule
-    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5");
+    private static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5");
 
     @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(db2);
+    public static RuleChain chain = RuleChain.outerRule(skipJavaSemeruWithFipsEnabled).around(KerberosPlatformRule.instance()).around(db2);
 
     @Server("com.ibm.ws.jdbc.fat.krb5")
     @TestServlet(servlet = DB2KerberosTestServlet.class, contextRoot = APP_NAME)
