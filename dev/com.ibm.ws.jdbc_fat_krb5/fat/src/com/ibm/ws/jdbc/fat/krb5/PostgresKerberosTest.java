@@ -46,8 +46,7 @@ public class PostgresKerberosTest extends FATServletClient {
 
     public static final String APP_NAME = "krb5-pg-app";
 
-    @Rule
-    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5.postgresql");
+    private static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5.postgresql");
 
     @Server("com.ibm.ws.jdbc.fat.krb5.postgresql")
     @TestServlet(servlet = PgKerberosTestServlet.class, contextRoot = APP_NAME)
