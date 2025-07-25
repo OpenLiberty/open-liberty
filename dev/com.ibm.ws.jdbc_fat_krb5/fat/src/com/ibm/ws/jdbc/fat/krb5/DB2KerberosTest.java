@@ -125,7 +125,6 @@ public class DB2KerberosTest extends FATServletClient {
      * Wait for a config update, and expect the getConnection test to work since the credential should be found in the ccache
      */
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     @Mode(TestMode.FULL)
     public void testTicketCache() throws Exception {
         String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + KRB5_USER).toAbsolutePath().toString();
