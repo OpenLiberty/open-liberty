@@ -158,7 +158,6 @@ public class DB2KerberosTest extends FATServletClient {
      * Mimics testTicketCache, but using an expired cache to ensure a LoginException is thrown.
      */
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.resource.ResourceException", "javax.security.auth.login.LoginException" })
     public void testTicketCacheExpired() throws Exception {
