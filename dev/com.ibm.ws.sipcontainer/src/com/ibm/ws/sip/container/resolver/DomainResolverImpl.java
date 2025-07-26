@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sip.resolver.DomainResolver;
 import com.ibm.websphere.sip.resolver.DomainResolverListener;
 import com.ibm.websphere.sip.resolver.exception.SipURIResolveException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.sip.container.internal.SipContainerComponent;
 import com.ibm.ws.sip.container.properties.PropertiesStore;
 import com.ibm.ws.sip.container.util.SipUtil;
@@ -45,6 +46,7 @@ import com.ibm.ws.sip.properties.SipPropertiesMap;
 import com.ibm.ws.sip.stack.internalapi.NaptrRequestListener;
 import com.ibm.ws.sip.stack.internalapi.SipStackDomainResolver;
 import com.ibm.ws.sip.stack.transaction.SIPTransactionConstants;
+import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.sip.channel.resolver.SIPUri;
 import com.ibm.wsspi.sip.channel.resolver.SipURILookup;
 import com.ibm.wsspi.sip.channel.resolver.SipURILookupException;
@@ -70,7 +72,9 @@ public class DomainResolverImpl implements DomainResolver, SipStackDomainResolve
 	private boolean _naptrAutoResolve = false;
 	private NettyFramework m_nettyfw;
 	private CHFWBundle m_chfw;
-	private boolean _useNetty = false;
+	private boolean useNetty = false;
+
+	private static final String USE_NETTY = "useNettyTransport";
 
 	/**
 	 * DS method to activate this component.
@@ -83,6 +87,15 @@ public class DomainResolverImpl implements DomainResolver, SipStackDomainResolve
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 			Tr.debug(tc, "DomainResolverImpl activated", properties);
 		PropertiesStore.getInstance().getProperties().updateProperties(properties);
+		useNetty = (!ProductInfo.getBetaEdition())?false:MetatypeUtils.parseBoolean(
+			"domainResolver", USE_NETTY, properties.get(USE_NETTY), true);
+		if (c_logger.isTraceDebugEnabled() && useNetty) {
+			c_logger.traceDebug("DomainResolverImpl activate: useNetty=true");
+		}
+		if (c_logger.isTraceDebugEnabled() && ProductInfo.getBetaEdition() && !useNetty) {
+			//log when beta=true but useNetty=false
+			c_logger.traceDebug("DomainResolverImpl activate: useNetty=false");
+		}
 		init();
 	}
 
@@ -233,8 +246,7 @@ public class DomainResolverImpl implements DomainResolver, SipStackDomainResolve
 			dsProps.put(CoreProperties.SIP_RFC3263_ADD_TTL, addTTL);
 			dsProps.put(CoreProperties.SIP_DNS_QUERY_TIMEOUT, queryTimeoutDuration);
 
-			_useNetty = SipContainerComponent.useNetty();
-		    if (_useNetty) {
+		    if (useNetty) {
 		        if (m_nettyfw == null) {
 		            throw new RuntimeException("NettyFramework service was null!");
 		        }
@@ -454,7 +466,7 @@ public class DomainResolverImpl implements DomainResolver, SipStackDomainResolve
 	
 	
     private SipURILookup getSipURILookup(SipURILookupCallbackImpl callback, SIPUri uri) {
-        if (_useNetty) {
+        if (useNetty) {
             return com.ibm.ws.sip.channel.resolver.impl.netty.SipResolverService.getInstance(callback, uri);
         } else {
             return com.ibm.ws.sip.channel.resolver.impl.chfw.SipResolverService.getInstance(callback, uri);

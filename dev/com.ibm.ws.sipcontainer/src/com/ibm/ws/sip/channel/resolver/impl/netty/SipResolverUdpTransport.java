@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2021 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -104,7 +104,8 @@ class SipResolverUdpTransport implements SipResolverTransport {
             try {
                 Map<String, Object> options = new HashMap<String, Object>();
                 options.put(ConfigConstants.EXTERNAL_NAME, this.CHAINNAME);
-                bootstrap = _framework.createUDPBootstrapOutbound(options);
+                // bootstrap = _framework.createUDPBootstrapOutbound(options);
+                bootstrap = _framework.createUDPBootstrap(options);
                 _writeState = WRITE_STATE_DISCONNECTED;
                 _readState = READ_STATE_DISCONNECTED;
                 reConnectAllowed = true;
@@ -212,7 +213,18 @@ class SipResolverUdpTransport implements SipResolverTransport {
 
             /** open the listener socket */
             try {
-                _framework.startOutbound(bootstrap, "*", 0, f -> {
+                // _framework.startOutbound(bootstrap, "*", 0, f -> {
+                //     if (f.isCancelled() || !f.isSuccess()) {
+                //         if (c_logger.isWarnEnabled()) {
+                //             c_logger.warn("Resolver channel exception during connect: " + f.cause().getMessage());
+                //         }
+                //         destroy((Exception) f.cause());
+                //     } else {
+                //         channel = f.channel();
+                //         ready();
+                //     }
+                // });
+                _framework.start(bootstrap, "*", 0, f -> {
                     if (f.isCancelled() || !f.isSuccess()) {
                         if (c_logger.isWarnEnabled()) {
                             c_logger.warn("Resolver channel exception during connect: " + f.cause().getMessage());

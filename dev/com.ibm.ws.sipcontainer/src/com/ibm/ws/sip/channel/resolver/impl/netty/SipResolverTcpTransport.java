@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -719,8 +719,8 @@ class SipResolverTcpTransport implements SipResolverTransport {
                 parent.init(ch);
             }
             ChannelPipeline pipeline = ch.pipeline();
-            pipeline.addLast("writeTimeoutHandler", new WriteTimeoutHandler(WRITE_TIMEOUT, TimeUnit.MILLISECONDS));
-            pipeline.addLast("readTimeoutHandler", new ReadTimeoutHandler(READ_TIMEOUT, TimeUnit.MILLISECONDS));
+            // pipeline.addLast("writeTimeoutHandler", new WriteTimeoutHandler(WRITE_TIMEOUT, TimeUnit.MILLISECONDS));
+            // pipeline.addLast("readTimeoutHandler", new ReadTimeoutHandler(READ_TIMEOUT, TimeUnit.MILLISECONDS));
             pipeline.addLast(CHAINNAME, new SipResolverTcpTransportHandler());
         }
     }
