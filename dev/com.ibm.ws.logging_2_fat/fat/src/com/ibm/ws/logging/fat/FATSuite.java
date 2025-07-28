@@ -23,7 +23,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @SuiteClasses({
                 FfdcCleanupTest.class,
-                TimeBasedLogRolloverTest.class
+                TimeBasedLogRolloverTest.class,
+                MessageTraceFileNameTimedRolloverTest.class
 })
 
 public class FATSuite {
