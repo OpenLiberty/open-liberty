@@ -508,7 +508,7 @@ public class CryptoUtils {
      * Check the provider name exist instead of the provider class for securityUtility command.
      *
      */
-    static boolean isIBMJCEPlusFIPSProviderAvailable() {
+    public static boolean isIBMJCEPlusFIPSProviderAvailable() {
         return (Security.getProvider(IBMJCE_PLUS_FIPS_NAME) != null);
     }
 
@@ -516,7 +516,7 @@ public class CryptoUtils {
      * Check the provider name exist instead of the provider class for securityUtility command.
      *
      */
-    static boolean isOpenJCEPlusFIPSProviderAvailable() {
+    public static boolean isOpenJCEPlusFIPSProviderAvailable() {
         return (Security.getProvider(OPENJCE_PLUS_FIPS_NAME) != null);
     }
 
