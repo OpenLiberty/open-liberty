@@ -128,6 +128,12 @@ public class TimeoutHandler extends ChannelDuplexHandler{
                 }
             
         }
+
+        @Override
+        public void channelInactive(ChannelHandlerContext context) throws Exception{
+            cancel();
+            super.channelInactive(context);
+        }
     
         @Override
         public void handlerRemoved(ChannelHandlerContext context) throws Exception {
@@ -137,6 +143,7 @@ public class TimeoutHandler extends ChannelDuplexHandler{
     
         @Override
         public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
+            
             if(getProtocol(context) == ProtocolName.HTTP2 && !streamOnly){
                 if(phase == Phase.H2_IDLE && h2InactivityTimeout>0){
                     arm(context, Phase.H2_IDLE);
@@ -217,12 +224,17 @@ public class TimeoutHandler extends ChannelDuplexHandler{
         private void arm(ChannelHandlerContext context, Phase newPhase){
             int timeout = timeoutForPhase(newPhase);
             if(timeout <=0){
+                cancel();
                 phase = Phase.OFF;
                 return;
             }
-            cancel();
+            ScheduledFuture<?> previous = currentTimeout;
             phase = newPhase;
             currentTimeout = context.executor().schedule(() -> onTimeout(context), timeout, TimeUnit.MILLISECONDS);
+
+            if(previous != null){
+                previous.cancel(true);
+            }
         }
     
     
@@ -254,6 +266,7 @@ public class TimeoutHandler extends ChannelDuplexHandler{
                     if (firstRequest && !readRetried) {
                         readRetried = true;
                         arm(context, Phase.READ);
+                       
                         return;
                     }
                     if(firstRequest){
