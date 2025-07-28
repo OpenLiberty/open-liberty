@@ -12,6 +12,6 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/transform.props
 
-Bundle-Name: MicroProfile OpenAPI Jakarta
+Bundle-Name: Going Postal Jakarta
 Bundle-SymbolicName: io.openliberty.goingpostal.1.0.internal.jakarta
-Bundle-Description: MicroProfile OpenAPI 2.0, version ${bVersion}; Jakarta Enabled
+Bundle-Description: Going Postal 1.0, version ${bVersion}; Jakarta Enabled

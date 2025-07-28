@@ -1,7 +1,9 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.goingPostal-1.0
 singleton=true
--bundles=io.openliberty.goingPostal.1.0.internal;
+-features=io.openliberty.noShip-1.0
+-bundles=io.openliberty.goingPostal.1.0.internal.jakarta;
+kind=noship
 kind=ga
-edition=core
+edition=full
 WLP-Activation-Type: parallel
