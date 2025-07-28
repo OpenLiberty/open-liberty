@@ -23,24 +23,23 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class HeaderFilter implements Filter {
-    /**
-     * Filters out specific requests and takes the appropriate action for each
-     *
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
-     */
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-
-        if (resp instanceof HttpServletResponse) {
+        System.out.println("Header Filter is running.");
+        if (req instanceof HttpServletRequest && resp instanceof HttpServletResponse) {
+            System.out.println("HttpServletResponse.");
             HttpServletResponse httpServletResp = (HttpServletResponse) resp;
             httpServletResp.setHeader("X-Clacks-Overhead", "GNU Terry Pratchett");
-            chain.doFilter(req, resp);
-        } else {
+            System.out.println("Headers set.");
             chain.doFilter(req, resp);
         }
+        chain.doFilter(req, resp);
+
     }
 
     @Override
