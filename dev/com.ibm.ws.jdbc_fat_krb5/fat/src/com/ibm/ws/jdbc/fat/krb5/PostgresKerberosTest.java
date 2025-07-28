@@ -20,7 +20,6 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
@@ -39,6 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.pg.web.PgKerberosTestServlet;
 
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 @RunWith(FATRunner.class)
 public class PostgresKerberosTest extends FATServletClient {
 
@@ -46,7 +46,7 @@ public class PostgresKerberosTest extends FATServletClient {
 
     public static final String APP_NAME = "krb5-pg-app";
 
-    private static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5.postgresql");
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5.postgresql");
 
     @Server("com.ibm.ws.jdbc.fat.krb5.postgresql")
     @TestServlet(servlet = PgKerberosTestServlet.class, contextRoot = APP_NAME)
