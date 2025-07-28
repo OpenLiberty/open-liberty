@@ -18,10 +18,14 @@ configurations {
 }
 
 dependencies {
-  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
-               'org.apache.httpcomponents:httpcore:4.1.2',
-               project(':io.openliberty.org.apache.commons.codec'),
-               project(':com.ibm.ws.security.spnego.fat.common')
+    requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2'
+    requiredLibs 'org.apache.httpcomponents:httpcore:4.1.2'
+    requiredLibs(project(':io.openliberty.org.apache.commons.codec')){
+        transitive = false
+    }
+    requiredLibs(project(':com.ibm.ws.security.spnego.fat.common')){
+        transitive = false
+    }
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

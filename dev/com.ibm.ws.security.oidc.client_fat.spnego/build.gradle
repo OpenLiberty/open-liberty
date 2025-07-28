@@ -12,25 +12,39 @@
  *******************************************************************************/
 
 dependencies {
-  requiredLibs project(':com.ibm.ws.com.meterware.httpunit.1.7'),
-               project(':com.ibm.ws.security.jaas.common'),
-               project(':com.ibm.ws.security.oauth.oidc_fat.common'),
-               'jtidy:jtidy:4aug2000r7-dev',
-               'org.apache.sshd:sshd-common:2.12.1',
-               'org.apache.sshd:sshd-core:2.12.1',
-               'org.apache.sshd:sshd-scp:2.12.1',
-               'net.sourceforge.htmlunit:htmlunit:2.44.0',
-               'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
-               'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
-               'rhino:js:1.6R5',
-               'xalan:xalan:2.7.2',
-               'org.brotli:dec:0.1.2',
-               project(':io.openliberty.org.apache.xercesImpl'),
-               project(':io.openliberty.org.apache.commons.codec'), // 1.15 (was 1.4)
-               'org.apache.httpcomponents:httpclient:4.1.2',
-               'org.apache.httpcomponents:httpcore:4.1.2',
-               project(':com.ibm.ws.org.apache.commons.lang3'), // 3.8 (was ????)
-               project(':com.ibm.ws.security.spnego.fat.common')
+    requiredLibs (project(':com.ibm.ws.com.meterware.httpunit.1.7')){
+        transitive = false
+    }
+    requiredLibs (project(':com.ibm.ws.security.jaas.common')){
+        transitive = false 
+    }
+    requiredLibs (project(':com.ibm.ws.security.oauth.oidc_fat.common')){
+        transitive = false
+    }
+    requiredLibs 'jtidy:jtidy:4aug2000r7-dev'
+    requiredLibs 'org.apache.sshd:sshd-common:2.12.1'
+    requiredLibs 'org.apache.sshd:sshd-core:2.12.1'
+    requiredLibs 'org.apache.sshd:sshd-scp:2.12.1'
+    requiredLibs 'net.sourceforge.htmlunit:htmlunit:2.44.0'
+    requiredLibs 'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0'
+    requiredLibs 'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0'
+    requiredLibs'rhino:js:1.6R5'
+    requiredLibs 'xalan:xalan:2.7.2'
+    requiredLibs'org.brotli:dec:0.1.2'
+    requiredLibs (project(':io.openliberty.org.apache.xercesImpl')){
+        transitive = false
+    }
+    requiredLibs (project(':io.openliberty.org.apache.commons.codec')){// 1.15 (was 1.4)
+        transitive = false
+    }
+    requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2'
+    requiredLibs 'org.apache.httpcomponents:httpcore:4.1.2'
+    requiredLibs (project(':com.ibm.ws.org.apache.commons.lang3')){ // 3.8 (was ????)
+        transitive = false
+    }
+    requiredLibs (project(':com.ibm.ws.security.spnego.fat.common')){
+        transitive = false
+    }
 }
 
 configurations {
