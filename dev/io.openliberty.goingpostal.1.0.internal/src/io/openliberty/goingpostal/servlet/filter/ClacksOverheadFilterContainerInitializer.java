@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.goingpostal.servlet.filter;
+package io.openliberty.goingpostal.servlet.filter;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
@@ -36,7 +36,7 @@ public class ClacksOverheadFilterContainerInitializer implements ServletContaine
         //if (tc.isDebugEnabled()) {
         //    Tr.debug(tc, "Enable TelemetryServletFilter");
         //}
-        FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.microprofile.goingpostal.servlet.filter.ClacksOverheadFilter",
+        FilterRegistration.Dynamic filterRegistration = sc.addFilter("io.openliberty.goingpostal.servlet.filter.ClacksOverheadFilter",
                                                                      ClacksOverheadFilter.class);
         filterRegistration.addMappingForUrlPatterns(null, true, "/*");
         filterRegistration.setAsyncSupported(true);

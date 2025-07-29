@@ -13,5 +13,5 @@
 -include= ~../cnf/resources/bnd/transform.props
 
 Bundle-Name: Going Postal Jakarta
-Bundle-SymbolicName: io.openliberty.goingpostal.1.0.internal.jakarta
+Bundle-SymbolicName: io.openliberty.goingPostal.1.0.internal.jakarta
 Bundle-Description: Going Postal 1.0, version ${bVersion}; Jakarta Enabled

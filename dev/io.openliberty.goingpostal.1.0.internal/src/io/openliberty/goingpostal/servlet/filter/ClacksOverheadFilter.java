@@ -13,7 +13,7 @@
 /**
  * @version 1.0
  */
-package io.openliberty.microprofile.goingpostal.servlet.filter;
+package io.openliberty.goingpostal.servlet.filter;
 
 import java.io.IOException;
 
@@ -23,6 +23,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ClacksOverheadFilter implements Filter {
@@ -33,8 +34,9 @@ public class ClacksOverheadFilter implements Filter {
      */
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+        System.out.println("Filter is active");
 
-        if (resp instanceof HttpServletResponse) {
+        if (req instanceof HttpServletRequest && resp instanceof HttpServletResponse) {
             HttpServletResponse httpServletResp = (HttpServletResponse) resp;
             httpServletResp.setHeader("X-Clacks-Overhead", "GNU Terry Pratchett");
             chain.doFilter(req, resp);

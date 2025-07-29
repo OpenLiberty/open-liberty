@@ -11,6 +11,6 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 @Version("1.0")
-package io.openliberty.microprofile.goingpostal.servlet.filter;
+package io.openliberty.goingpostal.servlet.filter;
 
 import org.osgi.annotation.versioning.Version;
