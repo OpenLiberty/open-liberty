@@ -10,11 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-configurations {
-  requiredLibs {
-    transitive = false
-  }
-}
+
 dependencies {
     requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2'
     requiredLibs 'org.apache.httpcomponents:httpcore:4.1.2'

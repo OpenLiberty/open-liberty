@@ -13,10 +13,12 @@
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
-configurations {
-  derbyJar
-  mongoJavaDriver
-}
+/*
+*configurations {
+*  derbyJar
+*  mongoJavaDriver
+*}
+*/
 
 dependencies {
   derbyJar        'org.apache.derby:derby:10.11.1.1'
