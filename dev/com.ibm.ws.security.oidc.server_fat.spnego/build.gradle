@@ -16,9 +16,6 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 configurations {
   derbyJar
   mongoJavaDriver
-  requiredLibs {
-    transitive = false
-  }
 }
 
 dependencies {
