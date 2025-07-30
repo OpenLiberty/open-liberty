@@ -22,13 +22,12 @@ Import-Package: \
     javax.xml.bind.annotation;version=!,\
     org.jboss.jandex;version="[2.4,4)",\
     *
-    
+
 -dsannotations: \
-  io.openliberty.goingpostal.servlet.filter.HeaderFilterContainerInitializer
-  
+  io.openliberty.goingpostal.servlet.filter.ClacksOverheadFilterContainerInitializer
+
 Export-Package: \
 	io.openliberty.goingpostal.servlet.filter	
-
 
 -buildpath: \
     com.ibm.websphere.appserver.spi.httptransport;version=latest,\
