@@ -1439,7 +1439,8 @@ public class DataJPATestServlet extends FATServlet {
                                                  .map(t -> t.ssn)
                                                  .collect(Collectors.toList()));
 
-        // TODO enable once issue #31558 is fixed in EclipseLink
+        // TODO enable once issue #31558 and
+        // TODO subsequently #32263 is fixed in EclipseLink
         if (false)
             assertIterableEquals(List.of(789007890L),
                                  taxpayers.findByBankAccountsNotEmpty()

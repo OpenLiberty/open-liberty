@@ -78,6 +78,7 @@ import io.openliberty.jpa.data.tests.models.Segment;
 import io.openliberty.jpa.data.tests.models.ShippingAddress;
 import io.openliberty.jpa.data.tests.models.Store;
 import io.openliberty.jpa.data.tests.models.StreetAddress;
+import io.openliberty.jpa.data.tests.models.TaxPayer;
 import io.openliberty.jpa.data.tests.models.Triangle;
 import io.openliberty.jpa.data.tests.models.Vehicle;
 import io.openliberty.jpa.data.tests.models.Door;
@@ -2371,6 +2372,33 @@ public class JakartaDataRecreateServlet extends FATServlet {
             tx.rollback();
             throw e;
         }
+    }
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32204")
+    public void testOLGH32204() throws Exception {
+        deleteAllEntities(TaxPayer.class);
+
+        AccountId account1 = new AccountId(123456789L, 111000000L);
+        AccountId account2 = new AccountId(987654321L, 222000000L);
+
+        TaxPayer tp1 = new TaxPayer(101L, TaxPayer.FilingStatus.Single, 0, 40000f, account1);
+        TaxPayer tp2 = new TaxPayer(102L, TaxPayer.FilingStatus.MarriedFilingJointly, 2, 60000f, account1);
+        TaxPayer tp3 = new TaxPayer(103L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 50000f, account2);
+
+        tx.begin();
+        em.persist(tp1);
+        em.persist(tp2);
+        em.persist(tp3);
+        tx.commit();
+
+        List<TaxPayer> result = em.createQuery(
+            "SELECT o FROM TaxPayer o WHERE (?1 MEMBER OF o.bankAccounts) ORDER BY o.income, o.ssn",
+            TaxPayer.class
+        ).setParameter(1, account1).getResultList();
+
+        assertEquals(2, result.size());
+        assertEquals(40000f, result.get(0).income, 0.01);
+        assertEquals(60000f, result.get(1).income, 0.01);
     }
 
     /**

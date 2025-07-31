@@ -93,11 +93,6 @@ public class ProtocolHelper {
         } else {
             String protocol = protocols[0];
             if (!validatedProtocols.contains(protocol)) {
-//                 TODO: uncomment the following once SSL tests have been updated for FIPS 140-3
-//                if (fips140_3Enabled && !allowedProtocols.contains(protocol)) {
-//                    Tr.error(tc, "ssl.protocol.error.CWPKI0832E", protocol);
-//                    throw new SSLException("Protocol provided is not appropriate for a protocol list.");
-//                }
                 checkProtocol(protocol);
             }
         }

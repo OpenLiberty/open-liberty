@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -386,7 +387,7 @@ public class MergeProcessorImpl implements MergeProcessor {
                 return null;
             }
 
-            HashMap<String, T> newMap = new HashMap<>();
+            Map<String, T> newMap = new LinkedHashMap<>(); //We must preserve the order of components as the order is human visible.
             for (Entry<String, T> entry : componentMap.entrySet()) {
                 String key = entry.getKey();
                 newMap.put(documentNameProcessor.createUniqueName(nameType, key, entry.getValue()), entry.getValue());
@@ -499,7 +500,7 @@ public class MergeProcessorImpl implements MergeProcessor {
                 removeContextRoot(server, contextRoot);
             }
 
-            Map<String, PathItem> newPathItems = new HashMap<>();
+            Map<String, PathItem> newPathItems = new LinkedHashMap<>(); //We must preserve the order of path items as the order is human visible.
             for (Entry<String, PathItem> entry : pathItems.entrySet()) {
                 PathItem pathItem = entry.getValue();
 

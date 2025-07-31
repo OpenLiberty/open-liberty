@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import org.eclipse.equinox.region.Region;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -38,8 +37,9 @@ import org.osgi.framework.Version;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.common.crypto.CryptoUtils;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 public class BundleFactory extends ManifestFactory {
     private static final TraceComponent tc = Tr.register(BundleFactory.class);
     private static final String EXTRAS_SHA_HEADER = "IBM-Extras-SHA";
@@ -221,6 +221,8 @@ public class BundleFactory extends ManifestFactory {
             } catch (NoSuchAlgorithmException e) {
                 // The preferred algorithm may be unavailable during server checkpoint.
                 // Default to an available algorithm for checkpoint/restore.
+                // FIPS 140-3: Algorithm assessment complete; no changes required.
+                // SHA-1 is only used if SHA-256 cannot be found. FIPS 140-3 enabled JVM will always have SHA-256 available.
                 try {
                     return MessageDigest.getInstance(shaAlgorithm = SHA_ALGORITHM_DEFAULT);
                 } catch (NoSuchAlgorithmException e2) {

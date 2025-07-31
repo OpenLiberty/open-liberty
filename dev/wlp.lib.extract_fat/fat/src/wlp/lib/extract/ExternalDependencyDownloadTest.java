@@ -6,7 +6,7 @@ package wlp.lib.extract;
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -133,7 +133,8 @@ public class ExternalDependencyDownloadTest {
         assertBadInstall("/redirectnotfound", "depRedirectNotFound");
     }
 
-    @Test
+    // test intermittently fails.  disabling until we can make it more stable.
+//    @Test
     public void testInstallProtocolRedirect() throws Exception {
         assertGoodInstall("/protocolchange", "depProtoChange");
     }

@@ -37,12 +37,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.util.UUID;
 
+import io.openliberty.data.internal.AttributeConstraint;
 import io.openliberty.data.internal.persistence.cdi.RepositoryProducer;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.data.Order;
@@ -234,6 +236,24 @@ public class Util {
     }
 
     /**
+     * Returns names of all Query by Method Name constraint keywords that are
+     * supported for collection attributes. This is used in error reporting
+     * to display which keywords are valid.
+     *
+     * @return names of all constraints that are supported for collection attributes.
+     */
+    @Trivial
+    static Set<String> constraintsThatSupportCollections() {
+        Set<String> supported = new TreeSet<>();
+        for (AttributeConstraint c : AttributeConstraint.values())
+            if (c.supportsCollections() && c.lengthWithinMethodName() > 0) {
+                String name = c.name();
+                supported.add(name);
+            }
+        return supported;
+    }
+
+    /**
      * Identifies whether a method is annotated with a Jakarta Data annotation
      * that performs and operation, such as Query, Find, or Save. This method is
      * for use by error reporting only, so it does not need to be very efficient.
@@ -299,8 +319,8 @@ public class Util {
                         .lifeCycleAnnoTypes(producer.stateful());
 
         return annoClasses.stream() //
-                   .map(Class::getSimpleName) //
-                   .collect(Collectors.joining(", ", "[", "]"));
+                        .map(Class::getSimpleName) //
+                        .collect(Collectors.joining(", ", "[", "]"));
     }
 
     /**
@@ -368,8 +388,8 @@ public class Util {
                         .operationAnnoTypes(producer.stateful());
 
         return annoClasses.stream() //
-                           .map(Class::getSimpleName) //
-                           .collect(Collectors.joining(", ", "[", "]"));
+                        .map(Class::getSimpleName) //
+                        .collect(Collectors.joining(", ", "[", "]"));
     }
 
     /**
@@ -451,8 +471,8 @@ public class Util {
                         .resourceAccessorTypes(producer.stateful());
 
         return types.stream() //
-                    .map(Class::getSimpleName) //
-                    .collect(Collectors.joining(", ", "[", "]"));
+                        .map(Class::getSimpleName) //
+                        .collect(Collectors.joining(", ", "[", "]"));
     }
 
     /**

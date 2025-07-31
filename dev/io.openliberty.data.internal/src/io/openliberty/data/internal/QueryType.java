@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.version;
+package io.openliberty.data.internal;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 

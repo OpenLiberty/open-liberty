@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,10 @@ public class FeatureManifestFile extends UpdatedFile {
         String id = n.getAttributes().getNamedItem("id") == null ? null : n.getAttributes().getNamedItem("id").getNodeValue();
         long size = n.getAttributes().getNamedItem("size") == null ? null : Long.parseLong(n.getAttributes().getNamedItem("size").getNodeValue());
         String date = n.getAttributes().getNamedItem("date") == null ? null : n.getAttributes().getNamedItem("date").getNodeValue();
+
+        // FIPS 140-3: Algorithm assessment complete; no changes required.
+        // MD5 is used for file comparison / checksums which isn't a cryptographic use case
+        // We can't update the hashing algorithm used here because Ifix/ESA's only provide MD5 checksums
         String hash = n.getAttributes().getNamedItem("hash") == null ? n.getAttributes().getNamedItem("MD5hash") == null ? null : n.getAttributes().getNamedItem("MD5hash").getNodeValue() : n.getAttributes().getNamedItem("hash").getNodeValue();
         String symbolicName = n.getAttributes().getNamedItem("symbolicName") == null ? null : n.getAttributes().getNamedItem("symbolicName").getNodeValue();
         String version = n.getAttributes().getNamedItem("version") == null ? null : n.getAttributes().getNamedItem("version").getNodeValue();

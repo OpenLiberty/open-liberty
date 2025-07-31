@@ -7,7 +7,6 @@ wasliberty-aws-docker-remote/docker/library/mongo:6.0.6
 wasliberty-aws-docker-remote/docker/library/postgres:17
 wasliberty-aws-docker-remote/docker/library/postgres:17-alpine
 wasliberty-aws-docker-remote/docker/library/python:3.11.6
-wasliberty-docker-remote/ibmcom/cloudant-developer:2.0.1
 wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23-full-faststart
 wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23-slim-faststart
 wasliberty-ghcr-docker-remote/testcontainers/ryuk:0.12.0
@@ -37,7 +36,6 @@ wasliberty-infrastructure-docker/seleniarm/standalone-chromium:4.8.3
 wasliberty-infrastructure-docker/selenium/standalone-chrome:4.8.3
 wasliberty-infrastructure-docker/zachhein/krb5-server:0.2
 wasliberty-infrastructure-docker/zachhein/ldap-server:0.5
-wasliberty-internal-docker-local/openliberty/testcontainers/cloudant-dev:2.0.1
 wasliberty-internal-docker-local/openliberty/testcontainers/couchdb-ssl:3.0.0.1
 wasliberty-internal-docker-local/openliberty/testcontainers/db2-krb5:12.1.1.0
 wasliberty-internal-docker-local/openliberty/testcontainers/db2-ssl:12.1.1.0

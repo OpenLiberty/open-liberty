@@ -31,11 +31,13 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.data.internal.AttributeConstraint;
+import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
-import io.openliberty.data.internal.version.QueryType;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Is;
+import io.openliberty.data.repository.IgnoreCase;
+import io.openliberty.data.repository.Is.Op;
 import io.openliberty.data.repository.function.AbsoluteValue;
 import io.openliberty.data.repository.function.CharCount;
 import io.openliberty.data.repository.function.ElementCount;
@@ -50,11 +52,25 @@ import io.openliberty.data.repository.update.SubtractFrom;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
+import jakarta.data.constraint.AtLeast;
+import jakarta.data.constraint.AtMost;
+import jakarta.data.constraint.Between;
+import jakarta.data.constraint.Constraint;
+import jakarta.data.constraint.EqualTo;
+import jakarta.data.constraint.GreaterThan;
+import jakarta.data.constraint.In;
+import jakarta.data.constraint.LessThan;
+import jakarta.data.constraint.NotBetween;
+import jakarta.data.constraint.NotEqualTo;
+import jakarta.data.constraint.NotLike;
+import jakarta.data.constraint.NotNull;
+import jakarta.data.constraint.Null;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.Is;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Select;
@@ -159,31 +175,36 @@ public class Data_1_1 implements DataVersionCompatibility {
     public StringBuilder appendConstraint(StringBuilder q,
                                           String o_,
                                           String attrName,
-                                          Object constraint,
+                                          AttributeConstraint constraint,
                                           int qp,
                                           boolean isCollection,
                                           Annotation[] annos) {
         StringBuilder attributeExpr = new StringBuilder();
 
-        Is.Op comparison = (Is.Op) constraint;
         List<Annotation> functionAnnos = new ArrayList<>();
+        boolean ignoreCase = false;
         for (int a = annos.length - 1; a >= 0; a--) {
-            String annoPackage = annos[a].annotationType().getPackageName();
-            if (FUNCTION_ANNO_PACKAGE.equals(annoPackage)) {
-                functionAnnos.add(annos[a]);
-                String functionType = annos[a] instanceof Extract //
-                                ? ((Extract) annos[a]).value().name() //
-                                : annos[a] instanceof Rounded //
-                                                ? ((Rounded) annos[a]).value().name() //
-                                                : annos[a].annotationType().getSimpleName();
-                String functionCall = FUNCTION_CALLS.get(functionType);
-                attributeExpr.append(functionCall);
+            if (annos[a] instanceof IgnoreCase) {
+                ignoreCase = true;
+            } else {
+                String annoPackage = annos[a].annotationType().getPackageName();
+                if (FUNCTION_ANNO_PACKAGE.equals(annoPackage)) {
+                    functionAnnos.add(annos[a]);
+                    String functionType = annos[a] instanceof Extract //
+                                    ? ((Extract) annos[a]).value().name() //
+                                    : annos[a] instanceof Rounded //
+                                                    ? ((Rounded) annos[a]).value().name() //
+                                                    : annos[a].annotationType().getSimpleName();
+                    String functionCall = FUNCTION_CALLS.get(functionType);
+                    attributeExpr.append(functionCall);
+                }
             }
         }
 
-        Is.Op baseOp = comparison.base();
-        boolean ignoreCase = comparison.ignoreCase();
-        boolean negated = comparison.isNegative();
+        boolean negated = constraint.isNegative();
+        AttributeConstraint baseConstraint = negated //
+                        ? constraint.negate() //
+                        : constraint;
 
         if (ignoreCase)
             attributeExpr.append("LOWER(");
@@ -205,40 +226,58 @@ public class Data_1_1 implements DataVersionCompatibility {
 
         if (isCollection)
             if (ignoreCase ||
-                baseOp != Is.Op.Equal) // TODO also have an operation for collection containing?
-                throw new UnsupportedOperationException("The " + comparison.name() +
+                baseConstraint != AttributeConstraint.Equal) // TODO also have an operation for collection containing?
+                throw new UnsupportedOperationException("The " + constraint.constraintName() +
                                                         " constraint that is applied to entity attribute " +
                                                         attrName +
                                                         " is not supported for collection attributes."); // TODO NLS (future)
 
-        switch (baseOp) {
+        switch (baseConstraint) {
             case Equal:
-                q.append(attributeExpr).append(negated ? "<>" : '=');
-                appendParam(q, ignoreCase, qp);
-                break;
             case GreaterThan:
-                q.append(attributeExpr).append('>');
+            case GreaterThanEqual:
+            case LessThan:
+            case LessThanEqual:
+                q.append(attributeExpr).append(constraint.operator());
                 appendParam(q, ignoreCase, qp);
                 break;
-            case GreaterThanEqual:
-                q.append(attributeExpr).append(">=");
+            case Between:
+                q.append(attributeExpr).append(constraint.operator());
                 appendParam(q, ignoreCase, qp);
+                q.append(" AND ");
+                appendParam(q, ignoreCase, qp + 1);
                 break;
             case In:
                 if (ignoreCase)
                     throw new UnsupportedOperationException(); // should be unreachable
+                q.append(attributeExpr).append(constraint.operator());
+                appendParam(q, ignoreCase, qp);
+                break;
+            // TODO 1.1: escape characters and custom wildcards
+            case Like:
+                q.append(attributeExpr).append(constraint.operator());
+                appendParam(q, ignoreCase, qp);
+                break;
+            case Null:
+                q.append(attributeExpr).append(constraint.operator());
+                break;
+            case Contains:
                 q.append(attributeExpr) //
                                 .append(negated ? " NOT" : "") //
-                                .append(" IN ");
-                appendParam(q, ignoreCase, qp);
+                                .append(" LIKE CONCAT('%', ");
+                appendParam(q, ignoreCase, qp).append(", '%')");
                 break;
-            case LessThan:
-                q.append(attributeExpr).append('<');
-                appendParam(q, ignoreCase, qp);
+            case EndsWith:
+                q.append(attributeExpr) //
+                                .append(negated ? " NOT" : "") //
+                                .append(" LIKE CONCAT('%', ");
+                appendParam(q, ignoreCase, qp).append(')');
                 break;
-            case LessThanEqual:
-                q.append(attributeExpr).append("<=");
-                appendParam(q, ignoreCase, qp);
+            case StartsWith:
+                q.append(attributeExpr) //
+                                .append(negated ? " NOT" : "") //
+                                .append(" LIKE CONCAT(");
+                appendParam(q, ignoreCase, qp).append(", '%')");
                 break;
             // TODO operation for collection containing?
             //case ???:
@@ -246,32 +285,8 @@ public class Data_1_1 implements DataVersionCompatibility {
             //                    .append(negated ? " NOT" : "") //
             //                    .append(" MEMBER OF ").append(attributeExpr);
             //    break;
-            case Like:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT" : "") //
-                                .append(" LIKE ");
-                appendParam(q, ignoreCase, qp);
-                break;
-            case Prefixed:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT" : "") //
-                                .append(" LIKE CONCAT(");
-                appendParam(q, ignoreCase, qp).append(", '%')");
-                break;
-            case Substringed:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT" : "") //
-                                .append(" LIKE CONCAT('%', ");
-                appendParam(q, ignoreCase, qp).append(", '%')");
-                break;
-            case Suffixed:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT" : "") //
-                                .append(" LIKE CONCAT('%', ");
-                appendParam(q, ignoreCase, qp).append(')');
-                break;
             default:
-                throw new UnsupportedOperationException(comparison.name());
+                throw new UnsupportedOperationException(constraint.constraintName());
         }
 
         return q;
@@ -365,15 +380,16 @@ public class Data_1_1 implements DataVersionCompatibility {
                                   Class<?> paramType,
                                   Annotation[] paramAnnos,
                                   String[] attrNames,
-                                  Object[] constraints, // TODO 1.1: Class<?>[]
+                                  AttributeConstraint[] constraints,
                                   char[] updateOps,
                                   int qpNext) {
         int qpOriginal = qpNext;
 
         for (Annotation anno : paramAnnos)
             if (anno instanceof Is) {
-                constraints[p] = ((Is) anno).value();
-                qpNext++;
+                constraints[p] = toAttributeConstraint(((Is) anno).value());
+            } else if (anno instanceof io.openliberty.data.repository.Is) {
+                constraints[p] = toAttributeConstraint(((io.openliberty.data.repository.Is) anno).value());
             } else if (anno instanceof Assign) {
                 attrNames[p] = ((Assign) anno).value();
                 updateOps[p] = '=';
@@ -396,14 +412,25 @@ public class Data_1_1 implements DataVersionCompatibility {
                 qpNext++;
             }
 
-        if (qpNext == qpOriginal) { // no annotation indicating a constraint or update
+        if (Constraint.class.isAssignableFrom(paramType)) {
+            if (constraints[p] == null)
+                constraints[p] = toAttributeConstraint(paramType);
+
+            // TODO 1.1 implement handling of Constraint, check for collisions,
+            // and merge with subsequent code
+        }
+
+        if (qpNext == qpOriginal) {
+            if (constraints[p] == null)
+                constraints[p] = AttributeConstraint.Equal;
+
+            // no annotation indicating a constraint or update
             if (false) { // TODO 1.1 check if paramType is a Constraint
                 // qpNext increment will vary by Constraint subtype
                 // TODO 1.1: if Constraint.class and generated upfront,
                 // qpNext = PARAM_CONSTRAINT_DEFERRED;
             } else {
-                constraints[p] = Is.Op.Equal;
-                qpNext++;
+                qpNext += constraints[p].numMethodParams();
             }
         } else if (qpNext - qpOriginal > 1) {
             // TODO possibly allow a redundant Constraint that matches the Is annotation.
@@ -478,5 +505,64 @@ public class Data_1_1 implements DataVersionCompatibility {
     @Trivial
     public Set<Class<?>> specialParamTypes() {
         return SPECIAL_PARAM_TYPES;
+    }
+
+    /**
+     * Convert a constraint subtype to its AttributeConstraint representation.
+     *
+     * @param type subtype of Constraint.
+     * @return AttributeConstraint representation.
+     */
+    private static final AttributeConstraint toAttributeConstraint(Class<?> type) {
+        AttributeConstraint constraint;
+        if (AtLeast.class.equals(type))
+            constraint = AttributeConstraint.GreaterThanEqual;
+        else if (AtMost.class.equals(type))
+            constraint = AttributeConstraint.LessThanEqual;
+        else if (Between.class.equals(type))
+            constraint = AttributeConstraint.Between;
+        else if (EqualTo.class.equals(type))
+            constraint = AttributeConstraint.Equal;
+        else if (GreaterThan.class.equals(type))
+            constraint = AttributeConstraint.GreaterThan;
+        else if (In.class.equals(type))
+            constraint = AttributeConstraint.In;
+        else if (LessThan.class.equals(type))
+            constraint = AttributeConstraint.LessThan;
+        else if (NotBetween.class.equals(type))
+            constraint = AttributeConstraint.NotBetween;
+        else if (NotEqualTo.class.equals(type))
+            constraint = AttributeConstraint.Not;
+        else if (NotLike.class.equals(type))
+            constraint = AttributeConstraint.NotLike;
+        else if (NotNull.class.equals(type))
+            constraint = AttributeConstraint.NotNull;
+        else if (Null.class.equals(type))
+            constraint = AttributeConstraint.Null;
+        else
+            throw new UnsupportedOperationException("Constraint: " + type.getName()); // TODO NLS
+
+        return constraint;
+    }
+
+    private static final AttributeConstraint toAttributeConstraint(Op op) {
+        return switch (op) {
+            case Equal -> AttributeConstraint.Equal;
+            case GreaterThan -> AttributeConstraint.GreaterThan;
+            case GreaterThanEqual -> AttributeConstraint.GreaterThanEqual;
+            case In -> AttributeConstraint.In;
+            case LessThan -> AttributeConstraint.LessThan;
+            case LessThanEqual -> AttributeConstraint.LessThanEqual;
+            case Like -> AttributeConstraint.Like;
+            case Not -> AttributeConstraint.Not;
+            case NotIn -> AttributeConstraint.NotIn;
+            case NotLike -> AttributeConstraint.NotLike;
+            case NotPrefixed -> AttributeConstraint.NotStartsWith;
+            case NotSubstringed -> AttributeConstraint.NotContains;
+            case NotSuffixed -> AttributeConstraint.NotEndsWith;
+            case Prefixed -> AttributeConstraint.StartsWith;
+            case Substringed -> AttributeConstraint.Contains;
+            case Suffixed -> AttributeConstraint.EndsWith;
+        };
     }
 }

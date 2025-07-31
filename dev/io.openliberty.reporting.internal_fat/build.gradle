@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,8 +44,8 @@ addRequiredLibraries {
 }
 
 dependencies {
-  requiredLibs 'org.glassfish:javax.json:1.1'
-  requiredLibs 'org.apache.commons:commons-lang3:3.14.0'
+  requiredLibs project(':com.ibm.ws.org.glassfish.json.1.1')
+  requiredLibs project(':com.ibm.ws.org.apache.commons.lang3')
   yasson 'org.eclipse:yasson:1.0.8'
   jsonbapi 'javax.json.bind:javax.json.bind-api:1.0'
 }

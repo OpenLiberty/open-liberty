@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -439,11 +439,13 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Adding alias \"" + alias + "\" to truststore \"" + tsFile + "\".");
                     wsks.setCertificateEntry(alias, chain[chain.length - 1]);
-                    String shaDigest = KeyStoreManager.getInstance().generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1, chain[chain.length - 1]);
-
-                    issueMessage("ssl.signer.add.to.local.truststore.CWPKI0308I", new Object[] { alias, tsFile, shaDigest }, "CWPKI0308I: Adding signer alias \"" + alias
-                                                                                                                             + "\" to local keystore \"" + tsFile
-                                                                                                                             + "\" with the following SHA digest: " + shaDigest);
+                    // FIPS 140-3: Replaced deprecated algorithm with modern, FIPS compliant equivalent: SHA-1 to SHA-256.
+                    String messageDigestAlgorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
+                    String shaDigest = KeyStoreManager.getInstance().generateDigest(messageDigestAlgorithm, chain[chain.length - 1]);
+                    String defaultMsg = "CWPKI0308I: Adding signer alias \"" + alias + "\" to local keystore \"" + tsFile + "\" with the following "
+                                        + messageDigestAlgorithm + " digest: " + shaDigest;
+                    issueMessage("ssl.signer.add.to.local.truststore.CWPKI0308I", new Object[] { alias, tsFile, shaDigest, messageDigestAlgorithm },
+                                 defaultMsg);
 
                     //Certificate is set on the truststore now clear the caches, if the file monitor is on let it handle the change.
                     String trigger = wsks.getTrigger();

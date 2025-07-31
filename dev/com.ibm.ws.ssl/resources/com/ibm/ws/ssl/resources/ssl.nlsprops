@@ -312,7 +312,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: The following local keys
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=This message is for informational purposes only.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=No action is required.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: The system is adding signer alias {0} to local keystore {1} with the following SHA digest: {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: The system is adding signer alias {0} to local keystore {1} with the following {3} digest: {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=This message is for informational purposes only.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=No action is required.
 # -------------------------------------------------------------------------------------------------

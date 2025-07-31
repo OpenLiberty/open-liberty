@@ -12,22 +12,22 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
-import static io.openliberty.data.internal.persistence.Condition.IgnoreCase;
-import static io.openliberty.data.internal.persistence.Condition.Not;
+import static io.openliberty.data.internal.AttributeConstraint.IgnoreCase;
+import static io.openliberty.data.internal.AttributeConstraint.Not;
+import static io.openliberty.data.internal.QueryType.COUNT;
+import static io.openliberty.data.internal.QueryType.EXISTS;
+import static io.openliberty.data.internal.QueryType.FIND;
+import static io.openliberty.data.internal.QueryType.FIND_AND_DELETE;
+import static io.openliberty.data.internal.QueryType.INSERT;
+import static io.openliberty.data.internal.QueryType.LC_DELETE;
+import static io.openliberty.data.internal.QueryType.LC_UPDATE;
+import static io.openliberty.data.internal.QueryType.LC_UPDATE_RET_ENTITY;
+import static io.openliberty.data.internal.QueryType.QM_DELETE;
+import static io.openliberty.data.internal.QueryType.QM_UPDATE;
+import static io.openliberty.data.internal.QueryType.SAVE;
 import static io.openliberty.data.internal.persistence.Util.SORT_PARAM_TYPES;
 import static io.openliberty.data.internal.persistence.Util.lifeCycleReturnTypes;
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
-import static io.openliberty.data.internal.version.QueryType.COUNT;
-import static io.openliberty.data.internal.version.QueryType.EXISTS;
-import static io.openliberty.data.internal.version.QueryType.FIND;
-import static io.openliberty.data.internal.version.QueryType.FIND_AND_DELETE;
-import static io.openliberty.data.internal.version.QueryType.INSERT;
-import static io.openliberty.data.internal.version.QueryType.LC_DELETE;
-import static io.openliberty.data.internal.version.QueryType.LC_UPDATE;
-import static io.openliberty.data.internal.version.QueryType.LC_UPDATE_RET_ENTITY;
-import static io.openliberty.data.internal.version.QueryType.QM_DELETE;
-import static io.openliberty.data.internal.version.QueryType.QM_UPDATE;
-import static io.openliberty.data.internal.version.QueryType.SAVE;
 import static jakarta.data.repository.By.ID;
 
 import java.io.PrintWriter;
@@ -67,9 +67,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.AttributeConstraint;
+import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.persistence.cdi.RepositoryProducer;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
-import io.openliberty.data.internal.version.QueryType;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -2349,29 +2350,35 @@ public class QueryInfo {
     }
 
     /**
-     * Generates JPQL for a *By condition such as MyColumn[IgnoreCase][Not]Like
+     * Generates JPQL for a *By constraint such as MyColumn[IgnoreCase][Not]Like
+     *
+     * @param methodName name of the repository method.
+     * @param start      position (0-based) within the method name to start at.
+     * @param endBefore  position (0-based) before which to end because it no longer
+     *                       corresponds to the entity attribute constraint.
+     * @param q          partial completed JPQL query to which to append.
      */
-    private void generateCondition(String methodName,
-                                   int start,
-                                   int endBefore,
-                                   StringBuilder q) {
+    private void generateConstraint(String methodName,
+                                    int start,
+                                    int endBefore,
+                                    StringBuilder q) {
         int length = endBefore - start;
 
-        Condition condition = Condition.Equal;
+        AttributeConstraint constraint = AttributeConstraint.Equal;
         switch (methodName.charAt(endBefore - 1)) {
             case 'n': // GreaterThan | LessThan | In | Between
                 if (length > 2) {
                     char ch = methodName.charAt(endBefore - 2);
                     if (ch == 'a') { // GreaterThan | LessThan
                         if (endsWith("GreaterTh", methodName, start, endBefore - 2))
-                            condition = Condition.GreaterThan;
+                            constraint = AttributeConstraint.GreaterThan;
                         else if (endsWith("LessTh", methodName, start, endBefore - 2))
-                            condition = Condition.LessThan;
+                            constraint = AttributeConstraint.LessThan;
                     } else if (ch == 'I') { // In
-                        condition = Condition.In;
+                        constraint = AttributeConstraint.In;
                     } else if (ch == 'e' &&
                                endsWith("Betwe", methodName, start, endBefore - 2)) {
-                        condition = Condition.Between;
+                        constraint = AttributeConstraint.Between;
                     }
                 }
                 break;
@@ -2380,13 +2387,13 @@ public class QueryInfo {
                     char ch = methodName.charAt(endBefore - 2);
                     if (ch == 'a') { // GreaterThanEqual | LessThanEqual
                         if (endsWith("GreaterThanEqu", methodName, start, endBefore - 2))
-                            condition = Condition.GreaterThanEqual;
+                            constraint = AttributeConstraint.GreaterThanEqual;
                         else if (endsWith("LessThanEqu", methodName, start, endBefore - 2))
-                            condition = Condition.LessThanEqual;
+                            constraint = AttributeConstraint.LessThanEqual;
                     } else if (ch == 'l' &&
                                methodName.charAt(endBefore - 3) == 'u' &&
                                methodName.charAt(endBefore - 4) == 'N') {
-                        condition = Condition.Null;
+                        constraint = AttributeConstraint.Null;
                     }
                 }
                 break;
@@ -2396,13 +2403,13 @@ public class QueryInfo {
                     if (ch == 'L') {
                         if (methodName.charAt(endBefore - 3) == 'i' &&
                             methodName.charAt(endBefore - 2) == 'k')
-                            condition = Condition.Like;
+                            constraint = AttributeConstraint.Like;
                     } else if (ch == 'T') {
                         if (methodName.charAt(endBefore - 3) == 'r' &&
                             methodName.charAt(endBefore - 2) == 'u')
-                            condition = Condition.True;
+                            constraint = AttributeConstraint.True;
                     } else if (endsWith("Fals", methodName, start, endBefore - 1)) {
-                        condition = Condition.False;
+                        constraint = AttributeConstraint.False;
                     }
                 }
                 break;
@@ -2411,23 +2418,23 @@ public class QueryInfo {
                     char ch = methodName.charAt(endBefore - 8);
                     if (ch == 'E') {
                         if (endsWith("ndsWit", methodName, start, endBefore - 1))
-                            condition = Condition.EndsWith;
+                            constraint = AttributeConstraint.EndsWith;
                     } else if (endBefore > 10 && ch == 'a' &&
                                endsWith("StartsWit", methodName, start, endBefore - 1)) {
-                        condition = Condition.StartsWith;
+                        constraint = AttributeConstraint.StartsWith;
                     }
                 }
                 break;
             case 's': // Contains
                 if (endsWith("Contain", methodName, start, endBefore - 1))
-                    condition = Condition.Contains;
+                    constraint = AttributeConstraint.Contains;
                 break;
             case 'y': // Empty
                 if (endsWith("Empt", methodName, start, endBefore - 1))
-                    condition = Condition.Empty;
+                    constraint = AttributeConstraint.Empty;
         }
 
-        endBefore -= condition.length;
+        endBefore -= constraint.lengthWithinMethodName();
 
         boolean negated = endsWith(Not.name(), methodName, start, endBefore);
         endBefore -= (negated ? 3 : 0);
@@ -2452,51 +2459,60 @@ public class QueryInfo {
             attributeExpr.append(')');
 
         if (negated) {
-            Condition negatedCondition = condition.negate();
-            if (negatedCondition != null) {
-                condition = negatedCondition;
-                negated = false;
-            }
+            constraint = constraint.negate();
+            negated = constraint.isNegative();
         }
 
         boolean isCollection = entityInfo.collectionElementTypes.containsKey(name);
-        if (isCollection && (ignoreCase || !condition.supportsCollections))
+        if (isCollection && (ignoreCase || !constraint.supportsCollections()))
             throw exc(MappingException.class,
                       "CWWKD1110.incompat.with.collection",
                       method.getName(),
                       repositoryInterface.getName(),
-                      ignoreCase ? IgnoreCase.name() : condition.name(),
+                      ignoreCase ? IgnoreCase.name() : constraint.name(),
                       name,
                       entityInfo.getType().getName(),
-                      Condition.supportedForCollections());
+                      Util.constraintsThatSupportCollections());
 
-        switch (condition) {
+        switch (constraint) {
+            case Equal:
+            case GreaterThan:
+            case GreaterThanEqual:
+            case LessThan:
+            case LessThanEqual:
+            case Not:
+                q.append(attributeExpr).append(constraint.operator());
+                generateParam(q, ignoreCase, ++jpqlParamCount);
+                break;
             case StartsWith:
+            case NotStartsWith:
                 q.append(attributeExpr) //
                                 .append(negated ? " NOT " : " ") //
                                 .append("LIKE CONCAT(");
                 generateParam(q, ignoreCase, ++jpqlParamCount).append(", '%')");
                 break;
             case EndsWith:
+            case NotEndsWith:
                 q.append(attributeExpr) //
                                 .append(negated ? " NOT " : " ") //
                                 .append("LIKE CONCAT('%', ");
                 generateParam(q, ignoreCase, ++jpqlParamCount).append(")");
                 break;
             case Like:
+            case NotLike:
                 q.append(attributeExpr) //
                                 .append(negated ? " NOT " : " ") //
                                 .append("LIKE ");
                 generateParam(q, ignoreCase, ++jpqlParamCount);
                 break;
             case Between:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT " : " ") //
-                                .append("BETWEEN ");
+            case NotBetween:
+                q.append(attributeExpr).append(constraint.operator());
                 generateParam(q, ignoreCase, ++jpqlParamCount).append(" AND ");
                 generateParam(q, ignoreCase, ++jpqlParamCount);
                 break;
             case Contains:
+            case NotContains:
                 if (isCollection) {
                     q.append(" ?").append(++jpqlParamCount) //
                                     .append(negated ? " NOT " : " ") //
@@ -2508,35 +2524,36 @@ public class QueryInfo {
                     generateParam(q, ignoreCase, ++jpqlParamCount).append(", '%')");
                 }
                 break;
-            case Null:
-            case NotNull:
-            case True:
-            case False:
-                q.append(attributeExpr).append(condition.operator);
-                break;
-            case Empty:
-                q.append(attributeExpr).append(isCollection //
-                                ? Condition.Empty.operator //
-                                : Condition.Null.operator);
-                break;
-            case NotEmpty:
-                q.append(attributeExpr).append(isCollection //
-                                ? Condition.NotEmpty.operator //
-                                : Condition.NotNull.operator);
-                break;
             case In:
+            case NotIn:
                 if (ignoreCase)
                     throw exc(UnsupportedOperationException.class,
                               "CWWKD1074.qbmn.incompat.keywords",
                               method.getName(),
                               repositoryInterface.getName(),
                               IgnoreCase.name(),
-                              condition.name());
-            default:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT " : "") //
-                                .append(condition.operator);
+                              constraint.name());
+                q.append(attributeExpr).append(constraint.operator());
                 generateParam(q, ignoreCase, ++jpqlParamCount);
+                break;
+            case Null:
+            case NotNull:
+            case True:
+            case False:
+                q.append(attributeExpr).append(constraint.operator());
+                break;
+            case Empty:
+                q.append(attributeExpr).append(isCollection //
+                                ? AttributeConstraint.Empty.operator() //
+                                : AttributeConstraint.Null.operator());
+                break;
+            case NotEmpty:
+                q.append(attributeExpr).append(isCollection //
+                                ? AttributeConstraint.NotEmpty.operator() //
+                                : AttributeConstraint.NotNull.operator());
+                break;
+            default:
+                throw new UnsupportedOperationException(constraint.name());
         }
     }
 
@@ -2796,7 +2813,8 @@ public class QueryInfo {
 
         // Arrays to be populated per repository method parameter
         String[] attrNames = new String[numAttributeParams];
-        Object[] constraints = new Object[numAttributeParams]; // TODO 1.1 Class<?>[]
+        AttributeConstraint[] constraints = //
+                        new AttributeConstraint[numAttributeParams];
         char[] updateOps = new char[numAttributeParams];
         int[] qpStarts = new int[numAttributeParams];
 
@@ -3366,7 +3384,7 @@ public class QueryInfo {
             iNext = Math.min(and, or);
             if (iNext < 0)
                 iNext = Math.max(and, or);
-            generateCondition(methodName, i, iNext < 0 || iNext >= endBefore ? endBefore : iNext, q);
+            generateConstraint(methodName, i, iNext < 0 || iNext >= endBefore ? endBefore : iNext, q);
             if (iNext > 0 && iNext < endBefore) {
                 q.append(iNext == and ? " AND " : " OR ");
                 iNext += (iNext == and ? 3 : 2);

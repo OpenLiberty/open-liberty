@@ -42,7 +42,7 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
 
         String protocol = Constants.PROTOCOL_SSL_TLS_V2;
         if (CryptoUtils.isFips140_3Enabled()) {
-            protocol = Constants.PROTOCOL_TLSV1_2;
+            protocol = Constants.PROTOCOL_TLS;
         }
 
         initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,

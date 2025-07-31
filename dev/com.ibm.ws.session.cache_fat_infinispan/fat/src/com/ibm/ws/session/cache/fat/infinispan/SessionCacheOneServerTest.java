@@ -79,7 +79,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
     public static void tearDown() throws Exception {
         executor.shutdownNow();
         Log.info(SessionCacheOneServerTest.class, "tearDown", "Wait for active tasks to stop...");
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(30);
         server.stopServer();
 
         if (isZOS()) {

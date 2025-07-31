@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -440,8 +440,7 @@ public class NettyConnectionReadCompletedCallback extends BaseConnectionReadCall
 									((NettyNetworkConnection)vc).setHearbeatInterval(0);
 									readCtx.read(1, this, false, IOReadRequestContext.NO_TIMEOUT);      // F184828
 								} catch (NettyException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
+									throw new RuntimeException(e);
 								}
 							}
 						}

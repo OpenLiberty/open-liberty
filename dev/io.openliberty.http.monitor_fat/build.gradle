@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ dependencies {
       'org.apache.httpcomponents:httpmime:4.5.3',
       project(':com.ibm.ws.org.apache.httpcomponents'),
       'org.brotli:dec:0.1.2',
-      'org.apache.commons:commons-lang3:3.14.0',
+      project(':com.ibm.ws.org.apache.commons.lang3'),
       project(':com.ibm.ws.org.apache.commons.io'),
       project(':io.openliberty.org.apache.xercesImpl'),
       'xalan:xalan:2.7.2',

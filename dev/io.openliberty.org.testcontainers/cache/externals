@@ -1,7 +1,6 @@
 # NOTICE: This file was automatically updated to reflect changes made to test projects.
 # Please check these changes into GitHub
 confluentinc/cp-kafka:7.1.1
-docker.io/ibmcom/cloudant-developer:2.0.1
 elastic/logstash:7.16.3
 fbicodex/spnego-kdc-server:1.0
 ghcr.io/gvenzl/oracle-free:23-full-faststart
@@ -21,7 +20,6 @@ jiwoo/squid-proxy:1.0
 kyleaure/db2-krb5:2.0
 letsencrypt/pebble-challtestsrv:v2.3.1
 letsencrypt/pebble:v2.3.1
-localhost/openliberty/testcontainers/cloudant-dev:2.0.1
 localhost/openliberty/testcontainers/couchdb-ssl:3.0.0.1
 localhost/openliberty/testcontainers/db2-krb5:12.1.1.0
 localhost/openliberty/testcontainers/db2-ssl:12.1.1.0

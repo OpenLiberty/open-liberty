@@ -16,6 +16,7 @@ public class MD5Utils {
 
     static {
         try {
+            // FIPS 140-3: Algorithm assessment complete; no changes required. Utility functions.
             messagedigest = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
         } catch (NoSuchAlgorithmException e) {
             //should not happen

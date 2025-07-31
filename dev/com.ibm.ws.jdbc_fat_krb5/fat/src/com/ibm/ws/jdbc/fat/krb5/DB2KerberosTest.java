@@ -45,10 +45,12 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.db2.web.DB2KerberosTestServlet;
 
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DB2KerberosTest extends FATServletClient {
@@ -61,8 +63,10 @@ public class DB2KerberosTest extends FATServletClient {
 
     public static final DB2KerberosContainer db2 = new DB2KerberosContainer(FATSuite.network);
 
+    private static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5");
+
     @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(db2);
+    public static RuleChain chain = RuleChain.outerRule(skipJavaSemeruWithFipsEnabled).around(KerberosPlatformRule.instance()).around(db2);
 
     @Server("com.ibm.ws.jdbc.fat.krb5")
     @TestServlet(servlet = DB2KerberosTestServlet.class, contextRoot = APP_NAME)
@@ -94,6 +98,7 @@ public class DB2KerberosTest extends FATServletClient {
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+        jvmOpts.add("-Dsun.security.jgss.debug=true"); // Hotspot/OpenJ9
 
         // TODO extract security files from container prior to server start
         // TODO delete security files from git
