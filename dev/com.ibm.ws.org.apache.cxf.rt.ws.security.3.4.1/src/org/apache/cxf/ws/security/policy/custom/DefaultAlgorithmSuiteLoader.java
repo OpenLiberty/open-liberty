@@ -59,22 +59,17 @@ public class DefaultAlgorithmSuiteLoader implements AlgorithmSuiteLoader {
             assertions.put(qName, new PrimitiveAssertion(qName));
             qName = new QName(ns, "Basic256GCM");
             assertions.put(qName, new PrimitiveAssertion(qName));
-            // Liberty Change Start: Backport FIPS supported algorithms
-            qName = new QName(ns, "Basic256GCMRsa15");
+            // Liberty Change Start: FIPS supported algorithm suites
+            qName = new QName(ns, "Basic256GCMSha256EcdEs");
             assertions.put(qName, new PrimitiveAssertion(qName));
-            qName = new QName(ns, "Basic192GCMRsa15");
+            qName = new QName(ns, "Basic192GCMSha256EcdEs");
             assertions.put(qName, new PrimitiveAssertion(qName));
-            qName = new QName(ns, "Basic128GCMRsa15");
+            qName = new QName(ns, "Basic128GCMSha256EcdEs");
             assertions.put(qName, new PrimitiveAssertion(qName));
-            qName = new QName(ns, "Basic256GCMSha256Rsa15");
-            assertions.put(qName, new PrimitiveAssertion(qName));
-            qName = new QName(ns, "Basic192GCMSha256Rsa15");
-            assertions.put(qName, new PrimitiveAssertion(qName));
-            qName = new QName(ns, "Basic128GCMSha256Rsa15");
-            assertions.put(qName, new PrimitiveAssertion(qName));
-            // Liberty Change End
+            // Backport change to allow a user to set a Custom Algorithm Suite since the FIPS changes were built on top of this
             qName = new QName(ns, "CustomAlgorithmSuite");
             assertions.put(qName, new PrimitiveAssertion(qName));
+            // Liberty Change End
 
             reg.registerBuilder(new PrimitiveAssertionBuilder(assertions.keySet()) {
                 public Assertion build(Element element, AssertionBuilderFactory fact) {
@@ -138,63 +133,32 @@ public class DefaultAlgorithmSuiteLoader implements AlgorithmSuiteLoader {
             
             //fips compliant policies
 
-            ALGORITHM_SUITE_TYPES.put("Basic256GCMRsa15", new AlgorithmSuiteType(
-                    "Basic256GCMRsa15", 
-                    SPConstants.SHA1, 
-                    "http://www.w3.org/2009/xmlenc11#aes256-gcm",
-                    SPConstants.KW_AES256, 
-                    SPConstants.KW_RSA15, 
-                    SPConstants.P_SHA1_L256,
-                    SPConstants.P_SHA1_L192, 
-                    256, 192, 256, 
-                    256, 1024, 4096));
-            ALGORITHM_SUITE_TYPES.put("Basic192GCMRsa15", new AlgorithmSuiteType(
-                    "Basic192GCMRsa15", 
-                    SPConstants.SHA1, 
-                    "http://www.w3.org/2009/xmlenc11#aes192-gcm",
-                    SPConstants.KW_AES192, 
-                    SPConstants.KW_RSA15, 
-                    SPConstants.P_SHA1_L192,
-                    SPConstants.P_SHA1_L192, 
-                    192, 192, 192, 
-                    256, 1024, 4096));
-            ALGORITHM_SUITE_TYPES.put("Basic128GCMRsa15", new AlgorithmSuiteType(
-                    "Basic128GCMRsa15", 
-                    SPConstants.SHA1,
-                    "http://www.w3.org/2009/xmlenc11#aes128-gcm",
-                    SPConstants.KW_AES128, 
-                    SPConstants.KW_RSA15, 
-                    SPConstants.P_SHA1_L128,
-                    SPConstants.P_SHA1_L128, 
-                    128, 128, 128, 
-                    256, 1024, 4096));
-
-            ALGORITHM_SUITE_TYPES.put("Basic256GCMSha256Rsa15", new AlgorithmSuiteType(
-                    "Basic256GCMSha256Rsa15", 
+            ALGORITHM_SUITE_TYPES.put("Basic256GCMSha256EcdEs", new AlgorithmSuiteType(
+                    "Basic256GCMSha256EcdEs", 
                     SPConstants.SHA256,
                     "http://www.w3.org/2009/xmlenc11#aes256-gcm",
                     SPConstants.KW_AES256, 
-                    SPConstants.KW_RSA15, 
+                    SPConstants.KA_ECDH_ES, 
                     SPConstants.P_SHA1_L256,
                     SPConstants.P_SHA1_L192, 
                     256, 192, 256, 
                     256, 1024, 4096));
-            ALGORITHM_SUITE_TYPES.put("Basic192GCMSha256Rsa15", new AlgorithmSuiteType(
-                    "Basic192GCMSha256Rsa15", 
+            ALGORITHM_SUITE_TYPES.put("Basic192GCMSha256EcdEs", new AlgorithmSuiteType(
+                    "Basic192GCMSha256EcdEs", 
                     SPConstants.SHA256, 
                     "http://www.w3.org/2009/xmlenc11#aes192-gcm",
-                    SPConstants.KW_AES192, 
-                    SPConstants.KW_RSA15, 
+                    SPConstants.KW_AES192,  
+                    SPConstants.KA_ECDH_ES,
                     SPConstants.P_SHA1_L192,
                     SPConstants.P_SHA1_L192, 
                     192, 192, 192, 
                     256, 1024, 4096));
-            ALGORITHM_SUITE_TYPES.put("Basic128GCMSha256Rsa15", new AlgorithmSuiteType(
-                    "Basic128GCMSha256Rsa15", 
+            ALGORITHM_SUITE_TYPES.put("Basic128GCMSha256EcdEs", new AlgorithmSuiteType(
+                    "Basic128GCMSha256EcdEs", 
                     SPConstants.SHA256,
                     "http://www.w3.org/2009/xmlenc11#aes128-gcm",
-                    SPConstants.KW_AES128,
-                    SPConstants.KW_RSA15, 
+                    SPConstants.KW_AES128, 
+                    SPConstants.KA_ECDH_ES,
                     SPConstants.P_SHA1_L128,
                     SPConstants.P_SHA1_L128, 
                     128, 128, 128, 
@@ -242,23 +206,14 @@ public class DefaultAlgorithmSuiteLoader implements AlgorithmSuiteLoader {
                 setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic256GCM"));
                 getAlgorithmSuiteType().setNamespace(assertionNamespace);
             // Liberty Change Start
-            } else if ("Basic256GCMRsa15".equals(assertionName)) {
-                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic256GCMRsa15"));
+            } else if ("Basic256GCMSha256EcdEs".equals(assertionName)) {
+                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic256GCMSha256EcdEs"));
                 getAlgorithmSuiteType().setNamespace(assertionNamespace);
-            } else if ("Basic192GCMRsa15".equals(assertionName)) {
-                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic192GCMRsa15"));
+            } else if ("Basic192GCMSha256EcdEs".equals(assertionName)) {
+                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic192GCMSha256EcdEs"));
                 getAlgorithmSuiteType().setNamespace(assertionNamespace);
-            } else if ("Basic128GCMRsa15".equals(assertionName)) {
-                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic128GCMRsa15"));
-                getAlgorithmSuiteType().setNamespace(assertionNamespace);
-            } else if ("Basic256GCMSha256Rsa15".equals(assertionName)) {
-                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic256GCMSha256Rsa15"));
-                getAlgorithmSuiteType().setNamespace(assertionNamespace);
-            } else if ("Basic192GCMSha256Rsa15".equals(assertionName)) {
-                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic192GCMSha256Rsa15"));
-                getAlgorithmSuiteType().setNamespace(assertionNamespace);
-            } else if ("Basic128GCMSha256Rsa15".equals(assertionName)) {
-                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic128GCMSha256Rsa15"));
+            } else if ("Basic128GCMSha256EcdEs".equals(assertionName)) {
+                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic128GCMSha256EcdEs"));
                 getAlgorithmSuiteType().setNamespace(assertionNamespace);
             // Liberty Change End
             } else if ("CustomAlgorithmSuite".equals(assertionName)) {

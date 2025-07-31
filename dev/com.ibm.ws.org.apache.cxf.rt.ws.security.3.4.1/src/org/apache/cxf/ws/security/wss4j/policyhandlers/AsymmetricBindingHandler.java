@@ -544,9 +544,14 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
             AlgorithmSuite algorithmSuite = abinding.getAlgorithmSuite();
             AlgorithmSuiteType algType = algorithmSuite.getAlgorithmSuiteType();
             encr.setSymmetricEncAlgorithm(algType.getEncryption());
+            // LOG.info("@TJJ encr.setSymmetricEncAlgorithm() = " + encr.getSymmetricEncAlgorithm());
             encr.setKeyEncAlgo(algType.getAsymmetricKeyWrap());
+            // LOG.info("@TJJ encr.setKeyEncAlgo() = " + encr.getKeyEncAlgo());
             encr.setMGFAlgorithm(algType.getMGFAlgo());
+
+            // LOG.info("@TJJ encr.getMGFAlgorithm() = " + encr.getMGFAlgorithm());
             encr.setDigestAlgorithm(algType.getEncryptionDigest());
+            // LOG.info("@TJJ encr.setDigestAlgorithm() = " + encr.getDigestAlgorithm());
             encr.prepare(crypto, symmetricKey);
 
             Element encryptedKeyElement = encr.getEncryptedKeyElement();
@@ -706,9 +711,12 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
 
             // Set the algo info
             dkSign.setSignatureAlgorithm(abinding.getAlgorithmSuite().getAlgorithmSuiteType().getSymmetricSignature());
+            // LOG.info("@TJJ dkSign.getSignatureAlgorithm = " + dkSign.getSignatureAlgorithm());
             dkSign.setSigCanonicalization(abinding.getAlgorithmSuite().getC14n().getValue());
             AlgorithmSuiteType algType = abinding.getAlgorithmSuite().getAlgorithmSuiteType();
             dkSign.setDigestAlgorithm(algType.getDigest());
+
+            // LOG.info("@TJJ dkSign.getDigestAlgorithm() = " + dkSign.getDigestAlgorithm());
             dkSign.setDerivedKeyLength(algType.getSignatureDerivedKeyLength() / 8);
             dkSign.setCustomValueType(WSS4JConstants.SOAPMESSAGE_NS11 + "#"
                     + WSS4JConstants.ENC_KEY_VALUE_TYPE);

@@ -82,7 +82,7 @@ public final class WSProviderConfig {
                 bcProviderAdded = false;
                 tlProviderAdded = false;
             }            
-            // Liberty Change Start: Enable FIPS support
+            // Liberty Change Start: Back Port Enable FIPS support - Does not work with Semaru FIPS
             if (FIPSUtils.isFIPSEnabled()) {
                 //So far the in-JDK security provider in FIPS mode
                 //doesn't support RSA-OAEP padding, try use the one 
@@ -97,6 +97,7 @@ public final class WSProviderConfig {
             // Liberty Change End
             staticallyInitialized = true;
         }
+        LOG.info("@TJJ added santuarioProviderAdded= " + santuarioProviderAdded + " bcProviderAdded=" + bcProviderAdded + " tlProviderAdded=" + tlProviderAdded + " staticallyInitialized=" + staticallyInitialized);
     }
 
     public static synchronized void init(boolean addXMLDSigRIInternalProv, boolean addBCProv, boolean addTLProv) {
@@ -148,6 +149,7 @@ public final class WSProviderConfig {
                 });
             }
             staticallyInitialized = true;
+            // LOG.info("@TJJ added santuarioProviderAdded= " + santuarioProviderAdded + " bcProviderAdded=" + bcProviderAdded + " tlProviderAdded=" + tlProviderAdded + " staticallyInitialized=" + staticallyInitialized);
         }
     }
 

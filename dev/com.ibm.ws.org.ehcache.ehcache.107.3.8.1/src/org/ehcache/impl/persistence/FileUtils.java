@@ -123,7 +123,13 @@ final class FileUtils {
      * @return sanitized version of name
      */
     static String safeIdentifier(String name) {
-        return safeIdentifier(name, true);
+        // Liberty Change Start: Prevent sha1 toggle from being true when FIPs is enabled
+        if (CryptoUtils.isFips140_3EnabledWithBetaGuard()) {
+            return safeIdentifier(name, false);
+        } else {
+            return safeIdentifier(name, true);
+        }
+        // Liberty Change End
     }
 
     static String safeIdentifier(String name, boolean withSha1) {
@@ -160,7 +166,7 @@ final class FileUtils {
             // Liberty Change End
             return digest;
         } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError("All JDKs must have SHA-1");
+            throw new AssertionError(e.getMessage());
         }
     }
 
