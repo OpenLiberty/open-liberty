@@ -65,6 +65,9 @@ public class CryptoUtils {
     public static boolean fipsChecked = false;
     public static boolean fips140_3Checked = false;
 
+    public static boolean isEnhancedSecurity = false;
+    public static boolean isEnhancedSecurityChecked = false;
+
     public static boolean javaVersionChecked = false;
     public static boolean isJava11orHigher = false;
 
@@ -321,8 +324,9 @@ public class CryptoUtils {
 
     public static String getProvider() {
         String provider = null;
-
-        if (fipsEnabled) {
+        // if useEnhancedSecurityAlgorithms() returns true we will assume FIPS is not enabled at the JVM level.
+        // Do not return a FIPS provider in this case because it likely isn't available.
+        if (fipsEnabled && !useEnhancedSecurityAlgorithms()) {
             //Do not check the provider available or not. Later on when we use the provider, the JDK will handle it.
             if (isSemeruFips()) {
                 provider = OPENJCE_PLUS_FIPS_NAME;
@@ -372,7 +376,9 @@ public class CryptoUtils {
         MessageDigest md1 = null;
         try {
             if (fipsEnabled) {
-                if (isSemeruFips()) {
+                if (useEnhancedSecurityAlgorithms()) {
+                    md1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM_SHA_512);
+                } else if (isSemeruFips()) {
                     md1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM_SHA_512,
                                                     OPENJCE_PLUS_FIPS_NAME);
                 } else {
@@ -416,10 +422,15 @@ public class CryptoUtils {
     }
 
     protected static boolean useEnhancedSecurityAlgorithms() {
-        boolean isEnhancedSecurity = isRunningBetaMode() && Boolean.valueOf(getPropertyLowerCase(PROPERTY_USE_ENHANCED_SECURITY_ALG, "false"));
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "isEnhancedSecurity: " + (isEnhancedSecurity ? "enabled" : "disabled"));
+        if (isEnhancedSecurityChecked) {
+            return isEnhancedSecurity;
+        } else {
+            isEnhancedSecurity = isRunningBetaMode() && Boolean.valueOf(getPropertyLowerCase(PROPERTY_USE_ENHANCED_SECURITY_ALG, "false"));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "isEnhancedSecurity: " + (isEnhancedSecurity ? "enabled" : "disabled"));
+            }
         }
+        isEnhancedSecurityChecked = true;
         return isEnhancedSecurity;
     }
 

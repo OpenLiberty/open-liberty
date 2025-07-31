@@ -40,6 +40,10 @@ public class AESKeyManager {
                                                            -93, 86, 76, -115, 113, -124, 104, -40, -121, -9, 86, 121, -48, -57, -77, -58, 73, 7, 12, 4, 24, -81, -64, 107 };
 
     public static enum KeyVersion {
+
+        // FIPS 140-3: Algorithm assessment complete; no changes required.
+        // AES_V0 is only used for backward compatibility, newly created passwords will use AES_V1. If FIPS is enabled, AES_V0 will not be tolerated
+        // and users must recreate their password
         AES_V0(CryptoUtils.PBKDF2_WITH_HMAC_SHA1, CryptoUtils.PBKDF2HMACSHA1_ITERATIONS, CryptoUtils.AES_128_KEY_LENGTH_BITS, AES_V0_SALT),
         AES_V1(CryptoUtils.PBKDF2_WITH_HMAC_SHA512, CryptoUtils.PBKDF2HMACSHA512_ITERATIONS, CryptoUtils.AES_256_KEY_LENGTH_BITS, AES_V1_SALT);
 

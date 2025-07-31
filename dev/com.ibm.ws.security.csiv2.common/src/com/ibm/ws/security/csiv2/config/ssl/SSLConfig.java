@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -209,6 +209,8 @@ public class SSLConfig {
     private static final int ENCRYPTION_ALGORITHM_OTHER_INDEX = 10;
     private static final int SHA_ALGORITHM_INDEX = 11;
     private static final int SHA_KEY_LENGTH_INDEX = 12;
+    // FIPS 140-3: Algorithm assessment complete; no changes required.
+    // because the index below is a capture group index from a pattern defined earlier and it could look like an oversight if index 13 is missing.
     private static final int MD5_ALGORITHM_INDEX = 13;
 
     private static final int MINIMUM_STRONG_KEY_LENGTH = 128;

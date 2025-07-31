@@ -25,7 +25,10 @@ import javax.crypto.spec.PBEKeySpec;
 import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class PasswordHashGenerator {
-    final private static String DEFAULT_ALGORITHM = CryptoUtils.PBKDF2_WITH_HMAC_SHA1;
+    // FIPS 140-3: Algorithm assessment complete; no changes required.
+    // OLD_DEFAULT_ALGORITHM is only used when old hashes are being compared.
+    // Going forward new hashes with use LATEST_DEFAULT_ALGORITHM
+    final private static String OLD_DEFAULT_ALGORITHM = CryptoUtils.PBKDF2_WITH_HMAC_SHA1;
     final public static String LATEST_DEFAULT_ALGORITHM = CryptoUtils.PBKDF2_WITH_HMAC_SHA512;
     final private static int DEFAULT_ITERATION = 6384;
     final private static int DEFAULT_OUTPUT_LENGTH = 256;
@@ -57,7 +60,7 @@ public class PasswordHashGenerator {
     }
 
     public static String getDefaultAlgorithm() {
-        return DEFAULT_ALGORITHM;
+        return OLD_DEFAULT_ALGORITHM;
     }
 
     public static int getDefaultOutputLength() {
@@ -70,10 +73,6 @@ public class PasswordHashGenerator {
         } else {
             throw new InvalidPasswordCipherException("HashedData object is null.");
         }
-    }
-
-    public static byte[] digest(char[] plainBytes) throws InvalidPasswordCipherException {
-        return digest(plainBytes, generateSalt(null), DEFAULT_ALGORITHM, DEFAULT_ITERATION, DEFAULT_OUTPUT_LENGTH);
     }
 
     /**
