@@ -49,7 +49,7 @@ public class FileUtilityTest {
     private final File parent = mock.mock(File.class, "parent");
     private final File grandParent = mock.mock(File.class, "grandParent");
     private final String SLASH = FileUtility.SLASH;
-    private final IFileUtility fileUtil = new FileUtility("WLP_USER_DIR", "WLP_OUTPUT_DIR");
+    private final IFileUtility fileUtil = new FileUtility("WLP_USER_DIR", "WLP_OUTPUT_DIR", "WLP_INSTALL_DIR");
 
     @After
     public void tearDown() {
@@ -61,7 +61,7 @@ public class FileUtilityTest {
      */
     @Test
     public void getServersDirectory_noSetVariable() {
-        IFileUtility fileUtil = new FileUtility(null, null);
+        IFileUtility fileUtil = new FileUtility(null, null, null);
         assertEquals("Did not get expected constructed path",
                      System.getProperty("user.dir") + SLASH + "usr" + SLASH + "servers" + SLASH,
                      fileUtil.getServersDirectory());
@@ -72,7 +72,7 @@ public class FileUtilityTest {
      */
     @Test
     public void getServersDirectory_WLP_USER_DIR() {
-        IFileUtility fileUtil = new FileUtility("WLP_USER_DIR", null);
+        IFileUtility fileUtil = new FileUtility("WLP_USER_DIR", null, null);
         assertEquals("Did not get expected value for WLP_USER_DIR",
                      "WLP_USER_DIR" + SLASH + "servers" + SLASH, fileUtil.getServersDirectory());
     }
@@ -82,7 +82,7 @@ public class FileUtilityTest {
      */
     @Test
     public void getServersDirectory_WLP_OUTPUT_DIR() {
-        IFileUtility fileUtil = new FileUtility(null, "WLP_OUTPUT_DIR");
+        IFileUtility fileUtil = new FileUtility(null, "WLP_OUTPUT_DIR", null);
         assertEquals("Did not get expected value for WLP_OUTPUT_DIR",
                      "WLP_OUTPUT_DIR" + SLASH, fileUtil.getServersDirectory());
     }
@@ -92,7 +92,7 @@ public class FileUtilityTest {
      */
     @Test
     public void getServersDirectory_bothVariables() {
-        IFileUtility fileUtil = new FileUtility("WLP_USER_DIR", "WLP_OUTPUT_DIR");
+        IFileUtility fileUtil = new FileUtility("WLP_USER_DIR", "WLP_OUTPUT_DIR", null);
         assertEquals("WLP_OUTPUT_DIR takes precedence over WLP_USER_DIR",
                      "WLP_OUTPUT_DIR" + SLASH, fileUtil.getServersDirectory());
     }
@@ -102,7 +102,7 @@ public class FileUtilityTest {
      */
     @Test
     public void getClientsDirectory_noSetVariable() {
-        IFileUtility fileUtil = new FileUtility(null, null);
+        IFileUtility fileUtil = new FileUtility(null, null, null);
         assertEquals("Did not get expected constructed path",
                      System.getProperty("user.dir") + SLASH + "usr" + SLASH + "clients" + SLASH,
                      fileUtil.getClientsDirectory());
@@ -113,9 +113,29 @@ public class FileUtilityTest {
      */
     @Test
     public void getClientsDirectory_WLP_USER_DIR() {
-        IFileUtility fileUtil = new FileUtility("WLP_USER_DIR", null);
+        IFileUtility fileUtil = new FileUtility("WLP_USER_DIR", null, null);
         assertEquals("Did not get expected value for WLP_USER_DIR",
                      "WLP_USER_DIR" + SLASH + "clients" + SLASH, fileUtil.getClientsDirectory());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.utility.utils.FileUtility#getInstallDirectory()}.
+     */
+    @Test
+    public void getInstallDirectory_noSetVariable() {
+        IFileUtility fileUtil = new FileUtility(null, null, null);
+        assertEquals("Did not get expected constructed path",
+                     System.getProperty("user.dir") + SLASH, fileUtil.getInstallDirectory());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.utility.utils.FileUtility#getInstallDirectory()}.
+     */
+    @Test
+    public void getInstallDirectory_WLP_INSTALL_DIR() {
+        IFileUtility fileUtil = new FileUtility(null, null, "WLP_INSTALL_DIR");
+        assertEquals("Did not get expected value for WLP_INSTALL_DIR",
+                     "WLP_INSTALL_DIR", fileUtil.getInstallDirectory());
     }
 
     /**

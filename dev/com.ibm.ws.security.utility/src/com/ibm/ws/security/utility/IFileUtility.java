@@ -14,6 +14,7 @@ package com.ibm.ws.security.utility;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 
 /**
  *
@@ -85,8 +86,22 @@ public interface IFileUtility {
     boolean writeToFile(PrintStream stderr, String toWrite, File outFile);
 
     /**
+     * Store the String to the specified File.
+     *
+     * @param toWrite
+     * @param outFile
+     * @return
+     */
+    boolean writeToFile(PrintStream stderr, String toWrite, File outFile, Charset charset);
+
+    /**
      * @return clientDirectory
      */
     String getClientsDirectory();
+
+    /**
+     * @return installDirectory
+     */
+    String getInstallDirectory();
 
 }

@@ -34,7 +34,8 @@ instrument.disabled: true
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.security.utility.securityutil;version=latest,\
 	com.ibm.ws.org.apache.commons.io;version=latest,\
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
