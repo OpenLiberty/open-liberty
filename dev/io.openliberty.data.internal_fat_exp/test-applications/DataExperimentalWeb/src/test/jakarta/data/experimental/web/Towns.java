@@ -14,7 +14,6 @@ import static io.openliberty.data.repository.Is.Op.GreaterThan;
 import static io.openliberty.data.repository.Is.Op.GreaterThanEqual;
 import static io.openliberty.data.repository.Is.Op.LessThanEqual;
 import static io.openliberty.data.repository.Is.Op.Not;
-import static io.openliberty.data.repository.Is.Op.NotIgnoreCase;
 import static io.openliberty.data.repository.Is.Op.Prefixed;
 import static jakarta.data.repository.By.ID;
 
@@ -34,6 +33,7 @@ import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.IgnoreCase;
 import io.openliberty.data.repository.Is;
 import io.openliberty.data.repository.update.Assign;
 
@@ -70,7 +70,7 @@ public interface Towns {
     @OrderBy("stateName")
     @OrderBy("name")
     Stream<Town> largerThan(@By("population") @Is(GreaterThan) int minPopulation,
-                            @By("name") @Is(NotIgnoreCase) String cityToExclude,
+                            @By("name") @IgnoreCase @Is(Not) String cityToExclude,
                             @By("stateName") @Is(Prefixed) String statePattern);
 
     @Update

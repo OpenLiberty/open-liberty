@@ -301,16 +301,14 @@ public class DB2KerberosTestServlet extends FATServlet {
             TestXAResource.removeSuccessLimit(cons);
             try {
                 tran.rollback();
-            } catch (Throwable t) {
-            }
+            } catch (Throwable t) {}
             throw x;
         } finally {
             for (Connection con : cons)
                 if (con != null)
                     try {
                         con.close();
-                    } catch (Throwable x) {
-                    }
+                    } catch (Throwable x) {}
         }
 
         // At this point, the transaction is in-doubt.
@@ -395,8 +393,7 @@ public class DB2KerberosTestServlet extends FATServlet {
                 String mc1 = String.valueOf(f1.get(conn1));
                 f1.setAccessible(false);
                 return mc1;
-            } catch (Exception ignore) {
-            }
+            } catch (Exception ignore) {}
         }
         throw new RuntimeException("Did not find field 'managedConn' on " + conn1.getClass());
     }

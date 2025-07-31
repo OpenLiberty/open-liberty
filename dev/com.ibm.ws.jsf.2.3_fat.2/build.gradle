@@ -16,7 +16,7 @@ dependencies {
     requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit:2.20'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-core-js:2.17'
-    requiredLibs 'org.apache.commons:commons-lang3:3.14.0'
+    requiredLibs project(':com.ibm.ws.org.apache.commons.lang3')
     requiredLibs project(':io.openliberty.org.apache.commons.codec')
     // transitive = false makes it so that io.openliberty.faces.fat.selenium.util.internal dependencies are not imported
     // it is required to keep from guava-android being imported

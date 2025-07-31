@@ -14,10 +14,9 @@ package test.jakarta.data.experimental.web;
 
 import static io.openliberty.data.repository.Is.Op.GreaterThan;
 import static io.openliberty.data.repository.Is.Op.GreaterThanEqual;
-import static io.openliberty.data.repository.Is.Op.IgnoreCase;
 import static io.openliberty.data.repository.Is.Op.LessThan;
 import static io.openliberty.data.repository.Is.Op.LessThanEqual;
-import static io.openliberty.data.repository.Is.Op.LikeIgnoreCase;
+import static io.openliberty.data.repository.Is.Op.Like;
 import static io.openliberty.data.repository.Is.Op.NotSuffixed;
 import static io.openliberty.data.repository.Is.Op.Substringed;
 import static io.openliberty.data.repository.Is.Op.Suffixed;
@@ -37,6 +36,7 @@ import jakarta.data.repository.Select;
 
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.IgnoreCase;
 import io.openliberty.data.repository.Is;
 import io.openliberty.data.repository.function.CharCount;
 import io.openliberty.data.repository.function.Trimmed;
@@ -64,7 +64,7 @@ public interface PrimeNumbers {
     @OrderBy(value = ID, descending = true)
     List<Long> inRangeHavingNumeralLikeAndSubstringOfName(@By(ID) @Is(GreaterThanEqual) long min,
                                                           @By(ID) @Is(LessThanEqual) long max,
-                                                          @By("romanNumeral") @Is(LikeIgnoreCase) String pattern,
+                                                          @By("romanNumeral") @Is(Like) @IgnoreCase String pattern,
                                                           @By("name") @Is(Substringed) String nameSubstring);
 
     @Exists
@@ -82,7 +82,7 @@ public interface PrimeNumbers {
                                            @By("name") @CharCount @Is(LessThanEqual) int maxLength);
 
     @Find
-    Optional<PrimeNum> withAnyCaseName(@By("name") @Trimmed @Is(IgnoreCase) String name);
+    Optional<PrimeNum> withAnyCaseName(@By("name") @Trimmed @IgnoreCase String name);
 
     @Find
     List<PrimeNum> withNameLengthAndWithin(@By("name") @Trimmed @CharCount int length,

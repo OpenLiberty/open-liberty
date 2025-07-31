@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -38,6 +39,7 @@ import io.openliberty.classloading.parentlast.test.app.ParentLastTestServlet;
  *
  */
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel=11)
 public class ParentLastLibraryFeatureTests extends FATServletClient {
 
     @Server(PARENT_LAST_TEST_SERVER)

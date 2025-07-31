@@ -12,8 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.QueryType.RESOURCE_ACCESS;
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
-import static io.openliberty.data.internal.version.QueryType.RESOURCE_ACCESS;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -45,9 +45,9 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
+import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
-import io.openliberty.data.internal.version.QueryType;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;

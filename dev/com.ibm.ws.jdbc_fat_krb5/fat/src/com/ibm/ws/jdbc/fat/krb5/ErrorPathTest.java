@@ -21,6 +21,7 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
@@ -38,6 +39,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -51,6 +54,9 @@ public class ErrorPathTest extends FATServletClient {
     public static LibertyServer server;
 
     public static final DB2KerberosContainer db2 = DB2KerberosTest.db2;
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5");
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(db2);
@@ -141,6 +147,7 @@ public class ErrorPathTest extends FATServletClient {
      * Expect that getConnection() in the test app fails with a LoginException
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     @AllowedFFDC
     public void testPasswordInvalid() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();

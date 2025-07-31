@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,8 @@ public class MD5Utils {
 
     static {
         try {
-            messagedigest = MessageDigest.getInstance("MD5");
+            // FIPS 140-3: Algorithm assessment complete; no changes required. Utility functions.
+            messagedigest = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
         } catch (NoSuchAlgorithmException e) {
             //should not happen
         }

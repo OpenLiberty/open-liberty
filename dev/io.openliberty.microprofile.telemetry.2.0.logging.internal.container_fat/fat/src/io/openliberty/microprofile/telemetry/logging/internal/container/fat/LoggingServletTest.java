@@ -113,7 +113,8 @@ public class LoggingServletTest {
         assertTrue("Module could not be found.",
                    TestUtils.assertLogContains("testMessageLogs", logs,
                                                "io.openliberty.module: Str(io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.MpTelemetryServlet)"));
-        assertTrue("SeverityText message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "SeverityText: I"));
+
+        assertTrue("SeverityText message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "SeverityText: INFO"));
         assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "SeverityNumber: Info"));
         assertTrue("Squence message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "io.openliberty.sequence: Str"));
         assertTrue("Log type message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "io.openliberty.type: Str(liberty_message)"));
@@ -145,7 +146,7 @@ public class LoggingServletTest {
         assertTrue("Module could not be found.",
                    TestUtils.assertLogContains("testTraceLogs", logs,
                                                "io.openliberty.module: Str(io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.MpTelemetryServlet)"));
-        assertTrue("SeverityText message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "SeverityText: 3"));
+        assertTrue("SeverityText message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "SeverityText: FINEST"));
         assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "SeverityNumber: Trace(1)"));
         assertTrue("Sequence message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "io.openliberty.sequence: Str"));
         assertTrue("Log type message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "io.openliberty.type: Str(liberty_trace)"));

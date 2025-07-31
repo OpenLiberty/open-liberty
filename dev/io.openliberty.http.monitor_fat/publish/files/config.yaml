@@ -1,13 +1,16 @@
 receivers:
   otlp:
     protocols:
-        grpc:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
 
 exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
   debug:
-    verbosity: normal
+    verbosity: basic
 
 processors:
   batch:
@@ -18,3 +21,7 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [prometheus, debug]
+
+  telemetry:
+    logs:
+      level: debug

@@ -21,7 +21,7 @@ src: \
     com.ibm.ws.security.fat.common,\
     io.openliberty.security.jakartasec.3.0.internal_fat.common,\
     io.openliberty.security.jakartasec.3.0.internal_fat.config.commonTest
-	
+    
 fat.project: true
 publish.wlp.jar.disabled: true
 
@@ -31,27 +31,24 @@ javac.source: 11
 javac.target: 11
 
 -buildpath: \
-	io.openliberty.jakarta.annotation.2.0;version=latest,\
-	io.openliberty.jakarta.security.3.0;version=latest,\
-	io.openliberty.jakarta.servlet.6.0;version=latest,\
-	io.openliberty.jakarta.cdi.4.0;version=latest,\
-	io.openliberty.jakarta.servlet.5.0,\
-	io.openliberty.jakarta.jsonp.2.1;version=latest,\
-	com.ibm.ws.security.fat.common;version=latest,\
-	com.ibm.ws.security.fat.common.jwt;version=latest,\
-	io.openliberty.security.jakartasec.3.0.internal_fat.common;version=latest,\
-	io.openliberty.security.jakartasec.3.0.internal_fat.config.commonTest;version=latest,\
-	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
-	net.sourceforge.htmlunit:webdriver;version='2.6',\
-	com.ibm.ws.org.apache.httpcomponents;version=latest,\
-	io.openliberty.org.apache.commons.logging;version=latest,\
-	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-	jakarta.inject.jakarta.inject-api;version=latest,\
-    org.glassfish:javax.json;version=1.0,\
+    io.openliberty.jakarta.annotation.2.0;version=latest,\
+    io.openliberty.jakarta.security.3.0;version=latest,\
+    io.openliberty.jakarta.servlet.6.0;version=latest,\
+    io.openliberty.jakarta.cdi.4.0;version=latest,\
+    io.openliberty.jakarta.servlet.5.0,\
+    io.openliberty.jakarta.jsonp.2.1;version=latest,\
+    com.ibm.ws.security.fat.common;version=latest,\
+    com.ibm.ws.security.fat.common.jwt;version=latest,\
+    io.openliberty.security.jakartasec.3.0.internal_fat.common;version=latest,\
+    io.openliberty.security.jakartasec.3.0.internal_fat.config.commonTest;version=latest,\
+    net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
+    net.sourceforge.htmlunit:webdriver;version='2.6',\
+    com.ibm.ws.org.apache.httpcomponents;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+    jakarta.inject.jakarta.inject-api;version=latest,\
     com.ibm.json4j;version=latest,\
-	com.ibm.ws.org.jose4j;version=latest,\
-	org.eclipse.parsson:parsson;version=1.1.0,\
-	javax.json-api
+    com.ibm.ws.org.jose4j;version=latest
 
 
 #-testpath: \

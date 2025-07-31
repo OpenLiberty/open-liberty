@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2013 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -195,7 +195,8 @@ public interface CacheAdminMBean {
                     throws javax.management.AttributeNotFoundException;
 
     /**
-     * Returns an MD5 digest of all the cache entries for the named cache instance.
+     * Returns a digest of all the cache entries for the named cache instance. When FIPS 140-3 is enabled,
+     * a SHA-256 digest is returned, MD5 otherwise. 
      * Note that the cache key and value objects should override the default java.lang.Object.hashCode()
      * method to get semantic comparability between object instances. This is a CPU and I/O intensive
      * when the useMemoryCacheDigest parameter is set to false. In this case the command will compute
@@ -205,7 +206,7 @@ public interface CacheAdminMBean {
      * @param useMemoryCacheDigest If true, use only the memory cache digest. If false, use the whole cache digest.
      * @param cacheIDOnly If true, get cache ID digest. It also includes ID digest from the PushPullTable. If false, get cache ID/value digest.
      * @param debug If debug is true, a list of the cache IDs and their hashcodes are written to the SystemOut log.
-     * @return MD5 digest of all the cache entries in memory/disk for the named cache instance.
+     * @return A digest of all the cache entries in memory/disk for the named cache instance. Uses SHA-256 when FIPS 140-3 is enabled, otherwise uses MD5.
      * @throws javax.management.AttributeNotFoundException
      */
     public abstract String getCacheDigest(String cacheInstance,

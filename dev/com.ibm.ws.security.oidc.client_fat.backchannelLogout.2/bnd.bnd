@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ tested.features: openidconnectclient-1.0, jsp-2.2, servlet-3.1, osgiconsole-1.0,
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
 	com.ibm.ws.org.jose4j;version=latest,\
-	org.glassfish:javax.json;version='1.0',\
+	com.ibm.ws.org.glassfish.json.1.0;version=latest,\
 	com.ibm.json4j;version=latest,\
 	org.bitbucket.b_c.jose4j,\
 	com.ibm.ws.security.jwt;version=latest

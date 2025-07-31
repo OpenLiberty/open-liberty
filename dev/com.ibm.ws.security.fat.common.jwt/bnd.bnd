@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2023 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -47,35 +47,36 @@ generate.replacement: true
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
-	com.ibm.ws.security.fat.common;version=latest,\
-	com.ibm.ws.security.jwt;version=latest,\
-	javax.ws.rs:javax.ws.rs-api;version=2.0,\
-	com.ibm.ws.org.apache.httpcomponents;version=latest,\
-	net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
-	net.sourceforge.htmlunit:webdriver;version=2.6,\
+    com.ibm.ws.security.fat.common;version=latest,\
+    com.ibm.ws.security.jwt;version=latest,\
+    javax.ws.rs:javax.ws.rs-api;version=2.0,\
+    com.ibm.ws.org.apache.httpcomponents;version=latest,\
+    net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
+    net.sourceforge.htmlunit:webdriver;version=2.6,\
     org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
     org.brotli:dec;version=0.1.2,\
-	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
-	org.apache.httpcomponents:httpmime;version=4.3.1,\
-	com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.org.osgi.core;version=latest,\
-	com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.logging.core;version=latest,\
-	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.org.apache.commons.lang3;version=latest,\
-	io.openliberty.org.apache.commons.logging;version=latest,\
-	io.openliberty.org.apache.commons.codec;version=latest,\
-	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.org.jose4j;version=latest,\
-	com.ibm.websphere.javaee.jws.1.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.json4j;version=latest,\
-	com.ibm.ws.org.glassfish.json.1.1,\
-	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
-	org.glassfish:javax.json;version=1.0,\
-	com.ibm.ws.security.token;version=latest,\
-	fattest.simplicity;version=latest,\
-	org.bitbucket.b_c.jose4j
+    net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
+    org.apache.httpcomponents:httpmime;version=4.3.1,\
+    com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.logging.core;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.org.apache.commons.lang3;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
+    io.openliberty.org.apache.commons.codec;version=latest,\
+    com.ibm.websphere.security;version=latest,\
+    com.ibm.ws.org.jose4j;version=latest,\
+    com.ibm.websphere.javaee.jws.1.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+    com.ibm.json4j;version=latest,\
+    com.ibm.ws.org.glassfish.json.1.1,\
+    com.ibm.ws.security.openidconnect.clients.common;version=latest,\
+    com.ibm.ws.org.glassfish.json.1.0;version=latest,\
+    com.ibm.ws.security.token;version=latest,\
+    fattest.simplicity;version=latest,\
+    org.bitbucket.b_c.jose4j
     

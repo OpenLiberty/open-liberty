@@ -17,6 +17,8 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import io.openliberty.data.internal.AttributeConstraint;
+import io.openliberty.data.internal.QueryType;
 import jakarta.data.repository.Find;
 
 /**
@@ -62,7 +64,7 @@ public interface DataVersionCompatibility {
     StringBuilder appendConstraint(StringBuilder q,
                                    String o_,
                                    String attrName,
-                                   Object constraint, // TODO 1.1 Class<?>
+                                   AttributeConstraint constraint,
                                    int qp,
                                    boolean isCollection,
                                    Annotation[] annos);
@@ -160,7 +162,7 @@ public interface DataVersionCompatibility {
                            Class<?> paramType,
                            Annotation[] paramAnnos,
                            String[] attrNames,
-                           Object[] constraints, // TODO 1.1: Class<?>[]
+                           AttributeConstraint[] constraints,
                            char[] updateOps,
                            int qpNext);
 

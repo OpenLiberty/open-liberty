@@ -25,8 +25,9 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.data.internal.AttributeConstraint;
+import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
-import io.openliberty.data.internal.version.QueryType;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -116,7 +117,7 @@ public class Data_1_0 implements DataVersionCompatibility {
     public StringBuilder appendConstraint(StringBuilder q,
                                           String o_,
                                           String attrName,
-                                          Object constraint,
+                                          AttributeConstraint constraint,
                                           int qp,
                                           boolean isCollection,
                                           Annotation[] annos) {
@@ -167,13 +168,11 @@ public class Data_1_0 implements DataVersionCompatibility {
                                   Class<?> paramType,
                                   Annotation[] paramAnnos,
                                   String[] attrNames,
-                                  Object[] constraints, // TODO 1.1: Class<?>[]
+                                  AttributeConstraint[] constraints,
                                   char[] updateOps,
                                   int qpNext) {
         // In Data 1.0, all constraints are the equality condition
-        // By.class serves as a marker for this because that is how it behaves
-        // absent any other constraints or annotations.
-        constraints[p] = By.class;
+        constraints[p] = AttributeConstraint.Equal;
         return qpNext + 1;
     }
 

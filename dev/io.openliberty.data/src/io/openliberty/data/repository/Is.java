@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.data.repository;
 
-import static io.openliberty.data.repository.Constants.IGNORE_CASE;
 import static io.openliberty.data.repository.Constants.NOT;
 
 import java.lang.annotation.ElementType;
@@ -29,29 +28,19 @@ public @interface Is {
         Equal,
         GreaterThan,
         GreaterThanEqual,
-        IgnoreCase(Equal, IGNORE_CASE),
         In,
         LessThan,
         LessThanEqual,
         Like,
-        LikeIgnoreCase(Like, IGNORE_CASE),
         Prefixed,
-        PrefixedIgnoreCase(Prefixed, IGNORE_CASE),
         Substringed,
-        SubstringedIgnoreCase(Substringed, IGNORE_CASE),
         Suffixed,
-        SuffixedIgnoreCase(Suffixed, IGNORE_CASE),
         Not(NOT, Equal),
-        NotIgnoreCase(NOT, Equal, IGNORE_CASE),
         NotIn(NOT, In),
         NotLike(NOT, Like),
-        NotLikeIgnoreCase(NOT, Like, IGNORE_CASE),
         NotPrefixed(NOT, Prefixed),
-        NotPrefixedIgnoreCase(NOT, Prefixed, IGNORE_CASE),
         NotSubstringed(NOT, Substringed),
-        NotSubstringedIgnoreCase(NOT, Substringed, IGNORE_CASE),
-        NotSuffixed(NOT, Suffixed),
-        NotSuffixedIgnoreCase(NOT, Suffixed, IGNORE_CASE);
+        NotSuffixed(NOT, Suffixed);
 
         // The remaining part of this class is here to help Jakarta Data providers
         // interpret the enumerated constants. It can be removed if it doesn't seem
@@ -59,32 +48,16 @@ public @interface Is {
 
         private final Op base;
 
-        private final boolean ignoreCase;
-
         private final boolean isNegative;
 
         private Op() {
             this.base = this;
-            this.ignoreCase = false;
             this.isNegative = false;
         }
 
         private Op(int not, Op baseOp) {
             this.base = baseOp;
-            this.ignoreCase = false;
-            this.isNegative = not == NOT; 
-        }
-
-        private Op(int not, Op baseOp, boolean ignoreCase) {
-            this.base = baseOp;
-            this.ignoreCase = ignoreCase;
-            this.isNegative = not == NOT; 
-        }
-
-        private Op(Op baseOp, boolean ignoreCase) {
-            this.base = baseOp;
-            this.ignoreCase = ignoreCase;
-            this.isNegative = false;
+            this.isNegative = not == NOT;
         }
 
         /**
@@ -96,15 +69,6 @@ public @interface Is {
          */
         public Op base() {
             return base;
-        }
-
-        /**
-         * Whether to request that case be ignored.
-         *
-         * @return whether to request that case be ignored.
-         */
-        public boolean ignoreCase() {
-            return ignoreCase;
         }
 
         /**
@@ -122,6 +86,5 @@ public @interface Is {
 
 //Internal constants that make constructors for the enumerated values more readable
 class Constants {
-    static final boolean IGNORE_CASE = true;
     static final int NOT = -1;
 }

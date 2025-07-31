@@ -117,6 +117,8 @@ public class CryptoUtils {
     // recommended PBKDF2WithHmacSHA512 OWASP recommended iterations
     public static final int PBKDF2HMACSHA512_ITERATIONS = 210000;
 
+    public static String SHA2DRBG = "SHA2DRBG";
+
     /**
      * For tracking all uses of PBKDF2WithHmacSHA1
      * <p>Example Usages:

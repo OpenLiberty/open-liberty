@@ -661,6 +661,9 @@ public class ESAAdaptor extends ArchiveAdaptor {
             if (write(false, filesInstalled, fileToWrite, ebcdicCharSet, zip.getInputStream(ze),
                       asciiCharSet, existsAction, checksumEntry)) {
                 if (replaceChecksum) {
+                    // FIPS 140-3: Algorithm assessment complete; no changes required.
+                    // MD5 is used for file comparison / checksums which isn't a cryptographic use case
+                    // We can't update the hashing algorithm used here because ESA's only provide MD5 checksums
                     String cs = HashUtils.getFileMD5String(fileToWrite);
                     checksumsManager.registerNewChecksums(featureDir, fileName, cs);
                 }

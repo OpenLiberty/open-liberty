@@ -110,10 +110,9 @@ public class MpTelemetryLogMappingUtils {
         String loglevel = logData.getLoglevel();
         builder.setSeverity(mapWsLevelToSeverity(loglevel));
 
-        // Get Log Severity from LogData and set it in the LogRecordBuilder
-        String logSeverity = logData.getSeverity();
-        builder.setSeverityText(logSeverity);
-
+        // Log severity is set to what the log level is known as at the source
+        builder.setSeverityText(loglevel);
+        
         // Get message from LogData and set it in the LogRecordBuilder
         String message = logData.getMessage();
         if (loglevel != null) {
