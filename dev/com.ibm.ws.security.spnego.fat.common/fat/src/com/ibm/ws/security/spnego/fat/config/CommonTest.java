@@ -56,10 +56,10 @@ public class CommonTest {
     protected static String TARGET_SERVER = "";
     protected static boolean wasCommonTokenRefreshed = false;
     protected static JDKExpectationTestClass expectation;
-
     protected final static Krb5Helper krb5Helper = new Krb5Helper();
     protected static KdcHelper kdcHelper = null;
-
+    private static boolean isZOS = false;
+        private static byte[] ASCII2EBCDIC = new byte[256];
     @Rule
     public TestName name = new TestName();
 
@@ -389,9 +389,15 @@ public class CommonTest {
     }
 
     protected static void createKrbConf(LibertyServer testServer) throws IOException {
-        boolean isZOS = testServer.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
         String thisMethod = "createKrbConf";
         Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+        try{
+            isZOS = testServer.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
+        }
+        catch (Exception e){
+            Throwable cause = new RuntimeException("Error determening if it's z/OS.");
+            Log.error(c, "createKrbConf", cause);
+        }
         try(FileOutputStream out = new FileOutputStream(testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
@@ -404,6 +410,7 @@ public class CommonTest {
               Log.info(c, thisMethod, "Did not find clockskew  = 300 in krb5.conf");
             }
         if (isZOS) {
+            Log.info(c, thisMethod, "OS is z/OS Converting krb.conf file to EBCDIC");
             byte[] krbConfBytes = baos.toByteArray();
             byte[] ebcdicBytes = convertStrToEBCDIC(krbConfBytes);
             out.write(krbConfBytes);
@@ -1042,7 +1049,7 @@ public class CommonTest {
      * @param in -- an array containing ASCII data.
      * @return -- an array containing EBCIDIC data.
      */
-    public byte[] convertStrToEBCDIC(byte[] in) {
+    public static byte[] convertStrToEBCDIC(byte[] in) {
         if (in != null) {
             byte[] out = new byte[in.length];
             for (int i = 0; i < in.length; ++i) {
@@ -1059,7 +1066,7 @@ public class CommonTest {
      * they are converted as signed values. Thus the "& 0xFF" to ensure
      * that we don't try to lookup negative values.
      **/
-    private byte convertByteA2E(byte in) {
+    private static byte convertByteA2E(byte in) {
         return ASCII2EBCDIC[in & 0xFF];
     }
 
