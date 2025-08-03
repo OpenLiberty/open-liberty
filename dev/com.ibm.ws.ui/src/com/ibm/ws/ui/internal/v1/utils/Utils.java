@@ -40,7 +40,7 @@ public class Utils {
 
     static {
         try {
-            messagedigest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
+            messagedigest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
         } catch (NoSuchAlgorithmException e) {
             //should not happen
             throw new RuntimeException(e);
@@ -118,12 +118,12 @@ public class Utils {
     }
 
     /**
-     * Generates the md5 checksum of the given string
+     * Generates the SHA512 or MD5 checksum of the given string in respect to FIPS is enabled or not.
      *
      * @param str The input string
-     * @return The MD5 checksum of the given string.
+     * @return The checksum of the given string.
      */
-    public synchronized static String getMD5String(String str) {
+    public synchronized static String getChecksumString(String str) {
         byte[] hash;
         try {
             hash = messagedigest.digest(str.getBytes(StandardCharsets.UTF_8));
@@ -140,6 +140,7 @@ public class Utils {
         }
         return sb.toString();
     }
+
 
     /**
      * This method validates whether the input string is a valid JSON or not.
