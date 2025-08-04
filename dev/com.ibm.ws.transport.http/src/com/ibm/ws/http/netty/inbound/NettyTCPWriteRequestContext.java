@@ -10,6 +10,7 @@
 package com.ibm.ws.http.netty.inbound;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -98,6 +99,11 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     public void setStreamId(String streamId) {
         this.streamID = streamId;
+    }
+
+    @Override
+    public Socket getSocket() {
+        throw new UnsupportedOperationException("Can not get the socket from a Netty connection!");
     }
 
     @Override

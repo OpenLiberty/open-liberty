@@ -11,6 +11,7 @@ package com.ibm.ws.http.netty.inbound;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -80,6 +81,11 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     @Override
     public TCPConnectionContext getInterface() {
         return this.connectionContext;
+    }
+
+    @Override
+    public Socket getSocket() {
+        throw new UnsupportedOperationException("Can not get the socket from a Netty connection!");
     }
 
     /**
