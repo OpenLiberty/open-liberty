@@ -14,15 +14,14 @@ package com.ibm.ws.logging.fat;
 
 import static org.junit.Assert.*;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
+import java.io.File;
+import java.util.Calendar;
 
 import org.junit.*;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -31,155 +30,332 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 public class MessageTraceFileNameTimedRolloverTest {
 
+    private static final Class<?> c = MessageTraceFileNameTimedRolloverTest.class;
     private static final String SERVER_NAME = "com.ibm.ws.logging.messagetracerollover";
-    private static final String[] EXPECTED_FAILURES = { "CWWKF0001E" };
 
     private static LibertyServer server;
     private static RemoteFile bootstrapFile = null;
-    private static Properties initialBootstrapProps = null;
+
+    @Before
+    public void cleanLogsBeforeEach() throws Exception {
+        // ensure no residue between tests
+        server.deleteDirectoryFromLibertyServerRoot("logs/");
+        clearBootstrap(); // avoid leakage of traceFileName across tests
+    }
+
+    /** Write bootstrap content (overwrites). */
+    private static void writeBootstrap(String content) throws Exception {
+        if (bootstrapFile.exists()) {
+            bootstrapFile.delete();
+        }
+        try (java.io.OutputStream os = bootstrapFile.openForWriting(false)) {
+            os.write(content.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        }
+    }
+
+    /** Set or clear com.ibm.ws.logging.trace.file.name in bootstrap.properties. */
+    private static void setBootstrapTraceFileName(String value) throws Exception {
+        String content = "bootstrap.include=../testports.properties\n"
+                         + (value == null ? "" : "com.ibm.ws.logging.trace.file.name=" + value + "\n");
+        writeBootstrap(content);
+    }
+
+    /** Clear bootstrap to just include test ports. */
+    private static void clearBootstrap() throws Exception {
+        writeBootstrap("bootstrap.include=../testports.properties\n");
+    }
+
+    /** Wait up to timeoutMs for a file to exist under logs/ */
+    private static boolean waitForFileExists(String pathFromRoot, long timeoutMs) throws Exception {
+        long end = System.currentTimeMillis() + timeoutMs;
+        while (System.currentTimeMillis() < end) {
+            if (server.fileExistsInLibertyServerRoot(pathFromRoot))
+                return true;
+            Thread.sleep(250);
+        }
+        return false;
+    }
+
+    /** Wait up to timeoutMs for any rolled files with the given prefix (e.g., "trace", "test") */
+    private static int waitForRolledFiles(String prefix, long timeoutMs) {
+        File logsDir = new File(server.getLogsRoot());
+        long end = System.currentTimeMillis() + timeoutMs;
+        int count = 0;
+        while (System.currentTimeMillis() < end) {
+            File[] rolled = logsDir.listFiles((dir, name) -> name.startsWith(prefix + "_") && name.endsWith(".log"));
+            count = (rolled == null) ? 0 : rolled.length;
+            if (count > 0)
+                return count;
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ignored) {
+                /* no-op */ }
+        }
+        return count;
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
 
-        // Get the bootstrap.properties file and store original content
+        // Get the bootstrap.properties file reference
         bootstrapFile = server.getServerBootstrapPropertiesFile();
-        FileInputStream in = getFileInputStreamForRemoteFile(bootstrapFile);
-        initialBootstrapProps = loadProperties(in);
 
-        // Preserve the original server configuration
+        // Clean server state
+        if (server.isStarted()) {
+            server.stopServer();
+        }
+        server.deleteDirectoryFromLibertyServerRoot("logs/");
+
+        // Ensure a clean bootstrap baseline before any tests
+        clearBootstrap();
+
+        // Save original server configuration
         server.saveServerConfiguration();
     }
 
     @After
-    public void cleanupAfterEachTest() throws Exception {
+    public void tearDownAfterEachTest() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer(EXPECTED_FAILURES);
+            server.stopServer();
         }
-
-        // Restore the initial contents of bootstrap.properties
-        if (bootstrapFile != null && initialBootstrapProps != null) {
-            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
-            writeProperties(initialBootstrapProps, out);
-        }
+        // Restore original server configuration after each test
+        server.restoreServerConfiguration();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer(EXPECTED_FAILURES);
+            server.stopServer();
         }
     }
 
     /**
      * Test 1: Configure TimedLogRollover (in server.env) and set traceFileName=stdout in bootstrap.properties,
-     * verify if trace.log is not created, only message.log is rolled over.
+     * verify trace.log is not created, only message.log is rolled over.
      */
     @Test
     public void testTraceFileNameStdoutBootstrapWithTimedRollover() throws Exception {
-        // Simple - just start server (bootstrap.properties already has traceFileName=stdout)
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "=== TEST 1: Requirements Check ===");
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "✓ Requirement: TimedLogRollover in server.env");
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "✓ Requirement: traceFileName=stdout in bootstrap.properties");
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "✓ Requirement: trace.log should NOT be created");
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "✓ Requirement: messages.log should roll over");
+
+        setBootstrapTraceFileName("stdout");
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "Set traceFileName=stdout in bootstrap.properties");
+
+        waitForBeginningOfMinute();
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "Started at beginning of minute: " + new java.util.Date());
+
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
+        // Verify trace.log is NOT created
         boolean traceLogExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
-        assertFalse("REQUIREMENT: trace.log should NOT be created when traceFileName=stdout", traceLogExists);
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "trace.log exists: " + traceLogExists + " (should be FALSE)");
+        assertFalse("trace.log should NOT be created when traceFileName=stdout", traceLogExists);
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "VERIFIED: trace.log NOT created");
 
-        boolean messageLogExists = server.fileExistsInLibertyServerRoot("logs/messages.log") ||
-                                   server.fileExistsInLibertyServerRoot("logs/message.log");
-        assertTrue("message log should exist", messageLogExists);
+        // Verify messages.log exists
+        boolean messageLogExists = server.fileExistsInLibertyServerRoot("logs/messages.log");
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "messages.log exists: " + messageLogExists + " (should be TRUE)");
+        assertTrue("messages.log should exist", messageLogExists);
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "VERIFIED: messages.log exists");
+
+        // Calculate next rollover time
+        Calendar nextRollover = getNextRolloverTime(0, 1);
+        long waitTime = nextRollover.getTimeInMillis() - System.currentTimeMillis() + 5000;
+
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "Next rollover at: " + nextRollover.getTime());
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "Waiting " + (waitTime / 1000) + " seconds for rollover...");
+
+        if (waitTime > 0) {
+            Thread.sleep(waitTime);
+        }
+
+        // Check for rolled message files
+        File logsDir = new File(server.getLogsRoot());
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "Checking directory: " + logsDir.getAbsolutePath());
+
+        File[] allFiles = logsDir.listFiles();
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "All files in logs directory:");
+        if (allFiles != null) {
+            for (File f : allFiles) {
+                Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "  - " + f.getName());
+            }
+        }
+
+        File[] rolledFiles = logsDir.listFiles((dir, name) -> name.startsWith("messages_") && name.endsWith(".log"));
+
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "Found " + (rolledFiles != null ? rolledFiles.length : 0) + " rolled message files");
+        assertTrue("Message log should have rolled over", rolledFiles != null && rolledFiles.length > 0);
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "VERIFIED: messages.log rolled over");
+        Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "=== TEST 1: COMPLETE - All requirements verified ===");
     }
 
     /**
      * Test 2: Configure TimedLogRollover (in server.env) and traceFileName=stdout in server.xml,
-     * verify if the trace.log is NOT rolled over.
+     * verify the trace.log is NOT created and NOT rolled.
      */
     @Test
     public void testTraceFileNameStdoutServerXmlWithTimedRollover() throws Exception {
-        // Use server.xml configuration for this test
+        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "=== TEST 2: Requirements Check ===");
+        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "✓ Use server.xml configuration with traceFileName=stdout");
+        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "✓ Verify trace.log is NOT created and trace_* does NOT roll");
+
+        // Ensure bootstrap is NOT forcing a file name
+        setBootstrapTraceFileName(null);
+
         server.setServerConfigurationFile("server_trace_stdout.xml");
+
+        // Align so we can assert that no trace_* file rolls on the next minute boundary
+        waitForBeginningOfMinute();
+
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // Check results
         boolean traceLogExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
-        assertFalse("REQUIREMENT: trace.log should NOT be created when traceFileName=stdout in server.xml", traceLogExists);
+        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "trace.log exists: " + traceLogExists + " (should be FALSE)");
+        assertFalse("trace.log should NOT be created when traceFileName=stdout", traceLogExists);
 
-        boolean messageLogExists = server.fileExistsInLibertyServerRoot("logs/messages.log") ||
-                                   server.fileExistsInLibertyServerRoot("logs/message.log");
-        assertTrue("message logs should exist for normal operation", messageLogExists);
+        Calendar next = getNextRolloverTime(0, 1);
+        long waitMs = next.getTimeInMillis() - System.currentTimeMillis() + 5000;
+        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "Waiting " + (waitMs / 1000) + " seconds for rollover check...");
+        if (waitMs > 0)
+            Thread.sleep(waitMs);
+
+        int rolled = waitForRolledFiles("trace", 3000);
+        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "Found rolled trace_* files: " + rolled + " (should be 0)");
+        assertEquals("trace_* rolled files must be ZERO when writing to stdout", 0, rolled);
+
+        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "=== TEST 2: COMPLETE ===");
     }
 
     /**
-     * Test 3: Configure TimedLogRollover (in server.env) and set traceFileName=stdout in bootstrap.properties,
-     * and then dynamically update the traceFileName to trace.log in server.xml,
-     * verify if the trace.log gets rolled over.
+     * Test 3: TimedLogRollover (server.env) + start with traceFileName=stdout in bootstrap.properties,
+     * then dynamically update to traceFileName=trace.log in server.xml, and verify trace.log CREATES and ROLLS.
      */
     @Test
     public void testDynamicTraceFileNameStdoutToTraceLog() throws Exception {
-        // Start with existing bootstrap.properties (already has traceFileName=stdout)
+        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "=== TEST 3: Requirements Check ===");
+        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "✓ Start with traceFileName=stdout in bootstrap");
+        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "✓ Dynamically update to traceFileName=trace.log in server.xml");
+        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "✓ Verify trace.log gets created and then rolled over");
+
+        // Start with stdout via bootstrap
+        setBootstrapTraceFileName("stdout");
+
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // Verify initial state - trace.log should not exist
-        boolean initialTraceLogExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
-        assertFalse("REQUIREMENT: Initially, trace.log should not exist when traceFileName=stdout in bootstrap", initialTraceLogExists);
+        // Verify initial state (no trace.log)
+        assertFalse("trace.log should not exist initially when traceFileName=stdout",
+                    server.fileExistsInLibertyServerRoot("logs/trace.log"));
 
-        // Dynamically update server.xml to change traceFileName to trace.log
+        // Dynamic update -> trace.log
         server.setMarkToEndOfLog();
+        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "Updating to server_trace_log.xml...");
         server.setServerConfigurationFile("server_trace_log.xml");
-        assertNotNull("Configuration update should complete",
-                      server.waitForConfigUpdateInLogUsingMark(null));
+        assertNotNull("Config update should complete", server.waitForConfigUpdateInLogUsingMark(null));
 
-        // Verify trace.log now exists after dynamic update
-        boolean traceLogNowExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
-        assertTrue("REQUIREMENT: trace.log should exist after dynamic update to traceFileName=trace.log", traceLogNowExists);
+        // File must be created shortly after update
+        assertTrue("trace.log should be created after dynamic update",
+                   waitForFileExists("logs/trace.log", 15000));
+
+        // And it must roll on the next boundary
+        Calendar next = getNextRolloverTime(0, 1);
+        long waitMs = next.getTimeInMillis() - System.currentTimeMillis() + 5000;
+        if (waitMs > 0)
+            Thread.sleep(waitMs);
+
+        int rolled = waitForRolledFiles("trace", 5000);
+        assertTrue("trace_* rolled files should exist after update to trace.log", rolled > 0);
+
+        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "=== TEST 3: COMPLETE ===");
     }
 
     /**
-     * Test 4: Configure TimedLogRollover (in server.env), and then dynamically update the traceFileName
-     * to test.log in server.xml, verify if the new test.log gets rolled over,
-     * and the trace.log file does NOT roll over.
+     * Test 4: With TimedLogRollover, dynamically update traceFileName to test.log,
+     * verify test.log CREATES and ROLLS, and verify trace_* does NOT roll.
      */
     @Test
     public void testDynamicTraceFileNameToCustomFile() throws Exception {
-        // Start with default configuration
+        Log.info(c, "testDynamicTraceFileNameToCustomFile", "=== TEST 4: Requirements Check ===");
+        Log.info(c, "testDynamicTraceFileNameToCustomFile", "✓ Dynamically update traceFileName to test.log");
+        Log.info(c, "testDynamicTraceFileNameToCustomFile", "✓ Verify test.log gets rolled over");
+        Log.info(c, "testDynamicTraceFileNameToCustomFile", "✓ Verify trace.log does NOT roll over");
+
+        // Let server.xml control (no bootstrap override)
+        setBootstrapTraceFileName(null);
+
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // Dynamically update server.xml to change traceFileName to test.log
+        // Sanity: trace.log should not be there at start of this test run
+        boolean initialTraceLog = server.fileExistsInLibertyServerRoot("logs/trace.log");
+        Log.info(c, "testDynamicTraceFileNameToCustomFile", "Initial trace.log exists: " + initialTraceLog);
+
+        // Update to test.log
         server.setMarkToEndOfLog();
+        Log.info(c, "testDynamicTraceFileNameToCustomFile", "Updating to server_test_log.xml...");
         server.setServerConfigurationFile("server_test_log.xml");
+        assertNotNull("Config update should complete", server.waitForConfigUpdateInLogUsingMark(null));
 
-        // Wait for config update
-        assertNotNull("Configuration update should complete",
-                      server.waitForConfigUpdateInLogUsingMark(null));
+        // test.log must be created shortly after update
+        assertTrue("test.log should be created after dynamic update",
+                   waitForFileExists("logs/test.log", 15000));
 
-        // Verify new test.log gets created
-        boolean testLogNowExists = server.fileExistsInLibertyServerRoot("logs/test.log");
-        assertTrue("REQUIREMENT: test.log should exist after dynamic update to traceFileName=test.log", testLogNowExists);
+        // On next boundary: test_* should roll, trace_* must NOT roll
+        Calendar next = getNextRolloverTime(0, 1);
+        long waitMs = next.getTimeInMillis() - System.currentTimeMillis() + 5000;
+        if (waitMs > 0)
+            Thread.sleep(waitMs);
+
+        int testRolled = waitForRolledFiles("test", 5000);
+        int traceRolled = waitForRolledFiles("trace", 2000);
+
+        assertTrue("test_* rolled files should exist", testRolled > 0);
+        assertEquals("trace_* must NOT roll when traceFileName points to test.log", 0, traceRolled);
+
+        Log.info(c, "testDynamicTraceFileNameToCustomFile", "=== TEST 4: COMPLETE ===");
     }
 
     /**
      * Test 5: Repeat scenario 4 using messageFileName, instead.
-     * Configure TimedLogRollover (in server.env), then dynamically update messageFileName
-     * to custom file, verify rollover behavior.
+     * (Don’t block on CWWKG0017I; just wait for the file to appear.)
      */
     @Test
     public void testDynamicMessageFileNameToCustomFile() throws Exception {
-        // Start with default configuration
+        Log.info(c, "testDynamicMessageFileNameToCustomFile", "=== TEST 5: Requirements Check ===");
+        Log.info(c, "testDynamicMessageFileNameToCustomFile", "✓ Requirement: Dynamically update messageFileName to custom_message.log");
+        Log.info(c, "testDynamicMessageFileNameToCustomFile", "✓ Requirement: Verify custom_message.log gets rolled over");
+
+        // Let server.xml control (no bootstrap override)
+        setBootstrapTraceFileName(null);
+
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // Dynamically update server.xml to change messageFileName to custom_message.log
         server.setMarkToEndOfLog();
+        Log.info(c, "testDynamicMessageFileNameToCustomFile", "Updating to server_custom_message.xml...");
         server.setServerConfigurationFile("server_custom_message.xml");
 
-        // Wait for config update
-        server.waitForStringInLogUsingMark("CWWKG0017I");
+        // Wait for the file to appear instead of waiting on CWWKG0017I
+        assertTrue("custom_message.log should appear after config update",
+                   waitForFileExists("logs/custom_message.log", 20000));
 
-        // Verify new custom_message.log gets created
-        boolean customMessageNowExists = server.fileExistsInLibertyServerRoot("logs/custom_message.log");
-        assertTrue("REQUIREMENT: custom_message.log should exist after dynamic update to messageFileName=custom_message.log", customMessageNowExists);
+        // Then wait for the next rollover and verify a rolled file exists
+        Calendar nextRollover = getNextRolloverTime(0, 1);
+        long waitTime = nextRollover.getTimeInMillis() - System.currentTimeMillis() + 5000;
+        if (waitTime > 0)
+            Thread.sleep(waitTime);
+
+        int rolled = waitForRolledFiles("custom_message", 5000);
+        Log.info(c, "testDynamicMessageFileNameToCustomFile", "custom_message_* rolled count: " + rolled);
+        assertTrue("custom_message_* rolled files should exist", rolled > 0);
+
+        Log.info(c, "testDynamicMessageFileNameToCustomFile", "=== TEST 5: COMPLETE ===");
     }
 
     /**
@@ -188,86 +364,64 @@ public class MessageTraceFileNameTimedRolloverTest {
      */
     @Test
     public void testTraceFileNameStdoutNoTraceLogCreated() throws Exception {
-        // Use server.xml configuration with traceFileName=stdout (same as Test 2 approach)
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "=== TEST 6: Requirements Check ===");
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "✓ Use server.xml configuration with traceFileName=stdout");
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "✓ Verify trace.log is NOT created, but messages.log still is");
+
+        // Ensure bootstrap is NOT forcing a file name
+        setBootstrapTraceFileName(null);
+
         server.setServerConfigurationFile("server_trace_stdout.xml");
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // Main test: Verify trace.log is NOT created when traceFileName=stdout in server.xml
         boolean traceLogExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
-        assertFalse("REQUIREMENT: trace.log should NOT be created when traceFileName=stdout in server.xml", traceLogExists);
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "trace.log exists: " + traceLogExists + " (should be FALSE)");
+        assertFalse("trace.log should NOT be created when traceFileName=stdout", traceLogExists);
 
-        // Verify other logs are still functional
-        boolean messageLogExists = server.fileExistsInLibertyServerRoot("logs/messages.log") ||
-                                   server.fileExistsInLibertyServerRoot("logs/message.log");
-        assertTrue("Other log files should still be created normally", messageLogExists);
+        boolean messageLogExists = server.fileExistsInLibertyServerRoot("logs/messages.log");
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "messages.log exists: " + messageLogExists + " (should be TRUE)");
+        assertTrue("messages.log should still be created normally", messageLogExists);
+
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "=== TEST 6: COMPLETE ===");
     }
 
-    // Helper methods (copied from the example file)
-    private static FileInputStream getFileInputStreamForRemoteFile(RemoteFile bootstrapPropFile) throws Exception {
-        FileInputStream input = null;
-        try {
-            input = (FileInputStream) bootstrapPropFile.openForReading();
-        } catch (Exception e) {
-            throw new Exception("Error while getting the FileInputStream for the remote bootstrap properties file.");
-        }
-        return input;
-    }
+    // ---- helpers for timing/rollover ----
 
-    private static Properties loadProperties(FileInputStream input) throws IOException {
-        Properties props = new Properties();
-        try {
-            props.load(input);
-        } catch (IOException e) {
-            throw new IOException("Error while loading properties from the remote bootstrap properties file.");
-        } finally {
+    private static void waitForBeginningOfMinute() {
+        // Wait for the beginning of the minute
+        if (Calendar.getInstance().get(Calendar.SECOND) != 0) {
             try {
-                input.close();
-            } catch (IOException e1) {
-                throw new IOException("Error while closing the input stream.");
-            }
-        }
-        return props;
-    }
-
-    private static FileOutputStream getFileOutputStreamForRemoteFile(RemoteFile bootstrapPropFile, boolean append) throws Exception {
-        FileOutputStream output = null;
-        try {
-            output = (FileOutputStream) bootstrapPropFile.openForWriting(append);
-        } catch (Exception e) {
-            throw new Exception("Error while getting FileOutputStream for the remote bootstrap properties file.");
-        }
-        return output;
-    }
-
-    private static void writeProperties(Properties props, FileOutputStream output) throws Exception {
-        try {
-            props.store(output, null);
-        } catch (IOException e) {
-            throw new Exception("Error while writing to the remote bootstrap properties file.");
-        } finally {
-            try {
-                output.close();
-            } catch (IOException e) {
-                throw new IOException("Error while closing the output stream.");
+                Thread.sleep((60000 - Calendar.getInstance().get(Calendar.SECOND) * 1000));
+                Thread.sleep(2000); // padding
+            } catch (InterruptedException e) {
+                // Ignore
             }
         }
     }
 
-    private static void setInBootstrapPropertiesFile(LibertyServer libertyServer, RemoteFile bootstrapFile, String key, String value) throws Exception {
-        // Stop server, if running...
-        if (libertyServer != null && libertyServer.isStarted()) {
-            libertyServer.stopServer(EXPECTED_FAILURES);
+    private static Calendar getNextRolloverTime(int rolloverStartHour, int rolloverInterval) {
+        // Set calendar start time
+        Calendar sched = Calendar.getInstance();
+        sched.set(Calendar.HOUR_OF_DAY, rolloverStartHour);
+        sched.set(Calendar.MINUTE, 0);
+        sched.set(Calendar.SECOND, 0);
+        sched.set(Calendar.MILLISECOND, 0);
+
+        Calendar currCal = Calendar.getInstance();
+
+        if (currCal.before(sched)) {
+            while (currCal.before(sched)) {
+                sched.add(Calendar.MINUTE, rolloverInterval * (-1));
+            }
+            sched.add(Calendar.MINUTE, rolloverInterval);
+        } else if (currCal.after(sched)) {
+            while (currCal.after(sched)) {
+                sched.add(Calendar.MINUTE, rolloverInterval);
+            }
+        } else if (currCal.equals(sched)) {
+            sched.add(Calendar.MINUTE, rolloverInterval);
         }
-
-        // Update the bootstrap.properties file
-        Properties newBootstrapProps = new Properties();
-        newBootstrapProps.put(key, value);
-
-        FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, true);
-        writeProperties(newBootstrapProps, out);
-
-        // Start server...
-        libertyServer.startServer();
+        return sched;
     }
 }

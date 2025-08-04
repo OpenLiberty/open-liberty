@@ -10,25 +10,14 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="new server">
-	
-	<include location="../fatTestPorts.xml"/>
+<server description="Server for testing dynamic stdout -> trace.log">
+    <include location="../fatTestPorts.xml"/>
 
-    <!-- Enable features -->
     <featureManager>
-		<feature>timedexit-1.0</feature>
+        <feature>timedexit-1.0</feature>
     </featureManager>
 
-    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
-    <httpEndpoint id="defaultHttpEndpoint"
-                  httpPort="9080"
-                  httpsPort="9443" />
-
-    <!-- Automatically expand WAR files and EAR files -->
-    <applicationManager autoExpand="true"/>
-
-    <!-- Default SSL configuration enables trust for default certificates from the Java runtime --> 
-    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
-
-    <logging traceSpecification="com.ibm.ws.webcontainer.*=all" traceFileName="trace.log"/>
+    <logging
+        traceSpecification="*=info:com.ibm.ws.kernel.*=all:com.ibm.ws.config.*=all"
+        traceFileName="trace.log"/>
 </server>
