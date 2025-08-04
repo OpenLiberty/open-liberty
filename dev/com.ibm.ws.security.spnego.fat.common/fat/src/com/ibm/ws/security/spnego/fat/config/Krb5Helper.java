@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -148,7 +148,7 @@ public class Krb5Helper {
         if (realm != null && !realm.isEmpty()) {
             //TODO: remove this block if it is not required
             Log.info(thisClass, thisMethod, "NOT Setting system properties java.security.krb5.realm and java.security.krb5.kdc");
-            // NOTE: do not set the kdc and realm system properties, as they should be ready from the krb5.conf file instead
+            // NOTE: do not set the kdc and realm system properties, as they should be read from the krb5.conf file instead
             //System.setProperty("java.security.krb5.realm", realm);
             //System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);
         } else if (krb5Config != null) {
@@ -159,7 +159,7 @@ public class Krb5Helper {
         if (!IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
             loginContextEntry = SUN_JDK_KRB5_LOGIN;
             System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
-            // NOTE: do not set the kdc and realm system properties, as they should be ready from the krb5.conf file instead
+            // NOTE: do not set the kdc and realm system properties, as they should be read from the krb5.conf file instead
             //System.setProperty("java.security.krb5.realm", (realm == null) ? InitClass.KDC_REALM : realm);
             //System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);
         }
