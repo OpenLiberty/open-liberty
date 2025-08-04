@@ -4100,7 +4100,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                 // has cipher to bit size map                                           
 
                 keySize = com.ibm.ws.webcontainer.WebContainer.getWebContainer().getKeySizefromCipherMap(cipherSuite);
-
+                
+                // FIPS 140-3: Algorithm assessment complete; no impact; future investigation needed.
+                // because we are unsure if clients are still using the older algorithms.
                 if (keySize == null) {
                     if (cipherSuite.contains("_AES_256_")) {
                         keySize = 256;

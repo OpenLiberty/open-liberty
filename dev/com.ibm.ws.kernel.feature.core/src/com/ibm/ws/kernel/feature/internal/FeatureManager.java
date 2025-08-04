@@ -52,8 +52,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.eclipse.equinox.region.RegionDigraph;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -186,7 +186,11 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
 
     private static Version JAVA_MAJOR_VERSION = new Version(JavaInfo.majorVersion(), 0, 0);
 
-    final static Collection<String> ALLOWED_ON_ALL_FEATURES = Arrays.asList("com.ibm.websphere.appserver.timedexit-1.0", "com.ibm.websphere.appserver.osgiConsole-1.0");
+    final static Collection<String> ALLOWED_ON_ALL_FEATURES = Arrays.asList(
+                                                                            "com.ibm.websphere.appserver.timedexit-1.0",
+                                                                            "com.ibm.websphere.appserver.osgiConsole-1.0",
+                                                                            "io.openliberty.xmlBinding-4.0" // Removed from platform in EE 11.  Can be specified on server or client now.
+    );
     final static Collection<String> ALL_ALLOWED_ON_CLIENT_FEATURES;
     static {
         Collection<String> temp = new ArrayList<String>();
@@ -247,7 +251,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
 
         Set<String> getPlatformsWithLowerCaseName() {
             Set<String> lcnPlatforms = new HashSet<String>();
-            if(platforms == null){
+            if (platforms == null) {
                 return lcnPlatforms;
             }
             for (String platform : platforms) {
@@ -351,7 +355,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         private volatile Collection<ProvisioningFeatureDefinition> kernelFeatures;
 
         private final FeatureManager featureManager;
-       
+
         private final ProvisioningMode initialMode;
 
         KernelFeaturesHolder(FeatureManager featureManager, ProvisioningMode initialMode) {
@@ -979,8 +983,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             Tr.debug(tc, "all installed features " + postInstalledFeatures);
         }
 
-        if(result != null){
-            if(!result.getResolvedPlatforms().isEmpty()){
+        if (result != null) {
+            if (!result.getResolvedPlatforms().isEmpty()) {
                 Tr.info(tc, "RESOLVED_PLATFORM", result.getResolvedPlatforms());
             }
 
@@ -989,19 +993,19 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             List<String> resolvedVersionless = new ArrayList<>();
             List<String> resolvedVersioned = new ArrayList<>();
             for (Map.Entry<String, String> versionlessResolved : result.getVersionlessFeatures().entrySet()) {
-                if(versionlessResolved.getValue() == null){
+                if (versionlessResolved.getValue() == null) {
                     continue;
                 }
                 ProvisioningFeatureDefinition versionless = featureRepository.getFeature(versionlessResolved.getKey());
                 ProvisioningFeatureDefinition versioned = featureRepository.getFeature(versionlessResolved.getValue());
-                if((postInstalledFeatures.contains(versionless.getFeatureName()) || postInstalledFeatures.contains(versionless.getSymbolicName()))
-                    && (postInstalledFeatures.contains(versioned.getFeatureName()) || postInstalledFeatures.contains(versioned.getSymbolicName()))){
-                    
+                if ((postInstalledFeatures.contains(versionless.getFeatureName()) || postInstalledFeatures.contains(versionless.getSymbolicName()))
+                    && (postInstalledFeatures.contains(versioned.getFeatureName()) || postInstalledFeatures.contains(versioned.getSymbolicName()))) {
+
                     resolvedVersionless.add(versionless.getFeatureName());
                     resolvedVersioned.add(versioned.getFeatureName());
                 }
             }
-            if(!resolvedVersionless.isEmpty()){
+            if (!resolvedVersionless.isEmpty()) {
                 Tr.info(tc, "VERSIONLESS_FEATURE_RESOLVED_TO_FEATURE", resolvedVersionless, resolvedVersioned);
             }
         }
@@ -1342,7 +1346,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 // If we don't want to include auto features, then check each feature before adding it.
                 if (!includeAutoFeatures) {
                     if (fd instanceof ProvisioningFeatureDefinition) {
-                        if (!((ProvisioningFeatureDefinition) fd).isAutoFeature())
+                        if (!fd.isAutoFeature())
                             publicFeatures.add(fd.getFeatureName());
                     } else {
                         // If we're not an instance of ProvisioningFeatureDefinition then add the feature to the list.
@@ -1493,27 +1497,27 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
 
             @Override
-            public Map<String, String> getVersionlessFeatures(){
+            public Map<String, String> getVersionlessFeatures() {
                 return Collections.emptyMap();
             }
 
             @Override
-            public Set<String> getResolvedPlatforms(){
+            public Set<String> getResolvedPlatforms() {
                 return Collections.emptySet();
             }
 
             @Override
-            public Set<String> getMissingPlatforms(){
+            public Set<String> getMissingPlatforms() {
                 return Collections.emptySet();
             }
 
             @Override
-            public Map<String, Set<String>> getDuplicatePlatforms(){
+            public Map<String, Set<String>> getDuplicatePlatforms() {
                 return Collections.emptyMap();
             }
 
             @Override
-            public Map<String, Set<String>> getNoPlatformVersionless(){
+            public Map<String, Set<String>> getNoPlatformVersionless() {
                 return Collections.emptyMap();
             }
         };
@@ -1530,10 +1534,10 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
      */
     @FFDCIgnore(Throwable.class)
     protected Result updateFeatures(WsLocationAdmin locService,
-                                     Provisioner provisioner,
-                                     Set<String> preInstalledFeatures,
-                                     FeatureChange featureChange,
-                                     long sequenceNumber) {
+                                    Provisioner provisioner,
+                                    Set<String> preInstalledFeatures,
+                                    FeatureChange featureChange,
+                                    long sequenceNumber) {
         // NOTE RE: FFDCIgnore above-- The catch block for Throwable below, stores
         // the exception in an InstallStatus object and calls FFDC at a more appropriate time.
         BundleList newBundleList = null;
@@ -1598,7 +1602,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                         bundleCache.addAllNoReplace(newBundleList);
 
                         // Update installedFeatures with the features that were successfully added
-                        featureRepository.setResolvedFeatures(goodFeatures, newConfiguredFeatures, reportedConfigurationErrors, newConfiguredPlatforms, platformEnvironmentVariable);
+                        featureRepository.setResolvedFeatures(goodFeatures, newConfiguredFeatures, reportedConfigurationErrors, newConfiguredPlatforms,
+                                                              platformEnvironmentVariable);
                     }
                 }
             }
@@ -1757,10 +1762,10 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     private boolean areConfiguredFeaturesGood(Set<String> newConfiguredFeatures, Set<String> newConfiguredPlatforms) {
         if (!!!featureRepository.isDirty()
             && !!!featureRepository.hasConfigurationError()
-            && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)){
-            if(featureRepository.getPlatforms().equals(newConfiguredPlatforms) 
+            && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)) {
+            if (featureRepository.getPlatforms().equals(newConfiguredPlatforms)
                 && equals(featureRepository.getPlatformEnvVar(), platformEnvironmentVariable)) {
-                    
+
                 // check that all installed features are still installed
                 for (String resolvedFeature : featureRepository.getResolvedFeatures()) {
                     if (featureRepository.getFeature(resolvedFeature) == null) {
@@ -2010,36 +2015,34 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
         }
 
-        if(!result.getDuplicatePlatforms().isEmpty()){
-            for(Map.Entry<String, Set<String>> duplicatePlatforms : result.getDuplicatePlatforms().entrySet()){
+        if (!result.getDuplicatePlatforms().isEmpty()) {
+            for (Map.Entry<String, Set<String>> duplicatePlatforms : result.getDuplicatePlatforms().entrySet()) {
                 Tr.error(tc, "DUPLICATE_PLATFORMS", duplicatePlatforms.getValue());
             }
         }
 
-        if(!result.getMissingPlatforms().isEmpty()){
+        if (!result.getMissingPlatforms().isEmpty()) {
             reportedErrors = true;
             Set<String> remainingMissingPlatforms = new HashSet<String>();
-            if(platformEnvironmentVariable != null){
-                for(String plat : result.getMissingPlatforms()){
-                    if(platformEnvironmentVariable.contains(plat)){
+            if (platformEnvironmentVariable != null) {
+                for (String plat : result.getMissingPlatforms()) {
+                    if (platformEnvironmentVariable.contains(plat)) {
                         Tr.error(tc, "UNKNOWN_PLATFORM_VALUE_ENV_VAR", plat);
-                    }
-                    else{
+                    } else {
                         remainingMissingPlatforms.add(plat);
                     }
                 }
-            }
-            else{
+            } else {
                 remainingMissingPlatforms.addAll(result.getMissingPlatforms());
             }
-            if(!remainingMissingPlatforms.isEmpty()){
-                for(String missingPlat : remainingMissingPlatforms){
+            if (!remainingMissingPlatforms.isEmpty()) {
+                for (String missingPlat : remainingMissingPlatforms) {
                     Tr.error(tc, "UNKNOWN_PLATFORM_ELEMENT", missingPlat);
                 }
             }
         }
 
-        if(!result.getNoPlatformVersionless().isEmpty()){
+        if (!result.getNoPlatformVersionless().isEmpty()) {
             for (Map.Entry<String, Set<String>> noPlatformVersionless : result.getNoPlatformVersionless().entrySet()) {
                 Tr.error(tc, "NO_RESOLVED_PLATFORM", noPlatformVersionless.getValue());
             }
@@ -2049,7 +2052,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             String versionlessResolved = versionlessResolvedEntry.getKey();
             String versionedResolved = versionlessResolvedEntry.getValue();
 
-            if(versionedResolved != null){
+            if (versionedResolved != null) {
                 continue; // Sucessfully resolved.  Nothing to check.
             }
 
@@ -2061,7 +2064,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             ProvisioningFeatureDefinition compatibility = null;
             for (String platform : platforms) {
                 compatibility = featureRepository.getCompatibilityFeature(platform);
-                if(compatibility != null){
+                if (compatibility != null) {
                     break;
                 }
             }
@@ -2070,21 +2073,21 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
 
             String compatibilityBaseName = featureRepository.getFeatureBaseName(compatibility.getFeatureName());
-            for(String resolvedPlat : result.getResolvedPlatforms()){
+            for (String resolvedPlat : result.getResolvedPlatforms()) {
                 ProvisioningFeatureDefinition compatibilityFeature = featureRepository.getCompatibilityFeature(resolvedPlat);
-                if(compatibilityFeature == null){
-                    continue; 
+                if (compatibilityFeature == null) {
+                    continue;
                 }
                 String resolvedBaseName = featureRepository.getFeatureBaseName(compatibilityFeature.getFeatureName());
 
-                if(compatibilityBaseName.equals(resolvedBaseName)){
-                    if(!platforms.contains(resolvedPlat)){
+                if (compatibilityBaseName.equals(resolvedBaseName)) {
+                    if (!platforms.contains(resolvedPlat)) {
                         Tr.error(tc, "INCOMPATIBLE_VERSIONLESS_FEATURE_WITH_PLATFORM", getFeatureName(versionlessResolved), resolvedPlat);
                         break;
                     }
                 }
             }
-       }
+        }
 
         List<Entry<String, Collection<Chain>>> sortedConflicts = new ArrayList<Entry<String, Collection<Chain>>>(result.getConflicts().entrySet());
         sortedConflicts.sort(new ConflictComparator()); // order by importance
@@ -2386,7 +2389,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     }
 
     private String getPreferredEePlatform(String symbolicName, String compatibleFeatureBase) {
-        if(symbolicName.startsWith(compatibleFeatureBase)){
+        if (symbolicName.startsWith(compatibleFeatureBase)) {
             return getEeCompatiblePlatform(symbolicName, false); // include ee version
         }
         ProvisioningFeatureDefinition fdefinition = featureRepository.getFeature(symbolicName);

@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -336,20 +335,22 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "using metadata: " + metadata);
 
-            ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl //
-                            .getComponentMetaDataAccessor();
-            if (metadata == null)
-                accessor.beginDefaultContext();
-            else
-                accessor.beginContext(metadata);
-            try {
-                if (namespace != null) {
+            if (namespace != null) {
+                ComponentMetaDataAccessorImpl accessor = //
+                                ComponentMetaDataAccessorImpl //
+                                                .getComponentMetaDataAccessor();
+                if (metadata == null)
+                    accessor.beginDefaultContext();
+                else
+                    accessor.beginContext(metadata);
+                try {
                     //Object resource = InitialContext.doLookup(dataStore);
                     // TODO use the above instead of the following temporary workaround
                     Object resource = null;
                     NamingException failure = null;
                     for (long start = System.nanoTime(); //
-                                    resource == null && System.nanoTime() - start < TimeUnit.SECONDS.toNanos(30); //
+                                    resource == null && System.nanoTime() - start //
+                                                    < TimeUnit.SECONDS.toNanos(30); //
                                     TimeUnit.SECONDS.sleep(2))
                         try {
                             resource = InitialContext.doLookup(dataStore);
@@ -371,35 +372,9 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                                         resourceName, //
                                         metadata, //
                                         entityTypes);
-                } else {
-                    // Check for resource references and persistence unit references where java:comp/env/ is omitted:
-                    String javaCompName = "java:comp/env/" + resourceName;
-                    try {
-                        Object resource = InitialContext.doLookup(javaCompName);
-
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, javaCompName + " is the JNDI name for " + resource);
-
-                        if (resource instanceof EntityManagerFactory)
-                            return new PUnitEMBuilder(provider, //
-                                            repositoryClassLoader, //
-                                            repositoryInterfaces, //
-                                            (EntityManagerFactory) resource, //
-                                            javaCompName, //
-                                            metadata, //
-                                            entityTypes);
-
-                        if (resource instanceof DataSource)
-                            resourceName = javaCompName;
-                    } catch (NamingException x) {
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, javaCompName + " is not available in JNDI, ensure dataStore = "
-                                               + resourceName + " refers to a resource reference or persistence unit reference. "
-                                               + "Otherwise, we will assume this property refers to a datasource.");
-                    }
+                } finally {
+                    accessor.endContext();
                 }
-            } finally {
-                accessor.endContext();
             }
 
             boolean javacolon = namespace != null || // any java: namespace

@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.xmlWSClient-3.0
+symbolicName=io.openliberty.xmlWSClient.internal-3.0
 Subsystem-Name: Internal JAX-WS Client Container Features
 WLP-Activation-Type: parallel
 singleton=true

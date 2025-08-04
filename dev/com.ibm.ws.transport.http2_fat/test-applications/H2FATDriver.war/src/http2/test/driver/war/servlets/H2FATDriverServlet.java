@@ -5290,6 +5290,29 @@ public class H2FATDriverServlet extends FATServlet {
 
     }
 
+    public void testGetRequestSocketInsecure(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testGetRequestSocketInsecure", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testGetRequestSocketInsecure",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testGetRequestSocketInsecure";
+
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        String expectedResponse = "RequestSocket called from socket LocalPort: " + request.getParameter("port") + System.lineSeparator();
+
+        h2Client.addExpectedFrame(new FrameData(1, expectedResponse.getBytes(), 0, false, false, false));
+
+        setupDefaultUpgradedConnection(h2Client, "/H2TestModule/GetRequestSocketServlet");
+
+        blockUntilConnectionIsDone.await();
+        handleErrors(h2Client, testName);
+
+    }
+
     void handleErrors(Http2Client client, String testName) {
         boolean testFailed = false;
         List<Exception> errors = client.getReportedExceptions();

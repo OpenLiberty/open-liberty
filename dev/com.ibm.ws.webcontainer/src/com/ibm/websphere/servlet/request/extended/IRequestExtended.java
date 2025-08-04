@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.websphere.servlet.request.extended;
+
+import java.net.Socket;
 
 import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.ws.util.ThreadPool;
@@ -25,4 +27,6 @@ public interface IRequestExtended extends IRequest {
     public ThreadPool getThreadPool();
     
     public HttpInboundConnection getHttpInboundConnection();
+    
+    public Socket getRequestSocket();
 }

@@ -308,6 +308,7 @@ public class EE11Features {
         // remove client features
         features.remove("jakartaeeClient-11.0");
         features.remove("appSecurityClient-1.0");
+        features.remove("xmlWSClient-4.0");
 
         // remove acmeCA-2.0 since it requires additional resources and configuration
         features.remove("acmeCA-2.0");

@@ -245,6 +245,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final boolean REPEAT_FEATURE_CHECK_ERROR = Boolean.parseBoolean(PrivHelper.getProperty(REPEAT_FEATURE_CHECK_ERROR_PROP, "true"));
 
     //FIPS 140-3
+    protected static final boolean GLOBAL_ENHANCED_ALGO = Boolean.parseBoolean(PrivHelper.getProperty("global.use.enhanced.security.algorithms", "false"));
     protected static final boolean GLOBAL_FIPS_140_3 = Boolean.parseBoolean(PrivHelper.getProperty("global.fips_140-3", "false"));
     protected static final boolean GLOBAL_FIPS_140_2 = Boolean.parseBoolean(PrivHelper.getProperty("global.fips_140-2", "false"));
 
@@ -1735,7 +1736,12 @@ public class LibertyServer implements LogMonitorClient {
         //FIPS 140-3
         // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM Arg
         if (isFIPS140_3EnabledAndSupported(info) || isFIPS140_2EnabledAndSupported(info)) {
-            JVM_ARGS += getJvmArgString(this.getFipsJvmOptions(info, false));
+            if (!GLOBAL_ENHANCED_ALGO) {
+                JVM_ARGS += getJvmArgString(this.getFipsJvmOptions(info, false));
+            }else
+            {
+                JVM_ARGS += getJvmArgString(this.getEnhancedAlgorithmOptions());
+            }
         }
 
         Properties bootstrapProperties = getBootstrapProperties();
@@ -7832,6 +7838,15 @@ public class LibertyServer implements LogMonitorClient {
     // FIPS 140-3
     public boolean isFIPS140_3EnabledAndSupported(JavaInfo serverJavaInfo, boolean logOutput) throws IOException {
         String methodName = "isFIPS140_3EnabledAndSupported";
+
+        // short circuit this function so that it returns true if GLOBAL_ENHANCED_ALGO is true, this way the tests behave as though FIPS is enabled.
+        if (GLOBAL_ENHANCED_ALGO) {
+            if (logOutput) {
+                Log.info(c, methodName, "use.enhanced.security.algorithms enabled, returning true");
+            }
+            return true;
+        }
+
         boolean isIBMJVM8 = (serverJavaInfo.majorVersion() == 8) && (serverJavaInfo.VENDOR == Vendor.IBM);
         boolean isIBMJVMGreaterOrEqualTo11 = (serverJavaInfo.majorVersion() >= 11) && (serverJavaInfo.VENDOR == Vendor.IBM);
         if (logOutput && GLOBAL_FIPS_140_3) {
@@ -8195,5 +8210,16 @@ public class LibertyServer implements LogMonitorClient {
                 this.setJvmOptions(combined);
             }
         }
+    }
+
+    private Map<String, String> getEnhancedAlgorithmOptions() {
+        Map<String, String> opts = new HashMap<>();
+        opts.put("-Duse.enhanced.security.algorithms", "true");
+        opts.put("-Dcom.ibm.ws.beta.edition", "true");
+        return opts;
+    }
+
+    public boolean isEnhancedAlgorithmOptionsEnabled() {
+        return GLOBAL_ENHANCED_ALGO;
     }
 }

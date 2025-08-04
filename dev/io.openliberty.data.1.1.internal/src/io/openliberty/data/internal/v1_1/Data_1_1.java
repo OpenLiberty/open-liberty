@@ -60,8 +60,10 @@ import jakarta.data.constraint.EqualTo;
 import jakarta.data.constraint.GreaterThan;
 import jakarta.data.constraint.In;
 import jakarta.data.constraint.LessThan;
+import jakarta.data.constraint.Like;
 import jakarta.data.constraint.NotBetween;
 import jakarta.data.constraint.NotEqualTo;
+import jakarta.data.constraint.NotIn;
 import jakarta.data.constraint.NotLike;
 import jakarta.data.constraint.NotNull;
 import jakarta.data.constraint.Null;
@@ -529,10 +531,14 @@ public class Data_1_1 implements DataVersionCompatibility {
             constraint = AttributeConstraint.In;
         else if (LessThan.class.equals(type))
             constraint = AttributeConstraint.LessThan;
+        else if (Like.class.equals(type))
+            constraint = AttributeConstraint.Like;
         else if (NotBetween.class.equals(type))
             constraint = AttributeConstraint.NotBetween;
         else if (NotEqualTo.class.equals(type))
             constraint = AttributeConstraint.Not;
+        else if (NotIn.class.equals(type))
+            constraint = AttributeConstraint.NotIn;
         else if (NotLike.class.equals(type))
             constraint = AttributeConstraint.NotLike;
         else if (NotNull.class.equals(type))

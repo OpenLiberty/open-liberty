@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -101,7 +101,8 @@ public class JakartaEE11Action extends JakartaEEAction {
                                                   "servlet-6.1",
                                                   "websocket-2.2",
                                                   "xmlBinding-4.0",
-                                                  "xmlWS-4.0"
+                                                  "xmlWS-4.0",
+                                                  "xmlWSClient-4.0"
     };
 
     private static final String[] EE11_ONLY_FEATURES_ARRAY_LOWERCASE = {

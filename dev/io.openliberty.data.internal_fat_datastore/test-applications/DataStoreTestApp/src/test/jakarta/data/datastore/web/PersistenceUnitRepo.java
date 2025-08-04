@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import javax.sql.DataSource;
  * This repository has its dataStore set to a PersistenceUnit reference from DataStoreTestServlet
  * that is pointing to the MyPersistenceUnit persistence-unit in persistence.xml
  */
-@Repository(dataStore = "persistence/MyPersistenceUnitRef") // java:comp/env/ is implied
+@Repository(dataStore = "java:comp/env/persistence/MyPersistenceUnitRef")
 public interface PersistenceUnitRepo {
 
     Connection connection();

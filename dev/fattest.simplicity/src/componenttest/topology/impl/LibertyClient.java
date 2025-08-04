@@ -102,6 +102,7 @@ public class LibertyClient {
 
     //FIPS 140-3
     protected static final boolean GLOBAL_CLIENT_FIPS_140_3 = Boolean.parseBoolean(PrivHelper.getProperty("global.client.fips_140-3", "false"));
+    protected static final boolean GLOBAL_ENHANCED_ALGO = Boolean.parseBoolean(PrivHelper.getProperty("global.use.enhanced.security.algorithms", "false"));
 
     protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
     protected static final String TMP_DIR = PrivHelper.getProperty("java.io.tmpdir");
@@ -673,26 +674,32 @@ public class LibertyClient {
         //FIPS 140-3
         // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM arg
         if (isFIPS140_3EnabledAndSupported()) {
-            Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
+            if (GLOBAL_ENHANCED_ALGO) {
+                JVM_ARGS += " -Duse.enhanced.security.algorithms=true";
+                JVM_ARGS += " -Dcom.ibm.ws.beta.edition=true";
+            } else {
 
-            if (javaInfo.majorVersion() >= 11){
-                Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
-                                                   + " with IBM Java " + javaInfo.majorVersion() + ", adding required JVM arguments to run with FIPS 140-3 enabled");
-                                                   
-                JVM_ARGS += " -Dsemeru.fips=true";
-                JVM_ARGS += " -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Custom";
-                JVM_ARGS += " -Djava.security.properties=" + getSemeruFips140_3CustomProfileLocationAndPrintFileContents();
-                JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
-                // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
-            } else if (javaInfo.majorVersion() == 8) {
-                Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
-                                               + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
+                Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
 
-                JVM_ARGS += " -Xenablefips140-3";
-                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
-                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-                JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
-                // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
+                if (javaInfo.majorVersion() >= 11) {
+                    Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
+                                                       + " with IBM Java " + javaInfo.majorVersion() + ", adding required JVM arguments to run with FIPS 140-3 enabled");
+
+                    JVM_ARGS += " -Dsemeru.fips=true";
+                    JVM_ARGS += " -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Custom";
+                    JVM_ARGS += " -Djava.security.properties=" + getSemeruFips140_3CustomProfileLocationAndPrintFileContents();
+                    JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
+                    // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
+                } else if (javaInfo.majorVersion() == 8) {
+                    Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
+                                                       + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
+
+                    JVM_ARGS += " -Xenablefips140-3";
+                    JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
+                    JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
+                    JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
+                    // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
+                }
             }
         }
 
@@ -768,16 +775,16 @@ public class LibertyClient {
             String clientSecurityDir = clientRoot + File.separator + "resources" + File.separator + "security";
             File ltpaFIPSKeys = new File(clientSecurityDir, "ltpaFIPS.keys");
             File ltpaKeys = new File(clientSecurityDir, "ltpa.keys");
-        
+
             if (!ltpaKeys.exists() && !ltpaFIPSKeys.exists()) {
-                Log.info(this.getClass(), "startClientWithArgs", 
-                        "FIPS 140-3 global build properties are set for client " + getClientName() 
-                        + ", but neither ltpa.keys nor ltpaFIPS.keys is found in " + clientSecurityDir);
+                Log.info(this.getClass(), "startClientWithArgs",
+                         "FIPS 140-3 global build properties are set for client " + getClientName()
+                                                                 + ", but neither ltpa.keys nor ltpaFIPS.keys is found in " + clientSecurityDir);
             } else {
-                Log.info(this.getClass(), "startClientWithArgs", 
-                        "FIPS 140-3 global build properties are set for client " + getClientName() 
-                        + ", swapping ltpaFIPS.keys into ltpa.keys");
-        
+                Log.info(this.getClass(), "startClientWithArgs",
+                         "FIPS 140-3 global build properties are set for client " + getClientName()
+                                                                 + ", swapping ltpaFIPS.keys into ltpa.keys");
+
                 try {
                     // Delete ltpa.keys if it exists
                     if (ltpaKeys.exists()) {
@@ -788,7 +795,7 @@ public class LibertyClient {
                             Thread.sleep(1000);
                         }
                     }
-        
+
                     // Rename ltpaFIPS.keys to ltpa.keys if ltpaFIPS.keys exists
                     if (ltpaFIPSKeys.exists()) {
                         if (!ltpaFIPSKeys.renameTo(ltpaKeys)) {
@@ -797,17 +804,17 @@ public class LibertyClient {
                             Log.info(this.getClass(), "startClientWithArgs", "Waiting for 1 second after rename.");
                             Thread.sleep(1000);
                         }
-                    
+
                         // Log the content of ltpa.keys
                         String content = FileUtils.readFile(ltpaKeys.getAbsolutePath());
                         Log.info(this.getClass(), "printLtpaKeys", "Content of ltpa.keys: " + content);
                     }
-        
+
                 } catch (Exception e) {
                     Log.info(this.getClass(), "startClientWithArgs", "Error during ltpa.keys handling: " + e.getMessage());
                 }
             }
-        }        
+        }
 
         ProgramOutput output;
         if (executeAsync) {
@@ -3973,6 +3980,13 @@ public class LibertyClient {
     //FIPS 140-3
     public boolean isFIPS140_3EnabledAndSupported() {
         String methodName = "isFIPS140_3EnabledAndSupported";
+
+        // short circuit this function so that it returns true if GLOBAL_ENHANCED_ALGO is true, this way the tests behave as though FIPS is enabled.
+        if (GLOBAL_ENHANCED_ALGO) {
+            Log.info(c, methodName, "use.enhanced.security.algorithms enabled, returning true");
+            return true;
+        }
+
         boolean isIBMJVM8 = (javaInfo.majorVersion() == 8) && (javaInfo.VENDOR == Vendor.IBM);
         boolean isIBMJVMGreaterOrEqualTo11 = (javaInfo.majorVersion() >= 11) && (javaInfo.VENDOR == Vendor.IBM);
         if (GLOBAL_CLIENT_FIPS_140_3) {

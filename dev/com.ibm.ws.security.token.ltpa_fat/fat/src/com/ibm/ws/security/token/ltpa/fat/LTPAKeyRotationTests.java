@@ -230,8 +230,10 @@ public class LTPAKeyRotationTests {
         // Wait for the LTPA configuration to be ready
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
                       server.waitForStringInLog("CWWKS4105I"));
-
-        checkFipsEnabledMessages();
+                      
+        if (!server.isEnhancedAlgorithmOptionsEnabled()) {
+            checkFipsEnabledMessages();
+        }
 
         messagesLogFile = server.getDefaultLogFile();
 

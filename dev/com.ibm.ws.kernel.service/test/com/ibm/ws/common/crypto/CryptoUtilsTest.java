@@ -12,6 +12,7 @@ package com.ibm.ws.common.crypto;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -20,6 +21,12 @@ import org.mockito.Mockito;
  *
  */
 public class CryptoUtilsTest {
+
+    @Before
+    public void setUp() {
+        // useEnhancedSecurityAlgorithms() caches its return value, reset the cached value to ensure test isolation.
+        CryptoUtils.isEnhancedSecurityChecked = false;
+    }
 
     @Test
     public void testFipsEnabled_fipsLevel_140_3_ibmJcePlusFipsAvailable() {
