@@ -417,12 +417,16 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public StringBuffer getRequestURL() {
-
-        String host = context.getLocalAddr().getCanonicalHostName();
-        int port = context.getLocalPort();
-
-        return new StringBuffer(getScheme() + "://" + host + ":" + port + getRequestURI());
-
+        StringBuffer sb = new StringBuffer(getScheme() + "://");
+        sb.append(getTargetHost());
+        sb.append(':');
+        sb.append(getTargetPort());
+        sb.append(getRequestURI());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getRequestURL() returning [" + sb.toString() + "]");
+        }
+        
+        return sb;
     }
 
     @Override
