@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ public class AuditKeyEncryptor {
         this.password = password;
         java.security.MessageDigest md = null;
         try {
-            md = java.security.MessageDigest.getInstance(algorithm);
+            md = getMd();
             passwordDigestBytes = new byte[CryptoUtils.AES_256_KEY_LENGTH_BYTES];
             byte[] digest = md.digest(this.password);
             ByteArray.copy(digest, 0, digest.length, passwordDigestBytes, 0);
@@ -38,6 +38,14 @@ public class AuditKeyEncryptor {
         }
         des = new AuditCrypto();
 
+    }
+
+    private java.security.MessageDigest getMd() throws java.security.NoSuchAlgorithmException {
+        try {
+            return java.security.MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256);
+        } catch (java.security.NoSuchAlgorithmException e) {
+            return java.security.MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
+        }
     }
 
     public byte[] decrypt(byte[] encrKey) {
