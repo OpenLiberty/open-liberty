@@ -14,10 +14,8 @@ package com.ibm.ws.security.spnego.fat.config;
 
 import static org.junit.Assert.assertNull;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,7 +57,6 @@ public class CommonTest {
     protected final static Krb5Helper krb5Helper = new Krb5Helper();
     protected static KdcHelper kdcHelper = null;
     private static boolean isZOS = false;
-        private static byte[] ASCII2EBCDIC = new byte[256];
     @Rule
     public TestName name = new TestName();
 
@@ -390,37 +387,39 @@ public class CommonTest {
 
     protected static void createKrbConf(LibertyServer testServer) throws IOException {
         String thisMethod = "createKrbConf";
-        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
-        try{
+        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot()
+                + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+        try {
             isZOS = testServer.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Throwable cause = new RuntimeException("Error determening if it's z/OS.");
             Log.error(c, "createKrbConf", cause);
         }
-        try(FileOutputStream out = new FileOutputStream(testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
-            // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
-            // Additionally, for this update to work the allowed skew also needs to be updated on the KDC machine
-            InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
-            if (InitClass.KRB5_CONF.contains("clockskew  = 600")) {
-                Log.info(c, thisMethod, "Replaced clockskew  = 300 with clockskew  = 600");
-            } else {
-              Log.info(c, thisMethod, "Did not find clockskew  = 300 in krb5.conf");
-            }
+        // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
+        // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
+        // Additionally, for this update to work the allowed skew also needs to be
+        // updated on the KDC machine
+        InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
+        if (InitClass.KRB5_CONF.contains("clockskew  = 600")) {
+            Log.info(c, thisMethod, "Replaced clockskew  = 300 with clockskew  = 600");
+        } else {
+            Log.info(c, thisMethod, "Did not find clockskew  = 300 in krb5.conf");
+        }
         if (isZOS) {
-            Log.info(c, thisMethod, "OS is z/OS Converting krb.conf file to EBCDIC");
-            byte[] krbConfBytes = baos.toByteArray();
-            byte[] ebcdicBytes = convertStrToEBCDIC(krbConfBytes);
-            out.write(krbConfBytes);
-            out.close();
-        }else{
+            try (FileOutputStream out = new FileOutputStream(
+                    testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+                    OutputStreamWriter osw = new OutputStreamWriter(out, "IBM-1047");
+                    PrintWriter pw = new PrintWriter(osw)) {
+                pw.print(InitClass.KRB5_CONF.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            FileOutputStream out = new FileOutputStream(
+                    testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
             out.write(InitClass.KRB5_CONF.getBytes());
             out.close();
-        }
-        } catch (IOException ioe) {
-            throw ioe;
         }
     }
 
@@ -1042,32 +1041,4 @@ public class CommonTest {
         }
         return message;
     }
-
-    /**
-     * Convert an array of ASCII bytes to EBCDIC.
-     * 
-     * @param in -- an array containing ASCII data.
-     * @return -- an array containing EBCIDIC data.
-     */
-    public static byte[] convertStrToEBCDIC(byte[] in) {
-        if (in != null) {
-            byte[] out = new byte[in.length];
-            for (int i = 0; i < in.length; ++i) {
-                out[i] = convertByteA2E(in[i]);
-            }
-            return out;
-        }
-        return null;
-    }
-
-    /**
-     * Make the lookup easier.
-     * Note that when numbers with the high bit are converted to integers
-     * they are converted as signed values. Thus the "& 0xFF" to ensure
-     * that we don't try to lookup negative values.
-     **/
-    private static byte convertByteA2E(byte in) {
-        return ASCII2EBCDIC[in & 0xFF];
-    }
-
 }
