@@ -43,7 +43,7 @@ IBM-SPI-Package: \
   com.ibm.websphere.appserver.beanValidationCore-1.0, \
   com.ibm.websphere.appserver.javax.validation-1.1
 -bundles=\
-  com.ibm.ws.org.apache.commons.weaver.1.1, \
+  com.ibm.ws.org.apache.commons.weaver, \
   com.ibm.ws.beanvalidation.v11, \
   com.ibm.ws.org.apache.bval.1.1.0, \
   com.ibm.ws.com.fasterxml.classmate

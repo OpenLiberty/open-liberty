@@ -43,7 +43,7 @@ public class BasicValidation11Test extends BasicValidation_Common {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE0921W");
     }
 
     @Override
