@@ -282,8 +282,8 @@ public class XMLSecurityConstants {
     public static final String NS_MGF1_SHA384 = NS_XMLENC11 + "mgf1sha384";
     public static final String NS_MGF1_SHA512 = NS_XMLENC11 + "mgf1sha512";
 
-    public static final String NS_XENC_SHA256 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase();
-    public static final String NS_XENC_SHA512 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase();
+    public static final String NS_XENC_SHA256 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256.toLowerCase();
+    public static final String NS_XENC_SHA512 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512.toLowerCase();
 
     public static final String PREFIX_C14N_EXCL = "c14nEx";
     public static final QName ATT_NULL_PrefixList = new QName(null, "PrefixList");

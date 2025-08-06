@@ -32,7 +32,7 @@ import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInform
 import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class EntityMappingsScannerResults {
-    private final String shaDigestAlg = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+    private final String shaDigestAlg = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
     public static final String KEY_SHA256HASH = "SHA256HASH"; // Value is a String
     public static final String KEY_CITXML = "CITXML";   // Value is byte[]
     
