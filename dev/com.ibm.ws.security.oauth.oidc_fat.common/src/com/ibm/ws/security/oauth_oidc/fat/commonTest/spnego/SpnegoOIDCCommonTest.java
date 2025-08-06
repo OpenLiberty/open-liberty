@@ -14,6 +14,8 @@ package com.ibm.ws.security.oauth_oidc.fat.commonTest.spnego;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -103,6 +105,12 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 	protected final static Krb5Helper krb5Helper = new Krb5Helper();
 	protected static KdcHelper kdcHelper = null;
 
+    private static boolean isZOS = System.getProperty("os.name").equals("z/OS");
+
+     // When running on zOS the file format is not properly converted for the krb.conf file currently,
+    // so we will use krb.conf, which is already formatted for zOS.
+    private static final String SERVER_KRB5_CONFIG_FILE = isZOS ? SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE : SPNEGOConstants.SERVER_KRB5_CONFIG_FILE;
+
 	@Rule
 	public TestName name = new TestName();
 
@@ -134,7 +142,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 	public static String createSpnegoTokenForUser(String user, String password) throws Exception {
 		Log.info(c, "createSpnegoTokenForUser", "^^^^Creating a new SPNEGO token for specific user: " + user +"^^^^");
 		String spnegoToken = testHelper.createSpnegoToken(user, password, TARGET_SERVER,
-				SPNEGOConstants.SERVER_KRB5_CONFIG_FILE, krb5Helper);
+				SERVER_KRB5_CONFIG_FILE, krb5Helper);
 		
 		Log.info(c, "createSpnegoTokenForUser", "^^^^The token that was created looks like this: " + spnegoToken);
 		return spnegoToken;
@@ -190,7 +198,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 
 		try {
 			spnegoTokenForTestClass = testHelper.createSpnegoToken(user, password, TARGET_SERVER,
-					SPNEGOConstants.SERVER_KRB5_CONFIG_FILE, krb5Helper);
+					SERVER_KRB5_CONFIG_FILE, krb5Helper);
 		} catch (Exception e) {
 			String errorMsg = "Exception was caught while trying to create a SPNEGO token. Ensuing tests requiring use of this token might fail. "
 					+ e.getMessage();
@@ -498,10 +506,34 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 
     protected static void createKrbConf(LibertyServer testServer) throws IOException {
         String thisMethod = "createKrbConf";
-        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
-        FileOutputStream out = new FileOutputStream(testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
-        out.write(InitClass.KRB5_CONF.getBytes());
-        out.close();
+        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot()
+                + SERVER_KRB5_CONFIG_FILE);
+        // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
+        // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
+        // Additionally, for this update to work the allowed skew also needs to be
+        // updated on the KDC machine
+        InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
+        if (InitClass.KRB5_CONF.contains("clockskew  = 600")) {
+            Log.info(c, thisMethod, "Replaced clockskew  = 300 with clockskew  = 600");
+        } else {
+            Log.info(c, thisMethod, "Did not find clockskew  = 300 in krb5.conf");
+        }
+        if (isZOS) {
+            try (FileOutputStream out = new FileOutputStream(
+                    testServer.getServerRoot() + SERVER_KRB5_CONFIG_FILE);
+                    OutputStreamWriter osw = new OutputStreamWriter(out, "IBM-1047");
+                    PrintWriter pw = new PrintWriter(osw)) {
+                pw.print(InitClass.KRB5_CONF.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            FileOutputStream out = new FileOutputStream(
+                    testServer.getServerRoot() + SERVER_KRB5_CONFIG_FILE);
+            out.write(InitClass.KRB5_CONF.getBytes());
+            out.close();
+        }
     }
 
 	private static HashMap<String, String> addBootstrapProps(Map<String, String> testProps)

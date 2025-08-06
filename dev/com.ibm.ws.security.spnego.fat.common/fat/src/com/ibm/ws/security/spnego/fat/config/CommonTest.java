@@ -15,6 +15,8 @@ package com.ibm.ws.security.spnego.fat.config;
 import static org.junit.Assert.assertNull;
 
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -41,7 +43,6 @@ import com.ibm.ws.webcontainer.security.test.servlets.SSLBasicAuthClient;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.ExternalTestService;
-import com.ibm.websphere.simplicity.OperatingSystem;
 
 public class CommonTest {
     private static final Class<?> c = CommonTest.class;
@@ -56,7 +57,10 @@ public class CommonTest {
     protected static JDKExpectationTestClass expectation;
     protected final static Krb5Helper krb5Helper = new Krb5Helper();
     protected static KdcHelper kdcHelper = null;
-    private static boolean isZOS = false;
+    private static boolean isZOS = System.getProperty("os.name").equals("z/OS");
+    // When running on zOS the file format is not properly converted for the krb.conf file currently,
+    // so we will use krb.conf, which is already formatted for zOS.
+    private static final String SERVER_KRB5_CONFIG_FILE = isZOS? SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE : SPNEGOConstants.SERVER_KRB5_CONFIG_FILE;
     @Rule
     public TestName name = new TestName();
 
@@ -154,7 +158,7 @@ public class CommonTest {
     private static void createSpnegoToken(String thisMethod, String user, String password) throws Exception, InterruptedException {
         for (int i = 1; i <= 6; i++) {
             try {
-                spnegoTokenForTestClass = testHelper.createSpnegoToken(user, password, TARGET_SERVER, SPNEGOConstants.SERVER_KRB5_CONFIG_FILE, krb5Helper);
+                spnegoTokenForTestClass = testHelper.createSpnegoToken(user, password, TARGET_SERVER, SERVER_KRB5_CONFIG_FILE, krb5Helper);
                 break;
             } catch (LoginException e) {
                 if (i == 6) {
@@ -388,13 +392,7 @@ public class CommonTest {
     protected static void createKrbConf(LibertyServer testServer) throws IOException {
         String thisMethod = "createKrbConf";
         Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot()
-                + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
-        try {
-            isZOS = testServer.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
-        } catch (Exception e) {
-            Throwable cause = new RuntimeException("Error determening if it's z/OS.");
-            Log.error(c, "createKrbConf", cause);
-        }
+                + SERVER_KRB5_CONFIG_FILE);
         // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
         // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
         // Additionally, for this update to work the allowed skew also needs to be
@@ -407,7 +405,7 @@ public class CommonTest {
         }
         if (isZOS) {
             try (FileOutputStream out = new FileOutputStream(
-                    testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+                    testServer.getServerRoot() + SERVER_KRB5_CONFIG_FILE);
                     OutputStreamWriter osw = new OutputStreamWriter(out, "IBM-1047");
                     PrintWriter pw = new PrintWriter(osw)) {
                 pw.print(InitClass.KRB5_CONF.getBytes());
@@ -417,7 +415,7 @@ public class CommonTest {
 
         } else {
             FileOutputStream out = new FileOutputStream(
-                    testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+                    testServer.getServerRoot() + SERVER_KRB5_CONFIG_FILE);
             out.write(InitClass.KRB5_CONF.getBytes());
             out.close();
         }
@@ -757,7 +755,7 @@ public class CommonTest {
         String spnegoToken = InitClass.COMMON_SPNEGO_TOKEN;
         // We might already have a SPNEGO token, so only create a new token if given a user different from the one used to create the common token
         if (spnegoTokenUser != InitClass.COMMON_TOKEN_USER) {
-            spnegoToken = testHelper.createSpnegoToken(spnegoTokenUser, spnegoTokenUserPwd, TARGET_SERVER, SPNEGOConstants.SERVER_KRB5_CONFIG_FILE, krb5Helper);
+            spnegoToken = testHelper.createSpnegoToken(spnegoTokenUser, spnegoTokenUserPwd, TARGET_SERVER, SERVER_KRB5_CONFIG_FILE, krb5Helper);
         }
 
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + spnegoToken, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
