@@ -104,6 +104,7 @@ public class InitClass {
     public static String serverCanonicalHostName = null;
     public static String serverShortHostName = null;
     public static boolean randomizeHostName = false;
+    private static boolean isZOS = System.getProperty("os.name").equals("z/OS");
 
     public static void getKDCInfoFromConsul() throws Exception {
         String thisMethod = "getKDCInfoFromConsul";
@@ -118,7 +119,12 @@ public class InitClass {
             KDC_USER_PWD = services.get(0).getProperties().get(SPNEGOConstants.MS_KDC_USER_PASSWORD_CONSUL);
             KDC_REALM = services.get(0).getProperties().get(SPNEGOConstants.KDC_REALM_FROM_CONSUL);
             KDC_HOST_SHORTNAME = services.get(0).getProperties().get(SPNEGOConstants.KDC_SHORTNAME_FROM_CONSUL);
-            KRB5_CONF = services.get(0).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
+            if(isZOS){
+                KRB5_CONF = services.get(0).getProperties().get(SPNEGOConstants.ZKRB5_CONF_FROM_CONSUL);
+
+            }else {
+                KRB5_CONF = services.get(0).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
+            }
             Z_USER = services.get(0).getProperties().get(SPNEGOConstants.Z_USER_FROM_CONSUL);
             FIRST_USER = services.get(0).getProperties().get(SPNEGOConstants.FIRST_USER_FROM_CONSUL);
             SECOND_USER = services.get(0).getProperties().get(SPNEGOConstants.SECOND_USER_FROM_CONSUL);
@@ -138,7 +144,11 @@ public class InitClass {
                 KDC_USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.MS_KDC_USER_PASSWORD_CONSUL);
                 KDC_REALM = services.get(1).getProperties().get(SPNEGOConstants.KDC_REALM_FROM_CONSUL);
                 KDC_HOST_SHORTNAME = services.get(1).getProperties().get(SPNEGOConstants.KDC_SHORTNAME_FROM_CONSUL);
-                KRB5_CONF = services.get(1).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
+                if(isZOS){
+                    KRB5_CONF = services.get(1).getProperties().get(SPNEGOConstants.ZKRB5_CONF_FROM_CONSUL);
+                }else {
+                    KRB5_CONF = services.get(1).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
+                }
                 Z_USER = services.get(1).getProperties().get(SPNEGOConstants.Z_USER_FROM_CONSUL);
                 FIRST_USER = services.get(1).getProperties().get(SPNEGOConstants.FIRST_USER_FROM_CONSUL);
                 SECOND_USER = services.get(1).getProperties().get(SPNEGOConstants.SECOND_USER_FROM_CONSUL);

@@ -14,6 +14,10 @@ package com.ibm.ws.security.spnego.fat.config;
 
 import static org.junit.Assert.assertNull;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -158,7 +162,7 @@ public class CommonTest {
     private static void createSpnegoToken(String thisMethod, String user, String password) throws Exception, InterruptedException {
         for (int i = 1; i <= 6; i++) {
             try {
-                spnegoTokenForTestClass = testHelper.createSpnegoToken(user, password, TARGET_SERVER, SERVER_KRB5_CONFIG_FILE, krb5Helper);
+                spnegoTokenForTestClass = testHelper.createSpnegoToken(user, password, TARGET_SERVER, SPNEGOConstants.SERVER_KRB5_CONFIG_FILE, krb5Helper);
                 break;
             } catch (LoginException e) {
                 if (i == 6) {
@@ -391,12 +395,11 @@ public class CommonTest {
 
     protected static void createKrbConf(LibertyServer testServer) throws IOException {
         String thisMethod = "createKrbConf";
-        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot()
-                + SERVER_KRB5_CONFIG_FILE);
+        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE +
+        "the machine is z/OS? " + isZOS);
         // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
         // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
-        // Additionally, for this update to work the allowed skew also needs to be
-        // updated on the KDC machine
+        // Additionally, for this update to work the allowed skew also needs to be updated on the KDC machine
         InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
         if (InitClass.KRB5_CONF.contains("clockskew  = 600")) {
             Log.info(c, thisMethod, "Replaced clockskew  = 300 with clockskew  = 600");
@@ -405,17 +408,18 @@ public class CommonTest {
         }
         if (isZOS) {
             try (FileOutputStream out = new FileOutputStream(
-                    testServer.getServerRoot() + SERVER_KRB5_CONFIG_FILE);
+                    testServer.getServerRoot() + SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE);
                     OutputStreamWriter osw = new OutputStreamWriter(out, "IBM-1047");
                     PrintWriter pw = new PrintWriter(osw)) {
                 pw.print(InitClass.KRB5_CONF.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            Files.copy(Paths.get(SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE), Paths.get(SPNEGOConstants.SERVER_KRB5_CONFIG_FILE), StandardCopyOption.REPLACE_EXISTING);
 
         } else {
             FileOutputStream out = new FileOutputStream(
-                    testServer.getServerRoot() + SERVER_KRB5_CONFIG_FILE);
+                    testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
             out.write(InitClass.KRB5_CONF.getBytes());
             out.close();
         }
@@ -755,7 +759,7 @@ public class CommonTest {
         String spnegoToken = InitClass.COMMON_SPNEGO_TOKEN;
         // We might already have a SPNEGO token, so only create a new token if given a user different from the one used to create the common token
         if (spnegoTokenUser != InitClass.COMMON_TOKEN_USER) {
-            spnegoToken = testHelper.createSpnegoToken(spnegoTokenUser, spnegoTokenUserPwd, TARGET_SERVER, SERVER_KRB5_CONFIG_FILE, krb5Helper);
+            spnegoToken = testHelper.createSpnegoToken(spnegoTokenUser, spnegoTokenUserPwd, TARGET_SERVER, SPNEGOConstants.SERVER_KRB5_CONFIG_FILE, krb5Helper);
         }
 
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + spnegoToken, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);

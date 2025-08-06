@@ -12,6 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest.spnego;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -107,10 +111,6 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 
     private static boolean isZOS = System.getProperty("os.name").equals("z/OS");
 
-     // When running on zOS the file format is not properly converted for the krb.conf file currently,
-    // so we will use krb.conf, which is already formatted for zOS.
-    private static final String SERVER_KRB5_CONFIG_FILE = isZOS ? SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE : SPNEGOConstants.SERVER_KRB5_CONFIG_FILE;
-
 	@Rule
 	public TestName name = new TestName();
 
@@ -142,7 +142,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 	public static String createSpnegoTokenForUser(String user, String password) throws Exception {
 		Log.info(c, "createSpnegoTokenForUser", "^^^^Creating a new SPNEGO token for specific user: " + user +"^^^^");
 		String spnegoToken = testHelper.createSpnegoToken(user, password, TARGET_SERVER,
-				SERVER_KRB5_CONFIG_FILE, krb5Helper);
+				SPNEGOConstants.SERVER_KRB5_CONFIG_FILE, krb5Helper);
 		
 		Log.info(c, "createSpnegoTokenForUser", "^^^^The token that was created looks like this: " + spnegoToken);
 		return spnegoToken;
@@ -198,7 +198,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 
 		try {
 			spnegoTokenForTestClass = testHelper.createSpnegoToken(user, password, TARGET_SERVER,
-					SERVER_KRB5_CONFIG_FILE, krb5Helper);
+					SPNEGOConstants.SERVER_KRB5_CONFIG_FILE, krb5Helper);
 		} catch (Exception e) {
 			String errorMsg = "Exception was caught while trying to create a SPNEGO token. Ensuing tests requiring use of this token might fail. "
 					+ e.getMessage();
@@ -507,7 +507,7 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
     protected static void createKrbConf(LibertyServer testServer) throws IOException {
         String thisMethod = "createKrbConf";
         Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot()
-                + SERVER_KRB5_CONFIG_FILE);
+                + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
         // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
         // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
         // Additionally, for this update to work the allowed skew also needs to be
@@ -520,17 +520,18 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
         }
         if (isZOS) {
             try (FileOutputStream out = new FileOutputStream(
-                    testServer.getServerRoot() + SERVER_KRB5_CONFIG_FILE);
+                    testServer.getServerRoot() + SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE);
                     OutputStreamWriter osw = new OutputStreamWriter(out, "IBM-1047");
                     PrintWriter pw = new PrintWriter(osw)) {
                 pw.print(InitClass.KRB5_CONF.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            Files.copy(Paths.get(SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE), Paths.get(SPNEGOConstants.SERVER_KRB5_CONFIG_FILE), StandardCopyOption.REPLACE_EXISTING);
 
         } else {
             FileOutputStream out = new FileOutputStream(
-                    testServer.getServerRoot() + SERVER_KRB5_CONFIG_FILE);
+                    testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
             out.write(InitClass.KRB5_CONF.getBytes());
             out.close();
         }
