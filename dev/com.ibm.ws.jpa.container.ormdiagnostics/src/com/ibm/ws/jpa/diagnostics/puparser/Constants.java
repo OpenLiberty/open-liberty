@@ -17,7 +17,7 @@ import com.ibm.ws.common.crypto.CryptoUtils;
 
 public final class Constants {
     public final static String JVM_Property_PXML_DIGEST_ALGORITHM = "jpaormviewer.pxml.digest.algorithm";
-    public final static String DEFAULT_DIGEST_ALGORITHM = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+    public final static String DEFAULT_DIGEST_ALGORITHM = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
 
     public final static String JPA_10_JAXB_PACKAGE = "com.ibm.ws.jpa.diagnostics.puparser.jaxb.puxml10";
     public final static String JPA_20_JAXB_PACKAGE = "com.ibm.ws.jpa.diagnostics.puparser.jaxb.puxml20";
