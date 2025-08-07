@@ -18,8 +18,6 @@
  */
 package org.apache.xml.security.algorithms;
 
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,7 +32,10 @@ import org.w3c.dom.Element;
  */
 public class JCEMapper {
 
-    private static final Logger LOG = System.getLogger(JCEMapper.class.getName());
+    // Liberty Change Start: Use original Logger from 2.3
+    private static final org.slf4j.Logger LOG =
+        org.slf4j.LoggerFactory.getLogger(JCEMapper.class);
+    // Liberty Change End
 
     private static Map<String, Algorithm> algorithmsMap = new ConcurrentHashMap<>();
 
@@ -322,6 +323,12 @@ public class JCEMapper {
             XMLCipher.DIFFIE_HELLMAN,
             new Algorithm("", "", "KeyAgreement")
         );
+        // Liberty Change Start: Add DHEC algorithm
+        algorithmsMap.put(
+            XMLCipher.DIFFIE_HELLMAN_EC,
+            new Algorithm("", "", "KeyAgreement")
+        );
+        // Liberty Change Stop
         algorithmsMap.put(
             XMLCipher.TRIPLEDES_KeyWrap,
             new Algorithm("DESede", "DESedeWrap", "SymmetricKeyWrap", 192, 0)
@@ -440,8 +447,9 @@ public class JCEMapper {
      * @return The Algorithm object for the given URI.
      */
     private static Algorithm getAlgorithm(String algorithmURI) {
-        LOG.log(Level.DEBUG, "Request for URI {0}", algorithmURI);
-
+        // Liberty Change Start: Add original 2.3 Logger
+        LOG.debug("Request for URI {0}", algorithmURI);
+        // Liberty Change End
         if (algorithmURI != null) {
             return algorithmsMap.get(algorithmURI);
         }

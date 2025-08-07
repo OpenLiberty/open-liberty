@@ -14,5 +14,11 @@
 
 wss4jVersion=2.4.1
 
+-includeresource: \
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/!META-INF/MANIFEST.MF,\
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/templates/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/schemas/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/*xml
+
 -buildpath: org.apache.wss4j:wss4j-policy;version=${wss4jVersion}, \
             com.ibm.ws.org.apache.neethi.3.1.1;version=latest
