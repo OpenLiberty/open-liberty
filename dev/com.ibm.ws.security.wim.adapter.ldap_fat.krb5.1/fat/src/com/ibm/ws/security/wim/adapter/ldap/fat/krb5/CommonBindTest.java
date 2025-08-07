@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -143,6 +143,9 @@ public class CommonBindTest {
             config.setTimeout(Integer.MAX_VALUE);
             conn = new KdcConnection(config);
         }
+
+        LDAP_PORT = FATSuite.ldap.getMappedPort(389);
+        Log.info(c, "setUp", "Setting LDAP_PORT to: " + LDAP_PORT);
 
         //createTicketCacheFile(); //ApacheDSandKDC.getDefaultTicketCacheFile();
         /// get ticket cache file from container for user17
